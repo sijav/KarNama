@@ -650,6 +650,25 @@ const commands = {
       if (task.status !== 'review') {
         fail(`move: ${id} is ${task.status}. A task goes to review, is roasted there, and closes from review.`)
       }
+
+      // A verify command is REQUIRED, and this is checked FIRST, before the
+      // roast gate. Optional, the close proved only that a review happened and
+      // that its findings were filed, not that the work works: a task with no
+      // verifier closed on a manifest-bound round and any non-empty prose, so
+      // its test, its deployment or its visual check could be plainly false and
+      // nothing would say so.
+      //
+      // First, because the order is also the advice. "You have no mechanical
+      // check" is more useful than "you have no review", and writing the check
+      // before asking for the review is the right way round.
+      if (!task.verify) {
+        fail(
+          `move: ${id} has no verify command, so nothing would mechanically check that it is done.\n` +
+            `Write agent/scripts/verify/${id}.mjs asserting as much of the exit condition as a command\n` +
+            `can, then: npm run todo -- set ${id} --verify "node agent/scripts/verify/${id}.mjs"\n` +
+            'KN-054 covers backfilling the tasks that predate this rule.',
+        )
+      }
       const last = task.roasts?.[task.roasts.length - 1]
       if (!last) fail(`move: ${id} has no roast round. Run "npm run roast -- ${id} ..." and record it before closing.`)
 
@@ -954,6 +973,20 @@ const commands = {
   },
 
   validate(board) {
+    // Reported rather than failed. Every task needs a verify command before it
+    // can close, but demanding one the moment a card is filed would mean
+    // writing the check before the work, and a check written that early tends
+    // to describe what is easy to assert rather than what the task must prove.
+    // Saying how many are missing keeps the debt visible without blocking.
+    const open = board.tasks.filter((task) => !SETTLED_STATUSES.includes(task.status))
+    const unverified = open.filter((task) => !task.verify)
+    if (unverified.length) {
+      process.stdout.write(
+        `${unverified.length} of ${open.length} open task(s) have no verify command yet, so they cannot close.\n` +
+          `First few: ${unverified.slice(0, 5).map((task) => task.id).join(', ')}. KN-054 covers the backfill.\n`,
+      )
+    }
+
     const problems = checkBoard(board)
     if (!problems.length) {
       process.stdout.write(`Board is valid. ${board.tasks.length} task(s).\n`)

@@ -1416,14 +1416,15 @@
       "parent": [
         "KN-001"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one.",
       "roasts": [],
       "notes": [
         "ORDERING NOTE. Once move done requires a verify command, every task from that point on must write its own verifier as part of doing the work, which is the intent rather than a side effect: the verifier is how the exit condition stops being a wish. It does NOT mean KN-054 must run first, because a task written after this lands will carry its verify already. KN-054's remaining job is therefore the two halves that this task does not cover: backfilling the tasks that predate the rule, and making validate report or fail on a task that has none. Check that framing against KN-054's card when picking it up so the two do not overlap."
       ],
       "createdAt": "2026-09-07T21:12:12.658Z",
-      "updatedAt": "2026-09-07T21:20:20.637Z"
+      "updatedAt": "2026-09-07T21:29:05.624Z",
+      "verify": "node agent/scripts/verify/KN-065.mjs"
     },
     {
       "id": "KN-066",
