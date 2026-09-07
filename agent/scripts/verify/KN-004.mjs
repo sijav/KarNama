@@ -91,7 +91,68 @@ for (const [role, metrics, weight] of type) {
 // thing stopping someone re-adding it, so it has to be allowed to say the name.
 if (/`Body\/Small`\s*\|/.test(doc)) problems.push('Body/Small is listed as a type role, but Figma deleted it')
 
-const documentedExtras = ['#ef4444', '#d43030', '#b91c1c', '#bfdbfe', '#1e40af', '#e5e7eb', '#0000000f', '#0000000a']
+// The effect styles, read with get_variable_defs from the frames named in the
+// table. These were missing entirely and the document asserted there was only
+// one, which is the reason this task exists: the Foundations overview frame 7:2
+// carries colours, spacing and radius but NOT effect or type styles, so a sweep
+// that reads 7:2 alone cannot see them. Each row is checked whole, so a shadow
+// whose blur or spread drifts is caught rather than only a missing hex.
+const elevation = [
+  ['Elevation/Card', '137:44', ['#0000000F', '0 1', 'blur 3', 'spread 0'], ['#0000000A', '0 1', 'blur 2', 'spread 0']],
+  ['Elevation/Modal', '210:276', ['#0000001F', '0 8', 'blur 24', 'spread -4'], ['#00000014', '0 2', 'blur 6', 'spread -2']],
+]
+
+for (const [style, node, first, second] of elevation) {
+  const row = rows.find((line) => line.includes(`\`${style}\``))
+  if (!row) {
+    problems.push(`effect style ${style} appears in no table`)
+    continue
+  }
+  if (!row.includes(`\`${node}\``)) problems.push(`${style} does not name the node it was read from, ${node}`)
+  for (const part of [...first, ...second]) {
+    if (!row.includes(part)) problems.push(`${style} is missing "${part}": ${row.trim()}`)
+  }
+}
+// And the false claim must not come back. It survived one whole task. Same
+// exemption as Body/Small above: the paragraph that records the correction has
+// to be allowed to quote the thing it is correcting, or the document cannot
+// warn anyone off re-adding it. So the phrase is a defect unless the sentence
+// carrying it also says it was wrong.
+for (const match of doc.matchAll(/only elevation/gi)) {
+  const from = doc.lastIndexOf('.', match.index) + 1
+  const to = doc.indexOf('.', match.index + match[0].length)
+  const sentence = doc.slice(from, to === -1 ? doc.length : to)
+  if (!/(was false|earlier version|no longer|used to)/i.test(sentence)) {
+    problems.push(`the document still claims there is only one elevation: ${sentence.trim().replace(/\s+/g, ' ').slice(0, 80)}`)
+  }
+}
+if (!/exactly two effect styles/i.test(doc)) problems.push('the document does not state how many effect styles there are')
+
+// Variables the Foundations overview 7:2 does not carry, found by sweeping the
+// component frames that use them. Each has to name the frame it was read from,
+// because "read from component frames" without saying which is not traceable
+// and the exit condition asks for traceable.
+const offBoard = [
+  ['bg/danger/default', '31:4', '#ef4444'],
+  ['bg/danger/hover', '31:4', '#d43030'],
+  ['accent/200', '31:4', '#bfdbfe'],
+  ['accent/700', '31:4', '#1e40af'],
+  ['gray/200', '31:4', '#e5e7eb'],
+  ['red/700', '31:4', '#b91c1c'],
+  ['text/error', '95:39', '#b91c1c'],
+  ['black/base', '31:4', '#000000'],
+]
+
+for (const [name, node, hex] of offBoard) {
+  const row = rows.find((line) => line.includes(`\`${name}\``) && line.includes(`\`${node}\``))
+  if (!row) {
+    problems.push(`${name} is not recorded as read from ${node}`)
+    continue
+  }
+  if (!row.toLowerCase().includes(hex)) problems.push(`${name} should be ${hex}: ${row.trim()}`)
+}
+
+const documentedExtras = ['#ef4444', '#d43030', '#b91c1c', '#bfdbfe', '#1e40af', '#e5e7eb', '#0000000f', '#0000000a', '#0000001f', '#00000014', '#000000']
 const known = new Set([...Object.values(semantic), ...Object.values(status).flat(), ...documentedExtras])
 for (const hex of new Set((doc.match(/#[0-9a-fA-F]{6,8}/g) ?? []).map((h) => h.toLowerCase()))) {
   if (!known.has(hex)) problems.push(`${hex} appears in the document but is not a Figma token or a documented extra`)

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 84,
+  "nextId": 85,
   "tasks": [
     {
       "id": "KN-001",
@@ -241,7 +241,7 @@
       "parent": [
         "KN-001"
       ],
-      "status": "backlog",
+      "status": "review",
       "exit": "A named sweep of the Foundations canvas finds no token absent from DESIGN.md, every value in the DESIGN.md tables is traceable to a Figma node id, and the KN-001 verify script's type-scale check still passes.",
       "roasts": [],
       "notes": [
@@ -252,7 +252,7 @@
         "SWEEP CONTINUED, six more frames sampled and the result is reassuring. Contact Card 248:116, Empty State 159:80, Bulk Action Bar 401:436 and Menu 512:8350 introduce NO token outside the recorded set. The menu uses Elevation/Card rather than a third elevation, so there are exactly two effect styles in the file, Card and Modal, and the correction to make is narrow: DESIGN.md says Card is the only one, and it should say there are two and which surface each is for. Frames sampled in total: 7:2, 7:105, 33:58, 84:22, 95:38, 137:44, 159:80, 185:11, 210:276, 248:116, 401:436, 416:21, 512:8350. Colours, spacing, radius, icon sizes and type are all confirmed complete against those; only the effect styles were incomplete, which is exactly the class the Foundations overview does not expose."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T22:03:47.841Z",
+      "updatedAt": "2026-09-07T22:35:02.826Z",
       "verify": "node agent/scripts/verify/KN-004.mjs ."
     },
     {
@@ -1875,6 +1875,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T22:30:33.307Z"
+    },
+    {
+      "id": "KN-084",
+      "title": "Make the AGENTS.md section 5 gate runnable before any workspace exists",
+      "desc": "package.json declares workspaces apps/web, apps/api and packages/graphql, none of which exist yet, so npm run lint, lint:tsc, test and build all exit non-zero with \"No workspaces found!\". AGENTS.md section 5 tells every agent to run those four commands and read the output. Today they produce four errors and no information, which trains the reader to ignore them. Make each script succeed with an honest \"nothing to check yet\" when no workspace is present, or gate them on the directories existing.",
+      "why": "The first four steps of the done gate are the ones every task runs, and a gate that always errors is a gate nobody can distinguish from a real failure. It was found by actually running the gate on a docs task rather than assuming it was inert, which is the check AGENTS.md itself asks for.",
+      "severity": "medium",
+      "points": 1,
+      "area": "infra",
+      "parent": [
+        "KN-001"
+      ],
+      "status": "backlog",
+      "exit": "npm run lint, npm run lint:tsc, npm test and npm run build each exit zero and say what they did on a clean checkout with no workspace directories, and each still fails honestly once apps/web exists and contains a failing check.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T22:34:48.392Z"
     }
   ]
 }

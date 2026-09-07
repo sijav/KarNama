@@ -69,9 +69,26 @@ gets added to the palette with a name, it does not get inlined.
 | `accent/700`                | `#1e40af` |
 | `gray/200`                  | `#e5e7eb` |
 
-`bg/danger/*`, `text/error`, `accent/*` and `gray/200` were read from component
-frames rather than from the Foundations overview, so they are real but they are
-not on the Foundations board. Do not delete them as strays.
+#### Not on the Foundations board, and where each was actually read
+
+The Foundations overview at `7:2` does not carry everything. These are real
+variables that only surface on the frames that use them, so each row names the
+frame it was read from with `get_variable_defs`. Do not delete them as strays.
+
+| Token                | Read from | Value     | Note                                          |
+| -------------------- | --------- | --------- | --------------------------------------------- |
+| `bg/danger/default`  | `31:4`    | `#ef4444` | the destructive button                        |
+| `bg/danger/hover`    | `31:4`    | `#d43030` | the destructive button                        |
+| `accent/200`         | `31:4`    | `#bfdbfe` | a primitive, not a role                       |
+| `accent/700`         | `31:4`    | `#1e40af` | a primitive, not a role                       |
+| `gray/200`           | `31:4`    | `#e5e7eb` | a primitive, the same value as `border/default` |
+| `red/700`            | `31:4`    | `#b91c1c` | a primitive, the value `text/error` resolves to |
+| `text/error`         | `95:39`   | `#b91c1c` | the Input error state                         |
+| `black/base`         | `31:4`    | `#000000` | the base the two elevation shadows take alpha from |
+
+`black/base` is why the shadow colours are written `#0000000F` and `#00000014`
+rather than as greys: they are black at an alpha, and the alpha is the whole
+token. It is not a colour any component may paint with.
 
 ### Colour, status
 
@@ -103,8 +120,29 @@ radius   none 0  sm 4   md 8    lg 16   full 999
 icon     sm 16   md 20  base 24
 ```
 
-`Elevation/Card` is two stacked drop shadows: `#0000000F` at `0 1 3`, and
-`#0000000A` at `0 1 2`. It is the only elevation in the file.
+### Elevation
+
+**There are exactly two effect styles**, and they are for different surfaces: a
+card sits on the page, a modal sits above everything. Each is two stacked drop
+shadows, and each value below was read from the named node with
+`get_variable_defs`.
+
+| Style             | Read from | Shadow 1                        | Shadow 2                        |
+| ----------------- | --------- | ------------------------------- | ------------------------------- |
+| `Elevation/Card`  | `137:44`  | `#0000000F` `0 1` blur 3 spread 0  | `#0000000A` `0 1` blur 2 spread 0  |
+| `Elevation/Modal` | `210:276` | `#0000001F` `0 8` blur 24 spread -4 | `#00000014` `0 2` blur 6 spread -2 |
+
+An earlier version of this document said Card was the only elevation in the
+file. That was false, not merely incomplete, and it survived because the
+Foundations overview frame `7:2` exposes the colour, spacing and radius sets but
+**not the effect styles or the type styles**: those appear only on the frames
+that use them. A sweep that reads `7:2` alone will miss exactly this class of
+token every time, which is why the sweep for this task sampled thirteen
+component frames instead: `7:2`, `7:105`, `33:58`, `84:22`, `95:38`, `137:44`,
+`159:80`, `185:11`, `210:276`, `248:116`, `401:436`, `416:21` and `512:8350`.
+The Menu at `512:8350` uses `Elevation/Card` rather than a third style, and the
+Contact Card, Empty State and Bulk Action Bar introduce no token outside the set
+recorded here.
 
 ### Type
 
