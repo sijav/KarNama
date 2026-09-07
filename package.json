@@ -1,0 +1,24 @@
+{
+  "name": "karnama",
+  "description": "KarNama, a job application tracker that keeps the record of where you applied and what came back",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/graphql",
+    "apps/web",
+    "apps/api"
+  ],
+  "scripts": {
+    "todo": "node agent/scripts/todo.mjs",
+    "roast": "node agent/scripts/roast.mjs",
+    "board": "node agent/scripts/todo.mjs render",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:tsc": "npm run lint:tsc --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
