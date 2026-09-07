@@ -81,14 +81,32 @@ export default defineConfig(
       'lingui/no-unlocalized-strings': [
         'error',
         {
-          // Anything with no letter in it cannot be a sentence: css values,
-          // numbers, punctuation, and the token names that are identifiers.
-          ignore: ['^[^\\p{L}]*$', '^[a-z-]+/[a-z0-9-/]+$', '^(rtl|ltr|fa-IR|en-US)$'],
+          ignore: [
+            // Anything with no letter in it cannot be a sentence: css values,
+            // numbers and punctuation.
+            '^[^\\p{L}]*$',
+            // Token names, which are identifiers rendered as labels: `bg/page`.
+            '^[a-z-]+/[a-z0-9-/]+$',
+            '^(rtl|ltr|fa-IR|en-US)$',
+            // A Storybook title is a path in the sidebar, not copy: every
+            // segment is capitalised and separated by a slash, `App/Shell`.
+            // Narrow on purpose, because `title` as a JSX prop IS user-facing
+            // and must not be exempt: see the note on ignoreNames below.
+            '^[A-Z][A-Za-z]*(/[A-Z][A-Za-z ]*)+$',
+          ],
           ignoreNames: [
             {
               regex: {
+                // `title` and `aria-*` are NOT here, and that is the point of
+                // KN-087. They were, swept in with the structural props this
+                // list is for, and they are the opposite: aria-label is the
+                // accessible name a screen reader speaks and title is the
+                // tooltip a sighted user hovers. Exempting them let the copy a
+                // blind user hears go untranslated while the lint reported
+                // green, which is a hole in exactly the place this rule exists
+                // to cover.
                 pattern:
-                  '^(id|key|data-testid|className|variant|color|component|role|dir|lang|type|name|sx|to|href|title|icon|provider|family|direction|locale|aria-[a-z]+' +
+                  '^(id|key|data-testid|className|variant|color|component|role|dir|lang|type|name|sx|to|href|icon|provider|family|direction|locale' +
                   // CSS values are not user-facing text and the rule cannot tell
                   // the difference, so the properties that hold them are named.
                   '|boxShadow|fontFamily|lineHeight|letterSpacing|fontSize|card|modal)$',

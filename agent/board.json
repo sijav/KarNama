@@ -1984,11 +1984,13 @@
       "parent": [
         "KN-003"
       ],
-      "status": "backlog",
+      "status": "review",
       "exit": "A component with aria-label=\"Delete this application\" and one with title=\"Delete this application\" both fail npm run lint, both are committed under src/gate-fixtures, and agent/scripts/verify/KN-003.mjs requires each to fail on the lingui rule by name.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T23:11:00.398Z"
+      "createdAt": "2026-09-07T23:11:00.398Z",
+      "updatedAt": "2026-09-07T23:17:02.595Z",
+      "verify": "node agent/scripts/verify/KN-087.mjs"
     },
     {
       "id": "KN-088",

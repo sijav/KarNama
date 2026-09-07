@@ -18,7 +18,7 @@
 // worktree separately.
 
 import { spawnSync } from 'node:child_process'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -110,13 +110,31 @@ check('Storybook builds', () => {
   return result.status === 0 ? null : (result.stdout || result.stderr || '').split('\n').slice(-20).join('\n')
 })
 
-check('a planted unlocalized string FAILS the lint', () => {
-  const result = run('npx eslint src/gate-fixtures/unlocalized.tsx --no-ignore')
-  if (result.status === 0) return 'the fixture with a bare English sentence passed, so the lingui rule is not enforcing anything'
-  const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
-  // Failing for the RIGHT reason. A parse error or a missing file would also
-  // exit non-zero and would prove nothing about the rule.
-  return output.includes('lingui/no-unlocalized-strings') ? null : `it failed, but not on the lingui rule:\n${output.slice(0, 600)}`
+check('EVERY planted unlocalized string FAILS the lint', () => {
+  // Discovered rather than listed, so adding a fixture is enough to have it
+  // checked and deleting one is noticed. A single named fixture was the earlier
+  // version and it hid two holes: `aria-label`, which is the name a screen
+  // reader speaks, and `title`, which is the tooltip, were both exempt and
+  // neither had a fixture to say so. KN-087.
+  const dir = join(WEB, 'src', 'gate-fixtures')
+  const fixtures = readdirSync(dir).filter((name) => name.startsWith('unlocalized') && name.endsWith('.tsx'))
+  if (fixtures.length < 3) return `only ${fixtures.length} unlocalized fixtures, expected at least the plain one, aria-label and title`
+
+  const problems = []
+  for (const fixture of fixtures) {
+    const result = run(`npx eslint src/gate-fixtures/${fixture} --no-ignore`)
+    if (result.status === 0) {
+      problems.push(`${fixture} passed the lint, so the rule is not enforcing anything for that case`)
+      continue
+    }
+    const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
+    // Failing for the RIGHT reason. A parse error or a missing file would also
+    // exit non-zero and would prove nothing about the rule.
+    if (!output.includes('lingui/no-unlocalized-strings')) {
+      problems.push(`${fixture} failed, but not on the lingui rule: ${output.slice(0, 300)}`)
+    }
+  }
+  return problems.length ? problems.join(' | ') : null
 })
 
 check('a planted broken test FAILS the run', () => {
