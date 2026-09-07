@@ -1237,7 +1237,20 @@
       ],
       "status": "review",
       "exit": "A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "agent/roasts/KN-058-round-1.2026-09-07T21-14-50-403Z.md",
+          "filed": [],
+          "cardDigest": "abef9e720ed48d6642b52fef04cceb282f37775553d5239fb9a72741661dc706",
+          "head": "855e753173f60db38bfae3701ca214119c848fd8",
+          "reviewerScore": 7,
+          "reviewerCriticals": 0,
+          "at": "2026-09-07T21:19:28.356Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T21:08:49.893Z",
       "updatedAt": "2026-09-07T21:14:27.997Z",

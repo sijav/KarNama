@@ -734,6 +734,8 @@ move done executes a task's verify command with shell true, so anything after th
 
 **Exit condition.** A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done.
 
+**Roasts.** round 1 scored 7 with 0 critical(s)
+
 ### `KN-059` Decompose the board tool after ten rounds of patching
 
 - **status** backlog · **severity** medium · **points** 3 · **area** agent

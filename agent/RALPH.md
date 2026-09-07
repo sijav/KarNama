@@ -193,6 +193,17 @@ Fix a finding here only when it is cheap, obviously right, and inside this
 task's exit condition. Everything else is a card. The board then schedules it
 against everything else waiting, which is the whole point of having a board.
 
+**Filing is cheaper than fixing, and the gate makes that concrete.** Fixing a
+finding changes the work after the review, so the round no longer describes what
+exists and the close is refused until a new round runs. Filing costs nothing:
+the task closes now and the card is scheduled. So the question to ask of each
+finding is not "could I fix this quickly" but "is this inside the exit condition
+of the task I am closing". If it is not, it is a card, and reaching for it
+anyway buys a whole extra round.
+
+When you do fix in-task, you owe exactly one more round, against the fixed code.
+That is not grinding a score, it is the review describing what actually exists.
+
 **Do not re-roast the same task until it scores well.** That was the original
 mistake: a three point task absorbed ten rounds while fifty six others waited,
 and each round found smaller things than the last. One roast, one adjudication,
