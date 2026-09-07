@@ -395,9 +395,11 @@
       "status": "backlog",
       "exit": "All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "Card hover is Smart Animate 300ms in the prototype: the checkbox and the delete icon appear and the title moves forward. Per frame 416:14 these are component-level variant reactions rather than separate screens."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:11:08.397Z"
+      "updatedAt": "2026-09-07T21:21:53.260Z"
     },
     {
       "id": "KN-016",
@@ -692,8 +694,11 @@
       "status": "backlog",
       "exit": "All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "Motion values from frame 384:12: Dissolve 150ms for opening and closing a modal, Smart Animate 300ms for a state change within a screen such as the card hover, and Instant for menus and popovers. The prototype advances Loading to Review after 1.4 seconds, which is a prototype timing rather than a spec, but it is the intended feel. The extract button is disabled until the field is both touched and filled."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T21:21:52.638Z"
     },
     {
       "id": "KN-030",
@@ -1059,8 +1064,11 @@
       "status": "backlog",
       "exit": "Both scenarios pass end to end on a clean database, each asserts the stored record and its status history rather than only what is on screen, and both run in CI.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "The canonical end-to-end journey is specified in the prototype map at frame 384:12, and the scenario test should walk it: login, board, click a card, job modal, contacts tab, add a contact, save, back to the board, add job, paste a link with extract still disabled, click into the field, extract becomes enabled, loading, Review, save. That single path crosses both surviving scenarios."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T21:21:52.064Z"
     },
     {
       "id": "KN-049",
