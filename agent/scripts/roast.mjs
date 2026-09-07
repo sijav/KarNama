@@ -17,6 +17,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { cardDigest } from './lib/card.mjs'
 import { workingChanges } from './lib/worktree.mjs'
 
 const AGENT_DIR = dirname(dirname(fileURLToPath(import.meta.url)))
@@ -305,22 +306,11 @@ writeFileSync(
       model,
       head,
       base,
-      // What the reviewer was actually looking at. `move done` refuses to close
-      // a task whose card changed after the round that cleared it.
-      cardDigest: createHash('sha256')
-        .update(
-          JSON.stringify({
-            title: task.title,
-            desc: task.desc,
-            why: task.why,
-            exit: task.exit,
-            area: task.area,
-            severity: task.severity,
-            points: task.points,
-            parent: task.parent,
-          }),
-        )
-        .digest('hex'),
+      // What the reviewer was actually looking at, from the one shared
+      // definition, so the board and the harness cannot disagree about it.
+      // `move done` refuses to close a task whose card changed after the round
+      // that cleared it, and `verify` is part of the card.
+      cardDigest: cardDigest(task),
       replyDigest: createHash('sha256').update(reply).digest('hex'),
       at: new Date().toISOString(),
     },

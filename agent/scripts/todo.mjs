@@ -14,6 +14,8 @@ import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { cardDigest } from './lib/card.mjs'
 import { workChangedSince, workingChanges } from './lib/worktree.mjs'
 
 const AGENT_DIR = dirname(dirname(fileURLToPath(import.meta.url)))
@@ -125,23 +127,6 @@ const requireValue = (value, flag) => {
   if (String(value).trim() === '') fail(`--${flag} cannot be empty`)
   return String(value)
 }
-
-/** The digest of what a reviewer was actually shown, so an edited card invalidates its round. */
-const cardDigest = (task) =>
-  createHash('sha256')
-    .update(
-      JSON.stringify({
-        title: task.title,
-        desc: task.desc,
-        why: task.why,
-        exit: task.exit,
-        area: task.area,
-        severity: task.severity,
-        points: task.points,
-        parent: task.parent,
-      }),
-    )
-    .digest('hex')
 
 /**
  * The LAST verdict block, not the first match anywhere in the file.

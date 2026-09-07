@@ -17,90 +17,84 @@ The value is the trail, not the listing.
 
 **Scope is closed.** Scenarios 1 and 2, searching boards and showing aggregated
 ads, were cut by the mentor's filter 4. **Crawling job sites is permanently
-out** and a second teammate does not bring it back. Two owner additions: third
-parties can leave comments or suggested changes, stored for later evaluation
-rather than applied, and there is an admin panel over what users submit.
+out.** Two owner additions: third parties can leave comments or suggested
+changes, stored for later evaluation rather than applied, and there is an admin
+panel over what users submit.
 
 Stack and owner decisions:
 
 - Monorepo, npm workspaces: `apps/web`, `apps/api`, `packages/graphql`.
 - React 19, TypeScript, MUI, Storybook, Playwright, Vitest, 100 percent
   coverage. **Components first with their stories, then screens.**
-- GraphQL with a NestJS server instead of react-query over local data.
-- Render free web service for the API, Supabase Postgres. Cold start about 50
-  seconds, which the UI has to handle honestly.
-- Deploy the web app to GitHub Pages. Repo `sijav/KarNama`, public, still empty.
-- lingui, **English is the source**, Persian is the translation, and a language
-  button goes in the existing chrome without disturbing the design.
+- GraphQL with a NestJS server. Render free tier, Supabase Postgres, cold start
+  about 50 seconds which the UI must handle honestly.
+- GitHub Pages for the web app. Repo `sijav/KarNama`, public, **still empty, no
+  remote has been added yet**.
+- lingui, **English is the source**, Persian is the translation. A language
+  button goes in existing chrome without disturbing the design.
 - **Match the design exactly**, not approximately.
-
-Two decisions the owner made after reading the Figma Documentation canvas:
-
-- **Auth is phone OTP**, following the design: mobile number then a five digit
-  code. Email stays as a fallback behind the same interface. **For the MVP the
-  provider is mocked**, no real SMS.
-- **The Documentation canvas wins over the Components canvas.** The main screen
-  is a **kanban board**, not a list, and navigation has **three** destinations:
-  the board, افزودن فرصت شغلی, and a standalone شبکه من contacts page.
-
-## What happened
-
-Read `D:\Kar\Gandom\daramadname` for the conventions to carry over. Verified the
-tooling: Codex on `gpt-5.6-terra`, `gh` authed as `sijav`, node 24, jq, git.
-
-Figma: the original file is view-only and every MCP call against it fails. The
-owner supplied a **copy**, `EITM6CbJY33dMY8IsMFR4R`, which works. Read the
-Foundations, Components, Documentation and Screens canvases. Tokens, component
-families, the 53-screen inventory and the stated decisions are in `DESIGN.md`
-and in the notes on KN-002.
-
-This work started in `D:\Kar\Gandom\SkipBureau`, which turned out to hold a
-different product scaffolded minutes earlier by another session. Nothing there
-was touched; the owner moved us here.
-
-Then KN-001: the loop, the board, the tooling, and four roast rounds against it.
+- **Auth is phone OTP** (mobile number, then a five digit code), email as a
+  fallback behind the same interface, **provider mocked for the MVP**.
+- **The Documentation canvas beats the Components canvas**: kanban board, not a
+  list, and three nav destinations, not two.
 
 ## Where things stand
 
-Committed and working. Nothing of the product exists yet: no app, no API, no
-components. What exists is the machine that will build them.
+**Nothing of the product exists yet.** No app, no API, no components. What
+exists is the machine that will build them, and its design contract.
 
-- `agent/RALPH.md`, the six-step loop with context re-injection at step 0.
-- `agent/scripts/todo.mjs`, the board tool, zero dependencies so it runs on a
-  fresh clone before `npm install`.
-- `agent/scripts/roast.mjs`, the Codex harness on `gpt-5.6-terra`, which writes
-  a manifest beside every reply binding it to the task, round and commit.
-- `agent/scripts/verify/KN-001.mjs`, a real cross-platform exit-condition check.
-- `agent/board.json`, 54 tasks, valid, rendered to `agent/TODO_BOARD.md`.
+- `agent/RALPH.md`, the six-step loop.
+- `agent/scripts/todo.mjs`, the board, zero dependencies.
+- `agent/scripts/roast.mjs`, the Codex harness on `gpt-5.6-terra`.
+- `agent/scripts/lib/worktree.mjs`, the one definition of "unreviewed work".
+- `agent/scripts/lib/card.mjs`, the one definition of the card digest.
+- `agent/scripts/verify/KN-001.mjs`, eight real checks, tested against planted
+  breaks.
+- `agent/board.json`, **55 tasks**, valid, rendered to `agent/TODO_BOARD.md`.
 - `AGENTS.md`, `DESIGN.md`, `TECH-DEBT.md`, `CLAUDE.md`, root workspace config.
-- `.claude/ralph-loop.local.md`, the loop **armed**, promise `KARNAMA-DONE`.
+- `.claude/ralph-loop.local.md`, the loop armed, promise `KARNAMA-DONE`.
 
-**The roast rounds are the story of this task.** Round 1 scored 3.5 with two
-criticals, round 2 scored 1.5 with four, round 3 scored 1.0 with four. Every
-finding was accepted; none were rejected. The gate was bypassable through `set
---status done`, through `add --status done`, through `move dropped`, and through
-recording a round against the harness's own prompt file, which contains the
-verdict template. Round 3 also found a hard deadlock that made every honest
-close impossible, which I had found independently minutes earlier.
+`DESIGN.md` now carries the full verified token set, the corrected five-role
+type scale, the kanban structure, the three destinations, phone OTP, and the
+terminology rule. An independent checker confirms every colour, spacing, radius
+and type value against Figma, and fails when any is corrupted.
 
-The forgery line was then **scoped rather than chased**: `TECH-DEBT.md` entry 1
-now states that the gate defends against carelessness and drift, not deliberate
-fraud, because nothing running locally under the author's own hand can prove the
-author was honest.
+## KN-001, in review, six roast rounds so far
+
+Scores: **3.5, 1.5, 1.0, 5.0, 5.0, 5.5**. Every finding accepted, none rejected.
+The board records rounds 1 and 2 only, because two rounds' replies predate the
+manifest mechanism or were superseded before recording; the archives are all in
+`agent/roasts/`.
+
+What the rounds found and what was fixed: the gate was bypassable through `set
+--status done`, `add --status done`, `move dropped`, recording a round against
+the harness's own prompt file, `rm --force`, and swapping `verify` after a clear
+round. The documented close path deadlocked because the harness and the board
+had two disagreeing definitions of a dirty tree. A rename into `agent/roasts/`
+hid real work from the close gate. The `review` state was decorative. The
+"tokens transcribed" clause was false while the verifier passed.
+
+The forgery line was **scoped, not chased**: `TECH-DEBT.md` entry 1 says the
+gate defends against carelessness and drift, not deliberate fraud, because
+nothing running locally under the author's own hand can prove the author honest.
 
 ## Next step
 
-Round 4 is in flight against commit `9192be8` plus the anchoring fix. When it
-lands: adjudicate, record with `npm run todo -- roast KN-001 ...`, and if it is
-clean at 9.5 or above, close with `move KN-001 done --evidence "..."`.
+Round 7 is the next action for KN-001, against the current HEAD. Round 6's
+critical, `verify` being swappable after a clear round, is fixed by folding
+`verify` into the shared card digest, and verified: swapping it now returns
+"KN-001 has been edited since the roast that cleared it".
 
-Then **KN-002**, which the owner asked for by name: fold the Documentation
-(`5:8`) and Screens (`5:7`) canvases into `DESIGN.md`, and file the tasks the
-new decisions imply. The board still describes a list screen and two nav
-destinations, and several cards need rewriting: KN-027 navigation (three
-destinations), KN-043 (kanban with drag and drop, not a list), KN-036 and
-KN-046 (phone OTP, mocked provider), plus new cards for the standalone contacts
-page, the column-menu screens, and the terminology glossary.
+When round 7 is clean at 9.5 or above: record it, then
+`npm run todo -- move KN-001 done --evidence "..."`.
+
+Then **KN-002**, which the owner named: fold the Documentation (`5:8`) and
+Screens (`5:7`) canvases into `DESIGN.md` in full and rewrite the cards the new
+decisions invalidate. `DESIGN.md` has already been corrected on navigation,
+kanban, auth and terminology, so KN-002's remaining work is the 53-screen
+inventory, the Job Record field list, the required-field rules, and **rewriting
+KN-036 and KN-046, which still say email magic link**, and KN-043, which still
+describes a list.
 
 ## What to read first
 

@@ -201,11 +201,32 @@ overridable per instance.
 These are written into the Figma annotations. They are settled, and reopening
 one is a decision for the owner, not for whoever is building.
 
-**Navigation is responsive and has exactly two destinations.** A sidebar on the
-**right** on desktop, a tab bar at the **bottom** on mobile. The two
-destinations are آگهی‌های من (My Jobs) and افزودن آگهی (Add Job). Job detail is
+**Navigation is responsive, and has three destinations.** A sidebar on the
+**right** on desktop, a tab bar at the **bottom** on mobile. Job detail is
 **not** a destination and **not** a page: it opens as a modal from inside the
-list.
+board.
+
+The Components canvas annotation says two destinations, آگهی‌های من and
+افزودن آگهی. **That is superseded.** The Documentation canvas is later and more
+specific, and the owner confirmed it: the destinations are
+**فرصت‌های شغلی من** (the board), **افزودن فرصت شغلی**, and **شبکه من**, a
+standalone contacts page drawn in full at page-map row 5. The old labels are
+also superseded, see the terminology rule below.
+
+**The main screen is a kanban board, not a list.** Columns are statuses, cards
+drag between them, and the desktop board scrolls horizontally. Read from
+`241:2`: `Main` is 1200 wide at x=0 with the `Nav / Sidebar` 240 wide at
+**x=1200**, the right edge, and inside `Main` sits a frame named literally
+`Board (horizontal scroll)`. The columns frame is 1864 wide inside a 1200
+container, which is the overflow.
+
+**The rightmost column is the first stage**, because the layout is RTL. Left to
+right the frames are Add Column, پیشنهاد کار, رد شده, مصاحبه, درخواست‌شده,
+ذخیره‌شده, so read right to left the order is ذخیره‌شده, درخواست‌شده, مصاحبه,
+رد شده, پیشنهاد کار. A column is 300 by 684, holding a 276 by 40 header, cards
+at 276 by 148, and an `Add Card` row pinned at the bottom. `Add Column` is
+labelled «افزودن وضعیت», add status, which is the plainest statement that a
+column IS a status.
 
 **The Status Chip is display only.** It has no click target and no focus ring.
 The interactive version is a separate wrapper, `Status Control`, and that is
@@ -227,6 +248,43 @@ card itself. There is a Contact Modal, but only for Add and Edit.
 fallback path and Error as the failure path. The Review fields are provisional
 until the Job Record shape is finalised.
 
+**Auth is phone OTP**: a mobile number, then a five digit code. The Screens
+canvas draws Login, Code and Signup for both desktop and mobile at page-map row
+6, and the Login card asks for «شماره موبایلت را وارد کن». The owner confirmed
+this over an earlier email-magic-link decision, and added: email stays as a
+fallback behind the same interface, and **for the MVP the provider is mocked**,
+so no real SMS is sent. Build it provider-agnostic with a fake that logs the
+code, so nothing blocks on SMS credit.
+
+### Terminology, which is a hard rule rather than a preference
+
+The Documentation canvas records sixteen copy changes and states the rule
+directly. It is not stylistic: the two words mean different things.
+
+- **فرصت شغلی** is the record the user is tracking inside KarNama.
+- **آگهی** is **only** the external source: the original posting on a job board,
+  or the link or text the user pasted to extract from.
+- **«فرصت» never appears alone.** Always the full phrase «فرصت شغلی», including
+  in a secondary reference mid sentence. The delete-confirmation title is
+  «حذف این فرصت شغلی؟», not «حذف این فرصت؟». Without exception.
+
+Renames that follow from it: «آگهی‌های من» became «فرصت‌های شغلی من»,
+«افزودن آگهی» became «افزودن فرصت شغلی», the nav item «مخاطبین» became
+«شبکه من», and the contacts tab inside the job modal became «افراد مرتبط». The
+nav item and the tab are different things: one is a standalone page for the
+user's whole network, the other is the people attached to one فرصت شغلی.
+
+Since message ids are English, this needs a glossary in the catalog: **job
+opportunity** for the tracked record, **job posting** for the external source.
+Getting these the wrong way round in English produces Persian that breaks the
+rule.
+
+**Tone.** UI labels, placeholders, field names and short system messages are
+neutral, clean, formal Persian: «در» rather than «تو». Microcopy, meaning
+guidance, empty-state encouragement and helper sentences addressed to the user,
+is gently colloquial: «رو», «هر چی», «می‌شه». No emoji, and no heavy chat-speak,
+in either register.
+
 ---
 
 ## 4. Where the language switch goes
@@ -238,8 +296,8 @@ was drawn Persian-only.
 The rule for it: it goes in the **existing** app chrome and adds no new chrome.
 On desktop that is the bottom of the sidebar (`185:11`), below the nav items,
 where the sidebar already has empty space and already carries a `log-out` icon
-in the icon set. On mobile the tab bar has exactly two destinations and adding a
-third would change the design, so the switch belongs in the Page Header
+in the icon set. On mobile the tab bar carries the three drawn destinations and
+a fourth entry would change the design, so the switch belongs in the Page Header
 (`155:56`) as an optional trailing action rather than in the tab bar.
 
 Nothing else moves. If honouring this ever requires resizing or reflowing a

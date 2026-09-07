@@ -33,15 +33,27 @@
           "reviewerScore": 5,
           "reviewerCriticals": 2,
           "at": "2026-09-07T20:31:34.557Z"
+        },
+        {
+          "round": 3,
+          "score": 5.5,
+          "criticals": 1,
+          "file": "agent/roasts/KN-001-round-3.2026-09-07T20-39-08-221Z.md",
+          "cardDigest": "d09e9570c091e3fab45a7230c3283a7cdaa2ed3a5716d8d58cae6655b804a0e1",
+          "head": "6b907901ac9a81b1b4691cb002c65fee0d6d20e1",
+          "reviewerScore": 5.5,
+          "reviewerCriticals": 1,
+          "at": "2026-09-07T20:44:32.625Z"
         }
       ],
       "notes": [
         "Round 1 adjudication: all four findings accepted as real, none rejected. Two criticals were the gate being bypassable through 'set --status done' and 'add --status done', and the roast path accepting fabricated scores, negative criticals and a nonexistent archive. Two majors were a blocked task making the board silently unpickable, and a missing flag value clearing a task's parents instead of erroring. Fixed all of them, plus one Codex did not name: only one task may now be in_progress, because the finish-before-starting rule is only safe with exactly one.",
         "Round 2 scored 1.5 with four criticals and every finding was real, including a working exploit: the harness writes the VERDICT template into its own prompt file, so recording a roast against that prompt passed the substring check and forged a clear round. Round 2's own reply predates the sidecar mechanism, so it cannot be recorded through the tool, which is the guard behaving correctly rather than a gap. Its findings are all fixed and round 3 is the authoritative round.",
-        "Round 4 (board round 2) scored 5.0 with two criticals, up from 1.0. All four findings accepted. The documented close path deadlocked because RALPH step 4 says 'move review' then 'npm run roast', and the move dirtied the board the harness then refused; the only reason it never fired is that I was skipping the documented review step. The verifier accepted any stale archive from any task. rm --force stripped dependency edges from a valid board, recreating the dropped bypass under another name. The bookkeeping filter read only the first path of a rename record, so a rename out of agent/roasts into real source was hidden."
+        "Round 4 (board round 2) scored 5.0 with two criticals, up from 1.0. All four findings accepted. The documented close path deadlocked because RALPH step 4 says 'move review' then 'npm run roast', and the move dirtied the board the harness then refused; the only reason it never fired is that I was skipping the documented review step. The verifier accepted any stale archive from any task. rm --force stripped dependency edges from a valid board, recreating the dropped bypass under another name. The bookkeeping filter read only the first path of a rename record, so a rename out of agent/roasts into real source was hidden.",
+        "Round 6 (board round 3) scored 5.5 with one critical, and confirmed the documented close path works. The critical was real: cardDigest omitted verify, so a task could record a clear round, swap its verify command for one that always passes, commit that as bookkeeping, and close against a check nobody reviewed. Fixed by folding verify into the digest and moving the digest into agent/scripts/lib/card.mjs so the board and the harness share one definition. Also accepted: STATE.md was stale at exactly the point a context reset depends on it, and DESIGN.md still asserted two nav destinations while the recorded decision says three. Codex could not reach Figma to check my token tables, so I verified them independently instead. It ruled PHASE-NEXT.md correctly deferred to KN-053, which I accept."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:38:15.296Z",
+      "updatedAt": "2026-09-07T20:44:33.054Z",
       "verify": "node agent/scripts/verify/KN-001.mjs"
     },
     {
