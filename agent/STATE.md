@@ -11,7 +11,7 @@ from there:
 
 ```bash
 npm run todo -- next            # what to work on
-npm run todo -- show KN-004     # a card, its roast rounds and its notes
+npm run todo -- show KN-003     # a card, its roast rounds and its notes
 npm run todo -- list            # everything, with blockers marked
 ```
 
@@ -26,15 +26,16 @@ A job seeker adds a posting themselves, by link or by text, the product
 structures it into a record, and the record carries a status through the search.
 **The value is the trail, not the listing.**
 
-**Scope is closed.** Scenarios 1 and 2, searching boards and showing aggregated
-ads, were cut by the mentor's filter 4. **Crawling job sites is permanently
-out.** Two owner additions: third parties can leave comments or suggested
-changes, stored for later evaluation rather than applied, and there is an admin
-panel over what users submit.
+**Scope is closed.** Searching boards and showing aggregated ads were cut by the
+mentor's filter 4. **Crawling job sites is permanently out.** Two owner
+additions: third parties can leave comments or suggested changes, stored for
+later evaluation rather than applied, and there is an admin panel over what
+users submit.
 
 Stack and standing decisions:
 
-- Monorepo, npm workspaces: `apps/web`, `apps/api`, `packages/graphql`.
+- Monorepo, npm workspaces. `apps/web` exists; `apps/api` and
+  `packages/graphql` do not yet.
 - React 19, TypeScript, MUI, Storybook, Playwright, Vitest, 100 percent
   coverage. **Components first with their stories, then screens.**
 - GraphQL with NestJS. Render free tier, Supabase Postgres, cold start about 50
@@ -49,73 +50,78 @@ Stack and standing decisions:
 
 ## Where things stand
 
-**Nothing of the product exists yet.** No app, no API, no components. What
-exists is the machine that builds them and a design contract checked against
-Figma rather than asserted.
+`sijav/KarNama` is live and pushed. **`apps/web` exists and its gate is real.**
 
-`sijav/KarNama` is **live**: remote `origin` added, `main` pushed, public. The
-repository holds the loop, the board tool, the Codex harness, `AGENTS.md`,
-`DESIGN.md`, `TECH-DEBT.md`, and the verifiers.
+Green and checked by running, not by inference: lint with `--max-warnings 0`,
+`tsc`, 63 tests across 5 files at 100 percent on all four coverage metrics, the
+vite build, the Storybook build, and 6 Playwright tests on desktop 1440x900 and
+mobile 390x844, which are the viewports the Screens canvas draws. Seen in a
+browser at `localhost:6006` in both languages.
 
-**`agent/figma-capture/` is new and it is the point.** Raw `get_metadata`
-responses for canvas `5:7` and `5:8` are committed with their sha256 in
-`agent/design-manifest.json`, so the screen list, the documentation frame list,
-the pending-item inventory and the copy-change counts are all **derived from a
-committed artefact** rather than written by whoever wrote the document.
-`.gitattributes` marks them `-text` so a clone cannot break a digest.
+What exists in the app: the token set as typed constants, the MUI theme built
+from it, the RTL emotion cache, lingui with English ids and a Persian catalog,
+`AppProviders`, a nearly empty shell, and a Foundations/Tokens story.
 
-**What that still cannot show, and DESIGN.md now says so.** `get_metadata`
-returns layer *names*, and Figma caps an auto-generated one: 64 of the 148 names
-in the documentation capture sit at the cap, cut mid phrase. The inventory is a
-floor, not a ceiling. **KN-079** carries the text capture that would fix it and
-**KN-078** the coverage check that depends on it. Round 4 of KN-002 rated this
-critical and argued the task should have stayed open; that objection is recorded
-on KN-079 rather than dismissed.
+**`src/gate-fixtures/` is the part worth knowing about.** Five green commands
+prove five commands ran, not that any can go red. So a component with a bare
+English sentence, one with a bare `aria-label`, one with a bare `title` and a
+test asserting 1 + 1 is 3 are all committed, kept out of the ordinary run, and
+driven by `agent/scripts/verify/KN-003.mjs` through the real tools, which
+requires each to fail **for the right reason**. Every verifier in this repo has
+also been mutation tested: KN-002 twelve breaks, KN-003 six, KN-004 twelve,
+KN-087 four, all caught.
 
-## The lesson this iteration actually taught
+`agent/figma-capture/` holds raw `get_metadata` for canvases `5:7` and `5:8`
+with their sha256 in `agent/design-manifest.json`, so the screen list, the frame
+list, the pending-item inventory and the copy-change counts are **derived from a
+committed artefact**. What that cannot show is written into `DESIGN.md`: the
+capture is metadata, so 64 of its 148 layer names sit at Figma's truncation cap.
+**KN-079** carries the text capture, **KN-078** the coverage check.
 
-KN-002 took four rounds, and every round found the same defect in a new place:
-**an unchecked claim replaced by another unchecked claim.** "All sixteen copy
-changes were applied" was false. Correcting it to "fourteen of sixteen" was
-itself unverified. Stating the truncation as "63 of 148" was a guess. Each fix
-was only real once the number was **derived from the capture and the document
-required to match it**.
+## What this iteration taught, in one line each
 
-The second lesson is the loop's own rule. `agent/RALPH.md` step 5 permits fixing
-in-task when the verifier fails **or when it passes dishonestly**, and the second
-clause has no bound, so it was invoked three rounds running. Every roast of a
-verifier can be phrased that way. **KN-080** bounds it to once per task. Until it
-lands, read the trigger prompt's wording as the rule: if the verify script
-passes, it is a card.
+**An unchecked claim replaced by another unchecked claim is not a fix.** KN-002
+took four rounds on that alone: "all sixteen copy changes were applied" was
+false, "fourteen of sixteen" was unverified, "63 of 148 truncated" was a guess.
+Each only became real when the number was **derived from the capture and the
+document required to match it**.
+
+**Do not mutate the worktree while a roast is reading it.** KN-003's round
+reported a critical that was simply my mutation test caught mid-run. The finding
+was true of what it saw and false of the repository, and adjudicating it cost
+more than waiting would have.
+
+**Test the notice, do not believe it.** Storybook says `setProjectAnnotations`
+can be removed from the vitest setup. Removing it fails seven tests, because
+every story then renders with no theme, no direction and no catalog.
+
+**The loop's own carve-out has no bound.** `RALPH.md` step 5 allows fixing
+in-task when the verifier "passes dishonestly", and every roast of a verifier
+can be phrased that way, so it ran three rounds straight on KN-002. **KN-080**
+bounds it to once per task. Until it lands, use the trigger prompt's wording:
+**if the verify script passes, it is a card.**
 
 ## Next step
 
 `npm run todo -- next` picks it. Do not choose by hand.
 
-**KN-004 is in review with its roast running.** When it lands: adjudicate, file
-the survivors, record with `--filed`, close with `--evidence`. It corrected a
-false statement in the contract (Card was called the only elevation, and
-Elevation/Modal exists) and traced every off-board token to the frame it was
-read from, which turned up `red/700` and `black/base`, neither previously
-recorded.
+**KN-087 is in review with its roast running.** When it lands: adjudicate, file
+the survivors, record with `--filed`, close with `--evidence`.
 
-Then **KN-003, the web scaffold**, where the first line of product code gets
-written. Its card carries the dependency matrix, and that matrix is now
-**proven, not resolved**: 477 packages installed clean in a scratch workspace and
-esbuild, swc, tsc 6.0.3, vite 8.2.2, vitest 4.1.11, eslint 10.9.1 and playwright
-1.62.1 all execute. npm blocks the swc and esbuild postinstalls under
-`allowScripts`, which is harmless because both ship platform binaries, but
-**Playwright will need an explicit `playwright install`**. The pins that are not
-negotiable: `typescript ~6.0.x` because typescript-eslint and
-eslint-plugin-lingui both refuse 7, the whole vitest line at `4.1.11`, and
-`stylis` at `4.2.0` in a root `overrides` or every `::placeholder` rule crashes.
+Then the board hands back the rest of KN-003's roast: **KN-088** (the planted
+broken test is proved through a separate vitest config, not the one `npm test`
+uses), **KN-089** (a clean clone cannot run the suite without
+`npx playwright install chromium`), **KN-090** (`AppProviders` mutates the lingui
+singleton during render), **KN-091** (story prose sits in the TSX while
+`AGENTS.md` requires `src/shared/story-docs/{en,fa}` plus a guard test).
 
-**11 points to a public deployed page**: KN-003 then KN-051.
+**KN-005 and KN-006 were reconciled against the code this iteration**, not from
+memory, and both shrank to 3 points. What is left of KN-005 is dark mode and the
+no-raw-hex test; what is left of KN-006 is the macro plugin, a persisted runtime
+locale switch, and a real catalog-completeness test.
 
-**The gate cannot currently be run.** `npm run lint`, `lint:tsc`, `test` and
-`build` all exit non-zero with "No workspaces found!", because `package.json`
-declares workspaces that do not exist. Filed as **KN-084**. KN-003 will make
-three of them work; the card is what makes the fourth honest.
+Then the component queue, then screens. **KN-051** is the Pages deploy and it is
+no longer blocked by the API.
 
 ## What to read first
 

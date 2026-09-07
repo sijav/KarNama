@@ -303,7 +303,7 @@
       "desc": "tokens.ts holding the Figma token set as typed constants, theme.ts mapping them onto MUI, and AppThemeProvider owning both colour scheme (light, dark, system) and direction, swapping the Emotion cache for RTL and setting dir and lang on the document.",
       "why": "Every component reads colour, spacing and radius from here, so it has to exist before the first one. It also has to own direction, because a component that gets direction from somewhere else will be laid out backwards in exactly one of the two languages.",
       "severity": "critical",
-      "points": 5,
+      "points": 3,
       "area": "web",
       "parent": [
         "KN-003",
@@ -313,10 +313,11 @@
       "exit": "A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour.",
       "roasts": [],
       "notes": [
-        "PIN stylis TO 4.2.0 with a root overrides entry. @emotion/cache 11.14.0 depends on stylis at EXACTLY 4.2.0, while @mui/stylis-plugin-rtl 9.4.0 peers stylis 4.x, so npm installs 4.4.0 and the two disagree. Emotion walks the element tree with its own bundled stylis, so handing it a prefixer built from a different version produces elements it cannot lift and crashes on every ::placeholder rule in the app. This is the single hardest bug to diagnose in the RTL setup because the failure looks like a component problem rather than a dependency one. Also note @fontsource-variable/vazirmatn is at 5.3.0, and the design flags Vazirmatn as a placeholder font, so the family name belongs in one theme constant rather than scattered through components."
+        "PIN stylis TO 4.2.0 with a root overrides entry. @emotion/cache 11.14.0 depends on stylis at EXACTLY 4.2.0, while @mui/stylis-plugin-rtl 9.4.0 peers stylis 4.x, so npm installs 4.4.0 and the two disagree. Emotion walks the element tree with its own bundled stylis, so handing it a prefixer built from a different version produces elements it cannot lift and crashes on every ::placeholder rule in the app. This is the single hardest bug to diagnose in the RTL setup because the failure looks like a component problem rather than a dependency one. Also note @fontsource-variable/vazirmatn is at 5.3.0, and the design flags Vazirmatn as a placeholder font, so the family name belongs in one theme constant rather than scattered through components.",
+        "PARTLY DELIVERED BY KN-003, checked against the code rather than remembered. Already exists and is tested: apps/web/src/theme/tokens.ts with the full Figma set as typed constants including both effect styles, theme.ts mapping them onto MUI with a buildTheme(direction), rtl.ts with the emotion caches and the exported plugin lists, AppProviders setting dir and lang on documentElement, and a Foundations/Tokens story with five families driven from args. 63 tests at 100 percent coverage include tokens.test.ts, which reads DESIGN.md and asserts every value against the contract rather than restating it, and theme.test.ts, which renders CSS through stylis and proves the RTL flip and the ::placeholder rule. WHAT IS LEFT, and it is the whole remaining point of this card: colour scheme, light dark and system, is NOT built. There is no dark palette, no Storybook theme toolbar, and no persistence. Also missing is the exit condition test that asserts no component file contains a raw hex colour, which nothing currently checks. DESIGN.md section on dark mode is the source for the palette."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:04:44.497Z"
+      "updatedAt": "2026-09-07T23:17:57.119Z"
     },
     {
       "id": "KN-006",
@@ -324,7 +325,7 @@
       "desc": "lingui configured with en-US as the source locale and fa-IR as the translation, the macro plugin wired into Vite, Storybook and both Vitest projects, the eslint lingui rule enforcing localized strings with type information, and a runtime locale switch that also flips direction.",
       "why": "The rule is that message ids are English and Persian is a translation, and it only holds if the tooling enforces it from the start. Retrofitting localization onto components that were written with bare strings means touching every component again.",
       "severity": "critical",
-      "points": 5,
+      "points": 3,
       "area": "web",
       "parent": [
         "KN-003"
@@ -334,10 +335,11 @@
       "roasts": [],
       "notes": [
         "From frame 376:43: Persian text carries invisible characters, so a plain === comparison between two Persian strings can fail. Normalise with NFC before comparing, and do NOT strip the zero-width non-joiner: it is meaningful in Persian, «می‌شود» is not «میشود». Any test asserting a Persian catalog string needs this, and a test that trims the ZWNJ is asserting the wrong string.",
-        "eslint-plugin-lingui 0.15.0 peers eslint ^8.37 or ^9 or ^10, so eslint 10.10.0 is fine, and typescript ^5 or ^6, which independently confirms the TypeScript 6 pin: two separate packages now refuse TS 7. Other current versions: @lingui/cli, @lingui/react and @lingui/format-po at 6.6.0, @lingui/swc-plugin at 6.7.0, eslint-plugin-storybook and the storybook addons at 10.6.0."
+        "eslint-plugin-lingui 0.15.0 peers eslint ^8.37 or ^9 or ^10, so eslint 10.10.0 is fine, and typescript ^5 or ^6, which independently confirms the TypeScript 6 pin: two separate packages now refuse TS 7. Other current versions: @lingui/cli, @lingui/react and @lingui/format-po at 6.6.0, @lingui/swc-plugin at 6.7.0, eslint-plugin-storybook and the storybook addons at 10.6.0.",
+        "PARTLY DELIVERED BY KN-003, checked against the code rather than remembered. Already exists and is tested: lingui with English message ids as the source and Persian as the translation, catalogs in apps/web/src/i18n/locales, I18nProvider wired through AppProviders, the app defaulting to Persian, the eslint lingui rule with useTsTypes enforcing localized strings, and a committed fixture proving a bare literal fails the lint, extended by KN-087 to aria-label and title. i18n.test.ts proves the fallback goes to the English id rather than to an empty string, which is the safety net the whole English-source-id rule rests on, and that no Persian message says فرصت without شغلی. WHAT IS LEFT: the macro plugin is NOT wired, TECH-DEBT entry 8 says why and what retires it, so catalogs are hand written and lingui extract has nothing to extract. There is no runtime locale switch and nothing persists a choice: main.tsx hard codes the default and only the Storybook toolbar can change it. And no test asserts the fa-IR catalog is 100 percent translated, only that every English id has a Persian entry, which is the same thing today because the catalogs are hand written and will stop being the same thing the moment extract runs."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:42:34.915Z"
+      "updatedAt": "2026-09-07T23:17:57.226Z"
     },
     {
       "id": "KN-007",

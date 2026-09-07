@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 6 of 91 tasks done · 21 of 365 points.
+Project **KarNama** · 6 of 91 tasks done · 21 of 361 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -21,8 +21,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-088` | Prove the REAL test project reports a failure, not a separate config | critical | 2 | agent | KN-003 | The planted broken test is detected through the configuration npm test uses, and a mutation that empties the real unit project include makes agent/scripts/verify/KN-003.mjs fail rather than pass. |
-| `KN-005` | Theme: tokens, MUI theme, direction and colour scheme provider | critical | 5 | web | KN-003, KN-004 | A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour. |
-| `KN-006` | lingui: English source catalog, Persian translation, runtime switch | critical | 5 | web | KN-003 | A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not. |
+| `KN-005` | Theme: tokens, MUI theme, direction and colour scheme provider | critical | 3 | web | KN-003, KN-004 | A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour. |
+| `KN-006` | lingui: English source catalog, Persian translation, runtime switch | critical | 3 | web | KN-003 | A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not. |
 | `KN-034` | Prisma schema, Postgres on Supabase, and migrations | critical | 5 | api | KN-033 | Migrations apply to an empty database and to an existing one, the schema covers every field the Figma job record names, status history records every transition with its timestamp, and a seed script produces a realistic archive to develop against. |
 | `KN-035` | GraphQL codegen wired both ways | critical | 5 | graphql | KN-003, KN-033 | Changing the API schema without regenerating fails the build, the web app imports only generated types for GraphQL data, and no hand-written interface duplicates a generated one. |
 | `KN-033` | API scaffold: NestJS, GraphQL code first, and its quality gate | critical | 8 | api | KN-001 | lint, typecheck, test and build all pass in apps/api, the server starts, the GraphQL playground serves the schema, the health endpoint answers, and a missing required environment variable fails at startup with a clear message rather than at first request. |
@@ -177,7 +177,7 @@ Sweep the Foundations canvas for any token DESIGN.md is still missing, and corre
 
 ### `KN-005` Theme: tokens, MUI theme, direction and colour scheme provider
 
-- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **status** backlog · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-003, KN-004
 
 tokens.ts holding the Figma token set as typed constants, theme.ts mapping them onto MUI, and AppThemeProvider owning both colour scheme (light, dark, system) and direction, swapping the Emotion cache for RTL and setting dir and lang on the document.
@@ -188,7 +188,7 @@ tokens.ts holding the Figma token set as typed constants, theme.ts mapping them 
 
 ### `KN-006` lingui: English source catalog, Persian translation, runtime switch
 
-- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **status** backlog · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-003
 
 lingui configured with en-US as the source locale and fa-IR as the translation, the macro plugin wired into Vite, Storybook and both Vitest projects, the eslint lingui rule enforcing localized strings with type information, and a runtime locale switch that also flips direction.
