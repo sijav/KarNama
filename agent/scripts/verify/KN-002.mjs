@@ -22,6 +22,13 @@ const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
 const design = readFileSync(join(ROOT, 'DESIGN.md'), 'utf8')
 const board = JSON.parse(readFileSync(join(ROOT, 'agent', 'board.json'), 'utf8'))
 
+
+/** Every top-level frame on the Screens canvas 5:7, read from the canvas. */
+const SCREEN_NODES = ['241:2', '241:146', '243:2', '243:76', '243:224', '243:325', '243:433', '243:682', '243:726', '243:814', '243:899', '243:971', '243:1078', '243:1213', '243:1374', '243:1502', '243:1652', '252:2', '252:175', '252:411', '259:2', '259:105', '259:184', '259:295', '271:55', '271:190', '271:332', '305:2', '305:165', '305:374', '305:558', '305:705', '305:876', '305:1055', '305:1232', '305:1377', '305:1547', '305:1696', '305:1842', '305:2018', '305:2243', '376:5645', '376:5868', '376:5997', '377:6244', '407:6951', '407:6972', '407:7000', '407:7022', '407:7043', '407:7071', '492:7482', '492:7581']
+
+/** Escapes a heading before it goes into a RegExp. */
+const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, (match) => `\\${match}`)
+
 const failures = []
 const check = (label, run) => {
   try {
@@ -71,19 +78,26 @@ check('the optional field list is written down', () => {
   return missing.length ? `missing ${missing.join(', ')}` : null
 })
 
-check('every screen flow row is inventoried with node ids', () => {
-  // One representative node id per row, so a row that was summarised without
-  // being read shows up.
-  const rows = [
-    ['the board', '241:2'],
-    ['managing a status', '259:105'],
-    ['adding one', '243:899'],
-    ['the job modal', '377:6244'],
-    ['the network', '271:190'],
-    ['signing in', '407:6972'],
-  ]
-  const missing = rows.filter(([, node]) => !design.includes(node))
-  return missing.length ? `rows not inventoried: ${missing.map(([name]) => name).join(', ')}` : null
+check('all 53 screen frames are inventoried, not one per row', () => {
+  // Every top-level frame on canvas 5:7, read from the canvas itself rather
+  // than summarised. An earlier version checked ONE node per flow row, which
+  // meant 47 of them could be deleted and it would still pass. That is exactly
+  // the completeness failure this task exists to prevent.
+  const missing = SCREEN_NODES.filter((node) => !design.includes(node))
+  if (missing.length) return `${missing.length} of ${SCREEN_NODES.length} not listed: ${missing.slice(0, 8).join(', ')}`
+  return null
+})
+
+check('every heading the frame index points at actually exists', () => {
+  // The index names headings rather than section numbers, because it once
+  // named numbers, a later edit renumbered the sections, and it then pointed
+  // readers at the wrong place while looking authoritative. This proves each
+  // destination is real.
+  const index = design.slice(design.indexOf('| Frame'), design.indexOf('### What the product is'))
+  const quoted = [...index.matchAll(/"([^"]+)"/g)].map((match) => match[1])
+  if (quoted.length < 8) return `only found ${quoted.length} quoted destinations, the index looks unparsed`
+  const missing = quoted.filter((heading) => !new RegExp(`^#{2,3} .*${escapeRegExp(heading)}`, 'm').test(design))
+  return missing.length ? `these destinations are not headings: ${missing.join(' | ')}` : null
 })
 
 check('the prototype critical path and the motion values are recorded', () => {
@@ -93,12 +107,26 @@ check('the prototype critical path and the motion values are recorded', () => {
   return /critical path/i.test(design) ? null : 'the critical path is not recorded'
 })
 
-check('every open question the file raises is recorded as open', () => {
-  // Each is something the design deliberately has not settled. Recording them
-  // is what stops one being resolved by accident while implementing.
-  const questions = [['رد شده', 'where rejected belongs'], ['email or phone', 'whether a contact needs a contact route'], ['open item 18', 'where status history belongs'], ['unconfirmed', 'the provisional enums']]
-  const missing = questions.filter(([needle]) => !design.includes(needle))
-  return missing.length ? `not recorded: ${missing.map(([, what]) => what).join(', ')}` : null
+check('every open item is recorded AND has a task to obtain the decision', () => {
+  // The exit condition says every open item is "either reflected in the board
+  // as a task or recorded as a decision". Listing one as Undecided is NEITHER,
+  // which an earlier version of this check missed entirely: it only asked
+  // whether the question appeared in the document. Each now needs a card whose
+  // job is to get the answer.
+  const titles = board.tasks.map((task) => `${task.id} ${task.title}`)
+  const items = [
+    ['رد شده', 'where rejected belongs', /where رد شده belongs/i],
+    ['email or phone', 'whether a contact needs a contact route', /contact needs an email or a phone/i],
+    ['open item 18', 'where status history belongs', /where status history belongs/i],
+    ['unconfirmed', 'the provisional enums', /confirm the employment type and job level/i],
+  ]
+  const unrecorded = items.filter(([needle]) => !design.includes(needle))
+  if (unrecorded.length) return `not recorded in the document: ${unrecorded.map(([, what]) => what).join(', ')}`
+
+  const untasked = items.filter(([, , pattern]) => !titles.some((title) => pattern.test(title)))
+  return untasked.length
+    ? `recorded as open but with no task to decide it: ${untasked.map(([, what]) => what).join(', ')}`
+    : null
 })
 
 check('the superseded tone rule is marked superseded, not silently dropped', () => {

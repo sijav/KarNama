@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 70,
+  "nextId": 74,
   "tasks": [
     {
       "id": "KN-001",
@@ -1560,6 +1560,74 @@
       ],
       "createdAt": "2026-09-07T21:40:46.783Z",
       "updatedAt": "2026-09-07T21:43:18.695Z"
+    },
+    {
+      "id": "KN-070",
+      "title": "Decide where رد شده belongs on the board",
+      "desc": "Frame 434:16 flags this with a warning and leaves it open: should the rejected status stay as the last column of the pipeline, or move off the board entirely? Get the decision from the designer or the owner, record it in DESIGN.md as a decision rather than a question, and update the column order and any card that assumes the current answer.",
+      "why": "It changes the board's column set, which is the main screen, so building the board while this is open means building something that may need re-ordering and re-testing. It is also cheap to settle now and expensive to settle after the drag-and-drop and column tasks are done.",
+      "severity": "high",
+      "points": 1,
+      "area": "design",
+      "parent": [
+        "KN-002"
+      ],
+      "status": "backlog",
+      "exit": "DESIGN.md records the answer as a decision with who made it, section 6 no longer lists it as open, and the column order in section 3 matches.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T21:48:45.372Z"
+    },
+    {
+      "id": "KN-071",
+      "title": "Decide whether a contact needs an email or a phone",
+      "desc": "Frame 434:2 says only a full name is required, and notes in the same breath that a contact with neither an email nor a phone has no contact route and is practically useless, leaving it for QA to decide whether one of the two becomes required. Get the decision, record it, and set the validation accordingly.",
+      "why": "It is a validation rule on a form that is already scheduled, so leaving it open means either building the permissive version and changing it later, or quietly choosing the strict one and calling it the design. The file explicitly asks for a decision rather than an assumption.",
+      "severity": "high",
+      "points": 1,
+      "area": "design",
+      "parent": [
+        "KN-002"
+      ],
+      "status": "backlog",
+      "exit": "DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-031 and KN-039 state the resulting rule.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T21:48:45.867Z"
+    },
+    {
+      "id": "KN-072",
+      "title": "Decide where status history belongs",
+      "desc": "The Components canvas flags this as its open item 18: status history currently sits at the bottom of the Info tab of the job modal, and the file says that is provisional. Get the decision on whether it stays there, becomes its own tab, or moves elsewhere, and record it.",
+      "why": "It is the payoff of the whole data model, since the trail is what the product is for, and it is currently placed by default rather than by choice. Building the modal around a provisional placement and moving it later means rebuilding a tab.",
+      "severity": "high",
+      "points": 1,
+      "area": "design",
+      "parent": [
+        "KN-002"
+      ],
+      "status": "backlog",
+      "exit": "DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-030 states where history renders.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T21:48:46.372Z"
+    },
+    {
+      "id": "KN-073",
+      "title": "Confirm the employment type and job level option lists",
+      "desc": "Frame 434:33 carries a red warning: the two enumerations came from the product owner and were never matched against jobinja.ir or jobvision.ir, because that environment's network blocked both. Check them against the real sources, or get the owner to confirm them as final, then remove the provisional marking.",
+      "why": "They are enum values that reach the database, the GraphQL schema and the Select components, so changing them after the schema exists is a migration rather than an edit. The design file marks them unconfirmed precisely so nobody treats them as settled.",
+      "severity": "high",
+      "points": 2,
+      "area": "design",
+      "parent": [
+        "KN-002"
+      ],
+      "status": "backlog",
+      "exit": "DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T21:48:46.881Z"
     }
   ]
 }

@@ -316,6 +316,53 @@ in either register.
 
 ---
 
+### Enumerated field values, from `434:33`
+
+Provisional, see the open questions below. English on the left because message
+ids are English, Persian on the right because that is what ships by default.
+
+**نوع همکاری, employment type:** full-time تمام‌وقت · part-time پاره‌وقت ·
+internship کارآموزی · remote دورکاری · contract قراردادی · project پروژه‌ای
+
+**سطح شغلی, job level:** worker کارگر · employee کارمند · specialist کارشناس ·
+senior specialist کارشناس ارشد · middle manager مدیر میانی ·
+deputy or senior manager معاون / مدیر ارشد · chief executive مدیر عامل
+
+**وضعیت, status:** the five defaults, plus «+ وضعیت تازه» to create one. Two
+Persianisations are already applied and should not be undone:
+«تازه اضافه‌شده» became «ذخیره‌شده», and «اپلای‌شده» became «درخواست‌شده».
+
+A status label is **data, not a catalog message**, because the user can rename
+any of them. The five default names ship as catalog messages only as the seed
+values for a fresh account.
+
+### The design is 100 percent tokenised, which makes the no-literal rule checkable
+
+Frame `434:26` reports full variable coverage across both the Components and
+Screens pages: background colour 5496 of 5496, border colour 1995 of 1995,
+padding 6276 of 6276, gap 3226 of 3226, radius 2038 of 2038, and 464 icon sizes
+all bound to `size/icon-*`. Off-scale values were corrected in the same pass:
+spacing 2 and 3 to 4, 6 and 10 to 8, 20 to 24, 40 to 32; radius 2 and 5 to 4;
+font 11 to 12 and 18 to 20.
+
+So every number a component needs **is** in the token set. If an implementation
+reaches for a literal, either the value is wrong or the token was not looked up.
+
+### States are variants on the component, not separate screens
+
+Frame `416:14`: hover and press are reactions carried by each Component Set that
+has a State axis, so they work on every instance rather than only on the one
+drawn inside a Hover frame. They are applied to Card, Contact Card, Button in
+all sizes and styles, Menu Item, Option Row, Filter Chip, Search Bar, Input,
+Select, Status Control, Sort Control and Checkbox.
+
+This means the `Hover`, `Drag` and `Drop Done` frames on the Screens canvas are
+**prototype demonstrations, not screens to implement**. Build the states as
+variants on the component. The file also records why bulk selection was not
+wired from the card checkbox in the prototype: a reaction can only change a
+variant on its own component, it cannot navigate elsewhere. That is a Figma
+limitation, not a product decision, so the real app should wire it properly.
+
 ## 4. The Job Record
 
 Read from the required-fields frame `434:2` and the add and edit modal at
@@ -391,53 +438,6 @@ drawn frame, stop and ask the owner rather than editing the design by hand.
 
 ---
 
-### Enumerated field values, from `434:33`
-
-Provisional, see the open questions below. English on the left because message
-ids are English, Persian on the right because that is what ships by default.
-
-**نوع همکاری, employment type:** full-time تمام‌وقت · part-time پاره‌وقت ·
-internship کارآموزی · remote دورکاری · contract قراردادی · project پروژه‌ای
-
-**سطح شغلی, job level:** worker کارگر · employee کارمند · specialist کارشناس ·
-senior specialist کارشناس ارشد · middle manager مدیر میانی ·
-deputy or senior manager معاون / مدیر ارشد · chief executive مدیر عامل
-
-**وضعیت, status:** the five defaults, plus «+ وضعیت تازه» to create one. Two
-Persianisations are already applied and should not be undone:
-«تازه اضافه‌شده» became «ذخیره‌شده», and «اپلای‌شده» became «درخواست‌شده».
-
-A status label is **data, not a catalog message**, because the user can rename
-any of them. The five default names ship as catalog messages only as the seed
-values for a fresh account.
-
-### The design is 100 percent tokenised, which makes the no-literal rule checkable
-
-Frame `434:26` reports full variable coverage across both the Components and
-Screens pages: background colour 5496 of 5496, border colour 1995 of 1995,
-padding 6276 of 6276, gap 3226 of 3226, radius 2038 of 2038, and 464 icon sizes
-all bound to `size/icon-*`. Off-scale values were corrected in the same pass:
-spacing 2 and 3 to 4, 6 and 10 to 8, 20 to 24, 40 to 32; radius 2 and 5 to 4;
-font 11 to 12 and 18 to 20.
-
-So every number a component needs **is** in the token set. If an implementation
-reaches for a literal, either the value is wrong or the token was not looked up.
-
-### States are variants on the component, not separate screens
-
-Frame `416:14`: hover and press are reactions carried by each Component Set that
-has a State axis, so they work on every instance rather than only on the one
-drawn inside a Hover frame. They are applied to Card, Contact Card, Button in
-all sizes and styles, Menu Item, Option Row, Filter Chip, Search Bar, Input,
-Select, Status Control, Sort Control and Checkbox.
-
-This means the `Hover`, `Drag` and `Drop Done` frames on the Screens canvas are
-**prototype demonstrations, not screens to implement**. Build the states as
-variants on the component. The file also records why bulk selection was not
-wired from the card checkbox in the prototype: a reaction can only change a
-variant on its own component, it cannot navigate elsewhere. That is a Figma
-limitation, not a product decision, so the real app should wire it properly.
-
 ## 6. Open questions the design has not settled
 
 These are flagged in the file itself. They are the designer's or the owner's
@@ -471,24 +471,31 @@ Canvas `5:8`. Every frame, with what it settles and where that now lives, so a
 reader can tell at a glance whether this document has absorbed it. Nothing is
 left in the Figma file alone.
 
-| Frame     | Subject                | Where it landed                                                                                          |
-| --------- | ---------------------- | -------------------------------------------------------------------------------------------------------- |
-| `376:2`   | what the product is    | the definition below, and Huntr and Teal as the reference products                                        |
-| `376:9`   | design principles      | section 3, inline editing and work-where-you-are; its tone rule is SUPERSEDED by `505:3`, see section 6   |
-| `376:21`  | tokens                 | section 1, checked against the variables by `agent/scripts/verify/KN-004.mjs`                             |
-| `376:31`  | key patterns           | section 3, the card stripe and hover, the board, bulk selection, the column menu, the add flow            |
-| `376:43`  | Figma gotchas          | seven are plugin-scripting notes that do not reach the app; the two that do are below                     |
-| `376:46`  | page map               | section 8, the six flow rows                                                                              |
-| `384:12`  | prototype map          | the critical path and the motion values, below                                                            |
-| `416:14`  | interactive components | section 3, states are variants, so Hover, Drag and Drop Done are prototype frames rather than screens     |
-| `416:21`  | type scale             | section 1, five roles and no sixth                                                                        |
-| `434:2`   | required fields        | section 4                                                                                                 |
-| `434:16`  | order and layout       | section 3, the column order, the contacts grid, the chip picker, the four sort options                    |
-| `434:26`  | variable coverage      | section 3, 100 percent, which is what makes the no-literal rule checkable                                 |
-| `434:33`  | field options          | section 3, the enums, marked provisional                                                                  |
-| `505:3`   | copywriting            | section 3, the terminology rule and the two registers                                                      |
+"Where it landed" names a **heading**, not a section number. An earlier version
+numbered them, a later edit renumbered the sections, and the index then pointed
+readers at the wrong place while looking authoritative. Headings survive
+renumbering; numbers do not.
 
-**What the product is**, from `376:2`, in the designer's own words: KarNama is a
+| Frame     | Subject                | Where it landed                                                                                       |
+| --------- | ---------------------- | ----------------------------------------------------------------------------------------------------- |
+| `376:2`   | what the product is    | "What the product is", below, with Huntr and Teal as the reference products                            |
+| `376:9`   | design principles      | "Decisions the design already made"; its tone rule is SUPERSEDED by `505:3`                            |
+| `376:21`  | tokens                 | "Tokens", checked against the variables by `agent/scripts/verify/KN-004.mjs`                            |
+| `376:31`  | key patterns           | "Decisions the design already made": the card stripe and hover, the board, bulk selection, the column menu |
+| `376:43`  | Figma gotchas          | seven are plugin-scripting notes that do not reach the app; the two that do are below                  |
+| `376:46`  | page map               | "The screens", the six flow rows                                                                       |
+| `384:12`  | prototype map          | "The critical path" and the motion values, below                                                       |
+| `416:14`  | interactive components | "States are variants on the component, not separate screens"                                           |
+| `416:21`  | type scale             | "Type", five roles and no sixth                                                                        |
+| `434:2`   | required fields        | "The Job Record"                                                                                       |
+| `434:16`  | order and layout       | "Decisions the design already made": the column order, the contacts grid, the chip picker, the sort options |
+| `434:26`  | variable coverage      | "The design is 100 percent tokenised, which makes the no-literal rule checkable"                       |
+| `434:33`  | field options          | "Enumerated field values", marked provisional                                                          |
+| `505:3`   | copywriting            | "Decisions the design already made": the terminology rule and the two registers                        |
+
+### What the product is
+
+From `376:2`, in the designer's own words: KarNama is a
 Persian, right-to-left job application tracker. The user pastes a link or the
 text of a posting, the information is extracted automatically, and the posting
 moves between statuses on a kanban board. Two products are named as the
@@ -511,8 +518,10 @@ and closing a modal. **Instant** for menus and popovers. The prototype advances
 Loading to Review after 1.4 seconds, which is a prototype timing rather than a
 specification, but it is the intended feel.
 
-**The critical path**, also from `384:12`, is the canonical journey and what the
-end-to-end scenario test should walk:
+### The critical path
+
+Also from `384:12`. The canonical journey, and what the end-to-end scenario test
+should walk:
 
 > sign in → the board → click a card → the job modal → the related-people tab →
 > add a contact → save → back to the board → add a job opportunity → paste a
