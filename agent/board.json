@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 55,
+  "nextId": 56,
   "tasks": [
     {
       "id": "KN-001",
@@ -1057,6 +1057,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T20:18:24.566Z"
+    },
+    {
+      "id": "KN-055",
+      "title": "Record where a task started, so a roast can diff the whole task",
+      "desc": "When a task moves to in_progress, record the current HEAD on it as startHead. Make the roast harness default --base to that instead of HEAD~1, so a roast sees everything the task changed rather than only its last commit. Show it on the card.",
+      "why": "A task spans several commits. The harness defaults to HEAD~1, so from task two onward every roast reviews only the final commit of the task and silently misses the rest, which is a reviewer looking at a fraction of the work while reporting on all of it. KN-001 only avoided this because it passed the empty tree as an explicit base.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-001"
+      ],
+      "status": "backlog",
+      "exit": "Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T20:33:44.264Z"
     }
   ]
 }
