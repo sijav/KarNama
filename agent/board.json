@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 69,
+  "nextId": 70,
   "tasks": [
     {
       "id": "KN-001",
@@ -1508,6 +1508,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T21:26:11.198Z"
+    },
+    {
+      "id": "KN-069",
+      "title": "Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory",
+      "desc": "The override currently accepts any path under the repository or anywhere under the system temp tree. That is much wider than the stated need, which is a scratch board a verifier just created. Narrow it: accept only a path inside a directory the running process made, or match the karnama- prefix the verifiers use, so a leaked value cannot make render overwrite a TODO_BOARD.md beside an unrelated permitted file.",
+      "why": "The fence exists to stop an environment variable redirecting writes, and a fence with a hole the size of the whole temp tree only stops the careless case. Rendering writes a sibling file next to whatever board it is given, so the blast radius is larger than the board itself: any directory with a board.json in it also gets its TODO_BOARD.md overwritten.",
+      "severity": "medium",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-065"
+      ],
+      "status": "backlog",
+      "exit": "A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, the verifiers that use it still work unchanged, and a test covers both.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T21:40:46.783Z"
     }
   ]
 }

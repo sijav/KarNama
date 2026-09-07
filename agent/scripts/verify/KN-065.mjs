@@ -158,17 +158,33 @@ try {
   if (cleanup) rmSync(cleanup, { recursive: true, force: true })
 }
 
-if (skipped.length) {
-  process.stdout.write(
-    `\n${skipped.length} check(s) SKIPPED: this environment forbids writes (${noWrites}), and driving the CLI needs a writable board.\n`,
-  )
-  for (const label of skipped) process.stdout.write(`  skip ${label}\n`)
-  process.stdout.write('A close writes the board itself, so it only happens somewhere writable, where these do run.\n')
-}
-
 if (failures.length) {
   process.stderr.write(`\nKN-065 verify FAILED, ${failures.length} check(s):\n`)
   for (const failure of failures) process.stderr.write(`  - ${failure}\n`)
   process.exit(1)
 }
+
+// A skipped check is not a passed check, and saying "passed" when three of the
+// four substantive assertions did not run would be the worst version of this
+// script: it would turn a visible crash into an invisible false pass, in
+// exactly the environment where a reviewer is meant to check the work.
+//
+// So it exits non-zero and calls itself INCOMPLETE. That is not the crash it
+// replaced: the reason is stated, the checks that did run are reported, and
+// nothing is claimed that was not established. It also does not affect a close,
+// because `move done` writes the board itself, so a close only ever happens
+// somewhere writable, where nothing skips.
+if (skipped.length) {
+  process.stderr.write(
+    `\nKN-065 verify INCOMPLETE. ${skipped.length} of ${skipped.length + 2} checks could not run:\n`,
+  )
+  for (const label of skipped) process.stderr.write(`  skip ${label}\n`)
+  process.stderr.write(
+    `\nThis environment forbids writes (${noWrites}), and driving the CLI needs a writable board.\n` +
+      'The two checks that do not need one passed. Run this where writes are allowed to establish the rest;\n' +
+      'a close happens there by definition, since move done writes the board itself.\n',
+  )
+  process.exit(1)
+}
+
 process.stdout.write('\nKN-065 verify passed.\n')

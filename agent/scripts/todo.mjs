@@ -13,7 +13,7 @@ import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join, resolve, sep } from 'node:path'
+import { basename, dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { cardDigest } from './lib/card.mjs'
@@ -45,15 +45,31 @@ const overrideBoard = () => {
   // `render` and every mutating command to write a board and a TODO_BOARD.md
   // beside some unrelated file.
   const allowed = [realpathSync(dirname(AGENT_DIR)), realpathSync(tmpdir())]
-  const parent = existsSync(dirname(requested)) ? realpathSync(dirname(requested)) : dirname(requested)
-  if (!allowed.some((root) => parent === root || parent.startsWith(`${root}${sep}`))) {
+
+  // The TARGET is resolved, not just its parent. Checking the parent alone let
+  // a final-component symlink escape: a link inside the repository pointing at
+  // an unrelated board passed the check, because its parent really is in the
+  // repository, and then writeFileSync followed the link and overwrote the
+  // target. A path whose parent does not exist is refused rather than accepted
+  // lexically, because there is nothing to resolve and nothing to check.
+  const parentDir = dirname(requested)
+  if (!existsSync(parentDir)) {
+    process.stderr.write(`KARNAMA_BOARD points into ${parentDir}, which does not exist.\n`)
+    process.exit(1)
+  }
+  const real = existsSync(requested) ? realpathSync(requested) : join(realpathSync(parentDir), basename(requested))
+
+  const inside = allowed.some((root) => real === root || real.startsWith(`${root}${sep}`))
+  if (!inside) {
     process.stderr.write(
-      `KARNAMA_BOARD points at ${requested}, which is neither inside the repository nor inside the system temp directory.\n` +
+      `KARNAMA_BOARD points at ${requested}, which really resolves to ${real}, outside both the repository and the system temp directory.\n` +
         'It exists so a verifier can drive this CLI against a throwaway copy, not to redirect the board anywhere.\n',
     )
     process.exit(1)
   }
-  return requested
+  // Return the RESOLVED path, so every later write goes to the thing that was
+  // checked rather than back through the link that was not.
+  return real
 }
 
 const BOARD_PATH = process.env.KARNAMA_BOARD ? overrideBoard() : join(AGENT_DIR, 'board.json')
