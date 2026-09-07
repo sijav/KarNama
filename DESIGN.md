@@ -232,9 +232,38 @@ column IS a status.
 The interactive version is a separate wrapper, `Status Control`, and that is
 what the card uses. Do not merge them.
 
-**Custom statuses are managed inline**, through the Menu: rename, recolour,
-reorder, delete. The four custom colour slots are fixed, so "recolour" means
-choosing among them, not a free colour.
+**Custom statuses are managed inline**, through the column Menu, which has
+exactly **three** options: rename, change colour, delete. **Reorder was removed
+from the design**, so a menu offering four options is wrong. The four custom
+colour slots are fixed, so "change colour" means choosing among them rather than
+a free colour. Delete is disabled while the column still holds postings, and the
+hover explains why. The colour menu **replaces** the main menu; the two are
+never on screen together.
+
+**There is no separate Edit button anywhere in the product.** Clicking a job
+card or a contact card opens its modal already editable. Adding a status,
+changing a status and adding a contact are all inline, and the separate
+status-management page was removed.
+
+**Status is chosen with chips, never a dropdown.** The `Status Picker` is a row
+of status chips with a blue ring on the selected one, plus a dashed
+«+ وضعیت تازه» chip that creates a new status in place.
+
+**The card's status stripe is on the RIGHT edge**, 4px, in the status colour.
+On hover a checkbox appears, the title shifts, and a delete icon appears in the
+corner. The link icon follows the title and is toggled per instance, because not
+every posting has a link.
+
+**Bulk selection has no bar above the columns.** A dark bar floats at the
+**bottom** of the page carrying the count, «انتقال به...», «حذف» and a close.
+
+**Sorting** offers exactly four options: تازه‌ترین, قدیمی‌ترین,
+نزدیک‌ترین مهلت, and نام شرکت alphabetically.
+
+**RTL is `direction: rtl` with the natural array order.** The file says this
+outright, twice, for the contacts grid and as a general principle. Figma reverses
+its arrays because horizontal Auto Layout always lays out left to right; code
+must not copy that. Reversing an array in code to "fix" RTL is a defect.
 
 **The Job Modal replaces a detail page**, with four tabs: اطلاعات آگهی,
 یادداشت, مخاطبین, فایل‌ها. Status history currently sits at the bottom of the
@@ -305,7 +334,34 @@ drawn frame, stop and ask the owner rather than editing the design by hand.
 
 ---
 
-## 5. RTL, and what it does to the DOM
+## 5. Open questions the design has not settled
+
+These are flagged in the file itself. They are the designer's or the owner's
+call, not a build decision, and nothing should quietly resolve them by picking
+one while implementing.
+
+- **Where «رد شده» belongs.** Frame `434:16` marks it with a warning: should
+  rejected stay as the last stage of the pipeline, or move off the board
+  entirely? Undecided.
+- **Whether a contact needs a contact route.** Frame `434:2` notes that only the
+  full name is required, and that a contact with no email and no phone is
+  practically useless, so QA should decide whether "email or phone" becomes a
+  required one-of-two.
+- **Where status history belongs.** The Components canvas flags it as open item
+  18. It currently sits at the bottom of the Info tab, and that is where it gets
+  built until someone decides otherwise.
+- **The employment type and job level option lists** at `434:33` are marked
+  **unconfirmed**: they were never checked against Jobinja and Jobvision because
+  the network blocked it. Treat the values as provisional.
+
+One contradiction between two documentation frames, already resolved:
+principle 5 at `376:9` forbids colloquial Persian outright, while the
+copywriting frame at `505:3` requires it for microcopy and formal Persian only
+for UI labels. **`505:3` wins**: it is the later revision and it enumerates
+sixteen concrete changes that were applied, one of which reverts a wrong
+colloquial edit on a UI label. Principle 5 is superseded, do not re-apply it.
+
+## 6. RTL, and what it does to the DOM
 
 The design is laid out right to left. A panel drawn on the **left** of a frame
 comes **second** in the DOM, and one on the right comes first. Read the child

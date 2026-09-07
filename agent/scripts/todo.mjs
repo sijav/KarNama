@@ -178,6 +178,21 @@ const readArchive = (file, task, expectedRound) => {
   return { archive, meta }
 }
 
+/**
+ * A verify command may not reach into the archive directory.
+ *
+ * `agent/roasts/` is excluded from work-change detection so that recording a
+ * round does not count as unreviewed work. Pointing a verifier at a script
+ * living there turned that exclusion into a way to swap the check after the
+ * review: the card digest covers the command TEXT, not the file it runs.
+ */
+const verifyCommand = (command) => {
+  if (/agent[\\/]roasts[\\/]/.test(command)) {
+    fail('set: a verify command may not run anything from agent/roasts, which the work-change gate ignores')
+  }
+  return command
+}
+
 /** `add` opens tasks. Closing one is `move`'s job, because that is where the gate is. */
 const openingStatus = (status) => {
   if (!['backlog', 'in_progress'].includes(status)) {
@@ -660,8 +675,10 @@ const commands = {
       // all, and only tripped when the task happened to have unsettled parents.
       // One door, so there is one place the rule can live.
       // Optional, but the whole point of it is that `move done` runs it, so it
-      // is settable like any other field.
-      else if (key === 'verify') task.verify = requireValue(value, 'verify')
+      // is settable like any other field. It may not live in the archive
+      // directory: belt and braces alongside the narrowed bookkeeping pattern,
+      // because a checker parked there was invisible to the work-change gate.
+      else if (key === 'verify') task.verify = verifyCommand(requireValue(value, 'verify'))
       else if (key === 'evidence') task.evidence = requireValue(value, 'evidence')
       else if (key === 'status') fail('set: status is changed with "move", which is where the roast gate lives')
       else if (key === 'id') fail('set: id is immutable, other tasks point at it')

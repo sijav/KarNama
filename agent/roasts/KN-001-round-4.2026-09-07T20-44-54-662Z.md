@@ -1,0 +1,28 @@
+1. No. The digest protects the command text, not the code it executes. `verify` can point into `agent/roasts/`, which the work-change gate deliberately ignores. A post-roast edit to that verifier is then invisible, while `move done` runs the modified check.
+
+2. `DESIGN.md` itself is mostly internally consistent now. Its serious contradiction is with the board: it mandates three destinations, kanban, and phone OTP, while active implementation cards still mandate two routes/two destinations, a list, and email magic links.
+
+3. No, a fresh iteration cannot accurately resume. `STATE.md` says the board has rounds 1 and 2 only and instructs round 7, but `board.json` records rounds 1–3 and the harness will produce round 4. It also claims an independent token checker exists, while the board says it only exists in a session scratchpad and must be moved into the repo.
+
+4. The breakdown is not ready for a builder. The first necessary repair is KN-002 rewriting the stale cards, but the plan also lacks explicit work for the standalone My Network screen, kanban column/drag-and-drop/status-management composition, and the service that safely turns pasted posting links/text into the Review result. The current cards can pass their stated exits while delivering a list-based, two-route, magic-link app that contradicts the contract.
+
+Findings:
+
+- **critical** — The close gate can run a verifier different from the one reviewed. `set` accepts any nonempty verifier command, including `node agent/roasts/close-check.mjs`; `agent/roasts/**` is classified as bookkeeping and excluded both from dirty-work detection and commit-to-commit work detection. After a clear roast, changing only that script and committing leaves the card digest unchanged and `workChangedSince` empty, then `move done` executes the changed script. This is exactly the carelessness/drift threat model the gate claims to cover. Restrict verifier paths to tracked non-bookkeeping sources, or hash the verifier artifact and validate that hash at close. [todo.mjs](/D:/Kar/Gandom/KarNama/agent/scripts/todo.mjs:621) [worktree.mjs](/D:/Kar/Gandom/KarNama/agent/scripts/lib/worktree.mjs:18)
+
+- **critical** — `STATE.md` is already stale at the only point a reset is supposed to trust it. It states that only rounds 1 and 2 are on the board and directs “Round 7”; the actual card has three recorded rounds, so `roast.mjs` computes round 4. A fresh agent following the compressed head will use the wrong archive/round model before it can close KN-001. [STATE.md](/D:/Kar/Gandom/KarNama/agent/STATE.md:62) [STATE.md](/D:/Kar/Gandom/KarNama/agent/STATE.md:83) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:40) [roast.mjs](/D:/Kar/Gandom/KarNama/agent/scripts/roast.mjs:144)
+
+- **critical** — The board’s executable plan contradicts the design contract in three core flows. The design requires three destinations, a kanban board with drag between status columns, and mocked phone OTP; KN-027/042 require exactly two destinations/routes, KN-043 specifies a card list, and KN-036/046 implement magic links. The board validates because validation never checks its cards against DESIGN.md. This is not harmless documentation debt: a builder can complete those cards exactly as written and ship the wrong product. [DESIGN.md](/D:/Kar/Gandom/KarNama/DESIGN.md:204) [DESIGN.md](/D:/Kar/Gandom/KarNama/DESIGN.md:216) [DESIGN.md](/D:/Kar/Gandom/KarNama/DESIGN.md:251) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:556) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:735) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:840) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:859) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:922)
+
+- **major** — The task breakdown has no web task for the required standalone My Network destination. It has Contact Card and Contact Modal, but neither composes a contacts route, loads its data, handles selection/bulk actions, or adds it to navigation. The only shell task explicitly creates two routes. [DESIGN.md](/D:/Kar/Gandom/KarNama/DESIGN.md:211) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:534) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:840)
+
+- **major** — The core “paste a posting and structure it” backend is unplanned. KN-029 draws Loading/Review/Error, KN-044 tests pasting a link, but KN-037 only says CRUD “create from a pasted link or text.” There is no task defining extraction behavior, provider/mocking boundary, SSRF-safe URL handling, timeouts, normalization, or how extraction errors map to Manual. This will surface late when the UI needs a real Review payload. [DESIGN.md](/D:/Kar/Gandom/KarNama/DESIGN.md:247) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:604) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:753) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:882)
+
+- **major** — The claimed repository-backed independent token verifier does not exist. `STATE.md` treats it as present evidence, while KN-004 says it is only in a session scratchpad and explicitly sets a verifier command for a nonexistent file. A reset loses the checker and leaves the next design task unable to run its declared verification until it is recreated. [STATE.md](/D:/Kar/Gandom/KarNama/agent/STATE.md:57) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:117) [board.json](/D:/Kar/Gandom/KarNama/agent/board.json:121)
+
+`node agent/scripts/todo.mjs validate` and `node agent/scripts/verify/KN-001.mjs` both pass, but neither check detects these failures.
+
+VERDICT
+score: 2.5
+criticals: 3
+one-line: Close the verifier-artifact bypass, then reconcile the board with the already-settled design before KN-001 is closed.

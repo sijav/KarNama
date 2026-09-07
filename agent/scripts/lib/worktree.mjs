@@ -11,11 +11,18 @@
 import { spawnSync } from 'node:child_process'
 
 /**
- * The loop's own files. Anchored, so the three match exactly and only `roasts/`
- * matches as a directory prefix. Unanchored, a work file named
- * `agent/board.json.bak` was treated as bookkeeping and its changes hidden.
+ * The loop's own files. Anchored, so the three match exactly. Unanchored, a work
+ * file named `agent/board.json.bak` was treated as bookkeeping and hidden.
+ *
+ * Under `roasts/` only the archive itself is bookkeeping: a `.md` reply and its
+ * `.md.meta.json` manifest, nothing else. Excluding the whole directory made it
+ * a blind spot that anything could be parked in. A task's `verify` command could
+ * point at `node agent/roasts/close-check.mjs`, and editing that script after a
+ * clear roast changed neither the card digest nor any path the work-change check
+ * could see, so the close ran a checker nobody had reviewed.
  */
-export const BOOKKEEPING = /^agent\/(?:board\.json|TODO_BOARD\.md|STATE\.md)$|^agent\/roasts\/./
+export const BOOKKEEPING =
+  /^agent\/(?:board\.json|TODO_BOARD\.md|STATE\.md)$|^agent\/roasts\/[^/]+\.md(?:\.meta\.json)?$/
 
 const isBookkeeping = (path) => BOOKKEEPING.test(path)
 

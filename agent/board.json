@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 56,
+  "nextId": 58,
   "tasks": [
     {
       "id": "KN-001",
@@ -44,6 +44,17 @@
           "reviewerScore": 5.5,
           "reviewerCriticals": 1,
           "at": "2026-09-07T20:44:32.625Z"
+        },
+        {
+          "round": 4,
+          "score": 2.5,
+          "criticals": 3,
+          "file": "agent/roasts/KN-001-round-4.2026-09-07T20-44-54-662Z.md",
+          "cardDigest": "c56d04453965271ea6e74dd2b34c57877144d20d280e2d913530b62f82fba618",
+          "head": "3864e3f36d558dcc405ab44244972766494d6870",
+          "reviewerScore": 2.5,
+          "reviewerCriticals": 3,
+          "at": "2026-09-07T20:51:04.667Z"
         }
       ],
       "notes": [
@@ -75,10 +86,14 @@
         "PREFETCHED. Auth in the design is PHONE OTP, mobile number plus a five digit code, with Login, Signup and Reset drawn mobile-first at page map row 6. The owner separately chose email magic link before seeing this canvas. That is a contradiction only the owner can settle, and it changes KN-034, KN-036 and KN-046.",
         "PREFETCHED. Navigation has THREE destinations, not two: فرصت‌های شغلی من (the board), شبکه من (a standalone contacts page with list, selection, add and edit at page map row 5), and افزودن فرصت شغلی. The Components canvas annotation claiming two destinations is superseded by the Documentation canvas.",
         "PREFETCHED. Terminology was overhauled, 16 changes, and it is a hard rule rather than a preference. فرصت شغلی is the record the user tracks in KarNama; آگهی is ONLY the external source, the original post or the pasted link and text. فرصت never appears alone, always the full phrase فرصت شغلی, including mid sentence. Since message ids are English this needs a written glossary: job opportunity vs job posting. Also: UI labels formal, microcopy colloquial, no emoji.",
-        "PREFETCHED. Required fields are specified at frame 434:2. Add flow needs EITHER a link OR the full text, not both. Job record requires only the job title. Contact requires name. A custom status requires a name and its colour is auto assigned. Login requires mobile number and a five digit code. Employment type and job level option lists exist at 434:33 but are marked UNCONFIRMED because the network blocked checking them against Jobinja and Jobvision."
+        "PREFETCHED. Required fields are specified at frame 434:2. Add flow needs EITHER a link OR the full text, not both. Job record requires only the job title. Contact requires name. A custom status requires a name and its colour is auto assigned. Login requires mobile number and a five digit code. Employment type and job level option lists exist at 434:33 but are marked UNCONFIRMED because the network blocked checking them against Jobinja and Jobvision.",
+        "CORRECTION to the earlier prefetched note. The job record requires THREE fields, not one: job title, company name, and status (which always has a value, defaulting to ذخیره‌شده). Read in full from frame 434:2. The add flow requires exactly one of job link OR full ad text, and the extract button stays disabled until one is present; the manual path requires neither. A contact requires only a full name, and the file itself flags an open question about whether email or phone should be a required one-of-two. A custom status requires only a name, its colour is auto-assigned. Login asks for a mobile number and a five digit code, and the user's name only on first login.",
+        "CORRECTIONS owed to DESIGN.md, read from frame 376:31. The column menu has THREE options, rename, change colour and delete: reorder was REMOVED, and DESIGN.md still lists it. The card's 4px status stripe is on the RIGHT edge, and on hover a checkbox appears, the title shifts and a delete icon appears in the corner. Bulk selection uses a dark floating bar at the BOTTOM of the page, not a bar above the columns. The mobile board is one column plus a horizontally scrolling status chip bar. The manual and extracted add forms are the same form, differing only in whether the fields arrive filled.",
+        "Read from frame 434:16. The contacts grid is two columns ordered right to left and row by row, and the file explicitly says code must NOT reverse the array: direction rtl on the grid gives the natural order. Status selection has NO dropdown, it is a row of chips (Status Picker) with a blue ring on the selected one plus a dashed plus-new-status chip. Sort options are exactly four: newest, oldest, nearest deadline, company name alphabetical. OPEN DESIGN QUESTION flagged in the file: whether رد شده stays at the end of the pipeline or moves off the board. That is the owner's or designer's call and must be raised, not decided here.",
+        "Read from frame 376:9, the design principles. THREE product rules that change component work: there is NO separate Edit button anywhere, clicking a job or contact card opens its modal already editable; adding and changing a status and adding a contact are all inline, and the separate status-management page was removed; and RTL is achieved with direction rtl and natural array order, never by reversing arrays. Also a CONTRADICTION to record: principle 5 here forbids colloquial Persian outright, while the later Copywriting frame 505:3 requires it for microcopy and formal Persian only for UI labels. 505:3 wins, it is later and enumerates sixteen applied changes. Mark principle 5 superseded so nobody re-applies it."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:02:02.781Z"
+      "updatedAt": "2026-09-07T20:47:48.896Z"
     },
     {
       "id": "KN-003",
@@ -116,8 +131,8 @@
         "A working independent token checker already exists in the session scratchpad (tokencheck.mjs). It parses DESIGN.md's tables and asserts them against the Figma variable set from node 7:2 plus the type documentation at 416:21, carries its own self-test so a broken pattern is caught, and currently reports full agreement: 32 colour tokens, 13 spacing and radius values, 5 type roles. Move it into agent/scripts/verify/KN-004.mjs and make it this task's verify command rather than rewriting it. Note it must NOT flag the prose that records Body/Small's deletion, only a table row."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:41:33.167Z",
-      "verify": "node agent/scripts/verify/KN-004.mjs"
+      "updatedAt": "2026-09-07T20:51:03.180Z",
+      "verify": "node agent/scripts/verify/KN-004.mjs ."
     },
     {
       "id": "KN-005",
@@ -552,7 +567,7 @@
     {
       "id": "KN-027",
       "title": "Navigation: nav item, desktop sidebar, mobile tab bar, and the language switch",
-      "desc": "Nav Item with Default, Active and Hover from node 184:14, the sidebar at 185:11 which sits on the RIGHT on desktop, and the tab bar at 185:19 at the bottom on mobile. Exactly two destinations, My Jobs and Add Job. The language switch goes at the foot of the sidebar on desktop, per DESIGN.md section 4.",
+      "desc": "Nav Item with Default, Active and Hover from node 184:14, the sidebar at 185:11 which sits on the RIGHT on desktop, and the tab bar at 185:19 at the bottom on mobile. THREE destinations, per the Documentation canvas which supersedes the Components canvas annotation: فرصت‌های شغلی من (the board), افزودن فرصت شغلی, and شبکه من (the standalone network page). The language switch goes at the foot of the sidebar on desktop, per DESIGN.md section 4.",
       "why": "It is the frame every screen sits in, and it is where the owner asked for the language button to go without disturbing the design. Getting the RTL side wrong here puts the sidebar on the wrong edge for the default language of the product.",
       "severity": "high",
       "points": 8,
@@ -565,10 +580,11 @@
         "KN-009"
       ],
       "status": "backlog",
-      "exit": "The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly two destinations exist, the language switch changes locale and direction and persists, and no third tab bar destination was added.",
+      "exit": "The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:49:03.225Z"
     },
     {
       "id": "KN-028",
@@ -731,9 +747,9 @@
     },
     {
       "id": "KN-036",
-      "title": "Auth: email magic link, JWT, and the admin role",
-      "desc": "Passwordless email magic link issuing a short-lived JWT, refresh handling, and a single ADMIN role gating the admin surface. Third-party feedback stays anonymous and needs no account.",
-      "why": "The archive is per person and accrues over months, so it has to survive changing devices, which rules out a device-only token. Passwordless avoids storing passwords and avoids building reset and verification flows for a two-scenario MVP.",
+      "title": "Auth: phone OTP, JWT, and the admin role",
+      "desc": "A mobile number, then a five digit code, then a JWT. Login, Code and Signup as drawn at page-map row 6. The name is asked only on first login and is required there. The SMS provider sits behind an interface with a mock implementation that logs the code, so the MVP needs no SMS credit; email stays as a second channel behind the same interface. One ADMIN role gates the admin surface. Third-party feedback stays anonymous.",
+      "why": "The design draws phone OTP and the owner confirmed it over an earlier email magic link decision, adding that the provider is mocked for the MVP. The archive accrues over months so it has to survive a device change, which rules out a device-only token, and passwordless avoids storing passwords and building reset flows for a two-scenario MVP.",
       "severity": "high",
       "points": 8,
       "area": "api",
@@ -741,33 +757,36 @@
         "KN-034"
       ],
       "status": "backlog",
-      "exit": "A user can sign in from a link, the token expires and refreshes, a non-admin is refused every admin operation at the resolver rather than only in the UI, an expired or reused link is rejected, and tests cover all four.",
+      "exit": "A user signs in with a number and a code against the mock provider, the code expires and a reused code is rejected, first login collects the required name, a non-admin is refused every admin operation at the resolver rather than only in the UI, and tests cover all of those.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:49:24.163Z"
     },
     {
       "id": "KN-037",
       "title": "Job records: CRUD, status transitions, and status history",
-      "desc": "Create from a pasted link or text, read, update, archive and delete a job record. Every status change appends to history with its timestamp, and history is never rewritten.",
+      "desc": "Create, read, update, archive and delete a job record, using the extraction service for the pasted path. Every status change appends to history with its timestamp, and history is never rewritten. Required fields are title, company and status, per frame 434:2; status always has a value and defaults to ذخیره‌شده.",
       "why": "This is both surviving scenarios on the server side. History being append only is the anchor: the value of the product is that it can tell you what happened and when, and an overwritten status cannot.",
       "severity": "high",
       "points": 8,
       "area": "api",
       "parent": [
         "KN-034",
-        "KN-036"
+        "KN-036",
+        "KN-057"
       ],
       "status": "backlog",
       "exit": "An e2e test creates a record, moves it through New, Applied, Interview and Offer, and reads back a history with four entries in order, and a test proves history cannot be edited or reordered through the API.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:49:42.361Z"
     },
     {
       "id": "KN-038",
-      "title": "Custom statuses: rename, recolour, reorder, delete",
-      "desc": "Per-user status definitions. The five defaults can be renamed and reordered, up to four custom statuses can be created using the four reserved colour slots, and deleting a status has to define what happens to the records holding it.",
+      "title": "Custom statuses: rename, recolour, delete",
+      "desc": "Per-user status definitions, which are the kanban columns. The five defaults can be renamed, up to four custom statuses can be created using the four reserved colour slots, and deleting a status has to define what happens to the records holding it. The column menu has exactly THREE options, rename, change colour and delete: reorder was removed from the design. Delete is refused while the column still holds postings, and the UI explains why.",
       "why": "The design draws four reserved slots and inline management, so this is a first class feature rather than a setting. Deletion is the sharp edge: records pointing at a deleted status must not become unreadable, which is why the card falls back to the new colour.",
       "severity": "high",
       "points": 5,
@@ -776,10 +795,11 @@
         "KN-037"
       ],
       "status": "backlog",
-      "exit": "A renamed status shows its new name everywhere including old records, a deleted status leaves its records readable with the fallback colour, the four custom slots cannot be exceeded, and a test covers deletion with records attached.",
+      "exit": "A renamed status shows its new name everywhere including old records, deletion is refused while postings remain in that status and the message says how many, the four custom slots cannot be exceeded, a record pointing at a deleted status still renders with the fallback colour, and tests cover each.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:49:55.231Z"
     },
     {
       "id": "KN-039",
@@ -836,7 +856,7 @@
     {
       "id": "KN-042",
       "title": "App shell: routing, responsive navigation, and the language switch in place",
-      "desc": "The two routes the design allows, My Jobs and Add Job, inside the responsive nav frame, with the Apollo client, auth state and error boundary wired, and the language switch working from the sidebar on desktop and the page header on mobile.",
+      "desc": "The three routes the design draws, the board, add, and the network page, inside the responsive nav frame, with the Apollo client, auth state and error boundary wired, and the language switch working from the sidebar on desktop and the page header on mobile.",
       "why": "It is the frame the screens sit in, and it is the first point where the front and the back meet. Building screens before it means each one invents its own layout and they disagree.",
       "severity": "high",
       "points": 5,
@@ -847,18 +867,19 @@
         "KN-035"
       ],
       "status": "backlog",
-      "exit": "Both routes render inside the shell, the nav switches between sidebar and tab bar at the breakpoint, a deep link to either route works on a hard refresh, the language switch persists across a reload, and an API error renders the error state rather than a blank page.",
+      "exit": "All three routes render inside the shell, the nav switches between right sidebar and bottom tab bar at the breakpoint, a deep link to any of them works on a hard refresh, the language switch persists across a reload, and an API error renders the error state rather than a blank page.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:49:03.739Z"
     },
     {
       "id": "KN-043",
-      "title": "My Jobs screen",
-      "desc": "The archive: the card list, the status filter row with counts, search, sort, bulk selection, and the empty state. Opens the job modal from a card.",
-      "why": "This is scenario 4, the archive, and it is the screen the product is judged on. It is where a user sees where they stand, which is the thing nobody else keeps for them.",
+      "title": "The kanban board screen",
+      "desc": "The board, not a list. Columns ARE statuses, laid out RTL so the rightmost column is the first stage, scrolling horizontally on desktop and collapsing to one column plus a scrolling status chip bar on mobile. Cards drag between columns. Includes the toolbar (sort and search), the column header with its count and menu, the per-column Add Card row, the Add Column tile labelled افزودن وضعیت, bulk selection via the bottom floating bar, and the empty and search-empty states.",
+      "why": "This is scenario 4, the archive, and it is the screen the product is judged on. The kanban form is the point rather than a decoration: seeing how many sit in each stage IS the view of where you stand, which is the thing nobody else keeps for you. An earlier version of this card described a plain list, which the Documentation canvas supersedes.",
       "severity": "high",
-      "points": 8,
+      "points": 13,
       "area": "web",
       "parent": [
         "KN-042",
@@ -871,10 +892,11 @@
         "KN-037"
       ],
       "status": "backlog",
-      "exit": "An e2e test seeds an archive, filters by status, searches for one ad, sorts, selects several and acts on them, and opens a card into the modal, all against the real API.",
+      "exit": "An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:49:04.262Z"
     },
     {
       "id": "KN-044",
@@ -917,8 +939,8 @@
     },
     {
       "id": "KN-046",
-      "title": "Auth screens",
-      "desc": "Request a magic link, handle the callback, show signed-in state, and sign out. Includes the expired and already-used link cases.",
+      "title": "Auth screens: login, code, signup",
+      "desc": "The three screens at page-map row 6, both desktop (407:6951, 407:6972, 407:7000) and mobile (407:7022, 407:7043, 407:7071): enter a mobile number, enter the five digit code, and the first-login signup that collects the name. Includes the expired code, wrong code and resend paths.",
       "why": "Everything in the archive belongs to someone, so nothing else can be real until sign-in is. The failure cases matter more than the happy path here, because an expired link is the common experience of a magic link.",
       "severity": "high",
       "points": 5,
@@ -928,10 +950,11 @@
         "KN-036"
       ],
       "status": "backlog",
-      "exit": "An e2e test signs in through a link and reaches My Jobs, an expired link shows an honest message with a way to request another, and signing out clears the token and the cache rather than only the UI.",
+      "exit": "An e2e test signs in with a number and the code from the mock provider and reaches the board, a wrong or expired code shows an honest message with a way to resend, first login collects the name, and signing out clears the token and the Apollo cache rather than only the UI.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:49:24.656Z"
     },
     {
       "id": "KN-047",
@@ -1092,6 +1115,43 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T20:33:44.264Z"
+    },
+    {
+      "id": "KN-056",
+      "title": "The standalone network screen",
+      "desc": "شبکه من, the third nav destination, drawn at page-map row 5: the contacts list on desktop (252:2) and mobile (252:411), selection states, add and edit modals, the bottom bulk bar, delete confirmation, and the empty state. The grid is two columns ordered right to left and row by row, achieved with direction rtl and the natural array order rather than by reversing the array.",
+      "why": "It is a drawn destination with ten screens and the board had no task that composes it. Contact Card and Contact Modal exist as components, but nothing routed them, loaded their data, or handled selection, so the screen would have been discovered missing only when the navigation task tried to link to it.",
+      "severity": "high",
+      "points": 8,
+      "area": "web",
+      "parent": [
+        "KN-042",
+        "KN-026",
+        "KN-032",
+        "KN-039"
+      ],
+      "status": "backlog",
+      "exit": "An e2e test opens the network route, adds a contact, edits it, selects two and deletes them through the bottom bar, and sees the empty state on a fresh account. The grid reads right to left and row by row in Persian and mirrors in English, with no array reversal in the code.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T20:49:25.116Z"
+    },
+    {
+      "id": "KN-057",
+      "title": "Posting extraction: turn a pasted link or text into a Review payload",
+      "desc": "The service behind the Loading step. Takes either a URL or the raw text of a posting and returns the structured fields the Review step edits: title, company, location, employment type, job level, experience, salary, posted and expiry dates, source, description and skills. Behind an interface with a deterministic mock for dev and tests. URL fetching must be SSRF-safe (no private or link-local addresses, no redirects to them), time-bounded, size-capped, and must map every failure onto the drawn Error state whose way out is the Manual form.",
+      "why": "This is the product's actual argument, that the user pastes and the product does the structuring, and it was the one piece with no task. KN-029 draws Loading, Review and Error, KN-044 tests pasting a link, and KN-037 said only create from a pasted link or text, so the extraction behaviour, its failure mapping and its safety boundary would have been discovered when the UI first needed a real payload. Fetching a user-supplied URL from the server is also the one place in this product with a genuine security surface.",
+      "severity": "high",
+      "points": 8,
+      "area": "api",
+      "parent": [
+        "KN-034"
+      ],
+      "status": "backlog",
+      "exit": "Extraction from raw text returns the documented field set with a named test fixture, a URL pointing at a private or link-local address is refused, a slow or oversized response is aborted within the configured bound, every failure path returns the error shape the UI maps to the Error state, and the mock provider makes all of it runnable with no network.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T20:49:41.782Z"
     }
   ]
 }

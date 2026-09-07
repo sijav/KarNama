@@ -4,6 +4,17 @@ The only memory of earlier iterations that may be relied on. Rewritten at the
 end of every iteration. When this file and the repository disagree, the
 repository is right and this file is stale.
 
+**This file does not restate anything the board already knows.** It went stale
+twice by carrying round counts and task statuses that had moved on, at exactly
+the point a context reset trusts it. Numbers that live in `board.json` are read
+from there:
+
+```bash
+npm run todo -- next            # what to work on
+npm run todo -- show KN-001     # a card, its roast rounds and its notes
+npm run todo -- list            # everything, with blockers marked
+```
+
 ---
 
 ## The task spec
@@ -13,88 +24,79 @@ loop.
 
 A job seeker adds a posting themselves, by link or by text, the product
 structures it into a record, and the record carries a status through the search.
-The value is the trail, not the listing.
+**The value is the trail, not the listing.**
 
 **Scope is closed.** Scenarios 1 and 2, searching boards and showing aggregated
 ads, were cut by the mentor's filter 4. **Crawling job sites is permanently
-out.** Two owner additions: third parties can leave comments or suggested
-changes, stored for later evaluation rather than applied, and there is an admin
-panel over what users submit.
+out**, and a second teammate does not bring it back. Two owner additions: third
+parties can leave comments or suggested changes, stored for later evaluation
+rather than applied, and there is an admin panel over what users submit.
 
-Stack and owner decisions:
+Stack and standing decisions:
 
 - Monorepo, npm workspaces: `apps/web`, `apps/api`, `packages/graphql`.
 - React 19, TypeScript, MUI, Storybook, Playwright, Vitest, 100 percent
   coverage. **Components first with their stories, then screens.**
-- GraphQL with a NestJS server. Render free tier, Supabase Postgres, cold start
-  about 50 seconds which the UI must handle honestly.
-- GitHub Pages for the web app. Repo `sijav/KarNama`, public, **still empty, no
-  remote has been added yet**.
-- lingui, **English is the source**, Persian is the translation. A language
-  button goes in existing chrome without disturbing the design.
+- GraphQL with NestJS. Render free tier, Supabase Postgres, cold start about 50
+  seconds which the UI must handle honestly.
+- GitHub Pages for the web app. Repo `sijav/KarNama`, public, **empty, and no
+  git remote has been added yet**.
+- lingui, **English is the source**, Persian is the translation.
 - **Match the design exactly**, not approximately.
-- **Auth is phone OTP** (mobile number, then a five digit code), email as a
+- **Auth is phone OTP**, mobile number then a five digit code, email as a
   fallback behind the same interface, **provider mocked for the MVP**.
-- **The Documentation canvas beats the Components canvas**: kanban board, not a
-  list, and three nav destinations, not two.
+- **The Documentation canvas beats the Components canvas**: a kanban board, not
+  a list, and three nav destinations, not two.
 
 ## Where things stand
 
 **Nothing of the product exists yet.** No app, no API, no components. What
-exists is the machine that will build them, and its design contract.
+exists is the machine that will build them, and a design contract that has been
+verified against Figma rather than asserted.
 
-- `agent/RALPH.md`, the six-step loop.
-- `agent/scripts/todo.mjs`, the board, zero dependencies.
-- `agent/scripts/roast.mjs`, the Codex harness on `gpt-5.6-terra`.
-- `agent/scripts/lib/worktree.mjs`, the one definition of "unreviewed work".
-- `agent/scripts/lib/card.mjs`, the one definition of the card digest.
-- `agent/scripts/verify/KN-001.mjs`, eight real checks, tested against planted
-  breaks.
-- `agent/board.json`, **55 tasks**, valid, rendered to `agent/TODO_BOARD.md`.
+- `agent/RALPH.md`, the loop. `agent/scripts/todo.mjs`, the board, zero
+  dependencies. `agent/scripts/roast.mjs`, the Codex harness on
+  `gpt-5.6-terra`. `agent/scripts/lib/{worktree,card}.mjs`, the single
+  definitions of "unreviewed work" and "the reviewed card".
+- `agent/scripts/verify/KN-001.mjs` and `KN-004.mjs`, real checks, each tested
+  against planted breaks rather than only against success.
 - `AGENTS.md`, `DESIGN.md`, `TECH-DEBT.md`, `CLAUDE.md`, root workspace config.
 - `.claude/ralph-loop.local.md`, the loop armed, promise `KARNAMA-DONE`.
 
-`DESIGN.md` now carries the full verified token set, the corrected five-role
-type scale, the kanban structure, the three destinations, phone OTP, and the
-terminology rule. An independent checker confirms every colour, spacing, radius
-and type value against Figma, and fails when any is corrupted.
+`DESIGN.md` carries the verified token set, the corrected five-role type scale,
+the kanban structure, three destinations, phone OTP, the terminology rule, the
+inline-editing rules, and a section of open questions the design has NOT
+settled. `agent/scripts/verify/KN-004.mjs` asserts the token tables against
+Figma and fails when any value is corrupted.
 
-## KN-001, in review, six roast rounds so far
+## KN-001, still in review
 
-Scores: **3.5, 1.5, 1.0, 5.0, 5.0, 5.5**. Every finding accepted, none rejected.
-The board records rounds 1 and 2 only, because two rounds' replies predate the
-manifest mechanism or were superseded before recording; the archives are all in
-`agent/roasts/`.
+Read its round history with `npm run todo -- show KN-001`. Every finding across
+every round was accepted and none rejected. What they found, in summary: the
+close gate was bypassable six different ways, the documented close path
+deadlocked, a rename could hide work from the gate, the `review` state was
+decorative, the "tokens transcribed" claim was false while the verifier passed,
+and most recently the board's own cards contradicted the design contract.
 
-What the rounds found and what was fixed: the gate was bypassable through `set
---status done`, `add --status done`, `move dropped`, recording a round against
-the harness's own prompt file, `rm --force`, and swapping `verify` after a clear
-round. The documented close path deadlocked because the harness and the board
-had two disagreeing definitions of a dirty tree. A rename into `agent/roasts/`
-hid real work from the close gate. The `review` state was decorative. The
-"tokens transcribed" clause was false while the verifier passed.
-
-The forgery line was **scoped, not chased**: `TECH-DEBT.md` entry 1 says the
-gate defends against carelessness and drift, not deliberate fraud, because
+The forgery line was **scoped, not chased**. `TECH-DEBT.md` entry 1 states that
+the gate defends against carelessness and drift, not deliberate fraud, because
 nothing running locally under the author's own hand can prove the author honest.
 
 ## Next step
 
-Round 7 is the next action for KN-001, against the current HEAD. Round 6's
-critical, `verify` being swappable after a clear round, is fixed by folding
-`verify` into the shared card digest, and verified: swapping it now returns
-"KN-001 has been edited since the roast that cleared it".
+Run the next roast round for KN-001 against the current HEAD. The harness picks
+its own round number from the board, so do not assume one.
 
-When round 7 is clean at 9.5 or above: record it, then
-`npm run todo -- move KN-001 done --evidence "..."`.
+When a round comes back clean at 9.5 or above with zero criticals: record it,
+then `npm run todo -- move KN-001 done --evidence "..."`.
 
-Then **KN-002**, which the owner named: fold the Documentation (`5:8`) and
-Screens (`5:7`) canvases into `DESIGN.md` in full and rewrite the cards the new
-decisions invalidate. `DESIGN.md` has already been corrected on navigation,
-kanban, auth and terminology, so KN-002's remaining work is the 53-screen
-inventory, the Job Record field list, the required-field rules, and **rewriting
-KN-036 and KN-046, which still say email magic link**, and KN-043, which still
-describes a list.
+Then **KN-002**, which the owner named. Its card carries detailed notes from the
+Documentation and Screens canvases, read them with `npm run todo -- show
+KN-002`. The stale cards KN-027, KN-036, KN-042, KN-043, KN-038 and KN-046 have
+already been rewritten against the design, and the two missing tasks it would
+have found, the standalone network screen and the posting extraction service,
+are already filed. KN-002's remaining work is the full 53-screen inventory and
+the Job Record field list.
 
 ## What to read first
 
