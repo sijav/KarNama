@@ -1234,12 +1234,13 @@
       "parent": [
         "KN-001"
       ],
-      "status": "backlog",
+      "status": "review",
       "exit": "A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T21:08:49.893Z",
-      "updatedAt": "2026-09-07T21:12:12.257Z"
+      "updatedAt": "2026-09-07T21:14:27.997Z",
+      "verify": "node agent/scripts/verify/KN-058.mjs"
     },
     {
       "id": "KN-059",

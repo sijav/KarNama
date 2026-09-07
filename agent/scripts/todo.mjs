@@ -195,6 +195,31 @@ const readArchive = (file, task, expectedRound) => {
  * how it stays runnable on both platforms.
  */
 const VERIFY_DIR = join(ROOT, 'agent', 'scripts', 'verify')
+
+/**
+ * Split a verify command into argv, refusing anything a shell would treat as
+ * more than one command.
+ *
+ * The command was validated as a structured `node` invocation and then executed
+ * with `shell: true`, so everything after the accepted prefix was handed to the
+ * shell. `node agent/scripts/verify/KN-001.mjs || exit 0` passed validation and
+ * then reported success no matter what the verifier did, which turns the one
+ * mechanical check that a task's exit condition holds into a check that always
+ * passes. It needs no ill intent: appending something to a command line is an
+ * ordinary thing to do.
+ */
+const SHELL_METACHARACTERS = /[|&;<>()$`\\"'\n\r*?[\]{}~!#]/
+const verifyArgv = (command) => {
+  if (SHELL_METACHARACTERS.test(command)) {
+    fail(
+      `set: a verify command may not contain shell characters, and this one does: ${command}\n` +
+        'It is run directly rather than through a shell, so an operator would not do what it looks like.\n' +
+        'Put the logic inside the verify script instead, where it can be read and tested.',
+    )
+  }
+  return command.split(/\s+/).filter(Boolean)
+}
+
 const verifyCommand = (command) => {
   const match = /^node\s+(agent\/scripts\/verify\/[A-Za-z0-9_.-]+\.mjs)(\s|$)/.exec(command)
   if (!match) {
@@ -230,6 +255,7 @@ const verifyCommand = (command) => {
   if (!realTarget.startsWith(`${realVerifyDir}${sep}`)) {
     fail(`set: ${match[1]} really lives at ${realTarget}, outside agent/scripts/verify`)
   }
+  verifyArgv(command)
   return command
 }
 
@@ -697,9 +723,13 @@ const commands = {
         // rule existed, or a file swapped for a symlink afterwards, would
         // otherwise still be executed here.
         verifyCommand(task.verify)
-        const check = spawnSync(task.verify, {
+        // Spawned as argv with NO shell, so the command is the command. `node`
+        // is resolved to this process's own executable rather than looked up on
+        // PATH, which also removes the one thing that still needed a shell on
+        // Windows.
+        const [, ...args] = verifyArgv(task.verify)
+        const check = spawnSync(process.execPath, args, {
           cwd: ROOT,
-          shell: true,
           encoding: 'utf8',
           stdio: ['ignore', 'inherit', 'inherit'],
         })
