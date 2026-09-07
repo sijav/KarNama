@@ -17,6 +17,7 @@ import { fileURLToPath } from 'node:url'
 
 import { cardDigest } from './lib/card.mjs'
 import { contractProblems, loadContractInputs } from './lib/contract.mjs'
+import { runVerify, VerifyError, verifyArgv } from './lib/verify.mjs'
 import { workChangedSince, workingChanges } from './lib/worktree.mjs'
 
 const AGENT_DIR = dirname(dirname(fileURLToPath(import.meta.url)))
@@ -208,18 +209,6 @@ const VERIFY_DIR = join(ROOT, 'agent', 'scripts', 'verify')
  * passes. It needs no ill intent: appending something to a command line is an
  * ordinary thing to do.
  */
-const SHELL_METACHARACTERS = /[|&;<>()$`\\"'\n\r*?[\]{}~!#]/
-const verifyArgv = (command) => {
-  if (SHELL_METACHARACTERS.test(command)) {
-    fail(
-      `set: a verify command may not contain shell characters, and this one does: ${command}\n` +
-        'It is run directly rather than through a shell, so an operator would not do what it looks like.\n' +
-        'Put the logic inside the verify script instead, where it can be read and tested.',
-    )
-  }
-  return command.split(/\s+/).filter(Boolean)
-}
-
 const verifyCommand = (command) => {
   const match = /^node\s+(agent\/scripts\/verify\/[A-Za-z0-9_.-]+\.mjs)(\s|$)/.exec(command)
   if (!match) {
@@ -255,7 +244,12 @@ const verifyCommand = (command) => {
   if (!realTarget.startsWith(`${realVerifyDir}${sep}`)) {
     fail(`set: ${match[1]} really lives at ${realTarget}, outside agent/scripts/verify`)
   }
-  verifyArgv(command)
+  try {
+    verifyArgv(command)
+  } catch (error) {
+    if (error instanceof VerifyError) fail(`set: ${error.message}`)
+    throw error
+  }
   return command
 }
 
@@ -723,18 +717,12 @@ const commands = {
         // rule existed, or a file swapped for a symlink afterwards, would
         // otherwise still be executed here.
         verifyCommand(task.verify)
-        // Spawned as argv with NO shell, so the command is the command. `node`
-        // is resolved to this process's own executable rather than looked up on
-        // PATH, which also removes the one thing that still needed a shell on
-        // Windows.
-        const [, ...args] = verifyArgv(task.verify)
-        const check = spawnSync(process.execPath, args, {
-          cwd: ROOT,
-          encoding: 'utf8',
-          stdio: ['ignore', 'inherit', 'inherit'],
-        })
-        if (check.status !== 0) {
-          fail(`move: ${id}'s verify command failed (exit ${check.status}): ${task.verify}`)
+        // Through the shared module, which is the same code the task's own
+        // verifier exercises. It used to be inline here and asserted by reading
+        // this file's source text, which tests wording rather than behaviour.
+        const status = runVerify(ROOT, task.verify)
+        if (status !== 0) {
+          fail(`move: ${id}'s verify command failed (exit ${status}): ${task.verify}`)
         }
       }
 

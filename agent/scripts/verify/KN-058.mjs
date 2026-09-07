@@ -15,6 +15,8 @@ import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { runVerify, VerifyError, verifyArgv } from '../lib/verify.mjs'
+
 const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
 const TODO = join(ROOT, 'agent', 'scripts', 'todo.mjs')
 const VERIFY_DIR = join(ROOT, 'agent', 'scripts', 'verify')
@@ -55,7 +57,7 @@ try {
     if (!subject) return 'no backlog task to test against'
     const result = todo('set', subject, '--verify', 'node agent/scripts/verify/kn058-scratch.mjs || exit 0')
     if (result.status === 0) return 'it was accepted'
-    return /shell characters/.test(result.stderr) ? null : `refused for the wrong reason: ${result.stderr.trim()}`
+    return /shell character/.test(result.stderr) ? null : `refused for the wrong reason: ${result.stderr.trim()}`
   })
 
   check('a command with a semicolon is refused', () => {
@@ -82,24 +84,60 @@ try {
     return null
   })
 
-  check('a failing verifier exits non-zero, which is what blocks a close', () => {
+  // The next three exercise the SAME function the close path calls, rather than
+  // reading todo.mjs source for the string `shell: true`. The source version was
+  // brittle in both directions: a refactor that renamed a variable broke it
+  // while the code was correct, and a stale comment containing the markers would
+  // have passed it while the close path was broken. It tested wording.
+
+  check('runVerify reports a failing verifier, which is what blocks a close', () => {
     const failing = join(VERIFY_DIR, 'kn058-failing.mjs')
     writeFileSync(failing, "process.stderr.write('deliberately failing\\n')\nprocess.exit(1)\n", 'utf8')
     try {
-      const result = spawnSync(process.execPath, [failing], { cwd: ROOT, encoding: 'utf8' })
-      return result.status === 0 ? 'a deliberately failing verifier reported success' : null
+      const status = runVerify(ROOT, 'node agent/scripts/verify/kn058-failing.mjs')
+      return status === 0 ? 'a deliberately failing verifier reported success' : null
     } finally {
       rmSync(failing, { force: true })
     }
   })
 
-  check('move done spawns without a shell', () => {
-    // Read the source rather than guess: `shell: true` anywhere in the close
-    // path is the defect this task exists to remove.
-    const source = readFileSync(TODO, 'utf8')
-    const closeBlock = source.slice(source.indexOf('if (task.verify)'), source.indexOf('task.evidence ='))
-    if (/shell:\s*true/.test(closeBlock)) return 'the close path still passes shell: true'
-    return /spawnSync\(process\.execPath/.test(closeBlock) ? null : 'the close path no longer spawns node directly'
+  check('runVerify reports success for a passing verifier', () => {
+    const status = runVerify(ROOT, 'node agent/scripts/verify/kn058-scratch.mjs')
+    return status === 0 ? null : `a passing verifier reported ${status}`
+  })
+
+  check('runVerify refuses a shell operator rather than executing it', () => {
+    // The exact exploit: a valid prefix with an operator appended. Under the old
+    // code this ran through a shell and reported success whatever the verifier
+    // did. It must now throw instead of running anything.
+    try {
+      runVerify(ROOT, 'node agent/scripts/verify/kn058-failing.mjs || exit 0')
+      return 'it ran a command containing a shell operator'
+    } catch (error) {
+      return error instanceof VerifyError ? null : `threw the wrong error: ${error.message}`
+    }
+  })
+
+  check('a Windows path argument is accepted, since there is no shell to confuse', () => {
+    // A backslash was previously rejected outright, which broke every Windows
+    // path argument the advertised `[args]` format is meant to allow.
+    const argv = verifyArgv('node agent/scripts/verify/kn058-scratch.mjs C:\\work\\tokens')
+    return argv.length === 3 && argv[2] === 'C:\\work\\tokens' ? null : `parsed as ${JSON.stringify(argv)}`
+  })
+
+  check('cmd.exe expansion characters are still refused', () => {
+    for (const command of [
+      'node agent/scripts/verify/kn058-scratch.mjs %PATH%',
+      'node agent/scripts/verify/kn058-scratch.mjs ^a',
+    ]) {
+      try {
+        verifyArgv(command)
+        return `accepted ${command}`
+      } catch (error) {
+        if (!(error instanceof VerifyError)) return `threw the wrong error for ${command}`
+      }
+    }
+    return null
   })
 } finally {
   restore()
