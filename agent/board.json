@@ -122,8 +122,11 @@
       "status": "backlog",
       "exit": "On a clean checkout, lint, lint:tsc, test, build and build-storybook all pass in apps/web, and both a deliberately broken test and a deliberately unlocalized string fail the run when planted by hand.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "VERSION CONSTRAINTS verified from the registry, not from memory, and both must be honoured or the gate cannot be built. (1) typescript-eslint 8.70.0 declares peer typescript >=4.8.4 <6.1.0, so TypeScript 7.0.2, the current latest, breaks linting entirely. Pin typescript to ~6.0.x and record it in TECH-DEBT with the check that retires it, which is typescript-eslint widening its range. (2) @storybook/addon-vitest 10.6.0 declares peer vitest ^3.0.0 || ^4.0.0, so vitest 5.0.0, the current latest, is incompatible with the Storybook test project. Pin vitest to ^4 and record that too. Other current versions: react and react-dom 19.2.8, vite 8.2.2, @mui/material 9.4.0, storybook 10.6.0, @playwright/test 1.63.0, @lingui/core 6.6.0, @apollo/client 4.2.12, eslint 10.10.0. Note that min-release-age=7 is set in the user npmrc, so npm refuses anything published in the last seven days; that is deliberate supply-chain protection and must not be overridden."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:58:14.694Z"
     },
     {
       "id": "KN-004",
