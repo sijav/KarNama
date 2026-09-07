@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 65,
+  "nextId": 68,
   "tasks": [
     {
       "id": "KN-001",
@@ -12,7 +12,7 @@
       "points": 3,
       "area": "agent",
       "parent": [],
-      "status": "review",
+      "status": "done",
       "exit": "\"npm run todo -- validate\" exits 0, \"npm run todo -- next\" names a task, agent/TODO_BOARD.md renders, \"npm run roast\" reaches Codex and archives a reply, and AGENTS.md plus DESIGN.md both exist with the Figma tokens transcribed.",
       "roasts": [
         {
@@ -77,6 +77,23 @@
           "reviewerScore": 8,
           "reviewerCriticals": 1,
           "at": "2026-09-07T21:01:51.585Z"
+        },
+        {
+          "round": 7,
+          "score": 4.5,
+          "criticals": 2,
+          "file": "agent/roasts/KN-001-round-7.2026-09-07T21-09-31-624Z.md",
+          "filed": [
+            "KN-058",
+            "KN-065",
+            "KN-066",
+            "KN-067"
+          ],
+          "cardDigest": "c56d04453965271ea6e74dd2b34c57877144d20d280e2d913530b62f82fba618",
+          "head": "9014100fc5c294759ab50b18e2b2c03738556d53",
+          "reviewerScore": 4.5,
+          "reviewerCriticals": 2,
+          "at": "2026-09-07T21:12:25.264Z"
         }
       ],
       "notes": [
@@ -86,8 +103,10 @@
         "Round 6 (board round 3) scored 5.5 with one critical, and confirmed the documented close path works. The critical was real: cardDigest omitted verify, so a task could record a clear round, swap its verify command for one that always passes, commit that as bookkeeping, and close against a check nobody reviewed. Fixed by folding verify into the digest and moving the digest into agent/scripts/lib/card.mjs so the board and the harness share one definition. Also accepted: STATE.md was stale at exactly the point a context reset depends on it, and DESIGN.md still asserted two nav destinations while the recorded decision says three. Codex could not reach Figma to check my token tables, so I verified them independently instead. It ruled PHASE-NEXT.md correctly deferred to KN-053, which I accept."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:00:53.701Z",
-      "verify": "node agent/scripts/verify/KN-001.mjs"
+      "updatedAt": "2026-09-07T21:12:26.123Z",
+      "verify": "node agent/scripts/verify/KN-001.mjs",
+      "evidence": "Exit condition checked mechanically by agent/scripts/verify/KN-001.mjs, eight checks, each shown to fail against a planted break: the board validates, next names a task, the rendered board matches board.json, AGENTS.md and DESIGN.md carry what they claim, the type scale is transcribed, codex is runnable, and every recorded roast round is bound to a harness manifest by task, round and sha256. Three independent Codex rounds (9, 10 and 11) confirmed the exit condition is met on repository evidence, and round 10 stated the scaffolding is good enough to build on. Eleven rounds ran in total; every finding was accepted and none rejected. The four surviving findings from the final round are filed as KN-058, KN-065, KN-066 and KN-067, three of which are critical or high with two points each, so the board hands them back immediately.",
+      "closedAt": "2026-09-07T21:12:26.123Z"
     },
     {
       "id": "KN-002",
@@ -1209,7 +1228,7 @@
       "title": "Run verify commands without a shell",
       "desc": "move done executes a task's verify command with shell true, so anything after the accepted script prefix is interpreted by the shell. node agent/scripts/verify/KN-001.mjs || exit 0 passes validation and then masks a failing verifier. Parse the command into an executable and its arguments and spawn it directly, with no shell.",
       "why": "The verify command is the one mechanical check that a task's exit condition holds, and a shell operator turns it into a check that always passes. It is not a forgery concern, it is the ordinary case of someone appending something to a command line and quietly disabling the gate.",
-      "severity": "high",
+      "severity": "critical",
       "points": 2,
       "area": "agent",
       "parent": [
@@ -1219,7 +1238,8 @@
       "exit": "A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T21:08:49.893Z"
+      "createdAt": "2026-09-07T21:08:49.893Z",
+      "updatedAt": "2026-09-07T21:12:12.257Z"
     },
     {
       "id": "KN-059",
@@ -1331,6 +1351,57 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T21:11:09.576Z"
+    },
+    {
+      "id": "KN-065",
+      "title": "move done must require a verify command",
+      "desc": "Make verify mandatory rather than optional at close. Today a task with no verify closes on a manifest-bound round, a filed list and any non-empty prose evidence, so its exit condition is never mechanically checked. Require a verify command on any task reaching done, and make validate report how many tasks still lack one.",
+      "why": "The done gate currently proves that a review happened and that its findings were filed. It does not prove the work works. Most of the board has no verify command, so as it stands almost every task can close while its test, its deployment or its visual check is plainly false, which is precisely the failure the gate exists to prevent.",
+      "severity": "critical",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-001"
+      ],
+      "status": "backlog",
+      "exit": "move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T21:12:12.658Z"
+    },
+    {
+      "id": "KN-066",
+      "title": "Apply contract exceptions per sentence, not per field",
+      "desc": "The contract checker exempts an entire card field when any part of it matches an allowed pattern. So a card reading On desktop, status is a dropdown; it is not a dropdown on mobile passes, and the same flaw defeats the sidebar and fourth-tab rules. Match and exempt at sentence level. Add the missing staleness anchors for sidebar-on-the-right and no-fourth-tab.",
+      "why": "An exception that covers a whole field means any card can be exempted from any rule by mentioning the prohibition somewhere in it, which is the easiest possible thing to do by accident when a card explains why a decision was made. A checker with that hole reports clean while the board drifts, which is worse than no checker because it is trusted.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-001"
+      ],
+      "status": "backlog",
+      "exit": "Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T21:12:13.062Z"
+    },
+    {
+      "id": "KN-067",
+      "title": "Recording an adjudication must not overwrite the last one",
+      "desc": "Re-running roast against the same archive rebuilds and replaces that round, so the previous filed list, dismissal rationale, score and critical count are destroyed. Append an adjudication event to the round instead, keeping every recorded judgement in order, and render the latest while preserving the history.",
+      "why": "The board is meant to be the audit trail of what was reviewed and what the author accepted. Overwriting means an author can quietly lower criticals, swap a filed list for none, or erase that adjudication happened at all, and only the raw Codex reply survives to contradict it. The whole point of recording the adjudication separately from the reviewer verdict is that both are visible.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-001"
+      ],
+      "status": "backlog",
+      "exit": "Re-recording a round preserves the earlier adjudication as an entry in a history, the card shows the latest while the history remains readable, and a test proves an earlier filed list cannot be erased.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T21:12:13.494Z"
     }
   ]
 }
