@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 74,
+  "nextId": 75,
   "tasks": [
     {
       "id": "KN-001",
@@ -134,10 +134,11 @@
         "Read from frame 376:9, the design principles. THREE product rules that change component work: there is NO separate Edit button anywhere, clicking a job or contact card opens its modal already editable; adding and changing a status and adding a contact are all inline, and the separate status-management page was removed; and RTL is achieved with direction rtl and natural array order, never by reversing arrays. Also a CONTRADICTION to record: principle 5 here forbids colloquial Persian outright, while the later Copywriting frame 505:3 requires it for microcopy and formal Persian only for UI labels. 505:3 wins, it is later and enumerates sixteen applied changes. Mark principle 5 superseded so nobody re-applies it.",
         "Field options read in full from 434:33, and they are MARKED UNCONFIRMED in the file itself: taken from the product owner but never matched against jobinja.ir or jobvision.ir because the network blocked both. Employment type: تمام‌وقت، پاره‌وقت، کارآموزی، دورکاری، قراردادی، پروژه‌ای. Job level: کارگر، کارمند، کارشناس، کارشناس ارشد، مدیر میانی، معاون یا مدیر ارشد، مدیر عامل. Status: ذخیره‌شده، درخواست‌شده، مصاحبه، رد شده، پیشنهاد کار، plus create-new. Two Persianisations already applied: تازه اضافه‌شده became ذخیره‌شده and اپلای‌شده became درخواست‌شده.",
         "From frame 416:14: hover and press are component-level reactions on each Component Set with a State axis, not frame jumps, so the Hover, Drag and Drop Done entries in the Screens canvas are prototype demonstrations rather than separate screens to implement. Build the states as variants on the component. Also from 434:26: the design is 100 percent tokenised, every background, border, padding, gap, radius and icon size is bound to a variable, which makes the no-literal rule a checkable claim rather than a preference.",
-        "From frame 376:2, the product in one sentence: KarNama is a Persian right-to-left job application tracker; the user pastes a link or the text of a posting, the information is extracted automatically, and the posting moves between statuses on a kanban board. That independently confirms both the kanban decision and the extraction service being core rather than optional. The file also names two reference products the designer worked against, Huntr and Teal, which are the comparables to consult when a design question is genuinely ambiguous. Project status at time of writing: a 14 day sprint on day 8, two person team."
+        "From frame 376:2, the product in one sentence: KarNama is a Persian right-to-left job application tracker; the user pastes a link or the text of a posting, the information is extracted automatically, and the posting moves between statuses on a kanban board. That independently confirms both the kanban decision and the extraction service being core rather than optional. The file also names two reference products the designer worked against, Huntr and Teal, which are the comparables to consult when a design question is genuinely ambiguous. Project status at time of writing: a 14 day sprint on day 8, two person team.",
+        "Two roast rounds ran before either was recorded, so only the last can be entered on the board: the harness stamps the round number at run time and the record command requires it to be the next one. The earlier archives are on disk under agent/roasts and their findings were all acted on. Filed as KN-074."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:45:38.271Z",
+      "updatedAt": "2026-09-07T21:57:29.887Z",
       "verify": "node agent/scripts/verify/KN-002.mjs"
     },
     {
@@ -1629,6 +1630,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T21:48:46.881Z"
+    },
+    {
+      "id": "KN-074",
+      "title": "The harness stamps a round number that goes stale before it is recorded",
+      "desc": "roast.mjs computes the round number from the board at RUN time, as roasts.length + 1, and readArchive later requires meta.round to equal roasts.length + 1 at RECORD time. Running two roasts before recording either makes the first unrecordable, because both manifests claim the same round and only one can be next. Either stamp something order-independent, such as the reviewed commit plus a sequence within it, or let the record command accept any manifest for this task whose round has not already been recorded.",
+      "why": "It bit on KN-002: two rounds ran before either was recorded, so the first round's verdict cannot be entered on the board at all and survives only as a file on disk. The board is meant to be the audit trail of what was reviewed, and a round it structurally cannot accept is a hole in that trail. It also pushes toward recording immediately, which is the opposite of the adjudicate-then-record flow the loop asks for.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-001"
+      ],
+      "status": "backlog",
+      "exit": "Two roast rounds run back to back can both be recorded, in order, with their own verdicts and filed lists, and a manifest that has already been recorded is still refused a second time.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T21:57:29.299Z"
     }
   ]
 }
