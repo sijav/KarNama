@@ -278,10 +278,28 @@ check('everywhere the CAPTURES say something is unsettled is accounted for', () 
       problems.push(`${key} ${node} is marked pending in the capture and recorded nowhere`)
       continue
     }
-    const owner = byId.get(item.decidedBy)
-    if (!owner) problems.push(`${key} ${node} is assigned to ${item.decidedBy}, which is not on the board`)
-    else if (['done', 'dropped'].includes(owner.status)) {
-      problems.push(`${key} ${node} is still pending in the design but ${item.decidedBy} is ${owner.status}`)
+    // A capture is a historical artefact: the marker in it never goes away, so
+    // "the owning task must still be open" was a trap. Completing KN-077 would
+    // fail this check, and deleting its record would fail the other direction,
+    // leaving no way to ever finish. A disposition is therefore permanent: a
+    // task while it is open, or a written decision and the heading it landed
+    // under once it is closed.
+    const hasTask = typeof item.decidedBy === 'string'
+    const hasDecision = typeof item.decided === 'string' && typeof item.landedIn === 'string'
+    if (hasTask === hasDecision) {
+      problems.push(`${key} ${node} needs exactly one of decidedBy, or decided plus landedIn`)
+      continue
+    }
+    if (hasTask) {
+      const owner = byId.get(item.decidedBy)
+      if (!owner) problems.push(`${key} ${node} is assigned to ${item.decidedBy}, which is not on the board`)
+      else if (['done', 'dropped'].includes(owner.status)) {
+        problems.push(
+          `${key} ${node} is assigned to ${item.decidedBy}, which is ${owner.status}: record what was decided and where it landed instead`,
+        )
+      }
+    } else if (sectionBody(item.landedIn) === null) {
+      problems.push(`${key} ${node} says it landed under "${item.landedIn}", which is not a heading in DESIGN.md`)
     }
   }
   // Both directions: a recorded item whose marker has gone from the capture is a
@@ -291,6 +309,63 @@ check('everywhere the CAPTURES say something is unsettled is accounted for', () 
   for (const key of recorded.keys()) {
     if (!live.has(key)) problems.push(`${key} is recorded as pending but the capture no longer says so`)
   }
+  return problems.length ? problems.join(' | ') : null
+})
+
+check('the copy-change counts in DESIGN.md are DERIVED from the capture', () => {
+  // "Fourteen of the sixteen were applied" was written to correct a roast
+  // finding, and was itself an unverified number: the same defect one level up.
+  // Frame 505:3 enumerates its changes with Persian ordinals, so both numbers
+  // come out of the capture. Change the source and the document has to follow,
+  // or this fails.
+  const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+    'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty']
+  const PENDING = /نیاز به بررسی|نیاز به تأیید|نیاز به تایید|پیدا نشد|وجود ندار(?:ه|د)/
+
+  const lines = capture('documentation').text.split(/\r?\n/)
+  const start = lines.findIndex((line) => /^  <frame id="505:3"/.test(line))
+  if (start === -1) return 'frame 505:3 is not in the capture'
+  const end = lines.findIndex((line, index) => index > start && /^  <\/frame>/.test(line))
+  const block = lines.slice(start, end === -1 ? undefined : end)
+
+  const items = block.filter((line) => /<text id="[^"]+" name="[۰-۹]+\.\s/.test(line))
+  const pending = items.filter((line) => PENDING.test(line))
+  const total = WORDS[items.length]
+  const applied = WORDS[items.length - pending.length]
+  const outstanding = WORDS[pending.length]
+  if (!total || !applied) return `derived ${items.length} items and ${pending.length} pending, which is outside the word table`
+
+  const problems = []
+  if (!design.includes(`${total} copy changes`)) problems.push(`the document does not say "${total} copy changes"`)
+  if (!design.includes(`${outstanding} were not`)) problems.push(`the document does not say "${outstanding} were not"`)
+
+  // Every "N of the sixteen" in the document has to be the derived number, so a
+  // second sentence cannot drift away from the first.
+  const claims = [...design.matchAll(new RegExp(`\\b(\\w+) of (?:the |its )?${total}\\b`, 'gi'))]
+  if (!claims.length) problems.push(`the document never says how many of the ${total} were applied`)
+  for (const claim of claims) {
+    if (claim[1].toLowerCase() !== applied) {
+      problems.push(`the document claims "${claim[0]}" where the capture gives ${applied}`)
+    }
+  }
+  return problems.length ? problems.join(' | ') : null
+})
+
+check('the truncation the document admits to is MEASURED, not estimated', () => {
+  // DESIGN.md tells the reader how much of the capture is cut off, which is the
+  // one thing standing between "derived from source" and overclaiming. A number
+  // written by hand there would rot the moment the capture is replaced, and
+  // rotting downwards -- claiming less truncation than there is -- is exactly
+  // the direction that misleads. So it is measured here.
+  const names = [...capture('documentation').text.matchAll(/name="([^"]*)"/g)].map((match) => [...match[1]].length)
+  const cap = Math.max(...names.filter((length) => names.filter((other) => other === length).length > 10))
+  const atCap = names.filter((length) => length >= cap - 2 && length <= cap).length
+
+  const problems = []
+  if (!design.includes(`${atCap} of the ${names.length} names`)) {
+    problems.push(`the capture has ${atCap} of ${names.length} names at or just under the cap of ${cap}, and DESIGN.md does not say so`)
+  }
+  if (atCap / names.length > 0.6) problems.push(`${atCap} of ${names.length} names are truncated, which is too much to derive anything from`)
   return problems.length ? problems.join(' | ') : null
 })
 

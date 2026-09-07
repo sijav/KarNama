@@ -1,0 +1,26 @@
+1. No. It covers only captured prefixes. Thirty-two documentation text nodes are exactly 28 characters long and visibly cut mid-phrase, while the scanner searches only those `name` attributes. A pending marker at character 60 is absent from the artifact and therefore undetectable. Exact 28-character saturation is evidence of truncation, but the verifier neither detects nor fails on it. [documentation-5-8.xml:4](D:/Kar/Gandom/KarNama/agent/figma-capture/documentation-5-8.xml:4) [KN-002.mjs:261](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-002.mjs:261)
+
+2. Yes. “Fourteen of sixteen were applied” is an unsupported contract claim. The check finds two matching pending markers, but never establishes there are sixteen enumerated changes or that the other fourteen are present on their intended screens. The claim can be changed to “fifteen,” or the source can lose an item, and verification remains green. [DESIGN.md:291](D:/Kar/Gandom/KarNama/DESIGN.md:291) [KN-002.mjs:252](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-002.mjs:252)
+
+3. Yes, it is a trap. Complete KN-077 while its source marker remains in the capture and its manifest entry remains: verification fails because the owner is done. Remove the entry instead: verification fails because the live marker is unrecorded. A disposition must be a persistent manifest state, backed by a decision or resolved contract location, rather than equating “marker still exists in the historical source” with “owner task must remain open.” [KN-002.mjs:275](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-002.mjs:275) [KN-002.mjs:287](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-002.mjs:287) [board.json:1732](D:/Kar/Gandom/KarNama/agent/board.json:1732)
+
+4. The largest remaining gap is that it cannot establish full transcription of the source at all. The verifier checks a hand-selected set of manifest substrings per frame, not the frame’s complete content, and the supposed source text is itself truncated. Thus it cannot answer whether every annotation, especially an open item, reached DESIGN.md. [KN-002.mjs:164](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-002.mjs:164) [board.json:1739](D:/Kar/Gandom/KarNama/agent/board.json:1739)
+
+5. The open follow-up cards alone do not mean KN-002 was too broad. They are the correct decomposition of unresolved design decisions, and are blocked by KN-002 so it must close before they can proceed. But closing KN-002 is not honest now: the capture cannot support the claim that all source open items are inventoried, and the verifier cannot prove the stated exit condition.
+
+Findings:
+
+- critical — The new capture-pending mechanism has a blind spot exactly where it claims to provide source-derived completeness. The committed capture truncates many text names at 28 characters; the scanner inspects only those strings. Put `نیاز به بررسی` after the cutoff of any one of those nodes and neither `found` nor `capturePending` will contain it, so KN-002 passes while an open design item is untracked. [documentation-5-8.xml:39](D:/Kar/Gandom/KarNama/agent/figma-capture/documentation-5-8.xml:39) [KN-002.mjs:261](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-002.mjs:261)
+
+- critical — DESIGN.md repeats the precise “fourteen of sixteen applied” result three times without a corresponding source-derived count or application check. The pending scan proves, at most, that it detected two matching phrases in the capture. It proves neither denominator nor numerator, so the contract asserts a result the repository does not verify. [DESIGN.md:292](D:/Kar/Gandom/KarNama/DESIGN.md:292) [DESIGN.md:471](D:/Kar/Gandom/KarNama/DESIGN.md:471) [KN-002.mjs:252](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-002.mjs:252)
+
+- major — KN-077 cannot be completed without changing or deleting the source-pending record. Marking it done while the historical documentation marker remains makes the verifier fail; deleting its manifest entry also makes it fail. This contradicts KN-077’s stated “disposed” outcome and repeats the closure defect already acknowledged for KN-076. [KN-002.mjs:281](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-002.mjs:281) [KN-002.mjs:291](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-002.mjs:291) [board.json:1705](D:/Kar/Gandom/KarNama/agent/board.json:1705)
+
+- major — KN-078 is correctly filed but not fixed. The live verifier still lets the same author choose the facts that prove each frame was transcribed. A frame can retain its index row and selected keywords while losing material decisions, and pass. [KN-002.mjs:170](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-002.mjs:170) [KN-002.mjs:180](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-002.mjs:180)
+
+`node agent/scripts/verify/KN-002.mjs` and `node agent/scripts/todo.mjs validate` both pass. Those are false passes, not execution failures.
+
+VERDICT
+score: 2.0
+criticals: 2
+one-line: replace the truncated metadata capture with complete source text before treating the pending-item inventory or KN-002 closure as trustworthy

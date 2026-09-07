@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 79,
+  "nextId": 80,
   "tasks": [
     {
       "id": "KN-001",
@@ -151,6 +151,21 @@
           "reviewerScore": 2.5,
           "reviewerCriticals": 2,
           "at": "2026-09-07T22:20:20.632Z"
+        },
+        {
+          "round": 3,
+          "score": 2,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-002-round-3.2026-09-07T22-21-09-277Z.md",
+          "filed": [
+            "KN-079"
+          ],
+          "cardDigest": "bbd7f52a37244badaa88e5e43f6e1e10f6402c895fcb12b82278703d077f1b93",
+          "head": "52da586fb0a178ac567072a0627ec2b5d3ae4f84",
+          "reviewerScore": 2,
+          "reviewerCriticals": 2,
+          "dismissed": "The second major, that KN-078 is filed rather than fixed, is not a defect: filing is the policy this loop runs on, the card carries a mutation-based exit condition, and fixing it needs the text capture that KN-079 has to land first. Everything else was real and is either fixed or filed.",
+          "at": "2026-09-07T22:26:48.216Z"
         }
       ],
       "notes": [
@@ -191,10 +206,11 @@
         "EXACT VERSION MATRIX for the test stack, resolved from the registry. @vitest/browser-playwright pins vitest to an EXACT version in its peers (4.1.11 peers vitest 4.1.11), and @storybook/addon-vitest 10.6.0 peers vitest ^3 or ^4 with @vitest/browser-playwright ^4. So the whole vitest line must be 4.1.11, not 5: vitest 4.1.11, @vitest/browser 4.1.11, @vitest/browser-playwright 4.1.11, @vitest/coverage-v8 4.1.11. Taking the latest of any of them pulls in 5.0.0 and breaks the Storybook test project. Together with the TypeScript pin at ~6.0.x (typescript-eslint peers <6.1.0) these are the two places where latest is wrong, and both need a TECH-DEBT entry with the check that retires them.",
         "ROOT INSTALL PULLS TYPESCRIPT 7 TODAY. prettier-plugin-organize-imports peers typescript >=2.9 as a non-optional peer, so a bare npm install at the root resolves TypeScript 7.0.2, which is exactly the version that breaks typescript-eslint. Declare typescript explicitly in the root devDependencies pinned to ~6.0.x so the peer resolves to the pin rather than to latest, and check after installing that only one TypeScript version is present in the tree. Confirmed separately that npm install is happy with workspaces pointing at directories that do not yet contain a package.json, so the workspace declaration does not have to wait for the apps to exist.",
         "VERIFIED DEPENDENCY MATRIX, every peer range checked against the registry. react and react-dom 19.2.8; vite 8.2.2; @vitejs/plugin-react-swc 4.3.3 (peers vite ^4 to ^8); typescript ~6.0.x NOT 7, because typescript-eslint peers <6.1.0 and eslint-plugin-lingui peers ^5 or ^6; eslint 10.10.0 with eslint-plugin-lingui 0.15.0 (peers eslint ^8.37 or ^9 or ^10); @mui/material 9.4.0 (peers react ^19); storybook, @storybook/react-vite, @storybook/addon-vitest, @storybook/addon-a11y, @storybook/addon-docs and eslint-plugin-storybook all 10.6.0, and react-vite peers vite ^5 to ^8 so vite 8 is fine; the ENTIRE vitest line at exactly 4.1.11, vitest plus @vitest/browser plus @vitest/browser-playwright plus @vitest/coverage-v8, because vitest 4.1.11 pins each companion to its own exact version and the Storybook addon peers browser-playwright at ^4, and vitest peers vite ^6 to ^8 and @types/node >=24 so node 24 is fine; @playwright/test 1.63.0; @lingui/core, @lingui/react, @lingui/cli and @lingui/format-po 6.6.0 with @lingui/swc-plugin 6.7.0; @fontsource-variable/vazirmatn 5.3.0; and a root overrides entry pinning stylis to 4.2.0 because @emotion/cache depends on exactly that while @mui/stylis-plugin-rtl 9.4.0 peers 4.x, so a plain install resolves 4.4.0 and emotion crashes on every ::placeholder rule. Declare typescript explicitly at the root too, or prettier-plugin-organize-imports pulls TypeScript 7 in as a peer.",
-        "PROVEN INSTALLABLE SET, resolved in a throwaway directory with npm install --package-lock-only: 586 packages, one stylis at 4.2.0. The min-release-age=7 rule in the user npmrc means LATEST IS OFTEN NOT INSTALLABLE, and it differs from latest in six places. Use exactly: react and react-dom 19.0.8, vite 8.2.2, typescript 6.0.3, eslint 10.9.1, typescript-eslint 8.68.0, the whole storybook line at 10.5.10 including react-vite, addon-vitest, addon-a11y, addon-docs and eslint-plugin-storybook, the whole vitest line at 4.1.11 including browser, browser-playwright and coverage-v8, @playwright/test and playwright 1.62.1, eslint-plugin-lingui 0.14.0, @mui/material and icons-material and stylis-plugin-rtl 9.4.0, @apollo/client 4.2.12, @lingui/core and react and cli and format-po 6.6.0, @lingui/swc-plugin 6.7.0, @vitejs/plugin-react-swc 4.3.3, @fontsource-variable/vazirmatn 5.3.0, plus a root overrides pinning stylis to 4.2.0. Every peer range was checked at THESE versions, not at latest: addon-vitest 10.5.10 peers vitest ^3 or ^4 and browser-playwright ^4, eslint-plugin-lingui 0.14.0 peers eslint ^8.37 or ^9 or ^10 and typescript ^5 or ^6, typescript-eslint 8.68.0 peers typescript <6.1.0. Two packages have install scripts blocked by the allowScripts policy, @swc/core and esbuild, which will need an allowScripts entry in package.json."
+        "PROVEN INSTALLABLE SET, resolved in a throwaway directory with npm install --package-lock-only: 586 packages, one stylis at 4.2.0. The min-release-age=7 rule in the user npmrc means LATEST IS OFTEN NOT INSTALLABLE, and it differs from latest in six places. Use exactly: react and react-dom 19.0.8, vite 8.2.2, typescript 6.0.3, eslint 10.9.1, typescript-eslint 8.68.0, the whole storybook line at 10.5.10 including react-vite, addon-vitest, addon-a11y, addon-docs and eslint-plugin-storybook, the whole vitest line at 4.1.11 including browser, browser-playwright and coverage-v8, @playwright/test and playwright 1.62.1, eslint-plugin-lingui 0.14.0, @mui/material and icons-material and stylis-plugin-rtl 9.4.0, @apollo/client 4.2.12, @lingui/core and react and cli and format-po 6.6.0, @lingui/swc-plugin 6.7.0, @vitejs/plugin-react-swc 4.3.3, @fontsource-variable/vazirmatn 5.3.0, plus a root overrides pinning stylis to 4.2.0. Every peer range was checked at THESE versions, not at latest: addon-vitest 10.5.10 peers vitest ^3 or ^4 and browser-playwright ^4, eslint-plugin-lingui 0.14.0 peers eslint ^8.37 or ^9 or ^10 and typescript ^5 or ^6, typescript-eslint 8.68.0 peers typescript <6.1.0. Two packages have install scripts blocked by the allowScripts policy, @swc/core and esbuild, which will need an allowScripts entry in package.json.",
+        "TOOLCHAIN PROVEN, not just resolved. The pinned dependency matrix on this card was installed for real into a scratch workspace: 477 packages, no peer conflicts, one stylis at 4.2.0 via the override. Then each tool was executed, not merely resolved: esbuild transforms TypeScript, @swc/core transforms, tsc reports 6.0.3, vite reports 8.2.2, vitest reports 4.1.11. npm blocked the postinstall scripts of @swc/core and esbuild because they are not covered by allowScripts, and it does NOT matter on this platform: both ship their binary as an optional platform package, and @esbuild/win32-x64/esbuild.exe and @swc/core-win32-x64-msvc/swc.win32-x64-msvc.node were both present and working. Playwright is the one that will need allowScripts or an explicit `playwright install`, because its browsers are a download rather than a package."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:54:35.026Z"
+      "updatedAt": "2026-09-07T22:21:57.059Z"
     },
     {
       "id": "KN-004",
@@ -1713,8 +1729,11 @@
       "status": "backlog",
       "exit": "An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision that the manifest does not record still fails; and closing KN-070 as decided leaves the verifier green.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T22:11:19.267Z"
+      "notes": [
+        "PROVEN BLOCKING, not theoretical. A planted mutation finished KN-077 the way the manifest shape now intends: task done, its capturePending entries flipped from decidedBy to decided plus landedIn, and the section 6 bullet rewritten as a decision. The capture-pending check went green. The section 6 check still failed with \"a decision does not own this item\", so the disposition is unreachable and NO open question on this board can ever be closed as decided. That makes this card a blocker for KN-070, KN-071, KN-072, KN-073, KN-075 and KN-077, not a tidy-up. The mutation is in the scratchpad script that proves the KN-002 verifier can fail; re-plant it as the regression test."
+      ],
+      "createdAt": "2026-09-07T22:11:19.267Z",
+      "updatedAt": "2026-09-07T22:26:48.142Z"
     },
     {
       "id": "KN-077",
@@ -1749,6 +1768,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T22:18:31.097Z"
+    },
+    {
+      "id": "KN-079",
+      "title": "Capture the documentation canvas as text, not as truncated layer names",
+      "desc": "agent/figma-capture/documentation-5-8.xml is a get_metadata dump, and get_metadata returns layer NAMES. Figma caps auto-generated text layer names, so 63 of the 148 names in the capture are exactly 26 or 28 characters and visibly cut mid-phrase; only frame 505:3, whose layers were named deliberately, carries full text. Everything derived from the capture therefore sees a prefix. Re-capture the 14 frames with get_design_context or an equivalent that returns the text content, commit that alongside the metadata, and point the capture-pending scan and the coverage check at the text.",
+      "why": "Two roasts in a row rated this critical and both were right. The pending-item inventory in agent/design-manifest.json is presented as derived from source, which is only true for the part of each string that survived truncation: a pending marker at character 60 of a truncated node is absent from the artefact and undetectable. The inventory is a floor, not a ceiling, and until this is done DESIGN.md cannot honestly claim the canvas is fully absorbed. It is also the precondition for KN-078, which cannot check coverage against content that is not in the repository.",
+      "severity": "high",
+      "points": 3,
+      "area": "design",
+      "parent": [
+        "KN-002"
+      ],
+      "status": "backlog",
+      "exit": "A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T22:25:13.496Z"
     }
   ]
 }

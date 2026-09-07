@@ -478,8 +478,8 @@ one while implementing.
 One contradiction between two documentation frames, already resolved:
 principle 5 at `376:9` forbids colloquial Persian outright, while the
 copywriting frame at `505:3` requires it for microcopy and formal Persian only
-for UI labels. **`505:3` wins**: it is the later revision and it enumerates
-sixteen concrete changes, fourteen of them applied in the file, one of which
+for UI labels. **`505:3` wins**: it is the later revision and it enumerates the
+sixteen copy changes, fourteen of the sixteen applied in the file, one of which
 reverts a wrong colloquial edit on a UI label. Principle 5 is superseded, do not
 re-apply it.
 
@@ -494,6 +494,17 @@ Figma file too, so there is nothing to absorb yet.
 numbered them, a later edit renumbered the sections, and the index then pointed
 readers at the wrong place while looking authoritative. Headings survive
 renumbering; numbers do not.
+
+**What the committed capture can and cannot support.** The frame list and the
+inventory of pending items are derived from `agent/figma-capture/`, which holds
+`get_metadata` responses. Those carry layer *names*, and Figma caps an
+auto-generated text layer name: 64 of the 148 names in the documentation capture
+sit at or just under the cap and are cut mid-phrase. Only frame `505:3`, whose layers
+were named deliberately, is present in full. So the pending-item inventory is a
+floor rather than a ceiling — a marker written past the cut is not in the
+artefact and nothing can see it — and this index says where each frame landed,
+not that the landing is complete. **Open, tracked by KN-079**, with the coverage
+check itself tracked by KN-078.
 
 | Frame     | Subject                | Where it landed                                                                                       |
 | --------- | ---------------------- | ----------------------------------------------------------------------------------------------------- |
