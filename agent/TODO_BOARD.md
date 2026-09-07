@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 0 of 53 tasks done · 0 of 261 points.
+Project **KarNama** · 0 of 54 tasks done · 0 of 266 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-001` | The loop, the board, and the tooling that runs them | critical | 3 | agent | none | "npm run todo -- validate" exits 0, "npm run todo -- next" names a task, agent/TODO_BOARD.md renders, "npm run roast" reaches Codex and archives a reply, and AGENTS.md plus DESIGN.md both exist with the Figma tokens transcribed. |
 
-## Backlog (52)
+## Backlog (53)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -58,6 +58,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-045` | Job detail modal, wired | high | 5 | web | KN-043, KN-030, KN-038, KN-039 | An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. |
 | `KN-046` | Auth screens | high | 5 | web | KN-042, KN-036 | An e2e test signs in through a link and reaches My Jobs, an expired link shows an honest message with a way to request another, and signing out clears the token and the cache rather than only the UI. |
 | `KN-052` | Deploy the API to Render with Supabase Postgres | high | 5 | deploy | KN-033, KN-034, KN-050 | The deployed app talks to the deployed API from the Pages origin, a cold start shows the loading state and completes rather than timing out, migrations ran, and no secret is in the repository. |
+| `KN-054` | Backfill a verify command on every board task | high | 5 | agent | KN-001 | Every task on the board has a verify command, npm run todo -- validate fails when one does not, and a deliberately broken verify command blocks move done when planted by hand. |
 | `KN-015` | Card, desktop and mobile, with the status stripe | high | 8 | web | KN-005, KN-006, KN-007, KN-010, KN-008 | All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. |
 | `KN-027` | Navigation: nav item, desktop sidebar, mobile tab bar, and the language switch | high | 8 | web | KN-005, KN-006, KN-007, KN-008, KN-009 | The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly two destinations exist, the language switch changes locale and direction and persists, and no third tab bar destination was added. |
 | `KN-029` | Add and edit job modal, all six steps | high | 8 | web | KN-005, KN-006, KN-007, KN-011, KN-012, KN-028 | All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding. |
@@ -659,4 +660,15 @@ README.md and README.fa.md describing what the product is, what was deliberately
 **Why.** The scope cuts are the most interesting decision in this project and the reasoning is currently only in a chat log. Writing down that crawling failed filter 4, rather than being merely unbuilt, is what stops it being re-proposed every month.
 
 **Exit condition.** Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut.
+
+### `KN-054` Backfill a verify command on every board task
+
+- **status** backlog · **severity** high · **points** 5 · **area** agent
+- **blocked by** KN-001
+
+Add the optional verify field to every task on the board, holding a command that proves that task's exit condition, then make validate fail on a task that has none. Where a condition genuinely cannot be reduced to a command, say so in the field rather than leaving it empty.
+
+**Why.** Codex's round 2 roast on KN-001 was right that calling prose exit conditions unverifiable was too broad, and that the debt note was hiding a tractable problem. move done already runs verify where it is set, but almost no task sets it, so the gate is mostly decorative.
+
+**Exit condition.** Every task on the board has a verify command, npm run todo -- validate fails when one does not, and a deliberately broken verify command blocks move done when planted by hand.
 

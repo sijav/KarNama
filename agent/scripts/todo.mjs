@@ -9,6 +9,8 @@
 // `agent/TODO_BOARD.md` is the rendered kanban a human reads, regenerated after
 // every mutation so the two can never drift.
 
+import { spawnSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -46,6 +48,8 @@ const saveBoard = (board) => {
 }
 
 const byId = (board, id) => board.tasks.find((task) => task.id === id)
+
+const git = (args) => spawnSync('git', args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
 
 // ---------------------------------------------------------------- arguments
 
@@ -105,6 +109,73 @@ const fail = (message) => {
 const requireValue = (value, flag) => {
   if (value === true || value === undefined) fail(`--${flag} needs a value`)
   return Array.isArray(value) ? fail(`--${flag} was given more than once`) : String(value)
+}
+
+/** The digest of what a reviewer was actually shown, so an edited card invalidates its round. */
+const cardDigest = (task) =>
+  createHash('sha256')
+    .update(
+      JSON.stringify({
+        title: task.title,
+        desc: task.desc,
+        why: task.why,
+        exit: task.exit,
+        area: task.area,
+        severity: task.severity,
+        points: task.points,
+        parent: task.parent,
+      }),
+    )
+    .digest('hex')
+
+/**
+ * The LAST verdict block, not the first match anywhere in the file.
+ *
+ * Searching the whole archive let a preamble decide the verdict: a file whose
+ * top said `criticals: 0` and whose real verdict said `criticals: 2` read as
+ * clean, and the reverse demanded a dismissal that was not owed.
+ */
+const finalVerdict = (archive) => {
+  const index = archive.lastIndexOf('VERDICT')
+  if (index === -1) return null
+  const tail = archive.slice(index)
+  const score = tail.match(/^\s*score:\s*([0-9]+(?:\.[0-9]+)?)\s*$/im)
+  const criticals = tail.match(/^\s*criticals:\s*([0-9]+)\s*$/im)
+  if (!score || !criticals) return null
+  return { score: Number(score[1]), criticals: Number(criticals[1]) }
+}
+
+/**
+ * Load a roast archive and prove it came from the harness, for this task, for
+ * this round.
+ *
+ * Substring-matching "VERDICT" was not evidence of anything: the harness writes
+ * the verdict TEMPLATE into its own prompt file, so `--file <the prompt>` passed
+ * the check and recorded a fabricated clear round. The sidecar the harness
+ * writes is the thing that has to match.
+ */
+const readArchive = (file, task, expectedRound) => {
+  if (/\.prompt\.md$/.test(file)) {
+    fail(`roast: ${file} is the prompt the harness sent, not the reply it received`)
+  }
+  const path = join(ROOT, file)
+  if (!existsSync(path)) fail(`roast: --file ${file} does not exist, relative to the repository root`)
+
+  const metaPath = `${path}.meta.json`
+  if (!existsSync(metaPath)) {
+    fail(`roast: ${file} has no .meta.json beside it, so it was not written by "npm run roast"`)
+  }
+  const meta = JSON.parse(readFileSync(metaPath, 'utf8'))
+  const archive = readFileSync(path, 'utf8')
+
+  if (meta.replyDigest !== createHash('sha256').update(archive).digest('hex')) {
+    fail(`roast: ${file} has been edited since the harness wrote it, its digest no longer matches`)
+  }
+  if (meta.task !== task.id) fail(`roast: ${file} is a roast of ${meta.task}, not of ${task.id}`)
+  if (meta.round !== expectedRound + 1) {
+    fail(`roast: ${file} is round ${meta.round}, and ${task.id} is recording round ${expectedRound + 1}`)
+  }
+  return { archive, meta }
 }
 
 /** `add` opens tasks. Closing one is `move`'s job, because that is where the gate is. */
@@ -179,6 +250,28 @@ const checkBoard = (board) => {
       if (task.status === 'done' && !SETTLED_STATUSES.includes(parent.status)) {
         problems.push(`${task.id} is done but its parent ${parent.id} is ${parent.status}`)
       }
+    }
+  }
+
+  // The single-work-in-progress rule lived only in `move`, so `add --status
+  // in_progress` created a second running task and the board still validated.
+  // An invariant enforced at one call site is a convention, not an invariant.
+  const running = board.tasks.filter((task) => task.status === 'in_progress')
+  if (running.length > 1) {
+    problems.push(
+      `${running.map((task) => task.id).join(' and ')} are all in_progress. Exactly one task may be, because the selection law ranks in_progress ahead of severity.`,
+    )
+  }
+
+  for (const task of board.tasks) {
+    if (task.status === 'blocked' && !task.blockedReason) {
+      problems.push(`${task.id} is blocked with no reason recorded, so it has silently left the board`)
+    }
+    if (task.status === 'dropped' && !task.droppedReason) {
+      problems.push(`${task.id} is dropped with no reason recorded`)
+    }
+    if (task.status === 'done' && !task.evidence) {
+      problems.push(`${task.id} is done with no evidence recorded of how its exit condition was checked`)
     }
   }
 
@@ -444,6 +537,22 @@ const commands = {
       task.blockedReason = requireValue(flags.reason, 'reason')
     }
 
+    // `dropped` is a terminal state and it SETTLES dependencies, so dropping a
+    // task silently unblocks everything waiting on it. It had no gate at all,
+    // which made it the quiet way to close anything.
+    if (status === 'dropped') {
+      task.droppedReason = requireValue(flags.reason, 'reason')
+      const dependents = board.tasks.filter(
+        (entry) => !SETTLED_STATUSES.includes(entry.status) && (entry.parent ?? []).includes(id),
+      )
+      if (dependents.length) {
+        fail(
+          `move: dropping ${id} would settle it, which silently unblocks ${dependents.map((entry) => entry.id).join(', ')}.\n` +
+            'Decide what happens to those first: re-parent them, or drop them too.',
+        )
+      }
+    }
+
     // A task is only done when a roast round has actually cleared it, and the
     // round has to point at an archive that exists and carries a verdict.
     // Without the archive check the numbers are a claim about a run that may
@@ -454,15 +563,46 @@ const commands = {
       if (last.criticals > 0) fail(`move: ${id}'s last roast left ${last.criticals} critical(s) open`)
       if (last.score < 9.5) fail(`move: ${id}'s last roast scored ${last.score}, below the 9.5 bar`)
 
-      const archive = join(ROOT, last.file)
-      if (!existsSync(archive)) fail(`move: ${id}'s last roast points at ${last.file}, which does not exist`)
-      if (!readFileSync(archive, 'utf8').includes('VERDICT')) {
-        fail(`move: ${last.file} has no VERDICT block, so it is not a roast reply`)
+      // Re-verify the archive at close time, not only at record time, so a
+      // reply cannot be deleted or rewritten between the two.
+      readArchive(last.file, task, (task.roasts?.length ?? 1) - 1)
+
+      // A clear round is a statement about a specific card at a specific
+      // revision. Reopening a task, editing its description or exit condition,
+      // or changing the code afterwards all make that statement stale, and the
+      // old round was still closing the new work.
+      if (last.cardDigest !== cardDigest(task)) {
+        fail(`move: ${id} has been edited since the roast that cleared it. Roast the current card.`)
+      }
+      const head = (git(['rev-parse', 'HEAD']).stdout ?? '').trim()
+      if (last.head && head && last.head !== head) {
+        fail(
+          `move: ${id} was reviewed at ${last.head.slice(0, 8)} and HEAD is now ${head.slice(0, 8)}.\n` +
+            'The code changed after the round that cleared it, so run a new round against what exists now.',
+        )
+      }
+      const dirty = (git(['status', '--porcelain']).stdout ?? '').trim()
+      if (dirty) {
+        fail(`move: the worktree is dirty, so ${id} would close over unreviewed changes:\n${dirty}`)
       }
 
-      // The exit condition is prose, so no script can check it. What a script
-      // can do is refuse to close the task until someone writes down how it was
-      // checked, which puts the claim on the record where it can be disputed.
+      // Where a task names a command that proves its exit condition, run it. The
+      // prose conditions cannot all be reduced to one, but many of them can, and
+      // calling the whole problem irreducible was hiding the tractable half.
+      if (task.verify) {
+        const check = spawnSync(task.verify, {
+          cwd: ROOT,
+          shell: true,
+          encoding: 'utf8',
+          stdio: ['ignore', 'inherit', 'inherit'],
+        })
+        if (check.status !== 0) {
+          fail(`move: ${id}'s verify command failed (exit ${check.status}): ${task.verify}`)
+        }
+      }
+
+      // What the verify command cannot cover stays prose, so the claim about it
+      // goes on the record where the next roast can dispute it.
       task.evidence = requireValue(flags.evidence, 'evidence')
     }
 
@@ -512,26 +652,22 @@ const commands = {
     if (!Number.isFinite(score) || score < 0 || score > 10) fail('roast: --score must be a number from 0 to 10')
     if (!Number.isInteger(criticals) || criticals < 0) fail('roast: --criticals must be a non-negative whole number')
 
-    // The archive is what ties a recorded round to a run that actually
-    // happened. Without it the round is a number somebody typed.
     const file = requireValue(flags.file, 'file')
-    if (!existsSync(join(ROOT, file))) fail(`roast: --file ${file} does not exist, relative to the repository root`)
-    const archive = readFileSync(join(ROOT, file), 'utf8')
-    if (!archive.includes('VERDICT')) fail(`roast: ${file} has no VERDICT block, so it is not a roast reply`)
+    const { archive, meta } = readArchive(file, task, task.roasts?.length ?? 0)
 
     // The recorded numbers are the ADJUDICATED ones, and adjudication really can
     // drop a finding, because reviewers misread things. What it may not do is
     // drop one silently. Recording fewer criticals, or a better score, than the
-    // archive claims requires saying which findings were rejected and why.
-    const claimed = archive.match(/^\s*criticals:\s*([0-9]+)/im)
-    const claimedScore = archive.match(/^\s*score:\s*([0-9]+(?:\.[0-9]+)?)/im)
-    const softened =
-      (claimed && criticals < Number(claimed[1])) || (claimedScore && score > Number(claimedScore[1]))
-    if (softened && !(flags.dismissed && flags.dismissed !== true)) {
-      fail(
-        `roast: the archive reports ${claimed?.[1] ?? '?'} critical(s) at score ${claimedScore?.[1] ?? '?'}, and you are recording ${criticals} at ${score}.\n` +
-          'That may well be right, reviewers misread things. Say which findings you rejected and why, with --dismissed "...".',
-      )
+    // reviewer's own verdict requires saying which findings were rejected.
+    const verdict = finalVerdict(archive)
+    if (!verdict) fail(`roast: ${file} has no parseable VERDICT block with score and criticals`)
+    if (criticals < verdict.criticals || score > verdict.score) {
+      if (!(flags.dismissed && flags.dismissed !== true)) {
+        fail(
+          `roast: the reviewer's verdict is ${verdict.criticals} critical(s) at score ${verdict.score}, and you are recording ${criticals} at ${score}.\n` +
+            'That may well be right, reviewers misread things. Say which findings you rejected and why, with --dismissed "...".',
+        )
+      }
     }
     task.roasts = [
       ...(task.roasts ?? []),
@@ -540,6 +676,12 @@ const commands = {
         score,
         criticals,
         file,
+        // Carried from the harness manifest so `move done` can prove the round
+        // reviewed THIS card at THIS revision, rather than an older one.
+        cardDigest: meta.cardDigest,
+        head: meta.head,
+        reviewerScore: verdict.score,
+        reviewerCriticals: verdict.criticals,
         ...(flags.dismissed && flags.dismissed !== true ? { dismissed: String(flags.dismissed) } : {}),
         at: new Date().toISOString(),
       },

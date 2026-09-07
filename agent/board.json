@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 54,
+  "nextId": 55,
   "tasks": [
     {
       "id": "KN-001",
@@ -24,10 +24,11 @@
         }
       ],
       "notes": [
-        "Round 1 adjudication: all four findings accepted as real, none rejected. Two criticals were the gate being bypassable through 'set --status done' and 'add --status done', and the roast path accepting fabricated scores, negative criticals and a nonexistent archive. Two majors were a blocked task making the board silently unpickable, and a missing flag value clearing a task's parents instead of erroring. Fixed all of them, plus one Codex did not name: only one task may now be in_progress, because the finish-before-starting rule is only safe with exactly one."
+        "Round 1 adjudication: all four findings accepted as real, none rejected. Two criticals were the gate being bypassable through 'set --status done' and 'add --status done', and the roast path accepting fabricated scores, negative criticals and a nonexistent archive. Two majors were a blocked task making the board silently unpickable, and a missing flag value clearing a task's parents instead of erroring. Fixed all of them, plus one Codex did not name: only one task may now be in_progress, because the finish-before-starting rule is only safe with exactly one.",
+        "Round 2 scored 1.5 with four criticals and every finding was real, including a working exploit: the harness writes the VERDICT template into its own prompt file, so recording a roast against that prompt passed the substring check and forged a clear round. Round 2's own reply predates the sidecar mechanism, so it cannot be recorded through the tool, which is the guard behaving correctly rather than a gap. Its findings are all fixed and round 3 is the authoritative round."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:06:09.827Z"
+      "updatedAt": "2026-09-07T20:18:25.046Z"
     },
     {
       "id": "KN-002",
@@ -1026,6 +1027,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z"
+    },
+    {
+      "id": "KN-054",
+      "title": "Backfill a verify command on every board task",
+      "desc": "Add the optional verify field to every task on the board, holding a command that proves that task's exit condition, then make validate fail on a task that has none. Where a condition genuinely cannot be reduced to a command, say so in the field rather than leaving it empty.",
+      "why": "Codex's round 2 roast on KN-001 was right that calling prose exit conditions unverifiable was too broad, and that the debt note was hiding a tractable problem. move done already runs verify where it is set, but almost no task sets it, so the gate is mostly decorative.",
+      "severity": "high",
+      "points": 5,
+      "area": "agent",
+      "parent": [
+        "KN-001"
+      ],
+      "status": "backlog",
+      "exit": "Every task on the board has a verify command, npm run todo -- validate fails when one does not, and a deliberately broken verify command blocks move done when planted by hand.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T20:18:24.566Z"
     }
   ]
 }

@@ -12,6 +12,7 @@
 // Zero dependencies, same reason as todo.mjs.
 
 import { spawnSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -94,8 +95,21 @@ if (!questions.length) {
 
 const git = (args) => spawnSync('git', args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
 
+// A roast has to be OF something. Reviewing a dirty worktree produces a verdict
+// that cannot be tied to any revision, so the same clear round stays "valid"
+// while the code underneath it keeps changing. Commit first, then roast the
+// commit, and `move done` can check that nothing moved since.
+const dirty = (git(['status', '--porcelain']).stdout ?? '').trim()
+if (dirty) {
+  fail(
+    `The worktree is dirty, so this roast could not be tied to any revision:\n${dirty}\n\n` +
+      'Commit the work first, then roast the commit. That is what lets the board refuse to close a task whose code changed after it was reviewed.',
+  )
+}
+
 const hasCommits = git(['rev-parse', '--verify', 'HEAD']).status === 0
-const base = flags.base && flags.base !== true ? String(flags.base) : 'HEAD'
+const head = hasCommits ? (git(['rev-parse', 'HEAD']).stdout ?? '').trim() : ''
+const base = flags.base && flags.base !== true ? String(flags.base) : 'HEAD~1'
 
 let diff = ''
 let diffNote = ''
@@ -245,6 +259,47 @@ if (!existsSync(replyPath)) fail(`codex exited ${result.status} without writing 
 if (readFileSync(replyPath, 'utf8').trim() === '') fail(`codex wrote an empty reply to ${replyPath}`)
 
 const reply = readFileSync(replyPath, 'utf8')
+
+// The sidecar is what makes the archive evidence rather than an assertion. Round
+// 2 of this very task showed why: `todo.mjs` accepted any file containing the
+// word VERDICT, and the harness's own PROMPT file contains the verdict template,
+// so a passing round could be recorded against it with one flag. The board now
+// requires this manifest, and the digest has to match the reply it names.
+const metaPath = `${replyPath}.meta.json`
+writeFileSync(
+  metaPath,
+  `${JSON.stringify(
+    {
+      task: task.id,
+      round,
+      model,
+      head,
+      base,
+      // What the reviewer was actually looking at. `move done` refuses to close
+      // a task whose card changed after the round that cleared it.
+      cardDigest: createHash('sha256')
+        .update(
+          JSON.stringify({
+            title: task.title,
+            desc: task.desc,
+            why: task.why,
+            exit: task.exit,
+            area: task.area,
+            severity: task.severity,
+            points: task.points,
+            parent: task.parent,
+          }),
+        )
+        .digest('hex'),
+      replyDigest: createHash('sha256').update(reply).digest('hex'),
+      at: new Date().toISOString(),
+    },
+    null,
+    2,
+  )}\n`,
+  'utf8',
+)
+
 const scoreMatch = reply.match(/^\s*score:\s*([0-9]+(?:\.[0-9]+)?)/im)
 const criticalMatch = reply.match(/^\s*criticals:\s*([0-9]+)/im)
 

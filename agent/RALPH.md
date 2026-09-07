@@ -128,6 +128,11 @@ Two ordering rules the owner set explicitly:
 Then run the gate in `AGENTS.md` section 5. All of it, including actually
 opening the thing in a browser and looking at it in both languages.
 
+**Then commit, before the roast.** A roast has to be *of* something. The harness
+refuses to run against a dirty worktree, and `move done` refuses to close a task
+whose HEAD has moved since the round that cleared it, so the review is bound to
+a revision instead of to a smudge that keeps changing underneath it.
+
 ## Step 4 · Hand it to Codex for a roast
 
 **You do not score your own work.** You know what you meant, so you read the
@@ -208,7 +213,8 @@ far as the owner is concerned.
 - Anything suppressed, pinned, widened or routed around goes in `TECH-DEBT.md`
   with the check that says when it can be removed. A deliberate scope cut goes
   in `PHASE-NEXT.md` instead. Those are decisions, not debt.
-- Commit, with a message that says what changed and why.
+- Commit the fixes, with a message that says what changed and why. Each roast
+  round reviews a commit, so a fix cycle is: fix, commit, roast again.
 - Rewrite `agent/STATE.md`.
 - Go straight to the next task. Do not stop to summarise and wait.
 

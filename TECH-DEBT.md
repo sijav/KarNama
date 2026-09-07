@@ -16,49 +16,60 @@ Deliberate scope cuts are decisions rather than debt, and go in
 ## 1. A recorded roast score is still the agent's own claim
 
 **What.** `npm run todo -- roast <id> --score N --criticals N` writes numbers the
-agent types. The board then lets the task close when those numbers clear the
-bar. Nothing proves the agent judged honestly.
+agent types. The board then lets the task close when those numbers clear the bar.
 
 **Why it is like that.** The recorded numbers are deliberately the *adjudicated*
 ones, not Codex's. Adjudication is the point of step 5 of the loop: reviewers do
 misread code, and a finding that is wrong has to be droppable. A script cannot
 tell a correct dismissal from a convenient one.
 
-**What is already done about it.** Three guards, all in `todo.mjs`:
+**What is done about it.** The round is now bound to an actual harness run:
 
-- `--file` is required, the file must exist, and it must contain a `VERDICT`
-  block, so a round cannot be recorded for a Codex run that never happened.
-- If the recorded criticals are **fewer**, or the score **higher**, than the
-  archive itself reports, `--dismissed` is required, so softening the verdict
-  means writing down which findings were rejected and why.
-- `move <id> done` re-checks the archive, so a round cannot be recorded against
-  a real file that is later deleted.
+- The harness writes a `.meta.json` beside every reply holding the task id, the
+  round, the model, the reviewed commit, a digest of the task card and a digest
+  of the reply. `roast` requires it, and refuses a reply whose digest no longer
+  matches, a reply belonging to another task, or one whose round does not follow.
+- `*.prompt.md` is refused outright. Round 2 of KN-001 demonstrated the exploit:
+  the harness writes the verdict TEMPLATE into its own prompt file, so before
+  this, `--file <the prompt>` recorded a fabricated clear round with one flag.
+- The reviewer's own numbers are parsed from the **last** verdict block and
+  stored alongside the adjudicated ones, so the two are visible side by side.
+  Recording kinder numbers requires `--dismissed`.
 
-**What would actually fix it.** Having something other than the author record
-the number: a second Codex pass that reads the adjudication and rules on whether
-the dismissals hold, or a human sign-off on close.
+**What is still true.** None of this is an independent authority. Everything runs
+locally, the author can write files, and a determined author can forge a
+sidecar. What the guards buy is that fabrication is no longer a single flag and
+no longer invisible: it requires deliberately faking a digest, which is a
+different act from carelessly typing a nine.
 
-**The check that retires this.** When a task can only reach `done` with a
-verdict written by a process the author does not control.
+**What would actually fix it.** A verdict written by a process the author does
+not control: a signed reply from the model provider, or a human sign-off.
 
-## 2. Exit conditions are prose, so no script checks them
+**The check that retires this.** When `done` requires a verdict artifact the
+author cannot produce.
+
+## 2. Task exit conditions are not machine-checked yet
+
+Codex was right that the earlier version of this entry overclaimed. It said
+prose exit conditions "cannot" be machine-checked, which was too broad and was
+hiding a tractable problem behind a debt note.
 
 **What.** Every task carries an `exit` field naming the condition under which it
-may be called done. `todo.mjs` checks that the field is present and longer than
-25 characters. It does not, and cannot, check that the condition was met.
+may be called done. A task may also carry an optional `verify` field holding a
+command, and `move <id> done` now runs it and refuses to close on a non-zero
+exit. **Most tasks do not have one yet.**
 
-**Why it is like that.** The conditions are things like "a deliberately broken
-test fails the run when planted by hand" and "the sidebar renders on the right
-in Persian". Those are exactly the checks worth having and exactly the ones that
-are not expressible as an assertion in a board tool.
+**Why it is not finished.** The exit conditions were written before `verify`
+existed. Backfilling them is real work and it is on the board as its own task
+rather than done half-heartedly here.
 
-**What is already done about it.** `move <id> done` requires `--evidence`, a
-written statement of how the condition was checked, stored on the task. That
-does not verify anything, but it puts the claim on the record where a later
-reader, or the next roast, can dispute it.
+**What is done about it.** `verify` runs where it is set. `move done` also
+refuses when the worktree is dirty, or when HEAD has moved since the round that
+cleared the task, so a passing check cannot be recycled across a later change.
+`--evidence` is required for the part no command covers.
 
-**The check that retires this.** When each task's exit condition is a named test
-id that CI runs, and `move done` verifies that test passed in the current commit.
+**The check that retires this.** When every task on the board has a `verify`
+command, and `validate` fails on a task that has none.
 
 ## 3. `npm run roast` shells out through cmd.exe on Windows
 
