@@ -59,7 +59,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-045` | Job detail modal, wired | high | 5 | web | KN-043, KN-030, KN-038, KN-039 | An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. |
 | `KN-046` | Auth screens: login, code, signup | high | 5 | web | KN-042, KN-036 | An e2e test signs in with a number and the code from the mock provider and reaches the board, a wrong or expired code shows an honest message with a way to resend, first login collects the name, and signing out clears the token and the Apollo cache rather than only the UI. |
 | `KN-052` | Deploy the API to Render with Supabase Postgres | high | 5 | deploy | KN-033, KN-034, KN-050 | The deployed app talks to the deployed API from the Pages origin, a cold start shows the loading state and completes rather than timing out, migrations ran, and no secret is in the repository. |
-| `KN-054` | Backfill a verify command on every board task | high | 5 | agent | KN-001 | Every task on the board has a verify command, npm run todo -- validate fails when one does not, and a deliberately broken verify command blocks move done when planted by hand. |
+| `KN-054` | Backfill a verify command on every board task | high | 5 | agent | KN-001 | Every task on the board has a verify command pointing at an existing script under agent/scripts/verify, npm run todo -- validate fails when one does not, each script has been shown to fail against a deliberately planted break rather than only to pass, and no task's verify field contains prose. |
 | `KN-015` | Card, desktop and mobile, with the status stripe | high | 8 | web | KN-005, KN-006, KN-007, KN-010, KN-008 | All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. |
 | `KN-027` | Navigation: nav item, desktop sidebar, mobile tab bar, and the language switch | high | 8 | web | KN-005, KN-006, KN-007, KN-008, KN-009 | The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added. |
 | `KN-029` | Add and edit job modal, all six steps | high | 8 | web | KN-005, KN-006, KN-007, KN-011, KN-012, KN-028 | All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding. |
@@ -90,7 +90,7 @@ agent/RALPH.md (the iteration rules), agent/scripts/todo.mjs (the board tool, ze
 
 **Exit condition.** "npm run todo -- validate" exits 0, "npm run todo -- next" names a task, agent/TODO_BOARD.md renders, "npm run roast" reaches Codex and archives a reply, and AGENTS.md plus DESIGN.md both exist with the Figma tokens transcribed.
 
-**Roasts.** round 1 scored 3.5 with 2 critical(s); round 2 scored 5 with 2 critical(s); round 3 scored 5.5 with 1 critical(s); round 4 scored 2.5 with 3 critical(s); round 5 scored 4.5 with 2 critical(s)
+**Roasts.** round 1 scored 3.5 with 2 critical(s); round 2 scored 5 with 2 critical(s); round 3 scored 5.5 with 1 critical(s); round 4 scored 2.5 with 3 critical(s); round 5 scored 4.5 with 2 critical(s); round 6 scored 8 with 1 critical(s)
 
 ### `KN-002` Read the Figma Documentations canvas and fold it into the contract
 
@@ -253,7 +253,7 @@ The job card at Figma node 137:44 with Default, Hover, Pressed, Selected, Static
 
 Default, Focus and Filled from Figma node 155:92, with the search icon and a clear affordance in the filled state.
 
-**Why.** Finding one specific ad in a growing archive is the second flow the design names. An archive you cannot search stops being useful at about the point it starts being valuable.
+**Why.** Finding one specific job opportunity in a growing archive is the second flow the design names. An archive you cannot search stops being useful at about the point it starts being valuable.
 
 **Exit condition.** Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke.
 
@@ -385,7 +385,7 @@ Nav Item with Default, Active and Hover from node 184:14, the sidebar at 185:11 
 
 The modal shell with focus trap and Escape handling, Modal/Confirm at Figma node 150:92 for delete and archive, and Modal/Change Status at 150:93.
 
-**Why.** Deleting an ad is irreversible and confirmation is the only thing between a user and losing part of their record. The shell also underpins the two larger modals, so its focus behaviour is inherited by both.
+**Why.** Deleting a job opportunity is irreversible, and confirmation is the only thing between a user and losing part of their record. The shell also underpins the two larger modals, so its focus behaviour is inherited by both.
 
 **Exit condition.** Both modals match Figma, focus is trapped and returns to the trigger on close, Escape closes, the backdrop click behaviour matches the design, and the dialog has an accessible name and is announced as a dialog.
 
@@ -669,11 +669,11 @@ README.md and README.fa.md describing what the product is, what was deliberately
 - **status** backlog · **severity** high · **points** 5 · **area** agent
 - **blocked by** KN-001
 
-Add the optional verify field to every task on the board, holding a command that proves that task's exit condition, then make validate fail on a task that has none. Where a condition genuinely cannot be reduced to a command, say so in the field rather than leaving it empty.
+Give every task on the board a verify command, each one a node script under agent/scripts/verify that asserts as much of that task's exit condition as a command can, then make validate fail on a task that has none. A verify command is always executable: there is no way to write prose into that field, because move done runs whatever is there. Where part of a condition genuinely cannot be commanded, for example that a layout was looked at in both languages, the script asserts everything around it and the remainder is stated in the --evidence that closing already requires.
 
 **Why.** Codex's round 2 roast on KN-001 was right that calling prose exit conditions unverifiable was too broad, and that the debt note was hiding a tractable problem. move done already runs verify where it is set, but almost no task sets it, so the gate is mostly decorative.
 
-**Exit condition.** Every task on the board has a verify command, npm run todo -- validate fails when one does not, and a deliberately broken verify command blocks move done when planted by hand.
+**Exit condition.** Every task on the board has a verify command pointing at an existing script under agent/scripts/verify, npm run todo -- validate fails when one does not, each script has been shown to fail against a deliberately planted break rather than only to pass, and no task's verify field contains prose.
 
 ### `KN-055` Record where a task started, so a roast can diff the whole task
 

@@ -11,7 +11,7 @@
 
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { existsSync, lstatSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -206,6 +206,29 @@ const verifyCommand = (command) => {
   if (!target.startsWith(`${VERIFY_DIR}${sep}`)) fail(`set: ${match[1]} resolves outside agent/scripts/verify`)
   if (!existsSync(target)) fail(`set: ${match[1]} does not exist`)
   if (lstatSync(target).isSymbolicLink()) fail(`set: ${match[1]} is a symlink, which hides what actually runs`)
+
+  // `resolve` is only lexical, so it normalises `..` and nothing else. If
+  // `agent/scripts/verify` is ITSELF a directory symlink pointing outside the
+  // repository, the final file is a perfectly ordinary `.mjs` and every check
+  // above passes, while the code that actually runs lives somewhere git never
+  // looks. Comparing REAL paths is the only version of this check that means
+  // anything: it collapses a symlinked ancestor at any depth.
+  let realTarget
+  let realVerifyDir
+  let realRoot
+  try {
+    realTarget = realpathSync(target)
+    realVerifyDir = realpathSync(VERIFY_DIR)
+    realRoot = realpathSync(ROOT)
+  } catch (error) {
+    fail(`set: could not resolve ${match[1]} to a real path: ${error.message}`)
+  }
+  if (!realVerifyDir.startsWith(`${realRoot}${sep}`)) {
+    fail('set: agent/scripts/verify resolves outside the repository, so nothing inside it is tracked by git')
+  }
+  if (!realTarget.startsWith(`${realVerifyDir}${sep}`)) {
+    fail(`set: ${match[1]} really lives at ${realTarget}, outside agent/scripts/verify`)
+  }
   return command
 }
 

@@ -66,6 +66,17 @@
           "reviewerScore": 4.5,
           "reviewerCriticals": 2,
           "at": "2026-09-07T20:57:10.659Z"
+        },
+        {
+          "round": 6,
+          "score": 8,
+          "criticals": 1,
+          "file": "agent/roasts/KN-001-round-6.2026-09-07T20-57-30-524Z.md",
+          "cardDigest": "c56d04453965271ea6e74dd2b34c57877144d20d280e2d913530b62f82fba618",
+          "head": "7cc8d815f1d3d8b277f5904d0a012db838508c10",
+          "reviewerScore": 8,
+          "reviewerCriticals": 1,
+          "at": "2026-09-07T21:01:51.585Z"
         }
       ],
       "notes": [
@@ -75,7 +86,7 @@
         "Round 6 (board round 3) scored 5.5 with one critical, and confirmed the documented close path works. The critical was real: cardDigest omitted verify, so a task could record a clear round, swap its verify command for one that always passes, commit that as bookkeeping, and close against a check nobody reviewed. Fixed by folding verify into the digest and moving the digest into agent/scripts/lib/card.mjs so the board and the harness share one definition. Also accepted: STATE.md was stale at exactly the point a context reset depends on it, and DESIGN.md still asserted two nav destinations while the recorded decision says three. Codex could not reach Figma to check my token tables, so I verified them independently instead. It ruled PHASE-NEXT.md correctly deferred to KN-053, which I accept."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:54:45.854Z",
+      "updatedAt": "2026-09-07T21:00:53.701Z",
       "verify": "node agent/scripts/verify/KN-001.mjs"
     },
     {
@@ -107,7 +118,8 @@
         "From frame 376:2, the product in one sentence: KarNama is a Persian right-to-left job application tracker; the user pastes a link or the text of a posting, the information is extracted automatically, and the posting moves between statuses on a kanban board. That independently confirms both the kanban decision and the extraction service being core rather than optional. The file also names two reference products the designer worked against, Huntr and Teal, which are the comparables to consult when a design question is genuinely ambiguous. Project status at time of writing: a 14 day sprint on day 8, two person team."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:59:10.207Z"
+      "updatedAt": "2026-09-07T21:01:19.198Z",
+      "verify": "node agent/scripts/verify/contract.mjs"
     },
     {
       "id": "KN-003",
@@ -365,7 +377,7 @@
       "id": "KN-016",
       "title": "Search bar, 3 states",
       "desc": "Default, Focus and Filled from Figma node 155:92, with the search icon and a clear affordance in the filled state.",
-      "why": "Finding one specific ad in a growing archive is the second flow the design names. An archive you cannot search stops being useful at about the point it starts being valuable.",
+      "why": "Finding one specific job opportunity in a growing archive is the second flow the design names. An archive you cannot search stops being useful at about the point it starts being valuable.",
       "severity": "high",
       "points": 2,
       "area": "web",
@@ -379,7 +391,8 @@
       "exit": "Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T21:01:17.973Z"
     },
     {
       "id": "KN-017",
@@ -614,7 +627,7 @@
       "id": "KN-028",
       "title": "Modal shell, confirm, and change status",
       "desc": "The modal shell with focus trap and Escape handling, Modal/Confirm at Figma node 150:92 for delete and archive, and Modal/Change Status at 150:93.",
-      "why": "Deleting an ad is irreversible and confirmation is the only thing between a user and losing part of their record. The shell also underpins the two larger modals, so its focus behaviour is inherited by both.",
+      "why": "Deleting a job opportunity is irreversible, and confirmation is the only thing between a user and losing part of their record. The shell also underpins the two larger modals, so its focus behaviour is inherited by both.",
       "severity": "high",
       "points": 5,
       "area": "web",
@@ -629,7 +642,8 @@
       "exit": "Both modals match Figma, focus is trapped and returns to the trigger on close, Escape closes, the backdrop click behaviour matches the design, and the dialog has an accessible name and is announced as a dialog.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T21:01:18.375Z"
     },
     {
       "id": "KN-029",
@@ -1110,7 +1124,7 @@
     {
       "id": "KN-054",
       "title": "Backfill a verify command on every board task",
-      "desc": "Add the optional verify field to every task on the board, holding a command that proves that task's exit condition, then make validate fail on a task that has none. Where a condition genuinely cannot be reduced to a command, say so in the field rather than leaving it empty.",
+      "desc": "Give every task on the board a verify command, each one a node script under agent/scripts/verify that asserts as much of that task's exit condition as a command can, then make validate fail on a task that has none. A verify command is always executable: there is no way to write prose into that field, because move done runs whatever is there. Where part of a condition genuinely cannot be commanded, for example that a layout was looked at in both languages, the script asserts everything around it and the remainder is stated in the --evidence that closing already requires.",
       "why": "Codex's round 2 roast on KN-001 was right that calling prose exit conditions unverifiable was too broad, and that the debt note was hiding a tractable problem. move done already runs verify where it is set, but almost no task sets it, so the gate is mostly decorative.",
       "severity": "high",
       "points": 5,
@@ -1119,10 +1133,11 @@
         "KN-001"
       ],
       "status": "backlog",
-      "exit": "Every task on the board has a verify command, npm run todo -- validate fails when one does not, and a deliberately broken verify command blocks move done when planted by hand.",
+      "exit": "Every task on the board has a verify command pointing at an existing script under agent/scripts/verify, npm run todo -- validate fails when one does not, each script has been shown to fail against a deliberately planted break rather than only to pass, and no task's verify field contains prose.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T20:18:24.566Z"
+      "createdAt": "2026-09-07T20:18:24.566Z",
+      "updatedAt": "2026-09-07T21:01:18.790Z"
     },
     {
       "id": "KN-055",

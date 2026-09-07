@@ -109,6 +109,19 @@ incomplete task, which is the point.
 Before filing anything, **search the board for it first**. A match is not a new
 task; it is evidence the existing one matters more than its severity says.
 
+**A card may not instruct anything `DESIGN.md` forbids.** This went wrong twice:
+both times the board was "reconciled" by editing the cards someone remembered,
+and both times several more still carried superseded instructions, which a
+builder would have implemented faithfully. Run the check rather than trusting
+the memory:
+
+```bash
+npm run contract
+```
+
+It also fails when `DESIGN.md` stops saying what its rules assume, so a reversed
+decision cannot leave the old answer quietly enforced.
+
 ## Step 3 · Do the work
 
 Linear. One unit at a time. No parallel fan-out, no workflows, no sub-agents.

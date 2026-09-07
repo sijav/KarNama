@@ -9,10 +9,15 @@
     "apps/web",
     "apps/api"
   ],
+  "devDependencies": {
+    "prettier": "^3.9.5",
+    "prettier-plugin-organize-imports": "^4.3.0"
+  },
   "scripts": {
     "todo": "node agent/scripts/todo.mjs",
     "roast": "node agent/scripts/roast.mjs",
     "board": "node agent/scripts/todo.mjs render",
+    "contract": "node agent/scripts/verify/contract.mjs",
     "lint": "npm run lint --workspaces --if-present",
     "lint:tsc": "npm run lint:tsc --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
