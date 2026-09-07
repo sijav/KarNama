@@ -444,17 +444,17 @@ These are flagged in the file itself. They are the designer's or the owner's
 call, not a build decision, and nothing should quietly resolve them by picking
 one while implementing.
 
-- **Where «رد شده» belongs.** Frame `434:16` marks it with a warning: should
+- **Where «رد شده» belongs.** Decided by **KN-070**. Frame `434:16` marks it with a warning: should
   rejected stay as the last stage of the pipeline, or move off the board
   entirely? Undecided.
-- **Whether a contact needs a contact route.** Frame `434:2` notes that only the
+- **Whether a contact needs a contact route.** Decided by **KN-071**. Frame `434:2` notes that only the
   full name is required, and that a contact with no email and no phone is
   practically useless, so QA should decide whether "email or phone" becomes a
   required one-of-two.
-- **Where status history belongs.** The Components canvas flags it as open item
+- **Where status history belongs.** Decided by **KN-072**. The Components canvas flags it as open item
   18. It currently sits at the bottom of the Info tab, and that is where it gets
   built until someone decides otherwise.
-- **The employment type and job level option lists** at `434:33` are marked
+- **The employment type and job level option lists**, decided by **KN-073**, at `434:33` are marked
   **unconfirmed**: they were never checked against Jobinja and Jobvision because
   the network blocked it. Treat the values as provisional.
 

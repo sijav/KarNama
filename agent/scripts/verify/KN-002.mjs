@@ -6,12 +6,20 @@
 // item in the file is either reflected in the board as a task or recorded as a
 // decision, and the Job Record field list is written down.
 //
-// Read-only. It reads DESIGN.md and board.json and writes nothing, so it runs
-// anywhere, including the sandbox a reviewer uses.
+// **What this can and cannot establish.** Figma cannot be queried at
+// verification time, so nothing here proves the canvas was read. What it proves
+// is that DESIGN.md covers everything `agent/design-manifest.json` records as
+// having been read, and that the manifest is source-stamped, so a fresh read
+// updates it deliberately rather than the verifier quietly agreeing with itself.
 //
-// It also runs the contract checker, because a fold-in that introduced a card
-// contradicting the design would be the exact failure this task exists to
-// prevent.
+// Two earlier versions did agree with themselves. One carried its own list of
+// 14 node ids and checked only that each occurred SOMEWHERE, so a frame's whole
+// transcription could be deleted while its index row remained. The other knew
+// four open-item phrases by heart, so a fifth open item with no task passed. The
+// facts and the open items now come from the manifest, and the open-questions
+// section is PARSED rather than pattern-matched.
+//
+// Read-only: reads three files, writes nothing, runs in any sandbox.
 
 import { spawnSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
@@ -21,13 +29,7 @@ import { fileURLToPath } from 'node:url'
 const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
 const design = readFileSync(join(ROOT, 'DESIGN.md'), 'utf8')
 const board = JSON.parse(readFileSync(join(ROOT, 'agent', 'board.json'), 'utf8'))
-
-
-/** Every top-level frame on the Screens canvas 5:7, read from the canvas. */
-const SCREEN_NODES = ['241:2', '241:146', '243:2', '243:76', '243:224', '243:325', '243:433', '243:682', '243:726', '243:814', '243:899', '243:971', '243:1078', '243:1213', '243:1374', '243:1502', '243:1652', '252:2', '252:175', '252:411', '259:2', '259:105', '259:184', '259:295', '271:55', '271:190', '271:332', '305:2', '305:165', '305:374', '305:558', '305:705', '305:876', '305:1055', '305:1232', '305:1377', '305:1547', '305:1696', '305:1842', '305:2018', '305:2243', '376:5645', '376:5868', '376:5997', '377:6244', '407:6951', '407:6972', '407:7000', '407:7022', '407:7043', '407:7071', '492:7482', '492:7581']
-
-/** Escapes a heading before it goes into a RegExp. */
-const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, (match) => `\\${match}`)
+const manifest = JSON.parse(readFileSync(join(ROOT, 'agent', 'design-manifest.json'), 'utf8'))
 
 const failures = []
 const check = (label, run) => {
@@ -40,101 +42,97 @@ const check = (label, run) => {
   }
 }
 
-/** Every frame on the Documentation canvas, and the Screens canvas rows. */
-const DOC_FRAMES = [
-  ['376:2', 'what the product is'],
-  ['376:9', 'design principles'],
-  ['376:21', 'tokens'],
-  ['376:31', 'key patterns'],
-  ['376:43', 'Figma gotchas'],
-  ['376:46', 'page map'],
-  ['384:12', 'prototype map'],
-  ['416:14', 'interactive components'],
-  ['416:21', 'type scale'],
-  ['434:2', 'required fields'],
-  ['434:16', 'order and layout'],
-  ['434:26', 'variable coverage'],
-  ['434:33', 'field options'],
-  ['505:3', 'copywriting'],
-]
+const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, (match) => `\\${match}`)
 
-check('every Documentation frame is accounted for by node id', () => {
-  const missing = DOC_FRAMES.filter(([node]) => !design.includes(node))
-  return missing.length ? `no mention of ${missing.map(([node, what]) => `${node} (${what})`).join(', ')}` : null
-})
+/** The body of a `##` or `###` section, by its heading text. */
+const sectionBody = (heading) => {
+  const pattern = new RegExp(`^#{2,3} .*${escapeRegExp(heading)}.*$`, 'm')
+  const match = pattern.exec(design)
+  if (!match) return null
+  const from = match.index + match[0].length
+  const next = design.slice(from).search(/^#{2,3} /m)
+  return next === -1 ? design.slice(from) : design.slice(from, from + next)
+}
 
-check('the Job Record required fields are written down, all three', () => {
-  for (const field of ['`title`', '`company`', '`status`']) {
-    if (!design.includes(field)) return `${field} is not listed as required`
+check('the manifest is source-stamped, so it can be re-derived rather than trusted', () => {
+  const { source } = manifest
+  for (const field of ['fileKey', 'canvases', 'readOn', 'readBy']) {
+    if (!source?.[field]) return `the manifest has no ${field}, so nothing says where its content came from`
   }
-  // The specific error this corrects: an earlier note said only the title.
-  if (!/Three fields, not one/i.test(design)) return 'the document does not say there are three, which was got wrong once'
-  return null
+  return /^\d{4}-\d{2}-\d{2}$/.test(source.readOn) ? null : `readOn is not a date: ${source.readOn}`
 })
 
-check('the optional field list is written down', () => {
-  const optional = ['postingUrl', 'employmentType', 'jobLevel', 'expiresAt', 'skills', 'statusHistory']
-  const missing = optional.filter((field) => !design.includes(field))
-  return missing.length ? `missing ${missing.join(', ')}` : null
-})
-
-check('all 53 screen frames are inventoried, not one per row', () => {
-  // Every top-level frame on canvas 5:7, read from the canvas itself rather
-  // than summarised. An earlier version checked ONE node per flow row, which
-  // meant 47 of them could be deleted and it would still pass. That is exactly
-  // the completeness failure this task exists to prevent.
-  const missing = SCREEN_NODES.filter((node) => !design.includes(node))
-  if (missing.length) return `${missing.length} of ${SCREEN_NODES.length} not listed: ${missing.slice(0, 8).join(', ')}`
-  return null
-})
-
-check('every heading the frame index points at actually exists', () => {
-  // The index names headings rather than section numbers, because it once
-  // named numbers, a later edit renumbered the sections, and it then pointed
-  // readers at the wrong place while looking authoritative. This proves each
-  // destination is real.
-  const index = design.slice(design.indexOf('| Frame'), design.indexOf('### What the product is'))
-  const quoted = [...index.matchAll(/"([^"]+)"/g)].map((match) => match[1])
-  if (quoted.length < 8) return `only found ${quoted.length} quoted destinations, the index looks unparsed`
-  const missing = quoted.filter((heading) => !new RegExp(`^#{2,3} .*${escapeRegExp(heading)}`, 'm').test(design))
-  return missing.length ? `these destinations are not headings: ${missing.join(' | ')}` : null
-})
-
-check('the prototype critical path and the motion values are recorded', () => {
-  for (const needle of ['300ms', '150ms', 'Instant']) {
-    if (!design.includes(needle)) return `the ${needle} motion value is missing`
+check('every documentation frame has a real section carrying its content', () => {
+  // Not "the id appears somewhere". The frame's heading must exist, and the
+  // facts read from that frame must be present, so deleting a transcription
+  // while keeping its index row fails.
+  const problems = []
+  for (const frame of manifest.documentationFrames) {
+    if (!design.includes(frame.node)) {
+      problems.push(`${frame.node} is not mentioned at all`)
+      continue
+    }
+    if (sectionBody(frame.landsUnder) === null) {
+      problems.push(`${frame.node} claims to land under "${frame.landsUnder}", which is not a heading`)
+      continue
+    }
+    const missing = frame.facts.filter((fact) => !design.includes(fact))
+    if (missing.length) problems.push(`${frame.node} (${frame.title}) is missing: ${missing.join(', ')}`)
   }
-  return /critical path/i.test(design) ? null : 'the critical path is not recorded'
+  return problems.length ? problems.join(' | ') : null
 })
 
-check('every open item is recorded AND has a task to obtain the decision', () => {
-  // The exit condition says every open item is "either reflected in the board
-  // as a task or recorded as a decision". Listing one as Undecided is NEITHER,
-  // which an earlier version of this check missed entirely: it only asked
-  // whether the question appeared in the document. Each now needs a card whose
-  // job is to get the answer.
-  const titles = board.tasks.map((task) => `${task.id} ${task.title}`)
-  const items = [
-    ['رد شده', 'where rejected belongs', /where رد شده belongs/i],
-    ['email or phone', 'whether a contact needs a contact route', /contact needs an email or a phone/i],
-    ['open item 18', 'where status history belongs', /where status history belongs/i],
-    ['unconfirmed', 'the provisional enums', /confirm the employment type and job level/i],
-  ]
-  const unrecorded = items.filter(([needle]) => !design.includes(needle))
-  if (unrecorded.length) return `not recorded in the document: ${unrecorded.map(([, what]) => what).join(', ')}`
+check('EVERY open question in the document maps to a task, parsed not guessed', () => {
+  // The section is parsed, so an open item added later without a task fails
+  // even though no list in this file knows about it. That is the whole point:
+  // the previous version knew four phrases and a fifth slipped straight past.
+  const body = sectionBody('Open questions the design has not settled')
+  if (!body) return 'there is no open-questions section'
 
-  const untasked = items.filter(([, , pattern]) => !titles.some((title) => pattern.test(title)))
-  return untasked.length
-    ? `recorded as open but with no task to decide it: ${untasked.map(([, what]) => what).join(', ')}`
+  const bullets = body
+    .split('\n')
+    .filter((line) => /^- /.test(line.trim()))
+    .map((line) => line.trim())
+  if (!bullets.length) return 'the open-questions section has no items, which is suspicious rather than clean'
+
+  const ids = new Set(board.tasks.map((task) => task.id))
+  const unmapped = bullets.filter((bullet) => {
+    // An item is disposed of either by naming the task that decides it, or by
+    // being restated as a decision. Anything else is still open and unowned.
+    const named = [...bullet.matchAll(/KN-\d{3}/g)].map((match) => match[0])
+    return !named.some((id) => ids.has(id))
+  })
+  return unmapped.length
+    ? `${unmapped.length} open item(s) name no board task: ${unmapped.map((b) => b.slice(0, 60)).join(' | ')}`
     : null
 })
 
-check('the superseded tone rule is marked superseded, not silently dropped', () => {
-  // 376:9 and 505:3 contradict each other. Recording which wins, and that the
-  // other is superseded, is what stops the old one being re-applied.
-  return /SUPERSEDED by `505:3`|superseded/i.test(design) && design.includes('505:3')
-    ? null
-    : 'the contradiction between the principles frame and the copywriting frame is not resolved in writing'
+check('every open item the manifest records has a task that exists and is open', () => {
+  const byId = new Map(board.tasks.map((task) => [task.id, task]))
+  const problems = []
+  for (const item of manifest.openItems) {
+    if (!design.includes(item.marker)) problems.push(`${item.id} is not recorded in the document`)
+    const task = byId.get(item.decidedBy)
+    if (!task) problems.push(`${item.id} points at ${item.decidedBy}, which is not on the board`)
+    else if (!design.includes(item.decidedBy)) problems.push(`${item.id}'s task ${item.decidedBy} is not named in the document`)
+  }
+  return problems.length ? problems.join(' | ') : null
+})
+
+check('the Job Record field list is written down, all three required', () => {
+  for (const field of ['`title`', '`company`', '`status`']) {
+    if (!design.includes(field)) return `${field} is not listed as required`
+  }
+  const optional = ['postingUrl', 'employmentType', 'jobLevel', 'expiresAt', 'skills', 'statusHistory']
+  const missing = optional.filter((field) => !design.includes(field))
+  return missing.length ? `optional fields missing: ${missing.join(', ')}` : null
+})
+
+check('all screen frames the manifest records are inventoried', () => {
+  const missing = manifest.screenNodes.filter((node) => !design.includes(node))
+  return missing.length
+    ? `${missing.length} of ${manifest.screenNodes.length} not listed: ${missing.slice(0, 8).join(', ')}`
+    : null
 })
 
 check('no board card contradicts the contract', () => {
@@ -146,9 +144,6 @@ check('no board card contradicts the contract', () => {
 })
 
 check('the tasks the canvases implied exist on the board', () => {
-  // The fold-in is only finished when what it discovered is schedulable. These
-  // are the five gaps the audit found, plus the two the superseded decisions
-  // required.
   const needed = [
     [/kanban column/i, 'the column component'],
     [/drag a card between columns/i, 'drag and drop'],

@@ -1,0 +1,111 @@
+{
+  "$comment": "What was READ from Figma, separated from what DESIGN.md SAYS about it. The verifier checks the document against this; a fresh read updates this file deliberately. Written because a verifier that carries its own list of what to look for is only checking itself: it proved each of 14 node ids appeared somewhere, so deleting a frame's whole transcription while keeping its index row still passed.",
+  "source": {
+    "fileKey": "EITM6CbJY33dMY8IsMFR4R",
+    "note": "A copy. The original K1EP8GCOmelU8o4vPR7a9f is view-only and every MCP call against it fails.",
+    "canvases": { "cover": "0:1", "foundations": "5:3", "components": "5:5", "screens": "5:7", "documentation": "5:8" },
+    "readOn": "2026-09-07",
+    "readBy": "figma MCP get_metadata, get_variable_defs and get_screenshot"
+  },
+  "documentationFrames": [
+    {
+      "node": "376:2",
+      "title": "کارنما — سند دیزاین سیستم",
+      "landsUnder": "What the product is",
+      "facts": ["Huntr", "Teal", "kanban board"]
+    },
+    {
+      "node": "376:9",
+      "title": "اصول طراحی",
+      "landsUnder": "Decisions the design already made",
+      "facts": ["no separate Edit button", "direction: rtl", "superseded"]
+    },
+    {
+      "node": "376:21",
+      "title": "توکن‌ها",
+      "landsUnder": "Tokens",
+      "facts": ["#2563eb", "radius", "spacing"]
+    },
+    {
+      "node": "376:31",
+      "title": "الگوهای کلیدی",
+      "landsUnder": "Decisions the design already made",
+      "facts": ["RIGHT edge", "bottom", "three", "same form"]
+    },
+    {
+      "node": "376:43",
+      "title": "گاچاهای فیگما",
+      "landsUnder": "The Documentation canvas, frame by frame",
+      "facts": ["zero-width non-joiner", "display: none"]
+    },
+    {
+      "node": "376:46",
+      "title": "نقشه‌ی صفحات",
+      "landsUnder": "The screens",
+      "facts": ["Row 1", "Row 6", "1440 by 900", "390 by 844"]
+    },
+    {
+      "node": "384:12",
+      "title": "نقشه‌ی پروتوتایپ",
+      "landsUnder": "The critical path",
+      "facts": ["300ms", "150ms", "Instant"]
+    },
+    {
+      "node": "416:14",
+      "title": "کامپوننت‌های تعاملی",
+      "landsUnder": "States are variants on the component, not separate screens",
+      "facts": ["prototype demonstrations", "Component Set"]
+    },
+    {
+      "node": "416:21",
+      "title": "مقیاس تایپ",
+      "landsUnder": "Type",
+      "facts": ["24 / 32", "12 / 16", "Body/Small", "only five"]
+    },
+    {
+      "node": "434:2",
+      "title": "فیلدهای اجباری",
+      "landsUnder": "The Job Record",
+      "facts": ["Three fields, not one", "exactly one of", "statusHistory"]
+    },
+    {
+      "node": "434:16",
+      "title": "ترتیب و چیدمان",
+      "landsUnder": "Decisions the design already made",
+      "facts": ["rightmost column is the first stage", "chips, never a dropdown", "exactly four options"]
+    },
+    {
+      "node": "434:26",
+      "title": "پوشش وریبل‌ها",
+      "landsUnder": "The design is 100 percent tokenised, which makes the no-literal rule checkable",
+      "facts": ["5496", "6276", "2038"]
+    },
+    {
+      "node": "434:33",
+      "title": "گزینه‌های فیلد (تأییدنشده)",
+      "landsUnder": "Enumerated field values",
+      "facts": ["full-time", "chief executive", "provisional"]
+    },
+    {
+      "node": "505:3",
+      "title": "زبان و لحن متن",
+      "landsUnder": "Decisions the design already made",
+      "facts": ["فرصت شغلی", "آگهی", "never appears alone", "microcopy"]
+    }
+  ],
+  "openItems": [
+    { "id": "rejected-placement", "marker": "رد شده", "from": "434:16", "decidedBy": "KN-070" },
+    { "id": "contact-route", "marker": "email or phone", "from": "434:2", "decidedBy": "KN-071" },
+    { "id": "status-history-placement", "marker": "open item 18", "from": "5:5", "decidedBy": "KN-072" },
+    { "id": "provisional-enums", "marker": "unconfirmed", "from": "434:33", "decidedBy": "KN-073" }
+  ],
+  "screenNodes": [
+    "241:2", "241:146", "243:2", "243:76", "243:224", "243:325", "243:433", "243:682", "243:726",
+    "243:814", "243:899", "243:971", "243:1078", "243:1213", "243:1374", "243:1502", "243:1652",
+    "252:2", "252:175", "252:411", "259:2", "259:105", "259:184", "259:295", "271:55", "271:190",
+    "271:332", "305:2", "305:165", "305:374", "305:558", "305:705", "305:876", "305:1055",
+    "305:1232", "305:1377", "305:1547", "305:1696", "305:1842", "305:2018", "305:2243",
+    "376:5645", "376:5868", "376:5997", "377:6244", "407:6951", "407:6972", "407:7000",
+    "407:7022", "407:7043", "407:7071", "492:7482", "492:7581"
+  ]
+}
