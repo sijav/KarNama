@@ -90,6 +90,19 @@ Fix a finding inside the task only when it is cheap, obviously right, and inside
 that task's exit condition. Everything else is a card. Do not re-roast to grind
 a score up.
 
+**That criterion turned out to be too loose, and it cost KN-058 three rounds.**
+Almost any finding about a task can be argued to be "inside its exit condition",
+so it licensed fixing rather than filing twice in a row, and each fix changed
+the work after the review and bought another round. The sharper test, to be
+written into RALPH.md:
+
+> Fix in-task ONLY when the task's own verifier FAILS because of the finding.
+> If the verifier still passes, the finding is a card, however tempting.
+
+That is mechanical and cannot be rationalised around. A finding about missing
+test coverage, which is what KN-058's rounds 1 and 2 both were, does not make a
+verifier fail, so both should have been filed.
+
 ## KN-001, closed after eleven rounds
 
 Read its round history with `npm run todo -- show KN-001`. Every finding across
