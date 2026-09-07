@@ -1165,9 +1165,11 @@
       "status": "backlog",
       "exit": "Every task on the board has a verify command pointing at an existing script under agent/scripts/verify, npm run todo -- validate fails when one does not, each script has been shown to fail against a deliberately planted break rather than only to pass, and no task's verify field contains prose.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "See the ordering note on KN-065. Once move done requires a verify command, every task written after that carries its own, so this task is not a prerequisite for anything: its job is the tasks that predate the rule, plus making validate report on tasks that still lack one."
+      ],
       "createdAt": "2026-09-07T20:18:24.566Z",
-      "updatedAt": "2026-09-07T21:01:18.790Z"
+      "updatedAt": "2026-09-07T21:20:21.214Z"
     },
     {
       "id": "KN-055",
@@ -1381,8 +1383,11 @@
       "status": "backlog",
       "exit": "move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T21:12:12.658Z"
+      "notes": [
+        "ORDERING NOTE. Once move done requires a verify command, every task from that point on must write its own verifier as part of doing the work, which is the intent rather than a side effect: the verifier is how the exit condition stops being a wish. It does NOT mean KN-054 must run first, because a task written after this lands will carry its verify already. KN-054's remaining job is therefore the two halves that this task does not cover: backfilling the tasks that predate the rule, and making validate report or fail on a task that has none. Check that framing against KN-054's card when picking it up so the two do not overlap."
+      ],
+      "createdAt": "2026-09-07T21:12:12.658Z",
+      "updatedAt": "2026-09-07T21:20:20.637Z"
     },
     {
       "id": "KN-066",
