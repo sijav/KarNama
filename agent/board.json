@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 58,
+  "nextId": 60,
   "tasks": [
     {
       "id": "KN-001",
@@ -1197,6 +1197,40 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T20:49:41.782Z"
+    },
+    {
+      "id": "KN-058",
+      "title": "Run verify commands without a shell",
+      "desc": "move done executes a task's verify command with shell true, so anything after the accepted script prefix is interpreted by the shell. node agent/scripts/verify/KN-001.mjs || exit 0 passes validation and then masks a failing verifier. Parse the command into an executable and its arguments and spawn it directly, with no shell.",
+      "why": "The verify command is the one mechanical check that a task's exit condition holds, and a shell operator turns it into a check that always passes. It is not a forgery concern, it is the ordinary case of someone appending something to a command line and quietly disabling the gate.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-001"
+      ],
+      "status": "backlog",
+      "exit": "A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T21:08:49.893Z"
+    },
+    {
+      "id": "KN-059",
+      "title": "Decompose the board tool after ten rounds of patching",
+      "desc": "move() now handles state transitions, blocking, dropping, roast adjudication, artifact validation, revision binding, dirty-work checks, verifier execution and evidence collection in one function. The argument parser is duplicated in todo.mjs and roast.mjs. Split the lifecycle rules into named guards, move the parser into agent/scripts/lib, and leave move() reading as the list of conditions it enforces.",
+      "why": "It grew a rule at a time across ten roast rounds and it shows. The next lifecycle rule added to that function is the one that lands in the wrong place or interacts with a check nobody remembered, and the duplicated parser has already drifted once between the two scripts.",
+      "severity": "medium",
+      "points": 3,
+      "area": "agent",
+      "parent": [
+        "KN-001"
+      ],
+      "status": "backlog",
+      "exit": "move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T21:08:50.327Z"
     }
   ]
 }

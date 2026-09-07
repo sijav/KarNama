@@ -175,61 +175,88 @@ The harness sends the task card, the exit condition, your summary and the diff,
 gives Codex read access to the repository, and archives the reply under
 `agent/roasts/`.
 
-## Step 5 · Roast the roast
+## Step 5 · Roast the roast, then file what survives and MOVE ON
 
-**Codex's output is evidence, not a verdict.** Its score is its own opinion and
-it does not go on the board. Take each finding and judge it yourself, against
-the code:
+**Codex's output is evidence, not a verdict.** Its score is its own opinion. Take
+each finding and judge it yourself, against the code:
 
 - **Real.** Reproduce it. Name the input or state that triggers it.
 - **Wrong.** The reviewer misread something. Say what it misread. A finding
   dropped without a reason is a finding you did not check.
-- **Real but out of scope.** It becomes its own board entry, with all ten fields
-  filled, at its own severity, before you move on.
 
-Then measure what survived, and record **your** adjudicated numbers:
+Then, and this is the part that was wrong for ten rounds:
+
+> **Every finding that survives adjudication becomes its OWN board entry, with
+> all ten fields filled, at its own severity. It does not hold this task open.**
+
+Fix a finding here only when it is cheap, obviously right, and inside this
+task's exit condition. Everything else is a card. The board then schedules it
+against everything else waiting, which is the whole point of having a board.
+
+**Do not re-roast the same task until it scores well.** That was the original
+mistake: a three point task absorbed ten rounds while fifty six others waited,
+and each round found smaller things than the last. One roast, one adjudication,
+file the survivors, next task. A second round is for when the first was
+answering the wrong question, not for grinding a score upward.
+
+Record the round, then adjudicate, then record what you filed:
 
 ```bash
-npm run todo -- roast KN-014 --score 9.6 --criticals 0 --file agent/roasts/KN-014-round-1.<stamp>.md
+npm run todo -- roast KN-014 --score 8 --criticals 1 --file agent/roasts/KN-014-round-1.<stamp>.md
+# judge the findings, file the survivors as tasks, then:
+npm run todo -- roast KN-014 --score 8 --criticals 1 --file <same archive> --filed KN-058,KN-059
 ```
 
-`--file` is required, has to exist, and has to contain a `VERDICT` block, so a
-round cannot be recorded for a run that never happened. If your numbers are
-**kinder** than the archive's own, the tool requires `--dismissed "..."` naming
-which findings you rejected and why. Softening a verdict is allowed. Softening
-it silently is not.
+Re-running against the same archive updates that round rather than inventing a
+second one. `--filed none` is the honest record when nothing survived.
 
-The rule the board enforces:
+`--file` must exist and carry a `VERDICT` block, so a round cannot be recorded
+for a run that never happened. If your numbers are **kinder** than the archive's
+own, `--dismissed "..."` is required, naming what you rejected and why.
+Softening a verdict is allowed; softening it silently is not.
 
-- **Any surviving critical** → not done. Fix it, then run a **new** roast round.
-  Never a self-assessment in place of a second roast.
-- **No criticals, score below 9.5** → not done. Same rule.
-- **No criticals, 9.5 or above** → done:
+**Relay the roast to the owner in your reply**, including what you filed. The
+archive and the tool output are invisible to them.
 
-  ```bash
-  npm run todo -- move KN-014 done --evidence "how the exit condition was actually checked"
-  ```
+## Step 6 · Close it
 
-  `--evidence` is required, because the exit condition is prose and no script can
-  check it. Writing down how it was checked puts the claim on the record where
-  the next roast can dispute it.
+```bash
+npm run todo -- move KN-014 done --evidence "how the exit condition was actually checked"
+```
+
+The board requires three things, and a score is not among them:
+
+1. A **manifest-bound roast round** exists, from the harness, for this card, at
+   this revision.
+2. That round records **what was filed** from it, so the findings went somewhere
+   the board will schedule rather than into a paragraph nobody reads.
+3. **`--evidence`**, because the exit condition is prose and no script can check
+   it. Writing down how it was checked puts the claim on the record where the
+   next roast can dispute it.
+
+Plus the task's own `verify` command must pass, the worktree must hold no
+unreviewed work, and no work may have changed since the reviewed commit.
+
+A task with surviving findings still closes. Its findings are on the board.
 
 **Relay the roast to the owner in your reply.** The archive file and the tool
 output are invisible to them. Say what was found, what you accepted, what you
 rejected and why, and the score. A roast that is not relayed did not happen as
 far as the owner is concerned.
 
-## Step 6 · Record, commit, continue
+## Step 7 · Record, commit, continue
 
 - Write anything newly learned into `AGENTS.md`, `DESIGN.md` or `TECH-DEBT.md`
   now, while you still know it. Next iteration you will not.
 - Anything suppressed, pinned, widened or routed around goes in `TECH-DEBT.md`
   with the check that says when it can be removed. A deliberate scope cut goes
   in `PHASE-NEXT.md` instead. Those are decisions, not debt.
-- Commit the fixes, with a message that says what changed and why. Each roast
-  round reviews a commit, so a fix cycle is: fix, commit, roast again.
+- Commit, with a message that says what changed and why. The roast reviews a
+  commit, so the order is: finish, commit, roast.
 - Rewrite `agent/STATE.md`.
-- Go straight to the next task. Do not stop to summarise and wait.
+- **Go straight to `npm run todo -- next`.** Do not stop to summarise, do not
+  re-open the task you just closed, and do not start polishing it because the
+  roast mentioned something. That something is a card now.
 
 ---
 
@@ -250,8 +277,11 @@ is the channel that reaches them. A paragraph in a summary is not.
 ## Completion
 
 Output `<promise>KARNAMA-DONE</promise>` only when every board task is `done` or
-`dropped`, every task's final roast round scored 9.5 or above with zero
-criticals, and the product is live-verified in a browser in both languages.
+`dropped`, every closed task carries a manifest-bound roast round whose findings
+were filed, and the product is live-verified in a browser in both languages.
+
+The board emptying is the condition, not a score. Findings become cards, cards
+get worked, and the loop ends when there are none left.
 
 Never output it falsely to escape the loop, however long the loop is taking. If
 the loop should stop, the promise becomes true by finishing the work.

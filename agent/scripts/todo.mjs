@@ -16,6 +16,7 @@ import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { cardDigest } from './lib/card.mjs'
+import { contractProblems, loadContractInputs } from './lib/contract.mjs'
 import { workChangedSince, workingChanges } from './lib/worktree.mjs'
 
 const AGENT_DIR = dirname(dirname(fileURLToPath(import.meta.url)))
@@ -534,7 +535,11 @@ const renderBoard = (board) => {
 // ---------------------------------------------------------------- commands
 
 const mutate = (board) => {
-  const problems = checkBoard(board)
+  // Structural integrity AND the design contract. Running only the structural
+  // check made the contract optional: `add` and `set` wrote a perfectly valid
+  // card that instructed the wrong product, and the only thing standing between
+  // that and a builder was somebody remembering to run a separate script.
+  const problems = [...checkBoard(board), ...contractProblems(board, loadContractInputs(ROOT).design)]
   if (problems.length) {
     process.stderr.write('Board would be invalid, refusing to write:\n')
     for (const problem of problems) process.stderr.write(`  - ${problem}\n`)
@@ -627,8 +632,23 @@ const commands = {
       }
       const last = task.roasts?.[task.roasts.length - 1]
       if (!last) fail(`move: ${id} has no roast round. Run "npm run roast -- ${id} ..." and record it before closing.`)
-      if (last.criticals > 0) fail(`move: ${id}'s last roast left ${last.criticals} critical(s) open`)
-      if (last.score < 9.5) fail(`move: ${id}'s last roast scored ${last.score}, below the 9.5 bar`)
+
+      // A finding does not hold a task open. It becomes its own board entry and
+      // the queue moves on. Re-roasting one task until it scores perfectly is
+      // how a three point task ate ten rounds while fifty six others waited,
+      // and it hides the finding inside a conversation instead of putting it
+      // somewhere the board will schedule.
+      if (last.filed === undefined) {
+        fail(
+          `move: ${id}'s last roast has no record of what was filed from it.\n` +
+            'Adjudicate the findings, file the survivors as tasks, then re-record the round with\n' +
+            `  npm run todo -- roast ${id} --score N --criticals N --file <archive> --filed KN-0xx,KN-0yy\n` +
+            'or --filed none when nothing survived adjudication.',
+        )
+      }
+      for (const filedId of last.filed) {
+        if (!byId(board, filedId)) fail(`move: ${id}'s roast says it filed ${filedId}, which is not on the board`)
+      }
 
       // Re-verify the archive at close time, not only at record time, so a
       // reply cannot be deleted or rewritten between the two.
@@ -760,7 +780,13 @@ const commands = {
     if (!Number.isInteger(criticals) || criticals < 0) fail('roast: --criticals must be a non-negative whole number')
 
     const file = requireValue(flags.file, 'file')
-    const { archive, meta } = readArchive(file, task, task.roasts?.length ?? 0)
+    // Recording a round and adjudicating it are two moments, not one: the
+    // findings have to be judged and filed before `--filed` can be truthful.
+    // Re-running against the SAME archive updates that round rather than
+    // inventing a second one, so the numbers and what was filed stay together.
+    const rounds = task.roasts ?? []
+    const existing = rounds.length && rounds[rounds.length - 1].file === file ? rounds.length - 1 : -1
+    const { archive, meta } = readArchive(file, task, existing === -1 ? rounds.length : existing)
 
     // The recorded numbers are the ADJUDICATED ones, and adjudication really can
     // drop a finding, because reviewers misread things. What it may not do is
@@ -776,30 +802,42 @@ const commands = {
         )
       }
     }
-    task.roasts = [
-      ...(task.roasts ?? []),
-      {
-        round: (task.roasts?.length ?? 0) + 1,
-        score,
-        criticals,
-        file,
-        // Carried from the harness manifest so `move done` can prove the round
-        // reviewed THIS card at THIS revision, rather than an older one.
-        cardDigest: meta.cardDigest,
-        head: meta.head,
-        reviewerScore: verdict.score,
-        reviewerCriticals: verdict.criticals,
-        ...(flags.dismissed && flags.dismissed !== true ? { dismissed: String(flags.dismissed) } : {}),
-        at: new Date().toISOString(),
-      },
-    ]
+    const record = {
+      round: existing === -1 ? rounds.length + 1 : rounds[existing].round,
+      score,
+      criticals,
+      file,
+        // What the adjudication produced. `--filed none` records an explicit
+        // empty, which is different from never having adjudicated at all, and
+        // that difference is what `move done` checks.
+        ...(flags.filed === undefined ? {} : { filed: requireValue(flags.filed, 'filed') === 'none' ? [] : asList(flags.filed) }),
+      // Carried from the harness manifest so `move done` can prove the round
+      // reviewed THIS card at THIS revision, rather than an older one.
+      cardDigest: meta.cardDigest,
+      head: meta.head,
+      reviewerScore: verdict.score,
+      reviewerCriticals: verdict.criticals,
+      ...(flags.dismissed && flags.dismissed !== true ? { dismissed: String(flags.dismissed) } : {}),
+      at: new Date().toISOString(),
+    }
+    if (existing === -1) task.roasts = [...rounds, record]
+    else task.roasts = rounds.map((entry, index) => (index === existing ? record : entry))
+
     mutate(board)
-    const last = task.roasts[task.roasts.length - 1]
-    process.stdout.write(`${id} roast round ${last.round}: score ${last.score}, ${last.criticals} critical(s)\n`)
-    if (last.criticals > 0 || last.score < 9.5) {
-      process.stdout.write('Not done. Fix the findings and run a NEW roast round, never a self-assessment.\n')
+    process.stdout.write(
+      `${id} roast round ${record.round}: score ${record.score}, ${record.criticals} critical(s)` +
+        `${existing === -1 ? '' : ' (updated)'}\n`,
+    )
+    if (record.filed === undefined) {
+      process.stdout.write(
+        'Now adjudicate. Reproduce each finding or say what the reviewer misread, file every survivor\n' +
+          'as its own board entry, then re-record this round with --filed <ids> or --filed none.\n' +
+          'Findings become tasks; they do not hold this one open.\n',
+      )
+    } else if (record.filed.length) {
+      process.stdout.write(`Filed ${record.filed.join(', ')}. "move ${id} done --evidence ..." will now be accepted.\n`)
     } else {
-      process.stdout.write(`Clear. "npm run todo -- move ${id} done" will now be accepted.\n`)
+      process.stdout.write(`Nothing survived adjudication. "move ${id} done --evidence ..." will now be accepted.\n`)
     }
   },
 
