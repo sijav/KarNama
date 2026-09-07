@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 92,
+  "nextId": 94,
   "tasks": [
     {
       "id": "KN-001",
@@ -1988,7 +1988,23 @@
       ],
       "status": "review",
       "exit": "A component with aria-label=\"Delete this application\" and one with title=\"Delete this application\" both fail npm run lint, both are committed under src/gate-fixtures, and agent/scripts/verify/KN-003.mjs requires each to fail on the lingui rule by name.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 1.5,
+          "criticals": 4,
+          "file": "./agent/roasts/KN-087-round-1.2026-09-07T23-17-18-452Z.md",
+          "filed": [
+            "KN-092",
+            "KN-093"
+          ],
+          "cardDigest": "9da378449a38f03d0534e876199c8fdadc85bb4b169cf4c61f55a12f399effa5",
+          "head": "54648798de5f5dbda3a3a90c3f5785bafcf20190",
+          "reviewerScore": 1.5,
+          "reviewerCriticals": 4,
+          "at": "2026-09-07T23:29:18.011Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T23:11:00.398Z",
       "updatedAt": "2026-09-07T23:17:02.595Z",
@@ -2061,6 +2077,40 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T23:11:17.315Z"
+    },
+    {
+      "id": "KN-092",
+      "title": "Enforce the import conventions with a lint rule, and fix what already breaks them",
+      "desc": "AGENTS.md requires MUI from the top-level barrel only, absolute src/... imports with no relative parent imports, and an index.ts barrel in every folder with more than one file. apps/web violates all three throughout: every component deep-imports @mui/material/Box, AppProviders reaches up through ../i18n and ../theme/rtl, and there are no barrels. Nothing lints for it, which is why the very first files written broke it. Add no-restricted-imports for the MUI deep paths and a rule against relative parent imports, add a tsconfig path alias for src, then fix the existing files.",
+      "why": "A roast caught the deep imports in two fixtures and the same violation is in every file. Deep MUI imports were once a bundle-size trick and are now just an inconsistency, and a relative parent import breaks the moment a file moves. This matters most NOW, before the component queue: 30 component folders written the wrong way is a rename nobody wants, and the convention only holds if the lint holds it.",
+      "severity": "medium",
+      "points": 3,
+      "area": "web",
+      "parent": [
+        "KN-003"
+      ],
+      "status": "backlog",
+      "exit": "A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T23:28:59.911Z"
+    },
+    {
+      "id": "KN-093",
+      "title": "Stop a later scoped ESLint block silently re-exempting a lingui hole",
+      "desc": "ESLint replaces rule options rather than merging them, so a config block added later and scoped to part of the tree, say src/shared/**, can reconfigure lingui/no-unlocalized-strings with aria-label exempt for those files only. Every existing check would still pass: the fixtures live in src/gate-fixtures and would keep failing, and KN-087s config check reads the shared options constant, which the override does not touch. Check the RESOLVED configuration instead, with ESLint calculateConfigForFile over a sample of paths across the tree, and require the same exemption list everywhere.",
+      "why": "A roast rated this major and it is the general form of the bug the whole task was about: an exemption added for a good local reason that quietly widens somewhere it should not. It is also how the last two holes got in, once as a name and once as a shape, so the third will arrive as a scope.",
+      "severity": "medium",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-087"
+      ],
+      "status": "backlog",
+      "exit": "A config block scoped to src/shared/** that exempts aria-label makes agent/scripts/verify/KN-087.mjs fail, the check reads the resolved config for at least one path per top-level source folder, and the block being present is what the failure names.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T23:29:00.026Z"
     }
   ]
 }

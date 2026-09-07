@@ -38,14 +38,55 @@ const lint = (file) =>
 
 const config = readFileSync(join(WEB, 'eslint.config.js'), 'utf8')
 
-check('the exemption list does not name aria-* or title', () => {
-  // Only the ignoreNames pattern is examined. The word `title` appears in this
-  // file's own prose and in the Storybook block, and a plain search for it
-  // would have failed on the comment explaining why it is absent.
-  const pattern = /ignoreNames:\s*\[[\s\S]*?pattern:\s*\n?\s*'([^']*)'/.exec(config)?.[1] ?? ''
-  if (!pattern) return 'no ignoreNames pattern found, so the config shape has changed and this check is stale'
-  const readded = ['aria-', 'title'].filter((name) => pattern.includes(name))
-  return readded.length ? `back in the exemption list: ${readded.join(', ')}` : null
+check('the structural prop list does not name aria-* or title', () => {
+  // A previous version of this check read the FIRST quoted fragment after
+  // `ignoreNames:` with a regex, and the pattern was a concatenation, so
+  // `'...locale' + '|aria-[a-z]+...'` slipped straight past it. Reading a
+  // JavaScript expression with a regular expression is the wrong tool. The
+  // exemption list is now a single named constant with no concatenation of
+  // prop names, and this reads that constant, so there is one string to check
+  // rather than however many the author chose to split it into.
+  const declaration = /const structuralProps =\s*([\s\S]*?)\n\n/.exec(config)?.[1]
+  if (!declaration) return 'the structuralProps constant is gone, so the config shape has changed and this check is stale'
+  const readded = ['aria-', 'title'].filter((name) => declaration.includes(name))
+  if (readded.length) return `back in the exemption list: ${readded.join(', ')}`
+  // And the shape-based escape must not come back either: it matched
+  // `New/Applied`, which is copy, so it exempted the very props this task is
+  // about through the value instead of the name.
+  //
+  // Comments are stripped first. The paragraph that records why the pattern was
+  // removed has to be allowed to quote it, or the config cannot warn anyone off
+  // re-adding it, and the check fired on its own explanation. Same exemption
+  // the Body/Small prose and the "only elevation" correction already have.
+  const code = config.replace(/^\s*\/\/.*$/gm, '')
+  return code.includes('[A-Z][A-Za-z]*(/[A-Z]') ? 'the story-path shape exemption is back, and it matches New/Applied' : null
+})
+
+check('the behaviour is checked, not only the config, on every known hole', () => {
+  // The config check says WHY when this breaks; this one says THAT it broke. A
+  // config can read correctly and be overridden by a later block, which is how
+  // a scoped `src/shared/**` override would slip past a config-only check.
+  const cases = [
+    ['unlocalized-aria.tsx', 'a bare aria-label'],
+    ['unlocalized-title.tsx', 'a bare title'],
+    ['unlocalized-pathlike.tsx', 'copy shaped like a Storybook path, New/Applied'],
+    ['unlocalized-setattribute.tsx', "an aria-label set through setAttribute"],
+  ]
+  const problems = []
+  for (const [file, what] of cases) {
+    if (!existsSync(join(WEB, 'src', 'gate-fixtures', file))) {
+      problems.push(`${file} is missing, so ${what} is unchecked`)
+      continue
+    }
+    const result = lint(`src/gate-fixtures/${file}`)
+    if (result.status === 0) {
+      problems.push(`${what} passed the lint`)
+      continue
+    }
+    const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
+    if (!output.includes('lingui/no-unlocalized-strings')) problems.push(`${what} failed for another reason: ${output.slice(0, 200)}`)
+  }
+  return problems.length ? problems.join(' | ') : null
 })
 
 check('a bare aria-label is rejected', () => {
@@ -76,10 +117,17 @@ check('a Storybook story path still passes, so the fix did not just break the bu
   return result.status === 0 ? null : (result.stdout || result.stderr || '').split('\n').slice(-20).join('\n')
 })
 
-check("KN-003's verifier checks every unlocalized fixture, not one by name", () => {
+check("KN-003's verifier requires each fixture BY NAME, and discovers the rest", () => {
+  // Discovery alone let the aria fixture be deleted and replaced by any other
+  // `unlocalized-*.tsx`: the count stayed up and the hole reopened. Naming them
+  // makes deletion a failure; discovering on top means a new fixture is covered
+  // without editing this list.
   const other = readFileSync(join(ROOT, 'agent', 'scripts', 'verify', 'KN-003.mjs'), 'utf8')
-  if (!other.includes('readdirSync')) return 'it still names a single fixture, so a new hole gets a fixture nobody runs'
-  return /startsWith\('unlocalized'\)/.test(other) ? null : 'it discovers files but not by the unlocalized prefix'
+  if (!other.includes('readdirSync')) return 'it no longer discovers, so a new fixture would be added and never run'
+  if (!/startsWith\('unlocalized'\)/.test(other)) return 'it discovers files but not by the unlocalized prefix'
+  const named = ['unlocalized-aria.tsx', 'unlocalized-title.tsx', 'unlocalized-pathlike.tsx', 'unlocalized-setattribute.tsx']
+  const missing = named.filter((name) => !other.includes(name))
+  return missing.length ? `not required by name in KN-003: ${missing.join(', ')}` : null
 })
 
 if (failures.length) {

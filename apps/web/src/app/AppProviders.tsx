@@ -39,8 +39,13 @@ export const AppProviders = ({ locale, children }: AppProvidersProps) => {
   // MUI Menu or Dialog renders outside the tree, so a direction set on a
   // wrapper would leave every popover laid out the wrong way round.
   useEffect(() => {
-    document.documentElement.setAttribute('dir', direction)
-    document.documentElement.setAttribute('lang', locale)
+    // Property assignment rather than setAttribute, so no string literal is
+    // passed to a DOM call. That matters beyond style: exempting setAttribute
+    // from the lingui rule, which is what the literal 'dir' needed, also
+    // exempted setAttribute('aria-label', 'Delete this application'), which is
+    // untranslated copy a screen reader reads out. KN-087.
+    document.documentElement.dir = direction
+    document.documentElement.lang = locale
   }, [direction, locale])
 
   return (

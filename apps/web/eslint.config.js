@@ -14,6 +14,71 @@ import tseslint from 'typescript-eslint'
  * `--max-warnings 0` in the lint script means a warning is a failure, so a rule
  * set to warn is not a softer rule, it is the same rule with a different word.
  */
+
+/**
+ * The options for `lingui/no-unlocalized-strings`, in one place because ESLint
+ * REPLACES rule options rather than merging them. A later block that wants one
+ * more exemption has to restate all of them, and a block that restates them by
+ * hand drops the rest silently: the stories block did exactly that and quietly
+ * removed every ignore the src block had.
+ *
+ * `structuralProps` is the whole idea of the list. A prop whose value is an
+ * identifier, a css value or a routing target is not copy. A prop whose value is
+ * read by a person is copy, and `title` and `aria-*` are the second kind, which
+ * is what KN-087 is about.
+ */
+const structuralProps =
+  'id|key|data-testid|className|variant|color|component|role|dir|lang|type|name|sx|to|href|icon|provider|family|direction|locale' +
+  // CSS values are not user-facing text and the rule cannot tell the
+  // difference, so the properties that hold them are named.
+  '|boxShadow|fontFamily|lineHeight|letterSpacing|fontSize|card|modal'
+
+const linguiOptions = (extraProps = '') => ({
+  ignore: [
+    // Anything with no letter in it cannot be a sentence: css values, numbers
+    // and punctuation.
+    '^[^\\p{L}]*$',
+    // Token names, which are identifiers rendered as labels: `bg/page`.
+    '^[a-z-]+/[a-z0-9-/]+$',
+    '^(rtl|ltr|fa-IR|en-US)$',
+    // A shape-based exemption for Storybook paths used to live here,
+    // `^[A-Z][A-Za-z]*(/[A-Z][A-Za-z ]*)+$`, and it reopened the exact hole
+    // KN-087 closed: `New/Applied` matches it, so `aria-label="New/Applied"`
+    // and `title="New/Applied"` both passed. Status-transition copy looks like
+    // a path. A story title is exempted by WHERE it is instead.
+  ],
+  ignoreNames: [{ regex: { pattern: `^(${structuralProps}${extraProps})$` } }],
+  ignoreFunctions: [
+    // Developer-facing text, not user-facing. An Error thrown at mount because
+    // index.html has no #root is read by whoever broke the build, never by a
+    // job seeker.
+    'Error',
+    'console.*',
+    // `setAttribute` and `*.setAttribute` used to be here, so
+    // `el.setAttribute('aria-label', 'Delete this application')` passed: the
+    // same untranslated accessible name the prop-level rule rejects, reached
+    // through a method call. AppProviders assigns `documentElement.dir` and
+    // `.lang` as properties instead, so nothing needs the exemption.
+    //
+    // A story's play function is a test, and the literal it passes to a query
+    // or an assertion IS the expected rendered output. Wrapping it in `t` would
+    // assert that the translation of the expectation equals the translation of
+    // the value, which is a test that cannot fail.
+    '*.getByText',
+    '*.getByRole',
+    '*.getByLabelText',
+    '*.getByTestId',
+    '*.getByPlaceholderText',
+    '*.findByText',
+    '*.findByRole',
+    '*.queryByText',
+    '*.toHaveTextContent',
+    '*.toHaveAttribute',
+    '*.toHaveAccessibleName',
+  ],
+  useTsTypes: true,
+})
+
 export default defineConfig(
   {
     // `src/gate-fixtures` holds files that are SUPPOSED to fail, so an ordinary
@@ -78,72 +143,7 @@ export default defineConfig(
     ignores: ['src/i18n/locales/**', 'src/**/*.test.{ts,tsx}'],
     plugins: { lingui },
     rules: {
-      'lingui/no-unlocalized-strings': [
-        'error',
-        {
-          ignore: [
-            // Anything with no letter in it cannot be a sentence: css values,
-            // numbers and punctuation.
-            '^[^\\p{L}]*$',
-            // Token names, which are identifiers rendered as labels: `bg/page`.
-            '^[a-z-]+/[a-z0-9-/]+$',
-            '^(rtl|ltr|fa-IR|en-US)$',
-            // A Storybook title is a path in the sidebar, not copy: every
-            // segment is capitalised and separated by a slash, `App/Shell`.
-            // Narrow on purpose, because `title` as a JSX prop IS user-facing
-            // and must not be exempt: see the note on ignoreNames below.
-            '^[A-Z][A-Za-z]*(/[A-Z][A-Za-z ]*)+$',
-          ],
-          ignoreNames: [
-            {
-              regex: {
-                // `title` and `aria-*` are NOT here, and that is the point of
-                // KN-087. They were, swept in with the structural props this
-                // list is for, and they are the opposite: aria-label is the
-                // accessible name a screen reader speaks and title is the
-                // tooltip a sighted user hovers. Exempting them let the copy a
-                // blind user hears go untranslated while the lint reported
-                // green, which is a hole in exactly the place this rule exists
-                // to cover.
-                pattern:
-                  '^(id|key|data-testid|className|variant|color|component|role|dir|lang|type|name|sx|to|href|icon|provider|family|direction|locale' +
-                  // CSS values are not user-facing text and the rule cannot tell
-                  // the difference, so the properties that hold them are named.
-                  '|boxShadow|fontFamily|lineHeight|letterSpacing|fontSize|card|modal)$',
-              },
-            },
-          ],
-          // Developer-facing text, not user-facing. An Error thrown at mount
-          // because index.html has no #root is read by whoever broke the build,
-          // never by a job seeker.
-          ignoreFunctions: [
-            // Developer-facing text, not user-facing. An Error thrown at mount
-            // because index.html has no #root is read by whoever broke the
-            // build, never by a job seeker.
-            'Error',
-            'console.*',
-            'setAttribute',
-            '*.setAttribute',
-            'document.*',
-            // A story's play function is a test, and the literal it passes to a
-            // query or an assertion IS the expected rendered output. Wrapping it
-            // in `t` would assert that the translation of the expectation equals
-            // the translation of the value, which is a test that cannot fail.
-            '*.getByText',
-            '*.getByRole',
-            '*.getByLabelText',
-            '*.getByTestId',
-            '*.getByPlaceholderText',
-            '*.findByText',
-            '*.findByRole',
-            '*.queryByText',
-            '*.toHaveTextContent',
-            '*.toHaveAttribute',
-            '*.toHaveAccessibleName',
-          ],
-          useTsTypes: true,
-        },
-      ],
+      'lingui/no-unlocalized-strings': ['error', linguiOptions()],
       'lingui/t-call-in-function': 'error',
       'lingui/no-single-variables-to-translate': 'error',
       'lingui/no-trans-inside-trans': 'error',
@@ -154,6 +154,24 @@ export default defineConfig(
     files: ['**/*.stories.tsx', '.storybook/**/*.{ts,tsx}'],
     plugins: { storybook },
     rules: { ...storybook.configs['flat/recommended'].at(-1)?.rules },
+  },
+
+  {
+    // lingui applies to STORIES, which render product components, and not to
+    // `.storybook/**`, which is build configuration for a developer tool: its
+    // `defaultName: 'Docs'` and its toolbar labels are not product copy and
+    // never reach a user.
+    files: ['**/*.stories.tsx'],
+    plugins: { lingui },
+    rules: {
+      // A story's `title` is its path in the sidebar, `App/Shell`, not copy.
+      // Exempted HERE, where only stories are in scope, rather than globally by
+      // the shape of the string: the shape-based version let `New/Applied`
+      // through on a real `aria-label`, which is exactly the hole this rule is
+      // for. Built from the same options as the src block, with `title` added,
+      // because restating them by hand drops every other exemption silently.
+      'lingui/no-unlocalized-strings': ['error', linguiOptions('|title')],
+    },
   },
 
   {

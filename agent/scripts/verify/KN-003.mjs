@@ -118,7 +118,15 @@ check('EVERY planted unlocalized string FAILS the lint', () => {
   // neither had a fixture to say so. KN-087.
   const dir = join(WEB, 'src', 'gate-fixtures')
   const fixtures = readdirSync(dir).filter((name) => name.startsWith('unlocalized') && name.endsWith('.tsx'))
-  if (fixtures.length < 3) return `only ${fixtures.length} unlocalized fixtures, expected at least the plain one, aria-label and title`
+
+  // Discovery alone was not enough: with only a count to satisfy, deleting the
+  // aria fixture and adding any unrelated `unlocalized-*.tsx` kept the number up
+  // and the hole open. Each hole that has actually been found is named, and the
+  // discovered set is checked on top of that so a new fixture is covered for
+  // free.
+  const required = ['unlocalized.tsx', 'unlocalized-aria.tsx', 'unlocalized-title.tsx', 'unlocalized-pathlike.tsx', 'unlocalized-setattribute.tsx']
+  const absent = required.filter((name) => !fixtures.includes(name))
+  if (absent.length) return `these fixtures are required by name and are missing: ${absent.join(', ')}`
 
   const problems = []
   for (const fixture of fixtures) {

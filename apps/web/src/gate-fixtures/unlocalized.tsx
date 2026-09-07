@@ -1,4 +1,4 @@
-import Typography from '@mui/material/Typography'
+import { Typography } from '@mui/material'
 
 // A bare user-facing string, on purpose. `lingui/no-unlocalized-strings` must
 // reject this. See README.md in this directory.
