@@ -90,18 +90,26 @@ Fix a finding inside the task only when it is cheap, obviously right, and inside
 that task's exit condition. Everything else is a card. Do not re-roast to grind
 a score up.
 
-**That criterion turned out to be too loose, and it cost KN-058 three rounds.**
-Almost any finding about a task can be argued to be "inside its exit condition",
-so it licensed fixing rather than filing twice in a row, and each fix changed
-the work after the review and bought another round. The sharper test, to be
-written into RALPH.md:
+**That criterion was too loose, and it cost KN-058 three rounds.** Almost any
+finding can be argued to be "inside the exit condition", so it licensed fixing
+rather than filing twice in a row, and each fix changed the work after the
+review and bought another round. It is now mechanical, and it is in RALPH.md:
 
-> Fix in-task ONLY when the task's own verifier FAILS because of the finding.
-> If the verifier still passes, the finding is a card, however tempting.
+> Fix in-task ONLY when the task's own `verify` script FAILS because of the
+> finding. If the verifier still passes, it is a card, however tempting.
 
-That is mechanical and cannot be rationalised around. A finding about missing
-test coverage, which is what KN-058's rounds 1 and 2 both were, does not make a
-verifier fail, so both should have been filed.
+A finding about missing test coverage never fails a verifier, which is what
+KN-058's first two rounds both were, so both should have been cards. The third
+round's finding WAS filed, as KN-068, and the task closed in one step.
+
+**Every task now needs a verify script to close** (KN-065), checked before the
+roast gate so the advice is the actionable one. `validate` reports how many open
+tasks still lack one. Write it at `agent/scripts/verify/<id>.mjs`, make it
+assert as much of the exit condition as a command can, **and prove it fails by
+planting a break** before trusting it. Keep it read-only with respect to the
+repository: snapshot and restore anything it touches, and use
+`agent/scripts/verify/fixtures/always-fails.mjs` rather than writing scratch
+files, so it runs in the read-only tree a reviewer uses.
 
 ## KN-001, closed after eleven rounds
 

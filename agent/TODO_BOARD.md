@@ -10,7 +10,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-065` move done must require a verify command** (critical, 2 pt, agent)
 
-## In progress (1)
+## Awaiting roast (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -805,7 +805,7 @@ The web surface for someone who is not the owner of a record leaving a comment o
 
 ### `KN-065` move done must require a verify command
 
-- **status** in_progress · **severity** critical · **points** 2 · **area** agent
+- **status** review · **severity** critical · **points** 2 · **area** agent
 - **blocked by** KN-001
 
 Make verify mandatory rather than optional at close. Today a task with no verify closes on a manifest-bound round, a filed list and any non-empty prose evidence, so its exit condition is never mechanically checked. Require a verify command on any task reaching done, and make validate report how many tasks still lack one.
