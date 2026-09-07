@@ -102,6 +102,17 @@ A finding about missing test coverage never fails a verifier, which is what
 KN-058's first two rounds both were, so both should have been cards. The third
 round's finding WAS filed, as KN-068, and the task closed in one step.
 
+**The questions shape how many rounds a task takes.** The gate tasks attracted
+eleven, three and three rounds because they were asked adversarial "attack this"
+questions, and an adversarial reviewer can always find one more environmental
+edge case. That was right for the gate, whose whole job is to resist misuse. It
+is the wrong shape for a component.
+
+For product work, ask questions that CONVERGE: does this match the Figma node
+exactly, which drawn state is missing, does it hold up in both languages and
+both directions, what does the test not actually assert. Those have answers that
+run out. Save "attack this" for something whose purpose is to be attacked.
+
 **Every task now needs a verify script to close** (KN-065), checked before the
 roast gate so the advice is the actionable one. `validate` reports how many open
 tasks still lack one. Write it at `agent/scripts/verify/<id>.mjs`, make it

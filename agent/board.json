@@ -1434,6 +1434,18 @@
           "reviewerScore": 3.5,
           "reviewerCriticals": 1,
           "at": "2026-09-07T21:33:33.623Z"
+        },
+        {
+          "round": 2,
+          "score": 4,
+          "criticals": 1,
+          "file": "agent/roasts/KN-065-round-2.2026-09-07T21-33-56-670Z.md",
+          "filed": [],
+          "cardDigest": "e88aedfa676bf5416ba1f7be7a8cc3198a8b7d019b7affc445f7ec1c9d75dea6",
+          "head": "f510643c6ff1913d5b9c94fd8be8d279933dc0c9",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "at": "2026-09-07T21:37:12.743Z"
         }
       ],
       "notes": [
