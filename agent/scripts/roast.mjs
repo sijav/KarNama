@@ -210,16 +210,39 @@ writeFileSync(promptPath, prompt, 'utf8')
 
 const model = flags.model && flags.model !== true ? String(flags.model) : MODEL
 
+// On Windows `codex` is a .cmd shim, and Node refuses to spawn one without a
+// shell, so spawnSync fails with ENOENT before it ever reaches the model. With
+// a shell the whole command is re-parsed as a string, so any argument that
+// could hold a space has to be quoted by us.
+const isWindows = process.platform === 'win32'
+const shellQuote = (value) => (/[\s"^&|<>]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value)
+
+const runCodex = (args, options) =>
+  spawnSync('codex', isWindows ? args.map(shellQuote) : args, { shell: isWindows, ...options })
+
+// Preflight. Building a prompt that can run to a couple of hundred kilobytes
+// and only then discovering the binary is unreachable wastes the whole round,
+// and the failure reads like a model problem rather than a PATH problem.
+const version = runCodex(['--version'], { encoding: 'utf8' })
+if (version.error || version.status !== 0) {
+  fail(
+    `codex is not runnable from here: ${version.error?.message ?? `exit ${version.status}`}\n` +
+      'Install it, or put it on PATH. The roast step is not optional, so this is a hard stop rather than a skip.',
+  )
+}
+
 process.stderr.write(`Roasting ${task.id}, round ${round}, with ${model}. This takes a few minutes.\n`)
 
-const result = spawnSync(
-  'codex',
-  ['exec', '-m', model, '--sandbox', 'read-only', '-C', ROOT, '-o', replyPath, '-'],
-  { input: prompt, encoding: 'utf8', stdio: ['pipe', 'inherit', 'inherit'], maxBuffer: 64 * 1024 * 1024 },
-)
+const result = runCodex(['exec', '-m', model, '--sandbox', 'read-only', '-C', ROOT, '-o', replyPath, '-'], {
+  input: prompt,
+  encoding: 'utf8',
+  stdio: ['pipe', 'inherit', 'inherit'],
+  maxBuffer: 64 * 1024 * 1024,
+})
 
 if (result.error) fail(`could not run codex: ${result.error.message}`)
 if (!existsSync(replyPath)) fail(`codex exited ${result.status} without writing a reply to ${replyPath}`)
+if (readFileSync(replyPath, 'utf8').trim() === '') fail(`codex wrote an empty reply to ${replyPath}`)
 
 const reply = readFileSync(replyPath, 'utf8')
 const scoreMatch = reply.match(/^\s*score:\s*([0-9]+(?:\.[0-9]+)?)/im)

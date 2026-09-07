@@ -14,9 +14,20 @@
       "parent": [],
       "status": "in_progress",
       "exit": "\"npm run todo -- validate\" exits 0, \"npm run todo -- next\" names a task, agent/TODO_BOARD.md renders, \"npm run roast\" reaches Codex and archives a reply, and AGENTS.md plus DESIGN.md both exist with the Figma tokens transcribed.",
-      "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3.5,
+          "criticals": 2,
+          "file": "agent/roasts/KN-001-round-1.2026-09-07T20-01-20-821Z.md",
+          "at": "2026-09-07T20:06:09.427Z"
+        }
+      ],
+      "notes": [
+        "Round 1 adjudication: all four findings accepted as real, none rejected. Two criticals were the gate being bypassable through 'set --status done' and 'add --status done', and the roast path accepting fabricated scores, negative criticals and a nonexistent archive. Two majors were a blocked task making the board silently unpickable, and a missing flag value clearing a task's parents instead of erroring. Fixed all of them, plus one Codex did not name: only one task may now be in_progress, because the finish-before-starting rule is only safe with exactly one."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:06:09.827Z"
     },
     {
       "id": "KN-002",
@@ -32,8 +43,15 @@
       "status": "backlog",
       "exit": "DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "PREFETCHED from canvas 5:8. The list screen is actually a KANBAN BOARD, not a list: columns are statuses, desktop scrolls horizontally, cards drag between columns, and the RIGHTMOST column is the first stage because the layout is RTL. Page map row 1 is Board/Empty/Hover/Drag, row 2 is Column Menu and Rename Column. This changes KN-043 substantially.",
+        "PREFETCHED. Auth in the design is PHONE OTP, mobile number plus a five digit code, with Login, Signup and Reset drawn mobile-first at page map row 6. The owner separately chose email magic link before seeing this canvas. That is a contradiction only the owner can settle, and it changes KN-034, KN-036 and KN-046.",
+        "PREFETCHED. Navigation has THREE destinations, not two: فرصت‌های شغلی من (the board), شبکه من (a standalone contacts page with list, selection, add and edit at page map row 5), and افزودن فرصت شغلی. The Components canvas annotation claiming two destinations is superseded by the Documentation canvas.",
+        "PREFETCHED. Terminology was overhauled, 16 changes, and it is a hard rule rather than a preference. فرصت شغلی is the record the user tracks in KarNama; آگهی is ONLY the external source, the original post or the pasted link and text. فرصت never appears alone, always the full phrase فرصت شغلی, including mid sentence. Since message ids are English this needs a written glossary: job opportunity vs job posting. Also: UI labels formal, microcopy colloquial, no emoji.",
+        "PREFETCHED. Required fields are specified at frame 434:2. Add flow needs EITHER a link OR the full text, not both. Job record requires only the job title. Contact requires name. A custom status requires a name and its colour is auto assigned. Login requires mobile number and a five digit code. Employment type and job level option lists exist at 434:33 but are marked UNCONFIRMED because the network blocked checking them against Jobinja and Jobvision."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:02:02.781Z"
     },
     {
       "id": "KN-003",

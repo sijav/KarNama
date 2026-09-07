@@ -73,6 +73,10 @@ The script picks, not you, and it applies the law:
 > **smaller story point**, then the **older id**. A task whose blockers are not
 > all settled is not a candidate at all, whatever its severity.
 
+**Exactly one task may be in progress**, and the tool enforces it. That is what
+makes "finish before starting" safe: with two open at once, a merely high task
+left in progress outranks an unblocked critical one indefinitely.
+
 If you disagree with the pick, the fix is to correct the severity, the points or
 the parents on the board and run it again. Never to override it in your head.
 
@@ -80,6 +84,14 @@ Move it before you touch a file:
 
 ```bash
 npm run todo -- move KN-014 in_progress
+```
+
+If something genuinely stops the task, park it with a stated cause, because a
+blocked task is invisible to the selection law and a block with no reason is a
+task that silently leaves the board:
+
+```bash
+npm run todo -- move KN-014 blocked --reason "waiting on the owner's call about phone OTP versus magic link"
 ```
 
 **The to-do is written before the work, always.** The moment the owner asks for
@@ -163,13 +175,26 @@ Then measure what survived, and record **your** adjudicated numbers:
 npm run todo -- roast KN-014 --score 9.6 --criticals 0 --file agent/roasts/KN-014-round-1.<stamp>.md
 ```
 
+`--file` is required, has to exist, and has to contain a `VERDICT` block, so a
+round cannot be recorded for a run that never happened. If your numbers are
+**kinder** than the archive's own, the tool requires `--dismissed "..."` naming
+which findings you rejected and why. Softening a verdict is allowed. Softening
+it silently is not.
+
 The rule the board enforces:
 
 - **Any surviving critical** → not done. Fix it, then run a **new** roast round.
   Never a self-assessment in place of a second roast.
 - **No criticals, score below 9.5** → not done. Same rule.
-- **No criticals, 9.5 or above** → done. `npm run todo -- move KN-014 done` will
-  now be accepted; before that it is refused.
+- **No criticals, 9.5 or above** → done:
+
+  ```bash
+  npm run todo -- move KN-014 done --evidence "how the exit condition was actually checked"
+  ```
+
+  `--evidence` is required, because the exit condition is prose and no script can
+  check it. Writing down how it was checked puts the claim on the record where
+  the next roast can dispute it.
 
 **Relay the roast to the owner in your reply.** The archive file and the tool
 output are invisible to them. Say what was found, what you accepted, what you

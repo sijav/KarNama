@@ -14,6 +14,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const AGENT_DIR = dirname(dirname(fileURLToPath(import.meta.url)))
+const ROOT = dirname(AGENT_DIR)
 const BOARD_PATH = join(AGENT_DIR, 'board.json')
 const RENDER_PATH = join(AGENT_DIR, 'TODO_BOARD.md')
 
@@ -93,6 +94,25 @@ const asList = (value) => {
 const fail = (message) => {
   process.stderr.write(`${message}\n`)
   process.exit(1)
+}
+
+/**
+ * A flag written with no value parses as `true`. Coercing that silently is how a
+ * field gets a wrong value instead of an error: `--points --area docs` made
+ * `Number(true)`, which is 1, a perfectly valid story point, and quietly moved
+ * the task to the front of the queue.
+ */
+const requireValue = (value, flag) => {
+  if (value === true || value === undefined) fail(`--${flag} needs a value`)
+  return Array.isArray(value) ? fail(`--${flag} was given more than once`) : String(value)
+}
+
+/** `add` opens tasks. Closing one is `move`'s job, because that is where the gate is. */
+const openingStatus = (status) => {
+  if (!['backlog', 'in_progress'].includes(status)) {
+    fail(`add: a task may only be created in backlog or in_progress. Use "move" to reach ${status}.`)
+  }
+  return status
 }
 
 // ---------------------------------------------------------------- validation
@@ -388,8 +408,11 @@ const commands = {
       severity: String(flags.severity),
       points: Number(flags.points),
       area: String(flags.area),
-      parent: asList(flags.parent),
-      status: flags.status && flags.status !== true ? String(flags.status) : 'backlog',
+      parent: flags.parent === undefined ? [] : asList(requireValue(flags.parent, 'parent')),
+      // `add` may only open a task, never close one. Creating a task directly
+      // as `done` was a second door around the roast gate, and it needed no
+      // roast at all because there was no prior state to check.
+      status: flags.status === undefined ? 'backlog' : openingStatus(requireValue(flags.status, 'status')),
       exit: String(flags.exit),
       roasts: [],
       notes: [],
@@ -399,21 +422,48 @@ const commands = {
     process.stdout.write(`added ${id}\n`)
   },
 
-  move(board, { positional }) {
+  move(board, { positional, flags }) {
     const [id, status] = positional
     if (!id || !status) fail('move needs an id and a status, for example: move KN-003 in_progress')
     const task = byId(board, id)
     if (!task) fail(`move: ${id} does not exist`)
     if (!STATUSES.includes(status)) fail(`move: status must be one of ${STATUSES.join(', ')}`)
 
-    // A task is only done when a roast round has actually cleared it. Without
-    // this the loop can mark its own homework, which is the failure the roast
-    // step exists to prevent.
+    // Only one task may be in progress. The selection law puts in_progress
+    // ahead of severity so that work gets finished before new work starts, and
+    // that is only safe while there is exactly one of them. With two, a merely
+    // high task left open outranks an unblocked critical one indefinitely.
+    if (status === 'in_progress') {
+      const running = board.tasks.find((entry) => entry.status === 'in_progress' && entry.id !== id)
+      if (running) fail(`move: ${running.id} is already in progress. Finish or park it before starting ${id}.`)
+    }
+
+    // A blocked task is invisible to `next`, so a block with no stated cause is
+    // a task that silently leaves the board.
+    if (status === 'blocked') {
+      task.blockedReason = requireValue(flags.reason, 'reason')
+    }
+
+    // A task is only done when a roast round has actually cleared it, and the
+    // round has to point at an archive that exists and carries a verdict.
+    // Without the archive check the numbers are a claim about a run that may
+    // never have happened.
     if (status === 'done') {
       const last = task.roasts?.[task.roasts.length - 1]
       if (!last) fail(`move: ${id} has no roast round. Run "npm run roast -- ${id} ..." and record it before closing.`)
       if (last.criticals > 0) fail(`move: ${id}'s last roast left ${last.criticals} critical(s) open`)
       if (last.score < 9.5) fail(`move: ${id}'s last roast scored ${last.score}, below the 9.5 bar`)
+
+      const archive = join(ROOT, last.file)
+      if (!existsSync(archive)) fail(`move: ${id}'s last roast points at ${last.file}, which does not exist`)
+      if (!readFileSync(archive, 'utf8').includes('VERDICT')) {
+        fail(`move: ${last.file} has no VERDICT block, so it is not a roast reply`)
+      }
+
+      // The exit condition is prose, so no script can check it. What a script
+      // can do is refuse to close the task until someone writes down how it was
+      // checked, which puts the claim on the record where it can be disputed.
+      task.evidence = requireValue(flags.evidence, 'evidence')
     }
 
     task.status = status
@@ -428,10 +478,21 @@ const commands = {
     const task = byId(board, id)
     if (!task) fail(`set: ${id} does not exist`)
     for (const [key, value] of Object.entries(flags)) {
-      if (key === 'parent') task.parent = asList(value)
-      else if (key === 'points') task.points = Number(value)
-      else if (key === 'note') task.notes = [...(task.notes ?? []), String(value)]
-      else if (REQUIRED.includes(key)) task[key] = String(value)
+      // `--parent` with no value parsed as `true`, asList made that `[]`, and
+      // the task silently lost every blocker it had, which changes what `next`
+      // will pick. Clearing parents has to be said out loud, as `--parent none`.
+      if (key === 'parent') task.parent = requireValue(value, 'parent') === 'none' ? [] : asList(value)
+      else if (key === 'points') task.points = Number(requireValue(value, 'points'))
+      // Repeated --note is the normal way to add several at once. Coercing the
+      // array with String() joined them into one comma-spliced note.
+      else if (key === 'note') task.notes = [...(task.notes ?? []), ...(Array.isArray(value) ? value : [value]).map(String)]
+      // `move` carries the roast gate. Letting `set` write status too made that
+      // gate optional: `set <id> --status done` closed a task with no roast at
+      // all, and only tripped when the task happened to have unsettled parents.
+      // One door, so there is one place the rule can live.
+      else if (key === 'status') fail('set: status is changed with "move", which is where the roast gate lives')
+      else if (key === 'id') fail('set: id is immutable, other tasks point at it')
+      else if (REQUIRED.includes(key)) task[key] = requireValue(value, key)
       else fail(`set: "${key}" is not a task field`)
     }
     task.updatedAt = new Date().toISOString()
@@ -446,13 +507,40 @@ const commands = {
     if (flags.score === undefined || flags.criticals === undefined) {
       fail('roast needs --score and --criticals, and --file pointing at the archived reply')
     }
+    const score = Number(requireValue(flags.score, 'score'))
+    const criticals = Number(requireValue(flags.criticals, 'criticals'))
+    if (!Number.isFinite(score) || score < 0 || score > 10) fail('roast: --score must be a number from 0 to 10')
+    if (!Number.isInteger(criticals) || criticals < 0) fail('roast: --criticals must be a non-negative whole number')
+
+    // The archive is what ties a recorded round to a run that actually
+    // happened. Without it the round is a number somebody typed.
+    const file = requireValue(flags.file, 'file')
+    if (!existsSync(join(ROOT, file))) fail(`roast: --file ${file} does not exist, relative to the repository root`)
+    const archive = readFileSync(join(ROOT, file), 'utf8')
+    if (!archive.includes('VERDICT')) fail(`roast: ${file} has no VERDICT block, so it is not a roast reply`)
+
+    // The recorded numbers are the ADJUDICATED ones, and adjudication really can
+    // drop a finding, because reviewers misread things. What it may not do is
+    // drop one silently. Recording fewer criticals, or a better score, than the
+    // archive claims requires saying which findings were rejected and why.
+    const claimed = archive.match(/^\s*criticals:\s*([0-9]+)/im)
+    const claimedScore = archive.match(/^\s*score:\s*([0-9]+(?:\.[0-9]+)?)/im)
+    const softened =
+      (claimed && criticals < Number(claimed[1])) || (claimedScore && score > Number(claimedScore[1]))
+    if (softened && !(flags.dismissed && flags.dismissed !== true)) {
+      fail(
+        `roast: the archive reports ${claimed?.[1] ?? '?'} critical(s) at score ${claimedScore?.[1] ?? '?'}, and you are recording ${criticals} at ${score}.\n` +
+          'That may well be right, reviewers misread things. Say which findings you rejected and why, with --dismissed "...".',
+      )
+    }
     task.roasts = [
       ...(task.roasts ?? []),
       {
         round: (task.roasts?.length ?? 0) + 1,
-        score: Number(flags.score),
-        criticals: Number(flags.criticals),
-        file: flags.file && flags.file !== true ? String(flags.file) : '(not archived)',
+        score,
+        criticals,
+        file,
+        ...(flags.dismissed && flags.dismissed !== true ? { dismissed: String(flags.dismissed) } : {}),
         at: new Date().toISOString(),
       },
     ]
@@ -469,18 +557,28 @@ const commands = {
   next(board) {
     const task = pickNext(board)
     if (!task) {
-      const open = board.tasks.filter((entry) => OPEN_STATUSES.includes(entry.status))
+      // A `blocked` task is not in OPEN_STATUSES, so listing only those would
+      // report "nothing is pickable" while hiding the tasks that are the reason
+      // for it. Whatever is stalling the board has to be named here.
+      const open = board.tasks.filter((entry) => !SETTLED_STATUSES.includes(entry.status))
       if (!open.length) {
         process.stdout.write('Board is finished. Every task is done or dropped.\n')
         return
       }
-      process.stdout.write('Nothing is pickable, every open task is blocked:\n')
+      process.stdout.write('Nothing is pickable. What is holding the board:\n')
       for (const entry of open) {
+        if (entry.status === 'blocked') {
+          process.stdout.write(`  ${entry.id} is BLOCKED: ${entry.blockedReason ?? 'no reason recorded'}\n`)
+          continue
+        }
         const blockers = (entry.parent ?? [])
           .filter((parentId) => !SETTLED_STATUSES.includes(byId(board, parentId)?.status))
           .join(', ')
         process.stdout.write(`  ${entry.id} waits on ${blockers || 'an unknown blocker'}\n`)
       }
+      process.stdout.write(
+        '\nA board that cannot move is a decision for the owner. Unblock something, or ask.\n',
+      )
       process.exit(1)
     }
     process.stdout.write(`${formatCard(board, task)}\n`)
