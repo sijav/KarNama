@@ -220,10 +220,11 @@
       "exit": "A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not.",
       "roasts": [],
       "notes": [
-        "From frame 376:43: Persian text carries invisible characters, so a plain === comparison between two Persian strings can fail. Normalise with NFC before comparing, and do NOT strip the zero-width non-joiner: it is meaningful in Persian, «می‌شود» is not «میشود». Any test asserting a Persian catalog string needs this, and a test that trims the ZWNJ is asserting the wrong string."
+        "From frame 376:43: Persian text carries invisible characters, so a plain === comparison between two Persian strings can fail. Normalise with NFC before comparing, and do NOT strip the zero-width non-joiner: it is meaningful in Persian, «می‌شود» is not «میشود». Any test asserting a Persian catalog string needs this, and a test that trims the ZWNJ is asserting the wrong string.",
+        "eslint-plugin-lingui 0.15.0 peers eslint ^8.37 or ^9 or ^10, so eslint 10.10.0 is fine, and typescript ^5 or ^6, which independently confirms the TypeScript 6 pin: two separate packages now refuse TS 7. Other current versions: @lingui/cli, @lingui/react and @lingui/format-po at 6.6.0, @lingui/swc-plugin at 6.7.0, eslint-plugin-storybook and the storybook addons at 10.6.0."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:35:16.187Z"
+      "updatedAt": "2026-09-07T21:42:34.915Z"
     },
     {
       "id": "KN-007",
