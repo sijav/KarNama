@@ -2,24 +2,20 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 5 of 86 tasks done · 13 of 354 points.
+Project **KarNama** · 6 of 91 tasks done · 21 of 365 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-003` Web app scaffold with the full quality gate** (critical, 8 pt, web)
+**Next up: `KN-087` Stop the lingui rule exempting aria-label and title** (critical, 1 pt, web)
 
-## Awaiting roast (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-003` | Web app scaffold with the full quality gate | critical | 8 | web | KN-001 | On a clean checkout, lint, lint:tsc, test, build and build-storybook all pass in apps/web, and both a deliberately broken test and a deliberately unlocalized string fail the run when planted by hand. |
-
-## Backlog (80)
+## Backlog (84)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-087` | Stop the lingui rule exempting aria-label and title | critical | 1 | web | KN-003 | A component with aria-label="Delete this application" and one with title="Delete this application" both fail npm run lint, both are committed under src/gate-fixtures, and agent/scripts/verify/KN-003.mjs requires each to fail on the lingui rule by name. |
+| `KN-088` | Prove the REAL test project reports a failure, not a separate config | critical | 2 | agent | KN-003 | The planted broken test is detected through the configuration npm test uses, and a mutation that empties the real unit project include makes agent/scripts/verify/KN-003.mjs fail rather than pass. |
 | `KN-005` | Theme: tokens, MUI theme, direction and colour scheme provider | critical | 5 | web | KN-003, KN-004 | A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour. |
 | `KN-006` | lingui: English source catalog, Persian translation, runtime switch | critical | 5 | web | KN-003 | A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not. |
 | `KN-034` | Prisma schema, Postgres on Supabase, and migrations | critical | 5 | api | KN-033 | Migrations apply to an empty database and to an existing one, the schema covers every field the Figma job record names, status history records every transition with its timestamp, and a seed script produces a realistic archive to develop against. |
@@ -43,6 +39,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-076` | Let a settled open question be recorded as a decision, not only as a task | high | 2 | agent | KN-002 | An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision whose text does not appear under the heading it claims still fails; a capturePending entry disposed of as a decision is held to the same standard; and closing KN-070 as decided leaves the verifier green. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-080` | Bound the fix-in-task carve-out to once per task, and make the board enforce it | high | 2 | agent | KN-001 | A task whose roast rounds record a second fix-in-task is refused by move done with a message naming the first one, agent/RALPH.md states the bound in the same paragraph as the mechanical test, and a planted second carve-out on a scratch task proves the refusal fires. |
+| `KN-089` | Make a clean clone able to run the gate without a manual browser download | high | 2 | infra | KN-003 | On a machine with no Playwright browsers, a documented single command brings the gate to green, agent/scripts/verify/KN-003.mjs reports the missing browser by name rather than failing opaquely, and the README says what to run. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -57,6 +54,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | high | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
+| `KN-090` | Stop AppProviders mutating the lingui singleton during render | high | 3 | web | KN-003 | A story that mounts a Persian and an English AppProviders side by side renders each in its own language and direction, the switch still shows no flash of the previous catalog, and a test covers both. |
+| `KN-091` | Move story prose out of the TSX and into story-docs, with the guard test | high | 3 | web | KN-003 | src/shared/story-docs/en and fa exist and carry the prose for every story, no .tsx under src holds a docblock above const meta or a story export, the Docs pages render the markdown in the toolbar language, and a guard test fails when a prop or a story is missing from either language. |
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | high | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | high | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
@@ -89,7 +88,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-043` | The kanban board screen | high | 13 | web | KN-042, KN-015, KN-016, KN-017, KN-024, KN-025, KN-022, KN-037, KN-060, KN-061 | An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. |
 | `KN-075` | Decide which fields the Review step of the add flow shows | medium | 1 | design | KN-002 | DESIGN.md names the Review field list with the reason for it, section 6 no longer lists the Review step as open, and agent/design-manifest.json records the disposition instead of the open item. |
 | `KN-081` | Replace the truncation-cap frequency guess with a stated cap | medium | 1 | agent | KN-002 | The truncation figure in DESIGN.md is derived from a cap the manifest records with its provenance, or from per-name evidence of cutting, and a fixture capture with eleven repeated 36-character labels and no truncation does not report any name as truncated. |
-| `KN-084` | Make the AGENTS.md section 5 gate runnable before any workspace exists | medium | 1 | infra | KN-001 | npm run lint, npm run lint:tsc, npm test and npm run build each exit zero and say what they did on a clean checkout with no workspace directories, and each still fails honestly once apps/web exists and contains a failing check. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -101,7 +99,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-047` | Admin panel screen | medium | 8 | web | KN-042, KN-041 | An e2e test signs in as an admin, approves one submission and rejects another, and sees both leave the pending queue, and a non-admin reaching the route is refused rather than shown an empty panel. |
 | `KN-083` | Remove the em dashes the last DESIGN.md edits introduced | low | 1 | docs | KN-002 | No em dash appears in DESIGN.md, AGENTS.md, RALPH.md or STATE.md, and a check in the contract verifier fails when one is reintroduced. |
 
-## Done (5)
+## Done (6)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -110,6 +108,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-001` | The loop, the board, and the tooling that runs them | critical | 3 | agent | none | "npm run todo -- validate" exits 0, "npm run todo -- next" names a task, agent/TODO_BOARD.md renders, "npm run roast" reaches Codex and archives a reply, and AGENTS.md plus DESIGN.md both exist with the Figma tokens transcribed. |
 | `KN-002` | Read the Figma Documentations canvas and fold it into the contract | critical | 3 | design | KN-001 | DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down. |
 | `KN-004` | Read the remaining type scale and any missing tokens from Figma | critical | 3 | design | KN-001 | A named sweep of the Foundations canvas finds no token absent from DESIGN.md, every value in the DESIGN.md tables is traceable to a Figma node id, and the KN-001 verify script's type-scale check still passes. |
+| `KN-003` | Web app scaffold with the full quality gate | critical | 8 | web | KN-001 | On a clean checkout, lint, lint:tsc, test, build and build-storybook all pass in apps/web, and both a deliberately broken test and a deliberately unlocalized string fail the run when planted by hand. |
+
+## Dropped (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-084` | Make the AGENTS.md section 5 gate runnable before any workspace exists | low | 1 | infra | KN-001 | npm run lint, npm run lint:tsc, npm test and npm run build each exit zero and say what they did on a clean checkout with no workspace directories, and each still fails honestly once apps/web exists and contains a failing check. |
 
 ## Cards
 
@@ -141,7 +146,7 @@ Read canvas 5:8 "Documentations" in full, and canvas 5:7 "Screens", and write wh
 
 ### `KN-003` Web app scaffold with the full quality gate
 
-- **status** review · **severity** critical · **points** 8 · **area** web
+- **status** done · **severity** critical · **points** 8 · **area** web
 - **blocked by** KN-001
 
 apps/web on Vite, React 19, TypeScript, MUI, ESLint flat config with zero warnings and the lingui rule, Prettier, Vitest with a unit project and a Storybook project in headless Chromium, Storybook 10, Playwright for e2e, and coverage reporting.
@@ -149,6 +154,8 @@ apps/web on Vite, React 19, TypeScript, MUI, ESLint flat config with zero warnin
 **Why.** Every component task depends on the gate being real. A gate added after the components exist gets weakened to fit them, which is how a 100 percent coverage target quietly becomes 60. Building it first makes the standard non-negotiable rather than aspirational.
 
 **Exit condition.** On a clean checkout, lint, lint:tsc, test, build and build-storybook all pass in apps/web, and both a deliberately broken test and a deliberately unlocalized string fail the run when planted by hand.
+
+**Roasts.** round 1 scored 3 with 3 critical(s)
 
 ### `KN-004` Read the remaining type scale and any missing tokens from Figma
 
@@ -1038,7 +1045,7 @@ AGENTS.md section on writing forbids em dashes in documentation and asks for com
 
 ### `KN-084` Make the AGENTS.md section 5 gate runnable before any workspace exists
 
-- **status** backlog · **severity** medium · **points** 1 · **area** infra
+- **status** dropped · **severity** low · **points** 1 · **area** infra
 - **blocked by** KN-001
 
 package.json declares workspaces apps/web, apps/api and packages/graphql, none of which exist yet, so npm run lint, lint:tsc, test and build all exit non-zero with "No workspaces found!". AGENTS.md section 5 tells every agent to run those four commands and read the output. Today they produce four errors and no information, which trains the reader to ignore them. Make each script succeed with an honest "nothing to check yet" when no workspace is present, or gate them on the directories existing.
@@ -1068,4 +1075,59 @@ Three defects in agent/scripts/verify/KN-004.mjs, all in the elevation work. Fir
 **Why.** A roast rated the first two major and the third minor, and all three are real. The order blindness matters because the elevation table is the artefact the theme is generated from, and two shadows in the wrong order is a visible difference that the check was written specifically to catch. The exemption bypass matters because the guard exists to stop a false statement returning, and it currently accepts one with a historical clause bolted on.
 
 **Exit condition.** Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation.
+
+### `KN-087` Stop the lingui rule exempting aria-label and title
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** KN-003
+
+eslint.config.js ignores prop names matching aria-[a-z]+ and title, so a bare English string in either passes the lint. Both are user-facing: aria-label IS the accessible name a screen reader speaks, and title is the tooltip a sighted user hovers. Remove them from ignoreNames, wrap the strings the codebase already has, and add a case to src/gate-fixtures that proves an unlocalized aria-label fails.
+
+**Why.** A roast rated this critical and it is the hole in exactly the place the gate exists to cover: the rule is meant to make "every user-facing string goes through lingui" mechanical, and the current config lets the copy a blind user hears go untranslated while reporting green. The exemption was added to stop the rule firing on structural props like role and dir and swept these two up with them.
+
+**Exit condition.** A component with aria-label="Delete this application" and one with title="Delete this application" both fail npm run lint, both are committed under src/gate-fixtures, and agent/scripts/verify/KN-003.mjs requires each to fail on the lingui rule by name.
+
+### `KN-088` Prove the REAL test project reports a failure, not a separate config
+
+- **status** backlog · **severity** critical · **points** 2 · **area** agent
+- **blocked by** KN-003
+
+agent/scripts/verify/KN-003.mjs proves a broken test fails by running vitest against src/gate-fixtures/vitest.gate.config.ts, which is an independent configuration. The real unit and storybook projects could be excluded, skipped or misconfigured and that check would still report 1 failed. Drive the proof through the real vitest.config.ts instead: temporarily include the fixture, or add a mode the project honours, so what is proved is that npm test would have caught it.
+
+**Why.** A roast rated this critical and the logic is right: the check answers "can vitest fail" when the question is "would the gate this repository actually runs have failed". The same shape of mistake, proving a thing like the thing, is what AGENTS.md warns about under do not verify by inference.
+
+**Exit condition.** The planted broken test is detected through the configuration npm test uses, and a mutation that empties the real unit project include makes agent/scripts/verify/KN-003.mjs fail rather than pass.
+
+### `KN-089` Make a clean clone able to run the gate without a manual browser download
+
+- **status** backlog · **severity** high · **points** 2 · **area** infra
+- **blocked by** KN-003
+
+The exit condition of KN-003 says the gate passes on a clean checkout. It does not: the Storybook test project runs in real Chromium and Playwright downloads browsers in a postinstall that the owner allow-scripts policy blocks, so npm test on a fresh clone fails until someone runs npx playwright install chromium. Add an explicit, documented step that the gate itself runs or checks for, so the failure names the missing browser instead of looking like a broken suite.
+
+**Why.** A roast rated this critical and it is a literal failure of the stated exit condition rather than a nitpick. It is also the first thing a new contributor or a CI job hits, and the error a missing browser produces does not say install a browser.
+
+**Exit condition.** On a machine with no Playwright browsers, a documented single command brings the gate to green, agent/scripts/verify/KN-003.mjs reports the missing browser by name rather than failing opaquely, and the README says what to run.
+
+### `KN-090` Stop AppProviders mutating the lingui singleton during render
+
+- **status** backlog · **severity** high · **points** 3 · **area** web
+- **blocked by** KN-003
+
+AppProviders calls i18n.activate(locale) in the render body, guarded by a locale comparison. Under concurrent rendering React can render a subtree, mutate the singleton, then abandon that render, leaving a committed tree reading the wrong catalog. Two providers mounted at once, which a Storybook Docs page does, share the same singleton and whichever renders last wins for both. The dir and lang effect on document.documentElement has the same last-writer-wins problem and no cleanup. Give each provider its own I18n instance, or move activation into a store React can subscribe to.
+
+**Why.** A roast rated this major and the analysis is correct. It was written this way to avoid a flash of the previous language, which an effect does cause, so the fix has to keep synchronous activation without mutating shared state during render. It matters as soon as anything renders two locales at once, which the Docs page and any side-by-side comparison do.
+
+**Exit condition.** A story that mounts a Persian and an English AppProviders side by side renders each in its own language and direction, the switch still shows no flash of the previous catalog, and a test covers both.
+
+### `KN-091` Move story prose out of the TSX and into story-docs, with the guard test
+
+- **status** backlog · **severity** high · **points** 3 · **area** web
+- **blocked by** KN-003
+
+AGENTS.md requires that everything a Storybook Docs page prints lives in src/shared/story-docs/{en,fa}/<slug>.md, with no JSDoc above const meta, no docblock above a story export and no description inside argTypes, and it says a guard test fails until both languages describe every prop and story. Neither the directory nor the guard exists, and App.stories.tsx and Tokens.stories.tsx both carry prose docblocks above their meta. Create the structure, move the prose, wire the Docs pages to read it, and write the guard.
+
+**Why.** A roast rated this major and it is a contract the repository already states and the first components will copy. Prose in a TSX is prose only the person editing the file sees, in one language, and the product is bilingual by rule: a Docs page that is English at the top and Persian once you scroll is the failure mode AGENTS.md section 5 names.
+
+**Exit condition.** src/shared/story-docs/en and fa exist and carry the prose for every story, no .tsx under src holds a docblock above const meta or a story export, the Docs pages render the markdown in the toolbar language, and a guard test fails when a prop or a story is missing from either language.
 
