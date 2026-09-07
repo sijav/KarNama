@@ -10,7 +10,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-001` The loop, the board, and the tooling that runs them** (critical, 3 pt, agent)
 
-## In progress (1)
+## Awaiting roast (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -78,7 +78,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 ### `KN-001` The loop, the board, and the tooling that runs them
 
-- **status** in_progress · **severity** critical · **points** 3 · **area** agent
+- **status** review · **severity** critical · **points** 3 · **area** agent
 - **blocked by** none
 
 agent/RALPH.md (the iteration rules), agent/scripts/todo.mjs (the board tool, zero dependencies), agent/scripts/roast.mjs (the Codex harness on gpt-5.6-terra), agent/board.json seeded with the plan, plus AGENTS.md, DESIGN.md, CLAUDE.md and the root workspace config.

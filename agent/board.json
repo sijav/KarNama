@@ -12,7 +12,7 @@
       "points": 3,
       "area": "agent",
       "parent": [],
-      "status": "in_progress",
+      "status": "review",
       "exit": "\"npm run todo -- validate\" exits 0, \"npm run todo -- next\" names a task, agent/TODO_BOARD.md renders, \"npm run roast\" reaches Codex and archives a reply, and AGENTS.md plus DESIGN.md both exist with the Figma tokens transcribed.",
       "roasts": [
         {
@@ -40,7 +40,7 @@
         "Round 4 (board round 2) scored 5.0 with two criticals, up from 1.0. All four findings accepted. The documented close path deadlocked because RALPH step 4 says 'move review' then 'npm run roast', and the move dirtied the board the harness then refused; the only reason it never fired is that I was skipping the documented review step. The verifier accepted any stale archive from any task. rm --force stripped dependency edges from a valid board, recreating the dropped bypass under another name. The bookkeeping filter read only the first path of a rename record, so a rename out of agent/roasts into real source was hidden."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:31:35.047Z",
+      "updatedAt": "2026-09-07T20:32:21.297Z",
       "verify": "node agent/scripts/verify/KN-001.mjs"
     },
     {
