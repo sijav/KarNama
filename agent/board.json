@@ -100,10 +100,12 @@
       "exit": "A named sweep of the Foundations canvas finds no token absent from DESIGN.md, every value in the DESIGN.md tables is traceable to a Figma node id, and the KN-001 verify script's type-scale check still passes.",
       "roasts": [],
       "notes": [
-        "The type scale portion was completed under KN-001, because KN-001's exit condition claimed the Figma tokens were transcribed and Codex round 5 correctly called that false while DESIGN.md itself admitted four roles were unread. Five roles, not six: Heading/L 24/32 SemiBold, Heading/M 20/28 SemiBold, Title 16/24 Medium, Body 14/22 Regular, Label 12/16 Medium. No size outside those five is permitted. Body/Small at 13 was deleted from the design."
+        "The type scale portion was completed under KN-001, because KN-001's exit condition claimed the Figma tokens were transcribed and Codex round 5 correctly called that false while DESIGN.md itself admitted four roles were unread. Five roles, not six: Heading/L 24/32 SemiBold, Heading/M 20/28 SemiBold, Title 16/24 Medium, Body 14/22 Regular, Label 12/16 Medium. No size outside those five is permitted. Body/Small at 13 was deleted from the design.",
+        "A working independent token checker already exists in the session scratchpad (tokencheck.mjs). It parses DESIGN.md's tables and asserts them against the Figma variable set from node 7:2 plus the type documentation at 416:21, carries its own self-test so a broken pattern is caught, and currently reports full agreement: 32 colour tokens, 13 spacing and radius values, 5 type roles. Move it into agent/scripts/verify/KN-004.mjs and make it this task's verify command rather than rewriting it. Note it must NOT flag the prose that records Body/Small's deletion, only a table row."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:38:43.522Z"
+      "updatedAt": "2026-09-07T20:41:33.167Z",
+      "verify": "node agent/scripts/verify/KN-004.mjs"
     },
     {
       "id": "KN-005",
