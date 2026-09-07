@@ -1161,23 +1161,24 @@
     },
     {
       "id": "KN-054",
-      "title": "Backfill a verify command on every board task",
-      "desc": "Give every task on the board a verify command, each one a node script under agent/scripts/verify that asserts as much of that task's exit condition as a command can, then make validate fail on a task that has none. A verify command is always executable: there is no way to write prose into that field, because move done runs whatever is there. Where part of a condition genuinely cannot be commanded, for example that a layout was looked at in both languages, the script asserts everything around it and the remainder is stated in the --evidence that closing already requires.",
-      "why": "Codex's round 2 roast on KN-001 was right that calling prose exit conditions unverifiable was too broad, and that the debt note was hiding a tractable problem. move done already runs verify where it is set, but almost no task sets it, so the gate is mostly decorative.",
+      "title": "Turn the verify report into a failure once the debt is gone",
+      "desc": "KN-065 made a verify command mandatory to close and made validate REPORT how many open tasks lack one. This is the other half: once that count reaches zero, make validate FAIL on a task with no verify command rather than reporting, so the rule holds for cards filed in future rather than only for cards being closed.",
+      "why": "The original framing of this task, backfill a verifier onto every card, is superseded and would have been the wrong work: each task now writes its own verifier as part of being closed, because the close gate refuses without one. Writing sixty verifiers up front would mean writing each check before its work exists, and a check written that early describes what is easy to assert rather than what the task must prove. What is genuinely left is flipping the report to a failure, which can only happen once the count is zero, so this task waits for the board rather than driving it.",
       "severity": "high",
-      "points": 5,
+      "points": 2,
       "area": "agent",
       "parent": [
         "KN-001"
       ],
       "status": "backlog",
-      "exit": "Every task on the board has a verify command pointing at an existing script under agent/scripts/verify, npm run todo -- validate fails when one does not, each script has been shown to fail against a deliberately planted break rather than only to pass, and no task's verify field contains prose.",
+      "exit": "validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task.",
       "roasts": [],
       "notes": [
-        "See the ordering note on KN-065. Once move done requires a verify command, every task written after that carries its own, so this task is not a prerequisite for anything: its job is the tasks that predate the rule, plus making validate report on tasks that still lack one."
+        "See the ordering note on KN-065. Once move done requires a verify command, every task written after that carries its own, so this task is not a prerequisite for anything: its job is the tasks that predate the rule, plus making validate report on tasks that still lack one.",
+        "Re-scoped after KN-065. Do not pick this up until validate reports zero tasks without a verify command; before that it would fail the board on work that has not been done yet. Check with: npm run todo -- validate"
       ],
       "createdAt": "2026-09-07T20:18:24.566Z",
-      "updatedAt": "2026-09-07T21:20:21.214Z"
+      "updatedAt": "2026-09-07T21:30:31.187Z"
     },
     {
       "id": "KN-055",
