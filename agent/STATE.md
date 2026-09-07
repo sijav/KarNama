@@ -72,7 +72,25 @@ inline-editing rules, and a section of open questions the design has NOT
 settled. `agent/scripts/verify/KN-004.mjs` asserts the token tables against
 Figma and fails when any value is corrupted.
 
-## KN-001, still in review
+## The loop's law was corrected, and this is the correction
+
+The owner caught a real mistake. The rule is: **finish a task, roast it, roast
+the roast, FILE what survives as new to-dos, and move on to the next to-do.**
+What was built instead was roast, fix, re-roast until a score cleared a bar, and
+that is why one three point task absorbed eleven rounds while sixty others
+waited, each round finding smaller things than the last.
+
+So `move done` no longer looks at a score. It requires a manifest-bound round, a
+record of **what was filed** from adjudicating it, `--evidence`, a passing
+`verify`, and no unreviewed work. **A task with surviving findings closes**,
+because its findings are on the board where they get scheduled against
+everything else.
+
+Fix a finding inside the task only when it is cheap, obviously right, and inside
+that task's exit condition. Everything else is a card. Do not re-roast to grind
+a score up.
+
+## KN-001, closed after eleven rounds
 
 Read its round history with `npm run todo -- show KN-001`. Every finding across
 every round was accepted and none rejected. What they found, in summary: the
@@ -87,11 +105,22 @@ nothing running locally under the author's own hand can prove the author honest.
 
 ## Next step
 
-Run the next roast round for KN-001 against the current HEAD. The harness picks
-its own round number from the board, so do not assume one.
+`npm run todo -- next` picks it. Do not choose by hand.
 
-When a round comes back clean at 9.5 or above with zero criticals: record it,
-then `npm run todo -- move KN-001 done --evidence "..."`.
+KN-058 is in review with its roast running. When it lands: adjudicate, file the
+survivors, record with `--filed`, close with `--evidence`, then take the next
+card. The board currently hands back the gate repairs KN-001's final round
+produced, KN-065 first, then KN-002 and the scaffold.
+
+**The board was NOT complete.** The owner asked, and the honest answer was no.
+Auditing it found five missing things, now filed: the kanban column as its own
+component (KN-060), dragging a card between columns with a keyboard path
+(KN-061), shared story fixtures (KN-062), an accessibility gate (KN-063), and
+the third-party feedback submission surface (KN-064), which had an API and a
+moderation queue but nothing anyone could submit through.
+
+67 tasks, 317 points, every one reachable from the dependency graph. Read the
+current numbers from the board rather than from this paragraph.
 
 Then **KN-002**, which the owner named. Its card carries detailed notes from the
 Documentation and Screens canvases; read them with `npm run todo -- show KN-002`.
