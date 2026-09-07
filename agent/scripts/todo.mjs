@@ -68,7 +68,10 @@ const git = (args) => spawnSync('git', args, { cwd: ROOT, encoding: 'utf8', maxB
  * `move done` refused every close. Excluding these keeps the rule's real intent,
  * which is that no unreviewed WORK changed between the review and the close.
  */
-const BOOKKEEPING = /^agent\/(board\.json|TODO_BOARD\.md|STATE\.md|roasts\/)/
+// Anchored, so the three files match exactly and only `roasts/` matches as a
+// prefix. Unanchored, a work file called `agent/board.json.anything` matched
+// the bookkeeping pattern and its changes were excluded from both checks.
+const BOOKKEEPING = /^agent\/(?:board\.json|TODO_BOARD\.md|STATE\.md)$|^agent\/roasts\/./
 
 const workingChanges = () =>
   (git(['status', '--porcelain']).stdout ?? '')
