@@ -179,8 +179,11 @@
       "status": "backlog",
       "exit": "A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "PIN stylis TO 4.2.0 with a root overrides entry. @emotion/cache 11.14.0 depends on stylis at EXACTLY 4.2.0, while @mui/stylis-plugin-rtl 9.4.0 peers stylis 4.x, so npm installs 4.4.0 and the two disagree. Emotion walks the element tree with its own bundled stylis, so handing it a prefixer built from a different version produces elements it cannot lift and crashes on every ::placeholder rule in the app. This is the single hardest bug to diagnose in the RTL setup because the failure looks like a component problem rather than a dependency one. Also note @fontsource-variable/vazirmatn is at 5.3.0, and the design flags Vazirmatn as a placeholder font, so the family name belongs in one theme constant rather than scattered through components."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T21:04:44.497Z"
     },
     {
       "id": "KN-006",
