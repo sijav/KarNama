@@ -31,8 +31,16 @@ const REQUIRED = ['id', 'title', 'desc', 'why', 'severity', 'points', 'area', 'p
 
 /** A task is pickable in these states. `blocked` is excluded: it names a reason outside the board. */
 const OPEN_STATUSES = ['in_progress', 'review', 'backlog']
-/** A parent in one of these no longer blocks its children. */
-const SETTLED_STATUSES = ['done', 'dropped']
+/**
+ * A parent in one of these no longer blocks its children. Only `done`.
+ *
+ * `dropped` used to settle too, which made it a terminal state with no roast
+ * requirement that behaved exactly like `done`: detach a task's dependents with
+ * `set --parent none`, drop it, and everything downstream unblocked with no
+ * verdict anywhere. Dropping is a scope decision, and the tasks that were
+ * waiting on it have to be re-pointed deliberately rather than freed silently.
+ */
+const SETTLED_STATUSES = ['done']
 
 // ---------------------------------------------------------------- board io
 
@@ -50,6 +58,32 @@ const saveBoard = (board) => {
 const byId = (board, id) => board.tasks.find((task) => task.id === id)
 
 const git = (args) => spawnSync('git', args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
+
+/**
+ * The loop's own bookkeeping, which is not the work under review.
+ *
+ * The clean-worktree rule deadlocked the board without this: recording a roast
+ * round writes `board.json` and re-renders the board, and the harness writes its
+ * reply and manifest, so by the time a round existed the tree was dirty and
+ * `move done` refused every close. Excluding these keeps the rule's real intent,
+ * which is that no unreviewed WORK changed between the review and the close.
+ */
+const BOOKKEEPING = /^agent\/(board\.json|TODO_BOARD\.md|STATE\.md|roasts\/)/
+
+const workingChanges = () =>
+  (git(['status', '--porcelain']).stdout ?? '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => !BOOKKEEPING.test(line.replace(/^\S+\s+/, '').replace(/^"|"$/g, '')))
+
+/** Paths that changed between two commits, ignoring the loop's bookkeeping. */
+const workChangedSince = (from, to) =>
+  (git(['diff', '--name-only', from, to]).stdout ?? '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((path) => !BOOKKEEPING.test(path))
 
 // ---------------------------------------------------------------- arguments
 
@@ -108,7 +142,12 @@ const fail = (message) => {
  */
 const requireValue = (value, flag) => {
   if (value === true || value === undefined) fail(`--${flag} needs a value`)
-  return Array.isArray(value) ? fail(`--${flag} was given more than once`) : String(value)
+  if (Array.isArray(value)) fail(`--${flag} was given more than once`)
+  // An empty value is not a value. `set <id> --verify ""` wrote an empty verify
+  // command, which the close path then skipped because it only runs a truthy
+  // one, so passing an empty string switched the check off.
+  if (String(value).trim() === '') fail(`--${flag} cannot be empty`)
+  return String(value)
 }
 
 /** The digest of what a reviewer was actually shown, so an edited card invalidates its round. */
@@ -249,6 +288,15 @@ const checkBoard = (board) => {
       }
       if (task.status === 'done' && !SETTLED_STATUSES.includes(parent.status)) {
         problems.push(`${task.id} is done but its parent ${parent.id} is ${parent.status}`)
+      }
+      // A dropped parent no longer settles, so anything still waiting on it is
+      // stuck until someone decides what that dependency meant. Saying so is
+      // the point: the alternative was dropping a task and silently freeing
+      // everything downstream with no verdict anywhere.
+      if (parent.status === 'dropped' && !SETTLED_STATUSES.includes(task.status)) {
+        problems.push(
+          `${task.id} waits on ${parent.id}, which was dropped. Re-point it with "set ${task.id} --parent ..." or drop it too.`,
+        )
       }
     }
   }
@@ -574,16 +622,32 @@ const commands = {
       if (last.cardDigest !== cardDigest(task)) {
         fail(`move: ${id} has been edited since the roast that cleared it. Roast the current card.`)
       }
-      const head = (git(['rev-parse', 'HEAD']).stdout ?? '').trim()
-      if (last.head && head && last.head !== head) {
-        fail(
-          `move: ${id} was reviewed at ${last.head.slice(0, 8)} and HEAD is now ${head.slice(0, 8)}.\n` +
-            'The code changed after the round that cleared it, so run a new round against what exists now.',
-        )
+      // An empty recorded head used to pass this check, because the guard was
+      // written as `last.head && ...`. A round with no revision is a round that
+      // reviewed nothing identifiable.
+      if (!last.head) {
+        fail(`move: ${id}'s last roast records no reviewed commit, so it cannot be tied to any revision`)
       }
-      const dirty = (git(['status', '--porcelain']).stdout ?? '').trim()
-      if (dirty) {
-        fail(`move: the worktree is dirty, so ${id} would close over unreviewed changes:\n${dirty}`)
+      const head = (git(['rev-parse', 'HEAD']).stdout ?? '').trim()
+      if (!head) fail('move: cannot read HEAD')
+
+      // Comparing the two commits outright deadlocked every honest close: the
+      // harness writes its reply and manifest AFTER its own clean check, and
+      // recording the round rewrites the board, so committing those required
+      // artifacts always moved HEAD past the reviewed commit. What matters is
+      // whether any of the WORK changed, not whether the bookkeeping did.
+      if (last.head !== head) {
+        const changed = workChangedSince(last.head, head)
+        if (changed.length) {
+          fail(
+            `move: ${id} was reviewed at ${last.head.slice(0, 8)} and work has changed since:\n  ${changed.join('\n  ')}\n` +
+              'Run a new round against what exists now.',
+          )
+        }
+      }
+      const dirty = workingChanges()
+      if (dirty.length) {
+        fail(`move: the worktree has unreviewed changes, so ${id} would close over them:\n  ${dirty.join('\n  ')}`)
       }
 
       // Where a task names a command that proves its exit condition, run it. The
@@ -749,6 +813,37 @@ const commands = {
     }
   },
 
+  /**
+   * The recovery route. Every mutation validates first, so a board that is
+   * already malformed, duplicate ids being the reachable case, rejected every
+   * command including the ones that would repair it. Ids are immutable and
+   * nothing could delete a task, so the tool could talk a board into a state it
+   * could not talk it out of.
+   */
+  rm(board, { positional, flags }) {
+    const [id] = positional
+    const task = byId(board, id)
+    if (!task) fail(`rm: ${id} does not exist`)
+    const reason = requireValue(flags.reason, 'reason')
+
+    const dependents = board.tasks.filter((entry) => entry.id !== id && (entry.parent ?? []).includes(id))
+    if (dependents.length && !flags.force) {
+      fail(
+        `rm: ${dependents.map((entry) => entry.id).join(', ')} still point at ${id}. Re-point them first, or pass --force to strip the edges.`,
+      )
+    }
+    for (const entry of dependents) entry.parent = (entry.parent ?? []).filter((parentId) => parentId !== id)
+
+    const index = board.tasks.findIndex((entry) => entry === task)
+    board.tasks.splice(index, 1)
+    saveBoard(board)
+    process.stdout.write(`removed ${id}: ${reason}\n`)
+    const problems = checkBoard(board)
+    if (problems.length) {
+      process.stdout.write(`Board still has ${problems.length} problem(s), run validate.\n`)
+    }
+  },
+
   validate(board) {
     const problems = checkBoard(board)
     if (!problems.length) {
@@ -785,6 +880,8 @@ const commands = {
         '                             --file must exist and carry a VERDICT block.',
         '                             record YOUR adjudicated numbers, not the archive\'s.',
         '                             kinder than the archive needs --dismissed "what you rejected and why"',
+        '  rm <id> --reason "..."     remove a task. The repair route for a board that',
+        '                             validation has made unwritable. --force strips edges.',
         '  validate                   integrity check, exits non-zero when broken',
         '  render                     regenerate agent/TODO_BOARD.md',
         '',

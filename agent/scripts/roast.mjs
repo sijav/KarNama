@@ -231,8 +231,12 @@ const model = flags.model && flags.model !== true ? String(flags.model) : MODEL
 const isWindows = process.platform === 'win32'
 const shellQuote = (value) => (/[\s"^&|<>]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value)
 
+// Passing an args array alongside shell:true is deprecated, and Node only
+// concatenates them anyway, so build the command line ourselves on Windows.
 const runCodex = (args, options) =>
-  spawnSync('codex', isWindows ? args.map(shellQuote) : args, { shell: isWindows, ...options })
+  isWindows
+    ? spawnSync(['codex', ...args.map(shellQuote)].join(' '), { shell: true, ...options })
+    : spawnSync('codex', args, options)
 
 // Preflight. Building a prompt that can run to a couple of hundred kilobytes
 // and only then discovering the binary is unreachable wastes the whole round,

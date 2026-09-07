@@ -36,17 +36,35 @@ tell a correct dismissal from a convenient one.
   stored alongside the adjudicated ones, so the two are visible side by side.
   Recording kinder numbers requires `--dismissed`.
 
-**What is still true.** None of this is an independent authority. Everything runs
-locally, the author can write files, and a determined author can forge a
-sidecar. What the guards buy is that fabrication is no longer a single flag and
-no longer invisible: it requires deliberately faking a digest, which is a
-different act from carelessly typing a nine.
+**What is still true, and the threat model this gate is actually for.**
 
-**What would actually fix it.** A verdict written by a process the author does
-not control: a signed reply from the model provider, or a human sign-off.
+The manifest is ordinary JSON in a repository the author can write to. An author
+who wants to fake a clear round can write a reply, write a matching sidecar,
+commit both, and close the task. Three roast rounds found three different
+versions of that path, and a fourth would find a fifth, because the property
+being asked for is unobtainable: **nothing running locally under the author's
+own hand can prove the author was honest.**
 
-**The check that retires this.** When `done` requires a verdict artifact the
-author cannot produce.
+So the gate is scoped deliberately. It defends against **carelessness and
+drift**, which are the failures that actually happen in a loop:
+
+- closing a task nobody reviewed, because it felt finished
+- recording a round against the wrong file, or a stale one
+- letting a clear round outlive the code it reviewed
+- softening a verdict while reading it, and forgetting that you did
+- typing a flag wrong and silently changing what the board picks next
+
+It does **not** defend against deliberate fraud, and no claim anywhere in this
+repository should say that it does. Earlier versions of this entry and of
+`RALPH.md` implied it, which was the more dangerous error, because a guard
+believed to be stronger than it is stops being checked.
+
+**What would actually fix it.** A verdict the author cannot produce: a signed
+reply from the model provider, a CI job that runs the roast on a machine the
+author does not control, or a human sign-off on close.
+
+**The check that retires this.** When `done` requires a verdict artifact
+produced outside the author's own working copy.
 
 ## 2. Task exit conditions are not machine-checked yet
 

@@ -28,8 +28,8 @@
         "Round 2 scored 1.5 with four criticals and every finding was real, including a working exploit: the harness writes the VERDICT template into its own prompt file, so recording a roast against that prompt passed the substring check and forged a clear round. Round 2's own reply predates the sidecar mechanism, so it cannot be recorded through the tool, which is the guard behaving correctly rather than a gap. Its findings are all fixed and round 3 is the authoritative round."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:18:41.868Z",
-      "verify": "npm run --silent todo -- validate && npm run --silent todo -- next > /dev/null && test -f agent/TODO_BOARD.md && test -f AGENTS.md && test -f DESIGN.md && node agent/scripts/roast.mjs 2>&1 | grep -q 'npm run roast'"
+      "updatedAt": "2026-09-07T20:24:04.898Z",
+      "verify": "node agent/scripts/verify/KN-001.mjs"
     },
     {
       "id": "KN-002",
