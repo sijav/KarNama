@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 94,
+  "nextId": 98,
   "tasks": [
     {
       "id": "KN-001",
@@ -1986,7 +1986,7 @@
       "parent": [
         "KN-003"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "A component with aria-label=\"Delete this application\" and one with title=\"Delete this application\" both fail npm run lint, both are committed under src/gate-fixtures, and agent/scripts/verify/KN-003.mjs requires each to fail on the lingui rule by name.",
       "roasts": [
         {
@@ -2003,12 +2003,31 @@
           "reviewerScore": 1.5,
           "reviewerCriticals": 4,
           "at": "2026-09-07T23:29:18.011Z"
+        },
+        {
+          "round": 2,
+          "score": 2,
+          "criticals": 4,
+          "file": "agent/roasts/KN-087-round-2.2026-09-07T23-29-38-371Z.md",
+          "filed": [
+            "KN-094",
+            "KN-095",
+            "KN-096",
+            "KN-097"
+          ],
+          "cardDigest": "9da378449a38f03d0534e876199c8fdadc85bb4b169cf4c61f55a12f399effa5",
+          "head": "aec5bb423092b60b9b0a9396bab24de5436a01b5",
+          "reviewerScore": 2,
+          "reviewerCriticals": 4,
+          "at": "2026-09-07T23:35:39.386Z"
         }
       ],
       "notes": [],
       "createdAt": "2026-09-07T23:11:00.398Z",
-      "updatedAt": "2026-09-07T23:17:02.595Z",
-      "verify": "node agent/scripts/verify/KN-087.mjs"
+      "updatedAt": "2026-09-07T23:36:30.608Z",
+      "verify": "node agent/scripts/verify/KN-087.mjs",
+      "evidence": "The exit condition names two strings and requires both to fail the lint. Both do, verified by running eslint against them: src/gate-fixtures/unlocalized-aria.tsx holds aria-label=\"Delete this application\" and unlocalized-title.tsx holds title=\"Delete this application\", and each is rejected by lingui/no-unlocalized-strings by name rather than by any other error. Both are committed, both are required BY NAME by agent/scripts/verify/KN-003.mjs alongside three others it discovers, and agent/scripts/verify/KN-087.mjs checks the config and the behaviour separately, on the reasoning that a config can read correctly and be overridden by a later block. Two more routes to the same hole, both introduced by my own first fix, were found by round 1 and are closed with their own fixtures: copy shaped like a Storybook path, New/Applied, which the global shape exemption accepted in both props, and el.setAttribute(\"aria-label\", ...), which the setAttribute exemption accepted; AppProviders assigns documentElement.dir and .lang as properties now so nothing needs that exemption. Four planted breaks on the verifier, four caught. The whole gate stayed green: lint, tsc, 63 tests at 100 percent coverage on all four metrics, build and storybook build. What this does NOT establish, all filed with their own fixtures as the exit condition: the lower-case token-name value exemption still accepts aria-label=\"delete/application\", KN-094; the stories-only title exemption covers every JSX title in a story rather than only the meta, KN-095; a literal type alias walks past the rule through the type system with no exemption at all, KN-096; and .mdx is in the Storybook stories glob while no lingui block matches it, KN-097. Plus KN-093 for the resolved-config check and KN-092 for the import conventions nothing lints.",
+      "closedAt": "2026-09-07T23:36:30.608Z"
     },
     {
       "id": "KN-088",
@@ -2111,6 +2130,74 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T23:29:00.026Z"
+    },
+    {
+      "id": "KN-094",
+      "title": "The token-name value exemption reaches aria-label and title",
+      "desc": "The lingui rule ignores any value matching ^[a-z-]+/[a-z0-9-/]+$, added so a token name rendered as a label, bg/page, would pass. It applies to EVERY value, so aria-label=\"delete/application\" and title=\"delete/application\" both pass, verified by probe. Scope the exemption to where token names actually appear rather than to every string in the codebase, or drop it and localise the Foundations story labels.",
+      "why": "A roast rated this critical after finding it by probe. It is the third route into the same hole KN-087 closed twice: first the prop name, then a capitalised shape, now a lower-case one. The pattern across all three is an exemption written for one legitimate case that quietly covers every case, and the fix has to narrow the SCOPE rather than the pattern, or a fourth shape will be found.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-087"
+      ],
+      "status": "backlog",
+      "exit": "aria-label=\"delete/application\" and title=\"delete/application\" both fail npm run lint, a committed fixture holds both, the Foundations token story still passes, and agent/scripts/verify/KN-087.mjs requires the fixture by name.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T23:35:15.722Z"
+    },
+    {
+      "id": "KN-095",
+      "title": "The stories-only title exemption covers every JSX title, not just meta.title",
+      "desc": "The lingui block for *.stories.tsx exempts the property name title so a story meta can carry its sidebar path, App/Shell. ESLint matches the NAME wherever it appears, so <Box title=\"Delete this application\" /> inside a story also passes, verified by probe, and that renders a real tooltip in Storybook. Exempt the meta object specifically, by shape or by position, rather than the property name across the whole file.",
+      "why": "A roast rated this critical. It is the same defect as the shape-based exemption it replaced, one level narrower: scoping to stories files was better than scoping to a value shape and is still too wide, because a story renders the same components a screen does and its JSX is not metadata.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-087"
+      ],
+      "status": "backlog",
+      "exit": "A story containing <Box title=\"Delete this application\" /> fails npm run lint while the same file keeps its meta title App/Shell, a committed fixture holds both, and agent/scripts/verify/KN-087.mjs requires it by name.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T23:35:15.827Z"
+    },
+    {
+      "id": "KN-096",
+      "title": "A literal type alias carries an unlocalized string past the lingui rule",
+      "desc": "With useTsTypes enabled, assigning a string through a literal type alias and passing the variable to a prop passes the lint: type Label = \"Delete this application\"; const label: Label = \"Delete this application\"; <IconButton aria-label={label} />. No as, no any, no suppression, so nothing else in the gate objects either. Decide whether the rule can be configured to follow it, and if it cannot, add a check that flags a literal type alias whose value is a sentence.",
+      "why": "A roast rated this critical and it is the only one of the routes that needs no exemption at all: it walks past the rule through the type system. It matters because it is the shape a well-meaning contributor would write when trying to centralise strings, so it will arrive by accident rather than by evasion.",
+      "severity": "high",
+      "points": 3,
+      "area": "web",
+      "parent": [
+        "KN-087"
+      ],
+      "status": "backlog",
+      "exit": "The literal-type-alias form fails npm run lint or fails a dedicated check, a committed fixture holds it, and the check is proved by a planted break.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T23:35:32.682Z"
+    },
+    {
+      "id": "KN-097",
+      "title": "MDX story files are linted by no lingui block at all",
+      "desc": ".storybook/main.ts includes ../src/**/*.mdx in its stories glob, and neither lingui block in eslint.config.js matches an .mdx file: the source block is src/**/*.{ts,tsx} and the stories block is **/*.stories.tsx. So a supported src/foo.stories.mdx can render <button aria-label=\"Delete this application\" /> with no enforcement whatsoever. Either lint MDX with eslint-plugin-mdx and apply the rule, or stop accepting MDX in the stories glob and say so.",
+      "why": "A roast rated this critical. It is worse than the other routes because it needs no trick at all, and it lands exactly where KN-091 is heading: that card moves story prose into markdown, so MDX is about to carry real copy rather than being a theoretical path.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-087"
+      ],
+      "status": "backlog",
+      "exit": "An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T23:35:32.790Z"
     }
   ]
 }
