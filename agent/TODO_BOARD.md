@@ -10,7 +10,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-002` Read the Figma Documentations canvas and fold it into the contract** (critical, 3 pt, design)
 
-## In progress (1)
+## Awaiting roast (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -111,7 +111,7 @@ agent/RALPH.md (the iteration rules), agent/scripts/todo.mjs (the board tool, ze
 
 ### `KN-002` Read the Figma Documentations canvas and fold it into the contract
 
-- **status** in_progress · **severity** critical · **points** 3 · **area** design
+- **status** review · **severity** critical · **points** 3 · **area** design
 - **blocked by** KN-001
 
 Read canvas 5:8 "Documentations" in full, and canvas 5:7 "Screens", and write what they say into DESIGN.md: the flows, the open items, the field list of a Job Record, the rules the annotations state, and anything that contradicts what is already written.

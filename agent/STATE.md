@@ -139,6 +139,26 @@ nothing running locally under the author's own hand can prove the author honest.
 
 `npm run todo -- next` picks it. Do not choose by hand.
 
+**The gate is finished.** KN-001, KN-058 and KN-065 are closed, and the design
+contract is complete: `DESIGN.md` now carries the tokens, the component
+families, the Job Record, the frame-by-frame index of all fourteen
+documentation frames, the 53-screen inventory, the open questions and the RTL
+rules, all verified by `agent/scripts/verify/KN-002.mjs` and `KN-004.mjs`.
+
+What comes next is the product. KN-004 is a token sweep whose verifier already
+passes, then **KN-003, the web scaffold**, which is where the first line of
+product code gets written. Its card carries the three version pins that have
+been resolved from the registry rather than guessed: `typescript ~6.0.x`,
+because typescript-eslint AND eslint-plugin-lingui both refuse 7; the whole
+vitest line at `4.1.11`, because @vitest/browser-playwright peers vitest
+exactly and the Storybook addon peers that at ^4; and `stylis` at `4.2.0` in a
+root `overrides`, because @emotion/cache bundles that exact version and the RTL
+plugin peers `4.x`, so a plain install crashes on every `::placeholder` rule.
+
+**11 points to a public deployed page**: KN-003 then KN-051. The Pages deploy
+was re-pointed off CI, which had it waiting on the NestJS scaffold for no
+reason.
+
 KN-058 is in review with its roast running. When it lands: adjudicate, file the
 survivors, record with `--filed`, close with `--evidence`, then take the next
 card. The board currently hands back the gate repairs KN-001's final round

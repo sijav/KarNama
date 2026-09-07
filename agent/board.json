@@ -119,7 +119,7 @@
       "parent": [
         "KN-001"
       ],
-      "status": "in_progress",
+      "status": "review",
       "exit": "DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down.",
       "roasts": [],
       "notes": [
@@ -137,7 +137,7 @@
         "From frame 376:2, the product in one sentence: KarNama is a Persian right-to-left job application tracker; the user pastes a link or the text of a posting, the information is extracted automatically, and the posting moves between statuses on a kanban board. That independently confirms both the kanban decision and the extraction service being core rather than optional. The file also names two reference products the designer worked against, Huntr and Teal, which are the comparables to consult when a design question is genuinely ambiguous. Project status at time of writing: a 14 day sprint on day 8, two person team."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:45:37.318Z",
+      "updatedAt": "2026-09-07T21:45:38.271Z",
       "verify": "node agent/scripts/verify/KN-002.mjs"
     },
     {
