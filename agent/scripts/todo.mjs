@@ -12,6 +12,7 @@
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -37,7 +38,25 @@ const ROOT = dirname(AGENT_DIR)
  * It is not a bypass. Closing a task in a throwaway copy changes nothing about
  * the board that is committed.
  */
-const BOARD_PATH = process.env.KARNAMA_BOARD ? resolve(process.env.KARNAMA_BOARD) : join(AGENT_DIR, 'board.json')
+const overrideBoard = () => {
+  const requested = resolve(process.env.KARNAMA_BOARD)
+  // Constrained to the repository or the system temp directory. Unrestricted,
+  // it was an arbitrary output redirect: any leaked or mistaken value sent
+  // `render` and every mutating command to write a board and a TODO_BOARD.md
+  // beside some unrelated file.
+  const allowed = [realpathSync(dirname(AGENT_DIR)), realpathSync(tmpdir())]
+  const parent = existsSync(dirname(requested)) ? realpathSync(dirname(requested)) : dirname(requested)
+  if (!allowed.some((root) => parent === root || parent.startsWith(`${root}${sep}`))) {
+    process.stderr.write(
+      `KARNAMA_BOARD points at ${requested}, which is neither inside the repository nor inside the system temp directory.\n` +
+        'It exists so a verifier can drive this CLI against a throwaway copy, not to redirect the board anywhere.\n',
+    )
+    process.exit(1)
+  }
+  return requested
+}
+
+const BOARD_PATH = process.env.KARNAMA_BOARD ? overrideBoard() : join(AGENT_DIR, 'board.json')
 const RENDER_PATH = process.env.KARNAMA_BOARD
   ? join(dirname(BOARD_PATH), 'TODO_BOARD.md')
   : join(AGENT_DIR, 'TODO_BOARD.md')

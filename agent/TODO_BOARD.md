@@ -814,6 +814,8 @@ Make verify mandatory rather than optional at close. Today a task with no verify
 
 **Exit condition.** move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one.
 
+**Roasts.** round 1 scored 3.5 with 1 critical(s)
+
 ### `KN-066` Apply contract exceptions per sentence, not per field
 
 - **status** backlog · **severity** high · **points** 2 · **area** agent

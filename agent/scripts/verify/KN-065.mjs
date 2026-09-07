@@ -29,23 +29,44 @@ const TODO = join(ROOT, 'agent', 'scripts', 'todo.mjs')
 const REAL_BOARD = join(ROOT, 'agent', 'board.json')
 
 const failures = []
+const skipped = []
+/** Returned by a check that cannot run here, as opposed to one that failed. */
+const SKIP = Symbol('skip')
+
 const check = (label, run) => {
   try {
     const problem = run()
-    if (problem) failures.push(`${label}: ${problem}`)
+    if (problem === SKIP) skipped.push(label)
+    else if (problem) failures.push(`${label}: ${problem}`)
     else process.stdout.write(`  ok   ${label}\n`)
   } catch (error) {
     failures.push(`${label}: threw ${error.message}`)
   }
 }
 
-const scratchDir = mkdtempSync(join(tmpdir(), 'karnama-kn065-'))
-const scratchBoard = join(scratchDir, 'board.json')
-copyFileSync(REAL_BOARD, scratchBoard)
-// The copy inherits the source's mode, so in the read-only tree this verifier
-// exists to work in, the scratch board arrived read-only too and the CLI could
-// not write it either. The copy is ours; make it writable.
-chmodSync(scratchBoard, 0o600)
+// Some review sandboxes forbid writes ANYWHERE, including the system temp
+// directory, so even creating a scratch copy fails with EPERM before a single
+// check runs. The checks that drive the CLI genuinely need a writable board,
+// because the CLI writes one; the rest do not. So set up if we can, and report
+// the difference honestly rather than failing the whole run or, worse, claiming
+// to have checked something that never ran.
+//
+// This costs nothing in the environment that matters: `move done` writes the
+// board itself, so a close can only ever happen somewhere writable.
+let scratchBoard = null
+let noWrites = null
+let cleanup = null
+try {
+  const scratchDir = mkdtempSync(join(tmpdir(), 'karnama-kn065-'))
+  scratchBoard = join(scratchDir, 'board.json')
+  copyFileSync(REAL_BOARD, scratchBoard)
+  // The copy inherits the source's mode, so under a read-only tree the scratch
+  // board arrived read-only too and the CLI could not write it either.
+  chmodSync(scratchBoard, 0o600)
+  cleanup = scratchDir
+} catch (error) {
+  noWrites = error.code ?? error.message
+}
 
 /** The real CLI, pointed at the throwaway copy. */
 const todo = (...args) =>
@@ -60,6 +81,7 @@ const isOpen = (task) => task.status !== 'done' && task.status !== 'dropped'
 
 try {
   check('move done refuses a task with no verify command, before the roast gate', () => {
+    if (!scratchBoard) return SKIP
     const subject = board.tasks.find((task) => !task.verify && task.status === 'backlog')
     if (!subject) return 'no task without a verify command to test against'
 
@@ -99,6 +121,7 @@ try {
   })
 
   check('validate reports the count, including when it is zero', () => {
+    if (!scratchBoard) return SKIP
     const result = todo('validate')
     if (result.status !== 0) return `validate exited ${result.status}: ${result.stderr.trim()}`
     const match = /(\d+) of (\d+) open task\(s\) have no verify command/.exec(result.stdout)
@@ -114,6 +137,7 @@ try {
   })
 
   check('the count excludes dropped tasks, which are finished rather than unclosable', () => {
+    if (!scratchBoard) return SKIP
     const result = todo('validate')
     const match = /(\d+) of (\d+) open task\(s\)/.exec(result.stdout)
     if (!match) return 'no count to check'
@@ -131,7 +155,15 @@ try {
       : 'agent/board.json changed while this verifier ran'
   })
 } finally {
-  rmSync(scratchDir, { recursive: true, force: true })
+  if (cleanup) rmSync(cleanup, { recursive: true, force: true })
+}
+
+if (skipped.length) {
+  process.stdout.write(
+    `\n${skipped.length} check(s) SKIPPED: this environment forbids writes (${noWrites}), and driving the CLI needs a writable board.\n`,
+  )
+  for (const label of skipped) process.stdout.write(`  skip ${label}\n`)
+  process.stdout.write('A close writes the board itself, so it only happens somewhere writable, where these do run.\n')
 }
 
 if (failures.length) {

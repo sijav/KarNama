@@ -219,8 +219,11 @@
       "status": "backlog",
       "exit": "A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "From frame 376:43: Persian text carries invisible characters, so a plain === comparison between two Persian strings can fail. Normalise with NFC before comparing, and do NOT strip the zero-width non-joiner: it is meaningful in Persian, «می‌شود» is not «میشود». Any test asserting a Persian catalog string needs this, and a test that trims the ZWNJ is asserting the wrong string."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T21:35:16.187Z"
     },
     {
       "id": "KN-007",
@@ -396,10 +399,11 @@
       "exit": "All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable.",
       "roasts": [],
       "notes": [
-        "Card hover is Smart Animate 300ms in the prototype: the checkbox and the delete icon appear and the title moves forward. Per frame 416:14 these are component-level variant reactions rather than separate screens."
+        "Card hover is Smart Animate 300ms in the prototype: the checkbox and the delete icon appear and the title moves forward. Per frame 416:14 these are component-level variant reactions rather than separate screens.",
+        "From frame 376:43: the card keeps its height on hover by toggling visibility rather than removing the node. In CSS that means visibility hidden or opacity 0 for the checkbox and delete icon, never display none, or the card reflows and jumps under the cursor as it is hovered."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:21:53.260Z"
+      "updatedAt": "2026-09-07T21:35:16.607Z"
     },
     {
       "id": "KN-016",
@@ -1419,7 +1423,19 @@
       ],
       "status": "review",
       "exit": "move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3.5,
+          "criticals": 1,
+          "file": "agent/roasts/KN-065-round-1.2026-09-07T21-29-30-153Z.md",
+          "cardDigest": "e88aedfa676bf5416ba1f7be7a8cc3198a8b7d019b7affc445f7ec1c9d75dea6",
+          "head": "50797a55380b51328797dadd64d7228c4c86f4af",
+          "reviewerScore": 3.5,
+          "reviewerCriticals": 1,
+          "at": "2026-09-07T21:33:33.623Z"
+        }
+      ],
       "notes": [
         "ORDERING NOTE. Once move done requires a verify command, every task from that point on must write its own verifier as part of doing the work, which is the intent rather than a side effect: the verifier is how the exit condition stops being a wish. It does NOT mean KN-054 must run first, because a task written after this lands will carry its verify already. KN-054's remaining job is therefore the two halves that this task does not cover: backfilling the tasks that predate the rule, and making validate report or fail on a task that has none. Check that framing against KN-054's card when picking it up so the two do not overlap."
       ],
