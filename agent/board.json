@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 98,
+  "nextId": 99,
   "tasks": [
     {
       "id": "KN-001",
@@ -2040,11 +2040,13 @@
       "parent": [
         "KN-003"
       ],
-      "status": "backlog",
+      "status": "review",
       "exit": "The planted broken test is detected through the configuration npm test uses, and a mutation that empties the real unit project include makes agent/scripts/verify/KN-003.mjs fail rather than pass.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T23:11:00.511Z"
+      "createdAt": "2026-09-07T23:11:00.511Z",
+      "updatedAt": "2026-09-07T23:42:20.930Z",
+      "verify": "node agent/scripts/verify/KN-088.mjs"
     },
     {
       "id": "KN-089",
@@ -2198,6 +2200,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T23:35:32.790Z"
+    },
+    {
+      "id": "KN-098",
+      "title": "Prove the STORYBOOK test project reports a failure too",
+      "desc": "KN-088 proves the real unit project detects a broken test. The storybook project, which runs every story in headless Chromium and is where component behaviour is actually checked, has no such proof: its story set comes from the stories glob in .storybook/main.ts, so a fixture story needs that glob to admit it. Add a gate story with a play function that asserts something untrue, admitted only in gate mode, and require the run to report it.",
+      "why": "The storybook project is the half of the suite that renders anything. If it silently ran zero stories, or swallowed a failing play function, every component task after this would report green having checked nothing, and the unit project passing would hide it. This is the same question KN-088 asks, aimed at the project that matters more.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-088"
+      ],
+      "status": "backlog",
+      "exit": "A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T23:37:18.473Z"
     }
   ]
 }

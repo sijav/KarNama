@@ -7,6 +7,25 @@ import { defineConfig } from 'vitest/config'
 const dirname = fileURLToPath(new URL('.', import.meta.url))
 
 /**
+ * Gate mode: `KARNAMA_GATE_FIXTURES=1 npm test` adds the fixture that is
+ * supposed to fail to the unit project, ON TOP of the ordinary include rather
+ * than instead of it.
+ *
+ * This exists because the earlier proof ran the fixture through a separate
+ * config file, which established that vitest can report a failure and NOT that
+ * the gate this repository runs would have caught one. The real unit project
+ * could have been excluded, emptied or misconfigured and that proof stayed
+ * green. Adding to the same array means emptying it shows up in both directions:
+ * the ordinary run drops to zero tests and the gate run stops reporting any
+ * passes alongside the failure.
+ *
+ * `.gate.ts` rather than `.test.ts` is what keeps the fixture out of an
+ * ordinary run, so this flag is the only way in.
+ */
+const unitInclude = ['src/**/*.test.ts']
+const gateMode = Boolean(process.env.KARNAMA_GATE_FIXTURES)
+
+/**
  * Two projects, deliberately.
  *
  * `unit` runs in node against the things that have no DOM: the token set, the
@@ -33,11 +52,7 @@ export default defineConfig({
         test: {
           name: 'unit',
           environment: 'node',
-          // The failing fixture is named `.gate.ts`, so this pattern cannot
-          // reach it and no exclude is needed. An exclude was worse: it made
-          // vitest report "no test files found" when the verifier named the
-          // file explicitly.
-          include: ['src/**/*.test.ts'],
+          include: gateMode ? [...unitInclude, 'src/gate-fixtures/**/*.gate.ts'] : unitInclude,
         },
       },
       {

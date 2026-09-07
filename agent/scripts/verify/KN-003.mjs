@@ -46,8 +46,8 @@ const check = (label, run) => {
  * read from the board or the environment, so there is nothing here for a shell
  * to interpolate.
  */
-const run = (command) =>
-  spawnSync(command, { cwd: WEB, encoding: 'utf8', shell: true, env: { ...process.env, CI: '1', FORCE_COLOR: '0' } })
+const run = (command, extraEnv = {}) =>
+  spawnSync(command, { cwd: WEB, encoding: 'utf8', shell: true, env: { ...process.env, CI: '1', FORCE_COLOR: '0', ...extraEnv } })
 
 if (!existsSync(WEB)) {
   process.stderr.write('KN-003 verify FAILED: apps/web does not exist\n')
@@ -145,19 +145,40 @@ check('EVERY planted unlocalized string FAILS the lint', () => {
   return problems.length ? problems.join(' | ') : null
 })
 
-check('a planted broken test FAILS the run', () => {
-  const result = run('npx vitest run --config src/gate-fixtures/vitest.gate.config.ts')
+check('a planted broken test FAILS the REAL test project', () => {
+  // Through `npm test` and the real `vitest.config.ts`, not a config of its
+  // own. The earlier version ran the fixture against a separate config file,
+  // which established that vitest can report a failure and NOT that the gate
+  // this repository runs would have caught one: the real unit project could
+  // have been emptied or misconfigured and that proof stayed green. KN-088.
+  if (!existsSync(join(WEB, 'src', 'gate-fixtures', 'failing.gate.ts'))) return 'the failing fixture is missing or renamed'
+
+  const result = run('npm test', { KARNAMA_GATE_FIXTURES: '1' })
   if (result.status === 0) return 'the fixture that asserts 1 + 1 is 3 passed, so the runner is not reporting failures'
   const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
-  return /1 failed/.test(output) ? null : `it exited non-zero, but no test was reported as failing:\n${output.slice(0, 600)}`
+
+  // Three things, because any one of them alone can be true while the gate is
+  // broken. The fixture was reported failing; it was the `unit` PROJECT that
+  // reported it, not some other runner; and the ordinary tests still ran
+  // alongside it, so an empty include cannot masquerade as a working gate.
+  if (!/1 failed/.test(output)) return `it exited non-zero, but no test was reported as failing:\n${output.slice(0, 500)}`
+  if (!/\|unit\|.*failing\.gate\.ts/.test(output)) return 'the failure was not reported by the unit project against the fixture'
+  const alsoPassed = /Tests\s+1 failed \| (\d+) passed/.exec(output)
+  if (!alsoPassed) return 'the run reported a failure but no passing count, so the ordinary tests may not have run'
+  return Number(alsoPassed[1]) >= 20 ? null : `only ${alsoPassed[1]} tests passed alongside it, so the include has been emptied`
 })
 
-check('the failing fixture cannot leak into the ordinary run', () => {
-  // Named `.gate.ts` rather than `.test.ts` precisely so the include pattern
-  // cannot reach it. If someone renames it back, `npm test` starts failing for
-  // a reason nobody will connect to this directory.
-  if (!existsSync(join(WEB, 'src', 'gate-fixtures', 'failing.gate.ts'))) return 'the failing fixture is missing or renamed'
-  return /include:\s*\['src\/\*\*\/\*\.test\.ts'\]/.test(vitestConfig) ? null : 'the unit include pattern no longer excludes it by name'
+check('the failing fixture cannot leak into an ORDINARY run', () => {
+  // Named `.gate.ts` rather than `.test.ts`, so the ordinary include cannot
+  // reach it and the flag is the only way in. If someone renames it back,
+  // `npm test` starts failing for a reason nobody will connect to this
+  // directory.
+  if (!/const unitInclude = \['src\/\*\*\/\*\.test\.ts'\]/.test(vitestConfig)) {
+    return 'the ordinary unit include is no longer exactly the .test.ts pattern'
+  }
+  return /gateMode \? \[\.\.\.unitInclude/.test(vitestConfig)
+    ? null
+    : 'gate mode no longer ADDS to the ordinary include, so emptying it would go unnoticed'
 })
 
 if (failures.length) {
