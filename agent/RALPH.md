@@ -192,7 +192,17 @@ Then, and this is the part that was wrong for ten rounds:
 **The test for fix-or-file is mechanical, so it cannot be argued with:**
 
 > Fix in-task ONLY when the task's own `verify` script FAILS because of the
-> finding. If the verifier still passes, it is a card. However tempting.
+> finding, **or when the finding is that the verifier PASSES DISHONESTLY**:
+> that it reports success without having established the exit condition.
+> Otherwise it is a card. However tempting.
+
+The second clause is not a loophole, it is the hole the first one cannot see.
+"Does the verifier fail" cannot catch a verifier that succeeds while checking
+nothing, because by construction that verifier passes. KN-065 hit exactly that:
+a version of it skipped three of its four substantive assertions in the
+reviewer's environment and still printed "verify passed", turning a visible
+crash into an invisible false pass. Filing that and closing on it would have
+been closing on a verifier known to be lying.
 
 An earlier wording said "cheap, obviously right, and inside this task's exit
 condition", and that was too loose: almost any finding about a task can be
