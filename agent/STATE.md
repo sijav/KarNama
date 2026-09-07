@@ -11,7 +11,7 @@ from there:
 
 ```bash
 npm run todo -- next            # what to work on
-npm run todo -- show KN-001     # a card, its roast rounds and its notes
+npm run todo -- show KN-004     # a card, its roast rounds and its notes
 npm run todo -- list            # everything, with blockers marked
 ```
 
@@ -28,9 +28,9 @@ structures it into a record, and the record carries a status through the search.
 
 **Scope is closed.** Scenarios 1 and 2, searching boards and showing aggregated
 ads, were cut by the mentor's filter 4. **Crawling job sites is permanently
-out**, and a second teammate does not bring it back. Two owner additions: third
-parties can leave comments or suggested changes, stored for later evaluation
-rather than applied, and there is an admin panel over what users submit.
+out.** Two owner additions: third parties can leave comments or suggested
+changes, stored for later evaluation rather than applied, and there is an admin
+panel over what users submit.
 
 Stack and standing decisions:
 
@@ -39,8 +39,7 @@ Stack and standing decisions:
   coverage. **Components first with their stories, then screens.**
 - GraphQL with NestJS. Render free tier, Supabase Postgres, cold start about 50
   seconds which the UI must handle honestly.
-- GitHub Pages for the web app. Repo `sijav/KarNama`, public, **empty, and no
-  git remote has been added yet**.
+- GitHub Pages for the web app.
 - lingui, **English is the source**, Persian is the translation.
 - **Match the design exactly**, not approximately.
 - **Auth is phone OTP**, mobile number then a five digit code, email as a
@@ -51,153 +50,77 @@ Stack and standing decisions:
 ## Where things stand
 
 **Nothing of the product exists yet.** No app, no API, no components. What
-exists is the machine that will build them, and a design contract that has been
-verified against Figma rather than asserted.
+exists is the machine that builds them and a design contract checked against
+Figma rather than asserted.
 
-- `agent/RALPH.md`, the loop. `agent/scripts/todo.mjs`, the board, zero
-  dependencies. `agent/scripts/roast.mjs`, the Codex harness on
-  `gpt-5.6-terra`. `agent/scripts/lib/{worktree,card}.mjs`, the single
-  definitions of "unreviewed work" and "the reviewed card".
-- `agent/scripts/verify/KN-001.mjs`, `KN-004.mjs` and `contract.mjs`, real
-  checks, each tested against planted breaks rather than only against success.
-  A `verify` command must be `node agent/scripts/verify/<name>.mjs`, and both
-  that directory and the target are resolved with `realpathSync` and required to
-  sit inside the real repository root.
-- `AGENTS.md`, `DESIGN.md`, `TECH-DEBT.md`, `CLAUDE.md`, root workspace config.
-- `.claude/ralph-loop.local.md`, the loop armed, promise `KARNAMA-DONE`.
+`sijav/KarNama` is **live**: remote `origin` added, `main` pushed, public. The
+repository holds the loop, the board tool, the Codex harness, `AGENTS.md`,
+`DESIGN.md`, `TECH-DEBT.md`, and the verifiers.
 
-`DESIGN.md` carries the verified token set, the corrected five-role type scale,
-the kanban structure, three destinations, phone OTP, the terminology rule, the
-inline-editing rules, and a section of open questions the design has NOT
-settled. `agent/scripts/verify/KN-004.mjs` asserts the token tables against
-Figma and fails when any value is corrupted.
+**`agent/figma-capture/` is new and it is the point.** Raw `get_metadata`
+responses for canvas `5:7` and `5:8` are committed with their sha256 in
+`agent/design-manifest.json`, so the screen list, the documentation frame list,
+the pending-item inventory and the copy-change counts are all **derived from a
+committed artefact** rather than written by whoever wrote the document.
+`.gitattributes` marks them `-text` so a clone cannot break a digest.
 
-## The loop's law was corrected, and this is the correction
+**What that still cannot show, and DESIGN.md now says so.** `get_metadata`
+returns layer *names*, and Figma caps an auto-generated one: 64 of the 148 names
+in the documentation capture sit at the cap, cut mid phrase. The inventory is a
+floor, not a ceiling. **KN-079** carries the text capture that would fix it and
+**KN-078** the coverage check that depends on it. Round 4 of KN-002 rated this
+critical and argued the task should have stayed open; that objection is recorded
+on KN-079 rather than dismissed.
 
-The owner caught a real mistake. The rule is: **finish a task, roast it, roast
-the roast, FILE what survives as new to-dos, and move on to the next to-do.**
-What was built instead was roast, fix, re-roast until a score cleared a bar, and
-that is why one three point task absorbed eleven rounds while sixty others
-waited, each round finding smaller things than the last.
+## The lesson this iteration actually taught
 
-So `move done` no longer looks at a score. It requires a manifest-bound round, a
-record of **what was filed** from adjudicating it, `--evidence`, a passing
-`verify`, and no unreviewed work. **A task with surviving findings closes**,
-because its findings are on the board where they get scheduled against
-everything else.
+KN-002 took four rounds, and every round found the same defect in a new place:
+**an unchecked claim replaced by another unchecked claim.** "All sixteen copy
+changes were applied" was false. Correcting it to "fourteen of sixteen" was
+itself unverified. Stating the truncation as "63 of 148" was a guess. Each fix
+was only real once the number was **derived from the capture and the document
+required to match it**.
 
-Fix a finding inside the task only when it is cheap, obviously right, and inside
-that task's exit condition. Everything else is a card. Do not re-roast to grind
-a score up.
-
-**That criterion was too loose, and it cost KN-058 three rounds.** Almost any
-finding can be argued to be "inside the exit condition", so it licensed fixing
-rather than filing twice in a row, and each fix changed the work after the
-review and bought another round. It is now mechanical, and it is in RALPH.md:
-
-> Fix in-task ONLY when the task's own `verify` script FAILS because of the
-> finding. If the verifier still passes, it is a card, however tempting.
-
-A finding about missing test coverage never fails a verifier, which is what
-KN-058's first two rounds both were, so both should have been cards. The third
-round's finding WAS filed, as KN-068, and the task closed in one step.
-
-**The questions shape how many rounds a task takes.** The gate tasks attracted
-eleven, three and three rounds because they were asked adversarial "attack this"
-questions, and an adversarial reviewer can always find one more environmental
-edge case. That was right for the gate, whose whole job is to resist misuse. It
-is the wrong shape for a component.
-
-For product work, ask questions that CONVERGE: does this match the Figma node
-exactly, which drawn state is missing, does it hold up in both languages and
-both directions, what does the test not actually assert. Those have answers that
-run out. Save "attack this" for something whose purpose is to be attacked.
-
-**Every task now needs a verify script to close** (KN-065), checked before the
-roast gate so the advice is the actionable one. `validate` reports how many open
-tasks still lack one. Write it at `agent/scripts/verify/<id>.mjs`, make it
-assert as much of the exit condition as a command can, **and prove it fails by
-planting a break** before trusting it. Keep it read-only with respect to the
-repository: snapshot and restore anything it touches, and use
-`agent/scripts/verify/fixtures/always-fails.mjs` rather than writing scratch
-files, so it runs in the read-only tree a reviewer uses.
-
-## KN-001, closed after eleven rounds
-
-Read its round history with `npm run todo -- show KN-001`. Every finding across
-every round was accepted and none rejected. What they found, in summary: the
-close gate was bypassable six different ways, the documented close path
-deadlocked, a rename could hide work from the gate, the `review` state was
-decorative, the "tokens transcribed" claim was false while the verifier passed,
-and most recently the board's own cards contradicted the design contract.
-
-The forgery line was **scoped, not chased**. `TECH-DEBT.md` entry 1 states that
-the gate defends against carelessness and drift, not deliberate fraud, because
-nothing running locally under the author's own hand can prove the author honest.
+The second lesson is the loop's own rule. `agent/RALPH.md` step 5 permits fixing
+in-task when the verifier fails **or when it passes dishonestly**, and the second
+clause has no bound, so it was invoked three rounds running. Every roast of a
+verifier can be phrased that way. **KN-080** bounds it to once per task. Until it
+lands, read the trigger prompt's wording as the rule: if the verify script
+passes, it is a card.
 
 ## Next step
 
 `npm run todo -- next` picks it. Do not choose by hand.
 
-**The gate is finished.** KN-001, KN-058 and KN-065 are closed, and the design
-contract is complete: `DESIGN.md` now carries the tokens, the component
-families, the Job Record, the frame-by-frame index of all fourteen
-documentation frames, the 53-screen inventory, the open questions and the RTL
-rules, all verified by `agent/scripts/verify/KN-002.mjs` and `KN-004.mjs`.
+**KN-004 is in review with its roast running.** When it lands: adjudicate, file
+the survivors, record with `--filed`, close with `--evidence`. It corrected a
+false statement in the contract (Card was called the only elevation, and
+Elevation/Modal exists) and traced every off-board token to the frame it was
+read from, which turned up `red/700` and `black/base`, neither previously
+recorded.
 
-What comes next is the product. KN-004 is a token sweep whose verifier already
-passes, then **KN-003, the web scaffold**, which is where the first line of
-product code gets written. Its card carries the three version pins that have
-been resolved from the registry rather than guessed: `typescript ~6.0.x`,
-because typescript-eslint AND eslint-plugin-lingui both refuse 7; the whole
-vitest line at `4.1.11`, because @vitest/browser-playwright peers vitest
-exactly and the Storybook addon peers that at ^4; and `stylis` at `4.2.0` in a
-root `overrides`, because @emotion/cache bundles that exact version and the RTL
-plugin peers `4.x`, so a plain install crashes on every `::placeholder` rule.
+Then **KN-003, the web scaffold**, where the first line of product code gets
+written. Its card carries the dependency matrix, and that matrix is now
+**proven, not resolved**: 477 packages installed clean in a scratch workspace and
+esbuild, swc, tsc 6.0.3, vite 8.2.2, vitest 4.1.11, eslint 10.9.1 and playwright
+1.62.1 all execute. npm blocks the swc and esbuild postinstalls under
+`allowScripts`, which is harmless because both ship platform binaries, but
+**Playwright will need an explicit `playwright install`**. The pins that are not
+negotiable: `typescript ~6.0.x` because typescript-eslint and
+eslint-plugin-lingui both refuse 7, the whole vitest line at `4.1.11`, and
+`stylis` at `4.2.0` in a root `overrides` or every `::placeholder` rule crashes.
 
-**11 points to a public deployed page**: KN-003 then KN-051. The Pages deploy
-was re-pointed off CI, which had it waiting on the NestJS scaffold for no
-reason.
+**11 points to a public deployed page**: KN-003 then KN-051.
 
-KN-058 is in review with its roast running. When it lands: adjudicate, file the
-survivors, record with `--filed`, close with `--evidence`, then take the next
-card. The board currently hands back the gate repairs KN-001's final round
-produced, KN-065 first, then KN-002 and the scaffold.
-
-**The board was NOT complete.** The owner asked, and the honest answer was no.
-Auditing it found five missing things, now filed: the kanban column as its own
-component (KN-060), dragging a card between columns with a keyboard path
-(KN-061), shared story fixtures (KN-062), an accessibility gate (KN-063), and
-the third-party feedback submission surface (KN-064), which had an API and a
-moderation queue but nothing anyone could submit through.
-
-67 tasks, 317 points, every one reachable from the dependency graph. Read the
-current numbers from the board rather than from this paragraph.
-
-Then **KN-002**, which the owner named. Its card carries detailed notes from the
-Documentation and Screens canvases; read them with `npm run todo -- show KN-002`.
-
-Cards that contradicted the design have been rewritten, and the two tasks the
-plan was missing, the standalone network screen and the posting extraction
-service, are filed as KN-056 and KN-057.
-
-**Do not take that reconciliation on trust.** It was claimed complete twice and
-was wrong twice, both times because the cards someone remembered were edited
-instead of every card being checked. That is now a command, not a memory:
-
-```bash
-npm run contract
-```
-
-One rule per settled design decision, each naming its `DESIGN.md` anchor, each
-with an exception list so a card that records a prohibition is not mistaken for
-one that instructs it. It carries a canary, so a clean result means the rules can
-still fire, and it fails when `DESIGN.md` stops saying what a rule assumes.
-
-KN-002's remaining work is the full 53-screen inventory and the Job Record field
-list, and it ends by running that check rather than asserting the result.
+**The gate cannot currently be run.** `npm run lint`, `lint:tsc`, `test` and
+`build` all exit non-zero with "No workspaces found!", because `package.json`
+declares workspaces that do not exist. Filed as **KN-084**. KN-003 will make
+three of them work; the card is what makes the fourth honest.
 
 ## What to read first
 
 `AGENTS.md`, `DESIGN.md`, `agent/RALPH.md`, `agent/TODO_BOARD.md`. In that
-order, every iteration, before touching anything.
+order, every iteration, before touching anything. Then `npm run contract`, which
+is the only trustworthy answer to "do the cards still agree with the design":
+that reconciliation was claimed complete twice and was wrong twice, because the
+cards someone remembered were edited instead of every card being checked.

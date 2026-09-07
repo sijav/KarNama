@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 85,
+  "nextId": 87,
   "tasks": [
     {
       "id": "KN-001",
@@ -225,10 +225,11 @@
         "ROOT INSTALL PULLS TYPESCRIPT 7 TODAY. prettier-plugin-organize-imports peers typescript >=2.9 as a non-optional peer, so a bare npm install at the root resolves TypeScript 7.0.2, which is exactly the version that breaks typescript-eslint. Declare typescript explicitly in the root devDependencies pinned to ~6.0.x so the peer resolves to the pin rather than to latest, and check after installing that only one TypeScript version is present in the tree. Confirmed separately that npm install is happy with workspaces pointing at directories that do not yet contain a package.json, so the workspace declaration does not have to wait for the apps to exist.",
         "VERIFIED DEPENDENCY MATRIX, every peer range checked against the registry. react and react-dom 19.2.8; vite 8.2.2; @vitejs/plugin-react-swc 4.3.3 (peers vite ^4 to ^8); typescript ~6.0.x NOT 7, because typescript-eslint peers <6.1.0 and eslint-plugin-lingui peers ^5 or ^6; eslint 10.10.0 with eslint-plugin-lingui 0.15.0 (peers eslint ^8.37 or ^9 or ^10); @mui/material 9.4.0 (peers react ^19); storybook, @storybook/react-vite, @storybook/addon-vitest, @storybook/addon-a11y, @storybook/addon-docs and eslint-plugin-storybook all 10.6.0, and react-vite peers vite ^5 to ^8 so vite 8 is fine; the ENTIRE vitest line at exactly 4.1.11, vitest plus @vitest/browser plus @vitest/browser-playwright plus @vitest/coverage-v8, because vitest 4.1.11 pins each companion to its own exact version and the Storybook addon peers browser-playwright at ^4, and vitest peers vite ^6 to ^8 and @types/node >=24 so node 24 is fine; @playwright/test 1.63.0; @lingui/core, @lingui/react, @lingui/cli and @lingui/format-po 6.6.0 with @lingui/swc-plugin 6.7.0; @fontsource-variable/vazirmatn 5.3.0; and a root overrides entry pinning stylis to 4.2.0 because @emotion/cache depends on exactly that while @mui/stylis-plugin-rtl 9.4.0 peers 4.x, so a plain install resolves 4.4.0 and emotion crashes on every ::placeholder rule. Declare typescript explicitly at the root too, or prettier-plugin-organize-imports pulls TypeScript 7 in as a peer.",
         "PROVEN INSTALLABLE SET, resolved in a throwaway directory with npm install --package-lock-only: 586 packages, one stylis at 4.2.0. The min-release-age=7 rule in the user npmrc means LATEST IS OFTEN NOT INSTALLABLE, and it differs from latest in six places. Use exactly: react and react-dom 19.0.8, vite 8.2.2, typescript 6.0.3, eslint 10.9.1, typescript-eslint 8.68.0, the whole storybook line at 10.5.10 including react-vite, addon-vitest, addon-a11y, addon-docs and eslint-plugin-storybook, the whole vitest line at 4.1.11 including browser, browser-playwright and coverage-v8, @playwright/test and playwright 1.62.1, eslint-plugin-lingui 0.14.0, @mui/material and icons-material and stylis-plugin-rtl 9.4.0, @apollo/client 4.2.12, @lingui/core and react and cli and format-po 6.6.0, @lingui/swc-plugin 6.7.0, @vitejs/plugin-react-swc 4.3.3, @fontsource-variable/vazirmatn 5.3.0, plus a root overrides pinning stylis to 4.2.0. Every peer range was checked at THESE versions, not at latest: addon-vitest 10.5.10 peers vitest ^3 or ^4 and browser-playwright ^4, eslint-plugin-lingui 0.14.0 peers eslint ^8.37 or ^9 or ^10 and typescript ^5 or ^6, typescript-eslint 8.68.0 peers typescript <6.1.0. Two packages have install scripts blocked by the allowScripts policy, @swc/core and esbuild, which will need an allowScripts entry in package.json.",
-        "TOOLCHAIN PROVEN, not just resolved. The pinned dependency matrix on this card was installed for real into a scratch workspace: 477 packages, no peer conflicts, one stylis at 4.2.0 via the override. Then each tool was executed, not merely resolved: esbuild transforms TypeScript, @swc/core transforms, tsc reports 6.0.3, vite reports 8.2.2, vitest reports 4.1.11. npm blocked the postinstall scripts of @swc/core and esbuild because they are not covered by allowScripts, and it does NOT matter on this platform: both ship their binary as an optional platform package, and @esbuild/win32-x64/esbuild.exe and @swc/core-win32-x64-msvc/swc.win32-x64-msvc.node were both present and working. Playwright is the one that will need allowScripts or an explicit `playwright install`, because its browsers are a download rather than a package."
+        "TOOLCHAIN PROVEN, not just resolved. The pinned dependency matrix on this card was installed for real into a scratch workspace: 477 packages, no peer conflicts, one stylis at 4.2.0 via the override. Then each tool was executed, not merely resolved: esbuild transforms TypeScript, @swc/core transforms, tsc reports 6.0.3, vite reports 8.2.2, vitest reports 4.1.11. npm blocked the postinstall scripts of @swc/core and esbuild because they are not covered by allowScripts, and it does NOT matter on this platform: both ship their binary as an optional platform package, and @esbuild/win32-x64/esbuild.exe and @swc/core-win32-x64-msvc/swc.win32-x64-msvc.node were both present and working. Playwright is the one that will need allowScripts or an explicit `playwright install`, because its browsers are a download rather than a package.",
+        "RTL PIPELINE PROVEN, which was the one risk in this matrix that is not a version question. Driving stylis directly with @mui/stylis-plugin-rtl at stylis 4.2.0, @emotion/cache 11.14.0 and the plugin at 9.4.0: padding-left became padding-right, margin-right became margin-left, border-top-left-radius became border-top-right-radius, text-align left became right, and the ::placeholder rule that the version conflict used to crash on came through flipped and vendor-prefixed. A negative control confirms the flipper is not echoing input. So the root overrides pin on stylis 4.2.0 is load bearing and correct. Method note for whoever writes the theme: do NOT probe this through @emotion/cache insert and cache.sheet.tags, which is empty outside a DOM, so every assertion passes over an empty string and proves nothing. Drive compile, serialize, middleware and stringify from stylis."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T22:21:57.059Z"
+      "updatedAt": "2026-09-07T22:37:05.985Z"
     },
     {
       "id": "KN-004",
@@ -241,9 +242,25 @@
       "parent": [
         "KN-001"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "A named sweep of the Foundations canvas finds no token absent from DESIGN.md, every value in the DESIGN.md tables is traceable to a Figma node id, and the KN-001 verify script's type-scale check still passes.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-004-round-1.2026-09-07T22-35-22-974Z.md",
+          "filed": [
+            "KN-085",
+            "KN-086"
+          ],
+          "cardDigest": "7808b3a670afcc5bf147efb1009d022e460cd1453c6e336332f8ae80cf2ae6b5",
+          "head": "cc784db1ee4228ddbb4a26cf96c05f7086057c5f",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "at": "2026-09-07T22:38:14.288Z"
+        }
+      ],
       "notes": [
         "The type scale portion was completed under KN-001, because KN-001's exit condition claimed the Figma tokens were transcribed and Codex round 5 correctly called that false while DESIGN.md itself admitted four roles were unread. Five roles, not six: Heading/L 24/32 SemiBold, Heading/M 20/28 SemiBold, Title 16/24 Medium, Body 14/22 Regular, Label 12/16 Medium. No size outside those five is permitted. Body/Small at 13 was deleted from the design.",
         "A working independent token checker already exists in the session scratchpad (tokencheck.mjs). It parses DESIGN.md's tables and asserts them against the Figma variable set from node 7:2 plus the type documentation at 416:21, carries its own self-test so a broken pattern is caught, and currently reports full agreement: 32 colour tokens, 13 spacing and radius values, 5 type roles. Move it into agent/scripts/verify/KN-004.mjs and make it this task's verify command rather than rewriting it. Note it must NOT flag the prose that records Body/Small's deletion, only a table row.",
@@ -252,8 +269,10 @@
         "SWEEP CONTINUED, six more frames sampled and the result is reassuring. Contact Card 248:116, Empty State 159:80, Bulk Action Bar 401:436 and Menu 512:8350 introduce NO token outside the recorded set. The menu uses Elevation/Card rather than a third elevation, so there are exactly two effect styles in the file, Card and Modal, and the correction to make is narrow: DESIGN.md says Card is the only one, and it should say there are two and which surface each is for. Frames sampled in total: 7:2, 7:105, 33:58, 84:22, 95:38, 137:44, 159:80, 185:11, 210:276, 248:116, 401:436, 416:21, 512:8350. Colours, spacing, radius, icon sizes and type are all confirmed complete against those; only the effect styles were incomplete, which is exactly the class the Foundations overview does not expose."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T22:35:02.826Z",
-      "verify": "node agent/scripts/verify/KN-004.mjs ."
+      "updatedAt": "2026-09-07T22:38:27.058Z",
+      "verify": "node agent/scripts/verify/KN-004.mjs .",
+      "evidence": "The false statement the card names is gone and its replacement is checked. DESIGN.md now carries an elevation table with both effect styles, each naming the frame it was read from, and both were read this iteration with get_variable_defs rather than taken from the card notes: Elevation/Card at 137:44 is #0000000F offset 0 1 blur 3 spread 0 plus #0000000A offset 0 1 blur 2 spread 0, and Elevation/Modal at 210:276 is #0000001F offset 0 8 blur 24 spread -4 plus #00000014 offset 0 2 blur 6 spread -2. The traceability half of the exit condition was the paragraph that said the off-board tokens were \"read from component frames\" without naming which; sweeping 31:4 and 95:39 traced every one of them into a table with its frame, and turned up two the document did not have at all, red/700 #b91c1c and black/base #000000. agent/scripts/verify/KN-004.mjs passes and twelve planted mutations all failed it, including a blur off by four, a spread that loses its sign, a row that stops naming its frame, a deleted elevation row, a drifting spacing value, a drifting type weight and the old false claim returning in the present tense. What this does NOT establish, which the roast rated critical and which is filed as KN-085: the sweep samples thirteen component frames out of about thirty five families, and sampling use sites can never find a style nothing uses, so completeness needs a file-level inventory rather than more sampling. KN-086 carries the verifier being order-blind across the two shadow columns and the regression exemption being bypassable with a historical clause.",
+      "closedAt": "2026-09-07T22:38:27.058Z"
     },
     {
       "id": "KN-005",
@@ -1892,6 +1911,40 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T22:34:48.392Z"
+    },
+    {
+      "id": "KN-085",
+      "title": "Inventory every Figma style and variable at file level, not by sampling use sites",
+      "desc": "The token sweep samples thirteen component frames and diffs each against DESIGN.md. The component inventory lists about thirty five families, so Icon Button 460:672, Checkbox 204:11, Menu Item 181:22, Select 183:26, Confirm Modal 150:92, Add-Edit Modal 166:82 and Mobile Card 491:751 are among those never sampled. More fundamentally, sampling use sites cannot find a style or variable nothing uses, so no amount of extra sampling closes it. Pull a file-level inventory instead, through the Figma MCP search or library tools, commit it under agent/figma-capture the way the canvas captures are committed, and have the verifier require every entry to be either present in DESIGN.md or listed as deliberately excluded with a reason.",
+      "why": "A roast rated this critical and the reasoning holds: a third effect style used only by the Icon Button, or a variable nothing references yet, would be absent from DESIGN.md while every check stayed green. The theme is generated from that table, so a missing token becomes a literal in a component, which is the exact defect the no-literal rule exists to prevent. This is also the honest general form of the sweep: the current one can only ever say \"nothing new in the frames I looked at\".",
+      "severity": "high",
+      "points": 3,
+      "area": "design",
+      "parent": [
+        "KN-004"
+      ],
+      "status": "backlog",
+      "exit": "A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T22:38:07.426Z"
+    },
+    {
+      "id": "KN-086",
+      "title": "Make the elevation checks order-aware and the regression exemption scoped",
+      "desc": "Three defects in agent/scripts/verify/KN-004.mjs, all in the elevation work. First, the row check tests only that each fragment occurs somewhere in the row, so swapping shadow 1 and shadow 2 leaves it green even though stack order changes rendering: check each column separately. Second, the guard against the old \"only elevation\" claim exempts a whole sentence containing \"was false\", \"earlier version\", \"no longer\" or \"used to\", so \"Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented\" passes: scope the exemption to the clause carrying the claim, or match the corrective phrasing exactly rather than anywhere in the sentence. Third, the success line lists colours, spacing, radius and type but not elevation, so a green run does not mention the thing under review.",
+      "why": "A roast rated the first two major and the third minor, and all three are real. The order blindness matters because the elevation table is the artefact the theme is generated from, and two shadows in the wrong order is a visible difference that the check was written specifically to catch. The exemption bypass matters because the guard exists to stop a false statement returning, and it currently accepts one with a historical clause bolted on.",
+      "severity": "medium",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-004"
+      ],
+      "status": "backlog",
+      "exit": "Swapping the two shadow columns of either elevation row fails the verifier, the sentence \"Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented\" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T22:38:07.515Z"
     }
   ]
 }
