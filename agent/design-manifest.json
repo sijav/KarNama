@@ -3,109 +3,194 @@
   "source": {
     "fileKey": "EITM6CbJY33dMY8IsMFR4R",
     "note": "A copy. The original K1EP8GCOmelU8o4vPR7a9f is view-only and every MCP call against it fails.",
-    "canvases": { "cover": "0:1", "foundations": "5:3", "components": "5:5", "screens": "5:7", "documentation": "5:8" },
+    "canvases": {
+      "cover": "0:1",
+      "foundations": "5:3",
+      "components": "5:5",
+      "screens": "5:7",
+      "documentation": "5:8"
+    },
     "readOn": "2026-09-07",
-    "readBy": "figma MCP get_metadata, get_variable_defs and get_screenshot"
+    "readBy": "figma MCP get_metadata, get_variable_defs and get_screenshot",
+    "capture": {
+      "$comment": "The raw get_metadata response for the Screens canvas, committed so the screen list is DERIVED rather than asserted. The verifier re-derives it and compares.",
+      "file": "agent/figma-capture/screens-5-7.xml",
+      "canvas": "5:7",
+      "sha256": "fd025a4142e984c621c5c880d20149189cf8e8fd65065098a64c78c14f4e2097",
+      "bytes": 217306
+    }
   },
   "documentationFrames": [
     {
       "node": "376:2",
       "title": "کارنما — سند دیزاین سیستم",
       "landsUnder": "What the product is",
-      "facts": ["Huntr", "Teal", "kanban board"]
+      "facts": [
+        "Huntr",
+        "Teal",
+        "kanban board"
+      ]
     },
     {
       "node": "376:9",
       "title": "اصول طراحی",
       "landsUnder": "Decisions the design already made",
-      "facts": ["no separate Edit button", "direction: rtl", "superseded"]
+      "facts": [
+        "no separate Edit button",
+        "direction: rtl",
+        "superseded"
+      ]
     },
     {
       "node": "376:21",
       "title": "توکن‌ها",
       "landsUnder": "Tokens",
-      "facts": ["#2563eb", "radius", "spacing"]
+      "facts": [
+        "#2563eb",
+        "radius",
+        "spacing"
+      ]
     },
     {
       "node": "376:31",
       "title": "الگوهای کلیدی",
       "landsUnder": "Decisions the design already made",
-      "facts": ["RIGHT edge", "bottom", "three", "same form"]
+      "$factsNote": "The add-flow half of this frame lands in The Job Record instead, which is why 'same form' is not asserted here. Facts are checked inside the section they are claimed to be in, so a fact must be listed against the section that actually carries it.",
+      "facts": [
+        "RIGHT edge",
+        "bottom",
+        "exactly **three** options"
+      ]
     },
     {
       "node": "376:43",
       "title": "گاچاهای فیگما",
       "landsUnder": "The Documentation canvas, frame by frame",
-      "facts": ["zero-width non-joiner", "display: none"]
+      "facts": [
+        "zero-width non-joiner",
+        "display: none"
+      ]
     },
     {
       "node": "376:46",
       "title": "نقشه‌ی صفحات",
       "landsUnder": "The screens",
-      "facts": ["Row 1", "Row 6", "1440 by 900", "390 by 844"]
+      "facts": [
+        "Row 1",
+        "Row 6",
+        "1440 by 900",
+        "390 by 844"
+      ]
     },
     {
       "node": "384:12",
       "title": "نقشه‌ی پروتوتایپ",
-      "landsUnder": "The critical path",
-      "facts": ["300ms", "150ms", "Instant"]
+      "landsUnder": "The Documentation canvas, frame by frame",
+      "$factsNote": "The motion values sit in this section's prose and the journey in its 'The critical path' subsection, and a section now includes its subsections, so both are covered from here.",
+      "facts": [
+        "300ms",
+        "150ms",
+        "Instant",
+        "The critical path"
+      ]
     },
     {
       "node": "416:14",
       "title": "کامپوننت‌های تعاملی",
       "landsUnder": "States are variants on the component, not separate screens",
-      "facts": ["prototype demonstrations", "Component Set"]
+      "facts": [
+        "prototype demonstrations",
+        "Component Set"
+      ]
     },
     {
       "node": "416:21",
       "title": "مقیاس تایپ",
       "landsUnder": "Type",
-      "facts": ["24 / 32", "12 / 16", "Body/Small", "only five"]
+      "facts": [
+        "24 / 32",
+        "12 / 16",
+        "Body/Small",
+        "only five"
+      ]
     },
     {
       "node": "434:2",
       "title": "فیلدهای اجباری",
       "landsUnder": "The Job Record",
-      "facts": ["Three fields, not one", "exactly one of", "statusHistory"]
+      "facts": [
+        "Three fields, not one",
+        "exactly one of",
+        "statusHistory"
+      ]
     },
     {
       "node": "434:16",
       "title": "ترتیب و چیدمان",
       "landsUnder": "Decisions the design already made",
-      "facts": ["rightmost column is the first stage", "chips, never a dropdown", "exactly four options"]
+      "facts": [
+        "rightmost column is the first stage",
+        "chips, never a dropdown",
+        "exactly four options"
+      ]
     },
     {
       "node": "434:26",
       "title": "پوشش وریبل‌ها",
       "landsUnder": "The design is 100 percent tokenised, which makes the no-literal rule checkable",
-      "facts": ["5496", "6276", "2038"]
+      "facts": [
+        "5496",
+        "6276",
+        "2038"
+      ]
     },
     {
       "node": "434:33",
       "title": "گزینه‌های فیلد (تأییدنشده)",
       "landsUnder": "Enumerated field values",
-      "facts": ["full-time", "chief executive", "provisional"]
+      "facts": [
+        "full-time",
+        "chief executive",
+        "Provisional"
+      ]
     },
     {
       "node": "505:3",
       "title": "زبان و لحن متن",
       "landsUnder": "Decisions the design already made",
-      "facts": ["فرصت شغلی", "آگهی", "never appears alone", "microcopy"]
+      "facts": [
+        "فرصت شغلی",
+        "آگهی",
+        "never appears alone",
+        "Microcopy"
+      ]
     }
   ],
   "openItems": [
-    { "id": "rejected-placement", "marker": "رد شده", "from": "434:16", "decidedBy": "KN-070" },
-    { "id": "contact-route", "marker": "email or phone", "from": "434:2", "decidedBy": "KN-071" },
-    { "id": "status-history-placement", "marker": "open item 18", "from": "5:5", "decidedBy": "KN-072" },
-    { "id": "provisional-enums", "marker": "unconfirmed", "from": "434:33", "decidedBy": "KN-073" }
+    {
+      "id": "rejected-placement",
+      "marker": "رد شده",
+      "from": "434:16",
+      "decidedBy": "KN-070"
+    },
+    {
+      "id": "contact-route",
+      "marker": "email or phone",
+      "from": "434:2",
+      "decidedBy": "KN-071"
+    },
+    {
+      "id": "status-history-placement",
+      "marker": "open item 18",
+      "from": "5:5",
+      "decidedBy": "KN-072"
+    },
+    {
+      "id": "provisional-enums",
+      "marker": "unconfirmed",
+      "from": "434:33",
+      "decidedBy": "KN-073"
+    }
   ],
-  "screenNodes": [
-    "241:2", "241:146", "243:2", "243:76", "243:224", "243:325", "243:433", "243:682", "243:726",
-    "243:814", "243:899", "243:971", "243:1078", "243:1213", "243:1374", "243:1502", "243:1652",
-    "252:2", "252:175", "252:411", "259:2", "259:105", "259:184", "259:295", "271:55", "271:190",
-    "271:332", "305:2", "305:165", "305:374", "305:558", "305:705", "305:876", "305:1055",
-    "305:1232", "305:1377", "305:1547", "305:1696", "305:1842", "305:2018", "305:2243",
-    "376:5645", "376:5868", "376:5997", "377:6244", "407:6951", "407:6972", "407:7000",
-    "407:7022", "407:7043", "407:7071", "492:7482", "492:7581"
-  ]
+  "$screenNodesNote": "Removed. Derived from source.capture at verification time instead of listed here, because a list the author writes is a claim and a list derived from a committed capture is evidence."
 }

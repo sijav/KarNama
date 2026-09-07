@@ -22,6 +22,7 @@
 // Read-only: reads three files, writes nothing, runs in any sandbox.
 
 import { spawnSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -42,79 +43,159 @@ const check = (label, run) => {
   }
 }
 
+/** The top-level frame ids in the committed Screens capture, derived not listed. */
+const captureNodes = () =>
+  readFileSync(join(ROOT, manifest.source.capture.file), 'utf8')
+    .split(/\r?\n/)
+    .filter((line) => /^  <(frame|section) /.test(line))
+    .map((line) => (/id="([^"]+)"/.exec(line) || [])[1])
+    .filter(Boolean)
+
 const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, (match) => `\\${match}`)
 
-/** The body of a `##` or `###` section, by its heading text. */
+/**
+ * The body of a section, by its heading text, INCLUDING its subsections.
+ *
+ * Ending at the next heading of any level was wrong: a `##` with `###`
+ * subsections returned only its preamble, so every fact that lived in a
+ * subsection read as missing. A section ends at the next heading of the same
+ * level or higher.
+ */
 const sectionBody = (heading) => {
-  const pattern = new RegExp(`^#{2,3} .*${escapeRegExp(heading)}.*$`, 'm')
+  const pattern = new RegExp(`^(#{2,4}) .*${escapeRegExp(heading)}.*$`, 'm')
   const match = pattern.exec(design)
   if (!match) return null
+  const level = match[1].length
   const from = match.index + match[0].length
-  const next = design.slice(from).search(/^#{2,3} /m)
+  const next = design.slice(from).search(new RegExp(`^#{2,${level}} `, 'm'))
   return next === -1 ? design.slice(from) : design.slice(from, from + next)
 }
 
-check('the manifest is source-stamped, so it can be re-derived rather than trusted', () => {
-  const { source } = manifest
-  for (const field of ['fileKey', 'canvases', 'readOn', 'readBy']) {
-    if (!source?.[field]) return `the manifest has no ${field}, so nothing says where its content came from`
+/**
+ * List items in a block, with wrapped continuation lines joined.
+ *
+ * Line-by-line was wrong twice over: a bullet's own text was truncated at the
+ * first newline, so a marker further along was invisible, and a wrapped line
+ * that happened to begin "18." was read as a numbered list item of its own.
+ */
+const listItems = (body) => {
+  const items = []
+  let inItem = false
+  let previousBlank = true
+
+  for (const line of body.split(/\r?\n/)) {
+    const blank = !line.trim()
+    // A bullet always starts an item. A NUMBERED item only starts one after a
+    // blank line, because a wrapped sentence ending "... flags it as open item"
+    // continues onto a line beginning "18." and that is prose, not a list.
+    const startsItem = /^\s*[-*+]\s/.test(line) || (previousBlank && /^\s*\d+\.\s/.test(line))
+
+    if (startsItem) {
+      items.push(line.trim())
+      inItem = true
+    } else if (inItem && !blank) {
+      items[items.length - 1] += ` ${line.trim()}`
+    } else if (blank) {
+      // A blank line ends the item. A paragraph after it is prose, not a
+      // continuation, and treating it as one invented list items that did not
+      // exist.
+      inItem = false
+    }
+    previousBlank = blank
   }
-  return /^\d{4}-\d{2}-\d{2}$/.test(source.readOn) ? null : `readOn is not a date: ${source.readOn}`
+  return items
+}
+
+check('the screen list is DERIVED from a committed capture, not asserted', () => {
+  // The manifest used to carry a hand-written list of 53 node ids, which is a
+  // claim. The raw get_metadata response for canvas 5:7 is committed instead,
+  // its digest recorded, and the list re-derived here. That does not prove the
+  // canvas was read in full, but it does mean the list and the document are
+  // both checked against the same captured artefact rather than against me.
+  const capture = manifest.source?.capture
+  if (!capture?.file) return 'the manifest records no capture'
+  const body = readFileSync(join(ROOT, capture.file))
+  const digest = createHash('sha256').update(body).digest('hex')
+  if (digest !== capture.sha256) return `${capture.file} has changed since it was captured`
+  if (body.length !== capture.bytes) return `${capture.file} is ${body.length} bytes, the manifest says ${capture.bytes}`
+
+  const nodes = captureNodes()
+  if (nodes.length < 40) return `only ${nodes.length} frames derivable from the capture, which looks truncated`
+  const missing = nodes.filter((node) => !design.includes(node))
+  return missing.length
+    ? `${missing.length} of ${nodes.length} captured frames are not in the document: ${missing.slice(0, 8).join(', ')}`
+    : null
 })
 
-check('every documentation frame has a real section carrying its content', () => {
-  // Not "the id appears somewhere". The frame's heading must exist, and the
-  // facts read from that frame must be present, so deleting a transcription
-  // while keeping its index row fails.
+check("every documentation frame's facts are IN the section it claims", () => {
+  // Searched within the claimed section, not across the whole document. Global
+  // search meant a heading could be emptied and its facts moved into an
+  // unrelated paragraph while the index row survived, which is the same
+  // false-pass class as before with a slightly harder mutation.
   const problems = []
   for (const frame of manifest.documentationFrames) {
     if (!design.includes(frame.node)) {
       problems.push(`${frame.node} is not mentioned at all`)
       continue
     }
-    if (sectionBody(frame.landsUnder) === null) {
+    const body = sectionBody(frame.landsUnder)
+    if (body === null) {
       problems.push(`${frame.node} claims to land under "${frame.landsUnder}", which is not a heading`)
       continue
     }
-    const missing = frame.facts.filter((fact) => !design.includes(fact))
-    if (missing.length) problems.push(`${frame.node} (${frame.title}) is missing: ${missing.join(', ')}`)
+    const missing = frame.facts.filter((fact) => !body.includes(fact))
+    if (missing.length) {
+      problems.push(`${frame.node} (${frame.title}) is missing from "${frame.landsUnder}": ${missing.join(', ')}`)
+    }
   }
   return problems.length ? problems.join(' | ') : null
 })
 
-check('EVERY open question in the document maps to a task, parsed not guessed', () => {
-  // The section is parsed, so an open item added later without a task fails
-  // even though no list in this file knows about it. That is the whole point:
-  // the previous version knew four phrases and a fifth slipped straight past.
+check('EVERY open item is disposed of, and by the task that actually owns it', () => {
+  // Three earlier weaknesses, all real. It only saw lines starting `- `, so a
+  // `*` bullet or a paragraph was invisible. Any existing KN id satisfied any
+  // bullet, so a retention question citing KN-070 passed even though KN-070 is
+  // about where rejected belongs. And "Decided by" was accepted as a
+  // disposition when the four items still said "Undecided", which is an open
+  // item tracked by a task, not a decision.
   const body = sectionBody('Open questions the design has not settled')
   if (!body) return 'there is no open-questions section'
 
-  const bullets = body
-    .split('\n')
-    .filter((line) => /^- /.test(line.trim()))
-    .map((line) => line.trim())
-  if (!bullets.length) return 'the open-questions section has no items, which is suspicious rather than clean'
+  const items = listItems(body)
+  if (!items.length) return 'the open-questions section has no items, which is suspicious rather than clean'
 
-  const ids = new Set(board.tasks.map((task) => task.id))
-  const unmapped = bullets.filter((bullet) => {
-    // An item is disposed of either by naming the task that decides it, or by
-    // being restated as a decision. Anything else is still open and unowned.
-    const named = [...bullet.matchAll(/KN-\d{3}/g)].map((match) => match[0])
-    return !named.some((id) => ids.has(id))
-  })
-  return unmapped.length
-    ? `${unmapped.length} open item(s) name no board task: ${unmapped.map((b) => b.slice(0, 60)).join(' | ')}`
-    : null
-})
-
-check('every open item the manifest records has a task that exists and is open', () => {
   const byId = new Map(board.tasks.map((task) => [task.id, task]))
+  const owners = new Map(manifest.openItems.map((item) => [item.decidedBy, item]))
   const problems = []
+
+  for (const item of items) {
+    const named = [...item.matchAll(/KN-\d{3}/g)].map((match) => match[0]).filter((id) => byId.has(id))
+    const decided = /\*\*Decided(?: by)?[^*]*\*\*.*\b(on|:)\b/i.test(item)
+    if (!named.length && !decided) {
+      problems.push(`no task and no decision: ${item.slice(0, 60)}`)
+      continue
+    }
+    // Subject linkage: the named task must be the one the manifest says owns
+    // this item, matched by the marker that identifies it.
+    const matched = named.some((id) => {
+      const owner = owners.get(id)
+      return owner && item.includes(owner.marker)
+    })
+    if (!matched) {
+      problems.push(`${named.join(', ') || 'a decision'} does not own this item: ${item.slice(0, 60)}`)
+      continue
+    }
+    // An item is only tracked while its task is still open.
+    const stillOpen = named.some((id) => !['done', 'dropped'].includes(byId.get(id).status))
+    if (!stillOpen) problems.push(`tracked by a closed task while still open in the document: ${item.slice(0, 60)}`)
+  }
+
+  // And every item the manifest knows about must appear, so removing a bullet
+  // is not a way to make this pass.
   for (const item of manifest.openItems) {
-    if (!design.includes(item.marker)) problems.push(`${item.id} is not recorded in the document`)
-    const task = byId.get(item.decidedBy)
-    if (!task) problems.push(`${item.id} points at ${item.decidedBy}, which is not on the board`)
-    else if (!design.includes(item.decidedBy)) problems.push(`${item.id}'s task ${item.decidedBy} is not named in the document`)
+    if (!items.some((line) => line.includes(item.marker))) {
+      problems.push(`${item.id} is in the manifest but no longer listed in the document`)
+    }
   }
   return problems.length ? problems.join(' | ') : null
 })
@@ -126,13 +207,6 @@ check('the Job Record field list is written down, all three required', () => {
   const optional = ['postingUrl', 'employmentType', 'jobLevel', 'expiresAt', 'skills', 'statusHistory']
   const missing = optional.filter((field) => !design.includes(field))
   return missing.length ? `optional fields missing: ${missing.join(', ')}` : null
-})
-
-check('all screen frames the manifest records are inventoried', () => {
-  const missing = manifest.screenNodes.filter((node) => !design.includes(node))
-  return missing.length
-    ? `${missing.length} of ${manifest.screenNodes.length} not listed: ${missing.slice(0, 8).join(', ')}`
-    : null
 })
 
 check('no board card contradicts the contract', () => {
