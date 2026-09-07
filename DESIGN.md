@@ -316,7 +316,64 @@ in either register.
 
 ---
 
-## 4. Where the language switch goes
+## 4. The Job Record
+
+Read from the required-fields frame `434:2` and the add and edit modal at
+`166:82`. English names on the left, because message ids and schema fields are
+English; the Persian is what ships by default.
+
+**Required. Three fields, not one.**
+
+| Field     | Persian    | Why the design requires it                 |
+| --------- | ---------- | ------------------------------------------ |
+| `title`   | عنوان شغلی | without it the card has no name to display |
+| `company` | نام شرکت   | the key the archive groups and searches by |
+| `status`  | وضعیت      | always has a value, defaulting to «ذخیره‌شده» |
+
+`status` is never absent, so it is not nullable anywhere: a record arrives with
+the default and moves from there. And a status label is **data, not a catalog
+message**, because the user can rename any status.
+
+**Optional.** `postingUrl` لینک آگهی · `location` موقعیت مکانی ·
+`employmentType` نوع همکاری · `jobLevel` سطح شغلی · `experience` سابقه‌ی موردنیاز
+· `salary` حقوق · `postedAt` تاریخ انتشار · `expiresAt` تاریخ انقضا ·
+`source` منبع · `description` شرح شغل · `skills` مهارت‌ها · `note` یادداشت ·
+`contacts` مخاطبین · `files` فایل‌ها
+
+The last three are relations rather than columns, and they are the Note,
+Related People and Files tabs of the job modal.
+
+**Not a field, but part of the record: `statusHistory`.** Every status change
+appends an entry with its timestamp, and history is never rewritten. It is the
+anchor of the whole product, so it is a table rather than a column, and the Info
+tab renders it in reverse chronological order.
+
+### Creating one
+
+The add flow requires **exactly one of** a posting link **or** the full text of
+the posting. Until one is present the «استخراج اطلاعات» button stays disabled,
+and the file specifies it is disabled until the field has been touched as well
+as filled. The manual path requires neither and opens with empty fields.
+
+**The manual form and the extracted form are the same form.** The only
+difference is whether the fields arrive filled, so there is one form component
+with one validation, not two that drift.
+
+### Contacts, custom statuses, signing in
+
+A contact requires a full name and nothing else. Role, company, email, phone,
+social and the related job opportunity are optional. **The file raises its own
+open question here**, see section 6: a contact with neither email nor phone has
+no contact route and is close to useless.
+
+A custom status requires a name only. Its colour is assigned automatically from
+the four reserved slots, so it is not a required input and must not be presented
+as one.
+
+Signing in requires a mobile number and a five digit code. The user's name is
+asked **only on first sign-in**, and is required there.
+
+## 5. Where the language switch goes
 
 The owner asked for a language button in the menu bar, placed so it does not
 destroy anything in the design. The design has no language control, because it
@@ -381,7 +438,7 @@ wired from the card checkbox in the prototype: a reaction can only change a
 variant on its own component, it cannot navigate elsewhere. That is a Figma
 limitation, not a product decision, so the real app should wire it properly.
 
-## 5. Open questions the design has not settled
+## 6. Open questions the design has not settled
 
 These are flagged in the file itself. They are the designer's or the owner's
 call, not a build decision, and nothing should quietly resolve them by picking
@@ -408,7 +465,99 @@ for UI labels. **`505:3` wins**: it is the later revision and it enumerates
 sixteen concrete changes that were applied, one of which reverts a wrong
 colloquial edit on a UI label. Principle 5 is superseded, do not re-apply it.
 
-## 6. RTL, and what it does to the DOM
+## 7. The Documentation canvas, frame by frame
+
+Canvas `5:8`. Every frame, with what it settles and where that now lives, so a
+reader can tell at a glance whether this document has absorbed it. Nothing is
+left in the Figma file alone.
+
+| Frame     | Subject                | Where it landed                                                                                          |
+| --------- | ---------------------- | -------------------------------------------------------------------------------------------------------- |
+| `376:2`   | what the product is    | the definition below, and Huntr and Teal as the reference products                                        |
+| `376:9`   | design principles      | section 3, inline editing and work-where-you-are; its tone rule is SUPERSEDED by `505:3`, see section 6   |
+| `376:21`  | tokens                 | section 1, checked against the variables by `agent/scripts/verify/KN-004.mjs`                             |
+| `376:31`  | key patterns           | section 3, the card stripe and hover, the board, bulk selection, the column menu, the add flow            |
+| `376:43`  | Figma gotchas          | seven are plugin-scripting notes that do not reach the app; the two that do are below                     |
+| `376:46`  | page map               | section 8, the six flow rows                                                                              |
+| `384:12`  | prototype map          | the critical path and the motion values, below                                                            |
+| `416:14`  | interactive components | section 3, states are variants, so Hover, Drag and Drop Done are prototype frames rather than screens     |
+| `416:21`  | type scale             | section 1, five roles and no sixth                                                                        |
+| `434:2`   | required fields        | section 4                                                                                                 |
+| `434:16`  | order and layout       | section 3, the column order, the contacts grid, the chip picker, the four sort options                    |
+| `434:26`  | variable coverage      | section 3, 100 percent, which is what makes the no-literal rule checkable                                 |
+| `434:33`  | field options          | section 3, the enums, marked provisional                                                                  |
+| `505:3`   | copywriting            | section 3, the terminology rule and the two registers                                                      |
+
+**What the product is**, from `376:2`, in the designer's own words: KarNama is a
+Persian, right-to-left job application tracker. The user pastes a link or the
+text of a posting, the information is extracted automatically, and the posting
+moves between statuses on a kanban board. Two products are named as the
+benchmark, **Huntr** and **Teal**, and they are the comparables to consult when
+a design question is genuinely ambiguous.
+
+**The two Figma gotchas that reach the app**, from `376:43`:
+
+- **Persian text carries invisible characters, so `===` can fail.** Normalise
+  with NFC before comparing, and do **not** strip the zero-width non-joiner: it
+  is meaningful, «می‌شود» is not «میشود». A test that trims it is asserting the
+  wrong string.
+- **Keep a card's height stable on hover** by toggling visibility rather than
+  removing the node. In CSS that is `visibility: hidden` or `opacity: 0`, never
+  `display: none`, or the card reflows and jumps under the cursor.
+
+**Motion, from the prototype map `384:12`.** Smart Animate **300ms** for a state
+change within a screen, such as the card hover. Dissolve **150ms** for opening
+and closing a modal. **Instant** for menus and popovers. The prototype advances
+Loading to Review after 1.4 seconds, which is a prototype timing rather than a
+specification, but it is the intended feel.
+
+**The critical path**, also from `384:12`, is the canonical journey and what the
+end-to-end scenario test should walk:
+
+> sign in → the board → click a card → the job modal → the related-people tab →
+> add a contact → save → back to the board → add a job opportunity → paste a
+> link, with extract still disabled → click into the field → extract becomes
+> enabled → loading → Review → save
+
+## 8. The screens
+
+Canvas `5:7`, 53 frames, desktop 1440 by 900 and mobile 390 by 844, grouped into
+six flow rows. **`Hover`, `Drag` and `Drop Done` are prototype demonstrations,
+not screens to implement**: those states belong to the components, per `416:14`.
+
+**Row 1, y=0, the board.** Desktop Board `241:2`, Mobile Board `241:146`, Mobile
+Empty `243:2`, Desktop Hover `243:76`, Desktop Drag `243:224`, Mobile Selection
+`243:325`, Desktop Selection `243:433`, Desktop Search Empty `305:1547`, Desktop
+Empty `305:1696`, Desktop Drop Done `376:5997`, Mobile Card Menu `492:7482`,
+Mobile Status Menu `492:7581`.
+
+**Row 2, y=1100, managing a status.** Column Menu `259:2`, Rename Column
+`259:105`, Column Colour `259:184`, Delete Blocked `259:295`, Delete Status
+Confirm `305:1377`.
+
+**Row 3, y=2200, adding one.** Mobile Paste `243:682`, Mobile Paste Filled
+`376:5868`, Mobile Review `243:726`, Mobile Manual `305:2`, Desktop Paste
+`243:814`, Desktop Paste Filled `376:5645`, Desktop Loading `243:899`, Desktop
+Review `243:971`, Desktop Manual `305:165`, Desktop Error `305:374`.
+
+**Row 4, y=3300, the job modal.** Mobile and desktop for each of the four tabs,
+`243:1078`, `305:558`, `305:705`, `305:876`, `243:1213`, `243:1374`, `243:1502`,
+`243:1652`, plus Desktop Delete Confirm `305:1055` and Desktop Change Status
+`377:6244`.
+
+**Row 5, y=4400, the network.** Desktop `252:2`, Desktop Selection `252:175`,
+Mobile `252:411`, Desktop Add `271:55`, Desktop Edit `271:190`, Mobile Add
+`271:332`, Mobile Selection `305:1842`, Mobile Edit `305:2018`, Desktop Delete
+Confirm `305:1232`, Desktop Empty `305:2243`.
+
+**Row 6, y=5500, signing in.** Desktop Login `407:6951`, Desktop Code `407:6972`,
+Desktop Signup `407:7000`, and the mobile three at `407:7022`, `407:7043` and
+`407:7071`. The Login card is 440 by 387: a brand row, a heading of
+«ورود به کارنما» over «شماره موبایلت را وارد کن», one Input, one primary action,
+and a terms note. Login then Code then Signup is what makes the phone OTP flow
+unambiguous.
+
+## 9. RTL, and what it does to the DOM
 
 The design is laid out right to left. A panel drawn on the **left** of a frame
 comes **second** in the DOM, and one on the right comes first. Read the child

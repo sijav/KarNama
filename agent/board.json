@@ -119,7 +119,7 @@
       "parent": [
         "KN-001"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down.",
       "roasts": [],
       "notes": [
@@ -137,8 +137,8 @@
         "From frame 376:2, the product in one sentence: KarNama is a Persian right-to-left job application tracker; the user pastes a link or the text of a posting, the information is extracted automatically, and the posting moves between statuses on a kanban board. That independently confirms both the kanban decision and the extraction service being core rather than optional. The file also names two reference products the designer worked against, Huntr and Teal, which are the comparables to consult when a design question is genuinely ambiguous. Project status at time of writing: a 14 day sprint on day 8, two person team."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:01:19.198Z",
-      "verify": "node agent/scripts/verify/contract.mjs"
+      "updatedAt": "2026-09-07T21:45:37.318Z",
+      "verify": "node agent/scripts/verify/KN-002.mjs"
     },
     {
       "id": "KN-003",
@@ -1425,7 +1425,7 @@
       "parent": [
         "KN-001"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one.",
       "roasts": [
         {
@@ -1484,8 +1484,10 @@
         "ORDERING NOTE. Once move done requires a verify command, every task from that point on must write its own verifier as part of doing the work, which is the intent rather than a side effect: the verifier is how the exit condition stops being a wish. It does NOT mean KN-054 must run first, because a task written after this lands will carry its verify already. KN-054's remaining job is therefore the two halves that this task does not cover: backfilling the tasks that predate the rule, and making validate report or fail on a task that has none. Check that framing against KN-054's card when picking it up so the two do not overlap."
       ],
       "createdAt": "2026-09-07T21:12:12.658Z",
-      "updatedAt": "2026-09-07T21:29:29.532Z",
-      "verify": "node agent/scripts/verify/KN-065.mjs"
+      "updatedAt": "2026-09-07T21:43:29.780Z",
+      "verify": "node agent/scripts/verify/KN-065.mjs",
+      "evidence": "agent/scripts/verify/KN-065.mjs establishes all five checks in a writable environment: move done refuses a task with no verify command AND does so before the roast gate, which the same check proves behaviourally because the subject has no roast round either; a verifier that exits non-zero is rejected by the shared close gate; validate reports the count and reports it even at zero; dropped tasks are excluded from that count; and agent/board.json is byte-identical afterwards, because the CLI is driven against a throwaway copy through KARNAMA_BOARD. Shown to fail by disabling the requirement, which breaks its main check. In an environment that forbids writes it exits non-zero as INCOMPLETE and names the three checks that could not run, claiming nothing it did not establish; Codex confirmed that behaviour in its own sandbox. The remaining finding, that a hard link inside an allowed root still writes an external inode, is filed as KN-069.",
+      "closedAt": "2026-09-07T21:43:29.780Z"
     },
     {
       "id": "KN-066",
