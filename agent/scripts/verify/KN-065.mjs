@@ -6,17 +6,19 @@
 // failing verify still cannot close, and validate reports the count of tasks
 // lacking one.
 //
-// Drives the real todo.mjs for everything reachable, and calls the shared
-// verifyGate for the close-time behaviour that a whole close cannot reach,
-// because closing needs a manifest-bound roast round and one of those cannot be
-// fabricated without forging, by design.
+// **Genuinely read-only with respect to the repository.** The first version
+// snapshotted board.json, let the CLI rewrite it, and restored it in a finally,
+// which is not read-only however carefully it is written: in the read-only tree
+// a reviewer works in, the first write failed with EPERM, the restore failed
+// with it, and every accumulated result was lost. It could not run in the one
+// environment where an outsider could check it.
 //
-// Read-only with respect to the repository: it snapshots board.json, restores
-// it in a finally, and writes no scratch files. A verifier that cannot run in a
-// read-only tree cannot be run by the reviewer who most needs to.
+// So it copies the board into the system temp directory and points the CLI at
+// the copy with KARNAMA_BOARD. Nothing under the repository is written.
 
 import { spawnSync } from 'node:child_process'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { chmodSync, copyFileSync, mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -24,7 +26,7 @@ import { verifyGate } from '../lib/verify.mjs'
 
 const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
 const TODO = join(ROOT, 'agent', 'scripts', 'todo.mjs')
-const BOARD = join(ROOT, 'agent', 'board.json')
+const REAL_BOARD = join(ROOT, 'agent', 'board.json')
 
 const failures = []
 const check = (label, run) => {
@@ -37,31 +39,52 @@ const check = (label, run) => {
   }
 }
 
-const todo = (...args) => spawnSync(process.execPath, [TODO, ...args], { cwd: ROOT, encoding: 'utf8' })
+const scratchDir = mkdtempSync(join(tmpdir(), 'karnama-kn065-'))
+const scratchBoard = join(scratchDir, 'board.json')
+copyFileSync(REAL_BOARD, scratchBoard)
+// The copy inherits the source's mode, so in the read-only tree this verifier
+// exists to work in, the scratch board arrived read-only too and the CLI could
+// not write it either. The copy is ours; make it writable.
+chmodSync(scratchBoard, 0o600)
 
-const snapshot = readFileSync(BOARD, 'utf8')
-const board = JSON.parse(snapshot)
-
-try {
-  check('some open task still lacks a verify command, so the checks below mean something', () => {
-    const open = board.tasks.filter((task) => task.status !== 'done' && task.status !== 'dropped')
-    return open.some((task) => !task.verify) ? null : 'every open task already has one, so nothing is being tested'
+/** The real CLI, pointed at the throwaway copy. */
+const todo = (...args) =>
+  spawnSync(process.execPath, [TODO, ...args], {
+    cwd: ROOT,
+    encoding: 'utf8',
+    env: { ...process.env, KARNAMA_BOARD: scratchBoard },
   })
 
-  check('move done refuses a task with no verify command', () => {
+const board = JSON.parse(readFileSync(REAL_BOARD, 'utf8'))
+const isOpen = (task) => task.status !== 'done' && task.status !== 'dropped'
+
+try {
+  check('move done refuses a task with no verify command, before the roast gate', () => {
     const subject = board.tasks.find((task) => !task.verify && task.status === 'backlog')
     if (!subject) return 'no task without a verify command to test against'
 
-    // Park whatever is running, walk the subject to review, and try to close it.
+    // Park whatever is running, then walk the subject to review. Each move is
+    // asserted, because a setup step that silently failed would make the real
+    // assertion below pass or fail for a reason that has nothing to do with it.
     const running = board.tasks.find((task) => task.status === 'in_progress')
-    if (running) todo('move', running.id, 'review')
-    todo('move', subject.id, 'in_progress')
-    todo('move', subject.id, 'review')
-    const result = todo('move', subject.id, 'done', '--evidence', 'testing the verify requirement')
+    if (running) {
+      const parked = todo('move', running.id, 'review')
+      if (parked.status !== 0) return `could not park ${running.id}: ${parked.stderr.trim()}`
+    }
+    for (const to of ['in_progress', 'review']) {
+      const moved = todo('move', subject.id, to)
+      if (moved.status !== 0) return `could not move ${subject.id} to ${to}: ${moved.stderr.trim()}`
+    }
 
+    const result = todo('move', subject.id, 'done', '--evidence', 'testing the verify requirement')
     if (result.status === 0) return `${subject.id} closed with no verify command`
+
+    // This is also the ORDERING assertion, behaviourally: the subject has no
+    // roast round either, so if the roast gate fired first this would name the
+    // roast instead. An earlier version asserted ordering by reading source
+    // positions, which a comment could satisfy and a refactor could break.
     if (!/has no verify command/.test(result.stderr)) {
-      return `refused for another reason first: ${result.stderr.trim().split('\n')[0]}`
+      return `the roast gate fired first, or another guard did: ${result.stderr.trim().split('\n')[0]}`
     }
     if (!/KN-054/.test(result.stderr)) return 'the message does not name KN-054 as where the backfill happens'
     if (!new RegExp(`agent/scripts/verify/${subject.id}\\.mjs`).test(result.stderr)) {
@@ -70,37 +93,45 @@ try {
     return null
   })
 
-  check('the refusal comes BEFORE the roast gate, so the advice is the useful one', () => {
-    // Ordering is part of the behaviour: telling someone to write a check is
-    // more actionable than telling them to get a review of an unchecked thing.
-    const source = readFileSync(TODO, 'utf8')
-    const doneBlock = source.slice(source.indexOf("if (status === 'done')"))
-    const verifyAt = doneBlock.indexOf('has no verify command')
-    const roastAt = doneBlock.indexOf('has no roast round')
-    if (verifyAt === -1 || roastAt === -1) return 'one of the two guards is missing'
-    return verifyAt < roastAt ? null : 'the roast gate fires before the verify requirement'
-  })
-
   check('a task whose verify FAILS still cannot close', () => {
-    // Through the same gate move done calls. A whole close cannot be driven
-    // here, so this exercises the function rather than a copy of its logic.
     const problem = verifyGate(ROOT, { id: 'SCRATCH', verify: 'node agent/scripts/verify/fixtures/always-fails.mjs' })
     return problem ? null : 'the close gate accepted a task whose verifier exited non-zero'
   })
 
-  check('validate reports how many open tasks lack a verify command', () => {
+  check('validate reports the count, including when it is zero', () => {
     const result = todo('validate')
-    if (result.status !== 0) return `validate exited ${result.status}`
+    if (result.status !== 0) return `validate exited ${result.status}: ${result.stderr.trim()}`
     const match = /(\d+) of (\d+) open task\(s\) have no verify command/.exec(result.stdout)
+    // Asserted unconditionally: a report that disappears at zero is one nothing
+    // can assert against, and it would make this check fail the moment the
+    // backfill succeeded.
     if (!match) return `validate did not report the count: ${result.stdout.trim()}`
-    const expected = board.tasks.filter((task) => task.status !== 'done' && task.status !== 'dropped' && !task.verify)
-    return Number(match[1]) === expected.length
+
+    const open = board.tasks.filter(isOpen)
+    const missing = open.filter((task) => !task.verify)
+    if (Number(match[2]) !== open.length) return `reported ${match[2]} open tasks, the board has ${open.length}`
+    return Number(match[1]) === missing.length ? null : `reported ${match[1]} missing, the board has ${missing.length}`
+  })
+
+  check('the count excludes dropped tasks, which are finished rather than unclosable', () => {
+    const result = todo('validate')
+    const match = /(\d+) of (\d+) open task\(s\)/.exec(result.stdout)
+    if (!match) return 'no count to check'
+    const dropped = board.tasks.filter((task) => task.status === 'dropped')
+    const openCount = board.tasks.filter(isOpen).length
+    if (dropped.length === 0 && Number(match[2]) === openCount) return null
+    return Number(match[2]) === openCount ? null : `dropped tasks are being counted as open`
+  })
+
+  check('nothing under the repository was written', () => {
+    // The point of the whole scratch-board arrangement. If the CLI wrote to the
+    // real board, this file would differ from the copy taken before any of it.
+    return readFileSync(REAL_BOARD, 'utf8') === JSON.stringify(board, null, 2) + '\n'
       ? null
-      : `reported ${match[1]} but ${expected.length} open tasks lack one`
+      : 'agent/board.json changed while this verifier ran'
   })
 } finally {
-  writeFileSync(BOARD, snapshot, 'utf8')
-  todo('render')
+  rmSync(scratchDir, { recursive: true, force: true })
 }
 
 if (failures.length) {

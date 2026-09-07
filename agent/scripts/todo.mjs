@@ -22,8 +22,25 @@ import { workChangedSince, workingChanges } from './lib/worktree.mjs'
 
 const AGENT_DIR = dirname(dirname(fileURLToPath(import.meta.url)))
 const ROOT = dirname(AGENT_DIR)
-const BOARD_PATH = join(AGENT_DIR, 'board.json')
-const RENDER_PATH = join(AGENT_DIR, 'TODO_BOARD.md')
+/**
+ * `KARNAMA_BOARD` points the tool at a different board file, and the rendered
+ * board follows it.
+ *
+ * This exists so a task's verifier can drive the real CLI without touching the
+ * real board. KN-065's first verifier snapshotted `board.json`, let the CLI
+ * rewrite it, and restored it in a `finally`, which is not read-only however
+ * carefully it is done: in the read-only tree a reviewer works in, the first
+ * write failed with EPERM, the restore failed too, and the accumulated results
+ * were lost with it. The verifier could not run in the one environment where an
+ * outsider could check it.
+ *
+ * It is not a bypass. Closing a task in a throwaway copy changes nothing about
+ * the board that is committed.
+ */
+const BOARD_PATH = process.env.KARNAMA_BOARD ? resolve(process.env.KARNAMA_BOARD) : join(AGENT_DIR, 'board.json')
+const RENDER_PATH = process.env.KARNAMA_BOARD
+  ? join(dirname(BOARD_PATH), 'TODO_BOARD.md')
+  : join(AGENT_DIR, 'TODO_BOARD.md')
 
 /** Highest first. `next` walks this order, so index is the rank. */
 const SEVERITIES = ['critical', 'high', 'medium', 'low']
@@ -978,14 +995,19 @@ const commands = {
     // writing the check before the work, and a check written that early tends
     // to describe what is easy to assert rather than what the task must prove.
     // Saying how many are missing keeps the debt visible without blocking.
-    const open = board.tasks.filter((task) => !SETTLED_STATUSES.includes(task.status))
+    // `dropped` is excluded as well as `done`. It is not settled, so it does not
+    // unblock dependents, but it is finished: saying a dropped task "cannot
+    // close" is false, and counting it would make the number drift from what
+    // anyone can act on.
+    const open = board.tasks.filter((task) => !SETTLED_STATUSES.includes(task.status) && task.status !== 'dropped')
     const unverified = open.filter((task) => !task.verify)
-    if (unverified.length) {
-      process.stdout.write(
-        `${unverified.length} of ${open.length} open task(s) have no verify command yet, so they cannot close.\n` +
-          `First few: ${unverified.slice(0, 5).map((task) => task.id).join(', ')}. KN-054 covers the backfill.\n`,
-      )
-    }
+    // Printed even at zero. A report that vanishes when the number is good is a
+    // report nothing can assert against, and it made this very count untestable
+    // once the debt was cleared.
+    process.stdout.write(
+      `${unverified.length} of ${open.length} open task(s) have no verify command yet, so they cannot close.` +
+        `${unverified.length ? ` First few: ${unverified.slice(0, 5).map((task) => task.id).join(', ')}. KN-054 covers the backfill.` : ''}\n`,
+    )
 
     const problems = checkBoard(board)
     if (!problems.length) {
