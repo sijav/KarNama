@@ -630,6 +630,10 @@ const commands = {
       // gate optional: `set <id> --status done` closed a task with no roast at
       // all, and only tripped when the task happened to have unsettled parents.
       // One door, so there is one place the rule can live.
+      // Optional, but the whole point of it is that `move done` runs it, so it
+      // is settable like any other field.
+      else if (key === 'verify') task.verify = requireValue(value, 'verify')
+      else if (key === 'evidence') task.evidence = requireValue(value, 'evidence')
       else if (key === 'status') fail('set: status is changed with "move", which is where the roast gate lives')
       else if (key === 'id') fail('set: id is immutable, other tasks point at it')
       else if (REQUIRED.includes(key)) task[key] = requireValue(value, key)
