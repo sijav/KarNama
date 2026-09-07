@@ -189,9 +189,17 @@ Then, and this is the part that was wrong for ten rounds:
 > **Every finding that survives adjudication becomes its OWN board entry, with
 > all ten fields filled, at its own severity. It does not hold this task open.**
 
-Fix a finding here only when it is cheap, obviously right, and inside this
-task's exit condition. Everything else is a card. The board then schedules it
-against everything else waiting, which is the whole point of having a board.
+**The test for fix-or-file is mechanical, so it cannot be argued with:**
+
+> Fix in-task ONLY when the task's own `verify` script FAILS because of the
+> finding. If the verifier still passes, it is a card. However tempting.
+
+An earlier wording said "cheap, obviously right, and inside this task's exit
+condition", and that was too loose: almost any finding about a task can be
+argued into its exit condition. It licensed fixing rather than filing twice in a
+row on KN-058, each fix changed the work after the review, and a two point task
+took three rounds. Both of those findings were about missing test coverage,
+which never fails a verifier, so both were cards.
 
 **Filing is cheaper than fixing, and the gate makes that concrete.** Fixing a
 finding changes the work after the review, so the round no longer describes what

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 68,
+  "nextId": 69,
   "tasks": [
     {
       "id": "KN-001",
@@ -1245,7 +1245,7 @@
       "parent": [
         "KN-001"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done.",
       "roasts": [
         {
@@ -1271,12 +1271,28 @@
           "reviewerScore": 8,
           "reviewerCriticals": 0,
           "at": "2026-09-07T21:23:28.883Z"
+        },
+        {
+          "round": 3,
+          "score": 8,
+          "criticals": 0,
+          "file": "agent/roasts/KN-058-round-3.2026-09-07T21-23-49-872Z.md",
+          "filed": [
+            "KN-068"
+          ],
+          "cardDigest": "abef9e720ed48d6642b52fef04cceb282f37775553d5239fb9a72741661dc706",
+          "head": "b9f0d3805e0ae475e83758cb888ee7c58210a338",
+          "reviewerScore": 8,
+          "reviewerCriticals": 0,
+          "at": "2026-09-07T21:26:12.146Z"
         }
       ],
       "notes": [],
       "createdAt": "2026-09-07T21:08:49.893Z",
-      "updatedAt": "2026-09-07T21:14:27.997Z",
-      "verify": "node agent/scripts/verify/KN-058.mjs"
+      "updatedAt": "2026-09-07T21:26:13.610Z",
+      "verify": "node agent/scripts/verify/KN-058.mjs",
+      "evidence": "agent/scripts/verify/KN-058.mjs runs thirteen checks and passes: a shell operator is refused at set time through the real todo.mjs, runVerify and the close gate both refuse one, a failing verifier is reported, a passing one is allowed, a Windows path argument is accepted, cmd.exe expansion characters are refused, and todo.mjs is asserted to import and call the shared verifyGate so the close path cannot be a separate implementation. Shown to fail by neutering SHELL_OPERATORS through a checked edit, which breaks four checks. Codex confirmed the close path itself does revalidate and does reject a non-zero status; the surviving finding is that the TEST calls verifyGate without the revalidator the close supplies, which is filed as KN-068 rather than fixed, because the verifier passes and my rule is to fix only when it fails.",
+      "closedAt": "2026-09-07T21:26:13.610Z"
     },
     {
       "id": "KN-059",
@@ -1442,6 +1458,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T21:12:13.494Z"
+    },
+    {
+      "id": "KN-068",
+      "title": "Make verifyGate's revalidator mandatory, and test the real invocation",
+      "desc": "verifyGate takes revalidate as an optional argument. move done passes verifyCommand; KN-058's verifier passes nothing, so it exercises a weaker mode than the close does and would stay green if close-time revalidation broke. Without the callback verifyGate accepts bare node and node --version, neither of which runs a verifier, so its documented string-or-null contract is false: null can mean node exited zero rather than an approved verifier ran. Make revalidate required, add cases for a missing target and for the symlink and real-path checks, and make the verifier runnable in a read-only sandbox, which it currently is not because it writes scratch files.",
+      "why": "A test that calls a function differently from the way production calls it proves the wrong thing, and this one has now been flagged three rounds running in three different forms. The optional argument is the root cause rather than the test: an interface whose contract only holds when an optional argument is supplied will eventually be called without it. It also cannot run in the read-only sandbox a reviewer uses, so the one place an outsider could check it is the one place it does not work.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-058"
+      ],
+      "status": "backlog",
+      "exit": "verifyGate refuses to run without a revalidator, verifyGate with the real revalidator rejects bare node, node --version, a missing target and a symlinked target, and the KN-058 verifier runs to completion in a read-only working tree without writing into the repository.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T21:26:11.198Z"
     }
   ]
 }
