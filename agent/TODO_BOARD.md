@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 3 of 74 tasks done · 7 of 331 points.
+Project **KarNama** · 3 of 76 tasks done · 7 of 334 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-002` | Read the Figma Documentations canvas and fold it into the contract | critical | 3 | design | KN-001 | DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down. |
 
-## Backlog (70)
+## Backlog (72)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -42,6 +42,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-068` | Make verifyGate's revalidator mandatory, and test the real invocation | high | 2 | agent | KN-058 | verifyGate refuses to run without a revalidator, verifyGate with the real revalidator rejects bare node, node --version, a missing target and a symlinked target, and the KN-058 verifier runs to completion in a read-only working tree without writing into the repository. |
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-074` | The harness stamps a round number that goes stale before it is recorded | high | 2 | agent | KN-001 | Two roast rounds run back to back can both be recorded, in order, with their own verdicts and filed lists, and a manifest that has already been recorded is still refused a second time. |
+| `KN-076` | Let a settled open question be recorded as a decision, not only as a task | high | 2 | agent | KN-002 | An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision that the manifest does not record still fails; and closing KN-070 as decided leaves the verifier green. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -83,6 +84,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-056` | The standalone network screen | high | 8 | web | KN-042, KN-026, KN-032, KN-039 | An e2e test opens the network route, adds a contact, edits it, selects two and deletes them through the bottom bar, and sees the empty state on a fresh account. The grid reads right to left and row by row in Persian and mirrors in English, with no array reversal in the code. |
 | `KN-057` | Posting extraction: turn a pasted link or text into a Review payload | high | 8 | api | KN-034 | Extraction from raw text returns the documented field set with a named test fixture, a URL pointing at a private or link-local address is refused, a slow or oversized response is aborted within the configured bound, every failure path returns the error shape the UI maps to the Error state, and the mock provider makes all of it runnable with no network. |
 | `KN-043` | The kanban board screen | high | 13 | web | KN-042, KN-015, KN-016, KN-017, KN-024, KN-025, KN-022, KN-037, KN-060, KN-061 | An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. |
+| `KN-075` | Decide which fields the Review step of the add flow shows | medium | 1 | design | KN-002 | DESIGN.md names the Review field list with the reason for it, section 6 no longer lists the Review step as open, and agent/design-manifest.json records the disposition instead of the open item. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
@@ -124,6 +126,8 @@ Read canvas 5:8 "Documentations" in full, and canvas 5:7 "Screens", and write wh
 **Why.** The owner asked for this explicitly, right after the loop and the board. The design file carries decisions that are nowhere else, and building from the component canvas alone means rediscovering them as bugs. A contradiction found now is a paragraph; found in a screen it is a rewrite.
 
 **Exit condition.** DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down.
+
+**Roasts.** round 1 scored 4 with 2 critical(s)
 
 ### `KN-003` Web app scaffold with the full quality gate
 
@@ -920,4 +924,26 @@ roast.mjs computes the round number from the board at RUN time, as roasts.length
 **Why.** It bit on KN-002: two rounds ran before either was recorded, so the first round's verdict cannot be entered on the board at all and survives only as a file on disk. The board is meant to be the audit trail of what was reviewed, and a round it structurally cannot accept is a hole in that trail. It also pushes toward recording immediately, which is the opposite of the adjudicate-then-record flow the loop asks for.
 
 **Exit condition.** Two roast rounds run back to back can both be recorded, in order, with their own verdicts and filed lists, and a manifest that has already been recorded is still refused a second time.
+
+### `KN-075` Decide which fields the Review step of the add flow shows
+
+- **status** backlog · **severity** medium · **points** 1 · **area** design
+- **blocked by** KN-002
+
+Frame 376:31 draws the add flow as one modal with Paste, Loading and Review, and 434:2 fixes what a job record requires, but neither says which fields the Review step puts in front of the user before they save. Decide the field list, write it into DESIGN.md, and move the item out of the open-questions section.
+
+**Why.** DESIGN.md carried "The Review fields are provisional until the Job Record shape is finalised" as bare prose in section 3, with no task and no cross-reference. A roast found it. Showing every field and showing only the three required ones are both defensible, so whoever builds the Review screen would silently pick one and it would ship as a decision nobody made.
+
+**Exit condition.** DESIGN.md names the Review field list with the reason for it, section 6 no longer lists the Review step as open, and agent/design-manifest.json records the disposition instead of the open item.
+
+### `KN-076` Let a settled open question be recorded as a decision, not only as a task
+
+- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **blocked by** KN-002
+
+agent/scripts/verify/KN-002.mjs recognises a "**Decided ...**" disposition when it parses an open-questions item, then discards that path: it requires a named board task, and requires the manifest to say that task owns the item, so an item settled with a written decision and no task is rejected. Citing the task that made the decision does not help either, because a closed task trips the "tracked by a closed task while still open" branch. Give a decision its own shape in the manifest and let the verifier accept it.
+
+**Why.** The exit condition of KN-002 says every open item is "either reflected in the board as a task or recorded as a decision". Only the first can pass today, so KN-070 through KN-073 and KN-075 cannot be closed the way the contract says they may be: the moment one of them is decided and marked done, this verifier starts failing. Found by a roast as a major.
+
+**Exit condition.** An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision that the manifest does not record still fails; and closing KN-070 as decided leaves the verifier green.
 

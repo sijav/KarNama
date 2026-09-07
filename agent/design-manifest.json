@@ -12,12 +12,21 @@
     },
     "readOn": "2026-09-07",
     "readBy": "figma MCP get_metadata, get_variable_defs and get_screenshot",
-    "capture": {
-      "$comment": "The raw get_metadata response for the Screens canvas, committed so the screen list is DERIVED rather than asserted. The verifier re-derives it and compares.",
-      "file": "agent/figma-capture/screens-5-7.xml",
-      "canvas": "5:7",
-      "sha256": "fd025a4142e984c621c5c880d20149189cf8e8fd65065098a64c78c14f4e2097",
-      "bytes": 217306
+    "$capturesNote": "Raw get_metadata responses, committed verbatim, so both the screen list and the documentation frame list are DERIVED rather than asserted. The verifier re-derives each and compares. It does not prove the canvases were read in full — nothing available at verification time can — but it does mean the lists and the document are checked against the same captured artefact rather than against the author's memory. Deleting a frame from the manifest no longer hides it: the captured list is the authority and the manifest must match it exactly.",
+    "captures": {
+      "screens": {
+        "file": "agent/figma-capture/screens-5-7.xml",
+        "canvas": "5:7",
+        "sha256": "fd025a4142e984c621c5c880d20149189cf8e8fd65065098a64c78c14f4e2097",
+        "bytes": 217306
+      },
+      "documentation": {
+        "file": "agent/figma-capture/documentation-5-8.xml",
+        "canvas": "5:8",
+        "sha256": "fd770f1d784931f6ffaa54e40d60f0af858f853da3b45805295cbef91322df36",
+        "bytes": 21951,
+        "readOn": "2026-09-08"
+      }
     }
   },
   "documentationFrames": [
@@ -190,6 +199,13 @@
       "marker": "unconfirmed",
       "from": "434:33",
       "decidedBy": "KN-073"
+    },
+    {
+      "$comment": "Found by a roast, not by me. DESIGN.md carried 'The Review fields are provisional until the Job Record shape is finalised' in section 3 with no task and no cross-reference, and the verifier passed because it only parsed section 6. The item is real: which fields the Review step shows is a design decision nobody has made.",
+      "id": "review-step-fields",
+      "marker": "Review step",
+      "from": "376:31",
+      "decidedBy": "KN-075"
     }
   ],
   "$screenNodesNote": "Removed. Derived from source.capture at verification time instead of listed here, because a list the author writes is a claim and a list derived from a committed capture is evidence."

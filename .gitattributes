@@ -1,0 +1,4 @@
+# Figma captures are byte-compared against a recorded sha256. Line-ending
+# translation would silently break that digest on a fresh clone, and the
+# verifier would report a tampered capture when nothing had been tampered with.
+agent/figma-capture/*.xml -text

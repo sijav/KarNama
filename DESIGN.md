@@ -267,15 +267,16 @@ must not copy that. Reversing an array in code to "fix" RTL is a defect.
 
 **The Job Modal replaces a detail page**, with four tabs: اطلاعات آگهی,
 یادداشت, مخاطبین, فایل‌ها. Status history currently sits at the bottom of the
-Info tab, which the file flags as open item 18. Build it where the file puts it,
-and raise the question separately.
+Info tab, which the file flags as open item 18: **open, tracked by KN-072**, see
+section 6. Build it where the file puts it, and raise the question separately.
 
 **A Contact Card has no detail view.** Everything about a contact is on the
 card itself. There is a Contact Modal, but only for Add and Edit.
 
 **The add-job flow is Paste, then Loading, then Review**, with Manual as the
-fallback path and Error as the failure path. The Review fields are provisional
-until the Job Record shape is finalised.
+fallback path and Error as the failure path. Which fields the Review step shows
+is **open, tracked by KN-075**, see section 6: the design draws the flow but not
+the field list, and it cannot be settled by reading the file.
 
 **Auth is phone OTP**: a mobile number, then a five digit code. The Screens
 canvas draws Login, Code and Signup for both desktop and mobile at page-map row
@@ -457,6 +458,13 @@ one while implementing.
 - **The employment type and job level option lists**, **open, tracked by KN-073**, at `434:33` are marked
   **unconfirmed**: they were never checked against Jobinja and Jobvision because
   the network blocked it. Treat the values as provisional.
+- **Which fields the Review step of the add flow shows.** **Open, tracked by
+  KN-075.** Frame `376:31` draws the flow — one modal, Paste then Loading then
+  Review — and `434:2` fixes what the record requires, but neither says which
+  fields the Review step puts in front of the user before they save. Showing all
+  of them and showing only the three required ones are both defensible, and
+  picking one while implementing is exactly the quiet resolution this section
+  exists to prevent.
 
 One contradiction between two documentation frames, already resolved:
 principle 5 at `376:9` forbids colloquial Persian outright, while the
@@ -490,7 +498,7 @@ renumbering; numbers do not.
 | `434:2`   | required fields        | "The Job Record"                                                                                       |
 | `434:16`  | order and layout       | "Decisions the design already made": the column order, the contacts grid, the chip picker, the sort options |
 | `434:26`  | variable coverage      | "The design is 100 percent tokenised, which makes the no-literal rule checkable"                       |
-| `434:33`  | field options          | "Enumerated field values", marked provisional                                                          |
+| `434:33`  | field options          | "Enumerated field values", provisional, tracked by KN-073                                              |
 | `505:3`   | copywriting            | "Decisions the design already made": the terminology rule and the two registers                        |
 
 ### What the product is

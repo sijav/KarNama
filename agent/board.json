@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 75,
+  "nextId": 77,
   "tasks": [
     {
       "id": "KN-001",
@@ -121,7 +121,23 @@
       ],
       "status": "review",
       "exit": "DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-002-round-1.2026-09-07T22-02-51-721Z.md",
+          "filed": [
+            "KN-075",
+            "KN-076"
+          ],
+          "cardDigest": "bbd7f52a37244badaa88e5e43f6e1e10f6402c895fcb12b82278703d077f1b93",
+          "head": "2c930b78ea19350815bffeaf45f1e6cd25003957",
+          "reviewerScore": 4,
+          "reviewerCriticals": 2,
+          "at": "2026-09-07T22:13:17.730Z"
+        }
+      ],
       "notes": [
         "PREFETCHED from canvas 5:8. The list screen is actually a KANBAN BOARD, not a list: columns are statuses, desktop scrolls horizontally, cards drag between columns, and the RIGHTMOST column is the first stage because the layout is RTL. Page map row 1 is Board/Empty/Hover/Drag, row 2 is Column Menu and Rename Column. This changes KN-043 substantially.",
         "PREFETCHED. Auth in the design is PHONE OTP, mobile number plus a five digit code, with Login, Signup and Reset drawn mobile-first at page map row 6. The owner separately chose email magic link before seeing this canvas. That is a contradiction only the owner can settle, and it changes KN-034, KN-036 and KN-046.",
@@ -1650,6 +1666,40 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T21:57:29.299Z"
+    },
+    {
+      "id": "KN-075",
+      "title": "Decide which fields the Review step of the add flow shows",
+      "desc": "Frame 376:31 draws the add flow as one modal with Paste, Loading and Review, and 434:2 fixes what a job record requires, but neither says which fields the Review step puts in front of the user before they save. Decide the field list, write it into DESIGN.md, and move the item out of the open-questions section.",
+      "why": "DESIGN.md carried \"The Review fields are provisional until the Job Record shape is finalised\" as bare prose in section 3, with no task and no cross-reference. A roast found it. Showing every field and showing only the three required ones are both defensible, so whoever builds the Review screen would silently pick one and it would ship as a decision nobody made.",
+      "severity": "medium",
+      "points": 1,
+      "area": "design",
+      "parent": [
+        "KN-002"
+      ],
+      "status": "backlog",
+      "exit": "DESIGN.md names the Review field list with the reason for it, section 6 no longer lists the Review step as open, and agent/design-manifest.json records the disposition instead of the open item.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T22:11:07.414Z"
+    },
+    {
+      "id": "KN-076",
+      "title": "Let a settled open question be recorded as a decision, not only as a task",
+      "desc": "agent/scripts/verify/KN-002.mjs recognises a \"**Decided ...**\" disposition when it parses an open-questions item, then discards that path: it requires a named board task, and requires the manifest to say that task owns the item, so an item settled with a written decision and no task is rejected. Citing the task that made the decision does not help either, because a closed task trips the \"tracked by a closed task while still open\" branch. Give a decision its own shape in the manifest and let the verifier accept it.",
+      "why": "The exit condition of KN-002 says every open item is \"either reflected in the board as a task or recorded as a decision\". Only the first can pass today, so KN-070 through KN-073 and KN-075 cannot be closed the way the contract says they may be: the moment one of them is decided and marked done, this verifier starts failing. Found by a roast as a major.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-002"
+      ],
+      "status": "backlog",
+      "exit": "An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision that the manifest does not record still fails; and closing KN-070 as decided leaves the verifier green.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T22:11:19.267Z"
     }
   ]
 }

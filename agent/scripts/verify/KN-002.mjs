@@ -43,10 +43,29 @@ const check = (label, run) => {
   }
 }
 
-/** The top-level frame ids in the committed Screens capture, derived not listed. */
-const captureNodes = () =>
-  readFileSync(join(ROOT, manifest.source.capture.file), 'utf8')
-    .split(/\r?\n/)
+/**
+ * A committed capture, checked byte for byte against its recorded digest.
+ *
+ * Throws rather than returning a problem, because every caller treats a
+ * tampered or missing capture as fatal and a check that swallows it would be
+ * the same false pass it exists to prevent.
+ */
+const capture = (key) => {
+  const record = manifest.source?.captures?.[key]
+  if (!record?.file) throw new Error(`the manifest records no ${key} capture`)
+  const body = readFileSync(join(ROOT, record.file))
+  const digest = createHash('sha256').update(body).digest('hex')
+  if (digest !== record.sha256) throw new Error(`${record.file} has changed since it was captured`)
+  if (body.length !== record.bytes) {
+    throw new Error(`${record.file} is ${body.length} bytes, the manifest says ${record.bytes}`)
+  }
+  return { record, text: body.toString('utf8') }
+}
+
+/** The top-level frame ids in a committed capture, derived not listed. */
+const captureNodes = (key) =>
+  capture(key)
+    .text.split(/\r?\n/)
     .filter((line) => /^  <(frame|section) /.test(line))
     .map((line) => (/id="([^"]+)"/.exec(line) || [])[1])
     .filter(Boolean)
@@ -112,19 +131,34 @@ check('the screen list is DERIVED from a committed capture, not asserted', () =>
   // its digest recorded, and the list re-derived here. That does not prove the
   // canvas was read in full, but it does mean the list and the document are
   // both checked against the same captured artefact rather than against me.
-  const capture = manifest.source?.capture
-  if (!capture?.file) return 'the manifest records no capture'
-  const body = readFileSync(join(ROOT, capture.file))
-  const digest = createHash('sha256').update(body).digest('hex')
-  if (digest !== capture.sha256) return `${capture.file} has changed since it was captured`
-  if (body.length !== capture.bytes) return `${capture.file} is ${body.length} bytes, the manifest says ${capture.bytes}`
-
-  const nodes = captureNodes()
+  const nodes = captureNodes('screens')
   if (nodes.length < 40) return `only ${nodes.length} frames derivable from the capture, which looks truncated`
   const missing = nodes.filter((node) => !design.includes(node))
   return missing.length
     ? `${missing.length} of ${nodes.length} captured frames are not in the document: ${missing.slice(0, 8).join(', ')}`
     : null
+})
+
+check('the documentation frame list is DERIVED from a committed capture too', () => {
+  // The same argument, applied to the canvas this task is actually about. The
+  // screens half was captured and the documentation half was not, so a frame
+  // could be dropped from `documentationFrames` AND from DESIGN.md and the
+  // whole thing stayed green: the verifier was looping the author's own list.
+  // Canvas 5:8 is now committed, the 14 frames are derived from it, and the
+  // manifest must match that set exactly in BOTH directions.
+  const captured = captureNodes('documentation')
+  if (captured.length < 10) return `only ${captured.length} frames derivable from 5:8, which looks truncated`
+
+  const claimed = new Set(manifest.documentationFrames.map((frame) => frame.node))
+  const unclaimed = captured.filter((node) => !claimed.has(node))
+  if (unclaimed.length) {
+    return `${unclaimed.length} captured frame(s) missing from the manifest: ${unclaimed.join(', ')}`
+  }
+  const invented = [...claimed].filter((node) => !captured.includes(node))
+  if (invented.length) return `manifest claims frame(s) the capture does not contain: ${invented.join(', ')}`
+
+  const absent = captured.filter((node) => !design.includes(node))
+  return absent.length ? `captured frame(s) not in DESIGN.md: ${absent.join(', ')}` : null
 })
 
 check("every documentation frame's facts are IN the section it claims", () => {
@@ -198,6 +232,53 @@ check('EVERY open item is disposed of, and by the task that actually owns it', (
     }
   }
   return problems.length ? problems.join(' | ') : null
+})
+
+check('nothing is left open ANYWHERE in the document, not just in section 6', () => {
+  // The previous version parsed only the open-questions section, so an item
+  // written as ordinary prose elsewhere was invisible. It missed a real one:
+  // "The Review fields are provisional until the Job Record shape is finalised"
+  // sat in section 3 for four rounds, citing nothing, while the exit condition
+  // claimed every open item in the FILE was disposed of. Found by a roast.
+  //
+  // Section 6 is excluded here only because the check above parses it far more
+  // strictly; everything outside it is scanned for the vocabulary of an
+  // undecided thing, and each hit must carry its own disposition.
+  const OPEN = /\b(provisional|unconfirmed|undecided|unresolved|open question|open item|to be decided|not (?:yet )?(?:settled|decided)|TBD)\b/i
+  const DISPOSED = /\b(section 6|open questions)\b/i
+
+  const heading = /^(#{2,4}) .*Open questions the design has not settled.*$/m.exec(design)
+  if (!heading) return 'there is no open-questions section to exclude'
+  const from = heading.index
+  const rest = design.slice(from + heading[0].length)
+  const next = rest.search(new RegExp(`^#{2,${heading[1].length}} `, 'm'))
+  const outside = design.slice(0, from) + (next === -1 ? '' : rest.slice(next))
+
+  const byId = new Map(board.tasks.map((task) => [task.id, task]))
+  const tracked = (text) =>
+    [...text.matchAll(/KN-\d{3}/g)].some((match) => {
+      const task = byId.get(match[0])
+      return task && !['done', 'dropped'].includes(task.status)
+    })
+
+  // Blank-line separated blocks, with table rows and list items judged one by
+  // one so a disposition on a neighbouring bullet cannot cover a bare one.
+  const candidates = []
+  for (const block of outside.split(/\r?\n\s*\r?\n/)) {
+    if (!block.trim()) continue
+    const rows = block.split(/\r?\n/).filter((line) => line.trim().startsWith('|'))
+    const items = listItems(block)
+    if (rows.length) candidates.push(...rows)
+    else if (items.length) candidates.push(...items)
+    else candidates.push(block.replace(/\s+/g, ' '))
+  }
+
+  const undisposed = candidates.filter((text) => OPEN.test(text) && !DISPOSED.test(text) && !tracked(text))
+  return undisposed.length
+    ? `${undisposed.length} open item(s) outside section 6 with no task and no cross-reference: ${undisposed
+        .map((text) => `"${text.slice(0, 70).trim()}…"`)
+        .join(' | ')}`
+    : null
 })
 
 check('the Job Record field list is written down, all three required', () => {
