@@ -216,7 +216,7 @@
       "parent": [
         "KN-001"
       ],
-      "status": "backlog",
+      "status": "review",
       "exit": "On a clean checkout, lint, lint:tsc, test, build and build-storybook all pass in apps/web, and both a deliberately broken test and a deliberately unlocalized string fail the run when planted by hand.",
       "roasts": [],
       "notes": [
@@ -229,7 +229,8 @@
         "RTL PIPELINE PROVEN, which was the one risk in this matrix that is not a version question. Driving stylis directly with @mui/stylis-plugin-rtl at stylis 4.2.0, @emotion/cache 11.14.0 and the plugin at 9.4.0: padding-left became padding-right, margin-right became margin-left, border-top-left-radius became border-top-right-radius, text-align left became right, and the ::placeholder rule that the version conflict used to crash on came through flipped and vendor-prefixed. A negative control confirms the flipper is not echoing input. So the root overrides pin on stylis 4.2.0 is load bearing and correct. Method note for whoever writes the theme: do NOT probe this through @emotion/cache insert and cache.sheet.tags, which is empty outside a DOM, so every assertion passes over an empty string and proves nothing. Drive compile, serialize, middleware and stringify from stylis."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T22:37:05.985Z"
+      "updatedAt": "2026-09-07T23:03:32.497Z",
+      "verify": "node agent/scripts/verify/KN-003.mjs"
     },
     {
       "id": "KN-004",

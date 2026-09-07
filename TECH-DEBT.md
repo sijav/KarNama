@@ -138,3 +138,73 @@ in the original, we build against a snapshot without knowing it.
 
 **The check that retires this.** When the account the Figma MCP authenticates as
 has edit access to the original, and `DESIGN.md` points at it.
+
+---
+
+## 6. Three dependency pins where "latest" is wrong
+
+**What.** `apps/web` and the root pin versions rather than tracking latest, and
+each pin is load bearing:
+
+| Pin                              | Why                                                                                            |
+| -------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `typescript` at `6.0.3`, root and web | `typescript-eslint` peers `<6.1.0`, so TypeScript 7 breaks linting entirely. Declared at the ROOT too, because `prettier-plugin-organize-imports` peers `typescript >=2.9` non-optionally and would otherwise pull 7 in |
+| the whole vitest line at `4.1.11` | `@vitest/browser-playwright` peers vitest at an EXACT version, and `@storybook/addon-vitest` peers `@vitest/browser-playwright` at `^4`. Taking the latest of any one of the four pulls in 5 and breaks the Storybook test project |
+| `stylis` at `4.2.0`, root `overrides` | `@emotion/cache` depends on exactly 4.2.0 while `@mui/stylis-plugin-rtl` peers `4.x`, so a plain install resolves two copies and emotion throws on every `::placeholder` rule |
+
+**Why it is like that.** All three are upstream peer ranges, not choices. Each
+was checked against the registry rather than guessed, and the stylis one was
+verified by rendering CSS through the plugin and confirming the `::placeholder`
+rule survives.
+
+**The check that retires each one.** TypeScript: `typescript-eslint` widening its
+peer range past 6.1. Vitest: `@vitest/browser-playwright` peering a range rather
+than an exact version. Stylis: `@emotion/cache` depending on `^4` rather than
+`4.2.0`, or the RTL plugin moving to the same version.
+
+---
+
+## 7. npm install scripts are blocked, and Playwright browsers need a separate step
+
+**What.** The user's npmrc sets `allow-scripts`, so `@swc/core` and `esbuild`
+postinstall scripts do not run. Nothing here adds a project `.npmrc` to widen
+that.
+
+**Why it is like that.** It is deliberate supply-chain protection and it is the
+owner's setting, not this project's to override. On this platform it costs
+nothing: both packages ship their binary as an optional platform package, and
+`@esbuild/win32-x64/esbuild.exe` and `@swc/core-win32-x64-msvc` were both
+present and working after a blocked install.
+
+**What it does cost.** Playwright downloads browsers in a postinstall, so a
+fresh clone needs `npx playwright install chromium` before `npm test` or
+`npx playwright test` can run. The Storybook test project runs in real Chromium,
+so this is not optional.
+
+**The check that retires this.** A `postinstall` step in CI that runs
+`playwright install --with-deps chromium` explicitly, at which point the manual
+step exists only for a fresh local clone and belongs in the README.
+
+---
+
+## 8. lingui runs through its runtime API, not its macros
+
+**What.** Strings go through `<Trans id="English sentence" />` and `i18n._()`
+rather than the `<Trans>` macro that reads the English out of the JSX. The
+catalogs in `src/i18n/locales/` are hand written rather than produced by
+`lingui extract`.
+
+**Why it is like that.** The macro transform needs `@lingui/swc-plugin` wired
+into `@vitejs/plugin-react-swc`, and the swc plugin is compiled against a
+specific swc ABI, so a mismatch fails at build time in a way that is unrelated
+to anything the scaffold is trying to prove. The runtime API needs no transform
+and enforces the same rule: `eslint-plugin-lingui` rejects a bare literal either
+way, which is the half that makes the rule mechanical.
+
+**What it costs.** Message ids are written twice, once in the JSX and once in
+the catalog, and nothing yet checks that a used id exists. `i18n:extract` is
+wired but has nothing to extract from.
+
+**The check that retires this.** `@lingui/swc-plugin` building against the swc
+version `@vitejs/plugin-react-swc` resolves, `lingui extract` producing the
+catalogs, and the hand written ones deleted.

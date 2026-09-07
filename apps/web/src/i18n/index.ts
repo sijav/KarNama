@@ -1,0 +1,31 @@
+import { i18n } from '@lingui/core'
+import { messages as en } from './locales/en-US'
+import { messages as fa } from './locales/fa-IR'
+
+/**
+ * lingui, with ENGLISH message ids as the source and Persian as a translation.
+ *
+ * The direction of that matters and is easy to get backwards: the id in the
+ * code is the English sentence, so a missing Persian translation renders the
+ * English rather than an empty string or a key. That was verified against
+ * `@lingui/core` 6.6.0 rather than assumed, because a fallback to empty would
+ * make an untranslated screen look broken instead of look English, and nobody
+ * would notice until a user did.
+ *
+ * The default locale is Persian, because the product is Persian. English is the
+ * source language, not the default one.
+ */
+export const locales = { 'fa-IR': 'فارسی', 'en-US': 'English' } as const
+
+export type Locale = keyof typeof locales
+
+export const defaultLocale: Locale = 'fa-IR'
+
+export const directionFor = (locale: Locale): 'rtl' | 'ltr' => (locale === 'fa-IR' ? 'rtl' : 'ltr')
+
+export const isLocale = (value: string): value is Locale => value in locales
+
+i18n.load({ 'en-US': en, 'fa-IR': fa })
+i18n.activate(defaultLocale)
+
+export { i18n }

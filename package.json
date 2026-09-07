@@ -11,7 +11,11 @@
   ],
   "devDependencies": {
     "prettier": "^3.9.5",
-    "prettier-plugin-organize-imports": "^4.3.0"
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "typescript": "6.0.3"
+  },
+  "overrides": {
+    "stylis": "4.2.0"
   },
   "scripts": {
     "todo": "node agent/scripts/todo.mjs",
