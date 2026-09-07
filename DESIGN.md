@@ -334,6 +334,53 @@ drawn frame, stop and ask the owner rather than editing the design by hand.
 
 ---
 
+### Enumerated field values, from `434:33`
+
+Provisional, see the open questions below. English on the left because message
+ids are English, Persian on the right because that is what ships by default.
+
+**نوع همکاری, employment type:** full-time تمام‌وقت · part-time پاره‌وقت ·
+internship کارآموزی · remote دورکاری · contract قراردادی · project پروژه‌ای
+
+**سطح شغلی, job level:** worker کارگر · employee کارمند · specialist کارشناس ·
+senior specialist کارشناس ارشد · middle manager مدیر میانی ·
+deputy or senior manager معاون / مدیر ارشد · chief executive مدیر عامل
+
+**وضعیت, status:** the five defaults, plus «+ وضعیت تازه» to create one. Two
+Persianisations are already applied and should not be undone:
+«تازه اضافه‌شده» became «ذخیره‌شده», and «اپلای‌شده» became «درخواست‌شده».
+
+A status label is **data, not a catalog message**, because the user can rename
+any of them. The five default names ship as catalog messages only as the seed
+values for a fresh account.
+
+### The design is 100 percent tokenised, which makes the no-literal rule checkable
+
+Frame `434:26` reports full variable coverage across both the Components and
+Screens pages: background colour 5496 of 5496, border colour 1995 of 1995,
+padding 6276 of 6276, gap 3226 of 3226, radius 2038 of 2038, and 464 icon sizes
+all bound to `size/icon-*`. Off-scale values were corrected in the same pass:
+spacing 2 and 3 to 4, 6 and 10 to 8, 20 to 24, 40 to 32; radius 2 and 5 to 4;
+font 11 to 12 and 18 to 20.
+
+So every number a component needs **is** in the token set. If an implementation
+reaches for a literal, either the value is wrong or the token was not looked up.
+
+### States are variants on the component, not separate screens
+
+Frame `416:14`: hover and press are reactions carried by each Component Set that
+has a State axis, so they work on every instance rather than only on the one
+drawn inside a Hover frame. They are applied to Card, Contact Card, Button in
+all sizes and styles, Menu Item, Option Row, Filter Chip, Search Bar, Input,
+Select, Status Control, Sort Control and Checkbox.
+
+This means the `Hover`, `Drag` and `Drop Done` frames on the Screens canvas are
+**prototype demonstrations, not screens to implement**. Build the states as
+variants on the component. The file also records why bulk selection was not
+wired from the card checkbox in the prototype: a reaction can only change a
+variant on its own component, it cannot navigate elsewhere. That is a Figma
+limitation, not a product decision, so the real app should wire it properly.
+
 ## 5. Open questions the design has not settled
 
 These are flagged in the file itself. They are the designer's or the owner's

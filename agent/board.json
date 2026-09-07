@@ -55,6 +55,17 @@
           "reviewerScore": 2.5,
           "reviewerCriticals": 3,
           "at": "2026-09-07T20:51:04.667Z"
+        },
+        {
+          "round": 5,
+          "score": 4.5,
+          "criticals": 2,
+          "file": "agent/roasts/KN-001-round-5.2026-09-07T20-51-24-171Z.md",
+          "cardDigest": "c56d04453965271ea6e74dd2b34c57877144d20d280e2d913530b62f82fba618",
+          "head": "2ee0e1cd48fa7bbff8d9d6b6fefb8855b08169a4",
+          "reviewerScore": 4.5,
+          "reviewerCriticals": 2,
+          "at": "2026-09-07T20:57:10.659Z"
         }
       ],
       "notes": [
@@ -64,7 +75,7 @@
         "Round 6 (board round 3) scored 5.5 with one critical, and confirmed the documented close path works. The critical was real: cardDigest omitted verify, so a task could record a clear round, swap its verify command for one that always passes, commit that as bookkeeping, and close against a check nobody reviewed. Fixed by folding verify into the digest and moving the digest into agent/scripts/lib/card.mjs so the board and the harness share one definition. Also accepted: STATE.md was stale at exactly the point a context reset depends on it, and DESIGN.md still asserted two nav destinations while the recorded decision says three. Codex could not reach Figma to check my token tables, so I verified them independently instead. It ruled PHASE-NEXT.md correctly deferred to KN-053, which I accept."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:44:33.054Z",
+      "updatedAt": "2026-09-07T20:54:45.854Z",
       "verify": "node agent/scripts/verify/KN-001.mjs"
     },
     {
@@ -90,10 +101,12 @@
         "CORRECTION to the earlier prefetched note. The job record requires THREE fields, not one: job title, company name, and status (which always has a value, defaulting to ذخیره‌شده). Read in full from frame 434:2. The add flow requires exactly one of job link OR full ad text, and the extract button stays disabled until one is present; the manual path requires neither. A contact requires only a full name, and the file itself flags an open question about whether email or phone should be a required one-of-two. A custom status requires only a name, its colour is auto-assigned. Login asks for a mobile number and a five digit code, and the user's name only on first login.",
         "CORRECTIONS owed to DESIGN.md, read from frame 376:31. The column menu has THREE options, rename, change colour and delete: reorder was REMOVED, and DESIGN.md still lists it. The card's 4px status stripe is on the RIGHT edge, and on hover a checkbox appears, the title shifts and a delete icon appears in the corner. Bulk selection uses a dark floating bar at the BOTTOM of the page, not a bar above the columns. The mobile board is one column plus a horizontally scrolling status chip bar. The manual and extracted add forms are the same form, differing only in whether the fields arrive filled.",
         "Read from frame 434:16. The contacts grid is two columns ordered right to left and row by row, and the file explicitly says code must NOT reverse the array: direction rtl on the grid gives the natural order. Status selection has NO dropdown, it is a row of chips (Status Picker) with a blue ring on the selected one plus a dashed plus-new-status chip. Sort options are exactly four: newest, oldest, nearest deadline, company name alphabetical. OPEN DESIGN QUESTION flagged in the file: whether رد شده stays at the end of the pipeline or moves off the board. That is the owner's or designer's call and must be raised, not decided here.",
-        "Read from frame 376:9, the design principles. THREE product rules that change component work: there is NO separate Edit button anywhere, clicking a job or contact card opens its modal already editable; adding and changing a status and adding a contact are all inline, and the separate status-management page was removed; and RTL is achieved with direction rtl and natural array order, never by reversing arrays. Also a CONTRADICTION to record: principle 5 here forbids colloquial Persian outright, while the later Copywriting frame 505:3 requires it for microcopy and formal Persian only for UI labels. 505:3 wins, it is later and enumerates sixteen applied changes. Mark principle 5 superseded so nobody re-applies it."
+        "Read from frame 376:9, the design principles. THREE product rules that change component work: there is NO separate Edit button anywhere, clicking a job or contact card opens its modal already editable; adding and changing a status and adding a contact are all inline, and the separate status-management page was removed; and RTL is achieved with direction rtl and natural array order, never by reversing arrays. Also a CONTRADICTION to record: principle 5 here forbids colloquial Persian outright, while the later Copywriting frame 505:3 requires it for microcopy and formal Persian only for UI labels. 505:3 wins, it is later and enumerates sixteen applied changes. Mark principle 5 superseded so nobody re-applies it.",
+        "Field options read in full from 434:33, and they are MARKED UNCONFIRMED in the file itself: taken from the product owner but never matched against jobinja.ir or jobvision.ir because the network blocked both. Employment type: تمام‌وقت، پاره‌وقت، کارآموزی، دورکاری، قراردادی، پروژه‌ای. Job level: کارگر، کارمند، کارشناس، کارشناس ارشد، مدیر میانی، معاون یا مدیر ارشد، مدیر عامل. Status: ذخیره‌شده، درخواست‌شده، مصاحبه، رد شده، پیشنهاد کار، plus create-new. Two Persianisations already applied: تازه اضافه‌شده became ذخیره‌شده and اپلای‌شده became درخواست‌شده.",
+        "From frame 416:14: hover and press are component-level reactions on each Component Set with a State axis, not frame jumps, so the Hover, Drag and Drop Done entries in the Screens canvas are prototype demonstrations rather than separate screens to implement. Build the states as variants on the component. Also from 434:26: the design is 100 percent tokenised, every background, border, padding, gap, radius and icon size is bound to a variable, which makes the no-literal rule a checkable claim rather than a preference."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:47:48.896Z"
+      "updatedAt": "2026-09-07T20:53:29.736Z"
     },
     {
       "id": "KN-003",
@@ -131,7 +144,7 @@
         "A working independent token checker already exists in the session scratchpad (tokencheck.mjs). It parses DESIGN.md's tables and asserts them against the Figma variable set from node 7:2 plus the type documentation at 416:21, carries its own self-test so a broken pattern is caught, and currently reports full agreement: 32 colour tokens, 13 spacing and radius values, 5 type roles. Move it into agent/scripts/verify/KN-004.mjs and make it this task's verify command rather than rewriting it. Note it must NOT flag the prose that records Body/Small's deletion, only a table row."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:51:03.180Z",
+      "updatedAt": "2026-09-07T20:54:46.444Z",
       "verify": "node agent/scripts/verify/KN-004.mjs ."
     },
     {
@@ -229,7 +242,7 @@
       "id": "KN-010",
       "title": "Status chip, 9 statuses by 2 sizes, display only",
       "desc": "A display-only chip for the nine statuses at sizes S and M, from Figma node 82:2, taking base and container colours from the status token pairs. No click target and no focus ring, deliberately.",
-      "why": "Status is the spine of the product, so its visual language appears on every card, filter and modal. The design separates display from interaction on purpose, and merging them here would put a focus ring on every card in the list.",
+      "why": "Status is the spine of the product, so its visual language appears on every card, column header and filter. The design separates display from interaction on purpose, and merging them here would put a focus ring on every card on the board. The label is data rather than a translated constant, because a user can rename any status and a catalog cannot represent that.",
       "severity": "high",
       "points": 3,
       "area": "web",
@@ -239,10 +252,11 @@
         "KN-007"
       ],
       "status": "backlog",
-      "exit": "Nine statuses at both sizes match their Figma nodes, the chip has no tabindex and no click handler, a test asserts that, and the label comes from the catalog rather than a hardcoded string so a renamed status shows its new name.",
+      "exit": "Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:56:10.166Z"
     },
     {
       "id": "KN-011",
@@ -286,7 +300,7 @@
       "id": "KN-013",
       "title": "Checkbox, 5 states",
       "desc": "Unchecked, Checked, Indeterminate, Hover and Disabled from Figma node 204:11, at 20 by 20.",
-      "why": "Bulk selection on the My Jobs list needs it, and indeterminate is what a partially selected header checkbox shows. A checkbox without an indeterminate state forces the header into a lie when some rows are selected.",
+      "why": "Bulk selection on the board needs it, and indeterminate is what a partially selected column header shows. A checkbox without an indeterminate state forces the header into a lie when some cards are selected.",
       "severity": "high",
       "points": 2,
       "area": "web",
@@ -299,7 +313,8 @@
       "exit": "All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:56:13.758Z"
     },
     {
       "id": "KN-014",
@@ -365,7 +380,7 @@
     {
       "id": "KN-017",
       "title": "Filter chip, doubling as the status counter",
-      "desc": "Default, Hover, Pressed and Selected from Figma node 159:71, carrying a count, used as the status filter row above the job list.",
+      "desc": "Default, Hover, Pressed and Selected from Figma node 159:71, carrying a count. On mobile it is the scrolling status chip bar that stands in for the columns; on desktop it is the counter and filter row.",
       "why": "It is both the filter and the summary: how many are in each status is the answer to \"where do I actually stand\", which is the archive scenario in one line.",
       "severity": "high",
       "points": 2,
@@ -379,13 +394,14 @@
       "exit": "Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:56:14.255Z"
     },
     {
       "id": "KN-018",
       "title": "Menu and menu item",
       "desc": "Menu Item with Default, Hover, Disabled and Destructive from node 181:22, and the two menus at 512:8350, Type=Status and Type=Card.",
-      "why": "Status management is inline through this menu: rename, recolour, reorder, delete. The card menu carries the destructive actions, and Destructive being a distinct drawn state means the design intends deletion to look different, not merely to be confirmed.",
+      "why": "Status management is inline through this menu, and the design gives it exactly three options: rename, change colour, delete. Reorder was removed. The card menu carries the destructive actions, and Destructive being a distinct drawn state means the design intends deletion to look different, not merely to be confirmed. The colour menu replaces the main menu rather than opening beside it.",
       "severity": "high",
       "points": 5,
       "area": "web",
@@ -399,7 +415,8 @@
       "exit": "All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:56:10.670Z"
     },
     {
       "id": "KN-019",
@@ -424,7 +441,7 @@
       "id": "KN-020",
       "title": "Status choice, status picker and status control",
       "desc": "Status Choice with Default, Hover and Selected from node 427:567, the Status Picker popover at 427:592, and Status Control with Default, Hover and Pressed at 199:21, which is the clickable wrapper the card uses around a display-only chip.",
-      "why": "Changing a status from the list without opening anything is the core interaction of the organise scenario. The design deliberately keeps the chip inert and puts interaction in a wrapper, so this is where that separation is honoured or lost.",
+      "why": "Changing a status without opening anything is the core interaction of the organise scenario, whether by dragging a card between columns or by picking from the chip picker. The design deliberately keeps the chip inert and puts interaction in a wrapper, so this is where that separation is honoured or lost.",
       "severity": "high",
       "points": 5,
       "area": "web",
@@ -440,13 +457,14 @@
       "exit": "All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:56:14.743Z"
     },
     {
       "id": "KN-021",
       "title": "Page header",
       "desc": "Title, optional back button and optional primary action, from Figma node 155:56 with the second instance at 155:72. Carries the language switch as a trailing action on mobile, per DESIGN.md section 4.",
-      "why": "Every screen has one, and it is where the language control lives on mobile because the tab bar has exactly two destinations and a third would change the design.",
+      "why": "Every screen has one, and it is where the language control lives on mobile: the tab bar carries the three drawn destinations and a fourth entry would change the design, so the switch belongs here instead.",
       "severity": "high",
       "points": 3,
       "area": "web",
@@ -461,7 +479,8 @@
       "exit": "Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:56:11.168Z"
     },
     {
       "id": "KN-022",
@@ -506,7 +525,7 @@
       "id": "KN-024",
       "title": "Sort control",
       "desc": "Default, Hover and Open from Figma node 408:512.",
-      "why": "An archive that only grows needs an order the user chooses. Sorting by when it was added, or by status, is what turns a list into a view of where things stand.",
+      "why": "An archive that only grows needs an order the user chooses. The design permits exactly four: newest, oldest, nearest deadline, and company name alphabetically. Sorting by status is NOT one of them, because status is already the axis the board columns express.",
       "severity": "high",
       "points": 3,
       "area": "web",
@@ -517,10 +536,11 @@
         "KN-018"
       ],
       "status": "backlog",
-      "exit": "Three states match Figma, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced.",
+      "exit": "Three states match Figma, the four permitted options are the only ones offered, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:56:12.194Z"
     },
     {
       "id": "KN-025",
@@ -647,10 +667,11 @@
         "KN-020"
       ],
       "status": "backlog",
-      "exit": "All four tabs match Figma, the modal opens from a card in the list, status history renders in the Info tab in reverse chronological order, and switching tabs does not lose unsaved note text.",
+      "exit": "All four tabs match Figma, the modal opens from a card on the board, status history renders in the Info tab in reverse chronological order, and switching tabs does not lose unsaved note text.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-07T20:56:13.255Z"
     },
     {
       "id": "KN-031",
@@ -941,7 +962,7 @@
       "id": "KN-046",
       "title": "Auth screens: login, code, signup",
       "desc": "The three screens at page-map row 6, both desktop (407:6951, 407:6972, 407:7000) and mobile (407:7022, 407:7043, 407:7071): enter a mobile number, enter the five digit code, and the first-login signup that collects the name. Includes the expired code, wrong code and resend paths.",
-      "why": "Everything in the archive belongs to someone, so nothing else can be real until sign-in is. The failure cases matter more than the happy path here, because an expired link is the common experience of a magic link.",
+      "why": "Everything in the archive belongs to someone, so nothing else can be real until sign-in is. The failure cases matter more than the happy path: a mistyped or expired five digit code is the common experience of an OTP flow, and a resend that silently does nothing is the usual way it goes wrong.",
       "severity": "high",
       "points": 5,
       "area": "web",
@@ -954,7 +975,7 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:49:24.656Z"
+      "updatedAt": "2026-09-07T20:56:12.735Z"
     },
     {
       "id": "KN-047",
@@ -1114,7 +1135,8 @@
       "exit": "Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T20:33:44.264Z"
+      "createdAt": "2026-09-07T20:33:44.264Z",
+      "updatedAt": "2026-09-07T20:55:11.902Z"
     },
     {
       "id": "KN-056",

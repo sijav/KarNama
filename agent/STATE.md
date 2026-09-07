@@ -91,12 +91,23 @@ When a round comes back clean at 9.5 or above with zero criticals: record it,
 then `npm run todo -- move KN-001 done --evidence "..."`.
 
 Then **KN-002**, which the owner named. Its card carries detailed notes from the
-Documentation and Screens canvases, read them with `npm run todo -- show
-KN-002`. The stale cards KN-027, KN-036, KN-042, KN-043, KN-038 and KN-046 have
-already been rewritten against the design, and the two missing tasks it would
-have found, the standalone network screen and the posting extraction service,
-are already filed. KN-002's remaining work is the full 53-screen inventory and
-the Job Record field list.
+Documentation and Screens canvases; read them with `npm run todo -- show KN-002`.
+
+Cards that contradicted the design have been rewritten, and the two tasks the
+plan was missing, the standalone network screen and the posting extraction
+service, are filed as KN-056 and KN-057.
+
+**Do not take that reconciliation on trust.** The first attempt at it claimed to
+be complete and was not: four more contradicting cards were found afterwards by
+sweeping the board for the forbidden phrases rather than by remembering which
+cards were edited. Re-run that sweep before relying on the plan:
+
+```bash
+node -e "const b=require('./agent/board.json');for(const t of b.tasks)for(const f of ['title','desc','why','exit'])for(const re of [/reorder/i,/two destinations/i,/magic link/i])if(re.test(t[f]||''))console.log(t.id,f)"
+```
+
+KN-002's remaining work is the full 53-screen inventory and the Job Record field
+list, and it should end by proving the sweep is clean rather than asserting it.
 
 ## What to read first
 

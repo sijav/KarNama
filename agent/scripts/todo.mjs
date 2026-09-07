@@ -11,8 +11,8 @@
 
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { existsSync, lstatSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { cardDigest } from './lib/card.mjs'
@@ -179,17 +179,33 @@ const readArchive = (file, task, expectedRound) => {
 }
 
 /**
- * A verify command may not reach into the archive directory.
+ * A verify command must be a node script in `agent/scripts/verify/`, and that
+ * file must be real rather than a link.
  *
- * `agent/roasts/` is excluded from work-change detection so that recording a
- * round does not count as unreviewed work. Pointing a verifier at a script
- * living there turned that exclusion into a way to swap the check after the
- * review: the card digest covers the command TEXT, not the file it runs.
+ * Two weaker versions failed. The card digest covers the command TEXT, not the
+ * file it runs, so pointing a verifier at a script under `agent/roasts/` let the
+ * check be swapped after a clear round, because that directory is excluded from
+ * work-change detection. Rejecting the string `agent/roasts/` then failed too:
+ * `node agent/verify-current.mjs`, where that path is a SYMLINK into the
+ * archive, passes any check that reads the command instead of resolving it.
+ *
+ * So the allowed shape is narrow and the file is resolved. A verifier that wants
+ * to run lint, typecheck and tests writes a node script that does, which is also
+ * how it stays runnable on both platforms.
  */
+const VERIFY_DIR = join(ROOT, 'agent', 'scripts', 'verify')
 const verifyCommand = (command) => {
-  if (/agent[\\/]roasts[\\/]/.test(command)) {
-    fail('set: a verify command may not run anything from agent/roasts, which the work-change gate ignores')
+  const match = /^node\s+(agent\/scripts\/verify\/[A-Za-z0-9_.-]+\.mjs)(\s|$)/.exec(command)
+  if (!match) {
+    fail(
+      'set: a verify command must be "node agent/scripts/verify/<name>.mjs [args]".\n' +
+        'Anything else can be pointed, directly or through a link, at a path the work-change gate ignores.',
+    )
   }
+  const target = resolve(ROOT, match[1])
+  if (!target.startsWith(`${VERIFY_DIR}${sep}`)) fail(`set: ${match[1]} resolves outside agent/scripts/verify`)
+  if (!existsSync(target)) fail(`set: ${match[1]} does not exist`)
+  if (lstatSync(target).isSymbolicLink()) fail(`set: ${match[1]} is a symlink, which hides what actually runs`)
   return command
 }
 
@@ -634,6 +650,10 @@ const commands = {
       // prose conditions cannot all be reduced to one, but many of them can, and
       // calling the whole problem irreducible was hiding the tractable half.
       if (task.verify) {
+        // Re-validate at close, not only at write. A command stored before this
+        // rule existed, or a file swapped for a symlink afterwards, would
+        // otherwise still be executed here.
+        verifyCommand(task.verify)
         const check = spawnSync(task.verify, {
           cwd: ROOT,
           shell: true,
@@ -678,7 +698,14 @@ const commands = {
       // is settable like any other field. It may not live in the archive
       // directory: belt and braces alongside the narrowed bookkeeping pattern,
       // because a checker parked there was invisible to the work-change gate.
-      else if (key === 'verify') task.verify = verifyCommand(requireValue(value, 'verify'))
+      else if (key === 'verify') {
+        const raw = requireValue(value, 'verify')
+        // `--verify none` clears it, the same spelling `--parent none` uses.
+        // Without a way to unset, a command written by mistake is stuck on the
+        // card and only surfaces when the close runs it.
+        if (raw === 'none') delete task.verify
+        else task.verify = verifyCommand(raw)
+      }
       else if (key === 'evidence') task.evidence = requireValue(value, 'evidence')
       else if (key === 'status') fail('set: status is changed with "move", which is where the roast gate lives')
       else if (key === 'id') fail('set: id is immutable, other tasks point at it')
