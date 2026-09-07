@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 3 of 76 tasks done · 7 of 334 points.
+Project **KarNama** · 3 of 78 tasks done · 7 of 339 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-002` | Read the Figma Documentations canvas and fold it into the contract | critical | 3 | design | KN-001 | DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down. |
 
-## Backlog (72)
+## Backlog (74)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -43,6 +43,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-074` | The harness stamps a round number that goes stale before it is recorded | high | 2 | agent | KN-001 | Two roast rounds run back to back can both be recorded, in order, with their own verdicts and filed lists, and a manifest that has already been recorded is still refused a second time. |
 | `KN-076` | Let a settled open question be recorded as a decision, not only as a task | high | 2 | agent | KN-002 | An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision that the manifest does not record still fails; and closing KN-070 as decided leaves the verifier green. |
+| `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -54,6 +55,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-051` | Deploy the web app to GitHub Pages | high | 3 | deploy | KN-003 | The app loads at its Pages URL, a deep link to a route works on a hard refresh, Storybook is reachable at /storybook/, and the deploy runs from a push to main with no manual step. |
 | `KN-062` | Shared story fixtures | high | 3 | web | KN-003, KN-007 | Every component story that needs data uses the shared fixtures, a Docs page rendering many stories at once seeds without error, the fixtures never appear in the production bundle and a test asserts that, and each fixture set has a long value that exercises truncation in both languages. |
+| `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | high | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | high | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | high | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
@@ -127,7 +129,7 @@ Read canvas 5:8 "Documentations" in full, and canvas 5:7 "Screens", and write wh
 
 **Exit condition.** DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down.
 
-**Roasts.** round 1 scored 4 with 2 critical(s)
+**Roasts.** round 1 scored 4 with 2 critical(s); round 2 scored 2.5 with 2 critical(s)
 
 ### `KN-003` Web app scaffold with the full quality gate
 
@@ -946,4 +948,26 @@ agent/scripts/verify/KN-002.mjs recognises a "**Decided ...**" disposition when 
 **Why.** The exit condition of KN-002 says every open item is "either reflected in the board as a task or recorded as a decision". Only the first can pass today, so KN-070 through KN-073 and KN-075 cannot be closed the way the contract says they may be: the moment one of them is decided and marked done, this verifier starts failing. Found by a roast as a major.
 
 **Exit condition.** An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision that the manifest does not record still fails; and closing KN-070 as decided leaves the verifier green.
+
+### `KN-077` Settle the two copy strings that frame 505:3 records as not yet applied
+
+- **status** backlog · **severity** high · **points** 2 · **area** design
+- **blocked by** KN-002
+
+Of the sixteen copy changes enumerated in documentation frame 505:3, two are marked in the frame itself as NOT applied. Item 10, the Review-step helper copy, says the node does not exist in the file after searching all five Add/Edit states on both breakpoints, so its placement needs confirming or the string needs adding. Item 15, the new-status helper copy, says the text was not found and needs manual review. Decide the wording and where each string lives, write both into DESIGN.md, and remove them from the open list.
+
+**Why.** DESIGN.md claimed all sixteen changes "were applied" and that nothing is left in the Figma file alone. Both statements were false, and a roast caught it by reading the committed capture rather than the document. Two user-facing strings with no agreed wording and no agreed home will otherwise be invented by whoever builds the Add flow and the status picker, which is the same silent decision the open-questions section exists to prevent.
+
+**Exit condition.** DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green.
+
+### `KN-078` Check documentation-frame coverage against the capture text, not an author-chosen fact list
+
+- **status** backlog · **severity** high · **points** 3 · **area** agent
+- **blocked by** KN-002
+
+agent/scripts/verify/KN-002.mjs proves each of the 14 frame ids appears somewhere in DESIGN.md, which the frame-index table alone satisfies, and then checks three or four author-chosen facts as substrings under the claimed heading. The facts are picked by the same person who wrote the section, so a frame can be substantially untranscribed while every check passes. Derive what must be covered from the committed capture instead: the frame title and its section headings are in the capture, so require each captured section heading of a frame to be answered somewhere in the claimed DESIGN.md section, and report coverage rather than a boolean.
+
+**Why.** A roast rated this major and it is the honest limit of the current verifier: the capture upgraded the ID inventory from a claim to evidence, but the CONTENT check is still self-attestation. That gap is what let frame 505:3 be summarised as sixteen applied changes when two of them were explicitly pending in the frame text.
+
+**Exit condition.** Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames.
 

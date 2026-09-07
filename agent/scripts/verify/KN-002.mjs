@@ -234,6 +234,66 @@ check('EVERY open item is disposed of, and by the task that actually owns it', (
   return problems.length ? problems.join(' | ') : null
 })
 
+check('everywhere the CAPTURES say something is unsettled is accounted for', () => {
+  // The strongest check here, and the one that would have caught what a roast
+  // caught by hand: the source says which of its own items are unfinished, in
+  // its own words, and that is evidence rather than assertion.
+  //
+  // DESIGN.md claimed all sixteen copy changes in 505:3 "were applied" and that
+  // nothing was left in the Figma file alone. Two of the sixteen say inside the
+  // frame that they were NOT applied: one records that the node does not exist
+  // after searching every Add and Edit state, the other that the text was not
+  // found and needs manual review. Every check passed, because every check was
+  // reading what the author wrote about the source instead of the source.
+  //
+  // Scanning DESIGN.md for English open-item vocabulary cannot do this: a
+  // document can only be checked for what it says. A capture can be checked for
+  // what it says is missing.
+  const PENDING = [
+    /نیاز به بررسی/, // needs review
+    /نیاز به تأیید|نیاز به تایید/, // needs confirmation
+    /پیدا نشد/, // was not found
+    /وجود ندار(?:ه|د)/, // does not exist
+    /تأییدنشده|تاییدنشده|تأیید نشده/, // unconfirmed
+    /⚠/, // the designer's own warning marker
+  ]
+
+  const found = []
+  for (const key of Object.keys(manifest.source?.captures ?? {})) {
+    for (const line of capture(key).text.split(/\r?\n/)) {
+      if (!PENDING.some((pattern) => pattern.test(line))) continue
+      const node = (/id="([^"]+)"/.exec(line) || [])[1]
+      if (node) found.push({ node, capture: key })
+    }
+  }
+  if (!found.length) return 'no pending marker found in any capture, which means the scan is broken, not that the design is clean'
+
+  const recorded = new Map((manifest.capturePending ?? []).map((item) => [`${item.capture}/${item.node}`, item]))
+  const byId = new Map(board.tasks.map((task) => [task.id, task]))
+  const problems = []
+
+  for (const { node, capture: key } of found) {
+    const item = recorded.get(`${key}/${node}`)
+    if (!item) {
+      problems.push(`${key} ${node} is marked pending in the capture and recorded nowhere`)
+      continue
+    }
+    const owner = byId.get(item.decidedBy)
+    if (!owner) problems.push(`${key} ${node} is assigned to ${item.decidedBy}, which is not on the board`)
+    else if (['done', 'dropped'].includes(owner.status)) {
+      problems.push(`${key} ${node} is still pending in the design but ${item.decidedBy} is ${owner.status}`)
+    }
+  }
+  // Both directions: a recorded item whose marker has gone from the capture is a
+  // stale entry, and leaving those in is how the inventory stops meaning
+  // anything.
+  const live = new Set(found.map(({ node, capture: key }) => `${key}/${node}`))
+  for (const key of recorded.keys()) {
+    if (!live.has(key)) problems.push(`${key} is recorded as pending but the capture no longer says so`)
+  }
+  return problems.length ? problems.join(' | ') : null
+})
+
 check('nothing is left open ANYWHERE in the document, not just in section 6', () => {
   // The previous version parsed only the open-questions section, so an item
   // written as ordinary prose elsewhere was invisible. It missed a real one:

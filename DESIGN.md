@@ -289,7 +289,9 @@ code, so nothing blocks on SMS credit.
 ### Terminology, which is a hard rule rather than a preference
 
 The Documentation canvas records sixteen copy changes and states the rule
-directly. It is not stylistic: the two words mean different things.
+directly. **Fourteen of the sixteen were applied in the file; two were not**,
+and the frame says so itself — see section 6. It is not stylistic: the two words
+mean different things.
 
 - **فرصت شغلی** is the record the user is tracking inside KarNama.
 - **آگهی** is **only** the external source: the original posting on a job board,
@@ -465,19 +467,28 @@ one while implementing.
   of them and showing only the three required ones are both defensible, and
   picking one while implementing is exactly the quiet resolution this section
   exists to prevent.
+- **The two copy strings frame `505:3` marks as not applied.** **Open, tracked
+  by KN-077.** Fourteen of its sixteen changes landed in the file. Item 10, the
+  Review-step helper copy, records that no such node exists after searching all
+  five Add and Edit states on both breakpoints, so its placement still needs
+  confirming or the string needs adding. Item 15, the new-status helper copy,
+  records that the text was not found and needs manual review. Both are wording
+  the design has written but not placed, so neither can be read off a screen.
 
 One contradiction between two documentation frames, already resolved:
 principle 5 at `376:9` forbids colloquial Persian outright, while the
 copywriting frame at `505:3` requires it for microcopy and formal Persian only
 for UI labels. **`505:3` wins**: it is the later revision and it enumerates
-sixteen concrete changes that were applied, one of which reverts a wrong
-colloquial edit on a UI label. Principle 5 is superseded, do not re-apply it.
+sixteen concrete changes, fourteen of them applied in the file, one of which
+reverts a wrong colloquial edit on a UI label. Principle 5 is superseded, do not
+re-apply it.
 
 ## 7. The Documentation canvas, frame by frame
 
 Canvas `5:8`. Every frame, with what it settles and where that now lives, so a
-reader can tell at a glance whether this document has absorbed it. Nothing is
-left in the Figma file alone.
+reader can tell at a glance whether this document has absorbed it. Two copy
+strings are the one exception, and section 6 says which: they are open in the
+Figma file too, so there is nothing to absorb yet.
 
 "Where it landed" names a **heading**, not a section number. An earlier version
 numbered them, a later edit renumbered the sections, and the index then pointed

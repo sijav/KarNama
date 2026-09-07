@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 77,
+  "nextId": 79,
   "tasks": [
     {
       "id": "KN-001",
@@ -136,6 +136,21 @@
           "reviewerScore": 4,
           "reviewerCriticals": 2,
           "at": "2026-09-07T22:13:17.730Z"
+        },
+        {
+          "round": 2,
+          "score": 2.5,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-002-round-2.2026-09-07T22-14-36-002Z.md",
+          "filed": [
+            "KN-077",
+            "KN-078"
+          ],
+          "cardDigest": "bbd7f52a37244badaa88e5e43f6e1e10f6402c895fcb12b82278703d077f1b93",
+          "head": "8951651edee83c05ccd59ea2af031197ec2577fa",
+          "reviewerScore": 2.5,
+          "reviewerCriticals": 2,
+          "at": "2026-09-07T22:20:20.632Z"
         }
       ],
       "notes": [
@@ -1700,6 +1715,40 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T22:11:19.267Z"
+    },
+    {
+      "id": "KN-077",
+      "title": "Settle the two copy strings that frame 505:3 records as not yet applied",
+      "desc": "Of the sixteen copy changes enumerated in documentation frame 505:3, two are marked in the frame itself as NOT applied. Item 10, the Review-step helper copy, says the node does not exist in the file after searching all five Add/Edit states on both breakpoints, so its placement needs confirming or the string needs adding. Item 15, the new-status helper copy, says the text was not found and needs manual review. Decide the wording and where each string lives, write both into DESIGN.md, and remove them from the open list.",
+      "why": "DESIGN.md claimed all sixteen changes \"were applied\" and that nothing is left in the Figma file alone. Both statements were false, and a roast caught it by reading the committed capture rather than the document. Two user-facing strings with no agreed wording and no agreed home will otherwise be invented by whoever builds the Add flow and the status picker, which is the same silent decision the open-questions section exists to prevent.",
+      "severity": "high",
+      "points": 2,
+      "area": "design",
+      "parent": [
+        "KN-002"
+      ],
+      "status": "backlog",
+      "exit": "DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T22:18:31.013Z"
+    },
+    {
+      "id": "KN-078",
+      "title": "Check documentation-frame coverage against the capture text, not an author-chosen fact list",
+      "desc": "agent/scripts/verify/KN-002.mjs proves each of the 14 frame ids appears somewhere in DESIGN.md, which the frame-index table alone satisfies, and then checks three or four author-chosen facts as substrings under the claimed heading. The facts are picked by the same person who wrote the section, so a frame can be substantially untranscribed while every check passes. Derive what must be covered from the committed capture instead: the frame title and its section headings are in the capture, so require each captured section heading of a frame to be answered somewhere in the claimed DESIGN.md section, and report coverage rather than a boolean.",
+      "why": "A roast rated this major and it is the honest limit of the current verifier: the capture upgraded the ID inventory from a claim to evidence, but the CONTENT check is still self-attestation. That gap is what let frame 505:3 be summarised as sixteen applied changes when two of them were explicitly pending in the frame text.",
+      "severity": "high",
+      "points": 3,
+      "area": "agent",
+      "parent": [
+        "KN-002"
+      ],
+      "status": "backlog",
+      "exit": "Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T22:18:31.097Z"
     }
   ]
 }

@@ -206,6 +206,46 @@
       "marker": "Review step",
       "from": "376:31",
       "decidedBy": "KN-075"
+    },
+    {
+      "$comment": "Found by a roast reading the committed capture rather than the document. DESIGN.md said all sixteen copy changes in 505:3 were applied and that nothing was left in the Figma file alone. Both were false: two of the sixteen say inside the frame that they were not applied.",
+      "id": "unapplied-copy",
+      "marker": "not applied",
+      "from": "505:3",
+      "decidedBy": "KN-077"
+    }
+  ],
+  "$capturePendingNote": "Every place the CAPTURES themselves say something is unsettled, derived by scanning the committed XML for the Persian vocabulary of a pending item and then recorded here with its disposition. This is the half the English scan of DESIGN.md cannot do: DESIGN.md can only be checked for what it says, whereas the source can be checked for what it says is missing. The verifier re-derives this set and requires it to match exactly in both directions, so a pending marker in the design cannot be absorbed by silence.",
+  "capturePending": [
+    {
+      "node": "506:12",
+      "capture": "documentation",
+      "why": "Copy change 10, the Review-step helper string: the frame records that no such node exists after searching all five Add and Edit states on both breakpoints, so the placement is unconfirmed.",
+      "decidedBy": "KN-077"
+    },
+    {
+      "node": "506:17",
+      "capture": "documentation",
+      "why": "Copy change 15, the new-status helper string: the frame records that the text was not found in the file and needs manual review.",
+      "decidedBy": "KN-077"
+    },
+    {
+      "node": "434:33",
+      "capture": "documentation",
+      "why": "The frame is titled unconfirmed: the employment type and job level lists were never checked against Jobinja or Jobvision because the network blocked it.",
+      "decidedBy": "KN-073"
+    },
+    {
+      "node": "434:34",
+      "capture": "documentation",
+      "why": "The same claim as its frame title, restated as the frame's own heading text.",
+      "decidedBy": "KN-073"
+    },
+    {
+      "node": "434:35",
+      "capture": "documentation",
+      "why": "The warning line that states why those lists are unconfirmed.",
+      "decidedBy": "KN-073"
     }
   ],
   "$screenNodesNote": "Removed. Derived from source.capture at verification time instead of listed here, because a list the author writes is a claim and a list derived from a committed capture is evidence."
