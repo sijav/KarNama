@@ -108,18 +108,32 @@ icon     sm 16   md 20  base 24
 
 ### Type
 
-Family **Vazirmatn**, flagged in the file as a placeholder. The scale is
-`Heading/L`, `Heading/M`, `Title`, `Body`, `Body/Small`, `Label`, laid out at
-`7:105`.
+Family **Vazirmatn**, flagged in the file as a placeholder. Five roles, and
+**only five**, read from the type-scale documentation frame `416:21`:
 
-Two are read concretely:
+| Role        | Size / line height | Weight   |
+| ----------- | ------------------ | -------- |
+| `Heading/L` | 24 / 32            | SemiBold |
+| `Heading/M` | 20 / 28            | SemiBold |
+| `Title`     | 16 / 24            | Medium   |
+| `Body`      | 14 / 22            | Regular  |
+| `Label`     | 12 / 16            | Medium   |
 
-- `Body`: Regular, 14 / 22, letter spacing 0
-- `Label`: Medium, 12 / 16, letter spacing 0.2
+`Body` carries letter spacing 0 and `Label` carries 0.2, read from the component
+frames.
 
-The other four still have to be read from `7:105` before the theme is final.
-That is task `KN-004`, and until it closes the theme carries only these two as
-verified.
+**No size outside these five is permitted.** The file says so directly, and it
+records the cleanup: 11 and 18 were corrected to 12 and 20, and **`Body/Small`
+at 13 was deleted entirely**, with the column counters moving to 12 and
+everything else to 14. An earlier version of this document listed `Body/Small`
+as a sixth role, which was wrong: it does not exist.
+
+### The Status Chip has two sizes, and the large one is not general
+
+- `Size=S`, 12px, height 24, is the default and is what almost everything uses.
+- `Size=M`, 14px, height 28, is **only** for the kanban column header.
+
+Reaching for the large size anywhere else is a departure from the design.
 
 ### Dark mode
 

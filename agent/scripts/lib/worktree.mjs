@@ -47,9 +47,18 @@ export const workingChanges = (root) =>
     .filter((line) => pathsInStatusLine(line).some((path) => !isBookkeeping(path)))
     .map((line) => line.trim())
 
-/** Work paths that changed between two commits, ignoring the loop's bookkeeping. */
+/**
+ * Work paths that changed between two commits, ignoring the loop's bookkeeping.
+ *
+ * `--no-renames` matters. With rename detection on, `git diff --name-only`
+ * reports only the DESTINATION of a rename, so moving `src/real-work.ts` to
+ * `agent/roasts/real-work.md` after a clear roast showed up as one bookkeeping
+ * path, got filtered out, and let the close gate pass while real source had been
+ * removed. Without detection the same move is reported as a deletion of the old
+ * path and an addition of the new, so the source path is seen and counted.
+ */
 export const workChangedSince = (root, from, to) =>
-  (run(root, ['diff', '--name-only', from, to]).stdout ?? '')
+  (run(root, ['diff', '--name-only', '--no-renames', from, to]).stdout ?? '')
     .split('\n')
     .map((line) => line.trim())
     .filter(Boolean)

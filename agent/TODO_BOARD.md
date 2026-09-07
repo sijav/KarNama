@@ -21,7 +21,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-002` | Read the Figma Documentations canvas and fold it into the contract | critical | 3 | design | KN-001 | DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down. |
-| `KN-004` | Read the remaining type scale and any missing tokens from Figma | critical | 3 | design | KN-001 | DESIGN.md section 1 lists size, weight, line height and letter spacing for all six type roles, each traceable to a Figma node id, with no role marked as unread. |
+| `KN-004` | Read the remaining type scale and any missing tokens from Figma | critical | 3 | design | KN-001 | A named sweep of the Foundations canvas finds no token absent from DESIGN.md, every value in the DESIGN.md tables is traceable to a Figma node id, and the KN-001 verify script's type-scale check still passes. |
 | `KN-005` | Theme: tokens, MUI theme, direction and colour scheme provider | critical | 5 | web | KN-003, KN-004 | A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour. |
 | `KN-006` | lingui: English source catalog, Persian translation, runtime switch | critical | 5 | web | KN-003 | A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not. |
 | `KN-034` | Prisma schema, Postgres on Supabase, and migrations | critical | 5 | api | KN-033 | Migrations apply to an empty database and to an existing one, the schema covers every field the Figma job record names, status history records every transition with its timestamp, and a seed script produces a realistic archive to develop against. |
@@ -117,11 +117,11 @@ apps/web on Vite, React 19, TypeScript, MUI, ESLint flat config with zero warnin
 - **status** backlog · **severity** critical · **points** 3 · **area** design
 - **blocked by** KN-001
 
-Read frame 7:105 for Heading/L, Heading/M, Title and Body/Small, which are named in the file but whose sizes, weights and line heights have not been read yet. Check the Foundations canvas for any token DESIGN.md is missing, and correct the table.
+Sweep the Foundations canvas for any token DESIGN.md is still missing, and correct anything that disagrees. The type scale itself is already transcribed: KN-001's exit condition demanded it, so all five roles were read from documentation frame 416:21 during that task, and Body/Small was found to have been deleted from the design entirely.
 
 **Why.** The theme is generated from the token table, so a font size that was guessed rather than read propagates into every component and is invisible until someone compares against Figma by eye. Only Body and Label are currently verified.
 
-**Exit condition.** DESIGN.md section 1 lists size, weight, line height and letter spacing for all six type roles, each traceable to a Figma node id, with no role marked as unread.
+**Exit condition.** A named sweep of the Foundations canvas finds no token absent from DESIGN.md, every value in the DESIGN.md tables is traceable to a Figma node id, and the KN-001 verify script's type-scale check still passes.
 
 ### `KN-005` Theme: tokens, MUI theme, direction and colour scheme provider
 

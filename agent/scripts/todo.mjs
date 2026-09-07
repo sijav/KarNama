@@ -582,6 +582,10 @@ const commands = {
     // Without the archive check the numbers are a claim about a run that may
     // never have happened.
     if (status === 'done') {
+      // Closing is the last step of the documented flow, not a shortcut past it.
+      if (task.status !== 'review') {
+        fail(`move: ${id} is ${task.status}. A task goes to review, is roasted there, and closes from review.`)
+      }
       const last = task.roasts?.[task.roasts.length - 1]
       if (!last) fail(`move: ${id} has no roast round. Run "npm run roast -- ${id} ..." and record it before closing.`)
       if (last.criticals > 0) fail(`move: ${id}'s last roast left ${last.criticals} critical(s) open`)
@@ -688,6 +692,13 @@ const commands = {
     const [id] = positional
     const task = byId(board, id)
     if (!task) fail(`roast: ${id} does not exist`)
+    // The documented flow is in_progress, then review, then the roast. Recording
+    // a round against a backlog task let the board claim a task was never
+    // awaiting review even though it was roasted and closed, so the `review`
+    // state was decorative.
+    if (!['in_progress', 'review'].includes(task.status)) {
+      fail(`roast: ${id} is ${task.status}. A task is roasted while it is in progress or in review.`)
+    }
     if (flags.score === undefined || flags.criticals === undefined) {
       fail('roast needs --score and --criticals, and --file pointing at the archived reply')
     }

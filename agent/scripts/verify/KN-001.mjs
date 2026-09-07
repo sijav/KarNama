@@ -115,31 +115,55 @@ check('a real KN-001 roast is archived, and the board records it', () => {
   const rounds = task.roasts ?? []
   if (!rounds.length) return 'the board records no roast round for KN-001'
 
-  // Every round has to point at a real archive carrying a verdict.
+  // EVERY round is bound to a harness run, not just the latest. The only
+  // exception is a round explicitly marked `legacy`, which means it was recorded
+  // before the manifest mechanism existed. There is exactly one, round 1, and
+  // the honest alternatives were to delete the record or to forge a sidecar for
+  // it. `roast` refuses to record a new round without a manifest, so the set of
+  // legacy rounds cannot grow.
   for (const round of rounds) {
     const reply = join(ROOT, round.file)
     if (!existsSync(reply)) return `round ${round.round} points at ${round.file}, which does not exist`
     if (/\.prompt\.md$/.test(round.file)) return `round ${round.round} points at a prompt, not a reply`
-    if (!/\bVERDICT\b/.test(readFileSync(reply, 'utf8'))) return `round ${round.round}'s archive carries no verdict`
-  }
+    const body = readFileSync(reply, 'utf8')
+    if (!/\bVERDICT\b/.test(body)) return `round ${round.round}'s archive carries no verdict`
 
-  // The LAST round is the one that gates closing, so it has to be fully bound to
-  // a harness run. Round 1 here was recorded before the manifest mechanism
-  // existed and has no sidecar; that is history rather than a hole, its archive
-  // is still on disk, and the only honest alternatives were to delete the record
-  // or to forge a manifest for it.
-  const last = rounds[rounds.length - 1]
-  const reply = join(ROOT, last.file)
-  const metaPath = `${reply}.meta.json`
-  if (!existsSync(metaPath)) {
-    return `the latest round, ${last.round}, has no manifest beside its archive, so it is not bound to a harness run`
+    if (round.legacy) {
+      if (round.round !== 1) return `round ${round.round} is marked legacy, but only round 1 predates the manifest`
+      continue
+    }
+
+    const metaPath = `${reply}.meta.json`
+    if (!existsSync(metaPath)) return `round ${round.round} has no manifest beside its archive`
+    const meta = JSON.parse(readFileSync(metaPath, 'utf8'))
+    if (meta.task !== 'KN-001') return `round ${round.round}'s manifest names ${meta.task}, not KN-001`
+    if (meta.round !== round.round) return `round ${round.round}'s manifest says round ${meta.round}`
+    if (meta.replyDigest !== createHash('sha256').update(body).digest('hex')) {
+      return `round ${round.round}'s archive no longer matches its manifest digest`
+    }
   }
-  const meta = JSON.parse(readFileSync(metaPath, 'utf8'))
-  if (meta.task !== 'KN-001') return `the latest round's manifest names ${meta.task}, not KN-001`
-  if (meta.round !== last.round) return `the latest round is ${last.round} but its manifest says ${meta.round}`
-  const digest = createHash('sha256').update(readFileSync(reply, 'utf8')).digest('hex')
-  if (meta.replyDigest !== digest) return `the latest round's archive no longer matches its manifest digest`
   return null
+})
+
+check('DESIGN.md transcribes the full type scale', () => {
+  // The exit condition says the Figma tokens are transcribed, and for four of
+  // the type roles that was false while this script still passed, because it
+  // only grepped for a few colours. DESIGN.md itself admitted they were unread.
+  const text = readFileSync(join(ROOT, 'DESIGN.md'), 'utf8')
+  const roles = [
+    ['Heading/L', '24 / 32'],
+    ['Heading/M', '20 / 28'],
+    ['Title', '16 / 24'],
+    ['Body', '14 / 22'],
+    ['Label', '12 / 16'],
+  ]
+  const missing = roles.filter(([role, metrics]) => !text.includes(role) || !text.includes(metrics))
+  if (missing.length) return `does not give metrics for ${missing.map(([role]) => role).join(', ')}`
+  // The file deleted Body/Small outright, so listing it is a defect, not a gap.
+  if (/`Body\/Small`\s*\|/.test(text)) return 'still lists Body/Small as a type role, which Figma deleted'
+  return /still ha(?:s|ve) to be read|need(?:s)? reading|unread/i.test(text)
+    ? 'still says some tokens are unread'
+    : null
 })
 
 if (failures.length) {
