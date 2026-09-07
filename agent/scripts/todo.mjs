@@ -17,7 +17,7 @@ import { fileURLToPath } from 'node:url'
 
 import { cardDigest } from './lib/card.mjs'
 import { contractProblems, loadContractInputs } from './lib/contract.mjs'
-import { runVerify, VerifyError, verifyArgv } from './lib/verify.mjs'
+import { VerifyError, verifyArgv, verifyGate } from './lib/verify.mjs'
 import { workChangedSince, workingChanges } from './lib/worktree.mjs'
 
 const AGENT_DIR = dirname(dirname(fileURLToPath(import.meta.url)))
@@ -712,19 +712,12 @@ const commands = {
       // Where a task names a command that proves its exit condition, run it. The
       // prose conditions cannot all be reduced to one, but many of them can, and
       // calling the whole problem irreducible was hiding the tractable half.
-      if (task.verify) {
-        // Re-validate at close, not only at write. A command stored before this
-        // rule existed, or a file swapped for a symlink afterwards, would
-        // otherwise still be executed here.
-        verifyCommand(task.verify)
-        // Through the shared module, which is the same code the task's own
-        // verifier exercises. It used to be inline here and asserted by reading
-        // this file's source text, which tests wording rather than behaviour.
-        const status = runVerify(ROOT, task.verify)
-        if (status !== 0) {
-          fail(`move: ${id}'s verify command failed (exit ${status}): ${task.verify}`)
-        }
-      }
+      // One call, into the shared module, so the close path and KN-058's own
+      // verifier exercise exactly the same gate. Inline, its two clauses could
+      // only be reached by driving a whole close, and a close needs a
+      // manifest-bound roast that cannot be fabricated without forging.
+      const verifyProblem = verifyGate(ROOT, task, verifyCommand)
+      if (verifyProblem) fail(`move: ${verifyProblem}`)
 
       // What the verify command cannot cover stays prose, so the claim about it
       // goes on the record where the next roast can dispute it.

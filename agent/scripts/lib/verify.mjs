@@ -60,3 +60,34 @@ export const runVerify = (root, command) => {
   if (result.error) throw new VerifyError(`could not run the verify command: ${result.error.message}`)
   return result.status
 }
+
+/**
+ * The close-time verify gate, as one function, so it can be tested.
+ *
+ * `move done` used to inline this, which meant the only way to check it was to
+ * drive a whole close, and a close needs a manifest-bound roast round that
+ * cannot be fabricated without forging, by design. So the two clauses of
+ * KN-058's exit condition about close behaviour, that a stored operator is
+ * refused and that a failing verifier blocks, were unreachable by any test, and
+ * a reviewer said so twice. Now the close calls this and so does the test.
+ *
+ * Returns a problem string, or null when the task may close.
+ *
+ * `revalidate` is `verifyCommand` from the board tool, passed in rather than
+ * imported, because it needs paths the board owns and this module must stay
+ * usable on its own.
+ */
+export const verifyGate = (root, task, revalidate) => {
+  if (!task.verify) return null
+  try {
+    // Re-validate at close, not only at write: a command stored before the
+    // current rules, or a file swapped for a symlink afterwards, would
+    // otherwise still be executed here.
+    if (revalidate) revalidate(task.verify)
+    const status = runVerify(root, task.verify)
+    return status === 0 ? null : `${task.id}'s verify command failed (exit ${status}): ${task.verify}`
+  } catch (error) {
+    if (error instanceof VerifyError) return `${task.id}'s verify command is not runnable: ${error.message}`
+    throw error
+  }
+}

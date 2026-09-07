@@ -15,7 +15,7 @@ import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { runVerify, VerifyError, verifyArgv } from '../lib/verify.mjs'
+import { runVerify, VerifyError, verifyArgv, verifyGate } from '../lib/verify.mjs'
 
 const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
 const TODO = join(ROOT, 'agent', 'scripts', 'todo.mjs')
@@ -123,6 +123,50 @@ try {
     // path argument the advertised `[args]` format is meant to allow.
     const argv = verifyArgv('node agent/scripts/verify/kn058-scratch.mjs C:\\work\\tokens')
     return argv.length === 3 && argv[2] === 'C:\\work\\tokens' ? null : `parsed as ${JSON.stringify(argv)}`
+  })
+
+  // These two reach the clauses a reviewer said twice were unreachable: the
+  // close-time behaviour. `move done` cannot be driven end to end from here,
+  // because a close needs a manifest-bound roast round and one of those cannot
+  // be fabricated without forging, by design. So the close calls verifyGate and
+  // so do these, which is the same code rather than a copy of it.
+
+  check('the close gate reports a failing verifier', () => {
+    const failing = join(VERIFY_DIR, 'kn058-failing.mjs')
+    writeFileSync(failing, "process.stderr.write('deliberately failing\\n')\nprocess.exit(1)\n", 'utf8')
+    try {
+      const problem = verifyGate(ROOT, { id: 'SCRATCH', verify: 'node agent/scripts/verify/kn058-failing.mjs' })
+      return problem ? null : 'the close gate accepted a task whose verifier failed'
+    } finally {
+      rmSync(failing, { force: true })
+    }
+  })
+
+  check('the close gate refuses a stored command carrying a shell operator', () => {
+    // The exact regression: a command written before the rules tightened, or by
+    // editing board.json directly, still sitting on a card at close time.
+    const problem = verifyGate(ROOT, {
+      id: 'SCRATCH',
+      verify: 'node agent/scripts/verify/kn058-scratch.mjs || exit 0',
+    })
+    if (!problem) return 'the close gate accepted a stored command with a shell operator'
+    return /not runnable|shell character/.test(problem) ? null : `refused for the wrong reason: ${problem}`
+  })
+
+  check('the close gate passes a task whose verifier succeeds', () => {
+    const problem = verifyGate(ROOT, { id: 'SCRATCH', verify: 'node agent/scripts/verify/kn058-scratch.mjs' })
+    return problem ? `a passing verifier was rejected: ${problem}` : null
+  })
+
+  check('the close gate is what move done actually calls', () => {
+    // Not source-text matching for a behaviour, which is what was wrong before:
+    // this asserts that todo.mjs imports the shared gate, so the two cannot be
+    // different implementations that drift apart.
+    const source = readFileSync(TODO, 'utf8')
+    if (!/import \{[^}]*verifyGate[^}]*\} from '\.\/lib\/verify\.mjs'/.test(source)) {
+      return 'todo.mjs does not import verifyGate, so the close path is a separate implementation'
+    }
+    return /verifyGate\(ROOT, task, verifyCommand\)/.test(source) ? null : 'todo.mjs does not call verifyGate at close'
   })
 
   check('cmd.exe expansion characters are still refused', () => {
