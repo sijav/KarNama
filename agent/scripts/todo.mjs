@@ -14,6 +14,7 @@ import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { workChangedSince, workingChanges } from './lib/worktree.mjs'
 
 const AGENT_DIR = dirname(dirname(fileURLToPath(import.meta.url)))
 const ROOT = dirname(AGENT_DIR)
@@ -59,34 +60,6 @@ const byId = (board, id) => board.tasks.find((task) => task.id === id)
 
 const git = (args) => spawnSync('git', args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
 
-/**
- * The loop's own bookkeeping, which is not the work under review.
- *
- * The clean-worktree rule deadlocked the board without this: recording a roast
- * round writes `board.json` and re-renders the board, and the harness writes its
- * reply and manifest, so by the time a round existed the tree was dirty and
- * `move done` refused every close. Excluding these keeps the rule's real intent,
- * which is that no unreviewed WORK changed between the review and the close.
- */
-// Anchored, so the three files match exactly and only `roasts/` matches as a
-// prefix. Unanchored, a work file called `agent/board.json.anything` matched
-// the bookkeeping pattern and its changes were excluded from both checks.
-const BOOKKEEPING = /^agent\/(?:board\.json|TODO_BOARD\.md|STATE\.md)$|^agent\/roasts\/./
-
-const workingChanges = () =>
-  (git(['status', '--porcelain']).stdout ?? '')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .filter((line) => !BOOKKEEPING.test(line.replace(/^\S+\s+/, '').replace(/^"|"$/g, '')))
-
-/** Paths that changed between two commits, ignoring the loop's bookkeeping. */
-const workChangedSince = (from, to) =>
-  (git(['diff', '--name-only', from, to]).stdout ?? '')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .filter((path) => !BOOKKEEPING.test(path))
 
 // ---------------------------------------------------------------- arguments
 
@@ -640,7 +613,7 @@ const commands = {
       // artifacts always moved HEAD past the reviewed commit. What matters is
       // whether any of the WORK changed, not whether the bookkeeping did.
       if (last.head !== head) {
-        const changed = workChangedSince(last.head, head)
+        const changed = workChangedSince(ROOT, last.head, head)
         if (changed.length) {
           fail(
             `move: ${id} was reviewed at ${last.head.slice(0, 8)} and work has changed since:\n  ${changed.join('\n  ')}\n` +
@@ -648,7 +621,7 @@ const commands = {
           )
         }
       }
-      const dirty = workingChanges()
+      const dirty = workingChanges(ROOT)
       if (dirty.length) {
         fail(`move: the worktree has unreviewed changes, so ${id} would close over them:\n  ${dirty.join('\n  ')}`)
       }
@@ -829,10 +802,31 @@ const commands = {
     if (!task) fail(`rm: ${id} does not exist`)
     const reason = requireValue(flags.reason, 'reason')
 
+    // `rm` is a REPAIR tool, and it is only unlocked when there is damage to
+    // repair. Left general, `--force` stripped every dependency edge off a
+    // perfectly valid board and freed the descendants of a task that never
+    // reached done, which is the same terminal-state substitution that dropping
+    // used to allow, wearing a different command's name.
+    const broken = checkBoard(board).length > 0
     const dependents = board.tasks.filter((entry) => entry.id !== id && (entry.parent ?? []).includes(id))
+
+    if (!broken) {
+      if (!SETTLED_STATUSES.includes(task.status) && task.status !== 'dropped') {
+        fail(
+          `rm: ${id} is ${task.status}, and the board is valid, so there is nothing to repair. Close it or drop it instead.`,
+        )
+      }
+      if (dependents.length) {
+        fail(
+          `rm: ${dependents.map((entry) => entry.id).join(', ')} still point at ${id}. Re-point them with "set <id> --parent ..." first.`,
+        )
+      }
+      if (flags.force) fail('rm: --force only applies to a board that is already invalid, and this one validates')
+    }
+
     if (dependents.length && !flags.force) {
       fail(
-        `rm: ${dependents.map((entry) => entry.id).join(', ')} still point at ${id}. Re-point them first, or pass --force to strip the edges.`,
+        `rm: ${dependents.map((entry) => entry.id).join(', ')} still point at ${id}. Re-point them first, or pass --force to strip the edges while repairing.`,
       )
     }
     for (const entry of dependents) entry.parent = (entry.parent ?? []).filter((parentId) => parentId !== id)
@@ -858,7 +852,20 @@ const commands = {
     process.exit(1)
   },
 
-  render(board) {
+  render(board, { flags }) {
+    // `--check` writes nothing. A verify command has to be safe to run where the
+    // work is being INSPECTED rather than edited, and Codex reviews the repo in
+    // a read-only sandbox, where the writing version failed with "render exited
+    // 1" and the check reported a false problem.
+    if (flags.check) {
+      const expected = renderBoard(board)
+      const actual = existsSync(RENDER_PATH) ? readFileSync(RENDER_PATH, 'utf8') : ''
+      if (actual !== expected) {
+        fail(`${RENDER_PATH} is stale, it differs from what board.json renders. Run "npm run todo -- render".`)
+      }
+      process.stdout.write('the rendered board is in sync with board.json\n')
+      return
+    }
     saveBoard(board)
     process.stdout.write(`rendered ${RENDER_PATH}\n`)
   },

@@ -13,6 +13,7 @@
 // asserts the things the condition actually names.
 
 import { spawnSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -50,12 +51,12 @@ check('next names a task', () => {
 check('the rendered board is in sync with board.json', () => {
   const path = join(ROOT, 'agent', 'TODO_BOARD.md')
   if (!existsSync(path)) return 'agent/TODO_BOARD.md does not exist'
-  const before = readFileSync(path, 'utf8')
-  const result = node([todo, 'render'])
-  if (result.status !== 0) return `render exited ${result.status}`
-  return readFileSync(path, 'utf8') === before
-    ? null
-    : 'the committed board is stale, it differs from what render produces'
+  // `render --check` rather than `render`. The writing version made this whole
+  // script unrunnable in a read-only sandbox, which is exactly where a reviewer
+  // runs it, and it reported the failure as a stale board rather than as its
+  // own side effect.
+  const result = node([todo, 'render', '--check'])
+  return result.status === 0 ? null : (result.stderr || '').trim() || `render --check exited ${result.status}`
 })
 
 check('AGENTS.md carries the working agreement', () => {
@@ -99,13 +100,46 @@ check('the roast harness is wired and reaches Codex', () => {
   return null
 })
 
-check('a roast reply has been archived, with its manifest', () => {
+check('a real KN-001 roast is archived, and the board records it', () => {
+  // The earlier version of this check passed on ANY non-prompt markdown file in
+  // agent/roasts that had a sidecar, from any task, of any age. A working codex
+  // binary plus one stale file satisfied it, so it proved nothing about this
+  // task ever having been reviewed. It has to name KN-001, hash to its own
+  // manifest, and be the archive a recorded round on the board points at.
   const dir = join(ROOT, 'agent', 'roasts')
   if (!existsSync(dir)) return 'agent/roasts does not exist'
-  const replies = readdirSync(dir).filter((name) => name.endsWith('.md') && !name.endsWith('.prompt.md'))
-  if (!replies.length) return 'no roast reply has been archived'
-  const withManifest = replies.filter((name) => existsSync(join(dir, `${name}.meta.json`)))
-  return withManifest.length ? null : 'no archived reply has the manifest the harness writes'
+
+  const board = JSON.parse(readFileSync(join(ROOT, 'agent', 'board.json'), 'utf8'))
+  const task = board.tasks.find((entry) => entry.id === 'KN-001')
+  if (!task) return 'KN-001 is not on the board'
+  const rounds = task.roasts ?? []
+  if (!rounds.length) return 'the board records no roast round for KN-001'
+
+  // Every round has to point at a real archive carrying a verdict.
+  for (const round of rounds) {
+    const reply = join(ROOT, round.file)
+    if (!existsSync(reply)) return `round ${round.round} points at ${round.file}, which does not exist`
+    if (/\.prompt\.md$/.test(round.file)) return `round ${round.round} points at a prompt, not a reply`
+    if (!/\bVERDICT\b/.test(readFileSync(reply, 'utf8'))) return `round ${round.round}'s archive carries no verdict`
+  }
+
+  // The LAST round is the one that gates closing, so it has to be fully bound to
+  // a harness run. Round 1 here was recorded before the manifest mechanism
+  // existed and has no sidecar; that is history rather than a hole, its archive
+  // is still on disk, and the only honest alternatives were to delete the record
+  // or to forge a manifest for it.
+  const last = rounds[rounds.length - 1]
+  const reply = join(ROOT, last.file)
+  const metaPath = `${reply}.meta.json`
+  if (!existsSync(metaPath)) {
+    return `the latest round, ${last.round}, has no manifest beside its archive, so it is not bound to a harness run`
+  }
+  const meta = JSON.parse(readFileSync(metaPath, 'utf8'))
+  if (meta.task !== 'KN-001') return `the latest round's manifest names ${meta.task}, not KN-001`
+  if (meta.round !== last.round) return `the latest round is ${last.round} but its manifest says ${meta.round}`
+  const digest = createHash('sha256').update(readFileSync(reply, 'utf8')).digest('hex')
+  if (meta.replyDigest !== digest) return `the latest round's archive no longer matches its manifest digest`
+  return null
 })
 
 if (failures.length) {

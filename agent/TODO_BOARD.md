@@ -87,7 +87,7 @@ agent/RALPH.md (the iteration rules), agent/scripts/todo.mjs (the board tool, ze
 
 **Exit condition.** "npm run todo -- validate" exits 0, "npm run todo -- next" names a task, agent/TODO_BOARD.md renders, "npm run roast" reaches Codex and archives a reply, and AGENTS.md plus DESIGN.md both exist with the Figma tokens transcribed.
 
-**Roasts.** round 1 scored 3.5 with 2 critical(s)
+**Roasts.** round 1 scored 3.5 with 2 critical(s); round 2 scored 5 with 2 critical(s)
 
 ### `KN-002` Read the Figma Documentations canvas and fold it into the contract
 

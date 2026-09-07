@@ -1,0 +1,10 @@
+{
+  "task": "KN-001",
+  "round": 2,
+  "model": "gpt-5.6-terra",
+  "head": "e39eabc8632d7162daebd6b9a2aa96311ad4d83a",
+  "base": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+  "cardDigest": "d09e9570c091e3fab45a7230c3283a7cdaa2ed3a5716d8d58cae6655b804a0e1",
+  "replyDigest": "9609a784678f73f1d06b234c177df5d2127e8fa75f9aa94d8a3c258e98166085",
+  "at": "2026-09-07T20:28:20.158Z"
+}

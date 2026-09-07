@@ -107,7 +107,27 @@ quote or a shell metacharacter could still break the invocation.
 the harness resolves and invokes the underlying `node` entry point rather than
 the shim.
 
-## 4. The Figma original is unreadable, we work from a copy
+## 4. Codex cannot run `npm` inside its sandbox on Windows
+
+**What.** The reviewer shells through PowerShell, where `npm.ps1` is blocked by
+execution policy: "File C:\Program Files\nodejs\npm.ps1 cannot be loaded because
+running scripts is disabled on this system." Every `npm run todo -- ...`
+instruction it reads is therefore unrunnable for it.
+
+**Why it matters.** A reviewer that cannot execute the tool it is reviewing
+falls back to reading, and a roast that only reads finds a different, smaller
+class of defect. It showed up as six failed commands in one round, and one of
+them made the reviewer report a false problem.
+
+**What is done about it.** The roast prompt now tells the reviewer to call
+`node agent/scripts/todo.mjs <command>` directly, and says outright that the npm
+failure is an environment limitation rather than a finding.
+
+**The check that retires this.** When the reviewer can run the documented
+commands as documented, either because the sandbox stops using PowerShell or
+because the execution policy allows the npm shim.
+
+## 5. The Figma original is unreadable, we work from a copy
 
 **What.** `DESIGN.md` points at file `EITM6CbJY33dMY8IsMFR4R`, which is a copy.
 The original, `K1EP8GCOmelU8o4vPR7a9f`, refuses every MCP call with "you don't

@@ -17,6 +17,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { workingChanges } from './lib/worktree.mjs'
+
 const AGENT_DIR = dirname(dirname(fileURLToPath(import.meta.url)))
 const ROOT = dirname(AGENT_DIR)
 const BOARD_PATH = join(AGENT_DIR, 'board.json')
@@ -99,10 +101,17 @@ const git = (args) => spawnSync('git', args, { cwd: ROOT, encoding: 'utf8', maxB
 // that cannot be tied to any revision, so the same clear round stays "valid"
 // while the code underneath it keeps changing. Commit first, then roast the
 // commit, and `move done` can check that nothing moved since.
-const dirty = (git(['status', '--porcelain']).stdout ?? '').trim()
-if (dirty) {
+//
+// This uses the SAME filter the board uses, from the shared module. They were
+// two separate rules that disagreed, and the disagreement deadlocked the
+// documented sequence: RALPH.md step 4 says `move <id> review` and then
+// `npm run roast`, but the move writes `board.json`, and this check rejected
+// the tree the move had just dirtied. The only reason it never fired is that
+// the documented `review` step was being skipped in practice.
+const dirty = workingChanges(ROOT)
+if (dirty.length) {
   fail(
-    `The worktree is dirty, so this roast could not be tied to any revision:\n${dirty}\n\n` +
+    `The worktree has unreviewed work, so this roast could not be tied to any revision:\n  ${dirty.join('\n  ')}\n\n` +
       'Commit the work first, then roast the commit. That is what lets the board refuse to close a task whose code changed after it was reviewed.',
   )
 }
@@ -176,6 +185,23 @@ ${diffNote}
 \`\`\`diff
 ${diff}
 \`\`\`
+
+## Running things in this repository
+
+**\`npm\` does not work in your sandbox on Windows.** It shells through
+PowerShell, and \`npm.ps1\` is blocked by execution policy, so every
+\`npm run todo -- ...\` you see in the documentation fails for you with
+"running scripts is disabled on this system". Call the scripts through node
+directly instead, which works and does the same thing:
+
+\`\`\`
+node agent/scripts/todo.mjs validate
+node agent/scripts/todo.mjs next
+node agent/scripts/verify/<task>.mjs
+\`\`\`
+
+That is an environment limitation, not a defect in the work, so do not report it
+as a finding. Do report anything you find by actually running those commands.
 
 ## Project rules the work must satisfy
 
