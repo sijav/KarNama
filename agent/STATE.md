@@ -58,8 +58,11 @@ verified against Figma rather than asserted.
   dependencies. `agent/scripts/roast.mjs`, the Codex harness on
   `gpt-5.6-terra`. `agent/scripts/lib/{worktree,card}.mjs`, the single
   definitions of "unreviewed work" and "the reviewed card".
-- `agent/scripts/verify/KN-001.mjs` and `KN-004.mjs`, real checks, each tested
-  against planted breaks rather than only against success.
+- `agent/scripts/verify/KN-001.mjs`, `KN-004.mjs` and `contract.mjs`, real
+  checks, each tested against planted breaks rather than only against success.
+  A `verify` command must be `node agent/scripts/verify/<name>.mjs`, and both
+  that directory and the target are resolved with `realpathSync` and required to
+  sit inside the real repository root.
 - `AGENTS.md`, `DESIGN.md`, `TECH-DEBT.md`, `CLAUDE.md`, root workspace config.
 - `.claude/ralph-loop.local.md`, the loop armed, promise `KARNAMA-DONE`.
 
@@ -97,17 +100,21 @@ Cards that contradicted the design have been rewritten, and the two tasks the
 plan was missing, the standalone network screen and the posting extraction
 service, are filed as KN-056 and KN-057.
 
-**Do not take that reconciliation on trust.** The first attempt at it claimed to
-be complete and was not: four more contradicting cards were found afterwards by
-sweeping the board for the forbidden phrases rather than by remembering which
-cards were edited. Re-run that sweep before relying on the plan:
+**Do not take that reconciliation on trust.** It was claimed complete twice and
+was wrong twice, both times because the cards someone remembered were edited
+instead of every card being checked. That is now a command, not a memory:
 
 ```bash
-node -e "const b=require('./agent/board.json');for(const t of b.tasks)for(const f of ['title','desc','why','exit'])for(const re of [/reorder/i,/two destinations/i,/magic link/i])if(re.test(t[f]||''))console.log(t.id,f)"
+npm run contract
 ```
 
+One rule per settled design decision, each naming its `DESIGN.md` anchor, each
+with an exception list so a card that records a prohibition is not mistaken for
+one that instructs it. It carries a canary, so a clean result means the rules can
+still fire, and it fails when `DESIGN.md` stops saying what a rule assumes.
+
 KN-002's remaining work is the full 53-screen inventory and the Job Record field
-list, and it should end by proving the sweep is clean rather than asserting it.
+list, and it ends by running that check rather than asserting the result.
 
 ## What to read first
 
