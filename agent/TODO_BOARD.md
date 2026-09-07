@@ -2,21 +2,15 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 3 of 79 tasks done · 7 of 342 points.
+Project **KarNama** · 4 of 83 tasks done · 10 of 348 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-002` Read the Figma Documentations canvas and fold it into the contract** (critical, 3 pt, design)
+**Next up: `KN-004` Read the remaining type scale and any missing tokens from Figma** (critical, 3 pt, design)
 
-## Awaiting roast (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-002` | Read the Figma Documentations canvas and fold it into the contract | critical | 3 | design | KN-001 | DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down. |
-
-## Backlog (75)
+## Backlog (79)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -42,8 +36,9 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-068` | Make verifyGate's revalidator mandatory, and test the real invocation | high | 2 | agent | KN-058 | verifyGate refuses to run without a revalidator, verifyGate with the real revalidator rejects bare node, node --version, a missing target and a symlinked target, and the KN-058 verifier runs to completion in a read-only working tree without writing into the repository. |
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-074` | The harness stamps a round number that goes stale before it is recorded | high | 2 | agent | KN-001 | Two roast rounds run back to back can both be recorded, in order, with their own verdicts and filed lists, and a manifest that has already been recorded is still refused a second time. |
-| `KN-076` | Let a settled open question be recorded as a decision, not only as a task | high | 2 | agent | KN-002 | An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision that the manifest does not record still fails; and closing KN-070 as decided leaves the verifier green. |
+| `KN-076` | Let a settled open question be recorded as a decision, not only as a task | high | 2 | agent | KN-002 | An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision whose text does not appear under the heading it claims still fails; a capturePending entry disposed of as a decision is held to the same standard; and closing KN-070 as decided leaves the verifier green. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
+| `KN-080` | Bound the fix-in-task carve-out to once per task, and make the board enforce it | high | 2 | agent | KN-001 | A task whose roast rounds record a second fix-in-task is refused by move done with a message naming the first one, agent/RALPH.md states the bound in the same paragraph as the mechanical test, and a planted second carve-out on a scratch task proves the refusal fires. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -88,21 +83,25 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-057` | Posting extraction: turn a pasted link or text into a Review payload | high | 8 | api | KN-034 | Extraction from raw text returns the documented field set with a named test fixture, a URL pointing at a private or link-local address is refused, a slow or oversized response is aborted within the configured bound, every failure path returns the error shape the UI maps to the Error state, and the mock provider makes all of it runnable with no network. |
 | `KN-043` | The kanban board screen | high | 13 | web | KN-042, KN-015, KN-016, KN-017, KN-024, KN-025, KN-022, KN-037, KN-060, KN-061 | An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. |
 | `KN-075` | Decide which fields the Review step of the add flow shows | medium | 1 | design | KN-002 | DESIGN.md names the Review field list with the reason for it, section 6 no longer lists the Review step as open, and agent/design-manifest.json records the disposition instead of the open item. |
+| `KN-081` | Replace the truncation-cap frequency guess with a stated cap | medium | 1 | agent | KN-002 | The truncation figure in DESIGN.md is derived from a cap the manifest records with its provenance, or from per-name evidence of cutting, and a fixture capture with eleven repeated 36-character labels and no truncation does not report any name as truncated. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
+| `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-040` | Third-party feedback, stored for later evaluation | medium | 5 | api | KN-034 | A submission is stored with its target and a pending state, it never mutates the target, a submission whose target was deleted between submit and review is handled rather than orphaned, and rate limiting stops a flood from one source. |
 | `KN-041` | Admin API: the moderation queue | medium | 5 | api | KN-040, KN-036 | A non-admin is refused every operation at the resolver, approving and rejecting both record who did it and when, and the queue paginates rather than loading everything. |
 | `KN-064` | Third-party feedback submission surface | medium | 5 | web | KN-042, KN-040 | An anonymous visitor can submit a comment and a suggested change against a record, both arrive in the moderation queue in a pending state, the target record is not altered, the submitter is told it is pending review, and a flood from one source is rate limited. |
 | `KN-047` | Admin panel screen | medium | 8 | web | KN-042, KN-041 | An e2e test signs in as an admin, approves one submission and rejects another, and sees both leave the pending queue, and a non-admin reaching the route is refused rather than shown an empty panel. |
+| `KN-083` | Remove the em dashes the last DESIGN.md edits introduced | low | 1 | docs | KN-002 | No em dash appears in DESIGN.md, AGENTS.md, RALPH.md or STATE.md, and a check in the contract verifier fails when one is reintroduced. |
 
-## Done (3)
+## Done (4)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-058` | Run verify commands without a shell | critical | 2 | agent | KN-001 | A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done. |
 | `KN-065` | move done must require a verify command | critical | 2 | agent | KN-001 | move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one. |
 | `KN-001` | The loop, the board, and the tooling that runs them | critical | 3 | agent | none | "npm run todo -- validate" exits 0, "npm run todo -- next" names a task, agent/TODO_BOARD.md renders, "npm run roast" reaches Codex and archives a reply, and AGENTS.md plus DESIGN.md both exist with the Figma tokens transcribed. |
+| `KN-002` | Read the Figma Documentations canvas and fold it into the contract | critical | 3 | design | KN-001 | DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down. |
 
 ## Cards
 
@@ -121,7 +120,7 @@ agent/RALPH.md (the iteration rules), agent/scripts/todo.mjs (the board tool, ze
 
 ### `KN-002` Read the Figma Documentations canvas and fold it into the contract
 
-- **status** review · **severity** critical · **points** 3 · **area** design
+- **status** done · **severity** critical · **points** 3 · **area** design
 - **blocked by** KN-001
 
 Read canvas 5:8 "Documentations" in full, and canvas 5:7 "Screens", and write what they say into DESIGN.md: the flows, the open items, the field list of a Job Record, the rules the annotations state, and anything that contradicts what is already written.
@@ -130,7 +129,7 @@ Read canvas 5:8 "Documentations" in full, and canvas 5:7 "Screens", and write wh
 
 **Exit condition.** DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down.
 
-**Roasts.** round 1 scored 4 with 2 critical(s); round 2 scored 2.5 with 2 critical(s); round 3 scored 2 with 2 critical(s)
+**Roasts.** round 1 scored 4 with 2 critical(s); round 2 scored 2.5 with 2 critical(s); round 3 scored 2 with 2 critical(s); round 4 scored 2.5 with 1 critical(s)
 
 ### `KN-003` Web app scaffold with the full quality gate
 
@@ -948,7 +947,7 @@ agent/scripts/verify/KN-002.mjs recognises a "**Decided ...**" disposition when 
 
 **Why.** The exit condition of KN-002 says every open item is "either reflected in the board as a task or recorded as a decision". Only the first can pass today, so KN-070 through KN-073 and KN-075 cannot be closed the way the contract says they may be: the moment one of them is decided and marked done, this verifier starts failing. Found by a roast as a major.
 
-**Exit condition.** An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision that the manifest does not record still fails; and closing KN-070 as decided leaves the verifier green.
+**Exit condition.** An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision whose text does not appear under the heading it claims still fails; a capturePending entry disposed of as a decision is held to the same standard; and closing KN-070 as decided leaves the verifier green.
 
 ### `KN-077` Settle the two copy strings that frame 505:3 records as not yet applied
 
@@ -982,4 +981,48 @@ agent/figma-capture/documentation-5-8.xml is a get_metadata dump, and get_metada
 **Why.** Two roasts in a row rated this critical and both were right. The pending-item inventory in agent/design-manifest.json is presented as derived from source, which is only true for the part of each string that survived truncation: a pending marker at character 60 of a truncated node is absent from the artefact and undetectable. The inventory is a floor, not a ceiling, and until this is done DESIGN.md cannot honestly claim the canvas is fully absorbed. It is also the precondition for KN-078, which cannot check coverage against content that is not in the repository.
 
 **Exit condition.** A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail.
+
+### `KN-080` Bound the fix-in-task carve-out to once per task, and make the board enforce it
+
+- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **blocked by** KN-001
+
+agent/RALPH.md step 5 allows fixing in-task when the verify script fails OR when the verifier passes dishonestly. The second clause has no bound, so it can be invoked every round: KN-002 used it three rounds running, because every roast of a verifier can be phrased as "it passes without establishing the exit condition". Bound it: the carve-out may be used at most once per task, after which every finding is a card. Record fixed-in-task on the roast round so the board can count it, and have move done refuse a close where the carve-out was used more than once without an explicit owner override.
+
+**Why.** The owner corrected this loop once already, for exactly this failure: roast, fix, re-roast, over and over, while the rest of the board waited. The mechanical test was meant to end the argument, and the second clause quietly reopened it. Three rounds on a three point task is the same mistake in a smaller size, and the loop file currently licenses it.
+
+**Exit condition.** A task whose roast rounds record a second fix-in-task is refused by move done with a message naming the first one, agent/RALPH.md states the bound in the same paragraph as the mechanical test, and a planted second carve-out on a scratch task proves the refusal fires.
+
+### `KN-081` Replace the truncation-cap frequency guess with a stated cap
+
+- **status** backlog · **severity** medium · **points** 1 · **area** agent
+- **blocked by** KN-002
+
+agent/scripts/verify/KN-002.mjs infers the layer-name truncation cap as the largest name length that occurs more than ten times, then counts names within two of it as truncated. On the current capture that gives 28 and 64 of 148, which is right, but the inference is unsound: a capture with eleven ordinary repeated labels of length 36 and eight names actually cut at a higher cap would pick 36 and require DESIGN.md to state a number that means nothing. Record the cap in the manifest with how it was established, or detect truncation per name rather than by frequency.
+
+**Why.** The check exists so DESIGN.md cannot overclaim what the capture supports, and a check that can report a normal label set as truncated undermines exactly the number it is protecting. A roast rated it major and the reasoning is correct. It becomes moot if KN-079 lands a text capture first, in which case close this by deleting the check rather than by fixing it.
+
+**Exit condition.** The truncation figure in DESIGN.md is derived from a cap the manifest records with its provenance, or from per-name evidence of cutting, and a fixture capture with eleven repeated 36-character labels and no truncation does not report any name as truncated.
+
+### `KN-082` Parse the capture as a tree, not with line patterns
+
+- **status** backlog · **severity** medium · **points** 2 · **area** agent
+- **blocked by** KN-002
+
+The copy-change count in agent/scripts/verify/KN-002.mjs slices the capture between the line matching frame 505:3 and the next line matching a closing frame tag, then counts text nodes whose name starts with a Persian ordinal. That bounds the current frame only because the frame happens to be flat: an ordinal-prefixed text inside a nested group would be counted, and a missing matching close makes the slice run to end of file with no error. The frame-derivation check has the same shape, matching frames by two-space indentation. Parse the XML into a tree and address nodes by structure.
+
+**Why.** Two checks that present themselves as source-derived are actually format-dependent, so they pass by accident of the current dump rather than by verified structure. A roast rated it major. The failure mode is silent: the count changes and nothing reports it, which is the same class of defect the derived counts were introduced to remove.
+
+**Exit condition.** The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it.
+
+### `KN-083` Remove the em dashes the last DESIGN.md edits introduced
+
+- **status** backlog · **severity** low · **points** 1 · **area** docs
+- **blocked by** KN-002
+
+AGENTS.md section on writing forbids em dashes in documentation and asks for commas. The paragraphs added to DESIGN.md while closing KN-002, the capture-limitation note in the documentation-canvas section and the open-questions bullets, use them. Sweep DESIGN.md and the other markdown for em dashes and rewrite those sentences with commas.
+
+**Why.** The convention exists so the prose reads in one voice, and a violation left in the contract file is the one the next writer copies. It is filed rather than fixed because fixing it would change the work after the round that reviewed it and force another review round on a task that is otherwise finished, which is precisely the loop the owner corrected.
+
+**Exit condition.** No em dash appears in DESIGN.md, AGENTS.md, RALPH.md or STATE.md, and a check in the contract verifier fails when one is reintroduced.
 

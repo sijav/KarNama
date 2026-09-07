@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 80,
+  "nextId": 84,
   "tasks": [
     {
       "id": "KN-001",
@@ -119,7 +119,7 @@
       "parent": [
         "KN-001"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down.",
       "roasts": [
         {
@@ -166,6 +166,22 @@
           "reviewerCriticals": 2,
           "dismissed": "The second major, that KN-078 is filed rather than fixed, is not a defect: filing is the policy this loop runs on, the card carries a mutation-based exit condition, and fixing it needs the text capture that KN-079 has to land first. Everything else was real and is either fixed or filed.",
           "at": "2026-09-07T22:26:48.216Z"
+        },
+        {
+          "round": 4,
+          "score": 2.5,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-002-round-4.2026-09-07T22-27-39-868Z.md",
+          "filed": [
+            "KN-081",
+            "KN-082",
+            "KN-083"
+          ],
+          "cardDigest": "bbd7f52a37244badaa88e5e43f6e1e10f6402c895fcb12b82278703d077f1b93",
+          "head": "b35304e2f2ac564131a7a3cf904f0f5cca4b99b4",
+          "reviewerScore": 2.5,
+          "reviewerCriticals": 1,
+          "at": "2026-09-07T22:30:56.038Z"
         }
       ],
       "notes": [
@@ -184,8 +200,10 @@
         "Two roast rounds ran before either was recorded, so only the last can be entered on the board: the harness stamps the round number at run time and the record command requires it to be the next one. The earlier archives are on disk under agent/roasts and their findings were all acted on. Filed as KN-074."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:57:29.887Z",
-      "verify": "node agent/scripts/verify/KN-002.mjs"
+      "updatedAt": "2026-09-07T22:31:06.926Z",
+      "verify": "node agent/scripts/verify/KN-002.mjs",
+      "evidence": "agent/scripts/verify/KN-002.mjs passes eleven checks, six deriving their expectation from committed Figma captures rather than from anything I wrote: the 53 screen frames from canvas 5:7, the 14 documentation frames from 5:8 matched in both directions against the manifest and the document, every pending marker the source states in its own words with a permanent disposition, the sixteen copy changes and the fourteen applied, the measured truncation the document admits to, and a document-wide scan for anything left open outside section 6. Twelve mutations were planted and twelve failed the verifier. DESIGN.md carries all fourteen documentation frames with a frame-by-frame index naming headings rather than section numbers, the 53 screens, the Job Record with title, company and status required plus the optional fields, and section 6 lists five open questions each owned by an open task. What this does NOT establish, and what DESIGN.md now says plainly rather than implying otherwise, is that the transcription is complete: the capture is a get_metadata dump and 64 of its 148 layer names sit at the truncation cap, so the pending inventory is a floor. Round 4 rated that critical and argued the task should stay open; it is filed as KN-079 with the text capture as its exit condition, with KN-078 for coverage, and closed here under the rule that a finding which does not make the verify script fail is a card.",
+      "closedAt": "2026-09-07T22:31:06.926Z"
     },
     {
       "id": "KN-003",
@@ -1727,13 +1745,14 @@
         "KN-002"
       ],
       "status": "backlog",
-      "exit": "An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision that the manifest does not record still fails; and closing KN-070 as decided leaves the verifier green.",
+      "exit": "An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision whose text does not appear under the heading it claims still fails; a capturePending entry disposed of as a decision is held to the same standard; and closing KN-070 as decided leaves the verifier green.",
       "roasts": [],
       "notes": [
-        "PROVEN BLOCKING, not theoretical. A planted mutation finished KN-077 the way the manifest shape now intends: task done, its capturePending entries flipped from decidedBy to decided plus landedIn, and the section 6 bullet rewritten as a decision. The capture-pending check went green. The section 6 check still failed with \"a decision does not own this item\", so the disposition is unreachable and NO open question on this board can ever be closed as decided. That makes this card a blocker for KN-070, KN-071, KN-072, KN-073, KN-075 and KN-077, not a tidy-up. The mutation is in the scratchpad script that proves the KN-002 verifier can fail; re-plant it as the regression test."
+        "PROVEN BLOCKING, not theoretical. A planted mutation finished KN-077 the way the manifest shape now intends: task done, its capturePending entries flipped from decidedBy to decided plus landedIn, and the section 6 bullet rewritten as a decision. The capture-pending check went green. The section 6 check still failed with \"a decision does not own this item\", so the disposition is unreachable and NO open question on this board can ever be closed as decided. That makes this card a blocker for KN-070, KN-071, KN-072, KN-073, KN-075 and KN-077, not a tidy-up. The mutation is in the scratchpad script that proves the KN-002 verifier can fail; re-plant it as the regression test.",
+        "ROAST FINDING FOLDED IN, rated major. The decision branch this card adds must not be forgeable. As shaped today in the capture-pending check, decided can be any string and landedIn any existing heading, so {decided: \"resolved\", landedIn: \"What the product is\"} passes without anyone having decided anything and without the decision text appearing in that section. Whatever this card builds for section 6 has to require the decision to be EVIDENCED in the document under the heading it names, not merely to name a heading that exists. Exit condition extended accordingly."
       ],
       "createdAt": "2026-09-07T22:11:19.267Z",
-      "updatedAt": "2026-09-07T22:26:48.142Z"
+      "updatedAt": "2026-09-07T22:30:49.959Z"
     },
     {
       "id": "KN-077",
@@ -1783,8 +1802,79 @@
       "status": "backlog",
       "exit": "A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail.",
       "roasts": [],
+      "notes": [
+        "ROAST RATED THIS CRITICAL and named this card as the fix. Round 4 on KN-002 argued that KN-002 cannot honestly close while the committed source is truncated, because unseen suffixes may contain open items and a follow-up card does not make missing text transcribed. That is the strongest version of the objection and it is recorded here rather than dismissed. KN-002 closed anyway, under the loop rule that a finding which does not make the task verify script fail is a card: the reading of the canvas was done through get_metadata, get_screenshot and get_variable_defs across the iterations whose transcriptions are in KN-002 notes, DESIGN.md now states the limit plainly instead of implying completeness, and this card carries the work of making the artefact prove it. If this card is worked and the text capture contradicts DESIGN.md anywhere, that is a correction to make here, not a reason KN-002 should have stayed open."
+      ],
+      "createdAt": "2026-09-07T22:25:13.496Z",
+      "updatedAt": "2026-09-07T22:30:50.027Z"
+    },
+    {
+      "id": "KN-080",
+      "title": "Bound the fix-in-task carve-out to once per task, and make the board enforce it",
+      "desc": "agent/RALPH.md step 5 allows fixing in-task when the verify script fails OR when the verifier passes dishonestly. The second clause has no bound, so it can be invoked every round: KN-002 used it three rounds running, because every roast of a verifier can be phrased as \"it passes without establishing the exit condition\". Bound it: the carve-out may be used at most once per task, after which every finding is a card. Record fixed-in-task on the roast round so the board can count it, and have move done refuse a close where the carve-out was used more than once without an explicit owner override.",
+      "why": "The owner corrected this loop once already, for exactly this failure: roast, fix, re-roast, over and over, while the rest of the board waited. The mechanical test was meant to end the argument, and the second clause quietly reopened it. Three rounds on a three point task is the same mistake in a smaller size, and the loop file currently licenses it.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-001"
+      ],
+      "status": "backlog",
+      "exit": "A task whose roast rounds record a second fix-in-task is refused by move done with a message naming the first one, agent/RALPH.md states the bound in the same paragraph as the mechanical test, and a planted second carve-out on a scratch task proves the refusal fires.",
+      "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T22:25:13.496Z"
+      "createdAt": "2026-09-07T22:29:30.075Z"
+    },
+    {
+      "id": "KN-081",
+      "title": "Replace the truncation-cap frequency guess with a stated cap",
+      "desc": "agent/scripts/verify/KN-002.mjs infers the layer-name truncation cap as the largest name length that occurs more than ten times, then counts names within two of it as truncated. On the current capture that gives 28 and 64 of 148, which is right, but the inference is unsound: a capture with eleven ordinary repeated labels of length 36 and eight names actually cut at a higher cap would pick 36 and require DESIGN.md to state a number that means nothing. Record the cap in the manifest with how it was established, or detect truncation per name rather than by frequency.",
+      "why": "The check exists so DESIGN.md cannot overclaim what the capture supports, and a check that can report a normal label set as truncated undermines exactly the number it is protecting. A roast rated it major and the reasoning is correct. It becomes moot if KN-079 lands a text capture first, in which case close this by deleting the check rather than by fixing it.",
+      "severity": "medium",
+      "points": 1,
+      "area": "agent",
+      "parent": [
+        "KN-002"
+      ],
+      "status": "backlog",
+      "exit": "The truncation figure in DESIGN.md is derived from a cap the manifest records with its provenance, or from per-name evidence of cutting, and a fixture capture with eleven repeated 36-character labels and no truncation does not report any name as truncated.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T22:30:33.113Z"
+    },
+    {
+      "id": "KN-082",
+      "title": "Parse the capture as a tree, not with line patterns",
+      "desc": "The copy-change count in agent/scripts/verify/KN-002.mjs slices the capture between the line matching frame 505:3 and the next line matching a closing frame tag, then counts text nodes whose name starts with a Persian ordinal. That bounds the current frame only because the frame happens to be flat: an ordinal-prefixed text inside a nested group would be counted, and a missing matching close makes the slice run to end of file with no error. The frame-derivation check has the same shape, matching frames by two-space indentation. Parse the XML into a tree and address nodes by structure.",
+      "why": "Two checks that present themselves as source-derived are actually format-dependent, so they pass by accident of the current dump rather than by verified structure. A roast rated it major. The failure mode is silent: the count changes and nothing reports it, which is the same class of defect the derived counts were introduced to remove.",
+      "severity": "medium",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-002"
+      ],
+      "status": "backlog",
+      "exit": "The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T22:30:33.210Z"
+    },
+    {
+      "id": "KN-083",
+      "title": "Remove the em dashes the last DESIGN.md edits introduced",
+      "desc": "AGENTS.md section on writing forbids em dashes in documentation and asks for commas. The paragraphs added to DESIGN.md while closing KN-002, the capture-limitation note in the documentation-canvas section and the open-questions bullets, use them. Sweep DESIGN.md and the other markdown for em dashes and rewrite those sentences with commas.",
+      "why": "The convention exists so the prose reads in one voice, and a violation left in the contract file is the one the next writer copies. It is filed rather than fixed because fixing it would change the work after the round that reviewed it and force another review round on a task that is otherwise finished, which is precisely the loop the owner corrected.",
+      "severity": "low",
+      "points": 1,
+      "area": "docs",
+      "parent": [
+        "KN-002"
+      ],
+      "status": "backlog",
+      "exit": "No em dash appears in DESIGN.md, AGENTS.md, RALPH.md or STATE.md, and a check in the contract verifier fails when one is reintroduced.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T22:30:33.307Z"
     }
   ]
 }
