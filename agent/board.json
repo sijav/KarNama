@@ -1464,6 +1464,20 @@
           "reviewerScore": 3,
           "reviewerCriticals": 1,
           "at": "2026-09-07T21:40:47.477Z"
+        },
+        {
+          "round": 4,
+          "score": 7.5,
+          "criticals": 0,
+          "file": "agent/roasts/KN-065-round-4.2026-09-07T21-41-20-561Z.md",
+          "filed": [
+            "KN-069"
+          ],
+          "cardDigest": "e88aedfa676bf5416ba1f7be7a8cc3198a8b7d019b7affc445f7ec1c9d75dea6",
+          "head": "c9bb5059e923afb316b7af7c38c2de5abb02b105",
+          "reviewerScore": 7.5,
+          "reviewerCriticals": 0,
+          "at": "2026-09-07T21:43:19.635Z"
         }
       ],
       "notes": [
@@ -1536,10 +1550,13 @@
         "KN-065"
       ],
       "status": "backlog",
-      "exit": "A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, the verifiers that use it still work unchanged, and a test covers both.",
+      "exit": "A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T21:40:46.783Z"
+      "notes": [
+        "ALSO COVER HARD LINKS. realpathSync resolves symlinks but does not distinguish a hard link, so an in-repo or in-temp pathname that is an NTFS hard link to an external file passes the fence, and saveBoard then writes that inode and modifies the external file. Found in KN-065 round 4. Narrowing the fence to a verifier-owned scratch directory addresses this too, since a hard link into a directory the process just created is a deliberate act rather than an accident, but the check should also compare the target's device and inode, or stat nlink, rather than trusting the resolved name."
+      ],
+      "createdAt": "2026-09-07T21:40:46.783Z",
+      "updatedAt": "2026-09-07T21:43:18.695Z"
     }
   ]
 }
