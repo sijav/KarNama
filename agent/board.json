@@ -2849,8 +2849,12 @@
       "status": "backlog",
       "exit": "A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-08T01:44:17.656Z"
+      "notes": [
+        "Measured against PGlite before designing, rather than assumed. (1) pg_try_advisory_lock works and is re-entrant within a session, so the lock is real and testable. (2) DDL IS transactional: a ROLLBACK undid a CREATE TYPE, so wrapping each migration with its ledger row in one transaction genuinely gives the atomicity the exit condition asks for. (3) A failed statement inside BEGIN leaves the session ABORTED and every later statement fails with 'current transaction is aborted, commands ignored until end of transaction block', so the runner must issue an explicit ROLLBACK on failure or it poisons the connection and the failure that follows names the wrong cause. That is the trap in the failure-state clause. (4) Two PGlite instances cannot share a dataDir, so the concurrency clause cannot be proved with two real runners; prove it by asserting the lock is requested before any migration runs and that a runner told the lock is held waits rather than proceeding.",
+        "Second probe, the transaction mechanics themselves. exec() of a single BEGIN + migration + ledger-INSERT + COMMIT string DOES throw the real error ('relation kn123_ok already exists'), so the runner can detect the failure rather than having to inspect state afterwards. The partial DDL was rolled back CLEANLY, nothing left behind, which is the atomicity clause proved on the engine before writing a line of it. An explicit ROLLBACK restores the session; without one the next statement dies with 'current transaction is aborted'. So the order in the catch is forced and is not a style choice: ROLLBACK first, then write the failure row, then rethrow. Also settled: pg_advisory_lock BLOCKS, and a deploy that hangs forever is worse than one that fails, so use pg_try_advisory_lock with a bounded retry and an error that says another deploy is migrating. And the ledger's own ALTER TABLE ADD COLUMN IF NOT EXISTS runs outside the lock on first deploy, which is idempotent so two racing runners both succeed; that deserves a comment rather than a fix."
+      ],
+      "createdAt": "2026-09-08T01:44:17.656Z",
+      "updatedAt": "2026-09-08T05:20:58.585Z"
     },
     {
       "id": "KN-124",
@@ -3075,7 +3079,8 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T03:06:29.161Z",
-      "updatedAt": "2026-09-08T05:12:34.410Z"
+      "updatedAt": "2026-09-08T05:15:19.106Z",
+      "verify": "node agent/scripts/verify/KN-131.mjs"
     },
     {
       "id": "KN-132",
