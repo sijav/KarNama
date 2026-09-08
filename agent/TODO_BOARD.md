@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 14 of 136 tasks done · 51 of 458 points.
+Project **KarNama** · 14 of 138 tasks done · 51 of 461 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -10,13 +10,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-128` Generate typed GraphQL operations instead of asserting them by hand** (critical, 3 pt, graphql)
 
-## In progress (1)
+## Awaiting roast (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-128` | Generate typed GraphQL operations instead of asserting them by hand | critical | 3 | graphql | KN-035 | A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case. |
 
-## Backlog (120)
+## Backlog (122)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -123,6 +123,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-121` | Remove the escape hatches in the API tests, and the comment that denies them | medium | 2 | api | KN-033 | No `as` and no eslint-disable under apps/api, the resolver test uses a stub the type system accepts on its own, and the claim in health.test.ts is true or gone. |
 | `KN-125` | The seed builds SQL by concatenation and several values skip the quote helper | medium | 2 | api | KN-034 | Every value the seed writes goes through a parameter rather than into the SQL text, a seeded record containing an apostrophe and a backslash round trips intact, and the quote helper is gone. |
 | `KN-130` | The no-data health reason is English copy outside the catalog | medium | 2 | web | KN-035 | No English sentence originates in apps/web/src/core, the empty-response case carries a code the component renders through the catalog, a network message still passes through untranslated, and the catalog test covers the new id. |
+| `KN-137` | KN-128's verifier checks the exported type but never the exported document | medium | 2 | agent | none | Exporting a hand-built or widened document from apps/web/src/core/api makes the KN-128 verifier fail, proved by planting both cases, and the check that catches the widened one reads the document rather than its type, since the optional brand makes the type-level check unable to see it. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -140,6 +141,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-122` | Prettier is named in the API scaffold and is in neither the scripts nor the gate | low | 1 | infra | KN-033 | npm run format:check fails on a deliberately misformatted file in each workspace, and both KN-003 and KN-033 verifiers run it. |
 | `KN-133` | check-generated.mjs leaks a temp directory on every failure | low | 1 | graphql | none | Running the check against a deliberately invalid document leaves no karnama-codegen-* directory behind, proved by counting them before and after, and the same holds for the stale-file path. |
 | `KN-135` | The graphql package's coverage thresholds pass on zero files | low | 1 | graphql | none | Either adding an uncovered file with real behaviour to packages/graphql makes npm test fail, proved by planting one, or the thresholds are gone and a comment says why coverage does not apply here. |
+| `KN-138` | KN-128's verifier attributes compiler errors by substring, not by path | low | 1 | agent | none | A file elsewhere in the web app whose path ends with the probe's name is not counted as the probe, proved by creating one, running the verifier and removing it, rather than by editing the matcher and reasoning about it. |
 
 ## Done (14)
 
@@ -1595,7 +1597,7 @@ src/graphql/schema.test.ts proves the generator and the application share one li
 
 ### `KN-128` Generate typed GraphQL operations instead of asserting them by hand
 
-- **status** in_progress · **severity** critical · **points** 3 · **area** graphql
+- **status** review · **severity** critical · **points** 3 · **area** graphql
 - **blocked by** KN-035
 
 HEAD_QUERY is a gql template with a hand-written TypedDocumentNode annotation, and HealthQueryData is Pick<Query, health>. Neither is generated or validated against the schema. Misspell a selected field, environmentTypo, and TypeScript accepts it because the annotation was asserted rather than derived, and the server rejects the request at runtime. The declared response type also claims the whole Health object rather than the three fields selected, so adding a required field to Health makes the type say Apollo returned something the query never asked for. The typescript-operations plugin is installed and unused; switch to generated operation types, or the client preset, so the document and its type come from the same place.
@@ -1604,7 +1606,7 @@ HEAD_QUERY is a gql template with a hand-written TypedDocumentNode annotation, a
 
 **Exit condition.** A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case.
 
-**Roasts.** round 1 scored 7 with 2 critical(s); round 2 scored 8 with 0 critical(s); round 3 scored 9 with 0 critical(s); round 4 scored 9 with 0 critical(s)
+**Roasts.** round 1 scored 7 with 2 critical(s); round 2 scored 8 with 0 critical(s); round 3 scored 9 with 0 critical(s); round 4 scored 9 with 0 critical(s); round 5 scored 9 with 0 critical(s)
 
 ### `KN-129` The duplicate-type scan only sees exported top-level declarations
 
@@ -1693,4 +1695,26 @@ Every verifier under agent/scripts/verify has been mutation-tested and several c
 **Why.** This repository's rule is that a check nobody has seen fail is not a check. The mutation cases ARE the evidence that a verifier can fail, so throwing them away leaves the verifier and a number in a commit message that cannot be reproduced. It matters most when a verifier is edited, because a mutation that no longer applies looks exactly like a mutation that passed, and that is the failure that hides a broken checker.
 
 **Exit condition.** One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass.
+
+### `KN-137` KN-128's verifier checks the exported type but never the exported document
+
+- **status** backlog · **severity** medium · **points** 2 · **area** agent
+- **blocked by** none
+
+agent/scripts/verify/KN-128.mjs proves things about HealthQuery and nothing about HealthDocument. Its source inspection reads only apps/web/src/core/api/health.ts, not the barrel index.ts, and its type probe imports only the type. So the web app can export a document that was never generated while every check passes: define HealthDocument in the barrel as a hand-built { kind: 'Document', definitions: [] }, or re-export the real one widened to plain DocumentNode, and the verifier is satisfied. I wrote a probe asserting the public and generated documents are assignable both ways and PROVED IT DOES NOT WORK: TypedDocumentNode is DocumentNode plus an OPTIONAL branded property, so a plain DocumentNode is assignable to it and the widening survives. A source check for a document literal in health.ts and index.ts catches the hand-built case; the widened case needs something that reads the document itself, such as comparing print(HealthDocument) from the barrel against the generated one at runtime. Both halves are worth having and neither is written.
+
+**Why.** The card this came from exists because a hand-written document and a hand-written type drifted from the schema, and the verifier that proves the type is now generated does not prove the same of the document. A roast named the mutation and I confirmed the type-level fix for it does not work, so this is a measured gap rather than a suspected one. It matters when a second operation lands, because whatever shape that one takes will be copied from this one.
+
+**Exit condition.** Exporting a hand-built or widened document from apps/web/src/core/api makes the KN-128 verifier fail, proved by planting both cases, and the check that catches the widened one reads the document rather than its type, since the optional brand makes the type-level check unable to see it.
+
+### `KN-138` KN-128's verifier attributes compiler errors by substring, not by path
+
+- **status** backlog · **severity** low · **points** 1 · **area** agent
+- **blocked by** none
+
+agent/scripts/verify/KN-128.mjs splits tsc output into errors on its probe and errors elsewhere, and the split decides whether the run may conclude anything. It classifies a line by searching it for the probe's name, so a diagnostic from any file whose path contains that name is read as the probe's. A roast reproduced this with TypeScript's own diagnostic formatter using e2e/src/core/api/kn-128-probe.ts. The line-start anchoring that would fix it is worth having, but note what it does NOT fix: a mutation test for this needs a colliding file to exist, so the case cannot be planted by editing the verifier alone, and the honest version of this task creates the colliding file, runs the verifier, and removes it.
+
+**Why.** The probe-versus-elsewhere split is what lets that check say 'this run proves nothing' instead of reporting a collateral break as the wrong finding, which it did once already. A split that can misattribute is a split that can conclude from the wrong file, and the failure would look like a pass.
+
+**Exit condition.** A file elsewhere in the web app whose path ends with the probe's name is not counted as the probe, proved by creating one, running the verifier and removing it, rather than by editing the matcher and reasoning about it.
 
