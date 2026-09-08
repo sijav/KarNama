@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 140,
+  "nextId": 142,
   "tasks": [
     {
       "id": "KN-001",
@@ -3201,6 +3201,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T05:08:49.180Z"
+    },
+    {
+      "id": "KN-140",
+      "title": "KN-131's verifier regenerates generated.ts instead of restoring it",
+      "desc": "agent/scripts/verify/KN-131.mjs snapshots packages/graphql/src/generated.ts before it runs, but its finally block restores the OPERATION and then re-runs codegen:update to rebuild the generated file rather than writing the snapshot back. Two consequences. If the file had uncommitted content when the script started, that content is destroyed, because regeneration produces the canonical output rather than what was there. If codegen:update fails during cleanup, the REDUCED output is left behind. The snapshot comparison at the end detects both, so the script reports the damage, but detecting damage is not undoing it. Write GENERATED back from its snapshot in the finally, and keep the regeneration only as a way to leave dist and caches consistent.",
+      "why": "A verifier that destroys uncommitted work to run is one nobody should run, and this is the second time the same shape has appeared: KN-128's probe overwrote whatever sat at its path until it was made to refuse instead. Restoring from a snapshot is strictly simpler than regenerating and cannot fail halfway.",
+      "severity": "medium",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Starting the script with modified content in generated.ts leaves that exact content in place afterwards, proved by planting it, and a cleanup whose regeneration fails still restores the file.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T05:27:03.850Z"
+    },
+    {
+      "id": "KN-141",
+      "title": "NO_COLOR makes KN-131's verifier reject a correct compiler refusal",
+      "desc": "agent/scripts/verify/KN-131.mjs requires the planted symbol kn131TypeError to appear in the build output. TypeScript honours NO_COLOR ahead of FORCE_COLOR, and its plain diagnostics are of the form 'src/foo.ts(1,14): error TS2322: Type string is not assignable to type number' with no source excerpt, so the variable name never appears. On a machine with NO_COLOR set the compiler refuses exactly as intended and the verifier reports 'failed, but never mentioned the planted error'. It passes here because this environment does not set NO_COLOR, which is the same conditional shape as KN-132: correct on this machine, broken on a reasonable other one. Match the planted file and the diagnostic code rather than the source excerpt.",
+      "why": "A verifier that fails on a correct refusal trains whoever hits it to distrust the verifier rather than the code, and NO_COLOR is set by default in plenty of CI images. The fix also makes the assertion stronger rather than weaker, since a diagnostic code is more specific than a name appearing somewhere in the output.",
+      "severity": "low",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The verifier passes with NO_COLOR=1 set, proved by running it that way, and the assertion names the planted file and the TypeScript error code rather than the source excerpt.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T05:27:03.975Z"
     }
   ]
 }

@@ -55,7 +55,10 @@ check('every workspace build typechecks its own sources', () => {
   // Read as a property of the command, not as a spelling. `tsc` with emit is a
   // typecheck too, which is why the API's build already qualified while the
   // other two did not.
-  const typechecks = (build) => /(^|&&|\|\|)\s*(npx\s+)?tsc\b/.test(build) || /npm run lint:tsc/.test(build)
+  // `--noCheck` makes tsc emit without checking, so the command can name the
+  // compiler and check nothing. A roast named exactly that defeat.
+  const typechecks = (build) =>
+    !/--noCheck\b/.test(build) && (/(^|&&|\|\|)\s*(npx\s+)?tsc\b/.test(build) || /npm run lint:tsc/.test(build))
   const missing = []
   for (const workspace of ['apps/web', 'apps/api', 'packages/graphql']) {
     const build = scripts(workspace).build ?? ''
@@ -70,21 +73,25 @@ check('the root build delegates to all of them', () => {
   return /--workspaces/.test(build) ? null : `the root build is "${build}", so a workspace could be skipped`
 })
 
-check('A TYPE ERROR FAILS THE BUILD, proved by planting one in each workspace', () => {
-  // The blunt case first, one workspace at a time. A build that ships a bundle
-  // whose types were never checked is the whole finding, and the cheapest proof
-  // that it no longer does is to break a type and watch the build refuse.
+check('EACH WORKSPACE BUILD REJECTS AN ERROR IN ITS OWN SOURCES, proved by planting one', () => {
+  // Each plant is built by ITS OWN workspace, not by the root. Running the root
+  // build here proved almost nothing about the clause it was meant to prove:
+  // apps/web resolves @karnama/graphql to that package's TypeScript SOURCE, so
+  // web's compiler reports an error planted in packages/graphql and the root
+  // build fails whether or not the graphql build checks anything at all. A
+  // roast defeated it with `tsc --noEmit --noCheck` and it passed. Per
+  // workspace, the checker that has to object is that workspace's own.
   const plants = [
-    { workspace: 'apps/web', file: join(ROOT, 'apps', 'web', 'src', 'core', 'api', 'health.ts') },
-    { workspace: 'packages/graphql', file: join(PKG, 'src', 'index.ts') },
-    { workspace: 'apps/api', file: join(ROOT, 'apps', 'api', 'src', 'health', 'health.model.ts') },
+    { workspace: '@karnama/web', file: join(ROOT, 'apps', 'web', 'src', 'core', 'api', 'health.ts') },
+    { workspace: '@karnama/graphql', file: join(PKG, 'src', 'index.ts') },
+    { workspace: '@karnama/api', file: join(ROOT, 'apps', 'api', 'src', 'health', 'health.model.ts') },
   ]
   for (const plant of plants) {
     const original = readFileSync(plant.file, 'utf8')
     try {
       writeFileSync(plant.file, `${original}\nexport const kn131TypeError: number = 'not a number'\n`)
-      const build = run('npm run build')
-      if (build.status === 0) return `${plant.workspace} built with a type error in it`
+      const build = run(`npm run build --workspace ${plant.workspace}`)
+      if (build.status === 0) return `${plant.workspace} built its own sources with a type error in them`
       const output = plain(`${build.stdout ?? ''}${build.stderr ?? ''}`)
       if (!/kn131TypeError/.test(output)) return `${plant.workspace} failed, but never mentioned the planted error:\n${output.slice(-400)}`
     } finally {

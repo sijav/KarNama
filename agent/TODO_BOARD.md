@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 15 of 139 tasks done · 54 of 462 points.
+Project **KarNama** · 15 of 141 tasks done · 54 of 464 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-131` | Make the root build typecheck what it ships | critical | 2 | infra | none | Removing a selected field from the health operation and regenerating makes npm run build fail, proved by planting exactly that, and the failure names the consumer file rather than something incidental. Every workspace build either typechecks its own sources or the verifier records why it cannot. |
 
-## Backlog (122)
+## Backlog (124)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -111,6 +111,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-116` | Move the language switch out of the placeholder shell into the drawn chrome | medium | 1 | web | KN-006 | The switch renders at the bottom of the sidebar on desktop and as a Page Header trailing action on mobile, App.tsx contains no language control, and an e2e test finds it in both places at the two drawn viewports. |
 | `KN-126` | Assert there is exactly one graphql in the dependency tree | medium | 1 | api | KN-120 | agent/scripts/verify/KN-033.mjs fails when more than one graphql version resolves, proved by a planted duplicate, and TECH-DEBT entry 10 names it as the check that retires the split. |
 | `KN-139` | The board demands a verify command at the moment attaching one costs a roast round | medium | 1 | agent | none | Moving a task to review without a verify command is refused or warned about with the same message move done gives, proved by trying it, and the message says attaching it afterwards will invalidate the roast. |
+| `KN-140` | KN-131's verifier regenerates generated.ts instead of restoring it | medium | 1 | agent | none | Starting the script with modified content in generated.ts leaves that exact content in place afterwards, proved by planting it, and a cleanup whose regeneration fails still restores the file. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -142,6 +143,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-133` | check-generated.mjs leaks a temp directory on every failure | low | 1 | graphql | none | Running the check against a deliberately invalid document leaves no karnama-codegen-* directory behind, proved by counting them before and after, and the same holds for the stale-file path. |
 | `KN-135` | The graphql package's coverage thresholds pass on zero files | low | 1 | graphql | none | Either adding an uncovered file with real behaviour to packages/graphql makes npm test fail, proved by planting one, or the thresholds are gone and a comment says why coverage does not apply here. |
 | `KN-138` | KN-128's verifier attributes compiler errors by substring, not by path | low | 1 | agent | none | A file elsewhere in the web app whose path ends with the probe's name is not counted as the probe, proved by creating one, running the verifier and removing it, rather than by editing the matcher and reasoning about it. |
+| `KN-141` | NO_COLOR makes KN-131's verifier reject a correct compiler refusal | low | 1 | agent | none | The verifier passes with NO_COLOR=1 set, proved by running it that way, and the assertion names the planted file and the TypeScript error code rather than the source excerpt. |
 
 ## Done (15)
 
@@ -1729,4 +1731,26 @@ Closing KN-128 went: move to review, move to done, refused for having no verify 
 **Why.** This cost a round on KN-128 after the loop had already been told not to spend rounds, and it will cost one on every task whose verifier is written during the work rather than before it, which is all of them. The rule being right is exactly why it should fire at the first moment it can rather than the last.
 
 **Exit condition.** Moving a task to review without a verify command is refused or warned about with the same message move done gives, proved by trying it, and the message says attaching it afterwards will invalidate the roast.
+
+### `KN-140` KN-131's verifier regenerates generated.ts instead of restoring it
+
+- **status** backlog · **severity** medium · **points** 1 · **area** agent
+- **blocked by** none
+
+agent/scripts/verify/KN-131.mjs snapshots packages/graphql/src/generated.ts before it runs, but its finally block restores the OPERATION and then re-runs codegen:update to rebuild the generated file rather than writing the snapshot back. Two consequences. If the file had uncommitted content when the script started, that content is destroyed, because regeneration produces the canonical output rather than what was there. If codegen:update fails during cleanup, the REDUCED output is left behind. The snapshot comparison at the end detects both, so the script reports the damage, but detecting damage is not undoing it. Write GENERATED back from its snapshot in the finally, and keep the regeneration only as a way to leave dist and caches consistent.
+
+**Why.** A verifier that destroys uncommitted work to run is one nobody should run, and this is the second time the same shape has appeared: KN-128's probe overwrote whatever sat at its path until it was made to refuse instead. Restoring from a snapshot is strictly simpler than regenerating and cannot fail halfway.
+
+**Exit condition.** Starting the script with modified content in generated.ts leaves that exact content in place afterwards, proved by planting it, and a cleanup whose regeneration fails still restores the file.
+
+### `KN-141` NO_COLOR makes KN-131's verifier reject a correct compiler refusal
+
+- **status** backlog · **severity** low · **points** 1 · **area** agent
+- **blocked by** none
+
+agent/scripts/verify/KN-131.mjs requires the planted symbol kn131TypeError to appear in the build output. TypeScript honours NO_COLOR ahead of FORCE_COLOR, and its plain diagnostics are of the form 'src/foo.ts(1,14): error TS2322: Type string is not assignable to type number' with no source excerpt, so the variable name never appears. On a machine with NO_COLOR set the compiler refuses exactly as intended and the verifier reports 'failed, but never mentioned the planted error'. It passes here because this environment does not set NO_COLOR, which is the same conditional shape as KN-132: correct on this machine, broken on a reasonable other one. Match the planted file and the diagnostic code rather than the source excerpt.
+
+**Why.** A verifier that fails on a correct refusal trains whoever hits it to distrust the verifier rather than the code, and NO_COLOR is set by default in plenty of CI images. The fix also makes the assertion stronger rather than weaker, since a diagnostic code is more specific than a name appearing somewhere in the output.
+
+**Exit condition.** The verifier passes with NO_COLOR=1 set, proved by running it that way, and the assertion names the planted file and the TypeScript error code rather than the source excerpt.
 
