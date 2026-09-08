@@ -1,5 +1,9 @@
 import { createTheme, type Theme } from '@mui/material/styles'
+import { darkSemantic, darkStatus } from './darkMode'
 import { elevation, fontFamily, radius, semantic, spacing, status, type as typeScale } from './tokens'
+
+/** Light is the design. Dark is derived from it, see `darkMode.ts`. */
+export type ColorScheme = 'light' | 'dark'
 
 /**
  * The MUI theme, generated from the token set rather than written by hand.
@@ -8,13 +12,26 @@ import { elevation, fontFamily, radius, semantic, spacing, status, type as typeS
  * colour, a spacing or a radius literal is a defect even when the value happens
  * to be right, because the next change to the design silently misses it.
  */
+/**
+ * The token values are widened to `string` here on purpose.
+ *
+ * `tokens.ts` is `as const`, so `semantic['bg/page']` has the literal type
+ * `"#f6f7f9"`. That is right at the source, where it stops a typo. It is wrong
+ * on the theme, where the same slot holds the DERIVED dark value: a component
+ * reading `theme.karnama.semantic['bg/page']` would otherwise be typed as
+ * "exactly the light hex", which is false in dark mode and would push whoever
+ * hit it towards a cast.
+ */
+export type ThemeColours = Record<keyof typeof semantic, string>
+export type ThemeStatuses = Record<keyof typeof status, { base: string; container: string }>
+
 declare module '@mui/material/styles' {
   interface Theme {
     karnama: {
-      status: typeof status
+      status: ThemeStatuses
       elevation: typeof elevation
       radius: typeof radius
-      semantic: typeof semantic
+      semantic: ThemeColours
     }
   }
   interface ThemeOptions {
@@ -33,8 +50,19 @@ const role = (name: keyof typeof typeScale) => {
   }
 }
 
-export const buildTheme = (direction: 'rtl' | 'ltr'): Theme =>
-  createTheme({
+export const buildTheme = (direction: 'rtl' | 'ltr', scheme: ColorScheme = 'light'): Theme => {
+  // One set of names, two sets of values. Every component reads the names, so
+  // nothing below the theme knows or cares which scheme is active, and adding a
+  // third scheme later is a third table rather than a sweep of components.
+  //
+  // Annotated as `string` deliberately. `tokens.ts` is `as const`, so its values
+  // have literal types like `"#2563eb"`, and a derived value is a plain string.
+  // Widening here is where the two meet; leaving it to inference makes every
+  // consumer of the theme demand the light literal.
+  const colour: ThemeColours = scheme === 'dark' ? darkSemantic : semantic
+  const statuses: ThemeStatuses = scheme === 'dark' ? darkStatus : status
+
+  return createTheme({
     direction,
     // MUI's spacing unit is the 2xs step, so theme.spacing(2) is xs, (3) is sm,
     // (4) is md and so on. Every step in the scale is a whole multiple of 4,
@@ -43,12 +71,12 @@ export const buildTheme = (direction: 'rtl' | 'ltr'): Theme =>
     spacing: spacing['2xs'],
     shape: { borderRadius: radius.md },
     palette: {
-      mode: 'light',
-      background: { default: semantic['bg/page'], paper: semantic['bg/surface'] },
-      primary: { main: semantic['bg/brand/default'], dark: semantic['bg/brand/hover'], light: semantic['bg/brand/container'], contrastText: semantic['text/on-accent'] },
-      error: { main: semantic['bg/danger/default'], dark: semantic['bg/danger/hover'], contrastText: semantic['text/on-accent'] },
-      text: { primary: semantic['text/primary'], secondary: semantic['text/secondary'], disabled: semantic['text/disabled'] },
-      divider: semantic['border/default'],
+      mode: scheme,
+      background: { default: colour['bg/page'], paper: colour['bg/surface'] },
+      primary: { main: colour['bg/brand/default'], dark: colour['bg/brand/hover'], light: colour['bg/brand/container'], contrastText: colour['text/on-accent'] },
+      error: { main: colour['bg/danger/default'], dark: colour['bg/danger/hover'], contrastText: colour['text/on-accent'] },
+      text: { primary: colour['text/primary'], secondary: colour['text/secondary'], disabled: colour['text/disabled'] },
+      divider: colour['border/default'],
     },
     typography: {
       fontFamily,
@@ -58,7 +86,6 @@ export const buildTheme = (direction: 'rtl' | 'ltr'): Theme =>
       body1: role('body'),
       caption: role('label'),
     },
-    karnama: { status, elevation, radius, semantic },
+    karnama: { status: statuses, elevation, radius, semantic: colour },
   })
-
-export const theme = buildTheme('rtl')
+}

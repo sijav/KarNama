@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 103,
+  "nextId": 104,
   "tasks": [
     {
       "id": "KN-001",
@@ -309,7 +309,7 @@
         "KN-003",
         "KN-004"
       ],
-      "status": "backlog",
+      "status": "review",
       "exit": "A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour.",
       "roasts": [],
       "notes": [
@@ -317,7 +317,8 @@
         "PARTLY DELIVERED BY KN-003, checked against the code rather than remembered. Already exists and is tested: apps/web/src/theme/tokens.ts with the full Figma set as typed constants including both effect styles, theme.ts mapping them onto MUI with a buildTheme(direction), rtl.ts with the emotion caches and the exported plugin lists, AppProviders setting dir and lang on documentElement, and a Foundations/Tokens story with five families driven from args. 63 tests at 100 percent coverage include tokens.test.ts, which reads DESIGN.md and asserts every value against the contract rather than restating it, and theme.test.ts, which renders CSS through stylis and proves the RTL flip and the ::placeholder rule. WHAT IS LEFT, and it is the whole remaining point of this card: colour scheme, light dark and system, is NOT built. There is no dark palette, no Storybook theme toolbar, and no persistence. Also missing is the exit condition test that asserts no component file contains a raw hex colour, which nothing currently checks. DESIGN.md section on dark mode is the source for the palette."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T23:17:57.119Z"
+      "updatedAt": "2026-09-08T00:02:36.092Z",
+      "verify": "node agent/scripts/verify/KN-005.mjs"
     },
     {
       "id": "KN-006",
@@ -2305,6 +2306,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T23:46:48.033Z"
+    },
+    {
+      "id": "KN-103",
+      "title": "Coverage from the storybook project is discarded for any file the unit project also touches",
+      "desc": "The two vitest projects both produce v8 coverage. For a file only the browser project touches, like src/app/App.tsx, the browser numbers are reported. For a file BOTH touch, the unit project numbers win and the browser ones are lost: src/theme/useColorScheme.ts reported its hook as uncovered while every story exercises it through AppProviders. Reproduce it, then merge the two reports properly, with a per-project report to compare against so the merge can be checked rather than believed.",
+      "why": "The 100 percent number is the standard this project is built around and it is currently overstated, silently, for exactly the files that have both a unit test and a story, which is what every component in the queue will be. A component whose branches are only reached from a story would read as uncovered and get a pointless unit test, or worse, someone would lower the threshold to fit.",
+      "severity": "high",
+      "points": 3,
+      "area": "agent",
+      "parent": [
+        "KN-003"
+      ],
+      "status": "backlog",
+      "exit": "A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-07T23:58:03.747Z"
     }
   ]
 }

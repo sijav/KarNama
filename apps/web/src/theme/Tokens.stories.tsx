@@ -3,7 +3,8 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
-import { radius, semantic, spacing, status, type as typeScale } from './tokens'
+import { useTheme } from '@mui/material/styles'
+import { radius, spacing, type as typeScale } from './tokens'
 
 interface SwatchesProps {
   /** Which token family to render. Drives the canvas from the Controls panel. */
@@ -11,6 +12,14 @@ interface SwatchesProps {
 }
 
 const Swatches = ({ family }: SwatchesProps) => {
+  // Read from the THEME, not from the token module, so the Theme toolbar
+  // actually changes what this page shows. Reading `tokens.ts` directly meant
+  // the swatches went on displaying the light hexes on a dark page: a
+  // Foundations page that disagrees with the app it documents.
+  const theme = useTheme()
+  const semantic = theme.karnama.semantic
+  const status = theme.karnama.status
+
   if (family === 'semantic') {
     return (
       <Stack spacing={2} data-testid="swatches">

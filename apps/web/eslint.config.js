@@ -41,6 +41,10 @@ const linguiOptions = (extraProps = '') => ({
     // Token names, which are identifiers rendered as labels: `bg/page`.
     '^[a-z-]+/[a-z0-9-/]+$',
     '^(rtl|ltr|fa-IR|en-US)$',
+    // A CSS media query is an API string, not copy. Written out in full rather
+    // than as a wildcard for anything in brackets, because the point of this
+    // list is that each entry names one thing.
+    '^\\(prefers-color-scheme: (dark|light)\\)$',
     // A shape-based exemption for Storybook paths used to live here,
     // `^[A-Z][A-Za-z]*(/[A-Z][A-Za-z ]*)+$`, and it reopened the exact hole
     // KN-087 closed: `New/Applied` matches it, so `aria-label="New/Applied"`

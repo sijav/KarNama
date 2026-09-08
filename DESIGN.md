@@ -180,6 +180,18 @@ palette is derived, and must be labelled in the code as derived rather than
 presented as the design's. Replace it wholesale if the design ever ships real
 dark tokens.
 
+The derivation lives in `apps/web/src/theme/darkMode.ts` and it is two stated
+rules rather than a table, so it can be argued with. Hue is never touched,
+because hue is the only part of a token that carries meaning. Lightness is
+flipped for text, borders and accents, with a floor under the chromatic ones so
+a saturated hue stays readable on a dark surface. **Backgrounds take the other
+rule**: a flip reverses order, and the neutral backgrounds are all crowded
+against white, so flipping put the card darker than the page it sits on and ran
+elevation backwards across the whole board. They are remapped instead, order
+preserved, from the narrow band they occupy near white onto a narrow band near
+black. The Storybook theme toolbar labels the option **Dark (derived)** for the
+same reason this paragraph exists.
+
 ---
 
 ## 2. Component families

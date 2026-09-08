@@ -14,8 +14,10 @@ import { isLocale, locales } from '../src/i18n'
 const withProviders: Decorator = (Story, context) => {
   const selected: unknown = context.globals.locale
   const locale = typeof selected === 'string' && isLocale(selected) ? selected : 'fa-IR'
+  const chosen: unknown = context.globals.colorScheme
+  const colorScheme = chosen === 'dark' || chosen === 'light' || chosen === 'system' ? chosen : 'light'
   return (
-    <AppProviders locale={locale}>
+    <AppProviders locale={locale} colorScheme={colorScheme}>
       <Story />
     </AppProviders>
   )
@@ -33,8 +35,21 @@ const preview: Preview = {
         dynamicTitle: true,
       },
     },
+    colorScheme: {
+      description: 'Light is the design. Dark is derived from it, and is labelled as derived in the code',
+      toolbar: {
+        title: 'Theme',
+        icon: 'paintbrush',
+        items: [
+          { value: 'light', title: 'Light' },
+          { value: 'dark', title: 'Dark (derived)' },
+          { value: 'system', title: 'System' },
+        ],
+        dynamicTitle: true,
+      },
+    },
   },
-  initialGlobals: { locale: 'fa-IR' },
+  initialGlobals: { locale: 'fa-IR', colorScheme: 'light' },
   parameters: {
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
     a11y: { test: 'error' },

@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 8 of 102 tasks done · 24 of 384 points.
+Project **KarNama** · 8 of 103 tasks done · 24 of 387 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -10,11 +10,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-005` Theme: tokens, MUI theme, direction and colour scheme provider** (critical, 3 pt, web)
 
-## Backlog (93)
+## Awaiting roast (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-005` | Theme: tokens, MUI theme, direction and colour scheme provider | critical | 3 | web | KN-003, KN-004 | A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour. |
+
+## Backlog (93)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-006` | lingui: English source catalog, Persian translation, runtime switch | critical | 3 | web | KN-003 | A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not. |
 | `KN-034` | Prisma schema, Postgres on Supabase, and migrations | critical | 5 | api | KN-033 | Migrations apply to an empty database and to an existing one, the schema covers every field the Figma job record names, status history records every transition with its timestamp, and a seed script produces a realistic archive to develop against. |
 | `KN-035` | GraphQL codegen wired both ways | critical | 5 | graphql | KN-003, KN-033 | Changing the API schema without regenerating fails the build, the web app imports only generated types for GraphQL data, and no hand-written interface duplicates a generated one. |
@@ -61,6 +66,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-090` | Stop AppProviders mutating the lingui singleton during render | high | 3 | web | KN-003 | A story that mounts a Persian and an English AppProviders side by side renders each in its own language and direction, the switch still shows no flash of the previous catalog, and a test covers both. |
 | `KN-091` | Move story prose out of the TSX and into story-docs, with the guard test | high | 3 | web | KN-003 | src/shared/story-docs/en and fa exist and carry the prose for every story, no .tsx under src holds a docblock above const meta or a story export, the Docs pages render the markdown in the toolbar language, and a guard test fails when a prop or a story is missing from either language. |
 | `KN-096` | A literal type alias carries an unlocalized string past the lingui rule | high | 3 | web | KN-087 | The literal-type-alias form fails npm run lint or fails a dedicated check, a committed fixture holds it, and the check is proved by a planted break. |
+| `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | high | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | high | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | high | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
@@ -183,7 +189,7 @@ Sweep the Foundations canvas for any token DESIGN.md is still missing, and corre
 
 ### `KN-005` Theme: tokens, MUI theme, direction and colour scheme provider
 
-- **status** backlog · **severity** critical · **points** 3 · **area** web
+- **status** review · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-003, KN-004
 
 tokens.ts holding the Figma token set as typed constants, theme.ts mapping them onto MUI, and AppThemeProvider owning both colour scheme (light, dark, system) and direction, swapping the Emotion cache for RTL and setting dir and lang on the document.
@@ -1266,4 +1272,15 @@ apps/web/src/gate-fixtures/README.md names failing.test.ts, which is now failing
 **Why.** A roast rated this minor and it is the only kind of documentation that actually gets read, a README sitting in the directory it describes. A false one is worse than none, because it tells the next reader that the exclusion is in the config and they will go looking for it.
 
 **Exit condition.** Every file and mechanism the README names exists, no file in the directory is unmentioned, and a check in agent/scripts/verify/KN-003.mjs fails when a fixture is added or renamed without the README following.
+
+### `KN-103` Coverage from the storybook project is discarded for any file the unit project also touches
+
+- **status** backlog · **severity** high · **points** 3 · **area** agent
+- **blocked by** KN-003
+
+The two vitest projects both produce v8 coverage. For a file only the browser project touches, like src/app/App.tsx, the browser numbers are reported. For a file BOTH touch, the unit project numbers win and the browser ones are lost: src/theme/useColorScheme.ts reported its hook as uncovered while every story exercises it through AppProviders. Reproduce it, then merge the two reports properly, with a per-project report to compare against so the merge can be checked rather than believed.
+
+**Why.** The 100 percent number is the standard this project is built around and it is currently overstated, silently, for exactly the files that have both a unit test and a story, which is what every component in the queue will be. A component whose branches are only reached from a story would read as uncovered and get a pointless unit test, or worse, someone would lower the threshold to fit.
+
+**Exit condition.** A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run.
 

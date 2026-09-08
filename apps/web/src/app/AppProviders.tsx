@@ -7,10 +7,13 @@ import { useEffect, useMemo, type ReactNode } from 'react'
 import { directionFor, type Locale } from '../i18n'
 import { cacheFor } from '../theme/rtl'
 import { buildTheme } from '../theme/theme'
+import { resolveScheme, useSystemScheme, type ColorSchemePreference } from '../theme/useColorScheme'
 
 export interface AppProvidersProps {
   /** Which catalog and which direction. Persian is the default; English is the source. */
   locale: Locale
+  /** Light, dark, or follow the operating system. Light is the design; dark is derived. */
+  colorScheme?: ColorSchemePreference
   children: ReactNode
 }
 
@@ -24,9 +27,10 @@ export interface AppProvidersProps {
  * drives the same component the app does, so the four combinations the done
  * gate asks for are the same code path rather than a lookalike.
  */
-export const AppProviders = ({ locale, children }: AppProvidersProps) => {
+export const AppProviders = ({ locale, colorScheme = 'light', children }: AppProvidersProps) => {
   const direction = directionFor(locale)
-  const theme = useMemo(() => buildTheme(direction), [direction])
+  const scheme = resolveScheme(colorScheme, useSystemScheme())
+  const theme = useMemo(() => buildTheme(direction, scheme), [direction, scheme])
   const cache = useMemo(() => cacheFor(direction), [direction])
 
   // Activated during render, not in an effect. An effect runs after the first

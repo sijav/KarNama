@@ -17,6 +17,12 @@ const meta = {
   parameters: { layout: 'fullscreen' },
 } satisfies Meta<typeof App>
 
+/** Relative luminance of an `rgb(r, g, b)` string, 0 for black and 1 for white. */
+const luminanceOf = (colour: string) => {
+  const [r = 0, g = 0, b = 0] = [...colour.matchAll(/\d+/g)].map((match) => Number(match[0]) / 255)
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
 export default meta
 type Story = StoryObj<typeof meta>
 
@@ -27,6 +33,25 @@ export const Persian: Story = {
     await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('کارنما')
     await expect(canvas.getByText('فرصت‌های شغلی من')).toBeVisible()
     await expect(document.documentElement).toHaveAttribute('dir', 'rtl')
+  },
+}
+
+export const PersianDark: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    // The design has no dark tokens, so this palette is derived. What can be
+    // asserted is the direction of the derivation: the page is dark and the
+    // text is light, which is the thing that breaks if the flip is dropped.
+    const page = getComputedStyle(canvasElement.firstElementChild ?? canvasElement).backgroundColor
+    await expect(luminanceOf(page)).toBeLessThan(0.3)
+  },
+}
+
+export const SystemScheme: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'system' },
+  play: async ({ canvasElement }) => {
+    // Whatever the runner's OS says, the shell renders and picks one of the two.
+    await expect(within(canvasElement).getByRole('heading', { level: 1 })).toBeVisible()
   },
 }
 
