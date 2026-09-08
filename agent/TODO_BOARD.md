@@ -1557,7 +1557,7 @@ src/database/migrations.ts runs each migration and writes its ledger row as sepa
 
 **Exit condition.** A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite.
 
-**Roasts.** round 1 scored 5 with 2 critical(s)
+**Roasts.** round 1 scored 5 with 2 critical(s); round 2 scored 5 with 1 critical(s)
 
 ### `KN-124` Status history is documented as immutable and nothing enforces it
 
