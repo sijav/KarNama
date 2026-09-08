@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 126,
+  "nextId": 128,
   "tasks": [
     {
       "id": "KN-001",
@@ -2740,7 +2740,23 @@
       ],
       "status": "review",
       "exit": "npm run build produces schema.gql without starting a server, the file is committed, and a check fails when the resolvers and the committed schema disagree.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3.5,
+          "criticals": 2,
+          "file": "agent/roasts/KN-120-round-1.2026-09-08T02-01-57-927Z.md",
+          "filed": [
+            "KN-126",
+            "KN-127"
+          ],
+          "cardDigest": "0bd268fe7a8de48db41afea58512982755e272ec0d1c71c6f5e7f536762d1366",
+          "head": "1d8d0c44b68a4e021ee98d763309450d9a1767f9",
+          "reviewerScore": 3.5,
+          "reviewerCriticals": 2,
+          "at": "2026-09-08T02:09:58.611Z"
+        }
+      ],
       "notes": [
         "RAISED TO CRITICAL because it blocks one. KN-035, the codegen, generates the client types from schema.gql, so a schema that is gitignored and only appears when the server boots makes that card impossible to do honestly. The board refused to record the dependency while this was merely high, on the grounds that a blocker less severe than what it blocks never gets picked first, which is the right refusal and is why this is now critical rather than why the dependency was dropped."
       ],
@@ -2832,6 +2848,40 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T01:44:17.951Z"
+    },
+    {
+      "id": "KN-126",
+      "title": "Assert there is exactly one graphql in the dependency tree",
+      "desc": "apps/api/vitest.config.ts runs two projects because graphql and @nestjs/graphql need opposite inlining under Vite, recorded as TECH-DEBT entry 10. The split is a test-runner workaround and is not evidence that production is safe: if a future dependency ever pulls a second physical copy of graphql, the built server hits the same identity failure at schema construction, which is startup rather than a request. Add npm ls graphql, or an equivalent, to the API verifier and fail when more than one version resolves.",
+      "why": "A roast raised it as the unmeasured half of a workaround it otherwise accepted. The failure is loud rather than silent, which is the good news, but it happens at boot on a deploy rather than in a test, and the check that would catch it in advance is one command.",
+      "severity": "medium",
+      "points": 1,
+      "area": "api",
+      "parent": [
+        "KN-120"
+      ],
+      "status": "backlog",
+      "exit": "agent/scripts/verify/KN-033.mjs fails when more than one graphql version resolves, proved by a planted duplicate, and TECH-DEBT entry 10 names it as the check that retires the split.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T02:09:40.780Z"
+    },
+    {
+      "id": "KN-127",
+      "title": "The resolver-registration check reads text rather than the container",
+      "desc": "src/graphql/schema.test.ts proves the generator and the application share one list by grepping graphql.module.ts for providers: [...resolvers] and grepping other module files for a stray Resolver provider. That misses a resolver in a file not named *.resolver.ts, a default export, a re-export under another name, and a resolver registered through a dynamic module. Ask NEST instead: build the application context and compare the resolvers it actually instantiated against the generated schema fields.",
+      "why": "A roast rated the previous version of this critical because the two lists were genuinely separate, and they are one list now, which is the important half. What is left is that the CHECK is a text scan standing in for a runtime fact, and a text scan is what let the first version look fine. The application context already boots in the health test, so asking it is cheap.",
+      "severity": "medium",
+      "points": 2,
+      "area": "api",
+      "parent": [
+        "KN-120"
+      ],
+      "status": "backlog",
+      "exit": "A resolver registered in a way the text scan cannot see, a default export in a file not named *.resolver.ts, is detected, and the check reads the resolvers from a booted Nest context rather than from source text.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T02:09:40.921Z"
     }
   ]
 }

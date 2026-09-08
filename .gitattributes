@@ -2,3 +2,8 @@
 # translation would silently break that digest on a fresh clone, and the
 # verifier would report a tampered capture when nothing had been tampered with.
 agent/figma-capture/*.xml -text
+
+# The generated GraphQL schema is compared byte for byte against a fresh
+# generation, so a CRLF checkout would report it stale before any resolver
+# changed. Pinned to LF for the same reason the Figma captures are pinned.
+apps/api/schema.gql text eol=lf

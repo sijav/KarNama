@@ -232,3 +232,32 @@ without a suppression, or the rule gaining an option for test files.
 **Why this entry exists at all.** A roast found two unrecorded escape hatches in
 this workspace and filed KN-121 for them. This one was written after that, so
 it is recorded before it is committed rather than after someone finds it.
+
+---
+
+## 10. Two Vitest projects, because graphql and @nestjs/graphql want opposite inlining
+
+**What.** `apps/api/vitest.config.ts` runs two projects. The `schema` project
+sets `resolve.dedupe: ['graphql']` and `ssr.noExternal: ['graphql',
+'@nestjs/graphql']`; the `api` project sets neither.
+
+**Why it is like that.** Building a GraphQL schema in process under Vitest
+throws `Cannot use GraphQLScalarType "Boolean" from another module or realm`
+unless both are inlined: Vite's transform pipeline and the CommonJS interop
+inside `@nestjs/graphql` each resolve their own copy of `graphql`, and graphql
+compares scalars by identity. Inlining `@nestjs/graphql` then breaks the test
+that boots the whole application, because Nest cannot resolve `graphQlFactory`
+out of the inlined module. Neither problem exists in the built server, which
+loads one copy through Node's own resolution.
+
+**What it costs, and the risk nobody has measured.** The split is a workaround
+for the test runner, and it is NOT evidence that production is safe. The
+lockfile currently resolves exactly one `graphql@16.14.2`. If a future
+dependency ever pulls a second physical copy, the built server would hit the
+same identity failure at schema construction, which is startup rather than a
+request, so it would be loud rather than silent. Nothing checks for that today.
+
+**The check that retires this.** A single `graphql` in the tree asserted by the
+gate, plus either Vitest resolving one copy without help or `@nestjs/graphql`
+surviving inlining. `npm ls graphql` reporting one version is the cheap half and
+belongs in the API verifier.

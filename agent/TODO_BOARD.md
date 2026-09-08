@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 12 of 125 tasks done · 43 of 436 points.
+Project **KarNama** · 12 of 127 tasks done · 43 of 439 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-120` | Make schema.gql a checked build artefact rather than a side effect of starting the server | critical | 3 | api | KN-033 | npm run build produces schema.gql without starting a server, the file is committed, and a check fails when the resolvers and the committed schema disagree. |
 
-## Backlog (111)
+## Backlog (113)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -106,6 +106,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-075` | Decide which fields the Review step of the add flow shows | medium | 1 | design | KN-002 | DESIGN.md names the Review field list with the reason for it, section 6 no longer lists the Review step as open, and agent/design-manifest.json records the disposition instead of the open item. |
 | `KN-081` | Replace the truncation-cap frequency guess with a stated cap | medium | 1 | agent | KN-002 | The truncation figure in DESIGN.md is derived from a cap the manifest records with its provenance, or from per-name evidence of cutting, and a fixture capture with eleven repeated 36-character labels and no truncation does not report any name as truncated. |
 | `KN-116` | Move the language switch out of the placeholder shell into the drawn chrome | medium | 1 | web | KN-006 | The switch renders at the bottom of the sidebar on desktop and as a Page Header trailing action on mobile, App.tsx contains no language control, and an e2e test finds it in both places at the two drawn viewports. |
+| `KN-126` | Assert there is exactly one graphql in the dependency tree | medium | 1 | api | KN-120 | agent/scripts/verify/KN-033.mjs fails when more than one graphql version resolves, proved by a planted duplicate, and TECH-DEBT entry 10 names it as the check that retires the split. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -117,6 +118,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-117` | Re-triage severity, because 78 of 105 open cards are high | medium | 2 | agent | KN-001 | AGENTS.md defines each severity with a test a card can be held to, no level holds more than half the open board, and npm run todo -- validate reports the distribution so the next drift is visible. |
 | `KN-121` | Remove the escape hatches in the API tests, and the comment that denies them | medium | 2 | api | KN-033 | No `as` and no eslint-disable under apps/api, the resolver test uses a stub the type system accepts on its own, and the claim in health.test.ts is true or gone. |
 | `KN-125` | The seed builds SQL by concatenation and several values skip the quote helper | medium | 2 | api | KN-034 | Every value the seed writes goes through a parameter rather than into the SQL text, a seeded record containing an apostrophe and a backslash round trips intact, and the quote helper is gone. |
+| `KN-127` | The resolver-registration check reads text rather than the container | medium | 2 | api | KN-120 | A resolver registered in a way the text scan cannot see, a default export in a file not named *.resolver.ts, is detected, and the check reads the resolvers from a booted Nest context rather than from source text. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -1501,6 +1503,8 @@ autoSchemaFile writes schema.gql to process.cwd() when the application boots, an
 
 **Exit condition.** npm run build produces schema.gql without starting a server, the file is committed, and a check fails when the resolvers and the committed schema disagree.
 
+**Roasts.** round 1 scored 3.5 with 2 critical(s)
+
 ### `KN-121` Remove the escape hatches in the API tests, and the comment that denies them
 
 - **status** backlog · **severity** medium · **points** 2 · **area** api
@@ -1555,4 +1559,26 @@ src/database/seed.ts has a quote helper that doubles apostrophes, and the note, 
 **Why.** A roast rated this minor and it is, until someone edits the seed. The failure is a syntax error from Postgres pointing at generated SQL, which is a bad ten minutes for whoever is just trying to add a row. Parameters remove the whole class rather than the current instance.
 
 **Exit condition.** Every value the seed writes goes through a parameter rather than into the SQL text, a seeded record containing an apostrophe and a backslash round trips intact, and the quote helper is gone.
+
+### `KN-126` Assert there is exactly one graphql in the dependency tree
+
+- **status** backlog · **severity** medium · **points** 1 · **area** api
+- **blocked by** KN-120
+
+apps/api/vitest.config.ts runs two projects because graphql and @nestjs/graphql need opposite inlining under Vite, recorded as TECH-DEBT entry 10. The split is a test-runner workaround and is not evidence that production is safe: if a future dependency ever pulls a second physical copy of graphql, the built server hits the same identity failure at schema construction, which is startup rather than a request. Add npm ls graphql, or an equivalent, to the API verifier and fail when more than one version resolves.
+
+**Why.** A roast raised it as the unmeasured half of a workaround it otherwise accepted. The failure is loud rather than silent, which is the good news, but it happens at boot on a deploy rather than in a test, and the check that would catch it in advance is one command.
+
+**Exit condition.** agent/scripts/verify/KN-033.mjs fails when more than one graphql version resolves, proved by a planted duplicate, and TECH-DEBT entry 10 names it as the check that retires the split.
+
+### `KN-127` The resolver-registration check reads text rather than the container
+
+- **status** backlog · **severity** medium · **points** 2 · **area** api
+- **blocked by** KN-120
+
+src/graphql/schema.test.ts proves the generator and the application share one list by grepping graphql.module.ts for providers: [...resolvers] and grepping other module files for a stray Resolver provider. That misses a resolver in a file not named *.resolver.ts, a default export, a re-export under another name, and a resolver registered through a dynamic module. Ask NEST instead: build the application context and compare the resolvers it actually instantiated against the generated schema fields.
+
+**Why.** A roast rated the previous version of this critical because the two lists were genuinely separate, and they are one list now, which is the important half. What is left is that the CHECK is a text scan standing in for a runtime fact, and a text scan is what let the first version look fine. The application context already boots in the health test, so asking it is cheap.
+
+**Exit condition.** A resolver registered in a way the text scan cannot see, a default export in a file not named *.resolver.ts, is detected, and the check reads the resolvers from a booted Nest context rather than from source text.
 

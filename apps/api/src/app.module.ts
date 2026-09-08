@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
 import { parseEnv } from './config/env.js'
-import { HealthModule } from './health/health.module.js'
+import { GraphqlModule } from './graphql/graphql.module.js'
 
 @Module({
   imports: [
@@ -32,7 +32,9 @@ import { HealthModule } from './health/health.module.js'
       playground: false,
       graphiql: true,
     }),
-    HealthModule,
+    // One module, registering the same list the generator reads. See
+    // graphql.module.ts for why that matters.
+    GraphqlModule,
   ],
 })
 export class AppModule {}

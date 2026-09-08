@@ -17,6 +17,17 @@ import { SCHEMA_FILE, checkSchema, generateSchema, readCommittedSchema } from '.
  */
 const ROOT = join(import.meta.dirname, '..', '..')
 
+/**
+ * A module registering a resolver as a provider of its own.
+ *
+ * `[^\]]` and not `[^]]`. The second is two things in JavaScript: `[^]`, which
+ * matches ANY character, followed by a literal `]`, so the pattern quietly
+ * becomes "providers:, one character, some closing brackets, Resolver" and
+ * matches almost nothing. It arrived that way through a shell heredoc that ate
+ * the backslash, which is why the three assertions below exist.
+ */
+const STRAY_RESOLVER = /providers:[^\]]*Resolver/
+
 describe('generating the schema', () => {
   it('needs no server, no environment and no database', async () => {
     // Nothing is set up before this call. If it ever starts needing the
@@ -76,6 +87,39 @@ describe('the committed schema', () => {
 })
 
 describe('the resolver list', () => {
+  it('is what the running application registers, not a second list beside it', async () => {
+    // The defect this replaced a weaker test for. The generator read this list
+    // while HealthModule registered its resolver independently, so the two were
+    // separate lists a filename scan only appeared to keep in step: one added
+    // to the module and not the list was in the server and absent from the
+    // committed schema, and one added to the list and not the module put a
+    // field in the contract that nothing answered. Both were green.
+    const module = await readFile(join(ROOT, 'src', 'graphql', 'graphql.module.ts'), 'utf8')
+    expect(module).toContain('providers: [...resolvers]')
+    // And nothing else registers a resolver behind its back.
+    const strays: string[] = []
+    const walk = async (dir: string): Promise<void> => {
+      for (const entry of await readdir(dir, { withFileTypes: true })) {
+        const full = join(dir, entry.name)
+        if (entry.isDirectory()) await walk(full)
+        else if (entry.name.endsWith('.module.ts') && entry.name !== 'graphql.module.ts') {
+          const source = await readFile(full, 'utf8')
+          if (STRAY_RESOLVER.test(source)) strays.push(entry.name)
+        }
+      }
+    }
+    await walk(join(ROOT, 'src'))
+    expect(strays, 'these modules register a resolver outside the shared list').toEqual([])
+
+    // The pattern, proved on strings rather than on the tree. A scan that finds
+    // nothing proves nothing, and this one went through a shell heredoc once
+    // and arrived with its backslashes eaten, matching almost nothing while
+    // passing.
+    expect(STRAY_RESOLVER.test('@Module({ providers: [HealthResolver] })')).toBe(true)
+    expect(STRAY_RESOLVER.test('@Module({ providers: [ThingResolver, Other] })')).toBe(true)
+    expect(STRAY_RESOLVER.test('@Module({ providers: [SomeService] })')).toBe(false)
+  })
+
   it('names every resolver in the source tree', async () => {
     // The drift this closes: a resolver registered in a Nest module and absent
     // from this list is in the running server and missing from the generated

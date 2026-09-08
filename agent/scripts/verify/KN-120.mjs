@@ -61,14 +61,43 @@ check('the server no longer writes it on boot', () => {
   return /autoSchemaFile:\s*true/.test(module) ? null : 'autoSchemaFile is neither true nor a path, so the shape has changed'
 })
 
-check('the build produces it, with no server and no environment', () => {
-  const script = JSON.parse(readFileSync(join(API, 'package.json'), 'utf8')).scripts?.build ?? ''
-  if (!script.includes('schema:generate')) return `build is "${script}", which does not generate the schema`
+check('the build CHECKS the schema and does not regenerate it', () => {
+  // It used to regenerate. That is worse than not checking: a developer could
+  // change a resolver, leave the committed schema stale, run the ordinary build
+  // and get a success, because the build repaired the evidence it should have
+  // rejected. A roast rated that critical. Generation is now its own command.
+  const scripts = JSON.parse(readFileSync(join(API, 'package.json'), 'utf8')).scripts ?? {}
+  const build = scripts.build ?? ''
+  if (build.includes('schema:generate') || build.includes('schema:update')) {
+    return `build is "${build}", which regenerates the schema instead of checking it`
+  }
+  if (!build.includes('schema:check')) return `build is "${build}", which never checks the schema`
+  return typeof scripts['schema:update'] === 'string' ? null : 'there is no schema:update command to regenerate with'
+})
+
+check('generation needs no server, no environment and no database', () => {
   // With NOTHING set. The generator must not need WEB_ORIGIN, DATABASE_URL or a
   // port, because a fresh clone has none of them.
-  const result = run('npm run build', { env: { CI: '1', FORCE_COLOR: '0', PATH: process.env.PATH, SystemRoot: process.env.SystemRoot } })
+  const bare = { CI: '1', FORCE_COLOR: '0', PATH: process.env.PATH, SystemRoot: process.env.SystemRoot }
+  const compile = run('npx tsc -p tsconfig.build.json', { env: bare })
+  if (compile.status !== 0) return (compile.stdout || compile.stderr || '').split('\n').slice(-15).join('\n')
+  const result = run('npm run schema:update', { env: bare })
   if (result.status !== 0) return (result.stdout || result.stderr || '').split('\n').slice(-20).join('\n')
-  return existsSync(SCHEMA) ? null : 'the build did not produce schema.gql'
+  return existsSync(SCHEMA) ? null : 'schema:update did not produce schema.gql'
+})
+
+check('a stale schema fails the ORDINARY build, not just the explicit check', () => {
+  // The clause the roast found false. What matters is not that a check exists
+  // somewhere, it is that the command people actually run refuses.
+  const original = readFileSync(SCHEMA, 'utf8')
+  try {
+    writeFileSync(SCHEMA, `${original}\ntype NobodyWroteThis {\n  field: String!\n}\n`)
+    const result = run('npm run build')
+    if (result.status === 0) return 'npm run build succeeded against a stale schema'
+    return /stale/.test(`${result.stdout ?? ''}${result.stderr ?? ''}`) ? null : 'the build failed, but not because the schema is stale'
+  } finally {
+    writeFileSync(SCHEMA, original)
+  }
 })
 
 check('the committed schema matches the resolvers right now', () => {
