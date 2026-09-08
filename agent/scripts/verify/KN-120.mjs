@@ -76,6 +76,13 @@ check('the committed schema matches the resolvers right now', () => {
   return result.status === 0 ? null : (result.stdout || result.stderr || '').split('\n').slice(-10).join('\n')
 })
 
+// What the schema looked like before this script touched anything. Compared
+// against at the end, rather than against git: comparing to git conflated "this
+// script left the file modified" with "the file has an uncommitted change for
+// any reason at all", and reported a failure the first time the schema
+// legitimately gained a header.
+const schemaBefore = readFileSync(SCHEMA, 'utf8')
+
 check('a STALE schema fails the check, proved by making one', () => {
   const original = readFileSync(SCHEMA, 'utf8')
   try {
@@ -91,10 +98,9 @@ check('a STALE schema fails the check, proved by making one', () => {
   }
 })
 
-check('the schema was put back exactly as it was', () => {
-  const result = spawnSync('git diff --name-only -- apps/api/schema.gql', { cwd: ROOT, encoding: 'utf8', shell: true })
-  return (result.stdout ?? '').trim() === '' ? null : 'schema.gql differs from what git has, which is a defect in this script'
-})
+check('the schema was put back exactly as this script found it', () =>
+  readFileSync(SCHEMA, 'utf8') === schemaBefore ? null : 'schema.gql differs from what this script found, which is a defect in this script',
+)
 
 check('every resolver is in the list the generator builds from', () => {
   // The drift the single list closes: a resolver registered in a Nest module

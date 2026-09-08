@@ -1,3 +1,7 @@
+# GENERATED FROM THE RESOLVERS. Do not edit by hand.
+#
+# Regenerate:  npm run schema:generate --workspace @karnama/api
+# Check:       npm run schema:check    --workspace @karnama/api
 type Health {
   """Which environment this process believes it is in"""
   environment: String!

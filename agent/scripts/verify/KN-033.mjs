@@ -129,7 +129,12 @@ check('the generated schema is code-first and on disk', () => {
   const schema = join(API, 'schema.gql')
   if (!existsSync(schema)) return 'schema.gql was not generated'
   const text = readFileSync(schema, 'utf8')
-  if (!/AUTOMATICALLY GENERATED/.test(text)) return 'schema.gql is not the generated file'
+  // The marker changed when KN-120 moved generation off the boot path: Nest's
+  // own "AUTOMATICALLY GENERATED" header came from `autoSchemaFile`, and the
+  // file is now produced by `npm run schema:generate` with a header that also
+  // says how to regenerate it. This check follows the marker rather than
+  // pinning the old one, and it still refuses a hand-written file.
+  if (!/GENERATED FROM THE RESOLVERS/.test(text)) return 'schema.gql is not the generated file'
   for (const fragment of ['type Health {', 'status: String!', 'uptimeSeconds: Float!', 'health: Health!']) {
     if (!text.includes(fragment)) return `the schema is missing ${fragment}, so decorator metadata was probably dropped`
   }

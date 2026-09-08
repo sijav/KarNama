@@ -20,6 +20,14 @@ import { resolvers } from './resolvers.js'
  */
 export const SCHEMA_FILE = 'schema.gql'
 
+/** Says what the file is and what regenerates it, for whoever reads the diff. */
+export const SCHEMA_HEADER = [
+  '# GENERATED FROM THE RESOLVERS. Do not edit by hand.',
+  '#',
+  '# Regenerate:  npm run schema:generate --workspace @karnama/api',
+  '# Check:       npm run schema:check    --workspace @karnama/api',
+].join('\n')
+
 export const generateSchema = async (): Promise<string> => {
   const app = await NestFactory.create(GraphQLSchemaBuilderModule, { logger: false })
   await app.init()
@@ -28,7 +36,11 @@ export const generateSchema = async (): Promise<string> => {
     // Sorted, so the file is stable: an unsorted print reorders on unrelated
     // edits and every diff looks like a schema change.
     const schema = lexicographicSortSchema(await factory.create([...resolvers]))
-    return `${printSchema(schema).trim()}\n`
+    // The header is not decoration. This file is committed and reviewed, so it
+    // has to say what it is and what to run, or the first person to see a diff
+    // in it edits it by hand and the next check tells them they are stale
+    // without saying why.
+    return `${SCHEMA_HEADER}\n${printSchema(schema).trim()}\n`
   } finally {
     await app.close()
   }
