@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 114,
+  "nextId": 117,
   "tasks": [
     {
       "id": "KN-001",
@@ -365,7 +365,7 @@
       "parent": [
         "KN-003"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not.",
       "roasts": [
         {
@@ -383,6 +383,22 @@
           "reviewerScore": 1.5,
           "reviewerCriticals": 4,
           "at": "2026-09-08T00:41:33.278Z"
+        },
+        {
+          "round": 2,
+          "score": 2,
+          "criticals": 3,
+          "file": "agent/roasts/KN-006-round-2.2026-09-08T00-41-53-776Z.md",
+          "filed": [
+            "KN-114",
+            "KN-115",
+            "KN-116"
+          ],
+          "cardDigest": "43c5b25f86f0044be7d2e7aae030906867c8ef639b1d366b906f72dda27528ea",
+          "head": "c3a30f5029fa3af6a294666d9db722070a498262",
+          "reviewerScore": 2,
+          "reviewerCriticals": 3,
+          "at": "2026-09-08T00:45:45.696Z"
         }
       ],
       "notes": [
@@ -391,8 +407,10 @@
         "PARTLY DELIVERED BY KN-003, checked against the code rather than remembered. Already exists and is tested: lingui with English message ids as the source and Persian as the translation, catalogs in apps/web/src/i18n/locales, I18nProvider wired through AppProviders, the app defaulting to Persian, the eslint lingui rule with useTsTypes enforcing localized strings, and a committed fixture proving a bare literal fails the lint, extended by KN-087 to aria-label and title. i18n.test.ts proves the fallback goes to the English id rather than to an empty string, which is the safety net the whole English-source-id rule rests on, and that no Persian message says فرصت without شغلی. WHAT IS LEFT: the macro plugin is NOT wired, TECH-DEBT entry 8 says why and what retires it, so catalogs are hand written and lingui extract has nothing to extract. There is no runtime locale switch and nothing persists a choice: main.tsx hard codes the default and only the Storybook toolbar can change it. And no test asserts the fa-IR catalog is 100 percent translated, only that every English id has a Persian entry, which is the same thing today because the catalogs are hand written and will stop being the same thing the moment extract runs."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-08T00:35:34.213Z",
-      "verify": "node agent/scripts/verify/KN-006.mjs"
+      "updatedAt": "2026-09-08T00:46:22.367Z",
+      "verify": "node agent/scripts/verify/KN-006.mjs",
+      "evidence": "Every clause was checked by running, and one of them by reloading a real browser. A bare string literal in a tsx file fails lint: five committed fixtures each take a different route to an untranslated string and each is rejected by lingui/no-unlocalized-strings by name. The app defaults to Persian: both the i18n default and the stored-preference default are fa-IR, and the shell renders «کارنما» right to left. Switching to English flips direction and PERSISTS: a Playwright test on both drawn viewports clicks the switch, asserts dir becomes ltr, RELOADS, and asserts dir and lang survived. That reload is the whole point and it failed before this round: main.tsx passed a forced locale that the provider merged over the stored one, so the choice was written, read back and discarded on every mount, while my verifier passed because it asked whether the write happened rather than whether it survived. The verifier now fails if main.tsx forces a locale again, and fails if no component renders the switch. The fa-IR catalog is 100 percent translated and a test fails when it is not: catalog.test.ts scans the SOURCE for the ids the code uses and checks them against both catalogs in both directions, rejects a Persian message left as its English id, and rejects an entry nothing uses; eight planted breaks on the verifier were all caught. 209 tests at 100 percent coverage on all four metrics, 8 e2e, lint, tsc, build and storybook build clean. What this does NOT establish, all filed: the catalog test counts an empty string as a translation, KN-114; the id scan sees only two of the several valid spellings of a message id, KN-111; the language names bypass the catalog entirely, KN-115; two setters in one batch lose the first update, KN-112; the switch sits in the placeholder shell rather than the sidebar and header DESIGN.md names, KN-116; the macro plugin is not wired, KN-110 with TECH-DEBT 8; the portalled menu RTL anchoring is unasserted, KN-113; and the component documentation is JSDoc rather than story-docs, KN-091.",
+      "closedAt": "2026-09-08T00:46:22.367Z"
     },
     {
       "id": "KN-007",
@@ -2501,8 +2519,11 @@
       "status": "backlog",
       "exit": "Components use the Trans and t macros with no explicit id, lingui extract produces the catalogs, the hand-written ones are gone, npm test and npm run build both pass, and TECH-DEBT entry 8 is removed.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-08T00:35:33.956Z"
+      "notes": [
+        "RAISED AS A CRITICAL TWICE on KN-006, both times on the same ground: the card DESC names the macro plugin and neither vite.config.ts nor either vitest project configures it, there is no lingui.config file and no .po catalog. Recorded rather than argued. The reason it is a card is that KN-006 EXIT condition does not name the macro, only the behaviour, and the behaviour is met and proved end to end; TECH-DEBT entry 8 carries the ABI risk that made it a deferral rather than an oversight. If the owner reads the desc as binding, this card is the work."
+      ],
+      "createdAt": "2026-09-08T00:35:33.956Z",
+      "updatedAt": "2026-09-08T00:45:45.486Z"
     },
     {
       "id": "KN-111",
@@ -2518,8 +2539,11 @@
       "status": "backlog",
       "exit": "A Trans with a braced or template-literal id fails npm run lint, a committed fixture holds each form, and the catalog test still finds every id the codebase uses.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-08T00:41:13.196Z"
+      "notes": [
+        "RAISED A SECOND TIME in round 2 of KN-006, with two more forms than the card names: <Trans otherProp={x} id=\"...\"> also misses the scan because the regex requires id to follow Trans immediately, and a template literal argument to i18n._ misses it too. The fix is unchanged and it is the right one, forbid the forms the scan cannot see so the scan is sufficient by construction, but the card understated how many forms there are."
+      ],
+      "createdAt": "2026-09-08T00:41:13.196Z",
+      "updatedAt": "2026-09-08T00:45:45.371Z"
     },
     {
       "id": "KN-112",
@@ -2554,6 +2578,57 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T00:41:13.425Z"
+    },
+    {
+      "id": "KN-114",
+      "title": "The catalog test counts an empty string as a translation",
+      "desc": "src/i18n/catalog.test.ts checks that every used id is a KEY in both catalogs and rejects only a Persian value exactly equal to its English id. Set a Persian message to the empty string and every test still passes, while the user sees nothing at all where a label should be. Reject empty and whitespace-only values, and reject a value that is the English id with punctuation changed, which is the next spelling of the same evasion.",
+      "why": "A roast rated this critical and it is the clause the whole test exists for: the exit condition says the fa-IR catalog is 100 percent translated and a test fails when it is not, and an empty string is not a translation. An empty label is also worse than an English one, because English text tells a Persian user the string was missed and a blank tells them nothing.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [
+        "KN-006"
+      ],
+      "status": "backlog",
+      "exit": "Setting any Persian message to an empty or whitespace-only string fails npm test, and the failure names the id.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:45:32.304Z"
+    },
+    {
+      "id": "KN-115",
+      "title": "The language names bypass the catalog entirely",
+      "desc": "src/i18n/index.ts holds locales as a plain object mapping fa-IR to the raw Persian string and en-US to English, and LanguageSwitch renders those values directly. They are user-facing strings in a .ts file that never go through lingui, which is the rule the whole gate exists for, and the lingui rule does not see them because it is a value in an object rather than a JSX literal. The RENDERED text must stay native, a reader who cannot read the current language has to find their own, but that is an argument about which translation to show, not an argument for having no catalog entry.",
+      "why": "A roast rated this major and the distinction is the right one: the self-naming exception explains why the text is not translated, it does not explain why it is invisible to the catalog. As written, the two strings a language switch shows are the only user-facing strings in the product that nothing checks.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-006"
+      ],
+      "status": "backlog",
+      "exit": "The language names come from the catalog with each locale name present in both catalogs as its own native spelling, the lingui rule sees them, and a missing one fails the catalog test.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:45:32.428Z"
+    },
+    {
+      "id": "KN-116",
+      "title": "Move the language switch out of the placeholder shell into the drawn chrome",
+      "desc": "LanguageSwitch currently renders in App.tsx under the placeholder heading, with the sidebar placement on every breakpoint. DESIGN.md puts it at the bottom of the sidebar 185:11 on desktop and in the Page Header 155:56 as a trailing action on mobile, and says nothing else moves. Move it when those exist, choose the placement responsively, and delete the temporary block and its comment from App.tsx.",
+      "why": "A roast rated this major and it is right that the shell placement is not one of the two approved homes. It was put there deliberately, because a control only Storybook renders cannot show that a choice persists, and because the shell is itself a placeholder rather than a drawn frame, so nothing drawn is being reflowed. That reasoning expires the moment the sidebar exists.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [
+        "KN-006"
+      ],
+      "status": "backlog",
+      "exit": "The switch renders at the bottom of the sidebar on desktop and as a Page Header trailing action on mobile, App.tsx contains no language control, and an e2e test finds it in both places at the two drawn viewports.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:45:32.559Z"
     }
   ]
 }
