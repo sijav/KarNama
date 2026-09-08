@@ -30,7 +30,8 @@
     "@mui/stylis-plugin-rtl": "9.4.0",
     "react": "19.0.8",
     "react-dom": "19.0.8",
-    "stylis": "4.2.0"
+    "stylis": "4.2.0",
+    "@karnama/graphql": "*"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

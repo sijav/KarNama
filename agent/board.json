@@ -1047,12 +1047,13 @@
         "KN-033",
         "KN-120"
       ],
-      "status": "backlog",
+      "status": "review",
       "exit": "Changing the API schema without regenerating fails the build, the web app imports only generated types for GraphQL data, and no hand-written interface duplicates a generated one.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-08T01:45:33.846Z"
+      "updatedAt": "2026-09-08T02:29:46.009Z",
+      "verify": "node agent/scripts/verify/KN-035.mjs"
     },
     {
       "id": "KN-036",
