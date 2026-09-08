@@ -16,3 +16,7 @@ playwright-report/
 agent/roasts/*.prompt.md
 .claude/ralph-loop.local.md
 .claude/ralph-loop.paused
+
+# API build output
+apps/api/dist/
+apps/api/schema.gql

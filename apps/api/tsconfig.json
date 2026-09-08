@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "node18",
+    "verbatimModuleSyntax": false,
+    // `node18` rather than the deprecated `node10`, which TypeScript 6 rejects
+    // outright. It still resolves CommonJS, which NestJS needs, and it is the
+    // resolver that understands the `exports` field, which most of the Nest
+    // packages now use.
+    "moduleResolution": "node16",
+    "types": ["node"],
+
+    // NestJS is built on decorators and it reads their types at RUNTIME through
+    // `reflect-metadata`, which is what lets `@Args('id') id: string` know it is
+    // a string without being told twice. Both flags are load bearing: without
+    // emitDecoratorMetadata the GraphQL schema comes out with every field typed
+    // as the wrong thing, and the failure is at startup rather than at compile.
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+
+    // NOT `verbatimModuleSyntax`, unlike the web workspace. Nest resolves a
+    // decorated parameter's type from the emitted metadata, and a type-only
+    // import erases the very reference it needs, so a class imported as a type
+    // becomes `Object` in the schema.
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "sourceMap": true
+  },
+  "include": ["src", "*.config.ts", "vitest.setup.ts"]
+}

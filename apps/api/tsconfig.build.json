@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    // `rootDir` pinned to src, or the emitted tree gains a `src/` level: the
+    // type-check config includes `vitest.setup.ts` at the workspace root, which
+    // pulls the inferred root up and puts main.js at dist/src/main.js while
+    // every script points at dist/main.js.
+    "rootDir": "src"
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*.test.ts", "dist"]
+}

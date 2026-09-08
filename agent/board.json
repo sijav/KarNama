@@ -967,11 +967,13 @@
       "parent": [
         "KN-001"
       ],
-      "status": "backlog",
+      "status": "review",
       "exit": "lint, typecheck, test and build all pass in apps/api, the server starts, the GraphQL playground serves the schema, the health endpoint answers, and a missing required environment variable fails at startup with a clear message rather than at first request.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-08T01:08:01.859Z",
+      "verify": "node agent/scripts/verify/KN-033.mjs"
     },
     {
       "id": "KN-034",
