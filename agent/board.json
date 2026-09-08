@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 123,
+  "nextId": 126,
   "tasks": [
     {
       "id": "KN-001",
@@ -1007,13 +1007,32 @@
       "parent": [
         "KN-033"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "Migrations apply to an empty database and to an existing one, the schema covers every field the Figma job record names, status history records every transition with its timestamp, and a seed script produces a realistic archive to develop against.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3.5,
+          "criticals": 2,
+          "file": "agent/roasts/KN-034-round-1.2026-09-08T01-41-23-016Z.md",
+          "filed": [
+            "KN-123",
+            "KN-124",
+            "KN-125"
+          ],
+          "cardDigest": "82ad7b467560fe5f3191d227bf7e13a4552d962b4b0d81396a5369de2eee1112",
+          "head": "845a4edef9ffd419160ef4156f04adfe65b82789",
+          "reviewerScore": 3.5,
+          "reviewerCriticals": 2,
+          "at": "2026-09-08T01:44:32.852Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-08T01:40:43.077Z",
-      "verify": "node agent/scripts/verify/KN-034.mjs"
+      "updatedAt": "2026-09-08T01:44:52.411Z",
+      "verify": "node agent/scripts/verify/KN-034.mjs",
+      "evidence": "Every clause was run against a real Postgres. The migrations apply to an EMPTY database, creating all eight tables, and to an EXISTING one: the test applies the first migration, seeds data into it, then applies both and asserts only the second ran, then applies both again and asserts nothing ran, then counts the rows to prove the data survived. That is PGlite, which is Postgres compiled to wasm rather than a SQLite standing in for it, so the SQL is executed by the engine Supabase runs. The schema covers every field DESIGN.md names on the job record, and the verifier parses that list OUT of the document with two regexes rather than carrying its own copy, because a verifier holding the answer only proves two things the same author wrote agree; the roast independently confirmed the parse misses nothing. Status history is a table with a timestamp, a nullable fromStatusId so the first entry is a creation rather than a move, and no updatedAt, and the seed writes a four-step trail. The seed produces five job opportunities spread across five columns with notes, contacts and a feedback submission, and it is idempotent, which is tested by running it twice. 47 tests at 100 percent on all four metrics; nine mutations planted and nine caught, including dropping a field DESIGN.md names, making status nullable, giving history an updatedAt and deleting the second migration. What this does NOT establish, all filed: the migration runner has no transaction, lock, failure state or checksum, so a migration that fails halfway makes the retry worse, KN-123; history is documented as immutable and nothing enforces it, since the application role can UPDATE and DELETE those rows, KN-124; and the seed interpolates several values into SQL without the quote helper, so the first apostrophe breaks it, KN-125.",
+      "closedAt": "2026-09-08T01:44:52.411Z"
     },
     {
       "id": "KN-035",
@@ -2756,6 +2775,57 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T01:13:12.883Z"
+    },
+    {
+      "id": "KN-123",
+      "title": "The migration runner has no transaction, no lock, no failure state and no checksum",
+      "desc": "src/database/migrations.ts runs each migration and writes its ledger row as separate statements. A migration that fails halfway leaves partial DDL with no ledger row, so the next deploy replays it and fails permanently on the CREATE TYPE that already exists. Two runners racing can both see \"not applied\". An applied migration edited afterwards is silently skipped, because nothing records a checksum. Wrap each migration and its ledger row in one transaction, take an advisory lock for the run, record a failed state rather than nothing, and store a checksum that is compared on every deploy.",
+      "why": "A roast rated this critical and named the exact sequence. It is the single thing here most likely to cost real data: the first time a migration fails against Supabase, the retry makes it worse rather than better, and the recovery is manual SQL against a production database. Prisma migrate deploy solves all four and the runner exists only because Prisma 7 wants a live database at generate time, which is a smaller problem than this one.",
+      "severity": "critical",
+      "points": 5,
+      "area": "api",
+      "parent": [
+        "KN-034"
+      ],
+      "status": "backlog",
+      "exit": "A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T01:44:17.656Z"
+    },
+    {
+      "id": "KN-124",
+      "title": "Status history is documented as immutable and nothing enforces it",
+      "desc": "The schema comment says history is appended and never rewritten, and the verifier checks that StatusHistory has no updatedAt. Neither stops anything: the application role can UPDATE or DELETE rows in status_history like any other table. Enforce it, with a rule or a trigger that rejects UPDATE and DELETE except through the cascade from its job record, or with a role that lacks those grants, and change the comment to describe what is enforced rather than what is intended.",
+      "why": "A roast rated this critical. The trail is the product: DESIGN.md says the value is the trail rather than the listing, so a history table anyone can edit is the one table where a silent write is worth catching. The absence of an updatedAt column is a statement about intent that reads like a guarantee, which is the kind of claim this repository has been wrong about before.",
+      "severity": "high",
+      "points": 3,
+      "area": "api",
+      "parent": [
+        "KN-034"
+      ],
+      "status": "backlog",
+      "exit": "An UPDATE or a DELETE against status_history is rejected by the database, deleting a job record still removes its history through the cascade, and both are proved against PGlite.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T01:44:17.806Z"
+    },
+    {
+      "id": "KN-125",
+      "title": "The seed builds SQL by concatenation and several values skip the quote helper",
+      "desc": "src/database/seed.ts has a quote helper that doubles apostrophes, and the note, the contacts, the feedback body, the user name and the phone are interpolated as raw literals instead. Nothing in the current data contains an apostrophe, so it works; a contact named O Brien or a feedback body containing we are, spelled with the apostrophe, breaks the statement. Doubling apostrophes is also only correct while standard_conforming_strings is on. Use parameters rather than interpolation throughout.",
+      "why": "A roast rated this minor and it is, until someone edits the seed. The failure is a syntax error from Postgres pointing at generated SQL, which is a bad ten minutes for whoever is just trying to add a row. Parameters remove the whole class rather than the current instance.",
+      "severity": "medium",
+      "points": 2,
+      "area": "api",
+      "parent": [
+        "KN-034"
+      ],
+      "status": "backlog",
+      "exit": "Every value the seed writes goes through a parameter rather than into the SQL text, a seeded record containing an apostrophe and a backslash round trips intact, and the quote helper is gone.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T01:44:17.951Z"
     }
   ]
 }
