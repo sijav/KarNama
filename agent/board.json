@@ -3076,7 +3076,23 @@
       "parent": [],
       "status": "in_progress",
       "exit": "Removing a selected field from the health operation and regenerating makes npm run build fail, proved by planting exactly that, and the failure names the consumer file rather than something incidental. Every workspace build either typechecks its own sources or the verifier records why it cannot.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-131-round-1.2026-09-08T05-22-55-379Z.md",
+          "filed": [
+            "KN-140",
+            "KN-141"
+          ],
+          "cardDigest": "bd6d4ee2db235a4a9835396d0eefbf32193ec00b74d63693f06b0412f634901b",
+          "head": "09f65f2a933bc6c03d815dd842d448c60e28f0ba",
+          "reviewerScore": 8,
+          "reviewerCriticals": 0,
+          "at": "2026-09-08T05:32:47.270Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-08T03:06:29.161Z",
       "updatedAt": "2026-09-08T05:15:19.106Z",

@@ -1644,6 +1644,8 @@ apps/web/package.json build is "vite build" and nothing else. Vite transpiles pe
 
 **Exit condition.** Removing a selected field from the health operation and regenerating makes npm run build fail, proved by planting exactly that, and the failure names the consumer file rather than something incidental. Every workspace build either typechecks its own sources or the verifier records why it cannot.
 
+**Roasts.** round 1 scored 8 with 0 critical(s)
+
 ### `KN-132` Pin the byte-compared generated files to LF, or stop comparing bytes
 
 - **status** backlog · **severity** high · **points** 1 · **area** infra
