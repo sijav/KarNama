@@ -261,3 +261,42 @@ request, so it would be loud rather than silent. Nothing checks for that today.
 gate, plus either Vitest resolving one copy without help or `@nestjs/graphql`
 surviving inlining. `npm ls graphql` reporting one version is the cheap half and
 belongs in the API verifier.
+
+---
+
+## 11. Generated GraphQL documents carry a double assertion
+
+**What.** `packages/graphql/src/generated.ts` ends with
+
+```ts
+export const HealthDocument = {"kind":"Document", ...} as unknown as DocumentNode<HealthQuery, HealthQueryVariables>
+```
+
+`as unknown as` is the escape hatch AGENTS.md bans, and the comment in
+`codegen.ts` says generated code is held to that rule, so the file and the
+policy describing it currently disagree.
+
+**Why it is like that.** `@graphql-codegen/typed-document-node` emits the parsed
+AST as a JSON object literal and then asserts it into `DocumentNode<TResult,
+TVariables>`. It is not a claim about the data, which is a real parsed document
+generated from the schema-validated operation; it is a claim about the *type
+parameters*, which a plain object literal cannot carry. There is no config
+option that removes it: `documentMode: 'string'` drops the AST, and
+`documentMode: 'graphQLTag'` reintroduces the runtime `gql` parse this card
+existed to remove.
+
+**What it costs.** Much less than the assertion it replaced, and the difference
+is the point. The old `TypedDocumentNode<HealthQuery>` in the web app asserted a
+hand-written type onto a hand-written query with nothing comparing either to the
+schema. This one asserts a generated type onto a generated document, both
+produced in the same pass from an operation codegen validated against
+`apps/api/schema.gql`. The assertion cannot make the two disagree, because
+nothing writes either half. The residual risk is that a future codegen version
+changes the emitted shape without changing the asserted type.
+
+**The check that retires this.** `typed-document-node` emitting a
+`DocumentNode<TResult, TVariables>` without an assertion, or a check that parses
+the emitted literal and compares its selection set against the operation file,
+which would make the assertion redundant rather than trusted. Not written: the
+byte comparison in `check-generated.mjs` already fails if the emitted shape
+changes at all, so a silent drift is not the failure mode here.

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 131,
+  "nextId": 136,
   "tasks": [
     {
       "id": "KN-001",
@@ -2936,7 +2936,25 @@
       ],
       "status": "in_progress",
       "exit": "A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-128-round-1.2026-09-08T02-48-59-314Z.md",
+          "filed": [
+            "KN-131",
+            "KN-132",
+            "KN-133",
+            "KN-134"
+          ],
+          "cardDigest": "2320d878895c1fa70f08aa233b1a2156115c3e2ea6abc88dd30d49b1e52bb2b2",
+          "head": "d11504abd0e68df44f341adf92296c3f0a35f7ea",
+          "reviewerScore": 7,
+          "reviewerCriticals": 2,
+          "at": "2026-09-08T03:07:46.140Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-08T02:32:58.437Z",
       "updatedAt": "2026-09-08T02:34:19.009Z"
@@ -2974,6 +2992,81 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T02:32:58.762Z"
+    },
+    {
+      "id": "KN-131",
+      "title": "Make the root build typecheck what it ships",
+      "desc": "apps/web/package.json build is \"vite build\" and nothing else. Vite transpiles per file and never typechecks, so the only typecheck of the web app is the separate \"lint:tsc\" script. npm run build therefore compiles and emits a bundle whose types were never verified. Concrete sequence found by a roast on KN-128: remove a selected field from packages/graphql/src/operations/health.graphql, regenerate, and run npm run build. Both generation checks agree because both sides regenerated, but nothing typechecks apps/web/src/core/api/health.ts, which still reads input.data.health.environment. The build passes and toHealthState returns { kind: 'up', environment: undefined }, which reaches the screen. Add typechecking to the web build, and check whether the API and graphql workspace builds have the same hole.",
+      "why": "npm run build is the command a deploy runs, and KN-051 will wire it to GitHub Pages. A build that does not typecheck what it emits is a deploy that ships a type error as a blank field. This is the same class as KN-120, where the build regenerated the artefact before comparing and therefore always passed: a gate that cannot fail is not a gate.",
+      "severity": "critical",
+      "points": 2,
+      "area": "infra",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Removing a selected field from the health operation and regenerating makes npm run build fail, proved by planting exactly that, and the failure names the consumer file rather than something incidental. Every workspace build either typechecks its own sources or the verifier records why it cannot.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T03:06:29.161Z"
+    },
+    {
+      "id": "KN-132",
+      "title": "Pin the byte-compared generated files to LF, or stop comparing bytes",
+      "desc": ".gitattributes pins apps/api/schema.gql to LF and the Figma captures to -text, both because they are compared byte for byte. Two files added since are compared the same way and are NOT pinned: packages/graphql/src/generated.ts, which packages/graphql/scripts/check-generated.mjs compares literally against a fresh generation, and packages/graphql/src/operations/health.graphql, which agent/scripts/verify/KN-128.mjs edits by matching the literal string \"    environment\\n\". This machine has core.autocrlf=input so nothing converts on checkout and both work. On a machine with core.autocrlf=true the generated comparison reports the file stale when no schema changed, and the verifier's replacement stops matching. The verifier fails loudly there rather than silently passing, because it guards with \"the operation could not be edited, so this check proves nothing\", but a false failure on a clean clone is still a broken repository for whoever hits it. Either pin both files, or make the comparison normalise line endings and say so.",
+      "why": "The repository already learned this lesson twice and wrote the reason into .gitattributes both times. Every new byte-compared artefact has to be added there or the guarantee silently applies to a shrinking fraction of them. A contributor on default Windows git settings would see a stale-file failure on a fresh clone with no local change, which reads as the check being broken and trains people to bypass it.",
+      "severity": "high",
+      "points": 1,
+      "area": "infra",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T03:06:49.598Z"
+    },
+    {
+      "id": "KN-133",
+      "title": "check-generated.mjs leaks a temp directory on every failure",
+      "desc": "packages/graphql/scripts/check-generated.mjs defines fail() at line 24 as a function that calls process.exit(1), and calls it from lines 68 and 73, both inside the try whose finally at line 76 removes the mkdtemp scratch directory. process.exit does not run finally blocks, so every failed check leaves a karnama-codegen-* directory in the OS temp folder. Both failure paths are the interesting ones: line 68 is codegen refusing an invalid document, which is exactly what agent/scripts/verify/KN-128.mjs triggers deliberately on every run, and line 73 is the stale-file path. Replace the exits inside the try with a thrown error handled after cleanup.",
+      "why": "Found by a roast, and the reason it matters is not the disk space: it is that the cleanup reads as correct and is not, so the next script written from this one as a template inherits the same bug. The verifier that plants a bad field runs this path on purpose, so the leak happens most often precisely when the checks are working.",
+      "severity": "low",
+      "points": 1,
+      "area": "graphql",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Running the check against a deliberately invalid document leaves no karnama-codegen-* directory behind, proved by counting them before and after, and the same holds for the stale-file path.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T03:06:49.730Z"
+    },
+    {
+      "id": "KN-134",
+      "title": "ThemedTree sets i18n state while rendering",
+      "desc": "The web test suite prints, on every run: \"Cannot update a component (I18nProvider) while rendering a different component (ThemedTree). To locate the bad setState() call inside ThemedTree...\". apps/web/src/app/AppProviders.tsx activates the locale on i18n during ThemedTree's render rather than in an effect or before mount, so a render of one component schedules a state update in another. React names this specifically because the update is not part of the render it interrupts: under concurrent rendering the two can disagree about which locale is active, which shows up as a flash of the wrong language or a catalog read before activation. Nothing currently fails because of it, which is why it has survived. It is 222 passing tests loud.",
+      "why": "This is the language switch, which the owner asked for by name, and it is in the provider every screen mounts under, so whatever it does wrong it does everywhere. A warning that prints on every test run also costs more than the bug: it trains everyone reading the output to skip a block of red, and the next real warning prints into that trained blindness.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T03:07:02.115Z"
+    },
+    {
+      "id": "KN-135",
+      "title": "The graphql package's coverage thresholds pass on zero files",
+      "desc": "packages/graphql/vitest.config.ts sets thresholds of 100 for statements, branches, functions and lines, and then excludes src/generated.ts, src/index.ts and the tests. Those are the only files in src, so coverage reports \"Statements: Unknown% ( 0/0 )\" and the thresholds pass having measured nothing. Each exclusion is individually right: generated.ts is types with no runtime and index.ts is a re-export, and reporting 0 percent for either teaches people to ignore the number. The net effect is still a gate that cannot fail. Decide what this package's coverage means: either the thresholds apply to the first file with real behaviour, verified by planting an uncovered one, or the config says plainly that there is nothing to cover and drops the thresholds so nobody reads a guarantee that is not there.",
+      "why": "This repository's stated position is that a test asserting nothing is worse than no test because it reports green, and a threshold measuring nothing is the same thing one level up. It matters now rather than later because the package is about to grow: KN-129 and KN-130 add operations, and whoever adds the first piece of logic here will read three green 100s that were green before their file existed.",
+      "severity": "low",
+      "points": 1,
+      "area": "graphql",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Either adding an uncovered file with real behaviour to packages/graphql makes npm test fail, proved by planting one, or the thresholds are gone and a comment says why coverage does not apply here.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T03:09:21.563Z"
     }
   ]
 }

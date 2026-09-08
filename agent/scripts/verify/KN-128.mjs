@@ -28,6 +28,7 @@ const PKG = join(ROOT, 'packages', 'graphql')
 const OPERATION = join(PKG, 'src', 'operations', 'health.graphql')
 const GENERATED = join(PKG, 'src', 'generated.ts')
 const MODEL = join(API, 'src', 'health', 'health.model.ts')
+const RESOLVER = join(API, 'src', 'health', 'health.resolver.ts')
 const API_SCHEMA = join(API, 'schema.gql')
 // Temporary, and inside `src` because that is what `lint:tsc` typechecks. It is
 // removed in a `finally`, and the last check in this file re-runs the build to
@@ -97,27 +98,44 @@ check('A MISSPELLED FIELD FAILS THE BUILD, proved by misspelling one', () => {
     const build = run('npm run build')
     if (build.status === 0) return 'the build succeeded with a query selecting a field the schema does not have'
     const output = `${build.stdout ?? ''}${build.stderr ?? ''}`
-    // For the RIGHT reason: codegen rejecting the field, not tsc failing later
-    // for some unrelated consequence.
-    return /environmentTypo/.test(output) ? null : `it failed, but never mentioned the bad field:\n${output.slice(-400)}`
+    // For the RIGHT reason, and the field name alone does not establish that:
+    // a build could mention it while failing for some unrelated consequence.
+    // The diagnostic is what proves codegen VALIDATED the document against the
+    // schema, so require the diagnostic and the field together.
+    if (!/Cannot query field/i.test(output)) return `it failed, but not by validating the document:\n${output.slice(-400)}`
+    return /environmentTypo/.test(output) ? null : `it failed validation, but over some other field:\n${output.slice(-400)}`
   } finally {
     writeFileSync(OPERATION, operation)
   }
 })
 
-check('ADDING A FIELD TO Health DOES NOT CHANGE THE QUERY TYPE, proved by adding one', () => {
+check('ADDING A REQUIRED FIELD TO Health DOES NOT CHANGE THE QUERY TYPE, proved by adding one', () => {
   const model = readFileSync(MODEL, 'utf8')
+  const resolver = readFileSync(RESOLVER, 'utf8')
   const schema = readFileSync(API_SCHEMA, 'utf8')
   const generated = readFileSync(GENERATED, 'utf8')
   const before = /export type HealthQuery = ([^;]+);/.exec(generated)?.[1] ?? ''
 
   try {
+    // REQUIRED, which is what the exit condition asks for and is the harder
+    // case. A nullable field proves less: on the hand-written `{ health: Health }`
+    // shape this card removed, an added nullable field reads as possibly
+    // undefined anyway, so the compiler's refusal below would be ambiguous.
+    // Non-null makes the claim unambiguous, and forces the resolver to supply
+    // it, which is what a real schema change looks like.
     const changed = model.replace(
       "  @Field(() => Number, { description: 'Seconds since this process started, so a cold start is visible' })",
-      "  @Field(() => String, { nullable: true, description: 'Added by the verifier' })\n  addedByTheVerifier?: string\n\n  @Field(() => Number, { description: 'Seconds since this process started, so a cold start is visible' })",
+      "  @Field(() => String, { description: 'Added by the verifier' })\n  addedByTheVerifier!: string\n\n  @Field(() => Number, { description: 'Seconds since this process started, so a cold start is visible' })",
     )
     if (changed === model) return 'the model could not be edited, so this check proves nothing'
     writeFileSync(MODEL, changed)
+
+    // The resolver returns an object literal typed `Health`, so a required
+    // field that nothing supplies would fail to compile for a reason that has
+    // nothing to do with this check.
+    const changedResolver = resolver.replace("      status: 'ok',", "      status: 'ok',\n      addedByTheVerifier: 'planted',")
+    if (changedResolver === resolver) return 'the resolver could not be edited, so this check proves nothing'
+    writeFileSync(RESOLVER, changedResolver)
 
     const compile = run('npx tsc -p tsconfig.build.json', API)
     if (compile.status !== 0) return `the API stopped compiling, so the mutation is wrong:\n${compile.stdout ?? ''}`
@@ -153,12 +171,18 @@ check('ADDING A FIELD TO Health DOES NOT CHANGE THE QUERY TYPE, proved by adding
       const probe = run('npm run lint:tsc --workspace @karnama/graphql')
       if (probe.status === 0) return 'a field the query never selected can be read through the response type'
       const output = `${probe.stdout ?? ''}${probe.stderr ?? ''}`
+      // TS2339 is "property does not exist on type". Requiring the code as well
+      // as the name is what separates "the compiler refused this access" from
+      // "the compiler refused something and the name appeared in the message".
+      if (!/TS2339/.test(output)) return `it refused, but not by rejecting a property access:\n${output.slice(-400)}`
+      if (!/kn-128-probe/.test(output)) return `something else failed to compile, not the probe:\n${output.slice(-400)}`
       return /addedByTheVerifier/.test(output) ? null : `it refused, but not over the unselected field:\n${output.slice(-400)}`
     } finally {
       rmSync(PROBE, { force: true })
     }
   } finally {
     writeFileSync(MODEL, model)
+    writeFileSync(RESOLVER, resolver)
     writeFileSync(API_SCHEMA, schema)
     writeFileSync(GENERATED, generated)
     run('npx tsc -p tsconfig.build.json', API)

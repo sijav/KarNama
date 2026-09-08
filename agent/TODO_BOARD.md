@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 14 of 130 tasks done · 51 of 448 points.
+Project **KarNama** · 14 of 135 tasks done · 51 of 455 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,10 +16,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-128` | Generate typed GraphQL operations instead of asserting them by hand | critical | 3 | graphql | KN-035 | A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case. |
 
-## Backlog (114)
+## Backlog (119)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-131` | Make the root build typecheck what it ships | critical | 2 | infra | none | Removing a selected field from the health operation and regenerating makes npm run build fail, proved by planting exactly that, and the failure names the consumer file rather than something incidental. Every workspace build either typechecks its own sources or the verifier records why it cannot. |
 | `KN-123` | The migration runner has no transaction, no lock, no failure state and no checksum | critical | 5 | api | KN-034 | A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite. |
 | `KN-070` | Decide where رد شده belongs on the board | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision with who made it, section 6 no longer lists it as open, and the column order in section 3 matches. |
 | `KN-071` | Decide whether a contact needs an email or a phone | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-031 and KN-039 state the resulting rule. |
@@ -27,6 +28,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-100` | Make the gate-fixtures flag hermetic | high | 1 | agent | KN-088 | KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture, the ordinary run inside agent/scripts/verify/KN-003.mjs passes with the variable set to any value in the parent environment, and both are proved by planted environments. |
 | `KN-112` | Two preference setters called in one batch lose the first update | high | 1 | web | KN-006 | A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation. |
 | `KN-114` | The catalog test counts an empty string as a translation | high | 1 | web | KN-006 | Setting any Persian message to an empty or whitespace-only string fails npm test, and the failure names the id. |
+| `KN-132` | Pin the byte-compared generated files to LF, or stop comparing bytes | high | 1 | infra | none | A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
@@ -50,6 +52,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
 | `KN-108` | Dark destructive controls fail contrast, because on-accent is one token for two fills | high | 2 | web | KN-005 | Every derived contrastText clears 4.5 to one against every fill the theme pairs it with, a test enumerates those pairs from the theme rather than from a hand-written list, and it fails when a fill changes without its text following. |
 | `KN-111` | Forbid the message-id forms the catalog scan cannot see | high | 2 | web | KN-006 | A Trans with a braced or template-literal id fails npm run lint, a committed fixture holds each form, and the catalog test still finds every id the codebase uses. |
+| `KN-134` | ThemedTree sets i18n state while rendering | high | 2 | web | none | The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -134,6 +137,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-102` | The gate-fixtures README describes a file and a mechanism that no longer exist | low | 1 | docs | KN-088 | Every file and mechanism the README names exists, no file in the directory is unmentioned, and a check in agent/scripts/verify/KN-003.mjs fails when a fixture is added or renamed without the README following. |
 | `KN-106` | Localise the Storybook toolbar labels, or decide in writing that they stay English | low | 1 | web | KN-005 | Either the toolbar labels render from the catalog and a story proves it, or AGENTS.md states that Storybook chrome stays English with the reason and a check keeps product strings out of that directory. |
 | `KN-122` | Prettier is named in the API scaffold and is in neither the scripts nor the gate | low | 1 | infra | KN-033 | npm run format:check fails on a deliberately misformatted file in each workspace, and both KN-003 and KN-033 verifiers run it. |
+| `KN-133` | check-generated.mjs leaks a temp directory on every failure | low | 1 | graphql | none | Running the check against a deliberately invalid document leaves no karnama-codegen-* directory behind, proved by counting them before and after, and the same holds for the stale-file path. |
+| `KN-135` | The graphql package's coverage thresholds pass on zero files | low | 1 | graphql | none | Either adding an uncovered file with real behaviour to packages/graphql makes npm test fail, proved by planting one, or the thresholds are gone and a comment says why coverage does not apply here. |
 
 ## Done (14)
 
@@ -1598,6 +1603,8 @@ HEAD_QUERY is a gql template with a hand-written TypedDocumentNode annotation, a
 
 **Exit condition.** A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case.
 
+**Roasts.** round 1 scored 7 with 2 critical(s)
+
 ### `KN-129` The duplicate-type scan only sees exported top-level declarations
 
 - **status** backlog · **severity** medium · **points** 3 · **area** graphql
@@ -1619,4 +1626,59 @@ apps/web/src/core/api/health.ts returns { kind: down, reason: the API answered w
 **Why.** A roast rated this major and the sharpest part is that the comment beside it claims the opposite. A file that states a rule and breaks it in the next function is worse than one that does neither, because the next reader believes the comment.
 
 **Exit condition.** No English sentence originates in apps/web/src/core, the empty-response case carries a code the component renders through the catalog, a network message still passes through untranslated, and the catalog test covers the new id.
+
+### `KN-131` Make the root build typecheck what it ships
+
+- **status** backlog · **severity** critical · **points** 2 · **area** infra
+- **blocked by** none
+
+apps/web/package.json build is "vite build" and nothing else. Vite transpiles per file and never typechecks, so the only typecheck of the web app is the separate "lint:tsc" script. npm run build therefore compiles and emits a bundle whose types were never verified. Concrete sequence found by a roast on KN-128: remove a selected field from packages/graphql/src/operations/health.graphql, regenerate, and run npm run build. Both generation checks agree because both sides regenerated, but nothing typechecks apps/web/src/core/api/health.ts, which still reads input.data.health.environment. The build passes and toHealthState returns { kind: 'up', environment: undefined }, which reaches the screen. Add typechecking to the web build, and check whether the API and graphql workspace builds have the same hole.
+
+**Why.** npm run build is the command a deploy runs, and KN-051 will wire it to GitHub Pages. A build that does not typecheck what it emits is a deploy that ships a type error as a blank field. This is the same class as KN-120, where the build regenerated the artefact before comparing and therefore always passed: a gate that cannot fail is not a gate.
+
+**Exit condition.** Removing a selected field from the health operation and regenerating makes npm run build fail, proved by planting exactly that, and the failure names the consumer file rather than something incidental. Every workspace build either typechecks its own sources or the verifier records why it cannot.
+
+### `KN-132` Pin the byte-compared generated files to LF, or stop comparing bytes
+
+- **status** backlog · **severity** high · **points** 1 · **area** infra
+- **blocked by** none
+
+.gitattributes pins apps/api/schema.gql to LF and the Figma captures to -text, both because they are compared byte for byte. Two files added since are compared the same way and are NOT pinned: packages/graphql/src/generated.ts, which packages/graphql/scripts/check-generated.mjs compares literally against a fresh generation, and packages/graphql/src/operations/health.graphql, which agent/scripts/verify/KN-128.mjs edits by matching the literal string "    environment\n". This machine has core.autocrlf=input so nothing converts on checkout and both work. On a machine with core.autocrlf=true the generated comparison reports the file stale when no schema changed, and the verifier's replacement stops matching. The verifier fails loudly there rather than silently passing, because it guards with "the operation could not be edited, so this check proves nothing", but a false failure on a clean clone is still a broken repository for whoever hits it. Either pin both files, or make the comparison normalise line endings and say so.
+
+**Why.** The repository already learned this lesson twice and wrote the reason into .gitattributes both times. Every new byte-compared artefact has to be added there or the guarantee silently applies to a shrinking fraction of them. A contributor on default Windows git settings would see a stale-file failure on a fresh clone with no local change, which reads as the check being broken and trains people to bypass it.
+
+**Exit condition.** A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand.
+
+### `KN-133` check-generated.mjs leaks a temp directory on every failure
+
+- **status** backlog · **severity** low · **points** 1 · **area** graphql
+- **blocked by** none
+
+packages/graphql/scripts/check-generated.mjs defines fail() at line 24 as a function that calls process.exit(1), and calls it from lines 68 and 73, both inside the try whose finally at line 76 removes the mkdtemp scratch directory. process.exit does not run finally blocks, so every failed check leaves a karnama-codegen-* directory in the OS temp folder. Both failure paths are the interesting ones: line 68 is codegen refusing an invalid document, which is exactly what agent/scripts/verify/KN-128.mjs triggers deliberately on every run, and line 73 is the stale-file path. Replace the exits inside the try with a thrown error handled after cleanup.
+
+**Why.** Found by a roast, and the reason it matters is not the disk space: it is that the cleanup reads as correct and is not, so the next script written from this one as a template inherits the same bug. The verifier that plants a bad field runs this path on purpose, so the leak happens most often precisely when the checks are working.
+
+**Exit condition.** Running the check against a deliberately invalid document leaves no karnama-codegen-* directory behind, proved by counting them before and after, and the same holds for the stale-file path.
+
+### `KN-134` ThemedTree sets i18n state while rendering
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+The web test suite prints, on every run: "Cannot update a component (I18nProvider) while rendering a different component (ThemedTree). To locate the bad setState() call inside ThemedTree...". apps/web/src/app/AppProviders.tsx activates the locale on i18n during ThemedTree's render rather than in an effect or before mount, so a render of one component schedules a state update in another. React names this specifically because the update is not part of the render it interrupts: under concurrent rendering the two can disagree about which locale is active, which shows up as a flash of the wrong language or a catalog read before activation. Nothing currently fails because of it, which is why it has survived. It is 222 passing tests loud.
+
+**Why.** This is the language switch, which the owner asked for by name, and it is in the provider every screen mounts under, so whatever it does wrong it does everywhere. A warning that prints on every test run also costs more than the bug: it trains everyone reading the output to skip a block of red, and the next real warning prints into that trained blindness.
+
+**Exit condition.** The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload.
+
+### `KN-135` The graphql package's coverage thresholds pass on zero files
+
+- **status** backlog · **severity** low · **points** 1 · **area** graphql
+- **blocked by** none
+
+packages/graphql/vitest.config.ts sets thresholds of 100 for statements, branches, functions and lines, and then excludes src/generated.ts, src/index.ts and the tests. Those are the only files in src, so coverage reports "Statements: Unknown% ( 0/0 )" and the thresholds pass having measured nothing. Each exclusion is individually right: generated.ts is types with no runtime and index.ts is a re-export, and reporting 0 percent for either teaches people to ignore the number. The net effect is still a gate that cannot fail. Decide what this package's coverage means: either the thresholds apply to the first file with real behaviour, verified by planting an uncovered one, or the config says plainly that there is nothing to cover and drops the thresholds so nobody reads a guarantee that is not there.
+
+**Why.** This repository's stated position is that a test asserting nothing is worse than no test because it reports green, and a threshold measuring nothing is the same thing one level up. It matters now rather than later because the package is about to grow: KN-129 and KN-130 add operations, and whoever adds the first piece of logic here will read three green 100s that were green before their file existed.
+
+**Exit condition.** Either adding an uncovered file with real behaviour to packages/graphql makes npm test fail, proved by planting one, or the thresholds are gone and a comment says why coverage does not apply here.
 
