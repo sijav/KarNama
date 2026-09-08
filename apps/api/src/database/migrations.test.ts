@@ -233,3 +233,153 @@ describe('the seed', () => {
     await db.close()
   })
 })
+
+/**
+ * The four ways the first runner could cost a database.
+ *
+ * Each is planted against PGlite rather than argued about, because every one of
+ * them is a claim about what Postgres does when something goes wrong, and the
+ * only trustworthy answer is the engine's. Postgres DDL being transactional is
+ * the fact the whole design rests on, and it is checked here rather than
+ * assumed from the documentation.
+ */
+describe('the migration runner under failure', () => {
+  const ledger = async (db: PGlite) =>
+    (
+      await db.query<{ name: string; checksum: string | null; failed: boolean; applied: boolean }>(
+        `SELECT "name", "checksum", ("failed_at" IS NOT NULL) AS "failed", ("applied_at" IS NOT NULL) AS "applied"
+         FROM "_karnama_migrations" ORDER BY "name";`,
+      )
+    ).rows
+
+  const good = { name: '20260101000000_good', sql: 'CREATE TABLE kn123_good (id int);' }
+  // Fails on the SECOND statement, so the first has already taken effect when
+  // the failure arrives. A migration that fails on its first statement would
+  // prove nothing about rolling anything back.
+  const halfway = {
+    name: '20260102000000_halfway',
+    sql: 'CREATE TABLE kn123_partial (id int);\nCREATE TABLE kn123_partial (id int);',
+  }
+
+  it('leaves the database UNCHANGED when a migration throws halfway', async () => {
+    const db = await fresh()
+    await applyMigrations(db, [good])
+
+    await expect(applyMigrations(db, [good, halfway])).rejects.toThrow(/failed and was rolled back/)
+
+    // The first statement of the failed migration created a table. If DDL were
+    // not transactional, or the wrapper were missing, it would be here and the
+    // next deploy would die on it forever.
+    expect(await tableNames(db)).not.toContain('kn123_partial')
+    expect(await tableNames(db)).toContain('kn123_good')
+    await db.close()
+  })
+
+  it('records the failure rather than nothing, so the ledger can say what broke', async () => {
+    const db = await fresh()
+    await expect(applyMigrations(db, [halfway])).rejects.toThrow(/failed and was rolled back/)
+
+    const rows = await ledger(db)
+    const row = rows.find((entry) => entry.name === halfway.name)
+    expect(row).toBeDefined()
+    expect(row?.failed).toBe(true)
+    expect(row?.applied).toBe(false)
+
+    const stored = await db.query<{ error: string }>(
+      `SELECT "error" FROM "_karnama_migrations" WHERE "name" = '${halfway.name}';`,
+    )
+    expect(stored.rows[0]?.error).toMatch(/already exists/)
+    await db.close()
+  })
+
+  it('retries a failed migration on the next deploy, because nothing was applied', async () => {
+    const db = await fresh()
+    await expect(applyMigrations(db, [halfway])).rejects.toThrow(/failed and was rolled back/)
+
+    // Fixed, and deployed again. A ledger that recorded the failure as "applied"
+    // would skip it forever; one that recorded nothing would be indistinguishable
+    // from never having tried.
+    const fixed = { name: halfway.name, sql: 'CREATE TABLE kn123_partial (id int);' }
+    expect(await applyMigrations(db, [fixed])).toEqual([fixed.name])
+    expect(await tableNames(db)).toContain('kn123_partial')
+
+    const row = (await ledger(db)).find((entry) => entry.name === fixed.name)
+    expect(row?.failed).toBe(false)
+    expect(row?.applied).toBe(true)
+    await db.close()
+  })
+
+  it('REFUSES an applied migration whose SQL has changed since', async () => {
+    const db = await fresh()
+    await applyMigrations(db, [good])
+
+    const edited = { name: good.name, sql: `${good.sql}\nALTER TABLE kn123_good ADD COLUMN extra int;` }
+    await expect(applyMigrations(db, [edited])).rejects.toThrow(/has changed since it was applied/)
+
+    // And it did not half-apply the edit while refusing it.
+    const columns = await db.query<{ column_name: string }>(
+      `SELECT column_name FROM information_schema.columns WHERE table_name = 'kn123_good';`,
+    )
+    expect(columns.rows.map((row) => row.column_name)).not.toContain('extra')
+    await db.close()
+  })
+
+  it('adopts a row written before the checksum column existed, rather than refusing every old database', async () => {
+    const db = await fresh()
+    await applyMigrations(db, [good])
+    await db.exec(`UPDATE "_karnama_migrations" SET "checksum" = NULL WHERE "name" = '${good.name}';`)
+
+    expect(await applyMigrations(db, [good])).toEqual([])
+    const row = (await ledger(db)).find((entry) => entry.name === good.name)
+    expect(row?.checksum).not.toBeNull()
+    await db.close()
+  })
+
+  it('releases the lock when a migration fails, or the next deploy could never start', async () => {
+    const db = await fresh()
+    await expect(applyMigrations(db, [halfway])).rejects.toThrow(/failed and was rolled back/)
+
+    // A finally that did not run would leave this session holding the lock. The
+    // same session can retake it either way, so ask Postgres directly whether
+    // anything still holds it.
+    const held = await db.query<{ count: string }>(
+      `SELECT count(*)::text AS count FROM pg_locks WHERE locktype = 'advisory';`,
+    )
+    expect(held.rows[0]?.count).toBe('0')
+    await db.close()
+  })
+})
+
+describe('what the transaction wrapper actually buys', () => {
+  it('writes the migration and its ledger row in ONE statement batch', async () => {
+    // This is the guarantee, and it is not the one it looks like. Postgres wraps
+    // a multi-statement simple query in an IMPLICIT transaction, so removing the
+    // explicit BEGIN changes nothing that a test can see: the verifier planted
+    // exactly that and the suite stayed green, which is how this test came to
+    // exist.
+    //
+    // The defect in the first runner was never partial DDL inside one migration.
+    // It was TWO SEPARATE exec calls: the migration committed in its own
+    // transaction, and if the ledger INSERT then failed, or the process died
+    // between them, the schema had moved with nothing recording it and the next
+    // deploy replayed it and died on a CREATE TYPE that already existed.
+    //
+    // So what has to be true is that the DDL and its ledger row reach the
+    // database together. That is observable, and splitting them apart breaks it.
+    const db = await fresh()
+    const batches: string[] = []
+    const recording = {
+      exec: async (sql: string) => {
+        batches.push(sql)
+        return db.exec(sql)
+      },
+    }
+
+    await applyMigrations(recording, [{ name: '20260101000000_together', sql: 'CREATE TABLE kn123_together (id int);' }])
+
+    const withDdl = batches.filter((sql) => sql.includes('CREATE TABLE kn123_together'))
+    expect(withDdl).toHaveLength(1)
+    expect(withDdl[0]).toMatch(/INSERT INTO "_karnama_migrations"/)
+    await db.close()
+  })
+})

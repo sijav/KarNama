@@ -57,8 +57,14 @@ describe('reading the migrations', () => {
 describe('applying them through an unfamiliar client', () => {
   const migration = { name: '20260101000000_first', sql: 'SELECT 1;' }
 
+  // The lock has to be granted or nothing downstream runs, so the fake answers
+  // it and then hands the answer under test to the ledger read.
   const runnerAnswering = (answer: unknown): SqlRunner => ({
-    exec: (sql: string) => Promise.resolve(sql.startsWith('SELECT 1 FROM') ? answer : [{ rows: [] }]),
+    exec: (sql: string) => {
+      if (sql.startsWith('SELECT pg_try_advisory_lock')) return Promise.resolve([{ rows: [{ got: true }] }])
+      if (sql.startsWith('SELECT "checksum"')) return Promise.resolve(answer)
+      return Promise.resolve([{ rows: [] }])
+    },
   })
 
   it('refuses an answer that is not an array of results', async () => {
@@ -83,10 +89,45 @@ describe('applying them through an unfamiliar client', () => {
     const runner: SqlRunner = {
       exec: (sql: string) => {
         statements.push(sql)
+        if (sql.startsWith('SELECT pg_try_advisory_lock')) return Promise.resolve([{ rows: [{ got: true }] }])
         return Promise.resolve([{ rows: [] }])
       },
     }
     await applyMigrations(runner, [{ name: "20260101000000_o'brien", sql: 'SELECT 1;' }])
     expect(statements.some((sql) => sql.includes("'20260101000000_o''brien'"))).toBe(true)
+  })
+
+  it('refuses to start when the lock is held, without running a single migration', async () => {
+    // The concurrency clause. Two PGlite instances cannot share a dataDir, so
+    // the second runner is represented by a lock that is already taken, which
+    // is the only thing the losing runner would actually observe.
+    const statements: string[] = []
+    const runner: SqlRunner = {
+      exec: (sql: string) => {
+        statements.push(sql)
+        if (sql.startsWith('SELECT pg_try_advisory_lock')) return Promise.resolve([{ rows: [{ got: false }] }])
+        return Promise.resolve([{ rows: [] }])
+      },
+    }
+    await expect(
+      applyMigrations(runner, [{ name: '20260101000000_first', sql: 'CREATE TABLE never_created (id int);' }], {
+        lockAttempts: 2,
+        lockRetryMs: 0,
+      }),
+    ).rejects.toThrow(/another deploy is already migrating/)
+
+    // Waited rather than raced: it asked twice and never ran the migration.
+    expect(statements.filter((sql) => sql.startsWith('SELECT pg_try_advisory_lock'))).toHaveLength(2)
+    expect(statements.some((sql) => sql.includes('never_created'))).toBe(false)
+  })
+
+  it('refuses a migration that manages its own transaction', async () => {
+    // The runner wraps every migration in one, so a migration containing its
+    // own COMMIT would close that wrapper early and the ledger row would land
+    // outside it, which is the exact defect all of this exists to remove.
+    const runner: SqlRunner = { exec: () => Promise.resolve([{ rows: [] }]) }
+    await expect(
+      applyMigrations(runner, [{ name: '20260101000000_first', sql: 'BEGIN;\nSELECT 1;\nCOMMIT;' }]),
+    ).rejects.toThrow(/manages its own transaction/)
   })
 })

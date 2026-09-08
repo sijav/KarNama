@@ -2846,7 +2846,7 @@
       "parent": [
         "KN-034"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite.",
       "roasts": [],
       "notes": [
@@ -2854,7 +2854,8 @@
         "Second probe, the transaction mechanics themselves. exec() of a single BEGIN + migration + ledger-INSERT + COMMIT string DOES throw the real error ('relation kn123_ok already exists'), so the runner can detect the failure rather than having to inspect state afterwards. The partial DDL was rolled back CLEANLY, nothing left behind, which is the atomicity clause proved on the engine before writing a line of it. An explicit ROLLBACK restores the session; without one the next statement dies with 'current transaction is aborted'. So the order in the catch is forced and is not a style choice: ROLLBACK first, then write the failure row, then rethrow. Also settled: pg_advisory_lock BLOCKS, and a deploy that hangs forever is worse than one that fails, so use pg_try_advisory_lock with a bounded retry and an error that says another deploy is migrating. And the ledger's own ALTER TABLE ADD COLUMN IF NOT EXISTS runs outside the lock on first deploy, which is idempotent so two racing runners both succeed; that deserves a comment rather than a fix."
       ],
       "createdAt": "2026-09-08T01:44:17.656Z",
-      "updatedAt": "2026-09-08T05:20:58.585Z"
+      "updatedAt": "2026-09-08T05:49:30.474Z",
+      "verify": "node agent/scripts/verify/KN-123.mjs"
     },
     {
       "id": "KN-124",
