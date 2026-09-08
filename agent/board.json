@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 142,
+  "nextId": 143,
   "tasks": [
     {
       "id": "KN-001",
@@ -3091,6 +3091,20 @@
           "reviewerScore": 8,
           "reviewerCriticals": 0,
           "at": "2026-09-08T05:32:47.270Z"
+        },
+        {
+          "round": 2,
+          "score": 8,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-131-round-2.2026-09-08T05-32-47-888Z.md",
+          "filed": [
+            "KN-142"
+          ],
+          "cardDigest": "bd6d4ee2db235a4a9835396d0eefbf32193ec00b74d63693f06b0412f634901b",
+          "head": "8948d0fddc9c0d033cf6a5a5f6e3dc24ed1d67f9",
+          "reviewerScore": 8,
+          "reviewerCriticals": 0,
+          "at": "2026-09-08T05:36:40.771Z"
         }
       ],
       "notes": [],
@@ -3247,6 +3261,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T05:27:03.975Z"
+    },
+    {
+      "id": "KN-142",
+      "title": "Nothing checks that a tsconfig still covers what the bundler ships",
+      "desc": "KN-131 made every workspace build run the compiler, but nothing ties the compiler's PROGRAM to the module graph the bundler actually emits. A roast defeated it concretely: replace apps/web/tsconfig.json include with [\"src/core/api/health.ts\"] and every assertion still passes, because both web checks target that one consumer. src/main.tsx and the entire component tree leave the program. The reviewer confirmed against the installed compiler that a genuine error in the entrypoint, document.getElementById('root').toFixed(2), produces diagnostics under the real tsconfig and ZERO under the narrowed one, while Vite still enters through index.html, transpiles main.tsx and ships it. The same hole exists wherever an include or exclude list and a bundler entry can drift apart, so the check belongs at the level of the module graph: derive the files the build emits and require the compiler program to contain them, rather than trusting that a rejection in one fixed file proves coverage of the rest.",
+      "why": "This is the third variation of one idea and the first two were real: a build that names the compiler but passes --noCheck, and now a build that runs the compiler over a program missing the file it ships. Both leave the deploy shipping unchecked code while every gate reports green, which is the exact class KN-131 was opened to close. Filing rather than fixing because the exit condition as written asks that each build typecheck its own sources, which it does today; this asks for something stronger and deserves to be stated as its own thing.",
+      "severity": "medium",
+      "points": 3,
+      "area": "infra",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Narrowing any workspace's tsconfig include so a file the bundler ships leaves the compiler program makes the gate fail, proved by planting exactly the health-only include a roast used, and the check derives the shipped files rather than listing them by hand.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T05:36:32.282Z"
     }
   ]
 }

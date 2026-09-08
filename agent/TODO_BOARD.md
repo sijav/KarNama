@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 15 of 141 tasks done · 54 of 464 points.
+Project **KarNama** · 15 of 142 tasks done · 54 of 467 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-131` | Make the root build typecheck what it ships | critical | 2 | infra | none | Removing a selected field from the health operation and regenerating makes npm run build fail, proved by planting exactly that, and the failure names the consumer file rather than something incidental. Every workspace build either typechecks its own sources or the verifier records why it cannot. |
 
-## Backlog (124)
+## Backlog (125)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -132,6 +132,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-109` | Move apps/web/src to the folder structure AGENTS.md prescribes | medium | 3 | web | KN-003 | Every file under apps/web/src sits in core, pages, shared or locales, or is App.tsx or main.tsx, a check fails when a folder outside that set appears, and the whole gate still passes. |
 | `KN-110` | Wire the lingui macro plugin so catalogs are extracted rather than hand written | medium | 3 | web | KN-006 | Components use the Trans and t macros with no explicit id, lingui extract produces the catalogs, the hand-written ones are gone, npm test and npm run build both pass, and TECH-DEBT entry 8 is removed. |
 | `KN-129` | The duplicate-type scan only sees exported top-level declarations | medium | 3 | graphql | KN-035 | A local, unexported interface structurally identical to a generated type is detected in the web app, a differently named one is too, and an unrelated interface with some overlapping fields is not. |
+| `KN-142` | Nothing checks that a tsconfig still covers what the bundler ships | medium | 3 | infra | none | Narrowing any workspace's tsconfig include so a file the bundler ships leaves the compiler program makes the gate fail, proved by planting exactly the health-only include a roast used, and the check derives the shipped files rather than listing them by hand. |
 | `KN-040` | Third-party feedback, stored for later evaluation | medium | 5 | api | KN-034 | A submission is stored with its target and a pending state, it never mutates the target, a submission whose target was deleted between submit and review is handled rather than orphaned, and rate limiting stops a flood from one source. |
 | `KN-041` | Admin API: the moderation queue | medium | 5 | api | KN-040, KN-036 | A non-admin is refused every operation at the resolver, approving and rejecting both record who did it and when, and the queue paginates rather than loading everything. |
 | `KN-064` | Third-party feedback submission surface | medium | 5 | web | KN-042, KN-040 | An anonymous visitor can submit a comment and a suggested change against a record, both arrive in the moderation queue in a pending state, the target record is not altered, the submitter is told it is pending review, and a flood from one source is rate limited. |
@@ -1644,7 +1645,7 @@ apps/web/package.json build is "vite build" and nothing else. Vite transpiles pe
 
 **Exit condition.** Removing a selected field from the health operation and regenerating makes npm run build fail, proved by planting exactly that, and the failure names the consumer file rather than something incidental. Every workspace build either typechecks its own sources or the verifier records why it cannot.
 
-**Roasts.** round 1 scored 8 with 0 critical(s)
+**Roasts.** round 1 scored 8 with 0 critical(s); round 2 scored 8 with 0 critical(s)
 
 ### `KN-132` Pin the byte-compared generated files to LF, or stop comparing bytes
 
@@ -1755,4 +1756,15 @@ agent/scripts/verify/KN-131.mjs requires the planted symbol kn131TypeError to ap
 **Why.** A verifier that fails on a correct refusal trains whoever hits it to distrust the verifier rather than the code, and NO_COLOR is set by default in plenty of CI images. The fix also makes the assertion stronger rather than weaker, since a diagnostic code is more specific than a name appearing somewhere in the output.
 
 **Exit condition.** The verifier passes with NO_COLOR=1 set, proved by running it that way, and the assertion names the planted file and the TypeScript error code rather than the source excerpt.
+
+### `KN-142` Nothing checks that a tsconfig still covers what the bundler ships
+
+- **status** backlog · **severity** medium · **points** 3 · **area** infra
+- **blocked by** none
+
+KN-131 made every workspace build run the compiler, but nothing ties the compiler's PROGRAM to the module graph the bundler actually emits. A roast defeated it concretely: replace apps/web/tsconfig.json include with ["src/core/api/health.ts"] and every assertion still passes, because both web checks target that one consumer. src/main.tsx and the entire component tree leave the program. The reviewer confirmed against the installed compiler that a genuine error in the entrypoint, document.getElementById('root').toFixed(2), produces diagnostics under the real tsconfig and ZERO under the narrowed one, while Vite still enters through index.html, transpiles main.tsx and ships it. The same hole exists wherever an include or exclude list and a bundler entry can drift apart, so the check belongs at the level of the module graph: derive the files the build emits and require the compiler program to contain them, rather than trusting that a rejection in one fixed file proves coverage of the rest.
+
+**Why.** This is the third variation of one idea and the first two were real: a build that names the compiler but passes --noCheck, and now a build that runs the compiler over a program missing the file it ships. Both leave the deploy shipping unchecked code while every gate reports green, which is the exact class KN-131 was opened to close. Filing rather than fixing because the exit condition as written asks that each build typecheck its own sources, which it does today; this asks for something stronger and deserves to be stated as its own thing.
+
+**Exit condition.** Narrowing any workspace's tsconfig include so a file the bundler ships leaves the compiler program makes the gate fail, proved by planting exactly the health-only include a roast used, and the check derives the shipped files rather than listing them by hand.
 
