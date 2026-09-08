@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 14 of 138 tasks done · 51 of 461 points.
+Project **KarNama** · 14 of 139 tasks done · 51 of 462 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-128` | Generate typed GraphQL operations instead of asserting them by hand | critical | 3 | graphql | KN-035 | A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case. |
 
-## Backlog (122)
+## Backlog (123)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -111,6 +111,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-081` | Replace the truncation-cap frequency guess with a stated cap | medium | 1 | agent | KN-002 | The truncation figure in DESIGN.md is derived from a cap the manifest records with its provenance, or from per-name evidence of cutting, and a fixture capture with eleven repeated 36-character labels and no truncation does not report any name as truncated. |
 | `KN-116` | Move the language switch out of the placeholder shell into the drawn chrome | medium | 1 | web | KN-006 | The switch renders at the bottom of the sidebar on desktop and as a Page Header trailing action on mobile, App.tsx contains no language control, and an e2e test finds it in both places at the two drawn viewports. |
 | `KN-126` | Assert there is exactly one graphql in the dependency tree | medium | 1 | api | KN-120 | agent/scripts/verify/KN-033.mjs fails when more than one graphql version resolves, proved by a planted duplicate, and TECH-DEBT entry 10 names it as the check that retires the split. |
+| `KN-139` | The board demands a verify command at the moment attaching one costs a roast round | medium | 1 | agent | none | Moving a task to review without a verify command is refused or warned about with the same message move done gives, proved by trying it, and the message says attaching it afterwards will invalidate the roast. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -1717,4 +1718,15 @@ agent/scripts/verify/KN-128.mjs splits tsc output into errors on its probe and e
 **Why.** The probe-versus-elsewhere split is what lets that check say 'this run proves nothing' instead of reporting a collateral break as the wrong finding, which it did once already. A split that can misattribute is a split that can conclude from the wrong file, and the failure would look like a pass.
 
 **Exit condition.** A file elsewhere in the web app whose path ends with the probe's name is not counted as the probe, proved by creating one, running the verifier and removing it, rather than by editing the matcher and reasoning about it.
+
+### `KN-139` The board demands a verify command at the moment attaching one costs a roast round
+
+- **status** backlog · **severity** medium · **points** 1 · **area** agent
+- **blocked by** none
+
+Closing KN-128 went: move to review, move to done, refused for having no verify command, set --verify, move to done again, refused because setting it changed the card digest and invalidated the roast that had cleared it. Both refusals are correct on their own. cardDigest deliberately includes verify, and agent/scripts/lib/card.mjs explains why: without it a task could be closed against a substituted check nobody reviewed. The trap is the ORDER. Nothing tells you to attach the command until the only remaining step is the one that rejects you for attaching it, and the price is a whole extra roast round on a card that was finished. Say it earlier: move to review should refuse, or at least warn loudly, when the task has no verify command, since that is the point where the reviewer is about to be handed the card.
+
+**Why.** This cost a round on KN-128 after the loop had already been told not to spend rounds, and it will cost one on every task whose verifier is written during the work rather than before it, which is all of them. The rule being right is exactly why it should fire at the first moment it can rather than the last.
+
+**Exit condition.** Moving a task to review without a verify command is refused or warned about with the same message move done gives, proved by trying it, and the message says attaching it afterwards will invalidate the roast.
 

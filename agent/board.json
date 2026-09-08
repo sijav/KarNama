@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 139,
+  "nextId": 140,
   "tasks": [
     {
       "id": "KN-001",
@@ -3166,6 +3166,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T05:07:21.743Z"
+    },
+    {
+      "id": "KN-139",
+      "title": "The board demands a verify command at the moment attaching one costs a roast round",
+      "desc": "Closing KN-128 went: move to review, move to done, refused for having no verify command, set --verify, move to done again, refused because setting it changed the card digest and invalidated the roast that had cleared it. Both refusals are correct on their own. cardDigest deliberately includes verify, and agent/scripts/lib/card.mjs explains why: without it a task could be closed against a substituted check nobody reviewed. The trap is the ORDER. Nothing tells you to attach the command until the only remaining step is the one that rejects you for attaching it, and the price is a whole extra roast round on a card that was finished. Say it earlier: move to review should refuse, or at least warn loudly, when the task has no verify command, since that is the point where the reviewer is about to be handed the card.",
+      "why": "This cost a round on KN-128 after the loop had already been told not to spend rounds, and it will cost one on every task whose verifier is written during the work rather than before it, which is all of them. The rule being right is exactly why it should fire at the first moment it can rather than the last.",
+      "severity": "medium",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Moving a task to review without a verify command is refused or warned about with the same message move done gives, proved by trying it, and the message says attaching it afterwards will invalidate the roast.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T05:08:49.180Z"
     }
   ]
 }
