@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 143,
+  "nextId": 145,
   "tasks": [
     {
       "id": "KN-001",
@@ -3292,6 +3292,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T05:36:32.282Z"
+    },
+    {
+      "id": "KN-143",
+      "title": "The mutation harnesses match test names in output, not test outcomes",
+      "desc": "agent/scripts/verify/KN-123.mjs, and the same pattern in KN-128 and KN-131, decide a planted regression was caught by checking that the suite exited non-zero AND that the expected test name appears somewhere in the output. Vitest prints the names of tests that PASSED as well as ones that failed, so a run where the named test passed and something unrelated failed is counted as a catch. A roast pointed this out and gave a concrete instance: KN-123's mutation 6 makes its designated test fail through lock acquisition or timeout rather than through the transaction guard it is supposed to exercise, so the harness records the right name for the wrong reason. Consume a machine-readable result instead. Vitest writes JSON with --reporter=json, which carries each test's own status, so the harness can require that THIS test failed rather than that this string was printed.",
+      "why": "The whole argument for these harnesses is that a check nobody has seen fail is not a check, and a harness that mistakes a passing test for a failing one is the same defect one level up: it reports the guarantee is covered when it is not. It is worth fixing once, centrally, because three verifiers already share the pattern and every future one will copy it.",
+      "severity": "medium",
+      "points": 3,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A planted regression whose designated test still PASSES while some other test fails is reported as a MISS, proved by planting exactly that, and every verifier that plants regressions reads a machine-readable result rather than console text.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T06:08:17.728Z"
+    },
+    {
+      "id": "KN-144",
+      "title": "A NULL checksum in the ledger is adopted without proving the SQL ever ran",
+      "desc": "applyMigrations adopts a ledger row whose checksum is NULL, writing the current file's checksum and moving on. Rows like that are written by the version of the runner that predated the column, so adopting them is what lets an existing database deploy at all. The limitation is that adoption cannot establish that the file's CURRENT text is what the database actually ran: if the old runner applied SQL A and the file now contains B, the ledger records B's checksum without B ever having executed, and every later deploy accepts that baseline. Anyone who can write to the ledger could also null a checksum deliberately and get the same effect, though that person can already rewrite the checksum directly, so it is a limitation of the migration policy rather than a hole in it. Decide and record: adopt but WARN loudly, or require an explicit one-off acknowledgement, and say plainly in TECH-DEBT.md what adoption does and does not prove.",
+      "why": "A roast raised it twice and both times classed it as a limitation rather than a rejection, which is exactly the kind of thing that gets forgotten because nobody rejected it. It matters at the moment it is least visible: the first deploy against a database that predates the checksum column, which is the real Supabase instance rather than a test.",
+      "severity": "low",
+      "points": 2,
+      "area": "api",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T06:08:17.861Z"
     }
   ]
 }

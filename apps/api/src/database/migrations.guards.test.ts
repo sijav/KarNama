@@ -225,3 +225,174 @@ describe('the ledger DDL and the lock', () => {
     expect(statements.findIndex((sql) => sql.includes('_karnama_migrations'))).toBeGreaterThan(0)
   })
 })
+
+describe('transaction control hidden behind quoting', () => {
+  const runnerOver = (db: { exec: (sql: string) => Promise<unknown> }): SqlRunner => ({ exec: (sql) => db.exec(sql) })
+
+  // Both payloads are a roast's, run against the real runner. Each defeated a
+  // version of the guard that stripped quoting with independent passes: the
+  // dollar-quote pass saw `$tag$ ... $tag$` spanning two ORDINARY strings and
+  // erased the command between them.
+  it('refuses an ABORT hidden between two strings that look like dollar quotes', async () => {
+    // Recorded APPLIED with no table, and every later deploy skipped it.
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [
+        { name: '20260101000000_hidden_abort', sql: "CREATE TABLE probe (id int);\nSELECT '$tag$'; ABORT; SELECT '$tag$';" },
+      ]),
+    ).rejects.toThrow(/manages its own transaction/)
+    await db.close()
+  })
+
+  it('refuses a COMMIT hidden the same way', async () => {
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [
+        {
+          name: '20260101000000_hidden_commit',
+          sql: "CREATE TABLE probe (id int);\nSELECT '$tag$'; COMMIT; SELECT '$tag$';\nCREATE TABLE probe (id int);",
+        },
+      ]),
+    ).rejects.toThrow(/manages its own transaction/)
+    await db.close()
+  })
+
+  it('ACCEPTS a quoted identifier that happens to be a transaction keyword', async () => {
+    // The other direction. "commit" as a column name is legal and must not be
+    // mistaken for the command.
+    const db = await freshDb()
+    const applied = await applyMigrations(runnerOver(db), [
+      { name: '20260101000000_quoted', sql: 'CREATE TABLE probe_quoted ("commit" int, "end" text);' },
+    ])
+    expect(applied).toEqual(['20260101000000_quoted'])
+    await db.close()
+  })
+
+  it('ACCEPTS a semicolon and a keyword inside an escaped string', async () => {
+    const db = await freshDb()
+    const applied = await applyMigrations(runnerOver(db), [
+      // String.raw, because writing this through a shell heredoc silently ate
+      // the backslash and turned the SQL into a real ABORT statement. The test
+      // then failed and the lexer was right, which cost a debugging round.
+      { name: '20260101000000_escaped', sql: String.raw`CREATE TABLE probe_escaped (note text DEFAULT E'a\'b; ABORT;');` },
+    ])
+    expect(applied).toEqual(['20260101000000_escaped'])
+    await db.close()
+  })
+
+  it('ACCEPTS a doubled quote, which keeps the string open rather than ending it', async () => {
+    // `'it''s'` is how SQL escapes a quote, and it is the case that decides
+    // whether the scanner ends a string too early. If it did, everything after
+    // the apostrophe would be read as statements and the ABORT below would be
+    // treated as real, refusing a perfectly valid migration.
+    const db = await freshDb()
+    const applied = await applyMigrations(runnerOver(db), [
+      { name: '20260101000000_doubled', sql: "CREATE TABLE probe_doubled (note text DEFAULT 'it''s; ABORT; fine');" },
+    ])
+    expect(applied).toEqual(['20260101000000_doubled'])
+
+    // And the default really is the whole string, so the scanner did not
+    // quietly swallow part of it.
+    const stored = await db.query<{ column_default: string }>(
+      `SELECT column_default FROM information_schema.columns WHERE table_name = 'probe_doubled';`,
+    )
+    expect(stored.rows[0]?.column_default).toContain("it''s; ABORT; fine")
+    await db.close()
+  })
+
+  it('ACCEPTS a doubled quote inside a quoted identifier', async () => {
+    const db = await freshDb()
+    const applied = await applyMigrations(runnerOver(db), [
+      { name: '20260101000000_doubled_ident', sql: 'CREATE TABLE probe_ident ("a""b; ABORT" int);' },
+    ])
+    expect(applied).toEqual(['20260101000000_doubled_ident'])
+    await db.close()
+  })
+
+  it('ACCEPTS a keyword inside a nested block comment', async () => {
+    const db = await freshDb()
+    const applied = await applyMigrations(runnerOver(db), [
+      { name: '20260101000000_nested', sql: '/* outer /* inner ABORT; */ still comment */\nCREATE TABLE probe_nested (id int);' },
+    ])
+    expect(applied).toEqual(['20260101000000_nested'])
+    await db.close()
+  })
+})
+
+describe('malformed SQL the scanner still has to survive', () => {
+  const runnerOver = (db: { exec: (sql: string) => Promise<unknown> }): SqlRunner => ({ exec: (sql) => db.exec(sql) })
+
+  it('handles a line comment that runs to the end of the file with no newline', async () => {
+    const db = await freshDb()
+    const applied = await applyMigrations(runnerOver(db), [
+      { name: '20260101000000_trailing', sql: 'CREATE TABLE probe_trailing (id int);\n-- ABORT; and then nothing' },
+    ])
+    expect(applied).toEqual(['20260101000000_trailing'])
+    await db.close()
+  })
+
+  it('does not hang or crash on an unterminated dollar quote', async () => {
+    // Malformed, so the database will reject it. What matters here is that the
+    // scanner reaches the end rather than looping, and that the rejection is
+    // the DATABASE's rather than a crash inside the guard.
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [{ name: '20260101000000_unterminated', sql: 'CREATE TABLE probe_open (id int); DO $$ BEGIN' }]),
+    ).rejects.toThrow(/failed and was rolled back/)
+    await db.close()
+  })
+
+  it('records a failure when the client throws something that is not an Error', async () => {
+    // Clients throw strings. The failure row and the message have to survive
+    // that, or the ledger records nothing for the one case nobody anticipated.
+    const db = await freshDb()
+    const runner: SqlRunner = {
+      exec: (sql: string) => {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- being a badly behaved driver IS the subject; see TECH-DEBT 9
+        if (sql.startsWith('BEGIN;')) return Promise.reject('a bare string, not an Error')
+        return db.exec(sql)
+      },
+    }
+    await expect(
+      applyMigrations(runner, [{ name: '20260101000000_string_throw', sql: 'CREATE TABLE probe_string (id int);' }]),
+    ).rejects.toThrow(/a bare string, not an Error/)
+
+    const stored = await db.query<{ error: string; failed: boolean }>(
+      `SELECT "error", ("failed_at" IS NOT NULL) AS "failed" FROM "_karnama_migrations" WHERE "name" = '20260101000000_string_throw';`,
+    )
+    expect(stored.rows[0]?.failed).toBe(true)
+    expect(stored.rows[0]?.error).toContain('a bare string')
+    await db.close()
+  })
+})
+
+describe('waiting for the lock rather than racing', () => {
+  it('waits, then applies, once the lock becomes free', async () => {
+    // The clause says a second run WAITS. Refusing after N attempts proves it
+    // does not race; it does not prove it ever gets in. This is the other half.
+    const db = await freshDb()
+    let denials = 2
+    const runner: SqlRunner = {
+      exec: (sql: string) => {
+        if (sql.startsWith('SELECT pg_try_advisory_lock') && denials > 0) {
+          denials -= 1
+          return Promise.resolve([{ rows: [{ got: false }] }])
+        }
+        return db.exec(sql)
+      },
+    }
+
+    const applied = await applyMigrations(runner, [{ name: '20260101000000_after_wait', sql: 'CREATE TABLE probe_waited (id int);' }], {
+      lockAttempts: 5,
+      lockRetryMs: 1,
+    })
+    expect(applied).toEqual(['20260101000000_after_wait'])
+    expect(denials).toBe(0)
+
+    const tables = await db.query<{ table_name: string }>(
+      `SELECT table_name FROM information_schema.tables WHERE table_name = 'probe_waited';`,
+    )
+    expect(tables.rows).toHaveLength(1)
+    await db.close()
+  })
+})

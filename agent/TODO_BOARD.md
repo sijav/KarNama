@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 16 of 142 tasks done · 56 of 467 points.
+Project **KarNama** · 16 of 144 tasks done · 56 of 472 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-123` | The migration runner has no transaction, no lock, no failure state and no checksum | critical | 5 | api | KN-034 | A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite. |
 
-## Backlog (124)
+## Backlog (126)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -132,6 +132,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-110` | Wire the lingui macro plugin so catalogs are extracted rather than hand written | medium | 3 | web | KN-006 | Components use the Trans and t macros with no explicit id, lingui extract produces the catalogs, the hand-written ones are gone, npm test and npm run build both pass, and TECH-DEBT entry 8 is removed. |
 | `KN-129` | The duplicate-type scan only sees exported top-level declarations | medium | 3 | graphql | KN-035 | A local, unexported interface structurally identical to a generated type is detected in the web app, a differently named one is too, and an unrelated interface with some overlapping fields is not. |
 | `KN-142` | Nothing checks that a tsconfig still covers what the bundler ships | medium | 3 | infra | none | Narrowing any workspace's tsconfig include so a file the bundler ships leaves the compiler program makes the gate fail, proved by planting exactly the health-only include a roast used, and the check derives the shipped files rather than listing them by hand. |
+| `KN-143` | The mutation harnesses match test names in output, not test outcomes | medium | 3 | agent | none | A planted regression whose designated test still PASSES while some other test fails is reported as a MISS, proved by planting exactly that, and every verifier that plants regressions reads a machine-readable result rather than console text. |
 | `KN-040` | Third-party feedback, stored for later evaluation | medium | 5 | api | KN-034 | A submission is stored with its target and a pending state, it never mutates the target, a submission whose target was deleted between submit and review is handled rather than orphaned, and rate limiting stops a flood from one source. |
 | `KN-041` | Admin API: the moderation queue | medium | 5 | api | KN-040, KN-036 | A non-admin is refused every operation at the resolver, approving and rejecting both record who did it and when, and the queue paginates rather than loading everything. |
 | `KN-064` | Third-party feedback submission surface | medium | 5 | web | KN-042, KN-040 | An anonymous visitor can submit a comment and a suggested change against a record, both arrive in the moderation queue in a pending state, the target record is not altered, the submitter is told it is pending review, and a flood from one source is rate limited. |
@@ -144,6 +145,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-135` | The graphql package's coverage thresholds pass on zero files | low | 1 | graphql | none | Either adding an uncovered file with real behaviour to packages/graphql makes npm test fail, proved by planting one, or the thresholds are gone and a comment says why coverage does not apply here. |
 | `KN-138` | KN-128's verifier attributes compiler errors by substring, not by path | low | 1 | agent | none | A file elsewhere in the web app whose path ends with the probe's name is not counted as the probe, proved by creating one, running the verifier and removing it, rather than by editing the matcher and reasoning about it. |
 | `KN-141` | NO_COLOR makes KN-131's verifier reject a correct compiler refusal | low | 1 | agent | none | The verifier passes with NO_COLOR=1 set, proved by running it that way, and the assertion names the planted file and the TypeScript error code rather than the source excerpt. |
+| `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
 
 ## Done (16)
 
@@ -1769,4 +1771,26 @@ KN-131 made every workspace build run the compiler, but nothing ties the compile
 **Why.** This is the third variation of one idea and the first two were real: a build that names the compiler but passes --noCheck, and now a build that runs the compiler over a program missing the file it ships. Both leave the deploy shipping unchecked code while every gate reports green, which is the exact class KN-131 was opened to close. Filing rather than fixing because the exit condition as written asks that each build typecheck its own sources, which it does today; this asks for something stronger and deserves to be stated as its own thing.
 
 **Exit condition.** Narrowing any workspace's tsconfig include so a file the bundler ships leaves the compiler program makes the gate fail, proved by planting exactly the health-only include a roast used, and the check derives the shipped files rather than listing them by hand.
+
+### `KN-143` The mutation harnesses match test names in output, not test outcomes
+
+- **status** backlog · **severity** medium · **points** 3 · **area** agent
+- **blocked by** none
+
+agent/scripts/verify/KN-123.mjs, and the same pattern in KN-128 and KN-131, decide a planted regression was caught by checking that the suite exited non-zero AND that the expected test name appears somewhere in the output. Vitest prints the names of tests that PASSED as well as ones that failed, so a run where the named test passed and something unrelated failed is counted as a catch. A roast pointed this out and gave a concrete instance: KN-123's mutation 6 makes its designated test fail through lock acquisition or timeout rather than through the transaction guard it is supposed to exercise, so the harness records the right name for the wrong reason. Consume a machine-readable result instead. Vitest writes JSON with --reporter=json, which carries each test's own status, so the harness can require that THIS test failed rather than that this string was printed.
+
+**Why.** The whole argument for these harnesses is that a check nobody has seen fail is not a check, and a harness that mistakes a passing test for a failing one is the same defect one level up: it reports the guarantee is covered when it is not. It is worth fixing once, centrally, because three verifiers already share the pattern and every future one will copy it.
+
+**Exit condition.** A planted regression whose designated test still PASSES while some other test fails is reported as a MISS, proved by planting exactly that, and every verifier that plants regressions reads a machine-readable result rather than console text.
+
+### `KN-144` A NULL checksum in the ledger is adopted without proving the SQL ever ran
+
+- **status** backlog · **severity** low · **points** 2 · **area** api
+- **blocked by** none
+
+applyMigrations adopts a ledger row whose checksum is NULL, writing the current file's checksum and moving on. Rows like that are written by the version of the runner that predated the column, so adopting them is what lets an existing database deploy at all. The limitation is that adoption cannot establish that the file's CURRENT text is what the database actually ran: if the old runner applied SQL A and the file now contains B, the ledger records B's checksum without B ever having executed, and every later deploy accepts that baseline. Anyone who can write to the ledger could also null a checksum deliberately and get the same effect, though that person can already rewrite the checksum directly, so it is a limitation of the migration policy rather than a hole in it. Decide and record: adopt but WARN loudly, or require an explicit one-off acknowledgement, and say plainly in TECH-DEBT.md what adoption does and does not prove.
+
+**Why.** A roast raised it twice and both times classed it as a limitation rather than a rejection, which is exactly the kind of thing that gets forgotten because nobody rejected it. It matters at the moment it is least visible: the first deploy against a database that predates the checksum column, which is the real Supabase instance rather than a test.
+
+**Exit condition.** Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen.
 

@@ -127,7 +127,7 @@ const regressions = [
     name: 'transaction control is detected by a line-anchored keyword search again',
     apply: (code) =>
       code.replace(
-        'const managesItsOwnTransaction = (sql: string): boolean =>\n  withoutNoise(sql)\n    .split(\';\')\n    .some((statement) => CONTROL_KEYWORDS.test(statement.trim()))',
+        'const managesItsOwnTransaction = (sql: string): boolean =>\n  splitStatements(sql).some((statement) => CONTROL_KEYWORDS.test(statement.trim()))',
         'const managesItsOwnTransaction = (sql: string): boolean => /^\\s*(BEGIN|COMMIT|ROLLBACK|START\\s+TRANSACTION)\\b/im.test(sql)',
       ),
     expect: 'refuses ABORT, which would record success for a migration that did nothing',
@@ -136,8 +136,31 @@ const regressions = [
     // Without the noise stripping the guard fires on valid PL/pgSQL, which is
     // the opposite failure and just as real: a correct migration is refused.
     name: 'the guard stops ignoring strings, comments and dollar-quoted bodies',
-    apply: (code) => code.replace('const withoutNoise = (sql: string): string =>\n  sql\n', 'const withoutNoise = (sql: string): string =>\n  String(sql) ?? sql\n'),
+    apply: (code) =>
+      code.replace(
+        'const managesItsOwnTransaction = (sql: string): boolean =>\n  splitStatements(sql).some((statement) => CONTROL_KEYWORDS.test(statement.trim()))',
+        "const managesItsOwnTransaction = (sql: string): boolean =>\n  sql.split(';').some((statement) => CONTROL_KEYWORDS.test(statement.trim()))",
+      ),
     expect: 'ACCEPTS a DO block',
+  },
+  {
+    // The independent-passes version. A roast broke it with
+    // `SELECT '$tag$'; ABORT; SELECT '$tag$';`, where the dollar-quote pass saw
+    // a body spanning two ORDINARY strings and erased the ABORT between them.
+    name: 'quoting is stripped by independent passes instead of scanned',
+    apply: (code) =>
+      code.replace(
+        'const managesItsOwnTransaction = (sql: string): boolean =>\n  splitStatements(sql).some((statement) => CONTROL_KEYWORDS.test(statement.trim()))',
+        "const managesItsOwnTransaction = (sql: string): boolean =>\n  sql\n    .replace(/\\$([A-Za-z_]\\w*)?\\$[\\s\\S]*?\\$\\1?\\$/g, ' ')\n    .replace(/--[^\\n]*/g, ' ')\n    .replace(/'(?:[^']|'')*'/g, \"''\")\n    .split(';')\n    .some((statement) => CONTROL_KEYWORDS.test(statement.trim()))",
+      ),
+    expect: 'refuses an ABORT hidden between two strings that look like dollar quotes',
+  },
+  {
+    // The waiting half of the concurrency clause. Refusing after N attempts
+    // proves it does not race; it does not prove it ever gets in.
+    name: 'the retry loop stops retrying, so a busy lock is fatal rather than a wait',
+    apply: (code) => code.replace('    if (attempt < attempts) await wait(retryMs)', '    if (false) await wait(retryMs)\n    break'),
+    expect: 'waits, then applies, once the lock becomes free',
   },
   {
     name: 'the ledger is created before the lock is taken again',

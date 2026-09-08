@@ -211,9 +211,10 @@ catalogs, and the hand written ones deleted.
 
 ---
 
-## 9. One ESLint suppression in the API tests
+## 9. Two ESLint suppressions in the API tests
 
-**What.** `apps/api/src/database/cli.test.ts` disables
+**What.** `apps/api/src/database/cli.test.ts` and
+`apps/api/src/database/migrations.guards.test.ts` each disable
 `@typescript-eslint/prefer-promise-reject-errors` on one line, so a fake client
 can reject with a string.
 
@@ -221,10 +222,14 @@ can reject with a string.
 `Error`, because real database drivers do reject with strings and objects, and
 the only way to cover that branch is to be a driver that does it. The rule is
 right about production code and wrong about a test whose entire subject is the
-badly behaved case.
+badly behaved case. The migration runner grew the same branch for the same
+reason: it records the failure text in the ledger, and a driver that rejects
+with a string would otherwise put `[object Object]` or nothing where the cause
+should be.
 
-**What it costs.** Nothing, as long as it stays on that one line. The risk is
-that the disable gets copied to a place where the rule was correct.
+**What it costs.** Nothing, as long as it stays on those lines. The risk is
+that the disable gets copied to a place where the rule was correct, and there
+are two of them now rather than one, which is how that starts.
 
 **The check that retires this.** A helper that produces a non-`Error` rejection
 without a suppression, or the rule gaining an option for test files.

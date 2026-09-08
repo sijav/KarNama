@@ -95,20 +95,120 @@ const LOCK_KEY = 8_231_123
  */
 const CONTROL_KEYWORDS = /^(BEGIN|COMMIT|ROLLBACK|ABORT|END|START\s+TRANSACTION|SAVEPOINT|RELEASE\s+SAVEPOINT)\b/i
 
-const withoutNoise = (sql: string): string =>
-  sql
-    // Dollar-quoted bodies, tagged first so `$tag$ ... $tag$` is not cut short
-    // by the untagged pattern.
-    .replace(/\$([A-Za-z_]\w*)\$[\s\S]*?\$\1\$/g, ' ')
-    .replace(/\$\$[\s\S]*?\$\$/g, ' ')
-    .replace(/--[^\n]*/g, ' ')
-    .replace(/\/\*[\s\S]*?\*\//g, ' ')
-    .replace(/'(?:[^']|'')*'/g, "''")
+/**
+ * Splits SQL into statements, ignoring semicolons inside anything quoted.
+ *
+ * A scanner rather than a list of replacements, and the difference is not
+ * stylistic. The version this replaced stripped dollar-quoted bodies, then
+ * comments, then strings, each pass independent of the others, and a roast
+ * broke it with:
+ *
+ *     SELECT '$tag$'; ABORT; SELECT '$tag$';
+ *
+ * The dollar-quote pass ran first and saw `$tag$ ... $tag$` spanning two
+ * ORDINARY strings, so it erased everything between them, `ABORT` included.
+ * The migration then rolled itself back and the ledger recorded it as APPLIED,
+ * with the table absent and every later deploy skipping it.
+ *
+ * Quoting in SQL is sequential: whichever construct OPENS first owns everything
+ * until it closes. That cannot be expressed as independent passes, so this
+ * reads left to right once and never looks at the same character twice.
+ */
+const splitStatements = (sql: string): string[] => {
+  const statements: string[] = []
+  let current = ''
+  let index = 0
+
+  const skipQuoted = (close: string, backslashEscapes: boolean): void => {
+    index += close.length
+    while (index < sql.length) {
+      if (backslashEscapes && sql[index] === '\\') {
+        index += 2
+        continue
+      }
+      if (sql.startsWith(close + close, index)) {
+        index += close.length * 2
+        continue
+      }
+      if (sql.startsWith(close, index)) {
+        index += close.length
+        return
+      }
+      index += 1
+    }
+  }
+
+  while (index < sql.length) {
+    const rest = sql.slice(index)
+
+    if (rest.startsWith('--')) {
+      const newline = sql.indexOf('\n', index)
+      index = newline === -1 ? sql.length : newline
+      continue
+    }
+    if (rest.startsWith('/*')) {
+      // Block comments NEST in Postgres, unlike C.
+      let depth = 1
+      index += 2
+      while (index < sql.length && depth > 0) {
+        if (sql.startsWith('/*', index)) {
+          depth += 1
+          index += 2
+        } else if (sql.startsWith('*/', index)) {
+          depth -= 1
+          index += 2
+        } else index += 1
+      }
+      continue
+    }
+    // E'...' and e'...' take backslash escapes; ordinary '...' does not, under
+    // the standard_conforming_strings default.
+    if (/^[eE]'/.test(rest)) {
+      index += 1
+      skipQuoted("'", true)
+      current += ' '
+      continue
+    }
+    if (rest.startsWith("'")) {
+      skipQuoted("'", false)
+      current += ' '
+      continue
+    }
+    if (rest.startsWith('"')) {
+      skipQuoted('"', false)
+      // A quoted identifier is still an identifier, so leave something behind
+      // rather than nothing: `"begin"` as a table name must not read as BEGIN,
+      // but it must also not vanish and let the next word start the statement.
+      current += ' identifier '
+      continue
+    }
+    const dollar = /^\$([A-Za-z_]\w*)?\$/.exec(rest)
+    if (dollar) {
+      const tag = dollar[0]
+      const end = sql.indexOf(tag, index + tag.length)
+      index = end === -1 ? sql.length : end + tag.length
+      current += ' '
+      continue
+    }
+    if (rest.startsWith(';')) {
+      statements.push(current)
+      current = ''
+      index += 1
+      continue
+    }
+    // `slice` rather than an index, which is `string | undefined` under
+    // noUncheckedIndexedAccess and cannot be concatenated without a claim the
+    // loop bound already guarantees.
+    current += sql.slice(index, index + 1)
+    index += 1
+  }
+
+  statements.push(current)
+  return statements
+}
 
 const managesItsOwnTransaction = (sql: string): boolean =>
-  withoutNoise(sql)
-    .split(';')
-    .some((statement) => CONTROL_KEYWORDS.test(statement.trim()))
+  splitStatements(sql).some((statement) => CONTROL_KEYWORDS.test(statement.trim()))
 
 const LEDGER = `
   CREATE TABLE IF NOT EXISTS "_karnama_migrations" (
