@@ -112,12 +112,77 @@ export const deriveDarkSurface = (hex: string): string => {
 }
 
 /**
+ * Relative luminance and contrast ratio, both from WCAG 2.
+ *
+ * Here because the first version of this file did not have them and was wrong
+ * because of it. Every check it had was about HSL: hue preserved, lightness
+ * flipped, a floor under the chromatic values. All of those passed while eight
+ * of the nine dark status chips came out at between 1.01 and 1.51 to one, which
+ * is text you cannot read. HSL is not perceptual and lightness is not contrast.
+ */
+const channelLuminance = (channel: number) => (channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4)
+
+export const luminance = (hex: string): number => {
+  const value = hex.replace('#', '')
+  // Read channel by channel rather than through an array. `noUncheckedIndexedAccess`
+  // makes a destructured element possibly undefined, and the `?? 0` that
+  // silences it is a branch no test can ever reach: unreachable code that
+  // coverage correctly refuses to call covered.
+  const channel = (offset: number) => channelLuminance(Number.parseInt(value.slice(offset, offset + 2), 16) / 255)
+  return 0.2126 * channel(0) + 0.7152 * channel(2) + 0.0722 * channel(4)
+}
+
+export const contrast = (a: string, b: string): number => {
+  const first = luminance(a)
+  const second = luminance(b)
+  return (Math.max(first, second) + 0.05) / (Math.min(first, second) + 0.05)
+}
+
+/** WCAG AA for normal text. The design is a reading surface, so this is the bar. */
+export const MIN_CONTRAST = 4.5
+
+/**
+ * Walks a colour's lightness away from a background until it is readable.
+ *
+ * Hue and saturation are untouched, so this is still the same colour: it is the
+ * smallest change that makes the pair legible rather than a new palette. The
+ * direction is decided by the background, so a light foreground on a dark fill
+ * gets lighter and the reverse gets darker, and the walk gives up rather than
+ * looping if a hue simply cannot reach the ratio.
+ *
+ * There was a second loop here that drained saturation when lightness alone
+ * could not get there, and it was dead code: at lightness 1 or 0 the colour is
+ * white or black whatever its saturation, so once the first loop hits a rail
+ * there is nothing left for a second lever to do. Coverage is what said so.
+ * The real fix for the case that motivated it was `deriveDarkFill`, below:
+ * the problem was never the text, it was a fill that came out light.
+ */
+export const ensureContrast = (foreground: string, background: string, ratio = MIN_CONTRAST): string => {
+  const { h, s, l } = hexToHsl(foreground)
+  const towardsLight = luminance(background) < 0.5
+  let best = foreground
+
+  let lightness = l
+  for (let step = 0; step < 100; step += 1) {
+    if (contrast(best, background) >= ratio) return best
+    lightness = towardsLight ? Math.min(1, lightness + 0.01) : Math.max(0, lightness - 0.01)
+    best = hslToHex({ h, s, l: lightness })
+    if (lightness === 0 || lightness === 1) break
+  }
+  return best
+}
+
+/** The surface everything is read against, computed once so the text rows can cite it. */
+const darkSurface = deriveDarkSurface(semantic['bg/surface'])
+
+/**
  * Every semantic token, derived. Not the design's values.
  *
  * Written out one line per token rather than mapped over `Object.entries`,
  * because mapping needs a cast to get the keys back and this codebase does not
  * use `as`. One line per token also makes the derivation visible at the point
- * of use: each row says which light token it came from.
+ * of use: each row says which light token it came from, and whether it was then
+ * checked for contrast.
  */
 export const darkSemantic = {
   'bg/page': deriveDarkSurface(semantic['bg/page']),
@@ -128,12 +193,17 @@ export const darkSemantic = {
   'bg/brand/container': deriveDarkSurface(semantic['bg/brand/container']),
   'bg/danger/default': deriveDarkSurface(semantic['bg/danger/default']),
   'bg/danger/hover': deriveDarkSurface(semantic['bg/danger/hover']),
-  'text/primary': deriveDark(semantic['text/primary']),
-  'text/secondary': deriveDark(semantic['text/secondary']),
+  // Text is derived AND THEN checked against the surface it sits on. The
+  // derivation alone left secondary at 3.71 to one, brand at 2.62 and error at
+  // 3.38, all below the 4.5 that makes normal text readable, while every HSL
+  // assertion passed. `text/disabled` is exempt on purpose: disabled text is
+  // meant to recede, and WCAG does not require contrast from it.
+  'text/primary': ensureContrast(deriveDark(semantic['text/primary']), darkSurface),
+  'text/secondary': ensureContrast(deriveDark(semantic['text/secondary']), darkSurface),
   'text/disabled': deriveDark(semantic['text/disabled']),
-  'text/on-accent': deriveDark(semantic['text/on-accent']),
-  'text/brand': deriveDark(semantic['text/brand']),
-  'text/error': deriveDark(semantic['text/error']),
+  'text/on-accent': ensureContrast(deriveDark(semantic['text/on-accent']), deriveDarkSurface(semantic['bg/brand/default'])),
+  'text/brand': ensureContrast(deriveDark(semantic['text/brand']), darkSurface),
+  'text/error': ensureContrast(deriveDark(semantic['text/error']), darkSurface),
   'border/default': deriveDark(semantic['border/default']),
   'border/focus': deriveDark(semantic['border/focus']),
   'border/error': deriveDark(semantic['border/error']),
@@ -142,12 +212,48 @@ export const darkSemantic = {
   'gray/200': deriveDark(semantic['gray/200']),
 } satisfies Record<keyof typeof semantic, string>
 
-const pair = (name: keyof typeof status) => ({
-  base: deriveDark(status[name].base),
-  container: deriveDark(status[name].container),
-})
 
-/** Every status pair, derived. The base stays the readable end on a dark chip. */
+/**
+ * A status pair, and the two halves need OPPOSITE treatment.
+ *
+ * The first version put both through the same flip with the same chromatic
+ * floor, so both landed near lightness 0.55 and collapsed onto each other:
+ * eight of the nine chips came out between 1.01 and 1.51 to one, which is text
+ * you cannot read, while every test passed because every test was about HSL.
+ *
+ * The container is a FILL, so it takes the surface rule and becomes a dark tint
+ * of its own hue. The base is TEXT on that fill, so it stays light and is then
+ * walked away from the fill until it clears 4.5 to one. That is the same
+ * relationship the light design has, base readable on container, expressed the
+ * other way up.
+ */
+const LIGHT_FILL_BAND = { from: 0.85, to: 1 }
+const DARK_FILL_BAND = { from: 0.12, to: 0.22 }
+
+/**
+ * A chip fill in dark mode: the same hue, at a dark tint of it.
+ *
+ * `deriveDarkSurface` was the wrong tool and it is worth saying why, because it
+ * looked right. A container like rejected's `#fee2e2` is a pale red with high
+ * saturation, so the surface rule handed it straight to `deriveDark`, which
+ * applied the chromatic FLOOR and produced a LIGHT red. A light fill under
+ * light text is the collapse this whole pair function exists to avoid, and no
+ * amount of walking the text away from it helps, because the ceiling is the
+ * fill. A fill is not a surface and it is not a foreground: it needs its own
+ * rule, which is the band remap with no saturation gate in front of it.
+ */
+export const deriveDarkFill = (hex: string): string => {
+  const { h, s, l } = hexToHsl(hex)
+  const position = Math.min(1, Math.max(0, (l - LIGHT_FILL_BAND.from) / (LIGHT_FILL_BAND.to - LIGHT_FILL_BAND.from)))
+  return hslToHex({ h, s, l: DARK_FILL_BAND.from + position * (DARK_FILL_BAND.to - DARK_FILL_BAND.from) })
+}
+
+const pair = (name: keyof typeof status) => {
+  const container = deriveDarkFill(status[name].container)
+  return { base: ensureContrast(deriveDark(status[name].base), container), container }
+}
+
+/** Every status pair, derived. The base is readable on the container, and it is checked. */
 export const darkStatus = {
   new: pair('new'),
   applied: pair('applied'),

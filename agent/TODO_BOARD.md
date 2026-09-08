@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 8 of 103 tasks done · 24 of 387 points.
+Project **KarNama** · 8 of 107 tasks done · 24 of 395 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-005` | Theme: tokens, MUI theme, direction and colour scheme provider | critical | 3 | web | KN-003, KN-004 | A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour. |
 
-## Backlog (93)
+## Backlog (97)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -67,6 +67,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-091` | Move story prose out of the TSX and into story-docs, with the guard test | high | 3 | web | KN-003 | src/shared/story-docs/en and fa exist and carry the prose for every story, no .tsx under src holds a docblock above const meta or a story export, the Docs pages render the markdown in the toolbar language, and a guard test fails when a prop or a story is missing from either language. |
 | `KN-096` | A literal type alias carries an unlocalized string past the lingui rule | high | 3 | web | KN-087 | The literal-type-alias form fails npm run lint or fails a dedicated check, a committed fixture holds it, and the check is proved by a planted break. |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | high | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
+| `KN-104` | Give the product a colour scheme setting that persists | high | 3 | web | KN-005 | A user can choose light, dark or system in the running app, the choice survives a reload, an e2e test proves both, and the same mechanism carries the language choice. |
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | high | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | high | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
@@ -103,6 +104,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
 | `KN-093` | Stop a later scoped ESLint block silently re-exempting a lingui hole | medium | 2 | agent | KN-087 | A config block scoped to src/shared/** that exempts aria-label makes agent/scripts/verify/KN-087.mjs fail, the check reads the resolved config for at least one path per top-level source folder, and the block being present is what the failure names. |
+| `KN-105` | The no-raw-value test excludes src/theme, where a component with raw values lives | medium | 2 | web | KN-005 | The token modules are excluded by name rather than by directory, Tokens.stories.tsx is scanned and its raw values are gone, the scan also rejects rgb(), hsl() and named colours, and a planted violation in each covered form fails the run. |
+| `KN-107` | Prove a system colour scheme change actually repaints the tree | medium | 2 | web | KN-005 | A test emulates a prefers-color-scheme change with the preference set to system and asserts the rendered background moved from the light value to the dark one, and it fails when the store returns a constant. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -113,6 +116,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-047` | Admin panel screen | medium | 8 | web | KN-042, KN-041 | An e2e test signs in as an admin, approves one submission and rejects another, and sees both leave the pending queue, and a non-admin reaching the route is refused rather than shown an empty panel. |
 | `KN-083` | Remove the em dashes the last DESIGN.md edits introduced | low | 1 | docs | KN-002 | No em dash appears in DESIGN.md, AGENTS.md, RALPH.md or STATE.md, and a check in the contract verifier fails when one is reintroduced. |
 | `KN-102` | The gate-fixtures README describes a file and a mechanism that no longer exist | low | 1 | docs | KN-088 | Every file and mechanism the README names exists, no file in the directory is unmentioned, and a check in agent/scripts/verify/KN-003.mjs fails when a fixture is added or renamed without the README following. |
+| `KN-106` | Localise the Storybook toolbar labels, or decide in writing that they stay English | low | 1 | web | KN-005 | Either the toolbar labels render from the catalog and a story proves it, or AGENTS.md states that Storybook chrome stays English with the reason and a check keeps product strings out of that directory. |
 
 ## Done (8)
 
@@ -197,6 +201,8 @@ tokens.ts holding the Figma token set as typed constants, theme.ts mapping them 
 **Why.** Every component reads colour, spacing and radius from here, so it has to exist before the first one. It also has to own direction, because a component that gets direction from somewhere else will be laid out backwards in exactly one of the two languages.
 
 **Exit condition.** A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour.
+
+**Roasts.** round 1 scored 2.5 with 2 critical(s)
 
 ### `KN-006` lingui: English source catalog, Persian translation, runtime switch
 
@@ -1283,4 +1289,48 @@ The two vitest projects both produce v8 coverage. For a file only the browser pr
 **Why.** The 100 percent number is the standard this project is built around and it is currently overstated, silently, for exactly the files that have both a unit test and a story, which is what every component in the queue will be. A component whose branches are only reached from a story would read as uncovered and get a pointless unit test, or worse, someone would lower the threshold to fit.
 
 **Exit condition.** A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run.
+
+### `KN-104` Give the product a colour scheme setting that persists
+
+- **status** backlog · **severity** high · **points** 3 · **area** web
+- **blocked by** KN-005
+
+AppProviders takes a colorScheme preference of light, dark or system and resolves it, but nothing in the product sets it: main.tsx mounts with the default, so dark and system exist only through the Storybook toolbar. Put the choice somewhere the whole tree can reach, persist it, and give the user a control. The same shape is needed for the language switch, so build one mechanism and use it twice.
+
+**Why.** A roast rated this critical and the reading is fair: a colour scheme nobody can choose is a colour scheme that does not exist outside Storybook. It is paired with the language button the owner asked for on the menu bar, and both need the same thing, a preference that survives a reload and is reachable from anywhere, so doing them together is cheaper than doing either alone.
+
+**Exit condition.** A user can choose light, dark or system in the running app, the choice survives a reload, an e2e test proves both, and the same mechanism carries the language choice.
+
+### `KN-105` The no-raw-value test excludes src/theme, where a component with raw values lives
+
+- **status** backlog · **severity** medium · **points** 2 · **area** web
+- **blocked by** KN-005
+
+src/theme/noLiterals.test.ts skips the whole theme directory, because that is where hexes legitimately live. But Tokens.stories.tsx also lives there and it hardcodes 40, 16 and a 999 radius, which the no-raw-spacing rule forbids. Exclude only the files that are the token source rather than the directory, so a component that happens to sit next to them is still checked. The scan also misses rgb(), hsl() and named CSS colours, MDX, index.html inline styles and CSS files.
+
+**Why.** A roast rated this major. The exclusion was written as a directory because that was easy, and the first component to sit in that directory is already breaking the rule the test exists to enforce. Every component folder will eventually hold a story next to a helper, so an exclusion by directory is the wrong shape from the start.
+
+**Exit condition.** The token modules are excluded by name rather than by directory, Tokens.stories.tsx is scanned and its raw values are gone, the scan also rejects rgb(), hsl() and named colours, and a planted violation in each covered form fails the run.
+
+### `KN-106` Localise the Storybook toolbar labels, or decide in writing that they stay English
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** KN-005
+
+The Language and Theme toolbars in .storybook/preview.tsx carry bare English strings, Language, Theme, Light, Dark (derived) and System, and the lingui rule does not reach .storybook because that directory is build configuration for a developer tool. Either route them through the catalog so a Persian reviewer sees Persian chrome, or record in AGENTS.md that Storybook chrome is English by decision, with the reason.
+
+**Why.** A roast rated this major. The done gate asks every change to be reviewed in both languages, and the tool that review happens in is half English either way. It is a small thing that is either fine or not, and the cost of not deciding is that someone re-raises it every few months.
+
+**Exit condition.** Either the toolbar labels render from the catalog and a story proves it, or AGENTS.md states that Storybook chrome stays English with the reason and a check keeps product strings out of that directory.
+
+### `KN-107` Prove a system colour scheme change actually repaints the tree
+
+- **status** backlog · **severity** medium · **points** 2 · **area** web
+- **blocked by** KN-005
+
+The tests around useSystemScheme register a listener, unregister it and resolve a preference, but nothing dispatches a media query change and then checks the rendered theme followed it. Add a story or a browser test that flips the emulated colour scheme with the preference set to system and asserts the page background changed.
+
+**Why.** A roast rated this minor and it is the honest gap: what is tested is the plumbing around the subscription, not that the subscription does anything. useSyncExternalStore is exactly the kind of API where a wrong snapshot function still registers a listener and still never updates.
+
+**Exit condition.** A test emulates a prefers-color-scheme change with the preference set to system and asserts the rendered background moved from the light value to the dark one, and it fails when the store returns a constant.
 

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 104,
+  "nextId": 108,
   "tasks": [
     {
       "id": "KN-001",
@@ -311,7 +311,25 @@
       ],
       "status": "review",
       "exit": "A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 2.5,
+          "criticals": 2,
+          "file": "agent/roasts/KN-005-round-1.2026-09-08T00-02-57-673Z.md",
+          "filed": [
+            "KN-104",
+            "KN-105",
+            "KN-106",
+            "KN-107"
+          ],
+          "cardDigest": "87dcd98f478a5d44a997e1b5e90969aeef647d7c80c6af202dcee041bf8b4afc",
+          "head": "6cae4e02dd100feca361f30b6c5358574a9f0867",
+          "reviewerScore": 2.5,
+          "reviewerCriticals": 2,
+          "at": "2026-09-08T00:13:03.864Z"
+        }
+      ],
       "notes": [
         "PIN stylis TO 4.2.0 with a root overrides entry. @emotion/cache 11.14.0 depends on stylis at EXACTLY 4.2.0, while @mui/stylis-plugin-rtl 9.4.0 peers stylis 4.x, so npm installs 4.4.0 and the two disagree. Emotion walks the element tree with its own bundled stylis, so handing it a prefixer built from a different version produces elements it cannot lift and crashes on every ::placeholder rule in the app. This is the single hardest bug to diagnose in the RTL setup because the failure looks like a component problem rather than a dependency one. Also note @fontsource-variable/vazirmatn is at 5.3.0, and the design flags Vazirmatn as a placeholder font, so the family name belongs in one theme constant rather than scattered through components.",
         "PARTLY DELIVERED BY KN-003, checked against the code rather than remembered. Already exists and is tested: apps/web/src/theme/tokens.ts with the full Figma set as typed constants including both effect styles, theme.ts mapping them onto MUI with a buildTheme(direction), rtl.ts with the emotion caches and the exported plugin lists, AppProviders setting dir and lang on documentElement, and a Foundations/Tokens story with five families driven from args. 63 tests at 100 percent coverage include tokens.test.ts, which reads DESIGN.md and asserts every value against the contract rather than restating it, and theme.test.ts, which renders CSS through stylis and proves the RTL flip and the ::placeholder rule. WHAT IS LEFT, and it is the whole remaining point of this card: colour scheme, light dark and system, is NOT built. There is no dark palette, no Storybook theme toolbar, and no persistence. Also missing is the exit condition test that asserts no component file contains a raw hex colour, which nothing currently checks. DESIGN.md section on dark mode is the source for the palette."
@@ -2323,6 +2341,74 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T23:58:03.747Z"
+    },
+    {
+      "id": "KN-104",
+      "title": "Give the product a colour scheme setting that persists",
+      "desc": "AppProviders takes a colorScheme preference of light, dark or system and resolves it, but nothing in the product sets it: main.tsx mounts with the default, so dark and system exist only through the Storybook toolbar. Put the choice somewhere the whole tree can reach, persist it, and give the user a control. The same shape is needed for the language switch, so build one mechanism and use it twice.",
+      "why": "A roast rated this critical and the reading is fair: a colour scheme nobody can choose is a colour scheme that does not exist outside Storybook. It is paired with the language button the owner asked for on the menu bar, and both need the same thing, a preference that survives a reload and is reachable from anywhere, so doing them together is cheaper than doing either alone.",
+      "severity": "high",
+      "points": 3,
+      "area": "web",
+      "parent": [
+        "KN-005"
+      ],
+      "status": "backlog",
+      "exit": "A user can choose light, dark or system in the running app, the choice survives a reload, an e2e test proves both, and the same mechanism carries the language choice.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:12:37.579Z"
+    },
+    {
+      "id": "KN-105",
+      "title": "The no-raw-value test excludes src/theme, where a component with raw values lives",
+      "desc": "src/theme/noLiterals.test.ts skips the whole theme directory, because that is where hexes legitimately live. But Tokens.stories.tsx also lives there and it hardcodes 40, 16 and a 999 radius, which the no-raw-spacing rule forbids. Exclude only the files that are the token source rather than the directory, so a component that happens to sit next to them is still checked. The scan also misses rgb(), hsl() and named CSS colours, MDX, index.html inline styles and CSS files.",
+      "why": "A roast rated this major. The exclusion was written as a directory because that was easy, and the first component to sit in that directory is already breaking the rule the test exists to enforce. Every component folder will eventually hold a story next to a helper, so an exclusion by directory is the wrong shape from the start.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-005"
+      ],
+      "status": "backlog",
+      "exit": "The token modules are excluded by name rather than by directory, Tokens.stories.tsx is scanned and its raw values are gone, the scan also rejects rgb(), hsl() and named colours, and a planted violation in each covered form fails the run.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:12:37.686Z"
+    },
+    {
+      "id": "KN-106",
+      "title": "Localise the Storybook toolbar labels, or decide in writing that they stay English",
+      "desc": "The Language and Theme toolbars in .storybook/preview.tsx carry bare English strings, Language, Theme, Light, Dark (derived) and System, and the lingui rule does not reach .storybook because that directory is build configuration for a developer tool. Either route them through the catalog so a Persian reviewer sees Persian chrome, or record in AGENTS.md that Storybook chrome is English by decision, with the reason.",
+      "why": "A roast rated this major. The done gate asks every change to be reviewed in both languages, and the tool that review happens in is half English either way. It is a small thing that is either fine or not, and the cost of not deciding is that someone re-raises it every few months.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [
+        "KN-005"
+      ],
+      "status": "backlog",
+      "exit": "Either the toolbar labels render from the catalog and a story proves it, or AGENTS.md states that Storybook chrome stays English with the reason and a check keeps product strings out of that directory.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:12:53.167Z"
+    },
+    {
+      "id": "KN-107",
+      "title": "Prove a system colour scheme change actually repaints the tree",
+      "desc": "The tests around useSystemScheme register a listener, unregister it and resolve a preference, but nothing dispatches a media query change and then checks the rendered theme followed it. Add a story or a browser test that flips the emulated colour scheme with the preference set to system and asserts the page background changed.",
+      "why": "A roast rated this minor and it is the honest gap: what is tested is the plumbing around the subscription, not that the subscription does anything. useSyncExternalStore is exactly the kind of API where a wrong snapshot function still registers a listener and still never updates.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-005"
+      ],
+      "status": "backlog",
+      "exit": "A test emulates a prefers-color-scheme change with the preference set to system and asserts the rendered background moved from the light value to the dark one, and it fails when the store returns a constant.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:12:53.295Z"
     }
   ]
 }

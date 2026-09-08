@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { darkSemantic, darkStatus, deriveDark, deriveDarkSurface, hexToHsl, hslToHex } from './darkMode'
+import { MIN_CONTRAST, contrast, darkSemantic, darkStatus, deriveDark, deriveDarkSurface, ensureContrast, hexToHsl, hslToHex, luminance } from './darkMode'
 import { semantic, status } from './tokens'
 
 /**
@@ -107,6 +107,119 @@ describe('the derivation does what it says', () => {
   })
 
   it('is not the light palette wearing a different name', () => {
+    // No dark value equals ANY light value, which is stronger than checking key
+    // by key and needs no cast to get the keys back.
+    const light = new Set<string>(Object.values(semantic))
+    const survivors = Object.entries(darkSemantic).filter(([, hex]) => light.has(hex))
+    expect(survivors.map(([name]) => name)).toEqual([])
+  })
+})
+
+/**
+ * Contrast, which is the thing the first version of this file got wrong.
+ *
+ * Every check it had was about HSL, and every one of them passed while eight of
+ * the nine status chips sat between 1.01 and 1.51 to one. HSL lightness is not
+ * perceptual and it is not contrast, so a pair can be far apart in lightness
+ * and unreadable, or close in lightness and fine. These assert the ratio a
+ * person actually experiences.
+ */
+describe('the derived palette is readable', () => {
+  const surface = darkSemantic['bg/surface']
+
+  it.each([
+    ['text/primary', darkSemantic['text/primary']],
+    ['text/secondary', darkSemantic['text/secondary']],
+    ['text/brand', darkSemantic['text/brand']],
+    ['text/error', darkSemantic['text/error']],
+  ])('%s clears WCAG AA on the dark surface', (_name, colour) => {
+    expect(contrast(colour, surface)).toBeGreaterThanOrEqual(MIN_CONTRAST)
+  })
+
+  it('puts readable text on the brand fill', () => {
+    expect(contrast(darkSemantic['text/on-accent'], darkSemantic['bg/brand/default'])).toBeGreaterThanOrEqual(MIN_CONTRAST)
+  })
+
+  it.each(Object.entries(darkStatus))('the %s chip has readable text on its own fill', (_name, chip) => {
+    expect(contrast(chip.base, chip.container)).toBeGreaterThanOrEqual(MIN_CONTRAST)
+  })
+
+  it('and the LIGHT palette clears it too, so the design itself is checked as well', () => {
+    for (const [name, chip] of Object.entries(status)) {
+      expect(contrast(chip.base, chip.container), `light ${name}`).toBeGreaterThanOrEqual(MIN_CONTRAST)
+    }
+  })
+
+  it('measures contrast the way WCAG does, checked against the two values everyone knows', () => {
+    // Black on white is 21 to one and a colour against itself is 1 to one. If
+    // this ever stopped being true the ratios above would be meaningless while
+    // still looking like numbers.
+    expect(contrast('#000000', '#ffffff')).toBeCloseTo(21, 1)
+    expect(contrast('#2563eb', '#2563eb')).toBeCloseTo(1, 5)
+    expect(luminance('#ffffff')).toBeCloseTo(1, 5)
+    expect(luminance('#000000')).toBeCloseTo(0, 5)
+  })
+
+  it('fixes white on white by darkening, which is the lightness lever alone', () => {
+    // My first expectation here was that this could not be fixed, which was
+    // wrong: white on white darkens until it clears the ratio, and it does so
+    // without touching saturation because there is none to touch.
+    expect(contrast(ensureContrast('#ffffff', '#ffffff'), '#ffffff')).toBeGreaterThanOrEqual(MIN_CONTRAST)
+  })
+
+  it('walks a colour away from a fill of its own hue until it is readable', () => {
+    const fill = '#8b4a4a'
+    const fixed = ensureContrast('#d43030', fill)
+    expect(contrast(fixed, fill)).toBeGreaterThanOrEqual(MIN_CONTRAST)
+    // Same colour, moved, not a different one.
+    expect(Math.abs(hexToHsl(fixed).h - hexToHsl('#d43030').h)).toBeLessThan(1)
+  })
+
+  it('makes every chip fill a DARK tint, which is what the text is readable on', () => {
+    // The bug this rule was written for: `deriveDarkSurface` handed a pale but
+    // saturated container straight to the flip, which applied the chromatic
+    // floor and produced a LIGHT fill. Light text on a light fill, and no
+    // amount of adjusting the text fixes it, because the ceiling is the fill.
+    for (const [name, chip] of Object.entries(darkStatus)) {
+      expect(hexToHsl(chip.container).l, `${name} fill is not dark`).toBeLessThanOrEqual(0.25)
+      expect(hexToHsl(chip.base).l, `${name} text is not light`).toBeGreaterThan(0.4)
+    }
+  })
+
+  it('keeps each chip fill in its own hue rather than flattening it to grey', () => {
+    const lightContainers: Record<string, string> = Object.fromEntries(
+      Object.entries(status).map(([name, chip]) => [name, chip.container]),
+    )
+    for (const [name, chip] of Object.entries(darkStatus)) {
+      const original = hexToHsl(lightContainers[name] ?? '#000000')
+      // Below a fifth of full saturation the hue is 8-bit rounding noise rather
+      // than a colour: `new`'s container is a near-grey and its hue wobbles by
+      // two degrees between representations. Asserting on it would be asserting
+      // on the rounding.
+      if (original.s < 0.2) continue
+      expect(Math.abs(hexToHsl(chip.container).h - original.h), `${name} fill changed hue`).toBeLessThan(1)
+    }
+  })
+
+  it('returns what it has rather than looping when neither lever is enough', () => {
+    // Both loops are bounded and both guard rails are exercised here. Nothing in
+    // the token set reaches this, but an unbounded walk would hang the build.
+    // Grey on grey has no saturation to drain, so it ends at the lightness rail;
+    // a saturated pair drains to zero saturation and ends at that one.
+    expect(() => ensureContrast('#808080', '#808080', 21)).not.toThrow()
+    expect(() => ensureContrast('#b91c1c', '#b91c1c', 21)).not.toThrow()
+    // 21 to one is only black against white, so neither can reach it, and both
+    // have to come back with something rather than spin.
+    expect(contrast(ensureContrast('#808080', '#808080', 21), '#808080')).toBeLessThan(21)
+  })
+
+  it('leaves a pair alone when it already clears the ratio', () => {
+    expect(ensureContrast('#000000', '#ffffff')).toBe('#000000')
+  })
+})
+
+describe('the old assertions, kept', () => {
+  it('still is not the light palette wearing a different name', () => {
     // No dark value equals ANY light value, which is stronger than checking key
     // by key and needs no cast to get the keys back.
     const light = new Set<string>(Object.values(semantic))
