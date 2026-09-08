@@ -17,7 +17,7 @@
 // restores both from snapshots taken first, then re-runs the build to prove it.
 
 import { spawnSync } from 'node:child_process'
-import { readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -31,9 +31,24 @@ const MODEL = join(API, 'src', 'health', 'health.model.ts')
 const RESOLVER = join(API, 'src', 'health', 'health.resolver.ts')
 const API_SCHEMA = join(API, 'schema.gql')
 // Temporary, and inside `src` because that is what `lint:tsc` typechecks. It is
-// removed in a `finally`, and the last check in this file re-runs the build to
-// prove nothing was left behind.
+// removed in a `finally`, and the last check compares every file below against
+// a snapshot to prove nothing was left behind.
 const PROBE = join(PKG, 'src', 'kn-128-probe.ts')
+
+// This script writes to these, and to nothing else. Snapshotted here rather
+// than inside the checks, so the restoration check compares against the state
+// the script was HANDED rather than against whatever it produced.
+const TOUCHED = [OPERATION, GENERATED, MODEL, RESOLVER, API_SCHEMA]
+const snapshots = new Map(TOUCHED.map((path) => [path, readFileSync(path, 'utf8')]))
+
+// The probe path is unlikely to collide, which is not the same as safe. If
+// something is already there it is someone's work, and overwriting it to prove
+// a point about type safety would be a poor trade. Refuse instead: a script
+// that destroys uncommitted work to run is not one anybody should run.
+if (existsSync(PROBE)) {
+  process.stderr.write(`${PROBE} already exists. This script needs that path and will not overwrite it. Move it and re-run.\n`)
+  process.exit(1)
+}
 
 // Comments stripped before every grep for a banned construct. This file's own
 // prose names the constructs it removed ("a `gql` template with a hand-written
@@ -59,6 +74,13 @@ const check = (label, run) => {
 
 const run = (command, cwd = ROOT) =>
   spawnSync(command, { cwd, encoding: 'utf8', shell: true, env: { ...process.env, CI: '1', FORCE_COLOR: '0' } })
+
+// tsc colourises its diagnostics whatever FORCE_COLOR says, and puts the escape
+// codes BETWEEN the word and the code, so "error TS2339" is not contiguous in
+// the raw bytes. A grep for it finds nothing and reports zero errors while the
+// compiler is plainly printing one. Found by planting the case.
+// eslint-disable-next-line no-control-regex -- matching escape codes is the point
+const plain = (text) => text.replace(/\[[0-9;]*m/g, '')
 
 check('the operations are documents beside the schema, not templates in the app', () => {
   const config = code(join(PKG, 'codegen.ts'))
@@ -102,8 +124,13 @@ check('A MISSPELLED FIELD FAILS THE BUILD, proved by misspelling one', () => {
     // a build could mention it while failing for some unrelated consequence.
     // The diagnostic is what proves codegen VALIDATED the document against the
     // schema, so require the diagnostic and the field together.
-    if (!/Cannot query field/i.test(output)) return `it failed, but not by validating the document:\n${output.slice(-400)}`
-    return /environmentTypo/.test(output) ? null : `it failed validation, but over some other field:\n${output.slice(-400)}`
+    // ONE diagnostic, not two substrings that could come from two unrelated
+    // messages. This is the sentence graphql-codegen prints when it validates
+    // the document against the schema, naming the field and the type it is not
+    // on, and nothing else in the build produces it.
+    return /Cannot query field "environmentTypo" on type "Health"/.test(output)
+      ? null
+      : `it failed, but not by validating this operation against the schema:\n${output.slice(-500)}`
   } finally {
     writeFileSync(OPERATION, operation)
   }
@@ -140,7 +167,15 @@ check('ADDING A REQUIRED FIELD TO Health DOES NOT CHANGE THE QUERY TYPE, proved 
     const compile = run('npx tsc -p tsconfig.build.json', API)
     if (compile.status !== 0) return `the API stopped compiling, so the mutation is wrong:\n${compile.stdout ?? ''}`
     if (run('npm run schema:update', API).status !== 0) return 'schema:update failed'
-    if (readFileSync(API_SCHEMA, 'utf8') === schema) return 'the schema did not change, so nothing is being checked'
+    const emitted = readFileSync(API_SCHEMA, 'utf8')
+    if (emitted === schema) return 'the schema did not change, so nothing is being checked'
+    // REQUIRED, asserted against the emitted SDL rather than assumed from the
+    // decorator. Without this the plant could regress to nullable and every
+    // check below would still pass, proving the weaker clause under the
+    // stronger clause's name.
+    if (!/addedByTheVerifier:\s*String!/.test(emitted)) {
+      return `the planted field did not reach the schema as required:\n${/.*addedByTheVerifier.*/.exec(emitted)?.[0] ?? 'it is not in the schema at all'}`
+    }
     if (run('npm run codegen:update --workspace @karnama/graphql').status !== 0) return 'codegen:update failed'
 
     const regenerated = readFileSync(GENERATED, 'utf8')
@@ -162,21 +197,36 @@ check('ADDING A REQUIRED FIELD TO Health DOES NOT CHANGE THE QUERY TYPE, proved 
       writeFileSync(
         PROBE,
         [
-          '// Written by agent/scripts/verify/KN-128.mjs. Must not compile.',
+          '// Written by agent/scripts/verify/KN-128.mjs, and deleted by it.',
           "import type { HealthQuery } from './generated.js'",
+          '',
+          '// The positive control. A response type of `never` would reject the',
+          '// unselected field below with the same error code while proving',
+          '// nothing, so the SELECTED fields have to stay readable.',
+          'export const readsTheSelection = (q: HealthQuery) => `${q.health.status}${q.health.environment}${q.health.uptimeSeconds}`',
+          '',
+          '// The case under test. Must not compile.',
           'export const reachesAnUnselectedField = (q: HealthQuery) => q.health.addedByTheVerifier',
           '',
         ].join('\n'),
       )
       const probe = run('npm run lint:tsc --workspace @karnama/graphql')
       if (probe.status === 0) return 'a field the query never selected can be read through the response type'
-      const output = `${probe.stdout ?? ''}${probe.stderr ?? ''}`
-      // TS2339 is "property does not exist on type". Requiring the code as well
-      // as the name is what separates "the compiler refused this access" from
-      // "the compiler refused something and the name appeared in the message".
-      if (!/TS2339/.test(output)) return `it refused, but not by rejecting a property access:\n${output.slice(-400)}`
-      if (!/kn-128-probe/.test(output)) return `something else failed to compile, not the probe:\n${output.slice(-400)}`
-      return /addedByTheVerifier/.test(output) ? null : `it refused, but not over the unselected field:\n${output.slice(-400)}`
+      const output = plain(`${probe.stdout ?? ''}${probe.stderr ?? ''}`)
+      // EXACTLY one error, read from tsc's own summary line. More than one
+      // means the positive control failed too, so the response type is broken
+      // rather than merely correct, and a refusal from a broken type proves
+      // nothing about the selection.
+      const found = /Found (\d+) errors? in/.exec(output)
+      if (!found) return `tsc printed no error summary, so the count is unknown:\n${output.slice(-600)}`
+      if (found[1] !== '1') return `expected exactly one type error, got ${found[1]}:\n${output.slice(-600)}`
+      // TS2339 is "property does not exist on type", named together with the
+      // file and the property, which separates "the compiler rejected THIS
+      // access" from "the compiler rejected something and the name appeared".
+      if (!/kn-128-probe\.ts.*TS2339.*addedByTheVerifier/s.test(output)) {
+        return `it refused, but not this property access on the probe:\n${output.slice(-600)}`
+      }
+      return null
     } finally {
       rmSync(PROBE, { force: true })
     }
@@ -189,7 +239,20 @@ check('ADDING A REQUIRED FIELD TO Health DOES NOT CHANGE THE QUERY TYPE, proved 
   }
 })
 
-check('everything was put back, and the build still passes', () => {
+check('every file this script touched is byte-identical to how it found it', () => {
+  // The build is not evidence of restoration and it took a roast to see it.
+  // The plant is internally consistent by construction: model, resolver, schema
+  // and generated types all agree, because each was regenerated from the one
+  // before it. So a run that restored NOTHING still builds, and the previous
+  // version of this check reported that as everything having been put back.
+  // Bytes against the snapshot, or it is not a restoration check.
+  for (const path of TOUCHED) {
+    if (readFileSync(path, 'utf8') !== snapshots.get(path)) return `${path.slice(ROOT.length + 1)} was left modified`
+  }
+  return existsSync(PROBE) ? `${PROBE.slice(ROOT.length + 1)} was left behind` : null
+})
+
+check('and the build still passes', () => {
   const build = run('npm run build')
   return build.status === 0 ? null : `the build no longer passes, which is a defect in this script:\n${(build.stdout ?? '').slice(-400)}`
 })
