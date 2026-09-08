@@ -3074,7 +3074,7 @@
       "points": 2,
       "area": "infra",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Removing a selected field from the health operation and regenerating makes npm run build fail, proved by planting exactly that, and the failure names the consumer file rather than something incidental. Every workspace build either typechecks its own sources or the verifier records why it cannot.",
       "roasts": [
         {
@@ -3109,8 +3109,10 @@
       ],
       "notes": [],
       "createdAt": "2026-09-08T03:06:29.161Z",
-      "updatedAt": "2026-09-08T05:15:19.106Z",
-      "verify": "node agent/scripts/verify/KN-131.mjs"
+      "updatedAt": "2026-09-08T05:37:35.439Z",
+      "verify": "node agent/scripts/verify/KN-131.mjs",
+      "evidence": "apps/web's build was 'vite build' and nothing else. Vite transpiles per file and never typechecks, so npm run build, the command a deploy runs and the one KN-051 is about to point GitHub Pages at, emitted a bundle whose types nothing had verified. packages/graphql was the same shape: codegen:check alone compares generated output byte for byte and never compiles it. apps/api already typechecked, because tsc -p tsconfig.build.json is a compile. Both now run tsc.\n\nExit condition, both clauses, each proved by planting. Removing a selected field from packages/graphql/src/operations/health.graphql and regenerating now fails the build: the verifier does exactly that, confirms the regenerated response type no longer carries the field so the two halves genuinely agree and nothing is stale, and requires the failure to name apps/web/src/core/api/health.ts and the field. The reviewer reproduced it independently and got TS2339 at health.ts line 47. Every workspace build typechecks its own sources: a type error is appended to a real source file in each of the three workspaces in turn and THAT WORKSPACE'S OWN build must reject it, named.\n\nThe per-workspace part is the correction round 1 forced and it was not cosmetic. The first version ran the ROOT build for each plant, and apps/web resolves @karnama/graphql to that package's TypeScript source, so web's compiler reports an error planted in packages/graphql and the root build fails whether or not the graphql build checks anything. Setting the graphql build to 'tsc --noEmit --noCheck' passed both checks. The predicate now rejects --noCheck, and a mutation that puts the plants back on the root build SURVIVES undetected, which is the direct evidence the change carries the clause rather than decorating it.\n\nEleven mutations across the two rounds, all behaving as predicted, including the operation reduced but NOT regenerated so the build fails as stale rather than over the consumer, which is the distinction the whole check rests on.\n\nGate: root lint clean, lint:tsc clean, 286 tests passing at 100 percent on all four metrics in apps/web and apps/api, build succeeds. AGENTS.md section 5 steps 5 to 7 were NOT performed and are not claimed: this card changes build scripts and renders nothing.\n\nTwo roast rounds, 8.0 both, zero criticals. Round 1's other two findings and round 2's single finding were filed rather than fixed: KN-140 cleanup regenerates generated.ts instead of restoring it from its snapshot, KN-141 NO_COLOR makes a correct refusal read as a failure, KN-142 nothing ties the compiler's program to the module graph the bundler ships, so narrowing a tsconfig include leaves the gate green while the entrypoint goes unchecked. Round 2 confirmed both clauses hold for the current configuration; KN-142 is about a future one.",
+      "closedAt": "2026-09-08T05:37:35.439Z"
     },
     {
       "id": "KN-132",

@@ -115,6 +115,15 @@ Read step 5 before adjudicating, not after.
 it afterwards invalidates the round that cleared the task. That alone cost round
 6. Filed as KN-139.
 
+**A gate that names the tool is not a gate that runs it.** KN-131's verifier
+accepted `tsc --noEmit --noCheck`, and its planting check ran the ROOT build,
+where one workspace's compiler covers for another's. Prove a workspace-level
+claim with that workspace's own command.
+
+**The mutation that must SURVIVE is the strongest evidence you can produce.**
+Reverting KN-131's fix and watching the defeat go undetected proved the fix was
+load-bearing in a way no passing test could.
+
 ## Next step
 
 `npm run todo -- next` picks it. Do not choose by hand.
@@ -123,12 +132,22 @@ it afterwards invalidates the round that cleared the task. That alone cost round
 `schema.gql` to `generated.ts` to the web app, with a refusal at each step, and
 operations validated against the schema rather than asserted by hand.
 
-**The most urgent thing on the board is KN-131**, filed out of KN-128's roast:
-`apps/web`'s build is `vite build` and nothing else, so `npm run build`, the
-command a deploy runs, never typechecks the web app. Removing a selected field
-from an operation and regenerating leaves the consumer reading a property that is
-no longer there, the build passes, and the screen renders undefined. It is
-critical and it must land before KN-051 wires GitHub Pages.
+**KN-131 is done**: every workspace build now runs the compiler, so `npm run
+build` no longer ships a bundle whose types nothing verified. The correction that
+mattered is worth remembering: the first version planted a type error and ran the
+ROOT build, which proves almost nothing, because `apps/web` resolves
+`@karnama/graphql` to that package's TypeScript SOURCE and web's compiler reports
+an error planted in the package whether or not the package's own build checks
+anything. Each plant runs its own workspace's build now.
+
+**The remaining critical is KN-123**, the migration runner. Both PGlite probes
+are already recorded as notes on the card, so the design is settled before any
+code: `pg_try_advisory_lock` works and is re-entrant, DDL IS transactional so one
+transaction around the migration and its ledger row genuinely gives atomicity,
+`exec` of a failing `BEGIN` block throws the real error, and the catch order is
+FORCED, `ROLLBACK` first or the session is poisoned and the next failure names
+the wrong cause. Two PGlite instances cannot share a dataDir, so the concurrency
+clause needs the lock-request assertion rather than two real runners.
 
 **Two exit conditions on the board contradict themselves.** KN-120's asked that
 the build both PRODUCE the schema and FAIL when it is stale, which cannot both
