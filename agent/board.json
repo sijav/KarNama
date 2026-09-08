@@ -2953,6 +2953,18 @@
           "reviewerScore": 7,
           "reviewerCriticals": 2,
           "at": "2026-09-08T03:07:46.140Z"
+        },
+        {
+          "round": 2,
+          "score": 8,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-128-round-2.2026-09-08T03-09-57-778Z.md",
+          "filed": [],
+          "cardDigest": "2320d878895c1fa70f08aa233b1a2156115c3e2ea6abc88dd30d49b1e52bb2b2",
+          "head": "16404960948cd29666484ad17a1fcfea9676b739",
+          "reviewerScore": 8,
+          "reviewerCriticals": 0,
+          "at": "2026-09-08T03:30:27.629Z"
         }
       ],
       "notes": [],

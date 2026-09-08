@@ -1603,7 +1603,7 @@ HEAD_QUERY is a gql template with a hand-written TypedDocumentNode annotation, a
 
 **Exit condition.** A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case.
 
-**Roasts.** round 1 scored 7 with 2 critical(s)
+**Roasts.** round 1 scored 7 with 2 critical(s); round 2 scored 8 with 0 critical(s)
 
 ### `KN-129` The duplicate-type scan only sees exported top-level declarations
 
