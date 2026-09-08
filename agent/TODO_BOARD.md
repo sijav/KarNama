@@ -2,21 +2,15 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 8 of 107 tasks done · 24 of 395 points.
+Project **KarNama** · 9 of 108 tasks done · 27 of 397 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-005` Theme: tokens, MUI theme, direction and colour scheme provider** (critical, 3 pt, web)
+**Next up: `KN-006` lingui: English source catalog, Persian translation, runtime switch** (critical, 3 pt, web)
 
-## Awaiting roast (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-005` | Theme: tokens, MUI theme, direction and colour scheme provider | critical | 3 | web | KN-003, KN-004 | A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour. |
-
-## Backlog (97)
+## Backlog (98)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -49,6 +43,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
+| `KN-108` | Dark destructive controls fail contrast, because on-accent is one token for two fills | high | 2 | web | KN-005 | Every derived contrastText clears 4.5 to one against every fill the theme pairs it with, a test enumerates those pairs from the theme rather than from a hand-written list, and it fails when a fill changes without its text following. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -118,7 +113,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-102` | The gate-fixtures README describes a file and a mechanism that no longer exist | low | 1 | docs | KN-088 | Every file and mechanism the README names exists, no file in the directory is unmentioned, and a check in agent/scripts/verify/KN-003.mjs fails when a fixture is added or renamed without the README following. |
 | `KN-106` | Localise the Storybook toolbar labels, or decide in writing that they stay English | low | 1 | web | KN-005 | Either the toolbar labels render from the catalog and a story proves it, or AGENTS.md states that Storybook chrome stays English with the reason and a check keeps product strings out of that directory. |
 
-## Done (8)
+## Done (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -129,6 +124,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-001` | The loop, the board, and the tooling that runs them | critical | 3 | agent | none | "npm run todo -- validate" exits 0, "npm run todo -- next" names a task, agent/TODO_BOARD.md renders, "npm run roast" reaches Codex and archives a reply, and AGENTS.md plus DESIGN.md both exist with the Figma tokens transcribed. |
 | `KN-002` | Read the Figma Documentations canvas and fold it into the contract | critical | 3 | design | KN-001 | DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down. |
 | `KN-004` | Read the remaining type scale and any missing tokens from Figma | critical | 3 | design | KN-001 | A named sweep of the Foundations canvas finds no token absent from DESIGN.md, every value in the DESIGN.md tables is traceable to a Figma node id, and the KN-001 verify script's type-scale check still passes. |
+| `KN-005` | Theme: tokens, MUI theme, direction and colour scheme provider | critical | 3 | web | KN-003, KN-004 | A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour. |
 | `KN-003` | Web app scaffold with the full quality gate | critical | 8 | web | KN-001 | On a clean checkout, lint, lint:tsc, test, build and build-storybook all pass in apps/web, and both a deliberately broken test and a deliberately unlocalized string fail the run when planted by hand. |
 
 ## Dropped (1)
@@ -193,7 +189,7 @@ Sweep the Foundations canvas for any token DESIGN.md is still missing, and corre
 
 ### `KN-005` Theme: tokens, MUI theme, direction and colour scheme provider
 
-- **status** review · **severity** critical · **points** 3 · **area** web
+- **status** done · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-003, KN-004
 
 tokens.ts holding the Figma token set as typed constants, theme.ts mapping them onto MUI, and AppThemeProvider owning both colour scheme (light, dark, system) and direction, swapping the Emotion cache for RTL and setting dir and lang on the document.
@@ -202,7 +198,7 @@ tokens.ts holding the Figma token set as typed constants, theme.ts mapping them 
 
 **Exit condition.** A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour.
 
-**Roasts.** round 1 scored 2.5 with 2 critical(s)
+**Roasts.** round 1 scored 2.5 with 2 critical(s); round 2 scored 3 with 2 critical(s)
 
 ### `KN-006` lingui: English source catalog, Persian translation, runtime switch
 
@@ -1333,4 +1329,15 @@ The tests around useSystemScheme register a listener, unregister it and resolve 
 **Why.** A roast rated this minor and it is the honest gap: what is tested is the plumbing around the subscription, not that the subscription does anything. useSyncExternalStore is exactly the kind of API where a wrong snapshot function still registers a listener and still never updates.
 
 **Exit condition.** A test emulates a prefers-color-scheme change with the preference set to system and asserts the rendered background moved from the light value to the dark one, and it fails when the store returns a constant.
+
+### `KN-108` Dark destructive controls fail contrast, because on-accent is one token for two fills
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** KN-005
+
+theme.ts gives the single derived text/on-accent to both primary.contrastText and error.contrastText, and darkMode.ts walks that one value against the BRAND background only. On the derived error main it is 3.64 to one and on error hover 4.24, both under 4.5, so a dark destructive button is unreadable while the new contrast suite passes because it only checks blue. Derive a second on-accent for the danger fill, or make the walk take every background a token is used against.
+
+**Why.** A roast rated this critical after recomputing every ratio, and it is the exact shape of the bug the contrast suite was written to catch, one level up: a token checked against one of its backgrounds and used against two. Destructive buttons are the ones where a misread is expensive, and the design has bg/danger/default and hover precisely so a delete looks like a delete.
+
+**Exit condition.** Every derived contrastText clears 4.5 to one against every fill the theme pairs it with, a test enumerates those pairs from the theme rather than from a hand-written list, and it fails when a fill changes without its text following.
 

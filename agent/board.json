@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 108,
+  "nextId": 109,
   "tasks": [
     {
       "id": "KN-001",
@@ -309,7 +309,7 @@
         "KN-003",
         "KN-004"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour.",
       "roasts": [
         {
@@ -328,6 +328,20 @@
           "reviewerScore": 2.5,
           "reviewerCriticals": 2,
           "at": "2026-09-08T00:13:03.864Z"
+        },
+        {
+          "round": 2,
+          "score": 3,
+          "criticals": 2,
+          "file": "agent/roasts/KN-005-round-2.2026-09-08T00-14-26-198Z.md",
+          "filed": [
+            "KN-108"
+          ],
+          "cardDigest": "87dcd98f478a5d44a997e1b5e90969aeef647d7c80c6af202dcee041bf8b4afc",
+          "head": "f91bec1974f84fa6c1a75e9a5b4c9ac4bef9b215",
+          "reviewerScore": 3,
+          "reviewerCriticals": 2,
+          "at": "2026-09-08T00:18:02.452Z"
         }
       ],
       "notes": [
@@ -335,8 +349,10 @@
         "PARTLY DELIVERED BY KN-003, checked against the code rather than remembered. Already exists and is tested: apps/web/src/theme/tokens.ts with the full Figma set as typed constants including both effect styles, theme.ts mapping them onto MUI with a buildTheme(direction), rtl.ts with the emotion caches and the exported plugin lists, AppProviders setting dir and lang on documentElement, and a Foundations/Tokens story with five families driven from args. 63 tests at 100 percent coverage include tokens.test.ts, which reads DESIGN.md and asserts every value against the contract rather than restating it, and theme.test.ts, which renders CSS through stylis and proves the RTL flip and the ::placeholder rule. WHAT IS LEFT, and it is the whole remaining point of this card: colour scheme, light dark and system, is NOT built. There is no dark palette, no Storybook theme toolbar, and no persistence. Also missing is the exit condition test that asserts no component file contains a raw hex colour, which nothing currently checks. DESIGN.md section on dark mode is the source for the palette."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-08T00:02:36.092Z",
-      "verify": "node agent/scripts/verify/KN-005.mjs"
+      "updatedAt": "2026-09-08T00:18:05.424Z",
+      "verify": "node agent/scripts/verify/KN-005.mjs",
+      "evidence": "The exit condition has three clauses and each was checked by running or by looking. The Tokens story renders every colour, spacing and radius token with its name and value, in five families driven from args, and it reads the THEME rather than the token module, so the toolbar changes what it shows: seen at localhost:6008 in light and dark. The theme switches light and dark from the Theme toolbar and RTL and LTR from the Language toolbar, all four combinations seen in a browser. A test asserts no component file contains a raw hex, and it carries a guard that fails if the file walk finds nothing, which is the way that class of test usually lies. Beyond the letter of it: the dark palette is DERIVED, as DESIGN.md requires, the code says so, and the verifier fails on any hex literal in darkMode.ts, so a hand-picked table cannot quietly replace the derivation. Round 1 found that eight of nine dark chips were unreadable at between 1.01 and 1.51 to one while every HSL test passed; that is fixed, and round 2 recomputed every ratio and confirmed the chips now run 4.50 to 8.09 and the four text roles 4.57 to 10.16. 151 tests at 100 percent on all four metrics, lint, tsc, build and storybook build clean, nine planted breaks on the verifier all caught. What this does NOT establish, all filed: text/on-accent is one token used as contrastText for both the brand and the danger fill and clears the ratio only on brand, KN-108; nothing in the product sets the scheme so dark exists only in Storybook, KN-104; the no-raw-value guard skips all of src/theme where the story with raw values lives, KN-105; the toolbar labels are bare English, KN-106; and nothing drives a media query change through to a repaint, KN-107.",
+      "closedAt": "2026-09-08T00:18:05.424Z"
     },
     {
       "id": "KN-006",
@@ -2356,8 +2372,11 @@
       "status": "backlog",
       "exit": "A user can choose light, dark or system in the running app, the choice survives a reload, an e2e test proves both, and the same mechanism carries the language choice.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-08T00:12:37.579Z"
+      "notes": [
+        "ROAST RAISED THIS TWICE, rating it critical both times: main.tsx mounts AppProviders with no preference, so production is permanently light and the whole colour scheme exists only through the Storybook toolbar. Recorded here rather than argued: the reviewer is right that filing a card does not make the provider usable, and the reason it is a card is the loop rule, not a judgement that it does not matter. Also worth carrying into this work: light text/secondary on bg/page is 4.51 to one and the light interview chip is 4.51, both passing by a hair, so a page token that gets slightly lighter breaks them."
+      ],
+      "createdAt": "2026-09-08T00:12:37.579Z",
+      "updatedAt": "2026-09-08T00:17:47.535Z"
     },
     {
       "id": "KN-105",
@@ -2373,8 +2392,11 @@
       "status": "backlog",
       "exit": "The token modules are excluded by name rather than by directory, Tokens.stories.tsx is scanned and its raw values are gone, the scan also rejects rgb(), hsl() and named colours, and a planted violation in each covered form fails the run.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-08T00:12:37.686Z"
+      "notes": [
+        "ROAST CONFIRMED IT A SECOND TIME, in round 2 of KN-005, with the specific values: Tokens.stories.tsx hardcodes 40 and 16 as sizes and 999 as a radius, and lives inside the directory the guard skips, so the guard cannot establish the no-component-file invariant it claims. Not new information, recorded because a finding raised twice is evidence the card matters more than its severity says."
+      ],
+      "createdAt": "2026-09-08T00:12:37.686Z",
+      "updatedAt": "2026-09-08T00:17:47.432Z"
     },
     {
       "id": "KN-106",
@@ -2409,6 +2431,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T00:12:53.295Z"
+    },
+    {
+      "id": "KN-108",
+      "title": "Dark destructive controls fail contrast, because on-accent is one token for two fills",
+      "desc": "theme.ts gives the single derived text/on-accent to both primary.contrastText and error.contrastText, and darkMode.ts walks that one value against the BRAND background only. On the derived error main it is 3.64 to one and on error hover 4.24, both under 4.5, so a dark destructive button is unreadable while the new contrast suite passes because it only checks blue. Derive a second on-accent for the danger fill, or make the walk take every background a token is used against.",
+      "why": "A roast rated this critical after recomputing every ratio, and it is the exact shape of the bug the contrast suite was written to catch, one level up: a token checked against one of its backgrounds and used against two. Destructive buttons are the ones where a misread is expensive, and the design has bg/danger/default and hover precisely so a delete looks like a delete.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-005"
+      ],
+      "status": "backlog",
+      "exit": "Every derived contrastText clears 4.5 to one against every fill the theme pairs it with, a test enumerates those pairs from the theme rather than from a hand-written list, and it fails when a fill changes without its text following.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:17:47.337Z"
     }
   ]
 }
