@@ -9,7 +9,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "build": "npm run codegen:check",
+    "build": "npm run codegen:check && tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
     "lint:tsc": "tsc --noEmit",
     "test": "vitest run --coverage",

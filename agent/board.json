@@ -3070,11 +3070,12 @@
       "points": 2,
       "area": "infra",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Removing a selected field from the health operation and regenerating makes npm run build fail, proved by planting exactly that, and the failure names the consumer file rather than something incidental. Every workspace build either typechecks its own sources or the verifier records why it cannot.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-08T03:06:29.161Z"
+      "createdAt": "2026-09-08T03:06:29.161Z",
+      "updatedAt": "2026-09-08T05:12:34.410Z"
     },
     {
       "id": "KN-132",
