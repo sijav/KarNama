@@ -39,6 +39,10 @@ const API_SCHEMA = join(API, 'schema.gql')
 // for the mutation I had not thought of and that was it.
 // Removed in a `finally`, and the restoration check proves it is gone.
 const PROBE = join(ROOT, 'apps', 'web', 'src', 'core', 'api', 'kn-128-probe.ts')
+// How tsc names it, relative to the workspace it runs in. Attribution matched a
+// bare basename before, so a file with the same name anywhere in the web app
+// would have been read as the probe.
+const PROBE_AS_TSC_NAMES_IT = 'src/core/api/kn-128-probe.ts'
 
 // This script writes to these, and to nothing else. Snapshotted here rather
 // than inside the checks, so the restoration check compares against the state
@@ -199,13 +203,34 @@ check('ADDING A REQUIRED FIELD TO Health DOES NOT CHANGE THE QUERY TYPE, proved 
     // an unselected field typechecks and is undefined at runtime. So read the
     // field through the query type and require the compiler to refuse.
     try {
+      // Baseline FIRST, with the plant applied and no probe present. Without it
+      // "the plant broke something outside the probe" cannot tell a break this
+      // script caused from one that was already there, and every conclusion
+      // below rests on the difference.
+      const baseline = run('npm run lint:tsc --workspace @karnama/web')
+      if (baseline.status !== 0) {
+        const detail = plain(`${baseline.stdout ?? ''}${baseline.stderr ?? ''}`)
+        // The planted field appearing here at all is the defect itself, one
+        // layer earlier than the probe would have found it: something in the
+        // web app is typed as the whole Health object, so adding a field to
+        // Health changed what the app believes a response contains.
+        if (/addedByTheVerifier/.test(detail)) {
+          return `the web app demands a field the query never selected, before any probe exists, so a consumer type is the whole object rather than the selection:\n${detail.slice(-500)}`
+        }
+        return `the web app does not typecheck with the planted field and no probe, so nothing below is attributable:\n${detail.slice(-500)}`
+      }
+
       writeFileSync(
         PROBE,
         [
           '// Written by agent/scripts/verify/KN-128.mjs, and deleted by it.',
-          '// Imports through the CONSUMER module, not from the generated file,',
-          '// so a web re-export that aliases the wrong type fails here.',
-          "import type { HealthQuery } from './health'",
+          '// Imports through the PUBLIC BARREL, which is what a screen imports.',
+          '// Importing ./health directly proved the module was right and nothing',
+          '// about the surface: re-exporting `type Query as HealthQuery` from',
+          '// index.ts restores the whole-object type on the public API while the',
+          '// module underneath stays correct. Every layer a consumer goes',
+          '// through has to be on the path this probe takes.',
+          "import type { HealthQuery } from './index'",
           '',
           '// The positive control. A response type of `never` would reject the',
           '// unselected field below with the same error code while proving',
@@ -224,15 +249,17 @@ check('ADDING A REQUIRED FIELD TO Health DOES NOT CHANGE THE QUERY TYPE, proved 
       )
       const probe = run('npm run lint:tsc --workspace @karnama/web')
       if (probe.status === 0) return 'a field the query never selected can be read through the response type'
-      const output = plain(`${probe.stdout ?? ''}${probe.stderr ?? ''}`)
+      // Separators normalised, because tsc prints Windows paths with
+      // backslashes and the comparison below is written with forward ones.
+      const output = plain(`${probe.stdout ?? ''}${probe.stderr ?? ''}`).replaceAll('\\', '/')
       // Errors ON THE PROBE, separated from everything else. A run where the
       // plant broke some other file is a run this check cannot conclude from,
       // and the earlier version reported exactly that state as "it refused, but
       // not this property access", which pointed the reader at the wrong file.
       // Fail closed, and say which.
       const errors = output.split('\n').filter((line) => /error TS\d+/.test(line))
-      const onProbe = errors.filter((line) => line.includes('kn-128-probe.ts'))
-      const elsewhere = errors.filter((line) => !line.includes('kn-128-probe.ts'))
+      const onProbe = errors.filter((line) => line.includes(PROBE_AS_TSC_NAMES_IT))
+      const elsewhere = errors.filter((line) => !line.includes(PROBE_AS_TSC_NAMES_IT))
       if (elsewhere.length) {
         return `the plant broke ${elsewhere.length} thing(s) outside the probe, so this run proves nothing about the response type:\n${elsewhere.slice(0, 3).join('\n')}`
       }
@@ -243,6 +270,14 @@ check('ADDING A REQUIRED FIELD TO Health DOES NOT CHANGE THE QUERY TYPE, proved 
       // property, which separates "the compiler rejected THIS access" from
       // "the compiler rejected something and the name appeared in the message".
       const only = onProbe[0]
+      // The positive control failing over the planted field is its own answer,
+      // and a useful one: it means the response type DEMANDS a field the query
+      // never selected, which is the whole-object type arriving through some
+      // layer between the generated file and here. Say that rather than
+      // reporting it as the wrong property access.
+      if (/TS274\d/.test(only) && /addedByTheVerifier/.test(only)) {
+        return `the response type requires a field the query never selected, so a layer between the generated types and the barrel is handing back the whole object:\n${only}`
+      }
       if (!/TS2339/.test(only) || !/addedByTheVerifier/.test(only)) {
         return `it refused, but not this property access on the probe:\n${only}`
       }
