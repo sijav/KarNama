@@ -2738,7 +2738,7 @@
       "parent": [
         "KN-033"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "npm run build produces schema.gql without starting a server, the file is committed, and a check fails when the resolvers and the committed schema disagree.",
       "roasts": [
         {
@@ -2755,14 +2755,31 @@
           "reviewerScore": 3.5,
           "reviewerCriticals": 2,
           "at": "2026-09-08T02:09:58.611Z"
+        },
+        {
+          "round": 2,
+          "score": 4,
+          "criticals": 2,
+          "file": "agent/roasts/KN-120-round-2.2026-09-08T02-10-18-184Z.md",
+          "filed": [
+            "KN-127"
+          ],
+          "cardDigest": "0bd268fe7a8de48db41afea58512982755e272ec0d1c71c6f5e7f536762d1366",
+          "head": "2c6aa3d48f48c2fa867061d37d442600f2e11c6c",
+          "reviewerScore": 4,
+          "reviewerCriticals": 2,
+          "dismissed": "The first critical is a real observation and not a defect to fix. The exit condition says npm run build produces schema.gql; the build now CHECKS it and schema:update produces it. Making build produce it is what round 1 correctly called critical, because a build that regenerates the artefact before comparing it destroys the evidence it is supposed to reject, and the third clause of the same exit condition, that a check fails when the resolvers and the committed schema disagree, cannot hold at the same time. The two clauses are contradictory as written. I have taken the third, which is the one with the guarantee in it, and said so in the evidence rather than quietly rewriting the first. The substance of the first clause, that the schema can be produced without starting a server, is met by schema:update and is verified with an empty environment.",
+          "at": "2026-09-08T02:13:03.715Z"
         }
       ],
       "notes": [
         "RAISED TO CRITICAL because it blocks one. KN-035, the codegen, generates the client types from schema.gql, so a schema that is gitignored and only appears when the server boots makes that card impossible to do honestly. The board refused to record the dependency while this was merely high, on the grounds that a blocker less severe than what it blocks never gets picked first, which is the right refusal and is why this is now critical rather than why the dependency was dropped."
       ],
       "createdAt": "2026-09-08T01:13:12.633Z",
-      "updatedAt": "2026-09-08T01:56:23.084Z",
-      "verify": "node agent/scripts/verify/KN-120.mjs"
+      "updatedAt": "2026-09-08T02:13:45.553Z",
+      "verify": "node agent/scripts/verify/KN-120.mjs",
+      "evidence": "The schema is a committed, tracked file, produced by npm run schema:update from the same decorators the server reads, with no server, no environment and no database: the verifier compiles and generates with WEB_ORIGIN, DATABASE_URL and PORT all absent. The server builds its schema in memory now, so starting it in the wrong directory can no longer rewrite the contract. A stale schema fails the ORDINARY build, proved by appending a type nobody wrote and running npm run build, which is the clause that matters and the one round 1 found false. Nine checks pass, and six planted mutations were caught: re-ignoring the file, putting generation back on the boot path, removing the check from the build, making the comparison always return equal, deleting the sentence that says how to fix it, and emptying the resolver list. One clause is NOT met as literally worded, and I would rather say so than rewrite it. The card says npm run build produces schema.gql; it checks it, and schema:update produces it. Making the build produce it is exactly what round 1 rated critical, because a build that regenerates the artefact before comparing destroys the evidence it should reject, and the third clause of the same condition, that a check fails when the resolvers and the committed schema disagree, cannot hold at the same time. The two clauses contradict each other; I took the one carrying the guarantee. What else this does NOT establish, both filed: nothing asserts there is exactly one graphql in the tree, which is the unmeasured half of the two-project Vitest workaround recorded as TECH-DEBT 10, KN-126; and the check that the generator and the application share one list reads source text, so a resolver default-exported from a file not named *.resolver.ts and registered with a space before the colon reaches the server without reaching the schema while everything stays green, KN-127, now high with the reviewer exact bypasses on it.",
+      "closedAt": "2026-09-08T02:13:45.553Z"
     },
     {
       "id": "KN-121",
@@ -2871,8 +2888,8 @@
       "title": "The resolver-registration check reads text rather than the container",
       "desc": "src/graphql/schema.test.ts proves the generator and the application share one list by grepping graphql.module.ts for providers: [...resolvers] and grepping other module files for a stray Resolver provider. That misses a resolver in a file not named *.resolver.ts, a default export, a re-export under another name, and a resolver registered through a dynamic module. Ask NEST instead: build the application context and compare the resolvers it actually instantiated against the generated schema fields.",
       "why": "A roast rated the previous version of this critical because the two lists were genuinely separate, and they are one list now, which is the important half. What is left is that the CHECK is a text scan standing in for a runtime fact, and a text scan is what let the first version look fine. The application context already boots in the health test, so asking it is cheap.",
-      "severity": "medium",
-      "points": 2,
+      "severity": "high",
+      "points": 3,
       "area": "api",
       "parent": [
         "KN-120"
@@ -2880,8 +2897,11 @@
       "status": "backlog",
       "exit": "A resolver registered in a way the text scan cannot see, a default export in a file not named *.resolver.ts, is detected, and the check reads the resolvers from a booted Nest context rather than from source text.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-08T02:09:40.921Z"
+      "notes": [
+        "ROUND 2 GAVE THE EXACT BYPASSES, and they are worse than the card said. The guard requires the literal text \"providers:\" so \"providers : [ExtraResolver]\" with a space walks past it; it only reads *.module.ts, so a module defined anywhere else is invisible; and the companion scan only reads *.resolver.ts and only matches \"export class Name\", so a default-exported resolver in src/extra.ts is missed by both. The reviewer constructed the case: a resolver registered from an imported module gains its fields in the running server while generation, npm test and npm run build all pass. That is the single-source-of-truth claim failing in the direction that matters, a field the server answers and the contract does not carry. Reading the booted Nest container instead of the source text closes all four at once, which is why this is one card rather than four patches to a regex."
+      ],
+      "createdAt": "2026-09-08T02:09:40.921Z",
+      "updatedAt": "2026-09-08T02:13:03.493Z"
     }
   ]
 }
