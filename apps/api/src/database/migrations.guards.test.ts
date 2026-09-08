@@ -2,7 +2,14 @@ import { mkdtemp, mkdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { PGlite } from '@electric-sql/pglite'
 import { applyMigrations, readMigrations, type SqlRunner } from './migrations.js'
+
+const freshDb = async () => {
+  const db = new PGlite()
+  await db.waitReady
+  return db
+}
 
 /**
  * The guards in the migration runner, exercised.
@@ -129,5 +136,92 @@ describe('applying them through an unfamiliar client', () => {
     await expect(
       applyMigrations(runner, [{ name: '20260101000000_first', sql: 'BEGIN;\nSELECT 1;\nCOMMIT;' }]),
     ).rejects.toThrow(/manages its own transaction/)
+  })
+})
+
+describe('transaction control hidden inside a migration', () => {
+  // Found by a roast, and both cases are the failure this whole card exists to
+  // remove, arriving through the guard rather than around it. The first regex
+  // matched only at the START of a line and knew only four keywords.
+  const runnerOver = (db: { exec: (sql: string) => Promise<unknown> }): SqlRunner => ({ exec: (sql) => db.exec(sql) })
+
+  it('refuses an inline COMMIT, which would commit the DDL and leave the ledger behind', async () => {
+    // `CREATE TABLE x; COMMIT;` on ONE line closes the wrapper early. The DDL
+    // commits, the next statement fails, the rollback has nothing to undo, and
+    // the ledger records a failure for a migration that actually ran. The next
+    // deploy replays it and dies on the table that already exists.
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [
+        { name: '20260101000000_inline', sql: 'CREATE TABLE probe_inline (id int); COMMIT;\nCREATE TABLE probe_inline (id int);' },
+      ]),
+    ).rejects.toThrow(/manages its own transaction/)
+    await db.close()
+  })
+
+  it('refuses ABORT, which would record success for a migration that did nothing', async () => {
+    // The worst of the set. ABORT rolls the wrapper back, so the DDL vanishes,
+    // and the ledger INSERT then runs outside any transaction and COMMITS a
+    // successful row. The migration is recorded as applied, the table does not
+    // exist, and every later deploy skips it. Silent and permanent.
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [{ name: '20260101000000_abort', sql: 'CREATE TABLE probe_abort (id int);\nABORT;' }]),
+    ).rejects.toThrow(/manages its own transaction/)
+    await db.close()
+  })
+
+  it('refuses END, which is COMMIT under another name', async () => {
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [{ name: '20260101000000_end', sql: 'CREATE TABLE probe_end (id int);\nEND;' }]),
+    ).rejects.toThrow(/manages its own transaction/)
+    await db.close()
+  })
+
+  it('ACCEPTS a DO block, whose BEGIN and END belong to PL/pgSQL rather than to a transaction', async () => {
+    // The other half of the same fix, and the reason a keyword search is not
+    // enough: this is valid, common, and must not be rejected.
+    const db = await freshDb()
+    const applied = await applyMigrations(runnerOver(db), [
+      {
+        name: '20260101000000_do',
+        sql: "DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'probe_enum') THEN CREATE TYPE probe_enum AS ENUM ('a'); END IF; END $$;",
+      },
+    ])
+    expect(applied).toEqual(['20260101000000_do'])
+    await db.close()
+  })
+
+  it('ACCEPTS a migration whose text merely mentions a keyword in a string or a comment', async () => {
+    const db = await freshDb()
+    const applied = await applyMigrations(runnerOver(db), [
+      {
+        name: '20260101000000_mentions',
+        sql: "-- COMMIT is mentioned here\nCREATE TABLE probe_mentions (note text DEFAULT 'ROLLBACK; BEGIN;');",
+      },
+    ])
+    expect(applied).toEqual(['20260101000000_mentions'])
+    await db.close()
+  })
+})
+
+describe('the ledger DDL and the lock', () => {
+  it('takes the lock BEFORE creating the ledger, because CREATE TABLE IF NOT EXISTS is not race safe', async () => {
+    // Two sessions can both see the table as absent and one then fails with a
+    // catalog uniqueness violation despite IF NOT EXISTS. Advisory locks do not
+    // depend on any user table, so the lock can and must come first. The comment
+    // this replaced claimed both runners would succeed, which was simply wrong.
+    const statements: string[] = []
+    const runner: SqlRunner = {
+      exec: (sql: string) => {
+        statements.push(sql)
+        if (sql.startsWith('SELECT pg_try_advisory_lock')) return Promise.resolve([{ rows: [{ got: true }] }])
+        return Promise.resolve([{ rows: [] }])
+      },
+    }
+    await applyMigrations(runner, [])
+    expect(statements[0]).toMatch(/pg_try_advisory_lock/)
+    expect(statements.findIndex((sql) => sql.includes('_karnama_migrations'))).toBeGreaterThan(0)
   })
 })

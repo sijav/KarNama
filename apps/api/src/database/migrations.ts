@@ -72,10 +72,43 @@ const LOCK_KEY = 8_231_123
 
 /**
  * Migration SQL may not manage its own transaction, because this runner wraps
- * it in one. Prisma does not emit transaction control, so this is a guard
- * against a hand-written migration rather than against the generator.
+ * it in one. Prisma does not emit transaction control, so this guards against a
+ * hand-written migration rather than against the generator.
+ *
+ * This has to be SQL-aware rather than a keyword search, and a roast proved why
+ * by getting three cases past the line-anchored version that preceded it:
+ *
+ * - `CREATE TABLE x (id int); COMMIT;` on ONE line. The wrapper closes early,
+ *   the DDL commits, a later statement fails, the ROLLBACK has nothing left to
+ *   undo, and the ledger records a failure for a migration that really ran. The
+ *   next deploy replays it and dies on the table that now exists.
+ * - `ABORT;`, which is ROLLBACK under another name and was not in the list.
+ *   The DDL is discarded and the ledger INSERT then runs outside any
+ *   transaction and commits SUCCESS. The migration is recorded as applied, the
+ *   table does not exist, and every later deploy skips it. Silent, permanent.
+ * - `END;`, which is COMMIT under another name.
+ *
+ * And it must not fire on the other side: `DO $$ BEGIN ... END $$` is ordinary
+ * PL/pgSQL, and a keyword inside a string or a comment is just text. So the
+ * noise is removed first and then each statement is judged by what it STARTS
+ * with, which is the only place transaction control can appear.
  */
-const TRANSACTION_CONTROL = /^\s*(BEGIN|COMMIT|ROLLBACK|START\s+TRANSACTION)\b/im
+const CONTROL_KEYWORDS = /^(BEGIN|COMMIT|ROLLBACK|ABORT|END|START\s+TRANSACTION|SAVEPOINT|RELEASE\s+SAVEPOINT)\b/i
+
+const withoutNoise = (sql: string): string =>
+  sql
+    // Dollar-quoted bodies, tagged first so `$tag$ ... $tag$` is not cut short
+    // by the untagged pattern.
+    .replace(/\$([A-Za-z_]\w*)\$[\s\S]*?\$\1\$/g, ' ')
+    .replace(/\$\$[\s\S]*?\$\$/g, ' ')
+    .replace(/--[^\n]*/g, ' ')
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/'(?:[^']|'')*'/g, "''")
+
+const managesItsOwnTransaction = (sql: string): boolean =>
+  withoutNoise(sql)
+    .split(';')
+    .some((statement) => CONTROL_KEYWORDS.test(statement.trim()))
 
 const LEDGER = `
   CREATE TABLE IF NOT EXISTS "_karnama_migrations" (
@@ -162,18 +195,22 @@ export const applyMigrations = async (
   migrations: Migration[],
   options: ApplyOptions = {},
 ): Promise<string[]> => {
-  const offender = migrations.find((migration) => TRANSACTION_CONTROL.test(migration.sql))
+  const offender = migrations.find((migration) => managesItsOwnTransaction(migration.sql))
   if (offender) {
     throw new Error(`migration ${offender.name} manages its own transaction, which this runner already does`)
   }
 
-  await runner.exec(LEDGER)
-  // The ledger's own DDL runs OUTSIDE the lock, because the lock is taken
-  // through a table that has to exist first. Every statement in it is
-  // idempotent, so two runners racing here both succeed.
+  // The lock comes FIRST, before the ledger exists. An earlier version created
+  // the ledger first and carried a comment claiming two racing runners would
+  // both succeed because every statement was idempotent. That was wrong:
+  // `CREATE TABLE IF NOT EXISTS` is not race safe, and two sessions can both
+  // see the table as absent and one then fail on a catalog uniqueness
+  // violation. Advisory locks depend on no user table, so nothing forced that
+  // order in the first place.
   await takeLock(runner, options.lockAttempts ?? 30, options.lockRetryMs ?? 1000)
 
   try {
+    await runner.exec(LEDGER)
     const applied: string[] = []
     for (const migration of migrations) {
       const checksum = checksumOf(migration.sql)

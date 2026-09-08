@@ -119,6 +119,34 @@ const regressions = [
     apply: (code) => code.replace('  if (offender) {', '  if (false && offender) {'),
     expect: 'refuses a migration that manages its own transaction',
   },
+  {
+    // The line-anchored keyword search this replaced. A roast got an inline
+    // COMMIT, an ABORT and an END past it, and the last of those records a
+    // migration as applied while the table it should have created does not
+    // exist, which every later deploy then skips.
+    name: 'transaction control is detected by a line-anchored keyword search again',
+    apply: (code) =>
+      code.replace(
+        'const managesItsOwnTransaction = (sql: string): boolean =>\n  withoutNoise(sql)\n    .split(\';\')\n    .some((statement) => CONTROL_KEYWORDS.test(statement.trim()))',
+        'const managesItsOwnTransaction = (sql: string): boolean => /^\\s*(BEGIN|COMMIT|ROLLBACK|START\\s+TRANSACTION)\\b/im.test(sql)',
+      ),
+    expect: 'refuses ABORT, which would record success for a migration that did nothing',
+  },
+  {
+    // Without the noise stripping the guard fires on valid PL/pgSQL, which is
+    // the opposite failure and just as real: a correct migration is refused.
+    name: 'the guard stops ignoring strings, comments and dollar-quoted bodies',
+    apply: (code) => code.replace('const withoutNoise = (sql: string): string =>\n  sql\n', 'const withoutNoise = (sql: string): string =>\n  String(sql) ?? sql\n'),
+    expect: 'ACCEPTS a DO block',
+  },
+  {
+    name: 'the ledger is created before the lock is taken again',
+    apply: (code) =>
+      code
+        .replace('  await takeLock(runner, options.lockAttempts ?? 30, options.lockRetryMs ?? 1000)', '  await runner.exec(LEDGER)\n  await takeLock(runner, options.lockAttempts ?? 30, options.lockRetryMs ?? 1000)')
+        .replace('  try {\n    await runner.exec(LEDGER)\n    const applied: string[] = []', '  try {\n    const applied: string[] = []'),
+    expect: 'takes the lock BEFORE creating the ledger',
+  },
 ]
 
 check('REMOVING ANY ONE GUARANTEE MAKES THE SUITE FAIL, proved by removing each', () => {
