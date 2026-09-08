@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 14 of 135 tasks done · 51 of 455 points.
+Project **KarNama** · 14 of 136 tasks done · 51 of 458 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-128` | Generate typed GraphQL operations instead of asserting them by hand | critical | 3 | graphql | KN-035 | A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case. |
 
-## Backlog (119)
+## Backlog (120)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -76,6 +76,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-119` | Nothing tests CORS, the port binding or the startup path | high | 3 | api | KN-033 | A preflight from an unexpected origin does not receive that origin back, a test covers the CORS options and the port resolution without binding a port, main.ts is no longer excluded from coverage wholesale, and changing origin to true fails the run. |
 | `KN-124` | Status history is documented as immutable and nothing enforces it | high | 3 | api | KN-034 | An UPDATE or a DELETE against status_history is rejected by the database, deleting a job record still removes its history through the cascade, and both are proved against PGlite. |
 | `KN-127` | The resolver-registration check reads text rather than the container | high | 3 | api | KN-120 | A resolver registered in a way the text scan cannot see, a default export in a file not named *.resolver.ts, is detected, and the check reads the resolvers from a booted Nest context rather than from source text. |
+| `KN-136` | Commit the mutation cases, so a verifier's claim can be re-run | high | 3 | agent | none | One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass. |
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | high | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | high | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
@@ -1681,4 +1682,15 @@ packages/graphql/vitest.config.ts sets thresholds of 100 for statements, branche
 **Why.** This repository's stated position is that a test asserting nothing is worse than no test because it reports green, and a threshold measuring nothing is the same thing one level up. It matters now rather than later because the package is about to grow: KN-129 and KN-130 add operations, and whoever adds the first piece of logic here will read three green 100s that were green before their file existed.
 
 **Exit condition.** Either adding an uncovered file with real behaviour to packages/graphql makes npm test fail, proved by planting one, or the thresholds are gone and a comment says why coverage does not apply here.
+
+### `KN-136` Commit the mutation cases, so a verifier's claim can be re-run
+
+- **status** backlog · **severity** high · **points** 3 · **area** agent
+- **blocked by** none
+
+Every verifier under agent/scripts/verify has been mutation-tested and several commit messages state a count, but the mutation cases themselves are written to a scratch directory and thrown away. Nobody else can re-run them, which a roast pointed out when it declined to certify a claimed count it had no way to check. The cost is not only external: a mutation silently stops applying when the verifier it targets is edited, and the only reason that was caught three times while working KN-128 was a harness that reports MUTATION DID NOT APPLY instead of counting it as a pass. Give the cases a home, one file per verifier next to it, each case naming what it breaks and the message that must appear, run by a single command. Start with KN-128, whose eighteen cases exist and are known to pass, then backfill the ones whose counts are already in commit messages.
+
+**Why.** This repository's rule is that a check nobody has seen fail is not a check. The mutation cases ARE the evidence that a verifier can fail, so throwing them away leaves the verifier and a number in a commit message that cannot be reproduced. It matters most when a verifier is edited, because a mutation that no longer applies looks exactly like a mutation that passed, and that is the failure that hides a broken checker.
+
+**Exit condition.** One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass.
 

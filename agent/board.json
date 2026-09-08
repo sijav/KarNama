@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 136,
+  "nextId": 137,
   "tasks": [
     {
       "id": "KN-001",
@@ -3079,6 +3079,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T03:09:21.563Z"
+    },
+    {
+      "id": "KN-136",
+      "title": "Commit the mutation cases, so a verifier's claim can be re-run",
+      "desc": "Every verifier under agent/scripts/verify has been mutation-tested and several commit messages state a count, but the mutation cases themselves are written to a scratch directory and thrown away. Nobody else can re-run them, which a roast pointed out when it declined to certify a claimed count it had no way to check. The cost is not only external: a mutation silently stops applying when the verifier it targets is edited, and the only reason that was caught three times while working KN-128 was a harness that reports MUTATION DID NOT APPLY instead of counting it as a pass. Give the cases a home, one file per verifier next to it, each case naming what it breaks and the message that must appear, run by a single command. Start with KN-128, whose eighteen cases exist and are known to pass, then backfill the ones whose counts are already in commit messages.",
+      "why": "This repository's rule is that a check nobody has seen fail is not a check. The mutation cases ARE the evidence that a verifier can fail, so throwing them away leaves the verifier and a number in a commit message that cannot be reproduced. It matters most when a verifier is edited, because a mutation that no longer applies looks exactly like a mutation that passed, and that is the failure that hides a broken checker.",
+      "severity": "high",
+      "points": 3,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T04:01:31.724Z"
     }
   ]
 }

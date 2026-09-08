@@ -30,10 +30,15 @@ const GENERATED = join(PKG, 'src', 'generated.ts')
 const MODEL = join(API, 'src', 'health', 'health.model.ts')
 const RESOLVER = join(API, 'src', 'health', 'health.resolver.ts')
 const API_SCHEMA = join(API, 'schema.gql')
-// Temporary, and inside `src` because that is what `lint:tsc` typechecks. It is
-// removed in a `finally`, and the last check compares every file below against
-// a snapshot to prove nothing was left behind.
-const PROBE = join(PKG, 'src', 'kn-128-probe.ts')
+// Temporary, and in the WEB app beside the module it imports, because that is
+// the contract that matters. An earlier version put it next to `generated.ts`
+// and imported from there, which proved the generated type was a selection and
+// nothing about what the app receives. Changing the web re-export to
+// `import { type Query as HealthQuery }` would have restored the whole-object
+// defect this card removed while every check here still passed. A roast asked
+// for the mutation I had not thought of and that was it.
+// Removed in a `finally`, and the restoration check proves it is gone.
+const PROBE = join(ROOT, 'apps', 'web', 'src', 'core', 'api', 'kn-128-probe.ts')
 
 // This script writes to these, and to nothing else. Snapshotted here rather
 // than inside the checks, so the restoration check compares against the state
@@ -198,33 +203,48 @@ check('ADDING A REQUIRED FIELD TO Health DOES NOT CHANGE THE QUERY TYPE, proved 
         PROBE,
         [
           '// Written by agent/scripts/verify/KN-128.mjs, and deleted by it.',
-          "import type { HealthQuery } from './generated.js'",
+          '// Imports through the CONSUMER module, not from the generated file,',
+          '// so a web re-export that aliases the wrong type fails here.',
+          "import type { HealthQuery } from './health'",
           '',
           '// The positive control. A response type of `never` would reject the',
           '// unselected field below with the same error code while proving',
           '// nothing, so the SELECTED fields have to stay readable.',
           'export const readsTheSelection = (q: HealthQuery) => `${q.health.status}${q.health.environment}${q.health.uptimeSeconds}`',
           '',
+          '// And nothing beyond the selection is REQUIRED of a response. This is',
+          '// the direction that catches a consumer aliasing the whole object',
+          '// type: `Health` demands the planted field, the selection does not.',
+          'export const acceptsExactlyTheSelection = (v: { readonly status: string; readonly environment: string; readonly uptimeSeconds: number }): HealthQuery[\'health\'] => v',
+          '',
           '// The case under test. Must not compile.',
           'export const reachesAnUnselectedField = (q: HealthQuery) => q.health.addedByTheVerifier',
           '',
         ].join('\n'),
       )
-      const probe = run('npm run lint:tsc --workspace @karnama/graphql')
+      const probe = run('npm run lint:tsc --workspace @karnama/web')
       if (probe.status === 0) return 'a field the query never selected can be read through the response type'
       const output = plain(`${probe.stdout ?? ''}${probe.stderr ?? ''}`)
-      // EXACTLY one error, read from tsc's own summary line. More than one
-      // means the positive control failed too, so the response type is broken
-      // rather than merely correct, and a refusal from a broken type proves
-      // nothing about the selection.
-      const found = /Found (\d+) errors? in/.exec(output)
-      if (!found) return `tsc printed no error summary, so the count is unknown:\n${output.slice(-600)}`
-      if (found[1] !== '1') return `expected exactly one type error, got ${found[1]}:\n${output.slice(-600)}`
+      // Errors ON THE PROBE, separated from everything else. A run where the
+      // plant broke some other file is a run this check cannot conclude from,
+      // and the earlier version reported exactly that state as "it refused, but
+      // not this property access", which pointed the reader at the wrong file.
+      // Fail closed, and say which.
+      const errors = output.split('\n').filter((line) => /error TS\d+/.test(line))
+      const onProbe = errors.filter((line) => line.includes('kn-128-probe.ts'))
+      const elsewhere = errors.filter((line) => !line.includes('kn-128-probe.ts'))
+      if (elsewhere.length) {
+        return `the plant broke ${elsewhere.length} thing(s) outside the probe, so this run proves nothing about the response type:\n${elsewhere.slice(0, 3).join('\n')}`
+      }
+      // EXACTLY one, or a positive control failed too and a refusal from a
+      // broken type proves nothing about the selection.
+      if (onProbe.length !== 1) return `expected exactly one error on the probe, got ${onProbe.length}:\n${output.slice(-600)}`
       // TS2339 is "property does not exist on type", named together with the
-      // file and the property, which separates "the compiler rejected THIS
-      // access" from "the compiler rejected something and the name appeared".
-      if (!/kn-128-probe\.ts.*TS2339.*addedByTheVerifier/s.test(output)) {
-        return `it refused, but not this property access on the probe:\n${output.slice(-600)}`
+      // property, which separates "the compiler rejected THIS access" from
+      // "the compiler rejected something and the name appeared in the message".
+      const only = onProbe[0]
+      if (!/TS2339/.test(only) || !/addedByTheVerifier/.test(only)) {
+        return `it refused, but not this property access on the probe:\n${only}`
       }
       return null
     } finally {
