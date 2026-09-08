@@ -1007,11 +1007,13 @@
       "parent": [
         "KN-033"
       ],
-      "status": "backlog",
+      "status": "review",
       "exit": "Migrations apply to an empty database and to an existing one, the schema covers every field the Figma job record names, status history records every transition with its timestamp, and a seed script produces a realistic archive to develop against.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-08T01:40:43.077Z",
+      "verify": "node agent/scripts/verify/KN-034.mjs"
     },
     {
       "id": "KN-035",

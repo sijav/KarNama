@@ -1,0 +1,244 @@
+// KarNama's data model.
+//
+// The trail is the product, so `StatusHistory` is a TABLE rather than a column
+// on the job record. `DESIGN.md` puts it plainly: every status change appends an
+// entry with its timestamp and history is never rewritten. A column holding the
+// current status would answer "where is this now" and lose "how did it get
+// here", which is the only question the archive exists to answer.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// A person using KarNama. Auth is phone OTP, so the phone is the identity and
+/// the name is asked only on first sign-in, which is why it is nullable here
+/// even though the sign-up form requires it.
+model User {
+  id        String   @id @default(uuid())
+  phone     String   @unique
+  /// Optional in the database, required by the first-sign-in form. The database
+  /// carries the weaker constraint on purpose: a row can exist between the code
+  /// being verified and the name being given.
+  name      String?
+  /// The email fallback DESIGN.md describes, behind the same interface as the
+  /// phone. Nullable and unique-when-present.
+  email     String?  @unique
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  statuses    Status[]
+  jobRecords  JobRecord[]
+  contacts    Contact[]
+  moderations FeedbackSubmission[] @relation("ModeratedBy")
+
+  @@map("users")
+}
+
+/// A column on the kanban board.
+///
+/// A status LABEL is data, not a catalog message, because the user can rename
+/// any of them, including the five the design ships with. The colour is assigned
+/// automatically from the four reserved slots and is never a required input.
+model Status {
+  id     String @id @default(uuid())
+  userId String
+
+  /// The design's own key for the five defaults, `new`, `applied`, `interview`,
+  /// `rejected`, `offer`, and null for a status the user created. It is what
+  /// lets a renamed default still be recognised as the first stage.
+  key   String?
+  name  String
+  /// Which of the nine token pairs paints it. The four custom slots are
+  /// assigned round-robin, so this is never asked for.
+  color String
+
+  /// Board order. The RIGHTMOST column is the first stage because the board is
+  /// RTL, so position 0 is the first stage and the renderer decides which edge
+  /// that is. Storing a visual edge here would bake the direction into the data.
+  position Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobRecords JobRecord[]
+  movedFrom  StatusHistory[] @relation("FromStatus")
+  movedTo    StatusHistory[] @relation("ToStatus")
+
+  @@unique([userId, position])
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("statuses")
+}
+
+/// A job opportunity, which is the record the user tracks. NOT an آگهی: that
+/// word belongs to the external posting, and `postingUrl` and `source` are the
+/// only parts of this record that refer to one.
+model JobRecord {
+  id     String @id @default(uuid())
+  userId String
+
+  /// The three the design requires. `status` is never absent, so `statusId` is
+  /// not nullable: a record arrives with the default and moves from there.
+  title    String
+  company  String
+  statusId String
+
+  postingUrl  String?
+  location    String?
+  /// Free text rather than an enum, deliberately. The option lists at `434:33`
+  /// are marked UNCONFIRMED in the design and are tracked by KN-073, and an enum
+  /// would turn confirming them into a migration over user data.
+  employmentType String?
+  jobLevel       String?
+  experience     String?
+  salary         String?
+  postedAt       DateTime?
+  expiresAt      DateTime?
+  source         String?
+  description    String?
+  skills         String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user          User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status        Status               @relation(fields: [statusId], references: [id], onDelete: Restrict)
+  statusHistory StatusHistory[]
+  notes         Note[]
+  contacts      Contact[]
+  files         FileReference[]
+  feedback      FeedbackSubmission[]
+
+  @@index([userId, statusId])
+  @@index([userId, company])
+  @@map("job_records")
+}
+
+/// Every status change, in order, forever.
+///
+/// There is no `updatedAt` and there is no update path: history is appended and
+/// never rewritten. `fromStatusId` is null for the first entry, which is the
+/// record being created rather than moved.
+model StatusHistory {
+  id           String   @id @default(uuid())
+  jobRecordId  String
+  fromStatusId String?
+  toStatusId   String
+  changedAt    DateTime @default(now())
+
+  jobRecord  JobRecord @relation(fields: [jobRecordId], references: [id], onDelete: Cascade)
+  fromStatus Status?   @relation("FromStatus", fields: [fromStatusId], references: [id], onDelete: SetNull)
+  toStatus   Status    @relation("ToStatus", fields: [toStatusId], references: [id], onDelete: Restrict)
+
+  @@index([jobRecordId, changedAt])
+  @@map("status_history")
+}
+
+/// Someone in the user's network. A full name and nothing else is required.
+///
+/// Whether a contact needs an email or a phone is an OPEN QUESTION in the design
+/// itself, tracked by KN-071, so both are nullable here and neither is enforced.
+/// Adding a constraint now would be answering a question the design asked.
+model Contact {
+  id     String @id @default(uuid())
+  userId String
+
+  fullName String
+  role     String?
+  company  String?
+  email    String?
+  phone    String?
+  social   String?
+
+  /// The tab inside a job opportunity is "Related People"; the standalone page
+  /// is "My Network". A contact can belong to no job opportunity at all, which
+  /// is what makes the network a page rather than a tab.
+  jobRecordId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobRecord JobRecord? @relation(fields: [jobRecordId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([jobRecordId])
+  @@map("contacts")
+}
+
+/// The Note tab. One job opportunity, many notes, ordered by when they arrived.
+model Note {
+  id          String   @id @default(uuid())
+  jobRecordId String
+  body        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  jobRecord JobRecord @relation(fields: [jobRecordId], references: [id], onDelete: Cascade)
+
+  @@index([jobRecordId, createdAt])
+  @@map("notes")
+}
+
+/// The Files tab. A REFERENCE, not the bytes: the file lives in object storage
+/// and this row is how it is found again.
+model FileReference {
+  id          String   @id @default(uuid())
+  jobRecordId String
+  name        String
+  storageKey  String   @unique
+  mimeType    String
+  sizeBytes   Int
+  createdAt   DateTime @default(now())
+
+  jobRecord JobRecord @relation(fields: [jobRecordId], references: [id], onDelete: Cascade)
+
+  @@index([jobRecordId])
+  @@map("file_references")
+}
+
+/// What a third party submitted about a job opportunity.
+///
+/// The owner's rule is that a suggestion is STORED FOR LATER EVALUATION rather
+/// than applied, so `suggestedChanges` is a payload nobody has merged and the
+/// moderation state is what an admin moves. Nothing here writes to JobRecord.
+model FeedbackSubmission {
+  id          String @id @default(uuid())
+  jobRecordId String
+
+  /// The submitter is not a user of KarNama, so they are described rather than
+  /// referenced. Both are optional: an anonymous note is still worth keeping.
+  submitterName  String?
+  submitterEmail String?
+
+  body String
+
+  /// The proposed field changes, exactly as submitted, applied to nothing.
+  suggestedChanges Json?
+
+  state       ModerationState @default(PENDING)
+  moderatedAt DateTime?
+  moderatedById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jobRecord   JobRecord @relation(fields: [jobRecordId], references: [id], onDelete: Cascade)
+  moderatedBy User?     @relation("ModeratedBy", fields: [moderatedById], references: [id], onDelete: SetNull)
+
+  @@index([state, createdAt])
+  @@index([jobRecordId])
+  @@map("feedback_submissions")
+}
+
+enum ModerationState {
+  PENDING
+  ACCEPTED
+  REJECTED
+}

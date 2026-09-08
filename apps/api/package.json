@@ -9,7 +9,10 @@
     "start": "node dist/main.js",
     "lint": "eslint . --max-warnings 0",
     "lint:tsc": "tsc --noEmit",
-    "test": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "db:migrate": "node dist/database/cli-entry.js migrate",
+    "db:seed": "node dist/database/cli-entry.js seed",
+    "db:diff": "prisma migrate diff --from-migrations prisma/migrations --to-schema prisma/schema.prisma --script --exit-code"
   },
   "dependencies": {
     "@apollo/server": "5.5.1",
@@ -20,18 +23,23 @@
     "@nestjs/core": "12.0.1",
     "@nestjs/graphql": "14.0.0",
     "@nestjs/platform-express": "12.0.1",
+    "@prisma/client": "^7.10.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "graphql": "16.14.2",
+    "pg": "^8.18.0",
+    "prisma": "^7.10.0",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2",
     "zod": "4.5.4"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
     "@nestjs/testing": "12.0.1",
     "@swc/core": "1.16.1",
     "@types/express": "^5.0.0",
     "@types/node": "^24.0.0",
+    "@types/pg": "^8.23.1",
     "@types/supertest": "7.2.1",
     "@vitest/coverage-v8": "4.1.11",
     "eslint": "10.9.1",

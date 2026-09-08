@@ -208,3 +208,27 @@ wired but has nothing to extract from.
 **The check that retires this.** `@lingui/swc-plugin` building against the swc
 version `@vitejs/plugin-react-swc` resolves, `lingui extract` producing the
 catalogs, and the hand written ones deleted.
+
+---
+
+## 9. One ESLint suppression in the API tests
+
+**What.** `apps/api/src/database/cli.test.ts` disables
+`@typescript-eslint/prefer-promise-reject-errors` on one line, so a fake client
+can reject with a string.
+
+**Why it is like that.** `main` has a branch for an error that is not an
+`Error`, because real database drivers do reject with strings and objects, and
+the only way to cover that branch is to be a driver that does it. The rule is
+right about production code and wrong about a test whose entire subject is the
+badly behaved case.
+
+**What it costs.** Nothing, as long as it stays on that one line. The risk is
+that the disable gets copied to a place where the rule was correct.
+
+**The check that retires this.** A helper that produces a non-`Error` rejection
+without a suppression, or the rule gaining an option for test files.
+
+**Why this entry exists at all.** A roast found two unrecorded escape hatches in
+this workspace and filed KN-121 for them. This one was written after that, so
+it is recorded before it is committed rather than after someone finds it.

@@ -27,7 +27,16 @@ export default defineConfig({
       // `main.ts` boots a real server on a real port and `*.module.ts` files are
       // declarations with no behaviour: covering them would mean asserting that
       // a decorator was written, which the schema snapshot already does better.
-      exclude: ['src/main.ts', 'src/**/*.module.ts', 'src/**/*.test.ts'],
+      exclude: [
+        'src/main.ts',
+        'src/**/*.module.ts',
+        'src/**/*.test.ts',
+        // The only excluded file with code in it, and it has no decisions:
+        // six lines that read argv, call main and set an exit code. It is
+        // covered by cli-entry.test.ts, which spawns it as a real process,
+        // and coverage cannot see a subprocess.
+        'src/database/cli-entry.ts',
+      ],
       thresholds: { statements: 100, branches: 100, functions: 100, lines: 100 },
     },
   },
