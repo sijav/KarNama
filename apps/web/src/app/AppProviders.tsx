@@ -4,15 +4,20 @@ import { I18nProvider } from '@lingui/react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { useEffect, useMemo, type ReactNode } from 'react'
+import { PreferencesProvider, usePreferences } from '../core/preferences'
 import { directionFor, type Locale } from '../i18n'
 import { cacheFor } from '../theme/rtl'
 import { buildTheme } from '../theme/theme'
 import { resolveScheme, useSystemScheme, type ColorSchemePreference } from '../theme/useColorScheme'
 
 export interface AppProvidersProps {
-  /** Which catalog and which direction. Persian is the default; English is the source. */
-  locale: Locale
-  /** Light, dark, or follow the operating system. Light is the design; dark is derived. */
+  /**
+   * Forces the catalog and direction, overriding what the user has stored.
+   * Storybook's toolbar drives the tree through this; the app leaves it unset
+   * and follows the preference.
+   */
+  locale?: Locale
+  /** Forces the colour scheme the same way. Light is the design; dark is derived. */
   colorScheme?: ColorSchemePreference
   children: ReactNode
 }
@@ -27,7 +32,25 @@ export interface AppProvidersProps {
  * drives the same component the app does, so the four combinations the done
  * gate asks for are the same code path rather than a lookalike.
  */
-export const AppProviders = ({ locale, colorScheme = 'light', children }: AppProvidersProps) => {
+export const AppProviders = ({ locale, colorScheme, children }: AppProvidersProps) => (
+  // Keyed on the seed so a Storybook toolbar change remounts the provider and
+  // takes effect, while a user's own change inside a story still sticks. Both
+  // are needed: deterministic stories, and a switch that actually switches.
+  <PreferencesProvider
+    key={`${locale ?? ''}-${colorScheme ?? ''}`}
+    initial={{ ...(locale ? { locale } : {}), ...(colorScheme ? { colorScheme } : {}) }}
+  >
+    <ThemedTree>{children}</ThemedTree>
+  </PreferencesProvider>
+)
+
+/**
+ * Split from `AppProviders` because it has to be INSIDE the preferences
+ * provider to read them. One component cannot both provide a context and
+ * consume it in the same render.
+ */
+const ThemedTree = ({ children }: { children: ReactNode }) => {
+  const { locale, colorScheme } = usePreferences()
   const direction = directionFor(locale)
   const scheme = resolveScheme(colorScheme, useSystemScheme())
   const theme = useMemo(() => buildTheme(direction, scheme), [direction, scheme])

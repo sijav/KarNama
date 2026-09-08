@@ -51,7 +51,7 @@ check('the proof runs through the real config, with no config of its own', () =>
 check('gate mode ADDS to the ordinary include rather than replacing it', () => {
   // Replacing would hide the mutation this card is about: with the ordinary
   // pattern swapped out, emptying it would change nothing about the gate run.
-  if (!/const unitInclude = \['src\/\*\*\/\*\.test\.ts'\]/.test(original)) return 'the ordinary include is no longer a named constant'
+  if (!/const unitInclude = \[[^\]]*'src\/\*\*\/\*\.test\.ts'/.test(original)) return 'the ordinary include is no longer a named constant carrying the .test.ts pattern'
   return /gateMode \? \[\.\.\.unitInclude, 'src\/gate-fixtures/.test(original) ? null : 'gate mode does not spread the ordinary include'
 })
 
@@ -66,7 +66,8 @@ check('the failure is attributed to the unit project and counted against the sui
 })
 
 check('EMPTYING the real unit include makes KN-003 fail, proved by doing it', () => {
-  const broken = original.replace("const unitInclude = ['src/**/*.test.ts']", 'const unitInclude = []')
+  const declaration = /const unitInclude = \[[^\]]*\]/.exec(original)?.[0] ?? ''
+  const broken = declaration ? original.replace(declaration, 'const unitInclude = []') : original
   if (broken === original) return 'the mutation did not apply, so this check proves nothing'
   try {
     writeFileSync(CONFIG, broken)

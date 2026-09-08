@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 9 of 108 tasks done · 27 of 397 points.
+Project **KarNama** · 9 of 110 tasks done · 27 of 403 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -10,11 +10,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-006` lingui: English source catalog, Persian translation, runtime switch** (critical, 3 pt, web)
 
-## Backlog (98)
+## Awaiting roast (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-006` | lingui: English source catalog, Persian translation, runtime switch | critical | 3 | web | KN-003 | A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not. |
+
+## Backlog (99)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-034` | Prisma schema, Postgres on Supabase, and migrations | critical | 5 | api | KN-033 | Migrations apply to an empty database and to an existing one, the schema covers every field the Figma job record names, status history records every transition with its timestamp, and a seed script produces a realistic archive to develop against. |
 | `KN-035` | GraphQL codegen wired both ways | critical | 5 | graphql | KN-003, KN-033 | Changing the API schema without regenerating fails the build, the web app imports only generated types for GraphQL data, and no hand-written interface duplicates a generated one. |
 | `KN-033` | API scaffold: NestJS, GraphQL code first, and its quality gate | critical | 8 | api | KN-001 | lint, typecheck, test and build all pass in apps/api, the server starts, the GraphQL playground serves the schema, the health endpoint answers, and a missing required environment variable fails at startup with a clear message rather than at first request. |
@@ -105,6 +110,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
 | `KN-101` | Run destructive mutation verifiers in an isolated worktree | medium | 3 | agent | KN-088 | agent/scripts/verify/KN-088.mjs performs its mutation in a temporary git worktree, killing it mid-run leaves apps/web/vitest.config.ts byte-identical, and two concurrent runs both pass and leave the file byte-identical. |
+| `KN-109` | Move apps/web/src to the folder structure AGENTS.md prescribes | medium | 3 | web | KN-003 | Every file under apps/web/src sits in core, pages, shared or locales, or is App.tsx or main.tsx, a check fails when a folder outside that set appears, and the whole gate still passes. |
+| `KN-110` | Wire the lingui macro plugin so catalogs are extracted rather than hand written | medium | 3 | web | KN-006 | Components use the Trans and t macros with no explicit id, lingui extract produces the catalogs, the hand-written ones are gone, npm test and npm run build both pass, and TECH-DEBT entry 8 is removed. |
 | `KN-040` | Third-party feedback, stored for later evaluation | medium | 5 | api | KN-034 | A submission is stored with its target and a pending state, it never mutates the target, a submission whose target was deleted between submit and review is handled rather than orphaned, and rate limiting stops a flood from one source. |
 | `KN-041` | Admin API: the moderation queue | medium | 5 | api | KN-040, KN-036 | A non-admin is refused every operation at the resolver, approving and rejecting both record who did it and when, and the queue paginates rather than loading everything. |
 | `KN-064` | Third-party feedback submission surface | medium | 5 | web | KN-042, KN-040 | An anonymous visitor can submit a comment and a suggested change against a record, both arrive in the moderation queue in a pending state, the target record is not altered, the submitter is told it is pending review, and a flood from one source is rate limited. |
@@ -202,7 +209,7 @@ tokens.ts holding the Figma token set as typed constants, theme.ts mapping them 
 
 ### `KN-006` lingui: English source catalog, Persian translation, runtime switch
 
-- **status** backlog · **severity** critical · **points** 3 · **area** web
+- **status** review · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-003
 
 lingui configured with en-US as the source locale and fa-IR as the translation, the macro plugin wired into Vite, Storybook and both Vitest projects, the eslint lingui rule enforcing localized strings with type information, and a runtime locale switch that also flips direction.
@@ -1340,4 +1347,26 @@ theme.ts gives the single derived text/on-accent to both primary.contrastText an
 **Why.** A roast rated this critical after recomputing every ratio, and it is the exact shape of the bug the contrast suite was written to catch, one level up: a token checked against one of its backgrounds and used against two. Destructive buttons are the ones where a misread is expensive, and the design has bg/danger/default and hover precisely so a delete looks like a delete.
 
 **Exit condition.** Every derived contrastText clears 4.5 to one against every fill the theme pairs it with, a test enumerates those pairs from the theme rather than from a hand-written list, and it fails when a fill changes without its text following.
+
+### `KN-109` Move apps/web/src to the folder structure AGENTS.md prescribes
+
+- **status** backlog · **severity** medium · **points** 3 · **area** web
+- **blocked by** KN-003
+
+AGENTS.md fixes the layout as src/core for singletons, src/pages one folder per route, src/shared for components operations types and utils, src/locales for the catalogs, and says only these, with src itself holding App.tsx, main.tsx and the Storybook landing page. What exists is src/app, src/i18n, src/theme and src/gate-fixtures. Move i18n and theme into core, the catalogs into locales, App into src, and decide where gate-fixtures belongs since it is neither a singleton nor shared. Add a check so the next new folder cannot be invented.
+
+**Why.** The structure was written down before any code existed and the first code ignored it, the same way the import conventions were ignored, and for the same reason: nothing checks. It matters now rather than later because the component queue is about to create thirty folders, and moving thirty is a different job from moving four. It pairs with KN-092, which adds the import lint, since both fixes touch every file.
+
+**Exit condition.** Every file under apps/web/src sits in core, pages, shared or locales, or is App.tsx or main.tsx, a check fails when a folder outside that set appears, and the whole gate still passes.
+
+### `KN-110` Wire the lingui macro plugin so catalogs are extracted rather than hand written
+
+- **status** backlog · **severity** medium · **points** 3 · **area** web
+- **blocked by** KN-006
+
+Strings go through <Trans id="English sentence" /> and i18n._() with hand-written catalogs in src/i18n/locales. TECH-DEBT entry 8 records why: the macro transform needs @lingui/swc-plugin wired into @vitejs/plugin-react-swc, and that plugin is compiled against a specific swc ABI, so a mismatch fails the build for a reason unrelated to what was being built. Wire it, switch the components to the macro, run lingui extract into po files, and delete the hand-written catalogs.
+
+**Why.** Message ids are written twice today, once in the JSX and once in the catalog, and only a test keeps them in step. The macro removes the second copy entirely and lingui extract keeps the catalog honest by construction, which is the difference between a rule and a habit. It is filed rather than done because the ABI risk is real and the runtime API already satisfies every clause of KN-006.
+
+**Exit condition.** Components use the Trans and t macros with no explicit id, lingui extract produces the catalogs, the hand-written ones are gone, npm test and npm run build both pass, and TECH-DEBT entry 8 is removed.
 

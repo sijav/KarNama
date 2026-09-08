@@ -173,8 +173,15 @@ check('the failing fixture cannot leak into an ORDINARY run', () => {
   // reach it and the flag is the only way in. If someone renames it back,
   // `npm test` starts failing for a reason nobody will connect to this
   // directory.
-  if (!/const unitInclude = \['src\/\*\*\/\*\.test\.ts'\]/.test(vitestConfig)) {
-    return 'the ordinary unit include is no longer exactly the .test.ts pattern'
+  // Matched as "the constant exists and contains the .test.ts pattern" rather
+  // than as an exact line, because the list grew a `.test.tsx` entry and an
+  // exact match would have to be edited every time it grows, which trains
+  // people to edit the check instead of reading it.
+  if (!/const unitInclude = \[[^\]]*'src\/\*\*\/\*\.test\.ts'/.test(vitestConfig)) {
+    return 'the ordinary unit include is no longer a named constant carrying the .test.ts pattern'
+  }
+  if (/\.gate\.ts/.test(/const unitInclude = \[[^\]]*\]/.exec(vitestConfig)?.[0] ?? '')) {
+    return 'the ordinary include now reaches the .gate.ts fixture, so a normal run would fail on it'
   }
   return /gateMode \? \[\.\.\.unitInclude/.test(vitestConfig)
     ? null

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 109,
+  "nextId": 111,
   "tasks": [
     {
       "id": "KN-001",
@@ -365,7 +365,7 @@
       "parent": [
         "KN-003"
       ],
-      "status": "backlog",
+      "status": "review",
       "exit": "A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not.",
       "roasts": [],
       "notes": [
@@ -374,7 +374,8 @@
         "PARTLY DELIVERED BY KN-003, checked against the code rather than remembered. Already exists and is tested: lingui with English message ids as the source and Persian as the translation, catalogs in apps/web/src/i18n/locales, I18nProvider wired through AppProviders, the app defaulting to Persian, the eslint lingui rule with useTsTypes enforcing localized strings, and a committed fixture proving a bare literal fails the lint, extended by KN-087 to aria-label and title. i18n.test.ts proves the fallback goes to the English id rather than to an empty string, which is the safety net the whole English-source-id rule rests on, and that no Persian message says فرصت without شغلی. WHAT IS LEFT: the macro plugin is NOT wired, TECH-DEBT entry 8 says why and what retires it, so catalogs are hand written and lingui extract has nothing to extract. There is no runtime locale switch and nothing persists a choice: main.tsx hard codes the default and only the Storybook toolbar can change it. And no test asserts the fa-IR catalog is 100 percent translated, only that every English id has a Persian entry, which is the same thing today because the catalogs are hand written and will stop being the same thing the moment extract runs."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T23:17:57.226Z"
+      "updatedAt": "2026-09-08T00:35:34.213Z",
+      "verify": "node agent/scripts/verify/KN-006.mjs"
     },
     {
       "id": "KN-007",
@@ -2448,6 +2449,40 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T00:17:47.337Z"
+    },
+    {
+      "id": "KN-109",
+      "title": "Move apps/web/src to the folder structure AGENTS.md prescribes",
+      "desc": "AGENTS.md fixes the layout as src/core for singletons, src/pages one folder per route, src/shared for components operations types and utils, src/locales for the catalogs, and says only these, with src itself holding App.tsx, main.tsx and the Storybook landing page. What exists is src/app, src/i18n, src/theme and src/gate-fixtures. Move i18n and theme into core, the catalogs into locales, App into src, and decide where gate-fixtures belongs since it is neither a singleton nor shared. Add a check so the next new folder cannot be invented.",
+      "why": "The structure was written down before any code existed and the first code ignored it, the same way the import conventions were ignored, and for the same reason: nothing checks. It matters now rather than later because the component queue is about to create thirty folders, and moving thirty is a different job from moving four. It pairs with KN-092, which adds the import lint, since both fixes touch every file.",
+      "severity": "medium",
+      "points": 3,
+      "area": "web",
+      "parent": [
+        "KN-003"
+      ],
+      "status": "backlog",
+      "exit": "Every file under apps/web/src sits in core, pages, shared or locales, or is App.tsx or main.tsx, a check fails when a folder outside that set appears, and the whole gate still passes.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:19:06.526Z"
+    },
+    {
+      "id": "KN-110",
+      "title": "Wire the lingui macro plugin so catalogs are extracted rather than hand written",
+      "desc": "Strings go through <Trans id=\"English sentence\" /> and i18n._() with hand-written catalogs in src/i18n/locales. TECH-DEBT entry 8 records why: the macro transform needs @lingui/swc-plugin wired into @vitejs/plugin-react-swc, and that plugin is compiled against a specific swc ABI, so a mismatch fails the build for a reason unrelated to what was being built. Wire it, switch the components to the macro, run lingui extract into po files, and delete the hand-written catalogs.",
+      "why": "Message ids are written twice today, once in the JSX and once in the catalog, and only a test keeps them in step. The macro removes the second copy entirely and lingui extract keeps the catalog honest by construction, which is the difference between a rule and a habit. It is filed rather than done because the ABI risk is real and the runtime API already satisfies every clause of KN-006.",
+      "severity": "medium",
+      "points": 3,
+      "area": "web",
+      "parent": [
+        "KN-006"
+      ],
+      "status": "backlog",
+      "exit": "Components use the Trans and t macros with no explicit id, lingui extract produces the catalogs, the hand-written ones are gone, npm test and npm run build both pass, and TECH-DEBT entry 8 is removed.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:35:33.956Z"
     }
   ]
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { defaultLocale, directionFor, i18n, isLocale, locales } from './index'
+import { defaultLocale, directionFor, i18n, isLocale, localeOrder, locales } from './index'
 import { messages as en } from './locales/en-US'
 import { messages as fa } from './locales/fa-IR'
 
@@ -46,5 +46,16 @@ describe('locale plumbing', () => {
     for (const locale of Object.keys(locales)) expect(isLocale(locale)).toBe(true)
     expect(isLocale('de-DE')).toBe(false)
     expect(isLocale('')).toBe(false)
+  })
+})
+
+describe('the menu order', () => {
+  it('lists every locale exactly once, so a new language cannot be invisible', () => {
+    expect([...localeOrder].toSorted()).toEqual(Object.keys(locales).toSorted())
+    expect(new Set(localeOrder).size).toBe(localeOrder.length)
+  })
+
+  it('puts Persian first, because the product is Persian', () => {
+    expect(localeOrder[0]).toBe('fa-IR')
   })
 })

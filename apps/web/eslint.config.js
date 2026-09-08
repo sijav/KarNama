@@ -31,7 +31,11 @@ const structuralProps =
   'id|key|data-testid|className|variant|color|component|role|dir|lang|type|name|sx|to|href|icon|provider|family|direction|locale' +
   // CSS values are not user-facing text and the rule cannot tell the
   // difference, so the properties that hold them are named.
-  '|boxShadow|fontFamily|lineHeight|letterSpacing|fontSize|card|modal'
+  '|boxShadow|fontFamily|lineHeight|letterSpacing|fontSize|card|modal' +
+  // A localStorage key is an identifier the browser stores things under, not
+  // text anyone reads. Named, not pattern-matched, so one key does not exempt
+  // every dotted string in the codebase.
+  '|STORAGE_KEY'
 
 const linguiOptions = (extraProps = '') => ({
   ignore: [

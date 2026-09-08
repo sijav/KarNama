@@ -22,7 +22,12 @@ const dirname = fileURLToPath(new URL('.', import.meta.url))
  * `.gate.ts` rather than `.test.ts` is what keeps the fixture out of an
  * ordinary run, so this flag is the only way in.
  */
-const unitInclude = ['src/**/*.test.ts']
+// `.test.tsx` as well as `.test.ts`: a test that renders JSX through
+// `react-dom/server` needs the extension, and the node project is where the
+// cases a story cannot reach are tested, such as a context read outside its
+// provider. `.gate.ts` still matches neither, which is what keeps the
+// deliberately failing fixture out of an ordinary run.
+const unitInclude = ['src/**/*.test.ts', 'src/**/*.test.tsx']
 const gateMode = Boolean(process.env.KARNAMA_GATE_FIXTURES)
 
 /**

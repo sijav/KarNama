@@ -19,6 +19,17 @@ export const locales = { 'fa-IR': 'فارسی', 'en-US': 'English' } as const
 
 export type Locale = keyof typeof locales
 
+/**
+ * The locales in the order a menu should list them, typed so a consumer needs
+ * no guard.
+ *
+ * `Object.keys(locales)` gives `string[]`, so mapping over it forces either a
+ * cast or a runtime `isLocale` check whose false branch can never happen: an
+ * unreachable branch that coverage correctly refuses to call covered. A written
+ * list has neither problem, and the test below keeps it in step with `locales`.
+ */
+export const localeOrder: readonly Locale[] = ['fa-IR', 'en-US']
+
 export const defaultLocale: Locale = 'fa-IR'
 
 export const directionFor = (locale: Locale): 'rtl' | 'ltr' => (locale === 'fa-IR' ? 'rtl' : 'ltr')
