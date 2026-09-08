@@ -2,7 +2,6 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
-import { join } from 'node:path'
 import { parseEnv } from './config/env.js'
 import { HealthModule } from './health/health.module.js'
 
@@ -18,11 +17,13 @@ import { HealthModule } from './health/health.module.js'
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      // Code first: the schema is generated FROM the resolvers and written to
-      // disk, so `packages/graphql` can generate the client types from a file
-      // that cannot disagree with the server. A schema-first setup would put a
-      // second copy of the contract in the repository for someone to forget.
-      autoSchemaFile: join(process.cwd(), 'schema.gql'),
+      // Code first, and IN MEMORY. It used to write `schema.gql` on boot, which
+      // made the committed contract a side effect of running the server: a
+      // fresh clone had none, and a server started in the wrong directory
+      // rewrote it in a different format and broke the staleness check. The
+      // file is produced by `npm run schema:generate`, from the same
+      // decorators, without a server. KN-120.
+      autoSchemaFile: true,
       sortSchema: true,
       // On in every environment on purpose. This is a personal tool with a
       // public schema and no secrets in it, and a playground that only exists

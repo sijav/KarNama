@@ -19,4 +19,3 @@ agent/roasts/*.prompt.md
 
 # API build output
 apps/api/dist/
-apps/api/schema.gql

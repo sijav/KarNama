@@ -1,0 +1,17 @@
+type Health {
+  """Which environment this process believes it is in"""
+  environment: String!
+
+  """ok when the service is serving requests"""
+  status: String!
+
+  """Seconds since this process started, so a cold start is visible"""
+  uptimeSeconds: Float!
+}
+
+type Query {
+  """
+  Whether the API is up, and enough context to tell a cold start from an outage
+  """
+  health: Health!
+}

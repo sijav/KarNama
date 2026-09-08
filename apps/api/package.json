@@ -5,14 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch dist/main.js",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && npm run schema:generate",
     "start": "node dist/main.js",
     "lint": "eslint . --max-warnings 0",
     "lint:tsc": "tsc --noEmit",
     "test": "vitest run --coverage",
     "db:migrate": "node dist/database/cli-entry.js migrate",
     "db:seed": "node dist/database/cli-entry.js seed",
-    "db:diff": "prisma migrate diff --from-migrations prisma/migrations --to-schema prisma/schema.prisma --script --exit-code"
+    "db:diff": "prisma migrate diff --from-migrations prisma/migrations --to-schema prisma/schema.prisma --script --exit-code",
+    "schema:generate": "node dist/graphql/schema-entry.js generate",
+    "schema:check": "node dist/graphql/schema-entry.js check"
   },
   "dependencies": {
     "@apollo/server": "5.5.1",
