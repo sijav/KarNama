@@ -1,0 +1,15 @@
+# Every operation the product sends lives here, beside the schema it is checked
+# against.
+#
+# In a .graphql file rather than a gql template in the web app, deliberately.
+# Codegen VALIDATES documents against the schema at generation time, so a
+# misspelled field fails the build; a template literal in a component could only
+# be validated if codegen scanned the app, which would make the contract package
+# depend on its own consumer.
+query Health {
+  health {
+    status
+    environment
+    uptimeSeconds
+  }
+}

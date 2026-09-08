@@ -1,6 +1,6 @@
-import type { Health } from '@karnama/graphql'
+import { print } from 'graphql'
 import { describe, expect, it } from 'vitest'
-import { HEALTH_QUERY, toHealthState } from './health'
+import { HealthDocument, toHealthState, type HealthQuery } from './health'
 
 /**
  * The typed query and the state it turns into.
@@ -9,12 +9,15 @@ import { HEALTH_QUERY, toHealthState } from './health'
  * so this file also demonstrates the clause it is testing: change the schema
  * and this test stops compiling before it stops passing.
  */
-const up: Health = { status: 'ok', environment: 'production', uptimeSeconds: 12 }
+const up: HealthQuery['health'] = { status: 'ok', environment: 'production', uptimeSeconds: 12 }
 
 describe('the health query', () => {
-  it('asks for exactly the fields the state needs', () => {
-    const text = HEALTH_QUERY.loc?.source.body ?? ''
+  it('is the generated document, and asks for exactly the fields the state needs', () => {
+    const text = print(HealthDocument)
     for (const field of ['status', 'environment', 'uptimeSeconds']) expect(text).toContain(field)
+    // A field the schema does not have could not survive generation, which is
+    // the guarantee this replaced a hand-written annotation to get.
+    expect(text).not.toContain('Typo')
   })
 })
 

@@ -17,11 +17,13 @@
     "codegen:check": "node scripts/check-generated.mjs"
   },
   "dependencies": {
+    "@graphql-typed-document-node/core": "^3.2.0",
     "graphql": "16.14.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@graphql-codegen/cli": "7.3.1",
+    "@graphql-codegen/typed-document-node": "^7.1.0",
     "@graphql-codegen/typescript": "6.1.0",
     "@graphql-codegen/typescript-operations": "6.1.6",
     "@vitest/coverage-v8": "4.1.11",

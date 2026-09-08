@@ -2934,11 +2934,12 @@
       "parent": [
         "KN-035"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-08T02:32:58.437Z"
+      "createdAt": "2026-09-08T02:32:58.437Z",
+      "updatedAt": "2026-09-08T02:34:19.009Z"
     },
     {
       "id": "KN-129",

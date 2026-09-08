@@ -1,1 +1,1 @@
-export { HEALTH_QUERY, toHealthState, type HealthQueryData, type HealthState } from './health'
+export { HealthDocument, toHealthState, type HealthQuery, type HealthState } from './health'

@@ -16,9 +16,18 @@ import type { CodegenConfig } from '@graphql-codegen/cli'
  */
 const config: CodegenConfig = {
   schema: '../../apps/api/schema.gql',
+  // The operations live here, beside the schema they are checked against, and
+  // codegen VALIDATES them at generation time. That is the guarantee the
+  // previous version did not have: the query was a gql template in the web app
+  // with a hand-written TypedDocumentNode annotation, so a misspelled field
+  // typechecked and failed at runtime, which is the exact thing a monorepo is
+  // supposed to make impossible.
+  documents: 'src/operations/*.graphql',
   generates: {
     'src/generated.ts': {
-      plugins: ['typescript'],
+      // `typed-document-node` emits the document AND its type together, so a
+      // consumer cannot pair the wrong two.
+      plugins: ['typescript', 'typescript-operations', 'typed-document-node'],
       config: {
         // No `any` anywhere in generated output either. The repository bans
         // escape hatches and generated code is code.

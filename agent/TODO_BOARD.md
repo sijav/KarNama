@@ -10,11 +10,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-128` Generate typed GraphQL operations instead of asserting them by hand** (critical, 3 pt, graphql)
 
-## Backlog (115)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-128` | Generate typed GraphQL operations instead of asserting them by hand | critical | 3 | graphql | KN-035 | A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case. |
+
+## Backlog (114)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-123` | The migration runner has no transaction, no lock, no failure state and no checksum | critical | 5 | api | KN-034 | A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite. |
 | `KN-070` | Decide where رد شده belongs on the board | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision with who made it, section 6 no longer lists it as open, and the column order in section 3 matches. |
 | `KN-071` | Decide whether a contact needs an email or a phone | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-031 and KN-039 state the resulting rule. |
@@ -1584,7 +1589,7 @@ src/graphql/schema.test.ts proves the generator and the application share one li
 
 ### `KN-128` Generate typed GraphQL operations instead of asserting them by hand
 
-- **status** backlog · **severity** critical · **points** 3 · **area** graphql
+- **status** in_progress · **severity** critical · **points** 3 · **area** graphql
 - **blocked by** KN-035
 
 HEAD_QUERY is a gql template with a hand-written TypedDocumentNode annotation, and HealthQueryData is Pick<Query, health>. Neither is generated or validated against the schema. Misspell a selected field, environmentTypo, and TypeScript accepts it because the annotation was asserted rather than derived, and the server rejects the request at runtime. The declared response type also claims the whole Health object rather than the three fields selected, so adding a required field to Health makes the type say Apollo returned something the query never asked for. The typescript-operations plugin is installed and unused; switch to generated operation types, or the client preset, so the document and its type come from the same place.
