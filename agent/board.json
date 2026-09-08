@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 128,
+  "nextId": 131,
   "tasks": [
     {
       "id": "KN-001",
@@ -1047,13 +1047,32 @@
         "KN-033",
         "KN-120"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "Changing the API schema without regenerating fails the build, the web app imports only generated types for GraphQL data, and no hand-written interface duplicates a generated one.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "agent/roasts/KN-035-round-1.2026-09-08T02-30-06-466Z.md",
+          "filed": [
+            "KN-128",
+            "KN-129",
+            "KN-130"
+          ],
+          "cardDigest": "9fefb9b0e177c3abb3be3b702f736914c15a07e1106fe75e888472ffca232680",
+          "head": "35e14b60101b3c6a49d65fcef2375dd6b2a0f298",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "at": "2026-09-08T02:33:15.459Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-08T02:29:46.009Z",
-      "verify": "node agent/scripts/verify/KN-035.mjs"
+      "updatedAt": "2026-09-08T02:33:43.943Z",
+      "verify": "node agent/scripts/verify/KN-035.mjs",
+      "evidence": "The first clause was proved by doing it rather than by reading: agent/scripts/verify/KN-035.mjs adds a nullable field to the health model, regenerates the API schema so the two halves genuinely disagree, and requires the ROOT build, npm run build, to refuse; it does, saying the generated types are stale and naming the command that fixes them, and all three touched files are restored and the build re-run to prove it. The package build runs codegen:check, which regenerates into a temporary directory and compares, and never writes into src, because a build that regenerates before comparing always passes, which was a critical on the previous card. The web app imports Query from the generated package and describes nothing again: change uptimeSeconds to a string on the server and apps/web/src/core/api/health.ts stops compiling, and the roast independently confirmed that a renamed, removed, nullable or retyped field all fail for the three fields consumed. No hand-written type duplicates a generated one, checked by a test that also proves its own patterns can fire. Five mutations planted, five caught, after repairing one that had passed: the check that codegen reads the API schema grepped the whole file and matched the prose in the config rather than the setting, so comments are stripped now. 222 web tests, 60 API tests, 4 in the new package. What this does NOT establish, all filed: the operation itself is a hand-asserted TypedDocumentNode rather than a generated one, so a misspelled field typechecks and fails at runtime, and the response type claims the whole object rather than the selection, KN-128; the duplicate scan only sees exported top-level declarations, so a local interface with the same shape is invisible, KN-129; and the empty-response reason is English copy produced in a core module whose own comment forbids it, KN-130.",
+      "closedAt": "2026-09-08T02:33:43.943Z"
     },
     {
       "id": "KN-036",
@@ -2903,6 +2922,57 @@
       ],
       "createdAt": "2026-09-08T02:09:40.921Z",
       "updatedAt": "2026-09-08T02:13:03.493Z"
+    },
+    {
+      "id": "KN-128",
+      "title": "Generate typed GraphQL operations instead of asserting them by hand",
+      "desc": "HEAD_QUERY is a gql template with a hand-written TypedDocumentNode annotation, and HealthQueryData is Pick<Query, health>. Neither is generated or validated against the schema. Misspell a selected field, environmentTypo, and TypeScript accepts it because the annotation was asserted rather than derived, and the server rejects the request at runtime. The declared response type also claims the whole Health object rather than the three fields selected, so adding a required field to Health makes the type say Apollo returned something the query never asked for. The typescript-operations plugin is installed and unused; switch to generated operation types, or the client preset, so the document and its type come from the same place.",
+      "why": "A roast rated this critical and it is the card own why: the reason for a monorepo is that a schema change fails at typecheck rather than at runtime, and the one place that guarantee is exercised is the place it does not hold. A misspelled field is the most common GraphQL mistake there is, and it currently reaches production silently.",
+      "severity": "critical",
+      "points": 3,
+      "area": "graphql",
+      "parent": [
+        "KN-035"
+      ],
+      "status": "backlog",
+      "exit": "A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T02:32:58.437Z"
+    },
+    {
+      "id": "KN-129",
+      "title": "The duplicate-type scan only sees exported top-level declarations",
+      "desc": "packages/graphql/src/handwritten.test.ts finds a duplicate only when it is a top-level export whose name exactly matches a generated type. A local interface LocalHealth with the same three fields, or an unexported interface Health inside a module, is invisible and can stand in for the generated type throughout a file. Compare SHAPES rather than names, or use the type checker: a declaration structurally identical to a generated type is the duplicate, whatever it is called.",
+      "why": "A roast rated this major. The clause is that no hand-written interface duplicates a generated one, and a scan matching names catches only the honest case: someone who writes LocalJobRecord to avoid the import is exactly the person the rule is for. Name matching also produces the wrong error for the right problem.",
+      "severity": "medium",
+      "points": 3,
+      "area": "graphql",
+      "parent": [
+        "KN-035"
+      ],
+      "status": "backlog",
+      "exit": "A local, unexported interface structurally identical to a generated type is detected in the web app, a differently named one is too, and an unrelated interface with some overlapping fields is not.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T02:32:58.591Z"
+    },
+    {
+      "id": "KN-130",
+      "title": "The no-data health reason is English copy outside the catalog",
+      "desc": "apps/web/src/core/api/health.ts returns { kind: down, reason: the API answered with nothing } when the response has no data and no error. That is user-facing English produced in a core module, in the same file whose comment says user-facing text must not originate there, so a Persian user sees English on exactly the failure that is hardest to explain. The lingui rule did not catch it because reason also carries network messages, which are not ours. Separate the two: a code the component translates, and a passthrough for whatever the network said.",
+      "why": "A roast rated this major and the sharpest part is that the comment beside it claims the opposite. A file that states a rule and breaks it in the next function is worse than one that does neither, because the next reader believes the comment.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-035"
+      ],
+      "status": "backlog",
+      "exit": "No English sentence originates in apps/web/src/core, the empty-response case carries a code the component renders through the catalog, a network message still passes through untranslated, and the catalog test covers the new id.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T02:32:58.762Z"
     }
   ]
 }
