@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 10 of 116 tasks done · 30 of 412 points.
+Project **KarNama** · 10 of 117 tasks done · 30 of 414 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -10,7 +10,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-033` API scaffold: NestJS, GraphQL code first, and its quality gate** (critical, 8 pt, api)
 
-## Backlog (105)
+## Backlog (106)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -106,6 +106,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-107` | Prove a system colour scheme change actually repaints the tree | medium | 2 | web | KN-005 | A test emulates a prefers-color-scheme change with the preference set to system and asserts the rendered background moved from the light value to the dark one, and it fails when the store returns a constant. |
 | `KN-113` | Prove the portalled menu anchors correctly in RTL | medium | 2 | web | KN-006 | A story asserts the menu is anchored to the right of its trigger in RTL and to the left in LTR, and it fails when the direction is not propagated to the portal. |
 | `KN-115` | The language names bypass the catalog entirely | medium | 2 | web | KN-006 | The language names come from the catalog with each locale name present in both catalogs as its own native spelling, the lingui rule sees them, and a missing one fails the catalog test. |
+| `KN-117` | Re-triage severity, because 78 of 105 open cards are high | medium | 2 | agent | KN-001 | AGENTS.md defines each severity with a test a card can be held to, no level holds more than half the open board, and npm run todo -- validate reports the distribution so the next drift is visible. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -1438,4 +1439,15 @@ LanguageSwitch currently renders in App.tsx under the placeholder heading, with 
 **Why.** A roast rated this major and it is right that the shell placement is not one of the two approved homes. It was put there deliberately, because a control only Storybook renders cannot show that a choice persists, and because the shell is itself a placeholder rather than a drawn frame, so nothing drawn is being reflowed. That reasoning expires the moment the sidebar exists.
 
 **Exit condition.** The switch renders at the bottom of the sidebar on desktop and as a Page Header trailing action on mobile, App.tsx contains no language control, and an e2e test finds it in both places at the two drawn viewports.
+
+### `KN-117` Re-triage severity, because 78 of 105 open cards are high
+
+- **status** backlog · **severity** medium · **points** 2 · **area** agent
+- **blocked by** KN-001
+
+The selection law orders by severity, then points, then id. 78 of the 105 open tasks are high, 3 are critical, 21 medium and 3 low, so severity has stopped discriminating and the law is effectively picking by points and id. Most of the high ones arrived from roasts, where high was the honest rating of a finding in isolation and is not its rating against the other 77. Re-rate the board against a written definition of each level, and add that definition to AGENTS.md so the next fifty findings do not repeat it.
+
+**Why.** The whole point of the law is that the script picks rather than the author, and a board where four fifths of the work shares one severity hands the choice back to whoever wrote the points. It also hides the genuinely urgent: three criticals are invisible in a list of seventy-eight highs. Found by looking at the distribution rather than at any one card.
+
+**Exit condition.** AGENTS.md defines each severity with a test a card can be held to, no level holds more than half the open board, and npm run todo -- validate reports the distribution so the next drift is visible.
 

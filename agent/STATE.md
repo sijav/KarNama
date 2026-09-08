@@ -4,14 +4,12 @@ The only memory of earlier iterations that may be relied on. Rewritten at the
 end of every iteration. When this file and the repository disagree, the
 repository is right and this file is stale.
 
-**This file does not restate anything the board already knows.** It went stale
-twice by carrying round counts and task statuses that had moved on, at exactly
-the point a context reset trusts it. Numbers that live in `board.json` are read
-from there:
+**This file does not restate anything the board already knows.** Numbers that
+live in `board.json` are read from there:
 
 ```bash
 npm run todo -- next            # what to work on
-npm run todo -- show KN-003     # a card, its roast rounds and its notes
+npm run todo -- show KN-033     # a card, its roast rounds and its notes
 npm run todo -- list            # everything, with blockers marked
 ```
 
@@ -26,16 +24,15 @@ A job seeker adds a posting themselves, by link or by text, the product
 structures it into a record, and the record carries a status through the search.
 **The value is the trail, not the listing.**
 
-**Scope is closed.** Searching boards and showing aggregated ads were cut by the
-mentor's filter 4. **Crawling job sites is permanently out.** Two owner
-additions: third parties can leave comments or suggested changes, stored for
-later evaluation rather than applied, and there is an admin panel over what
-users submit.
+**Scope is closed.** Searching boards and showing aggregated ads were cut.
+**Crawling job sites is permanently out.** Two owner additions: third parties can
+leave comments or suggested changes, stored for later evaluation rather than
+applied, and there is an admin panel over what users submit.
 
 Stack and standing decisions:
 
-- Monorepo, npm workspaces. `apps/web` exists; `apps/api` and
-  `packages/graphql` do not yet.
+- Monorepo, npm workspaces. `apps/web` exists. `apps/api` and
+  `packages/graphql` do not.
 - React 19, TypeScript, MUI, Storybook, Playwright, Vitest, 100 percent
   coverage. **Components first with their stories, then screens.**
 - GraphQL with NestJS. Render free tier, Supabase Postgres, cold start about 50
@@ -50,78 +47,75 @@ Stack and standing decisions:
 
 ## Where things stand
 
-`sijav/KarNama` is live and pushed. **`apps/web` exists and its gate is real.**
+`sijav/KarNama` is live and pushed. **`apps/web` works and its gate is real.**
 
-Green and checked by running, not by inference: lint with `--max-warnings 0`,
-`tsc`, 63 tests across 5 files at 100 percent on all four coverage metrics, the
-vite build, the Storybook build, and 6 Playwright tests on desktop 1440x900 and
-mobile 390x844, which are the viewports the Screens canvas draws. Seen in a
-browser at `localhost:6006` in both languages.
+Green and checked by running: lint with `--max-warnings 0`, `tsc`, 209 tests
+across 13 files at 100 percent on all four coverage metrics, vite build,
+Storybook build, and 8 Playwright tests on desktop 1440x900 and mobile 390x844,
+the viewports the Screens canvas draws.
 
-What exists in the app: the token set as typed constants, the MUI theme built
-from it, the RTL emotion cache, lingui with English ids and a Persian catalog,
-`AppProviders`, a nearly empty shell, and a Foundations/Tokens story.
+What exists: the token set, a light theme from it and a DERIVED dark one, the
+RTL emotion cache, lingui with English source ids, a persisted preference store,
+a working `LanguageSwitch`, and an almost empty shell. **A user can switch the
+language and it survives a reload**, proved end to end.
 
-**`src/gate-fixtures/` is the part worth knowing about.** Five green commands
-prove five commands ran, not that any can go red. So a component with a bare
-English sentence, one with a bare `aria-label`, one with a bare `title` and a
-test asserting 1 + 1 is 3 are all committed, kept out of the ordinary run, and
-driven by `agent/scripts/verify/KN-003.mjs` through the real tools, which
-requires each to fail **for the right reason**. Every verifier in this repo has
-also been mutation tested: KN-002 twelve breaks, KN-003 six, KN-004 twelve,
-KN-087 four, all caught.
+**`src/gate-fixtures/` is the part worth knowing about.** Five components that
+are supposed to fail the lint, one test that is supposed to fail, all committed,
+all excluded from an ordinary run, all driven through the REAL tools by
+`agent/scripts/verify/KN-003.mjs`, which requires each to fail for the right
+reason. `KARNAMA_GATE_FIXTURES=1 npm test` is how the broken test reaches the
+real unit project.
 
-`agent/figma-capture/` holds raw `get_metadata` for canvases `5:7` and `5:8`
-with their sha256 in `agent/design-manifest.json`, so the screen list, the frame
-list, the pending-item inventory and the copy-change counts are **derived from a
-committed artefact**. What that cannot show is written into `DESIGN.md`: the
-capture is metadata, so 64 of its 148 layer names sit at Figma's truncation cap.
-**KN-079** carries the text capture, **KN-078** the coverage check.
+Every verifier here has been mutation tested: KN-002 twelve breaks, KN-003 six,
+KN-004 twelve, KN-005 nine, KN-006 eight, KN-087 four. All caught.
 
-## What this iteration taught, in one line each
+## What the roasts keep proving, in one line each
 
 **An unchecked claim replaced by another unchecked claim is not a fix.** KN-002
-took four rounds on that alone: "all sixteen copy changes were applied" was
-false, "fourteen of sixteen" was unverified, "63 of 148 truncated" was a guess.
-Each only became real when the number was **derived from the capture and the
-document required to match it**.
+spent four rounds on it. The cure is always the same: derive the number from a
+committed artefact and make the document match it.
 
-**Do not mutate the worktree while a roast is reading it.** KN-003's round
-reported a critical that was simply my mutation test caught mid-run. The finding
-was true of what it saw and false of the repository, and adjudicating it cost
-more than waiting would have.
+**A test that measures the wrong quantity passes while the thing is broken.**
+KN-005's dark palette had every HSL assertion green while eight of nine status
+chips sat at 1.0 to 1.5 contrast. HSL lightness is not contrast.
 
-**Test the notice, do not believe it.** Storybook says `setProjectAnnotations`
-can be removed from the vitest setup. Removing it fails seven tests, because
-every story then renders with no theme, no direction and no catalog.
+**"It is written" is not "it works".** KN-006 wrote the language preference,
+read it back, and threw it away on the next mount, because the root forced a
+locale over it. The verifier asked whether the write happened, not whether it
+survived. Only the reload test found it.
 
-**The loop's own carve-out has no bound.** `RALPH.md` step 5 allows fixing
-in-task when the verifier "passes dishonestly", and every roast of a verifier
-can be phrased that way, so it ran three rounds straight on KN-002. **KN-080**
-bounds it to once per task. Until it lands, use the trigger prompt's wording:
-**if the verify script passes, it is a card.**
+**Do not mutate the worktree while a roast is reading it.** One critical in
+KN-003's round was my own mutation test caught mid-run.
+
+**The loop's carve-out has no bound.** `RALPH.md` step 5 permits fixing in-task
+when the verifier "passes dishonestly", and every roast of a verifier can be
+phrased that way. **KN-080** bounds it to once per task, which is the rule I have
+been applying since: one fix round, then everything is a card.
 
 ## Next step
 
 `npm run todo -- next` picks it. Do not choose by hand.
 
-**KN-087 is in review with its roast running.** When it lands: adjudicate, file
-the survivors, record with `--filed`, close with `--evidence`.
+It hands back **KN-033, the API scaffold**: NestJS, GraphQL code first, its own
+quality gate, a health endpoint, configuration from the environment with no
+secret committed. Eight points, and the first code outside `apps/web`.
 
-Then the board hands back the rest of KN-003's roast: **KN-088** (the planted
-broken test is proved through a separate vitest config, not the one `npm test`
-uses), **KN-089** (a clean clone cannot run the suite without
-`npx playwright install chromium`), **KN-090** (`AppProviders` mutates the lingui
-singleton during render), **KN-091** (story prose sits in the TSX while
-`AGENTS.md` requires `src/shared/story-docs/{en,fa}` plus a guard test).
+**The board grows faster than it shrinks.** Ten tasks are done and 105 are open,
+39 of them filed by roasts. That is the loop working, but it means the promise
+condition is a long way off, and it is worth telling the owner plainly rather
+than discovering it at task 200.
 
-**KN-005 and KN-006 were reconciled against the code this iteration**, not from
-memory, and both shrank to 3 points. What is left of KN-005 is dark mode and the
-no-raw-hex test; what is left of KN-006 is the macro plugin, a persisted runtime
-locale switch, and a real catalog-completeness test.
+**Severity has stopped discriminating**: 78 of the 105 open cards are high, 3
+critical. The selection law orders by severity first, so it is effectively
+picking by points and id. Filed as **KN-117** with a definition to write into
+`AGENTS.md`.
 
-Then the component queue, then screens. **KN-051** is the Pages deploy and it is
-no longer blocked by the API.
+Clusters worth taking together rather than one at a time: **KN-111, KN-114,
+KN-115** are all "the catalog test or the lingui rule is incomplete".
+**KN-092, KN-109** are both "nothing enforces a convention AGENTS.md states",
+and both touch every file, so they are cheaper before the component queue than
+after. **KN-091** is story-docs and every component added meanwhile is another
+one to migrate.
 
 ## What to read first
 

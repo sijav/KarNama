@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 117,
+  "nextId": 118,
   "tasks": [
     {
       "id": "KN-001",
@@ -2629,6 +2629,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T00:45:32.559Z"
+    },
+    {
+      "id": "KN-117",
+      "title": "Re-triage severity, because 78 of 105 open cards are high",
+      "desc": "The selection law orders by severity, then points, then id. 78 of the 105 open tasks are high, 3 are critical, 21 medium and 3 low, so severity has stopped discriminating and the law is effectively picking by points and id. Most of the high ones arrived from roasts, where high was the honest rating of a finding in isolation and is not its rating against the other 77. Re-rate the board against a written definition of each level, and add that definition to AGENTS.md so the next fifty findings do not repeat it.",
+      "why": "The whole point of the law is that the script picks rather than the author, and a board where four fifths of the work shares one severity hands the choice back to whoever wrote the points. It also hides the genuinely urgent: three criticals are invisible in a list of seventy-eight highs. Found by looking at the distribution rather than at any one card.",
+      "severity": "medium",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-001"
+      ],
+      "status": "backlog",
+      "exit": "AGENTS.md defines each severity with a test a card can be held to, no level holds more than half the open board, and npm run todo -- validate reports the distribution so the next drift is visible.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:47:11.002Z"
     }
   ]
 }
