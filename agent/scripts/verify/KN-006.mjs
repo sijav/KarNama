@@ -80,6 +80,37 @@ check('the switch exists, is placed where DESIGN.md says, and persists', () => {
   return /writePreferences\(next\)/.test(provider) ? null : 'changing a preference does not persist it'
 })
 
+check('the app does not force a locale over the stored one', () => {
+  // This check exists because the previous version of this file did not, and
+  // passed. It asked whether `writePreferences` was called, which it was, and
+  // never asked whether the value survived a mount, which it did not: the root
+  // passed `locale={defaultLocale}` and the provider merged it OVER what was
+  // read back, so choose English, reload, get Persian was the actual behaviour
+  // while the persistence clause of the exit condition read as met.
+  const main = read('src', 'main.tsx')
+  if (/<AppProviders[^>]*\blocale=/.test(main)) return 'main.tsx forces a locale, which overrides the stored preference on every mount'
+  return /<AppProviders[^>]*\bcolorScheme=/.test(main) ? 'main.tsx forces a colour scheme the same way' : null
+})
+
+check('a user can actually reach the switch', () => {
+  // A control only Storybook renders is not a control. Where it goes is fixed
+  // by DESIGN.md and neither place exists yet, so it sits in the shell in the
+  // meantime, which is a placeholder inside a placeholder and says so.
+  const app = read('src', 'app', 'App.tsx')
+  return /<LanguageSwitch\s*\/>/.test(app) ? null : 'the application renders no language control'
+})
+
+check('the choice survives a reload, proved end to end in a real browser', () => {
+  const result = run('npx playwright test --grep "survives a reload"')
+  if (result.status !== 0) return (result.stdout || result.stderr || '').split('\n').slice(-25).join('\n')
+  const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
+  const passed = /(\d+) passed/.exec(output)
+  if (!passed) return 'the e2e run reported no result'
+  // Both viewports, because the switch has a different home on each and a
+  // single-project pass would hide a mobile-only failure.
+  return Number(passed[1]) >= 2 ? null : `only ${passed[1]} e2e test ran, expected one per viewport`
+})
+
 check('switching flips the direction, proved by running the story', () => {
   // Not by reading the code. The story clicks the menu item and then asserts
   // documentElement's dir and lang, which is the part of a locale change that

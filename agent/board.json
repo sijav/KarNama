@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 111,
+  "nextId": 114,
   "tasks": [
     {
       "id": "KN-001",
@@ -367,7 +367,24 @@
       ],
       "status": "review",
       "exit": "A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 1.5,
+          "criticals": 4,
+          "file": "agent/roasts/KN-006-round-1.2026-09-08T00-36-11-903Z.md",
+          "filed": [
+            "KN-111",
+            "KN-112",
+            "KN-113"
+          ],
+          "cardDigest": "43c5b25f86f0044be7d2e7aae030906867c8ef639b1d366b906f72dda27528ea",
+          "head": "2b01be793e6aad128a01de843df70ec351a8c217",
+          "reviewerScore": 1.5,
+          "reviewerCriticals": 4,
+          "at": "2026-09-08T00:41:33.278Z"
+        }
+      ],
       "notes": [
         "From frame 376:43: Persian text carries invisible characters, so a plain === comparison between two Persian strings can fail. Normalise with NFC before comparing, and do NOT strip the zero-width non-joiner: it is meaningful in Persian, «می‌شود» is not «میشود». Any test asserting a Persian catalog string needs this, and a test that trims the ZWNJ is asserting the wrong string.",
         "eslint-plugin-lingui 0.15.0 peers eslint ^8.37 or ^9 or ^10, so eslint 10.10.0 is fine, and typescript ^5 or ^6, which independently confirms the TypeScript 6 pin: two separate packages now refuse TS 7. Other current versions: @lingui/cli, @lingui/react and @lingui/format-po at 6.6.0, @lingui/swc-plugin at 6.7.0, eslint-plugin-storybook and the storybook addons at 10.6.0.",
@@ -2152,8 +2169,11 @@
       "status": "backlog",
       "exit": "src/shared/story-docs/en and fa exist and carry the prose for every story, no .tsx under src holds a docblock above const meta or a story export, the Docs pages render the markdown in the toolbar language, and a guard test fails when a prop or a story is missing from either language.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T23:11:17.315Z"
+      "notes": [
+        "CONFIRMED AGAIN by a roast on KN-006: LanguageSwitch.tsx carries its component documentation as a JSDoc block and src/shared/story-docs does not exist, so the contract is now broken by two components rather than one. The card is unchanged; this is evidence it should be worked before the component queue rather than after, since every component added meanwhile is another one to migrate."
+      ],
+      "createdAt": "2026-09-07T23:11:17.315Z",
+      "updatedAt": "2026-09-08T00:41:13.546Z"
     },
     {
       "id": "KN-092",
@@ -2483,6 +2503,57 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T00:35:33.956Z"
+    },
+    {
+      "id": "KN-111",
+      "title": "Forbid the message-id forms the catalog scan cannot see",
+      "desc": "src/i18n/catalog.test.ts finds used ids with two regexes, <Trans id=\"...\"> and i18n._(single or double quoted). <Trans id={\"Delete this application\"} />, a template literal, an identifier, or a reordered prop list all miss it, so the id never reaches the catalog and a Persian user silently gets the English fallback. Add the lingui rule that requires an explicit literal id, or a rule of our own that rejects a non-literal id, so the scan is sufficient BY CONSTRUCTION rather than by everyone happening to write it the same way.",
+      "why": "A roast rated this critical. The catalog test is what stands behind the claim that the Persian catalog is 100 percent translated, and a gate that only sees one spelling of a thing is a gate that measures spelling. The failure is silent and reaches the user, which is the worst combination: no error, no test failure, just English text on a Persian screen.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-006"
+      ],
+      "status": "backlog",
+      "exit": "A Trans with a braced or template-literal id fails npm run lint, a committed fixture holds each form, and the catalog test still finds every id the codebase uses.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:41:13.196Z"
+    },
+    {
+      "id": "KN-112",
+      "title": "Two preference setters called in one batch lose the first update",
+      "desc": "PreferencesProvider builds each setter over the locale and colorScheme captured in that render, so setLocale(\"en-US\") followed synchronously by setColorScheme(\"dark\") computes the second update from the stale locale: the state and the stored value both end up {locale: \"fa-IR\", colorScheme: \"dark\"} and the language change is gone. Use a functional state update and persist the value the updater computed.",
+      "why": "A roast rated this major and it is a plain correctness bug in new code. It is dormant only because there is one control today; the moment the settings surface offers both, a user changing two things at once loses one of them, and the symptom is a preference that sometimes does not stick, which is the hardest kind of bug to believe a report of.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [
+        "KN-006"
+      ],
+      "status": "backlog",
+      "exit": "A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:41:13.307Z"
+    },
+    {
+      "id": "KN-113",
+      "title": "Prove the portalled menu anchors correctly in RTL",
+      "desc": "LanguageSwitch renders a MUI Menu, which portals out of the tree. The stories assert the items, their text and the accessible name, and never the geometry: nothing checks that the popover anchors to the right edge under direction rtl, which is the one thing a portal is most likely to get wrong because it renders outside the element that carries the direction. Assert the anchor position, or the computed direction on the portalled node, in both directions.",
+      "why": "A roast rated this minor and it is the design contract rather than a nicety: RTL is achieved with direction rtl and natural order, and a popover that escapes that is the classic way a right-to-left layout half works. Every component after this one that opens a menu or a dialog inherits whatever this proves.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-006"
+      ],
+      "status": "backlog",
+      "exit": "A story asserts the menu is anchored to the right of its trigger in RTL and to the left in LTR, and it fails when the direction is not propagated to the portal.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T00:41:13.425Z"
     }
   ]
 }

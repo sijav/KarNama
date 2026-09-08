@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import { LanguageSwitch } from '../shared/language-switch'
 
 /**
  * The application shell.
@@ -26,5 +27,17 @@ export const App = () => (
     <Typography variant="body1" color="text.secondary" sx={{ mt: 3 }}>
       <Trans id="My job opportunities" />
     </Typography>
+    {/*
+      Here TEMPORARILY, and it is a placeholder inside a placeholder. DESIGN.md
+      puts the switch at the bottom of the sidebar `185:11` on desktop and in
+      the Page Header `155:56` on mobile, adding no new chrome, and neither
+      exists yet. It sits in the shell meanwhile because a control a user cannot
+      reach is not a feature: without it the language choice lives only in
+      Storybook, and "switching persists" cannot be shown end to end. Move it
+      when the sidebar lands, and delete this comment with it.
+    */}
+    <Box sx={{ mt: 6 }}>
+      <LanguageSwitch />
+    </Box>
   </Box>
 )
