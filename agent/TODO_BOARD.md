@@ -2,21 +2,15 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 10 of 117 tasks done · 30 of 414 points.
+Project **KarNama** · 11 of 122 tasks done · 38 of 426 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-033` API scaffold: NestJS, GraphQL code first, and its quality gate** (critical, 8 pt, api)
+**Next up: `KN-034` Prisma schema, Postgres on Supabase, and migrations** (critical, 5 pt, api)
 
-## Awaiting roast (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-033` | API scaffold: NestJS, GraphQL code first, and its quality gate | critical | 8 | api | KN-001 | lint, typecheck, test and build all pass in apps/api, the server starts, the GraphQL playground serves the schema, the health endpoint answers, and a missing required environment variable fails at startup with a clear message rather than at first request. |
-
-## Backlog (105)
+## Backlog (110)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -70,6 +64,9 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-096` | A literal type alias carries an unlocalized string past the lingui rule | high | 3 | web | KN-087 | The literal-type-alias form fails npm run lint or fails a dedicated check, a committed fixture holds it, and the check is proved by a planted break. |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | high | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-104` | Give the product a colour scheme setting that persists | high | 3 | web | KN-005 | A user can choose light, dark or system in the running app, the choice survives a reload, an e2e test proves both, and the same mechanism carries the language choice. |
+| `KN-118` | Health says ok while the database is unreachable, and the URLs are only checked for emptiness | high | 3 | api | KN-033 | A malformed DATABASE_URL or WEB_ORIGIN fails at startup and names which, the health query reports the database separately from the process, and it does not say ok when the database cannot be reached, proved against a URL pointing at a closed port. |
+| `KN-119` | Nothing tests CORS, the port binding or the startup path | high | 3 | api | KN-033 | A preflight from an unexpected origin does not receive that origin back, a test covers the CORS options and the port resolution without binding a port, main.ts is no longer excluded from coverage wholesale, and changing origin to true fails the run. |
+| `KN-120` | Make schema.gql a checked build artefact rather than a side effect of starting the server | high | 3 | api | KN-033 | npm run build produces schema.gql without starting a server, the file is committed, and a check fails when the resolvers and the committed schema disagree. |
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | high | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | high | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
@@ -112,6 +109,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-113` | Prove the portalled menu anchors correctly in RTL | medium | 2 | web | KN-006 | A story asserts the menu is anchored to the right of its trigger in RTL and to the left in LTR, and it fails when the direction is not propagated to the portal. |
 | `KN-115` | The language names bypass the catalog entirely | medium | 2 | web | KN-006 | The language names come from the catalog with each locale name present in both catalogs as its own native spelling, the lingui rule sees them, and a missing one fails the catalog test. |
 | `KN-117` | Re-triage severity, because 78 of 105 open cards are high | medium | 2 | agent | KN-001 | AGENTS.md defines each severity with a test a card can be held to, no level holds more than half the open board, and npm run todo -- validate reports the distribution so the next drift is visible. |
+| `KN-121` | Remove the escape hatches in the API tests, and the comment that denies them | medium | 2 | api | KN-033 | No `as` and no eslint-disable under apps/api, the resolver test uses a stub the type system accepts on its own, and the claim in health.test.ts is true or gone. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -125,8 +123,9 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-083` | Remove the em dashes the last DESIGN.md edits introduced | low | 1 | docs | KN-002 | No em dash appears in DESIGN.md, AGENTS.md, RALPH.md or STATE.md, and a check in the contract verifier fails when one is reintroduced. |
 | `KN-102` | The gate-fixtures README describes a file and a mechanism that no longer exist | low | 1 | docs | KN-088 | Every file and mechanism the README names exists, no file in the directory is unmentioned, and a check in agent/scripts/verify/KN-003.mjs fails when a fixture is added or renamed without the README following. |
 | `KN-106` | Localise the Storybook toolbar labels, or decide in writing that they stay English | low | 1 | web | KN-005 | Either the toolbar labels render from the catalog and a story proves it, or AGENTS.md states that Storybook chrome stays English with the reason and a check keeps product strings out of that directory. |
+| `KN-122` | Prettier is named in the API scaffold and is in neither the scripts nor the gate | low | 1 | infra | KN-033 | npm run format:check fails on a deliberately misformatted file in each workspace, and both KN-003 and KN-033 verifiers run it. |
 
-## Done (10)
+## Done (11)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -140,6 +139,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-005` | Theme: tokens, MUI theme, direction and colour scheme provider | critical | 3 | web | KN-003, KN-004 | A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour. |
 | `KN-006` | lingui: English source catalog, Persian translation, runtime switch | critical | 3 | web | KN-003 | A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not. |
 | `KN-003` | Web app scaffold with the full quality gate | critical | 8 | web | KN-001 | On a clean checkout, lint, lint:tsc, test, build and build-storybook all pass in apps/web, and both a deliberately broken test and a deliberately unlocalized string fail the run when planted by hand. |
+| `KN-033` | API scaffold: NestJS, GraphQL code first, and its quality gate | critical | 8 | api | KN-001 | lint, typecheck, test and build all pass in apps/api, the server starts, the GraphQL playground serves the schema, the health endpoint answers, and a missing required environment variable fails at startup with a clear message rather than at first request. |
 
 ## Dropped (1)
 
@@ -515,7 +515,7 @@ The tooltip at Figma node 410:469.
 
 ### `KN-033` API scaffold: NestJS, GraphQL code first, and its quality gate
 
-- **status** review · **severity** critical · **points** 8 · **area** api
+- **status** done · **severity** critical · **points** 8 · **area** api
 - **blocked by** KN-001
 
 apps/api on NestJS with GraphQL code first, ESLint, Prettier, Jest or Vitest with coverage, a health endpoint, and configuration through environment variables with no secret committed.
@@ -523,6 +523,8 @@ apps/api on NestJS with GraphQL code first, ESLint, Prettier, Jest or Vitest wit
 **Why.** The web app cannot move past local fixtures without a schema to generate from, and the schema is the contract between the two halves. Building the gate with the scaffold is the same argument as on the web side.
 
 **Exit condition.** lint, typecheck, test and build all pass in apps/api, the server starts, the GraphQL playground serves the schema, the health endpoint answers, and a missing required environment variable fails at startup with a clear message rather than at first request.
+
+**Roasts.** round 1 scored 4.2 with 0 critical(s)
 
 ### `KN-034` Prisma schema, Postgres on Supabase, and migrations
 
@@ -1455,4 +1457,59 @@ The selection law orders by severity, then points, then id. 78 of the 105 open t
 **Why.** The whole point of the law is that the script picks rather than the author, and a board where four fifths of the work shares one severity hands the choice back to whoever wrote the points. It also hides the genuinely urgent: three criticals are invisible in a list of seventy-eight highs. Found by looking at the distribution rather than at any one card.
 
 **Exit condition.** AGENTS.md defines each severity with a test a card can be held to, no level holds more than half the open board, and npm run todo -- validate reports the distribution so the next drift is visible.
+
+### `KN-118` Health says ok while the database is unreachable, and the URLs are only checked for emptiness
+
+- **status** backlog · **severity** high · **points** 3 · **area** api
+- **blocked by** KN-033
+
+src/config/env.ts requires DATABASE_URL and WEB_ORIGIN to be non-empty strings and nothing more, so DATABASE_URL=not-a-postgres-url and WEB_ORIGIN=not a URL both start the service. Nothing connects to the database at any point, so the health query answers ok against a database that does not exist. Validate both as URLs with the schemes they must have, and make health a readiness check that reports the database separately from the process.
+
+**Why.** A roast rated this major twice over and it is the deploy failure this whole config file was written to prevent, one level deeper: the point of requiring DATABASE_URL before listening is that a server which starts without a database and fails on the first query is worse than one that refuses to start. As written it starts and then reports itself healthy, which is the same failure with a green light on it.
+
+**Exit condition.** A malformed DATABASE_URL or WEB_ORIGIN fails at startup and names which, the health query reports the database separately from the process, and it does not say ok when the database cannot be reached, proved against a URL pointing at a closed port.
+
+### `KN-119` Nothing tests CORS, the port binding or the startup path
+
+- **status** backlog · **severity** high · **points** 3 · **area** api
+- **blocked by** KN-033
+
+vitest.config.ts excludes src/main.ts from coverage, which is where CORS is configured, the port is bound and the CLI failure path lives. So the 100 percent figure is reported over a file set that omits the only code a deploy actually depends on, and a change to the allowed origin, to credentials, or to origin: true would keep the gate green. Export the parts of bootstrap that can be tested without listening, test the CORS options object directly, and add a preflight test against the running server in the probe.
+
+**Why.** A roast rated this major. The excluded file is not an uninteresting one: origin: true instead of the configured value is the difference between a CORS policy and the absence of one, and it is a one-word edit that nothing would catch. The exclusion was written for the right reason, main.ts starts a real server, and the wrong conclusion was drawn from it.
+
+**Exit condition.** A preflight from an unexpected origin does not receive that origin back, a test covers the CORS options and the port resolution without binding a port, main.ts is no longer excluded from coverage wholesale, and changing origin to true fails the run.
+
+### `KN-120` Make schema.gql a checked build artefact rather than a side effect of starting the server
+
+- **status** backlog · **severity** high · **points** 3 · **area** api
+- **blocked by** KN-033
+
+autoSchemaFile writes schema.gql to process.cwd() when the application boots, and the file is gitignored. npm run build runs tsc only, so a fresh clone has no schema, and packages/graphql is supposed to generate the client types from it. That means the contract between the two halves can only be regenerated by someone able to boot the server with a full environment and a writable directory, and nothing can fail a build because the schema changed and the client types did not. Generate it in a build step, commit it, and add a check that the committed file matches what the resolvers produce.
+
+**Why.** A roast rated this major and it is the load bearing one for everything after: KN-035 generates types from this file both ways, and a generated artefact that is neither committed nor reproducible is a contract nobody can diff. The one thing a code-first schema is for is that the server cannot disagree with the client, and that only holds if the file is checked.
+
+**Exit condition.** npm run build produces schema.gql without starting a server, the file is committed, and a check fails when the resolvers and the committed schema disagree.
+
+### `KN-121` Remove the escape hatches in the API tests, and the comment that denies them
+
+- **status** backlog · **severity** medium · **points** 2 · **area** api
+- **blocked by** KN-033
+
+src/health/health.resolver.test.ts casts a fake object through unknown to ConfigService twice, and src/config/env.test.ts carries an eslint-disable for no-dynamic-delete with a cast beside it and no TECH-DEBT entry. AGENTS.md bans both, and TECH-DEBT is where anything suppressed is supposed to be recorded. Worse, a comment in health.test.ts says an `as` there "would be the first one in the repository", which was already false when it was written. Build a real ConfigService or a typed stub that satisfies the contract, drop the disable, and correct the comment.
+
+**Why.** A roast rated these minor and they are, individually. Together they are the pattern the whole ban exists to stop: a cast in a test masks whether the mock satisfies the dependency it stands in for, so the test passes and the wiring is unproven. And a comment asserting the rule is kept, in a file next to two violations of it, is the thing that makes the next reader stop checking.
+
+**Exit condition.** No `as` and no eslint-disable under apps/api, the resolver test uses a stub the type system accepts on its own, and the claim in health.test.ts is true or gone.
+
+### `KN-122` Prettier is named in the API scaffold and is in neither the scripts nor the gate
+
+- **status** backlog · **severity** low · **points** 1 · **area** infra
+- **blocked by** KN-033
+
+The KN-033 card says the scaffold includes Prettier. apps/api has no format or format:check script, the root .prettierrc is never applied to it by any command, and agent/scripts/verify/KN-033.mjs does not run it. A badly formatted API file passes every gate. Add the script, add it to the verifier, and do the same for apps/web, which has the same gap.
+
+**Why.** A roast rated this minor. It matters slightly more than it looks because the web workspace has the same hole, so nothing in this repository actually enforces formatting anywhere, while both cards claim it. A formatter that is configured and never run is a configuration file pretending to be a rule.
+
+**Exit condition.** npm run format:check fails on a deliberately misformatted file in each workspace, and both KN-003 and KN-033 verifiers run it.
 

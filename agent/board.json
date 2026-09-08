@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 118,
+  "nextId": 123,
   "tasks": [
     {
       "id": "KN-001",
@@ -967,13 +967,34 @@
       "parent": [
         "KN-001"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "lint, typecheck, test and build all pass in apps/api, the server starts, the GraphQL playground serves the schema, the health endpoint answers, and a missing required environment variable fails at startup with a clear message rather than at first request.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4.2,
+          "criticals": 0,
+          "file": "agent/roasts/KN-033-round-1.2026-09-08T01-08-23-593Z.md",
+          "filed": [
+            "KN-118",
+            "KN-119",
+            "KN-120",
+            "KN-121",
+            "KN-122"
+          ],
+          "cardDigest": "27decafc79e61669f1d0db0e282d967177a61b5343248db665cb8402e7ceb7c3",
+          "head": "abaa9d3b4873d5cef36adb33b351d27a3fdffa85",
+          "reviewerScore": 4.2,
+          "reviewerCriticals": 0,
+          "at": "2026-09-08T01:13:29.115Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-08T01:08:01.859Z",
-      "verify": "node agent/scripts/verify/KN-033.mjs"
+      "updatedAt": "2026-09-08T01:13:45.304Z",
+      "verify": "node agent/scripts/verify/KN-033.mjs",
+      "evidence": "Every clause was run. lint, lint:tsc, test and build all pass in apps/api: 16 tests across 3 files at 100 percent on all four metrics. The server starts, and it was started as a COLD PROCESS from the build rather than in-process, by a committed probe that waits for it, fetches the endpoint as HTML and gets GraphiQL, posts the health query and gets status ok with a numeric uptime, then stops it. schema.gql is generated code-first from the resolvers and carries Health with String, String and Float fields, which is also how the run proves decorator metadata survived: without it those types come out wrong rather than the build failing. A missing required variable fails at startup, before anything listens, printing two lines that name the variable and exiting 1; the check refuses a message that arrives wrapped in a Nest exception handler, because that was the first version of it. Six mutations were planted and five caught, including switching off decoratorMetadata, lowering a coverage threshold, giving WEB_ORIGIN a default and breaking the health answer; the sixth, restoring the static import, turned out not to reproduce the old behaviour, so that sub-assertion is recorded as currently unfalsifiable rather than counted. What this does NOT establish, all filed: DATABASE_URL and WEB_ORIGIN are checked only for emptiness and health says ok against a database that does not exist, KN-118; main.ts is excluded from coverage so CORS, the port binding and the CLI path are untested, KN-119; schema.gql is gitignored and produced only by booting the server, so the contract packages/graphql needs is neither committed nor reproducible, KN-120; two casts and an eslint-disable violate the escape-hatch ban and a comment denies it, KN-121; and Prettier is named in the card and is in neither the scripts nor the gate, in either workspace, KN-122.",
+      "closedAt": "2026-09-08T01:13:45.304Z"
     },
     {
       "id": "KN-034",
@@ -2648,6 +2669,91 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T00:47:11.002Z"
+    },
+    {
+      "id": "KN-118",
+      "title": "Health says ok while the database is unreachable, and the URLs are only checked for emptiness",
+      "desc": "src/config/env.ts requires DATABASE_URL and WEB_ORIGIN to be non-empty strings and nothing more, so DATABASE_URL=not-a-postgres-url and WEB_ORIGIN=not a URL both start the service. Nothing connects to the database at any point, so the health query answers ok against a database that does not exist. Validate both as URLs with the schemes they must have, and make health a readiness check that reports the database separately from the process.",
+      "why": "A roast rated this major twice over and it is the deploy failure this whole config file was written to prevent, one level deeper: the point of requiring DATABASE_URL before listening is that a server which starts without a database and fails on the first query is worse than one that refuses to start. As written it starts and then reports itself healthy, which is the same failure with a green light on it.",
+      "severity": "high",
+      "points": 3,
+      "area": "api",
+      "parent": [
+        "KN-033"
+      ],
+      "status": "backlog",
+      "exit": "A malformed DATABASE_URL or WEB_ORIGIN fails at startup and names which, the health query reports the database separately from the process, and it does not say ok when the database cannot be reached, proved against a URL pointing at a closed port.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T01:12:50.624Z"
+    },
+    {
+      "id": "KN-119",
+      "title": "Nothing tests CORS, the port binding or the startup path",
+      "desc": "vitest.config.ts excludes src/main.ts from coverage, which is where CORS is configured, the port is bound and the CLI failure path lives. So the 100 percent figure is reported over a file set that omits the only code a deploy actually depends on, and a change to the allowed origin, to credentials, or to origin: true would keep the gate green. Export the parts of bootstrap that can be tested without listening, test the CORS options object directly, and add a preflight test against the running server in the probe.",
+      "why": "A roast rated this major. The excluded file is not an uninteresting one: origin: true instead of the configured value is the difference between a CORS policy and the absence of one, and it is a one-word edit that nothing would catch. The exclusion was written for the right reason, main.ts starts a real server, and the wrong conclusion was drawn from it.",
+      "severity": "high",
+      "points": 3,
+      "area": "api",
+      "parent": [
+        "KN-033"
+      ],
+      "status": "backlog",
+      "exit": "A preflight from an unexpected origin does not receive that origin back, a test covers the CORS options and the port resolution without binding a port, main.ts is no longer excluded from coverage wholesale, and changing origin to true fails the run.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T01:12:50.753Z"
+    },
+    {
+      "id": "KN-120",
+      "title": "Make schema.gql a checked build artefact rather than a side effect of starting the server",
+      "desc": "autoSchemaFile writes schema.gql to process.cwd() when the application boots, and the file is gitignored. npm run build runs tsc only, so a fresh clone has no schema, and packages/graphql is supposed to generate the client types from it. That means the contract between the two halves can only be regenerated by someone able to boot the server with a full environment and a writable directory, and nothing can fail a build because the schema changed and the client types did not. Generate it in a build step, commit it, and add a check that the committed file matches what the resolvers produce.",
+      "why": "A roast rated this major and it is the load bearing one for everything after: KN-035 generates types from this file both ways, and a generated artefact that is neither committed nor reproducible is a contract nobody can diff. The one thing a code-first schema is for is that the server cannot disagree with the client, and that only holds if the file is checked.",
+      "severity": "high",
+      "points": 3,
+      "area": "api",
+      "parent": [
+        "KN-033"
+      ],
+      "status": "backlog",
+      "exit": "npm run build produces schema.gql without starting a server, the file is committed, and a check fails when the resolvers and the committed schema disagree.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T01:13:12.633Z"
+    },
+    {
+      "id": "KN-121",
+      "title": "Remove the escape hatches in the API tests, and the comment that denies them",
+      "desc": "src/health/health.resolver.test.ts casts a fake object through unknown to ConfigService twice, and src/config/env.test.ts carries an eslint-disable for no-dynamic-delete with a cast beside it and no TECH-DEBT entry. AGENTS.md bans both, and TECH-DEBT is where anything suppressed is supposed to be recorded. Worse, a comment in health.test.ts says an `as` there \"would be the first one in the repository\", which was already false when it was written. Build a real ConfigService or a typed stub that satisfies the contract, drop the disable, and correct the comment.",
+      "why": "A roast rated these minor and they are, individually. Together they are the pattern the whole ban exists to stop: a cast in a test masks whether the mock satisfies the dependency it stands in for, so the test passes and the wiring is unproven. And a comment asserting the rule is kept, in a file next to two violations of it, is the thing that makes the next reader stop checking.",
+      "severity": "medium",
+      "points": 2,
+      "area": "api",
+      "parent": [
+        "KN-033"
+      ],
+      "status": "backlog",
+      "exit": "No `as` and no eslint-disable under apps/api, the resolver test uses a stub the type system accepts on its own, and the claim in health.test.ts is true or gone.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T01:13:12.749Z"
+    },
+    {
+      "id": "KN-122",
+      "title": "Prettier is named in the API scaffold and is in neither the scripts nor the gate",
+      "desc": "The KN-033 card says the scaffold includes Prettier. apps/api has no format or format:check script, the root .prettierrc is never applied to it by any command, and agent/scripts/verify/KN-033.mjs does not run it. A badly formatted API file passes every gate. Add the script, add it to the verifier, and do the same for apps/web, which has the same gap.",
+      "why": "A roast rated this minor. It matters slightly more than it looks because the web workspace has the same hole, so nothing in this repository actually enforces formatting anywhere, while both cards claim it. A formatter that is configured and never run is a configuration file pretending to be a rule.",
+      "severity": "low",
+      "points": 1,
+      "area": "infra",
+      "parent": [
+        "KN-033"
+      ],
+      "status": "backlog",
+      "exit": "npm run format:check fails on a deliberately misformatted file in each workspace, and both KN-003 and KN-033 verifiers run it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T01:13:12.883Z"
     }
   ]
 }
