@@ -1,0 +1,10 @@
+{
+  "task": "KN-128",
+  "round": 6,
+  "model": "gpt-6-astra",
+  "head": "7e69f4de57149d77a38cb07d9303c5c809da0202",
+  "base": "HEAD~1",
+  "cardDigest": "fcd190e7cd6156c5faf69295c5a65f23a26afedcb39854a14f53f54bcf169800",
+  "replyDigest": "ec2f0cbabedfe4d5b0b70fe52ae46ed8fc78e53803302350f062fce407162832",
+  "at": "2026-09-08T05:10:37.487Z"
+}

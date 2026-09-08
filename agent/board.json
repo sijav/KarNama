@@ -2934,7 +2934,7 @@
       "parent": [
         "KN-035"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case.",
       "roasts": [
         {
@@ -3006,12 +3006,26 @@
           "reviewerScore": 9,
           "reviewerCriticals": 0,
           "at": "2026-09-08T05:07:26.944Z"
+        },
+        {
+          "round": 6,
+          "score": 9,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-128-round-6.2026-09-08T05-09-07-730Z.md",
+          "filed": [],
+          "cardDigest": "fcd190e7cd6156c5faf69295c5a65f23a26afedcb39854a14f53f54bcf169800",
+          "head": "7e69f4de57149d77a38cb07d9303c5c809da0202",
+          "reviewerScore": 9,
+          "reviewerCriticals": 0,
+          "at": "2026-09-08T05:11:01.770Z"
         }
       ],
       "notes": [],
       "createdAt": "2026-09-08T02:32:58.437Z",
-      "updatedAt": "2026-09-08T05:08:02.830Z",
-      "verify": "node agent/scripts/verify/KN-128.mjs"
+      "updatedAt": "2026-09-08T05:11:33.310Z",
+      "verify": "node agent/scripts/verify/KN-128.mjs",
+      "evidence": "The operation lives in packages/graphql/src/operations/health.graphql, where codegen validates it against apps/api/schema.gql at generation time. typescript-operations and typed-document-node emit HealthDocument and HealthQuery together so a consumer cannot pair the wrong two, and apps/web/src/core/api/health.ts re-exports them instead of holding a gql template with a hand-written TypedDocumentNode annotation.\n\nExit condition, clause by clause, each proved by planting the case. A query selecting a field that does not exist fails the build: a field in the operation is misspelled and the ROOT build must refuse with the diagnostic naming the field and the type, not merely a failed build, so the refusal is codegen comparing document to schema rather than something incidental. The response type is the SELECTION: HealthQuery is an inline shape of the three selected fields and the check refuses any mention of the Health object type. Adding a REQUIRED field to Health does not change it: a non-null field is added to the model and supplied in the resolver, the API recompiles, schema.gql and the types regenerate, the emitted SDL is asserted to carry that field as non-null so the plant cannot regress to nullable under the required clause's name, and then the query type must be byte-identical AND a probe reading the new field through the web consumer must fail with exactly one TS2339 naming it. Byte equality alone was not enough: the hand-written whole-object shape this card removed has text that does not change when Health gains a field either.\n\nThe verifier writes and restores. It snapshots the five files it can touch before any check runs, refuses to start if anything already occupies the probe path, and the closing check compares bytes against those snapshots rather than running the build, because the plant is internally consistent by construction so a run that restored nothing still builds. Twenty mutations planted and twenty caught, including the two that earlier versions missed: a probe importing the generated file rather than the consumer, and the whole-object Query type aliased under the right name. Those cases live in a scratch directory rather than the repository, which the reviewer twice declined to certify and was right to; that is filed as KN-136.\n\nGate: root lint clean, lint:tsc clean, 286 tests passing at 100 percent statements, branches, functions and lines across apps/web and apps/api, build succeeds with both schema.gql and generated.ts reported as matching. AGENTS.md section 5 steps 5 to 7 were NOT performed and are not claimed: nothing renders this module yet, so there is no story or screen to open in fa-IR and en-US, light and dark.\n\nSix roast rounds: 7.0, 8.0, then 9.0 four times, zero criticals from round 2 on. Round 6 answered every clause of the exit condition yes and found no new defect. Four of those rounds should not have happened. Rounds 3 to 5 were fixes that the loop's mechanical test says should have been cards, and round 6 was the cost of attaching the verify command after the roast rather than before, which changes the card digest. Both mistakes are filed: the ordering trap as KN-139, and round 5's two real findings as KN-137 the verifier checks the exported type but never the exported document, and KN-138 it attributes compiler errors by substring rather than by path. The fixes already written for those were reverted so this closes on the state that was actually reviewed.",
+      "closedAt": "2026-09-08T05:11:33.310Z"
     },
     {
       "id": "KN-129",

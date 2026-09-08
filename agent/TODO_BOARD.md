@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 14 of 139 tasks done · 51 of 462 points.
+Project **KarNama** · 15 of 139 tasks done · 54 of 462 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-128` Generate typed GraphQL operations instead of asserting them by hand** (critical, 3 pt, graphql)
-
-## Awaiting roast (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-128` | Generate typed GraphQL operations instead of asserting them by hand | critical | 3 | graphql | KN-035 | A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case. |
+**Next up: `KN-131` Make the root build typecheck what it ships** (critical, 2 pt, infra)
 
 ## Backlog (123)
 
@@ -144,7 +138,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-135` | The graphql package's coverage thresholds pass on zero files | low | 1 | graphql | none | Either adding an uncovered file with real behaviour to packages/graphql makes npm test fail, proved by planting one, or the thresholds are gone and a comment says why coverage does not apply here. |
 | `KN-138` | KN-128's verifier attributes compiler errors by substring, not by path | low | 1 | agent | none | A file elsewhere in the web app whose path ends with the probe's name is not counted as the probe, proved by creating one, running the verifier and removing it, rather than by editing the matcher and reasoning about it. |
 
-## Done (14)
+## Done (15)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -158,6 +152,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-005` | Theme: tokens, MUI theme, direction and colour scheme provider | critical | 3 | web | KN-003, KN-004 | A Tokens story renders every colour, spacing and radius token with its name and value, the theme switches light and dark and RTL and LTR from the Storybook toolbars, and a test asserts no component file contains a raw hex colour. |
 | `KN-006` | lingui: English source catalog, Persian translation, runtime switch | critical | 3 | web | KN-003 | A bare string literal in a tsx file fails lint, the app defaults to Persian, switching to English flips direction and persists, the fa-IR catalog is 100 percent translated, and a test fails when it is not. |
 | `KN-120` | Make schema.gql a checked build artefact rather than a side effect of starting the server | critical | 3 | api | KN-033 | npm run build produces schema.gql without starting a server, the file is committed, and a check fails when the resolvers and the committed schema disagree. |
+| `KN-128` | Generate typed GraphQL operations instead of asserting them by hand | critical | 3 | graphql | KN-035 | A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case. |
 | `KN-034` | Prisma schema, Postgres on Supabase, and migrations | critical | 5 | api | KN-033 | Migrations apply to an empty database and to an existing one, the schema covers every field the Figma job record names, status history records every transition with its timestamp, and a seed script produces a realistic archive to develop against. |
 | `KN-035` | GraphQL codegen wired both ways | critical | 5 | graphql | KN-003, KN-033, KN-120 | Changing the API schema without regenerating fails the build, the web app imports only generated types for GraphQL data, and no hand-written interface duplicates a generated one. |
 | `KN-003` | Web app scaffold with the full quality gate | critical | 8 | web | KN-001 | On a clean checkout, lint, lint:tsc, test, build and build-storybook all pass in apps/web, and both a deliberately broken test and a deliberately unlocalized string fail the run when planted by hand. |
@@ -1598,7 +1593,7 @@ src/graphql/schema.test.ts proves the generator and the application share one li
 
 ### `KN-128` Generate typed GraphQL operations instead of asserting them by hand
 
-- **status** review · **severity** critical · **points** 3 · **area** graphql
+- **status** done · **severity** critical · **points** 3 · **area** graphql
 - **blocked by** KN-035
 
 HEAD_QUERY is a gql template with a hand-written TypedDocumentNode annotation, and HealthQueryData is Pick<Query, health>. Neither is generated or validated against the schema. Misspell a selected field, environmentTypo, and TypeScript accepts it because the annotation was asserted rather than derived, and the server rejects the request at runtime. The declared response type also claims the whole Health object rather than the three fields selected, so adding a required field to Health makes the type say Apollo returned something the query never asked for. The typescript-operations plugin is installed and unused; switch to generated operation types, or the client preset, so the document and its type come from the same place.
@@ -1607,7 +1602,7 @@ HEAD_QUERY is a gql template with a hand-written TypedDocumentNode annotation, a
 
 **Exit condition.** A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case.
 
-**Roasts.** round 1 scored 7 with 2 critical(s); round 2 scored 8 with 0 critical(s); round 3 scored 9 with 0 critical(s); round 4 scored 9 with 0 critical(s); round 5 scored 9 with 0 critical(s)
+**Roasts.** round 1 scored 7 with 2 critical(s); round 2 scored 8 with 0 critical(s); round 3 scored 9 with 0 critical(s); round 4 scored 9 with 0 critical(s); round 5 scored 9 with 0 critical(s); round 6 scored 9 with 0 critical(s)
 
 ### `KN-129` The duplicate-type scan only sees exported top-level declarations
 
