@@ -22,3 +22,9 @@ apps/api/dist/
 
 # The board the global /todo skill keeps, one per checkout.
 .claude/todo.db
+
+# Roast output and session ids: this machine, not the project.
+.claude/roast-result.md
+.claude/roast-sessions.json
+.claude/roast-last-message.tmp
+.claude/plan-*.md
