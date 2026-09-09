@@ -142,9 +142,15 @@ model StatusHistory {
 
 /// Someone in the user's network. A full name and nothing else is required.
 ///
-/// Whether a contact needs an email or a phone is an OPEN QUESTION in the design
-/// itself, tracked by KN-071, so both are nullable here and neither is enforced.
-/// Adding a constraint now would be answering a question the design asked.
+/// That is SETTLED, not provisional: the design asked whether a contact should
+/// need an email or a phone, and the owner answered on 2026-09-08 that it needs
+/// neither. See DESIGN.md section 6 and KN-071. Both stay nullable and neither
+/// is enforced, here or in the form.
+///
+/// The design's own note argues the other way — a contact with no route is
+/// close to useless — and the owner was shown it and chose the permissive rule
+/// anyway. So do NOT add a one-of-two constraint later on the grounds that the
+/// design obviously wanted one. It did; the owner overruled it.
 model Contact {
   id     String @id @default(uuid())
   userId String

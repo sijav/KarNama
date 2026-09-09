@@ -1881,11 +1881,12 @@
       "parent": [
         "KN-002"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-030 states where history renders.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T21:48:46.372Z"
+      "createdAt": "2026-09-07T21:48:46.372Z",
+      "updatedAt": "2026-09-09T21:43:54.997Z"
     },
     {
       "id": "KN-073",

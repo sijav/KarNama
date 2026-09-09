@@ -48,7 +48,17 @@ check('the decision is recorded, and says who made it and which card', () => {
   // sentence matched the grep, and this is the same shape of check.
   const line = settled.split('\n').find((row) => row.startsWith('**') && /contact/i.test(row))
   if (!line) return 'there is no bolded decision line about the contact'
-  if (!/only a full name/i.test(line)) return `the decision line does not say a full name is all that is required: "${line.trim().slice(0, 90)}"`
+  // A substring survives NEGATION, which is the whole difficulty here. "A
+  // contact cannot be saved with only a full name" contains "only a full name"
+  // and states the opposite decision, and it passed. So the affirmative shape
+  // is required AND the negations are refused, because this check exists to
+  // establish which of two opposite rules was chosen.
+  if (/\b(cannot|can not|never|must not|not be)\b/i.test(line) || /\b(requires?|needs?) (an? )?(email|phone|contact route)/i.test(line)) {
+    return `the decision line states the STRICT rule, or negates the permissive one: "${line.trim().slice(0, 90)}"`
+  }
+  if (!/\b(needs?|requires?) only a full name\b/i.test(line)) {
+    return `the decision line does not affirmatively say a contact needs only a full name: "${line.trim().slice(0, 90)}"`
+  }
   const entry = settled.slice(settled.indexOf(line), settled.indexOf(line) + 500)
   if (!/Owner/.test(entry)) return 'the entry does not name who decided it'
   return /KN-071/.test(entry) ? null : 'the entry does not cite KN-071'
@@ -80,10 +90,30 @@ for (const id of ['KN-031', 'KN-039']) {
     // Positive, not an absence. "does not require email" is satisfied by a card
     // that never mentions contacts at all; "saves with a full name and nothing
     // else" is a thing a builder can be held to.
-    if (!/full name/i.test(exit)) return `${id}'s exit condition does not mention the full name rule`
     if (!/KN-071/.test(exit)) return `${id}'s exit condition states a rule without citing the decision it comes from`
-    const positive = /saves? with|accepted|read back/i.test(exit)
-    return positive ? null : `${id} states the rule only as an absence, which a card that says nothing also satisfies`
+    // The whole acceptance clause, not keywords scattered anywhere in the text.
+    // Independent matches for "full name" and "saves" passed a card that read
+    // "a contact requires a full name and at least one of email or phone, per
+    // KN-071. Notes are accepted and read back unchanged" — the strict rule,
+    // with the permissive keywords supplied by an unrelated sentence.
+    if (/at least one|either an? email|email or phone is required|requires? (an? )?(email|phone)/i.test(exit)) {
+      return `${id} states the STRICT rule, which is the opposite of the decision it cites`
+    }
+    // One sentence has to carry all three: a contact, having only a full name,
+    // succeeding. Split on sentence ends so the parts cannot be borrowed from
+    // different claims.
+    const sentences = exit.split(/(?<=[.!?])\s+/)
+    const clause = sentences.find(
+      (s) => /contact/i.test(s) && /full name/i.test(s) && /\b(saves?|accepted|read back|succeeds?)\b/i.test(s),
+    )
+    if (!clause) {
+      return `${id} has no single sentence saying a contact with a full name and nothing else is accepted; the parts are scattered across claims that may be about something else`
+    }
+    // And it must say the routes are ABSENT, or "a contact saves with a full
+    // name" is satisfied by a contact that also has an email.
+    return /nothing else|no email|without an email|neither|and no phone/i.test(clause)
+      ? null
+      : `${id}'s acceptance clause does not say the email and phone are ABSENT: "${clause.trim().slice(0, 100)}"`
   })
 }
 
