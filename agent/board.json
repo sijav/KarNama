@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 148,
+  "nextId": 149,
   "tasks": [
     {
       "id": "KN-001",
@@ -3411,6 +3411,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T20:40:23.972Z"
+    },
+    {
+      "id": "KN-148",
+      "title": "The mutation harnesses re-run the whole suite once per regression",
+      "desc": "agent/scripts/verify/KN-123.mjs plants fifteen regressions and runs the ENTIRE database suite for each one, so a single verify is fifteen times a 68 second suite plus a baseline: about eighteen minutes. The close gate runs the verify, so every attempt to close the task pays it again, and the same shape is in KN-128's and KN-131's harnesses. Each regression names the one test that must fail, so vitest can be given that name with -t and run only it. Keep one full-suite baseline at the start, because a regression is only meaningful if everything passes first, then run each planted case narrowly. The saving is the difference between a check that gets run and one that gets skipped because it is too slow to bear.",
+      "why": "A verifier nobody wants to run stops being a verifier. Eighteen minutes is already long enough that the temptation is to close without it, which is precisely the failure the gate exists to prevent, and the harness gets slower every time a regression is added. It is also the single biggest wall-clock cost in this loop right now, ahead of the roasts themselves.",
+      "severity": "medium",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A verify that plants N regressions runs one full suite plus N filtered runs, and completes in under five minutes for KN-123, with every regression still caught, proved by running the harness before and after and comparing both the time and the caught count.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T20:58:35.809Z"
     }
   ]
 }

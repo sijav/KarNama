@@ -43,13 +43,16 @@ const check = (label, run) => {
   }
 }
 
-const suite = () =>
-  spawnSync('npx vitest run src/database/migrations.test.ts src/database/migrations.guards.test.ts', {
-    cwd: API,
-    encoding: 'utf8',
-    shell: true,
-    env: { ...process.env, CI: '1', FORCE_COLOR: '0' },
-  })
+// `only` is a test-name substring, which is what vitest's -t takes. The
+// baseline runs everything; a planted regression runs just the test it claims
+// to break. Re-running all sixty-seven to watch one of them fail was most of an
+// eighteen minute verify, and a check that slow is one that gets skipped.
+const suite = (only) =>
+  spawnSync(
+    'npx vitest run src/database/migrations.test.ts src/database/migrations.guards.test.ts' +
+      (only ? ` -t ${JSON.stringify(only)}` : ''),
+    { cwd: API, encoding: 'utf8', shell: true, env: { ...process.env, CI: '1', FORCE_COLOR: '0' } },
+  )
 
 check('the runner has all four guarantees in its source', () => {
   const code = snapshot.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')
@@ -174,8 +177,28 @@ const regressions = [
     // `$` is legal inside an unquoted identifier, so `a$b$c` is a name and not
     // a quoted body. Reading it as a body swallowed what followed.
     name: 'a dollar sign inside an identifier opens a dollar quote again',
-    apply: (code) => code.replace('const continuesIdentifier = /[A-Za-z0-9_$]/.test(previous)', 'const continuesIdentifier = false'),
+    apply: (code) => code.replace('const continuesIdentifier = /[\\p{L}\\p{N}_$]/u.test(previous)', 'const continuesIdentifier = false'),
     expect: 'refuses transaction control hidden after a dollar sign inside an identifier',
+  },
+  {
+    // Round 4. Postgres accepts accented and non-Latin letters in an unquoted
+    // name, so an ASCII-only boundary test read the `$` in `é$tag$` as opening
+    // a quoted body and swallowed the ABORT that followed.
+    name: 'the identifier boundary goes back to ASCII only',
+    apply: (code) => code.replace('/[\\p{L}\\p{N}_$]/u.test(previous)', '/[A-Za-z0-9_$]/.test(previous)'),
+    expect: 'refuses ABORT hidden behind a NON-ASCII identifier',
+  },
+  {
+    // Round 4. Postgres ends a line comment at a bare carriage return too, so
+    // searching only for \n consumed `-- c\rABORT;` as comment text while the
+    // server executed it.
+    name: 'a line comment only ends at a newline again',
+    apply: (code) =>
+      code.replace(
+        "      const lineFeed = sql.indexOf('\\n', index)\n      const carriageReturn = sql.indexOf('\\r', index)\n      const ends = [lineFeed, carriageReturn].filter((at) => at !== -1)\n      index = ends.length === 0 ? sql.length : Math.min(...ends)",
+        "      const lineFeed = sql.indexOf('\\n', index)\n      index = lineFeed === -1 ? sql.length : lineFeed",
+      ),
+    expect: 'refuses ABORT after a comment ended by a bare carriage return',
   },
   {
     // The waiting half of the concurrency clause. Refusing after N attempts
@@ -201,11 +224,21 @@ check('REMOVING ANY ONE GUARANTEE MAKES THE SUITE FAIL, proved by removing each'
       if (mutated === snapshot) return `"${regression.name}" did not apply, so it proves nothing`
       writeFileSync(RUNNER, mutated)
 
-      const result = suite()
-      if (result.status === 0) return `"${regression.name}" did not make the suite fail`
+      // Only the test this regression names, not all sixty-seven.
+      const result = suite(regression.expect)
       const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
-      if (!output.includes(regression.expect)) {
-        return `"${regression.name}" failed the suite, but not through "${regression.expect}":\n${output.split('\n').filter((line) => line.includes('×') || line.includes('FAIL')).slice(0, 6).join('\n')}`
+
+      // A filter matching NOTHING also exits non-zero, and that is
+      // indistinguishable from a catch. So the run has to have found the test
+      // and failed it. This is the smallest form of the defect KN-143 is about:
+      // a name appearing in output is not a test having failed, and four stale
+      // mutations passed silently today on exactly that confusion.
+      if (/No test (files )?found/i.test(output) || /matched\s+0\s+test/i.test(output)) {
+        return `"${regression.name}" filtered to no test at all, so its expectation no longer names a real one`
+      }
+      if (result.status === 0) return `"${regression.name}" did not make the suite fail`
+      if (!/Tests\s+\d+ failed/.test(output)) {
+        return `"${regression.name}" made the run fail without failing a test:\n${output.split('\n').slice(-12).join('\n')}`
       }
     } finally {
       writeFileSync(RUNNER, snapshot)

@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 16 of 147 tasks done · 56 of 482 points.
+Project **KarNama** · 16 of 148 tasks done · 56 of 484 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-123` | The migration runner has no transaction, no lock, no failure state and no checksum | critical | 5 | api | KN-034 | A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite. |
 
-## Backlog (129)
+## Backlog (130)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -126,6 +126,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-130` | The no-data health reason is English copy outside the catalog | medium | 2 | web | KN-035 | No English sentence originates in apps/web/src/core, the empty-response case carries a code the component renders through the catalog, a network message still passes through untranslated, and the catalog test covers the new id. |
 | `KN-137` | KN-128's verifier checks the exported type but never the exported document | medium | 2 | agent | none | Exporting a hand-built or widened document from apps/web/src/core/api makes the KN-128 verifier fail, proved by planting both cases, and the check that catches the widened one reads the document rather than its type, since the optional brand makes the type-level check unable to see it. |
 | `KN-147` | Nothing proves the migration runner waits between lock attempts | medium | 2 | api | none | Deleting the retry delay makes the suite fail, proved by planting exactly that, and the test asserts elapsed time or scheduled timing rather than attempt count alone. |
+| `KN-148` | The mutation harnesses re-run the whole suite once per regression | medium | 2 | agent | none | A verify that plants N regressions runs one full suite plus N filtered runs, and completes in under five minutes for KN-123, with every regression still caught, proved by running the harness before and after and comparing both the time and the caught count. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -1829,4 +1830,15 @@ takeLock retries with await wait(retryMs) between attempts, and no test covers t
 **Why.** The exit condition says a second concurrent run WAITS rather than racing. Refusing after N attempts proves it does not race, and eventually succeeding proves it can get in, but neither proves it waited, and waiting is the part that makes a real deploy survive a slower one ahead of it. It is also the last finding from four rounds that is still unaddressed.
 
 **Exit condition.** Deleting the retry delay makes the suite fail, proved by planting exactly that, and the test asserts elapsed time or scheduled timing rather than attempt count alone.
+
+### `KN-148` The mutation harnesses re-run the whole suite once per regression
+
+- **status** backlog · **severity** medium · **points** 2 · **area** agent
+- **blocked by** none
+
+agent/scripts/verify/KN-123.mjs plants fifteen regressions and runs the ENTIRE database suite for each one, so a single verify is fifteen times a 68 second suite plus a baseline: about eighteen minutes. The close gate runs the verify, so every attempt to close the task pays it again, and the same shape is in KN-128's and KN-131's harnesses. Each regression names the one test that must fail, so vitest can be given that name with -t and run only it. Keep one full-suite baseline at the start, because a regression is only meaningful if everything passes first, then run each planted case narrowly. The saving is the difference between a check that gets run and one that gets skipped because it is too slow to bear.
+
+**Why.** A verifier nobody wants to run stops being a verifier. Eighteen minutes is already long enough that the temptation is to close without it, which is precisely the failure the gate exists to prevent, and the harness gets slower every time a regression is added. It is also the single biggest wall-clock cost in this loop right now, ahead of the roasts themselves.
+
+**Exit condition.** A verify that plants N regressions runs one full suite plus N filtered runs, and completes in under five minutes for KN-123, with every regression still caught, proved by running the harness before and after and comparing both the time and the caught count.
 
