@@ -406,6 +406,31 @@ describe('token boundaries the scanner has to respect', () => {
     await db.close()
   })
 
+  it('refuses ABORT hidden behind a NON-ASCII identifier', async () => {
+    // Postgres accepts accented and non-Latin letters in an unquoted name, so
+    // `é$tag$` is an identifier. An ASCII-only boundary test read that `$` as
+    // opening a dollar quote and swallowed the ABORT between the two.
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [
+        { name: '20260101000000_unicode_ident', sql: 'CREATE TABLE probe_u (id int);\nSELECT 1 AS é$tag$;\nABORT;\nSELECT 1 AS é$tag$;' },
+      ]),
+    ).rejects.toThrow(/manages its own transaction/)
+    await db.close()
+  })
+
+  it('refuses ABORT after a comment ended by a bare carriage return', async () => {
+    // Postgres ends a line comment at \r as well as \n. Searching only for \n
+    // consumed the command as comment text while the server ran it.
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [
+        { name: '20260101000000_cr_comment', sql: 'CREATE TABLE probe_cr (id int); -- comment\rABORT;' },
+      ]),
+    ).rejects.toThrow(/manages its own transaction/)
+    await db.close()
+  })
+
   it('ACCEPTS a semicolon inside a quoted identifier', async () => {
     const db = await freshDb()
     const applied = await applyMigrations(runnerOver(db), [

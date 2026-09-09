@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 16 of 145 tasks done · 56 of 475 points.
+Project **KarNama** · 16 of 147 tasks done · 56 of 482 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -10,13 +10,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-123` The migration runner has no transaction, no lock, no failure state and no checksum** (critical, 5 pt, api)
 
-## In progress (1)
+## Awaiting roast (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-123` | The migration runner has no transaction, no lock, no failure state and no checksum | critical | 5 | api | KN-034 | A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite. |
 
-## Backlog (127)
+## Backlog (129)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -93,6 +93,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-060` | Kanban column component | high | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-015, KN-018 | The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. |
 | `KN-061` | Drag a card between columns, with a keyboard path | high | 5 | web | KN-060, KN-020 | A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology. |
 | `KN-063` | Accessibility gate | high | 5 | web | KN-003, KN-007 | An a11y violation planted in a story fails the test run, every action reachable by hover is reachable by keyboard, every icon-only control has an accessible name and a test asserts it, and each of the nine status base-on-container pairs is measured against the contrast bar with the result recorded. |
+| `KN-146` | The migration guard should stop lexing SQL and ask Postgres instead | high | 5 | api | none | A migration containing an early COMMIT or an ABORT cannot produce a ledger row saying applied, proved by planting both against PGlite using syntax the scanner does NOT recognise, so the protection is demonstrably the structure rather than the screen. |
 | `KN-015` | Card, desktop and mobile, with the status stripe | high | 8 | web | KN-005, KN-006, KN-007, KN-010, KN-008, KN-062 | All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. |
 | `KN-027` | Navigation: nav item, desktop sidebar, mobile tab bar, and the language switch | high | 8 | web | KN-005, KN-006, KN-007, KN-008, KN-009 | The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added. |
 | `KN-029` | Add and edit job modal, all six steps | high | 8 | web | KN-005, KN-006, KN-007, KN-011, KN-012, KN-028 | All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding. |
@@ -124,6 +125,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-125` | The seed builds SQL by concatenation and several values skip the quote helper | medium | 2 | api | KN-034 | Every value the seed writes goes through a parameter rather than into the SQL text, a seeded record containing an apostrophe and a backslash round trips intact, and the quote helper is gone. |
 | `KN-130` | The no-data health reason is English copy outside the catalog | medium | 2 | web | KN-035 | No English sentence originates in apps/web/src/core, the empty-response case carries a code the component renders through the catalog, a network message still passes through untranslated, and the catalog test covers the new id. |
 | `KN-137` | KN-128's verifier checks the exported type but never the exported document | medium | 2 | agent | none | Exporting a hand-built or widened document from apps/web/src/core/api makes the KN-128 verifier fail, proved by planting both cases, and the check that catches the widened one reads the document rather than its type, since the optional brand makes the type-level check unable to see it. |
+| `KN-147` | Nothing proves the migration runner waits between lock attempts | medium | 2 | api | none | Deleting the retry delay makes the suite fail, proved by planting exactly that, and the test asserts elapsed time or scheduled timing rather than attempt count alone. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -1549,7 +1551,7 @@ The KN-033 card says the scaffold includes Prettier. apps/api has no format or f
 
 ### `KN-123` The migration runner has no transaction, no lock, no failure state and no checksum
 
-- **status** in_progress · **severity** critical · **points** 5 · **area** api
+- **status** review · **severity** critical · **points** 5 · **area** api
 - **blocked by** KN-034
 
 src/database/migrations.ts runs each migration and writes its ledger row as separate statements. A migration that fails halfway leaves partial DDL with no ledger row, so the next deploy replays it and fails permanently on the CREATE TYPE that already exists. Two runners racing can both see "not applied". An applied migration edited afterwards is silently skipped, because nothing records a checksum. Wrap each migration and its ledger row in one transaction, take an advisory lock for the run, record a failed state rather than nothing, and store a checksum that is compared on every deploy.
@@ -1558,7 +1560,7 @@ src/database/migrations.ts runs each migration and writes its ledger row as sepa
 
 **Exit condition.** A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite.
 
-**Roasts.** round 1 scored 5 with 2 critical(s); round 2 scored 5 with 1 critical(s); round 3 scored 4 with 2 critical(s)
+**Roasts.** round 1 scored 5 with 2 critical(s); round 2 scored 5 with 1 critical(s); round 3 scored 4 with 2 critical(s); round 4 scored 4 with 2 critical(s)
 
 ### `KN-124` Status history is documented as immutable and nothing enforces it
 
@@ -1805,4 +1807,26 @@ applyMigrations refuses any migration containing CREATE FUNCTION f() RETURNS int
 **Why.** The two mistakes are not symmetric and the card should say so once rather than be re-litigated. Missing an ABORT costs a database, and a roast reproduced exactly that twice. Refusing a valid migration costs a deploy-time error with instructions. So the bias is correct today, but it is still a valid migration being refused, and the first person to hit it will be mid-deploy.
 
 **Exit condition.** A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite.
+
+### `KN-146` The migration guard should stop lexing SQL and ask Postgres instead
+
+- **status** backlog · **severity** high · **points** 5 · **area** api
+- **blocked by** none
+
+applyMigrations screens migration SQL for transaction control with a hand-written scanner. Four roast rounds found six holes in it, each a real data-loss path, each fixed: an inline COMMIT, ABORT and END; a command hidden between two ordinary strings that look like dollar quotes; ABORT split by a block comment, which Postgres reads as ABORT WORK; transaction control after a dollar sign inside an ASCII identifier; the same after a NON-ASCII identifier, since Postgres accepts accented and non-Latin letters in a name; and a comment ended by a bare carriage return rather than a newline. The pattern is the finding. Re-implementing Postgres's lexer in a guard is a losing game, and the sixth hole was found the same way as the first. Replace the screen with a structural check that does not care what the SQL says: wrap the batch so the runner can tell whether ITS transaction is the one that committed. A temp table created ON COMMIT DROP inside the transaction, with the ledger INSERT conditioned on that table still existing, makes an early COMMIT or ABORT unable to write a success row, whatever syntax produced it. Keep the scanner as a fast, friendly error, but stop it being the thing that protects the database.
+
+**Why.** Every hole in this list let the runner record a migration as APPLIED when its table did not exist, or FAILED when it had committed, and both mean hand-written SQL against a production database to recover. The current guard is only as good as the next thing nobody thought of, and four rounds of evidence say there is always a next thing. A structural check has no vocabulary to be incomplete about. It also matters less than it sounds day to day, because Prisma generates these migrations and never emits transaction control, which is exactly why this is worth doing calmly rather than in another round of patches.
+
+**Exit condition.** A migration containing an early COMMIT or an ABORT cannot produce a ledger row saying applied, proved by planting both against PGlite using syntax the scanner does NOT recognise, so the protection is demonstrably the structure rather than the screen.
+
+### `KN-147` Nothing proves the migration runner waits between lock attempts
+
+- **status** backlog · **severity** medium · **points** 2 · **area** api
+- **blocked by** none
+
+takeLock retries with await wait(retryMs) between attempts, and no test covers the delay. A roast pointed out across two rounds that deleting that line leaves every assertion in both contention tests passing: one counts attempts with lockRetryMs 0, the other denies the lock twice and then grants it regardless of elapsed time. So the runner could burn all thirty attempts as fast as the queries return and still look correct, which in production means a deploy failing rather than waiting for the other deploy to finish. Assert the timing: a controlled clock, or a recorded timestamp per attempt, requiring that no second acquisition happens before the configured interval, and plant the removal of ONLY the delay so the harness proves that specific line is load-bearing.
+
+**Why.** The exit condition says a second concurrent run WAITS rather than racing. Refusing after N attempts proves it does not race, and eventually succeeding proves it can get in, but neither proves it waited, and waiting is the part that makes a real deploy survive a slower one ahead of it. It is also the last finding from four rounds that is still unaddressed.
+
+**Exit condition.** Deleting the retry delay makes the suite fail, proved by planting exactly that, and the test asserts elapsed time or scheduled timing rather than attempt count alone.
 

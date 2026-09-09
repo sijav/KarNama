@@ -142,8 +142,13 @@ const splitStatements = (sql: string): string[] => {
     const rest = sql.slice(index)
 
     if (rest.startsWith('--')) {
-      const newline = sql.indexOf('\n', index)
-      index = newline === -1 ? sql.length : newline
+      // EITHER line terminator. Postgres ends a line comment at a bare
+      // carriage return too, and searching only for \n meant `-- c\rABORT;`
+      // was swallowed as comment text while the server executed the ABORT.
+      const lineFeed = sql.indexOf('\n', index)
+      const carriageReturn = sql.indexOf('\r', index)
+      const ends = [lineFeed, carriageReturn].filter((at) => at !== -1)
+      index = ends.length === 0 ? sql.length : Math.min(...ends)
       // A comment is WHITESPACE, not nothing. Postgres says so, and deleting it
       // instead joined the tokens either side: `ABORT/**/WORK` became
       // `ABORTWORK`, which the guard did not recognise while Postgres read it
@@ -195,7 +200,10 @@ const splitStatements = (sql: string): string[] => {
     // the middle is part of the identifier, and reading it as a quote swallowed
     // whatever followed, transaction control included.
     const previous = index === 0 ? '' : sql.slice(index - 1, index)
-    const continuesIdentifier = /[A-Za-z0-9_$]/.test(previous)
+    // Unicode, not ASCII. Postgres accepts accented and non-Latin letters in an
+    // unquoted identifier, so `é$tag$` is a name and an ASCII-only test read the
+    // `$` as opening a quoted body and swallowed whatever followed.
+    const continuesIdentifier = /[\p{L}\p{N}_$]/u.test(previous)
     const dollar = continuesIdentifier ? null : /^\$([A-Za-z_]\w*)?\$/.exec(rest)
     if (dollar) {
       const tag = dollar[0]
