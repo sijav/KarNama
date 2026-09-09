@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 16 of 144 tasks done · 56 of 472 points.
+Project **KarNama** · 16 of 145 tasks done · 56 of 475 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-123` | The migration runner has no transaction, no lock, no failure state and no checksum | critical | 5 | api | KN-034 | A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite. |
 
-## Backlog (126)
+## Backlog (127)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -146,6 +146,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-138` | KN-128's verifier attributes compiler errors by substring, not by path | low | 1 | agent | none | A file elsewhere in the web app whose path ends with the probe's name is not counted as the probe, proved by creating one, running the verifier and removing it, rather than by editing the matcher and reasoning about it. |
 | `KN-141` | NO_COLOR makes KN-131's verifier reject a correct compiler refusal | low | 1 | agent | none | The verifier passes with NO_COLOR=1 set, proved by running it that way, and the assertion names the planted file and the TypeScript error code rather than the source excerpt. |
 | `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
+| `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 
 ## Done (16)
 
@@ -1557,7 +1558,7 @@ src/database/migrations.ts runs each migration and writes its ledger row as sepa
 
 **Exit condition.** A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite.
 
-**Roasts.** round 1 scored 5 with 2 critical(s); round 2 scored 5 with 1 critical(s)
+**Roasts.** round 1 scored 5 with 2 critical(s); round 2 scored 5 with 1 critical(s); round 3 scored 4 with 2 critical(s)
 
 ### `KN-124` Status history is documented as immutable and nothing enforces it
 
@@ -1793,4 +1794,15 @@ applyMigrations adopts a ledger row whose checksum is NULL, writing the current 
 **Why.** A roast raised it twice and both times classed it as a limitation rather than a rejection, which is exactly the kind of thing that gets forgotten because nobody rejected it. It matters at the moment it is least visible: the first deploy against a database that predates the checksum column, which is the real Supabase instance rather than a test.
 
 **Exit condition.** Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen.
+
+### `KN-145` The migration guard cannot tell BEGIN ATOMIC from a transaction
+
+- **status** backlog · **severity** low · **points** 3 · **area** api
+- **blocked by** none
+
+applyMigrations refuses any migration containing CREATE FUNCTION f() RETURNS integer LANGUAGE SQL BEGIN ATOMIC SELECT 1; END; which Postgres 14 and later accept. The scanner splits on semicolons and judges each statement by its first keyword, and a BEGIN ATOMIC body contains its own semicolons and ends with END, so distinguishing it from transaction control means tracking function-definition context rather than lexical context. The refusal is deliberate for now and the error message names the case and tells the author to write the body as a dollar-quoted block, which is what Prisma emits anyway. Recorded as TECH-DEBT 12 with the reasoning. Retire it by recognising the construct, with a planted case for a function body AND a real BEGIN in the same migration, so the fix cannot be a blanket exemption for anything containing the word ATOMIC.
+
+**Why.** The two mistakes are not symmetric and the card should say so once rather than be re-litigated. Missing an ABORT costs a database, and a roast reproduced exactly that twice. Refusing a valid migration costs a deploy-time error with instructions. So the bias is correct today, but it is still a valid migration being refused, and the first person to hit it will be mid-deploy.
+
+**Exit condition.** A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite.
 

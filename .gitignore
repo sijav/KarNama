@@ -19,3 +19,6 @@ agent/roasts/*.prompt.md
 
 # API build output
 apps/api/dist/
+
+# The board the global /todo skill keeps, one per checkout.
+.claude/todo.db

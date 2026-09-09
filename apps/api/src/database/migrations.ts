@@ -144,6 +144,13 @@ const splitStatements = (sql: string): string[] => {
     if (rest.startsWith('--')) {
       const newline = sql.indexOf('\n', index)
       index = newline === -1 ? sql.length : newline
+      // A comment is WHITESPACE, not nothing. Postgres says so, and deleting it
+      // instead joined the tokens either side: `ABORT/**/WORK` became
+      // `ABORTWORK`, which the guard did not recognise while Postgres read it
+      // as `ABORT WORK` and rolled the migration back. The ledger then recorded
+      // it APPLIED with no table, and every later deploy skipped it. Found by a
+      // roast, and it is the same defect this card exists to remove.
+      current += ' '
       continue
     }
     if (rest.startsWith('/*')) {
@@ -159,6 +166,7 @@ const splitStatements = (sql: string): string[] => {
           index += 2
         } else index += 1
       }
+      current += ' '
       continue
     }
     // E'...' and e'...' take backslash escapes; ordinary '...' does not, under
@@ -182,7 +190,13 @@ const splitStatements = (sql: string): string[] => {
       current += ' identifier '
       continue
     }
-    const dollar = /^\$([A-Za-z_]\w*)?\$/.exec(rest)
+    // A `$` may only open a dollar quote when it does not continue an
+    // identifier. Postgres allows `$` inside an unquoted name, so in `a$b$c`
+    // the middle is part of the identifier, and reading it as a quote swallowed
+    // whatever followed, transaction control included.
+    const previous = index === 0 ? '' : sql.slice(index - 1, index)
+    const continuesIdentifier = /[A-Za-z0-9_$]/.test(previous)
+    const dollar = continuesIdentifier ? null : /^\$([A-Za-z_]\w*)?\$/.exec(rest)
     if (dollar) {
       const tag = dollar[0]
       const end = sql.indexOf(tag, index + tag.length)
@@ -297,7 +311,12 @@ export const applyMigrations = async (
 ): Promise<string[]> => {
   const offender = migrations.find((migration) => managesItsOwnTransaction(migration.sql))
   if (offender) {
-    throw new Error(`migration ${offender.name} manages its own transaction, which this runner already does`)
+    throw new Error(
+      `migration ${offender.name} manages its own transaction, which this runner already does. ` +
+        `If this is a SQL-standard function body written as BEGIN ATOMIC ... END, write the body as a ` +
+        `dollar-quoted block instead: the scanner cannot tell that BEGIN from a transaction, and refusing ` +
+        `a valid migration loudly is the safe side of that trade. See TECH-DEBT 12.`,
+    )
   }
 
   // The lock comes FIRST, before the ledger exists. An earlier version created

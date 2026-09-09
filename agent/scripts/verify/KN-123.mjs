@@ -156,6 +156,28 @@ const regressions = [
     expect: 'refuses an ABORT hidden between two strings that look like dollar quotes',
   },
   {
+    // Comments are whitespace in Postgres. Deleting a BLOCK comment joined the
+    // tokens either side, so `ABORT/**/WORK` read as `ABORTWORK` and got
+    // through. Only the block-comment space is load-bearing: a line comment
+    // ends at a newline, and the newline separates the tokens by itself. The
+    // first version of this mutation removed the line-comment space and the
+    // suite stayed green, correctly, which is how that came to be understood.
+    name: 'block comments are deleted rather than replaced with whitespace',
+    apply: (code) =>
+      code.replace(
+        "        } else index += 1\n      }\n      current += ' '\n      continue",
+        '        } else index += 1\n      }\n      continue',
+      ),
+    expect: 'refuses ABORT split by a block comment',
+  },
+  {
+    // `$` is legal inside an unquoted identifier, so `a$b$c` is a name and not
+    // a quoted body. Reading it as a body swallowed what followed.
+    name: 'a dollar sign inside an identifier opens a dollar quote again',
+    apply: (code) => code.replace('const continuesIdentifier = /[A-Za-z0-9_$]/.test(previous)', 'const continuesIdentifier = false'),
+    expect: 'refuses transaction control hidden after a dollar sign inside an identifier',
+  },
+  {
     // The waiting half of the concurrency clause. Refusing after N attempts
     // proves it does not race; it does not prove it ever gets in.
     name: 'the retry loop stops retrying, so a busy lock is fatal rather than a wait',

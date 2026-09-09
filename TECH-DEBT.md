@@ -305,3 +305,34 @@ the emitted literal and compares its selection set against the operation file,
 which would make the assertion redundant rather than trusted. Not written: the
 byte comparison in `check-generated.mjs` already fails if the emitted shape
 changes at all, so a silent drift is not the failure mode here.
+
+---
+
+## 12. The migration guard refuses a SQL-standard `BEGIN ATOMIC` function body
+
+**What.** `applyMigrations` refuses a migration containing
+
+```sql
+CREATE FUNCTION f() RETURNS integer LANGUAGE SQL BEGIN ATOMIC SELECT 1; END;
+```
+
+Postgres 14 and later accept it. The scanner reads the `BEGIN` as transaction
+control and the migration is rejected before it reaches the database.
+
+**Why it is like that.** The scanner splits on semicolons and judges each
+statement by its first keyword. A `BEGIN ATOMIC` body contains semicolons of its
+own and terminates with `END`, so telling it apart from a transaction means
+tracking function-definition context, which is a parser rather than a scanner.
+
+**What it costs, and why this is the right side of the trade.** The two kinds of
+mistake here are not equal. A false NEGATIVE, missing an `ABORT` or a `COMMIT`,
+costs a database: the runner has recorded migrations as applied that never ran,
+and as failed when they had committed, and a roast reproduced both. A false
+POSITIVE costs a clear error at deploy time telling the author to write the body
+as a dollar-quoted block, which is the form Prisma emits and the form almost
+every migration already uses. So the guard is deliberately biased towards
+refusing, and the error message names this case and says what to do.
+
+**The check that retires this.** Recognising `BEGIN ATOMIC` as a function body
+rather than a transaction, with a planted case for both the body and a real
+`BEGIN` in the same migration. Filed as KN-145.

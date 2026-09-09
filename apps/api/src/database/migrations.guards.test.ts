@@ -319,6 +319,103 @@ describe('transaction control hidden behind quoting', () => {
   })
 })
 
+describe('token boundaries the scanner has to respect', () => {
+  const runnerOver = (db: { exec: (sql: string) => Promise<unknown> }): SqlRunner => ({ exec: (sql) => db.exec(sql) })
+
+  // A roast's reproductions. A comment is WHITESPACE in Postgres, so deleting
+  // it joined the tokens either side and hid the command between them.
+  it('refuses ABORT split by a block comment, which Postgres reads as ABORT WORK', async () => {
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [
+        { name: '20260101000000_abort_comment', sql: 'CREATE TABLE probe_ac (id int);\nABORT/**/WORK;' },
+      ]),
+    ).rejects.toThrow(/manages its own transaction/)
+    await db.close()
+  })
+
+  it('refuses COMMIT split by a block comment', async () => {
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [
+        { name: '20260101000000_commit_comment', sql: 'CREATE TABLE probe_cc (id int);\nCOMMIT/**/WORK;\nCREATE TABLE probe_cc (id int);' },
+      ]),
+    ).rejects.toThrow(/manages its own transaction/)
+    await db.close()
+  })
+
+  it('refuses a command split by a line comment across a newline', async () => {
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [
+        { name: '20260101000000_line_split', sql: 'CREATE TABLE probe_ls (id int);\nABORT-- a comment\nWORK;' },
+      ]),
+    ).rejects.toThrow(/manages its own transaction/)
+    await db.close()
+  })
+
+  it('ACCEPTS a dollar sign inside an unquoted identifier, which is not a dollar quote', async () => {
+    // Postgres allows `$` inside a name. Reading `a$b$c` as a quoted body
+    // swallowed everything after it, transaction control included.
+    const db = await freshDb()
+    const applied = await applyMigrations(runnerOver(db), [
+      { name: '20260101000000_dollar_ident', sql: 'CREATE TABLE probe_d (a$b$c int);\nCREATE TABLE probe_d2 (id int);' },
+    ])
+    expect(applied).toEqual(['20260101000000_dollar_ident'])
+    const tables = await db.query<{ table_name: string }>(
+      `SELECT table_name FROM information_schema.tables WHERE table_name IN ('probe_d','probe_d2') ORDER BY 1;`,
+    )
+    expect(tables.rows.map((row) => row.table_name)).toEqual(['probe_d', 'probe_d2'])
+    await db.close()
+  })
+
+  it('refuses transaction control hidden after a dollar sign inside an identifier', async () => {
+    // The reason the identifier case matters: reading it as a quote hid this.
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [
+        { name: '20260101000000_dollar_hidden', sql: 'CREATE TABLE probe_dh (a$b$c int);\nABORT;\nSELECT 1;' },
+      ]),
+    ).rejects.toThrow(/manages its own transaction/)
+    await db.close()
+  })
+
+  it('refuses a SQL-standard BEGIN ATOMIC function body, deliberately and loudly', async () => {
+    // A KNOWN false positive, recorded as TECH-DEBT 12 and filed as KN-145.
+    // Postgres 14+ accepts this; the scanner cannot tell that BEGIN from a
+    // transaction without tracking function-definition context. The two
+    // mistakes are not symmetric: missing an ABORT costs a database, and a
+    // roast reproduced that twice, while this costs a deploy-time error that
+    // says to write the body as a dollar-quoted block. The message says so, and
+    // this test exists so the limitation is visible rather than folklore.
+    const db = await freshDb()
+    await expect(
+      applyMigrations(runnerOver(db), [
+        { name: '20260101000000_atomic', sql: 'CREATE FUNCTION probe_fn() RETURNS integer LANGUAGE SQL BEGIN ATOMIC SELECT 1; END;' },
+      ]),
+    ).rejects.toThrow(/dollar-quoted block/)
+    await db.close()
+  })
+
+  it('ACCEPTS the same function written with a dollar-quoted body, which is the way out', async () => {
+    const db = await freshDb()
+    const applied = await applyMigrations(runnerOver(db), [
+      { name: '20260101000000_atomic_ok', sql: "CREATE FUNCTION probe_fn2() RETURNS integer LANGUAGE SQL AS $$ SELECT 1; $$;" },
+    ])
+    expect(applied).toEqual(['20260101000000_atomic_ok'])
+    await db.close()
+  })
+
+  it('ACCEPTS a semicolon inside a quoted identifier', async () => {
+    const db = await freshDb()
+    const applied = await applyMigrations(runnerOver(db), [
+      { name: '20260101000000_semi_ident', sql: 'CREATE TABLE "probe; COMMIT; x" (id int);' },
+    ])
+    expect(applied).toEqual(['20260101000000_semi_ident'])
+    await db.close()
+  })
+})
+
 describe('malformed SQL the scanner still has to survive', () => {
   const runnerOver = (db: { exec: (sql: string) => Promise<unknown> }): SqlRunner => ({ exec: (sql) => db.exec(sql) })
 

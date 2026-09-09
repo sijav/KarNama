@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 145,
+  "nextId": 146,
   "tasks": [
     {
       "id": "KN-001",
@@ -2875,6 +2875,20 @@
           "reviewerScore": 5,
           "reviewerCriticals": 1,
           "at": "2026-09-08T06:24:24.706Z"
+        },
+        {
+          "round": 3,
+          "score": 4,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-123-round-3.2026-09-08T06-25-39-336Z.md",
+          "filed": [
+            "KN-145"
+          ],
+          "cardDigest": "c47fa5dd53d451781e89609cb908ac515ccb99ddc01d7b5650926c370883e97c",
+          "head": "28670cd4f6d426fc2962ecff6c030f0e392a0e99",
+          "reviewerScore": 4,
+          "reviewerCriticals": 2,
+          "at": "2026-09-09T20:31:54.057Z"
         }
       ],
       "notes": [
@@ -3337,6 +3351,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T06:08:17.861Z"
+    },
+    {
+      "id": "KN-145",
+      "title": "The migration guard cannot tell BEGIN ATOMIC from a transaction",
+      "desc": "applyMigrations refuses any migration containing CREATE FUNCTION f() RETURNS integer LANGUAGE SQL BEGIN ATOMIC SELECT 1; END; which Postgres 14 and later accept. The scanner splits on semicolons and judges each statement by its first keyword, and a BEGIN ATOMIC body contains its own semicolons and ends with END, so distinguishing it from transaction control means tracking function-definition context rather than lexical context. The refusal is deliberate for now and the error message names the case and tells the author to write the body as a dollar-quoted block, which is what Prisma emits anyway. Recorded as TECH-DEBT 12 with the reasoning. Retire it by recognising the construct, with a planted case for a function body AND a real BEGIN in the same migration, so the fix cannot be a blanket exemption for anything containing the word ATOMIC.",
+      "why": "The two mistakes are not symmetric and the card should say so once rather than be re-litigated. Missing an ABORT costs a database, and a roast reproduced exactly that twice. Refusing a valid migration costs a deploy-time error with instructions. So the bias is correct today, but it is still a valid migration being refused, and the first person to hit it will be mid-deploy.",
+      "severity": "low",
+      "points": 3,
+      "area": "api",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-08T06:30:32.911Z"
     }
   ]
 }
