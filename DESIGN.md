@@ -327,14 +327,13 @@ its arrays because horizontal Auto Layout always lays out left to right; code
 must not copy that. Reversing an array in code to "fix" RTL is a defect.
 
 **The Job Modal replaces a detail page.** The file draws four tabs at `210:276`:
-اطلاعات آگهی, یادداشت, مخاطبین, فایل‌ها. The file also puts status history at the
-bottom of the Info tab and flags that as open item 18.
-
-**The owner settled it on 2026-09-08 and history is now its own tab**, second,
-so the modal has FIVE: اطلاعات آگهی, سابقه, یادداشت, مخاطبین, فایل‌ها. See
-section 6 and KN-072. This is the second place the build deliberately departs
-from the frame, the first being where رد شده sits on the board, and both are the
-owner's call rather than a reading of the file.
+اطلاعات آگهی, یادداشت, مخاطبین, فایل‌ها. It also puts status history at the
+bottom of the Info tab and flags that as open item 18, and **the owner settled
+that on 2026-09-08, KN-072: history is now its own tab**, second, so the modal
+has FIVE: اطلاعات آگهی, سابقه, یادداشت, مخاطبین, فایل‌ها. See section 6. This is
+the second place the build deliberately departs from the frame, the first being
+where رد شده sits on the board, and both are the owner's call rather than a
+reading of the file.
 
 **A Contact Card has no detail view.** Everything about a contact is on the
 card itself. There is a Contact Modal, but only for Add and Edit.
