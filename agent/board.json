@@ -1862,7 +1862,7 @@
       "parent": [
         "KN-002"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-031 and KN-039 state the resulting rule.",
       "roasts": [
         {
@@ -1880,8 +1880,20 @@
       ],
       "notes": [],
       "createdAt": "2026-09-07T21:48:45.867Z",
-      "updatedAt": "2026-09-09T21:41:44.157Z",
-      "verify": "node agent/scripts/verify/KN-071.mjs"
+      "updatedAt": "2026-09-09T21:47:18.616Z",
+      "verify": "node agent/scripts/verify/KN-071.mjs",
+      "fixedSince": {
+        "head": "7b599ff84da13ef0ee1aaa80a82a7f6255d3cb9d",
+        "round": 1,
+        "changed": [
+          "agent/scripts/todo.mjs",
+          "agent/scripts/verify/KN-071.mjs",
+          "apps/api/prisma/schema.prisma"
+        ],
+        "why": "All three of the round's findings were fixed rather than filed, because two were the verifier reporting success without establishing what it claimed: the decision reversed to 'cannot be saved with only a full name' passed, and both implementation cards restated as the STRICT rule passed. Those are the dishonest-pass case the loop says to fix. The third, schema.prisma still calling the question open, is a comment contradicting a settled decision. Nothing the round examined was removed; its two attacks are now caught mutations, along with two more derived from them."
+      },
+      "evidence": "The owner was asked whether a contact needs an email or a phone, with the design file's own counter-argument in front of them — a contact with neither has no contact route and is close to useless — and chose the PERMISSIVE rule: full name required, email and phone both optional, no one-of-two validation. DESIGN.md section 6 records it in a Settled block naming the owner, the date and this card, and records that the counter-argument was seen and overruled so nobody later corrects it back on the grounds the design obviously wanted it.\n\nThe clause actually missing was the third: the rule had to reach KN-031 and KN-039, the cards someone builds from, not only the design document. Same gap KN-149 filed against KN-070.\n\nStating it was the hard part, and the roast proved the first attempt did not. The rule is that something is NOT required, and an absence is invisible, so both cards state it as something that must SUCCEED. But independent keyword matching certified nothing:\n\nReversing the decision passed. 'A contact cannot be saved with only a full name' contains 'only a full name', so a substring test certified the permissive rule while the document stated the strict one. A substring survives NEGATION, which is the whole difficulty of checking a choice between two opposites. The affirmative shape is required now and the negations refused by name.\n\nContradictory cards passed. Replacing both exit conditions with 'A contact requires a full name and at least one of email or phone, per KN-071. Notes are accepted and read back unchanged' satisfied every check, because 'full name' and 'accepted' were matched independently and a second sentence about notes supplied the permissive keywords for a strict rule. One SENTENCE must carry all three parts now — a contact, having only a full name, succeeding — and it must say the routes are ABSENT.\n\nBoth of the roast's mutations are caught, plus two derived from them: a card claiming saving works without saying the routes are absent, and one whose parts are scattered across unrelated sentences.\n\nThe third finding was not about the verifier: prisma/schema.prisma still called KN-071 an OPEN QUESTION and explained its nullable columns as restraint pending an answer. That is the comment the next API implementer reads. It records the decision now and says not to add a one-of-two constraint later on the grounds the design wanted one, because it did and the owner overruled it. Schema validates.\n\nChecked before assuming: fullName is required, email and phone are nullable, no check constraint, so this was a board and document change rather than a migration.\n\nGate: KN-071 and KN-002 both pass, lint clean, contract clean, board valid, prisma schema valid.",
+      "closedAt": "2026-09-09T21:47:18.616Z"
     },
     {
       "id": "KN-072",
