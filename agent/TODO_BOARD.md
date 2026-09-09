@@ -8,19 +8,24 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-151` The design manifest still calls four settled questions open** (high, 1 pt, design)
+**Next up: `KN-071` Decide whether a contact needs an email or a phone** (high, 1 pt, design)
 
 ## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-151` | The design manifest still calls four settled questions open | high | 1 | design | none | node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that. |
+| `KN-071` | Decide whether a contact needs an email or a phone | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-031 and KN-039 state the resulting rule. |
 
-## Backlog (131)
+## Awaiting roast (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-071` | Decide whether a contact needs an email or a phone | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-031 and KN-039 state the resulting rule. |
+| `KN-151` | The design manifest still calls four settled questions open | high | 1 | design | none | node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that. |
+
+## Backlog (130)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-072` | Decide where status history belongs | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-030 states where history renders. |
 | `KN-100` | Make the gate-fixtures flag hermetic | high | 1 | agent | KN-088 | KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture, the ordinary run inside agent/scripts/verify/KN-003.mjs passes with the variable set to any value in the parent environment, and both are proved by planted environments. |
 | `KN-112` | Two preference setters called in one batch lose the first update | high | 1 | web | KN-006 | A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation. |
@@ -83,7 +88,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-020` | Status choice, status picker and status control | high | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-018, KN-019 | All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own. |
 | `KN-026` | Contact card, full and compact | high | 5 | web | KN-005, KN-006, KN-007, KN-008, KN-014, KN-062 | Both layouts and all three states match Figma, every field the design draws is present, long values truncate rather than reflow the card, and email and phone are actionable links. |
 | `KN-028` | Modal shell, confirm, and change status | high | 5 | web | KN-005, KN-006, KN-007, KN-009, KN-014 | Both modals match Figma, focus is trapped and returns to the trigger on close, Escape closes, the backdrop click behaviour matches the design, and the dialog has an accessible name and is announced as a dialog. |
-| `KN-031` | Contact modal, add and edit | high | 5 | web | KN-005, KN-006, KN-007, KN-028, KN-011, KN-026 | Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. |
+| `KN-031` | Contact modal, add and edit | high | 5 | web | KN-005, KN-006, KN-007, KN-028, KN-011, KN-026 | Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route. |
 | `KN-038` | Custom statuses: rename, recolour, delete | high | 5 | api | KN-037 | A renamed status shows its new name everywhere including old records, deletion is refused while postings remain in that status and the message says how many, the four custom slots cannot be exceeded, a record pointing at a deleted status still renders with the fallback colour, and tests cover each. |
 | `KN-042` | App shell: routing, responsive navigation, and the language switch in place | high | 5 | web | KN-027, KN-006, KN-035 | All three routes render inside the shell, the nav switches between right sidebar and bottom tab bar at the breakpoint, a deep link to any of them works on a hard refresh, the language switch persists across a reload, and an API error renders the error state rather than a blank page. |
 | `KN-044` | Add job flow | high | 5 | web | KN-042, KN-029, KN-037 | An e2e test pastes a link, corrects a field in Review, saves, and finds the record on My Jobs with status New, and a second test takes the Error path into Manual and saves from there. |
@@ -100,7 +105,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-030` | Job modal, four tabs | high | 8 | web | KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020 | All four tabs match Figma, the modal opens from a card on the board, status history renders in the Info tab in reverse chronological order, and switching tabs does not lose unsaved note text. |
 | `KN-036` | Auth: phone OTP, JWT, and the admin role | high | 8 | api | KN-034 | A user signs in with a number and a code against the mock provider, the code expires and a reused code is rejected, first login collects the required name, a non-admin is refused every admin operation at the resolver rather than only in the UI, and tests cover all of those. |
 | `KN-037` | Job records: CRUD, status transitions, and status history | high | 8 | api | KN-034, KN-036, KN-057 | An e2e test creates a record, moves it through New, Applied, Interview and Offer, and reads back a history with four entries in order, and a test proves history cannot be edited or reordered through the API. |
-| `KN-039` | Contacts, notes and file references | high | 8 | api | KN-037 | A contact, a note and a file can each be attached to a record and read back, deleting a record removes its attachments, and an upload larger than the configured limit is refused with a usable error rather than a 500. |
+| `KN-039` | Contacts, notes and file references | high | 8 | api | KN-037 | A contact, a note and a file can each be attached to a record and read back, deleting a record removes its attachments, and an upload larger than the configured limit is refused with a usable error rather than a 500. A contact with a full name and no email and no phone is accepted and read back unchanged: the data layer carries no NOT NULL and no check constraint requiring either, per the owner's decision on KN-071. |
 | `KN-048` | End to end tests for both surviving scenarios | high | 8 | web | KN-043, KN-044, KN-045 | Both scenarios pass end to end on a clean database, each asserts the stored record and its status history rather than only what is on screen, and both run in CI. |
 | `KN-049` | Coverage to 100 percent, enforced | high | 8 | web | KN-048 | Coverage reports 100 percent against the stated exclusions, the build fails when a line is uncovered, and every exclusion has a written reason. |
 | `KN-056` | The standalone network screen | high | 8 | web | KN-042, KN-026, KN-032, KN-039 | An e2e test opens the network route, adds a contact, edits it, selects two and deletes them through the bottom bar, and sees the empty state on a fresh account. The grid reads right to left and row by row in Persian and mirrors in English, with no array reversal in the code. |
@@ -534,7 +539,7 @@ Mode=Add and Mode=Edit from Figma node 270:152.
 
 **Why.** Contacts are added from inside the job modal, so this is how a person gets attached to an application. Edit exists because a phone number learned later is the common case.
 
-**Exit condition.** Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving.
+**Exit condition.** Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route.
 
 ### `KN-032` Tooltip
 
@@ -628,7 +633,7 @@ Contacts attached to a job record, free-text notes, and file references. Files a
 
 **Why.** These are the three tabs of the job modal beside Info, so the modal cannot be wired without them. Storing files in Postgres would exhaust the free tier quickly and make backups unusable.
 
-**Exit condition.** A contact, a note and a file can each be attached to a record and read back, deleting a record removes its attachments, and an upload larger than the configured limit is refused with a usable error rather than a 500.
+**Exit condition.** A contact, a note and a file can each be attached to a record and read back, deleting a record removes its attachments, and an upload larger than the configured limit is refused with a usable error rather than a 500. A contact with a full name and no email and no phone is accepted and read back unchanged: the data layer carries no NOT NULL and no check constraint requiring either, per the owner's decision on KN-071.
 
 ### `KN-040` Third-party feedback, stored for later evaluation
 
@@ -979,7 +984,7 @@ Frame 434:16 flags this with a warning and leaves it open: should the rejected s
 
 ### `KN-071` Decide whether a contact needs an email or a phone
 
-- **status** backlog · **severity** high · **points** 1 · **area** design
+- **status** in_progress · **severity** high · **points** 1 · **area** design
 - **blocked by** KN-002
 
 Frame 434:2 says only a full name is required, and notes in the same breath that a contact with neither an email nor a phone has no contact route and is practically useless, leaving it for QA to decide whether one of the two becomes required. Get the decision, record it, and set the validation accordingly.
@@ -1871,7 +1876,7 @@ agent/scripts/verify/KN-070.mjs decides whether رد شده is still listed as a
 
 ### `KN-151` The design manifest still calls four settled questions open
 
-- **status** in_progress · **severity** high · **points** 1 · **area** design
+- **status** review · **severity** high · **points** 1 · **area** design
 - **blocked by** none
 
 agent/design-manifest.json carries an openItems list naming each question the design left open, and KN-002's verifier checks that every one of them is still listed as open in DESIGN.md. Recording the owner's four answers moved rejected-placement, contact-route, status-history-placement and review-step-fields out of the open list and into a Settled block, so the manifest and the document now disagree and KN-002's verifier FAILS. The manifest needs the same disposition the document has: each of the four marked as settled, with the card that settled it, so the check compares like with like rather than assuming every recorded question stays open forever. KN-073 and KN-077 are genuinely still open and must keep failing the check if they are ever quietly dropped.

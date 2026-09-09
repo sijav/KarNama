@@ -932,10 +932,11 @@
         "KN-026"
       ],
       "status": "backlog",
-      "exit": "Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving.",
+      "exit": "Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-09T21:34:46.785Z"
     },
     {
       "id": "KN-032",
@@ -1142,10 +1143,11 @@
         "KN-037"
       ],
       "status": "backlog",
-      "exit": "A contact, a note and a file can each be attached to a record and read back, deleting a record removes its attachments, and an upload larger than the configured limit is refused with a usable error rather than a 500.",
+      "exit": "A contact, a note and a file can each be attached to a record and read back, deleting a record removes its attachments, and an upload larger than the configured limit is refused with a usable error rather than a 500. A contact with a full name and no email and no phone is accepted and read back unchanged: the data layer carries no NOT NULL and no check constraint requiring either, per the owner's decision on KN-071.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-09T21:34:47.005Z"
     },
     {
       "id": "KN-040",
@@ -1860,12 +1862,13 @@
       "parent": [
         "KN-002"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-031 and KN-039 state the resulting rule.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T21:48:45.867Z",
-      "updatedAt": "2026-09-09T21:31:15.992Z"
+      "updatedAt": "2026-09-09T21:35:49.056Z",
+      "verify": "node agent/scripts/verify/KN-071.mjs"
     },
     {
       "id": "KN-072",
@@ -3501,12 +3504,12 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "in_progress",
+      "status": "review",
       "exit": "node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T21:31:15.773Z",
-      "updatedAt": "2026-09-09T21:33:42.496Z",
+      "updatedAt": "2026-09-09T21:34:30.496Z",
       "verify": "node agent/scripts/verify/KN-002.mjs"
     }
   ]
