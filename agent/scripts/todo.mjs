@@ -442,20 +442,28 @@ const isUnblocked = (board, task) =>
 /**
  * The selection law, in one place so it is auditable.
  *
- * Finish before starting: work already in progress outranks work awaiting its
- * roast, which outranks anything new. Only then does severity decide, then the
- * smaller story point, then the older id. A task whose parents are unsettled is
- * not a candidate at all.
+ * Finish before starting: work already in progress outranks anything new. Only
+ * then does severity decide, then the smaller story point, then the older id. A
+ * task whose parents are unsettled is not a candidate at all.
+ *
+ * `review` used to rank between them, which made sense while a roast was
+ * something you sat and waited for. The owner's rule is now that a roast runs
+ * in the BACKGROUND and the next task starts immediately, so a task in `review`
+ * is finished work waiting on somebody else, and ranking it ahead of the
+ * backlog handed it straight back and stalled the loop. It is not a candidate
+ * at all now; `next` reports it separately so it is not forgotten.
  */
 const rank = (task) => [
-  OPEN_STATUSES.indexOf(task.status),
+  task.status === 'in_progress' ? 0 : 1,
   SEVERITIES.indexOf(task.severity),
   task.points,
   task.id,
 ]
 
 const pickNext = (board) => {
-  const candidates = board.tasks.filter((task) => OPEN_STATUSES.includes(task.status) && isUnblocked(board, task))
+  const candidates = board.tasks.filter(
+    (task) => ['in_progress', 'backlog'].includes(task.status) && isUnblocked(board, task),
+  )
   return candidates.sort((left, right) => {
     const a = rank(left)
     const b = rank(right)
@@ -941,6 +949,17 @@ const commands = {
   },
 
   next(board) {
+    // Work whose roast is still out. It no longer holds the queue, which is the
+    // point, but a task that stops being mentioned is a task that gets left in
+    // `review` forever, so say it before saying what to do next.
+    const awaiting = board.tasks.filter((entry) => entry.status === 'review')
+    if (awaiting.length) {
+      process.stdout.write(
+        `AWAITING ROAST, not blocking: ${awaiting.map((entry) => entry.id).join(', ')}. ` +
+          'Adjudicate and close when it lands.\n\n',
+      )
+    }
+
     const task = pickNext(board)
     if (!task) {
       // A `blocked` task is not in OPEN_STATUSES, so listing only those would

@@ -10,7 +10,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-071` Decide whether a contact needs an email or a phone** (high, 1 pt, design)
 
-## In progress (1)
+## Awaiting roast (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -979,7 +979,7 @@ Frame 434:16 flags this with a warning and leaves it open: should the rejected s
 
 ### `KN-071` Decide whether a contact needs an email or a phone
 
-- **status** in_progress · **severity** high · **points** 1 · **area** design
+- **status** review · **severity** high · **points** 1 · **area** design
 - **blocked by** KN-002
 
 Frame 434:2 says only a full name is required, and notes in the same breath that a contact with neither an email nor a phone has no contact route and is practically useless, leaving it for QA to decide whether one of the two becomes required. Get the decision, record it, and set the validation accordingly.

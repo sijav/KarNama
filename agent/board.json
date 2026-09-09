@@ -1862,12 +1862,12 @@
       "parent": [
         "KN-002"
       ],
-      "status": "in_progress",
+      "status": "review",
       "exit": "DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-031 and KN-039 state the resulting rule.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T21:48:45.867Z",
-      "updatedAt": "2026-09-09T21:35:49.056Z",
+      "updatedAt": "2026-09-09T21:41:44.157Z",
       "verify": "node agent/scripts/verify/KN-071.mjs"
     },
     {
