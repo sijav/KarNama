@@ -3504,7 +3504,7 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "review",
+      "status": "done",
       "exit": "node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that.",
       "roasts": [
         {
@@ -3522,8 +3522,19 @@
       ],
       "notes": [],
       "createdAt": "2026-09-09T21:31:15.773Z",
-      "updatedAt": "2026-09-09T21:34:30.496Z",
-      "verify": "node agent/scripts/verify/KN-002.mjs"
+      "updatedAt": "2026-09-09T21:41:01.875Z",
+      "verify": "node agent/scripts/verify/KN-002.mjs",
+      "fixedSince": {
+        "head": "663423cd24ac94ee9a93b48974ee4b2167dae6fb",
+        "round": 1,
+        "changed": [
+          "agent/scripts/verify/KN-002.mjs",
+          "agent/scripts/verify/KN-071.mjs"
+        ],
+        "why": "The round found two things and both were the verifier reporting success without establishing what it claimed, so both were fixed rather than filed. The critical: the settling card was matched against the whole Settled block, so any card in the list satisfied any item; one decision entry must carry both now, and the roast's own two attacks, contact-route claiming KN-070 and swapping cards between decisions, are both caught. The major: settled bullets were judged as open questions, fixed by scoping the open loop above the Settled block. Nothing the round examined was removed and every attack it described is now a caught mutation."
+      },
+      "evidence": "Recording the owner's four answers turned KN-002's verifier RED: agent/design-manifest.json lists every question the design left open, and the check required each to still be listed as open in DESIGN.md, so moving four into a Settled block read as the questions having been dropped. It failed at the moment the work went RIGHT, which punishes the correct action and invites weakening the check instead of recording the answer.\n\nThe manifest now carries a DISPOSITION. The four settled items have settledBy and settledOn; the two genuinely open ones do not and are still required to appear in the open list. A settled item must appear in the Settled block, must be answered by an entry that NAMES the card which settled it, and must NOT still be asked as an open question.\n\nThree things this got wrong first, each found rather than reasoned about:\n\nThe settling card was matched against the WHOLE block, so every card in the list satisfied every item: contact-route could claim KN-070 settled it, and swapping two cards between their decisions passed. The block is split on its bolded headings now and ONE entry has to carry both the item and its card. That was the roast's critical and both of its attacks are caught.\n\nThe open-question loop read the whole of section 6 including the settled block, and passed only because settled entries begin with two asterisks rather than a dash so listItems skipped them. A formatting coincidence, not a scoping rule; writing one settled entry as a bullet would have broken it. Scoped to the open part now, and a settled entry written as a bullet survives.\n\nIdentification is by the marker phrase OR the frame the item came from, because an ANSWER may be worded differently from its question: should a contact require email or phone is settled by a contact needs only a full name, sharing no phrase, and frame 434:2 is what both cite.\n\nWHAT THIS DELIBERATELY DOES NOT CHECK is what an answer SAYS. Reversing the contact decision to requires both an email and a phone passes here. That is the right division and it was tested rather than assumed: the reversal sails past KN-002 and is caught by KN-071, whose card knows what its answer was supposed to be. Teaching both to read the prose would put one claim in two places and let them drift, and the code says so where someone would be tempted.\n\nGate: KN-002 and KN-071 both pass, lint clean, contract clean, board valid. Eight mutations planted across the two fixes, eight caught.\n\nFound by a PLAN roast before any of KN-071's work had started, which is the argument for checking plans and not only finished work.",
+      "closedAt": "2026-09-09T21:41:01.875Z"
     }
   ]
 }
