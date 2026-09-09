@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 17 of 148 tasks done · 61 of 484 points.
+Project **KarNama** · 17 of 150 tasks done · 61 of 486 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-070` | Decide where رد شده belongs on the board | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision with who made it, section 6 no longer lists it as open, and the column order in section 3 matches. |
 
-## Backlog (129)
+## Backlog (131)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -26,6 +26,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-112` | Two preference setters called in one batch lose the first update | high | 1 | web | KN-006 | A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation. |
 | `KN-114` | The catalog test counts an empty string as a translation | high | 1 | web | KN-006 | Setting any Persian message to an empty or whitespace-only string fails npm test, and the failure names the id. |
 | `KN-132` | Pin the byte-compared generated files to LF, or stop comparing bytes | high | 1 | infra | none | A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand. |
+| `KN-149` | The board cards for the rejected column do not require it to collapse | high | 1 | design | none | The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
@@ -147,6 +148,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-135` | The graphql package's coverage thresholds pass on zero files | low | 1 | graphql | none | Either adding an uncovered file with real behaviour to packages/graphql makes npm test fail, proved by planting one, or the thresholds are gone and a comment says why coverage does not apply here. |
 | `KN-138` | KN-128's verifier attributes compiler errors by substring, not by path | low | 1 | agent | none | A file elsewhere in the web app whose path ends with the probe's name is not counted as the probe, proved by creating one, running the verifier and removing it, rather than by editing the matcher and reasoning about it. |
 | `KN-141` | NO_COLOR makes KN-131's verifier reject a correct compiler refusal | low | 1 | agent | none | The verifier passes with NO_COLOR=1 set, proved by running it that way, and the assertion names the planted file and the TypeScript error code rather than the source excerpt. |
+| `KN-150` | KN-070's open-question check reads lines, not list items | low | 1 | agent | none | A wrapped bullet asking about رد شده makes the verifier fail, proved by planting one. |
 | `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 
@@ -971,6 +973,8 @@ Frame 434:16 flags this with a warning and leaves it open: should the rejected s
 **Why.** It changes the board's column set, which is the main screen, so building the board while this is open means building something that may need re-ordering and re-testing. It is also cheap to settle now and expensive to settle after the drag-and-drop and column tasks are done.
 
 **Exit condition.** DESIGN.md records the answer as a decision with who made it, section 6 no longer lists it as open, and the column order in section 3 matches.
+
+**Roasts.** round 1 scored 6 with 0 critical(s)
 
 ### `KN-071` Decide whether a contact needs an email or a phone
 
@@ -1841,4 +1845,26 @@ agent/scripts/verify/KN-123.mjs plants fifteen regressions and runs the ENTIRE d
 **Why.** A verifier nobody wants to run stops being a verifier. Eighteen minutes is already long enough that the temptation is to close without it, which is precisely the failure the gate exists to prevent, and the harness gets slower every time a regression is added. It is also the single biggest wall-clock cost in this loop right now, ahead of the roasts themselves.
 
 **Exit condition.** A verify that plants N regressions runs one full suite plus N filtered runs, and completes in under five minutes for KN-123, with every regression still caught, proved by running the harness before and after and comparing both the time and the caught count.
+
+### `KN-149` The board cards for the rejected column do not require it to collapse
+
+- **status** backlog · **severity** high · **points** 1 · **area** design
+- **blocked by** none
+
+KN-070 settled that رد شده sits last and is COLLAPSED to a count by default, expanding on click. That is a required interaction state, and the cards that build the board do not mention it: the full-height column card and KN-043 can both be satisfied completely while rendering رد شده as an ordinary always-open column. A roast found this by reading the downstream cards rather than the decision. Add the collapsed default, the count, and the expand interaction to the exit conditions of the column cards, and put the ordering exception there too, because someone building from a card does not necessarily re-read DESIGN.md section 3.
+
+**Why.** A decision recorded only in the design document is a decision that gets built wrong by whoever works from the board, which is the normal way to work here. The whole point of settling KN-070 before the board is built was to avoid re-doing the columns, and that saving is lost if the requirement never reaches the cards that do the building.
+
+**Exit condition.** The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered.
+
+### `KN-150` KN-070's open-question check reads lines, not list items
+
+- **status** backlog · **severity** low · **points** 1 · **area** agent
+- **blocked by** none
+
+agent/scripts/verify/KN-070.mjs decides whether رد شده is still listed as an open question by filtering for lines that begin with '- '. A bullet whose text wraps onto a continuation line therefore hides from it: a roast showed that '- **Unresolved status placement:**' with the question about رد شده on the next line passes the check. Markdown list items are not lines, and every other check in this repository that has read markdown line by line has had the same hole. Parse whole list items, joining continuations, before searching them.
+
+**Why.** The check exists so a question cannot be recorded as settled in one section while still being asked in another, and a reader who hits both comes away not knowing which is current. A guard that only sees the first line of a bullet gives exactly that outcome while reporting green.
+
+**Exit condition.** A wrapped bullet asking about رد شده makes the verifier fail, proved by planting one.
 

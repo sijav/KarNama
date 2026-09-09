@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 149,
+  "nextId": 151,
   "tasks": [
     {
       "id": "KN-001",
@@ -1825,7 +1825,23 @@
       ],
       "status": "in_progress",
       "exit": "DESIGN.md records the answer as a decision with who made it, section 6 no longer lists it as open, and the column order in section 3 matches.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-070-round-1.2026-09-09T21-14-49-796Z.md",
+          "filed": [
+            "KN-149",
+            "KN-150"
+          ],
+          "cardDigest": "98ffd3ac699463b3407d722034e2c789cdc80f98580bc869c86a13747255f912",
+          "head": "c34779bc33fe1ce9a8889a592a32443dacd5f444",
+          "reviewerScore": 6,
+          "reviewerCriticals": 0,
+          "at": "2026-09-09T21:17:30.205Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T21:48:45.372Z",
       "updatedAt": "2026-09-09T21:14:09.536Z",
@@ -3442,6 +3458,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T20:58:35.809Z"
+    },
+    {
+      "id": "KN-149",
+      "title": "The board cards for the rejected column do not require it to collapse",
+      "desc": "KN-070 settled that رد شده sits last and is COLLAPSED to a count by default, expanding on click. That is a required interaction state, and the cards that build the board do not mention it: the full-height column card and KN-043 can both be satisfied completely while rendering رد شده as an ordinary always-open column. A roast found this by reading the downstream cards rather than the decision. Add the collapsed default, the count, and the expand interaction to the exit conditions of the column cards, and put the ordering exception there too, because someone building from a card does not necessarily re-read DESIGN.md section 3.",
+      "why": "A decision recorded only in the design document is a decision that gets built wrong by whoever works from the board, which is the normal way to work here. The whole point of settling KN-070 before the board is built was to avoid re-doing the columns, and that saving is lost if the requirement never reaches the cards that do the building.",
+      "severity": "high",
+      "points": 1,
+      "area": "design",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T21:17:05.511Z"
+    },
+    {
+      "id": "KN-150",
+      "title": "KN-070's open-question check reads lines, not list items",
+      "desc": "agent/scripts/verify/KN-070.mjs decides whether رد شده is still listed as an open question by filtering for lines that begin with '- '. A bullet whose text wraps onto a continuation line therefore hides from it: a roast showed that '- **Unresolved status placement:**' with the question about رد شده on the next line passes the check. Markdown list items are not lines, and every other check in this repository that has read markdown line by line has had the same hole. Parse whole list items, joining continuations, before searching them.",
+      "why": "The check exists so a question cannot be recorded as settled in one section while still being asked in another, and a reader who hits both comes away not knowing which is current. A guard that only sees the first line of a bullet gives exactly that outcome while reporting green.",
+      "severity": "low",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A wrapped bullet asking about رد شده makes the verifier fail, proved by planting one.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T21:17:05.766Z"
     }
   ]
 }
