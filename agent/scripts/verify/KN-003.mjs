@@ -21,6 +21,7 @@ import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { childEnv } from './lib/child-env.mjs'
 
 const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
 const WEB = join(ROOT, 'apps', 'web')
@@ -45,9 +46,16 @@ const check = (label, run) => {
  * exec them directly. The arguments are literals in this file, never anything
  * read from the board or the environment, so there is nothing here for a shell
  * to interpolate.
+ *
+ * The environment comes from `childEnv` rather than from a spread of
+ * `process.env`, which scrubs KARNAMA_GATE_FIXTURES. Without that, running this
+ * verifier from a shell or a CI job that already had the variable set makes the
+ * ordinary `npm test` below include the fixture that is designed to fail, and
+ * this file reports the gate as broken when nothing about the gate is. The one
+ * run that wants gate mode asks for it by name.
  */
 const run = (command, extraEnv = {}) =>
-  spawnSync(command, { cwd: WEB, encoding: 'utf8', shell: true, env: { ...process.env, CI: '1', FORCE_COLOR: '0', ...extraEnv } })
+  spawnSync(command, { cwd: WEB, encoding: 'utf8', shell: true, env: childEnv(extraEnv) })
 
 if (!existsSync(WEB)) {
   process.stderr.write('KN-003 verify FAILED: apps/web does not exist\n')

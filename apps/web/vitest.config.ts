@@ -28,7 +28,12 @@ const dirname = fileURLToPath(new URL('.', import.meta.url))
 // provider. `.gate.ts` still matches neither, which is what keeps the
 // deliberately failing fixture out of an ordinary run.
 const unitInclude = ['src/**/*.test.ts', 'src/**/*.test.tsx']
-const gateMode = Boolean(process.env.KARNAMA_GATE_FIXTURES)
+// The EXACT string, not truthiness. `Boolean(process.env.X)` is true for "0",
+// "false" and "no", so a variable that reads as off turned the deliberately
+// failing fixture ON, and an inherited value from a CI template or a shell made
+// an ordinary run fail for a reason nobody would connect to this file. An
+// explicit opt-in is the only reading under which a stray value is safe.
+const gateMode = process.env.KARNAMA_GATE_FIXTURES === '1'
 
 /**
  * Two projects, deliberately.
