@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 156,
+  "nextId": 157,
   "tasks": [
     {
       "id": "KN-001",
@@ -1906,7 +1906,7 @@
       "parent": [
         "KN-002"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-030 states where history renders.",
       "roasts": [
         {
@@ -1929,8 +1929,21 @@
       ],
       "notes": [],
       "createdAt": "2026-09-07T21:48:46.372Z",
-      "updatedAt": "2026-09-09T21:51:20.481Z",
-      "verify": "node agent/scripts/verify/KN-072.mjs"
+      "updatedAt": "2026-09-09T22:31:55.047Z",
+      "verify": "node agent/scripts/verify/KN-072.mjs",
+      "fixedSince": {
+        "head": "a7733bf52b0a971ffcb598c5275ea1b99790513e",
+        "round": 1,
+        "changed": [
+          "agent/scripts/verify/KN-003.mjs",
+          "agent/scripts/verify/KN-100.mjs",
+          "agent/scripts/verify/lib/child-env.mjs",
+          "apps/web/vitest.config.ts"
+        ],
+        "why": "The four files that changed since a7733bf5 are all KN-100 work, apps/web/vitest.config.ts, KN-003.mjs, KN-100.mjs and lib/child-env.mjs, and none of them is a file this round looked at. The round read DESIGN.md, agent/board.json, agent/scripts/verify/KN-072.mjs and agent/design-manifest.json, and all four are byte-identical to the reviewed commit. Stating it plainly: this change is NOT the fix the round asked for, it is unrelated work that landed while the roast ran in the background, which is now the normal case rather than an exception. Every finding was re-checked against the current files before filing."
+      },
+      "evidence": "node agent/scripts/verify/KN-072.mjs passes: the decision is recorded affirmatively in DESIGN.md section 6 with the owner named and KN-072 cited, section 6 no longer lists it as open, section 3 says FIVE tabs and names them, KN-030 says history renders in its own tab rather than in Info, and agent/design-manifest.json records settledBy KN-072. The background roast returned 5.0 with 0 criticals, and each of its four majors was checked against the source before filing rather than taken on trust. All four are real and none are fixed here, per the loop. The settled tab list uses مخاطبین although DESIGN.md line 368 renamed the modal tab to افراد مرتبط and moved مخاطبین off the nav item too, while apps/api/prisma/schema.prisma has said Related People all along, KN-152. The sentence about history going second sits inside the owner-settled block although the author chose the order and said so, KN-153. The verifier accepts both failures it exists to prevent, reproduced by running: tab names count anywhere in a 1200 character window, and the contrast strip plus a final clause tested against the unstripped text let a card stating the exact opposite pass every check, KN-154. KN-045 still specifies the four-tab modal, so building from it reinstates the rejected arrangement, KN-155. What this does NOT establish: that the five tab names match Figma today. The verifier hardcodes them from an earlier reading of frame 210:276 rather than re-deriving them, which is exactly how the superseded label survived, and KN-152 is where that gets corrected.",
+      "closedAt": "2026-09-09T22:31:55.047Z"
     },
     {
       "id": "KN-073",
@@ -2475,12 +2488,12 @@
       "parent": [
         "KN-088"
       ],
-      "status": "in_progress",
+      "status": "review",
       "exit": "KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture, the ordinary run inside agent/scripts/verify/KN-003.mjs passes with the variable set to any value in the parent environment, and both are proved by planted environments.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T23:46:31.560Z",
-      "updatedAt": "2026-09-09T22:30:31.388Z",
+      "updatedAt": "2026-09-09T22:32:11.367Z",
       "verify": "node agent/scripts/verify/KN-100.mjs"
     },
     {
@@ -3650,6 +3663,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T22:23:50.956Z"
+    },
+    {
+      "id": "KN-156",
+      "title": "The close gate has no exit for unrelated work landing during a background roast",
+      "desc": "move done refuses when any file changed since the reviewed commit, and offers two ways out: run a new round, or close with --fixed-since because this change IS the fix the round asked for. Closing KN-072 hit a third case that fits neither. The four changed files were all KN-100 work and none of them was a file the round read; the files it did read were byte-identical. Since the loop now fires roasts in the BACKGROUND and takes the next card immediately, unrelated work landing between a roast and its adjudication is the normal case rather than an exception, so the gate will ask this question on almost every close and --fixed-since will be answered with a sentence that contradicts its own name.",
+      "why": "A gate whose only escape hatch is worded for a different situation trains people to type something untrue into it to get past. The gate is worth keeping, so the honest answer needs a door of its own.",
+      "severity": "medium",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "move done distinguishes changes that touch files the round read from changes that do not, names which files it compared, and accepts an unrelated change with its own flag and its own recorded sentence. A mutation that changes a file the round DID read still refuses with the original message.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T22:32:11.168Z"
     }
   ]
 }

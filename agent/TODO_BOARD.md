@@ -2,27 +2,21 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 20 of 155 tasks done · 64 of 492 points.
+Project **KarNama** · 21 of 156 tasks done · 65 of 493 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-100` Make the gate-fixtures flag hermetic** (high, 1 pt, agent)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-100` | Make the gate-fixtures flag hermetic | high | 1 | agent | KN-088 | KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture, the ordinary run inside agent/scripts/verify/KN-003.mjs passes with the variable set to any value in the parent environment, and both are proved by planted environments. |
+**Next up: `KN-112` Two preference setters called in one batch lose the first update** (high, 1 pt, web)
 
 ## Awaiting roast (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-072` | Decide where status history belongs | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-030 states where history renders. |
+| `KN-100` | Make the gate-fixtures flag hermetic | high | 1 | agent | KN-088 | KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture, the ordinary run inside agent/scripts/verify/KN-003.mjs passes with the variable set to any value in the parent environment, and both are proved by planted environments. |
 
-## Backlog (132)
+## Backlog (133)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -119,6 +113,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-126` | Assert there is exactly one graphql in the dependency tree | medium | 1 | api | KN-120 | agent/scripts/verify/KN-033.mjs fails when more than one graphql version resolves, proved by a planted duplicate, and TECH-DEBT entry 10 names it as the check that retires the split. |
 | `KN-139` | The board demands a verify command at the moment attaching one costs a roast round | medium | 1 | agent | none | Moving a task to review without a verify command is refused or warned about with the same message move done gives, proved by trying it, and the message says attaching it afterwards will invalidate the roast. |
 | `KN-140` | KN-131's verifier regenerates generated.ts instead of restoring it | medium | 1 | agent | none | Starting the script with modified content in generated.ts leaves that exact content in place afterwards, proved by planting it, and a cleanup whose regeneration fails still restores the file. |
+| `KN-156` | The close gate has no exit for unrelated work landing during a background roast | medium | 1 | agent | none | move done distinguishes changes that touch files the round read from changes that do not, names which files it compared, and accepts an unrelated change with its own flag and its own recorded sentence. A mutation that changes a file the round DID read still refuses with the original message. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -159,7 +154,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 
-## Done (20)
+## Done (21)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -182,6 +177,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-033` | API scaffold: NestJS, GraphQL code first, and its quality gate | critical | 8 | api | KN-001 | lint, typecheck, test and build all pass in apps/api, the server starts, the GraphQL playground serves the schema, the health endpoint answers, and a missing required environment variable fails at startup with a clear message rather than at first request. |
 | `KN-070` | Decide where رد شده belongs on the board | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision with who made it, section 6 no longer lists it as open, and the column order in section 3 matches. |
 | `KN-071` | Decide whether a contact needs an email or a phone | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-031 and KN-039 state the resulting rule. |
+| `KN-072` | Decide where status history belongs | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-030 states where history renders. |
 | `KN-151` | The design manifest still calls four settled questions open | high | 1 | design | none | node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that. |
 
 ## Dropped (1)
@@ -1001,7 +997,7 @@ Frame 434:2 says only a full name is required, and notes in the same breath that
 
 ### `KN-072` Decide where status history belongs
 
-- **status** review · **severity** high · **points** 1 · **area** design
+- **status** done · **severity** high · **points** 1 · **area** design
 - **blocked by** KN-002
 
 The Components canvas flags this as its open item 18: status history currently sits at the bottom of the Info tab of the job modal, and the file says that is provisional. Get the decision on whether it stays there, becomes its own tab, or moves elsewhere, and record it.
@@ -1315,7 +1311,7 @@ agent/scripts/verify/KN-003.mjs runs KARNAMA_GATE_FIXTURES=1 npm test and reads 
 
 ### `KN-100` Make the gate-fixtures flag hermetic
 
-- **status** in_progress · **severity** high · **points** 1 · **area** agent
+- **status** review · **severity** high · **points** 1 · **area** agent
 - **blocked by** KN-088
 
 vitest.config.ts reads Boolean(process.env.KARNAMA_GATE_FIXTURES), so any non-empty inherited value enables the deliberately failing fixture, including the string "0". agent/scripts/verify/KN-003.mjs spawns the ordinary npm test with the parent environment unchanged, so a CI job or a shell that has the variable set makes an ordinary run include a test designed to fail. Compare against the exact string "1" and scrub the variable explicitly for every run that is meant to be ordinary.
@@ -1938,4 +1934,15 @@ KN-045 reads: The four-tab modal reading and writing real data: info and status 
 **Why.** A settled decision that only reaches one of the cards that depend on it is not settled, it is contradicted. The stale card is the one an implementer actually works from.
 
 **Exit condition.** KN-045 names five tabs with history in its own, its exit condition asserts where history renders, and a check proves NO open card still says four-tab modal or places history inside the info tab.
+
+### `KN-156` The close gate has no exit for unrelated work landing during a background roast
+
+- **status** backlog · **severity** medium · **points** 1 · **area** agent
+- **blocked by** none
+
+move done refuses when any file changed since the reviewed commit, and offers two ways out: run a new round, or close with --fixed-since because this change IS the fix the round asked for. Closing KN-072 hit a third case that fits neither. The four changed files were all KN-100 work and none of them was a file the round read; the files it did read were byte-identical. Since the loop now fires roasts in the BACKGROUND and takes the next card immediately, unrelated work landing between a roast and its adjudication is the normal case rather than an exception, so the gate will ask this question on almost every close and --fixed-since will be answered with a sentence that contradicts its own name.
+
+**Why.** A gate whose only escape hatch is worded for a different situation trains people to type something untrue into it to get past. The gate is worth keeping, so the honest answer needs a door of its own.
+
+**Exit condition.** move done distinguishes changes that touch files the round read from changes that do not, names which files it compared, and accepts an unrelated change with its own flag and its own recorded sentence. A mutation that changes a file the round DID read still refuses with the original message.
 
