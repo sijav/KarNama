@@ -3506,7 +3506,20 @@
       "parent": [],
       "status": "review",
       "exit": "node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-151-round-1.2026-09-09T21-34-21-823Z.md",
+          "filed": [],
+          "cardDigest": "57125a0f37b96ea1b53694fad0515e6f7c6a33b1118bc24bc0eff1fb46dcdcb5",
+          "head": "663423cd24ac94ee9a93b48974ee4b2167dae6fb",
+          "reviewerScore": 5,
+          "reviewerCriticals": 1,
+          "at": "2026-09-09T21:40:26.800Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-09T21:31:15.773Z",
       "updatedAt": "2026-09-09T21:34:30.496Z",

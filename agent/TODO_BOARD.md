@@ -1885,3 +1885,5 @@ agent/design-manifest.json carries an openItems list naming each question the de
 
 **Exit condition.** node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that.
 
+**Roasts.** round 1 scored 5 with 1 critical(s)
+
