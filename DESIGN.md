@@ -272,8 +272,19 @@ container, which is the overflow.
 
 **The rightmost column is the first stage**, because the layout is RTL. Left to
 right the frames are Add Column, پیشنهاد کار, رد شده, مصاحبه, درخواست‌شده,
-ذخیره‌شده, so read right to left the order is ذخیره‌شده, درخواست‌شده, مصاحبه,
-رد شده, پیشنهاد کار. A column is 300 by 684, holding a 276 by 40 header, cards
+ذخیره‌شده, so read right to left the drawn order is ذخیره‌شده, درخواست‌شده,
+مصاحبه, رد شده, پیشنهاد کار.
+
+**The owner moved رد شده after پیشنهاد کار, so it is last.** See section 6:
+asked on 2026-09-08 and answered. The file draws رد شده fourth, between مصاحبه
+and پیشنهاد کار, and that is the one place the build does NOT follow the frame.
+It is worth being loud about because "match the design exactly" is the standing
+rule and this is a deliberate exception, made by the person the rule exists to
+serve: an offer is the outcome you are working towards and a rejection is where
+a record stops moving, so putting the terminal state after the goal reads as the
+end of the trail rather than as a stage on the way to it.
+
+A column is 300 by 684, holding a 276 by 40 header, cards
 at 276 by 148, and an `Add Card` row pinned at the bottom. `Add Column` is
 labelled «افزودن وضعیت», add status, which is the plainest statement that a
 column IS a status.

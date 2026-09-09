@@ -1823,11 +1823,13 @@
       "parent": [
         "KN-002"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "DESIGN.md records the answer as a decision with who made it, section 6 no longer lists it as open, and the column order in section 3 matches.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T21:48:45.372Z"
+      "createdAt": "2026-09-07T21:48:45.372Z",
+      "updatedAt": "2026-09-09T21:14:09.536Z",
+      "verify": "node agent/scripts/verify/KN-070.mjs"
     },
     {
       "id": "KN-071",
