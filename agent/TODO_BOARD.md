@@ -8,9 +8,9 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-100` Make the gate-fixtures flag hermetic** (high, 1 pt, agent)
+**Next up: `KN-112` Two preference setters called in one batch lose the first update** (high, 1 pt, web)
 
-## In progress (1)
+## Awaiting roast (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -1311,7 +1311,7 @@ agent/scripts/verify/KN-003.mjs runs KARNAMA_GATE_FIXTURES=1 npm test and reads 
 
 ### `KN-100` Make the gate-fixtures flag hermetic
 
-- **status** in_progress · **severity** high · **points** 1 · **area** agent
+- **status** review · **severity** high · **points** 1 · **area** agent
 - **blocked by** KN-088
 
 vitest.config.ts reads Boolean(process.env.KARNAMA_GATE_FIXTURES), so any non-empty inherited value enables the deliberately failing fixture, including the string "0". agent/scripts/verify/KN-003.mjs spawns the ordinary npm test with the parent environment unchanged, so a CI job or a shell that has the variable set makes an ordinary run include a test designed to fail. Compare against the exact string "1" and scrub the variable explicitly for every run that is meant to be ordinary.
@@ -1319,6 +1319,8 @@ vitest.config.ts reads Boolean(process.env.KARNAMA_GATE_FIXTURES), so any non-em
 **Why.** A roast rated this major. A flag that changes what the test suite runs is dangerous by construction, and this one turns on for a value that reads as off. The failure it produces is the worst kind: a suite that fails for a reason nobody can find, in an environment nobody thought about.
 
 **Exit condition.** KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture, the ordinary run inside agent/scripts/verify/KN-003.mjs passes with the variable set to any value in the parent environment, and both are proved by planted environments.
+
+**Roasts.** round 1 scored 5 with 0 critical(s)
 
 ### `KN-101` Run destructive mutation verifiers in an isolated worktree
 
