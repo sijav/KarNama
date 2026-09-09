@@ -497,26 +497,9 @@ These are flagged in the file itself. They are the designer's or the owner's
 call, not a build decision, and nothing should quietly resolve them by picking
 one while implementing.
 
-- **Where «رد شده» belongs.** **Open, tracked by KN-070.** Frame `434:16` marks it with a warning: should
-  rejected stay as the last stage of the pipeline, or move off the board
-  entirely? Undecided.
-- **Whether a contact needs a contact route.** **Open, tracked by KN-071.** Frame `434:2` notes that only the
-  full name is required, and that a contact with no email and no phone is
-  practically useless, so QA should decide whether "email or phone" becomes a
-  required one-of-two.
-- **Where status history belongs.** **Open, tracked by KN-072.** The Components canvas flags it as open item
-  18. It currently sits at the bottom of the Info tab, and that is where it gets
-  built until someone decides otherwise.
 - **The employment type and job level option lists**, **open, tracked by KN-073**, at `434:33` are marked
   **unconfirmed**: they were never checked against Jobinja and Jobvision because
   the network blocked it. Treat the values as provisional.
-- **Which fields the Review step of the add flow shows.** **Open, tracked by
-  KN-075.** Frame `376:31` draws the flow — one modal, Paste then Loading then
-  Review — and `434:2` fixes what the record requires, but neither says which
-  fields the Review step puts in front of the user before they save. Showing all
-  of them and showing only the three required ones are both defensible, and
-  picking one while implementing is exactly the quiet resolution this section
-  exists to prevent.
 - **The two copy strings frame `505:3` marks as not applied.** **Open, tracked
   by KN-077.** Fourteen of its sixteen changes landed in the file. Item 10, the
   Review-step helper copy, records that no such node exists after searching all
@@ -524,6 +507,43 @@ one while implementing.
   confirming or the string needs adding. Item 15, the new-status helper copy,
   records that the text was not found and needs manual review. Both are wording
   the design has written but not placed, so neither can be read off a screen.
+
+---
+
+### Settled by the owner on 2026-09-08
+
+Four of these were put to the owner directly, with the trade named on each, and
+answered. They are decisions now, not questions, and nothing below reopens by
+being inconvenient to build.
+
+**«رد شده» stays as the last column, collapsed to a count by default.** Owner,
+KN-070, over frame `434:16`. Rejected is the last stage of the pipeline and it
+expands on click. The reason it collapses rather than simply sitting open: it is
+the status that accumulates fastest in a job search, and an always-open rejected
+column ends up dominating the screen it is least useful on. Off the board
+entirely was rejected because the trail is what this product is for.
+
+So the column order in section 3 stands, and the board renders it as
+`رد شده ▸ 14` until the user opens it.
+
+**A contact needs only a full name.** Owner, KN-071, over frame `434:2`. Build
+what the frame specifies: name required, email and phone both optional. The
+file's own note that a contact with neither is close to useless was put to the
+owner and they chose the permissive rule anyway, which is a real position: a
+half-remembered name you can fill in later is worth more than a form that
+refuses it. **Do not add a one-of-two validation rule.**
+
+**Status history gets its own tab in the job modal.** Owner, KN-072, over the
+Components canvas open item 18. Tabs are `اطلاعات`, `سابقه`, `یادداشت‌ها`. It is
+no longer at the bottom of the Info tab. The trail is the payoff of the whole
+data model, and a tab gives it room for timestamps and per-transition notes
+instead of burying it under a scroll.
+
+**The Review step shows everything the parse filled, with the required fields
+marked.** Owner, KN-075, over frame `376:31`. Not only the three required ones.
+Review exists to catch a bad parse, so the user has to be able to see what was
+actually understood from what they pasted; a mis-parsed company or salary that
+is never shown is found much later, by which time the posting may be gone.
 
 One contradiction between two documentation frames, already resolved:
 principle 5 at `376:9` forbids colloquial Persian outright, while the
