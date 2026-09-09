@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 157,
+  "nextId": 158,
   "tasks": [
     {
       "id": "KN-001",
@@ -2488,7 +2488,7 @@
       "parent": [
         "KN-088"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture, the ordinary run inside agent/scripts/verify/KN-003.mjs passes with the variable set to any value in the parent environment, and both are proved by planted environments.",
       "roasts": [
         {
@@ -2506,8 +2506,18 @@
       ],
       "notes": [],
       "createdAt": "2026-09-07T23:46:31.560Z",
-      "updatedAt": "2026-09-09T23:19:31.506Z",
-      "verify": "node agent/scripts/verify/KN-100.mjs"
+      "updatedAt": "2026-09-09T23:23:25.449Z",
+      "verify": "node agent/scripts/verify/KN-100.mjs",
+      "fixedSince": {
+        "head": "edd8aebd361733526a3b68c10925cb60d4dbef44",
+        "round": 1,
+        "changed": [
+          "agent/scripts/verify/KN-100.mjs"
+        ],
+        "why": "The round's three findings were all the RALPH step 5 second clause, a verifier reporting success without establishing the exit condition, so all three were fixed in-task and the code changed after the review. Commit 5d97d30 is exactly that fix and nothing else. Note for anyone reading the archive: --filed none records that nothing became a CARD, not that nothing survived. All three findings were real, reproduced, and repaired here."
+      },
+      "evidence": "node agent/scripts/verify/KN-100.mjs passes, 11 checks, about 3.2 minutes. Both halves of the flag are closed. apps/web/vitest.config.ts opts in on the exact string '1', so '0', 'true', 'yes', 'false', 'no' and unset are all ordinary runs, proved by listing the resolved unit project for each and requiring failing.gate.ts absent. agent/scripts/verify/lib/child-env.mjs scrubs the key out of every child environment, matching on the uppercased key because Windows environment variables are case-insensitive while a spread of process.env is a plain object that is not. The exit condition's second clause is RUN, not approximated: KN-003 itself is spawned with an inherited '1' and must pass, 124 seconds, after an earlier version tried to satisfy that clause with a vitest list and was right to be rejected for it. Every absence is paired with a positive control on the same instrument and every listing must be non-empty first, because a listing that fails or collects nothing is indistinguishable from a correctly scrubbed one. The 'no way around it' check now counts child launches against scrubs, reading launcher names out of the child_process import, which catches a spawn with NO env option, the bypass that inherits by default and that the previous source grep passed. The anti-vacuity floor is project-scoped rather than suite-wide. Eight mutations, each caught with its own message: Boolean(env) restored, the scrub disabled, the scrub made case-sensitive, the scrub swallowing the deliberate opt-in, KN-003 reverted to a raw environment, KN-003 keeping the scrub but growing a second spawn that spreads the parent, the same with NO env option, and the unit project narrowed until it reported 3 passing tests. AGENTS section 5 items 1 to 4 all ran green inside that verify, since KN-003 runs lint, lint:tsc, the suite with coverage, build and build-storybook. Items 5 to 7 are the rendered-result checks and do not apply: this task changes no UI. What this does NOT establish, and what is already filed: the full npm test check still reads a suite-wide summary line, KN-099, so it is the project-scoped check beside it that establishes the unit project ran. The empty-string entry in the falsy-value list exercises the UNSET path on Windows rather than the empty one, which is said in the code rather than left to look like more than it is. The mutation cases live in a scratch directory and are thrown away, KN-136.",
+      "closedAt": "2026-09-09T23:23:25.449Z"
     },
     {
       "id": "KN-101",
@@ -3692,6 +3702,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T22:32:11.168Z"
+    },
+    {
+      "id": "KN-157",
+      "title": "The roast record cannot say a finding was fixed rather than dismissed",
+      "desc": "todo roast takes --filed <ids> or --filed none, and --filed none prints Nothing survived adjudication. That is wrong whenever findings were REAL and fixed in-task, which RALPH step 5 explicitly requires when the finding is that the verifier passes without establishing its exit condition. KN-100 closed that way: three real findings, all reproduced, all repaired, and the board now records the round as though the roast turned up nothing worth keeping. The distinction has to be carried by prose in --fixed-since, where nothing can query it, so the board's own history understates what its reviews caught.",
+      "why": "The roast archive is the only record of what review actually found. A record that reads the same for a review that found nothing and a review that found three real defects makes the loop look less effective than it is, and hides the pattern that would tell you which verifiers keep passing dishonestly.",
+      "severity": "medium",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "todo roast accepts a way to record findings that were fixed in-task rather than filed, the summary line distinguishes the three cases, dismissed, filed and fixed, and re-recording KN-100 round 1 with it shows three findings fixed rather than nothing survived.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T23:23:41.348Z"
     }
   ]
 }
