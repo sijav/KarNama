@@ -18,11 +18,15 @@
 // run. So every absence below is paired with a positive control on the SAME
 // instrument, and every listing is required to be non-empty first.
 //
-// The second clause is proved at the collection level rather than by nesting
-// KN-003, which runs two full suites, a build and a storybook build. Listing
-// the resolved unit project under a planted parent is the same composition —
-// the real config, resolved by the real tool, under the exact hazard — in
-// seconds instead of minutes.
+// The second clause is proved by RUNNING KN-003 under a planted parent, not by
+// approximating it. An earlier version stopped at the collection level, on the
+// argument that listing the resolved unit project under a planted parent is the
+// same composition for a fraction of the time. It is not the same: a config can
+// branch on how it was invoked, and a resolved file set is not an executed one,
+// so that proof sat next to the exit condition rather than on it. The cheap
+// checks are still here and still earn their place by localising a failure,
+// which a two and a half minute run does not. They just no longer stand in for
+// the run itself.
 //
 // Read-only: runs commands, writes nothing to the repository.
 
@@ -113,16 +117,49 @@ check('gate mode can still be asked for by name', () => {
   return env.KARNAMA_GATE_FIXTURES === '1' ? null : `asking for gate mode produced ${env.KARNAMA_GATE_FIXTURES}`
 })
 
-check('KN-003 hands its children that environment, with no way around it', () => {
-  // Checking the helper alone would prove a function nobody calls. The second
-  // half is what closes it: not one raw spread of the parent environment is
-  // left in the file, so there is no other path a child can arrive through.
+check('EVERY child launch in KN-003 goes through the scrub', () => {
+  // This check used to look for a raw spread of `process.env` and call that
+  // "no way around it". It was not: a spawn with NO `env` option at all
+  // inherits the parent environment by default, spreads nothing, and left the
+  // existing childEnv call untouched, so it sailed past while doing the exact
+  // thing the check exists to forbid. Claiming more than it established is the
+  // worse half of that bug.
+  //
+  // So the launches are COUNTED instead. Every child-process call in the file
+  // has to be matched by a `env: childEnv(` of its own, which catches both the
+  // raw spread and the missing option, and catches a second launch added later
+  // by anyone who does not read this file first.
   const source = readFileSync(join(ROOT, 'agent', 'scripts', 'verify', 'KN-003.mjs'), 'utf8')
   if (!/import\s*\{\s*childEnv\s*\}\s*from\s*'\.\/lib\/child-env\.mjs'/.test(source)) {
     return 'it does not import the scrub'
   }
-  if (!/env:\s*childEnv\(/.test(source)) return 'it imports the scrub but does not spawn with it'
-  return /\.\.\.process\.env/.test(source) ? 'it still spreads the parent environment somewhere' : null
+  // Comments are stripped first so prose describing a spawn is not counted as
+  // one, which is the mistake KN-002 and KN-072 each made in their own way.
+  const code = source.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1')
+
+  // The launcher names are read out of the import rather than guessed from a
+  // list. A guessed list counted `/pattern/.exec(source)` as a child process,
+  // which is a RegExp method sharing a name with a child_process one, and the
+  // check failed on a file that was correct. Reading the import also means a
+  // launcher this file does not use today is counted the day someone adds it.
+  const importMatch = /import\s*(.+?)\s*from\s*'node:child_process'/.exec(code)
+  if (!importMatch) return 'it imports nothing from node:child_process, so this check is measuring nothing'
+  const named = /^\{([^}]*)\}$/.exec(importMatch[1].trim())
+  if (!named) {
+    return `the child_process import is "${importMatch[1].trim()}" rather than a named list, so launches cannot be enumerated`
+  }
+  const launchers = named[1]
+    .split(',')
+    .map((entry) => entry.trim().split(/\s+as\s+/).pop()?.trim())
+    .filter((name) => name)
+
+  // The lookbehind is what keeps `foo.exec(` and `myExec(` out of the count.
+  let launches = 0
+  for (const name of launchers) launches += (code.match(new RegExp(`(?<![.\\w$])${name}\\s*\\(`, 'g')) ?? []).length
+  const scrubbed = (code.match(/env:\s*childEnv\(/g) ?? []).length
+  if (!launches) return 'it launches no child processes at all, so this check is measuring nothing'
+  if (launches !== scrubbed) return `${launches} child launch(es) but ${scrubbed} scrubbed environment(s)`
+  return /\.\.\.process\.env/.test(code) ? 'it still spreads the parent environment somewhere' : null
 })
 
 check('the instrument can see the fixture when gate mode is asked for', () => {
@@ -151,6 +188,12 @@ check("a parent holding '1' does not reach the real unit project", () => {
 check('no falsy-looking value turns gate mode on', () => {
   // The other half, and the one the card names by example. These are passed
   // straight through, so they test the comparison rather than the scrub.
+  //
+  // The empty string is in the list but does NOT prove what it looks like it
+  // proves: Windows treats an environment variable set to "" as absent, so on
+  // this platform that entry exercises the UNSET path. That path is worth
+  // covering and the entry stays, but calling it a test of the empty value
+  // would be describing a check by its input rather than by what it reaches.
   const bad = []
   for (const value of ['0', 'true', 'yes', '', 'false', 'no']) {
     const { files } = listUnit({ KARNAMA_GATE_FIXTURES: value })
@@ -158,6 +201,31 @@ check('no falsy-looking value turns gate mode on', () => {
     if (files.some((line) => line.includes(FIXTURE))) bad.push(value === '' ? '(empty)' : value)
   }
   return bad.length ? `these values still collected ${FIXTURE}: ${bad.join(', ')}` : null
+})
+
+check('KARNAMA_GATE_FIXTURES=0 leaves the UNIT project itself intact', () => {
+  // Scoped to the project that gate mode actually changes.
+  //
+  // The full `npm test` below reports one number for both projects, so its
+  // count cannot say the unit project ran: a config regression that stopped
+  // unit from collecting would leave storybook satisfying the threshold, and
+  // the fixture would be absent for the wrong reason entirely. That is KN-099
+  // in a different costume. A project-scoped run answers it directly and costs
+  // seconds, so the aggregate number is never asked to carry this weight.
+  const result = spawnSync('npx vitest run --project unit --coverage.enabled=false', {
+    cwd: WEB,
+    encoding: 'utf8',
+    shell: true,
+    env: childEnv({ KARNAMA_GATE_FIXTURES: '0' }),
+  })
+  const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
+  if (output.includes(FIXTURE)) return `the unit project ran ${FIXTURE} with the flag at "0"`
+  if (result.status !== 0) return output.split('\n').slice(-25).join('\n')
+  // The floor only has to catch a collapse. The project runs 208 tests today,
+  // so 20 is far below anything a healthy suite reports and far above what a
+  // broken include produces, which is zero.
+  const passed = Number(/Tests\s+(\d+) passed/.exec(output)?.[1] ?? 0)
+  return passed >= 20 ? null : `the unit project reported ${passed} passing tests, so passing proves nothing`
 })
 
 check('KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture', () => {
@@ -170,12 +238,33 @@ check('KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture', () => {
   })
   const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
   if (output.includes(FIXTURE)) return `the run touched ${FIXTURE}`
-  if (result.status !== 0) return output.split('\n').slice(-25).join('\n')
-  // A suite that collected nothing also exits 0 and also never touches the
-  // fixture, which is the same vacuous pass the listings above are guarded
-  // against. So the count has to be read, not assumed from the exit code.
-  const passed = Number(/Tests\s+(\d+) passed/.exec(output)?.[1] ?? 0)
-  return passed >= 20 ? null : `the run reported ${passed} passing tests, so passing proves nothing`
+  return result.status === 0 ? null : output.split('\n').slice(-25).join('\n')
+})
+
+check("KN-003 ITSELF passes with '1' inherited from the parent environment", () => {
+  // The clause the card names, run rather than approximated.
+  //
+  // Everything above proves things ABOUT that run: that the config ignores a
+  // stray value, that the helper scrubs, that every launch in the file uses it.
+  // None of them is the run. A config can branch on how it was invoked, and
+  // `vitest list` resolving a file set is not `vitest run` executing one, so
+  // the cheap proofs are adjacent to the exit condition rather than being it.
+  // This one costs about two and a half minutes and settles it: the real
+  // verifier, in the environment the card describes, either passes or does not.
+  //
+  // The environment here is deliberately NOT built by childEnv. Scrubbing the
+  // variable on the way in would remove the very hazard being planted.
+  const result = spawnSync('node agent/scripts/verify/KN-003.mjs', {
+    cwd: ROOT,
+    encoding: 'utf8',
+    shell: true,
+    env: { ...process.env, KARNAMA_GATE_FIXTURES: '1', CI: '1', FORCE_COLOR: '0' },
+  })
+  const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
+  if (result.status !== 0) return `KN-003 failed with an inherited "1":\n${output.split('\n').slice(-20).join('\n')}`
+  // Non-vacuity again: KN-003 exiting 0 without having run its checks would
+  // look identical from here.
+  return /KN-003 verify passed/.test(output) ? null : 'KN-003 exited 0 without reporting a pass'
 })
 
 if (failures.length) {

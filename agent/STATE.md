@@ -31,8 +31,7 @@ applied, and an admin panel over what users submit.
 
 Stack and standing decisions:
 
-- Monorepo, npm workspaces. `apps/web` and `apps/api` exist; `packages/graphql`
-  does not.
+- Monorepo, npm workspaces. `apps/web`, `apps/api` and `packages/graphql` exist.
 - React 19, TypeScript, MUI, Storybook, Playwright, Vitest, 100 percent
   coverage. **Components first with their stories, then screens.**
 - GraphQL with NestJS. Render free tier, Supabase Postgres, cold start about 50
@@ -47,43 +46,50 @@ Stack and standing decisions:
 
 ## Where things stand
 
-`sijav/KarNama` is live and pushed.
+`sijav/KarNama` is live and pushed. **No open criticals.** Both are closed:
+KN-123, the migration runner, and KN-128, the GraphQL chain.
 
-**`apps/web`**: 222 tests, 100 percent on all four coverage metrics, 8 Playwright
-tests on the two drawn viewports. The token set, a light theme and a DERIVED dark
-one, the RTL emotion cache, lingui with English source ids, a persisted preference
-store, and a working `LanguageSwitch`. A user can switch language and it survives
-a reload, proved end to end.
+**`apps/web`**: 222 tests across 14 files, 100 percent on all four coverage
+metrics, 8 Playwright tests on the two drawn viewports. The unit project alone is
+208 tests in 11 files, which is worth knowing because a suite-wide count cannot
+tell you the unit project ran. The token set, a light theme and a DERIVED dark
+one, the RTL emotion cache, lingui with English source ids, a persisted
+preference store, and a working `LanguageSwitch`.
 
 **`apps/api`**: 60 tests, 100 percent on all four. NestJS 12, GraphQL code first,
-a health query answering from a cold-started build, an environment that fails in
-two lines before the server listens, the full Prisma data model with two
-migrations, and a seed. The migrations run against PGlite, which is Postgres in
-process, so the SQL is executed by the engine Supabase runs.
+the full Prisma data model with two migrations, and a seed. The migrations run
+against PGlite, which is Postgres in process, so the SQL is executed by the
+engine Supabase runs.
 
 **`packages/graphql`**: 4 tests. Types AND operations generated from
-`apps/api/schema.gql`. The operation documents live in `src/operations/*.graphql`
-so codegen validates them against the schema at generation time, and
-`typed-document-node` emits each document with its type so a consumer cannot pair
-the wrong two. `codegen:check` regenerates into a temp dir and byte-compares; it
-never writes into `src`.
-
-**`apps/api/schema.gql` is committed and checked.** `npm run build` refuses a
-stale schema; `npm run schema:update` regenerates it with no server, no
-environment and no database. `GraphqlModule` registers the same array the
-generator reads, so a resolver reaches the server and the contract together.
+`apps/api/schema.gql`, validated against the schema at generation time.
 
 Every verifier here has been mutation tested. Nothing is trusted because it
 passed; it is trusted because it was made to fail. **But the mutation cases are
 written to a scratch directory and thrown away**, so no count in a commit message
-can be re-run by anyone, including the next iteration. Filed as KN-136, and two
-reviewers declined to certify a count for exactly this reason.
+can be re-run by anyone, including the next iteration. Filed as KN-136.
+
+## The two facts that shape what to do next
+
+**`validate` reporting that 133 of 134 open tasks have no `verify` command is
+NOT a blocker, and reading it as one is a trap this file fell into once.** A card
+gets its verifier when it is worked, because `move done` refuses without one, so
+the count is supposed to be high and falls one card at a time. KN-054's original
+framing, backfill a verifier onto every card, is superseded ON THE CARD: writing
+sixty verifiers up front means writing each check before its work exists, which
+produces checks describing what is easy to assert. What is actually left of
+KN-054 is flipping that report into a failure, and it must NOT be picked up until
+the count is already zero, or it fails the board on work nobody has done yet.
+Read the card before believing a validate message.
+
+**Severity has stopped discriminating.** 88 high, 35 medium, 11 low. The
+selection law orders by severity first, so it is effectively choosing by points
+and id. Filed as KN-117.
 
 ## What the roasts keep proving, one line each
 
 **An unchecked claim replaced by another unchecked claim is not a fix.** KN-002
-spent four rounds on it. The cure is to derive the number from a committed
-artefact and make the document match.
+spent four rounds on it. Derive the number from a committed artefact.
 
 **A test that measures the wrong quantity passes while the thing is broken.**
 KN-005's dark palette had every HSL assertion green while eight of nine status
@@ -92,79 +98,89 @@ chips sat at 1.0 to 1.5 contrast. Lightness is not contrast.
 **"It is written" is not "it works".** KN-006 wrote the language preference,
 read it back and discarded it on the next mount. Only a reload test found it.
 
-**A build that repairs the evidence cannot check it.** KN-120's build ran
-`schema:generate` before comparing, so a stale schema always passed.
+**An ABSENCE proves nothing without a positive control on the same instrument.**
+A listing that fails, collects nothing, or names its files differently produces
+exactly the result a correct run produces. KN-100 pairs every absence with a
+run that must SHOW the thing, and requires every listing to be non-empty first.
 
-**Shell heredocs eat backslashes.** Four times now a regex arrived with its
-escapes stripped and passed while matching nothing. Use the Edit tool for code.
+**A proxy for the exit condition is not the exit condition.** KN-100 first proved
+its second clause with `vitest list` instead of running the verifier the card
+names. A config can branch on how it was invoked and a resolved file set is not
+an executed one, so that proof sat next to the claim rather than on it. The cheap
+checks earn their place by localising a failure, not by standing in for the run.
 
-**Do not mutate the worktree while a roast is reading it.**
+**A source grep cannot establish "no way around it".** `spawnSync(cmd, {cwd})`
+with no `env` option inherits the parent environment by default: it spreads
+nothing and removes nothing, so a grep for `...process.env` passes it. Count the
+launches against the guard instead, and read the launcher names out of the import
+so `/pattern/.exec(s)` is not miscounted as a child process.
 
 **A grep for a banned construct finds the prose explaining the ban.** KN-128's
-check reported the defect it had just fixed, because the doc comment names what
-was removed. Strip comments before every such grep, and assert the stripped file
-is not empty or the grep passes by having nothing to read.
+check reported the defect it had just fixed. Strip comments before every such
+grep, and assert the stripped file is not empty.
+
+**A substring survives negation, and independent matches pass on coincidence.**
+KN-072's verifier accepts "status history does not render in its own tab; it
+renders in the Info tab", because the contrast strip ate the clause and the final
+check read the UNSTRIPPED text. Bind the assertion to one entry and one sentence.
+
+**The suite can CERTIFY the bug rather than miss it.** KN-112's existing test
+asserts the stale write as the expected value, so fixing the defect means
+rewriting an assertion, not adding one beside it. Read the existing expectations
+before assuming a bug is merely uncovered.
 
 **Fixing a finding costs a roast round; filing one costs nothing.** KN-128 took
-SIX rounds for a three point card. Rounds 3 to 5 were fixes the mechanical test
-in RALPH.md says should have been cards, and each fix changed the work after the
-review so the close was refused. The fixes for round 5 were reverted and filed.
-Read step 5 before adjudicating, not after.
+SIX rounds for a three point card. Read RALPH step 5 before adjudicating.
+**But step 5 has a second clause and it is not optional**: a finding that the
+verifier PASSES DISHONESTLY, reporting success without establishing the exit
+condition, is fixed in-task. "Does the verifier fail" cannot catch a verifier
+that succeeds while checking nothing.
+
+**A tool's REPORT is not a diagnosis.** `validate` says how many open cards lack
+a verifier, and this file previously read that as "the board cannot close
+anything" and called KN-054 the thing standing in the way. The card says the
+opposite in as many words. One `todo -- show` would have settled it, and the
+inference felt so obvious it did not seem to need checking, which is the whole
+failure mode.
 
 **Attach `--verify` BEFORE the roast.** The card digest includes it, so setting
-it afterwards invalidates the round that cleared the task. That alone cost round
-6. Filed as KN-139.
+it afterwards invalidates the round that cleared the task. Filed as KN-139.
 
 **A gate that names the tool is not a gate that runs it.** KN-131's verifier
-accepted `tsc --noEmit --noCheck`, and its planting check ran the ROOT build,
-where one workspace's compiler covers for another's. Prove a workspace-level
-claim with that workspace's own command.
+accepted `tsc --noEmit --noCheck`. Prove a workspace-level claim with that
+workspace's own command.
 
 **The mutation that must SURVIVE is the strongest evidence you can produce.**
-Reverting KN-131's fix and watching the defeat go undetected proved the fix was
-load-bearing in a way no passing test could.
+
+**Shell heredocs eat backslashes**, and in this session a `cat > file <<'EOF'`
+also aborted mid-write. Use the Write and Edit tools for code, every time.
+
+**Do not mutate the worktree while a roast is reading it**, and do not edit
+source while a mutation harness is running: its cases would test the edit.
+
+## Roasts now run in the BACKGROUND
+
+The owner's standing instruction: fire the roast, take the next card, and
+adjudicate when it lands. Consequences already felt:
+
+- **Unrelated work lands between a roast and its close.** The close gate refuses
+  that and offers only `--fixed-since`, which is worded "this change IS the fix
+  the round asked for". That is now the abnormal case. Filed as KN-156.
+- **The exception is a finding that BLOCKS the task in hand**: cancel it, revert
+  what was built for it, do the blocking card first, then replan.
 
 ## Next step
 
 `npm run todo -- next` picks it. Do not choose by hand.
 
-**KN-128 is done and the GraphQL chain is closed both ways**: resolvers to
-`schema.gql` to `generated.ts` to the web app, with a refusal at each step, and
-operations validated against the schema rather than asserted by hand.
-
-**KN-131 is done**: every workspace build now runs the compiler, so `npm run
-build` no longer ships a bundle whose types nothing verified. The correction that
-mattered is worth remembering: the first version planted a type error and ran the
-ROOT build, which proves almost nothing, because `apps/web` resolves
-`@karnama/graphql` to that package's TypeScript SOURCE and web's compiler reports
-an error planted in the package whether or not the package's own build checks
-anything. Each plant runs its own workspace's build now.
-
-**The remaining critical is KN-123**, the migration runner. Both PGlite probes
-are already recorded as notes on the card, so the design is settled before any
-code: `pg_try_advisory_lock` works and is re-entrant, DDL IS transactional so one
-transaction around the migration and its ledger row genuinely gives atomicity,
-`exec` of a failing `BEGIN` block throws the real error, and the catch order is
-FORCED, `ROLLBACK` first or the session is poisoned and the next failure names
-the wrong cause. Two PGlite instances cannot share a dataDir, so the concurrency
-clause needs the lock-request assertion rather than two real runners.
-
-**Two exit conditions on the board contradict themselves.** KN-120's asked that
-the build both PRODUCE the schema and FAIL when it is stale, which cannot both
-hold. That was recorded in the evidence rather than resolved by editing the card.
-Read the next exit condition for the same shape before building to it.
-
-**Severity has stopped discriminating**: most of the open board is high. Filed as
-KN-117. The selection law orders by severity first, so it is effectively choosing
-by points and id.
-
-Clusters worth taking together: **KN-111, KN-114, KN-115** are all "the catalog
-test or the lingui rule is incomplete". **KN-092, KN-109** are both "nothing
-enforces a convention AGENTS.md states" and both touch every file, so they are
-cheaper before the component queue than after. **KN-137, KN-138** are both
-"KN-128's verifier is narrower than it reads". **KN-123** is still the one that
-would cost real data: the migration runner has no transaction, lock, failure
-state or checksum.
+**KN-112 is planned and the plan has been checked**, `.claude/plan-KN-112.md`.
+Two setters built over one render's snapshot lose the first update when both are
+called before the next render. The fix composes onto a ref rather than onto the
+snapshot. The plan check corrected two things: the setters do NOT become stable,
+because `contextValue` is a `useMemo` over the two fields and is rebuilt anyway,
+and a new story owes Persian and English variants. The trap to avoid is proving
+the easy case: two calls after `renderToString` returns are not a React batch, so
+the story's probe needs ONE button whose handler calls both.
 
 ## What to read first
 

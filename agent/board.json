@@ -2488,12 +2488,12 @@
       "parent": [
         "KN-088"
       ],
-      "status": "review",
+      "status": "in_progress",
       "exit": "KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture, the ordinary run inside agent/scripts/verify/KN-003.mjs passes with the variable set to any value in the parent environment, and both are proved by planted environments.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T23:46:31.560Z",
-      "updatedAt": "2026-09-09T22:32:11.367Z",
+      "updatedAt": "2026-09-09T22:35:55.402Z",
       "verify": "node agent/scripts/verify/KN-100.mjs"
     },
     {
@@ -2710,7 +2710,8 @@
       "exit": "A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-08T00:41:13.307Z"
+      "createdAt": "2026-09-08T00:41:13.307Z",
+      "updatedAt": "2026-09-09T22:35:55.192Z"
     },
     {
       "id": "KN-113",
