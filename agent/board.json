@@ -1864,7 +1864,20 @@
       ],
       "status": "review",
       "exit": "DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-031 and KN-039 state the resulting rule.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-071-round-1.2026-09-09T21-41-45-214Z.md",
+          "filed": [],
+          "cardDigest": "3e0eddff8ab0c774f70abbafcb434dc98168397b222feb64348ce7f530f30fd0",
+          "head": "7b599ff84da13ef0ee1aaa80a82a7f6255d3cb9d",
+          "reviewerScore": 7,
+          "reviewerCriticals": 0,
+          "at": "2026-09-09T21:47:00.286Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T21:48:45.867Z",
       "updatedAt": "2026-09-09T21:41:44.157Z",

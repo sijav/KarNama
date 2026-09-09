@@ -993,6 +993,8 @@ Frame 434:2 says only a full name is required, and notes in the same breath that
 
 **Exit condition.** DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-031 and KN-039 state the resulting rule.
 
+**Roasts.** round 1 scored 7 with 0 critical(s)
+
 ### `KN-072` Decide where status history belongs
 
 - **status** in_progress · **severity** high · **points** 1 · **area** design
