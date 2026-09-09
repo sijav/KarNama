@@ -173,6 +173,14 @@ adjudicate when it lands. Consequences already felt:
 
 `npm run todo -- next` picks it. Do not choose by hand.
 
+**KN-100 is done.** The gate-fixtures flag is hermetic in both directions and,
+more usefully, its verifier was made to prove the clause the card names rather
+than something adjacent to it. `agent/scripts/verify/lib/child-env.mjs` is the
+shared scrub, and it is the place to reach for when a verifier spawns a child.
+Its round is worth reading before writing another verifier: all three findings
+were "passes without establishing the exit condition", which is the failure a
+passing test can never report about itself.
+
 **KN-112 is planned and the plan has been checked**, `.claude/plan-KN-112.md`.
 Two setters built over one render's snapshot lose the first update when both are
 called before the next render. The fix composes onto a ref rather than onto the
