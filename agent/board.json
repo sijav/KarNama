@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 152,
+  "nextId": 156,
   "tasks": [
     {
       "id": "KN-001",
@@ -1906,12 +1906,30 @@
       "parent": [
         "KN-002"
       ],
-      "status": "in_progress",
+      "status": "review",
       "exit": "DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-030 states where history renders.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "agent/roasts/KN-072-round-1.2026-09-09T21-51-21-567Z.md",
+          "filed": [
+            "KN-152",
+            "KN-153",
+            "KN-154",
+            "KN-155"
+          ],
+          "cardDigest": "054cca9e25076de10bfb611382815bcce57b5e4ace0a3bc153457b581963ce4a",
+          "head": "a7733bf52b0a971ffcb598c5275ea1b99790513e",
+          "reviewerScore": 5,
+          "reviewerCriticals": 0,
+          "at": "2026-09-09T22:24:17.399Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T21:48:46.372Z",
-      "updatedAt": "2026-09-09T21:50:34.705Z",
+      "updatedAt": "2026-09-09T21:51:20.481Z",
       "verify": "node agent/scripts/verify/KN-072.mjs"
     },
     {
@@ -2457,11 +2475,13 @@
       "parent": [
         "KN-088"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture, the ordinary run inside agent/scripts/verify/KN-003.mjs passes with the variable set to any value in the parent environment, and both are proved by planted environments.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T23:46:31.560Z"
+      "createdAt": "2026-09-07T23:46:31.560Z",
+      "updatedAt": "2026-09-09T22:30:31.388Z",
+      "verify": "node agent/scripts/verify/KN-100.mjs"
     },
     {
       "id": "KN-101",
@@ -3562,6 +3582,74 @@
       },
       "evidence": "Recording the owner's four answers turned KN-002's verifier RED: agent/design-manifest.json lists every question the design left open, and the check required each to still be listed as open in DESIGN.md, so moving four into a Settled block read as the questions having been dropped. It failed at the moment the work went RIGHT, which punishes the correct action and invites weakening the check instead of recording the answer.\n\nThe manifest now carries a DISPOSITION. The four settled items have settledBy and settledOn; the two genuinely open ones do not and are still required to appear in the open list. A settled item must appear in the Settled block, must be answered by an entry that NAMES the card which settled it, and must NOT still be asked as an open question.\n\nThree things this got wrong first, each found rather than reasoned about:\n\nThe settling card was matched against the WHOLE block, so every card in the list satisfied every item: contact-route could claim KN-070 settled it, and swapping two cards between their decisions passed. The block is split on its bolded headings now and ONE entry has to carry both the item and its card. That was the roast's critical and both of its attacks are caught.\n\nThe open-question loop read the whole of section 6 including the settled block, and passed only because settled entries begin with two asterisks rather than a dash so listItems skipped them. A formatting coincidence, not a scoping rule; writing one settled entry as a bullet would have broken it. Scoped to the open part now, and a settled entry written as a bullet survives.\n\nIdentification is by the marker phrase OR the frame the item came from, because an ANSWER may be worded differently from its question: should a contact require email or phone is settled by a contact needs only a full name, sharing no phrase, and frame 434:2 is what both cite.\n\nWHAT THIS DELIBERATELY DOES NOT CHECK is what an answer SAYS. Reversing the contact decision to requires both an email and a phone passes here. That is the right division and it was tested rather than assumed: the reversal sails past KN-002 and is caught by KN-071, whose card knows what its answer was supposed to be. Teaching both to read the prose would put one claim in two places and let them drift, and the code says so where someone would be tempted.\n\nGate: KN-002 and KN-071 both pass, lint clean, contract clean, board valid. Eight mutations planted across the two fixes, eight caught.\n\nFound by a PLAN roast before any of KN-071's work had started, which is the argument for checking plans and not only finished work.",
       "closedAt": "2026-09-09T21:41:01.875Z"
+    },
+    {
+      "id": "KN-152",
+      "title": "Use the current Contacts tab label in the history decision",
+      "desc": "DESIGN.md section 6 settles the five-tab list as اطلاعات آگهی · سابقه · یادداشت · مخاطبین · فایل‌ها, but DESIGN.md around line 368 already renamed things: the NAV ITEM مخاطبین became شبکه من, and the contacts tab inside the job modal became افراد مرتبط. So the settled tab list names the tab with a label that now belongs to a different thing, and it is the superseded one. agent/scripts/verify/KN-072.mjs hardcodes مخاطبین in its TABS array and REQUIRES it, so the verifier now enforces the obsolete label. apps/api/prisma/schema.prisma already says the tab is Related People, so the repository contradicts itself across files.",
+      "why": "A builder reading the settled decision ships the wrong tab label, and the verifier tells them they are right. The terminology rename is a contract the design states without exception.",
+      "severity": "high",
+      "points": 1,
+      "area": "design",
+      "parent": [
+        "KN-072"
+      ],
+      "status": "backlog",
+      "exit": "DESIGN.md section 6 and section 3 name the modal tab افراد مرتبط, KN-030 and KN-045 use that label, KN-072.mjs requires it and REJECTS مخاطبین as the modal tab label, and a mutation restoring مخاطبین fails the verifier with its own message.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T22:23:17.409Z"
+    },
+    {
+      "id": "KN-153",
+      "title": "Separate the owner-settled own-tab decision from the author-chosen tab ORDER",
+      "desc": "DESIGN.md section 6 puts History goes second, directly after the information it is the history OF inside the block headed Settled by the owner, and section 3 reinforces that attribution. The owner settled that status history gets its OWN TAB. The owner did not choose second position; the author did, and said so. Recording an author choice inside an owner-settled block makes it unchallengeable by anyone reading the document later.",
+      "why": "The settled block is the one place in this repository whose authority comes from the owner rather than from the agent. Mixing an agent decision into it silently launders the agent decision, and the owner loses the chance to say no to something they were never asked about.",
+      "severity": "high",
+      "points": 1,
+      "area": "design",
+      "parent": [
+        "KN-072"
+      ],
+      "status": "backlog",
+      "exit": "DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T22:23:26.951Z"
+    },
+    {
+      "id": "KN-154",
+      "title": "KN-072 verifier accepts the two failures it exists to prevent",
+      "desc": "Two holes, both reproduced. FIRST, at KN-072.mjs line 78 the five tab names are searched for anywhere inside entry.slice(0, 1200), so explanatory prose that merely MENTIONS a tab satisfies the check; the decision can drop a tab from the actual list and still pass. That is the same coincidence bug KN-002 and KN-071 were already fixed for. SECOND, at line 104 the contrast strip removes everything after not up to the next period, and the final clause then tests own tab against the UNSTRIPPED exit rather than against the stripped text. Confirmed by running: the card text All five tabs render. Status history does not render in its own tab; it renders in the Info tab. strips to All five tabs render. Status history does . and PASSES every check, although it states the exact opposite of the decision.",
+      "why": "This verifier exists because the first draft of the decision silently dropped two tabs. It currently certifies the failure it was written to catch, so the card it guards can be reversed without the gate noticing.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-072"
+      ],
+      "status": "backlog",
+      "exit": "KN-072.mjs parses the ACTUAL tab list out of the decision line and requires exactly the five names in it rather than searching a character window, and checks KN-030 placement on the stripped text with an affirmative un-negatable assertion. Both reproductions above are added as committed mutation cases and each fails the verifier with its own message.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T22:23:41.373Z"
+    },
+    {
+      "id": "KN-155",
+      "title": "KN-045 still specifies the four-tab modal KN-072 replaced",
+      "desc": "KN-045 reads: The four-tab modal reading and writing real data: info and status with history, notes, contacts and files. KN-072 settled that status history leaves the Info tab and gets its own, making FIVE tabs. Anyone building KN-045 from its own card rebuilds exactly the arrangement KN-072 rejected, and KN-045 verifies green because its exit condition only asks that history GROW, not where it renders. KN-072 updated KN-030 and stopped there, so the sweep for downstream cards was incomplete.",
+      "why": "A settled decision that only reaches one of the cards that depend on it is not settled, it is contradicted. The stale card is the one an implementer actually works from.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [
+        "KN-072"
+      ],
+      "status": "backlog",
+      "exit": "KN-045 names five tabs with history in its own, its exit condition asserts where history renders, and a check proves NO open card still says four-tab modal or places history inside the info tab.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T22:23:50.956Z"
     }
   ]
 }
