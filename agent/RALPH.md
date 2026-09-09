@@ -175,12 +175,44 @@ Two ordering rules the owner set explicitly:
 Then run the gate in `AGENTS.md` section 5. All of it, including actually
 opening the thing in a browser and looking at it in both languages.
 
-**Then commit, before the roast.** A roast has to be *of* something. The harness
-refuses to run against a dirty worktree, and `move done` refuses to close a task
-whose HEAD has moved since the round that cleared it, so the review is bound to
-a revision instead of to a smudge that keeps changing underneath it.
+**Then commit.** A roast has to be *of* something, and the harness refuses to
+run against a dirty worktree, so the review is bound to a revision instead of to
+a smudge that keeps changing underneath it.
 
-## Step 4 · Hand it to Codex for a roast, IN THE BACKGROUND, and keep going
+## Step 4 · Close it. The work is finished, so say so
+
+**The task is done when the work is done and its verifier proves it. Not when a
+reviewer approves of it.** This is the owner's rule of 2026-09-10 and it
+reversed the previous order, which was review, then roast, then close on the
+round.
+
+```bash
+npm run todo -- move KN-014 done --evidence "how the exit condition was actually checked"
+```
+
+The board asks for four things, and a roast is not among them:
+
+1. The task's own **`verify` command passes**, run at close time, not quoted
+   from memory.
+2. **`--evidence`**, because the exit condition is prose and no script covers
+   all of it. Writing down how it was checked puts the claim on the record where
+   the roast can dispute it. Say what it does NOT establish, too.
+3. A **clean worktree**, so the thing being closed is the thing that was
+   committed.
+4. The task was actually **taken** first. Closing a `backlog` card means the
+   work happened off the board.
+
+**Finish it properly before you close it.** Tests written, gate run, actually
+works. "Close it and let the roast catch the rest" is how a card closes on
+something broken, and the roast is not a test suite.
+
+Why the order changed: the reviewer used to be a gatekeeper of CLOSING, so a
+finished, verified, committed task sat open for minutes waiting on an opinion,
+and when the opinion arrived the pull was to reopen and fix it. That is how one
+three point card absorbed ten rounds while fifty six others waited. The reviewer
+is a source of the NEXT tasks, not a judge of this one.
+
+## Step 5 · Hand it to Codex for a roast, IN THE BACKGROUND, and take the next task
 
 **You do not score your own work.** You know what you meant, so you read the
 code as the thing you intended rather than as the thing you wrote. A different
@@ -189,12 +221,11 @@ model, with a clean context, does not have that problem.
 **Fire it in the background and take the next task immediately.** Waiting on a
 reviewer is dead time, and dead time is the largest single cost in this loop:
 one roast is minutes, and this session spent most of an hour watching them. The
-task is finished. The review is about what to do NEXT, not about whether to
-finish.
+task is already closed. The review is about what to do NEXT, not about whether
+this one is finished.
 
 ```bash
-npm run todo -- move KN-014 review
-# in the background, then carry on with the next task
+# KN-014 is already `done`. This runs against the closed, committed work.
 npm run roast -- KN-014 \
   --summary "what I actually did, honestly, including what I am unsure about" \
   --ask "a real question about this task's mechanism" \
@@ -223,7 +254,7 @@ The harness sends the task card, the exit condition, your summary and the diff,
 gives Codex read access to the repository, and archives the reply under
 `agent/roasts/`.
 
-## Step 5 · Roast the roast, then file what survives and MOVE ON
+## Step 6 · The roast lands: judge it, file EVERYTHING, then forget it or revert
 
 **Codex's output is evidence, not a verdict.** Its score is its own opinion. Take
 each finding and judge it yourself, against the code:
@@ -232,63 +263,57 @@ each finding and judge it yourself, against the code:
 - **Wrong.** The reviewer misread something. Say what it misread. A finding
   dropped without a reason is a finding you did not check.
 
-Then, and this is the part that was wrong for ten rounds:
+Then, and there is no longer any exception to this:
 
 > **Every finding that survives adjudication becomes its OWN board entry, with
-> all ten fields filled, at its own severity. It does not hold this task open.**
+> all ten fields filled, at its own severity. The roasted task is already
+> `done` and it STAYS done. Nothing here reopens it.**
 
-**The test for fix-or-file is mechanical, so it cannot be argued with:**
+**There is no fix-in-task rule any more, because there is no open task to fix
+in.** The roasted card closed at step 4, before the reviewer ever saw it. This
+deleted a rule that had been rewritten three times and argued with every time:
+"fix when the verifier fails", then "fix when the verifier fails or passes
+dishonestly", each version a little more elaborate and each one still requiring
+a judgement call in the exact moment when the temptation to polish is strongest.
+Closing first makes the question disappear rather than answering it.
 
-> Fix in-task ONLY when the task's own `verify` script FAILS because of the
-> finding, **or when the finding is that the verifier PASSES DISHONESTLY**:
-> that it reports success without having established the exit condition.
-> Otherwise it is a card. However tempting.
+So when the roast says the verifier proves less than it claims: that is a card,
+and it is often a good one. File it with the same care as any other, naming what
+the verifier fails to establish, and let the board schedule it.
 
-The second clause is not a loophole, it is the hole the first one cannot see.
-"Does the verifier fail" cannot catch a verifier that succeeds while checking
-nothing, because by construction that verifier passes. KN-065 hit exactly that:
-a version of it skipped three of its four substantive assertions in the
-reviewer's environment and still printed "verify passed", turning a visible
-crash into an invisible false pass. Filing that and closing on it would have
-been closing on a verifier known to be lying.
+**Then, having filed them, decide ONE thing:**
 
-An earlier wording said "cheap, obviously right, and inside this task's exit
-condition", and that was too loose: almost any finding about a task can be
-argued into its exit condition. It licensed fixing rather than filing twice in a
-row on KN-058, each fix changed the work after the review, and a two point task
-took three rounds. Both of those findings were about missing test coverage,
-which never fails a verifier, so both were cards.
+> Does any card you just filed **block the task now in your hands**? Not the
+> task that was roasted, the one you are building RIGHT NOW.
+>
+> - **No.** Then FORGET IT and carry on. Do not read them again, do not
+>   reprioritise, do not "just quickly" do the small one. They are scheduled.
+> - **Yes.** Then stop, revert, and take the blocker. Below.
 
-**Filing is cheaper than fixing, and the gate makes that concrete.** Fixing a
-finding changes the work after the review, so the round no longer describes what
-exists and the close is refused until a new round runs. Filing costs nothing:
-the task closes now and the card is scheduled. So the question to ask of each
-finding is not "could I fix this quickly" but "is this inside the exit condition
-of the task I am closing". If it is not, it is a card, and reaching for it
-anyway buys a whole extra round.
-
-When you do fix in-task, you owe exactly one more round, against the fixed code,
-or a `--fixed-since` on the close saying what changed and why the round still
-stands. That is not grinding a score, it is the review describing what exists.
-
-**A finding lands while you are already building something else, and you do NOT
-act on it.** By the time a roast returns you are mid-way through the next task.
-File the survivors and carry on: finishing what is in your hands is worth more
-than reacting, and a card is scheduled work rather than lost work.
+"No" is the common answer and forgetting is the correct behaviour, not
+negligence: the card is scheduled work, and finishing what is in your hands is
+worth more than reacting to it.
 
 ### The one exception: a finding that blocks what you are doing now
 
-If a filed finding **blocks the task currently in progress** — the new card has
-to land first, or the thing you are building rests on something the roast just
-showed is wrong — then stop rather than build further on it:
+The blocked thing is **the task now in your hands**, never the roasted one. The
+roasted card is closed and no finding reopens it. What can go wrong is that you
+are building something that rests on what the roast just showed is wrong, and
+every further minute on it is thrown away.
+
+If a card you just filed blocks the task in progress, stop rather than build
+further on it:
 
 1. **Cancel the current task.** `move <id> backlog` with a note saying why.
 2. **Revert what you did for it.** Do not leave half a change in the tree that
-   was built on a wrong assumption.
-3. **Do the blocking card first**, from step 2b: plan it, have the plan checked,
-   then build.
-4. **Come back and replan the cancelled task** against the new reality, rather
-   than resuming the old plan, which was written before you knew this.
+   was built on a wrong assumption. Save the diff somewhere scratch if it was
+   expensive, then take it out of the tree.
+3. **Take the next card from the board**, `npm run todo -- next`, which will
+   usually be the blocker you just filed, because you filed it at the severity
+   its content deserves. Do not hand-pick it. If the law does not select it, the
+   severity you gave it was wrong, and that is worth noticing.
+4. **Replan the cancelled task** when you come back to it, from step 2b, against
+   the new reality. The old plan was written before you knew this.
 
 Reverting feels wasteful and is not. Work resting on something known to be wrong
 is thrown away later anyway, at a worse moment, with more stacked on top of it.
@@ -318,32 +343,6 @@ Softening a verdict is allowed; softening it silently is not.
 **Relay the roast to the owner in your reply**, including what you filed. The
 archive and the tool output are invisible to them.
 
-## Step 6 · Close it
-
-```bash
-npm run todo -- move KN-014 done --evidence "how the exit condition was actually checked"
-```
-
-The board requires three things, and a score is not among them:
-
-1. A **manifest-bound roast round** exists, from the harness, for this card, at
-   this revision.
-2. That round records **what was filed** from it, so the findings went somewhere
-   the board will schedule rather than into a paragraph nobody reads.
-3. **`--evidence`**, because the exit condition is prose and no script can check
-   it. Writing down how it was checked puts the claim on the record where the
-   next roast can dispute it.
-
-Plus the task's own `verify` command must pass, the worktree must hold no
-unreviewed work, and no work may have changed since the reviewed commit.
-
-A task with surviving findings still closes. Its findings are on the board.
-
-**Relay the roast to the owner in your reply.** The archive file and the tool
-output are invisible to them. Say what was found, what you accepted, what you
-rejected and why, and the score. A roast that is not relayed did not happen as
-far as the owner is concerned.
-
 ## Step 7 · Record, commit, continue
 
 - Write anything newly learned into `AGENTS.md`, `DESIGN.md` or `TECH-DEBT.md`
@@ -352,7 +351,7 @@ far as the owner is concerned.
   with the check that says when it can be removed. A deliberate scope cut goes
   in `PHASE-NEXT.md` instead. Those are decisions, not debt.
 - Commit, with a message that says what changed and why. The roast reviews a
-  commit, so the order is: finish, commit, roast.
+  commit, so the order is: **finish, prove, commit, close, roast.**
 - Rewrite `agent/STATE.md`.
 - **Go straight to `npm run todo -- next`.** Do not stop to summarise, do not
   re-open the task you just closed, and do not start polishing it because the

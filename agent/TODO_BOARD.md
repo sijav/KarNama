@@ -2,15 +2,21 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 22 of 157 tasks done · 66 of 494 points.
+Project **KarNama** · 22 of 159 tasks done · 66 of 499 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-112` Two preference setters called in one batch lose the first update** (high, 1 pt, web)
+**Next up: `KN-159` Close the task BEFORE the roast, and never let a finding reopen it** (high, 2 pt, agent)
 
-## Backlog (134)
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-159` | Close the task BEFORE the roast, and never let a finding reopen it | high | 2 | agent | none | move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source. |
+
+## Backlog (135)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -70,6 +76,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-124` | Status history is documented as immutable and nothing enforces it | high | 3 | api | KN-034 | An UPDATE or a DELETE against status_history is rejected by the database, deleting a job record still removes its history through the cascade, and both are proved against PGlite. |
 | `KN-127` | The resolver-registration check reads text rather than the container | high | 3 | api | KN-120 | A resolver registered in a way the text scan cannot see, a default export in a file not named *.resolver.ts, is detected, and the check reads the resolvers from a booted Nest context rather than from source text. |
 | `KN-136` | Commit the mutation cases, so a verifier's claim can be re-run | high | 3 | agent | none | One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass. |
+| `KN-158` | The story-docs rule in AGENTS.md describes a system that does not exist | high | 3 | web | none | Either src/shared/story-docs/{en,fa} exists with a page for every story, the three existing stories are migrated off JSDoc on meta, and a guard test fails when either language is missing a prop or story; or AGENTS.md is corrected to describe what the repository actually does and the main.ts comment with it. Whichever is chosen, no story in the tree contradicts the written rule afterwards, proved by a check rather than by reading. |
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | high | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | high | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
@@ -1954,4 +1961,26 @@ todo roast takes --filed <ids> or --filed none, and --filed none prints Nothing 
 **Why.** The roast archive is the only record of what review actually found. A record that reads the same for a review that found nothing and a review that found three real defects makes the loop look less effective than it is, and hides the pattern that would tell you which verifiers keep passing dishonestly.
 
 **Exit condition.** todo roast accepts a way to record findings that were fixed in-task rather than filed, the summary line distinguishes the three cases, dismissed, filed and fixed, and re-recording KN-100 round 1 with it shows three findings fixed rather than nothing survived.
+
+### `KN-158` The story-docs rule in AGENTS.md describes a system that does not exist
+
+- **status** backlog · **severity** high · **points** 3 · **area** web
+- **blocked by** none
+
+AGENTS.md says everything a Storybook Docs page prints lives in src/shared/story-docs/{en,fa}/<slug>.md, that there must be no JSDoc above const meta and no docblock above a story export, and that a guard test fails until both languages describe every prop and story. None of that is true of the repository. src/shared/story-docs does not exist. No guard test references it; the only mention anywhere is a COMMENT in .storybook/main.ts. All three existing stories, App, LanguageSwitch and Tokens, carry exactly the JSDoc above const meta that the rule forbids. And main.ts sets reactDocgen to react-docgen-typescript, which sources prop descriptions from TSDoc in the component, the opposite of the rule.
+
+**Why.** A rule nobody can follow is worse than no rule: the next task that adds a story either violates the working agreement or silently absorbs building a documentation system, and neither is visible in its card. This was found because KN-112 needs a story and the plan check flagged the documentation it would owe. AGENTS.md is the working agreement, so a clause it states and the repository ignores is a contradiction at the top of the tree.
+
+**Exit condition.** Either src/shared/story-docs/{en,fa} exists with a page for every story, the three existing stories are migrated off JSDoc on meta, and a guard test fails when either language is missing a prop or story; or AGENTS.md is corrected to describe what the repository actually does and the main.ts comment with it. Whichever is chosen, no story in the tree contradicts the written rule afterwards, proved by a check rather than by reading.
+
+### `KN-159` Close the task BEFORE the roast, and never let a finding reopen it
+
+- **status** in_progress · **severity** high · **points** 2 · **area** agent
+- **blocked by** none
+
+The owner's rule of 2026-09-10 reversed the loop's order. It was: finish, move to review, roast, adjudicate, close on the round. It is now: finish with its tests and prove it works, close it on its own verifier, THEN roast the closed work in the background, and every finding becomes a new card that never reopens the closed task. agent/scripts/todo.mjs enforced the old order in three places: move done refused any status but review, it required a manifest-bound roast round with a --filed record, and it compared the worktree against the round's reviewed commit behind a --fixed-since escape. agent/RALPH.md documented the old order across steps 4, 5 and 6, including a fix-in-task rule with two clauses. The global loop and roast skills already had the new rule, so the project files were the ones out of sync.
+
+**Why.** An order that holds finished work open until a reviewer replies makes the reviewer a gatekeeper of closing rather than a source of the next tasks, and it creates the exact deadlock the loop has hit repeatedly: fix what the review found, and now the work has changed since the review, so closing needs another round, which finds something smaller. One three point card took ten rounds that way while fifty six others waited. Closing first deletes the question instead of answering it.
+
+**Exit condition.** move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source.
 

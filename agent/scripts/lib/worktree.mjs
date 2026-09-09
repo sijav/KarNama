@@ -54,19 +54,13 @@ export const workingChanges = (root) =>
     .filter((line) => pathsInStatusLine(line).some((path) => !isBookkeeping(path)))
     .map((line) => line.trim())
 
-/**
- * Work paths that changed between two commits, ignoring the loop's bookkeeping.
- *
- * `--no-renames` matters. With rename detection on, `git diff --name-only`
- * reports only the DESTINATION of a rename, so moving `src/real-work.ts` to
- * `agent/roasts/real-work.md` after a clear roast showed up as one bookkeeping
- * path, got filtered out, and let the close gate pass while real source had been
- * removed. Without detection the same move is reported as a deletion of the old
- * path and an addition of the new, so the source path is seen and counted.
- */
-export const workChangedSince = (root, from, to) =>
-  (run(root, ['diff', '--name-only', '--no-renames', from, to]).stdout ?? '')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .filter((path) => !isBookkeeping(path))
+// `workChangedSince` used to live here, comparing work paths between two
+// commits. It existed for one caller: the close gate's check that nothing had
+// changed since the roast that cleared the task. The owner's rule of 2026-09-10
+// closes a task BEFORE its roast, so there is no reviewed commit to compare
+// against and the function had no remaining caller. Removed rather than left
+// exported, because an unused helper is something the next person wires back in.
+//
+// The lesson it carried is kept in `workingChanges` above and is still live
+// there: a rename has TWO paths, and reading only one of them let a rename of
+// real source INTO `agent/roasts/` read as bookkeeping and disappear.

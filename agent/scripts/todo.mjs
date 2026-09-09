@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url'
 import { cardDigest } from './lib/card.mjs'
 import { contractProblems, loadContractInputs } from './lib/contract.mjs'
 import { VerifyError, verifyArgv, verifyGate } from './lib/verify.mjs'
-import { workChangedSince, workingChanges } from './lib/worktree.mjs'
+import { workingChanges } from './lib/worktree.mjs'
 
 const AGENT_DIR = dirname(dirname(fileURLToPath(import.meta.url)))
 const ROOT = dirname(AGENT_DIR)
@@ -701,14 +701,24 @@ const commands = {
       }
     }
 
-    // A task is only done when a roast round has actually cleared it, and the
-    // round has to point at an archive that exists and carries a verdict.
-    // Without the archive check the numbers are a claim about a run that may
-    // never have happened.
+    // A task is done when the WORK is done and its own verifier proves it. The
+    // roast happens AFTER, against the closed task, and what it finds becomes
+    // new cards.
+    //
+    // This was the other way round until 2026-09-10: review, then roast, then
+    // close on the round. The owner replaced it, and the reason is worth
+    // keeping. The old order made the reviewer a gatekeeper of CLOSING rather
+    // than a source of the next tasks, so a finished, verified, committed task
+    // sat open waiting on an opinion, and when the opinion came the pull was to
+    // reopen and fix it, which is how one three point card ate ten rounds while
+    // fifty six others waited. Closing on the verifier and filing the findings
+    // gets every finding onto the board without stalling the queue.
     if (status === 'done') {
-      // Closing is the last step of the documented flow, not a shortcut past it.
-      if (task.status !== 'review') {
-        fail(`move: ${id} is ${task.status}. A task goes to review, is roasted there, and closes from review.`)
+      // `backlog` is excluded on purpose: closing something never taken means
+      // the work happened off the board, which is the one case worth stopping.
+      // `review` stays legal for cards parked there under the old flow.
+      if (!['in_progress', 'review'].includes(task.status)) {
+        fail(`move: ${id} is ${task.status}. Take it with "move ${id} in_progress" before closing it.`)
       }
 
       // A verify command is REQUIRED, and this is checked FIRST, before the
@@ -729,77 +739,15 @@ const commands = {
             'KN-054 covers backfilling the tasks that predate this rule.',
         )
       }
-      const last = task.roasts?.[task.roasts.length - 1]
-      if (!last) fail(`move: ${id} has no roast round. Run "npm run roast -- ${id} ..." and record it before closing.`)
-
-      // A finding does not hold a task open. It becomes its own board entry and
-      // the queue moves on. Re-roasting one task until it scores perfectly is
-      // how a three point task ate ten rounds while fifty six others waited,
-      // and it hides the finding inside a conversation instead of putting it
-      // somewhere the board will schedule.
-      if (last.filed === undefined) {
-        fail(
-          `move: ${id}'s last roast has no record of what was filed from it.\n` +
-            'Adjudicate the findings, file the survivors as tasks, then re-record the round with\n' +
-            `  npm run todo -- roast ${id} --score N --criticals N --file <archive> --filed KN-0xx,KN-0yy\n` +
-            'or --filed none when nothing survived adjudication.',
-        )
-      }
-      for (const filedId of last.filed) {
-        if (!byId(board, filedId)) fail(`move: ${id}'s roast says it filed ${filedId}, which is not on the board`)
-      }
-
-      // Re-verify the archive at close time, not only at record time, so a
-      // reply cannot be deleted or rewritten between the two.
-      readArchive(last.file, task, (task.roasts?.length ?? 1) - 1)
-
-      // A clear round is a statement about a specific card at a specific
-      // revision. Reopening a task, editing its description or exit condition,
-      // or changing the code afterwards all make that statement stale, and the
-      // old round was still closing the new work.
-      if (last.cardDigest !== cardDigest(task)) {
-        fail(`move: ${id} has been edited since the roast that cleared it. Roast the current card.`)
-      }
-      // An empty recorded head used to pass this check, because the guard was
-      // written as `last.head && ...`. A round with no revision is a round that
-      // reviewed nothing identifiable.
-      if (!last.head) {
-        fail(`move: ${id}'s last roast records no reviewed commit, so it cannot be tied to any revision`)
-      }
-      const head = (git(['rev-parse', 'HEAD']).stdout ?? '').trim()
-      if (!head) fail('move: cannot read HEAD')
-
-      // Comparing the two commits outright deadlocked every honest close: the
-      // harness writes its reply and manifest AFTER its own clean check, and
-      // recording the round rewrites the board, so committing those required
-      // artifacts always moved HEAD past the reviewed commit. What matters is
-      // whether any of the WORK changed, not whether the bookkeeping did.
-      if (last.head !== head) {
-        const changed = workChangedSince(ROOT, last.head, head)
-        // The one case this check could not express, and it is not rare: the
-        // round found something real, it was FIXED, and fixing it is what moved
-        // the work past the reviewed commit. Demanding a fresh round then makes
-        // closing impossible whenever a review is useful, because that round can
-        // find something too. KN-123 reached four rounds that way and KN-128
-        // reached six; the loop's own rule says one.
-        //
-        // So the check still fires, and `--fixed-since` is the only way past it:
-        // say what changed and why the round still stands, and that sentence is
-        // stored on the task beside the round it answers. The purpose was never
-        // to freeze the code, it was to stop a task closing on a review nobody
-        // noticed had gone stale. A written justification plus a passing verify
-        // below serves that; an unbounded loop does not.
-        if (changed.length && !flags['fixed-since']) {
-          fail(
-            `move: ${id} was reviewed at ${last.head.slice(0, 8)} and work has changed since:\n  ${changed.join('\n  ')}\n` +
-              'Run a new round against what exists now, or, if this change IS the fix that round asked for,\n' +
-              'close with --fixed-since "what changed and why the round still stands".',
-          )
-        }
-        if (changed.length) {
-          task.fixedSince = { head: last.head, round: last.round, changed, why: String(flags['fixed-since']) }
-        }
-      }
+      // No roast is required here, and that is the whole point of the change.
+      // Everything this gate used to check about a round, that an archive
+      // existed, that it matched the card digest, that the work had not moved
+      // since the reviewed commit, was machinery for closing ON a review. The
+      // review now happens after the close, so none of it can apply, and
+      // keeping a weakened version would only look like a check.
+      //
+      // What replaces it is stricter about the thing that actually matters:
+      // the verifier below has to PASS, at close time, on a clean worktree.
       const dirty = workingChanges(ROOT)
       if (dirty.length) {
         fail(`move: the worktree has unreviewed changes, so ${id} would close over them:\n  ${dirty.join('\n  ')}`)
@@ -871,12 +819,15 @@ const commands = {
     const [id] = positional
     const task = byId(board, id)
     if (!task) fail(`roast: ${id} does not exist`)
-    // The documented flow is in_progress, then review, then the roast. Recording
-    // a round against a backlog task let the board claim a task was never
-    // awaiting review even though it was roasted and closed, so the `review`
-    // state was decorative.
-    if (!['in_progress', 'review'].includes(task.status)) {
-      fail(`roast: ${id} is ${task.status}. A task is roasted while it is in progress or in review.`)
+    // `done` is the NORMAL state to be roasted in as of 2026-09-10: finish the
+    // work, prove it, close it, then hand it to the reviewer in the background.
+    // `in_progress` and `review` stay legal so a round can still be recorded
+    // against a card that has not closed, but neither is required any more.
+    //
+    // `backlog` and `dropped` are still refused. A round against a backlog card
+    // would let the board claim a review of work nobody has started.
+    if (!['in_progress', 'review', 'done'].includes(task.status)) {
+      fail(`roast: ${id} is ${task.status}. A task is roasted once it is under way, and normally once it is done.`)
     }
     if (flags.score === undefined || flags.criticals === undefined) {
       fail('roast needs --score and --criticals, and --file pointing at the archived reply')
@@ -1080,6 +1031,21 @@ const commands = {
         `${unverified.length ? ` First few: ${unverified.slice(0, 5).map((task) => task.id).join(', ')}. KN-054 covers the backfill.` : ''}\n`,
     )
 
+    // The roast now happens AFTER the close, so the close gate can no longer be
+    // the thing that forces adjudication to be recorded. Without a replacement,
+    // a round could be filed and its findings never judged, and nothing would
+    // ever say so. Reported rather than failed, for the same reason as above: a
+    // round recorded a minute ago has legitimately not been adjudicated yet.
+    const unadjudicated = board.tasks.filter((task) => (task.roasts ?? []).some((round) => round.filed === undefined))
+    process.stdout.write(
+      `${unadjudicated.length} task(s) have a roast round whose findings were never adjudicated.` +
+        `${
+          unadjudicated.length
+            ? ` ${unadjudicated.slice(0, 5).map((task) => task.id).join(', ')}. Re-record with --filed KN-0xx,... or --filed none.`
+            : ''
+        }\n`,
+    )
+
     const problems = checkBoard(board)
     if (!problems.length) {
       process.stdout.write(`Board is valid. ${board.tasks.length} task(s).\n`)
@@ -1119,15 +1085,21 @@ const commands = {
         '  add --title --desc --why --severity --points --area --exit [--parent ids] [--status s]',
         '                             opens a task. Only backlog or in_progress; closing is move\'s job.',
         '  move <id> <status>         backlog | in_progress | review | blocked | done | dropped',
-        '                             done needs --evidence "how the exit condition was checked"',
+        '                             done needs --evidence "how the exit condition was checked",',
+        '                             a verify command, a worktree with nothing uncommitted in it,',
+        '                             and that verify command to PASS. It does not need a roast:',
+        '                             finish, prove, close, THEN roast in the background.',
         '                             blocked needs --reason "what is stopping it"',
         '                             only one task may be in_progress at a time',
         '  set <id> --field value     edit a field. --note "text" appends, repeatable.',
         '                             status is not settable here, use move. --parent none clears.',
         '  roast <id> --score N --criticals N --file path',
+        '                             normally recorded against a DONE task, after the fact.',
         '                             --file must exist and carry a VERDICT block.',
         '                             record YOUR adjudicated numbers, not the archive\'s.',
         '                             kinder than the archive needs --dismissed "what you rejected and why"',
+        '                             --filed KN-0xx,... or --filed none, once you have judged them.',
+        '                             findings NEVER reopen the task. They are new cards.',
         '  rm <id> --reason "..."     remove a task. The repair route for a board that',
         '                             validation has made unwritable. --force strips edges.',
         '  validate                   integrity check, exits non-zero when broken',

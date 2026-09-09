@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 158,
+  "nextId": 160,
   "tasks": [
     {
       "id": "KN-001",
@@ -2734,7 +2734,7 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T00:41:13.307Z",
-      "updatedAt": "2026-09-09T22:35:55.192Z"
+      "updatedAt": "2026-09-09T23:45:33.378Z"
     },
     {
       "id": "KN-113",
@@ -3717,6 +3717,38 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T23:23:41.348Z"
+    },
+    {
+      "id": "KN-158",
+      "title": "The story-docs rule in AGENTS.md describes a system that does not exist",
+      "desc": "AGENTS.md says everything a Storybook Docs page prints lives in src/shared/story-docs/{en,fa}/<slug>.md, that there must be no JSDoc above const meta and no docblock above a story export, and that a guard test fails until both languages describe every prop and story. None of that is true of the repository. src/shared/story-docs does not exist. No guard test references it; the only mention anywhere is a COMMENT in .storybook/main.ts. All three existing stories, App, LanguageSwitch and Tokens, carry exactly the JSDoc above const meta that the rule forbids. And main.ts sets reactDocgen to react-docgen-typescript, which sources prop descriptions from TSDoc in the component, the opposite of the rule.",
+      "why": "A rule nobody can follow is worse than no rule: the next task that adds a story either violates the working agreement or silently absorbs building a documentation system, and neither is visible in its card. This was found because KN-112 needs a story and the plan check flagged the documentation it would owe. AGENTS.md is the working agreement, so a clause it states and the repository ignores is a contradiction at the top of the tree.",
+      "severity": "high",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Either src/shared/story-docs/{en,fa} exists with a page for every story, the three existing stories are migrated off JSDoc on meta, and a guard test fails when either language is missing a prop or story; or AGENTS.md is corrected to describe what the repository actually does and the main.ts comment with it. Whichever is chosen, no story in the tree contradicts the written rule afterwards, proved by a check rather than by reading.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T23:25:04.199Z"
+    },
+    {
+      "id": "KN-159",
+      "title": "Close the task BEFORE the roast, and never let a finding reopen it",
+      "desc": "The owner's rule of 2026-09-10 reversed the loop's order. It was: finish, move to review, roast, adjudicate, close on the round. It is now: finish with its tests and prove it works, close it on its own verifier, THEN roast the closed work in the background, and every finding becomes a new card that never reopens the closed task. agent/scripts/todo.mjs enforced the old order in three places: move done refused any status but review, it required a manifest-bound roast round with a --filed record, and it compared the worktree against the round's reviewed commit behind a --fixed-since escape. agent/RALPH.md documented the old order across steps 4, 5 and 6, including a fix-in-task rule with two clauses. The global loop and roast skills already had the new rule, so the project files were the ones out of sync.",
+      "why": "An order that holds finished work open until a reviewer replies makes the reviewer a gatekeeper of closing rather than a source of the next tasks, and it creates the exact deadlock the loop has hit repeatedly: fix what the review found, and now the work has changed since the review, so closing needs another round, which finds something smaller. One three point card took ten rounds that way while fifty six others waited. Closing first deletes the question instead of answering it.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "in_progress",
+      "exit": "move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T23:45:21.341Z",
+      "updatedAt": "2026-09-09T23:51:57.414Z",
+      "verify": "node agent/scripts/verify/KN-159.mjs"
     }
   ]
 }
