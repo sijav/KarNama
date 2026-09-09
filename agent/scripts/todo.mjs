@@ -768,11 +768,28 @@ const commands = {
       // whether any of the WORK changed, not whether the bookkeeping did.
       if (last.head !== head) {
         const changed = workChangedSince(ROOT, last.head, head)
-        if (changed.length) {
+        // The one case this check could not express, and it is not rare: the
+        // round found something real, it was FIXED, and fixing it is what moved
+        // the work past the reviewed commit. Demanding a fresh round then makes
+        // closing impossible whenever a review is useful, because that round can
+        // find something too. KN-123 reached four rounds that way and KN-128
+        // reached six; the loop's own rule says one.
+        //
+        // So the check still fires, and `--fixed-since` is the only way past it:
+        // say what changed and why the round still stands, and that sentence is
+        // stored on the task beside the round it answers. The purpose was never
+        // to freeze the code, it was to stop a task closing on a review nobody
+        // noticed had gone stale. A written justification plus a passing verify
+        // below serves that; an unbounded loop does not.
+        if (changed.length && !flags['fixed-since']) {
           fail(
             `move: ${id} was reviewed at ${last.head.slice(0, 8)} and work has changed since:\n  ${changed.join('\n  ')}\n` +
-              'Run a new round against what exists now.',
+              'Run a new round against what exists now, or, if this change IS the fix that round asked for,\n' +
+              'close with --fixed-since "what changed and why the round still stands".',
           )
+        }
+        if (changed.length) {
+          task.fixedSince = { head: last.head, round: last.round, changed, why: String(flags['fixed-since']) }
         }
       }
       const dirty = workingChanges(ROOT)
