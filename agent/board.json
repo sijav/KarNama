@@ -2846,7 +2846,7 @@
       "parent": [
         "KN-034"
       ],
-      "status": "review",
+      "status": "done",
       "exit": "A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite.",
       "roasts": [
         {
@@ -2911,8 +2911,22 @@
         "Second probe, the transaction mechanics themselves. exec() of a single BEGIN + migration + ledger-INSERT + COMMIT string DOES throw the real error ('relation kn123_ok already exists'), so the runner can detect the failure rather than having to inspect state afterwards. The partial DDL was rolled back CLEANLY, nothing left behind, which is the atomicity clause proved on the engine before writing a line of it. An explicit ROLLBACK restores the session; without one the next statement dies with 'current transaction is aborted'. So the order in the catch is forced and is not a style choice: ROLLBACK first, then write the failure row, then rethrow. Also settled: pg_advisory_lock BLOCKS, and a deploy that hangs forever is worse than one that fails, so use pg_try_advisory_lock with a bounded retry and an error that says another deploy is migrating. And the ledger's own ALTER TABLE ADD COLUMN IF NOT EXISTS runs outside the lock on first deploy, which is idempotent so two racing runners both succeed; that deserves a comment rather than a fix."
       ],
       "createdAt": "2026-09-08T01:44:17.656Z",
-      "updatedAt": "2026-09-09T20:34:36.580Z",
-      "verify": "node agent/scripts/verify/KN-123.mjs"
+      "updatedAt": "2026-09-09T21:08:04.637Z",
+      "verify": "node agent/scripts/verify/KN-123.mjs",
+      "fixedSince": {
+        "head": "19d5525bbccd43605c2cb2c39fe186e4b613df9f",
+        "round": 4,
+        "changed": [
+          "DESIGN.md",
+          "agent/scripts/todo.mjs",
+          "agent/scripts/verify/KN-123.mjs",
+          "apps/api/src/database/migrations.guards.test.ts",
+          "apps/api/src/database/migrations.ts"
+        ],
+        "why": "Round 4's two criticals were data-loss paths and both were fixed in place: identifier boundaries are Unicode-aware, so a non-ASCII name no longer lets a dollar quote swallow an ABORT, and a line comment now ends at a bare carriage return as well as a newline. Each carries the reviewer's exact reproduction as a regression test. The harness also gained two regressions covering those fixes and was made twelve minutes faster. The round still stands: nothing it examined was removed, everything it asked for was added, and its remaining findings are filed as KN-146 and KN-147."
+      },
+      "evidence": "The migration runner had four defects, each a way to cost a production database. All four are closed and each is proved by planting the case against PGlite, Postgres compiled to wasm running in process, so the SQL is executed by the engine Supabase runs.\n\nONE TRANSACTION. The migration SQL and its ledger row go in a single statement batch. The first version issued two separate exec calls, so a migration could commit with nothing recording it and the next deploy would replay it and die on a CREATE TYPE that already existed. A recording runner asserts the batch containing the DDL also contains the ledger INSERT. The assertion is about ONE BATCH rather than about the BEGIN keyword for a reason: the harness first planted removal of the explicit BEGIN and the suite stayed GREEN, because Postgres wraps a multi-statement simple query in an implicit transaction, so the test as first written was measuring Postgres rather than this code.\n\nA RUN LOCK, pg_try_advisory_lock with bounded retries rather than pg_advisory_lock, because a deploy that hangs forever is worse than one that fails. Taken BEFORE the ledger DDL: the earlier order carried a comment claiming two racing runners would both succeed because every statement was idempotent, which is false, CREATE TABLE IF NOT EXISTS is not race safe.\n\nA RECORDED FAILURE, applied_at NULL, failed_at set, error text stored. ROLLBACK comes first in the catch and that order is forced: a failed statement leaves the session aborted and every later statement dies with 'current transaction is aborted' until the rollback.\n\nA CHECKSUM, sha256 of the SQL, compared every deploy, so an applied migration edited afterwards is refused rather than silently skipped. A row predating the column is adopted so an existing database still deploys; that limitation is KN-144.\n\nThe transaction guard is a left-to-right scanner: line comments ended by EITHER terminator, nested block comments, ordinary and E-strings, doubled-quote escapes, quoted identifiers, and tagged or untagged dollar quotes with Unicode-aware identifier boundaries. Four roast rounds found six holes and every one is a regression test now: inline COMMIT, ABORT and END; a command between two strings that look like dollar quotes; ABORT split by a block comment, which Postgres reads as ABORT WORK; and transaction control after a dollar sign inside an ASCII and then a non-ASCII identifier.\n\nWHAT IS NOT CLAIMED. The scanner is a screen, not a proof. Six holes found the same way says there is a seventh, so KN-146 replaces it with a structural check that never reads the SQL: a temp table ON COMMIT DROP with the ledger INSERT conditioned on it, so an early COMMIT or ABORT cannot write a success row whatever syntax produced it. Defence in depth rather than a live bug, because Prisma generates these migrations and never emits transaction control. KN-147 covers the last finding, that nothing proves the runner WAITS between lock attempts.\n\nagent/scripts/verify/KN-123.mjs IS the mutation harness, committed rather than thrown away, which is what KN-136 asks for generally. It removes each of fifteen guarantees in turn and requires the suite to fail through the named test. It now runs each planted case against only that test, so the verify takes three minutes rather than eighteen, and it refuses a run whose filter matched no test at all, because that exits non-zero too and would otherwise look like a catch.\n\nGate: lint clean, lint:tsc clean, 67 database tests passing, 100 percent statements and branches, verify passing in 3m04s. Nothing renders, so AGENTS.md section 5 steps 5 to 7 were not performed and are not claimed.\n\nFour rounds, 5.0, 5.0, 4.0, 4.0, seven criticals, every one real and every one a path to a migration recorded APPLIED that never ran. Filed rather than fixed: KN-143, KN-144, KN-145, KN-146, KN-147, KN-148.",
+      "closedAt": "2026-09-09T21:08:04.637Z"
     },
     {
       "id": "KN-124",
