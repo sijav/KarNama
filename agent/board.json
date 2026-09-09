@@ -1823,7 +1823,7 @@
       "parent": [
         "KN-002"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "DESIGN.md records the answer as a decision with who made it, section 6 no longer lists it as open, and the column order in section 3 matches.",
       "roasts": [
         {
@@ -1844,8 +1844,10 @@
       ],
       "notes": [],
       "createdAt": "2026-09-07T21:48:45.372Z",
-      "updatedAt": "2026-09-09T21:14:09.536Z",
-      "verify": "node agent/scripts/verify/KN-070.mjs"
+      "updatedAt": "2026-09-09T21:17:32.272Z",
+      "verify": "node agent/scripts/verify/KN-070.mjs",
+      "evidence": "The owner was asked with the trade named on each option and answered: رد شده stays on the board as the final stage, collapsed to a count by default, expanding on click. Off the board was rejected because the trail is what this product is for; always-open was rejected because rejections accumulate faster than any other status in a job search.\n\nDESIGN.md section 6 moves it out of the open list into a Settled block naming the owner, the date and this card. Section 3 records the part that matters more: the answer CONTRADICTS the file. Frame 241:2 draws the columns, read right to left, as ذخیره‌شده, درخواست‌شده, مصاحبه, رد شده, پیشنهاد کار, so the drawn order has رد شده fourth and ends on the offer. The owner put it last. AGENTS.md says match the design exactly, so rather than follow the owner silently the exception is written at the point someone reads the column order, marked as the one place the build does not follow the frame, with the reasoning.\n\nagent/scripts/verify/KN-070.mjs checks the decision is recorded with who made it, that section 6 no longer lists it open, that section 3 records the move and orders the two columns correctly in that sentence, and that the bolded decision line itself says the column collapses. Four mutations planted, four caught. The last check earned its wording: it first searched a window of nearby text and PASSED while the answer read 'always open', because a later sentence explaining why it collapses matched the grep.\n\nRoast round 1 scored 6.0 with no criticals and two real findings, both filed rather than fixed: KN-149, the decision reached the design document but not the cards that build the board, so KN-043 can be satisfied while rendering an always-open column; KN-150, the open-question check reads lines rather than list items, so a wrapped bullet hides from it.",
+      "closedAt": "2026-09-09T21:17:32.272Z"
     },
     {
       "id": "KN-071",

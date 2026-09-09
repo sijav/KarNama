@@ -122,6 +122,40 @@ npm run contract
 It also fails when `DESIGN.md` stops saying what its rules assume, so a reversed
 decision cannot leave the old answer quietly enforced.
 
+## Step 2b · Write the plan, and have it checked BEFORE you build
+
+**Before touching a file, write down exactly what you are about to do.** Put it
+in `.claude/plan-<id>.md` so it can be read and argued with:
+
+- the task, its **why** and its **exit condition**, quoted from the board
+- the approach, in steps
+- what you will change, file by file
+- what you expect to be hard, and what you are unsure about
+- how you will know it worked
+
+Then hand that plan to another model **with web search**, every time you write
+or change it:
+
+```bash
+python ~/.claude/skills/roast/roast.py plan \
+  --title "KN-0XX <title>" \
+  --why "<why, from the board>" \
+  --exit-condition "<exit condition, from the board>" \
+  --did "$(cat .claude/plan-KN-0XX.md)" \
+  --ask "the step I am least sure of is X — does it hold?" \
+  --ask "is there a simpler approach that meets the same exit condition?"
+```
+
+Judge the answer, fix the plan, and only then build. This is the cheapest review
+in the loop by a wide margin: a wrong plan costs a paragraph to fix now and a
+rewrite to fix later. The web search is not decoration either — a good share of
+what makes a plan wrong is a fact about the outside world that moved, and this
+repository has already lost time to exactly that, from `prisma migrate diff`
+losing a flag to `get_metadata` behaving differently on a canvas than on a frame.
+
+A plan that survives checking is the normal outcome. "This is sound" is a
+complete answer; the value was in checking while changing it was still free.
+
 ## Step 3 · Do the work
 
 Linear. One unit at a time. No parallel fan-out, no workflows, no sub-agents.
@@ -146,19 +180,33 @@ refuses to run against a dirty worktree, and `move done` refuses to close a task
 whose HEAD has moved since the round that cleared it, so the review is bound to
 a revision instead of to a smudge that keeps changing underneath it.
 
-## Step 4 · Hand it to Codex for a roast
+## Step 4 · Hand it to Codex for a roast, IN THE BACKGROUND, and keep going
 
 **You do not score your own work.** You know what you meant, so you read the
 code as the thing you intended rather than as the thing you wrote. A different
 model, with a clean context, does not have that problem.
 
+**Fire it in the background and take the next task immediately.** Waiting on a
+reviewer is dead time, and dead time is the largest single cost in this loop:
+one roast is minutes, and this session spent most of an hour watching them. The
+task is finished. The review is about what to do NEXT, not about whether to
+finish.
+
 ```bash
 npm run todo -- move KN-014 review
+# in the background, then carry on with the next task
 npm run roast -- KN-014 \
   --summary "what I actually did, honestly, including what I am unsure about" \
   --ask "a real question about this task's mechanism" \
-  --ask "a second one, aimed at where you think it is weakest"
+  --ask "a second one, aimed at where you think it is weakest" &
 ```
+
+**While a roast is reading the worktree, do not edit the files it is reading.**
+Changing them underneath produces findings about code that no longer exists, and
+you cannot tell those from the real ones. This has already happened once here: a
+roast reported a critical that was a mutation test running concurrently. Taking
+the next task is usually fine because it touches different files; when it does
+not, read rather than write until the roast lands.
 
 The questions are what make this worth doing. Generic questions get generic
 answers that find nothing. Ask about the specific mechanism, and aim at what you
@@ -219,8 +267,31 @@ finding is not "could I fix this quickly" but "is this inside the exit condition
 of the task I am closing". If it is not, it is a card, and reaching for it
 anyway buys a whole extra round.
 
-When you do fix in-task, you owe exactly one more round, against the fixed code.
-That is not grinding a score, it is the review describing what actually exists.
+When you do fix in-task, you owe exactly one more round, against the fixed code,
+or a `--fixed-since` on the close saying what changed and why the round still
+stands. That is not grinding a score, it is the review describing what exists.
+
+**A finding lands while you are already building something else, and you do NOT
+act on it.** By the time a roast returns you are mid-way through the next task.
+File the survivors and carry on: finishing what is in your hands is worth more
+than reacting, and a card is scheduled work rather than lost work.
+
+### The one exception: a finding that blocks what you are doing now
+
+If a filed finding **blocks the task currently in progress** — the new card has
+to land first, or the thing you are building rests on something the roast just
+showed is wrong — then stop rather than build further on it:
+
+1. **Cancel the current task.** `move <id> backlog` with a note saying why.
+2. **Revert what you did for it.** Do not leave half a change in the tree that
+   was built on a wrong assumption.
+3. **Do the blocking card first**, from step 2b: plan it, have the plan checked,
+   then build.
+4. **Come back and replan the cancelled task** against the new reality, rather
+   than resuming the old plan, which was written before you knew this.
+
+Reverting feels wasteful and is not. Work resting on something known to be wrong
+is thrown away later anyway, at a worse moment, with more stacked on top of it.
 
 **Do not re-roast the same task until it scores well.** That was the original
 mistake: a three point task absorbed ten rounds while fifty six others waited,
