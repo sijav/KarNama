@@ -195,7 +195,15 @@ check('EVERY open item is disposed of, and by the task that actually owns it', (
   const body = sectionBody('Open questions the design has not settled')
   if (!body) return 'there is no open-questions section'
 
-  const items = listItems(body)
+  // Only the part ABOVE the settled block. The section holds both the questions
+  // still open and the answers already given, and the loop below judges open
+  // questions: it requires each to be owned by a task that is not finished,
+  // which is exactly wrong for a settled one. It passed anyway because settled
+  // entries happen to start with `**` rather than `- `, so `listItems` skipped
+  // them — a formatting coincidence, not a scoping rule, and writing one
+  // settled entry as a bullet would have broken it.
+  const openBody = body.split('### Settled by the owner')[0] ?? body
+  const items = listItems(openBody)
   if (!items.length) return 'the open-questions section has no items, which is suspicious rather than clean'
 
   const byId = new Map(board.tasks.map((task) => [task.id, task]))
