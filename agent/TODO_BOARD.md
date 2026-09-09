@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 22 of 159 tasks done · 66 of 499 points.
+Project **KarNama** · 23 of 159 tasks done · 68 of 499 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-159` Close the task BEFORE the roast, and never let a finding reopen it** (high, 2 pt, agent)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-159` | Close the task BEFORE the roast, and never let a finding reopen it | high | 2 | agent | none | move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source. |
+**Next up: `KN-112` Two preference setters called in one batch lose the first update** (high, 1 pt, web)
 
 ## Backlog (135)
 
@@ -156,7 +150,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 
-## Done (22)
+## Done (23)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -182,6 +176,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-072` | Decide where status history belongs | high | 1 | design | KN-002 | DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-030 states where history renders. |
 | `KN-100` | Make the gate-fixtures flag hermetic | high | 1 | agent | KN-088 | KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture, the ordinary run inside agent/scripts/verify/KN-003.mjs passes with the variable set to any value in the parent environment, and both are proved by planted environments. |
 | `KN-151` | The design manifest still calls four settled questions open | high | 1 | design | none | node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that. |
+| `KN-159` | Close the task BEFORE the roast, and never let a finding reopen it | high | 2 | agent | none | move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source. |
 
 ## Dropped (1)
 
@@ -1975,7 +1970,7 @@ AGENTS.md says everything a Storybook Docs page prints lives in src/shared/story
 
 ### `KN-159` Close the task BEFORE the roast, and never let a finding reopen it
 
-- **status** in_progress · **severity** high · **points** 2 · **area** agent
+- **status** done · **severity** high · **points** 2 · **area** agent
 - **blocked by** none
 
 The owner's rule of 2026-09-10 reversed the loop's order. It was: finish, move to review, roast, adjudicate, close on the round. It is now: finish with its tests and prove it works, close it on its own verifier, THEN roast the closed work in the background, and every finding becomes a new card that never reopens the closed task. agent/scripts/todo.mjs enforced the old order in three places: move done refused any status but review, it required a manifest-bound roast round with a --filed record, and it compared the worktree against the round's reviewed commit behind a --fixed-since escape. agent/RALPH.md documented the old order across steps 4, 5 and 6, including a fix-in-task rule with two clauses. The global loop and roast skills already had the new rule, so the project files were the ones out of sync.

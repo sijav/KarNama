@@ -3742,13 +3742,15 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T23:45:21.341Z",
-      "updatedAt": "2026-09-09T23:51:57.414Z",
-      "verify": "node agent/scripts/verify/KN-159.mjs"
+      "updatedAt": "2026-09-09T23:52:27.071Z",
+      "verify": "node agent/scripts/verify/KN-159.mjs",
+      "evidence": "node agent/scripts/verify/KN-159.mjs passes, 7 checks, and this close is itself one of them: KN-159 closed from in_progress with no roast round recorded, which the old gate refused twice over. The verifier drives the REAL CLI inside a throwaway git repository rather than reading todo.mjs, because what changed is a control-flow path through move and this repository has already shipped a verifier that grepped for a construct and matched the comment explaining it. It proves: a task closes from in_progress with no roast at all; closing still refuses a task nobody took, a task whose own verify command FAILS, a close with no evidence, and a close over uncommitted work; roast accepts a done task; and RALPH.md orders close before roast with no fix-in-task rule left in it. Eight mutations were each caught with their own message and every file restored: the review-only requirement restored, the status check disabled, the verify gate short-circuited, evidence made optional, the dirty-worktree check disabled, the roast guard reverted to rejecting done, the fix-in-task rule reinserted, and the close step renumbered after the roast step. The three existing board verifiers that depend on this gate, KN-001, KN-058 and KN-065, were run and all still pass, which is what says the change removed the old order without removing the protections that were not part of it. AGENTS section 5 items 1 to 4 are workspace commands and agent/ is not a workspace, so they do not reach this change; items 5 to 7 are rendered-result checks and it has no UI. What this does NOT establish: the roast path is proved only as far as the status guard, because recording a round needs a harness-written archive and manifest that cannot be forged, and that is a property worth keeping rather than working around.",
+      "closedAt": "2026-09-09T23:52:27.071Z"
     }
   ]
 }
