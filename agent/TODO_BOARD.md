@@ -95,7 +95,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-015` | Card, desktop and mobile, with the status stripe | high | 8 | web | KN-005, KN-006, KN-007, KN-010, KN-008, KN-062 | All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. |
 | `KN-027` | Navigation: nav item, desktop sidebar, mobile tab bar, and the language switch | high | 8 | web | KN-005, KN-006, KN-007, KN-008, KN-009 | The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added. |
 | `KN-029` | Add and edit job modal, all six steps | high | 8 | web | KN-005, KN-006, KN-007, KN-011, KN-012, KN-028 | All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding. |
-| `KN-030` | Job modal, four tabs | high | 8 | web | KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020 | All four tabs match Figma, the modal opens from a card on the board, status history renders in the Info tab in reverse chronological order, and switching tabs does not lose unsaved note text. |
+| `KN-030` | Job modal, five tabs | high | 8 | web | KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020 | All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text. |
 | `KN-036` | Auth: phone OTP, JWT, and the admin role | high | 8 | api | KN-034 | A user signs in with a number and a code against the mock provider, the code expires and a reused code is rejected, first login collects the required name, a non-admin is refused every admin operation at the resolver rather than only in the UI, and tests cover all of those. |
 | `KN-037` | Job records: CRUD, status transitions, and status history | high | 8 | api | KN-034, KN-036, KN-057 | An e2e test creates a record, moves it through New, Applied, Interview and Offer, and reads back a history with four entries in order, and a test proves history cannot be edited or reordered through the API. |
 | `KN-039` | Contacts, notes and file references | high | 8 | api | KN-037 | A contact, a note and a file can each be attached to a record and read back, deleting a record removes its attachments, and an upload larger than the configured limit is refused with a usable error rather than a 500. A contact with a full name and no email and no phone is accepted and read back unchanged: the data layer carries no NOT NULL and no check constraint requiring either, per the owner's decision on KN-071. |
@@ -514,16 +514,16 @@ The Add/Edit modal at Figma node 166:82 with Step=Paste, PasteFilled, Loading, R
 
 **Exit condition.** All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding.
 
-### `KN-030` Job modal, four tabs
+### `KN-030` Job modal, five tabs
 
 - **status** backlog · **severity** high · **points** 8 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020
 
-The job detail modal at Figma node 210:276 with tabs Info, Note, Contacts and Files. Status history sits at the bottom of the Info tab, which the file flags as open item 18. Build it where the file puts it.
+The job detail modal at Figma node 210:276. The file draws four tab variants: Tab=Info 210:101, Tab=Note 210:145, Tab=Contacts 210:208, Tab=Files 210:275, each 720 by 617. The owner settled open item 18 on 2026-09-08 and status history is now its OWN tab rather than a block at the bottom of Info, so the modal has FIVE: اطلاعات آگهی, سابقه, یادداشت, مخاطبین, فایل‌ها, with سابقه second, directly after the information it is the history of. That is a deliberate departure from the frame, recorded in DESIGN.md section 3 and section 6 under KN-072. Everything else comes from the frame unchanged.
 
 **Why.** The design replaced a detail page with this modal, so it is the only place the full record is visible. Status history is the record of the trail, which is the anchor of the whole product.
 
-**Exit condition.** All four tabs match Figma, the modal opens from a card on the board, status history renders in the Info tab in reverse chronological order, and switching tabs does not lose unsaved note text.
+**Exit condition.** All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text.
 
 ### `KN-031` Contact modal, add and edit
 

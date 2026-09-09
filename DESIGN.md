@@ -326,10 +326,15 @@ outright, twice, for the contacts grid and as a general principle. Figma reverse
 its arrays because horizontal Auto Layout always lays out left to right; code
 must not copy that. Reversing an array in code to "fix" RTL is a defect.
 
-**The Job Modal replaces a detail page**, with four tabs: اطلاعات آگهی,
-یادداشت, مخاطبین, فایل‌ها. Status history currently sits at the bottom of the
-Info tab, which the file flags as open item 18: **open, tracked by KN-072**, see
-section 6. Build it where the file puts it, and raise the question separately.
+**The Job Modal replaces a detail page.** The file draws four tabs at `210:276`:
+اطلاعات آگهی, یادداشت, مخاطبین, فایل‌ها. The file also puts status history at the
+bottom of the Info tab and flags that as open item 18.
+
+**The owner settled it on 2026-09-08 and history is now its own tab**, second,
+so the modal has FIVE: اطلاعات آگهی, سابقه, یادداشت, مخاطبین, فایل‌ها. See
+section 6 and KN-072. This is the second place the build deliberately departs
+from the frame, the first being where رد شده sits on the board, and both are the
+owner's call rather than a reading of the file.
 
 **A Contact Card has no detail view.** Everything about a contact is on the
 card itself. There is a Contact Modal, but only for Add and Edit.
@@ -545,10 +550,21 @@ half-remembered name you can fill in later is worth more than a form that
 refuses it. **Do not add a one-of-two validation rule.**
 
 **Status history gets its own tab in the job modal.** Owner, KN-072, over the
-Components canvas open item 18. Tabs are `اطلاعات`, `سابقه`, `یادداشت‌ها`. It is
-no longer at the bottom of the Info tab. The trail is the payoff of the whole
-data model, and a tab gives it room for timestamps and per-transition notes
-instead of burying it under a scroll.
+Components canvas open item 18. It is no longer at the bottom of the Info tab.
+The trail is the payoff of the whole data model, and a tab gives it room for
+timestamps and per-transition notes instead of burying it under a scroll.
+
+**That makes FIVE tabs, not three.** Frame `210:276` draws four variants —
+`Tab=Info` `210:101`, `Tab=Note` `210:145`, `Tab=Contacts` `210:208`,
+`Tab=Files` `210:275`, each 720x617 — and this decision inserts a fifth:
+
+> اطلاعات آگهی · **سابقه** · یادداشت · مخاطبین · فایل‌ها
+
+History goes second, directly after the information it is the history OF. The
+question put to the owner illustrated the idea with a three-tab sketch, and that
+sketch was an illustration rather than the tab set: reading it as the answer
+would silently drop مخاطبین and فایل‌ها, which the design draws and the product
+needs. The decision adds a tab; it does not replace the others.
 
 **The Review step shows everything the parse filled, with the required fields
 marked.** Owner, KN-075, over frame `376:31`. Not only the three required ones.
