@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 18 of 150 tasks done · 62 of 486 points.
+Project **KarNama** · 18 of 151 tasks done · 62 of 487 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-071` Decide whether a contact needs an email or a phone** (high, 1 pt, design)
+**Next up: `KN-151` The design manifest still calls four settled questions open** (high, 1 pt, design)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-151` | The design manifest still calls four settled questions open | high | 1 | design | none | node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that. |
 
 ## Backlog (131)
 
@@ -1862,4 +1868,15 @@ agent/scripts/verify/KN-070.mjs decides whether رد شده is still listed as a
 **Why.** The check exists so a question cannot be recorded as settled in one section while still being asked in another, and a reader who hits both comes away not knowing which is current. A guard that only sees the first line of a bullet gives exactly that outcome while reporting green.
 
 **Exit condition.** A wrapped bullet asking about رد شده makes the verifier fail, proved by planting one.
+
+### `KN-151` The design manifest still calls four settled questions open
+
+- **status** in_progress · **severity** high · **points** 1 · **area** design
+- **blocked by** none
+
+agent/design-manifest.json carries an openItems list naming each question the design left open, and KN-002's verifier checks that every one of them is still listed as open in DESIGN.md. Recording the owner's four answers moved rejected-placement, contact-route, status-history-placement and review-step-fields out of the open list and into a Settled block, so the manifest and the document now disagree and KN-002's verifier FAILS. The manifest needs the same disposition the document has: each of the four marked as settled, with the card that settled it, so the check compares like with like rather than assuming every recorded question stays open forever. KN-073 and KN-077 are genuinely still open and must keep failing the check if they are ever quietly dropped.
+
+**Why.** A verifier that fails on a task already marked done is a false done, and this one went red the moment the decisions were recorded — which is to say, the moment the work went RIGHT. That is worse than a plain bug: it punishes the correct action and trains whoever hits it to edit the check rather than the data. It was found by a plan roast before any of KN-071's work started, which is the whole argument for checking plans.
+
+**Exit condition.** node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that.
 

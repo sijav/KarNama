@@ -224,9 +224,39 @@ check('EVERY open item is disposed of, and by the task that actually owns it', (
     if (!stillOpen) problems.push(`tracked by a closed task while still open in the document: ${item.slice(0, 60)}`)
   }
 
-  // And every item the manifest knows about must appear, so removing a bullet
-  // is not a way to make this pass.
+  // And every item the manifest knows about must appear SOMEWHERE, so removing
+  // a bullet is not a way to make this pass.
+  //
+  // An answered question is not a removed one. When the owner settles an item
+  // the bullet leaves the open list on purpose, and this check used to read
+  // that as the question being dropped: recording four decisions turned KN-002
+  // red, which punished the correct action and invited someone to weaken the
+  // check rather than record the answer. So the manifest carries the
+  // DISPOSITION, and each disposition is looked for where it belongs.
+  const settledBody = sectionBody('Open questions the design has not settled')?.split('### Settled by the owner')[1] ?? ''
+
   for (const item of manifest.openItems) {
+    if (item.settledBy) {
+      // Settled: it must be in the settled block, naming the card that settled
+      // it, and it must NOT still be asked as an open question.
+      // Either the marker phrase or the frame it came from. An ANSWER is
+      // allowed to be worded differently from the question that prompted it:
+      // "should a contact require email or phone" is settled by "a contact
+      // needs only a full name", which shares no phrase with it. The frame id
+      // is what both cite, so it identifies the item across the rewording, and
+      // demanding the question's words appear in the answer would mean
+      // contorting the prose to satisfy a grep.
+      const identified = settledBody.includes(item.marker) || (item.from && settledBody.includes(item.from))
+      if (!identified) {
+        problems.push(`${item.id} is recorded as settled by ${item.settledBy} but neither "${item.marker}" nor frame ${item.from} appears in the settled block`)
+      } else if (!settledBody.includes(item.settledBy)) {
+        problems.push(`${item.id} is in the settled block but does not name ${item.settledBy}, so nothing ties the answer to the card that got it`)
+      }
+      if (items.some((line) => line.includes(item.marker))) {
+        problems.push(`${item.id} is settled in the manifest and still listed as an open question`)
+      }
+      continue
+    }
     if (!items.some((line) => line.includes(item.marker))) {
       problems.push(`${item.id} is in the manifest but no longer listed in the document`)
     }

@@ -180,19 +180,25 @@
       "id": "rejected-placement",
       "marker": "رد شده",
       "from": "434:16",
-      "decidedBy": "KN-070"
+      "decidedBy": "KN-070",
+      "settledBy": "KN-070",
+      "settledOn": "2026-09-08"
     },
     {
       "id": "contact-route",
       "marker": "email or phone",
       "from": "434:2",
-      "decidedBy": "KN-071"
+      "decidedBy": "KN-071",
+      "settledBy": "KN-071",
+      "settledOn": "2026-09-08"
     },
     {
       "id": "status-history-placement",
       "marker": "open item 18",
       "from": "5:5",
-      "decidedBy": "KN-072"
+      "decidedBy": "KN-072",
+      "settledBy": "KN-072",
+      "settledOn": "2026-09-08"
     },
     {
       "id": "provisional-enums",
@@ -205,7 +211,9 @@
       "id": "review-step-fields",
       "marker": "Review step",
       "from": "376:31",
-      "decidedBy": "KN-075"
+      "decidedBy": "KN-075",
+      "settledBy": "KN-075",
+      "settledOn": "2026-09-08"
     },
     {
       "$comment": "Found by a roast reading the committed capture rather than the document. DESIGN.md said all sixteen copy changes in 505:3 were applied and that nothing was left in the Figma file alone. Both were false: two of the sixteen say inside the frame that they were not applied.",

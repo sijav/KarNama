@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 151,
+  "nextId": 152,
   "tasks": [
     {
       "id": "KN-001",
@@ -1864,7 +1864,8 @@
       "exit": "DESIGN.md records the answer as a decision, section 6 no longer lists it as open, and KN-031 and KN-039 state the resulting rule.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T21:48:45.867Z"
+      "createdAt": "2026-09-07T21:48:45.867Z",
+      "updatedAt": "2026-09-09T21:31:15.992Z"
     },
     {
       "id": "KN-072",
@@ -3490,6 +3491,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T21:17:05.766Z"
+    },
+    {
+      "id": "KN-151",
+      "title": "The design manifest still calls four settled questions open",
+      "desc": "agent/design-manifest.json carries an openItems list naming each question the design left open, and KN-002's verifier checks that every one of them is still listed as open in DESIGN.md. Recording the owner's four answers moved rejected-placement, contact-route, status-history-placement and review-step-fields out of the open list and into a Settled block, so the manifest and the document now disagree and KN-002's verifier FAILS. The manifest needs the same disposition the document has: each of the four marked as settled, with the card that settled it, so the check compares like with like rather than assuming every recorded question stays open forever. KN-073 and KN-077 are genuinely still open and must keep failing the check if they are ever quietly dropped.",
+      "why": "A verifier that fails on a task already marked done is a false done, and this one went red the moment the decisions were recorded — which is to say, the moment the work went RIGHT. That is worse than a plain bug: it punishes the correct action and trains whoever hits it to edit the check rather than the data. It was found by a plan roast before any of KN-071's work started, which is the whole argument for checking plans.",
+      "severity": "high",
+      "points": 1,
+      "area": "design",
+      "parent": [],
+      "status": "in_progress",
+      "exit": "node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T21:31:15.773Z",
+      "updatedAt": "2026-09-09T21:33:42.496Z",
+      "verify": "node agent/scripts/verify/KN-002.mjs"
     }
   ]
 }
