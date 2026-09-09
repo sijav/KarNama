@@ -254,11 +254,33 @@ check('EVERY open item is disposed of, and by the task that actually owns it', (
       // is what both cite, so it identifies the item across the rewording, and
       // demanding the question's words appear in the answer would mean
       // contorting the prose to satisfy a grep.
-      const identified = settledBody.includes(item.marker) || (item.from && settledBody.includes(item.from))
-      if (!identified) {
-        problems.push(`${item.id} is recorded as settled by ${item.settledBy} but neither "${item.marker}" nor frame ${item.from} appears in the settled block`)
-      } else if (!settledBody.includes(item.settledBy)) {
-        problems.push(`${item.id} is in the settled block but does not name ${item.settledBy}, so nothing ties the answer to the card that got it`)
+      //
+      // ONE decision entry has to carry both. Searching the whole block for the
+      // marker and then, separately, for the card certified nothing: every card
+      // in the list appears SOMEWHERE in the block, so contact-route could name
+      // KN-070 as its settling card and pass, and swapping two cards between
+      // their decisions passed too. The check claimed the manifest records the
+      // card that settled each question and did not establish it. Found by a
+      // roast planting exactly that swap.
+      //
+      // What this does NOT check is what the answer SAYS. Reversing the contact
+      // decision to "requires both an email and a phone" passes here, and that
+      // is deliberate rather than a gap: this check is bookkeeping, and the
+      // meaning of each decision is checked by the verifier of the card that
+      // made it, which knows what the answer was supposed to be. KN-071's
+      // verifier catches that exact reversal. Teaching this one to read prose
+      // would put the same claim in two places and let them drift.
+      const entries = settledBody
+        .split(/\n(?=\*\*)/)
+        .map((entry) => entry.trim())
+        .filter(Boolean)
+      const entry = entries.find((text) => text.includes(item.marker) || (item.from && text.includes(item.from)))
+      if (!entry) {
+        problems.push(`${item.id} is recorded as settled by ${item.settledBy} but neither "${item.marker}" nor frame ${item.from} appears in any decision in the settled block`)
+      } else if (!entry.includes(item.settledBy)) {
+        problems.push(
+          `${item.id}'s decision does not name ${item.settledBy}: the entry that answers it reads "${entry.split('\n')[0]?.slice(0, 70)}", so the manifest and the document disagree about which card settled it`,
+        )
       }
       if (items.some((line) => line.includes(item.marker))) {
         problems.push(`${item.id} is settled in the manifest and still listed as an open question`)
