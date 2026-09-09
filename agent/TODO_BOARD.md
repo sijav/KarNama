@@ -2,18 +2,25 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 23 of 159 tasks done · 68 of 499 points.
+Project **KarNama** · 23 of 166 tasks done · 68 of 514 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-112` Two preference setters called in one batch lose the first update** (high, 1 pt, web)
+**Next up: `KN-160` Plan files live beside the work, named #<id> - <title>.md** (high, 2 pt, agent)
 
-## Backlog (135)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-160` | Plan files live beside the work, named #<id> - <title>.md | high | 2 | agent | none | agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree. |
+
+## Backlog (141)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-162` | A closed task is still freely reopenable, so done does not mean done | critical | 2 | agent | none | move <id> in_progress, backlog, review or blocked all REFUSE when the task is done, and the refusal names the new-card route; dropped remains reachable if that is decided to be right; the refusal is proved by driving the real CLI in an isolated repository rather than by reading the source; and a mutation removing the guard fails the check with its own message. |
 | `KN-112` | Two preference setters called in one batch lose the first update | high | 1 | web | KN-006 | A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation. |
 | `KN-114` | The catalog test counts an empty string as a translation | high | 1 | web | KN-006 | Setting any Persian message to an empty or whitespace-only string fails npm test, and the failure names the id. |
 | `KN-132` | Pin the byte-compared generated files to LF, or stop comparing bytes | high | 1 | infra | none | A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand. |
@@ -46,6 +53,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-111` | Forbid the message-id forms the catalog scan cannot see | high | 2 | web | KN-006 | A Trans with a braced or template-literal id fails npm run lint, a committed fixture holds each form, and the catalog test still finds every id the codebase uses. |
 | `KN-134` | ThemedTree sets i18n state while rendering | high | 2 | web | none | The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload. |
 | `KN-154` | KN-072 verifier accepts the two failures it exists to prevent | high | 2 | agent | KN-072 | KN-072.mjs parses the ACTUAL tab list out of the decision line and requires exactly the five names in it rather than searching a character window, and checks KN-030 placement on the stripped text with an affirmative un-negatable assertion. Both reproductions above are added as committed mutation cases and each fails the verifier with its own message. |
+| `KN-163` | Adjudication is reported, not enforced, so findings can go unfiled forever | high | 2 | agent | none | todo roast refuses to record a round without --filed, accepting --filed none as the explicit honest answer; KN-001 and KN-065 are adjudicated so the board starts clean; validate still reports the count so a regression is visible; and driving the real CLI proves the refusal. |
+| `KN-166` | Check the loop rules are written correctly in the SkipBureau project | high | 2 | agent | none | ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -71,6 +80,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-127` | The resolver-registration check reads text rather than the container | high | 3 | api | KN-120 | A resolver registered in a way the text scan cannot see, a default export in a file not named *.resolver.ts, is detected, and the check reads the resolvers from a booted Nest context rather than from source text. |
 | `KN-136` | Commit the mutation cases, so a verifier's claim can be re-run | high | 3 | agent | none | One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass. |
 | `KN-158` | The story-docs rule in AGENTS.md describes a system that does not exist | high | 3 | web | none | Either src/shared/story-docs/{en,fa} exists with a page for every story, the three existing stories are migrated off JSDoc on meta, and a guard test fails when either language is missing a prop or story; or AGENTS.md is corrected to describe what the repository actually does and the main.ts comment with it. Whichever is chosen, no story in the tree contradicts the written rule afterwards, proved by a check rather than by reading. |
+| `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | high | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | high | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
@@ -110,6 +120,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-140` | KN-131's verifier regenerates generated.ts instead of restoring it | medium | 1 | agent | none | Starting the script with modified content in generated.ts leaves that exact content in place afterwards, proved by planting it, and a cleanup whose regeneration fails still restores the file. |
 | `KN-156` | The close gate has no exit for unrelated work landing during a background roast | medium | 1 | agent | none | move done distinguishes changes that touch files the round read from changes that do not, names which files it compared, and accepts an unrelated change with its own flag and its own recorded sentence. A mutation that changes a file the round DID read still refuses with the original message. |
 | `KN-157` | The roast record cannot say a finding was fixed rather than dismissed | medium | 1 | agent | none | todo roast accepts a way to record findings that were fixed in-task rather than filed, the summary line distinguishes the three cases, dismissed, filed and fixed, and re-recording KN-100 round 1 with it shows three findings fixed rather than nothing survived. |
+| `KN-164` | CLI messages still instruct the obsolete close-after-roast flow | medium | 1 | agent | none | No message printed by todo.mjs instructs closing after a roast or implies a done task should be reopened; the post-adjudication line describes what is actually true, that the round is recorded and its findings are on the board; and a check asserts the obsolete phrasings are absent from the source's message strings. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -134,6 +145,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-129` | The duplicate-type scan only sees exported top-level declarations | medium | 3 | graphql | KN-035 | A local, unexported interface structurally identical to a generated type is detected in the web app, a differently named one is too, and an unrelated interface with some overlapping fields is not. |
 | `KN-142` | Nothing checks that a tsconfig still covers what the bundler ships | medium | 3 | infra | none | Narrowing any workspace's tsconfig include so a file the bundler ships leaves the compiler program makes the gate fail, proved by planting exactly the health-only include a roast used, and the check derives the shipped files rather than listing them by hand. |
 | `KN-143` | The mutation harnesses match test names in output, not test outcomes | medium | 3 | agent | none | A planted regression whose designated test still PASSES while some other test fails is reported as a MISS, proved by planting exactly that, and every verifier that plants regressions reads a machine-readable result rather than console text. |
+| `KN-165` | Prove the roast recording path end to end with a stubbed reviewer | medium | 3 | agent | none | A verifier drives roast.mjs against a stubbed reviewer in an isolated repository, gets a genuine archive and manifest, records the round against a DONE task with todo.mjs roast, and asserts the round appears on the card; the stub is confined to the sandbox and no production path accepts it; and mutations to the manifest digest check are caught. |
 | `KN-040` | Third-party feedback, stored for later evaluation | medium | 5 | api | KN-034 | A submission is stored with its target and a pending state, it never mutates the target, a submission whose target was deleted between submit and review is handled rather than orphaned, and rate limiting stops a flood from one source. |
 | `KN-041` | Admin API: the moderation queue | medium | 5 | api | KN-040, KN-036 | A non-admin is refused every operation at the resolver, approving and rejecting both record who did it and when, and the queue paginates rather than loading everything. |
 | `KN-064` | Third-party feedback submission surface | medium | 5 | web | KN-042, KN-040 | An anonymous visitor can submit a comment and a suggested change against a record, both arrive in the moderation queue in a pending state, the target record is not altered, the submitter is told it is pending review, and a flood from one source is rate limited. |
@@ -1978,4 +1990,83 @@ The owner's rule of 2026-09-10 reversed the loop's order. It was: finish, move t
 **Why.** An order that holds finished work open until a reviewer replies makes the reviewer a gatekeeper of closing rather than a source of the next tasks, and it creates the exact deadlock the loop has hit repeatedly: fix what the review found, and now the work has changed since the review, so closing needs another round, which finds something smaller. One three point card took ten rounds that way while fifty six others waited. Closing first deletes the question instead of answering it.
 
 **Exit condition.** move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source.
+
+**Roasts.** round 1 scored 4 with 1 critical(s)
+
+### `KN-160` Plan files live beside the work, named #<id> - <title>.md
+
+- **status** in_progress · **severity** high · **points** 2 · **area** agent
+- **blocked by** none
+
+The owner's rule of 2026-09-10: the plan written before a task starts goes in the folder the work is about to be written to, named #<task id> - <title>.md, NOT in a separate directory. Today RALPH.md step 2b and the loop skill both say .claude/plan-<id>.md, which is a parallel tree: the plan sits nowhere near the code it describes, so nobody editing that code ever sees it, and the folder becomes a graveyard of plans for work that has since moved. Beside the work it is visible to whoever opens the directory, it moves when the code moves, and it is obvious when it is stale.
+
+**Why.** A plan nobody reads is ceremony. The whole value of writing one is that the next person, including the next iteration of me, encounters it while looking at the thing it describes. A separate plan folder guarantees they never do.
+
+**Exit condition.** agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree.
+
+### `KN-161` Give the roast, todo and loop skills BOTH a python and a node script
+
+- **status** backlog · **severity** high · **points** 3 · **area** agent
+- **blocked by** none
+
+The owner's rule of 2026-09-10: a skill should work whichever runtime is present. Today roast ships roast.py only, loop ships compact.py only, and todo ships todo.mjs only, so a project with node and no usable python cannot roast, and a project with python and no node cannot use the board. Each skill needs both entry points, behaving identically, and its SKILL.md has to say how to run each so the caller can pick without reading the directory.
+
+**Why.** The skills are meant to be project-agnostic and they are not: each one silently assumes a runtime. The failure is quiet, a command that is simply not there, and it lands in the middle of a loop iteration rather than at setup time.
+
+**Exit condition.** roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist.
+
+### `KN-162` A closed task is still freely reopenable, so done does not mean done
+
+- **status** backlog · **severity** critical · **points** 2 · **area** agent
+- **blocked by** none
+
+Found by the KN-159 roast. move has no transition guard on the CURRENT status. Its only in_progress guard asks whether some OTHER task is active, so move <id> in_progress succeeds on a task that is already done whenever nothing else is in progress. That permits exactly the sequence KN-159 exists to forbid: close, roast, reopen, fix what the roast found, close again. KN-159's claim that a roasted task STAYS done is therefore documentation rather than behaviour, and this session did precisely that to KN-100 before the rule changed.
+
+**Why.** The rule that findings never reopen a closed task is the load-bearing half of the new order. A rule enforced only by intention breaks at the exact moment it matters, which is when a reviewer has just found something and the pull to polish is strongest.
+
+**Exit condition.** move <id> in_progress, backlog, review or blocked all REFUSE when the task is done, and the refusal names the new-card route; dropped remains reachable if that is decided to be right; the refusal is proved by driving the real CLI in an isolated repository rather than by reading the source; and a mutation removing the guard fails the check with its own message.
+
+### `KN-163` Adjudication is reported, not enforced, so findings can go unfiled forever
+
+- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **blocked by** none
+
+Found by the KN-159 roast. todo roast records a round with no filed field, and validate prints how many such rounds exist but still exits 0. So the honest sequence is unenforced: record an authentic roast of closed work without --filed and simply never come back. KN-001 and KN-065 already sit in exactly that state and have for some time, which is the proof that a report does not hold. The old close gate used to enforce this and KN-159 removed it, correctly, because it put the reviewer in front of the close; the enforcement has to move rather than disappear. The reviewer suggested requiring --filed on the first board recording after adjudication, which fits: under the new order you record the round AFTER judging it, so you always know what you filed.
+
+**Why.** Every finding becomes a card is the mechanism that makes closing before review safe. If findings can be recorded and forgotten, closing early just loses them, and the loop gets the speed without the safety.
+
+**Exit condition.** todo roast refuses to record a round without --filed, accepting --filed none as the explicit honest answer; KN-001 and KN-065 are adjudicated so the board starts clean; validate still reports the count so a regression is visible; and driving the real CLI proves the refusal.
+
+### `KN-164` CLI messages still instruct the obsolete close-after-roast flow
+
+- **status** backlog · **severity** medium · **points** 1 · **area** agent
+- **blocked by** none
+
+Found by the KN-159 roast. Two messages contradict the order KN-159 shipped. After adjudication, todo roast prints that move <id> done will now be accepted, but under the new order that task is ALREADY done, so following the instruction fails and nudges the reader towards reopening it first, which is the exact forbidden move. And todo next prints AWAITING ROAST, not blocking: <ids>. Adjudicate and close when it lands, which again describes closing after the roast. Operational instructions printed by the tool are followed more literally than documentation, because they arrive at the moment of acting.
+
+**Why.** The tool's own output is the most trusted description of how the tool works. Leaving it describing the old order guarantees the old order gets followed by whoever reads it next, including a future iteration with no memory of this change.
+
+**Exit condition.** No message printed by todo.mjs instructs closing after a roast or implies a done task should be reopened; the post-adjudication line describes what is actually true, that the round is recorded and its findings are on the board; and a check asserts the obsolete phrasings are absent from the source's message strings.
+
+### `KN-165` Prove the roast recording path end to end with a stubbed reviewer
+
+- **status** backlog · **severity** medium · **points** 3 · **area** agent
+- **blocked by** none
+
+Found by the KN-159 roast. agent/scripts/verify/KN-159.mjs proves a done task passes the roast STATUS guard only, by asserting the refusal names a missing archive rather than the status. The recording path beyond that is unproven, because a real round needs a harness-written reply plus a .meta.json manifest whose digest matches, and forging one in a test would weaken the forgery resistance that check exists for. The reviewer proposed the way through: a sandbox-local fake codex executable, so roast.mjs writes a REAL archive and manifest from deterministic reviewer output, and todo.mjs roast then records against it. Production forgery resistance is untouched; the test simply supplies the reviewer.
+
+**Why.** The roast recording path is now the only route by which a finding reaches the board, since it is no longer part of the close gate. It is the least tested part of the loop and the part everything else now depends on.
+
+**Exit condition.** A verifier drives roast.mjs against a stubbed reviewer in an isolated repository, gets a genuine archive and manifest, records the round against a DONE task with todo.mjs roast, and asserts the round appears on the card; the stub is confined to the sandbox and no production path accepts it; and mutations to the manifest digest check are caught.
+
+### `KN-166` Check the loop rules are written correctly in the SkipBureau project
+
+- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **blocked by** none
+
+The owner's instruction of 2026-09-10: go to the sibling project at ../SkipBureau and make sure these rules are written correctly there, because the agent working it has been getting them wrong. The rules to check are the ones settled here: finish and prove a task BEFORE closing it, close on its own verifier rather than on a review, roast the closed work once in the background, every finding becomes a new to-do and never reopens the closed task, and the one exception is a finding that blocks the task now in hand, which means revert that task and take the board's next item. Also the plan-before-building rule and where the plan file lives. Read what is there before changing anything: that project has its own history and its rules may differ deliberately.
+
+**Why.** The owner asked directly, and a loop running the wrong rules produces work that has to be redone. The rules here were settled through several expensive mistakes and the sibling project has no way to learn them except by being told.
+
+**Exit condition.** ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed.
 

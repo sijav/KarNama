@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 160,
+  "nextId": 167,
   "tasks": [
     {
       "id": "KN-001",
@@ -2734,7 +2734,7 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T00:41:13.307Z",
-      "updatedAt": "2026-09-09T23:45:33.378Z"
+      "updatedAt": "2026-09-09T23:54:04.749Z"
     },
     {
       "id": "KN-113",
@@ -3744,13 +3744,137 @@
       "parent": [],
       "status": "done",
       "exit": "move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-159-round-1.2026-09-09T23-52-56-776Z.md",
+          "filed": [
+            "KN-162",
+            "KN-163",
+            "KN-164",
+            "KN-165"
+          ],
+          "cardDigest": "66216298edd19e809b2b05571dd0d1f40d69fe330247903dcd386fcdec6af76b",
+          "head": "f1685685a4cddffdb64dacc562aace4930d030e2",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "at": "2026-09-09T23:56:40.373Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-09T23:45:21.341Z",
       "updatedAt": "2026-09-09T23:52:27.071Z",
       "verify": "node agent/scripts/verify/KN-159.mjs",
       "evidence": "node agent/scripts/verify/KN-159.mjs passes, 7 checks, and this close is itself one of them: KN-159 closed from in_progress with no roast round recorded, which the old gate refused twice over. The verifier drives the REAL CLI inside a throwaway git repository rather than reading todo.mjs, because what changed is a control-flow path through move and this repository has already shipped a verifier that grepped for a construct and matched the comment explaining it. It proves: a task closes from in_progress with no roast at all; closing still refuses a task nobody took, a task whose own verify command FAILS, a close with no evidence, and a close over uncommitted work; roast accepts a done task; and RALPH.md orders close before roast with no fix-in-task rule left in it. Eight mutations were each caught with their own message and every file restored: the review-only requirement restored, the status check disabled, the verify gate short-circuited, evidence made optional, the dirty-worktree check disabled, the roast guard reverted to rejecting done, the fix-in-task rule reinserted, and the close step renumbered after the roast step. The three existing board verifiers that depend on this gate, KN-001, KN-058 and KN-065, were run and all still pass, which is what says the change removed the old order without removing the protections that were not part of it. AGENTS section 5 items 1 to 4 are workspace commands and agent/ is not a workspace, so they do not reach this change; items 5 to 7 are rendered-result checks and it has no UI. What this does NOT establish: the roast path is proved only as far as the status guard, because recording a round needs a harness-written archive and manifest that cannot be forged, and that is a property worth keeping rather than working around.",
       "closedAt": "2026-09-09T23:52:27.071Z"
+    },
+    {
+      "id": "KN-160",
+      "title": "Plan files live beside the work, named #<id> - <title>.md",
+      "desc": "The owner's rule of 2026-09-10: the plan written before a task starts goes in the folder the work is about to be written to, named #<task id> - <title>.md, NOT in a separate directory. Today RALPH.md step 2b and the loop skill both say .claude/plan-<id>.md, which is a parallel tree: the plan sits nowhere near the code it describes, so nobody editing that code ever sees it, and the folder becomes a graveyard of plans for work that has since moved. Beside the work it is visible to whoever opens the directory, it moves when the code moves, and it is obvious when it is stale.",
+      "why": "A plan nobody reads is ceremony. The whole value of writing one is that the next person, including the next iteration of me, encounters it while looking at the thing it describes. A separate plan folder guarantees they never do.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "in_progress",
+      "exit": "agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T23:54:04.856Z",
+      "updatedAt": "2026-09-09T23:54:25.090Z"
+    },
+    {
+      "id": "KN-161",
+      "title": "Give the roast, todo and loop skills BOTH a python and a node script",
+      "desc": "The owner's rule of 2026-09-10: a skill should work whichever runtime is present. Today roast ships roast.py only, loop ships compact.py only, and todo ships todo.mjs only, so a project with node and no usable python cannot roast, and a project with python and no node cannot use the board. Each skill needs both entry points, behaving identically, and its SKILL.md has to say how to run each so the caller can pick without reading the directory.",
+      "why": "The skills are meant to be project-agnostic and they are not: each one silently assumes a runtime. The failure is quiet, a command that is simply not there, and it lands in the middle of a loop iteration rather than at setup time.",
+      "severity": "high",
+      "points": 3,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T23:54:04.957Z"
+    },
+    {
+      "id": "KN-162",
+      "title": "A closed task is still freely reopenable, so done does not mean done",
+      "desc": "Found by the KN-159 roast. move has no transition guard on the CURRENT status. Its only in_progress guard asks whether some OTHER task is active, so move <id> in_progress succeeds on a task that is already done whenever nothing else is in progress. That permits exactly the sequence KN-159 exists to forbid: close, roast, reopen, fix what the roast found, close again. KN-159's claim that a roasted task STAYS done is therefore documentation rather than behaviour, and this session did precisely that to KN-100 before the rule changed.",
+      "why": "The rule that findings never reopen a closed task is the load-bearing half of the new order. A rule enforced only by intention breaks at the exact moment it matters, which is when a reviewer has just found something and the pull to polish is strongest.",
+      "severity": "critical",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "move <id> in_progress, backlog, review or blocked all REFUSE when the task is done, and the refusal names the new-card route; dropped remains reachable if that is decided to be right; the refusal is proved by driving the real CLI in an isolated repository rather than by reading the source; and a mutation removing the guard fails the check with its own message.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T23:56:07.338Z"
+    },
+    {
+      "id": "KN-163",
+      "title": "Adjudication is reported, not enforced, so findings can go unfiled forever",
+      "desc": "Found by the KN-159 roast. todo roast records a round with no filed field, and validate prints how many such rounds exist but still exits 0. So the honest sequence is unenforced: record an authentic roast of closed work without --filed and simply never come back. KN-001 and KN-065 already sit in exactly that state and have for some time, which is the proof that a report does not hold. The old close gate used to enforce this and KN-159 removed it, correctly, because it put the reviewer in front of the close; the enforcement has to move rather than disappear. The reviewer suggested requiring --filed on the first board recording after adjudication, which fits: under the new order you record the round AFTER judging it, so you always know what you filed.",
+      "why": "Every finding becomes a card is the mechanism that makes closing before review safe. If findings can be recorded and forgotten, closing early just loses them, and the loop gets the speed without the safety.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "todo roast refuses to record a round without --filed, accepting --filed none as the explicit honest answer; KN-001 and KN-065 are adjudicated so the board starts clean; validate still reports the count so a regression is visible; and driving the real CLI proves the refusal.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T23:56:07.447Z"
+    },
+    {
+      "id": "KN-164",
+      "title": "CLI messages still instruct the obsolete close-after-roast flow",
+      "desc": "Found by the KN-159 roast. Two messages contradict the order KN-159 shipped. After adjudication, todo roast prints that move <id> done will now be accepted, but under the new order that task is ALREADY done, so following the instruction fails and nudges the reader towards reopening it first, which is the exact forbidden move. And todo next prints AWAITING ROAST, not blocking: <ids>. Adjudicate and close when it lands, which again describes closing after the roast. Operational instructions printed by the tool are followed more literally than documentation, because they arrive at the moment of acting.",
+      "why": "The tool's own output is the most trusted description of how the tool works. Leaving it describing the old order guarantees the old order gets followed by whoever reads it next, including a future iteration with no memory of this change.",
+      "severity": "medium",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "No message printed by todo.mjs instructs closing after a roast or implies a done task should be reopened; the post-adjudication line describes what is actually true, that the round is recorded and its findings are on the board; and a check asserts the obsolete phrasings are absent from the source's message strings.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T23:56:34.645Z"
+    },
+    {
+      "id": "KN-165",
+      "title": "Prove the roast recording path end to end with a stubbed reviewer",
+      "desc": "Found by the KN-159 roast. agent/scripts/verify/KN-159.mjs proves a done task passes the roast STATUS guard only, by asserting the refusal names a missing archive rather than the status. The recording path beyond that is unproven, because a real round needs a harness-written reply plus a .meta.json manifest whose digest matches, and forging one in a test would weaken the forgery resistance that check exists for. The reviewer proposed the way through: a sandbox-local fake codex executable, so roast.mjs writes a REAL archive and manifest from deterministic reviewer output, and todo.mjs roast then records against it. Production forgery resistance is untouched; the test simply supplies the reviewer.",
+      "why": "The roast recording path is now the only route by which a finding reaches the board, since it is no longer part of the close gate. It is the least tested part of the loop and the part everything else now depends on.",
+      "severity": "medium",
+      "points": 3,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A verifier drives roast.mjs against a stubbed reviewer in an isolated repository, gets a genuine archive and manifest, records the round against a DONE task with todo.mjs roast, and asserts the round appears on the card; the stub is confined to the sandbox and no production path accepts it; and mutations to the manifest digest check are caught.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T23:56:34.740Z"
+    },
+    {
+      "id": "KN-166",
+      "title": "Check the loop rules are written correctly in the SkipBureau project",
+      "desc": "The owner's instruction of 2026-09-10: go to the sibling project at ../SkipBureau and make sure these rules are written correctly there, because the agent working it has been getting them wrong. The rules to check are the ones settled here: finish and prove a task BEFORE closing it, close on its own verifier rather than on a review, roast the closed work once in the background, every finding becomes a new to-do and never reopens the closed task, and the one exception is a finding that blocks the task now in hand, which means revert that task and take the board's next item. Also the plan-before-building rule and where the plan file lives. Read what is there before changing anything: that project has its own history and its rules may differ deliberately.",
+      "why": "The owner asked directly, and a loop running the wrong rules produces work that has to be redone. The rules here were settled through several expensive mistakes and the sibling project has no way to learn them except by being told.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-09T23:56:34.854Z"
     }
   ]
 }
