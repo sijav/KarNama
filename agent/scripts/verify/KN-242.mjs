@@ -43,13 +43,13 @@ check('the Input stories pass', () => {
 
 check('the meta renders every arg through the specimen, and Default adds no render of its own', () => {
   const source = readFileSync(STORIES, 'utf8')
-  if (!/ {8}<Input key=\{[^\n]*\} \{\.\.\.args\} onChange=\{onChange\} \/>\n/.test(source)) return 'the meta does not pass its args to the specimen'
+  if (!/ {8}<Bound key=\{[^\n]*\} args=\{args\} updateArgs=\{updateArgs\} \/>\n/.test(source)) return 'the meta does not pass its args to the specimen'
   return /render:/.test(storyBody(source, 'Default')) ? 'Default overrides the args-driven render' : null
 })
 
 check('THE CASE: a render that ignores its args fails FromArgs', () => {
   const original = readFileSync(STORIES, 'utf8')
-  const anchor = "        <Input key={args.value === undefined ? `0${args.defaultValue ?? ''}` : '1'} {...args} onChange={onChange} />\n"
+  const anchor = "        <Bound key={args.value === undefined ? `0${args.defaultValue ?? ''}` : '1'} args={args} updateArgs={updateArgs} />\n"
   if (!original.includes(anchor)) return 'the meta render changed shape, so this mutation no longer applies'
   try {
     writeFileSync(STORIES, original.replace(anchor, () => '        <Input />\n'))

@@ -29,7 +29,7 @@ const WEB = join(ROOT, 'apps', 'web')
 const STORIES = join(WEB, 'src', 'shared', 'input', 'Input.stories.tsx')
 const { chromium } = createRequire(join(WEB, 'package.json'))('playwright')
 
-const BINDING = '      if (args.value !== undefined) updateArgs({ value })\n'
+const BINDING = '      updateArgs({ value })\n'
 const SET = 'x7'
 const TYPED = '42'
 
@@ -165,15 +165,18 @@ await check('with value set in Controls, typing changes the field and the arg fo
   }),
 )
 
-await check('THE CASE: with the binding taken out, the field refuses the typing again', async () => {
+// Since KN-253 the field holds its own copy of a bound value, so without the
+// binding it still takes the typing; what breaks is the arg, which stays at the
+// value set in Controls. That is the check above failing, as the card asks.
+await check('THE CASE: with the binding taken out, the arg no longer follows the typing', async () => {
   const original = readFileSync(STORIES, 'utf8')
   if (!original.includes(BINDING)) return 'the value binding is not where this mutation expects it, so it no longer applies'
   try {
     writeFileSync(STORIES, original.replace(BINDING, () => ''))
     return await withBuild(async (out) => {
       const tried = typedInto(await typeOverValue(out))
-      const frozen = tried.filter((story) => story.arrived && story.field === SET)
-      return frozen.length ? null : `every field took the typing without the binding: ${JSON.stringify(tried)}`
+      const behind = tried.filter((story) => story.arrived && story.arg === SET)
+      return behind.length ? null : `every arg followed the typing without the binding: ${JSON.stringify(tried)}`
     })
   } finally {
     writeFileSync(STORIES, original)

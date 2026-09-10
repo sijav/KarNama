@@ -154,8 +154,8 @@ const main = async () => {
   await check('THE CASE: the hidden fallback back, an empty label drawn as the copy, fails ControlsMatchTheCanvas', () =>
     withEdit('  args: { ...AT_LOAD, onChange: fn() },\n', "  args: { ...AT_LOAD, label: '', onChange: fn() },\n", () =>
       withEdit(
-        "{...args} onChange={onChange} />\n      </>\n",
-        "{...args} label={args.label === '' ? specimenCopy().label : args.label} onChange={onChange} />\n      </>\n",
+        '  return <Input {...args} {...(bound && held.value !== undefined ? { value: held.value } : {})} onChange={onChange} />\n',
+        "  return <Input {...args} label={args.label === '' ? specimenCopy().label : args.label} {...(bound && held.value !== undefined ? { value: held.value } : {})} onChange={onChange} />\n",
         () => {
           const { code, output } = stories()
           if (code === 0) return 'the stories passed with the fallback back, so nothing asserts the canvas draws the args'

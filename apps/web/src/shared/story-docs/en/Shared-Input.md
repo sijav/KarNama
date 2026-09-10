@@ -124,6 +124,12 @@ Clicking the label focuses the field, and the field is named by the label.
 Typing into the field calls onChange with the new text first and the event
 after it, and a name reaches the input element for a form.
 
+### TypingIntoABoundValue
+
+A value set in the args and twenty keys typed with no pause between them. The
+field shows every key as it is typed, and the value control catches up with it
+rather than dragging it back.
+
 ### WithoutAHelper
 
 A label and nothing under it. With no message the field points at no

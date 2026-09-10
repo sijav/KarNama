@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
-import { useEffect, type ChangeEvent } from 'react'
+import { useEffect, useState, type ChangeEvent } from 'react'
 import { useArgs, useRef } from 'storybook/preview-api'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18n } from '../../i18n'
@@ -85,6 +85,42 @@ const FollowTheLanguage = ({ pending, write }: { pending: boolean; write: () => 
   return null
 }
 
+// What the bound field holds: the value it shows, the values it has sent to
+// the args and not yet seen come back, and the arg it last saw.
+interface Held {
+  value: string | undefined
+  sent: string[]
+  seen: string | undefined
+}
+
+// The field the meta's render draws. While a value is bound in the args it
+// holds its own copy: an edit shows the moment it is made and then goes to
+// the args, which come back through Storybook's channel; waiting for them
+// lost keys typed faster than that, KN-253. It remembers what it sent, so an
+// arg that comes back is an echo and changes nothing, however late, and one
+// it never sent was set in Controls and is taken. The channel may skip
+// echoes and deliver only the newest, which the same rule handles. The one
+// value it cannot tell apart is one set in Controls while its own edits are
+// still in flight and equal to one of them: that is taken as their echo.
+const Bound = ({ args, updateArgs }: { args: InputProps; updateArgs: (update: Partial<InputProps>) => void }) => {
+  const [held, setHeld] = useState<Held>({ value: args.value, sent: [], seen: args.value })
+  // React's pattern for state that follows a prop: adjusted during render
+  // when the arg changes, not in an effect.
+  if (args.value !== held.seen) {
+    const at = args.value === undefined ? -1 : held.sent.indexOf(args.value)
+    setHeld(at === -1 ? { value: args.value, sent: [], seen: args.value } : { value: held.value, sent: held.sent.slice(at + 1), seen: args.value })
+  }
+  const bound = args.value !== undefined
+  const onChange = (value: string, event: ChangeEvent<HTMLInputElement>) => {
+    if (bound) {
+      setHeld((current) => ({ ...current, value, sent: [...current.sent, value] }))
+      updateArgs({ value })
+    }
+    args.onChange?.(value, event)
+  }
+  return <Input {...args} {...(bound && held.value !== undefined ? { value: held.value } : {})} onChange={onChange} />
+}
+
 // The specimen for the fixed renders, which offer no controls: its copy is
 // stated here, in the language on screen, and any prop given replaces it.
 const JobTitle = ({ withError = false, ...rest }: Partial<InputProps> & { withError?: boolean }) => (
@@ -148,16 +184,12 @@ const meta = {
       }
       updateArgs(update)
     }
-    const onChange = (value: string, event: ChangeEvent<HTMLInputElement>) => {
-      if (args.value !== undefined) updateArgs({ value })
-      args.onChange?.(value, event)
-    }
     // Drawn exactly as the args say, and nothing else: a value the Controls
     // do not show is the hidden fallback this story used to have.
     return (
       <>
         <FollowTheLanguage pending={COPY_FIELDS.some((field) => update[field] !== undefined)} write={write} />
-        <Input key={args.value === undefined ? `0${args.defaultValue ?? ''}` : '1'} {...args} onChange={onChange} />
+        <Bound key={args.value === undefined ? `0${args.defaultValue ?? ''}` : '1'} args={args} updateArgs={updateArgs} />
       </>
     )
   },
@@ -369,7 +401,7 @@ export const LabelIsBound: Story = {
 // panel's, recorded beside the field they drive. An unset one records
 // nothing, so unset and emptied stay apart.
 const WithTheArgs: NonNullable<Story['render']> = (args) => (
-  <Box data-testid="args" data-label={args.label} data-placeholder={args.placeholder} data-helper={args.helperText}>
+  <Box data-testid="args" data-label={args.label} data-placeholder={args.placeholder} data-helper={args.helperText} data-value={args.value}>
     {meta.render(args)}
   </Box>
 )
@@ -407,6 +439,31 @@ export const ControlsMatchTheCanvasInEnglish: Story = {
   // Not the language this file loads in, so the copy has to be written into
   // the args, not only kept there.
   globals: { locale: 'en-US' },
+}
+
+// Twenty keys, letter-free since they are test data rather than copy.
+const KEYS = '01234567890123456789'
+
+export const TypingIntoABoundValue: Story = {
+  // A value bound in the args and twenty keys typed with no delay between
+  // them: the field keeps every one, KN-253. In Storybook itself the args
+  // then follow the field; under the test runner they cannot move,
+  // TECH-DEBT 16, which is what makes the plain round trip refuse every key
+  // there. A fixed assertion, so no control is offered.
+  parameters: { controls: { disable: true } },
+  args: { value: '7' },
+  render: WithTheArgs,
+  play: async ({ canvasElement }) => {
+    const box = within(canvasElement).getByRole('textbox')
+    const recorded = within(canvasElement).getByTestId('args').dataset
+    await userEvent.type(box, KEYS, { delay: null })
+    await expect(box).toHaveValue(`7${KEYS}`)
+    if ('__KARNAMA_STORY_TEST__' in globalThis) return
+    await waitFor(async () => {
+      await expect(recorded.value).toBe(`7${KEYS}`)
+    })
+    await expect(box).toHaveValue(`7${KEYS}`)
+  },
 }
 
 // The bare field: a label and nothing under it, not even a helper.

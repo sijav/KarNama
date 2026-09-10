@@ -27,8 +27,8 @@ const WEB = join(ROOT, 'apps', 'web')
 const STORIES = join(WEB, 'src', 'shared', 'input', 'Input.stories.tsx')
 const { chromium } = createRequire(join(WEB, 'package.json'))('playwright')
 
-const KEYED = "        <Input key={args.value === undefined ? `0${args.defaultValue ?? ''}` : '1'} {...args} onChange={onChange} />\n"
-const UNKEYED = '        <Input {...args} onChange={onChange} />\n'
+const KEYED = "        <Bound key={args.value === undefined ? `0${args.defaultValue ?? ''}` : '1'} args={args} updateArgs={updateArgs} />\n"
+const UNKEYED = '        <Bound args={args} updateArgs={updateArgs} />\n'
 const NEXT = 'second'
 const MARKER = 'marker'
 

@@ -30,8 +30,8 @@ const { chromium } = createRequire(join(WEB, 'package.json'))('playwright')
 
 const PORT = 6252
 const ORIGIN = `http://127.0.0.1:${PORT}`
-const FIXED = "        <Input key={args.value === undefined ? `0${args.defaultValue ?? ''}` : '1'} {...args} onChange={onChange} />\n"
-const BEFORE = '        <Input key={args.defaultValue} {...args} onChange={onChange} />\n'
+const FIXED = "        <Bound key={args.value === undefined ? `0${args.defaultValue ?? ''}` : '1'} args={args} updateArgs={updateArgs} />\n"
+const BEFORE = '        <Bound key={args.defaultValue} args={args} updateArgs={updateArgs} />\n'
 const MODE = /changing (a controlled input to be uncontrolled|an uncontrolled input to be controlled)/
 
 const failures = []
