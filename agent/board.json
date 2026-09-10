@@ -6768,13 +6768,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "In the derived dark palette, border/focus and border/error each reach at least 3:1 against bg/page, bg/surface and bg/surface-secondary with their hue unchanged; darkMode.test.ts asserts all six ratios, and a mutation back to the unchecked derivation fails it; DESIGN.md's dark mode section says which borders are checked and at what ratio; and the Input's Focus state and the Checkbox's focus ring are seen in dark in both languages.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T14:09:07.310Z",
-      "updatedAt": "2026-09-10T14:19:29.761Z",
-      "verify": "node agent/scripts/verify/KN-271.mjs"
+      "updatedAt": "2026-09-10T14:19:58.208Z",
+      "verify": "node agent/scripts/verify/KN-271.mjs",
+      "evidence": "darkMode.ts walks border/focus and border/error lighter in their own hue with ensureContrast until they clear NON_TEXT_CONTRAST, 3, against the dark surface, the lightest dark background. border/focus is #3670ed (was #2d69ec): 3.48 on bg/page, 3.04 on bg/surface, 3.57 on bg/surface-secondary; border/error unchanged #ed2c2c at 3.70, 3.23, 3.80. node agent/scripts/verify/KN-271.mjs passed: all six ratio cases and both hue cases pass by name; border/focus back to the unchecked derivation fails 'border/focus clears 3:1 on the dark bg/surface'; NON_TEXT_CONTRAST lowered to 2.5 fails it too, since the test states 3; the surface colour in the error row fails the error surface case; a red focus colour fails the hue case; DESIGN.md's dark mode section names both borders, the three backgrounds and 3 to one. Unit project 418 passed, Storybook project 65 passed, eslint and tsc clean, contract clean, KN-005 verify passed. Seen in production Storybook in dark, fa-IR and en-US: the focused Input (Filled story) reads 2px rgb(54,112,237) on rgb(46,46,46); the Checkbox ring and the Filter Chip outline read 2px rgb(54,112,237); the focused invalid Input keeps 2px rgb(237,44,44). Not established: backgrounds other than the three, such as the brand and danger fills, which no built focus treatment sits on.",
+      "closedAt": "2026-09-10T14:19:58.208Z"
     }
   ]
 }
