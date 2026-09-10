@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 219,
+  "nextId": 221,
   "tasks": [
     {
       "id": "KN-001",
@@ -5087,7 +5087,23 @@
       "parent": [],
       "status": "done",
       "exit": "Every Figma state named on the card has a story, hover included, and hover is exercised with a real pointer rather than a dispatched event, since hover cannot be dispatched. KN-013.mjs checks the states by NAME against the card rather than counting stories, so adding a sixth story or renaming one cannot silently satisfy it. A mutation deleting the hover story fails it.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7.8,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-208-round-1.2026-09-10T06-52-28-030Z.md",
+          "filed": [
+            "KN-219",
+            "KN-220"
+          ],
+          "cardDigest": "e6e140d267a14d304b14df0704518b3cfef8531b0c423feea342e842315a3571",
+          "head": "97249f1467a06e7ebc3b86b0d456b357c9551dd0",
+          "reviewerScore": 7.8,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T07:01:25.246Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -5264,6 +5280,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T06:56:21.840Z"
+    },
+    {
+      "id": "KN-219",
+      "title": "KN-013's verifier reads the required states out of a prose sentence",
+      "desc": "CHILD OF KN-208, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-208 roast and confirmed: cardStates() in agent/scripts/verify/KN-013.mjs takes the KN-013 description up to the first ' from Figma' and splits it on commas and 'and'. A state added later in the sentence, or in a second sentence, is invisible to it, and the title's count cross-check only notices when the title is updated too.",
+      "why": "The check was written to stop a count standing in for names, and it now depends on a sentence keeping one exact shape. It is verifier tooling and nothing is wrong with the Checkbox, so it is low, per the loop rule of 2026-09-10.",
+      "severity": "low",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The required state list is read from a delimited, structured source that a reworded description cannot silently shorten, or KN-013.mjs refuses a description it cannot parse completely, proved by a description with a state added in a second sentence failing it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T07:01:24.736Z"
+    },
+    {
+      "id": "KN-220",
+      "title": "The Checkbox Hover story passes on its baseline alone if the test runner cannot load its pointer",
+      "desc": "CHILD OF KN-208, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-208 roast and confirmed: the story catches EVERY rejection of import('vitest/browser') and returns, so under Vitest a resolution or initialisation failure makes Hover pass after asserting only the unhovered border. KN-013.mjs notices, because its two hover mutations then fail to fail, but an ordinary npm test does not. The fallback is meant only for Storybook's own UI, where there is no test runner, and Storybook's addon tells the two apart with globalThis.__vitest_browser__.",
+      "why": "A story that turns an infrastructure failure into a pass is a test that can go green having tested nothing, which is exactly what KN-208 was filed to stop. Raised to critical with the other component findings, on the owner's order of 2026-09-10 to finish the components first.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Under Vitest the Hover story imports the pointer API without a catch and fails loudly if it cannot, the published Storybook still renders it as a canvas with no error, and a mutation making the import fail under Vitest fails the story rather than passing it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T07:01:25.045Z"
     }
   ]
 }
