@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-259` An Input error made only of invisible characters still turns the field red** (critical, 1 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-259` | An Input error made only of invisible characters still turns the field red | critical | 1 | web | none | An error made only of whitespace and Unicode format characters is no error, while a message that merely contains them is still shown; BlankErrorIsNoError also renders an error of only a zero-width non-joiner and only a right-to-left mark and asserts they are no error, and a story with a real Persian message containing a ZWNJ still shows it; a mutation back to trim() fails the story by name. |
+
 ## Blocked (3)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -18,12 +24,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (175)
+## Backlog (174)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-259` | An Input error made only of invisible characters still turns the field red | critical | 1 | web | none | An error made only of whitespace and Unicode format characters is no error, while a message that merely contains them is still shown; BlankErrorIsNoError also renders an error of only a zero-width non-joiner and only a right-to-left mark and asserts they are no error, and a story with a real Persian message containing a ZWNJ still shows it; a mutation back to trim() fails the story by name. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -3265,9 +3270,11 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** With value set, changing defaultValue in Controls leaves the same input element in place, still focused if it was, showing the same value; with value unset a new default still starts the field over; a check on a built Storybook does both, and a mutation back to keying on defaultValue in both modes fails the first.
 
+**Roasts.** round 1 scored 10 with 0 critical(s)
+
 ### `KN-259` An Input error made only of invisible characters still turns the field red
 
-- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **status** in_progress · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-254 roast and confirmed in Node: KN-254 treats an error as blank when trim() empties it, and trim() leaves the Unicode format characters in place. A zero-width space, U+200B, a zero-width non-joiner, U+200C, a zero-width joiner, a left-to-right or right-to-left mark, or a word joiner each survive it as one character, so an error made only of them still draws border/error, sets aria-invalid and replaces the helper with a line a person cannot see. The zero-width non-joiner is part of ordinary Persian text. Whitespace plus the format characters, /^[\s\p{Cf}]*$/u, treats all of them as blank and still keeps a real message with a ZWNJ inside it.

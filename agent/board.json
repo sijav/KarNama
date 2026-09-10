@@ -6426,7 +6426,20 @@
       "parent": [],
       "status": "done",
       "exit": "With value set, changing defaultValue in Controls leaves the same input element in place, still focused if it was, showing the same value; with value unset a new default still starts the field over; a check on a built Storybook does both, and a mutation back to keying on defaultValue in both modes fails the first.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 10,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-258-round-1.2026-09-10T12-19-30-994Z.md",
+          "filed": [],
+          "cardDigest": "4cc88d71b5e56b9df3453a755b8da72b86b77b306adcabca8b8ca2a5af3e60b3",
+          "head": "3eaf0e0061c8dbbd12f866481d8bc3fd40f9e564",
+          "reviewerScore": 10,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T12:20:51.646Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T11:47:12.847Z",
       "updatedAt": "2026-09-10T12:19:15.857Z",
@@ -6443,11 +6456,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "An error made only of whitespace and Unicode format characters is no error, while a message that merely contains them is still shown; BlankErrorIsNoError also renders an error of only a zero-width non-joiner and only a right-to-left mark and asserts they are no error, and a story with a real Persian message containing a ZWNJ still shows it; a mutation back to trim() fails the story by name.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T12:09:09.497Z"
+      "createdAt": "2026-09-10T12:09:09.497Z",
+      "updatedAt": "2026-09-10T12:20:51.760Z"
     }
   ]
 }
