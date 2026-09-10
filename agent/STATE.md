@@ -21,7 +21,7 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**88 done, 183 open, 2 blocked, 2 dropped** of 275 (2026-09-10). Coverage 100
+**92 done, 186 open, 2 blocked, 2 dropped** of 282 (2026-09-10). Coverage 100
 percent on all four metrics. **Deployed**: https://sijav.github.io/KarNama/ and
 Storybook at https://sijav.github.io/KarNama/storybook/, both from
 `.github/workflows/pages.yml` on every push. The API needs
@@ -31,21 +31,25 @@ Storybook at https://sijav.github.io/KarNama/storybook/, both from
 Status Chip (KN-010), Input (KN-011). The live site is a placeholder shell
 until screens start, which is after components.
 
-**Open children.** KN-011: KN-245 (next), KN-251 (low), KN-253, KN-255, KN-256
-(low), KN-257 (medium), KN-260 (high), KN-266, KN-267, KN-272, KN-274, KN-275.
-KN-010: KN-240 (low), KN-264 (waits on KN-062). A finding from a child's roast
-sits under the same parent, one level. When a parent's last child closes, roast
-the parent with all its children.
+**Open children.** KN-011: KN-251 (low), KN-255, KN-256 (low), KN-257
+(medium), KN-260 (high), KN-267, KN-272, KN-274, KN-275, KN-277 (low), KN-278
+(low), KN-279 (waits on KN-272), KN-280, KN-281 (next), KN-282. KN-010: KN-240
+(low), KN-264 (waits on KN-062). A finding from a child's roast sits under the
+same parent, one level. When a parent's last child closes, roast the parent
+with all its children.
 
-**This stretch, 2026-09-10.** KN-263: the Status Chip is the flex box again,
-the name in an inner span. KN-271: the dark border/focus and border/error are
-checked at 3:1, focus now `#3670ed`. KN-244: a focused invalid Input keeps two
-pixels of border/error and takes the product's ring, outline 2px border/focus
-at offset 2. KN-273: a question card, the owner chose a new 3:1 resting edge
-role for controls, KN-275 builds it. Filed: KN-272, the dark selected Filter
-Chip's text is 1.34:1 because bg/brand/container derives to a bright `#207df9`;
-KN-274, the invalid ring lies outside a field that fills its container, so a
-clipping host removes it. KN-273's roast was running at the time of writing.
+**This stretch, 2026-09-10.** KN-263: the Status Chip is the flex box again.
+KN-271: the dark focus and error borders are checked at 3:1. KN-244: a focused
+invalid Input keeps two pixels of red and takes the product's ring. KN-273 and
+KN-276: question cards; the owner chose a 3:1 resting edge role for controls
+(KN-275) and a blue edge for a selected Filter Chip (KN-279). KN-245: the
+specimen's copy lives in the Input's args and follows the language there, the
+meta render writing it back from a React effect in a child. KN-253: a bound
+Input holds its own copy of the value and a queue of what it sent. KN-266: the
+Input's edge is a border on ::before, painted over the padding, so the text
+sits at 16 in every state. KN-266 found the Checkbox drawn at 1 for 1.5
+(KN-281) and the Filter Chip's text at 13 for 12 (KN-282). KN-266's roast was
+running at the time of writing.
 
 **KN-214 is deliberately held at high**: lingui compiles `ignore` with no flags,
 so `^[^\p{L}]*$` means "contains no p, {, L or }", and every Persian literal and
@@ -54,9 +58,9 @@ last component closes. Until then, strings go through lingui by hand.
 
 **Owner decisions of 2026-09-10**, in DESIGN.md under "Settled by the owner on
 2026-09-10": the drop onto the collapsed rejected column in full, KN-196;
-employment type as eight values, more than one per job, KN-265; and a 3:1
-resting edge role for controls, KN-273 and KN-275. The job level list and
-KN-077 still wait.
+employment type as eight values, more than one per job, KN-265; a 3:1 resting
+edge role for controls, KN-273 and KN-275; and a blue edge for a selected
+Filter Chip, KN-276 and KN-279. The job level list and KN-077 still wait.
 
 ## The owner's rules, most recent first
 
@@ -103,16 +107,19 @@ KN-077 still wait.
 - Hand-written lingui catalogs are never compiled: ICU renders raw in production (KN-221).
 - The real pointer stays where the last hover story left it (KN-260).
 - A derived palette is only as checked as its tests: text was, borders and fills were not (KN-271, KN-272).
+- Portable stories apply no updateArgs; anything that needs the store is proved in a production build (TECH-DEBT 16).
+- Storybook runs its own hooks' effects after play in its preview: write args from a React effect in a child.
+- A roast has three times called a plan beside the work misplaced documentation: dismiss it, it misreads step 2b.
+- Read the file with use_figma before trusting a code comment about it: the Checkbox said 1, the file says 1.5.
 - Vitest hides console output by default: `--silent=false --reporter=verbose` for probes.
 
 ## The next step
 
-KN-245, then by the law: the two-point Input children KN-253, KN-266, KN-267,
-KN-272, KN-274, then KN-275 (3), KN-206, KN-223 (blocked by KN-221), KN-226,
-KN-255, KN-221, and the components KN-019, KN-023, KN-062, KN-008, KN-009,
-KN-012. A new story title goes into `StoryTitle` in
-`src/shared/story-docs/story-meta.ts`; a story with a play function declares
-the controls it offers.
+Adjudicate KN-266's roast, then by the law: KN-281, KN-282, KN-267, KN-272,
+KN-274, KN-280, then KN-275 (3), KN-206, KN-226, KN-255, KN-221, and the
+components KN-019, KN-023, KN-062, KN-008, KN-009, KN-012. A new story title
+goes into `StoryTitle` in `src/shared/story-docs/story-meta.ts`; a story with
+a play function declares the controls it offers.
 
 ## What to read first
 
