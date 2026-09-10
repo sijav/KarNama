@@ -57,9 +57,12 @@ scratchpad, with `--summary` and `--ask`; and the Input verifier batch (KN-011,
 KN-241 to KN-267, KN-291), not rerun since the focus rule changed, though the
 line they anchor on was kept.
 
-**The owner paused the loop at 2026-09-10 21:34** with
-`.claude/ralph-loop.paused`, gitignored: the Stop hook does not re-feed while it
-exists. Delete it to resume. The owner then shut the machine down.
+**The owner paused the loop on 2026-09-10** and then shut the machine down. An
+empty `.claude/ralph-loop.paused` did not pause it: the installed hook reads
+only whether `.claude/ralph-loop.local.md` exists. So at 21:56 the state was
+moved into `.claude/ralph-loop.paused`, iteration 82. Resume with
+`mv .claude/ralph-loop.paused .claude/ralph-loop.local.md`; RALPH.md's Control
+section now says so.
 
 **KN-214 is deliberately held at high**: lingui compiles `ignore` with no flags,
 so `^[^\p{L}]*$` means "contains no p, {, L or }", and every Persian literal and

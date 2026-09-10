@@ -493,6 +493,12 @@ the loop should stop, the promise becomes true by finishing the work.
 ## Control
 
 ```bash
-touch .claude/ralph-loop.paused          # pause, state kept, delete to resume
-rm .claude/ralph-loop.local.md           # stop
+mv .claude/ralph-loop.local.md .claude/ralph-loop.paused   # pause, state kept
+mv .claude/ralph-loop.paused .claude/ralph-loop.local.md   # resume
+rm .claude/ralph-loop.local.md                             # stop
 ```
+
+The installed Stop hook, ralph-wiggum 1.0.0, reads only whether
+`.claude/ralph-loop.local.md` exists: an empty `ralph-loop.paused` beside it
+pauses nothing, as 2026-09-10 found. So a pause moves the state file aside, and
+a resume moves it back. Both names are gitignored.
