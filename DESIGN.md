@@ -187,6 +187,14 @@ as a sixth role, which was wrong: it does not exist.
 
 Reaching for the large size anywhere else is a departure from the design.
 
+### The Input focused while invalid
+
+Node `95:38` draws six standalone states and no composite, so this one is a
+decision rather than a reading. **A focused invalid field keeps the error
+colour and takes the focus width**: two pixels of `border/error`. Turning it
+blue would hide the error exactly while the user is fixing it, and keeping it
+at one pixel would leave no sign of focus. Revisit if the file ever draws it.
+
 ### Dark mode
 
 **The file defines light values only.** There are no dark tokens. Any dark

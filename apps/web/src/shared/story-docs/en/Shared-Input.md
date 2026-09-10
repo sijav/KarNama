@@ -72,6 +72,12 @@ Two pixels of the focus colour, and the text does not move a pixel for it.
 The error border, and the error message as the line under the field and as
 what the field announces.
 
+### FocusedWhileInvalid
+
+An invalid field taking focus keeps the error colour at the focus width, two
+pixels of the error border. The design does not draw this state; DESIGN.md
+records the decision.
+
 ### Disabled
 
 The secondary surface, with the text in the disabled colour.

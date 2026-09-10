@@ -81,14 +81,16 @@ export const Focus: Story = {
   play: async ({ canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')
     const field = fieldOf(canvasElement)
-    const before = box.getBoundingClientRect().left
+    const before = box.getBoundingClientRect()
     await userEvent.tab()
     await expect(box).toHaveFocus()
     const style = getComputedStyle(field)
-    // Node 95:17: TWO pixels of border/focus, and the text does not move for it.
+    // Node 95:17: TWO pixels of border/focus, and the text does not move for
+    // it, sideways or up and down: the field is border-box and 44 tall either way.
     await expect(Number.parseFloat(style.borderTopWidth)).toBe(2)
     await expect(style.borderTopColor).toBe(computedColour(field, semantic['border/focus']))
-    await expect(box.getBoundingClientRect().left).toBe(before)
+    const after = box.getBoundingClientRect()
+    await expect([after.left, after.top]).toEqual([before.left, before.top])
     await expect(field.offsetHeight).toBe(44)
   },
 }
@@ -108,6 +110,21 @@ export const WithError: Story = {
     if (!line) throw new Error('the field describes itself by nothing')
     await expect(getComputedStyle(line).color).toBe(computedColour(line, semantic['text/error']))
     await expect(box).toHaveAccessibleDescription(line.textContent)
+  },
+}
+
+export const FocusedWhileInvalid: Story = {
+  globals: { colorScheme: 'light' },
+  render: () => <JobTitle defaultValue="توسعه" withError />,
+  play: async ({ canvasElement }) => {
+    const field = fieldOf(canvasElement)
+    await userEvent.tab()
+    await expect(within(canvasElement).getByRole('textbox')).toHaveFocus()
+    // Not drawn in the file, decided in DESIGN.md: the focus width in the
+    // error colour, so the error stays visible while it is being fixed.
+    const style = getComputedStyle(field)
+    await expect(Number.parseFloat(style.borderTopWidth)).toBe(2)
+    await expect(style.borderTopColor).toBe(computedColour(field, semantic['border/error']))
   },
 }
 

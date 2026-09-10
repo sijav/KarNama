@@ -5954,11 +5954,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "DESIGN.md records what a focused invalid field looks like and why; a story focuses an invalid field and asserts exactly that; the Focus story asserts the text keeps both its horizontal and vertical position when the border widens; and a mutation changing the focused-error border fails the new story.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T09:27:16.092Z"
+      "createdAt": "2026-09-10T09:27:16.092Z",
+      "updatedAt": "2026-09-10T09:29:58.355Z",
+      "verify": "node agent/scripts/verify/KN-241.mjs"
     },
     {
       "id": "KN-242",
