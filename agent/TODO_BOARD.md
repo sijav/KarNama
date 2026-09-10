@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 31 of 188 tasks done · 81 of 550 points.
+Project **KarNama** · 31 of 190 tasks done · 81 of 554 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,10 +16,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
 
-## Backlog (154)
+## Backlog (156)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-189` | Heading keywords pick the wrong block, so a reversed real block still passes | critical | 2 | agent | none | The normative block is identified by an explicit stable marker rather than by keywords in a heading; both fixtures the reviewer ran, an earlier step whose prose contains both words, and a real step whose heading uses different words, are covered as cases; and each fails before the fix and passes after. |
+| `KN-190` | Command-shaped text inside a string counts as the command | critical | 2 | agent | none | The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident. |
 | `KN-149` | The board cards for the rejected column do not require it to collapse | high | 1 | design | none | The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered. |
 | `KN-152` | Use the current Contacts tab label in the history decision | high | 1 | design | KN-072 | DESIGN.md section 6 and section 3 name the modal tab افراد مرتبط, KN-030 and KN-045 use that label, KN-072.mjs requires it and REJECTS مخاطبین as the modal tab label, and a mutation restoring مخاطبین fails the verifier with its own message. |
 | `KN-153` | Separate the owner-settled own-tab decision from the author-chosen tab ORDER | high | 1 | design | KN-072 | DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message. |
@@ -2302,6 +2304,8 @@ Found by the KN-181 roast. agent/scripts/verify/KN-166.mjs claims in its own com
 
 **Exit condition.** The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed.
 
+**Roasts.** round 1 scored 3 with 2 critical(s)
+
 ### `KN-185` Nothing establishes which prompt file the sibling Stop hook actually feeds
 
 - **status** backlog · **severity** high · **points** 2 · **area** agent
@@ -2345,4 +2349,26 @@ The owner's rule of 2026-09-10: a roast's findings are filed as CHILDREN of the 
 **Why.** The rule is the thing that makes done mean something: a task is finished when everything its review turned up has been dealt with, not when somebody says so. Stating it in the loop file while the board cannot express it means every finding here is still a loose card, and the group roast that closes the cycle can never be triggered by anything but memory.
 
 **Exit condition.** A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source.
+
+### `KN-189` Heading keywords pick the wrong block, so a reversed real block still passes
+
+- **status** backlog · **severity** critical · **points** 2 · **area** agent
+- **blocked by** none
+
+CHILD OF KN-184, recorded here because board.json cannot express parent_task yet, KN-188. Found by the KN-184 roast, which reproduced it. lib/prompt-order.mjs selects the normative block with findIndex over numbered lines containing both done and roast. Any EARLIER numbered step whose prose happens to contain both words wins. The reviewer ran a fixture with step 2 headed If a task is done, roast it only after closing it and step 5 headed Close the task, then request review, and closesBeforeRoasting returned ok true while step 5's block was reversed. The exit condition KN-184 closed against is therefore not met for that shape. I raised this risk in my own plan, asked whether heading keywords were more robust than counting fences or just more quietly brittle, and the plan check endorsed heading association without foreseeing it. The reviewer's answer is an explicit marker for the normative block rather than prose keywords.
+
+**Why.** This is the second time this check has been fixed and the second time it has been fooled by a document that reads reasonably. Prose is not a selector: any rule that infers WHICH block is normative from the words around it can be defeated by words. A marker is the only thing that cannot drift, and the block matters because it is what gets copied.
+
+**Exit condition.** The normative block is identified by an explicit stable marker rather than by keywords in a heading; both fixtures the reviewer ran, an earlier step whose prose contains both words, and a real step whose heading uses different words, are covered as cases; and each fails before the fix and passes after.
+
+### `KN-190` Command-shaped text inside a string counts as the command
+
+- **status** backlog · **severity** critical · **points** 2 · **area** agent
+- **blocked by** none
+
+CHILD OF KN-184, recorded here because board.json cannot express parent_task yet, KN-188. Found by the KN-184 roast, which reproduced it. lib/prompt-order.mjs finds the close and the roast with unanchored regexes over each line, so any line CONTAINING the text counts. The reviewer ran a block whose first line is echo "todo move <id> done", followed by the real roast command and then the real close, and got ok true: the echo was read as the close, so the order looked right while the actual commands ran the wrong way round. Skipping lines that start with a hash is not enough, because the text does not have to be in a comment to be inert. The fix is to recognise an actual command at the start of a line rather than command-shaped text anywhere in it.
+
+**Why.** A check that reads text rather than commands can be satisfied by anything that mentions a command, including documentation of the very mistake it is looking for. That is the same shape as a grep matching the prose explaining a ban, which this repository has now shipped three times.
+
+**Exit condition.** The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident.
 

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 189,
+  "nextId": 191,
   "tasks": [
     {
       "id": "KN-001",
@@ -4282,7 +4282,24 @@
       "parent": [],
       "status": "done",
       "exit": "The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-184-round-1.2026-09-10T01-10-24-858Z.md",
+          "filed": [
+            "KN-189",
+            "KN-190"
+          ],
+          "cardDigest": "7d9ef536068de75edc3afae9e2db247ac84608ed3e1c4825deb26f9c9ff0f317",
+          "head": "9f356be5288eeef4503e10968abc5a21b8720e1a",
+          "reviewerScore": 3,
+          "reviewerCriticals": 2,
+          "dismissed": "One answer rejected in part, and it is about my own check rather than a finding. The reviewer says the inline reproduction of the OLD implementation is historical evidence and not load-bearing, and should be removed unless documenting the regression is valuable. I am keeping it, and the reason is that it is the only thing in the file that establishes the change fixed something: without it, every other check is equally consistent with a rewrite of code that was already correct. The reviewer is right that it cannot protect current behaviour and right that it will not track future edits, and both of those are true of any regression record. It stays as what it is, an assertion that the defect was real, rather than as a guard.",
+          "at": "2026-09-10T01:19:05.801Z"
+        }
+      ],
       "notes": [
         "Kept, because this is not a new gate: the check already exists and already claims in its own comment to read the block. This fixes a check that lies about what it reads."
       ],
@@ -4357,6 +4374,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T01:13:45.273Z"
+    },
+    {
+      "id": "KN-189",
+      "title": "Heading keywords pick the wrong block, so a reversed real block still passes",
+      "desc": "CHILD OF KN-184, recorded here because board.json cannot express parent_task yet, KN-188. Found by the KN-184 roast, which reproduced it. lib/prompt-order.mjs selects the normative block with findIndex over numbered lines containing both done and roast. Any EARLIER numbered step whose prose happens to contain both words wins. The reviewer ran a fixture with step 2 headed If a task is done, roast it only after closing it and step 5 headed Close the task, then request review, and closesBeforeRoasting returned ok true while step 5's block was reversed. The exit condition KN-184 closed against is therefore not met for that shape. I raised this risk in my own plan, asked whether heading keywords were more robust than counting fences or just more quietly brittle, and the plan check endorsed heading association without foreseeing it. The reviewer's answer is an explicit marker for the normative block rather than prose keywords.",
+      "why": "This is the second time this check has been fixed and the second time it has been fooled by a document that reads reasonably. Prose is not a selector: any rule that infers WHICH block is normative from the words around it can be defeated by words. A marker is the only thing that cannot drift, and the block matters because it is what gets copied.",
+      "severity": "critical",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The normative block is identified by an explicit stable marker rather than by keywords in a heading; both fixtures the reviewer ran, an earlier step whose prose contains both words, and a real step whose heading uses different words, are covered as cases; and each fails before the fix and passes after.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T01:18:51.144Z"
+    },
+    {
+      "id": "KN-190",
+      "title": "Command-shaped text inside a string counts as the command",
+      "desc": "CHILD OF KN-184, recorded here because board.json cannot express parent_task yet, KN-188. Found by the KN-184 roast, which reproduced it. lib/prompt-order.mjs finds the close and the roast with unanchored regexes over each line, so any line CONTAINING the text counts. The reviewer ran a block whose first line is echo \"todo move <id> done\", followed by the real roast command and then the real close, and got ok true: the echo was read as the close, so the order looked right while the actual commands ran the wrong way round. Skipping lines that start with a hash is not enough, because the text does not have to be in a comment to be inert. The fix is to recognise an actual command at the start of a line rather than command-shaped text anywhere in it.",
+      "why": "A check that reads text rather than commands can be satisfied by anything that mentions a command, including documentation of the very mistake it is looking for. That is the same shape as a grep matching the prose explaining a ban, which this repository has now shipped three times.",
+      "severity": "critical",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T01:18:51.245Z"
     }
   ]
 }
