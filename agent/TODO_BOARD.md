@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 24 of 167 tasks done · 70 of 516 points.
+Project **KarNama** · 24 of 171 tasks done · 70 of 522 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -10,11 +10,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-162` A closed task is still freely reopenable, so done does not mean done** (critical, 2 pt, agent)
 
-## Backlog (142)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-162` | A closed task is still freely reopenable, so done does not mean done | critical | 2 | agent | none | move <id> in_progress, backlog, review or blocked all REFUSE when the task is done, and the refusal names the new-card route; dropped remains reachable if that is decided to be right; the refusal is proved by driving the real CLI in an isolated repository rather than by reading the source; and a mutation removing the guard fails the check with its own message. |
+
+## Backlog (145)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-112` | Two preference setters called in one batch lose the first update | high | 1 | web | KN-006 | A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation. |
 | `KN-114` | The catalog test counts an empty string as a translation | high | 1 | web | KN-006 | Setting any Persian message to an empty or whitespace-only string fails npm test, and the failure names the id. |
 | `KN-132` | Pin the byte-compared generated files to LF, or stop comparing bytes | high | 1 | infra | none | A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand. |
@@ -22,6 +27,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-152` | Use the current Contacts tab label in the history decision | high | 1 | design | KN-072 | DESIGN.md section 6 and section 3 name the modal tab افراد مرتبط, KN-030 and KN-045 use that label, KN-072.mjs requires it and REJECTS مخاطبین as the modal tab label, and a mutation restoring مخاطبین fails the verifier with its own message. |
 | `KN-153` | Separate the owner-settled own-tab decision from the author-chosen tab ORDER | high | 1 | design | KN-072 | DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message. |
 | `KN-155` | KN-045 still specifies the four-tab modal KN-072 replaced | high | 1 | web | KN-072 | KN-045 names five tabs with history in its own, its exit condition asserts where history renders, and a check proves NO open card still says four-tab modal or places history inside the info tab. |
+| `KN-171` | The loop prompt fed by the Stop hook still teaches the old order | high | 1 | agent | none | .claude/ralph-loop.local.md states finish, prove, close, roast in that order, carries no fix-in-task rule, and describes the close gate as it actually is; a check asserts the prompt and RALPH.md do not contradict each other on the order; and a mutation reintroducing either stale rule fails that check with its own message. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
@@ -50,6 +56,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-163` | Adjudication is reported, not enforced, so findings can go unfiled forever | high | 2 | agent | none | todo roast refuses to record a round without --filed, accepting --filed none as the explicit honest answer; KN-001 and KN-065 are adjudicated so the board starts clean; validate still reports the count so a regression is visible; and driving the real CLI proves the refusal. |
 | `KN-166` | Check the loop rules are written correctly in the SkipBureau project | high | 2 | agent | none | ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed. |
 | `KN-167` | The API schema-entry test is flaky under load and fails the gate at random | high | 2 | api | none | The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure. |
+| `KN-168` | KN-160's verifier passes on two blind spots it claims to cover | high | 2 | agent | none | The tree walk covers agent/ and every other directory, distinguishing a plan file from a plan-shaped one by its NAME rather than by which folder it is in; the instruction corpus is derived from a stated convention or from a registry that new instruction files must join, rather than from a hand-maintained list; and both blind spots are proved closed by mutations that currently pass and must then fail. |
+| `KN-170` | An irreversible action must prove its rollback path before it runs | high | 2 | agent | none | AGENTS.md and agent/RALPH.md both carry the rule, naming the three git commands as the concrete instance and stating the general form; the wording makes clear it applies to any irreversible action and not only to deletion; and a check asserts both files carry it so it cannot quietly disappear the way the plan lifecycle rule did. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -116,6 +124,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-156` | The close gate has no exit for unrelated work landing during a background roast | medium | 1 | agent | none | move done distinguishes changes that touch files the round read from changes that do not, names which files it compared, and accepts an unrelated change with its own flag and its own recorded sentence. A mutation that changes a file the round DID read still refuses with the original message. |
 | `KN-157` | The roast record cannot say a finding was fixed rather than dismissed | medium | 1 | agent | none | todo roast accepts a way to record findings that were fixed in-task rather than filed, the summary line distinguishes the three cases, dismissed, filed and fixed, and re-recording KN-100 round 1 with it shows three findings fixed rather than nothing survived. |
 | `KN-164` | CLI messages still instruct the obsolete close-after-roast flow | medium | 1 | agent | none | No message printed by todo.mjs instructs closing after a roast or implies a done task should be reopened; the post-adjudication line describes what is actually true, that the round is recorded and its findings are on the board; and a check asserts the obsolete phrasings are absent from the source's message strings. |
+| `KN-169` | The KN-071 loss marker impersonates the plan it says was destroyed | medium | 1 | agent | none | The KN-071 loss record lives somewhere named for what it is rather than under a plan filename, the decision it concerns links to it, no file matching the plan naming convention denies being a plan, and a check proves that last property so the next marker cannot repeat it. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -2000,6 +2009,8 @@ The owner's rule of 2026-09-10: the plan written before a task starts goes in th
 
 **Exit condition.** agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree.
 
+**Roasts.** round 1 scored 5.8 with 0 critical(s)
+
 ### `KN-161` Give the roast, todo and loop skills BOTH a python and a node script
 
 - **status** backlog · **severity** high · **points** 3 · **area** agent
@@ -2013,7 +2024,7 @@ The owner's rule of 2026-09-10: a skill should work whichever runtime is present
 
 ### `KN-162` A closed task is still freely reopenable, so done does not mean done
 
-- **status** backlog · **severity** critical · **points** 2 · **area** agent
+- **status** in_progress · **severity** critical · **points** 2 · **area** agent
 - **blocked by** none
 
 Found by the KN-159 roast. move has no transition guard on the CURRENT status. Its only in_progress guard asks whether some OTHER task is active, so move <id> in_progress succeeds on a task that is already done whenever nothing else is in progress. That permits exactly the sequence KN-159 exists to forbid: close, roast, reopen, fix what the roast found, close again. KN-159's claim that a roasted task STAYS done is therefore documentation rather than behaviour, and this session did precisely that to KN-100 before the rule changed.
@@ -2076,4 +2087,48 @@ apps/api/src/graphql/schema-entry.test.ts failed one of its four cases during a 
 **Why.** A gate that fails at random is worse than no gate, because the first thing anyone learns is to run it again, and after that a REAL failure gets re-run too. This one is especially bad placed: it guards the schema entry, which is the contract between the resolvers and the generated client, so the test everyone learns to ignore is the one protecting the thing that breaks silently.
 
 **Exit condition.** The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure.
+
+### `KN-168` KN-160's verifier passes on two blind spots it claims to cover
+
+- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **blocked by** none
+
+Found by the KN-160 roast, both reproduced by reading. FIRST, the check named every plan file in the tree walks the repository but skips the whole agent directory, which is exactly where agent work puts its plans and where two of them already live. Creating agent/plan-KN-999.md leaves the verifier green. The skip was added so the walk would not match the verifier's own plan file, and it blinded the check to the directory that matters most. SECOND, no instruction file still sends a plan to the old directory inspects three hardcoded paths, so a new operative file, say agent/WORKFLOW.md, instructing the old path is invisible and the verifier still passes. The source admits this, and the roast is right that documenting a hole does not make the exit condition true.
+
+**Why.** A verifier whose stated coverage is wider than its real coverage is worse than a narrow one honestly described, because the next person reads the check name and stops looking. Both of these are the exact shape this repository keeps shipping: a check that passes for a reason unrelated to the thing it claims.
+
+**Exit condition.** The tree walk covers agent/ and every other directory, distinguishing a plan file from a plan-shaped one by its NAME rather than by which folder it is in; the instruction corpus is derived from a stated convention or from a registry that new instruction files must join, rather than from a hand-maintained list; and both blind spots are proved closed by mutations that currently pass and must then fail.
+
+### `KN-169` The KN-071 loss marker impersonates the plan it says was destroyed
+
+- **status** backlog · **severity** medium · **points** 1 · **area** agent
+- **blocked by** none
+
+Found by the KN-160 roast. apps/api/prisma/#KN-071 - A contact needs only a full name.md carries the mandated plan filename and a # Plan heading, and its first sentence says the plan is gone. So anything keyed on the #KN-NNN filename, a person scanning the folder or a future check that collects plans, will find an incident report where it expects the historical plan, and the two are not interchangeable. The roast's suggestion is to keep the loss record somewhere that says what it is, such as agent/incidents/, and link it from the decision it relates to rather than putting it in the plan's chair.
+
+**Why.** A file that says one thing in its name and the opposite in its first line will be classified by its name, by both people and automation. The record of a loss is worth keeping; keeping it disguised as the thing that was lost is how the loss gets forgotten twice.
+
+**Exit condition.** The KN-071 loss record lives somewhere named for what it is rather than under a plan filename, the decision it concerns links to it, no file matching the plan naming convention denies being a plan, and a check proves that last property so the next marker cannot repeat it.
+
+### `KN-170` An irreversible action must prove its rollback path before it runs
+
+- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **blocked by** none
+
+The general rule behind today's data loss, offered by the KN-160 roast and worth writing down because the specific fix, keep plan files, does not generalise. I deleted two files justified by the claim that git held them. It did not. The concrete guard is that the claim is one command away from being tested: git check-ignore -v <path> says whether it is ignored, git ls-files --error-unmatch <path> says whether it is tracked, git cat-file -e HEAD:<path> says whether a committed version exists. Any of those would have stopped the deletion. Stated generally: an irreversible action justified by a fallback needs a command that PROVES the fallback exists, run before the action, not an argument that it should.
+
+**Why.** This class of mistake is not about plans and will not be prevented by the rule that fixed plans. Every future delete, overwrite, force push, revert, prune or reset carries the same shape: a confident sentence about recoverability that nobody checked. The cost is unbounded and the check costs one command.
+
+**Exit condition.** AGENTS.md and agent/RALPH.md both carry the rule, naming the three git commands as the concrete instance and stating the general form; the wording makes clear it applies to any irreversible action and not only to deletion; and a check asserts both files carry it so it cannot quietly disappear the way the plan lifecycle rule did.
+
+### `KN-171` The loop prompt fed by the Stop hook still teaches the old order
+
+- **status** backlog · **severity** high · **points** 1 · **area** agent
+- **blocked by** none
+
+.claude/ralph-loop.local.md is the prompt the Stop hook feeds back every iteration, and it still carries the rules KN-159 replaced. Line 66 states the mechanical fix-in-task test that RALPH.md deleted, and line 76 makes step 6 Close it, after the roast, describing a close gate that requires a manifest-bound round and a record of what was filed, none of which is true any more. The prompt does say to follow RALPH.md exactly and that it is only the trigger, so the contradiction is survivable, but it is the single most-read instruction in the loop: it arrives at the start of every iteration and RALPH.md is read second. Two files giving different orders means the wrong one gets followed on the iteration where somebody is in a hurry.
+
+**Why.** The loop is driven by whichever text is in front of you at the moment of deciding. A trigger prompt that contradicts the rule file is the most expensive kind of stale documentation, because it is re-read more often than the thing it contradicts.
+
+**Exit condition.** .claude/ralph-loop.local.md states finish, prove, close, roast in that order, carries no fix-in-task rule, and describes the close gate as it actually is; a check asserts the prompt and RALPH.md do not contradict each other on the order; and a mutation reintroducing either stale rule fails that check with its own message.
 
