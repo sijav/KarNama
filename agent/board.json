@@ -7143,13 +7143,15 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The owner has answered, through the question tool, whether an Input on a screen keeps its message line reserved as the component does or drops it as the 91 screen instances draw it, and where an error on a field with the line off is shown; DESIGN.md records the answer as the owner's, with the date; and if the line can be off, a card for the change exists.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T17:20:16.518Z",
-      "updatedAt": "2026-09-10T17:58:53.095Z",
-      "verify": "node agent/scripts/verify/KN-285.mjs"
+      "updatedAt": "2026-09-10T17:58:55.567Z",
+      "verify": "node agent/scripts/verify/KN-285.mjs",
+      "evidence": "Read with use_figma: all 91 Input instances on the Screens canvas 5:7 set Helper Text off (label on, no icons), and in the Error variant 95:24 the message is the Helper Text node, so a field is 64 at rest and 90 failing. Put to the owner through the question tool on 2026-09-10 with four options and the trade on each: follow the screens (recommended), keep the line reserved, reserve only fields that can fail, ask the designer first; noting KN-286's announcement is required either way. The owner answered 'Follow the screens'. DESIGN.md's settled section (now five answers) records 'A field's message line is drawn only when there is something to say' as 'Owner, KN-285, put and answered through the question tool', with the heights, where an error shows, the options not taken, the reversal of KN-011's decision, KN-287 and KN-286. KN-287 exists, critical, 2 points, with the 64 and 90 heights, the line appearing with an error, the blank error and the record in its exit. node agent/scripts/verify/KN-285.mjs passed with its in-memory controls, and KN-196's, KN-273's and KN-276's verifiers pass. Contract and unit project (418) pass. Not established by a script: that the owner, not the author, answered; that rests on the question tool's record in this session.",
+      "closedAt": "2026-09-10T17:58:55.567Z"
     },
     {
       "id": "KN-286",
