@@ -6345,11 +6345,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "An error that is empty or only whitespace is no error: the field keeps its default border, is not aria-invalid, and shows its helper text; a story renders such an error and asserts all three; DESIGN.md or the component's story docs say the error state needs a message; and a mutation back to testing error against undefined fails that story by name.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T10:57:13.769Z"
+      "createdAt": "2026-09-10T10:57:13.769Z",
+      "updatedAt": "2026-09-10T12:06:36.495Z",
+      "verify": "node agent/scripts/verify/KN-254.mjs"
     },
     {
       "id": "KN-255",

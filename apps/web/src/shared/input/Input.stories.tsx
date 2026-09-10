@@ -131,7 +131,9 @@ export const FromArgs: Story = {
     const box = within(canvasElement).getByRole('textbox')
     await expect(box).toHaveAccessibleName(args.label)
     await expect(box).toHaveValue(args.value ?? args.defaultValue ?? '')
-    await expect(box).toHaveAccessibleDescription(args.error ?? args.helperText ?? '')
+    // A blank error is no error, so the helper describes the field then, KN-254.
+    const blank = args.error === undefined || args.error.trim() === ''
+    await expect(box).toHaveAccessibleDescription((blank ? args.helperText : args.error) ?? '')
     await (args.disabled === true ? expect(box).toBeDisabled() : expect(box).toBeEnabled())
   },
 }
@@ -324,5 +326,34 @@ export const ErrorDoesNotMoveTheField: Story = {
     if (!(first instanceof HTMLElement) || !(second instanceof HTMLElement)) throw new Error('the pair is not two elements')
     await expect(first.offsetHeight).toBe(second.offsetHeight)
     await expect(plain.getBoundingClientRect().top).toBe(failing.getBoundingClientRect().top)
+  },
+}
+
+export const BlankErrorIsNoError: Story = {
+  // A form may clear a field's error to '' rather than to undefined, or leave
+  // spaces in it. Blank is no error: the default border, not invalid, and the
+  // helper still under it, KN-254. A fixed pair, so no control applies.
+  parameters: { controls: { disable: true } },
+  globals: { colorScheme: 'light' },
+  render: () => (
+    <Stack direction="row" spacing={3} data-testid="blank">
+      <JobTitle error="" />
+      <JobTitle error="   " />
+    </Stack>
+  ),
+  play: async ({ canvasElement }) => {
+    const pair = [...within(canvasElement).getByTestId('blank').children]
+    await expect(pair).toHaveLength(2)
+    for (const input of pair) {
+      if (!(input instanceof HTMLElement)) throw new Error('a field is not an element')
+      const box = within(input).getByRole('textbox')
+      const field = fieldOf(input)
+      await expect(box).not.toHaveAttribute('aria-invalid')
+      await expect(getComputedStyle(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
+      const line = canvasElement.ownerDocument.getElementById(box.getAttribute('aria-describedby') ?? '')
+      if (!line) throw new Error('the field describes itself by nothing')
+      await expect(line.textContent).not.toBe('')
+      await expect(getComputedStyle(line).color).toBe(computedColour(line, semantic['text/secondary']))
+    }
   },
 }

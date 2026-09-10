@@ -39,7 +39,9 @@ const stories = () => {
 check('the Input stories pass, FocusWhileEmpty included', () => {
   const { code, output } = stories()
   if (code !== 0) return `they fail before anything is broken:\n${output.slice(-800)}`
-  return /Tests {2}13 passed \(13\)/.test(output) ? null : `expected thirteen stories to pass:\n${output.slice(-300)}`
+  // At least the thirteen there were when this closed; later cards add more.
+  const passed = Number(/Tests {2}(\d+) passed \(\1\)/.exec(output)?.[1] ?? 0)
+  return passed >= 13 ? null : `expected at least thirteen stories to pass, read ${passed}:\n${output.slice(-300)}`
 })
 
 check('FocusWhileEmpty focuses an empty field and compares the placeholder through getComputedStyle', () => {

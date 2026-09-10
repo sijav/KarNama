@@ -24,9 +24,12 @@ const { label: labelText, body } = typeScale
 // the helper or error line describes it, and that line always keeps its height,
 // so an error appearing never moves the field. It fills its container: the
 // 240 in the file is the specimen's width, not the field's.
-export const Input = ({ label, helperText, error, disabled = false, onChange, ...field }: InputProps) => {
+export const Input = ({ label, helperText, error: given, disabled = false, onChange, ...field }: InputProps) => {
   const id = useId()
   const messageId = `${id}-message`
+  // A blank error is no error: a form that clears one to '' rather than to
+  // undefined leaves the field valid, with its helper under it, KN-254.
+  const error = given === undefined || given.trim() === '' ? undefined : given
   const message = error ?? helperText
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing['2xs']}px` }}>

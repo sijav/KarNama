@@ -195,6 +195,15 @@ colour and takes the focus width**: two pixels of `border/error`. Turning it
 blue would hide the error exactly while the user is fixing it, and keeping it
 at one pixel would leave no sign of focus. Revisit if the file ever draws it.
 
+### An Input's error needs a message
+
+Node `95:38` draws the Error state with its message and never without one, so
+this is a decision too. **A blank error is no error**: an empty or
+whitespace-only message leaves the field in its default state, not marked
+invalid, with its helper under it. A form that clears an error to the empty
+string rather than to nothing would otherwise leave a valid field red, and a
+screen reader would announce it invalid with nothing to say why.
+
 ### Dark mode
 
 **The file defines light values only.** There are no dark tokens. Any dark
