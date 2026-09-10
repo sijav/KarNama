@@ -5452,13 +5452,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The story checks a flag this repository sets in the storybook project's Vitest setup, not a Vitest internal; the published Storybook still takes the canvas branch with no error; and a mutation removing the flag from the setup file fails the Hover story under npm test rather than passing it.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T07:34:17.438Z",
-      "updatedAt": "2026-09-10T07:51:44.628Z",
-      "verify": "node agent/scripts/verify/KN-225.mjs"
+      "updatedAt": "2026-09-10T07:52:06.074Z",
+      "verify": "node agent/scripts/verify/KN-225.mjs",
+      "evidence": ".storybook/vitest.setup.ts sets globalThis.__KARNAMA_STORY_TEST__ (only the Vitest storybook project loads it). The Checkbox Hover story no longer reads __vitest_browser__: with the flag it imports vitest/browser uncaught and hovers; without it, it returns only if Storybook's preview runtime (__STORYBOOK_PREVIEW__) is rendering it, and otherwise throws naming the setup file. agent/scripts/verify/KN-225.mjs, 4 checks green: Checkbox stories pass; the story reads the repository flag and no Vitest internal, and the setup sets it; THE CASE, removing the flag line from the setup fails Hover under the Vitest storybook project with \"without the story-test flag\" instead of passing; the published half, a production Storybook build served on a random port and opened in headless Chromium, renders Hover with a checkbox and zero page or console errors (committed, not scratch). KN-220.mjs updated to the new flag and green, which also reruns KN-013.mjs with its two hover mutations. Lint and tsc clean.",
+      "closedAt": "2026-09-10T07:52:06.074Z"
     },
     {
       "id": "KN-226",
