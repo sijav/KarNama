@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 79 of 260 tasks done · 158 of 662 points.
+Project **KarNama** · 80 of 260 tasks done · 159 of 662 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-259` An Input error made only of invisible characters still turns the field red** (critical, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-259` | An Input error made only of invisible characters still turns the field red | critical | 1 | web | none | An error made only of whitespace and Unicode format characters is no error, while a message that merely contains them is still shown; BlankErrorIsNoError also renders an error of only a zero-width non-joiner and only a right-to-left mark and asserts they are no error, and a story with a real Persian message containing a ZWNJ still shows it; a mutation back to trim() fails the story by name. |
+**Next up: `KN-238` A long renamed status name pushes the Status Chip out of its column** (critical, 2 pt, web)
 
 ## Blocked (3)
 
@@ -204,7 +198,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (79)
+## Done (80)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -229,6 +223,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-252` | Resetting the Input's value control turns the same field from controlled to uncontrolled | critical | 1 | web | none | Switching the value control between set and unset starts the field over rather than changing its mode in place, so React never sees one input go from controlled to uncontrolled or back; a check in a development build, where React reports it, sets value, types, resets it, and finds no such report and a field showing its default again; a mutation removing the fix brings the report back. |
 | `KN-254` | An empty error string puts the Input in its error state | critical | 1 | web | none | An error that is empty or only whitespace is no error: the field keeps its default border, is not aria-invalid, and shows its helper text; a story renders such an error and asserts all three; DESIGN.md or the component's story docs say the error state needs a message; and a mutation back to testing error against undefined fails that story by name. |
 | `KN-258` | Changing defaultValue while value is set remounts the Input's field for nothing | critical | 1 | web | none | With value set, changing defaultValue in Controls leaves the same input element in place, still focused if it was, showing the same value; with value unset a new default still starts the field over; a check on a built Storybook does both, and a mutation back to keying on defaultValue in both modes fails the first. |
+| `KN-259` | An Input error made only of invisible characters still turns the field red | critical | 1 | web | none | An error made only of whitespace and Unicode format characters is no error, while a message that merely contains them is still shown; BlankErrorIsNoError also renders an error of only a zero-width non-joiner and only a right-to-left mark and asserts they are no error, and a story with a real Persian message containing a ZWNJ still shows it; a mutation back to trim() fails the story by name. |
 | `KN-058` | Run verify commands without a shell | critical | 2 | agent | KN-001 | A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done. |
 | `KN-065` | move done must require a verify command | critical | 2 | agent | KN-001 | move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one. |
 | `KN-088` | Prove the REAL test project reports a failure, not a separate config | critical | 2 | agent | KN-003 | The planted broken test is detected through the configuration npm test uses, and a mutation that empties the real unit project include makes agent/scripts/verify/KN-003.mjs fail rather than pass. |
@@ -3275,7 +3270,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-259` An Input error made only of invisible characters still turns the field red
 
-- **status** in_progress · **severity** critical · **points** 1 · **area** web
+- **status** done · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-254 roast and confirmed in Node: KN-254 treats an error as blank when trim() empties it, and trim() leaves the Unicode format characters in place. A zero-width space, U+200B, a zero-width non-joiner, U+200C, a zero-width joiner, a left-to-right or right-to-left mark, or a word joiner each survive it as one character, so an error made only of them still draws border/error, sets aria-invalid and replaces the helper with a line a person cannot see. The zero-width non-joiner is part of ordinary Persian text. Whitespace plus the format characters, /^[\s\p{Cf}]*$/u, treats all of them as blank and still keeps a real message with a ZWNJ inside it.

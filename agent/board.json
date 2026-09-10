@@ -6462,13 +6462,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "An error made only of whitespace and Unicode format characters is no error, while a message that merely contains them is still shown; BlankErrorIsNoError also renders an error of only a zero-width non-joiner and only a right-to-left mark and asserts they are no error, and a story with a real Persian message containing a ZWNJ still shows it; a mutation back to trim() fails the story by name.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T12:09:09.497Z",
-      "updatedAt": "2026-09-10T12:42:02.035Z",
-      "verify": "node agent/scripts/verify/KN-259.mjs"
+      "updatedAt": "2026-09-10T12:42:29.109Z",
+      "verify": "node agent/scripts/verify/KN-259.mjs",
+      "evidence": "node agent/scripts/verify/KN-259.mjs passed. It checks: (1) the Input stories pass; (2) the Input defines BLANK as whitespace plus the Unicode format characters and tests the error against it; (3) BlankErrorIsNoError renders, besides '' and three spaces, an error of only a zero-width non-joiner and one of only a right-to-left mark, written as \\u200c and \\u200f escapes rather than raw invisible characters, and asserts all four fields keep the default border, carry no aria-invalid and show the helper in text/secondary; (4) THE CASE: back to trim(), BlankErrorIsNoError fails by name; (5) the other direction: the Persian error the specimen shows, 'این فیلد نمی‌تواند خالی باشد', contains a ZWNJ, and a BLANK greedy enough to take letters too fails WithError by name, so a real message that merely contains a format character is proved still shown; (6) DESIGN.md names the invisible characters. Before building it, Node showed trim() leaving ZWSP, ZWNJ, ZWJ, LRM, RLM and the word joiner as one character each, and /^[\\s\\p{Cf}]*$/u treating all of them as blank while keeping 'فیلد‌ها'. FromArgs, which reads its expected description from the args, applies the same pattern. Found while closing: in the full suite, one of BlankErrorIsNoError's now four fields sat under the real pointer the Hover story leaves behind and drew the hover border; the row now has pointer-events none, with the reason beside it, and the full suite passes: 26 files, 409 tests, coverage 100 percent on all four metrics. Also found: a background run of sibling verifiers restored a stale copy of the stories file over that fix, because each verifier restores what it read before its mutation; it was stopped, the diff checked for leftover mutations, none, and everything rerun in sequence with nothing edited meanwhile. Siblings passing: KN-254 (its normalisation anchor now reads BLANK), KN-247, KN-011, KN-241, KN-243, KN-248, KN-242, KN-246, KN-249, KN-252, KN-258, KN-250. Workspace lint zero warnings, tsc clean. NOT established: characters outside Cf that render nothing, such as some combining marks on their own or the Hangul filler, which the pattern does not treat as blank; and fonts that draw a visible glyph for a format character.",
+      "closedAt": "2026-09-10T12:42:29.109Z"
     },
     {
       "id": "KN-260",
