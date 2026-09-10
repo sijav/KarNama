@@ -7124,13 +7124,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Under forced colours the Checkbox frame's edge is drawn over the frame without taking layout, a border on a pseudo-element for instance, so its content box stays 20 by 20 in that mode as in every other; KN-281's forced-colours check measures the content box and the glyph's position as well as the pixels, and a mutation back to a laid-out border fails it.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T17:20:16.405Z",
-      "updatedAt": "2026-09-10T17:29:19.122Z",
-      "verify": "node agent/scripts/verify/KN-284.mjs"
+      "updatedAt": "2026-09-10T17:34:49.269Z",
+      "verify": "node agent/scripts/verify/KN-284.mjs",
+      "evidence": "Checkbox.tsx's forced-colours fallback is a one pixel ButtonBorder border on a ::before (content stated, position absolute, inset 0, box-sizing border-box, radius inherited, pointer events none) inside @media (forced-colors: active), with the frame position relative; outside forced colours the edge is still the 1.5 inset shadow. node agent/scripts/verify/KN-284.mjs passed: the Checkbox stories pass; in a production build with forced colours emulated and not, the unchecked and checked frames have a 20 by 20 content box in both modes, the tick at 4,4 in both, and an edge drawn on the pixels under forced colours; the laid-out border put back in place of the pseudo-element, rebuilt, is caught with the content box at 18 by 18; KN-281's verifier passes with its forced-colours check now measuring the content box (and through it KN-013, KN-205, KN-207 and KN-266). Unit 418, full eslint, tsc and contract clean. Not established: a real Windows high-contrast theme rather than Chromium's emulation, and the glyph's position cannot itself show a symmetric border, which is why the content box is the check.",
+      "closedAt": "2026-09-10T17:34:49.269Z"
     },
     {
       "id": "KN-285",
