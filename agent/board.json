@@ -6623,13 +6623,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The chip is the designed flex box again, centred by alignment with no vertical padding, and the name truncates with an ellipsis in an inner element; every story that measures the chip measures the chip, not the name; KN-238's verifier still passes with its mutations; and no padding or spacing in StatusChip.tsx resolves to anything but a spacing token or zero.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T12:57:36.792Z",
-      "updatedAt": "2026-09-10T13:59:39.473Z",
-      "verify": "node agent/scripts/verify/KN-263.mjs"
+      "updatedAt": "2026-09-10T14:00:47.689Z",
+      "verify": "node agent/scripts/verify/KN-263.mjs",
+      "evidence": "The chip is the flex box 84:4 and 398:6185 draw, centred by alignment with no vertical padding; the name truncates in an inner span (min-width 0, overflow hidden, ellipsis). node agent/scripts/verify/KN-263.mjs passed: the chip stories pass; every padding is the spacing token or zero; the stories that measure the chip measure the chip, not the name; a vertical padding put back fails AllStatuses; KN-238's and KN-010's verifiers still pass with their mutations. Unit project 404 passed, KN-239 verify passed, eslint and tsc clean. Seen in production Storybook in fa-IR and en-US, light and dark: text 4px above and below at S and 3px at M by centring, 8px each side, the long name cut with an ellipsis at the end of the Persian text in both page directions.",
+      "closedAt": "2026-09-10T14:00:47.689Z"
     },
     {
       "id": "KN-264",
