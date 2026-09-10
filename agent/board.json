@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 288,
+  "nextId": 290,
   "tasks": [
     {
       "id": "KN-001",
@@ -7126,7 +7126,24 @@
       "parent": [],
       "status": "done",
       "exit": "Under forced colours the Checkbox frame's edge is drawn over the frame without taking layout, a border on a pseudo-element for instance, so its content box stays 20 by 20 in that mode as in every other; KN-281's forced-colours check measures the content box and the glyph's position as well as the pixels, and a mutation back to a laid-out border fails it.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4.5,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-284-round-1.2026-09-10T17-35-11-709Z.md",
+          "filed": [
+            "KN-288",
+            "KN-289"
+          ],
+          "cardDigest": "7faf9694b3c42716c41b2d041c3ee7c38120fd82a6fe26a582d945d33b72c48e",
+          "head": "1ee56a9977b16516d63a860987b2bd2aa3593448",
+          "reviewerScore": 4.5,
+          "reviewerCriticals": 1,
+          "dismissed": "Severities swapped rather than softened: the roast's critical is a gap between KN-284's exit wording and the verifier that holds the check, the tick's position being measured in KN-284's own verifier, so under the owner's rule for findings about the loop it is low, KN-289; the roast's major, a disabled Checkbox drawing the enabled edge colour under forced colours, is a product defect on a built component and is critical under the owner's order, KN-288. One critical either way.",
+          "at": "2026-09-10T17:59:43.942Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T17:20:16.405Z",
       "updatedAt": "2026-09-10T17:34:49.269Z",
@@ -7182,6 +7199,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T17:57:44.885Z"
+    },
+    {
+      "id": "KN-288",
+      "title": "Under forced colours a disabled Checkbox draws the enabled edge, ButtonBorder, where GrayText says disabled",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-284 roast, KN-284 being a child of KN-011. In normal colours a disabled Checkbox's edge is bg/surface-secondary, the same as its fill, so it reads as absent; under forced colours, where the shadow is removed, KN-284's ::before draws one pixel of ButtonBorder in every state, disabled included, so a disabled checkbox looks exactly like an enabled one in high contrast. The system colour for a disabled control is GrayText. Only the unchecked and checked frames are read under forced colours today, so nothing would notice.",
+      "why": "A disabled control that looks enabled in high contrast invites a click that does nothing, for exactly the people who rely on that mode. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Under forced colours a disabled Checkbox's edge is GrayText and every enabled state's is ButtonBorder, checked and indeterminate included; a check in a production build reads the rendered edge of all five states under forced colours, and a mutation giving disabled ButtonBorder again fails it; and DESIGN.md's stroke section says which colour each state takes there.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T17:59:43.680Z"
+    },
+    {
+      "id": "KN-289",
+      "title": "KN-281's forced-colours check does not measure the tick's position, as KN-284's exit says it does",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-284 roast. KN-284's exit says KN-281's forced-colours check measures the content box and the glyph's position; it opens only the unchecked frame, which has no glyph, and reads its content box and two pixels. The tick's position under forced colours is measured, but in KN-284's own verifier, on the checked frame. The position cannot expose a symmetric border anyway, flex centring keeping the tick where it was, so the content box is the check that matters; the gap is between what the exit says and where the check lives.",
+      "why": "A verifier should check what its card says it checks. Low: it is about the loop's tooling, the tick's position is measured elsewhere, and nothing in the product is wrong.",
+      "severity": "low",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "KN-281's forced-colours check also opens the checked frame and asserts the tick at the same offset with forced colours on and off, or KN-284's exit is amended to name where that measurement lives.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T17:59:43.802Z"
     }
   ]
 }

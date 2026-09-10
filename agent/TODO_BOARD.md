@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 95 of 287 tasks done · 179 of 704 points.
+Project **KarNama** · 95 of 289 tasks done · 179 of 706 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-267` The Input has no leading or trailing icon slot, which node 95:38 carries** (critical, 2 pt, web)
+**Next up: `KN-288` Under forced colours a disabled Checkbox draws the enabled edge, ButtonBorder, where GrayText says disabled** (critical, 1 pt, web)
 
 ## Blocked (2)
 
@@ -17,12 +17,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (188)
+## Backlog (190)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | critical | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
+| `KN-288` | Under forced colours a disabled Checkbox draws the enabled edge, ButtonBorder, where GrayText says disabled | critical | 1 | web | none | Under forced colours a disabled Checkbox's edge is GrayText and every enabled state's is ButtonBorder, checked and indeterminate included; a check in a production build reads the rendered edge of all five states under forced colours, and a mutation giving disabled ButtonBorder again fails it; and DESIGN.md's stroke section says which colour each state takes there. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -183,6 +184,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-268` | The catalog test's blank-translation check is weaker than the Input's blank rule | low | 1 | web | none | The catalog test and the Input decide blankness with the same predicate, moved to a module both can import without the i18n tests depending on an Input file, or the catalog test states and tests a deliberately different contract; either way a translation of only U+2800, U+034F or U+FE0F is caught by a planted case that fails the test. |
 | `KN-277` | KN-273's verifier takes the question tool from the section's intro, not from the KN-273 paragraph | low | 1 | agent | none | The KN-273 paragraph itself says the answer came through the question tool, KN-273's verifier reads that from the paragraph rather than from the section, and its in-memory control that removes the phrase from the paragraph fails it. |
 | `KN-278` | TECH-DEBT 16 retires on a text search, not on the English twin passing under Vitest | low | 1 | docs | none | TECH-DEBT 16's retirement check is behavioural: take the early return out of ControlsMatchTheCanvas and run ControlsMatchTheCanvasInEnglish under Vitest; the entry retires only when that passes, and the entry says so. |
+| `KN-289` | KN-281's forced-colours check does not measure the tick's position, as KN-284's exit says it does | low | 1 | agent | none | KN-281's forced-colours check also opens the checked frame and asserts the tick at the same offset with forced colours on and off, or KN-284's exit is amended to name where that measurement lives. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -3609,6 +3611,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Under forced colours the Checkbox frame's edge is drawn over the frame without taking layout, a border on a pseudo-element for instance, so its content box stays 20 by 20 in that mode as in every other; KN-281's forced-colours check measures the content box and the glyph's position as well as the pixels, and a mutation back to a laid-out border fails it.
 
+**Roasts.** round 1 scored 4.5 with 1 critical(s)
+
 ### `KN-285` Every Input on the file's screens turns its helper line off, while the Input always reserves it
 
 - **status** done · **severity** critical · **points** 1 · **area** design
@@ -3641,4 +3645,26 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** Every screen is 26 taller per field than the file until this lands, and the owner chose the drawn layout over a form that never moves. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** An Input with neither a helper nor an error draws no message line and is 64 tall, as the 91 screen instances draw it; with a helper or an error it is 90, the file's variants; an error appearing on a field without a helper adds the line with its message; a blank error still draws no line; stories assert the 64 and the 90 and the line appearing with the error, replacing ErrorDoesNotMoveTheField and WithoutAHelper's reserved line; DESIGN.md records the owner's reversal of KN-011's decision; and the Input's comment about the line always keeping its height is corrected.
+
+### `KN-288` Under forced colours a disabled Checkbox draws the enabled edge, ButtonBorder, where GrayText says disabled
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-284 roast, KN-284 being a child of KN-011. In normal colours a disabled Checkbox's edge is bg/surface-secondary, the same as its fill, so it reads as absent; under forced colours, where the shadow is removed, KN-284's ::before draws one pixel of ButtonBorder in every state, disabled included, so a disabled checkbox looks exactly like an enabled one in high contrast. The system colour for a disabled control is GrayText. Only the unchecked and checked frames are read under forced colours today, so nothing would notice.
+
+**Why.** A disabled control that looks enabled in high contrast invites a click that does nothing, for exactly the people who rely on that mode. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** Under forced colours a disabled Checkbox's edge is GrayText and every enabled state's is ButtonBorder, checked and indeterminate included; a check in a production build reads the rendered edge of all five states under forced colours, and a mutation giving disabled ButtonBorder again fails it; and DESIGN.md's stroke section says which colour each state takes there.
+
+### `KN-289` KN-281's forced-colours check does not measure the tick's position, as KN-284's exit says it does
+
+- **status** backlog · **severity** low · **points** 1 · **area** agent
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-284 roast. KN-284's exit says KN-281's forced-colours check measures the content box and the glyph's position; it opens only the unchecked frame, which has no glyph, and reads its content box and two pixels. The tick's position under forced colours is measured, but in KN-284's own verifier, on the checked frame. The position cannot expose a symmetric border anyway, flex centring keeping the tick where it was, so the content box is the check that matters; the gap is between what the exit says and where the check lives.
+
+**Why.** A verifier should check what its card says it checks. Low: it is about the loop's tooling, the tick's position is measured elsewhere, and nothing in the product is wrong.
+
+**Exit condition.** KN-281's forced-colours check also opens the checked frame and asserts the tick at the same offset with forced colours on and off, or KN-284's exit is amended to name where that measurement lives.
 
