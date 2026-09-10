@@ -235,6 +235,21 @@ contains any of those characters is still an error. A form that clears an
 error to the empty string rather than to nothing would otherwise leave a valid
 field red, and a screen reader would announce it invalid with nothing to say why.
 
+### A stroke is drawn inside, and takes no space
+
+Every stroke on a component in the file is aligned INSIDE and left out of
+layout, read with use_figma on 2026-09-10: the Input's field, `95:5` and
+`95:19`, one pixel and two when focused; the Checkbox's frame, `204:11`, one and
+a half in every state, KN-281; the Filter Chip, `159:71`, one, one and a half
+when pressed and none when selected, KN-282, with the owner's blue selected edge
+from KN-276. The Tooltip and the Status Chip draw none. So a stroke is painted
+over a component's padding and never moves what is inside it: the Input's text
+sits 16 from its edge in every state, KN-266.
+
+In CSS that is a border on a pseudo-element laid over the component, not a
+border on the component itself, which is laid out, and not an inset box-shadow,
+which Windows' forced colours removes, leaving no edge at all.
+
 ### Dark mode
 
 **The file defines light values only.** There are no dark tokens. Any dark

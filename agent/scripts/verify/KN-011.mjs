@@ -53,8 +53,8 @@ for (const [label, from, to, story] of [
   ['THE CASE: the error state is measured, border/error on the field', "const edge = error === undefined ? colour['border/default'] : colour['border/error']", "const edge = colour['border/default']", 'With Error'],
   ['the helper line reserves its space, so an error does not move the form', '          minHeight: `${body.lineHeight}px`,\n', '', 'Error Does Not Move The Field'],
   ['the label is bound to the input', '        htmlFor={id}\n', '', 'Label Is Bound'],
-  ['focus is two pixels wide and does not move the text', '              paddingInline: `${spacing.md - 1}px`,\n', '', 'Focus'],
-  ['hover takes the text/secondary border', "            ...(error === undefined ? { '&:hover:not(.Mui-focused):not(.Mui-disabled)': { borderColor: colour['text/secondary'] } } : {}),\n", '', 'Hover'],
+  ['focus is two pixels wide', '              borderWidth: 2,\n', '', 'Focus'],
+  ['hover takes the text/secondary border', "            ...(error === undefined ? { '&:hover:not(.Mui-focused):not(.Mui-disabled)::before': { borderColor: colour['text/secondary'] } } : {}),\n", '', 'Hover'],
 ]) {
   check(`${label}: breaking it fails exactly that story`, () => {
     const original = readFileSync(COMPONENT, 'utf8')

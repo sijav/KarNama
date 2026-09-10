@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 281,
+  "nextId": 283,
   "tasks": [
     {
       "id": "KN-001",
@@ -6756,7 +6756,8 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T13:19:54.737Z",
-      "updatedAt": "2026-09-10T16:20:37.580Z"
+      "updatedAt": "2026-09-10T16:47:46.682Z",
+      "verify": "node agent/scripts/verify/KN-266.mjs"
     },
     {
       "id": "KN-267",
@@ -7030,6 +7031,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T16:23:23.839Z"
+    },
+    {
+      "id": "KN-281",
+      "title": "The Checkbox frame draws a 1px edge where every state in the file draws 1.5",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found while checking the other bordered components for KN-266, a KN-011 child. Read with use_figma: every Checkbox variant, 204:7 Unchecked, 204:10 Checked, 512:730 Indeterminate, 512:733 Hover and 512:734 Disabled, is 20 by 20 with a stroke of weight 1.5, aligned INSIDE and not included in layout. Checkbox.tsx draws borderWidth 1, and its comment says the file draws every border at one, which the file contradicts. The frame's glyph is centred, so the layout border moves no text, but the edge is two thirds of the drawn weight. How a 1.5px stroke renders at a device pixel ratio of 1, where Chromium snaps border widths to whole device pixels, is part of the question.",
+      "why": "Match the design exactly is the owner's standing rule, and the Checkbox's edge is the one thing that says where it is. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The Checkbox frame's edge is 1.5 in every state as the five variants of 204:11 draw it, painted inside the frame and taking no layout space; what a 1.5 edge renders as at device pixel ratios 1 and 2 is measured and recorded; the stories assert the width; and the comment that says the file draws every border at one is corrected.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T16:24:51.312Z"
+    },
+    {
+      "id": "KN-282",
+      "title": "The Filter Chip's text sits at 13 where the file draws 12, and its pressed edge is 1 where the file draws 1.5",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found while checking the other bordered components for KN-266, a KN-011 child. Read with use_figma: the Filter Chip variants of 159:71 are 32 tall with padding 12 at each side and 0 above and below, their stroke INSIDE and not included in layout, and the text at x 12 and y 5. FilterChip.tsx draws a one pixel CSS border, which is laid out, with paddingInline spacing.sm, so its text sits 13 from the edge, a pixel inward, the offset KN-266 removes from the Input. The file's Pressed variant, 159:67, draws its edge at 1.5, where FilterChip.tsx keeps 1 and only changes the colour. The Selected variant, 159:69, draws no stroke at all; the owner's KN-276 decision replaces that with a blue edge, which KN-279 builds, so this card leaves the selected edge to it.",
+      "why": "The Filter Chip is the status counter above the board, drawn a pixel off the file in every state, and its pressed state is not the one drawn. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "In every state the Filter Chip's text sits spacing/sm, 12px, from the chip's outer edge as 159:63 to 159:69 draw it, with the edge painted inside and taking no layout space; the pressed edge is 1.5 as 159:67 draws it; nothing in FilterChip.tsx computes a padding from a border width; the stories measure the text's distance from the edge; and the selected edge is left to KN-279.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T16:24:51.439Z"
     }
   ]
 }

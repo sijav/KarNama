@@ -133,7 +133,20 @@ const JobTitle = ({ withError = false, ...rest }: Partial<InputProps> & { withEr
 // told otherwise, including any prop added later, KN-247.
 const offers = (names: (keyof InputProps)[]) => ({ controls: { include: names } })
 
-// The field itself: MUI's input root, the element that draws the border.
+// The field's edge: a border on its ::before, painted over the padding, so it
+// takes no layout space, KN-266.
+const edgeOf = (field: HTMLElement) => getComputedStyle(field, '::before')
+
+// How far the text starts from the field's outer edge, on each side. The input
+// fills the field between its paddings, so both are the padding: 95:5 draws
+// 16, and a stroke that took space would make them 17.
+const textInsets = (field: HTMLElement, box: HTMLElement) => {
+  const outer = field.getBoundingClientRect()
+  const text = box.getBoundingClientRect()
+  return [text.left - outer.left, outer.right - text.right]
+}
+
+// The field itself: MUI's input root, the element that carries the edge.
 const fieldOf = (canvasElement: HTMLElement) => {
   const field = within(canvasElement).getByRole('textbox').parentElement
   if (!field) throw new Error('the input has no field around it')
@@ -204,13 +217,16 @@ export const Default: Story = {
   globals: { colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     const field = fieldOf(canvasElement)
+    const box = within(canvasElement).getByRole('textbox')
     const style = getComputedStyle(field)
-    // Node 95:3: 44 tall, 16 at each side, radius md, one pixel of border/default.
+    // Node 95:3: 44 tall, 16 at each side, radius md, one pixel of border/default
+    // drawn inside, so the text sits 16 from the edge, not 17, KN-266.
     await expect(field.offsetHeight).toBe(44)
     await expect([style.paddingLeft, style.paddingRight].map(Number.parseFloat)).toEqual([16, 16])
     await expect(Number.parseFloat(style.borderTopLeftRadius)).toBe(8)
-    await expect(Number.parseFloat(style.borderTopWidth)).toBe(1)
-    await expect(style.borderTopColor).toBe(computedColour(field, semantic['border/default']))
+    await expect(Number.parseFloat(edgeOf(field).borderTopWidth)).toBe(1)
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
+    await expect(textInsets(field, box)).toEqual([16, 16])
   },
 }
 
@@ -250,14 +266,15 @@ export const Focus: Story = {
     const box = within(canvasElement).getByRole('textbox')
     const field = fieldOf(canvasElement)
     const before = textLayout(box)
+    await expect(textInsets(field, box)).toEqual([16, 16])
     await userEvent.tab()
     await expect(box).toHaveFocus()
-    const style = getComputedStyle(field)
-    // Node 95:17: TWO pixels of border/focus, and the text does not move for
-    // it: the field is border-box and 44 tall either way, and nothing that lays
-    // the text out inside it changes.
-    await expect(Number.parseFloat(style.borderTopWidth)).toBe(2)
-    await expect(style.borderTopColor).toBe(computedColour(field, semantic['border/focus']))
+    // Node 95:19: TWO pixels of border/focus, drawn inside, and the text does
+    // not move for it: still 16 from the edge, the field 44 tall either way,
+    // and nothing that lays the text out inside it changes, KN-266.
+    await expect(Number.parseFloat(edgeOf(field).borderTopWidth)).toBe(2)
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/focus']))
+    await expect(textInsets(field, box)).toEqual([16, 16])
     await expect(changes(before, textLayout(box))).toEqual([])
     await expect(field.offsetHeight).toBe(44)
   },
@@ -290,7 +307,8 @@ export const WithError: Story = {
     const field = fieldOf(canvasElement)
     // Node 95:24: border/error on the field, text/error on the line under it,
     // and the error is what the field announces as its description.
-    await expect(getComputedStyle(field).borderTopColor).toBe(computedColour(field, semantic['border/error']))
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/error']))
+    await expect(textInsets(field, box)).toEqual([16, 16])
     await expect(box).toHaveAttribute('aria-invalid', 'true')
     const describedBy = box.getAttribute('aria-describedby') ?? ''
     const line = canvasElement.ownerDocument.getElementById(describedBy)
@@ -329,8 +347,8 @@ export const FocusedWhileInvalid: Story = {
       // focus width in the error colour, so the error stays in view while it
       // is being fixed, KN-241.
       const style = getComputedStyle(field)
-      await expect(Number.parseFloat(style.borderTopWidth)).toBe(2)
-      await expect(style.borderTopColor).toBe(computedColour(field, semantic['border/error']))
+      await expect(Number.parseFloat(edgeOf(field).borderTopWidth)).toBe(2)
+      await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/error']))
       // And the focus ring goes round it, since red to red is no change: two
       // pixels of border/focus outside the field, a band larger than the
       // field's own two pixel perimeter, changing from the backdrop at 3:1 or
@@ -368,7 +386,7 @@ export const Hover: Story = {
   play: async ({ canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')
     const field = fieldOf(canvasElement)
-    await expect(getComputedStyle(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
     // A REAL pointer, the Checkbox's pattern: `:hover` is the browser's own hit
     // testing, and only the test runner can drive one. In Storybook's UI the
     // story is a canvas; anywhere else without the flag is an error, KN-225.
@@ -379,7 +397,7 @@ export const Hover: Story = {
     const browser = await import('vitest/browser')
     await browser.userEvent.hover(box)
     // Node 512:761: the border takes text/secondary.
-    await expect(getComputedStyle(field).borderTopColor).toBe(computedColour(field, semantic['text/secondary']))
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['text/secondary']))
   },
 }
 
@@ -551,7 +569,7 @@ export const BlankErrorIsNoError: Story = {
       const box = within(input).getByRole('textbox')
       const field = fieldOf(input)
       await expect(box).not.toHaveAttribute('aria-invalid')
-      await expect(getComputedStyle(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
+      await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
       const line = canvasElement.ownerDocument.getElementById(box.getAttribute('aria-describedby') ?? '')
       if (!line) throw new Error('the field describes itself by nothing')
       await expect(line.textContent).not.toBe('')

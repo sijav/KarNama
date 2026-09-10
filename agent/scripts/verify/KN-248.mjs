@@ -56,7 +56,7 @@ check('FocusWhileEmpty focuses an empty field and compares the placeholder throu
 
 check('THE CASE: a focused-only placeholder text-indent fails FocusWhileEmpty, naming it', () => {
   const original = readFileSync(COMPONENT, 'utf8')
-  const anchor = "              paddingInline: `${spacing.md - 1}px`,\n"
+  const anchor = "            '&.Mui-focused': {\n"
   if (!original.includes(anchor)) return `the anchor for this mutation is gone:\n${anchor}`
   try {
     writeFileSync(COMPONENT, original.replace(anchor, () => `${anchor}              '& input::placeholder': { textIndent: '3px' },\n`))

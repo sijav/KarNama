@@ -106,8 +106,8 @@ check('the border stays border/error: a blue focused invalid border fails it', (
   mutation(COMPONENT, BORDER, "              borderColor: colour['border/focus'],\n", 'a blue border on an invalid field'),
 )
 
-check('the text does not move: dropping the padding that pays for the wider border fails it', () =>
-  mutation(COMPONENT, RING, RING.replace('outlineOffset: 2 }', 'outlineOffset: 2, paddingInline: `${spacing.md}px` }'), 'the text moving a pixel on focus', 'box '),
+check('the text does not move: a padding change on an invalid field\'s focus fails it', () =>
+  mutation(COMPONENT, RING, RING.replace('outlineOffset: 2 }', 'outlineOffset: 2, paddingInline: `${spacing.sm}px` }'), 'the text moving on focus', 'box '),
 )
 
 check('DESIGN.md records the treatment, the measure and the reason', () => {

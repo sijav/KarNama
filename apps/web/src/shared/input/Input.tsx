@@ -58,13 +58,14 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
           const colour = theme.karnama.semantic
           const edge = error === undefined ? colour['border/default'] : colour['border/error']
           return {
+            // The file's stroke is inside the field and takes no space, so the
+            // padding is the file's in every state and the text sits spacing/md
+            // from the edge, as 95:5 and 95:19 draw it, KN-266.
+            position: 'relative',
             height: FIELD_HEIGHT,
             boxSizing: 'border-box',
             paddingInline: `${spacing.md}px`,
             borderRadius: `${theme.karnama.radius.md}px`,
-            borderStyle: 'solid',
-            borderWidth: 1,
-            borderColor: edge,
             backgroundColor: colour['bg/surface'],
             color: colour['text/primary'],
             fontSize: `${body.size}px`,
@@ -72,18 +73,34 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
             fontWeight: body.weight,
             '& input': { padding: 0, height: 'auto' },
             '& input::placeholder': { color: colour['text/secondary'], opacity: 1 },
+            // The stroke: a border on a pseudo-element laid over the whole field
+            // and painted over its padding. Not a border on the field, which is
+            // laid out; not an inset shadow, which Windows' forced colours
+            // removes, leaving no edge; and not an outline, which is the focus
+            // ring below.
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              inset: 0,
+              borderRadius: 'inherit',
+              borderStyle: 'solid',
+              borderWidth: 1,
+              borderColor: edge,
+              pointerEvents: 'none',
+            },
             // The file's Hover border is text/secondary, a deliberate reuse. Not
             // while focused, disabled or in error: those borders say more.
-            ...(error === undefined ? { '&:hover:not(.Mui-focused):not(.Mui-disabled)': { borderColor: colour['text/secondary'] } } : {}),
-            // Two wide, one less padding, so the text does not move a pixel when
-            // the field takes focus. In error the border stays the error colour,
-            // so the error is in view while it is being fixed, and the focus ring
-            // the Checkbox and the Filter Chip draw goes round it: red to red is
-            // no change, so the ring is what shows focus, KN-244.
-            '&.Mui-focused': {
+            ...(error === undefined ? { '&:hover:not(.Mui-focused):not(.Mui-disabled)::before': { borderColor: colour['text/secondary'] } } : {}),
+            // Two wide on focus, drawn inside like the rest, so the text does not
+            // move. In error the border stays the error colour, so the error is
+            // in view while it is being fixed, and the focus ring the Checkbox
+            // and the Filter Chip draw goes round it: red to red is no change,
+            // so the ring is what shows focus, KN-244.
+            '&.Mui-focused::before': {
               borderWidth: 2,
               borderColor: error === undefined ? colour['border/focus'] : colour['border/error'],
-              paddingInline: `${spacing.md - 1}px`,
+            },
+            '&.Mui-focused': {
               ...(error === undefined ? {} : { outlineWidth: 2, outlineStyle: 'solid', outlineColor: colour['border/focus'], outlineOffset: 2 }),
             },
             '&.Mui-disabled': { backgroundColor: colour['bg/surface-secondary'] },

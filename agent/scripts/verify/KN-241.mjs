@@ -64,7 +64,7 @@ check('THE CASE: turning the focused invalid border blue fails FocusedWhileInval
 check('the Focus story catches the text moving vertically', () =>
   // A pixel of extra top padding on focus: the field stays 44 tall, and the text
   // drops by it. The first version of the story compared only `left`.
-  mutation("              paddingInline: `${spacing.md - 1}px`,\n", "              paddingInline: `${spacing.md - 1}px`,\n              paddingTop: 2,\n", 'Focus'),
+  mutation("            '&.Mui-focused': {\n", "            '&.Mui-focused': {\n              paddingTop: 2,\n", 'Focus'),
 )
 
 check('DESIGN.md records the focused-while-invalid decision and its reason', () => {

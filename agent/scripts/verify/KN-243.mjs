@@ -37,7 +37,7 @@ const stories = () => {
 
 // Adds a rule to the focused field's input, which moves the text inside a box
 // that stays where it was. The Focus story must fail, and fail for that.
-const FOCUSED = "              paddingInline: `${spacing.md - 1}px`,\n"
+const FOCUSED = "            '&.Mui-focused': {\n"
 const focusedInput = (rule, changed) => {
   const original = readFileSync(COMPONENT, 'utf8')
   if (!original.includes(FOCUSED)) return `the anchor for this mutation is gone:\n${FOCUSED}`
