@@ -5988,13 +5988,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Default renders the Input from its args with the specimen copy as its defaults, a story with non-default args asserts the field follows them, and any story that is a fixed render by design disables the controls it cannot honour.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T09:27:16.288Z",
-      "updatedAt": "2026-09-10T09:38:01.056Z",
-      "verify": "node agent/scripts/verify/KN-242.mjs"
+      "updatedAt": "2026-09-10T09:38:46.019Z",
+      "verify": "node agent/scripts/verify/KN-242.mjs",
+      "evidence": "node agent/scripts/verify/KN-242.mjs passed. It checks: (1) the thirteen Input stories pass; (2) the meta renders every story through the specimen as (args) => <JobTitle {...args} />, and Default has no render of its own; (3) THE CASE: replacing the meta render with one that ignores its args, () => <JobTitle />, fails FromArgs by name, and FromArgs renders label '42', defaultValue '7', helperText '#' and disabled and asserts each on the field (accessible name, value, accessible description, disabled); (4) every story that carries its own render (WithError, FocusedWhileInvalid, WithoutAHelper, ErrorDoesNotMoveTheField) disables its controls. Also rerun and passing: KN-011.mjs and KN-241.mjs, whose anchors live in the same files. NOT established: that the Storybook manager's Controls panel actually shows and edits these args, since nothing drives the manager UI; that placeholder and error follow Controls, since FromArgs does not set them (placeholder passes through by the same spread, error is fixed by design because its copy must come from the catalog); and check (4) is a text scan of the stories file, not a behavioural test, so a fixed render written in a shape the regex does not see would slip past it.",
+      "closedAt": "2026-09-10T09:38:46.019Z"
     }
   ]
 }
