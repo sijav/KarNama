@@ -1,6 +1,7 @@
 import type { Decorator, Preview } from '@storybook/react-vite'
 import { AppProviders } from '../src/app/AppProviders'
 import { isLocale, locales } from '../src/i18n'
+import { DocsPage } from '../src/shared/story-docs/DocsPage'
 
 /**
  * The Language toolbar is not a convenience, it is part of the done gate.
@@ -25,6 +26,10 @@ const withProviders: Decorator = (Story, context) => {
 
 const preview: Preview = {
   decorators: [withProviders],
+  // Autodocs is what creates a Docs page at all. Without this tag there is no
+  // generated page for `parameters.docs.page` to replace, which is easy to miss
+  // because the Docs tab simply does not appear rather than appearing empty.
+  tags: ['autodocs'],
   globalTypes: {
     locale: {
       description: 'Persian is the product, English is the source language',
@@ -53,6 +58,10 @@ const preview: Preview = {
   parameters: {
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
     a11y: { test: 'error' },
+    // The Docs page is ours, because it has to follow the Language toolbar.
+    // Storybook's generated page reads a description fixed at load time, which
+    // cannot change language without a reload.
+    docs: { page: DocsPage },
   },
 }
 

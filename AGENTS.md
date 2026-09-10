@@ -169,6 +169,15 @@ asserts nothing is worse than no test, because it reports green. A component
 whose behaviour is never exercised has not been finished, whatever the line
 count says.
 
+**It covers the PRODUCT, not the agent's own tooling.** The owner's rule of
+2026-09-10: 100 percent applies to the shipped source, `apps/*` and
+`packages/*`. It does not apply to `agent/scripts/**`, which is the machinery
+that runs the loop rather than anything a user gets, and there is no coverage of
+markdown at all — **markdown has no tests**. A verifier under
+`agent/scripts/verify` is held to its own standard, which is that it fails when
+the thing it checks is broken, proved by mutation. That is a different question
+from whether a line of it executed.
+
 ### Ask instead of assuming, but never stop to wait
 
 If something is genuinely ambiguous and the answer changes the work, ask through

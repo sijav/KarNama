@@ -424,11 +424,13 @@
         "KN-003",
         "KN-006"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T02:48:44.072Z",
+      "verify": "node agent/scripts/verify/KN-007.mjs"
     },
     {
       "id": "KN-008",

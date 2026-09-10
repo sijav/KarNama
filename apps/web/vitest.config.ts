@@ -53,7 +53,22 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/**/*.stories.tsx', 'src/main.tsx', 'src/**/*.d.ts', 'src/gate-fixtures/**'],
+      exclude: [
+        'src/**/*.stories.tsx',
+        'src/main.tsx',
+        'src/**/*.d.ts',
+        'src/gate-fixtures/**',
+        // The Storybook Docs page and the hook that feeds it. Excluded for the
+        // same reason `*.stories.tsx` is: this repository covers React by
+        // rendering stories in a real browser, and a Docs page cannot be
+        // rendered as a story — it needs the docs context that only Storybook's
+        // docs view provides. Every decision they make was moved into
+        // `docs-locale.ts` and `catalog.ts`, which ARE tested; what is left in
+        // these two is wiring, and the wiring is checked by opening Storybook
+        // and switching the Language toolbar, which is gate steps 5 to 7.
+        'src/shared/story-docs/DocsPage.tsx',
+        'src/shared/story-docs/useDocsLocale.ts',
+      ],
       thresholds: { statements: 100, branches: 100, functions: 100, lines: 100 },
     },
     projects: [

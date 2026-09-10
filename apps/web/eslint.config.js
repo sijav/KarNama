@@ -45,6 +45,13 @@ const linguiOptions = (extraProps = '') => ({
     // Token names, which are identifiers rendered as labels: `bg/page`.
     '^[a-z-]+/[a-z0-9-/]+$',
     '^(rtl|ltr|fa-IR|en-US)$',
+    // A Storybook preview-channel event name. An API string the docs page
+    // subscribes to, not something a person reads.
+    '^globalsUpdated$',
+    // The two section headings of the story-docs markdown format, matched while
+    // PARSING a file. Named rather than shape-matched, so this exempts the
+    // parser's comparison and not every occurrence of the words.
+    '^(props|stories)$',
     // A CSS media query is an API string, not copy. Written out in full rather
     // than as a wildcard for anything in brackets, because the point of this
     // list is that each entry names one thing.
