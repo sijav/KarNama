@@ -129,12 +129,13 @@ asserts the stale write as the expected value, so fixing the defect means
 rewriting an assertion, not adding one beside it. Read the existing expectations
 before assuming a bug is merely uncovered.
 
-**Fixing a finding costs a roast round; filing one costs nothing.** KN-128 took
-SIX rounds for a three point card. Read RALPH step 5 before adjudicating.
-**But step 5 has a second clause and it is not optional**: a finding that the
-verifier PASSES DISHONESTLY, reporting success without establishing the exit
-condition, is fixed in-task. "Does the verifier fail" cannot catch a verifier
-that succeeds while checking nothing.
+**Every finding is a card. There is no longer any fix-in-task case.** KN-128
+took SIX rounds for a three point card under the old order. The rule that once
+sat here, fix in-task when the verifier passes dishonestly, is DELETED along
+with the order that needed it: the task is already closed when the roast
+arrives, so there is nothing open to fix in. A finding that the verifier proves
+less than it claims is still a good card, often the best one, and it gets filed
+with the same care as any other.
 
 **A tool's REPORT is not a diagnosis.** `validate` says how many open cards lack
 a verifier, and this file previously read that as "the board cannot close

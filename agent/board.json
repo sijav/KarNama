@@ -2785,11 +2785,12 @@
       "parent": [
         "KN-006"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Setting any Persian message to an empty or whitespace-only string fails npm test, and the failure names the id.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-08T00:45:32.304Z"
+      "createdAt": "2026-09-08T00:45:32.304Z",
+      "updatedAt": "2026-09-10T00:32:46.371Z"
     },
     {
       "id": "KN-115",
