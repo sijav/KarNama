@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 216,
+  "nextId": 218,
   "tasks": [
     {
       "id": "KN-001",
@@ -2606,7 +2606,24 @@
       ],
       "status": "done",
       "exit": "A story containing <Box title=\"Delete this application\" /> fails npm run lint while the same file keeps its meta title App/Shell, a committed fixture holds both, and agent/scripts/verify/KN-087.mjs requires it by name.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-095-round-1.2026-09-10T06-37-03-389Z.md",
+          "filed": [
+            "KN-216",
+            "KN-217",
+            "KN-101"
+          ],
+          "cardDigest": "13a3c936dff8ce4228a2eaca3955d2d0ee87b7d24d3f49f17a553e4387ad88c8",
+          "head": "60ddc39b0e2955c7d674b5575e76e58a439638de",
+          "reviewerScore": 4,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T06:53:20.315Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T23:35:15.827Z",
       "updatedAt": "2026-09-10T06:36:47.937Z",
@@ -2739,10 +2756,11 @@
       "exit": "agent/scripts/verify/KN-088.mjs performs its mutation in a temporary git worktree, killing it mid-run leaves apps/web/vitest.config.ts byte-identical, and two concurrent runs both pass and leave the file byte-identical.",
       "roasts": [],
       "notes": [
-        "2026-09-10, from the KN-094 roast: agent/scripts/verify/KN-094.mjs is another instance. It writes apps/web/eslint.config.js and renames a committed fixture inside try/finally, and a killed process skips the finally. The worst leftover is the exemption restored in the config, which ordinary lint does not notice because src/gate-fixtures is ignored. Filed here rather than as a new card because it is this card's class exactly."
+        "2026-09-10, from the KN-094 roast: agent/scripts/verify/KN-094.mjs is another instance. It writes apps/web/eslint.config.js and renames a committed fixture inside try/finally, and a killed process skips the finally. The worst leftover is the exemption restored in the config, which ordinary lint does not notice because src/gate-fixtures is ignored. Filed here rather than as a new card because it is this card's class exactly.",
+        "2026-09-10, from the KN-095 roast: agent/scripts/verify/KN-095.mjs is a third instance. It writes a stories block exempting the name title into apps/web/eslint.config.js and rewrites a committed fixture inside try/finally; a killed process leaves the exemption in place, and ordinary lint cannot see it because src/gate-fixtures is ignored."
       ],
       "createdAt": "2026-09-07T23:46:47.916Z",
-      "updatedAt": "2026-09-10T06:20:55.200Z"
+      "updatedAt": "2026-09-10T06:53:19.988Z"
     },
     {
       "id": "KN-102",
@@ -5198,6 +5216,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T06:20:44.506Z"
+    },
+    {
+      "id": "KN-216",
+      "title": "The Storybook stories glob drops a story at the root of src, and the docs guard excludes by a different rule",
+      "desc": "CHILD OF KN-095, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-095 roast and confirmed from the glob: '../src/!(gate-fixtures)/**/*.stories.@(ts|tsx)' needs at least one directory segment after src, so src/App.stories.tsx would be silently absent from Storybook and from the addon-vitest project, which reads the same configuration. The docs guard, meanwhile, globs every story and excludes 'gate-fixtures/**', so it would still demand documentation for a story Storybook never shows. No current story is lost, since every story lives in a component folder, but the two lists are now two models of the same thing, and KN-095.mjs compares only the files that exist today, so it cannot see the drift.",
+      "why": "A story that silently is not a story is a component that is silently untested: it never renders in the browser project and never reaches the published library, and nothing fails. Two exclusion rules for one set of files is the shape of a drift nobody notices until it has happened.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A story file directly under src is indexed by Storybook and run by the storybook project, src/gate-fixtures is still excluded from both, and the docs guard derives its list from the same rule Storybook uses rather than a second one, proved by a fixture at the root of src that appears in Storybook's index and in the guard alike.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T06:53:19.499Z"
+    },
+    {
+      "id": "KN-217",
+      "title": "A string literal written 'as const' skips the lingui rule entirely, in any file",
+      "desc": "CHILD OF KN-095, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-095 roast and confirmed in eslint-plugin-lingui 0.14.0: the rule returns early for any literal whose direct parent is an 'as const' assertion, BEFORE the type check and before every other exemption. So <Box title={'Delete this application' as const} /> passes npm run lint in any file in src, product or story, and so does a story meta title written that way, which also bypasses the StoryMeta type KN-095 introduced, because the meta can then use plain Meta. A bare string literal almost never needs 'as const': a const binding or a contextual type already gives it a literal type.",
+      "why": "Every exemption this rule has had was written for one legitimate case and covered every case, and this one needs no configuration at all: it is built into the plugin. It is an escape hatch in the same sense AGENTS.md already forbids 'as' for, a place where the checker is told to stop checking, and it applies to accessible names and tooltips exactly as much as to anything else.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "<Box title={'Delete this application' as const} /> and aria-label={'Delete' as const} fail npm run lint in a committed fixture, a story meta title written with 'as const' fails too, and 'as const' on an object or array literal, which is the idiom that is actually used, still passes.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T06:53:19.840Z"
     }
   ]
 }

@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 51 of 215 tasks done · 119 of 598 points.
+Project **KarNama** · 51 of 217 tasks done · 119 of 600 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -18,7 +18,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (159)
+## Backlog (161)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -52,6 +52,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-027` | Navigation: nav item, desktop sidebar, mobile tab bar, and the language switch | critical | 8 | web | KN-005, KN-006, KN-007, KN-008, KN-009 | The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added. |
 | `KN-029` | Add and edit job modal, all six steps | critical | 8 | web | KN-005, KN-006, KN-007, KN-011, KN-012, KN-028 | All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding. |
 | `KN-030` | Job modal, five tabs | critical | 8 | web | KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020 | All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text. |
+| `KN-217` | A string literal written 'as const' skips the lingui rule entirely, in any file | high | 1 | web | none | <Box title={'Delete this application' as const} /> and aria-label={'Delete' as const} fail npm run lint in a committed fixture, a story meta title written with 'as const' fails too, and 'as const' on an object or array literal, which is the idiom that is actually used, still passes. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -111,6 +112,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-182` | KN-166's verifier makes this repository fail when a sibling project moves | medium | 1 | agent | none | KarNama's verification does not depend on any path outside this repository; a missing sibling is reported as unavailable rather than as a failure; and the rules check for SkipBureau lives in SkipBureau and gates SkipBureau, proved by running both with the sibling renamed. |
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-215` | The props and stories value exemption is global, so aria-label="stories" passes | medium | 1 | web | none | aria-label="stories" and title="props" fail npm run lint in a committed fixture, the story-docs parser still recognises both headings, and the ignore array no longer names them. |
+| `KN-216` | The Storybook stories glob drops a story at the root of src, and the docs guard excludes by a different rule | medium | 1 | web | none | A story file directly under src is indexed by Storybook and run by the storybook project, src/gate-fixtures is still excluded from both, and the docs guard derives its list from the same rule Storybook uses rather than a second one, proved by a fixture at the root of src that appears in Storybook's index and in the guard alike. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -1333,6 +1335,8 @@ The lingui block for *.stories.tsx exempts the property name title so a story me
 **Why.** A roast rated this critical. It is the same defect as the shape-based exemption it replaced, one level narrower: scoping to stories files was better than scoping to a value shape and is still too wide, because a story renders the same components a screen does and its JSX is not metadata.
 
 **Exit condition.** A story containing <Box title="Delete this application" /> fails npm run lint while the same file keeps its meta title App/Shell, a committed fixture holds both, and agent/scripts/verify/KN-087.mjs requires it by name.
+
+**Roasts.** round 1 scored 4 with 0 critical(s)
 
 ### `KN-096` A literal type alias carries an unlocalized string past the lingui rule
 
@@ -2689,4 +2693,26 @@ CHILD OF KN-094, recorded in prose because board.json cannot express parent_task
 **Why.** It is the same scope bug KN-087, KN-094 and KN-095 each closed a different instance of: an exemption written for one comparison that quietly applies to the whole codebase. The words themselves are unlikely copy, which is why it is medium rather than high, but a fourth instance left open after three were closed is the pattern continuing.
 
 **Exit condition.** aria-label="stories" and title="props" fail npm run lint in a committed fixture, the story-docs parser still recognises both headings, and the ignore array no longer names them.
+
+### `KN-216` The Storybook stories glob drops a story at the root of src, and the docs guard excludes by a different rule
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-095, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-095 roast and confirmed from the glob: '../src/!(gate-fixtures)/**/*.stories.@(ts|tsx)' needs at least one directory segment after src, so src/App.stories.tsx would be silently absent from Storybook and from the addon-vitest project, which reads the same configuration. The docs guard, meanwhile, globs every story and excludes 'gate-fixtures/**', so it would still demand documentation for a story Storybook never shows. No current story is lost, since every story lives in a component folder, but the two lists are now two models of the same thing, and KN-095.mjs compares only the files that exist today, so it cannot see the drift.
+
+**Why.** A story that silently is not a story is a component that is silently untested: it never renders in the browser project and never reaches the published library, and nothing fails. Two exclusion rules for one set of files is the shape of a drift nobody notices until it has happened.
+
+**Exit condition.** A story file directly under src is indexed by Storybook and run by the storybook project, src/gate-fixtures is still excluded from both, and the docs guard derives its list from the same rule Storybook uses rather than a second one, proved by a fixture at the root of src that appears in Storybook's index and in the guard alike.
+
+### `KN-217` A string literal written 'as const' skips the lingui rule entirely, in any file
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-095, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-095 roast and confirmed in eslint-plugin-lingui 0.14.0: the rule returns early for any literal whose direct parent is an 'as const' assertion, BEFORE the type check and before every other exemption. So <Box title={'Delete this application' as const} /> passes npm run lint in any file in src, product or story, and so does a story meta title written that way, which also bypasses the StoryMeta type KN-095 introduced, because the meta can then use plain Meta. A bare string literal almost never needs 'as const': a const binding or a contextual type already gives it a literal type.
+
+**Why.** Every exemption this rule has had was written for one legitimate case and covered every case, and this one needs no configuration at all: it is built into the plugin. It is an escape hatch in the same sense AGENTS.md already forbids 'as' for, a place where the checker is told to stop checking, and it applies to accessible names and tooltips exactly as much as to anything else.
+
+**Exit condition.** <Box title={'Delete this application' as const} /> and aria-label={'Delete' as const} fail npm run lint in a committed fixture, a story meta title written with 'as const' fails too, and 'as const' on an object or array literal, which is the idiom that is actually used, still passes.
 
