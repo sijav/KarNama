@@ -5730,13 +5730,15 @@
       "parent": [
         "KN-231"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A trigger that forwards its ref but drops its other props is reported in a PRODUCTION build as well as in development, proved by a story with such a wrapper checked on the production Storybook; a trigger that mounts after the first render is not falsely reported; a working trigger swapped for a broken one is reported; and the ReportsATriggerThatCannotAttach and KeepsTheTriggersName stories still pass.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T08:26:44.927Z",
-      "updatedAt": "2026-09-10T08:42:45.097Z",
-      "verify": "node agent/scripts/verify/KN-233.mjs"
+      "updatedAt": "2026-09-10T08:43:25.987Z",
+      "verify": "node agent/scripts/verify/KN-233.mjs",
+      "evidence": "Tooltip.tsx now checks attachment through MUI's ref callback (`attach`), so it runs on every attach and detach: a node that arrives must carry aria-describedby including the tooltip's descriptionId (KN-231's always-present link, handed over through the props), else it reports \"took the ref but not the props\"; a null or never-arriving node is reported as \"did not take a ref\" after a 100ms grace, cleared on unmount. New stories: ReportsATriggerThatDropsItsProps (RefOnlyButton forwards only its ref), AcceptsATriggerThatMountsLate (LateButton renders null then the trigger in a separate task; no report after 300ms and the tip opens on focus), ReportsATriggerSwappedForOneThatCannotAttach (SwappingTooltip swaps DeleteStatusButton for SwallowingButton). agent/scripts/verify/KN-233.mjs, 5 checks green: all 13 tooltip stories pass, the three new and ReportsATriggerThatCannotAttach and KeepsTheTriggersName included; THE CASE, without the props-link check the ref-only story fails; with the grace replaced by an immediate check the late story fails; with the check running only at mount the swap story fails; and on a production Storybook build the ref-only story logs zero errors, which its own assertion of the report would not allow if the report were development-only. KN-211 (anchor updated to the grace timer), KN-209, KN-231, KN-222 and KN-032 green; full web npm test 352 of 352 with coverage; docs guard 50 of 50 with all three stories documented in en and fa; lint and tsc clean.",
+      "closedAt": "2026-09-10T08:43:25.987Z"
     },
     {
       "id": "KN-234",
