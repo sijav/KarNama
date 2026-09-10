@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 88 of 275 tasks done · 169 of 685 points.
+Project **KarNama** · 88 of 277 tasks done · 169 of 687 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-245` The Input's Controls show empty values while the canvas draws the specimen's copy** (critical, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-245` | The Input's Controls show empty values while the canvas draws the specimen's copy | critical | 2 | web | none | With no control touched, every Controls value in the args-driven Input stories is what the canvas draws, label, placeholder and helper, in either language; changing one in Controls changes the canvas to exactly that value, and clearing the placeholder or helper removes it; a story asserts the rendered copy equals the args, and a mutation reintroducing a hidden fallback fails it. |
 
 ## Blocked (2)
 
@@ -17,16 +23,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (183)
+## Backlog (184)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | critical | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
+| `KN-276` | The selected Filter Chip is told apart by a 1.22:1 fill, under the 3:1 WCAG 1.4.11 asks of a state | critical | 1 | design | none | The owner has answered, through the question tool, whether the selected Filter Chip keeps the file's fill as its only sign of selection or gains one that meets WCAG 1.4.11 and 1.4.1, with the options and their trade named; DESIGN.md records the answer as the owner's, with the date; and if it changes, a card for the change exists that also covers KN-272's dark fill. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
-| `KN-245` | The Input's Controls show empty values while the canvas draws the specimen's copy | critical | 2 | web | none | With no control touched, every Controls value in the args-driven Input stories is what the canvas draws, label, placeholder and helper, in either language; changing one in Controls changes the canvas to exactly that value, and clearing the placeholder or helper removes it; a story asserts the rendered copy equals the args, and a mutation reintroducing a hidden fallback fails it. |
 | `KN-253` | The Input's value binding loses keystrokes that arrive faster than Storybook's channel | critical | 2 | web | none | The field shows every edit as it happens and the arg follows without a stale value overwriting newer input: 20 keys typed with no delay all arrive in both the field and the arg, and a composition driven through the browser's own IME input ends with the composed text in both; a mutation back to the plain round trip loses keys again. |
 | `KN-266` | The Input's border takes layout space, so its text sits a pixel inward of the file | critical | 2 | web | none | In every state the Input's text sits spacing/md, 16px, from the field's outer edge, as 95:5 and 95:19 draw it, with the stroke painted inside that padding and taking no layout space; no padding in Input.tsx is computed from a border width; the Default and Focus stories measure the text's distance from the edge at 16; and the other bordered components are checked for the same offset, each matching or carrying a card. |
 | `KN-267` | The Input has no leading or trailing icon slot, which node 95:38 carries | critical | 2 | web | none | The Input takes an optional leading and an optional trailing icon, each 20 by 20 at spacing/2xs from the text in text/secondary, matching 95:38 with the icons on, in both directions; stories show each and both; and the label's boolean in the file is either honoured, with the accessible name then required another way, or the decision not to is recorded in DESIGN.md. |
@@ -178,6 +184,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-240` | Nothing proves the theme's status colours come from the token set | low | 1 | web | none | A test asserts the light theme's status pairs are the token set's objects or equal to them key by key, and a mutation replacing one pair in buildTheme with a literal of the same value is caught by a check that the theme reads the token module rather than restating it. |
 | `KN-256` | KN-088's verifier stopped proving its claim when KN-007 changed the unit include | low | 1 | web | none | node agent/scripts/verify/KN-088.mjs passes against the vitest.config.ts as it is now: emptying the unit include makes KN-003 fail because the unit project ran nothing, shown by its own output rather than a type error, and the constant check matches the include as written today. |
 | `KN-268` | The catalog test's blank-translation check is weaker than the Input's blank rule | low | 1 | web | none | The catalog test and the Input decide blankness with the same predicate, moved to a module both can import without the i18n tests depending on an Input file, or the catalog test states and tests a deliberately different contract; either way a translation of only U+2800, U+034F or U+FE0F is caught by a planted case that fails the test. |
+| `KN-277` | KN-273's verifier takes the question tool from the section's intro, not from the KN-273 paragraph | low | 1 | agent | none | The KN-273 paragraph itself says the answer came through the question tool, KN-273's verifier reads that from the paragraph rather than from the section, and its in-memory control that removes the phrase from the paragraph fails it. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -3121,7 +3128,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-245` The Input's Controls show empty values while the canvas draws the specimen's copy
 
-- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-242 roast and confirmed from the code: the meta's args are label '' with no placeholder or helper, and JobTitle substitutes the catalog's specimen copy for each, so a reviewer opening Default sees an empty label control above a field labelled Job title, and empty placeholder and helper controls above a field that has both. Setting the helper to '' clears it, but resetting the control brings the specimen back, and an untouched control looks the same as an explicit empty one. The label cannot be emptied at all, since '' is the sentinel for the specimen's.
@@ -3464,6 +3471,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The owner has answered, through the question tool, whether the resting edge of an enabled Input and an unchecked Checkbox stays border/default as the file draws it or is raised to at least 3:1 against the surfaces it sits on; DESIGN.md records the answer as the owner's, with the date; and if it is raised, a card for the change exists.
 
+**Roasts.** round 1 scored 6.8 with 1 critical(s)
+
 ### `KN-274` The Input's focus ring for an invalid field sits outside a field that fills its container, so a host that clips at its edge removes it
 
 - **status** backlog · **severity** critical · **points** 2 · **area** web
@@ -3485,4 +3494,26 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** An empty field or an unchecked box has nothing but its edge to be found by, and at 1.24:1 someone with low vision may not find it. The owner chose the fix on 2026-09-10. Critical on the owner's order of 2026-09-10, as a finding on built components.
 
 **Exit condition.** tokens.ts carries a named role for a control's resting edge, a neutral in text/secondary's hue at 3.3:1 or more on bg/surface, bg/page and bg/surface-secondary, and darkMode.ts derives it and checks it at 3:1 or more on the three dark backgrounds, each ratio asserted by a unit test with a mutation back to border/default failing it; the Input's resting border and the Checkbox's unchecked frame use it, and the Input's Default story and the Checkbox's Unchecked story assert it; every other state of both still renders as drawn; DESIGN.md's token tables list the role as the owner's addition under KN-273; the token verifier and the contract pass; and the Input and the Checkbox are seen at rest in all four combinations.
+
+### `KN-276` The selected Filter Chip is told apart by a 1.22:1 fill, under the 3:1 WCAG 1.4.11 asks of a state
+
+- **status** backlog · **severity** critical · **points** 1 · **area** design
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-273 roast, KN-273 being a child of KN-011. The Filter Chip's selected state, node 159:71, fills the chip and its border with bg/brand/container #dbeafe and turns its text to text/brand; unselected it is bg/surface with border/default and text/secondary. The fill that shows the state is 1.22:1 against white, 1.14:1 against bg/page and 1.11:1 against bg/surface-secondary, and nothing but colour tells the two states apart, so WCAG 1.4.11's 3:1 for the visual information that identifies a state is not met, nor 1.4.1's rule that colour is not the only sign. The chip's own text exempts its boundary, as KN-273's plan said, but not its state; that plan was wrong to leave the chip out of the question. It is the file's own drawing, so changing it departs from 159:71 and is the owner's call. In dark the same fill is the bright #207df9 KN-272 is about.
+
+**Why.** Someone who cannot see a 1.2:1 difference cannot tell which filters are on, and the Filter Chip doubles as the status counter above the board. Fixing it departs from the file, so the owner has to choose. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** The owner has answered, through the question tool, whether the selected Filter Chip keeps the file's fill as its only sign of selection or gains one that meets WCAG 1.4.11 and 1.4.1, with the options and their trade named; DESIGN.md records the answer as the owner's, with the date; and if it changes, a card for the change exists that also covers KN-272's dark fill.
+
+### `KN-277` KN-273's verifier takes the question tool from the section's intro, not from the KN-273 paragraph
+
+- **status** backlog · **severity** low · **points** 1 · **area** agent
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-273 roast. The check that the answer came through the question tool searches the whole 2026-09-10 settled section, whose intro already says 'confirmed the details through the question tool' about the other two decisions, so the KN-273 paragraph could lose its provenance and the check would still pass. The intro's 'the third was put and answered through the question tool alone' binds it in prose; the verifier does not.
+
+**Why.** A verifier should fail when the thing it checks is missing. Low: it is about the loop's tooling rather than the product, and nothing is broken today.
+
+**Exit condition.** The KN-273 paragraph itself says the answer came through the question tool, KN-273's verifier reads that from the paragraph rather than from the section, and its in-memory control that removes the phrase from the paragraph fails it.
 

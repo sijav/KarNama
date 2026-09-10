@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 276,
+  "nextId": 278,
   "tasks": [
     {
       "id": "KN-001",
@@ -6157,11 +6157,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "With no control touched, every Controls value in the args-driven Input stories is what the canvas draws, label, placeholder and helper, in either language; changing one in Controls changes the canvas to exactly that value, and clearing the placeholder or helper removes it; a story asserts the rendered copy equals the args, and a mutation reintroducing a hidden fallback fails it.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T09:45:57.208Z"
+      "createdAt": "2026-09-10T09:45:57.208Z",
+      "updatedAt": "2026-09-10T14:46:17.696Z"
     },
     {
       "id": "KN-246",
@@ -6839,7 +6840,23 @@
       "parent": [],
       "status": "done",
       "exit": "The owner has answered, through the question tool, whether the resting edge of an enabled Input and an unchecked Checkbox stays border/default as the file draws it or is raised to at least 3:1 against the surfaces it sits on; DESIGN.md records the answer as the owner's, with the date; and if it is raised, a card for the change exists.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6.8,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-273-round-1.2026-09-10T14-44-55-028Z.md",
+          "filed": [
+            "KN-276",
+            "KN-277"
+          ],
+          "cardDigest": "bb56c39da036777b1f505eb93d42dd73c6289f3a4e17c2482dff2d855cd96e60",
+          "head": "c41dba2a5656e39a07ae45c0c88f9bd44e5c7024",
+          "reviewerScore": 6.8,
+          "reviewerCriticals": 1,
+          "at": "2026-09-10T14:49:24.713Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T14:24:29.018Z",
       "updatedAt": "2026-09-10T14:44:29.438Z",
@@ -6876,6 +6893,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T14:42:46.699Z"
+    },
+    {
+      "id": "KN-276",
+      "title": "The selected Filter Chip is told apart by a 1.22:1 fill, under the 3:1 WCAG 1.4.11 asks of a state",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-273 roast, KN-273 being a child of KN-011. The Filter Chip's selected state, node 159:71, fills the chip and its border with bg/brand/container #dbeafe and turns its text to text/brand; unselected it is bg/surface with border/default and text/secondary. The fill that shows the state is 1.22:1 against white, 1.14:1 against bg/page and 1.11:1 against bg/surface-secondary, and nothing but colour tells the two states apart, so WCAG 1.4.11's 3:1 for the visual information that identifies a state is not met, nor 1.4.1's rule that colour is not the only sign. The chip's own text exempts its boundary, as KN-273's plan said, but not its state; that plan was wrong to leave the chip out of the question. It is the file's own drawing, so changing it departs from 159:71 and is the owner's call. In dark the same fill is the bright #207df9 KN-272 is about.",
+      "why": "Someone who cannot see a 1.2:1 difference cannot tell which filters are on, and the Filter Chip doubles as the status counter above the board. Fixing it departs from the file, so the owner has to choose. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "design",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The owner has answered, through the question tool, whether the selected Filter Chip keeps the file's fill as its only sign of selection or gains one that meets WCAG 1.4.11 and 1.4.1, with the options and their trade named; DESIGN.md records the answer as the owner's, with the date; and if it changes, a card for the change exists that also covers KN-272's dark fill.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T14:49:24.519Z"
+    },
+    {
+      "id": "KN-277",
+      "title": "KN-273's verifier takes the question tool from the section's intro, not from the KN-273 paragraph",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-273 roast. The check that the answer came through the question tool searches the whole 2026-09-10 settled section, whose intro already says 'confirmed the details through the question tool' about the other two decisions, so the KN-273 paragraph could lose its provenance and the check would still pass. The intro's 'the third was put and answered through the question tool alone' binds it in prose; the verifier does not.",
+      "why": "A verifier should fail when the thing it checks is missing. Low: it is about the loop's tooling rather than the product, and nothing is broken today.",
+      "severity": "low",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The KN-273 paragraph itself says the answer came through the question tool, KN-273's verifier reads that from the paragraph rather than from the section, and its in-memory control that removes the phrase from the paragraph fails it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T14:49:24.605Z"
     }
   ]
 }
