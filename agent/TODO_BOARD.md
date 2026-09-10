@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 75 of 253 tasks done · 154 of 653 points.
+Project **KarNama** · 75 of 254 tasks done · 154 of 654 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -18,13 +18,14 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (173)
+## Backlog (174)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-248` | Nothing checks the Input's placeholder stays put when an empty field takes focus | critical | 1 | web | KN-250 | A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name. |
 | `KN-252` | Resetting the Input's value control turns the same field from controlled to uncontrolled | critical | 1 | web | none | Switching the value control between set and unset starts the field over rather than changing its mode in place, so React never sees one input go from controlled to uncontrolled or back; a check in a development build, where React reports it, sets value, types, resets it, and finds no such report and a field showing its default again; a mutation removing the fix brings the report back. |
+| `KN-254` | An empty error string puts the Input in its error state | critical | 1 | web | none | An error that is empty or only whitespace is no error: the field keeps its default border, is not aria-invalid, and shows its helper text; a story renders such an error and asserts all three; DESIGN.md or the component's story docs say the error state needs a message; and a mutation back to testing error against undefined fails that story by name. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -3195,4 +3196,15 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** Pasted or composed text that silently loses characters makes the component look broken to the person trying it. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** The field shows every edit as it happens and the arg follows without a stale value overwriting newer input: 20 keys typed with no delay all arrive in both the field and the arg, and a composition driven through the browser's own IME input ends with the composed text in both; a mutation back to the plain round trip loses keys again.
+
+### `KN-254` An empty error string puts the Input in its error state
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while doing KN-247 and reproduced by its sweep on the production Storybook: the Input treats every error other than undefined as an error. In Input.tsx the message is error ?? helperText, and aria-invalid and the border colour turn on error === undefined, so error '' draws the field in border/error, rgb(239, 68, 68), marks it aria-invalid, and replaces the helper text with an empty line; Default and Hover, rerun with error '', failed on exactly that border. A form library that clears a field's error to the empty string rather than to undefined leaves a valid field red with no message, and a screen reader announces it invalid with nothing to say why.
+
+**Why.** The error state is the one a user is told to fix; showing it on a valid field, and with no message, is wrong both ways. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** An error that is empty or only whitespace is no error: the field keeps its default border, is not aria-invalid, and shows its helper text; a story renders such an error and asserts all three; DESIGN.md or the component's story docs say the error state needs a message; and a mutation back to testing error against undefined fails that story by name.
 

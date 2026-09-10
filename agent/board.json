@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 254,
+  "nextId": 255,
   "tasks": [
     {
       "id": "KN-001",
@@ -6284,6 +6284,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T10:30:25.462Z"
+    },
+    {
+      "id": "KN-254",
+      "title": "An empty error string puts the Input in its error state",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while doing KN-247 and reproduced by its sweep on the production Storybook: the Input treats every error other than undefined as an error. In Input.tsx the message is error ?? helperText, and aria-invalid and the border colour turn on error === undefined, so error '' draws the field in border/error, rgb(239, 68, 68), marks it aria-invalid, and replaces the helper text with an empty line; Default and Hover, rerun with error '', failed on exactly that border. A form library that clears a field's error to the empty string rather than to undefined leaves a valid field red with no message, and a screen reader announces it invalid with nothing to say why.",
+      "why": "The error state is the one a user is told to fix; showing it on a valid field, and with no message, is wrong both ways. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "An error that is empty or only whitespace is no error: the field keeps its default border, is not aria-invalid, and shows its helper text; a story renders such an error and asserts all three; DESIGN.md or the component's story docs say the error state needs a message; and a mutation back to testing error against undefined fails that story by name.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T10:57:13.769Z"
     }
   ]
 }
