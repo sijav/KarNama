@@ -3350,7 +3350,8 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T03:06:49.598Z",
-      "updatedAt": "2026-09-10T00:50:19.992Z"
+      "updatedAt": "2026-09-10T01:00:35.095Z",
+      "verify": "node agent/scripts/verify/KN-132.mjs"
     },
     {
       "id": "KN-133",
