@@ -671,15 +671,17 @@
         "KN-007",
         "KN-205"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown.",
       "roasts": [],
       "notes": [
         "Blocked on KN-205 - The Checkbox hover and focus selectors reach the glyph. KN-013 is the first component of the library and this is the second, so its hover and focus styling will be written by copying the first. That pattern is currently wrong: it selects by a MUI class name and matches the inner glyph as well as the frame. Fixing the template before replicating it costs one card; fixing it afterwards costs every component that copied it."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T05:14:01.954Z",
-      "verify": "node agent/scripts/verify/KN-017.mjs"
+      "updatedAt": "2026-09-10T05:14:47.335Z",
+      "verify": "node agent/scripts/verify/KN-017.mjs",
+      "evidence": "node agent/scripts/verify/KN-017.mjs, 6 checks, all pass, worktree identical before and after. Four of them BREAK the component and require the stories to fail, rather than reading the source and agreeing with it. FOUR STATES VERIFIED IN A BROWSER by reading computed styles, not by eye. Default: height 32px, radius 999px, background rgb(255,255,255), border 1px rgb(229,231,235), colour rgb(107,114,128), padding-inline 12px, type 14/22/400. Selected: background rgb(219,234,254), border matching the fill so it reads borderless, colour rgb(29,78,216), aria-pressed true. Hover and Pressed read from the emitted stylesheet, which does not depend on simulating a pointer: hover sets background rgb(243,244,246) and active sets border-color rgb(37,99,235). Every value equals the Figma variable for node 159:71. BOTH LANGUAGES: Persian renders the chip as three in Persian digits with dir rtl, English renders the same chip with a Latin 3, dir ltr, lang en-US, and the label unchanged because it is the user own text rather than a catalog message. MUTATIONS, each tied to a clause of the exit condition. Replacing aria-pressed with a data attribute FAILS, so the selected state is proved to be announced and not merely shown. Pinning the count to English FAILS the Persian stories, so the digits are proved to follow the reader. Pinning the count to a constant FAILS, so the rendered text is proved to track the prop, which is what the count updates with the filtered data means for a component in isolation. THE COUNT FORMATTER: lingui i18n.number does exactly this and is DEPRECATED, which the linter caught. formatCount now lives in src/i18n with five unit tests covering both locales, thousands grouping, and zero, and it caches one Intl.NumberFormat per locale because a board draws a chip per status and a count per card. MY OWN CHECK SELF-MATCHED, the seventh time in this repository: it searched the source for disabled to prove no fifth state had been invented, and failed on the component comment saying there is no disabled state. It now strips comments first, and I proved the strip did not make it vacuous by planting a REAL disabled prop and watching it still be caught. KN-017 has no provenance parent, so it closed on the FULL suite: lint clean at zero warnings, tsc clean, npm test 428 passing across three projects (4 graphql, 324 web, 100 api), web coverage 100 percent on all four metrics, build succeeds and schema.gql matches the resolvers. One branch had to be REMOVED rather than excluded to keep coverage honest: narrowing lingui locale, a plain string, left a fallback that cannot be reached. The locale now comes from usePreferences, which is already typed, so there is no branch at all.",
+      "closedAt": "2026-09-10T05:14:47.335Z"
     },
     {
       "id": "KN-018",

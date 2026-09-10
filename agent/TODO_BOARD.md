@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 45 of 208 tasks done · 108 of 585 points.
+Project **KarNama** · 46 of 208 tasks done · 110 of 585 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-017` Filter chip, doubling as the status counter** (high, 2 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
+**Next up: `KN-032` Tooltip** (high, 2 pt, web)
 
 ## Blocked (1)
 
@@ -186,7 +180,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (45)
+## Done (46)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -227,6 +221,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-199` | KN-060 asks a reusable column component to own where the rejected column sits on the board | high | 1 | design | none | KN-043's exit condition names the rejected column's position after the offer column and its collapsed-to-a-count default; KN-060's names rendering collapsed to a count and expanding on click, and says nothing about where the column sits. KN-149's verifier requires the right clause of each card rather than one shared string, and a mutation that swaps the two clauses between the cards is caught. |
 | `KN-204` | KN-201 closed on a verifier that never tested one of its own exit-condition clauses | high | 1 | agent | none | KN-201.mjs plants a meta whose component is not a plain identifier, at least the two real shapes memo(Thing) and an inline arrow, and requires the guard to FAIL naming the file; that case fails before the guard fix and passes after. The verifier no longer leaves a tracked file modified if it is killed mid-run, or the residual risk is stated in its header with the reason it is accepted. The as-Error cast is gone, replaced by an instanceof narrowing, and no cast of that shape exists in apps/web/src or apps/api/src, checked rather than assumed. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
+| `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-159` | Close the task BEFORE the roast, and never let a finding reopen it | high | 2 | agent | none | move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source. |
 | `KN-160` | Plan files live beside the work, named #<id> - <title>.md | high | 2 | agent | none | agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree. |
 | `KN-166` | Check the loop rules are written correctly in the SkipBureau project | high | 2 | agent | none | ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed. |
@@ -439,7 +434,7 @@ Default, Focus and Filled from Figma node 155:92, with the search icon and a cle
 
 ### `KN-017` Filter chip, doubling as the status counter
 
-- **status** in_progress · **severity** high · **points** 2 · **area** web
+- **status** done · **severity** high · **points** 2 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-205
 
 Default, Hover, Pressed and Selected from Figma node 159:71, carrying a count. On mobile it is the scrolling status chip bar that stands in for the columns; on desktop it is the counter and filter row.
