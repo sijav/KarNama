@@ -85,16 +85,19 @@ const meta = {
   args: { label: '', onChange: fn() },
   // Keyed on defaultValue: the field is uncontrolled, and React reads a
   // default only when the field mounts, so a new one needs a new field or the
-  // Controls panel changes nothing, KN-246. And value is bound to the args:
-  // set it in Controls and the field is controlled, so what is typed has to
-  // go back into the arg, or the field refuses every keystroke, KN-249.
+  // Controls panel changes nothing, KN-246. And on whether value is set: one
+  // input cannot turn from uncontrolled to controlled or back, so value
+  // arriving or being reset starts the field over too, KN-252. Value is bound
+  // to the args: set it in Controls and the field is controlled, so what is
+  // typed has to go back into the arg, or the field refuses every keystroke,
+  // KN-249.
   render: function Render(args) {
     const [, updateArgs] = useArgs<InputProps>()
     const onChange = (value: string, event: ChangeEvent<HTMLInputElement>) => {
       if (args.value !== undefined) updateArgs({ value })
       args.onChange?.(value, event)
     }
-    return <JobTitle key={args.defaultValue} {...args} onChange={onChange} />
+    return <JobTitle key={`${args.value === undefined ? 0 : 1}${args.defaultValue ?? ''}`} {...args} onChange={onChange} />
   },
 } satisfies StoryMeta<typeof Input>
 
