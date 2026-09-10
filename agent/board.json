@@ -5294,13 +5294,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A story measures the open tip's computed padding as 8 top and bottom and 12 at each side, and its computed box-shadow as the value read from node 410:469; that value lives in the token set beside Card and Modal and is recorded in DESIGN.md's elevation table with the node it was read from; and a mutation restoring padding 12 on all sides fails the story.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T06:56:21.840Z",
-      "updatedAt": "2026-09-10T07:17:34.703Z",
-      "verify": "node agent/scripts/verify/KN-218.mjs"
+      "updatedAt": "2026-09-10T07:17:57.834Z",
+      "verify": "node agent/scripts/verify/KN-218.mjs",
+      "evidence": "From get_design_context on 410:469: py spacing-xs 8, px spacing-sm 12, shadow 0 6px 18px -2px rgba(0,0,0,0.24), which get_variable_defs shows is bound to no effect style. Tooltip.tsx pads `${spacing.xs}px ${spacing.sm}px` and draws theme.karnama.elevation.tooltip; tokens.ts adds elevation.tooltip '0 6px 18px -2px #0000003D' beside card and modal; tokens.test and theme.test updated and green (200 of 200 in src/theme); DESIGN.md's elevation table gains a row naming 410:469 and saying it is not a style, with a paragraph on why the two-style rule still holds and how the thirteen-frame sweep missed it. The OnHover story now asserts computed padding [8, 12, 8, 12] and box-shadow equal to the token as the browser normalises it. agent/scripts/verify/KN-218.mjs, 5 checks green: stories pass; MUTATION restoring padding 12 all round fails On Hover; removing the shadow fails it; the token is the frame's value and its test passes; DESIGN.md's row names the node and says no style. Lint: tokens.ts is exempt from lingui as a file, replacing the card and modal NAME exemptions, which are removed. KN-004.mjs checks the new row whole and knows #0000003D; KN-210.mjs finds the component row by name. All green: KN-210, KN-218, KN-032, KN-087, KN-094, KN-095, KN-004, and KN-003 (full gate: lint, tsc, suite with 100 percent coverage, both builds, every planted fixture failing). Seen in the browser pane: fa-IR light and en-US dark both measure the tip at 260 by 82 (Figma's frame is 260 by 82), padding 8px 12px, shadow rgba(0, 0, 0, 0.24) 0px 6px 18px -2px.",
+      "closedAt": "2026-09-10T07:17:57.834Z"
     },
     {
       "id": "KN-219",
