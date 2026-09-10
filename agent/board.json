@@ -457,7 +457,7 @@
       "title": "Icon set, 30 icons at 24 by 24",
       "desc": "An Icon component rendering the 30 icons drawn at Figma node 239:44, each 24 by 24, 2px stroke, round cap and join, defaulting to text/secondary and overridable per instance. Sizes sm 16, md 20 and base 24 come from the token scale.",
       "why": "Almost every other component contains an icon, so it blocks most of the component queue. Drawing them per component instead produces a set that drifts in weight and alignment, which is visible the moment two sit side by side.",
-      "severity": "high",
+      "severity": "critical",
       "points": 5,
       "area": "web",
       "parent": [
@@ -468,15 +468,18 @@
       "status": "backlog",
       "exit": "Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T06:38:17.569Z"
     },
     {
       "id": "KN-009",
       "title": "Button, 3 sizes by 5 styles by 5 states",
       "desc": "Sizes S, M and L, styles Primary, Secondary, Text, Destructive and Ghost, and states Default, Hover, Pressed, Disabled and Focus, built on MUI Button and restyled to Figma nodes 37:10, 33:58 and 37:71. 75 combinations in total.",
       "why": "It is the most repeated control in the product and the one where a wrong radius or hover tone is most visible. Every screen and every modal uses it, so getting it exactly right once removes the question everywhere else.",
-      "severity": "high",
+      "severity": "critical",
       "points": 5,
       "area": "web",
       "parent": [
@@ -487,15 +490,18 @@
       "status": "backlog",
       "exit": "All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T06:38:17.657Z"
     },
     {
       "id": "KN-010",
       "title": "Status chip, 9 statuses by 2 sizes, display only",
       "desc": "A display-only chip for the nine statuses at sizes S and M, from Figma node 82:2, taking base and container colours from the status token pairs. No click target and no focus ring, deliberately.",
       "why": "Status is the spine of the product, so its visual language appears on every card, column header and filter. The design separates display from interaction on purpose, and merging them here would put a focus ring on every card on the board. The label is data rather than a translated constant, because a user can rename any status and a catalog cannot represent that.",
-      "severity": "high",
+      "severity": "critical",
       "points": 3,
       "area": "web",
       "parent": [
@@ -506,16 +512,18 @@
       "status": "backlog",
       "exit": "Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:56:10.166Z"
+      "updatedAt": "2026-09-10T06:38:17.746Z"
     },
     {
       "id": "KN-011",
       "title": "Input, 6 states",
       "desc": "Text input with Default, Filled, Focus, Error, Disabled and Hover, from Figma node 95:38, with the label, helper and error line the design draws.",
       "why": "Every form in the product uses it: add job, manual entry, contact, note, admin. An input whose error state was never built means the first validation failure has nowhere to render.",
-      "severity": "high",
+      "severity": "critical",
       "points": 3,
       "area": "web",
       "parent": [
@@ -526,15 +534,18 @@
       "status": "backlog",
       "exit": "All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T06:38:17.836Z"
     },
     {
       "id": "KN-012",
       "title": "Select, option row and options menu",
       "desc": "Select with Default, Filled, Focus, Disabled and Open from node 183:26, Option Row with Default, Hover, Selected and Disabled from 408:465, and the popover at 408:487. Includes the two domain selects the file draws, employment type and job level.",
       "why": "The job record has enumerated fields, and the add and edit flows cannot be built without them. Hand-rolling a listbox is where keyboard support and screen reader semantics usually get lost, so this builds on the MUI primitive.",
-      "severity": "high",
+      "severity": "critical",
       "points": 5,
       "area": "web",
       "parent": [
@@ -545,8 +556,11 @@
       "status": "backlog",
       "exit": "All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T06:38:17.924Z"
     },
     {
       "id": "KN-013",
@@ -595,7 +609,7 @@
       "title": "Icon button, 2 tones by 3 states",
       "desc": "Neutral and Danger tones, each with Default, Hover and Disabled, from Figma node 460:672, at 32 by 32 wrapping a 20px icon.",
       "why": "Card actions, modal close and row menus all use it. It also has to carry an accessible name, because an icon-only control with no label is invisible to a screen reader.",
-      "severity": "high",
+      "severity": "critical",
       "points": 2,
       "area": "web",
       "parent": [
@@ -607,15 +621,18 @@
       "status": "backlog",
       "exit": "Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T06:38:18.013Z"
     },
     {
       "id": "KN-015",
       "title": "Card, desktop and mobile, with the status stripe",
       "desc": "The job card at Figma node 137:44 with Default, Hover, Pressed, Selected, Static and Focus, the mobile variant at 491:751 with Default and Selected, and the 4px status stripe at 358:430 in all nine status colours.",
       "why": "It is the product. The archive scenario is a list of these, and the whole value of the tool is that the list reads at a glance. The stripe is what makes status legible without reading, so its colour has to survive a status the user has renamed or deleted.",
-      "severity": "high",
+      "severity": "critical",
       "points": 8,
       "area": "web",
       "parent": [
@@ -631,17 +648,18 @@
       "roasts": [],
       "notes": [
         "Card hover is Smart Animate 300ms in the prototype: the checkbox and the delete icon appear and the title moves forward. Per frame 416:14 these are component-level variant reactions rather than separate screens.",
-        "From frame 376:43: the card keeps its height on hover by toggling visibility rather than removing the node. In CSS that means visibility hidden or opacity 0 for the checkbox and delete icon, never display none, or the card reflows and jumps under the cursor as it is hovered."
+        "From frame 376:43: the card keeps its height on hover by toggling visibility rather than removing the node. In CSS that means visibility hidden or opacity 0 for the checkbox and delete icon, never display none, or the card reflows and jumps under the cursor as it is hovered.",
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:35:16.607Z"
+      "updatedAt": "2026-09-10T06:38:18.099Z"
     },
     {
       "id": "KN-016",
       "title": "Search bar, 3 states",
       "desc": "Default, Focus and Filled from Figma node 155:92, with the search icon and a clear affordance in the filled state.",
       "why": "Finding one specific job opportunity in a growing archive is the second flow the design names. An archive you cannot search stops being useful at about the point it starts being valuable.",
-      "severity": "high",
+      "severity": "critical",
       "points": 2,
       "area": "web",
       "parent": [
@@ -653,9 +671,11 @@
       "status": "backlog",
       "exit": "Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:01:17.973Z"
+      "updatedAt": "2026-09-10T06:38:18.186Z"
     },
     {
       "id": "KN-017",
@@ -688,7 +708,7 @@
       "title": "Menu and menu item",
       "desc": "Menu Item with Default, Hover, Disabled and Destructive from node 181:22, and the two menus at 512:8350, Type=Status and Type=Card.",
       "why": "Status management is inline through this menu, and the design gives it exactly three options: rename, change colour, delete. Reorder was removed. The card menu carries the destructive actions, and Destructive being a distinct drawn state means the design intends deletion to look different, not merely to be confirmed. The colour menu replaces the main menu rather than opening beside it.",
-      "severity": "high",
+      "severity": "critical",
       "points": 5,
       "area": "web",
       "parent": [
@@ -700,16 +720,18 @@
       "status": "backlog",
       "exit": "All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:56:10.670Z"
+      "updatedAt": "2026-09-10T06:38:18.281Z"
     },
     {
       "id": "KN-019",
       "title": "Colour picker for the four custom status slots",
       "desc": "The picker at Figma node 257:17, offering the four reserved custom status colour pairs rather than a free colour field.",
       "why": "A user-defined status still has to read as a status, which is why the design reserves exactly four slots instead of a colour wheel. Building a free picker here would let a user choose a colour that collides with rejected or offer and quietly break the glance-readability of the list.",
-      "severity": "high",
+      "severity": "critical",
       "points": 3,
       "area": "web",
       "parent": [
@@ -720,15 +742,18 @@
       "status": "backlog",
       "exit": "The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T06:38:18.390Z"
     },
     {
       "id": "KN-020",
       "title": "Status choice, status picker and status control",
       "desc": "Status Choice with Default, Hover and Selected from node 427:567, the Status Picker popover at 427:592, and Status Control with Default, Hover and Pressed at 199:21, which is the clickable wrapper the card uses around a display-only chip.",
       "why": "Changing a status without opening anything is the core interaction of the organise scenario, whether by dragging a card between columns or by picking from the chip picker. The design deliberately keeps the chip inert and puts interaction in a wrapper, so this is where that separation is honoured or lost.",
-      "severity": "high",
+      "severity": "critical",
       "points": 5,
       "area": "web",
       "parent": [
@@ -742,16 +767,18 @@
       "status": "backlog",
       "exit": "All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:56:14.743Z"
+      "updatedAt": "2026-09-10T06:38:18.480Z"
     },
     {
       "id": "KN-021",
       "title": "Page header",
       "desc": "Title, optional back button and optional primary action, from Figma node 155:56 with the second instance at 155:72. Carries the language switch as a trailing action on mobile, per DESIGN.md section 4.",
       "why": "Every screen has one, and it is where the language control lives on mobile: the tab bar carries the three drawn destinations and a fourth entry would change the design, so the switch belongs here instead.",
-      "severity": "high",
+      "severity": "critical",
       "points": 3,
       "area": "web",
       "parent": [
@@ -764,16 +791,18 @@
       "status": "backlog",
       "exit": "Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:56:11.168Z"
+      "updatedAt": "2026-09-10T06:38:18.580Z"
     },
     {
       "id": "KN-022",
       "title": "Empty state and loading state",
       "desc": "Empty State at Figma node 159:80 for a job list with nothing in it, and Loading State at 159:92 for the extraction step in the add flow.",
       "why": "The first thing a new user sees is the empty state, so it is the first impression of the product. The loading state covers extraction, and it also has to cover the Render free tier cold start, which can take about 50 seconds.",
-      "severity": "high",
+      "severity": "critical",
       "points": 3,
       "area": "web",
       "parent": [
@@ -785,15 +814,18 @@
       "status": "backlog",
       "exit": "Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T06:38:18.673Z"
     },
     {
       "id": "KN-023",
       "title": "Tabs",
       "desc": "Tab Item with Default, Active and Hover from Figma node 204:20, and the tablist that composes them.",
       "why": "The job detail modal has four tabs and the design puts the whole detail view behind them, so the modal cannot be built before this is.",
-      "severity": "high",
+      "severity": "critical",
       "points": 3,
       "area": "web",
       "parent": [
@@ -804,15 +836,18 @@
       "status": "backlog",
       "exit": "Three states match Figma, the tablist follows the roving tabindex pattern with arrow key navigation, the active tab is announced as selected, and panels are associated with their tabs.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T06:38:18.771Z"
     },
     {
       "id": "KN-024",
       "title": "Sort control",
       "desc": "Default, Hover and Open from Figma node 408:512.",
       "why": "An archive that only grows needs an order the user chooses. The design permits exactly four: newest, oldest, nearest deadline, and company name alphabetically. Sorting by status is NOT one of them, because status is already the axis the board columns express.",
-      "severity": "high",
+      "severity": "critical",
       "points": 3,
       "area": "web",
       "parent": [
@@ -824,16 +859,18 @@
       "status": "backlog",
       "exit": "Three states match Figma, the four permitted options are the only ones offered, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:56:12.194Z"
+      "updatedAt": "2026-09-10T06:38:18.864Z"
     },
     {
       "id": "KN-025",
       "title": "Bulk action bar",
       "desc": "Type=Jobs and Type=Contacts from Figma node 401:436, appearing when a selection exists.",
       "why": "Managing an archive of hundreds means acting on many at once. Without it, cleaning up a stale search means opening every card.",
-      "severity": "high",
+      "severity": "critical",
       "points": 3,
       "area": "web",
       "parent": [
@@ -846,15 +883,18 @@
       "status": "backlog",
       "exit": "Both types match Figma, the bar appears only when at least one row is selected, it reports the selection count, and it is reachable by keyboard when it appears rather than trapping focus behind the list.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T06:38:18.961Z"
     },
     {
       "id": "KN-026",
       "title": "Contact card, full and compact",
       "desc": "Full and Compact layouts, each with Default, Hover and Selected, from Figma node 248:116. All contact information is on the card, the design gives it no detail view.",
       "why": "A job lead is a person as often as it is a link. The design deliberately has no contact detail page, so everything has to fit on the card, which constrains what the contact record can hold.",
-      "severity": "high",
+      "severity": "critical",
       "points": 5,
       "area": "web",
       "parent": [
@@ -868,16 +908,18 @@
       "status": "backlog",
       "exit": "Both layouts and all three states match Figma, every field the design draws is present, long values truncate rather than reflow the card, and email and phone are actionable links.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:11:08.771Z"
+      "updatedAt": "2026-09-10T06:38:19.062Z"
     },
     {
       "id": "KN-027",
       "title": "Navigation: nav item, desktop sidebar, mobile tab bar, and the language switch",
       "desc": "Nav Item with Default, Active and Hover from node 184:14, the sidebar at 185:11 which sits on the RIGHT on desktop, and the tab bar at 185:19 at the bottom on mobile. THREE destinations, per the Documentation canvas which supersedes the Components canvas annotation: فرصت‌های شغلی من (the board), افزودن فرصت شغلی, and شبکه من (the standalone network page). The language switch goes at the foot of the sidebar on desktop, per DESIGN.md section 4.",
       "why": "It is the frame every screen sits in, and it is where the owner asked for the language button to go without disturbing the design. Getting the RTL side wrong here puts the sidebar on the wrong edge for the default language of the product.",
-      "severity": "high",
+      "severity": "critical",
       "points": 8,
       "area": "web",
       "parent": [
@@ -890,16 +932,18 @@
       "status": "backlog",
       "exit": "The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:49:03.225Z"
+      "updatedAt": "2026-09-10T06:38:19.167Z"
     },
     {
       "id": "KN-028",
       "title": "Modal shell, confirm, and change status",
       "desc": "The modal shell with focus trap and Escape handling, Modal/Confirm at Figma node 150:92 for delete and archive, and Modal/Change Status at 150:93.",
       "why": "Deleting a job opportunity is irreversible, and confirmation is the only thing between a user and losing part of their record. The shell also underpins the two larger modals, so its focus behaviour is inherited by both.",
-      "severity": "high",
+      "severity": "critical",
       "points": 5,
       "area": "web",
       "parent": [
@@ -912,16 +956,18 @@
       "status": "backlog",
       "exit": "Both modals match Figma, focus is trapped and returns to the trigger on close, Escape closes, the backdrop click behaviour matches the design, and the dialog has an accessible name and is announced as a dialog.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:01:18.375Z"
+      "updatedAt": "2026-09-10T06:38:19.278Z"
     },
     {
       "id": "KN-029",
       "title": "Add and edit job modal, all six steps",
       "desc": "The Add/Edit modal at Figma node 166:82 with Step=Paste, PasteFilled, Loading, Review, Manual and Error. Paste takes a link or the text of an ad, Loading covers extraction, Review shows the structured result for correction, Manual is the fallback, Error is the failure path.",
       "why": "This is scenario 3, the organise scenario, in one component. It is also where the product makes its argument: the user pastes, and the product does the structuring. If Review is not correctable the extraction being wrong makes the record wrong permanently.",
-      "severity": "high",
+      "severity": "critical",
       "points": 8,
       "area": "web",
       "parent": [
@@ -936,17 +982,18 @@
       "exit": "All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding.",
       "roasts": [],
       "notes": [
-        "Motion values from frame 384:12: Dissolve 150ms for opening and closing a modal, Smart Animate 300ms for a state change within a screen such as the card hover, and Instant for menus and popovers. The prototype advances Loading to Review after 1.4 seconds, which is a prototype timing rather than a spec, but it is the intended feel. The extract button is disabled until the field is both touched and filled."
+        "Motion values from frame 384:12: Dissolve 150ms for opening and closing a modal, Smart Animate 300ms for a state change within a screen such as the card hover, and Instant for menus and popovers. The prototype advances Loading to Review after 1.4 seconds, which is a prototype timing rather than a spec, but it is the intended feel. The extract button is disabled until the field is both touched and filled.",
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:21:52.638Z"
+      "updatedAt": "2026-09-10T06:38:19.391Z"
     },
     {
       "id": "KN-030",
       "title": "Job modal, five tabs",
       "desc": "The job detail modal at Figma node 210:276. The file draws four tab variants: Tab=Info 210:101, Tab=Note 210:145, Tab=Contacts 210:208, Tab=Files 210:275, each 720 by 617. The owner settled open item 18 on 2026-09-08 and status history is now its OWN tab rather than a block at the bottom of Info, so the modal has FIVE: اطلاعات آگهی, سابقه, یادداشت, افراد مرتبط, فایل‌ها, with سابقه second, directly after the information it is the history of. That is a deliberate departure from the frame, recorded in DESIGN.md section 3 and section 6 under KN-072. Everything else comes from the frame unchanged.",
       "why": "The design replaced a detail page with this modal, so it is the only place the full record is visible. Status history is the record of the trail, which is the anchor of the whole product.",
-      "severity": "high",
+      "severity": "critical",
       "points": 8,
       "area": "web",
       "parent": [
@@ -961,16 +1008,18 @@
       "status": "backlog",
       "exit": "All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T02:54:36.877Z"
+      "updatedAt": "2026-09-10T06:38:19.514Z"
     },
     {
       "id": "KN-031",
       "title": "Contact modal, add and edit",
       "desc": "Mode=Add and Mode=Edit from Figma node 270:152.",
       "why": "Contacts are added from inside the job modal, so this is how a person gets attached to an application. Edit exists because a phone number learned later is the common case.",
-      "severity": "high",
+      "severity": "critical",
       "points": 5,
       "area": "web",
       "parent": [
@@ -984,9 +1033,11 @@
       "status": "backlog",
       "exit": "Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-09T21:34:46.785Z"
+      "updatedAt": "2026-09-10T06:38:19.616Z"
     },
     {
       "id": "KN-032",
@@ -1660,7 +1711,7 @@
       "title": "Kanban column component",
       "desc": "The column itself, 300 by 684 from node 241:125: the 276 by 40 header carrying its status icon, its count and its menu trigger, the card slot, the column spacer, and the Add Card row pinned at the bottom as a plus only. Plus the Add Column tile at 241:34 labelled افزودن وضعیت, and the empty-column message. Composes Card, Status Chip at Size=M which is the only place the large chip is used, and Menu.",
       "why": "Components before screens, and the column is a component the board screen composes rather than part of the screen. Building it inside the screen would mean its header, its empty state and its Add Card row never get reviewed in isolation, and the Size=M status chip has exactly one legitimate use which lives here.",
-      "severity": "high",
+      "severity": "critical",
       "points": 5,
       "area": "web",
       "parent": [
@@ -1674,9 +1725,11 @@
       "status": "backlog",
       "exit": "The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
       "createdAt": "2026-09-07T21:10:26.914Z",
-      "updatedAt": "2026-09-10T03:37:11.296Z"
+      "updatedAt": "2026-09-10T06:38:19.720Z"
     },
     {
       "id": "KN-061",
@@ -1703,7 +1756,7 @@
       "title": "Shared story fixtures",
       "desc": "A fixtures module under src/shared/story-fixtures holding realistic sample data for stories: job opportunities across every status, contacts, notes and a seeded board, in Persian and English. Storybook only, never bundled into the app. Seeding is idempotent and safe when several stories on one Docs page seed at once.",
       "why": "A Docs page renders every story of a component at once, so several stories seed simultaneously. Getting that wrong produces constraint errors on every Docs page from clear and write runs interleaving, which is a real failure this exact stack has produced before. Realistic data also matters: a card with a one word title hides the truncation the design relies on, and English strings are longer than Persian so a fixture that fits one may overflow the other.",
-      "severity": "high",
+      "severity": "critical",
       "points": 3,
       "area": "web",
       "parent": [
@@ -1713,8 +1766,11 @@
       "status": "backlog",
       "exit": "Every component story that needs data uses the shared fixtures, a Docs page rendering many stories at once seeds without error, the fixtures never appear in the production bundle and a test asserts that, and each fixture set has a long value that exercises truncation in both languages.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T21:10:45.923Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-07T21:10:45.923Z",
+      "updatedAt": "2026-09-10T06:38:17.471Z"
     },
     {
       "id": "KN-063",
@@ -4970,22 +5026,25 @@
       "title": "The Checkbox has no accessible name and a target smaller than WCAG allows",
       "desc": "CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188. Two halves of one problem: the control is not yet usable in the places it is actually for. FIRST, no accessible name is guaranteed. aria-label and aria-labelledby are both optional, there is no id prop at all, and every story renders a control with no name, so the canonical examples model the unusable case. A board card needs something like Select Senior React developer at X, and a column header needs Select all Applied. A checkbox announced as merely checkbox is unusable by screen reader precisely where bulk selection matters most. SECOND, the interactive target is 20 by 20 because padding is explicitly zero, and WCAG 2.5.8 asks for 24 CSS pixels unless the spacing exception applies. The component comment claims the hit area comes back through a label that wraps it, which is neither implemented nor sufficient for an icon-only control on a card. Both were found by the KN-013 roast and both are true by inspection.",
       "why": "Bulk selection is the feature this component exists for, and the people most likely to select in bulk are the ones a missing accessible name excludes. A 20 pixel target on a card that also drags is hard to hit for anyone, not only for people with motor impairments. Neither is a detail that gets fixed later once 37 components have copied the shape.",
-      "severity": "high",
+      "severity": "critical",
       "points": 3,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "The component takes an id, and rendering one with no accessible name is impossible without it being visible: either the type requires one of aria-label, aria-labelledby or a wrapping label, or a check fails on a story that omits all three. Every story names its control. The interactive target is at least 24 by 24 while the DRAWN frame stays 20 by 20 from Figma, or the spacing exception is demonstrated for the specific placement and written down. A test asserts the hit area, not the frame.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T04:52:10.607Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-10T04:52:10.607Z",
+      "updatedAt": "2026-09-10T06:38:19.812Z"
     },
     {
       "id": "KN-207",
       "title": "The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback",
       "desc": "CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-013 roast, and I checked both claims against AGENTS.md rather than taking them on trust. Both are real. AGENTS.md, under Documentation lives in markdown never in the code: a tsx carries code and the SHORT comments that explain the code, and everything a Storybook Docs page prints belongs in story-docs. Checkbox.tsx carries long design and API documentation blocks, and its per-prop JSDoc is exactly what react-docgen prints into the Controls table, so that prose is duplicated: once in the tsx and once in the markdown the guard already requires. The markdown is the source; the JSDoc should be short or gone. AGENTS.md line 246: every callback prop gets an fn() so the Actions panel records it. onChange has none, and nothing asserts its documented event and checked contract.",
       "why": "A rule that the first component of the library breaks is a rule the next 37 will break, and the reason the prose rule exists is that documentation kept in two places drifts. The fn() rule is smaller but it is the difference between a story a reviewer can interact with and one where nothing visible happens.",
-      "severity": "medium",
+      "severity": "critical",
       "points": 2,
       "area": "web",
       "parent": [],
@@ -4993,85 +5052,101 @@
       "exit": "Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering.",
       "roasts": [],
       "notes": [
-        "WIDENED on 2026-09-10. The same rule breach appears in the Tooltip, found by the KN-032 roast: long design and API documentation blocks in Tooltip.tsx and Tooltip.stories.tsx, duplicating what the story-docs markdown already carries. This card covers both components rather than a second card saying the same thing, and it should also decide whether per-prop JSDoc is allowed at all, since react-docgen prints it into the Controls table and that is prose a Docs page prints."
+        "WIDENED on 2026-09-10. The same rule breach appears in the Tooltip, found by the KN-032 roast: long design and API documentation blocks in Tooltip.tsx and Tooltip.stories.tsx, duplicating what the story-docs markdown already carries. This card covers both components rather than a second card saying the same thing, and it should also decide whether per-prop JSDoc is allowed at all, since react-docgen prints it into the Controls table and that is prose a Docs page prints.",
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-10T04:52:10.882Z",
-      "updatedAt": "2026-09-10T05:30:46.771Z"
+      "updatedAt": "2026-09-10T06:38:19.906Z"
     },
     {
       "id": "KN-208",
       "title": "KN-013 claimed five Figma states from five stories that are not the five states",
       "desc": "CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-013 roast. The card names five Figma states, Unchecked Checked Indeterminate Hover and Disabled, and the story file exports Unchecked Checked Indeterminate Disabled and KeyboardOnly. HOVER HAS NO STORY. KeyboardOnly is worth having and is behaviour coverage, not a design state. So KN-013.mjs, which asserts that five stories pass in a real browser, proves five stories ran and NOT that the five drawn states are covered, while reading as though it did. I verified hover by hand with a real pointer and recorded that in the evidence, so the state itself is correct; what is missing is anything that would catch it changing. This is the KN-190 shape again: a green count standing in for a clause nobody tests.",
       "why": "A verifier whose passing message implies more than it checked is worse than a missing check, because it stops anyone looking. Hover is also the one state that cannot be asserted from a story that never hovers, so it stays unproven by default unless something forces it.",
-      "severity": "medium",
+      "severity": "critical",
       "points": 1,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "Every Figma state named on the card has a story, hover included, and hover is exercised with a real pointer rather than a dispatched event, since hover cannot be dispatched. KN-013.mjs checks the states by NAME against the card rather than counting stories, so adding a sixth story or renaming one cannot silently satisfy it. A mutation deleting the hover story fails it.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T04:52:11.159Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-10T04:52:11.159Z",
+      "updatedAt": "2026-09-10T06:38:20.001Z"
     },
     {
       "id": "KN-209",
       "title": "The tooltip REPLACES an icon-only control's accessible name instead of describing it",
       "desc": "CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast and REPRODUCED in a browser, and it is worse than the finding said. I put aria-label='Delete this status' on the trigger, focused it, and read the attributes back: MUI had added aria-labelledby pointing at the tooltip. ARIA precedence puts aria-labelledby ABOVE aria-label, so the button's accessible name becomes the tooltip text and its own label is discarded entirely. That is MUI's documented default: a tooltip LABELS its child unless describeChild is set, in which case it DESCRIBES it through aria-describedby. For an icon-only control, which the card says is the whole reason this component exists, labelling is exactly wrong: the button stops being 'Delete this status' and becomes a paragraph about moving jobs to another column. The fix is describeChild on the MUI Tooltip. What is missing is not only the prop but the test: not one of the six checks looks at the accessible name, so the component's central accessibility claim is unasserted.",
       "why": "This component exists so icon-only controls have a visible label as well as an accessible one, and as shipped it takes the accessible one away. A screen reader user tabbing to a delete button is told a sentence about columns rather than that it deletes. It is also silent: nothing visual changes, and the tooltip looks perfect.",
-      "severity": "high",
+      "severity": "critical",
       "points": 2,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "The tooltip DESCRIBES rather than labels: a trigger with its own aria-label keeps that name, and the tip is reachable through aria-describedby. A story asserts the computed accessible name of an icon-only trigger while the tip is open, and a mutation removing describeChild makes it fail. The case where the trigger has NO name of its own is decided deliberately and written down, because describing something unnamed leaves it unnamed.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T05:30:45.846Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-10T05:30:45.846Z",
+      "updatedAt": "2026-09-10T06:38:20.100Z"
     },
     {
       "id": "KN-210",
       "title": "The tooltip's drawn width is neither implemented nor checkable",
       "desc": "CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast, and I had flagged it against myself when sending that roast. Figma node 410:469 is 292 wide. Nothing in the component sets a width or maxWidth, so wrapping comes from MUI's 300px default. For the one string in the frame the two are close enough to look identical, which is why it passed a visual check; for a longer title they wrap differently. The honest uncertainty is whether 292 is a SET width or just the natural wrap of that particular sentence. get_variable_defs returns no width variable for the node, so it cannot be settled from the variables alone and needs the frame's own layout properties. Until that is known, the component has an unstated dependency on a third-party default, and the evidence for KN-032 said the width was the one dimension not taken from a token without resolving it.",
       "why": "A dimension that comes from a library default rather than from the design is invisible until the library changes it or a longer string wraps somewhere the file does not. It is also the exact shape of thing 'match the design exactly' exists to catch, and this one was noticed and then left.",
-      "severity": "medium",
+      "severity": "critical",
       "points": 1,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T05:30:46.111Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-10T05:30:46.111Z",
+      "updatedAt": "2026-09-10T06:38:20.198Z"
     },
     {
       "id": "KN-211",
       "title": "The tooltip accepts triggers it cannot actually attach to",
       "desc": "CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast. children is typed ReactElement, which admits a Fragment and admits any component that does not forward the props and ref MUI injects. MUI attaches its hover and focus listeners by cloning the child, so for those triggers the tooltip silently never opens. Every story uses a native button, so all six checks pass while the case an icon-only wrapper component hits is untested. That matters immediately: KN-014 builds the Icon button, and it is the trigger this component is for.",
       "why": "A component that fails silently for a whole class of valid-looking input is worse than one that refuses: the caller gets no error, no warning, and a tooltip that simply never appears, which reads as their own mistake. The first real caller will be an icon button wrapper, which is precisely the shape at risk.",
-      "severity": "medium",
+      "severity": "critical",
       "points": 2,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T05:30:46.379Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-10T05:30:46.379Z",
+      "updatedAt": "2026-09-10T06:38:20.286Z"
     },
     {
       "id": "KN-212",
       "title": "The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked",
       "desc": "CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast. Both the tip text and the trigger label are Persian literals in the story args, so switching the Storybook Language toolbar to English changes nothing on screen. AGENTS.md section 5 requires every change to be seen in fa-IR and en-US, light and dark, and for this component two of those four are the same picture. The tip text is legitimately caller-provided and NOT a catalog message, so the fix is not to translate the component; it is that the STORY should pass something that changes with the locale, the way the FilterChip stories do. The lint rule does not catch it because the stories block exempts title, which is what the tooltip prop is called.",
       "why": "The four-combination rule exists because English strings are longer and the direction flips, and a tooltip is a box sized by its text: it is one of the components most likely to break on a longer string. A story that shows the same Persian in both languages cannot show that.",
-      "severity": "medium",
+      "severity": "critical",
       "points": 1,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T05:30:46.654Z"
+      "notes": [
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+      ],
+      "createdAt": "2026-09-10T05:30:46.654Z",
+      "updatedAt": "2026-09-10T06:38:20.375Z"
     },
     {
       "id": "KN-213",
@@ -5093,15 +5168,18 @@
       "title": "The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag",
       "desc": "Found while working KN-095, by reading eslint-plugin-lingui 0.14.0 rather than by probing. The rule compiles every entry of the ignore option with new RegExp(item) and NO flags. The first entry in apps/web/eslint.config.js is '^[^\\\\p{L}]*$', meant as 'anything with no letter in it'. Without the u flag, \\p is not a Unicode property escape, it is a plain p, so the class excludes only the four characters p, {, L and }. Every string that contains none of those four is whitelisted before any other check runs. Proved with the plugin's own construction: 'Delete', 'Save', 'Cancel', 'Close', 'مصاحبه' and 'حذف وضعیت' are all whitelisted; 'Delete this application' is not, only because 'application' has a p. Every committed gate fixture happens to contain a p, which is the only reason the gate has ever looked like it worked. A probe with a pattern that means what it says found 82 strings in apps/web/src passing only because of this. About five are real untranslated copy: the health reason 'the API answered with nothing' (KN-130), the language names (KN-115), the Persian args of the FilterChip and Tooltip stories, and the story-docs fallback message. The rest are identifiers the rule now correctly sees and must be answered one class at a time: hex colours in tokens.ts, CSS and DOM selectors, Storybook control types and layout values, event names, import.meta.glob options, locale codes, SVG attribute values.",
       "why": "'Every user-facing string goes through lingui with an ENGLISH id' is the rule the whole i18n design rests on, and the gate that enforces it has been passing almost all copy since the day it was written: all of the Persian, and every English word without a p. Sixty-five component cards are about to be built on that guarantee, and each one would report a clean lint over untranslated labels. It also explains why three roasts in a row found the rule's exemptions too wide and none found this: every probe string they used contained a p.",
-      "severity": "critical",
+      "severity": "high",
       "points": 5,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "The no-letter entry is replaced by one that works WITHOUT flags, since the plugin passes none, and fails closed: only digits, whitespace, punctuation and symbols are exempt, so a letter in any script is checked. 'Delete', 'Save', 'مصاحبه' and 'حذف وضعیت' each fail npm run lint in a committed fixture, as aria-label, as title and as JSX text, and the existing fixtures fail only on the string under test rather than also on a child like x. Every one of the 82 strings is either localised or exempted by a named, scoped rule with a reason, never by a value shape. A check compiles each ignore entry exactly as the plugin does, new RegExp(entry) with no flags, and fails if any entry whitelists a known copy string, and that check is proved by a mutation restoring the \\p{L} entry.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T06:20:44.279Z"
+      "notes": [
+        "2026-09-10: held at high on the owner's order, 'finish the components first'. Its impact is critical, since it is the check on every component's copy, and it is held below the component cards ONLY so the selection law serves them first. Restore it to critical when the last component card closes. Until then, component copy goes through lingui by hand and every story asserts both languages."
+      ],
+      "createdAt": "2026-09-10T06:20:44.279Z",
+      "updatedAt": "2026-09-10T06:38:20.472Z"
     },
     {
       "id": "KN-215",

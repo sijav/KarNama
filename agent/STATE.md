@@ -22,20 +22,29 @@ suggested changes, stored rather than applied, and an admin panel over them.
 
 Monorepo, npm workspaces. React 19, TypeScript, MUI 9, Storybook 10, Vitest,
 Playwright, 100 percent coverage. NestJS, GraphQL code first, Prisma, Postgres.
-GitHub Pages for web, Render for the API, Supabase for the database, with a 50
-second cold start the UI must handle honestly. lingui, **English is the source**.
+GitHub Pages for web, Render for the API, **Neon** for the database (chosen over
+Supabase, which pauses after seven idle days, and Render's own Postgres, which
+expires after thirty), with a 50 second cold start the UI must handle honestly. lingui, **English is the source**.
 **Components first with their stories, then screens. Match the design exactly.**
 **Auth is phone OTP**, provider mocked for the MVP.
 
 ## Where things stand
 
-**46 done, 159 open, 1 blocked, 2 dropped. No open criticals. Nothing in
-progress.** `apps/web`: 324 tests over 22 files, 100 percent on all four
-metrics. `apps/api`: 100. `packages/graphql`: 4.
+**50 done, 160 open, 3 blocked, 2 dropped.** Coverage 100 percent on all four
+metrics in every workspace. Counts live in `board.json`.
 
-**Two components exist**: KN-013 Checkbox and KN-017 Filter chip, both from
-Figma nodes, both verified by reading computed styles in a browser rather than
-by eye. 36 more web cards have no unmet blockers.
+**Four components exist**: KN-013 Checkbox, KN-017 Filter chip, KN-032 Tooltip
+and the language switch, all from Figma nodes and verified by reading computed
+styles in a browser. **The live site is still a placeholder shell**, because
+screens come after components, and the owner has seen it and said so.
+
+**KN-214 is the most important open defect and is deliberately held.** The
+lingui plugin compiles `ignore` patterns with NO flags, so `^[^\\p{L}]*$` means
+'contains no p, {, L or }': every Persian string and every English word without
+a p passes the gate. 82 strings in `src` pass only because of it. It is held at
+high so the components come first, see below; restore it to critical when the
+last component card closes. Until then, every component string goes through
+lingui BY HAND and every story asserts both languages.
 
 **IT IS DEPLOYED.** The web app is at https://sijav.github.io/KarNama/ and
 Storybook, as a SEPARATE site, at https://sijav.github.io/KarNama/storybook/;
@@ -51,6 +60,14 @@ preference, and then said to ask AGAIN once there is a running board to look at.
 Nobody can judge how a drag feels from three bullet points. Do not decide it.
 
 ## The owner's rules, most recent first
+
+**FINISH THE COMPONENTS FIRST**, 2026-09-10, after the owner opened the live
+site and found a placeholder. Every open component card and every open finding
+on a built component is `critical`; the selection law ranks by severity then by
+the smaller story point, so three- to eight-point components had kept losing to
+one-point gate cards. It is an ORDERING decision carried in the severity field,
+and each raised card says so in a note. **Do not 'correct' those severities.**
+KN-061 stays high because it waits on KN-196, the owner's decision.
 
 **100 percent coverage is a PRODUCT rule.** `apps/*` and `packages/*`, not
 `agent/scripts/**`, and **markdown has no tests**. In `AGENTS.md`.
@@ -82,7 +99,8 @@ child closes on the tests for the files it changed.
 ## What keeps going wrong, one line each
 
 **A check that searches for a string, and contains that string, flags itself.**
-Now SIX times. The newest two are the sharpest: KN-155's own EXIT CONDITION had
+Now EIGHT times; the newest, a mutation guard in KN-095's verifier refused to
+run because the fixture's COMMENT named the type the mutation removes. The newest two are the sharpest: KN-155's own EXIT CONDITION had
 to be reworded because an exit condition saying "a check must refuse phrase X"
 necessarily contains X; and `noLiterals.test.ts` rejected a COMMENT that spelled
 out the pixel shorthand it was explaining. **It reads comments too.**
@@ -116,15 +134,29 @@ Use `node agent/scripts/todo.mjs` directly. KN-195.
 nothing; `node agent/scripts/roast.mjs <id>` is the TASK roast and is the only
 one the board can record, because `todo roast --file` verifies its sidecar.
 
+**`String.replace` with a STRING replacement expands `$'` and `$&`.** A
+mutation inserting a regex ending in `$'` pasted the rest of the file into the
+middle of it, ESLint crashed, and the check blamed the fixture. **Always pass a
+function**: `s.replace(anchor, () => text)`.
+
+**A library's option can mean something other than its docs imply.** The
+lingui plugin compiles `ignore` with `new RegExp(entry)` and no flags. Three
+roasts probed the rule's exemptions and missed it, because every probe string
+contained a p. **Read how the tool consumes the option.**
+
 **Shell heredocs eat backslashes**, and one wrote a literal NUL byte into a
 source file this session. **Use Edit for code.**
 
 ## The next step
 
-`node agent/scripts/todo.mjs next` picks it. The component library is the work:
-KN-008 icons, KN-009 Button, KN-010 Status chip, KN-011 Input, KN-012 Select and
-34 more are unblocked. Build the component, its stories, and its story-docs in
-both languages; the guard refuses a story with no markdown entry.
+`node agent/scripts/todo.mjs next` picks it, and after the re-rank it serves
+component work: first the open findings on the four built components
+(KN-206 to KN-212), then KN-008 icons, KN-009 Button, KN-010 Status chip,
+KN-011 Input, KN-012 Select, KN-019, KN-023, KN-062. Build the component, its
+stories, and its story-docs in both languages; the guard refuses a story with
+no markdown entry. A new story's title must be added to `StoryTitle` in
+`src/shared/story-docs/story-meta.ts` and its meta must satisfy `StoryMeta`,
+or the lingui rule flags the title.
 
 ## What to read first
 

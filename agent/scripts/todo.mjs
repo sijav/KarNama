@@ -369,7 +369,12 @@ const checkBoard = (board) => {
       // A blocker that is less severe than what it blocks never gets picked
       // ahead of it, so the severe child starves behind a task nobody selects.
       // The fix is to raise the blocker, which is why this is an error.
-      if (SEVERITIES.indexOf(parent.severity) > SEVERITIES.indexOf(task.severity)) {
+      //
+      // Only while the blocker is OPEN. A settled blocker is never picked again,
+      // so nothing can starve behind it, and the rule used to refuse raising a
+      // card to critical because a parent finished weeks ago was only high. The
+      // fix it demanded was rewriting the severity of closed work.
+      if (!SETTLED_STATUSES.includes(parent.status) && SEVERITIES.indexOf(parent.severity) > SEVERITIES.indexOf(task.severity)) {
         problems.push(
           `${task.id} (${task.severity}) is blocked by ${parent.id} (${parent.severity}), which is less severe, so the blocker would never be picked first. Raise ${parent.id} to at least ${task.severity}.`,
         )

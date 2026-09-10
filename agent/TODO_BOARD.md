@@ -8,7 +8,7 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-214` The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag** (critical, 5 pt, web)
+**Next up: `KN-208` KN-013 claimed five Figma states from five stories that are not the five states** (critical, 1 pt, web)
 
 ## Blocked (3)
 
@@ -22,9 +22,37 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-214` | The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag | critical | 5 | web | none | The no-letter entry is replaced by one that works WITHOUT flags, since the plugin passes none, and fails closed: only digits, whitespace, punctuation and symbols are exempt, so a letter in any script is checked. 'Delete', 'Save', 'مصاحبه' and 'حذف وضعیت' each fail npm run lint in a committed fixture, as aria-label, as title and as JSX text, and the existing fixtures fail only on the string under test rather than also on a child like x. Every one of the 82 strings is either localised or exempted by a named, scoped rule with a reason, never by a value shape. A check compiles each ignore entry exactly as the plugin does, new RegExp(entry) with no flags, and fails if any entry whitelists a known copy string, and that check is proved by a mutation restoring the \p{L} entry. |
-| `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
-| `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
+| `KN-208` | KN-013 claimed five Figma states from five stories that are not the five states | critical | 1 | web | none | Every Figma state named on the card has a story, hover included, and hover is exercised with a real pointer rather than a dispatched event, since hover cannot be dispatched. KN-013.mjs checks the states by NAME against the card rather than counting stories, so adding a sixth story or renaming one cannot silently satisfy it. A mutation deleting the hover story fails it. |
+| `KN-210` | The tooltip's drawn width is neither implemented nor checkable | critical | 1 | web | none | Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed. |
+| `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | none | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
+| `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
+| `KN-207` | The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback | critical | 2 | web | none | Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering. |
+| `KN-209` | The tooltip REPLACES an icon-only control's accessible name instead of describing it | critical | 2 | web | none | The tooltip DESCRIBES rather than labels: a trigger with its own aria-label keeps that name, and the tip is reachable through aria-describedby. A story asserts the computed accessible name of an icon-only trigger while the tip is open, and a mutation removing describeChild makes it fail. The case where the trigger has NO name of its own is decided deliberately and written down, because describing something unnamed leaves it unnamed. |
+| `KN-211` | The tooltip accepts triggers it cannot actually attach to | critical | 2 | web | none | A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported. |
+| `KN-010` | Status chip, 9 statuses by 2 sizes, display only | critical | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
+| `KN-011` | Input, 6 states | critical | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
+| `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
+| `KN-021` | Page header | critical | 3 | web | KN-005, KN-006, KN-007, KN-009, KN-008 | Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree. |
+| `KN-022` | Empty state and loading state | critical | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
+| `KN-023` | Tabs | critical | 3 | web | KN-005, KN-006, KN-007 | Three states match Figma, the tablist follows the roving tabindex pattern with arrow key navigation, the active tab is announced as selected, and panels are associated with their tabs. |
+| `KN-024` | Sort control | critical | 3 | web | KN-005, KN-006, KN-007, KN-018 | Three states match Figma, the four permitted options are the only ones offered, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced. |
+| `KN-025` | Bulk action bar | critical | 3 | web | KN-005, KN-006, KN-007, KN-013, KN-009 | Both types match Figma, the bar appears only when at least one row is selected, it reports the selection count, and it is reachable by keyboard when it appears rather than trapping focus behind the list. |
+| `KN-062` | Shared story fixtures | critical | 3 | web | KN-003, KN-007 | Every component story that needs data uses the shared fixtures, a Docs page rendering many stories at once seeds without error, the fixtures never appear in the production bundle and a test asserts that, and each fixture set has a long value that exercises truncation in both languages. |
+| `KN-206` | The Checkbox has no accessible name and a target smaller than WCAG allows | critical | 3 | web | none | The component takes an id, and rendering one with no accessible name is impossible without it being visible: either the type requires one of aria-label, aria-labelledby or a wrapping label, or a check fails on a story that omits all three. Every story names its control. The interactive target is at least 24 by 24 while the DRAWN frame stays 20 by 20 from Figma, or the spacing exception is demonstrated for the specific placement and written down. A test asserts the hit area, not the frame. |
+| `KN-008` | Icon set, 30 icons at 24 by 24 | critical | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
+| `KN-009` | Button, 3 sizes by 5 styles by 5 states | critical | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
+| `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
+| `KN-018` | Menu and menu item | critical | 5 | web | KN-005, KN-006, KN-007, KN-008 | All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone. |
+| `KN-020` | Status choice, status picker and status control | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-018, KN-019 | All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own. |
+| `KN-026` | Contact card, full and compact | critical | 5 | web | KN-005, KN-006, KN-007, KN-008, KN-014, KN-062 | Both layouts and all three states match Figma, every field the design draws is present, long values truncate rather than reflow the card, and email and phone are actionable links. |
+| `KN-028` | Modal shell, confirm, and change status | critical | 5 | web | KN-005, KN-006, KN-007, KN-009, KN-014 | Both modals match Figma, focus is trapped and returns to the trigger on close, Escape closes, the backdrop click behaviour matches the design, and the dialog has an accessible name and is announced as a dialog. |
+| `KN-031` | Contact modal, add and edit | critical | 5 | web | KN-005, KN-006, KN-007, KN-028, KN-011, KN-026 | Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route. |
+| `KN-060` | Kanban column component | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-015, KN-018 | The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is. |
+| `KN-015` | Card, desktop and mobile, with the status stripe | critical | 8 | web | KN-005, KN-006, KN-007, KN-010, KN-008, KN-062 | All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. |
+| `KN-027` | Navigation: nav item, desktop sidebar, mobile tab bar, and the language switch | critical | 8 | web | KN-005, KN-006, KN-007, KN-008, KN-009 | The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added. |
+| `KN-029` | Add and edit job modal, all six steps | critical | 8 | web | KN-005, KN-006, KN-007, KN-011, KN-012, KN-028 | All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding. |
+| `KN-030` | Job modal, five tabs | critical | 8 | web | KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020 | All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -37,17 +65,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-195` | npm run silently truncates every argument at its first newline on Windows | high | 2 | agent | none | Either the scripts refuse an argument containing a newline with a message naming this cause, or the loop stops going through npm for anything carrying prose and RALPH.md and .claude/ralph-loop.local.md are updated to the invocation that works. A check demonstrates the truncation and its absence after the fix, using a free non-mutating command rather than a real roast. The existing board is audited for fields whose text ends mid-sentence, and the audit result is recorded whether or not it finds anything. |
 | `KN-202` | The story-docs markdown contract is documented as rigid but silently accepts malformed files | high | 2 | web | none | parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing. |
 | `KN-203` | The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian | high | 2 | web | none | The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository. |
-| `KN-209` | The tooltip REPLACES an icon-only control's accessible name instead of describing it | high | 2 | web | none | The tooltip DESCRIBES rather than labels: a trigger with its own aria-label keeps that name, and the tip is reachable through aria-describedby. A story asserts the computed accessible name of an icon-only trigger while the tip is open, and a mutation removing describeChild makes it fail. The case where the trigger has NO name of its own is decided deliberately and written down, because describing something unnamed leaves it unnamed. |
-| `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
-| `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
-| `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
-| `KN-021` | Page header | high | 3 | web | KN-005, KN-006, KN-007, KN-009, KN-008 | Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree. |
-| `KN-022` | Empty state and loading state | high | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
-| `KN-023` | Tabs | high | 3 | web | KN-005, KN-006, KN-007 | Three states match Figma, the tablist follows the roving tabindex pattern with arrow key navigation, the active tab is announced as selected, and panels are associated with their tabs. |
-| `KN-024` | Sort control | high | 3 | web | KN-005, KN-006, KN-007, KN-018 | Three states match Figma, the four permitted options are the only ones offered, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced. |
-| `KN-025` | Bulk action bar | high | 3 | web | KN-005, KN-006, KN-007, KN-013, KN-009 | Both types match Figma, the bar appears only when at least one row is selected, it reports the selection count, and it is reachable by keyboard when it appears rather than trapping focus behind the list. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
-| `KN-062` | Shared story fixtures | high | 3 | web | KN-003, KN-007 | Every component story that needs data uses the shared fixtures, a Docs page rendering many stories at once seeds without error, the fixtures never appear in the production bundle and a test asserts that, and each fixture set has a long value that exercises truncation in both languages. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | high | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -61,29 +79,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-124` | Status history is documented as immutable and nothing enforces it | high | 3 | api | KN-034 | An UPDATE or a DELETE against status_history is rejected by the database, deleting a job record still removes its history through the cascade, and both are proved against PGlite. |
 | `KN-127` | The resolver-registration check reads text rather than the container | high | 3 | api | KN-120 | A resolver registered in a way the text scan cannot see, a default export in a file not named *.resolver.ts, is detected, and the check reads the resolvers from a booted Nest context rather than from source text. |
 | `KN-158` | The story-docs rule in AGENTS.md describes a system that does not exist | high | 3 | web | none | Either src/shared/story-docs/{en,fa} exists with a page for every story, the three existing stories are migrated off JSDoc on meta, and a guard test fails when either language is missing a prop or story; or AGENTS.md is corrected to describe what the repository actually does and the main.ts comment with it. Whichever is chosen, no story in the tree contradicts the written rule afterwards, proved by a check rather than by reading. |
-| `KN-206` | The Checkbox has no accessible name and a target smaller than WCAG allows | high | 3 | web | none | The component takes an id, and rendering one with no accessible name is impossible without it being visible: either the type requires one of aria-label, aria-labelledby or a wrapping label, or a check fails on a story that omits all three. Every story names its control. The interactive target is at least 24 by 24 while the DRAWN frame stays 20 by 20 from Figma, or the spacing exception is demonstrated for the specific placement and written down. A test asserts the hit area, not the frame. |
-| `KN-008` | Icon set, 30 icons at 24 by 24 | high | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
-| `KN-009` | Button, 3 sizes by 5 styles by 5 states | high | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
-| `KN-012` | Select, option row and options menu | high | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
-| `KN-018` | Menu and menu item | high | 5 | web | KN-005, KN-006, KN-007, KN-008 | All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone. |
-| `KN-020` | Status choice, status picker and status control | high | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-018, KN-019 | All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own. |
-| `KN-026` | Contact card, full and compact | high | 5 | web | KN-005, KN-006, KN-007, KN-008, KN-014, KN-062 | Both layouts and all three states match Figma, every field the design draws is present, long values truncate rather than reflow the card, and email and phone are actionable links. |
-| `KN-028` | Modal shell, confirm, and change status | high | 5 | web | KN-005, KN-006, KN-007, KN-009, KN-014 | Both modals match Figma, focus is trapped and returns to the trigger on close, Escape closes, the backdrop click behaviour matches the design, and the dialog has an accessible name and is announced as a dialog. |
-| `KN-031` | Contact modal, add and edit | high | 5 | web | KN-005, KN-006, KN-007, KN-028, KN-011, KN-026 | Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route. |
 | `KN-038` | Custom statuses: rename, recolour, delete | high | 5 | api | KN-037 | A renamed status shows its new name everywhere including old records, deletion is refused while postings remain in that status and the message says how many, the four custom slots cannot be exceeded, a record pointing at a deleted status still renders with the fallback colour, and tests cover each. |
 | `KN-042` | App shell: routing, responsive navigation, and the language switch in place | high | 5 | web | KN-027, KN-006, KN-035 | All three routes render inside the shell, the nav switches between right sidebar and bottom tab bar at the breakpoint, a deep link to any of them works on a hard refresh, the language switch persists across a reload, and an API error renders the error state rather than a blank page. |
 | `KN-044` | Add job flow | high | 5 | web | KN-042, KN-029, KN-037 | An e2e test pastes a link, corrects a field in Review, saves, and finds the record on My Jobs with status New, and a second test takes the Error path into Manual and saves from there. |
 | `KN-045` | Job detail modal, wired | high | 5 | web | KN-043, KN-030, KN-038, KN-039 | An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries. |
 | `KN-046` | Auth screens: login, code, signup | high | 5 | web | KN-042, KN-036 | An e2e test signs in with a number and the code from the mock provider and reaches the board, a wrong or expired code shows an honest message with a way to resend, first login collects the name, and signing out clears the token and the Apollo cache rather than only the UI. |
 | `KN-052` | Deploy the API to Render free, with Neon free Postgres | high | 5 | deploy | KN-033, KN-034, KN-050 | The API answers at its Render URL, the web app reaches it across origins with the CORS policy WEB_ORIGIN sets, migrations have run against the Neon database, and a deploy follows a push to main with no manual step. The database choice is recorded with its reason so it is not silently reverted to a provider that expires or pauses. A check proves the deployed API responds and that render.yaml still pins the free plan and carries no DATABASE_URL value. |
-| `KN-060` | Kanban column component | high | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-015, KN-018 | The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is. |
 | `KN-061` | Drag a card between columns, with a keyboard path | high | 5 | web | KN-060, KN-020, KN-196 | A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology. |
 | `KN-063` | Accessibility gate | high | 5 | web | KN-003, KN-007 | An a11y violation planted in a story fails the test run, every action reachable by hover is reachable by keyboard, every icon-only control has an accessible name and a test asserts it, and each of the nine status base-on-container pairs is measured against the contrast bar with the result recorded. |
 | `KN-146` | The migration guard should stop lexing SQL and ask Postgres instead | high | 5 | api | none | A migration containing an early COMMIT or an ABORT cannot produce a ledger row saying applied, proved by planting both against PGlite using syntax the scanner does NOT recognise, so the protection is demonstrably the structure rather than the screen. |
-| `KN-015` | Card, desktop and mobile, with the status stripe | high | 8 | web | KN-005, KN-006, KN-007, KN-010, KN-008, KN-062 | All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. |
-| `KN-027` | Navigation: nav item, desktop sidebar, mobile tab bar, and the language switch | high | 8 | web | KN-005, KN-006, KN-007, KN-008, KN-009 | The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added. |
-| `KN-029` | Add and edit job modal, all six steps | high | 8 | web | KN-005, KN-006, KN-007, KN-011, KN-012, KN-028 | All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding. |
-| `KN-030` | Job modal, five tabs | high | 8 | web | KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020 | All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text. |
+| `KN-214` | The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag | high | 5 | web | none | The no-letter entry is replaced by one that works WITHOUT flags, since the plugin passes none, and fails closed: only digits, whitespace, punctuation and symbols are exempt, so a letter in any script is checked. 'Delete', 'Save', 'مصاحبه' and 'حذف وضعیت' each fail npm run lint in a committed fixture, as aria-label, as title and as JSX text, and the existing fixtures fail only on the string under test rather than also on a child like x. Every one of the 82 strings is either localised or exempted by a named, scoped rule with a reason, never by a value shape. A check compiles each ignore entry exactly as the plugin does, new RegExp(entry) with no flags, and fails if any entry whitelists a known copy string, and that check is proved by a mutation restoring the \p{L} entry. |
 | `KN-036` | Auth: phone OTP, JWT, and the admin role | high | 8 | api | KN-034 | A user signs in with a number and a code against the mock provider, the code expires and a reused code is rejected, first login collects the required name, a non-admin is refused every admin operation at the resolver rather than only in the UI, and tests cover all of those. |
 | `KN-037` | Job records: CRUD, status transitions, and status history | high | 8 | api | KN-034, KN-036, KN-057 | An e2e test creates a record, moves it through New, Applied, Interview and Offer, and reads back a history with four entries in order, and a test proves history cannot be edited or reordered through the API. |
 | `KN-039` | Contacts, notes and file references | high | 8 | api | KN-037 | A contact, a note and a file can each be attached to a record and read back, deleting a record removes its attachments, and an upload larger than the configured limit is refused with a usable error rather than a 500. A contact with a full name and no email and no phone is accepted and read back unchanged: the data layer carries no NOT NULL and no check constraint requiring either, per the owner's decision on KN-071. |
@@ -106,9 +111,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-180` | Verifiers claim to be read-only while their test runs write to node_modules | medium | 1 | agent | none | No verifier claims to be read-only when the commands it spawns write anywhere; those that need a writable tree say so in one line naming what they write; and a verifier that cannot complete reports that it could not RUN a check rather than counting it as a pass or a failure. |
 | `KN-182` | KN-166's verifier makes this repository fail when a sibling project moves | medium | 1 | agent | none | KarNama's verification does not depend on any path outside this repository; a missing sibling is reported as unavailable rather than as a failure; and the rules check for SkipBureau lives in SkipBureau and gates SkipBureau, proved by running both with the sibling renamed. |
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
-| `KN-208` | KN-013 claimed five Figma states from five stories that are not the five states | medium | 1 | web | none | Every Figma state named on the card has a story, hover included, and hover is exercised with a real pointer rather than a dispatched event, since hover cannot be dispatched. KN-013.mjs checks the states by NAME against the card rather than counting stories, so adding a sixth story or renaming one cannot silently satisfy it. A mutation deleting the hover story fails it. |
-| `KN-210` | The tooltip's drawn width is neither implemented nor checkable | medium | 1 | web | none | Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed. |
-| `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | medium | 1 | web | none | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-215` | The props and stories value exemption is global, so aria-label="stories" passes | medium | 1 | web | none | aria-label="stories" and title="props" fail npm run lint in a committed fixture, the story-docs parser still recognises both headings, and the ignore array no longer names them. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
@@ -126,8 +128,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-147` | Nothing proves the migration runner waits between lock attempts | medium | 2 | api | none | Deleting the retry delay makes the suite fail, proved by planting exactly that, and the test asserts elapsed time or scheduled timing rather than attempt count alone. |
 | `KN-148` | The mutation harnesses re-run the whole suite once per regression | medium | 2 | agent | none | A verify that plants N regressions runs one full suite plus N filtered runs, and completes in under five minutes for KN-123, with every regression still caught, proved by running the harness before and after and comparing both the time and the caught count. |
 | `KN-175` | Verifiers that need a scratch directory cannot run in the read-only review sandbox | medium | 2 | agent | none | The repository states, in AGENTS.md or RALPH.md, whether a verifier may require a writable scratch directory; verifiers that do are either made runnable in the review environment or carry a machine-readable marker saying they cannot be, and the roast prompt tells the reviewer which; and no future roast can raise this as a novel finding. |
-| `KN-207` | The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback | medium | 2 | web | none | Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering. |
-| `KN-211` | The tooltip accepts triggers it cannot actually attach to | medium | 2 | web | none | A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -340,7 +340,7 @@ src/shared/story-docs with en/ and fa/ markdown per story, a loader that applies
 
 ### `KN-008` Icon set, 30 icons at 24 by 24
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
+- **status** backlog · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007
 
 An Icon component rendering the 30 icons drawn at Figma node 239:44, each 24 by 24, 2px stroke, round cap and join, defaulting to text/secondary and overridable per instance. Sizes sm 16, md 20 and base 24 come from the token scale.
@@ -351,7 +351,7 @@ An Icon component rendering the 30 icons drawn at Figma node 239:44, each 24 by 
 
 ### `KN-009` Button, 3 sizes by 5 styles by 5 states
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
+- **status** backlog · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007
 
 Sizes S, M and L, styles Primary, Secondary, Text, Destructive and Ghost, and states Default, Hover, Pressed, Disabled and Focus, built on MUI Button and restyled to Figma nodes 37:10, 33:58 and 37:71. 75 combinations in total.
@@ -362,7 +362,7 @@ Sizes S, M and L, styles Primary, Secondary, Text, Destructive and Ghost, and st
 
 ### `KN-010` Status chip, 9 statuses by 2 sizes, display only
 
-- **status** backlog · **severity** high · **points** 3 · **area** web
+- **status** backlog · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-005, KN-006, KN-007
 
 A display-only chip for the nine statuses at sizes S and M, from Figma node 82:2, taking base and container colours from the status token pairs. No click target and no focus ring, deliberately.
@@ -373,7 +373,7 @@ A display-only chip for the nine statuses at sizes S and M, from Figma node 82:2
 
 ### `KN-011` Input, 6 states
 
-- **status** backlog · **severity** high · **points** 3 · **area** web
+- **status** backlog · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-005, KN-006, KN-007
 
 Text input with Default, Filled, Focus, Error, Disabled and Hover, from Figma node 95:38, with the label, helper and error line the design draws.
@@ -384,7 +384,7 @@ Text input with Default, Filled, Focus, Error, Disabled and Hover, from Figma no
 
 ### `KN-012` Select, option row and options menu
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
+- **status** backlog · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007
 
 Select with Default, Filled, Focus, Disabled and Open from node 183:26, Option Row with Default, Hover, Selected and Disabled from 408:465, and the popover at 408:487. Includes the two domain selects the file draws, employment type and job level.
@@ -408,7 +408,7 @@ Unchecked, Checked, Indeterminate, Hover and Disabled from Figma node 204:11, at
 
 ### `KN-014` Icon button, 2 tones by 3 states
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** backlog · **severity** critical · **points** 2 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-008
 
 Neutral and Danger tones, each with Default, Hover and Disabled, from Figma node 460:672, at 32 by 32 wrapping a 20px icon.
@@ -419,7 +419,7 @@ Neutral and Danger tones, each with Default, Hover and Disabled, from Figma node
 
 ### `KN-015` Card, desktop and mobile, with the status stripe
 
-- **status** backlog · **severity** high · **points** 8 · **area** web
+- **status** backlog · **severity** critical · **points** 8 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-010, KN-008, KN-062
 
 The job card at Figma node 137:44 with Default, Hover, Pressed, Selected, Static and Focus, the mobile variant at 491:751 with Default and Selected, and the 4px status stripe at 358:430 in all nine status colours.
@@ -430,7 +430,7 @@ The job card at Figma node 137:44 with Default, Hover, Pressed, Selected, Static
 
 ### `KN-016` Search bar, 3 states
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** backlog · **severity** critical · **points** 2 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-008
 
 Default, Focus and Filled from Figma node 155:92, with the search icon and a clear affordance in the filled state.
@@ -452,7 +452,7 @@ Default, Hover, Pressed and Selected from Figma node 159:71, carrying a count. O
 
 ### `KN-018` Menu and menu item
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
+- **status** backlog · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-008
 
 Menu Item with Default, Hover, Disabled and Destructive from node 181:22, and the two menus at 512:8350, Type=Status and Type=Card.
@@ -463,7 +463,7 @@ Menu Item with Default, Hover, Disabled and Destructive from node 181:22, and th
 
 ### `KN-019` Colour picker for the four custom status slots
 
-- **status** backlog · **severity** high · **points** 3 · **area** web
+- **status** backlog · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-005, KN-006, KN-007
 
 The picker at Figma node 257:17, offering the four reserved custom status colour pairs rather than a free colour field.
@@ -474,7 +474,7 @@ The picker at Figma node 257:17, offering the four reserved custom status colour
 
 ### `KN-020` Status choice, status picker and status control
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
+- **status** backlog · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-010, KN-018, KN-019
 
 Status Choice with Default, Hover and Selected from node 427:567, the Status Picker popover at 427:592, and Status Control with Default, Hover and Pressed at 199:21, which is the clickable wrapper the card uses around a display-only chip.
@@ -485,7 +485,7 @@ Status Choice with Default, Hover and Selected from node 427:567, the Status Pic
 
 ### `KN-021` Page header
 
-- **status** backlog · **severity** high · **points** 3 · **area** web
+- **status** backlog · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-009, KN-008
 
 Title, optional back button and optional primary action, from Figma node 155:56 with the second instance at 155:72. Carries the language switch as a trailing action on mobile, per DESIGN.md section 4.
@@ -496,7 +496,7 @@ Title, optional back button and optional primary action, from Figma node 155:56 
 
 ### `KN-022` Empty state and loading state
 
-- **status** backlog · **severity** high · **points** 3 · **area** web
+- **status** backlog · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-009
 
 Empty State at Figma node 159:80 for a job list with nothing in it, and Loading State at 159:92 for the extraction step in the add flow.
@@ -507,7 +507,7 @@ Empty State at Figma node 159:80 for a job list with nothing in it, and Loading 
 
 ### `KN-023` Tabs
 
-- **status** backlog · **severity** high · **points** 3 · **area** web
+- **status** backlog · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-005, KN-006, KN-007
 
 Tab Item with Default, Active and Hover from Figma node 204:20, and the tablist that composes them.
@@ -518,7 +518,7 @@ Tab Item with Default, Active and Hover from Figma node 204:20, and the tablist 
 
 ### `KN-024` Sort control
 
-- **status** backlog · **severity** high · **points** 3 · **area** web
+- **status** backlog · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-018
 
 Default, Hover and Open from Figma node 408:512.
@@ -529,7 +529,7 @@ Default, Hover and Open from Figma node 408:512.
 
 ### `KN-025` Bulk action bar
 
-- **status** backlog · **severity** high · **points** 3 · **area** web
+- **status** backlog · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-013, KN-009
 
 Type=Jobs and Type=Contacts from Figma node 401:436, appearing when a selection exists.
@@ -540,7 +540,7 @@ Type=Jobs and Type=Contacts from Figma node 401:436, appearing when a selection 
 
 ### `KN-026` Contact card, full and compact
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
+- **status** backlog · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-008, KN-014, KN-062
 
 Full and Compact layouts, each with Default, Hover and Selected, from Figma node 248:116. All contact information is on the card, the design gives it no detail view.
@@ -551,7 +551,7 @@ Full and Compact layouts, each with Default, Hover and Selected, from Figma node
 
 ### `KN-027` Navigation: nav item, desktop sidebar, mobile tab bar, and the language switch
 
-- **status** backlog · **severity** high · **points** 8 · **area** web
+- **status** backlog · **severity** critical · **points** 8 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-008, KN-009
 
 Nav Item with Default, Active and Hover from node 184:14, the sidebar at 185:11 which sits on the RIGHT on desktop, and the tab bar at 185:19 at the bottom on mobile. THREE destinations, per the Documentation canvas which supersedes the Components canvas annotation: فرصت‌های شغلی من (the board), افزودن فرصت شغلی, and شبکه من (the standalone network page). The language switch goes at the foot of the sidebar on desktop, per DESIGN.md section 4.
@@ -562,7 +562,7 @@ Nav Item with Default, Active and Hover from node 184:14, the sidebar at 185:11 
 
 ### `KN-028` Modal shell, confirm, and change status
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
+- **status** backlog · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-009, KN-014
 
 The modal shell with focus trap and Escape handling, Modal/Confirm at Figma node 150:92 for delete and archive, and Modal/Change Status at 150:93.
@@ -573,7 +573,7 @@ The modal shell with focus trap and Escape handling, Modal/Confirm at Figma node
 
 ### `KN-029` Add and edit job modal, all six steps
 
-- **status** backlog · **severity** high · **points** 8 · **area** web
+- **status** backlog · **severity** critical · **points** 8 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-011, KN-012, KN-028
 
 The Add/Edit modal at Figma node 166:82 with Step=Paste, PasteFilled, Loading, Review, Manual and Error. Paste takes a link or the text of an ad, Loading covers extraction, Review shows the structured result for correction, Manual is the fallback, Error is the failure path.
@@ -584,7 +584,7 @@ The Add/Edit modal at Figma node 166:82 with Step=Paste, PasteFilled, Loading, R
 
 ### `KN-030` Job modal, five tabs
 
-- **status** backlog · **severity** high · **points** 8 · **area** web
+- **status** backlog · **severity** critical · **points** 8 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020
 
 The job detail modal at Figma node 210:276. The file draws four tab variants: Tab=Info 210:101, Tab=Note 210:145, Tab=Contacts 210:208, Tab=Files 210:275, each 720 by 617. The owner settled open item 18 on 2026-09-08 and status history is now its OWN tab rather than a block at the bottom of Info, so the modal has FIVE: اطلاعات آگهی, سابقه, یادداشت, افراد مرتبط, فایل‌ها, with سابقه second, directly after the information it is the history of. That is a deliberate departure from the frame, recorded in DESIGN.md section 3 and section 6 under KN-072. Everything else comes from the frame unchanged.
@@ -595,7 +595,7 @@ The job detail modal at Figma node 210:276. The file draws four tab variants: Ta
 
 ### `KN-031` Contact modal, add and edit
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
+- **status** backlog · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-028, KN-011, KN-026
 
 Mode=Add and Mode=Edit from Figma node 270:152.
@@ -924,7 +924,7 @@ move() now handles state transitions, blocking, dropping, roast adjudication, ar
 
 ### `KN-060` Kanban column component
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
+- **status** backlog · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-010, KN-015, KN-018
 
 The column itself, 300 by 684 from node 241:125: the 276 by 40 header carrying its status icon, its count and its menu trigger, the card slot, the column spacer, and the Add Card row pinned at the bottom as a plus only. Plus the Add Column tile at 241:34 labelled افزودن وضعیت, and the empty-column message. Composes Card, Status Chip at Size=M which is the only place the large chip is used, and Menu.
@@ -946,7 +946,7 @@ Dragging a card from one column to another changes its status, with the Drag and
 
 ### `KN-062` Shared story fixtures
 
-- **status** backlog · **severity** high · **points** 3 · **area** web
+- **status** backlog · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-003, KN-007
 
 A fixtures module under src/shared/story-fixtures holding realistic sample data for stories: job opportunities across every status, contacts, notes and a seeded board, in Persian and English. Storybook only, never bundled into the app. Seeding is idempotent and safe when several stories on one Docs page seed at once.
@@ -2582,7 +2582,7 @@ CHILD OF KN-013, recorded in prose because board.json cannot express parent_task
 
 ### `KN-206` The Checkbox has no accessible name and a target smaller than WCAG allows
 
-- **status** backlog · **severity** high · **points** 3 · **area** web
+- **status** backlog · **severity** critical · **points** 3 · **area** web
 - **blocked by** none
 
 CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188. Two halves of one problem: the control is not yet usable in the places it is actually for. FIRST, no accessible name is guaranteed. aria-label and aria-labelledby are both optional, there is no id prop at all, and every story renders a control with no name, so the canonical examples model the unusable case. A board card needs something like Select Senior React developer at X, and a column header needs Select all Applied. A checkbox announced as merely checkbox is unusable by screen reader precisely where bulk selection matters most. SECOND, the interactive target is 20 by 20 because padding is explicitly zero, and WCAG 2.5.8 asks for 24 CSS pixels unless the spacing exception applies. The component comment claims the hit area comes back through a label that wraps it, which is neither implemented nor sufficient for an icon-only control on a card. Both were found by the KN-013 roast and both are true by inspection.
@@ -2593,7 +2593,7 @@ CHILD OF KN-013, recorded in prose because board.json cannot express parent_task
 
 ### `KN-207` The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback
 
-- **status** backlog · **severity** medium · **points** 2 · **area** web
+- **status** backlog · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-013 roast, and I checked both claims against AGENTS.md rather than taking them on trust. Both are real. AGENTS.md, under Documentation lives in markdown never in the code: a tsx carries code and the SHORT comments that explain the code, and everything a Storybook Docs page prints belongs in story-docs. Checkbox.tsx carries long design and API documentation blocks, and its per-prop JSDoc is exactly what react-docgen prints into the Controls table, so that prose is duplicated: once in the tsx and once in the markdown the guard already requires. The markdown is the source; the JSDoc should be short or gone. AGENTS.md line 246: every callback prop gets an fn() so the Actions panel records it. onChange has none, and nothing asserts its documented event and checked contract.
@@ -2604,7 +2604,7 @@ CHILD OF KN-013, recorded in prose because board.json cannot express parent_task
 
 ### `KN-208` KN-013 claimed five Figma states from five stories that are not the five states
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **status** backlog · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-013 roast. The card names five Figma states, Unchecked Checked Indeterminate Hover and Disabled, and the story file exports Unchecked Checked Indeterminate Disabled and KeyboardOnly. HOVER HAS NO STORY. KeyboardOnly is worth having and is behaviour coverage, not a design state. So KN-013.mjs, which asserts that five stories pass in a real browser, proves five stories ran and NOT that the five drawn states are covered, while reading as though it did. I verified hover by hand with a real pointer and recorded that in the evidence, so the state itself is correct; what is missing is anything that would catch it changing. This is the KN-190 shape again: a green count standing in for a clause nobody tests.
@@ -2615,7 +2615,7 @@ CHILD OF KN-013, recorded in prose because board.json cannot express parent_task
 
 ### `KN-209` The tooltip REPLACES an icon-only control's accessible name instead of describing it
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** backlog · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast and REPRODUCED in a browser, and it is worse than the finding said. I put aria-label='Delete this status' on the trigger, focused it, and read the attributes back: MUI had added aria-labelledby pointing at the tooltip. ARIA precedence puts aria-labelledby ABOVE aria-label, so the button's accessible name becomes the tooltip text and its own label is discarded entirely. That is MUI's documented default: a tooltip LABELS its child unless describeChild is set, in which case it DESCRIBES it through aria-describedby. For an icon-only control, which the card says is the whole reason this component exists, labelling is exactly wrong: the button stops being 'Delete this status' and becomes a paragraph about moving jobs to another column. The fix is describeChild on the MUI Tooltip. What is missing is not only the prop but the test: not one of the six checks looks at the accessible name, so the component's central accessibility claim is unasserted.
@@ -2626,7 +2626,7 @@ CHILD OF KN-032, recorded in prose because board.json cannot express parent_task
 
 ### `KN-210` The tooltip's drawn width is neither implemented nor checkable
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **status** backlog · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast, and I had flagged it against myself when sending that roast. Figma node 410:469 is 292 wide. Nothing in the component sets a width or maxWidth, so wrapping comes from MUI's 300px default. For the one string in the frame the two are close enough to look identical, which is why it passed a visual check; for a longer title they wrap differently. The honest uncertainty is whether 292 is a SET width or just the natural wrap of that particular sentence. get_variable_defs returns no width variable for the node, so it cannot be settled from the variables alone and needs the frame's own layout properties. Until that is known, the component has an unstated dependency on a third-party default, and the evidence for KN-032 said the width was the one dimension not taken from a token without resolving it.
@@ -2637,7 +2637,7 @@ CHILD OF KN-032, recorded in prose because board.json cannot express parent_task
 
 ### `KN-211` The tooltip accepts triggers it cannot actually attach to
 
-- **status** backlog · **severity** medium · **points** 2 · **area** web
+- **status** backlog · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast. children is typed ReactElement, which admits a Fragment and admits any component that does not forward the props and ref MUI injects. MUI attaches its hover and focus listeners by cloning the child, so for those triggers the tooltip silently never opens. Every story uses a native button, so all six checks pass while the case an icon-only wrapper component hits is untested. That matters immediately: KN-014 builds the Icon button, and it is the trigger this component is for.
@@ -2648,7 +2648,7 @@ CHILD OF KN-032, recorded in prose because board.json cannot express parent_task
 
 ### `KN-212` The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **status** backlog · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast. Both the tip text and the trigger label are Persian literals in the story args, so switching the Storybook Language toolbar to English changes nothing on screen. AGENTS.md section 5 requires every change to be seen in fa-IR and en-US, light and dark, and for this component two of those four are the same picture. The tip text is legitimately caller-provided and NOT a catalog message, so the fix is not to translate the component; it is that the STORY should pass something that changes with the locale, the way the FilterChip stories do. The lint rule does not catch it because the stories block exempts title, which is what the tooltip prop is called.
@@ -2670,7 +2670,7 @@ CHILD OF KN-089, recorded in prose because board.json cannot express parent_task
 
 ### `KN-214` The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag
 
-- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **status** backlog · **severity** high · **points** 5 · **area** web
 - **blocked by** none
 
 Found while working KN-095, by reading eslint-plugin-lingui 0.14.0 rather than by probing. The rule compiles every entry of the ignore option with new RegExp(item) and NO flags. The first entry in apps/web/eslint.config.js is '^[^\\p{L}]*$', meant as 'anything with no letter in it'. Without the u flag, \p is not a Unicode property escape, it is a plain p, so the class excludes only the four characters p, {, L and }. Every string that contains none of those four is whitelisted before any other check runs. Proved with the plugin's own construction: 'Delete', 'Save', 'Cancel', 'Close', 'مصاحبه' and 'حذف وضعیت' are all whitelisted; 'Delete this application' is not, only because 'application' has a p. Every committed gate fixture happens to contain a p, which is the only reason the gate has ever looked like it worked. A probe with a pattern that means what it says found 82 strings in apps/web/src passing only because of this. About five are real untranslated copy: the health reason 'the API answered with nothing' (KN-130), the language names (KN-115), the Persian args of the FilterChip and Tooltip stories, and the story-docs fallback message. The rest are identifiers the rule now correctly sees and must be answered one class at a time: hex colours in tokens.ts, CSS and DOM selectors, Storybook control types and layout values, event names, import.meta.glob options, locale codes, SVG attribute values.
