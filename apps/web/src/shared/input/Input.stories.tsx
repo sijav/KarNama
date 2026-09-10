@@ -70,7 +70,10 @@ const meta = {
   // An empty label means the specimen's, from the catalog; set one in
   // Controls and it is used instead.
   args: { label: '', onChange: fn() },
-  render: (args) => <JobTitle {...args} />,
+  // Keyed on defaultValue: the field is uncontrolled, and React reads a
+  // default only when the field mounts, so a new one needs a new field or the
+  // Controls panel changes nothing, KN-246.
+  render: (args) => <JobTitle key={args.defaultValue} {...args} />,
 } satisfies StoryMeta<typeof Input>
 
 export default meta

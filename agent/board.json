@@ -6104,11 +6104,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Changing defaultValue in Controls after the story has rendered changes the text in the field: a check renders an Input story, changes the arg through Storybook's own arg update, and asserts the field shows the new value, and it fails with the fix taken out.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T09:45:57.476Z"
+      "createdAt": "2026-09-10T09:45:57.476Z",
+      "updatedAt": "2026-09-10T10:01:11.276Z",
+      "verify": "node agent/scripts/verify/KN-246.mjs"
     },
     {
       "id": "KN-247",

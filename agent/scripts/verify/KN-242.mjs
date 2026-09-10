@@ -43,13 +43,13 @@ check('the Input stories pass', () => {
 
 check('the meta renders every arg through the specimen, and Default adds no render of its own', () => {
   const source = readFileSync(STORIES, 'utf8')
-  if (!/ {2}render: \(args\) => <JobTitle \{\.\.\.args\} \/>,/.test(source)) return 'the meta does not pass its args to the specimen'
+  if (!/ {2}render: \(args\) => <JobTitle key=\{args\.defaultValue\} \{\.\.\.args\} \/>,/.test(source)) return 'the meta does not pass its args to the specimen'
   return /render:/.test(storyBody(source, 'Default')) ? 'Default overrides the args-driven render' : null
 })
 
 check('THE CASE: a render that ignores its args fails FromArgs', () => {
   const original = readFileSync(STORIES, 'utf8')
-  const anchor = '  render: (args) => <JobTitle {...args} />,\n'
+  const anchor = '  render: (args) => <JobTitle key={args.defaultValue} {...args} />,\n'
   if (!original.includes(anchor)) return 'the meta render changed shape, so this mutation no longer applies'
   try {
     writeFileSync(STORIES, original.replace(anchor, () => '  render: () => <JobTitle />,\n'))
