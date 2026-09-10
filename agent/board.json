@@ -4674,10 +4674,12 @@
       "status": "blocked",
       "exit": "DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "Closed by mistake on 2026-09-10 and REVERTED. I put the three questions to the owner, they answered no preference on all three, and I read that as delegation and decided it myself. That was wrong twice over: no preference is not delegation, and the owner then said plainly to ask again, after there is something running to look at. Nobody can judge how a drag onto a collapsed column should feel by reading three bullet points; they need a board in front of them. So this stays BLOCKED until the board screen runs, and the question gets asked again then, against something real."
+      ],
       "createdAt": "2026-09-10T02:06:44.051Z",
       "blockedReason": "Waiting on the owner. This is a design DECISION, not a build: KN-070 settled that the rejected column collapses to a count, and did not settle what a drag onto it does. Whether it expands on hover and after what delay, whether it accepts a drop while collapsed, what the user sees after the drop lands, and what the keyboard path targets are all the owner's or the designer's call. An agent choosing them silently is the exact failure KN-153 was about. Blocked rather than backlog so it stops being picked as though it were buildable.",
-      "updatedAt": "2026-09-10T03:36:49.702Z"
+      "updatedAt": "2026-09-10T04:15:46.796Z"
     },
     {
       "id": "KN-197",
