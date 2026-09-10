@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 228,
+  "nextId": 229,
   "tasks": [
     {
       "id": "KN-001",
@@ -2517,10 +2517,11 @@
       "exit": "src/shared/story-docs/en and fa exist and carry the prose for every story, no .tsx under src holds a docblock above const meta or a story export, the Docs pages render the markdown in the toolbar language, and a guard test fails when a prop or a story is missing from either language.",
       "roasts": [],
       "notes": [
-        "CONFIRMED AGAIN by a roast on KN-006: LanguageSwitch.tsx carries its component documentation as a JSDoc block and src/shared/story-docs does not exist, so the contract is now broken by two components rather than one. The card is unchanged; this is evidence it should be worked before the component queue rather than after, since every component added meanwhile is another one to migrate."
+        "CONFIRMED AGAIN by a roast on KN-006: LanguageSwitch.tsx carries its component documentation as a JSDoc block and src/shared/story-docs does not exist, so the contract is now broken by two components rather than one. The card is unchanged; this is evidence it should be worked before the component queue rather than after, since every component added meanwhile is another one to migrate.",
+        "2026-09-10, from KN-207: the Checkbox and Tooltip are clean now, checked by asking react-docgen-typescript what a Docs page would print (agent/scripts/verify/KN-207.mjs). FilterChip.tsx and LanguageSwitch.tsx still carry long component JSDoc blocks that docgen prints as descriptions; those are this card's. Note for whoever does it: the story-docs guard now passes skipChildrenPropWithoutDoc: false to react-docgen, because removing a children JSDoc otherwise makes children vanish from the prop list."
       ],
       "createdAt": "2026-09-07T23:11:17.315Z",
-      "updatedAt": "2026-09-08T00:41:13.546Z"
+      "updatedAt": "2026-09-10T08:01:03.845Z"
     },
     {
       "id": "KN-092",
@@ -5069,7 +5070,7 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering.",
       "roasts": [],
       "notes": [
@@ -5077,7 +5078,8 @@
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-10T04:52:10.882Z",
-      "updatedAt": "2026-09-10T06:38:19.906Z"
+      "updatedAt": "2026-09-10T08:02:26.050Z",
+      "verify": "node agent/scripts/verify/KN-207.mjs"
     },
     {
       "id": "KN-208",
@@ -5484,10 +5486,27 @@
       "parent": [],
       "status": "done",
       "exit": "The story checks a flag this repository sets in the storybook project's Vitest setup, not a Vitest internal; the published Storybook still takes the canvas branch with no error; and a mutation removing the flag from the setup file fails the Hover story under npm test rather than passing it.",
-      "roasts": [],
-      "notes": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4.5,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-225-round-1.2026-09-10T07-52-19-597Z.md",
+          "filed": [
+            "KN-228"
+          ],
+          "cardDigest": "311238988dc4b7142af89e70c247023908e5d611b14953f6bef4ebe8a57d6dbd",
+          "head": "86b9cf152ada6e719733d4bf941248561324096c",
+          "reviewerScore": 4.5,
+          "reviewerCriticals": 1,
+          "at": "2026-09-10T08:01:49.270Z"
+        }
+      ],
+      "notes": [
+        "2026-09-10, roast round 1: the critical is dismissed. The mutation ran npx vitest run --project storybook, which is exactly the project npm test runs for the web workspace; whether npm test still includes that project is the gate's composition, KN-003's concern, not this story's. The shell finding is dismissed as before: no rule forbids it, and TECH-DEBT.md 3 records why .cmd shims need one on Windows."
+      ],
       "createdAt": "2026-09-10T07:34:17.438Z",
-      "updatedAt": "2026-09-10T07:52:06.074Z",
+      "updatedAt": "2026-09-10T08:01:49.413Z",
       "verify": "node agent/scripts/verify/KN-225.mjs",
       "evidence": ".storybook/vitest.setup.ts sets globalThis.__KARNAMA_STORY_TEST__ (only the Vitest storybook project loads it). The Checkbox Hover story no longer reads __vitest_browser__: with the flag it imports vitest/browser uncaught and hovers; without it, it returns only if Storybook's preview runtime (__STORYBOOK_PREVIEW__) is rendering it, and otherwise throws naming the setup file. agent/scripts/verify/KN-225.mjs, 4 checks green: Checkbox stories pass; the story reads the repository flag and no Vitest internal, and the setup sets it; THE CASE, removing the flag line from the setup fails Hover under the Vitest storybook project with \"without the story-test flag\" instead of passing; the published half, a production Storybook build served on a random port and opened in headless Chromium, renders Hover with a checkbox and zero page or console errors (committed, not scratch). KN-220.mjs updated to the new flag and green, which also reruns KN-013.mjs with its two hover mutations. Lint and tsc clean.",
       "closedAt": "2026-09-10T07:52:06.074Z"
@@ -5521,6 +5540,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T07:53:29.626Z"
+    },
+    {
+      "id": "KN-228",
+      "title": "The Hover story's canvas branch still keys off Storybook's private preview global",
+      "desc": "CHILD OF KN-225, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-225 roast and confirmed: without the repository's story-test flag, the Checkbox Hover story returns only when globalThis.__STORYBOOK_PREVIEW__ exists, an undocumented Storybook internal. It fails CLOSED, since a rename makes the published Hover story throw rather than pass anything silently, but it is still a private name. The fully owned version is a second flag set in .storybook/preview-head.html, which Storybook injects into its own preview and the Vitest page does not load, checked after the test flag so the test path always wins.",
+      "why": "KN-225 moved the test side onto a signal the repository owns; the canvas side still borrows one. Medium rather than critical because nothing is broken and the failure it guards against would be loud, not silent.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The Hover story reads no Storybook or Vitest internal; the published Storybook still renders it as a canvas with no error, checked on a production build; and removing either repository flag makes the story fail in the environment that flag belonged to.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T08:01:49.141Z"
     }
   ]
 }

@@ -15,32 +15,15 @@ const TIP_WIDTH = 260
 // is typed without data attributes, the same marker the Checkbox's frame uses.
 export const TOOLTIP_SURFACE = 'KarnamaTooltip-surface'
 
+// The props are documented in story-docs, not here, KN-207.
 export interface TooltipProps {
-  /** The text of the tip. */
   title: string
-  /** Drawn before the text, at 16 by 16. */
   icon?: ReactNode
-  /** The control the tip describes. */
   children: ReactElement
 }
 
-/**
- * The tooltip, from Figma node `410:469`.
- *
- * Built on MUI's `Tooltip` rather than from scratch, because the parts that are
- * hard here are collision detection, portalling and dismissal, and MUI already
- * shows on FOCUS as well as hover and closes on Escape. The exit condition asks
- * for focus explicitly, and a hover-only tooltip is invisible to anyone using a
- * keyboard.
- *
- * The fill is `text/primary`. That is a deliberate reuse rather than a missing
- * token: Figma resolves this surface to the same variable as the darkest text
- * colour, so a tooltip is the page inverted rather than a colour of its own.
- *
- * `pointerEvents: none` is the "does not trap the pointer" clause. A tooltip
- * sits over whatever it describes, and one that accepts the pointer swallows
- * the click meant for the control underneath.
- */
+// Node 410:469, on MUI's Tooltip, which already opens on keyboard focus as well
+// as hover, closes on Escape, and keeps the tip on screen.
 export const Tooltip = ({ title, icon, children }: TooltipProps) => (
   <MuiTooltip
     // The "does not trap the pointer" clause, and the sx below is not enough

@@ -5,22 +5,18 @@ import { elevation } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Tooltip, TOOLTIP_SURFACE } from './Tooltip'
 
-/**
- * The open tip's DRAWN surface, by the class the component puts on it. It used
- * to be the first child of the element carrying the role, which is MUI's popper,
- * so the test measured whatever MUI placed first. KN-222.
- */
+// The open tip's DRAWN surface, by the class the component puts on it. It used
+// to be the first child of the element carrying the role, which is MUI's popper,
+// so the test measured whatever MUI placed first. KN-222.
 const drawnSurface = () => {
   const surface = document.body.querySelector(`.${TOOLTIP_SURFACE}`)
   if (!(surface instanceof HTMLElement)) throw new Error('the tooltip has no drawn surface')
   return surface
 }
 
-/**
- * A shadow token as the browser computes it, so it can be compared with a
- * computed box-shadow. Borrowed on a scratch copy of the element's own inline
- * style and put back in the same tick, so nothing is painted with it.
- */
+// A shadow token as the browser computes it, so it can be compared with a
+// computed box-shadow. Borrowed on the element's own inline style and put back
+// in the same tick, so nothing is painted with it.
 const computedShadow = (host: HTMLElement, shadow: string) => {
   const previous = host.style.boxShadow
   host.style.boxShadow = shadow
@@ -29,10 +25,8 @@ const computedShadow = (host: HTMLElement, shadow: string) => {
   return value
 }
 
-/**
- * A stand-in for the real thing. KN-008 builds the icon set; until it lands, a
- * story that needs the drawn adornment draws it rather than blocking on it.
- */
+// A stand-in for the real thing. KN-008 builds the icon set; until it lands, a
+// story that needs the drawn adornment draws it rather than blocking on it.
 const InfoMark = (
   <Box component="svg" viewBox="0 0 16 16" sx={{ width: 16, height: 16, fill: 'currentColor' }}>
     <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 3a1 1 0 110 2 1 1 0 010-2zm1 8H7V7h2v5z" />

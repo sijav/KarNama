@@ -40,6 +40,8 @@ interface StoryFile {
    */
   componentUnreadable: boolean
   stories: string[]
+  /** The meta's args whose value is a `fn()` call. */
+  spied: string[]
 }
 
 /**
@@ -117,12 +119,29 @@ export const readStoryFile = (file: string): StoryFile => {
   const component = parsed._meta?.component
   const isIdentifier = typeof component === 'string' && /^[A-Za-z_$][\w$]*$/.test(component)
 
+  // The meta's args that are `fn()` spies, read from the parsed meta, KN-207.
+  // AGENTS.md gives every callback prop an fn() so the Actions panel records
+  // it; from the AST rather than the text, so a comment mentioning fn() cannot
+  // stand in for one.
+  const args = parsed._metaAnnotations.args
+  const spied =
+    args?.type === 'ObjectExpression'
+      ? args.properties.flatMap((property) => {
+          if (property.type !== 'ObjectProperty') return []
+          const key = property.key.type === 'Identifier' ? property.key.name : property.key.type === 'StringLiteral' ? property.key.value : null
+          const { value } = property
+          const isSpy = value.type === 'CallExpression' && value.callee.type === 'Identifier' && value.callee.name === 'fn'
+          return key !== null && isSpy ? [key] : []
+        })
+      : []
+
   return {
     file,
     title,
     component: isIdentifier ? component : null,
     componentUnreadable: component !== undefined && !isIdentifier,
     stories: parsed.indexInputs.map((input) => input.exportName),
+    spied,
   }
 }
 
@@ -137,6 +156,11 @@ const propsByComponent = (): Map<string, string[]> => {
     // every component would owe an entry for `className`, `key` and two hundred
     // DOM attributes, and the guard would be abandoned within a day.
     propFilter: (prop) => !prop.parent?.fileName.includes('node_modules'),
+    // react-docgen-typescript HIDES an undocumented `children` by default. The
+    // props are documented in story-docs, not in JSDoc, KN-207, so removing the
+    // Tooltip's JSDoc made its `children` vanish from this list and the guard
+    // accuse the markdown of documenting a prop that does not exist.
+    skipChildrenPropWithoutDoc: false,
   })
   const found = new Map<string, string[]>()
   for (const component of parser.parse(files)) {
@@ -212,6 +236,17 @@ describe('story-docs guard', () => {
       }
       for (const name of real) {
         expect.soft(documented, `${entry.title}: prop "${name}" of ${entry.component} has no entry`).toContain(name)
+      }
+    }
+  })
+
+  it('every callback prop has an fn() in the meta args, so the Actions panel records it', () => {
+    // The props come from react-docgen, so a new callback on a component is
+    // covered the day it is added, without anyone remembering this list.
+    for (const entry of files) {
+      if (!entry.component) continue
+      for (const name of (props.get(entry.component) ?? []).filter((prop) => /^on[A-Z]/.test(prop))) {
+        expect.soft(entry.spied, `${entry.title}: callback prop ${name} has no fn() in the meta args`).toContain(name)
       }
     }
   })

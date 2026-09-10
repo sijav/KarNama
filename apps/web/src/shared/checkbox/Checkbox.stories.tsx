@@ -1,16 +1,14 @@
 import type { StoryObj } from '@storybook/react-vite'
-import { expect, userEvent, within } from 'storybook/test'
+import { expect, fn, userEvent, within } from 'storybook/test'
 import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Checkbox } from './Checkbox'
 
-/**
- * A token's colour as the browser computes it, so it can be compared with a
- * computed style. The browser does the conversion rather than a hand-written
- * parser, so the two sides of the comparison are normalised the same way. The
- * host's own inline colour is borrowed and put back within the same tick, so
- * nothing is ever painted with it.
- */
+// A token's colour as the browser computes it, so it can be compared with a
+// computed style. The browser does the conversion rather than a hand-written
+// parser, so the two sides of the comparison are normalised the same way. The
+// host's own inline colour is borrowed and put back within the same tick, so
+// nothing is ever painted with it.
 const computedColour = (host: HTMLElement, colour: string) => {
   const previous = host.style.color
   host.style.color = colour
@@ -22,7 +20,7 @@ const computedColour = (host: HTMLElement, colour: string) => {
 const meta = {
   title: 'Shared/Checkbox',
   component: Checkbox,
-  args: { indeterminate: false, disabled: false },
+  args: { indeterminate: false, disabled: false, onChange: fn() },
   argTypes: {
     indeterminate: { control: 'boolean' },
     disabled: { control: 'boolean' },
@@ -151,7 +149,7 @@ export const Disabled: Story = {
 }
 
 export const KeyboardOnly: Story = {
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     const box = within(canvasElement).getByRole('checkbox')
     // Reachable by Tab and toggleable by Space, with no pointer anywhere in
     // this story. Bulk selection is the feature this exists for, and a
@@ -161,7 +159,12 @@ export const KeyboardOnly: Story = {
     await expect(box).toHaveFocus()
     await userEvent.keyboard(' ')
     await expect(box).toBeChecked()
+    // The documented contract: the event, then the NEW checked value, so a
+    // caller never has to read it back off the element. KN-207.
+    await expect(args.onChange).toHaveBeenLastCalledWith(expect.objectContaining({ target: box }), true)
     await userEvent.keyboard(' ')
     await expect(box).not.toBeChecked()
+    await expect(args.onChange).toHaveBeenLastCalledWith(expect.objectContaining({ target: box }), false)
+    await expect(args.onChange).toHaveBeenCalledTimes(2)
   },
 }
