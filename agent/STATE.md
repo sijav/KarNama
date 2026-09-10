@@ -30,8 +30,15 @@ expires after thirty), with a 50 second cold start the UI must handle honestly. 
 
 ## Where things stand
 
-**50 done, 160 open, 3 blocked, 2 dropped.** Coverage 100 percent on all four
+**57 done, 165 open, 3 blocked, 2 dropped.** Coverage 100 percent on all four
 metrics in every workspace. Counts live in `board.json`.
+
+**This stretch closed the component findings one by one**: the Checkbox has
+its Hover story, driven by a REAL pointer and proved real by failing under a
+dispatched one (KN-208, KN-220, KN-225); the Tooltip is the frame's 260 by 82,
+padded 8 by 12, with its own unnamed shadow, sized by its own box-sizing and
+found by a marker class (KN-210, KN-218, KN-222). Three lint holes closed on
+the way (KN-094, KN-095, KN-224).
 
 **Four components exist**: KN-013 Checkbox, KN-017 Filter chip, KN-032 Tooltip
 and the language switch, all from Figma nodes and verified by reading computed
@@ -144,19 +151,34 @@ lingui plugin compiles `ignore` with `new RegExp(entry)` and no flags. Three
 roasts probed the rule's exemptions and missed it, because every probe string
 contained a p. **Read how the tool consumes the option.**
 
+**The browser pane, while hidden, runs NO animation frames**, so no Storybook
+play function starts there: every story sits on WAIT, `requestAnimationFrame`
+never fires. That looks exactly like a broken story. Check the published
+behaviour on a PRODUCTION Storybook build in headless Chromium instead: the
+`storybook-static` launch config serves one, and KN-225.mjs does it committed.
+
+**The production Storybook is not the Vitest one.** Storybook's own preview CSS
+makes `body` border-box for a padded story; the Vitest page does not. KN-222's
+first version passed under Vitest and failed in the built Storybook.
+
+**Hand-written lingui catalogs are never compiled**, and lingui 6.6.0 compiles
+ICU only outside production: any message with a count or placeholder renders
+raw `{count, plural, ...}` in the deployed app. KN-221, and it blocks KN-212.
+
 **Shell heredocs eat backslashes**, and one wrote a literal NUL byte into a
 source file this session. **Use Edit for code.**
 
 ## The next step
 
-`node agent/scripts/todo.mjs next` picks it, and after the re-rank it serves
-component work: first the open findings on the four built components
-(KN-206 to KN-212), then KN-008 icons, KN-009 Button, KN-010 Status chip,
-KN-011 Input, KN-012 Select, KN-019, KN-023, KN-062. Build the component, its
-stories, and its story-docs in both languages; the guard refuses a story with
-no markdown entry. A new story's title must be added to `StoryTitle` in
-`src/shared/story-docs/story-meta.ts` and its meta must satisfy `StoryMeta`,
-or the lingui rule flags the title.
+`node agent/scripts/todo.mjs next` picks it, and serves component work first by
+the owner's order. Open findings on the built components: KN-207, KN-209,
+KN-211, KN-206, KN-223, KN-227, KN-226 (the published-Storybook smoke test),
+KN-216; then the components themselves, KN-010, KN-011, KN-019, KN-023,
+KN-062, KN-008, KN-009, KN-012. KN-212 waits on KN-221. A new story's title
+goes into `StoryTitle` in `src/shared/story-docs/story-meta.ts` and its meta
+must satisfy `StoryMeta`, or the lingui rule flags the title. KN-214 is held
+at high on the owner's order; restore it to critical when the last
+component closes.
 
 ## What to read first
 
