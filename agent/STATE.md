@@ -21,7 +21,7 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**96 done, 191 open, 2 blocked, 2 dropped** of 291 (2026-09-10). Coverage 100
+**96 done, 190 open, 2 blocked, 2 dropped** of 290 (2026-09-10). Coverage 100
 percent on all four metrics. **Deployed**: https://sijav.github.io/KarNama/ and
 Storybook at https://sijav.github.io/KarNama/storybook/, both from
 `.github/workflows/pages.yml` on every push. The API needs
