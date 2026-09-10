@@ -6140,15 +6140,17 @@
       "parent": [
         "KN-250"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control.",
       "roasts": [],
       "notes": [
         "2026-09-10: parked, blocked by KN-250. Its check runs every Input story on a production Storybook build, and Focus already fails there with nothing changed, because html dir is set in a passive effect after the play function starts. Verifier drafted and working (URL args per offered control, verdict from the errored phase and playFunctionThrewException, NOT storyFinished, whose status read success for a play that threw); saved to the session scratchpad as parked/KN-247.mjs. Planned allowlists: Default all but error; FromArgs reads defaultValue and disabled from args and offers those plus placeholder and name; Filled reads defaultValue from args, offers all but value; Focus all but disabled and error; Disabled all but disabled; Hover all but error and disabled; LabelIsBound all but disabled; Typing label, placeholder, helperText, error."
       ],
       "createdAt": "2026-09-10T09:45:57.752Z",
-      "updatedAt": "2026-09-10T10:53:24.589Z",
-      "verify": "node agent/scripts/verify/KN-247.mjs"
+      "updatedAt": "2026-09-10T10:56:07.546Z",
+      "verify": "node agent/scripts/verify/KN-247.mjs",
+      "evidence": "node agent/scripts/verify/KN-247.mjs passed. It builds the production Storybook, serves it, and for every Input story with a play function it runs the story once as it is and once per control it offers with that arg changed through Storybook's URL args (strings to a different value and to empty, booleans flipped), recording render phases and play exceptions from the moment Storybook assigns its channel and the args as the play function starts. The verdict is the errored phase or playFunctionThrewException; storyFinished is not used because its status read success for a play function that threw, observed while building this. (1) No offered control breaks any play function; before the fix 8 of the 8 args-driven stories offered at least one that did (Default error; FromArgs label, value, defaultValue, helperText, error, disabled; Filled value, defaultValue; Focus error, disabled; Disabled disabled; Hover error; LabelIsBound disabled; Typing value, defaultValue, disabled, name). Every changed arg was confirmed applied by reading it back at the start of the play function. (2) THE CASE: Typing put back on Storybook's default of every control is caught, breaking under disabled. (3) Every story with a play function declares its controls through offers() or disables them; a removed declaration was tested in isolation and is named. (4) The twelve Input stories pass. offers() takes an array typed (keyof InputProps)[], so a misspelt name fails tsc, and lingui skips the names through useTsTypes' contextual type rather than through KN-214's pattern, which only let the names without a p through when they were rest arguments. Also rerun and passing: KN-242, KN-246, KN-249 (now over five stories, since Typing no longer offers value), KN-243, KN-241, KN-011; docs guard, workspace lint zero warnings, tsc clean. A child task, so it closes on the tests for the files it changed. NOT established: Hover's hover assertion under its offered controls, which only the test runner's real pointer reaches; its list is reasoned from the component's hover rule; and values other than the ones tried, such as undefined, a long string, or the label left empty while FromArgs offers none.",
+      "closedAt": "2026-09-10T10:56:07.546Z"
     },
     {
       "id": "KN-248",
