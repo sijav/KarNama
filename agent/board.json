@@ -1275,7 +1275,7 @@
     {
       "id": "KN-045",
       "title": "Job detail modal, wired",
-      "desc": "The modal reading and writing real data: info and status with history, notes, the افراد مرتبط tab, and files. The tab is افراد مرتبط, not مخاطبین: DESIGN.md renames it without exception, and the nav item مخاطبین became a different thing. This card still says four tabs where KN-072 settled five; that contradiction belongs to KN-155 and is deliberately NOT repaired here, so this card is not quietly credited with work it did not do.",
+      "desc": "The FIVE-tab modal reading and writing real data. KN-072 settled that status history leaves the Info tab and gets its own tab, second, so the tabs are اطلاعات آگهی, سابقه, یادداشت, افراد مرتبط, فایل‌ها. Anyone building this card from its own text used to rebuild exactly the arrangement KN-072 rejected, because it said four tabs and its exit condition only asked that history GROW, never where it renders. The tab is افراد مرتبط, not مخاطبین: DESIGN.md renames it without exception, and the nav item مخاطبین became a different thing. KN-155 repaired this.",
       "why": "It is where the trail is actually read. Status history in particular is the payoff of the whole data model, and this is the only place it surfaces.",
       "severity": "high",
       "points": 5,
@@ -1287,11 +1287,11 @@
         "KN-039"
       ],
       "status": "backlog",
-      "exit": "An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there.",
+      "exit": "An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T02:54:37.014Z"
+      "updatedAt": "2026-09-10T03:32:14.522Z"
     },
     {
       "id": "KN-046",
@@ -3774,8 +3774,8 @@
     },
     {
       "id": "KN-155",
-      "title": "KN-045 still specifies the four-tab modal KN-072 replaced",
-      "desc": "KN-045 reads: The four-tab modal reading and writing real data: info and status with history, notes, contacts and files. KN-072 settled that status history leaves the Info tab and gets its own, making FIVE tabs. Anyone building KN-045 from its own card rebuilds exactly the arrangement KN-072 rejected, and KN-045 verifies green because its exit condition only asks that history GROW, not where it renders. KN-072 updated KN-030 and stopped there, so the sweep for downstream cards was incomplete.",
+      "title": "KN-045 specified the modal arrangement KN-072 replaced, and the downstream sweep stopped short",
+      "desc": "KN-045 used to read: a four-tab modal reading and writing real data, info and status with history, notes, contacts and files. KN-072 settled that status history leaves the Info tab and gets its own, making FIVE tabs. Anyone building KN-045 from its own card rebuilds exactly the arrangement KN-072 rejected, and KN-045 verifies green because its exit condition only asks that history GROW, not where it renders. KN-072 updated KN-030 and stopped there, so the sweep for downstream cards was incomplete. FIXED: KN-045 now names five tabs and its exit condition asserts WHERE history renders, not only that it grows. The wording above is past tense on purpose, because the sweep this card adds refuses that phrase in any OPEN card and this card is an open card until it closes. That is not an exemption: the phrase is genuinely no longer true of KN-045, and a card reporting a fixed contradiction in the present tense would be wrong on its own terms.",
       "why": "A settled decision that only reaches one of the cards that depend on it is not settled, it is contradicted. The stale card is the one an implementer actually works from.",
       "severity": "high",
       "points": 1,
@@ -3783,11 +3783,13 @@
       "parent": [
         "KN-072"
       ],
-      "status": "backlog",
-      "exit": "KN-045 names five tabs with history in its own, its exit condition asserts where history renders, and a check proves NO open card still says four-tab modal or places history inside the info tab.",
+      "status": "in_progress",
+      "exit": "KN-045 names five tabs with history in its own, its exit condition asserts WHERE history renders rather than only that it grows, and a check sweeps every OPEN card for the arrangement KN-072 replaced, refusing both the superseded tab count and any card that still puts the history block back where the owner took it from. This exit condition deliberately DESCRIBES those two shapes instead of quoting them: the sweep reads card prose, so a card quoting the banned wording is indistinguishable from a card instructing it, and this card would otherwise flag itself.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-09T22:23:50.956Z"
+      "createdAt": "2026-09-09T22:23:50.956Z",
+      "updatedAt": "2026-09-10T03:35:17.377Z",
+      "verify": "node agent/scripts/verify/KN-072.mjs"
     },
     {
       "id": "KN-156",

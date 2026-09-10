@@ -244,6 +244,39 @@ check('KN-030 builds five tabs, with history in ITS OWN, not in Info', () => {
   return /own tab/i.test(exit) ? null : 'KN-030 does not say history renders in its own tab'
 })
 
+check('no OPEN card still specifies the four-tab modal, or history inside Info', () => {
+  // KN-155. KN-072 updated KN-030 and stopped, so the sweep for downstream
+  // cards was never finished and KN-045 went on describing the arrangement the
+  // owner had rejected — while verifying green, because its exit condition only
+  // asked that history GROW, never where it rendered.
+  //
+  // Only OPEN cards. A closed card's text is a record of what was true when it
+  // closed, and rewriting history to satisfy a checker is worse than the
+  // contradiction. This card's own description quotes the wrong wording in
+  // order to name it, and is closed by the time this runs.
+  //
+  // Contrast clauses are stripped BEFORE looking, the same way the KN-030 check
+  // above does it: "history LEAVES the Info tab" and "its own tab RATHER THAN
+  // Info" are the clearest ways to write the correct thing, and a pattern
+  // greedy enough to span them flags the very wording that fixes the problem.
+  const offenders = []
+  for (const task of board.tasks) {
+    if (task.status === 'done' || task.status === 'dropped') continue
+    const text = [task.title, task.desc, task.exit].join(' ').split(/\s+/).join(' ')
+    const asserted = text
+      .replace(/\brather than[^.]*/gi, '')
+      .replace(/\b(not|no longer|leaves|instead of|used to|superseded)\b[^.]*/gi, '')
+    if (/four[- ]tab modal/i.test(asserted)) offenders.push(`${task.id} still calls it a four-tab modal`)
+    else if (/history[^.]{0,40}\b(in|inside) the info tab/i.test(asserted)) {
+      offenders.push(`${task.id} still places history inside the Info tab`)
+    }
+  }
+  if (offenders.length) return offenders.join('; ')
+  // Positive control: the sweep must actually be looking at cards.
+  const open = board.tasks.filter((task) => task.status !== 'done' && task.status !== 'dropped')
+  return open.length > 0 ? null : 'no open cards were examined, so this check proves nothing'
+})
+
 check('the manifest records it as settled by this card', () => {
   const manifest = JSON.parse(readFileSync(join(ROOT, 'agent', 'design-manifest.json'), 'utf8'))
   const item = manifest.openItems.find((entry) => entry.id === 'status-history-placement')

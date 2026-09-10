@@ -8,13 +8,18 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-155` KN-045 still specifies the four-tab modal KN-072 replaced** (high, 1 pt, web)
+**Next up: `KN-155` KN-045 specified the modal arrangement KN-072 replaced, and the downstream sweep stopped short** (high, 1 pt, web)
 
-## Backlog (162)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-155` | KN-045 still specifies the four-tab modal KN-072 replaced | high | 1 | web | KN-072 | KN-045 names five tabs with history in its own, its exit condition asserts where history renders, and a check proves NO open card still says four-tab modal or places history inside the info tab. |
+| `KN-155` | KN-045 specified the modal arrangement KN-072 replaced, and the downstream sweep stopped short | high | 1 | web | KN-072 | KN-045 names five tabs with history in its own, its exit condition asserts WHERE history renders rather than only that it grows, and a check sweeps every OPEN card for the arrangement KN-072 replaced, refusing both the superseded tab count and any card that still puts the history block back where the owner took it from. This exit condition deliberately DESCRIBES those two shapes instead of quoting them: the sweep reads card prose, so a card quoting the banned wording is indistinguishable from a card instructing it, and this card would otherwise flag itself. |
+
+## Backlog (161)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-172` | compact.py does the opposite of what the loop's compact step is for | high | 1 | agent | none | compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script. |
 | `KN-196` | Decide how a card is dropped onto a column that is collapsed to a count | high | 1 | design | none | DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker. |
 | `KN-199` | KN-060 asks a reusable column component to own where the rejected column sits on the board | high | 1 | design | none | KN-043's exit condition names the rejected column's position after the offer column and its collapsed-to-a-count default; KN-060's names rendering collapsed to a count and expanding on click, and says nothing about where the column sits. KN-149's verifier requires the right clause of each card rather than one shared string, and a mutation that swaps the two clauses between the cards is caught. |
@@ -92,7 +97,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-038` | Custom statuses: rename, recolour, delete | high | 5 | api | KN-037 | A renamed status shows its new name everywhere including old records, deletion is refused while postings remain in that status and the message says how many, the four custom slots cannot be exceeded, a record pointing at a deleted status still renders with the fallback colour, and tests cover each. |
 | `KN-042` | App shell: routing, responsive navigation, and the language switch in place | high | 5 | web | KN-027, KN-006, KN-035 | All three routes render inside the shell, the nav switches between right sidebar and bottom tab bar at the breakpoint, a deep link to any of them works on a hard refresh, the language switch persists across a reload, and an API error renders the error state rather than a blank page. |
 | `KN-044` | Add job flow | high | 5 | web | KN-042, KN-029, KN-037 | An e2e test pastes a link, corrects a field in Review, saves, and finds the record on My Jobs with status New, and a second test takes the Error path into Manual and saves from there. |
-| `KN-045` | Job detail modal, wired | high | 5 | web | KN-043, KN-030, KN-038, KN-039 | An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. |
+| `KN-045` | Job detail modal, wired | high | 5 | web | KN-043, KN-030, KN-038, KN-039 | An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries. |
 | `KN-046` | Auth screens: login, code, signup | high | 5 | web | KN-042, KN-036 | An e2e test signs in with a number and the code from the mock provider and reaches the board, a wrong or expired code shows an honest message with a way to resend, first login collects the name, and signing out clears the token and the Apollo cache rather than only the UI. |
 | `KN-052` | Deploy the API to Render with Supabase Postgres | high | 5 | deploy | KN-033, KN-034, KN-050 | The deployed app talks to the deployed API from the Pages origin, a cold start shows the loading state and completes rather than timing out, migrations ran, and no secret is in the repository. |
 | `KN-060` | Kanban column component | high | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-015, KN-018 | The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. رد شده is the last column, after پیشنهاد کار, and renders collapsed to a count by default, expanding on click. |
@@ -740,11 +745,11 @@ The add route driving the modal through Paste, Loading, Review and save, with Ma
 - **status** backlog · **severity** high · **points** 5 · **area** web
 - **blocked by** KN-043, KN-030, KN-038, KN-039
 
-The modal reading and writing real data: info and status with history, notes, the افراد مرتبط tab, and files. The tab is افراد مرتبط, not مخاطبین: DESIGN.md renames it without exception, and the nav item مخاطبین became a different thing. This card still says four tabs where KN-072 settled five; that contradiction belongs to KN-155 and is deliberately NOT repaired here, so this card is not quietly credited with work it did not do.
+The FIVE-tab modal reading and writing real data. KN-072 settled that status history leaves the Info tab and gets its own tab, second, so the tabs are اطلاعات آگهی, سابقه, یادداشت, افراد مرتبط, فایل‌ها. Anyone building this card from its own text used to rebuild exactly the arrangement KN-072 rejected, because it said four tabs and its exit condition only asked that history GROW, never where it renders. The tab is افراد مرتبط, not مخاطبین: DESIGN.md renames it without exception, and the nav item مخاطبین became a different thing. KN-155 repaired this.
 
 **Why.** It is where the trail is actually read. Status history in particular is the payoff of the whole data model, and this is the only place it surfaces.
 
-**Exit condition.** An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there.
+**Exit condition.** An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries.
 
 ### `KN-046` Auth screens: login, code, signup
 
@@ -1977,16 +1982,16 @@ Two holes, both reproduced. FIRST, at KN-072.mjs line 78 the five tab names are 
 
 **Exit condition.** KN-072.mjs parses the ACTUAL tab list out of the decision line and requires exactly the five names in it rather than searching a character window, and checks KN-030 placement on the stripped text with an affirmative un-negatable assertion. Both reproductions above are added as committed mutation cases and each fails the verifier with its own message.
 
-### `KN-155` KN-045 still specifies the four-tab modal KN-072 replaced
+### `KN-155` KN-045 specified the modal arrangement KN-072 replaced, and the downstream sweep stopped short
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** KN-072
 
-KN-045 reads: The four-tab modal reading and writing real data: info and status with history, notes, contacts and files. KN-072 settled that status history leaves the Info tab and gets its own, making FIVE tabs. Anyone building KN-045 from its own card rebuilds exactly the arrangement KN-072 rejected, and KN-045 verifies green because its exit condition only asks that history GROW, not where it renders. KN-072 updated KN-030 and stopped there, so the sweep for downstream cards was incomplete.
+KN-045 used to read: a four-tab modal reading and writing real data, info and status with history, notes, contacts and files. KN-072 settled that status history leaves the Info tab and gets its own, making FIVE tabs. Anyone building KN-045 from its own card rebuilds exactly the arrangement KN-072 rejected, and KN-045 verifies green because its exit condition only asks that history GROW, not where it renders. KN-072 updated KN-030 and stopped there, so the sweep for downstream cards was incomplete. FIXED: KN-045 now names five tabs and its exit condition asserts WHERE history renders, not only that it grows. The wording above is past tense on purpose, because the sweep this card adds refuses that phrase in any OPEN card and this card is an open card until it closes. That is not an exemption: the phrase is genuinely no longer true of KN-045, and a card reporting a fixed contradiction in the present tense would be wrong on its own terms.
 
 **Why.** A settled decision that only reaches one of the cards that depend on it is not settled, it is contradicted. The stale card is the one an implementer actually works from.
 
-**Exit condition.** KN-045 names five tabs with history in its own, its exit condition asserts where history renders, and a check proves NO open card still says four-tab modal or places history inside the info tab.
+**Exit condition.** KN-045 names five tabs with history in its own, its exit condition asserts WHERE history renders rather than only that it grows, and a check sweeps every OPEN card for the arrangement KN-072 replaced, refusing both the superseded tab count and any card that still puts the history block back where the owner took it from. This exit condition deliberately DESCRIBES those two shapes instead of quoting them: the sweep reads card prose, so a card quoting the banned wording is indistinguishable from a card instructing it, and this card would otherwise flag itself.
 
 ### `KN-156` The close gate has no exit for unrelated work landing during a background roast
 
