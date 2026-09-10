@@ -231,6 +231,18 @@ Two ordering rules the owner set explicitly:
   design is genuinely ambiguous, read the node again before guessing, and ask
   the owner if it is still ambiguous.
 
+**When the work is a verifier, write it clause by clause against the exit
+condition.** Every guarantee the card DECLARES gets two things: a fixture that
+passes because the guarantee holds, and a mutation that breaks that guarantee
+and makes that fixture fail. A verifier assembled from examples that seemed
+worth testing will be green and prove less than it looks like: KN-190 shipped 13
+passing checks and none of them tested its own central clause, "the close is the
+head token of its line", which the code did not do. Reading the exit condition
+as a list of clauses is what catches that, and it costs one pass.
+
+This is a way of writing tests, not a rule that refuses anything. Nothing here
+stops you closing a card.
+
 Then run the gate in `AGENTS.md` section 5, including actually opening the
 thing in a browser and looking at it in both languages.
 

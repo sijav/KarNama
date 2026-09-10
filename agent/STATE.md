@@ -29,8 +29,19 @@ second cold start the UI must handle honestly. lingui, **English is the source**
 
 ## Where things stand
 
-33 done, 155 open, 2 dropped. One open critical: **KN-190 - Command-shaped text
-inside a string counts as the command**, in progress.
+34 done, 159 open, 2 dropped. One open critical: **KN-193 - The close
+recogniser is not the head token, so any command's arguments can be the close**.
+**KN-149 - The board cards for the rejected column do not require it to
+collapse** is in progress, plan filed and checked.
+
+**KN-190 closed and did not fix its own class.** It removed the `echo` instance
+and left the general one: `readCommand('grep todo move <id> done')` is still
+`closes: true`, so a marked block of that line, then the real roast, then the
+real close returns `ok: true`. Its own amended exit condition says "the close is
+the head token of its line" and the code never did that, and its verifier had no
+counterexample for that clause, so 13 green checks established less than they
+looked like. KN-190 stays done, because done is terminal; KN-193 carries the
+work.
 
 `apps/web`: 229 tests over 15 files, 100 percent on all four metrics, 8
 Playwright tests. The unit project alone is 208, worth knowing because a
@@ -80,6 +91,30 @@ splitting "**last** open child". Collapse whitespace, and match the concept.
 
 **An ABSENCE proves nothing without a positive control on the same instrument.**
 A listing that collected nothing looks exactly like a correctly scrubbed one.
+**This applies to MUTATION testing too, and that is where it was missed.** I
+declared a mutation impossible to catch after trying only NEGATIVE fixtures,
+mentions that should not count. Every one of those fails safe by accident when
+the rule is broken, so they all look identical. The isolating fixture was a
+POSITIVE one, a legitimate command with a quoted argument,
+`todo move <id> "done"`: `closes: true` with quote handling, `false` without.
+A reviewer found it in one line. **Declaring something unprovable is a strong
+claim and needs the same evidence as any other.**
+
+**`npm run` SILENTLY TRUNCATES every argument at its first newline on Windows**,
+because it routes through cmd.exe. Everything after line one, including every
+later flag, is dropped with no error. `npm run todo -- show "KN-190\nJUNK"`
+prints KN-190's card; the same call through `node agent/scripts/todo.mjs` says
+the two-line string does not exist. **So pass prose as ONE line, or call the
+script with `node` directly.** A multi-line `--evidence` through npm would close
+a card on half a sentence. KN-195. Nothing on the board was corrupted, checked.
+
+**There are TWO roast harnesses and only one is board-recordable.**
+`python ~/.claude/skills/roast/roast.py plan` checks a PLAN, writes to scratch,
+records nothing. `node agent/scripts/roast.mjs <id>` is the TASK roast: it
+archives to `agent/roasts/` with a `.meta.json` sidecar, and `todo roast --file`
+verifies that digest, so a review run any other way cannot be recorded on the
+card. RALPH.md line 199 and line 297 say exactly this and I still used the wrong
+one.
 
 **A proxy for the exit condition is not the exit condition.** KN-100 first
 proved its clause with `vitest list` instead of running the verifier the card
@@ -107,6 +142,12 @@ for code.**
 **The mutation that must SURVIVE is the strongest evidence available**:
 reproduce the old implementation and watch it wave the defect through.
 
+**A verifier built from examples tests the examples.** Go clause by clause
+through the exit condition: each declared guarantee needs a fixture that passes
+because it holds AND a mutation that breaks it and makes that fixture fail.
+KN-190 was green on 13 checks with no test for its own central clause. Now in
+RALPH.md step 3.
+
 ## The skills
 
 `todo` and `roast` each ship a Node and a Python half, proved equivalent by
@@ -117,11 +158,15 @@ list stays project-local, because it resumes conversations.
 
 ## Next step
 
-`npm run todo -- next` picks it. **KN-190** is in progress: the recognisers match
-command-shaped TEXT anywhere on a line, so `echo "todo move <id> done"` counts as
-a close. Anchoring to line start is the obvious fix and breaks the real file,
-because the roast invocation is `python <path>/roast.py task` and the roast is an
-argument.
+`npm run todo -- next` picks it. **KN-149** is in progress: KN-070 settled that
+رد شده sits last and is collapsed to a count by default, and the cards that
+build the board never say so, so KN-043 and KN-060 can pass complete while
+rendering it as an ordinary open column. The plan is filed beside the verifier
+and its argument is that a POSITIVE prose grep is the wrong instrument here, the
+same one KN-184, KN-189 and KN-190 were about; the card should carry a
+machine-readable key instead, with a registry naming which cards must have it.
+
+Then **KN-193**, the open critical.
 
 ## What to read first
 

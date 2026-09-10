@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 195,
+  "nextId": 198,
   "tasks": [
     {
       "id": "KN-001",
@@ -1606,13 +1606,15 @@
       "area": "web",
       "parent": [
         "KN-060",
-        "KN-020"
+        "KN-020",
+        "KN-196"
       ],
       "status": "backlog",
       "exit": "A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T21:10:27.314Z"
+      "createdAt": "2026-09-07T21:10:27.314Z",
+      "updatedAt": "2026-09-10T02:06:50.976Z"
     },
     {
       "id": "KN-062",
@@ -4427,7 +4429,25 @@
       "parent": [],
       "status": "done",
       "exit": "The recognisers read a COMMAND rather than command-shaped text. The close is the head token of its line. The roast is matched among that line's tokens, because python <path>/roast.py task puts the roast in ARGUMENT position and an anchor would find nothing in the file this is written for. A quoted run stays ONE token, and a line whose head is a printer (echo, printf, cat) runs nothing, so a mention is not the command. The reviewer's echo fixture fails before the fix and passes after. A pipeline, a chain, a semicolon or a line continuation is REPORTED as unorderable rather than guessed at, and a single trailing ampersand is NOT, because backgrounding the roast is what the real prompt does.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 2,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-190-round-1.2026-09-10T02-03-02-271Z.md",
+          "filed": [
+            "KN-193",
+            "KN-194",
+            "KN-197"
+          ],
+          "cardDigest": "f2f8074e819c0c44626e6378d4ead0ac631ca9a95b2cfbde7430ff4878d49a78",
+          "head": "2bb405106166b538752e041051f508fa5f6a5df1",
+          "reviewerScore": 1.5,
+          "reviewerCriticals": 2,
+          "dismissed": "Nothing was rejected. Every finding was reproduced by running it: the command-substitution false pass, the escaped-quote false pass, and the stale-marker case which is the already-open KN-192. The one correction is to a detail rather than a finding: the reviewer said a marker rendered inside a fence binds to that fence's closing line and implied a false pass, and the misbinding is real, but it returns ok false, so it is a false NEGATIVE. Recorded on KN-192. Score 2 rather than the reviewer's 1.5 because the marker and block machinery inherited from KN-184 and KN-189 is sound and the reported echo instance really was fixed; the exit condition was still not met.",
+          "at": "2026-09-10T02:08:35.921Z"
+        }
+      ],
       "notes": [
         "EXIT CONDITION AMENDED 2026-09-10, original kept here. It read: 'The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident.' The clause 'at the start of the line' cannot be met, and the plan filed beside this card said so before the work started: the roast invocation is python <path>/roast.py task, so the roast is an ARGUMENT, and a rule demanding it start the line reports a correct prompt as having no roast command. The close does start its line and still must. Amended openly rather than declared satisfied by a check that does not check it.",
         "Roasted 2026-09-10 through the WRONG harness: I ran python ~/.claude/skills/roast/roast.py task, which RALPH.md line 199 reserves for PLAN checks, instead of npm run roast which line 297 names for task roasts. Only the local harness writes the .meta.json sidecar the board verifies, so that round could not be recorded here. The review itself was sound and I confirmed every reproducer by running it: the close recogniser is not head-anchored, so a marked block reading 'grep todo move <id> done' then the real roast then the real close returns ok true, which is the defect this card was opened for. Filed as KN-193 and KN-194. Re-roasted through the local harness for a recordable round. Done is terminal; this card is not reopening."
@@ -4466,10 +4486,11 @@
       "exit": "The marker must be the only thing on its line, and there must be exactly ONE in a document; a second marker, an inline marker, and a stale marker above an old block with the real block unmarked are each reported by name; and each of the three is a case that fails before the change and passes after.",
       "roasts": [],
       "notes": [
-        "Parent flattened from KN-189 to KN-184 on 2026-09-10. One level only: KN-189 is itself a child of KN-184, and leaving this pointed at KN-189 would have fired the parent-plus-children roast against a card whose children were all closed while KN-184 still had this one open."
+        "Parent flattened from KN-189 to KN-184 on 2026-09-10. One level only: KN-189 is itself a child of KN-184, and leaving this pointed at KN-189 would have fired the parent-plus-children roast against a card whose children were all closed while KN-184 still had this one open.",
+        "KN-190 round 1 confirmed this card is still open and added a shape: because markedBlocks has no markdown fence state, a marker written as literal TEXT inside a fenced example binds to that fence's closing line. I reproduced it, and note the direction is the opposite of this card's other cases: it returns ok false, 'the marked block never closes the task'. So it is a false NEGATIVE, which matters because a document that merely SHOWS the marker fails the check, and the tempting fix for a check that fails on correct input is to weaken it."
       ],
       "createdAt": "2026-09-10T01:44:50.061Z",
-      "updatedAt": "2026-09-10T01:54:45.044Z"
+      "updatedAt": "2026-09-10T02:08:27.170Z"
     },
     {
       "id": "KN-193",
@@ -4500,6 +4521,51 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T02:00:18.441Z"
+    },
+    {
+      "id": "KN-195",
+      "title": "npm run silently truncates every argument at its first newline on Windows",
+      "desc": "Found on 2026-09-10 while roasting KN-190. npm run <script> -- <args> routes through cmd.exe on Windows, and cmd.exe ends the command line at the first newline, so a multi-line argument loses everything after line one AND every flag that followed it, with no error. Proved with a free non-mutating case: node agent/scripts/todo.mjs show \"KN-190<newline>JUNK\" correctly reports that the whole two-line string does not exist, while npm run todo -- show \"KN-190<newline>JUNK\" prints KN-190's card, because the second line never arrived. This is not repeated-flag mangling, which was my first guess and is wrong. It bit for real: RALPH.md line 297 documents the task roast as npm run roast -- <id> --summary \"...\" --ask \"...\", and a genuine summary is multi-line, so every --ask was dropped and the harness refused with 'roast needs at least one --ask'. Calling node agent/scripts/roast.mjs directly works. The dangerous direction is quiet rather than loud: npm run todo -- move <id> done --evidence \"<multi-line>\" would record a truncated evidence string and close the card, and the same applies to --desc, --why, --exit and --note. I checked every field this session wrote through npm, six of them across KN-190, KN-193 and KN-194, and none was truncated, because I happened to build every value on one line.",
+      "why": "The board's evidence field is the record of how an exit condition was checked, and a close that silently stores half of it is worse than one that fails: the card looks complete. It also means the loop's own documented roast command does not work on the platform this repository is developed on, so the review step degrades to whatever fits on one line.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Either the scripts refuse an argument containing a newline with a message naming this cause, or the loop stops going through npm for anything carrying prose and RALPH.md and .claude/ralph-loop.local.md are updated to the invocation that works. A check demonstrates the truncation and its absence after the fix, using a free non-mutating command rather than a real roast. The existing board is audited for fields whose text ends mid-sentence, and the audit result is recorded whether or not it finds anything.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T02:04:40.845Z"
+    },
+    {
+      "id": "KN-196",
+      "title": "Decide how a card is dropped onto a column that is collapsed to a count",
+      "desc": "KN-070 settled that the rejected column sits last and renders collapsed to a count by default, expanding on click. It did NOT settle what happens when a card is DRAGGED onto it while collapsed, and rejected is the status cards are moved into most, so this is the common case rather than an edge. Open questions, all of them the owner's or the designer's call rather than a builder's: does the collapsed column expand on hover during a drag, and after what delay; does it accept a drop while still collapsed; does the count animate or does the column open to show where the card landed; and what does the keyboard path target, since a collapsed column has no visible slot to move a card into and the keyboard alternative is part of KN-061 rather than a later improvement. Raised while doing KN-149. I nearly folded these into KN-061's exit condition as though KN-070 had already answered them; a plan check pointed out that doing so would invent a design requirement while claiming to propagate an existing one. The frames may already draw some of this, so look at the Drag and Drop Done states before asking.",
+      "why": "KN-061 is drag a card between columns and it cannot be built correctly against an undecided target. Left open, whoever builds it picks an answer silently and the collapsed column either becomes undroppable, which breaks the main interaction for the most-used status, or springs open on hover in a way nobody chose. Deciding it costs a conversation now and a rebuild of the drag behaviour later, which is the same trade KN-070 was settled early to avoid.",
+      "severity": "high",
+      "points": 1,
+      "area": "design",
+      "parent": [],
+      "status": "backlog",
+      "exit": "DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T02:06:44.051Z"
+    },
+    {
+      "id": "KN-197",
+      "title": "The order check parses shell badly instead of refusing the shapes it cannot parse",
+      "desc": "CHILD OF KN-184, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by KN-190 round 1 and reproduced here by running each case. Two confirmed false passes, one root cause. FIRST, command substitution: the line todo move <id> done \"$(python <path>/roast.py task)\" is read as a plain close, because the tokeniser treats a quoted run as inert data, and a shell EXECUTES $(...) before it invokes todo. The marked block of that line followed by a visible roast returns ok true while the real order is roast, close, roast. Backticks and ${...} are the same hole. SECOND, escaped quotes: UNSUPPORTED is tested against line.replace(/\"[^\"]*\"|'[^']*'/g, ''), which is a SECOND shell parser and disagrees with tokenise() about escapes. The valid line sh -c 'python /x/roast.py task' \\\"; todo move <id> done \\\" # x has its semicolon swallowed as part of a fake quoted span, so no operator is reported, and the block passes while the shell runs the inner roast first. The reviewer's one-line judgement is the fix: stop treating shell text as tokenisable by two ad-hoc parsers. This check already REFUSES shapes it cannot order, &&, ||, a pipeline, a semicolon, a continuation, and that is the mechanism that works. Expansion and escape syntax belong in the same list rather than in a parser that gets them subtly wrong.",
+      "why": "A checker that half-parses a language reports a confident answer about text it did not understand, which is worse than refusing, because refusing is visible. Two independent quote parsers guarantee a disagreement exists; the only question is which input finds it. Narrowing what the check accepts turns every one of these into a loud refusal instead of a silent pass.",
+      "severity": "critical",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "There is ONE place that decides what is quoted. Command substitution, backticks and parameter expansion are REFUSED by name, as && and the semicolon already are, with a message saying the order cannot be read rather than guessing. A backslash before a quote is refused too, or handled by the single parser and proved. Both reproducers in this card are named failing cases before the fix and are refused after, each with a mutation that makes the case pass again. The real prompt's lines still resolve.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T02:08:26.742Z"
     }
   ]
 }
