@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 229,
+  "nextId": 231,
   "tasks": [
     {
       "id": "KN-001",
@@ -5072,7 +5072,23 @@
       "parent": [],
       "status": "done",
       "exit": "Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-207-round-1.2026-09-10T08-03-01-341Z.md",
+          "filed": [
+            "KN-229",
+            "KN-230"
+          ],
+          "cardDigest": "e9c6df015a13ea5d31963c9da221c21650b444cdd69a9225e86f137c8e21c7d4",
+          "head": "e7e76eae4058d54dfda0898dc1048975dfcf7595",
+          "reviewerScore": 5,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T08:08:34.797Z"
+        }
+      ],
       "notes": [
         "WIDENED on 2026-09-10. The same rule breach appears in the Tooltip, found by the KN-032 roast: long design and API documentation blocks in Tooltip.tsx and Tooltip.stories.tsx, duplicating what the story-docs markdown already carries. This card covers both components rather than a second card saying the same thing, and it should also decide whether per-prop JSDoc is allowed at all, since react-docgen prints it into the Controls table and that is prose a Docs page prints.",
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
@@ -5560,6 +5576,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T08:01:49.141Z"
+    },
+    {
+      "id": "KN-229",
+      "title": "The Tooltip's Controls table lost its children prop when its JSDoc went",
+      "desc": "CHILD OF KN-207, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-207 roast and confirmed: react-docgen-typescript hides an undocumented children prop by default. KN-207 removed the Tooltip's per-prop JSDoc and set skipChildrenPropWithoutDoc: false in the story-docs guard, but NOT in .storybook/main.ts, which configures the parser Storybook's own Controls table reads. So the published Controls table now shows title and icon and no children, while the story-docs markdown on the same page documents children. A regression KN-207 introduced and nothing caught.",
+      "why": "It is visible to anyone who opens the component's Docs page, and it is the kind of drift KN-207 was meant to remove: two configurations of the same parser disagreeing about what a component's props are. Critical on the owner's order of 2026-09-10, as a finding on a built component, and because the regression is this session's.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Storybook's docgen is configured with the same children rule as the guard, the other defaults it depends on kept; a production Storybook build reports children among the Tooltip's argTypes, checked from the built page rather than the config; and a mutation dropping the option makes that check fail.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T08:08:34.318Z"
+    },
+    {
+      "id": "KN-230",
+      "title": "The callback fn() rule reads only the meta's args, not what each story actually passes",
+      "desc": "CHILD OF KN-207, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-207 roast and confirmed: the story-docs guard requires an fn() in the META args for every on* prop. A story that overrides the callback with a plain function in its own args, or replaces it in a custom render, still passes, and its Actions panel records nothing. It also accepts any local function called fn, not only Storybook's spy.",
+      "why": "The rule's point is that every story's interactions are recorded, and it checks the default rather than what each story resolves to. Medium: nothing does this today, and the meta default covers every current story.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The guard fails for a story whose own args override a callback with anything but Storybook's fn(), and for an fn not imported from storybook/test, proved by a planted story of each kind, while the current stories still pass.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T08:08:34.630Z"
     }
   ]
 }

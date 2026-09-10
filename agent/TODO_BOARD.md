@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 59 of 228 tasks done · 129 of 617 points.
+Project **KarNama** · 59 of 230 tasks done · 129 of 619 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-211` The tooltip accepts triggers it cannot actually attach to** (critical, 2 pt, web)
+**Next up: `KN-229` The Tooltip's Controls table lost its children prop when its JSDoc went** (critical, 1 pt, web)
 
 ## Blocked (3)
 
@@ -18,11 +18,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (164)
+## Backlog (166)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-229` | The Tooltip's Controls table lost its children prop when its JSDoc went | critical | 1 | web | none | Storybook's docgen is configured with the same children rule as the guard, the other defaults it depends on kept; a production Storybook build reports children among the Tooltip's argTypes, checked from the built page rather than the config; and a mutation dropping the option makes that check fail. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-211` | The tooltip accepts triggers it cannot actually attach to | critical | 2 | web | none | A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported. |
@@ -115,6 +116,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-215` | The props and stories value exemption is global, so aria-label="stories" passes | medium | 1 | web | none | aria-label="stories" and title="props" fail npm run lint in a committed fixture, the story-docs parser still recognises both headings, and the ignore array no longer names them. |
 | `KN-216` | The Storybook stories glob drops a story at the root of src, and the docs guard excludes by a different rule | medium | 1 | web | none | A story file directly under src is indexed by Storybook and run by the storybook project, src/gate-fixtures is still excluded from both, and the docs guard derives its list from the same rule Storybook uses rather than a second one, proved by a fixture at the root of src that appears in Storybook's index and in the guard alike. |
 | `KN-228` | The Hover story's canvas branch still keys off Storybook's private preview global | medium | 1 | web | none | The Hover story reads no Storybook or Vitest internal; the published Storybook still renders it as a canvas with no error, checked on a production build; and removing either repository flag makes the story fail in the environment that flag belonged to. |
+| `KN-230` | The callback fn() rule reads only the meta's args, not what each story actually passes | medium | 1 | web | none | The guard fails for a story whose own args override a callback with anything but Storybook's fn(), and for an fn not imported from storybook/test, proved by a planted story of each kind, while the current stories still pass. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -2617,6 +2619,8 @@ CHILD OF KN-013, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering.
 
+**Roasts.** round 1 scored 5 with 0 critical(s)
+
 ### `KN-208` KN-013 claimed five Figma states from five stories that are not the five states
 
 - **status** done · **severity** critical · **points** 1 · **area** web
@@ -2861,4 +2865,26 @@ CHILD OF KN-225, recorded in prose because board.json cannot express parent_task
 **Why.** KN-225 moved the test side onto a signal the repository owns; the canvas side still borrows one. Medium rather than critical because nothing is broken and the failure it guards against would be loud, not silent.
 
 **Exit condition.** The Hover story reads no Storybook or Vitest internal; the published Storybook still renders it as a canvas with no error, checked on a production build; and removing either repository flag makes the story fail in the environment that flag belonged to.
+
+### `KN-229` The Tooltip's Controls table lost its children prop when its JSDoc went
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-207, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-207 roast and confirmed: react-docgen-typescript hides an undocumented children prop by default. KN-207 removed the Tooltip's per-prop JSDoc and set skipChildrenPropWithoutDoc: false in the story-docs guard, but NOT in .storybook/main.ts, which configures the parser Storybook's own Controls table reads. So the published Controls table now shows title and icon and no children, while the story-docs markdown on the same page documents children. A regression KN-207 introduced and nothing caught.
+
+**Why.** It is visible to anyone who opens the component's Docs page, and it is the kind of drift KN-207 was meant to remove: two configurations of the same parser disagreeing about what a component's props are. Critical on the owner's order of 2026-09-10, as a finding on a built component, and because the regression is this session's.
+
+**Exit condition.** Storybook's docgen is configured with the same children rule as the guard, the other defaults it depends on kept; a production Storybook build reports children among the Tooltip's argTypes, checked from the built page rather than the config; and a mutation dropping the option makes that check fail.
+
+### `KN-230` The callback fn() rule reads only the meta's args, not what each story actually passes
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-207, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-207 roast and confirmed: the story-docs guard requires an fn() in the META args for every on* prop. A story that overrides the callback with a plain function in its own args, or replaces it in a custom render, still passes, and its Actions panel records nothing. It also accepts any local function called fn, not only Storybook's spy.
+
+**Why.** The rule's point is that every story's interactions are recorded, and it checks the default rather than what each story resolves to. Medium: nothing does this today, and the meta default covers every current story.
+
+**Exit condition.** The guard fails for a story whose own args override a callback with anything but Storybook's fn(), and for an fn not imported from storybook/test, proved by a planted story of each kind, while the current stories still pass.
 
