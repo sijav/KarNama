@@ -2129,11 +2129,13 @@
       "parent": [
         "KN-002"
       ],
-      "status": "backlog",
+      "status": "blocked",
       "exit": "DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T22:18:31.013Z"
+      "createdAt": "2026-09-07T22:18:31.013Z",
+      "blockedReason": "Waiting on the owner. This card asks for the WORDING of two user-facing Persian strings, which is product voice rather than a build decision, and the owner has said to be asked later about decisions of this kind. The placement half, which screen each string belongs on, can be researched from the capture when the card is unblocked; the wording cannot be invented without becoming the silent decision the open-questions section exists to prevent. Note the pattern: KN-073, KN-077 and KN-196 are all blocked on the owner now, and all three are decisions rather than work.",
+      "updatedAt": "2026-09-10T05:31:39.102Z"
     },
     {
       "id": "KN-078",
@@ -2402,11 +2404,12 @@
       "parent": [
         "KN-003"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "On a machine with no Playwright browsers, a documented single command brings the gate to green, agent/scripts/verify/KN-003.mjs reports the missing browser by name rather than failing opaquely, and the README says what to run.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T23:11:00.628Z"
+      "createdAt": "2026-09-07T23:11:00.628Z",
+      "updatedAt": "2026-09-10T05:31:51.282Z"
     },
     {
       "id": "KN-090",
