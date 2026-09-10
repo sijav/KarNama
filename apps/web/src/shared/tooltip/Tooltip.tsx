@@ -1,5 +1,5 @@
 import { Box, Tooltip as MuiTooltip } from '@mui/material'
-import { useEffect, useRef, type ReactElement, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactElement, type ReactNode } from 'react'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 
 // The tip's width, from node `410:469`, KN-210. The frame is FIXED at 260 with
@@ -30,6 +30,11 @@ export const Tooltip = ({ title, icon, children }: TooltipProps) => {
   // the tip can never open and MUI says nothing, so this says it, KN-211. A
   // child that forwards the ref but drops the other props is MUI's own check.
   const trigger = useRef<Element>(null)
+  // The description, present from the first render, KN-231. MUI links the
+  // tip only while it is OPEN, and it opens about 100ms after focus, so a
+  // screen reader announcing the focused trigger heard no description at
+  // all. A hidden copy is still read when something points at it.
+  const descriptionId = useId()
   useEffect(() => {
     if (trigger.current) return
     console.error(
@@ -38,8 +43,11 @@ export const Tooltip = ({ title, icon, children }: TooltipProps) => {
   }, [])
 
   return (
+  <>
   <MuiTooltip
     ref={trigger}
+    // Spread onto the child after MUI's own open-only link, so it wins.
+    aria-describedby={descriptionId}
     // The "does not trap the pointer" clause, and the sx below is not enough
     // on its own: MUI's tooltip is INTERACTIVE by default and sets
     // `pointer-events: auto` itself so you can hover into it. A story
@@ -97,5 +105,9 @@ export const Tooltip = ({ title, icon, children }: TooltipProps) => {
   >
     {children}
   </MuiTooltip>
+  <Box component="span" id={descriptionId} hidden>
+    {title}
+  </Box>
+  </>
   )
 }

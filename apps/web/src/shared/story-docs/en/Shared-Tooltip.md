@@ -66,6 +66,19 @@ A wrapper that drops everything the tooltip hands it, ref included. The tip
 can never open, and instead of staying silent the component reports why. The
 report is captured by the story, so this page shows a button with no tip.
 
+### DescribedAtFocus
+
+The trigger is described BEFORE the tip opens: with no interaction at all, and
+again the moment it takes keyboard focus. MUI links the tip only while it is
+open, about 100ms after focus, which is after a screen reader has already
+announced the control; the component keeps a hidden copy of the text linked
+from the first render instead.
+
+### DescribedAtFocusInPersian
+
+The same, in Persian, with the trigger's Persian name written out so a
+missing translation cannot pass by comparing the English with itself.
+
 ### OnKeyboardFocus
 
 The clause the card names and the one a hover-only tooltip fails: Tab, with no

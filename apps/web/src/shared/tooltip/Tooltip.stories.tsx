@@ -139,15 +139,18 @@ export const KeepsTheTriggersName: Story = {
   args: { children: <DeleteStatusButton /> },
   // English, so the expected name is one known string.
   globals: { locale: 'en-US' },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     const button = within(canvasElement).getByRole('button')
     await userEvent.tab()
     const tip = await within(document.body).findByRole('tooltip')
     // KN-209. While the tip is OPEN, the button is still called what it is,
     // by its own label: a labelling tooltip replaced that with the tip's text.
     await expect(button).toHaveAccessibleName('Delete status')
-    // And the tip is reachable, as the button's description.
-    await expect(button.getAttribute('aria-describedby')).toBe(tip.id)
+    // And the tip's text is the button's DESCRIPTION. What a screen reader
+    // gets, rather than which element carries it: since KN-231 the link is
+    // to a copy present from the first render, not to MUI's popper.
+    await expect(button).toHaveAccessibleDescription(args.title)
+    await expect(tip).toBeInTheDocument()
     await expect(button).not.toHaveAttribute('aria-labelledby')
   },
 }
@@ -168,6 +171,40 @@ export const ReportsATriggerThatCannotAttach: Story = {
     await waitFor(async () => {
       await expect(console.error).toHaveBeenCalledWith(expect.stringContaining('did not take a ref'))
     })
+  },
+}
+
+// Checks the trigger is DESCRIBED before the tip can have opened, KN-231: first
+// with no interaction at all, when the tip cannot be open and MUI's own link
+// cannot exist, then on keyboard focus, the moment a screen reader announces
+// the control. Returns the trigger so each story can check its name.
+const describedBeforeTheTip = async (canvasElement: HTMLElement, description: string) => {
+  const button = within(canvasElement).getByRole('button')
+  await expect(within(document.body).queryByRole('tooltip')).not.toBeInTheDocument()
+  await expect(button).toHaveAccessibleDescription(description)
+  await userEvent.tab()
+  await expect(button).toHaveFocus()
+  await expect(button).toHaveAccessibleDescription(description)
+  return button
+}
+
+export const DescribedAtFocus: Story = {
+  args: { children: <DeleteStatusButton /> },
+  globals: { locale: 'en-US' },
+  play: async ({ args, canvasElement }) => {
+    const button = await describedBeforeTheTip(canvasElement, args.title)
+    await expect(button).toHaveAccessibleName('Delete status')
+  },
+}
+
+export const DescribedAtFocusInPersian: Story = {
+  args: { children: <DeleteStatusButton /> },
+  globals: { locale: 'fa-IR' },
+  play: async ({ args, canvasElement }) => {
+    const button = await describedBeforeTheTip(canvasElement, args.title)
+    // The Persian name, written out, so a missing translation cannot pass by
+    // comparing the English id with itself.
+    await expect(button).toHaveAccessibleName('حذف وضعیت')
   },
 }
 
