@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 29 of 183 tasks done · 78 of 541 points.
+Project **KarNama** · 29 of 187 tasks done · 78 of 547 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -10,11 +10,17 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-132` Pin the byte-compared generated files to LF, or stop comparing bytes** (high, 1 pt, infra)
 
-## Backlog (153)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-132` | Pin the byte-compared generated files to LF, or stop comparing bytes | high | 1 | infra | none | A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand. |
+
+## Backlog (156)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-184` | The order check reads the whole document, not the fenced block it claims to | critical | 2 | agent | none | The check extracts the fenced code block belonging to the close-and-roast step, by fence rather than by document position, and compares the order of the commands WITHIN it; a document carrying an earlier correctly-ordered example and a reversed real block FAILS; and that document is one of the mutation cases rather than an argument. |
 | `KN-149` | The board cards for the rejected column do not require it to collapse | high | 1 | design | none | The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered. |
 | `KN-152` | Use the current Contacts tab label in the history decision | high | 1 | design | KN-072 | DESIGN.md section 6 and section 3 name the modal tab افراد مرتبط, KN-030 and KN-045 use that label, KN-072.mjs requires it and REJECTS مخاطبین as the modal tab label, and a mutation restoring مخاطبین fails the verifier with its own message. |
 | `KN-153` | Separate the owner-settled own-tab decision from the author-chosen tab ORDER | high | 1 | design | KN-072 | DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message. |
@@ -55,6 +61,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-177` | The global todo skill lets a closed task reopen, so SkipBureau's rule is honour-based | high | 2 | agent | none | The global todo skill refuses every transition out of done, naming the new-card route; re-closing is a no-op rather than an error; the refusal is proved by driving the real CLI against a throwaway database rather than by reading the source; a mutation removing the guard fails that check with its own message; and SkipBureau's board is unaffected apart from gaining the guard. |
 | `KN-178` | The preferences story's localStorage restore races with other stories | high | 2 | web | none | The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler. |
 | `KN-183` | KN-114's verifier can silently overwrite a concurrent catalog edit | high | 2 | web | none | The blank and untranslated rules live in a pure function that takes the catalogs as an argument; catalog.test.ts calls it on the real imported ones; a test drives it with in-memory catalogs containing each evasion, empty, whitespace, format characters only, the id exactly and the id with punctuation and casing changed, and requires each to be reported naming the id; KN-114's verifier no longer writes to any tracked file; and its header no longer needs to warn that an interrupted run leaves the catalog planted. |
+| `KN-185` | Nothing establishes which prompt file the sibling Stop hook actually feeds | high | 2 | agent | none | The Stop-hook registration is traced to the exact prompt pathname it feeds, for both projects, and recorded where the next reader will find it; where a project's hook feeds a file nobody has been maintaining, that is filed; and the claim is supported by the resolved configuration rather than by the prompt's own text. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -125,6 +132,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-179` | no-restricted-globals does not cover stories, so a bare localStorage passed lint | medium | 1 | web | none | no-restricted-globals covers every file that runs in a browser including stories and .storybook, the existing bare uses are corrected, and a planted bare localStorage in a story FAILS npm run lint, proved by planting one rather than by reading the config. |
 | `KN-180` | Verifiers claim to be read-only while their test runs write to node_modules | medium | 1 | agent | none | No verifier claims to be read-only when the commands it spawns write anywhere; those that need a writable tree say so in one line naming what they write; and a verifier that cannot complete reports that it could not RUN a check rather than counting it as a pass or a failure. |
 | `KN-182` | KN-166's verifier makes this repository fail when a sibling project moves | medium | 1 | agent | none | KarNama's verification does not depend on any path outside this repository; a missing sibling is reported as unavailable rather than as a failure; and the rules check for SkipBureau lives in SkipBureau and gates SkipBureau, proved by running both with the sibling renamed. |
+| `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen; the KN-181 plan is moved there and tracked; and a check refuses a plan file in a location the rules forbid rather than relying on the author noticing. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -165,6 +173,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-141` | NO_COLOR makes KN-131's verifier reject a correct compiler refusal | low | 1 | agent | none | The verifier passes with NO_COLOR=1 set, proved by running it that way, and the assertion names the planted file and the TypeScript error code rather than the source excerpt. |
 | `KN-150` | KN-070's open-question check reads lines, not list items | low | 1 | agent | none | A wrapped bullet asking about رد شده makes the verifier fail, proved by planting one. |
 | `KN-176` | KN-162 closed against an exit condition it deliberately did not meet | low | 1 | agent | none | KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail. |
+| `KN-187` | An em dash reached a rule file that forbids em dashes | low | 1 | docs | none | No .md or .mdx in either project contains an em dash; a check enforces it with a Unicode-aware matcher so Persian text produces no false hit; and a planted em dash in a markdown file FAILS that check, proved by planting one. |
 | `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 
@@ -1699,7 +1708,7 @@ apps/web/package.json build is "vite build" and nothing else. Vite transpiles pe
 
 ### `KN-132` Pin the byte-compared generated files to LF, or stop comparing bytes
 
-- **status** backlog · **severity** high · **points** 1 · **area** infra
+- **status** in_progress · **severity** high · **points** 1 · **area** infra
 - **blocked by** none
 
 .gitattributes pins apps/api/schema.gql to LF and the Figma captures to -text, both because they are compared byte for byte. Two files added since are compared the same way and are NOT pinned: packages/graphql/src/generated.ts, which packages/graphql/scripts/check-generated.mjs compares literally against a fresh generation, and packages/graphql/src/operations/health.graphql, which agent/scripts/verify/KN-128.mjs edits by matching the literal string "    environment\n". This machine has core.autocrlf=input so nothing converts on checkout and both work. On a machine with core.autocrlf=true the generated comparison reports the file stale when no schema changed, and the verifier's replacement stops matching. The verifier fails loudly there rather than silently passing, because it guards with "the operation could not be edited, so this check proves nothing", but a false failure on a clean clone is still a broken repository for whoever hits it. Either pin both files, or make the comparison normalise line endings and say so.
@@ -2257,6 +2266,8 @@ Found by the KN-166 roast and confirmed by reading. ../SkipBureau/.claude/ralph-
 
 **Exit condition.** The command block in ../SkipBureau/.claude/ralph-loop.local.md closes before it roasts, matching its own prose; its step 1 says a false done is repaired by filing a card rather than by reopening; and a check covers BOTH that project's rule files rather than CLAUDE.md alone, so a contradiction between them fails rather than passing.
 
+**Roasts.** round 1 scored 3 with 2 critical(s)
+
 ### `KN-182` KN-166's verifier makes this repository fail when a sibling project moves
 
 - **status** backlog · **severity** medium · **points** 1 · **area** agent
@@ -2278,4 +2289,48 @@ Found by the KN-114 roast. agent/scripts/verify/KN-114.mjs snapshots apps/web/sr
 **Why.** This is the same class of defect that destroyed a plan file earlier today: a destructive operation whose safety rests on an assumption nobody checks, here that the file has not changed underneath. It is also unnecessary, because the proof can be made without writing to the repository at all.
 
 **Exit condition.** The blank and untranslated rules live in a pure function that takes the catalogs as an argument; catalog.test.ts calls it on the real imported ones; a test drives it with in-memory catalogs containing each evasion, empty, whitespace, format characters only, the id exactly and the id with punctuation and casing changed, and requires each to be reported naming the id; KN-114's verifier no longer writes to any tracked file; and its header no longer needs to warn that an interrupted run leaves the catalog planted.
+
+### `KN-184` The order check reads the whole document, not the fenced block it claims to
+
+- **status** backlog · **severity** critical · **points** 2 · **area** agent
+- **blocked by** none
+
+Found by the KN-181 roast. agent/scripts/verify/KN-166.mjs claims in its own comment to check the command block rather than the prose, and does not: it takes indexOf of the first todo move <id> done and the first roast.py task anywhere in the whitespace-collapsed document and compares those positions. So an editor who leaves an earlier harmless close-then-roast example anywhere above, and reverses the REAL step 5 fenced block, passes this check. That fails the card's requirement that a contradiction inside the command block fail, and it is worse than a check that never claimed it, because the comment tells the next reader the block is covered.
+
+**Why.** The check exists because prose and a command block disagreed and the block is what gets copied. A check that reads the whole document cannot tell those apart, so it is blind to the exact defect it was written for while asserting the opposite.
+
+**Exit condition.** The check extracts the fenced code block belonging to the close-and-roast step, by fence rather than by document position, and compares the order of the commands WITHIN it; a document carrying an earlier correctly-ordered example and a reversed real block FAILS; and that document is one of the mutation cases rather than an argument.
+
+### `KN-185` Nothing establishes which prompt file the sibling Stop hook actually feeds
+
+- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **blocked by** none
+
+Found by the KN-181 roast, and KN-181's own evidence admits it: that .claude/ralph-loop.local.md is what the hook injects was INFERRED from the file's frontmatter and from the harness bumping its iteration counter, not observed. Those show the file has loop-like state, not that the hook resolves that path. SkipBureau has no checked-in hook registration or settings file naming it, so the only support is the prompt's own self-description. If the hook resolves a different prompt, the live behaviour KN-181 set out to fix is still wrong and the card closed on a premise nobody checked. The observation available without running that loop is tracing the installed Stop-hook registration, the plugin or settings entry, to the pathname it resolves.
+
+**Why.** KN-181 was filed critical because a live loop was following the wrong order. If the file that was fixed is not the file being read, nothing was fixed and the board records a critical as closed. The same question applies to KarNama's own prompt, which KN-171 assumes without checking.
+
+**Exit condition.** The Stop-hook registration is traced to the exact prompt pathname it feeds, for both projects, and recorded where the next reader will find it; where a project's hook feeds a file nobody has been maintaining, that is filed; and the claim is supported by the resolved configuration rather than by the prompt's own text.
+
+### `KN-186` The plan-beside-the-work rule has no answer when the work IS in .claude
+
+- **status** backlog · **severity** medium · **points** 1 · **area** agent
+- **blocked by** none
+
+Found by the KN-181 roast. That card's plan was written to ../SkipBureau/.claude/, because the file it changed lives there and the rule says the plan goes in the folder the work lands in. SkipBureau's own rule also says never .claude/. Both rules are right and they contradict each other exactly when the work is a file in .claude, which is where every loop prompt lives, so this will recur on every card that touches one. The plan additionally sits untracked, so it can vanish in the same checkout or reset the card was careful to protect the real change from, and the plan itself argued for the prohibited location instead of noticing the conflict.
+
+**Why.** A rule pair that contradicts itself on a whole class of work gets resolved differently each time by whoever hits it, and the resolution is invisible afterwards. This one produced a plan in a location its own project forbids, justified in the plan.
+
+**Exit condition.** Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen; the KN-181 plan is moved there and tracked; and a check refuses a plan file in a location the rules forbid rather than relying on the author noticing.
+
+### `KN-187` An em dash reached a rule file that forbids em dashes
+
+- **status** backlog · **severity** low · **points** 1 · **area** docs
+- **blocked by** none
+
+Found by the KN-181 roast. The text added to ../SkipBureau/.claude/ralph-loop.local.md contains an em dash, and both projects' documentation rules say to use commas instead. KarNama's AGENTS.md states it for every .md and .mdx and warns to check with a Unicode-aware matcher rather than a byte-wise grep, which reports false hits inside Persian characters. Nothing enforces it, so it is caught only when a reviewer happens to look, and the markdown written during this session should be swept rather than only this one line.
+
+**Why.** It is a small rule and it is stated twice, which makes an unenforced version of it worse than none: everybody believes it holds. The sweep matters more than the single line, because a session that wrote many markdown files probably introduced more than one.
+
+**Exit condition.** No .md or .mdx in either project contains an em dash; a check enforces it with a Unicode-aware matcher so Persian text produces no false hit; and a planted em dash in a markdown file FAILS that check, proved by planting one.
 

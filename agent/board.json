@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 184,
+  "nextId": 188,
   "tasks": [
     {
       "id": "KN-001",
@@ -3345,11 +3345,12 @@
       "points": 1,
       "area": "infra",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-08T03:06:49.598Z"
+      "createdAt": "2026-09-08T03:06:49.598Z",
+      "updatedAt": "2026-09-10T00:50:19.992Z"
     },
     {
       "id": "KN-133",
@@ -4203,7 +4204,25 @@
       "parent": [],
       "status": "done",
       "exit": "The command block in ../SkipBureau/.claude/ralph-loop.local.md closes before it roasts, matching its own prose; its step 1 says a false done is repaired by filing a card rather than by reopening; and a check covers BOTH that project's rule files rather than CLAUDE.md alone, so a contradiction between them fails rather than passing.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-181-round-1.2026-09-10T00-49-36-968Z.md",
+          "filed": [
+            "KN-184",
+            "KN-185",
+            "KN-186",
+            "KN-187"
+          ],
+          "cardDigest": "8d818cd0313407c474856fee868054beba0c14d15944d467046d26184997ea33",
+          "head": "b096186bbea1d162c162883090f1cba701bea46c",
+          "reviewerScore": 3,
+          "reviewerCriticals": 2,
+          "at": "2026-09-10T00:52:26.964Z"
+        }
+      ],
       "notes": [
         "Verified by the shared SkipBureau rules check rather than a script of its own. Two scripts reading the same two files would drift, which is the defect KN-174 was filed for after exactly that happened to the sandbox builder. KN-182 moves the whole check to SkipBureau."
       ],
@@ -4242,6 +4261,66 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T00:50:02.857Z"
+    },
+    {
+      "id": "KN-184",
+      "title": "The order check reads the whole document, not the fenced block it claims to",
+      "desc": "Found by the KN-181 roast. agent/scripts/verify/KN-166.mjs claims in its own comment to check the command block rather than the prose, and does not: it takes indexOf of the first todo move <id> done and the first roast.py task anywhere in the whitespace-collapsed document and compares those positions. So an editor who leaves an earlier harmless close-then-roast example anywhere above, and reverses the REAL step 5 fenced block, passes this check. That fails the card's requirement that a contradiction inside the command block fail, and it is worse than a check that never claimed it, because the comment tells the next reader the block is covered.",
+      "why": "The check exists because prose and a command block disagreed and the block is what gets copied. A check that reads the whole document cannot tell those apart, so it is blind to the exact defect it was written for while asserting the opposite.",
+      "severity": "critical",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The check extracts the fenced code block belonging to the close-and-roast step, by fence rather than by document position, and compares the order of the commands WITHIN it; a document carrying an earlier correctly-ordered example and a reversed real block FAILS; and that document is one of the mutation cases rather than an argument.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:52:09.116Z"
+    },
+    {
+      "id": "KN-185",
+      "title": "Nothing establishes which prompt file the sibling Stop hook actually feeds",
+      "desc": "Found by the KN-181 roast, and KN-181's own evidence admits it: that .claude/ralph-loop.local.md is what the hook injects was INFERRED from the file's frontmatter and from the harness bumping its iteration counter, not observed. Those show the file has loop-like state, not that the hook resolves that path. SkipBureau has no checked-in hook registration or settings file naming it, so the only support is the prompt's own self-description. If the hook resolves a different prompt, the live behaviour KN-181 set out to fix is still wrong and the card closed on a premise nobody checked. The observation available without running that loop is tracing the installed Stop-hook registration, the plugin or settings entry, to the pathname it resolves.",
+      "why": "KN-181 was filed critical because a live loop was following the wrong order. If the file that was fixed is not the file being read, nothing was fixed and the board records a critical as closed. The same question applies to KarNama's own prompt, which KN-171 assumes without checking.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The Stop-hook registration is traced to the exact prompt pathname it feeds, for both projects, and recorded where the next reader will find it; where a project's hook feeds a file nobody has been maintaining, that is filed; and the claim is supported by the resolved configuration rather than by the prompt's own text.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:52:09.209Z"
+    },
+    {
+      "id": "KN-186",
+      "title": "The plan-beside-the-work rule has no answer when the work IS in .claude",
+      "desc": "Found by the KN-181 roast. That card's plan was written to ../SkipBureau/.claude/, because the file it changed lives there and the rule says the plan goes in the folder the work lands in. SkipBureau's own rule also says never .claude/. Both rules are right and they contradict each other exactly when the work is a file in .claude, which is where every loop prompt lives, so this will recur on every card that touches one. The plan additionally sits untracked, so it can vanish in the same checkout or reset the card was careful to protect the real change from, and the plan itself argued for the prohibited location instead of noticing the conflict.",
+      "why": "A rule pair that contradicts itself on a whole class of work gets resolved differently each time by whoever hits it, and the resolution is invisible afterwards. This one produced a plan in a location its own project forbids, justified in the plan.",
+      "severity": "medium",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen; the KN-181 plan is moved there and tracked; and a check refuses a plan file in a location the rules forbid rather than relying on the author noticing.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:52:26.699Z"
+    },
+    {
+      "id": "KN-187",
+      "title": "An em dash reached a rule file that forbids em dashes",
+      "desc": "Found by the KN-181 roast. The text added to ../SkipBureau/.claude/ralph-loop.local.md contains an em dash, and both projects' documentation rules say to use commas instead. KarNama's AGENTS.md states it for every .md and .mdx and warns to check with a Unicode-aware matcher rather than a byte-wise grep, which reports false hits inside Persian characters. Nothing enforces it, so it is caught only when a reviewer happens to look, and the markdown written during this session should be swept rather than only this one line.",
+      "why": "It is a small rule and it is stated twice, which makes an unenforced version of it worse than none: everybody believes it holds. The sweep matters more than the single line, because a session that wrote many markdown files probably introduced more than one.",
+      "severity": "low",
+      "points": 1,
+      "area": "docs",
+      "parent": [],
+      "status": "backlog",
+      "exit": "No .md or .mdx in either project contains an em dash; a check enforces it with a Unicode-aware matcher so Persian text produces no false hit; and a planted em dash in a markdown file FAILS that check, proved by planting one.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:52:26.787Z"
     }
   ]
 }
