@@ -6970,13 +6970,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "An invalid Input focused inside a host that clips its overflow flush at the field's edges still changes at least a two-pixel perimeter at 3:1, KN-244's measure, either because the change is drawn inside the field's own box or because the Input keeps the room itself; a story renders the field in an overflow hidden host with no padding and asserts, from the rendered geometry, that every pixel of the focus change lies inside every clipping ancestor, and a mutation back to a ring the host clips fails it by name; DESIGN.md's section says which; and the Checkbox's and the Filter Chip's rings are checked for the same, each matching or carrying a card.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T14:40:24.833Z",
-      "updatedAt": "2026-09-10T19:52:00.118Z",
-      "verify": "node agent/scripts/verify/KN-274.mjs"
+      "updatedAt": "2026-09-10T19:54:35.633Z",
+      "verify": "node agent/scripts/verify/KN-274.mjs",
+      "evidence": "Input.tsx draws the focused invalid field's ring as an ::after under '&.Mui-focused', at an inset of RING_INSET 4, the focused edge's two and a gap of two, a border of RING_WIDTH 2 in border/focus, border-box, its radius radius.md less the inset, pointer-events none; the outline is gone, so nothing of the focus change lies outside the field's box. FocusedWhileInvalid renders the field in an overflow hidden host with no padding and asserts from computed geometry that the focus extent, the field's box grown by any outline and outer shadow and the boxes of its pseudo-elements, lies inside the field's box and inside the padding box of every clipping ancestor, the host among them; the ring 2 or more wide, 3:1 or more against the field's own surface, border/focus; the band the edge gains plus the ring's band at least 4W + 4H; the edge 2 in border/error; the text unmoved. node agent/scripts/verify/KN-274.mjs passed: the outline put back fails FocusedWhileInvalid by name on the extent; in a production build at a device pixel ratio of one, focused by keyboard with the caret hidden and Tab's selection collapsed, the 568 by 44 field changes at least 4W + 4H, 2448, at 3:1 inside its box and nothing outside it, in fa-IR and en-US, light in the story's own clipping host and dark through Filled given an error (3516 in dark), the counts printed by the verifier; a second build with the outline back is the positive control, short inside (1180 in dark) and changing pixels outside (2516); the Checkbox changes 0 inside its 20 by 20 box and 230 outside, the Filter Chip 56 inside and 497 outside, so a flush host clips both, and they carry KN-293 and KN-294; DESIGN.md's section says the ring is drawn inside the field's own box, why not the room, the area of 6W + 172 against 4W + 176, and the two cards; KN-244's verifier, retargeted at the inside ring with a mutation per clause, passes and runs KN-241's. Unit project, eslint on the Input and tsc clean. Measured, not looked at. Not established: the other Input verifiers as a batch, which anchor on lines this change kept.",
+      "closedAt": "2026-09-10T19:54:35.633Z"
     },
     {
       "id": "KN-275",

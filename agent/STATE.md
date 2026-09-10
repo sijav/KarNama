@@ -21,7 +21,7 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**99 done, 191 open, 2 blocked, 2 dropped** of 294 (2026-09-10). Coverage 100
+**100 done, 190 open, 2 blocked, 2 dropped** of 294 (2026-09-10). Coverage 100
 percent on all four metrics. **Deployed**: https://sijav.github.io/KarNama/ and
 Storybook at https://sijav.github.io/KarNama/storybook/, both from
 `.github/workflows/pages.yml` on every push. The API needs
@@ -32,8 +32,8 @@ Status Chip (KN-010), Input (KN-011). The live site is a placeholder shell
 until screens start, which is after components.
 
 **Open children**, all critical unless marked. KN-011: KN-206, KN-251 (low),
-KN-255, KN-256 (low), KN-257 (medium), KN-260 (high), KN-268 (low), KN-274 (in
-progress), KN-275, KN-277 (low), KN-278 (low), KN-279, KN-280, KN-282, KN-283,
+KN-255, KN-256 (low), KN-257 (medium), KN-260 (high), KN-268 (low), KN-275,
+KN-277 (low), KN-278 (low), KN-279, KN-280, KN-282, KN-283,
 KN-286, KN-287, KN-289 (low), KN-290, KN-292. KN-013: KN-293. KN-017: KN-294.
 KN-010: KN-240 (low), KN-264 (waits on KN-062). A finding from a child's roast
 sits under the same parent, one level. When a parent's last child closes,
@@ -46,20 +46,20 @@ inset shadow, since Chromium floors border widths to whole CSS pixels), KN-284
 to follow the screens, the message line drawn only when there is a helper or
 an error, KN-287 builds it), KN-288 (disabled takes GrayText under forced
 colours), KN-267 (icon slots), KN-272 (in dark the brand container is a navy
-fill, DARK_FILLS), KN-291 (an icon turned off draws no slot). Every Input on
-the screens keeps its label and turns the helper line off (91 of 91).
+fill, DARK_FILLS), KN-291 (an icon turned off draws no slot), KN-274 (the
+invalid Input's focus ring is an `::after` four in from the edge, since the
+outline outside was lost to any host that clips at the field's edge; KN-244's
+verifier is retargeted at it). Every Input on the screens keeps its label and
+turns the helper line off (91 of 91).
 
-**KN-274, in progress**: the invalid Input's focus ring moved inside the field,
-an `::after` four in from the edge, since the outline outside was lost to any
-host that clips at the field's edge. Built, story and DESIGN.md done, KN-244's
-verifier retargeted at it. Its verifier measures pixels in a production build:
-Tab selects a text field's text, and the highlight must be collapsed before
-counting, or it inflates the count. The Checkbox's and the Filter Chip's rings
-are outlines outside them too: KN-293 and KN-294.
+**Owed after KN-274, not yet done**: its roast, base `50d05f7`, log in the
+scratchpad, with `--summary` and `--ask`; and the Input verifier batch (KN-011,
+KN-241 to KN-267, KN-291), not rerun since the focus rule changed, though the
+line they anchor on was kept.
 
 **The owner paused the loop at 2026-09-10 21:34** with
 `.claude/ralph-loop.paused`, gitignored: the Stop hook does not re-feed while it
-exists. Delete it to resume.
+exists. Delete it to resume. The owner then shut the machine down.
 
 **KN-214 is deliberately held at high**: lingui compiles `ignore` with no flags,
 so `^[^\p{L}]*$` means "contains no p, {, L or }", and every Persian literal and
@@ -132,7 +132,7 @@ screens draw it, KN-285 and KN-287. The job level list and KN-077 still wait.
 
 ## The next step
 
-Close KN-274 when its verifier and the Input verifier batch pass, roast it,
+Roast KN-274 and run the Input verifier batch (both owed, above),
 then by the law: KN-280, KN-282, KN-283, KN-286, KN-287, KN-290, KN-292,
 KN-293, KN-294, then KN-279 (3), KN-275 (3), KN-206, KN-226, KN-255, KN-221,
 and the components KN-019, KN-023, KN-062, KN-008, KN-009, KN-012. The KN-282
