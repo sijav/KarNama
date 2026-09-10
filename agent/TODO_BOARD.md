@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 47 of 208 tasks done · 112 of 585 points.
+Project **KarNama** · 47 of 212 tasks done · 112 of 591 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -17,7 +17,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-196` | Decide how a card is dropped onto a column that is collapsed to a count | high | 1 | design | none | DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker. |
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 
-## Backlog (157)
+## Backlog (161)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -39,6 +39,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-195` | npm run silently truncates every argument at its first newline on Windows | high | 2 | agent | none | Either the scripts refuse an argument containing a newline with a message naming this cause, or the loop stops going through npm for anything carrying prose and RALPH.md and .claude/ralph-loop.local.md are updated to the invocation that works. A check demonstrates the truncation and its absence after the fix, using a free non-mutating command rather than a real roast. The existing board is audited for fields whose text ends mid-sentence, and the audit result is recorded whether or not it finds anything. |
 | `KN-202` | The story-docs markdown contract is documented as rigid but silently accepts malformed files | high | 2 | web | none | parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing. |
 | `KN-203` | The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian | high | 2 | web | none | The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository. |
+| `KN-209` | The tooltip REPLACES an icon-only control's accessible name instead of describing it | high | 2 | web | none | The tooltip DESCRIBES rather than labels: a trigger with its own aria-label keeps that name, and the tip is reachable through aria-describedby. A story asserts the computed accessible name of an icon-only trigger while the tip is open, and a mutation removing describeChild makes it fail. The case where the trigger has NO name of its own is decided deliberately and written down, because describing something unnamed leaves it unnamed. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -108,6 +109,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-182` | KN-166's verifier makes this repository fail when a sibling project moves | medium | 1 | agent | none | KarNama's verification does not depend on any path outside this repository; a missing sibling is reported as unavailable rather than as a failure; and the rules check for SkipBureau lives in SkipBureau and gates SkipBureau, proved by running both with the sibling renamed. |
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-208` | KN-013 claimed five Figma states from five stories that are not the five states | medium | 1 | web | none | Every Figma state named on the card has a story, hover included, and hover is exercised with a real pointer rather than a dispatched event, since hover cannot be dispatched. KN-013.mjs checks the states by NAME against the card rather than counting stories, so adding a sixth story or renaming one cannot silently satisfy it. A mutation deleting the hover story fails it. |
+| `KN-210` | The tooltip's drawn width is neither implemented nor checkable | medium | 1 | web | none | Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed. |
+| `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | medium | 1 | web | none | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -125,6 +128,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-148` | The mutation harnesses re-run the whole suite once per regression | medium | 2 | agent | none | A verify that plants N regressions runs one full suite plus N filtered runs, and completes in under five minutes for KN-123, with every regression still caught, proved by running the harness before and after and comparing both the time and the caught count. |
 | `KN-175` | Verifiers that need a scratch directory cannot run in the read-only review sandbox | medium | 2 | agent | none | The repository states, in AGENTS.md or RALPH.md, whether a verifier may require a writable scratch directory; verifiers that do are either made runnable in the review environment or carry a machine-readable marker saying they cannot be, and the roast prompt tells the reviewer which; and no future roast can raise this as a novel finding. |
 | `KN-207` | The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback | medium | 2 | web | none | Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering. |
+| `KN-211` | The tooltip accepts triggers it cannot actually attach to | medium | 2 | web | none | A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -607,6 +611,8 @@ The tooltip at Figma node 410:469.
 **Why.** Icon-only controls need a visible label on hover as well as an accessible one. It is small and nothing else blocks on it, which is why it sits at the end of the component queue.
 
 **Exit condition.** It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer.
+
+**Roasts.** round 1 scored 4.2 with 0 critical(s)
 
 ### `KN-033` API scaffold: NestJS, GraphQL code first, and its quality gate
 
@@ -2599,4 +2605,48 @@ CHILD OF KN-013, recorded in prose because board.json cannot express parent_task
 **Why.** A verifier whose passing message implies more than it checked is worse than a missing check, because it stops anyone looking. Hover is also the one state that cannot be asserted from a story that never hovers, so it stays unproven by default unless something forces it.
 
 **Exit condition.** Every Figma state named on the card has a story, hover included, and hover is exercised with a real pointer rather than a dispatched event, since hover cannot be dispatched. KN-013.mjs checks the states by NAME against the card rather than counting stories, so adding a sixth story or renaming one cannot silently satisfy it. A mutation deleting the hover story fails it.
+
+### `KN-209` The tooltip REPLACES an icon-only control's accessible name instead of describing it
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast and REPRODUCED in a browser, and it is worse than the finding said. I put aria-label='Delete this status' on the trigger, focused it, and read the attributes back: MUI had added aria-labelledby pointing at the tooltip. ARIA precedence puts aria-labelledby ABOVE aria-label, so the button's accessible name becomes the tooltip text and its own label is discarded entirely. That is MUI's documented default: a tooltip LABELS its child unless describeChild is set, in which case it DESCRIBES it through aria-describedby. For an icon-only control, which the card says is the whole reason this component exists, labelling is exactly wrong: the button stops being 'Delete this status' and becomes a paragraph about moving jobs to another column. The fix is describeChild on the MUI Tooltip. What is missing is not only the prop but the test: not one of the six checks looks at the accessible name, so the component's central accessibility claim is unasserted.
+
+**Why.** This component exists so icon-only controls have a visible label as well as an accessible one, and as shipped it takes the accessible one away. A screen reader user tabbing to a delete button is told a sentence about columns rather than that it deletes. It is also silent: nothing visual changes, and the tooltip looks perfect.
+
+**Exit condition.** The tooltip DESCRIBES rather than labels: a trigger with its own aria-label keeps that name, and the tip is reachable through aria-describedby. A story asserts the computed accessible name of an icon-only trigger while the tip is open, and a mutation removing describeChild makes it fail. The case where the trigger has NO name of its own is decided deliberately and written down, because describing something unnamed leaves it unnamed.
+
+### `KN-210` The tooltip's drawn width is neither implemented nor checkable
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast, and I had flagged it against myself when sending that roast. Figma node 410:469 is 292 wide. Nothing in the component sets a width or maxWidth, so wrapping comes from MUI's 300px default. For the one string in the frame the two are close enough to look identical, which is why it passed a visual check; for a longer title they wrap differently. The honest uncertainty is whether 292 is a SET width or just the natural wrap of that particular sentence. get_variable_defs returns no width variable for the node, so it cannot be settled from the variables alone and needs the frame's own layout properties. Until that is known, the component has an unstated dependency on a third-party default, and the evidence for KN-032 said the width was the one dimension not taken from a token without resolving it.
+
+**Why.** A dimension that comes from a library default rather than from the design is invisible until the library changes it or a longer string wraps somewhere the file does not. It is also the exact shape of thing 'match the design exactly' exists to catch, and this one was noticed and then left.
+
+**Exit condition.** Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed.
+
+### `KN-211` The tooltip accepts triggers it cannot actually attach to
+
+- **status** backlog · **severity** medium · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast. children is typed ReactElement, which admits a Fragment and admits any component that does not forward the props and ref MUI injects. MUI attaches its hover and focus listeners by cloning the child, so for those triggers the tooltip silently never opens. Every story uses a native button, so all six checks pass while the case an icon-only wrapper component hits is untested. That matters immediately: KN-014 builds the Icon button, and it is the trigger this component is for.
+
+**Why.** A component that fails silently for a whole class of valid-looking input is worse than one that refuses: the caller gets no error, no warning, and a tooltip that simply never appears, which reads as their own mistake. The first real caller will be an icon button wrapper, which is precisely the shape at risk.
+
+**Exit condition.** A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported.
+
+### `KN-212` The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast. Both the tip text and the trigger label are Persian literals in the story args, so switching the Storybook Language toolbar to English changes nothing on screen. AGENTS.md section 5 requires every change to be seen in fa-IR and en-US, light and dark, and for this component two of those four are the same picture. The tip text is legitimately caller-provided and NOT a catalog message, so the fix is not to translate the component; it is that the STORY should pass something that changes with the locale, the way the FilterChip stories do. The lint rule does not catch it because the stories block exempts title, which is what the tooltip prop is called.
+
+**Why.** The four-combination rule exists because English strings are longer and the direction flips, and a tooltip is a box sized by its text: it is one of the components most likely to break on a longer string. A story that shows the same Persian in both languages cannot show that.
+
+**Exit condition.** At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through.
 

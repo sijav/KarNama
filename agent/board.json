@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 209,
+  "nextId": 213,
   "tasks": [
     {
       "id": "KN-001",
@@ -1003,7 +1003,26 @@
       ],
       "status": "done",
       "exit": "It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4.2,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-032-round-1.2026-09-10T05-26-01-500Z.md",
+          "filed": [
+            "KN-209",
+            "KN-210",
+            "KN-211",
+            "KN-212"
+          ],
+          "cardDigest": "e88cc7651fec5f3e4fa89d7ebf57d5e02f81fb9e02a2a050118f3793b5901e6d",
+          "head": "1823dd8c5c0ea83ec6841d650ba91f478468c0e9",
+          "reviewerScore": 4.2,
+          "reviewerCriticals": 0,
+          "dismissed": "Nothing rejected. The headline finding was REPRODUCED and is worse than stated: putting aria-label on the trigger and focusing it shows MUI adding aria-labelledby pointing at the tooltip, and ARIA precedence puts labelledby above label, so the button loses its own name entirely rather than merely having it changed. Filed as KN-209 at high. The width finding I had already flagged against myself when sending this roast, and it stands: nothing sets a width, so wrapping comes from a MUI default. KN-210. The trigger-API finding is real and lands soon, because KN-014 builds the Icon button and that is exactly the wrapper shape that would silently fail. KN-211. The language finding is real and I would not have caught it: both the tip text and the trigger label are Persian literals, so two of the four required combinations are the same picture, and the lint exemption for title is what let it through. KN-212. The prose-in-tsx minor was folded into KN-207 rather than duplicated, since that card already carries the identical breach for the Checkbox; it is now widened to both and to the question of whether per-prop JSDoc is allowed at all. The reviewer correctly labelled its inability to run the verifier as a sandbox limitation rather than a finding, which it is. Score 4.2 accepted as recorded. The component matches Figma on every measured value and the pointer clause was genuinely proved, and it also shipped an accessibility defect in the one scenario the card says it exists for.",
+          "at": "2026-09-10T05:31:04.793Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
       "updatedAt": "2026-09-10T05:25:35.162Z",
@@ -4925,8 +4944,11 @@
       "status": "backlog",
       "exit": "Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T04:52:10.882Z"
+      "notes": [
+        "WIDENED on 2026-09-10. The same rule breach appears in the Tooltip, found by the KN-032 roast: long design and API documentation blocks in Tooltip.tsx and Tooltip.stories.tsx, duplicating what the story-docs markdown already carries. This card covers both components rather than a second card saying the same thing, and it should also decide whether per-prop JSDoc is allowed at all, since react-docgen prints it into the Controls table and that is prose a Docs page prints."
+      ],
+      "createdAt": "2026-09-10T04:52:10.882Z",
+      "updatedAt": "2026-09-10T05:30:46.771Z"
     },
     {
       "id": "KN-208",
@@ -4942,6 +4964,66 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T04:52:11.159Z"
+    },
+    {
+      "id": "KN-209",
+      "title": "The tooltip REPLACES an icon-only control's accessible name instead of describing it",
+      "desc": "CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast and REPRODUCED in a browser, and it is worse than the finding said. I put aria-label='Delete this status' on the trigger, focused it, and read the attributes back: MUI had added aria-labelledby pointing at the tooltip. ARIA precedence puts aria-labelledby ABOVE aria-label, so the button's accessible name becomes the tooltip text and its own label is discarded entirely. That is MUI's documented default: a tooltip LABELS its child unless describeChild is set, in which case it DESCRIBES it through aria-describedby. For an icon-only control, which the card says is the whole reason this component exists, labelling is exactly wrong: the button stops being 'Delete this status' and becomes a paragraph about moving jobs to another column. The fix is describeChild on the MUI Tooltip. What is missing is not only the prop but the test: not one of the six checks looks at the accessible name, so the component's central accessibility claim is unasserted.",
+      "why": "This component exists so icon-only controls have a visible label as well as an accessible one, and as shipped it takes the accessible one away. A screen reader user tabbing to a delete button is told a sentence about columns rather than that it deletes. It is also silent: nothing visual changes, and the tooltip looks perfect.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The tooltip DESCRIBES rather than labels: a trigger with its own aria-label keeps that name, and the tip is reachable through aria-describedby. A story asserts the computed accessible name of an icon-only trigger while the tip is open, and a mutation removing describeChild makes it fail. The case where the trigger has NO name of its own is decided deliberately and written down, because describing something unnamed leaves it unnamed.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T05:30:45.846Z"
+    },
+    {
+      "id": "KN-210",
+      "title": "The tooltip's drawn width is neither implemented nor checkable",
+      "desc": "CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast, and I had flagged it against myself when sending that roast. Figma node 410:469 is 292 wide. Nothing in the component sets a width or maxWidth, so wrapping comes from MUI's 300px default. For the one string in the frame the two are close enough to look identical, which is why it passed a visual check; for a longer title they wrap differently. The honest uncertainty is whether 292 is a SET width or just the natural wrap of that particular sentence. get_variable_defs returns no width variable for the node, so it cannot be settled from the variables alone and needs the frame's own layout properties. Until that is known, the component has an unstated dependency on a third-party default, and the evidence for KN-032 said the width was the one dimension not taken from a token without resolving it.",
+      "why": "A dimension that comes from a library default rather than from the design is invisible until the library changes it or a longer string wraps somewhere the file does not. It is also the exact shape of thing 'match the design exactly' exists to catch, and this one was noticed and then left.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T05:30:46.111Z"
+    },
+    {
+      "id": "KN-211",
+      "title": "The tooltip accepts triggers it cannot actually attach to",
+      "desc": "CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast. children is typed ReactElement, which admits a Fragment and admits any component that does not forward the props and ref MUI injects. MUI attaches its hover and focus listeners by cloning the child, so for those triggers the tooltip silently never opens. Every story uses a native button, so all six checks pass while the case an icon-only wrapper component hits is untested. That matters immediately: KN-014 builds the Icon button, and it is the trigger this component is for.",
+      "why": "A component that fails silently for a whole class of valid-looking input is worse than one that refuses: the caller gets no error, no warning, and a tooltip that simply never appears, which reads as their own mistake. The first real caller will be an icon button wrapper, which is precisely the shape at risk.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T05:30:46.379Z"
+    },
+    {
+      "id": "KN-212",
+      "title": "The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked",
+      "desc": "CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast. Both the tip text and the trigger label are Persian literals in the story args, so switching the Storybook Language toolbar to English changes nothing on screen. AGENTS.md section 5 requires every change to be seen in fa-IR and en-US, light and dark, and for this component two of those four are the same picture. The tip text is legitimately caller-provided and NOT a catalog message, so the fix is not to translate the component; it is that the STORY should pass something that changes with the locale, the way the FilterChip stories do. The lint rule does not catch it because the stories block exempts title, which is what the tooltip prop is called.",
+      "why": "The four-combination rule exists because English strings are longer and the direction flips, and a tooltip is a box sized by its text: it is one of the components most likely to break on a longer string. A story that shows the same Persian in both languages cannot show that.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T05:30:46.654Z"
     }
   ]
 }
