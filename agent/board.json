@@ -5397,13 +5397,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The tooltip surface sets its own box-sizing, and a story rendering it WITHOUT CssBaseline measures 260; the width story finds the surface by a marker the component puts on the tooltip slot itself rather than by DOM position; and a mutation removing the box-sizing fails the no-reset story.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T07:05:35.614Z",
-      "updatedAt": "2026-09-10T07:44:04.571Z",
-      "verify": "node agent/scripts/verify/KN-222.mjs"
+      "updatedAt": "2026-09-10T07:44:23.404Z",
+      "verify": "node agent/scripts/verify/KN-222.mjs",
+      "evidence": "Tooltip.tsx sets boxSizing border-box on the tooltip slot and puts className TOOLTIP_SURFACE ('KarnamaTooltip-surface') on it; the stories find the surface with querySelector on that class, never firstElementChild. New story WithoutCssBaseline sets html AND body to content-box inline (the app's CssBaseline puts border-box on html, Storybook's preview CSS puts it on body for a padded story, and CssBaseline's * rule makes everything inherit), asserts the popper, the tip's own container, computes content-box, then asserts the surface's offsetWidth is 260; cleanup restores both. Documented in en and fa story-docs. agent/scripts/verify/KN-222.mjs, 5 checks green: stories pass with the no-reset story; THE CASE, removing the component's box-sizing fails exactly that story with \"expected 284 to be 260\" while the other five pass; the story undoes html and body and checks the popper; the surface is found by class; MUTATION removing the marker fails the stories. Also green: KN-210, KN-218, KN-032 (tooltip), KN-087, KN-094, KN-095, KN-003 full gate (the lint config gained the TOOLTIP_SURFACE named exemption), lint, tsc, docs guard 49 of 49, tooltip stories 6 of 6. Production Storybook build probed in headless Chromium: without-css-baseline and on-hover render with zero page or console errors. That probe is what found the first version wrong: undoing only html passed under Vitest and failed in the built Storybook because the preview's body rule still handed the tip border-box.",
+      "closedAt": "2026-09-10T07:44:23.404Z"
     },
     {
       "id": "KN-223",
