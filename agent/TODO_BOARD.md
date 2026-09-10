@@ -10,17 +10,22 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-013` Checkbox, 5 states** (high, 2 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
+
 ## Blocked (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-196` | Decide how a card is dropped onto a column that is collapsed to a count | high | 1 | design | none | DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker. |
 
-## Backlog (159)
+## Backlog (158)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
@@ -384,7 +389,7 @@ Select with Default, Filled, Focus, Disabled and Open from node 183:26, Option R
 
 ### `KN-013` Checkbox, 5 states
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** in_progress · **severity** high · **points** 2 · **area** web
 - **blocked by** KN-005, KN-006, KN-007
 
 Unchecked, Checked, Indeterminate, Hover and Disabled from Figma node 204:11, at 20 by 20.

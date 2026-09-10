@@ -561,12 +561,13 @@
         "KN-006",
         "KN-007"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:56:13.758Z"
+      "updatedAt": "2026-09-10T03:56:08.779Z",
+      "verify": "node agent/scripts/verify/KN-013.mjs"
     },
     {
       "id": "KN-014",
