@@ -113,6 +113,19 @@ for (const [style, node, first, second] of elevation) {
     if (!row.includes(part)) problems.push(`${style} is missing "${part}": ${row.trim()}`)
   }
 }
+// The tooltip's shadow, KN-218: a third row that is NOT an effect style. It is
+// bound to no style on node 410:469, so it cannot be looked up by a style name;
+// the row is found by its node and must say it is not a style, or the table
+// would contradict "exactly two effect styles" two lines above it.
+{
+  const row = rows.find((line) => line.includes('`410:469`') && line.includes('#0000003D'))
+  if (!row) problems.push('the tooltip shadow from 410:469 appears in no elevation row')
+  else {
+    for (const part of ['#0000003D', '0 6', 'blur 18', 'spread -2', 'no style']) {
+      if (!row.includes(part)) problems.push(`the tooltip shadow row is missing "${part}": ${row.trim()}`)
+    }
+  }
+}
 // And the false claim must not come back. It survived one whole task. Same
 // exemption as Body/Small above: the paragraph that records the correction has
 // to be allowed to quote the thing it is correcting, or the document cannot
@@ -152,7 +165,7 @@ for (const [name, node, hex] of offBoard) {
   if (!row.toLowerCase().includes(hex)) problems.push(`${name} should be ${hex}: ${row.trim()}`)
 }
 
-const documentedExtras = ['#ef4444', '#d43030', '#b91c1c', '#bfdbfe', '#1e40af', '#e5e7eb', '#0000000f', '#0000000a', '#0000001f', '#00000014', '#000000']
+const documentedExtras = ['#ef4444', '#d43030', '#b91c1c', '#bfdbfe', '#1e40af', '#e5e7eb', '#0000000f', '#0000000a', '#0000001f', '#00000014', '#0000003d', '#000000']
 const known = new Set([...Object.values(semantic), ...Object.values(status).flat(), ...documentedExtras])
 for (const hex of new Set((doc.match(/#[0-9a-fA-F]{6,8}/g) ?? []).map((h) => h.toLowerCase()))) {
   if (!known.has(hex)) problems.push(`${hex} appears in the document but is not a Figma token or a documented extra`)

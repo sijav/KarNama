@@ -131,6 +131,15 @@ shadows, and each value below was read from the named node with
 | ----------------- | --------- | ------------------------------- | ------------------------------- |
 | `Elevation/Card`  | `137:44`  | `#0000000F` `0 1` blur 3 spread 0  | `#0000000A` `0 1` blur 2 spread 0  |
 | `Elevation/Modal` | `210:276` | `#0000001F` `0 8` blur 24 spread -4 | `#00000014` `0 2` blur 6 spread -2 |
+| no style, tooltip | `410:469` | `#0000003D` `0 6` blur 18 spread -2 | none                            |
+
+The third row is **not an effect style**. The tooltip at `410:469` draws its own
+shadow, 24 percent black, read from the frame's `get_design_context` because
+`get_variable_defs` binds no style to it, so the two-style rule above still
+holds. It is in the token set as `elevation.tooltip`,
+named for the one surface that uses it, because a component may not state a
+shadow of its own. The thirteen-frame sweep below did not include `410:469`,
+which is how it was missed until KN-218 read the frame itself.
 
 An earlier version of this document said Card was the only elevation in the
 file. That was false, not merely incomplete, and it survived because the

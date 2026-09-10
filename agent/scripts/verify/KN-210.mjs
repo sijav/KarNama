@@ -95,7 +95,10 @@ check("the story pins the DESIGN's number, not the component's constant", () => 
 
 check('DESIGN.md records the answer where a reader will find it', () => {
   const design = readFileSync(join(ROOT, 'DESIGN.md'), 'utf8')
-  const row = design.split('\n').find((line) => line.includes('`410:469`'))
+  // The COMPONENT table's row, found by its name. The first version took the
+  // first line naming 410:469, and KN-218 added an elevation row for the same
+  // node higher up the document, which it then read instead.
+  const row = design.split('\n').find((line) => /^\| Tooltip\s+\|/.test(line) && line.includes('`410:469`'))
   if (!row) return 'the Tooltip row is gone from the component table'
   return /FIXED 260/.test(row) ? null : `the Tooltip row does not say the frame is a fixed 260: ${row}`
 })

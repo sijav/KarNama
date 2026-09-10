@@ -66,7 +66,11 @@ export const Tooltip = ({ title, icon, children }: TooltipProps) => (
           // cannot narrow it if its default ever drops below 260.
           width: TIP_WIDTH,
           maxWidth: TIP_WIDTH,
-          padding: `${spacing.sm}px`,
+          // 8 above and below, 12 at the sides: the frame is py spacing-xs and
+          // px spacing-sm. It was 12 all round, which is a real token and so
+          // passed a check that the right tokens were referenced. KN-218.
+          padding: `${spacing.xs}px ${spacing.sm}px`,
+          boxShadow: theme.karnama.elevation.tooltip,
           fontSize: `${typeScale.body.size}px`,
           lineHeight: `${typeScale.body.lineHeight}px`,
           fontWeight: typeScale.body.weight,

@@ -1,8 +1,22 @@
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { elevation } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Tooltip } from './Tooltip'
+
+/**
+ * A shadow token as the browser computes it, so it can be compared with a
+ * computed box-shadow. Borrowed on a scratch copy of the element's own inline
+ * style and put back in the same tick, so nothing is painted with it.
+ */
+const computedShadow = (host: HTMLElement, shadow: string) => {
+  const previous = host.style.boxShadow
+  host.style.boxShadow = shadow
+  const value = getComputedStyle(host).boxShadow
+  host.style.boxShadow = previous
+  return value
+}
 
 /**
  * A stand-in for the real thing. KN-008 builds the icon set; until it lands, a
@@ -46,6 +60,16 @@ export const OnHover: Story = {
     const surface = within(document.body).getByRole('tooltip').firstElementChild
     if (!(surface instanceof HTMLElement)) throw new Error('the tooltip has no drawn surface')
     await expect(surface.offsetWidth).toBe(260)
+
+    // KN-218. The frame is py 8 and px 12, read from its design context. The
+    // numbers are parsed rather than compared as pixel strings, which the
+    // no-literals rule refuses outside src/theme.
+    const style = getComputedStyle(surface)
+    const padding = [style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft].map(Number.parseFloat)
+    await expect(padding).toEqual([8, 12, 8, 12])
+    // And the frame's shadow, which is bound to no effect style. Both sides are
+    // normalised by the browser, so the token's hex and the computed rgba agree.
+    await expect(style.boxShadow).toBe(computedShadow(surface, elevation.tooltip))
   },
 }
 

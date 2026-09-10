@@ -30,8 +30,10 @@ import tseslint from 'typescript-eslint'
 const structuralProps =
   'id|key|data-testid|className|variant|color|component|role|dir|lang|type|name|sx|to|href|icon|provider|family|direction|locale' +
   // CSS values are not user-facing text and the rule cannot tell the
-  // difference, so the properties that hold them are named.
-  '|boxShadow|fontFamily|lineHeight|letterSpacing|fontSize|card|modal' +
+  // difference, so the properties that hold them are named. `card` and `modal`
+  // used to be here for the elevation tokens; tokens.ts is exempt as a file now,
+  // see the lingui block, so the names are not.
+  '|boxShadow|fontFamily|lineHeight|letterSpacing|fontSize' +
   // A localStorage key is an identifier the browser stores things under, not
   // text anyone reads. Named, not pattern-matched, so one key does not exempt
   // every dotted string in the codebase.
@@ -179,8 +181,15 @@ export default defineConfig(
     // rendered output, so its literals are the expected values. Excluding them
     // is not a softening: including them would force `t` around data and around
     // assertions, which teaches people to reach for the escape hatch.
+    //
+    // `src/theme/tokens.ts` is out for the same reason as a catalog: it is the
+    // transcription of the Figma variables, every literal in it is a design
+    // value, and none of it is copy. It used to be let through by exempting the
+    // property NAMES `card` and `modal`, which exempted any `card` or `modal`
+    // prop anywhere; a third shadow, KN-218, would have needed `tooltip`, and a
+    // `tooltip` prop is copy. So the file is exempt by WHERE it is instead.
     files: ['src/**/*.{ts,tsx}'],
-    ignores: ['src/i18n/locales/**', 'src/**/*.test.{ts,tsx}'],
+    ignores: ['src/i18n/locales/**', 'src/**/*.test.{ts,tsx}', 'src/theme/tokens.ts'],
     plugins: { lingui },
     rules: {
       'lingui/no-unlocalized-strings': ['error', linguiOptions],

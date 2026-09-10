@@ -28,10 +28,11 @@ describe('the theme is generated from the tokens', () => {
     expect(buildTheme('ltr').direction).toBe('ltr')
   })
 
-  it('exposes the status pairs and both elevations to components', () => {
+  it('exposes the status pairs and every elevation to components', () => {
     const theme = buildTheme('rtl')
     expect(Object.keys(theme.karnama.status)).toHaveLength(9)
-    expect(Object.keys(theme.karnama.elevation)).toEqual(['card', 'modal'])
+    // The two effect styles and the tooltip's unnamed shadow, KN-218.
+    expect(Object.keys(theme.karnama.elevation)).toEqual(['card', 'modal', 'tooltip'])
   })
 })
 

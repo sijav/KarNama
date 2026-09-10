@@ -69,10 +69,16 @@ export const type = {
   label: { size: 12, lineHeight: 16, weight: 500, letterSpacing: 0.2 },
 } as const
 
-/** The two effect styles. A card sits on the page, a modal sits above everything. */
+/**
+ * The two effect styles, and one shadow that is not a style. A card sits on the
+ * page, a modal sits above everything. The tooltip at `410:469` draws its own
+ * unnamed shadow, bound to no effect style, so it is named here for the one
+ * surface that uses it. KN-218.
+ */
 export const elevation = {
   card: '0 1px 3px 0 #0000000F, 0 1px 2px 0 #0000000A',
   modal: '0 8px 24px -4px #0000001F, 0 2px 6px -2px #00000014',
+  tooltip: '0 6px 18px -2px #0000003D',
 } as const
 
 export const fontFamily = "'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif"

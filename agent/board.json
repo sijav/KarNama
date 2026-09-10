@@ -5294,11 +5294,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A story measures the open tip's computed padding as 8 top and bottom and 12 at each side, and its computed box-shadow as the value read from node 410:469; that value lives in the token set beside Card and Modal and is recorded in DESIGN.md's elevation table with the node it was read from; and a mutation restoring padding 12 on all sides fails the story.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T06:56:21.840Z"
+      "createdAt": "2026-09-10T06:56:21.840Z",
+      "updatedAt": "2026-09-10T07:17:34.703Z",
+      "verify": "node agent/scripts/verify/KN-218.mjs"
     },
     {
       "id": "KN-219",
