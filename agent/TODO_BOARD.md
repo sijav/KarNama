@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 80 of 260 tasks done · 159 of 662 points.
+Project **KarNama** · 80 of 262 tasks done · 159 of 664 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-238` A long renamed status name pushes the Status Chip out of its column** (critical, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-238` | A long renamed status name pushes the Status Chip out of its column | critical | 2 | web | none | A status name longer than its container is truncated with an ellipsis inside the chip, which never grows past its container; the full name stays readable by a screen reader; a story renders a long name inside a 276px container and asserts nothing overflows; and DESIGN.md records the decision. |
 
 ## Blocked (3)
 
@@ -18,15 +24,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (175)
+## Backlog (176)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-261` | An Input error of only combining marks or blank symbols still turns the field red | critical | 1 | web | none | An error made only of whitespace, format characters, combining marks, variation selectors and the blank symbols named here is no error, while a real message containing any of them is still shown; the blank rule is defined once and tested at its boundaries, including each of those characters alone and each inside a real Persian message; and the comment says exactly what the rule covers. |
+| `KN-262` | FromArgs copies the Input's blank-error rule instead of sharing it | critical | 1 | web | none | The blank rule lives in one module that the Input and its stories both import, with no second copy of the pattern anywhere under src; a unit test covers the rule's boundaries; and a mutation that widens the rule in that module changes what FromArgs expects without editing the story. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
-| `KN-238` | A long renamed status name pushes the Status Chip out of its column | critical | 2 | web | none | A status name longer than its container is truncated with an ellipsis inside the chip, which never grows past its container; the full name stays readable by a screen reader; a story renders a long name inside a 276px container and asserts nothing overflows; and DESIGN.md records the decision. |
 | `KN-244` | A focused invalid Input shows focus by one pixel of the same red | critical | 2 | web | none | A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name. |
 | `KN-245` | The Input's Controls show empty values while the canvas draws the specimen's copy | critical | 2 | web | none | With no control touched, every Controls value in the args-driven Input stories is what the canvas draws, label, placeholder and helper, in either language; changing one in Controls changes the canvas to exactly that value, and clearing the placeholder or helper removes it; a story asserts the rendered copy equals the args, and a mutation reintroducing a hidden fallback fails it. |
 | `KN-253` | The Input's value binding loses keystrokes that arrive faster than Storybook's channel | critical | 2 | web | none | The field shows every edit as it happens and the arg follows without a stale value overwriting newer input: 20 keys typed with no delay all arrive in both the field and the arg, and a composition driven through the browser's own IME input ends with the composed text in both; a mutation back to the plain round trip loses keys again. |
@@ -3015,7 +3022,7 @@ CHILD OF KN-235, recorded in prose because board.json cannot express parent_task
 
 ### `KN-238` A long renamed status name pushes the Status Chip out of its column
 
-- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-010 roast and confirmed: the chip is an inline-flex span with white-space nowrap and no maximum width, and the API puts no length bound on Status.name. A user who renames a status to a long name gets a chip wider than the 276px column header or the card it sits in, and the row overflows. The design shows only short names, so the behaviour for a long one is not drawn: truncating with an ellipsis inside the chip, the full name staying in the DOM for assistive technology, is the conventional answer and should be recorded in DESIGN.md as a decision.
@@ -3279,6 +3286,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** An error made only of whitespace and Unicode format characters is no error, while a message that merely contains them is still shown; BlankErrorIsNoError also renders an error of only a zero-width non-joiner and only a right-to-left mark and asserts they are no error, and a story with a real Persian message containing a ZWNJ still shows it; a mutation back to trim() fails the story by name.
 
+**Roasts.** round 1 scored 8.3 with 0 critical(s)
+
 ### `KN-260` Stories inherit the real pointer where the last hover story left it
 
 - **status** backlog · **severity** high · **points** 1 · **area** web
@@ -3289,4 +3298,26 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** A resting-state assertion that depends on where an earlier story left the mouse is a flaky test waiting for a layout change, and one already failed a full run. High rather than critical: it breaks the suite, not a component.
 
 **Exit condition.** Every story starts with the test runner's pointer somewhere that hovers nothing, set once for the whole suite rather than per story; BlankErrorIsNoError drops its pointer-events workaround and TECH-DEBT 15 is deleted; and a check runs a story that leaves the pointer on a field followed by one asserting a resting border in the same spot, which fails without the reset.
+
+### `KN-261` An Input error of only combining marks or blank symbols still turns the field red
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-259 roast and confirmed from the pattern: BLANK in Input.tsx is whitespace plus the format characters, \p{Cf}, and several characters that show a person nothing are outside that class. A combining mark on its own, such as U+034F the combining grapheme joiner, a variation selector such as U+FE0F, the Hangul filler U+3164 and the braille blank U+2800 each still make an error, so the field turns red and invalid with nothing to read. The comment above BLANK claims 'what a person cannot see', which is wider than the pattern. No form is likely to send one, which is why this is small.
+
+**Why.** The claim in the code and the behaviour should agree, and an invisible message is the exact state KN-254 and KN-259 set out to remove. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** An error made only of whitespace, format characters, combining marks, variation selectors and the blank symbols named here is no error, while a real message containing any of them is still shown; the blank rule is defined once and tested at its boundaries, including each of those characters alone and each inside a real Persian message; and the comment says exactly what the rule covers.
+
+### `KN-262` FromArgs copies the Input's blank-error rule instead of sharing it
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-259 roast and confirmed from the code: FromArgs in Input.stories.tsx decides what description to expect with its own copy of the component's pattern, /^[\s\p{Cf}]*$/u, rather than the component's rule. FromArgs leaves error unset by default, so the day the component's rule changes and the copy does not, no automated run notices; only a reviewer setting an error in Controls would see the play function disagree with the field.
+
+**Why.** A test oracle that restates the rule it checks drifts silently the first time the rule moves. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** The blank rule lives in one module that the Input and its stories both import, with no second copy of the pattern anywhere under src; a unit test covers the rule's boundaries; and a mutation that widens the rule in that module changes what FromArgs expects without editing the story.
 

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 261,
+  "nextId": 263,
   "tasks": [
     {
       "id": "KN-001",
@@ -5905,11 +5905,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A status name longer than its container is truncated with an ellipsis inside the chip, which never grows past its container; the full name stays readable by a screen reader; a story renders a long name inside a 276px container and asserts nothing overflows; and DESIGN.md records the decision.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T09:24:03.635Z"
+      "createdAt": "2026-09-10T09:24:03.635Z",
+      "updatedAt": "2026-09-10T12:42:56.579Z"
     },
     {
       "id": "KN-239",
@@ -6464,7 +6465,23 @@
       "parent": [],
       "status": "done",
       "exit": "An error made only of whitespace and Unicode format characters is no error, while a message that merely contains them is still shown; BlankErrorIsNoError also renders an error of only a zero-width non-joiner and only a right-to-left mark and asserts they are no error, and a story with a real Persian message containing a ZWNJ still shows it; a mutation back to trim() fails the story by name.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8.3,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-259-round-1.2026-09-10T12-42-45-980Z.md",
+          "filed": [
+            "KN-261",
+            "KN-262"
+          ],
+          "cardDigest": "8e1d18034b744ce9f3f2bca6339f9f1d050409ad762613b065e1869e74f7ae84",
+          "head": "3beaf0d0d779f6e49a78ded7446bcde923f45888",
+          "reviewerScore": 8.3,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T12:45:37.135Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T12:09:09.497Z",
       "updatedAt": "2026-09-10T12:42:29.109Z",
@@ -6486,6 +6503,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T12:35:20.710Z"
+    },
+    {
+      "id": "KN-261",
+      "title": "An Input error of only combining marks or blank symbols still turns the field red",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-259 roast and confirmed from the pattern: BLANK in Input.tsx is whitespace plus the format characters, \\p{Cf}, and several characters that show a person nothing are outside that class. A combining mark on its own, such as U+034F the combining grapheme joiner, a variation selector such as U+FE0F, the Hangul filler U+3164 and the braille blank U+2800 each still make an error, so the field turns red and invalid with nothing to read. The comment above BLANK claims 'what a person cannot see', which is wider than the pattern. No form is likely to send one, which is why this is small.",
+      "why": "The claim in the code and the behaviour should agree, and an invisible message is the exact state KN-254 and KN-259 set out to remove. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "An error made only of whitespace, format characters, combining marks, variation selectors and the blank symbols named here is no error, while a real message containing any of them is still shown; the blank rule is defined once and tested at its boundaries, including each of those characters alone and each inside a real Persian message; and the comment says exactly what the rule covers.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T12:45:20.009Z"
+    },
+    {
+      "id": "KN-262",
+      "title": "FromArgs copies the Input's blank-error rule instead of sharing it",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-259 roast and confirmed from the code: FromArgs in Input.stories.tsx decides what description to expect with its own copy of the component's pattern, /^[\\s\\p{Cf}]*$/u, rather than the component's rule. FromArgs leaves error unset by default, so the day the component's rule changes and the copy does not, no automated run notices; only a reviewer setting an error in Controls would see the play function disagree with the field.",
+      "why": "A test oracle that restates the rule it checks drifts silently the first time the rule moves. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The blank rule lives in one module that the Input and its stories both import, with no second copy of the pattern anywhere under src; a unit test covers the rule's boundaries; and a mutation that widens the rule in that module changes what FromArgs expects without editing the story.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T12:45:20.256Z"
     }
   ]
 }
