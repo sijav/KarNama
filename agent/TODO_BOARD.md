@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 75 of 254 tasks done · 154 of 654 points.
+Project **KarNama** · 75 of 255 tasks done · 154 of 657 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-248` Nothing checks the Input's placeholder stays put when an empty field takes focus** (critical, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-248` | Nothing checks the Input's placeholder stays put when an empty field takes focus | critical | 1 | web | KN-250 | A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name. |
 
 ## Blocked (3)
 
@@ -23,7 +29,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-248` | Nothing checks the Input's placeholder stays put when an empty field takes focus | critical | 1 | web | KN-250 | A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name. |
 | `KN-252` | Resetting the Input's value control turns the same field from controlled to uncontrolled | critical | 1 | web | none | Switching the value control between set and unset starts the field over rather than changing its mode in place, so React never sees one input go from controlled to uncontrolled or back; a check in a development build, where React reports it, sets value, types, resets it, and finds no such report and a field showing its default again; a mutation removing the fix brings the report back. |
 | `KN-254` | An empty error string puts the Input in its error state | critical | 1 | web | none | An error that is empty or only whitespace is no error: the field keeps its default border, is not aria-invalid, and shows its helper text; a story renders such an error and asserts all three; DESIGN.md or the component's story docs say the error state needs a message; and a mutation back to testing error against undefined fails that story by name. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
@@ -44,6 +49,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-206` | The Checkbox has no accessible name and a target smaller than WCAG allows | critical | 3 | web | none | The component takes an id, and rendering one with no accessible name is impossible without it being visible: either the type requires one of aria-label, aria-labelledby or a wrapping label, or a check fails on a story that omits all three. Every story names its control. The interactive target is at least 24 by 24 while the DRAWN frame stays 20 by 20 from Figma, or the spacing exception is demonstrated for the specific placement and written down. A test asserts the hit area, not the frame. |
 | `KN-221` | The catalogs are never compiled, so a message with a count or a placeholder renders raw ICU in production | critical | 3 | web | none | A message with a plural and a placeholder renders correctly in BOTH locales in a production build, checked by rendering it from the built output or under NODE_ENV=production rather than in development, with Persian digits in fa-IR; a mutation that loads the catalogs uncompiled again makes that check fail; and the catalog tests still prove every English id has a non-empty Persian translation. |
 | `KN-226` | Nothing committed checks that the published Storybook renders its stories without errors | critical | 3 | infra | none | A committed check builds Storybook for production, opens every story in headless Chromium, and fails on any page error or console error; it runs before the Pages workflow publishes; and a mutation removing the Hover story's test-runner guard makes it fail on the emitted import error. |
+| `KN-255` | The other components' stories keep controls that make their play functions untrue | critical | 3 | web | none | Every story with a play function, in every component, either reads its expectations from the active args or offers only the controls its assertions hold for, and no story offers a control whose values the component cannot take, such as the Tooltip's children; KN-247's check, run over every story and changing each control by its own type (booleans flipped, every option of a select, a number changed, text changed and emptied), fails on none; and a repository guard fails any story file with a story that has a play function and neither declares its controls nor disables them. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | critical | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | critical | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
 | `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
@@ -3131,7 +3137,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-248` Nothing checks the Input's placeholder stays put when an empty field takes focus
 
-- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **status** in_progress · **severity** critical · **points** 1 · **area** web
 - **blocked by** KN-250
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-243 roast and confirmed: the Focus story is filled through defaultValue, so no placeholder is drawn, and the input's computed style does not include its ::placeholder pseudo-element, so a focused-only rule such as '&.Mui-focused input::placeholder': { textIndent: '3px' } moves the placeholder of an empty field and nothing fails. Chromium does report placeholder styles through getComputedStyle(input, '::placeholder'): on Default it gives text/secondary, rgb(107, 114, 128), where the input itself gives rgb(17, 24, 39), and a planted pseudo-only text-indent reads back as 3px, so a story can measure it.
@@ -3209,4 +3215,15 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** The error state is the one a user is told to fix; showing it on a valid field, and with no message, is wrong both ways. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** An error that is empty or only whitespace is no error: the field keeps its default border, is not aria-invalid, and shows its helper text; a story renders such an error and asserts all three; DESIGN.md or the component's story docs say the error state needs a message; and a mutation back to testing error against undefined fails that story by name.
+
+### `KN-255` The other components' stories keep controls that make their play functions untrue
+
+- **status** backlog · **severity** critical · **points** 3 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while doing KN-247: its sweep, pointed at every story outside the Input on a production build, finds the same fault in five more places, under controls a reviewer can really produce. Checkbox: Unchecked under indeterminate, Checked under checked false, Indeterminate under indeterminate false, Hover under indeterminate or disabled, Disabled under disabled false, KeyboardOnly under disabled. FilterChip: Default under selected or a new label, Selected under selected false, InEnglish under a new label, Toggling and KeyboardOnly under selected. StatusChip: ColumnHeaderSize, DisplayOnly and RenamedStatus under a new label, FromArgs under an empty one. Tooltip: every story under children, which Controls offers as text though the Tooltip needs an element, and WithIcon under icon. PreferencesProvider: Persian and English under the other locale. The sweep tried strings where some controls are selects or numbers, so its results for status, size, placement, family, count and a made-up locale are artifacts, not findings; the check has to change each control by its type.
+
+**Why.** As in KN-247, the Interactions panel's ticks are worth something only if they describe the story on screen, and a Controls panel that offers the Tooltip's children as text invites a reviewer to break every Tooltip story. Critical on the owner's order of 2026-09-10, as a finding on built components.
+
+**Exit condition.** Every story with a play function, in every component, either reads its expectations from the active args or offers only the controls its assertions hold for, and no story offers a control whose values the component cannot take, such as the Tooltip's children; KN-247's check, run over every story and changing each control by its own type (booleans flipped, every option of a select, a number changed, text changed and emptied), fails on none; and a repository guard fails any story file with a story that has a play function and neither declares its controls nor disables them.
 

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 255,
+  "nextId": 256,
   "tasks": [
     {
       "id": "KN-001",
@@ -6177,14 +6177,14 @@
       "parent": [
         "KN-250"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name.",
       "roasts": [],
       "notes": [
         "2026-09-10: blocked by KN-250. Its story snapshots the field before and after focus as Focus does, and on a production Storybook build html dir changes under any such snapshot until KN-250 sets it before paint, so it would ship a second story failing in the published Storybook."
       ],
       "createdAt": "2026-09-10T09:55:31.957Z",
-      "updatedAt": "2026-09-10T10:16:23.847Z"
+      "updatedAt": "2026-09-10T11:00:15.296Z"
     },
     {
       "id": "KN-249",
@@ -6313,6 +6313,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T10:57:13.769Z"
+    },
+    {
+      "id": "KN-255",
+      "title": "The other components' stories keep controls that make their play functions untrue",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while doing KN-247: its sweep, pointed at every story outside the Input on a production build, finds the same fault in five more places, under controls a reviewer can really produce. Checkbox: Unchecked under indeterminate, Checked under checked false, Indeterminate under indeterminate false, Hover under indeterminate or disabled, Disabled under disabled false, KeyboardOnly under disabled. FilterChip: Default under selected or a new label, Selected under selected false, InEnglish under a new label, Toggling and KeyboardOnly under selected. StatusChip: ColumnHeaderSize, DisplayOnly and RenamedStatus under a new label, FromArgs under an empty one. Tooltip: every story under children, which Controls offers as text though the Tooltip needs an element, and WithIcon under icon. PreferencesProvider: Persian and English under the other locale. The sweep tried strings where some controls are selects or numbers, so its results for status, size, placement, family, count and a made-up locale are artifacts, not findings; the check has to change each control by its type.",
+      "why": "As in KN-247, the Interactions panel's ticks are worth something only if they describe the story on screen, and a Controls panel that offers the Tooltip's children as text invites a reviewer to break every Tooltip story. Critical on the owner's order of 2026-09-10, as a finding on built components.",
+      "severity": "critical",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Every story with a play function, in every component, either reads its expectations from the active args or offers only the controls its assertions hold for, and no story offers a control whose values the component cannot take, such as the Tooltip's children; KN-247's check, run over every story and changing each control by its own type (booleans flipped, every option of a select, a number changed, text changed and emptied), fails on none; and a repository guard fails any story file with a story that has a play function and neither declares its controls nor disables them.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T11:01:50.818Z"
     }
   ]
 }
