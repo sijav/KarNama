@@ -543,6 +543,27 @@ entirely was rejected because the trail is what this product is for.
 So the column order in section 3 stands, and the board renders it as
 `رد شده ▸ 14` until the user opens it.
 
+**Dragging a card onto رد شده while it is collapsed.** Put to the owner on
+2026-09-10 as three questions, with the trade named on each. **The owner had no
+preference and delegated all three**, so what follows is the AUTHOR's choice
+recorded as such — it is not owner-settled, and anyone may argue with it. KN-196.
+
+- **Hover expands it, after about 500ms.** The card then drops into a visible
+  position like any other column. Half a second because the column sits at the
+  end of the row and a card on its way somewhere else will cross it; opening on
+  contact would make the board twitch on almost every drag.
+- **It does NOT accept a drop while collapsed.** Rejecting is the most common
+  move in a job search, and a drop the user never sees land is the one they will
+  most want to be sure of.
+- **After the drop it re-collapses and the count ticks up, with a brief
+  highlight.** The collapse is the whole point of KN-070, so staying open would
+  undo the decision the moment anyone rejects a card; the highlight is what
+  confirms the move without keeping the column open.
+- **The keyboard treats it as ONE target, announced with its count**, along the
+  lines of «رد شده، ۱۴ مورد», and the card goes to the top. Offering a
+  position by keyboard when dragging does not offer one would make the two paths
+  disagree, and the keyboard path exists to be equivalent rather than richer.
+
 **A contact needs only a full name.** Owner, KN-071, over frame `434:2`. Build
 what the frame specifies: name required, email and phone both optional. The
 file's own note that a contact with neither is close to useless was put to the
