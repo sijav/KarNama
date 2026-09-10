@@ -2729,13 +2729,15 @@
       "parent": [
         "KN-006"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T00:41:13.307Z",
-      "updatedAt": "2026-09-10T00:24:45.485Z",
-      "verify": "node agent/scripts/verify/KN-112.mjs"
+      "updatedAt": "2026-09-10T00:25:08.007Z",
+      "verify": "node agent/scripts/verify/KN-112.mjs",
+      "evidence": "node agent/scripts/verify/KN-112.mjs passes, 5 checks. Both halves of the exit condition are proved with the instrument each needs. What was WRITTEN is proved in the node project, where renderToString never re-renders so two setter calls hit the same snapshot, observed through a stubbed localStorage. The RENDERED STATE is proved by a story in real headless Chromium whose probe has ONE button calling both setters, because a batch is what an event handler makes and two calls after renderToString returns are not one. The verifier also asserts the story clicks exactly once, since two clicks are two renders and would pass against the defect while still printing a pass. Five mutations were each caught with their own message and every file restored: setColorScheme forwarding the stale locale, which is the original defect and fails BOTH the node test and the browser story, so the exit condition's clause about failing against the closure-based implementation is proved by running it; setLocale forwarding the stale colour scheme; the ref reverted to the render snapshot; the old assertion that enshrined the defect restored; and the story clicking twice. Writing those mutations exposed a gap in my own tests, which is worth recording: they exercised ONE order only, and since only the SECOND call in a batch overwrites anything, a defect in setLocale alone would have gone uncaught forever. A reversed-order test was added and mutation two is caught by that test alone. The suite previously CERTIFIED this bug rather than missing it, expecting the second write to carry the reverted locale, and the verifier now refuses that assertion's return. AGENTS section 5 items 1 to 4 are green: lint clean, tsc clean, 15 files and 228 tests passing at the 100 percent coverage thresholds, build and Storybook build both succeeded. Item 6, the four language and theme combinations, is honestly PARTIAL: both stories run in fa-IR and en-US, but the probe renders unstyled spans and a label-less button with no token, spacing or direction-dependent layout, so light against dark distinguishes nothing on it. What this does NOT establish: setColorScheme has no production caller today and DESIGN.md draws no settings surface, so this repairs a latent contract defect rather than a reachable user-facing bug, and the probe is currently the only thing in the repository that calls both setters.",
+      "closedAt": "2026-09-10T00:25:08.007Z"
     },
     {
       "id": "KN-113",
