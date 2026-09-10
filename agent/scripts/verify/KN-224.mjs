@@ -64,7 +64,9 @@ check('THE CASE: a copy string exported from tokens.ts fails the unit suite, and
   return withTokens(anchor, `export const helperText = 'Delete this application'\n\n${anchor}`, () => {
     const test = guard()
     if (test.code === 0) return 'the guard passed with a sentence exported from the token file'
-    if (!/helperText/.test(test.output)) return `it failed, but without naming the string:\n${test.output.slice(-600)}`
+    // Since KN-227 the guard reports the literal it refuses, not the export it
+    // sits in, because it reads the source rather than walking exports.
+    if (!/Delete this application/.test(test.output)) return `it failed, but without naming the string:\n${test.output.slice(-600)}`
     const linted = lint()
     // The gap, shown rather than assumed: the file is exempt from lingui.
     return linted.code === 0 ? null : `the lint caught it too, so the exemption is not what this test covers:\n${linted.output.slice(-400)}`
@@ -77,7 +79,7 @@ check('a copy string nested inside an existing export fails it too', () => {
   return withTokens(anchor, `${anchor}\n  label: 'Raised surface',`, () => {
     const test = guard()
     if (test.code === 0) return 'the guard passed with a label inside the elevation set'
-    return /elevation\.label/.test(test.output) ? null : `it failed, but not on the nested string:\n${test.output.slice(-600)}`
+    return /Raised surface/.test(test.output) ? null : `it failed, but not on the nested string:\n${test.output.slice(-600)}`
   })
 })
 

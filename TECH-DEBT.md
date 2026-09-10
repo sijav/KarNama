@@ -359,12 +359,16 @@ the shape of their values.
 
 **What it costs.** Anything added to `tokens.ts` is unchecked by the rule, and
 so is any string assigned to something called `STORAGE_KEY` or
-`TOOLTIP_SURFACE`. The file half is guarded: `src/theme/tokens.test.ts` walks
-every export of the module and fails on any string that is not a colour, a
-shadow or the font stack, so a label added there fails the unit suite even
-though the lint cannot see it. The names are guarded only by being specific.
+`TOOLTIP_SURFACE`. The file half is guarded: `src/theme/tokens.test.ts` parses
+the SOURCE of `tokens.ts` and fails on any string literal that is not a token
+name used as a key, a colour, a shadow or the Vazirmatn font stack, wherever it
+sits, in an object, a function, a Map or anything else. The names are guarded
+only by being specific.
 
-**The check that retires this.** The lingui rule, or a rule beside it, telling
-design values and identifiers apart by type rather than by name, so none of the
-three needs to be named here. Until then, the guard test's mutation, a copy
-string added to `tokens.ts`, is in `agent/scripts/verify/KN-224.mjs`.
+**The check that retires this.** A command, not a hope:
+`node agent/scripts/verify/KN-227.mjs` removes all three exemptions from the
+lint config, runs `npm run lint`, and restores the config in a `finally`. Today
+that lint FAILS, which is why the exemptions stand, and the verifier asserts
+exactly that. The day it passes, the verifier fails with "retire TECH-DEBT 13":
+the rule has learned to tell these strings from copy, and the three exemptions
+and this entry are to be deleted.

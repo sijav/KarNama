@@ -5579,11 +5579,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The guard reads every string literal in the SOURCE of src/theme/tokens.ts, not the runtime values, so a literal inside a function, a Map or any other construct is checked; the font stack is checked by value; mutations adding copy as a function return, as a Map entry and as the fontFamily value each fail it; and TECH-DEBT.md 13's retiring check is a condition a command can test, such as the three exemptions removed and npm run lint still green with every planted fixture failing.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T07:53:29.626Z"
+      "createdAt": "2026-09-10T07:53:29.626Z",
+      "updatedAt": "2026-09-10T08:25:34.309Z",
+      "verify": "node agent/scripts/verify/KN-227.mjs"
     },
     {
       "id": "KN-228",

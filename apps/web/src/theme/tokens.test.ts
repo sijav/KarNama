@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import ts from 'typescript'
 import { describe, expect, it } from 'vitest'
 import { elevation, iconSize, radius, semantic, spacing, status, type as typeScale } from './tokens'
 
@@ -93,36 +94,56 @@ describe('the token set agrees with DESIGN.md', () => {
   })
 })
 
-/**
- * Every string leaf of every export, with the path that reaches it. Walks the
- * MODULE rather than a list of names, so an export added tomorrow is covered
- * without anyone remembering to add it here.
- */
-const stringLeaves = (value: unknown, path: string): [string, string][] => {
-  if (typeof value === 'string') return [[path, value]]
-  if (value !== null && typeof value === 'object') {
-    return Object.entries(value).flatMap(([key, child]) => stringLeaves(child, `${path}.${key}`))
+// The lingui rule does not look at tokens.ts, TECH-DEBT.md 13, because every
+// literal in it is a design value and the rule cannot tell a hex code from a
+// word. This is the check that stands where the lint would. It reads the
+// SOURCE, every string literal the parser finds, rather than the module's
+// runtime values: a walk over exports never saw a string inside a function, a
+// Map or a getter, and exempted the font stack by its name instead of its
+// value, so each of those let copy through. KN-227.
+const hex = /^#[0-9a-f]{6}([0-9a-f]{2})?$/i
+// One layer of a box-shadow: four lengths and an eight-digit colour.
+const shadowLayer = /^(-?\d+(px)? ){4}#[0-9a-f]{8}$/i
+// A token name as the design writes it: lower case, digits and hyphens, in
+// slash-separated steps, bg/brand/default.
+const tokenName = /^[a-z0-9-]+(\/[a-z0-9-]+)*$/
+// The one font stack: Vazirmatn first, then quoted families or CSS generics.
+const fontStack = /^'Vazirmatn[^']*'(, ('[^']+'|[a-z-]+))+$/
+
+const isDesignValue = (text: string) => hex.test(text) || fontStack.test(text) || text.split(', ').every((layer) => shadowLayer.test(layer))
+
+/** Every string literal in `source` the checks refuse, with what it was used as. */
+const copyIn = (source: string): string[] => {
+  const file = ts.createSourceFile('tokens.ts', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
+  const found: string[] = []
+  const visit = (node: ts.Node) => {
+    if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+      const isKey = ts.isPropertyAssignment(node.parent) && node.parent.name === node
+      const allowed = isKey ? tokenName.test(node.text) : isDesignValue(node.text)
+      if (!allowed) found.push(`${isKey ? 'key' : 'value'} ${node.text}`)
+    }
+    // A template with substitutions can say anything, so it is never a token.
+    if (ts.isTemplateExpression(node)) found.push(`template ${node.getText(file)}`)
+    ts.forEachChild(node, visit)
   }
-  return []
+  visit(file)
+  return found
 }
 
 describe('the token module holds design values and nothing a person reads', () => {
-  // The lingui rule does not look at this file, TECH-DEBT.md 13, because every
-  // literal in it is a design value and the rule cannot tell a hex code from a
-  // word. So this is the check that stands where the lint would: a label or a
-  // helper string added here fails the unit suite even though no lint sees it.
-  const hex = /^#[0-9a-f]{6}([0-9a-f]{2})?$/i
-  // One layer of a box-shadow: four lengths and an eight-digit colour.
-  const shadowLayer = /^(-?\d+(px)? ){4}#[0-9a-f]{8}$/i
+  it('has no string literal anywhere that is not a token name, a colour, a shadow or the font stack', () => {
+    const source = readFileSync(fileURLToPath(new URL('./tokens.ts', import.meta.url)), 'utf8')
+    expect(copyIn(source)).toEqual([])
+  })
 
-  it('has no string that is not a colour, a shadow or the font stack', async () => {
-    const tokens: Record<string, unknown> = await import('./tokens')
-    const leaves = Object.entries(tokens).flatMap(([name, value]) => stringLeaves(value, name))
-    expect(leaves.length).toBeGreaterThan(0)
-    const copy = leaves.filter(([path, text]) => {
-      if (path === 'fontFamily') return false
-      return !hex.test(text) && !text.split(', ').every((layer) => shadowLayer.test(layer))
-    })
-    expect(copy).toEqual([])
+  // The check proved on the three ways round the old one, so it is not only
+  // ever seen passing. The verifier plants the same cases in the real file.
+  it.each([
+    ['a string returned from a function', "export const deleteLabel = () => 'Delete this application'"],
+    ['a string inside a Map', "export const labels = new Map([['delete', 'Delete this application']])"],
+    ['copy assigned to the font stack', "export const fontFamily = 'Delete this application'"],
+    ['a label keyed into a token object', "export const elevation = { label: 'Raised surface' }"],
+  ])('refuses %s', (_case, planted) => {
+    expect(copyIn(planted)).not.toEqual([])
   })
 })
