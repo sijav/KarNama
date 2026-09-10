@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 268,
+  "nextId": 269,
   "tasks": [
     {
       "id": "KN-001",
@@ -4900,7 +4900,7 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker.",
       "roasts": [],
       "notes": [
@@ -4909,7 +4909,7 @@
       ],
       "createdAt": "2026-09-10T02:06:44.051Z",
       "blockedReason": "Waiting on the owner. This is a design DECISION, not a build: KN-070 settled that the rejected column collapses to a count, and did not settle what a drag onto it does. Whether it expands on hover and after what delay, whether it accepts a drop while collapsed, what the user sees after the drop lands, and what the keyboard path targets are all the owner's or the designer's call. An agent choosing them silently is the exact failure KN-153 was about. Blocked rather than backlog so it stops being picked as though it were buildable.",
-      "updatedAt": "2026-09-10T13:19:55.178Z"
+      "updatedAt": "2026-09-10T13:21:35.124Z"
     },
     {
       "id": "KN-197",
@@ -6536,7 +6536,22 @@
       "parent": [],
       "status": "done",
       "exit": "An error made only of whitespace, format characters, combining marks, variation selectors and the blank symbols named here is no error, while a real message containing any of them is still shown; the blank rule is defined once and tested at its boundaries, including each of those characters alone and each inside a real Persian message; and the comment says exactly what the rule covers.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-261-round-1.2026-09-10T13-21-10-067Z.md",
+          "filed": [
+            "KN-268"
+          ],
+          "cardDigest": "148792c590e2832a4e89f680576559c97e5ae58e24084edc552f862fdf596ef8",
+          "head": "58129d7593da9841a463119ded39cb4785a1e68c",
+          "reviewerScore": 7,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T13:24:03.508Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T12:45:20.009Z",
       "updatedAt": "2026-09-10T13:20:34.541Z",
@@ -6635,6 +6650,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T13:19:54.870Z"
+    },
+    {
+      "id": "KN-268",
+      "title": "The catalog test's blank-translation check is weaker than the Input's blank rule",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-261 roast and confirmed from the code: src/i18n/catalog.test.ts strips the format characters from a translation and then asks for any non-space character, so a Persian translation made only of the braille blank U+2800, the combining grapheme joiner, a variation selector, a Hangul filler or marks alone passes as a message, while its own prose says it rejects messages that render as nothing. KN-261's isBlank already draws that line for the Input; the two rules disagree about the same idea.",
+      "why": "A test whose name claims more than it checks lets the case it names through. Low: no translator types a braille blank, and the catalogs are hand-written.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The catalog test and the Input decide blankness with the same predicate, moved to a module both can import without the i18n tests depending on an Input file, or the catalog test states and tests a deliberately different contract; either way a translation of only U+2800, U+034F or U+FE0F is caught by a planted case that fails the test.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T13:24:03.388Z"
     }
   ]
 }

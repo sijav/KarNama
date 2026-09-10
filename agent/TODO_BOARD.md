@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 82 of 267 tasks done · 162 of 673 points.
+Project **KarNama** · 82 of 268 tasks done · 162 of 674 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-196` Decide how a card is dropped onto a column that is collapsed to a count** (critical, 1 pt, design)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-196` | Decide how a card is dropped onto a column that is collapsed to a count | critical | 1 | design | none | DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker. |
 
 ## Blocked (2)
 
@@ -21,7 +27,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-196` | Decide how a card is dropped onto a column that is collapsed to a count | critical | 1 | design | none | DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-262` | FromArgs copies the Input's blank-error rule instead of sharing it | critical | 1 | web | none | The blank rule lives in one module that the Input and its stories both import, with no second copy of the pattern anywhere under src; a unit test covers the rule's boundaries; and a mutation that widens the rule in that module changes what FromArgs expects without editing the story. |
 | `KN-263` | The Status Chip centres its text with a 3px padding the spacing scale does not have | critical | 1 | web | none | The chip is the designed flex box again, centred by alignment with no vertical padding, and the name truncates with an ellipsis in an inner element; every story that measures the chip measures the chip, not the name; KN-238's verifier still passes with its mutations; and no padding or spacing in StatusChip.tsx resolves to anything but a spacing token or zero. |
@@ -176,6 +181,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-237` | The Tooltip's children type rejects a trigger held as a plain ReactElement | low | 1 | web | none | A trigger typed as a plain ReactElement type-checks as the Tooltip's child, the merge of the trigger's own description still works and KeepsTheTriggersOwnDescription still passes, and no TypeScript escape hatch is used to get there. |
 | `KN-240` | Nothing proves the theme's status colours come from the token set | low | 1 | web | none | A test asserts the light theme's status pairs are the token set's objects or equal to them key by key, and a mutation replacing one pair in buildTheme with a literal of the same value is caught by a check that the theme reads the token module rather than restating it. |
 | `KN-256` | KN-088's verifier stopped proving its claim when KN-007 changed the unit include | low | 1 | web | none | node agent/scripts/verify/KN-088.mjs passes against the vitest.config.ts as it is now: emptying the unit include makes KN-003 fail because the unit project ran nothing, shown by its own output rather than a type error, and the constant check matches the include as written today. |
+| `KN-268` | The catalog test's blank-translation check is weaker than the Input's blank rule | low | 1 | web | none | The catalog test and the Input decide blankness with the same predicate, moved to a module both can import without the i18n tests depending on an Input file, or the catalog test states and tests a deliberately different contract; either way a translation of only U+2800, U+034F or U+FE0F is caught by a planted case that fails the test. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -2528,7 +2534,7 @@ Found on 2026-09-10 while roasting KN-190. npm run <script> -- <args> routes thr
 
 ### `KN-196` Decide how a card is dropped onto a column that is collapsed to a count
 
-- **status** backlog · **severity** critical · **points** 1 · **area** design
+- **status** in_progress · **severity** critical · **points** 1 · **area** design
 - **blocked by** none
 
 KN-070 settled that the rejected column sits last and renders collapsed to a count by default, expanding on click. It did NOT settle what happens when a card is DRAGGED onto it while collapsed, and rejected is the status cards are moved into most, so this is the common case rather than an edge. Open questions, all of them the owner's or the designer's call rather than a builder's: does the collapsed column expand on hover during a drag, and after what delay; does it accept a drop while still collapsed; does the count animate or does the column open to show where the card landed; and what does the keyboard path target, since a collapsed column has no visible slot to move a card into and the keyboard alternative is part of KN-061 rather than a later improvement. Raised while doing KN-149. I nearly folded these into KN-061's exit condition as though KN-070 had already answered them; a plan check pointed out that doing so would invent a design requirement while claiming to propagate an existing one. The frames may already draw some of this, so look at the Drag and Drop Done states before asking.
@@ -3312,6 +3318,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** An error made only of whitespace, format characters, combining marks, variation selectors and the blank symbols named here is no error, while a real message containing any of them is still shown; the blank rule is defined once and tested at its boundaries, including each of those characters alone and each inside a real Persian message; and the comment says exactly what the rule covers.
 
+**Roasts.** round 1 scored 7 with 0 critical(s)
+
 ### `KN-262` FromArgs copies the Input's blank-error rule instead of sharing it
 
 - **status** backlog · **severity** critical · **points** 1 · **area** web
@@ -3377,4 +3385,15 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** A component missing part of what the file draws is not finished, and the icons are what later components build on. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** The Input takes an optional leading and an optional trailing icon, each 20 by 20 at spacing/2xs from the text in text/secondary, matching 95:38 with the icons on, in both directions; stories show each and both; and the label's boolean in the file is either honoured, with the accessible name then required another way, or the decision not to is recorded in DESIGN.md.
+
+### `KN-268` The catalog test's blank-translation check is weaker than the Input's blank rule
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-261 roast and confirmed from the code: src/i18n/catalog.test.ts strips the format characters from a translation and then asks for any non-space character, so a Persian translation made only of the braille blank U+2800, the combining grapheme joiner, a variation selector, a Hangul filler or marks alone passes as a message, while its own prose says it rejects messages that render as nothing. KN-261's isBlank already draws that line for the Input; the two rules disagree about the same idea.
+
+**Why.** A test whose name claims more than it checks lets the case it names through. Low: no translator types a braille blank, and the catalogs are hand-written.
+
+**Exit condition.** The catalog test and the Input decide blankness with the same predicate, moved to a module both can import without the i18n tests depending on an Input file, or the catalog test states and tests a deliberately different contract; either way a translation of only U+2800, U+034F or U+FE0F is caught by a planted case that fails the test.
 
