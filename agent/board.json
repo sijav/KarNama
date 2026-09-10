@@ -2785,15 +2785,17 @@
       "parent": [
         "KN-006"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Setting any Persian message to an empty or whitespace-only string fails npm test and the failure names the id; so does setting one to its English id with the punctuation or casing changed, which is the next spelling of the same evasion and is named in this card's description; each is proved by planting it and watching the suite go red rather than by reading the checks.",
       "roasts": [],
       "notes": [
         "Exit condition widened before building, on the plan check's point that the description asked for the punctuation case and the exit condition did not, so the implementation would have been stronger than the contract with nothing recording why."
       ],
       "createdAt": "2026-09-08T00:45:32.304Z",
-      "updatedAt": "2026-09-10T00:42:56.601Z",
-      "verify": "node agent/scripts/verify/KN-114.mjs"
+      "updatedAt": "2026-09-10T00:43:31.357Z",
+      "verify": "node agent/scripts/verify/KN-114.mjs",
+      "evidence": "node agent/scripts/verify/KN-114.mjs passes, 10 checks, and it is itself the mutation harness rather than a scratch file thrown away, which is what KN-136 asks for. It plants seven values into the REAL fa-IR catalog and requires the suite to go red NAMING the id for each: an empty string, spaces only, a tab only, a non-breaking space only, zero-width characters only, the English id exactly, and the id lowercased with punctuation added. It plants into the real catalog rather than a copy because the test imports the locale module directly, so a copy in a temp directory would prove the plant was written and not that the suite sees it, which the plan check named as the step most likely to be got wrong. A positive control runs first, since every other check asserts a FAILURE and a suite red for an unrelated reason would satisfy all of them, and a final run after restore proves the plants left nothing behind. Four further mutations weakening the CHECKS were each caught with their own message: the blank check removed, the blank check no longer stripping format characters, the untranslated check reverted to exact equality, and the untranslated check no longer casefolding. Gate: lint clean, tsc clean, 15 files and 229 tests at the 100 percent thresholds, build succeeded. Two things found while building, both corrected: my first blank check used LITERAL zero-width characters in its regex, invisible to any reader, and a comment of mine claimed U+200C is whitespace when it is not, since it is a letter-joining control that appears inside Persian words; the check now strips the Unicode FORMAT category by name and the verifier asserts no invisible character survives in that file. The card's exit condition was WIDENED before building, on the plan check's point that the description asked for the punctuation case while the exit condition covered only empty and whitespace, so the implementation would have been stronger than the contract with nothing recording why. What this does NOT establish: the catalog has three messages and none was blank, so this is preventive rather than a repair, and a Persian value of x still passes, because requiring a Persian character would false-positive on numbers, URLs and proper nouns and the card did not ask for it.",
+      "closedAt": "2026-09-10T00:43:31.357Z"
     },
     {
       "id": "KN-115",
