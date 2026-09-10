@@ -5129,15 +5129,17 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The tooltip DESCRIBES rather than labels: a trigger with its own aria-label keeps that name, and the tip is reachable through aria-describedby. A story asserts the computed accessible name of an icon-only trigger while the tip is open, and a mutation removing describeChild makes it fail. The case where the trigger has NO name of its own is decided deliberately and written down, because describing something unnamed leaves it unnamed.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-10T05:30:45.846Z",
-      "updatedAt": "2026-09-10T08:07:27.481Z",
-      "verify": "node agent/scripts/verify/KN-209.mjs"
+      "updatedAt": "2026-09-10T08:07:43.025Z",
+      "verify": "node agent/scripts/verify/KN-209.mjs",
+      "evidence": "Tooltip.tsx passes describeChild to MUI's Tooltip, so the tip is exposed through aria-describedby instead of labelling the child through aria-labelledby. New story KeepsTheTriggersName (en-US pinned) renders an icon-only button, only the InfoMark inside, named by aria-label={i18n._('Delete status')} and forwarding its props; with the tip open by keyboard it asserts toHaveAccessibleName('Delete status'), aria-describedby equal to the tip's id, and no aria-labelledby. agent/scripts/verify/KN-209.mjs, 5 checks green: tooltip stories pass (7 of 7); THE CASE, removing describeChild fails KeepsTheTriggersName with \"Expected element to have accessible name\"; the trigger is icon-only, catalog-named and forwards props; the unnamed-trigger decision is written in en and fa story-docs (the trigger must have its own name, and one without stays unnamed); the catalog test passes with 'Delete status': 'حذف وضعیت'. Docs guard and catalog 79 of 79, lint and tsc clean, KN-032 and KN-222 still green, production Storybook build renders keeps-the-triggers-name and on-hover with zero page or console errors.",
+      "closedAt": "2026-09-10T08:07:43.025Z"
     },
     {
       "id": "KN-210",
