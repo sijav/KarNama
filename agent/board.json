@@ -3607,13 +3607,15 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T21:17:05.511Z",
-      "updatedAt": "2026-09-10T02:13:54.622Z",
-      "verify": "node agent/scripts/verify/KN-149.mjs"
+      "updatedAt": "2026-09-10T02:14:23.492Z",
+      "verify": "node agent/scripts/verify/KN-149.mjs",
+      "evidence": "node agent/scripts/verify/KN-149.mjs, 5 checks, all pass. KN-043 and KN-060 now carry one canonical clause verbatim in their EXIT conditions, naming all three things the card asks for: the rejected column last after the offer column, collapsed to a count by default, expanding on click. The check reads board.json and DESIGN.md, so it derives the fact rather than trusting memory. Mutation harness, 9 cases, 8 that must be CAUGHT and 1 that must HOLD, patching board.json and DESIGN.md as well as the verifier and restoring each: CAUGHT the clause removed from KN-043; CAUGHT it removed from KN-060; CAUGHT it moved out of the exit condition into a note, which is the way this gets satisfied without being satisfied; CAUGHT the DESIGN.md sentence deleted, reported as STALE; CAUGHT a named card id changed to one not on the board; CAUGHT the clause emptied so it would match everything; CAUGHT the loop cut to the first card only; CAUGHT the containment test forced to always say yes, which is the positive control's own control. HELD, correctly, DESIGN.md re-flowed so a two-line sentence wraps differently, because that changes the layout and not the decision. git status was identical before and after the run, so every mutated file was restored byte for byte. KN-149 has NO parent, so per the owner's rule it closed on the FULL suite, not on the files it changed: npm run lint clean at zero warnings, npm run lint:tsc clean, npm test 329 passing across three projects (4 graphql, 229 web, 96 api) at 100 percent on all four metrics, npm run build succeeds and schema.gql matches the resolvers. npm run contract, 10 rules, no card trips one. Board validates, 197 tasks. Gate steps 5 to 7 are the visual ones, Storybook in four language and theme combinations and the Docs page in both languages. They were NOT run and have no subject here: this card changed two board cards and added a node script, and rendered nothing. Said plainly rather than counted as passed. SCOPE NOTED: the plan check stopped me widening this to KN-061. Dropping a card onto a collapsed column is undecided by KN-070, so requiring it here would have invented a design requirement while claiming to propagate one. Filed as KN-196 and KN-061 is now blocked on it. LIMIT STATED IN THE CHECK: it does not discover which cards build the board. There is no structural property for that, so the card list is human maintained, and a card added later that should carry the clause is not caught.",
+      "closedAt": "2026-09-10T02:14:23.492Z"
     },
     {
       "id": "KN-150",
