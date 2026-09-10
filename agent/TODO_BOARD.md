@@ -3665,6 +3665,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Under forced colours a disabled Checkbox's edge is GrayText and every enabled state's is ButtonBorder, checked and indeterminate included; a check in a production build reads the rendered edge of all five states under forced colours, and a mutation giving disabled ButtonBorder again fails it; and DESIGN.md's stroke section says which colour each state takes there.
 
+**Roasts.** round 1 scored 4 with 1 critical(s)
+
 ### `KN-289` KN-281's forced-colours check does not measure the tick's position, as KN-284's exit says it does
 
 - **status** backlog · **severity** low · **points** 1 · **area** agent

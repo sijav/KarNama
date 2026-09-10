@@ -7241,8 +7241,8 @@
           "head": "13633f42c31a9735d1bb3fb40b65dc127ea65327",
           "reviewerScore": 4,
           "reviewerCriticals": 1,
-          "dismissed": "The critical stands and is KN-290, with the first major, the verifier reading only the unchecked disabled frame, folded into its exit. The second major, a no-shell rule, does not exist: every verifier spawns npx through a shell because npx, like codex, is a .cmd shim Node will not spawn on Windows without one, which TECH-DEBT 3 records. The minor misreads agent/RALPH.md step 2b again, and the plan's earlier lines are kept on purpose with the check's corrections after them, so it reads as the record it is.",
-          "at": "2026-09-10T18:27:31.117Z"
+          "dismissed": "The critical stands and is KN-290, with the first major folded into its exit. The second major, a no-shell rule, does not exist: npx, like codex, is a .cmd shim Node will not spawn on Windows without a shell, which TECH-DEBT 3 records. The minor misreads agent/RALPH.md step 2b again.",
+          "at": "2026-09-10T18:27:44.049Z"
         }
       ],
       "notes": [],
