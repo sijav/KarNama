@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 278,
+  "nextId": 279,
   "tasks": [
     {
       "id": "KN-001",
@@ -6159,7 +6159,23 @@
       "parent": [],
       "status": "done",
       "exit": "With no control touched, every Controls value in the args-driven Input stories is what the canvas draws, label, placeholder and helper, in either language; changing one in Controls changes the canvas to exactly that value, and clearing the placeholder or helper removes it; a story asserts the rendered copy equals the args, and a mutation reintroducing a hidden fallback fails it.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8.2,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-245-round-1.2026-09-10T15-38-26-776Z.md",
+          "filed": [
+            "KN-278"
+          ],
+          "cardDigest": "5475746d7751ffc4bde72783482487cba584cb875d01963100d40ce4e5f129d7",
+          "head": "b2bc7982f2083dc9147a36f6a9eae0826d8b394d",
+          "reviewerScore": 8.2,
+          "reviewerCriticals": 0,
+          "dismissed": "Two of the three minors are not new cards. The plan file beside Input.stories.tsx is where agent/RALPH.md step 2b puts a plan, and it stays. The parent-relative import of ../../i18n follows the file's existing imports of ../../theme and ../story-docs; the import rule and every file breaking it are KN-092's, so this is evidence for that card, not a new one.",
+          "at": "2026-09-10T15:43:01.844Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T09:45:57.208Z",
       "updatedAt": "2026-09-10T15:38:05.904Z",
@@ -6906,11 +6922,12 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The owner has answered, through the question tool, whether the selected Filter Chip keeps the file's fill as its only sign of selection or gains one that meets WCAG 1.4.11 and 1.4.1, with the options and their trade named; DESIGN.md records the answer as the owner's, with the date; and if it changes, a card for the change exists that also covers KN-272's dark fill.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T14:49:24.519Z"
+      "createdAt": "2026-09-10T14:49:24.519Z",
+      "updatedAt": "2026-09-10T15:39:22.527Z"
     },
     {
       "id": "KN-277",
@@ -6926,6 +6943,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T14:49:24.605Z"
+    },
+    {
+      "id": "KN-278",
+      "title": "TECH-DEBT 16 retires on a text search, not on the English twin passing under Vitest",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-245 roast, KN-245 being a child of KN-011. TECH-DEBT 16 says ControlsMatchTheCanvas checks that its args follow the language only in Storybook's preview, because portable stories apply no updateStoryArgs. Its retirement check is a search of node_modules for a listener, which can find one that does not rerender the composed story or update its args, and retire the entry while the English twin still could not pass under Vitest.",
+      "why": "A retirement check that can pass while the thing it retires is still true removes the record of a gap without closing it. Low: it is about the suppression record, not the product, and nothing is broken today.",
+      "severity": "low",
+      "points": 1,
+      "area": "docs",
+      "parent": [],
+      "status": "backlog",
+      "exit": "TECH-DEBT 16's retirement check is behavioural: take the early return out of ControlsMatchTheCanvas and run ControlsMatchTheCanvasInEnglish under Vitest; the entry retires only when that passes, and the entry says so.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T15:43:01.758Z"
     }
   ]
 }
