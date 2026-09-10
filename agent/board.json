@@ -3779,13 +3779,15 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T23:54:04.856Z",
-      "updatedAt": "2026-09-10T00:03:37.622Z",
-      "verify": "node agent/scripts/verify/KN-160.mjs"
+      "updatedAt": "2026-09-10T00:09:54.506Z",
+      "verify": "node agent/scripts/verify/KN-160.mjs",
+      "evidence": "node agent/scripts/verify/KN-160.mjs passes, 7 checks. agent/RALPH.md and ~/.claude/skills/loop/SKILL.md both instruct the name #<task id> - <title>.md in the folder the work is about to be written to, both warn that a card title is not a filename, and both say the plan STAYS when the task closes; the verifier also REFUSES the delete-on-close wording by name so the regression cannot return quietly. No instruction file names the old path, the abolished directory holds no plans, KN-112's plan sits beside the preferences code, and a walk of the whole tree proves no file anywhere still uses the old plan-KN-NNN.md name, which catches the next one rather than only the three that existed. Eight mutations were each caught with their own message and every file restored. Placing .md files inside apps/web/src and apps/api/prisma was proved harmless by running both gates with them in place: web lint, tsc, 14 files and 222 tests, build and Storybook build all green, and the API suite at 9 files and 96 tests. What this does NOT establish, all of it said plainly rather than buried. First, I got the lifecycle wrong and it destroyed a file: this card originally said to delete a plan on close because git held every version, which was false, since .gitignore listed the old plan directory and those files had never been committed. KN-100's plan is restored from the session transcript, KN-071's is unrecoverable and carries a marker saying so rather than a reconstruction. The gitignore line is removed so a stray plan is visible rather than silently untracked. Second, the verifier reads a NAMED LIST of instruction files rather than the repository, deliberately, because this card's board entry and its own plan legitimately contain the old path and a repository-wide grep would report the defect it had just fixed; a new instruction file is invisible until added to that list, and the list is written out in the verifier where it can be argued with. Third, the API gate run surfaced a pre-existing flake unrelated to this change, filed as KN-167.",
+      "closedAt": "2026-09-10T00:09:54.506Z"
     },
     {
       "id": "KN-161",
