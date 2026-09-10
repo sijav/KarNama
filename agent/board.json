@@ -6886,13 +6886,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "In the derived dark palette bg/brand/container is a dark tint of its own hue, derived as a fill the way the status containers are, text/brand clears 4.5:1 on it and border/focus clears 3:1 on it, and every pair the tests already hold still holds; darkMode.test.ts asserts both pairs as the Filter Chip draws them, and a mutation back to the surface derivation fails them; and the selected Filter Chip, resting and pressed, is seen in dark in both languages.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T14:24:28.875Z",
-      "updatedAt": "2026-09-10T18:54:56.726Z",
-      "verify": "node agent/scripts/verify/KN-272.mjs"
+      "updatedAt": "2026-09-10T18:55:17.573Z",
+      "verify": "node agent/scripts/verify/KN-272.mjs",
+      "evidence": "darkMode.ts derives bg/brand/container with deriveDarkFill (moved above the palette), listed in an exported DARK_FILLS that the chromatic floor test skips by role; theme.ts's primary.light comment names it a fill. Probed and read: the dark container is #022655, hue 214.0 against the light 214.3, text/brand on it 5.10:1 and border/focus 3.33:1. node agent/scripts/verify/KN-272.mjs passed: the theme tests pass with the fill case (band 0.12 to 0.22, hue within a degree), text/brand on the dark container at 4.5 or more, border/focus on it at 3 or more, and the light pairs (5.49, 4.24), all by name; DARK_FILLS is one list the palette and the floor test read; the container back to deriveDarkSurface fails both pair cases by name; in a production build in dark, the selected chip in fa-IR and en-US reads fill rgb(2, 38, 85), text at 5.10 and, with a real pointer held down, the pressed edge at 3.33. Unit 422, all 71 stories, full eslint, tsc and contract clean; KN-271 and KN-005 verifiers pass. Seen in dark in both languages. Not established: the selected chip still differs from the dark page by little more than colour, 1.10:1, which is KN-276's decision and KN-279's work.",
+      "closedAt": "2026-09-10T18:55:17.573Z"
     },
     {
       "id": "KN-273",
