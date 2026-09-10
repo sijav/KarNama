@@ -19,4 +19,8 @@ export const messages: Record<string, string> = {
   'Interview': 'مصاحبه',
   'Rejected': 'رد شده',
   'Job offer': 'پیشنهاد کار',
+  'Job title': 'عنوان شغلی',
+  'e.g. Frontend developer': 'مثلاً: توسعه‌دهنده فرانت‌اند',
+  'A short explanation': 'توضیح کوتاه کمکی',
+  'This field cannot be empty': 'این فیلد نمی‌تواند خالی باشد',
 }

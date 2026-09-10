@@ -534,14 +534,15 @@
         "KN-006",
         "KN-007"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:17.836Z"
+      "updatedAt": "2026-09-10T09:22:19.025Z",
+      "verify": "node agent/scripts/verify/KN-011.mjs"
     },
     {
       "id": "KN-012",

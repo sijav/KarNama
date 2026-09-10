@@ -16,4 +16,8 @@ export const messages: Record<string, string> = {
   'Interview': 'Interview',
   'Rejected': 'Rejected',
   'Job offer': 'Job offer',
+  'Job title': 'Job title',
+  'e.g. Frontend developer': 'e.g. Frontend developer',
+  'A short explanation': 'A short explanation',
+  'This field cannot be empty': 'This field cannot be empty',
 }

@@ -25,6 +25,7 @@ export type StoryTitle =
   | 'Foundations/Tokens'
   | 'Shared/Checkbox'
   | 'Shared/FilterChip'
+  | 'Shared/Input'
   | 'Shared/LanguageSwitch'
   | 'Shared/StatusChip'
   | 'Shared/Tooltip'
