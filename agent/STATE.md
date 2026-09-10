@@ -181,7 +181,8 @@ Its round is worth reading before writing another verifier: all three findings
 were "passes without establishing the exit condition", which is the failure a
 passing test can never report about itself.
 
-**KN-112 is planned and the plan has been checked**, `.claude/plan-KN-112.md`.
+**KN-112 is planned and the plan has been checked**, and the plan sits beside
+the work it describes, `apps/web/src/core/preferences/`.
 Two setters built over one render's snapshot lose the first update when both are
 called before the next render. The fix composes onto a ref rather than onto the
 snapshot. The plan check corrected two things: the setters do NOT become stable,

@@ -69,6 +69,32 @@ the one that holds the substance of the change:
    in a third case leave a plan file at the old path, and require each to fail
    with its own message.
 
+## Corrected by the plan check
+
+- **A `.md` beside source is inert here**, confirmed against the configuration
+  rather than assumed: `tsconfig` includes only `.ts` and `.tsx`, the coverage
+  include is `src/**/*.{ts,tsx}`, and the Storybook glob takes `../src/**/*.mdx`
+  and `*.stories.@(ts|tsx)`, so `.md` matches nothing. Vite bundles imports, not
+  loose files. `#` needs quoting in a shell and escaping only in a `.gitignore`
+  pattern, and these files are meant to be tracked rather than ignored.
+- **The migration step was the weak one, and it was already wrong.** There are
+  THREE plans, not two: `KN-071`, `KN-100` and `KN-112`. I knew about two.
+  Every `.claude/plan-` reference gets classified before anything is edited,
+  which also turns up `agent/STATE.md`.
+- **Closed plans should not sit beside live code**, where the next reader takes
+  a stale document for current intent.
+
+## Decided here: a plan is deleted when its task closes
+
+The check argued for an explicit archive. I am choosing deletion instead, and
+the reason is that the archive already exists: **git has every version of the
+file**, and the commit that closed the task is exactly where anyone would look
+for why the work was shaped that way. A `plans-archive/` directory would be a
+second graveyard replacing the one this card abolishes, and it would need its
+own rule about when anything leaves it, which nothing ever would.
+
+So `KN-071` and `KN-100`, both closed, are deleted rather than moved.
+
 ## What I expect to be hard, and what I am unsure about
 
 - **The verifier is a document check, and document checks in this repository

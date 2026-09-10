@@ -124,8 +124,32 @@ decision cannot leave the old answer quietly enforced.
 
 ## Step 2b · Write the plan, and have it checked BEFORE you build
 
-**Before touching a file, write down exactly what you are about to do.** Put it
-in `.claude/plan-<id>.md` so it can be read and argued with:
+**Before touching a file, write down exactly what you are about to do.**
+
+**The plan goes BESIDE THE WORK**, in the folder the change is about to be
+written to, named `#<task id> - <title>.md`. A component fix puts it next to the
+component; a change to the loop's own rules puts it in `agent/`. Where a task
+spans several folders, the one holding the substance of the change wins, and
+being wrong about that is cheap.
+
+Beside the work, because a plan nobody reads is ceremony. Its whole value is
+that the next person, including the next iteration of you with no memory of
+this, meets it while looking at the thing it describes. A separate plan
+directory guarantees they never do, and fills up with plans for work that has
+since moved.
+
+Two practical rules that follow:
+
+- **A card title is not a filename.** Strip what the filesystem refuses,
+  `< > : " / \ | ? *`, and trailing dots and spaces, which Windows mangles
+  silently. Shortening a long title is fine. **The id is what must be exact**,
+  because the id is what ties the file to the card.
+- **Delete the plan when the task closes.** Git holds every version of it and
+  the closing commit is where anyone would look, so nothing is lost, and a
+  stale plan sitting beside live code reads as current intent to the next person
+  who opens that folder.
+
+It should say:
 
 - the task, its **why** and its **exit condition**, quoted from the board
 - the approach, in steps
@@ -141,7 +165,7 @@ python ~/.claude/skills/roast/roast.py plan \
   --title "KN-0XX <title>" \
   --why "<why, from the board>" \
   --exit-condition "<exit condition, from the board>" \
-  --did "$(cat .claude/plan-KN-0XX.md)" \
+  --did "$(cat 'apps/web/src/whatever/#KN-0XX - the title.md')" \
   --ask "the step I am least sure of is X — does it hold?" \
   --ask "is there a simpler approach that meets the same exit condition?"
 ```
