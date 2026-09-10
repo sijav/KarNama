@@ -1225,11 +1225,11 @@
         "KN-061"
       ],
       "status": "backlog",
-      "exit": "An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English.",
+      "exit": "An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and renders collapsed to a count by default, expanding on click.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:10:27.707Z"
+      "updatedAt": "2026-09-10T02:09:49.190Z"
     },
     {
       "id": "KN-044",
@@ -1591,10 +1591,11 @@
         "KN-018"
       ],
       "status": "backlog",
-      "exit": "The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node.",
+      "exit": "The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. رد شده is the last column, after پیشنهاد کار, and renders collapsed to a count by default, expanding on click.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T21:10:26.914Z"
+      "createdAt": "2026-09-07T21:10:26.914Z",
+      "updatedAt": "2026-09-10T02:09:49.327Z"
     },
     {
       "id": "KN-061",
@@ -3611,7 +3612,8 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T21:17:05.511Z",
-      "updatedAt": "2026-09-10T01:56:19.079Z"
+      "updatedAt": "2026-09-10T02:13:54.622Z",
+      "verify": "node agent/scripts/verify/KN-149.mjs"
     },
     {
       "id": "KN-150",
