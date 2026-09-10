@@ -158,6 +158,21 @@ also aborted mid-write. Use the Write and Edit tools for code, every time.
 **Do not mutate the worktree while a roast is reading it**, and do not edit
 source while a mutation harness is running: its cases would test the edit.
 
+## The order changed on 2026-10-09, and it is the owner's
+
+**Finish, prove, commit, CLOSE, then roast.** A task is done when its own
+verifier passes, not when a reviewer approves. The roast runs afterwards against
+the closed work, in the background, and everything it finds becomes a NEW card.
+Nothing reopens a closed task, and `move` now refuses every transition out of
+`done` so that is behaviour rather than documentation, KN-159 and KN-162.
+
+There is **no fix-in-task rule any more.** It was rewritten three times, each
+version more elaborate, and each still asked for a judgement call at the exact
+moment the pull to polish is strongest. Closing first deletes the question.
+
+**Plans live beside the work**, `#<id> - <title>.md` in the folder the change
+lands in, and they STAY when the task closes, KN-160.
+
 ## Roasts now run in the BACKGROUND
 
 The owner's standing instruction: fire the roast, take the next card, and
@@ -172,6 +187,14 @@ adjudicate when it lands. Consequences already felt:
 ## Next step
 
 `npm run todo -- next` picks it. Do not choose by hand.
+
+**Recently closed:** KN-159 close-before-roast, KN-160 plans beside the work,
+KN-162 done is terminal, KN-112 the preference-batch bug, KN-166 the sibling
+project's rules. Board: 29 done, 149 open, no criticals.
+
+**KN-166's finding is worth carrying:** SkipBureau's rules were already correct;
+what is broken there is that the GLOBAL todo skill has no terminal-done guard,
+so the rule it states is unenforced. KN-177.
 
 **KN-100 is done.** The gate-fixtures flag is hermetic in both directions and,
 more usefully, its verifier was made to prove the clause the card names rather
