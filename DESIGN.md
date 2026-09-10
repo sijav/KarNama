@@ -253,7 +253,9 @@ the width is not a whole pixel: Chromium floors a border's width to whole CSS
 pixels, measured in Chromium 151 at device pixel ratios 1 to 2, where the
 standard would keep 1.5 at 2, so a 1.5 border draws 1. The Checkbox's 1.5 is
 an inset box-shadow, which draws it, with a one pixel `ButtonBorder` border
-under forced colours, where the shadow is removed. KN-281.
+under forced colours, where the shadow is removed. KN-281. A disabled
+Checkbox takes `GrayText` there instead, so it does not read as enabled;
+every other state takes `ButtonBorder`. KN-288.
 
 ### Dark mode
 
