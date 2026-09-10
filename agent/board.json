@@ -5905,13 +5905,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A status name longer than its container is truncated with an ellipsis inside the chip, which never grows past its container; the full name stays readable by a screen reader; a story renders a long name inside a 276px container and asserts nothing overflows; and DESIGN.md records the decision.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T09:24:03.635Z",
-      "updatedAt": "2026-09-10T12:53:10.164Z",
-      "verify": "node agent/scripts/verify/KN-238.mjs"
+      "updatedAt": "2026-09-10T12:53:50.434Z",
+      "verify": "node agent/scripts/verify/KN-238.mjs",
+      "evidence": "node agent/scripts/verify/KN-238.mjs passed. It checks: (1) the Status Chip stories pass, LongName and LongNameInEnglish among them; (2) LongName renders the chip through InAColumn, a 276-wide box, the column header's width from 241:2, and asserts the column does not scroll sideways, the chip is exactly the column's width, the text is cut (scrollWidth over clientWidth), the computed text-overflow is ellipsis, the height is still 28, and the chip's text is the whole name; (3) THE CASE: with maxWidth taken out, LongName fails; (4) with the ellipsis taken out, LongName fails; (5) with dir=\"auto\" taken out, LongNameInEnglish fails, the story that renders the Persian name with the English locale and asserts the chip's computed direction is rtl while the document is ltr; (6) DESIGN.md has the section, saying how the name is cut, that a screen reader gets all of it, and that the chip takes its direction from the name. Before building, 82:2 was read again with get_design_context on 84:4 and 398:6185: the chip hugs its label and every variant shows the same placeholder, which is why they are all 72 or 81 wide, so cutting a long name is a decision, not a reading. The plan is committed beside the component and was checked twice by a second model with web search, which confirmed inline-block (text-overflow does not reach an inline-flex container's text) and the bidi reasoning. Also run and passing: KN-010 and KN-239, which anchor in the same files; the unit project, 346 tests; npm run contract; every verifier that reads DESIGN.md, seventeen of them; KN-250 over the production build, 130 renders in both languages, no story failing; workspace lint zero warnings, tsc clean. A child of KN-010, so it closes on the tests for the files it changed. NOT established: an English name in the Persian interface, the direction the roast of the plan asked for too, because a long English name as record data is a literal the lingui rule flags; KN-062's shared fixtures, whose exit condition asks for long values that exercise truncation in both languages, is where it lands. And a sighted user has no way to read the cut part: the design gives the chip no hover, and a tooltip would be a new interaction.",
+      "closedAt": "2026-09-10T12:53:50.434Z"
     },
     {
       "id": "KN-239",
