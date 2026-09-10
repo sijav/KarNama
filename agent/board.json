@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 263,
+  "nextId": 265,
   "tasks": [
     {
       "id": "KN-001",
@@ -5907,7 +5907,23 @@
       "parent": [],
       "status": "done",
       "exit": "A status name longer than its container is truncated with an ellipsis inside the chip, which never grows past its container; the full name stays readable by a screen reader; a story renders a long name inside a 276px container and asserts nothing overflows; and DESIGN.md records the decision.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7.4,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-238-round-1.2026-09-10T12-54-10-554Z.md",
+          "filed": [
+            "KN-263",
+            "KN-264"
+          ],
+          "cardDigest": "54eb4978b01e1c6b2def6f1bdb3b304a758664cfbf16a0a682582ea71bda5e77",
+          "head": "148160458e59272a5bcbf0bc508c5ff1c5187bb1",
+          "reviewerScore": 7.4,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T12:57:37.208Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T09:24:03.635Z",
       "updatedAt": "2026-09-10T12:53:50.434Z",
@@ -6516,11 +6532,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "An error made only of whitespace, format characters, combining marks, variation selectors and the blank symbols named here is no error, while a real message containing any of them is still shown; the blank rule is defined once and tested at its boundaries, including each of those characters alone and each inside a real Persian message; and the comment says exactly what the rule covers.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T12:45:20.009Z"
+      "createdAt": "2026-09-10T12:45:20.009Z",
+      "updatedAt": "2026-09-10T12:56:14.037Z"
     },
     {
       "id": "KN-262",
@@ -6536,6 +6553,38 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T12:45:20.256Z"
+    },
+    {
+      "id": "KN-263",
+      "title": "The Status Chip centres its text with a 3px padding the spacing scale does not have",
+      "desc": "CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-238 roast and confirmed from the code and the file: KN-238 made the chip an inline block and centred its line with block padding computed as (height minus line height) / 2, which is 4px for S and 3px for M. The design centres with flex and no vertical padding at all, get_design_context on 84:4 and 398:6185, and 3 is exactly the off-scale value the file's own cleanup corrected to 4, DESIGN.md's tokenised section. So the component states a spacing no token holds, even though it is computed rather than written. The inline block was chosen because text-overflow cannot reach a flex container's own text; the other way, which KN-238's plan weighed and set aside to keep one element, is the designed flex box with the text in an inner span that truncates.",
+      "why": "Every spacing in a component resolves to a token; the no-literal rule is only checkable because the design is fully tokenised, and a computed off-scale value is the same hole with a formula in front of it. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The chip is the designed flex box again, centred by alignment with no vertical padding, and the name truncates with an ellipsis in an inner element; every story that measures the chip measures the chip, not the name; KN-238's verifier still passes with its mutations; and no padding or spacing in StatusChip.tsx resolves to anything but a spacing token or zero.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T12:57:36.792Z"
+    },
+    {
+      "id": "KN-264",
+      "title": "The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it",
+      "desc": "CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-238 roast and confirmed: LongNameInEnglish proves a Persian-led name resolves rtl in the English interface, not the case that motivated dir=auto, a Latin-led name in the Persian interface such as 'Google استخدام', nor a digit-led one such as '۱۲۳ استخدام'. And DESIGN.md says the ellipsis ALWAYS cuts the end of a name, which is false for a name with no letter at all: digits or emoji alone have no strong character, so the chip falls back to the page's direction. A long Latin name as record data is a literal the lingui rule flags, which is why KN-238 left it to KN-062's fixtures; this card waits on them.",
+      "why": "A claim in the design contract should be exactly as strong as what the code does, and the mixed-script case is the one users of a Persian product actually type. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [
+        "KN-062"
+      ],
+      "status": "backlog",
+      "exit": "With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T12:57:37.062Z"
     }
   ]
 }
