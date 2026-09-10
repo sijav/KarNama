@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 224,
+  "nextId": 225,
   "tasks": [
     {
       "id": "KN-001",
@@ -4475,8 +4475,11 @@
       "status": "backlog",
       "exit": "no-restricted-globals covers every file that runs in a browser including stories and .storybook, the existing bare uses are corrected, and a planted bare localStorage in a story FAILS npm run lint, proved by planting one rather than by reading the config.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:28:35.466Z"
+      "notes": [
+        "2026-09-10, from the KN-218 roast: the Tooltip and Checkbox stories call getComputedStyle bare rather than through window, which AGENTS.md's browser-globals rule asks for. Another instance of this card's gap: no-restricted-globals does not reach stories, and does not list getComputedStyle."
+      ],
+      "createdAt": "2026-09-10T00:28:35.466Z",
+      "updatedAt": "2026-09-10T07:27:50.491Z"
     },
     {
       "id": "KN-180",
@@ -5296,7 +5299,23 @@
       "parent": [],
       "status": "done",
       "exit": "A story measures the open tip's computed padding as 8 top and bottom and 12 at each side, and its computed box-shadow as the value read from node 410:469; that value lives in the token set beside Card and Modal and is recorded in DESIGN.md's elevation table with the node it was read from; and a mutation restoring padding 12 on all sides fails the story.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-218-round-1.2026-09-10T07-18-12-079Z.md",
+          "filed": [
+            "KN-224",
+            "KN-179"
+          ],
+          "cardDigest": "30b8f450595b1c4fbe97279606dd67232c0c414bf0b37c92a700922413d1e6c4",
+          "head": "e8cd56557c29c38f5260764829e54986f8e547bf",
+          "reviewerScore": 7.5,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T07:27:50.647Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T06:56:21.840Z",
       "updatedAt": "2026-09-10T07:17:57.834Z",
@@ -5382,6 +5401,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T07:05:35.906Z"
+    },
+    {
+      "id": "KN-224",
+      "title": "The tokens.ts lingui exemption has no TECH-DEBT record and nothing stops copy being added to the file",
+      "desc": "CHILD OF KN-218, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-218 roast and confirmed against AGENTS.md section 6: nothing gets silenced without an entry in TECH-DEBT.md, and that covers ignore patterns. KN-218 added src/theme/tokens.ts to the lingui block's ignores and wrote the reason only into eslint.config.js. It also added nothing that would notice copy arriving in that file: today every literal in it is a design value, but a label or helper string added there later would pass the lingui rule without a word.",
+      "why": "It breaks a standing repository rule, in the one config the i18n guarantee rests on, and the exemption is only safe for as long as the file stays copy-free, which nothing checks. Critical on the owner's order of 2026-09-10 with the other findings on built components, since KN-218 was one.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "TECH-DEBT.md has an entry for the tokens.ts exemption in the file's what, why, fix and retiring-check format, and a unit test fails if any string exported from src/theme/tokens.ts is not a design value, a colour, a length, a shadow or the font stack, proved by a mutation adding a copy string to the file.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T07:27:50.354Z"
     }
   ]
 }
