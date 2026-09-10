@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 291,
+  "nextId": 292,
   "tasks": [
     {
       "id": "KN-001",
@@ -6788,7 +6788,23 @@
       "parent": [],
       "status": "done",
       "exit": "The Input takes an optional leading and an optional trailing icon, each 20 by 20 at spacing/2xs from the text in text/secondary, matching 95:38 with the icons on, in both directions; stories show each and both; and the label's boolean in the file is either honoured, with the accessible name then required another way, or the decision not to is recorded in DESIGN.md.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4.5,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-267-round-1.2026-09-10T18-47-16-519Z.md",
+          "filed": [
+            "KN-291"
+          ],
+          "cardDigest": "a5cf3f147df8711b24160ca1e847766040bddb4fdef4f4a7a6179f2bd93cf986",
+          "head": "0b1d5ac83e12c9c90379390a4d3dd258ba4289ad",
+          "reviewerScore": 4.5,
+          "reviewerCriticals": 1,
+          "dismissed": "The critical stands and is KN-291. The first major, disabled icons keeping text/secondary, is what the file draws: read with use_figma, the icon placeholders of all six variants of 95:38, the Disabled variant 95:31 included, are bound to color/text/secondary while the Disabled text is text/disabled, so the Input matches the file. The second major misreads agent/RALPH.md step 2b again: a plan lives beside the work. The minor, the geometry measuring the input's box, is KN-283, whose exit covers every Input story.",
+          "at": "2026-09-10T18:56:33.152Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T13:19:54.870Z",
       "updatedAt": "2026-09-10T18:46:56.459Z",
@@ -7288,6 +7304,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T18:27:30.977Z"
+    },
+    {
+      "id": "KN-291",
+      "title": "An Input icon given as false or null draws an empty slot, moving the text as if an icon were there",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-267 roast, KN-267 being a child of KN-011. Input.tsx draws a slot unless leadingIcon or trailingIcon is exactly undefined, but a React node that renders nothing can also be null, false, true or an empty string. The ordinary conditional, leadingIcon={hasIcon && <SearchIcon />}, passes false when the icon is off: the Input then draws an empty 20 by 20 slot, and with the gap the text sits 40 from that edge instead of 16. No story passes an empty value.",
+      "why": "The conditional that turns an icon off is the way callers write it, and it leaves a hole in the field the width of an icon. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "An Input given null, false, true or an empty string for either icon draws no slot and its text sits 16 from that edge, as with no icon at all; a story passes false for one icon and null for the other and asserts no slot and the 16, and a mutation back to the undefined check fails it by name.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T18:56:33.060Z"
     }
   ]
 }
