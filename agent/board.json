@@ -4186,11 +4186,15 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The command block in ../SkipBureau/.claude/ralph-loop.local.md closes before it roasts, matching its own prose; its step 1 says a false done is repaired by filing a card rather than by reopening; and a check covers BOTH that project's rule files rather than CLAUDE.md alone, so a contradiction between them fails rather than passing.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:34:27.362Z"
+      "notes": [
+        "Verified by the shared SkipBureau rules check rather than a script of its own. Two scripts reading the same two files would drift, which is the defect KN-174 was filed for after exactly that happened to the sandbox builder. KN-182 moves the whole check to SkipBureau."
+      ],
+      "createdAt": "2026-09-10T00:34:27.362Z",
+      "updatedAt": "2026-09-10T00:48:49.445Z",
+      "verify": "node agent/scripts/verify/KN-166.mjs"
     },
     {
       "id": "KN-182",

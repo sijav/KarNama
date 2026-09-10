@@ -114,6 +114,39 @@ check('it carries the two clauses that cost something to learn', () => {
   return problems.length ? problems.join('; ') : null
 })
 
+// The file KN-166 missed. `.claude/ralph-loop.local.md` is the prompt that
+// project's Stop hook feeds every iteration, so it is a rule file and it is the
+// one read FIRST. Checking `CLAUDE.md` alone let a contradiction sit in it: the
+// prose said close then roast, and the command block underneath ran the roast
+// first. KN-181. This is added here rather than in a new place because leaving
+// it unguarded is worse than deepening a coupling KN-182 already exists to
+// remove; when that card moves this check to SkipBureau, both files move.
+const PROMPT = join(SIBLING, '.claude', 'ralph-loop.local.md')
+const prompt = existsSync(PROMPT) ? readFileSync(PROMPT, 'utf8').replace(/\s+/g, ' ') : ''
+
+check('the loop prompt exists too, since it is the file read first', () => {
+  return existsSync(PROMPT) ? null : `${PROMPT} does not exist, so its rules were not checked`
+})
+
+check('the loop prompt CLOSES before it roasts, in its command block as well as its prose', () => {
+  if (!prompt) return 'no loop prompt to read'
+  // The command block, not the sentence. A block gets copied; prose does not,
+  // and this file said the right thing above a block that did the opposite.
+  const closeAt = prompt.indexOf('todo move <id> done')
+  const roastAt = prompt.indexOf('roast.py task')
+  if (closeAt === -1) return 'it never shows the close command'
+  if (roastAt === -1) return 'it never shows the roast command'
+  return closeAt < roastAt ? null : 'its command block fires the roast BEFORE the close, contradicting its own line'
+})
+
+check('the loop prompt repairs a false done by filing, not by reopening', () => {
+  if (!prompt) return 'no loop prompt to read'
+  if (!/by filing a card for what is actually left/i.test(prompt)) {
+    return 'it says a false done is repaired without saying that the repair is a new card'
+  }
+  return /`done` is terminal/i.test(prompt) ? null : 'it does not say done is terminal'
+})
+
 check('none of the abandoned gates survive anywhere in it', () => {
   if (!rules) return 'no rule file to read'
   // Narrow on purpose. "Never re-roast" is the rule, so the word itself is not
