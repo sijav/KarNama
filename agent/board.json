@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 260,
+  "nextId": 261,
   "tasks": [
     {
       "id": "KN-001",
@@ -6277,15 +6277,18 @@
       "title": "Nothing checks the Input's value control in the Controls panel follows what is typed",
       "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-249 roast and confirmed: KN-249's verifier loads only iframe.html and reads the preview's own story store, storyStoreValue.args, after typing. It never loads the manager, where the Controls panel lives, so a manager that failed to redraw the value control would pass it, while KN-249's exit condition says the value control follows what was typed. KN-249's evidence named the gap.",
       "why": "The Controls panel is what a reviewer looks at, and the card claimed a behaviour of it that nothing observed. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
-      "severity": "critical",
+      "severity": "low",
       "points": 2,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "A check loads the whole Storybook, manager and preview, from a production build, sets value through the Controls panel's own field, types into the canvas, and reads the Controls panel's value field showing the typed text; and it fails with the binding taken out.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T10:30:24.953Z"
+      "notes": [
+        "2026-09-10: lowered from critical by the loop's rule that a finding about the loop rather than the product is low unless it is actively breaking the work. It asks for a check, not a fix: nothing shows the Controls panel failing to follow, only that the verifier did not look."
+      ],
+      "createdAt": "2026-09-10T10:30:24.953Z",
+      "updatedAt": "2026-09-10T12:34:40.531Z"
     },
     {
       "id": "KN-252",
@@ -6390,15 +6393,18 @@
       "title": "KN-088's verifier stopped proving its claim when KN-007 changed the unit include",
       "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while doing KN-248, rerunning every verifier that reads the lint or test config: node agent/scripts/verify/KN-088.mjs fails two checks. Its proof that an emptied unit project fails the gate empties unitInclude, and KN-003 now fails on a TypeScript error instead, 'unitInclude' implicitly has an 'any[]' type at vitest.config.ts line 80, so the proof no longer shows what it names. And its check that the ordinary include is a named constant carrying the .test.ts pattern no longer matches. KN-007, ad81b72, rewrote that constant after KN-088's last commit, dbfb656, and nothing reran KN-088 since. The gate may still work; what is broken is the evidence for it.",
       "why": "A verifier that fails for a reason other than the one it names is a closed card whose proof has quietly stopped proving anything, and it is the proof that the done gate catches an empty test project.",
-      "severity": "high",
+      "severity": "low",
       "points": 1,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "node agent/scripts/verify/KN-088.mjs passes against the vitest.config.ts as it is now: emptying the unit include makes KN-003 fail because the unit project ran nothing, shown by its own output rather than a type error, and the constant check matches the include as written today.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T11:23:37.618Z"
+      "notes": [
+        "2026-09-10: lowered from high by the loop's own rule, restated in its prompt: a finding about the loop rather than the product is low unless it is actively breaking the work. KN-088's verifier is loop machinery, and the gate it vouches for still works."
+      ],
+      "createdAt": "2026-09-10T11:23:37.618Z",
+      "updatedAt": "2026-09-10T12:34:40.388Z"
     },
     {
       "id": "KN-257",
@@ -6461,7 +6467,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T12:09:09.497Z",
-      "updatedAt": "2026-09-10T12:20:51.760Z"
+      "updatedAt": "2026-09-10T12:42:02.035Z",
+      "verify": "node agent/scripts/verify/KN-259.mjs"
+    },
+    {
+      "id": "KN-260",
+      "title": "Stories inherit the real pointer where the last hover story left it",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while closing KN-259: in the full suite, BlankErrorIsNoError failed because one of its four fields drew text/secondary, the Input's hover border, where it asserts border/default. The Hover stories move the test runner's REAL pointer, as they must, and nothing moves it back, so the next story that renders a field under that spot starts hovered. The Input's Default story asserts a resting border too and passes only because nothing it renders sits there. KN-259 routed around it with pointer-events none on the story's row, recorded as TECH-DEBT 15.",
+      "why": "A resting-state assertion that depends on where an earlier story left the mouse is a flaky test waiting for a layout change, and one already failed a full run. High rather than critical: it breaks the suite, not a component.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Every story starts with the test runner's pointer somewhere that hovers nothing, set once for the whole suite rather than per story; BlankErrorIsNoError drops its pointer-events workaround and TECH-DEBT 15 is deleted; and a check runs a story that leaves the pointer on a field followed by one asserting a resting border in the same spot, which fails without the reset.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T12:35:20.710Z"
     }
   ]
 }

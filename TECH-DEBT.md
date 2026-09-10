@@ -383,3 +383,42 @@ that lint FAILS, which is why the exemptions stand, and the verifier asserts
 exactly that. The day it passes, the verifier fails with "retire TECH-DEBT 13":
 the rule has learned to tell these strings from copy, and the three exemptions
 and this entry are to be deleted.
+
+## 14. The lingui rule skips every string passed to getComputedStyle
+
+**What.** `apps/web/eslint.config.js` lists `getComputedStyle` in the lingui
+rule's `ignoreFunctions`, added by KN-248 so the Input stories can read the
+placeholder's style with `getComputedStyle(input, '::placeholder')`.
+
+**Why it is like that.** To the rule `'::placeholder'` is a string with letters
+in it, and so copy. The call renders nothing; its second argument is a CSS
+pseudo-element selector.
+
+**What it costs.** Every literal passed to `getComputedStyle` anywhere in `src`
+is unchecked, which is wider than the one selector the exemption was written
+for. Nothing a person reads should ever go there, but the width is the point:
+the KN-248 roast named it, filed as KN-257.
+
+**The check that retires this.** KN-257 replaces the function exemption with an
+exact pattern for `'::placeholder'`. This entry goes when
+`grep -n "'getComputedStyle'" apps/web/eslint.config.js` finds nothing and
+`npm run lint` still passes.
+
+## 15. BlankErrorIsNoError takes its fields out of the pointer's way
+
+**What.** The Input story `BlankErrorIsNoError` renders its four fields in a row
+with `pointerEvents: 'none'`, added by KN-259.
+
+**Why it is like that.** The Hover stories move the test runner's real pointer,
+and nothing moves it back. In the full suite one of the four fields rendered
+under that spot, took its hover border, and failed the assertion that a blank
+error leaves the resting border.
+
+**What it costs.** That story cannot notice a hover problem, which the Hover
+story covers. Worse, every other story that asserts a resting border is exposed
+to the same lingering pointer: the Input's Default story passes only because
+nothing it renders sits under the spot.
+
+**The check that retires this.** KN-260 puts the pointer somewhere neutral
+before every story, once for the whole suite. Then the `pointerEvents` line
+comes out of the story, the full suite still passes, and this entry is deleted.

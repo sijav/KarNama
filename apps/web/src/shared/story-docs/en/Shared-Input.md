@@ -39,7 +39,8 @@ A short note under the field. Replaced by the error while there is one.
 
 The error message. While it has any text, the field takes the error border, the
 line under it turns to the error colour, and the field is marked invalid. An
-empty or blank message is no error: the helper shows instead.
+empty or blank message, one of only spaces and invisible characters, is no
+error: the helper shows instead.
 
 ### disabled
 
@@ -120,5 +121,6 @@ below either of them moves.
 
 ### BlankErrorIsNoError
 
-An empty error beside one of only spaces: neither is an error, so both keep the
-default border, are not marked invalid, and show the helper.
+An empty error beside one of only spaces, one of only a zero-width non-joiner and
+one of only a right-to-left mark: none is an error, so all four keep the default
+border, are not marked invalid, and show the helper.

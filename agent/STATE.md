@@ -42,9 +42,18 @@ a placeholder shell**, because screens come after components.
 its Controls now drive the canvas (KN-242, KN-246, KN-249, KN-252), each story
 offers only the controls its play function holds for (KN-247), and focus is
 proved not to move the text or an empty field's placeholder (KN-243, KN-248).
-Open children of KN-011: KN-244, KN-245, KN-251, KN-253, KN-254 (in progress),
-KN-255, KN-256, KN-257, KN-258. When the last one closes, KN-011 is roasted
-together with all of them.
+Open children of KN-011: KN-244, KN-245, KN-251, KN-253, KN-255, KN-256,
+KN-257, KN-259 (closing), KN-260. KN-254 and KN-258 closed too. When the last
+one closes, KN-011 is roasted together with all of them.
+
+**Step 2b was skipped for every card from KN-205 to KN-259**: no plan file
+beside the work, no plan roast. The last committed plan is KN-204's. It
+resumes with KN-238; the closed cards get no plan written after the fact,
+because a plan written after the build is a record of nothing.
+
+**AGENTS.md section 6 was broken once and repaired**: KN-248 added a lingui
+exemption with no TECH-DEBT entry. Entry 14 records it, entry 15 records
+KN-259's pointer workaround, and KN-260 retires 15.
 
 **KN-250 fixed a real product bug found by accident**: html dir and lang were
 set in a passive effect, so the app painted its first frame right to left for
@@ -198,6 +207,12 @@ the contextual type. KN-247.
 '0px' in a story comment fails noLiterals. When a story changes, run the whole
 unit project; when a config changes, rerun every verifier that reads it. That
 is how KN-088's drift since KN-007 surfaced, KN-256. KN-248.
+
+**Never edit a file while a background run of verifiers that mutate it is
+going.** Each verifier restores the copy it read before its mutation, so an
+edit made in between is silently undone: it happened to the Input stories
+while closing KN-259. Stop the run, check the diff for a leftover mutation,
+re-apply, rerun in sequence. A killed verifier never reaches its finally.
 
 ## The next step
 

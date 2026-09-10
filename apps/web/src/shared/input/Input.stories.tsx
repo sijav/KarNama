@@ -133,8 +133,10 @@ export const FromArgs: Story = {
     const box = within(canvasElement).getByRole('textbox')
     await expect(box).toHaveAccessibleName(args.label)
     await expect(box).toHaveValue(args.value ?? args.defaultValue ?? '')
-    // A blank error is no error, so the helper describes the field then, KN-254.
-    const blank = args.error === undefined || args.error.trim() === ''
+    // A blank error is no error, so the helper describes the field then: the
+    // Input's own rule, whitespace and invisible format characters, KN-254,
+    // KN-259.
+    const blank = args.error === undefined || /^[\s\p{Cf}]*$/u.test(args.error)
     await expect(box).toHaveAccessibleDescription((blank ? args.helperText : args.error) ?? '')
     await (args.disabled === true ? expect(box).toBeDisabled() : expect(box).toBeEnabled())
   },
@@ -334,18 +336,25 @@ export const ErrorDoesNotMoveTheField: Story = {
 export const BlankErrorIsNoError: Story = {
   // A form may clear a field's error to '' rather than to undefined, or leave
   // spaces in it. Blank is no error: the default border, not invalid, and the
-  // helper still under it, KN-254. A fixed pair, so no control applies.
+  // helper still under it, KN-254. Invisible is blank too: only a zero-width
+  // non-joiner, or only a right-to-left mark, KN-259. A fixed set, so no control
+  // applies. WithError is the other half: its Persian message contains a
+  // zero-width non-joiner and is still an error.
   parameters: { controls: { disable: true } },
   globals: { colorScheme: 'light' },
   render: () => (
-    <Stack direction="row" spacing={3} data-testid="blank">
+    // Out of the pointer's way: the test runner's real pointer stays where the
+    // Hover story left it, and a hovered field takes its hover border.
+    <Stack direction="row" spacing={3} data-testid="blank" sx={{ pointerEvents: 'none' }}>
       <JobTitle error="" />
       <JobTitle error="   " />
+      <JobTitle error={'\u200c'} />
+      <JobTitle error={'\u200f'} />
     </Stack>
   ),
   play: async ({ canvasElement }) => {
     const pair = [...within(canvasElement).getByTestId('blank').children]
-    await expect(pair).toHaveLength(2)
+    await expect(pair).toHaveLength(4)
     for (const input of pair) {
       if (!(input instanceof HTMLElement)) throw new Error('a field is not an element')
       const box = within(input).getByRole('textbox')

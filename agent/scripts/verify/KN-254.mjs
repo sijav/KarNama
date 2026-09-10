@@ -18,7 +18,7 @@ const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
 const WEB = join(ROOT, 'apps', 'web')
 const COMPONENT = join(WEB, 'src', 'shared', 'input', 'Input.tsx')
 const STORIES = join(WEB, 'src', 'shared', 'input', 'Input.stories.tsx')
-const NORMALISED = "  const error = given === undefined || given.trim() === '' ? undefined : given\n"
+const NORMALISED = '  const error = given === undefined || BLANK.test(given) ? undefined : given\n'
 
 const failures = []
 const check = (label, run) => {
