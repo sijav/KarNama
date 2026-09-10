@@ -5452,11 +5452,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The story checks a flag this repository sets in the storybook project's Vitest setup, not a Vitest internal; the published Storybook still takes the canvas branch with no error; and a mutation removing the flag from the setup file fails the Hover story under npm test rather than passing it.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T07:34:17.438Z"
+      "createdAt": "2026-09-10T07:34:17.438Z",
+      "updatedAt": "2026-09-10T07:51:44.628Z",
+      "verify": "node agent/scripts/verify/KN-225.mjs"
     },
     {
       "id": "KN-226",

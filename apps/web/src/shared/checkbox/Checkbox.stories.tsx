@@ -103,11 +103,19 @@ export const Hover: Story = {
     //
     // In the published Storybook there is no test runner to move a pointer, so
     // the story is a canvas: hover it yourself. The two are told apart BEFORE
-    // importing, by `__vitest_browser__`, the flag Storybook's own vitest addon
-    // checks. The first version caught any failed import instead, so a runner
-    // that could not load its pointer passed this story on the unhovered
-    // assertion alone, KN-220. Under Vitest the import now has to succeed.
-    if (!('__vitest_browser__' in globalThis)) return
+    // importing, and a failed import is never caught, KN-220: that let a runner
+    // that could not load its pointer pass on the unhovered assertion alone.
+    //
+    // The runner is known by a flag THIS repository sets, in
+    // `.storybook/vitest.setup.ts`, which only the Vitest project loads, KN-225.
+    // It used to be `__vitest_browser__`, a Vitest internal an upgrade could
+    // rename. And a missing flag must FAIL rather than pass, so the canvas
+    // branch also needs Storybook's own preview to be the thing rendering the
+    // story; anything else is an error, not a quiet skip.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
+      if ('__STORYBOOK_PREVIEW__' in globalThis) return
+      throw new Error('Hover is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
+    }
     const browser = await import('vitest/browser')
     // The INPUT, not the frame: MUI's invisible input sits on top of the square,
     // so it is what a pointer over the square actually touches, and hovering it

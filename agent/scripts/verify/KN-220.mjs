@@ -74,10 +74,14 @@ check('CONTROL: the old catch-and-return swallowed that same failure', () =>
   // The mutation above is only evidence if the code KN-220 replaced would have
   // passed it. So the old shape goes back in, with the same rejection, and the
   // story must PASS: that pass is the defect this card closed.
+  //
+  // The runner-detection block is removed by its shape, so this keeps working
+  // after KN-225 replaced the Vitest internal it first checked with the
+  // repository's own flag.
   withStories(
     (source) =>
       source
-        .replace("    if (!('__vitest_browser__' in globalThis)) return\n", () => '')
+        .replace(/ {4}if \(!\('__KARNAMA_STORY_TEST__' in globalThis\)\) \{\n[\s\S]*?\n {4}\}\n/, () => '')
         .replace(IMPORT, () => REJECTING.replace('\n', '.catch(() => null)\n') + '    if (!browser) return\n'),
     () => {
       const { code, output } = stories()
@@ -88,9 +92,10 @@ check('CONTROL: the old catch-and-return swallowed that same failure', () =>
 
 check('the Storybook-UI branch is decided by the flag, before the import', () => {
   const source = readFileSync(STORIES, 'utf8').replace(/^\s*\/\/.*$/gm, '')
-  const flag = source.indexOf("if (!('__vitest_browser__' in globalThis)) return")
+  // The repository's own flag since KN-225, not the Vitest internal.
+  const flag = source.indexOf("if (!('__KARNAMA_STORY_TEST__' in globalThis))")
   const load = source.indexOf("await import('vitest/browser')")
-  if (flag < 0) return 'the story no longer checks the Vitest browser flag'
+  if (flag < 0) return 'the story no longer checks the story-test flag'
   if (load < 0 || load < flag) return 'the import is not after the flag check'
   return /import\('vitest\/browser'\)\s*\.catch/.test(source) ? 'the import is caught again' : null
 })

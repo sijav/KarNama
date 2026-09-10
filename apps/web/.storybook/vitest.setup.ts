@@ -15,3 +15,10 @@ import preview from './preview'
 const project = setProjectAnnotations([preview])
 
 beforeAll(project.beforeAll)
+
+// The flag a story reads to know a test runner is driving it, KN-225. Set here
+// because only the Vitest storybook project loads this file; the published
+// Storybook never does. Owned by this repository, unlike `__vitest_browser__`,
+// the Vitest internal the Checkbox Hover story used to rely on, which an upgrade
+// could rename and so turn every run into a silent pass.
+Object.assign(globalThis, { __KARNAMA_STORY_TEST__: true })
