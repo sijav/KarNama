@@ -3017,6 +3017,8 @@ CHILD OF KN-010, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Default renders from its args, so changing status, label or size in Controls changes the chip, asserted by a story that renders with non-default args; AllStatuses, a fixed matrix by design, disables the controls it cannot honour rather than showing them.
 
+**Roasts.** round 1 scored 8.4 with 0 critical(s)
+
 ### `KN-240` Nothing proves the theme's status colours come from the token set
 
 - **status** backlog · **severity** low · **points** 1 · **area** web

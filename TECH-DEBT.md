@@ -107,6 +107,17 @@ quote or a shell metacharacter could still break the invocation.
 the harness resolves and invokes the underlying `node` entry point rather than
 the shim.
 
+**The verifiers do the same, for the same reason.** Most of
+`agent/scripts/verify/*.mjs` run `npx vitest`, `npx eslint`, `npm run lint` or
+`npx storybook build` through `spawnSync(command, { shell: true })`, because
+`npx` and `npm` are `.cmd` shims on Windows too. Their command strings are
+literals written in the verifier, never built from the board, the environment
+or a file, so there is nothing for the shell to interpolate. This is NOT what
+KN-058 forbade: KN-058 is about `todo.mjs` running a card's `verify` COMMAND
+without a shell, so an appended `|| exit 0` cannot mask a failing verifier. A
+verifier's own exit code is what `todo.mjs` reads, and a shell inside it cannot
+change that. Retired by the same check as above, applied to the verifiers.
+
 ## 4. Codex cannot run `npm` inside its sandbox on Windows
 
 **What.** The reviewer shells through PowerShell, where `npm.ps1` is blocked by
