@@ -7328,12 +7328,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "An Input given null, false, true or an empty string for either icon draws no slot and its text sits 16 from that edge, as with no icon at all; a story passes false for one icon and null for the other and asserts no slot and the 16, and a mutation back to the undefined check fails it by name.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T18:56:33.060Z",
-      "updatedAt": "2026-09-10T18:57:10.381Z"
+      "updatedAt": "2026-09-10T19:13:06.367Z",
+      "verify": "node agent/scripts/verify/KN-291.mjs",
+      "evidence": "Input.tsx draws a Slot only when drawn(node) holds, node neither undefined, null, a boolean nor an empty string, so hasIcon && <Icon /> turned off draws no slot; a Slot whose child rendered nothing, an empty fragment or an icon returning null, collapses through '&:empty': { display: 'none' }, out of the flex row and its gap. node agent/scripts/verify/KN-291.mjs passed: the Input stories pass with IconsTurnedOff, which renders (false, null), (true, '') and (<></>, a component returning null) and asserts no element beside the input for the first two, zero-width slots for the third, and the text box 16 from both edges for all three; the undefined check put back fails IconsTurnedOff by name, and the :empty rule removed fails it too; in a production build, in fa-IR and en-US, all three fields measure the same. KN-267's verifier passes with its anchors moved to the new lines. Unit 422, eslint on the Input and tsc clean. Measured, not looked at: nothing on screen changes from the field without icons. Not established: the text's own start, which KN-283 replaces the box proxy for.",
+      "closedAt": "2026-09-10T19:13:06.367Z"
     }
   ]
 }
