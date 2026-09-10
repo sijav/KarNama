@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 200,
+  "nextId": 201,
   "tasks": [
     {
       "id": "KN-001",
@@ -4082,15 +4082,19 @@
       "title": "The loop prompt fed by the Stop hook still teaches the old order",
       "desc": ".claude/ralph-loop.local.md is the prompt the Stop hook feeds back every iteration, and it still carries the rules KN-159 replaced. Line 66 states the mechanical fix-in-task test that RALPH.md deleted, and line 76 makes step 6 Close it, after the roast, describing a close gate that requires a manifest-bound round and a record of what was filed, none of which is true any more. The prompt does say to follow RALPH.md exactly and that it is only the trigger, so the contradiction is survivable, but it is the single most-read instruction in the loop: it arrives at the start of every iteration and RALPH.md is read second. Two files giving different orders means the wrong one gets followed on the iteration where somebody is in a hurry.",
       "why": "The loop is driven by whichever text is in front of you at the moment of deciding. A trigger prompt that contradicts the rule file is the most expensive kind of stale documentation, because it is re-read more often than the thing it contradicts.",
-      "severity": "high",
+      "severity": "low",
       "points": 1,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": ".claude/ralph-loop.local.md states finish, prove, close, roast in that order, carries no fix-in-task rule, and describes the close gate as it actually is; a check asserts the prompt and RALPH.md do not contradict each other on the order; and a mutation reintroducing either stale rule fails that check with its own message.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:12:58.753Z"
+      "notes": [
+        "Raised from high to critical on 2026-09-10. This is the live loop prompt teaching the order the owner reversed, and KN-200 showed nothing has ever checked it: the order verifier has only ever been run against synthetic fixtures. The board refused to file KN-200 blocked on a less severe card, correctly, since a blocker that is never picked first is not a blocker.",
+        "Demoted after being fixed by hand on 2026-09-10: .claude/ralph-loop.local.md now closes at step 4 and roasts at step 5, which was the whole of this card. Left open only to confirm agent/RALPH.md agrees."
+      ],
+      "createdAt": "2026-09-10T00:12:58.753Z",
+      "updatedAt": "2026-09-10T02:24:32.743Z"
     },
     {
       "id": "KN-172",
@@ -4303,7 +4307,7 @@
       "title": "The order check reads the whole document, not the fenced block it claims to",
       "desc": "Found by the KN-181 roast. agent/scripts/verify/KN-166.mjs claims in its own comment to check the command block rather than the prose, and does not: it takes indexOf of the first todo move <id> done and the first roast.py task anywhere in the whitespace-collapsed document and compares those positions. So an editor who leaves an earlier harmless close-then-roast example anywhere above, and reverses the REAL step 5 fenced block, passes this check. That fails the card's requirement that a contradiction inside the command block fail, and it is worse than a check that never claimed it, because the comment tells the next reader the block is covered.",
       "why": "The check exists because prose and a command block disagreed and the block is what gets copied. A check that reads the whole document cannot tell those apart, so it is blind to the exact defect it was written for while asserting the opposite.",
-      "severity": "critical",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
@@ -4328,10 +4332,11 @@
         }
       ],
       "notes": [
-        "Kept, because this is not a new gate: the check already exists and already claims in its own comment to read the block. This fixes a check that lies about what it reads."
+        "Kept, because this is not a new gate: the check already exists and already claims in its own comment to read the block. This fixes a check that lies about what it reads.",
+        "Demoted to low on 2026-09-10. The owner stopped the session to point out that the roast loop had gone self-feeding: roasting the agent's own machinery produces more machinery, and five cards went into a checker for the ordering of two lines in a markdown file while sixty-five component cards sat untouched. KN-200 established that this checker has never been run against a real prompt at all. None of this is breaking the product. It stays on the board and it does not get picked ahead of KarNama."
       ],
       "createdAt": "2026-09-10T00:52:09.116Z",
-      "updatedAt": "2026-09-10T01:10:24.426Z",
+      "updatedAt": "2026-09-10T02:24:32.447Z",
       "verify": "node agent/scripts/verify/KN-184.mjs",
       "evidence": "node agent/scripts/verify/KN-184.mjs passes, 11 checks, and node agent/scripts/verify/KN-166.mjs still passes with the shared extraction wired in. The extraction lives in agent/scripts/verify/lib/prompt-order.mjs and finds the block by its HEADING, the numbered step mentioning both closing and roasting, takes the first fence under it, and stops at the next numbered step so a later step's example is never read as this one's. The plan check rejected my first idea of checking EVERY block containing both commands, on the grounds that it cannot coexist with documentation that teaches by counter-example, and heading association is closer to the exit condition; that correction is what is built. It reads the RAW text because fences are line-structured and the previous code collapsed whitespace first, handles the three-space indentation the real file has since the fence sits inside a list item, handles tilde fences, and ignores a commented-out command. The decisive check is the case the roast described: a correctly ordered decoy block ABOVE a reversed real block, which the previous implementation passed. The strongest is the last one, which reproduces that previous implementation against the same fixture and requires it to PASS: a fix nobody has watched failing beforehand is a fix for something that may not have been broken, and this is the mutation that must SURVIVE rather than be caught. Everything runs against in-memory fixtures through the same function the real check calls, so nothing had to be planted into another session's tracked prompt, which the plan check named as the alternative's cost. A real-file check runs the sibling prompt through the same function, and a structural check requires KN-166 to call it rather than keep a copy, with the old indexOf pair gone rather than living beside it. What this does NOT establish: it reads ONE step's block, the close-and-roast step, so a contradiction inside any other step's block is not covered.",
       "closedAt": "2026-09-10T01:10:24.426Z"
@@ -4392,15 +4397,18 @@
       "title": "KarNama's board cannot record a finding as a child of the task it came from",
       "desc": "The owner's rule of 2026-09-10: a roast's findings are filed as CHILDREN of the roasted task, one level, and when the last open child closes the parent and all its children are roasted together. The global todo skill now carries this as a parent_task column, with --parent-task on add and edit, and move done printing what to roast next. KarNama's own board cannot do it: board.json has a parent field and it means BLOCKED BY, a different relation entirely. A blocker must finish before the task can start; a finding comes out of a task that is already closed, so filing one as a blocker would deadlock it, and the selection law would refuse to hand it out. RALPH.md now states the rule and says the tool does not support it, which is honest and not a substitute.",
       "why": "The rule is the thing that makes done mean something: a task is finished when everything its review turned up has been dealt with, not when somebody says so. Stating it in the loop file while the board cannot express it means every finding here is still a loose card, and the group roast that closes the cycle can never be triggered by anything but memory.",
-      "severity": "high",
+      "severity": "low",
       "points": 3,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T01:13:45.273Z"
+      "notes": [
+        "Demoted to low on 2026-09-10. The owner stopped the session to point out that the roast loop had gone self-feeding: roasting the agent's own machinery produces more machinery, and five cards went into a checker for the ordering of two lines in a markdown file while sixty-five component cards sat untouched. KN-200 established that this checker has never been run against a real prompt at all. None of this is breaking the product. It stays on the board and it does not get picked ahead of KarNama."
+      ],
+      "createdAt": "2026-09-10T01:13:45.273Z",
+      "updatedAt": "2026-09-10T02:24:32.545Z"
     },
     {
       "id": "KN-189",
@@ -4484,22 +4492,25 @@
       "title": "The roast skill writes its transient result into the project, not a scratch directory",
       "desc": "The owner asked why on 2026-09-10. Both halves of the roast skill write .claude/roast-result.md into whatever project they are run in. It is gitignored so it never reaches history, but it is still transient agent output living in a working tree: it shows up in file listings and editors, and gitignored-plus-untracked is precisely the category that vanishes without anyone noticing, which is how two plan files were destroyed earlier the same day. I did not choose the location, roast.py already used it and the Node port copied it faithfully, which explains it without justifying it. Note what must NOT move: roast-sessions.json holds the session ids that let a reviewer resume a conversation across sessions, so it has to stay project-local and persistent; a session-scoped scratch directory would silently start a fresh conversation every time. KarNama's own harness, agent/scripts/roast.mjs, archives to agent/roasts/ and that is tracked on purpose, since those are manifest-bound evidence rather than scratch.",
       "why": "A tool that leaves working files in someone's project is a tool they have to tidy up after, and the answer to why is currently because it always did that. The distinction worth getting right is between state the tool NEEDS to keep, which belongs to the project, and output it happened to produce, which does not.",
-      "severity": "medium",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "The transient result file is written to a scratch location rather than into the project; roast-sessions.json stays project-local with its reason recorded; both halves agree on where and the parity test still passes; the gitignore entries for anything that no longer lands in the project are removed rather than left as fossils; and running a roast in a clean checkout leaves that checkout unchanged.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T01:34:56.950Z"
+      "notes": [
+        "Demoted to low on 2026-09-10. The owner stopped the session to point out that the roast loop had gone self-feeding: roasting the agent's own machinery produces more machinery, and five cards went into a checker for the ordering of two lines in a markdown file while sixty-five component cards sat untouched. KN-200 established that this checker has never been run against a real prompt at all. None of this is breaking the product. It stays on the board and it does not get picked ahead of KarNama."
+      ],
+      "createdAt": "2026-09-10T01:34:56.950Z",
+      "updatedAt": "2026-09-10T02:24:32.646Z"
     },
     {
       "id": "KN-192",
       "title": "A stale or inline marker masks the real block, so the marker is not yet a declaration",
       "desc": "CHILD OF KN-184, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-189 roast, and KN-189 is itself a child of KN-184, so this FLATTENS to KN-184: the rule is one level only. Recorded against KN-189 first, which would have fired the parent roast against a card with no open children while KN-184 still had one. That roast reproduced both halves. lib/prompt-order.mjs accepts the marker ANYWHERE in a line, so Note: <!-- roast-order --> above a correct fence counts as a declaration, and it accepts ANY NUMBER of marked blocks provided each is ordered. The reviewer ran a document with that inline marker above a correct fence plus a later UNMARKED reversed real fence and got ok true: the stale marker masked the moved real block. Two correctly ordered marked fences also pass. So the marker is not yet the declaration the card claimed; it is a token that anything can carry and that nothing is required to be unique. I chose checking every marked block deliberately, reasoning that two markers mean two normative blocks; the reviewer is right that it means a leftover marker satisfies the check while the block that matters drifts away unmarked.",
       "why": "The whole point of KN-189 was to replace an inference with a declaration, because three inferences had each been defeated by words. A declaration that any line can carry, in any quantity, is not much better than an inference: it recreates the false-pass class one layer up, and it does it silently.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
@@ -4508,41 +4519,48 @@
       "roasts": [],
       "notes": [
         "Parent flattened from KN-189 to KN-184 on 2026-09-10. One level only: KN-189 is itself a child of KN-184, and leaving this pointed at KN-189 would have fired the parent-plus-children roast against a card whose children were all closed while KN-184 still had this one open.",
-        "KN-190 round 1 confirmed this card is still open and added a shape: because markedBlocks has no markdown fence state, a marker written as literal TEXT inside a fenced example binds to that fence's closing line. I reproduced it, and note the direction is the opposite of this card's other cases: it returns ok false, 'the marked block never closes the task'. So it is a false NEGATIVE, which matters because a document that merely SHOWS the marker fails the check, and the tempting fix for a check that fails on correct input is to weaken it."
+        "KN-190 round 1 confirmed this card is still open and added a shape: because markedBlocks has no markdown fence state, a marker written as literal TEXT inside a fenced example binds to that fence's closing line. I reproduced it, and note the direction is the opposite of this card's other cases: it returns ok false, 'the marked block never closes the task'. So it is a false NEGATIVE, which matters because a document that merely SHOWS the marker fails the check, and the tempting fix for a check that fails on correct input is to weaken it.",
+        "Demoted to low on 2026-09-10. The owner stopped the session to point out that the roast loop had gone self-feeding: roasting the agent's own machinery produces more machinery, and five cards went into a checker for the ordering of two lines in a markdown file while sixty-five component cards sat untouched. KN-200 established that this checker has never been run against a real prompt at all. None of this is breaking the product. It stays on the board and it does not get picked ahead of KarNama."
       ],
       "createdAt": "2026-09-10T01:44:50.061Z",
-      "updatedAt": "2026-09-10T02:08:27.170Z"
+      "updatedAt": "2026-09-10T02:24:31.916Z"
     },
     {
       "id": "KN-193",
       "title": "The close recogniser is not the head token, so any command's arguments can be the close",
       "desc": "CHILD OF KN-184, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-190 roast, which reproduced it, and confirmed by running it here. KN-190 fixed the echo INSTANCE and left the CLASS. readCommand's close test is words.includes('move') and words.includes('done') and (command === 'todo' or words.includes('todo')), so the trailing disjunct lets any command whose ARGUMENTS happen to be the close shape count as the close. Confirmed reproducer: a marked block whose lines are grep todo move <id> done, then the real roast, then the real close returns ok true, so a block that roasts BEFORE it closes passes. That is the exact defect KN-190 was opened for. Also confirmed: env echo todo move <id> done and command echo ... bypass PRINTERS because their head is not a printer; a heredoc body is parsed as separate command lines, so cat <<EOF around a close masks the order; and the roast test accepts QUOTED tokens, so grep \"/tmp/roast.py\" task returns roasts true. KN-190's amended exit condition literally says the close is the head token of its line, and the implementation does not do it, so the card's green verifier did not establish its own exit condition. The reviewer also noted quote interpretation happens twice, in tokenise() and again in the line.replace() used for the operator check, and the two can disagree on escaped text; fold that into the fix rather than filing it separately.",
       "why": "This is the check that guards the loop's own order, and it currently passes a block that roasts before it closes. Every downstream card that trusts it is trusting nothing. It also means a closed critical card did not fix the thing it was closed for, which is the most expensive shape of wrong here: the board says the defect is gone.",
-      "severity": "critical",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "in_progress",
+      "status": "backlog",
       "exit": "The close is recognised ONLY when the head token is todo, or npm with todo among its arguments, and the remaining tokens match the close shape; the roast is recognised only from UNQUOTED tokens. Each of these is a named failing case before the fix and passing after: grep todo move <id> done, env echo todo move <id> done, a cat heredoc whose body is a close, and grep \"/tmp/roast.py\" task. The end-to-end reproducer in this card returns ok false with the reason naming the order. The two places that interpret quotes agree, or there is one place. The legitimate shapes still pass: todo move <id> done, todo move <id> \"done\", npm run todo -- move <id> done, and python <path>/roast.py task --title ... &",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "Put back to backlog on 2026-09-10, unbuilt, plan kept. KN-200 established that lib/prompt-order.mjs has never been run against a real loop prompt: every call site is a synthetic fixture and neither RALPH.md nor .claude/ralph-loop.local.md carries the marker. Hardening a checker with no subject is worth less than giving it one. The second plan check then found that the <id> placeholder in every command block is really input redirection, so the prompts must be rewritten to use an ordinary id, which is KN-200's work. So the order is KN-171, then KN-200, then this. Revision 3's requirements are recorded in the plan file beside this card.",
+        "Demoted to low on 2026-09-10. The owner stopped the session to point out that the roast loop had gone self-feeding: roasting the agent's own machinery produces more machinery, and five cards went into a checker for the ordering of two lines in a markdown file while sixty-five component cards sat untouched. KN-200 established that this checker has never been run against a real prompt at all. None of this is breaking the product. It stays on the board and it does not get picked ahead of KarNama."
+      ],
       "createdAt": "2026-09-10T02:00:17.784Z",
-      "updatedAt": "2026-09-10T02:15:29.525Z"
+      "updatedAt": "2026-09-10T02:24:31.991Z"
     },
     {
       "id": "KN-194",
       "title": "The prompt-order source states things that are false, including that a mutation is impossible",
       "desc": "CHILD OF KN-184, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-190 roast. I wrote comments into prompt-order.mjs, KN-190.mjs and the plan file asserting that quote handling cannot be isolated by any mutation, and that tokenisation is what separates a mention from a command, and that quoted text is data rather than command. All three are false. The reviewer produced the distinguishing fixture in one line: readCommand('todo move <id> \"done\"') returns closes true with quote handling and closes false without it, which I verified by patching the source and running it. Quoted tokens also still participate in the roast test. The reason I missed it is worth keeping: I searched only NEGATIVE fixtures, mentions that should not count, and every one of those fails safe by accident when quoting is disabled. The isolating fixture is a POSITIVE one, a legitimate command with a quoted argument. That is the positive-control rule already written in STATE.md, applied to mutation testing rather than to absence.",
       "why": "A comment that claims a protection cannot be tested is worse than no comment: it tells the next reader to stop looking, and it converts a gap into a settled fact. Declaring something unprovable is a strong claim and it needs the same standard of evidence as any other, which here means trying the positive case before concluding.",
-      "severity": "high",
+      "severity": "low",
       "points": 1,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "The false claims are gone from prompt-order.mjs, KN-190.mjs and the KN-190 plan file, replaced by what is actually true. readCommand('todo move <id> \"done\"') is a named check in the verifier, and disabling the tokeniser's quote handling makes it FAIL, proved by the mutation harness rather than asserted. STATE.md's positive-control line names mutation testing as a place it applies, since that is where it was missed.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T02:00:18.441Z"
+      "notes": [
+        "Demoted to low on 2026-09-10. The owner stopped the session to point out that the roast loop had gone self-feeding: roasting the agent's own machinery produces more machinery, and five cards went into a checker for the ordering of two lines in a markdown file while sixty-five component cards sat untouched. KN-200 established that this checker has never been run against a real prompt at all. None of this is breaking the product. It stays on the board and it does not get picked ahead of KarNama."
+      ],
+      "createdAt": "2026-09-10T02:00:18.441Z",
+      "updatedAt": "2026-09-10T02:24:32.068Z"
     },
     {
       "id": "KN-195",
@@ -4579,30 +4597,36 @@
       "title": "The order check parses shell badly instead of refusing the shapes it cannot parse",
       "desc": "CHILD OF KN-184, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by KN-190 round 1 and reproduced here by running each case. Two confirmed false passes, one root cause. FIRST, command substitution: the line todo move <id> done \"$(python <path>/roast.py task)\" is read as a plain close, because the tokeniser treats a quoted run as inert data, and a shell EXECUTES $(...) before it invokes todo. The marked block of that line followed by a visible roast returns ok true while the real order is roast, close, roast. Backticks and ${...} are the same hole. SECOND, escaped quotes: UNSUPPORTED is tested against line.replace(/\"[^\"]*\"|'[^']*'/g, ''), which is a SECOND shell parser and disagrees with tokenise() about escapes. The valid line sh -c 'python /x/roast.py task' \\\"; todo move <id> done \\\" # x has its semicolon swallowed as part of a fake quoted span, so no operator is reported, and the block passes while the shell runs the inner roast first. The reviewer's one-line judgement is the fix: stop treating shell text as tokenisable by two ad-hoc parsers. This check already REFUSES shapes it cannot order, &&, ||, a pipeline, a semicolon, a continuation, and that is the mechanism that works. Expansion and escape syntax belong in the same list rather than in a parser that gets them subtly wrong.",
       "why": "A checker that half-parses a language reports a confident answer about text it did not understand, which is worse than refusing, because refusing is visible. Two independent quote parsers guarantee a disagreement exists; the only question is which input finds it. Narrowing what the check accepts turns every one of these into a loud refusal instead of a silent pass.",
-      "severity": "critical",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "There is ONE place that decides what is quoted. Command substitution, backticks and parameter expansion are REFUSED by name, as && and the semicolon already are, with a message saying the order cannot be read rather than guessing. A backslash before a quote is refused too, or handled by the single parser and proved. Both reproducers in this card are named failing cases before the fix and are refused after, each with a mutation that makes the case pass again. The real prompt's lines still resolve.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T02:08:26.742Z"
+      "notes": [
+        "Demoted to low on 2026-09-10. The owner stopped the session to point out that the roast loop had gone self-feeding: roasting the agent's own machinery produces more machinery, and five cards went into a checker for the ordering of two lines in a markdown file while sixty-five component cards sat untouched. KN-200 established that this checker has never been run against a real prompt at all. None of this is breaking the product. It stays on the board and it does not get picked ahead of KarNama."
+      ],
+      "createdAt": "2026-09-10T02:08:26.742Z",
+      "updatedAt": "2026-09-10T02:24:32.154Z"
     },
     {
       "id": "KN-198",
       "title": "The required-card set is an unanchored constant, so shrinking the contract keeps the check green",
       "desc": "CHILD OF KN-149, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-149 roast and reproduced here by running it: change DECISION.cards in agent/scripts/verify/KN-149.mjs from ['KN-043', 'KN-060'] to ['KN-043'] and all five checks still pass, exit code 0. Nothing anchors the set. The 'real sentence' guard only asks that the list is non-empty, and the count consistency check compares the loop against DECISION.cards.length, which shrinks with it. So KN-060 can be dropped from the contract silently while the card that created the contract stays green, which defeats the exit condition's plural, the CARDS that build the board. The fix is a check I had in revision 1 of the plan and lost in revision 2: assert BOTH directions. Every card the registry names carries the clause, AND every card on the board that carries the clause is named by the registry. Shrinking the registry then fails loudly, because KN-060 still carries the clause and is no longer named. Consider anchoring the count outside the verifier as well, since both directions still passes if someone removes the clause from KN-060 AND drops it from the registry in one edit.",
       "why": "A check whose authority rests on a constant inside itself is a check that anyone can narrow to nothing by editing one line, and narrowing it looks exactly like passing it. The general lesson is the reason this is worth a card rather than a note: my mutation harness broke the IMPLEMENTATION eight ways and never touched the CONTRACT, so it proved the code enforces the registry and said nothing about whether the registry is the right one.",
-      "severity": "critical",
+      "severity": "low",
       "points": 1,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "The verifier fails when a card carrying the canonical clause is not named by the registry, and fails when a named card does not carry it. Shrinking DECISION.cards to ['KN-043'] is a named failing case, run as a mutation against the real verifier rather than argued. Whether a single edit that removes the clause from a card AND drops that card from the registry can be caught is answered in the check's own header, honestly, including a plain no if that is the answer.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T02:17:49.781Z"
+      "notes": [
+        "Demoted to low on 2026-09-10. The owner stopped the session to point out that the roast loop had gone self-feeding: roasting the agent's own machinery produces more machinery, and five cards went into a checker for the ordering of two lines in a markdown file while sixty-five component cards sat untouched. KN-200 established that this checker has never been run against a real prompt at all. None of this is breaking the product. It stays on the board and it does not get picked ahead of KarNama."
+      ],
+      "createdAt": "2026-09-10T02:17:49.781Z",
+      "updatedAt": "2026-09-10T02:24:32.249Z"
     },
     {
       "id": "KN-199",
@@ -4618,6 +4642,26 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T02:17:50.023Z"
+    },
+    {
+      "id": "KN-200",
+      "title": "The order check has never been run against a real loop prompt, and neither prompt carries the marker",
+      "desc": "Found on 2026-09-10 while planning KN-193, and verified three ways. FIRST, grep for roast-order across the repository returns only roast archives, one plan file and the rendered TODO_BOARD. agent/RALPH.md contains the marker ZERO times and .claude/ralph-loop.local.md contains it zero times. SECOND, every call site of closesBeforeRoasting is a synthetic fixture: eleven in KN-184.mjs and four in KN-190.mjs, all built by local block builders. No verifier reads either prompt. THIRD, running it against them by hand returns ok false, 'no block is marked', for both. So lib/prompt-order.mjs has been written, defeated and rewritten across KN-184, KN-189 and KN-190, and is about to be rewritten again by KN-193 and KN-197, while checking nothing. Meanwhile the defect it exists to catch is present RIGHT NOW in the file the Stop hook actually feeds the loop: .claude/ralph-loop.local.md roasts at step 4, roasts the roast at step 5, and closes at step 6, which is the order the owner reversed on 2026-09-10. KN-171 already carries that specific fix. This card is the other half, the reason it was never caught. The work is to put a marked block in both prompts and to have a verifier run the check against the real files, so a regression fails instead of being invisible.",
+      "why": "An instrument with no subject reports success forever. Four cards of effort went into making this check hard to fool, and none of that effort has ever been applied to a document that matters, which is why the wrong order has sat in the live loop prompt through every one of them. This is the most expensive shape of wrong in the repository, a green check over an unexamined thing, and it is the shape STATE.md already names twice under absence proving nothing.",
+      "severity": "low",
+      "points": 2,
+      "area": "agent",
+      "parent": [
+        "KN-171"
+      ],
+      "status": "backlog",
+      "exit": "agent/RALPH.md and .claude/ralph-loop.local.md each carry exactly one marked block, and a verifier runs closesBeforeRoasting against BOTH real files by path rather than against a fixture, failing if either is unmarked, ambiguous or reversed. The check is proved by mutation on the real files: reversing the two lines in each prompt makes it fail, and removing a marker makes it fail with the unmarked reason. Any verifier that would pass when handed a file containing no marked block at all is a defect, and the check for that is named. KN-171's fix to the prompt's order lands with or before this, since a marked block that records the wrong order is worse than none.",
+      "roasts": [],
+      "notes": [
+        "Demoted to low on 2026-09-10. The owner stopped the session to point out that the roast loop had gone self-feeding: roasting the agent's own machinery produces more machinery, and five cards went into a checker for the ordering of two lines in a markdown file while sixty-five component cards sat untouched. KN-200 established that this checker has never been run against a real prompt at all. None of this is breaking the product. It stays on the board and it does not get picked ahead of KarNama."
+      ],
+      "createdAt": "2026-09-10T02:22:29.038Z",
+      "updatedAt": "2026-09-10T02:24:32.346Z"
     }
   ]
 }

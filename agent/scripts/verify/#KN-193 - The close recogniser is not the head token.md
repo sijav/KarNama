@@ -145,3 +145,46 @@ not tested, and I will say so rather than let green checks stand in for it.
   guarantees nothing. Entirely from the check.
 - **Quoted text is not inert**, because expansion happens before quote removal.
   Revision 1 still half-believed the KN-190 premise.
+
+---
+
+## Revision 3 requirements, from the second plan check
+
+Revision 2 was re-checked and "fixes the earlier findings faithfully", with two
+gaps that stop it passing. Recorded here rather than built, because the first of
+them turns out to be work on the PROMPTS, which is KN-171 and KN-200, and this
+card was put back to the backlog behind them.
+
+**1. The placeholder exception is wrong, and must go.** `todo move <id> done` is
+not a `todo` command with a placeholder argument; it is input redirection from a
+file named `id`. My lexer would call it a close and a shell would not, which is
+the same category of error this card exists to remove, committed by the fix.
+There is no safe way to special-case it. **The prompts must stop using
+angle-bracket placeholders in command blocks** and write an ordinary word,
+`KN-014` or `TASK_ID`. That lands with KN-200, which is what puts marked blocks
+into the real prompts in the first place, so the grammar can then refuse `<` and
+`>` outright with no exception at all.
+
+**2. A lexical allowlist is not a command allowlist.** `sh -c 'python
+/x/roast.py task'` passes the lexer, is neither a recognised close nor a
+recognised roast, and is therefore IGNORED. Put it above a real close and a real
+roast and the checker reports a safe order while a roast has already run. The
+fix is the general form of everything above: **an executable line that is not
+one of the accepted shapes is a REFUSAL**, not a line to skip. Only blanks and
+comments may be skipped.
+
+**3. "Any allowed trailing options" is too loose.** `todo move KN-014 done
+--not-a-real-flag` invokes `todo` and does not close the task, and the roast on
+the next line still runs. Either accept only an `--evidence <literal>` tail, or
+say plainly in the header that this establishes INVOCATION order and not that a
+board transition succeeded. The honest answer is probably both.
+
+**4. `~` only in the roast script-path position**, since it is expansion
+everywhere else and that is the one place the live prompt needs it. `=` stops
+mattering once unknown commands are refused and the accepted heads are literally
+`todo`, `npm`, `python` and `node`.
+
+**And the boundary of honesty, from the same check**: this recogniser cannot
+prove by inspection that a real board transition succeeded. It establishes the
+order of invocations. That belongs in the header rather than in a reader's
+assumptions.
