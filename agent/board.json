@@ -6345,13 +6345,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "An error that is empty or only whitespace is no error: the field keeps its default border, is not aria-invalid, and shows its helper text; a story renders such an error and asserts all three; DESIGN.md or the component's story docs say the error state needs a message; and a mutation back to testing error against undefined fails that story by name.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T10:57:13.769Z",
-      "updatedAt": "2026-09-10T12:06:36.495Z",
-      "verify": "node agent/scripts/verify/KN-254.mjs"
+      "updatedAt": "2026-09-10T12:06:49.383Z",
+      "verify": "node agent/scripts/verify/KN-254.mjs",
+      "evidence": "node agent/scripts/verify/KN-254.mjs passed. It checks: (1) the Input stories pass, at least fourteen, BlankErrorIsNoError among them; (2) BlankErrorIsNoError renders error \"\" beside error \"   \" and asserts, for each, the default border, no aria-invalid, and a non-empty helper line in text/secondary; (3) THE CASE: with the normalisation line replaced by const error = given, BlankErrorIsNoError fails by name; (4) DESIGN.md has a section, An Input's error needs a message, saying a blank error is no error, both story docs document the story, and the English docs for the error prop say a blank one is no error. The bug was first reproduced by KN-247's sweep, where Default and Hover rerun with error '' drew border/error. The component change renames the prop on the way in, error: given, and normalises once, so every existing error === undefined line keeps its text: KN-011's and KN-241's mutations on those lines still pass. Full suite: 409 tests, coverage 100 percent on statements, branches, functions and lines, the new blank branch included; workspace lint zero warnings, tsc clean. Siblings rerun and passing: KN-011, KN-241, KN-243, KN-248, KN-242, KN-246, KN-249, KN-252, KN-247, KN-250. The first sibling run caught two things, fixed before closing: KN-247's sweep showed FromArgs, which reads its expected description from the args, still treating error '' as a message, so it now applies the same rule; and KN-248's verifier required exactly thirteen stories, now at least. NOT established: other whitespace a form might send, such as a non-breaking space, which trim() does remove but no story shows; and error values that are not strings at all, which the prop's type rules out.",
+      "closedAt": "2026-09-10T12:06:49.383Z"
     },
     {
       "id": "KN-255",
