@@ -4279,14 +4279,14 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed.",
       "roasts": [],
       "notes": [
         "Kept, because this is not a new gate: the check already exists and already claims in its own comment to read the block. This fixes a check that lies about what it reads."
       ],
       "createdAt": "2026-09-10T00:52:09.116Z",
-      "updatedAt": "2026-09-10T00:55:36.521Z"
+      "updatedAt": "2026-09-10T01:01:24.956Z"
     },
     {
       "id": "KN-185",

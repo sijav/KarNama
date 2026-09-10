@@ -86,6 +86,28 @@ Read the card before believing a validate message.
 selection law orders by severity first, so it is effectively choosing by points
 and id. Filed as KN-117.
 
+## Rule zero, and the way I keep breaking it
+
+**Do not invent gates the owner did not ask for.** It is written at the top of
+`agent/RALPH.md` now because it was only in the loop skill and this project
+reads RALPH.md.
+
+It gets broken by accident and it looks like diligence. A roast finds something
+real, the obvious fix is a check that refuses the next occurrence, the check
+becomes a card, and that card's exit condition is a gate nobody wanted. In one
+session that produced four: a refusal to record a roast without a filed list, a
+refusal of a card whose exit condition hedged, a refusal of a plan file in the
+wrong folder, and an em-dash checker. All four were removed or rewritten.
+
+**Above all, do not build gates into the SKILLS.** The owner's words: an agent
+can use them however it likes, and you do not stop them. Tests are welcome, and
+fixing what does not work is welcome. A refusal in a shared tool is not.
+
+The test, before writing an exit condition that refuses anything: did the owner
+ask for this refusal, or am I adding it because I found something? If the
+second, DO the work or write the rule down. Enforcing a rule the owner DID give
+is not inventing one.
+
 ## What the roasts keep proving, one line each
 
 **An unchecked claim replaced by another unchecked claim is not a fix.** KN-002
