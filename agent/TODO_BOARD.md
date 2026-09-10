@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 68 of 240 tasks done · 147 of 636 points.
+Project **KarNama** · 68 of 242 tasks done · 147 of 638 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-238` A long renamed status name pushes the Status Chip out of its column** (critical, 2 pt, web)
+**Next up: `KN-241` The Input's focused-while-invalid border is an unrecorded invention, and its focus test checks one axis** (critical, 1 pt, web)
 
 ## Blocked (3)
 
@@ -18,11 +18,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (167)
+## Backlog (169)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-241` | The Input's focused-while-invalid border is an unrecorded invention, and its focus test checks one axis | critical | 1 | web | none | DESIGN.md records what a focused invalid field looks like and why; a story focuses an invalid field and asserts exactly that; the Focus story asserts the text keeps both its horizontal and vertical position when the border widens; and a mutation changing the focused-error border fails the new story. |
+| `KN-242` | Most Input stories ignore their args, so the Controls panel controls nothing | critical | 1 | web | none | Default renders the Input from its args with the specimen copy as its defaults, a story with non-default args asserts the field follows them, and any story that is a fixed render by design disables the controls it cannot honour. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -408,6 +410,8 @@ Text input with Default, Filled, Focus, Error, Disabled and Hover, from Figma no
 **Why.** Every form in the product uses it: add job, manual entry, contact, note, admin. An input whose error state was never built means the first validation failure has nowhere to render.
 
 **Exit condition.** All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers.
+
+**Roasts.** round 1 scored 5.4 with 0 critical(s)
 
 ### `KN-012` Select, option row and options menu
 
@@ -3023,4 +3027,26 @@ CHILD OF KN-010, recorded in prose because board.json cannot express parent_task
 **Why.** The token module is the contract DESIGN.md is checked against, and the theme is what components draw from; the link between them is the one nothing asserts. Low: the theme does read the tokens today.
 
 **Exit condition.** A test asserts the light theme's status pairs are the token set's objects or equal to them key by key, and a mutation replacing one pair in buildTheme with a literal of the same value is caught by a check that the theme reads the token module rather than restating it.
+
+### `KN-241` The Input's focused-while-invalid border is an unrecorded invention, and its focus test checks one axis
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-011 roast, filed together because they are the same state and the same story. FIRST, confirmed: node 95:38 draws six standalone states and no error-and-focus composite. The component draws one anyway, two pixels of border/error, which is the conventional answer but is neither in the file nor recorded as a decision, and no story shows it. SECOND: the Focus story proves the text does not move horizontally when the border widens and never checks the vertical position.
+
+**Why.** Match the design exactly means a state the design does not draw is a decision to write down, not a default to slip in, and a user fixing a validation error is focused on an invalid field every time. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** DESIGN.md records what a focused invalid field looks like and why; a story focuses an invalid field and asserts exactly that; the Focus story asserts the text keeps both its horizontal and vertical position when the border widens; and a mutation changing the focused-error border fails the new story.
+
+### `KN-242` Most Input stories ignore their args, so the Controls panel controls nothing
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-011 roast and confirmed: every story renders a fixed specimen through a helper, and Default forwards only onChange, so changing label, value, placeholder, helperText, error or disabled in Controls changes nothing. KN-239 fixed the same thing in the Status Chip; the rule is that stories render from their args.
+
+**Why.** A Controls panel that silently does nothing tells a reviewer the component ignores its props. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** Default renders the Input from its args with the specimen copy as its defaults, a story with non-default args asserts the field follows them, and any story that is a fixed render by design disables the controls it cannot honour.
 

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 241,
+  "nextId": 243,
   "tasks": [
     {
       "id": "KN-001",
@@ -554,7 +554,24 @@
       ],
       "status": "done",
       "exit": "All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5.4,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-011-round-1.2026-09-10T09-23-16-843Z.md",
+          "filed": [
+            "KN-241",
+            "KN-242",
+            "KN-092"
+          ],
+          "cardDigest": "ccfa18c4c57cc693d3539b772dafbb08ded1571a35c312aa893ee1d9309ee2b7",
+          "head": "d3b7188f8a2f695055716887720943c1dee6616a",
+          "reviewerScore": 5.4,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T09:27:16.649Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -2563,10 +2580,11 @@
       "exit": "A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts.",
       "roasts": [],
       "notes": [
-        "2026-09-10, from the KN-010 roast: src/shared/status-chip is a multi-file folder with no barrel and imports ../../theme/tokens by a parent-relative path, the same as every other shared component today. Covered by this card's sweep rather than a card of its own."
+        "2026-09-10, from the KN-010 roast: src/shared/status-chip is a multi-file folder with no barrel and imports ../../theme/tokens by a parent-relative path, the same as every other shared component today. Covered by this card's sweep rather than a card of its own.",
+        "2026-09-10, from the KN-011 roast: src/shared/input joins status-chip as a new multi-file folder with no barrel and parent-relative imports, matching the codebase as it stands; for this sweep."
       ],
       "createdAt": "2026-09-07T23:28:59.911Z",
-      "updatedAt": "2026-09-10T09:24:04.363Z"
+      "updatedAt": "2026-09-10T09:27:16.435Z"
     },
     {
       "id": "KN-093",
@@ -5926,6 +5944,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T09:24:04.253Z"
+    },
+    {
+      "id": "KN-241",
+      "title": "The Input's focused-while-invalid border is an unrecorded invention, and its focus test checks one axis",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-011 roast, filed together because they are the same state and the same story. FIRST, confirmed: node 95:38 draws six standalone states and no error-and-focus composite. The component draws one anyway, two pixels of border/error, which is the conventional answer but is neither in the file nor recorded as a decision, and no story shows it. SECOND: the Focus story proves the text does not move horizontally when the border widens and never checks the vertical position.",
+      "why": "Match the design exactly means a state the design does not draw is a decision to write down, not a default to slip in, and a user fixing a validation error is focused on an invalid field every time. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "DESIGN.md records what a focused invalid field looks like and why; a story focuses an invalid field and asserts exactly that; the Focus story asserts the text keeps both its horizontal and vertical position when the border widens; and a mutation changing the focused-error border fails the new story.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T09:27:16.092Z"
+    },
+    {
+      "id": "KN-242",
+      "title": "Most Input stories ignore their args, so the Controls panel controls nothing",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-011 roast and confirmed: every story renders a fixed specimen through a helper, and Default forwards only onChange, so changing label, value, placeholder, helperText, error or disabled in Controls changes nothing. KN-239 fixed the same thing in the Status Chip; the rule is that stories render from their args.",
+      "why": "A Controls panel that silently does nothing tells a reviewer the component ignores its props. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Default renders the Input from its args with the specimen copy as its defaults, a story with non-default args asserts the field follows them, and any story that is a fixed render by design disables the controls it cannot honour.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T09:27:16.288Z"
     }
   ]
 }
