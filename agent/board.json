@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 283,
+  "nextId": 284,
   "tasks": [
     {
       "id": "KN-001",
@@ -6753,7 +6753,23 @@
       "parent": [],
       "status": "done",
       "exit": "In every state the Input's text sits spacing/md, 16px, from the field's outer edge, as 95:5 and 95:19 draw it, with the stroke painted inside that padding and taking no layout space; no padding in Input.tsx is computed from a border width; the Default and Focus stories measure the text's distance from the edge at 16; and the other bordered components are checked for the same offset, each matching or carrying a card.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-266-round-1.2026-09-10T16-51-21-665Z.md",
+          "filed": [
+            "KN-283"
+          ],
+          "cardDigest": "09d2fa29805c50f4a2b753ae96690d3f9b3dd7a2d5b1deae44aa2cb6f2cba5f1",
+          "head": "1ab9985d1532458460cef03960ba79c459635d49",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "dismissed": "Two majors and the minor are not new cards. Fractional device pixel ratios: the edge is an integer 1 or 2 CSS pixel border, and a pseudo-element's border rasterises exactly as the field's own border did, partial device pixels at 1.25 either way, so the change alters nothing there; the summary raised it as a question, not a claim. The inventory: every built component was checked, not a sample: Input, Checkbox and Filter Chip carry strokes in the file and have the edge fixed or a card (KN-281, KN-282); the Tooltip 410:469 and the Status Chip 84:22, all 18 variants read with use_figma, have none in the file or the code; the language switch has no Figma node. The stroked Status Choice 427:567 is unbuilt and its own card, KN-020, reads it. The plan-file minor misreads agent/RALPH.md step 2b, a fourth time.",
+          "at": "2026-09-10T16:55:25.059Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T13:19:54.737Z",
       "updatedAt": "2026-09-10T16:51:01.550Z",
@@ -7043,11 +7059,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The Checkbox frame's edge is 1.5 in every state as the five variants of 204:11 draw it, painted inside the frame and taking no layout space; what a 1.5 edge renders as at device pixel ratios 1 and 2 is measured and recorded; the stories assert the width; and the comment that says the file draws every border at one is corrected.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T16:24:51.312Z"
+      "createdAt": "2026-09-10T16:24:51.312Z",
+      "updatedAt": "2026-09-10T16:52:21.401Z"
     },
     {
       "id": "KN-282",
@@ -7063,6 +7080,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T16:24:51.439Z"
+    },
+    {
+      "id": "KN-283",
+      "title": "KN-266's text measurement reads the input's box, so a text-indent moves the text without failing a check",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-266 roast, KN-266 being a child of KN-011. textInsets in Input.stories.tsx, and KN-266's production check, subtract the input element's bounding rect from the field's, which is the input's box, not where its text starts. A static '& input': { textIndent: '1px' } in Input.tsx moves the drawn text to 17 in every state while every inset check still reads 16, and KN-243's layout comparison, which compares focus with rest, does not see a change present in both. So the exit condition's 'the text sits 16 from the edge' is measured by proxy. The text's start is the input box's edge on the side the text starts from, plus the input's own padding, border and text-indent there, given its direction and text-align.",
+      "why": "The card that moved the Input's text to 16 has a check that would not notice it moving back, which is the check that says it was done. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The Input's stories and KN-266's production check measure where the text starts, the input's box edge plus its own padding, border and text-indent on the side the text starts from, given its direction and alignment, and read 16 as 95:5 draws it; a static text-indent, a padding on the input and a changed alignment, each present in every state, fail Default and the production check by name.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T16:55:24.869Z"
     }
   ]
 }
