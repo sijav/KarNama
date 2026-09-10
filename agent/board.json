@@ -6157,12 +6157,17 @@
       "severity": "critical",
       "points": 1,
       "area": "web",
-      "parent": [],
+      "parent": [
+        "KN-250"
+      ],
       "status": "backlog",
       "exit": "A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T09:55:31.957Z"
+      "notes": [
+        "2026-09-10: blocked by KN-250. Its story snapshots the field before and after focus as Focus does, and on a production Storybook build html dir changes under any such snapshot until KN-250 sets it before paint, so it would ship a second story failing in the published Storybook."
+      ],
+      "createdAt": "2026-09-10T09:55:31.957Z",
+      "updatedAt": "2026-09-10T10:16:23.847Z"
     },
     {
       "id": "KN-249",

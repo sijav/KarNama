@@ -8,7 +8,7 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-248` Nothing checks the Input's placeholder stays put when an empty field takes focus** (critical, 1 pt, web)
+**Next up: `KN-249` Setting value in the Input's Controls freezes the field** (critical, 1 pt, web)
 
 ## Blocked (3)
 
@@ -24,7 +24,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-247` | The Input's interaction stories keep controls that make their play functions untrue | critical | 1 | web | KN-250 | Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control. |
-| `KN-248` | Nothing checks the Input's placeholder stays put when an empty field takes focus | critical | 1 | web | none | A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name. |
+| `KN-248` | Nothing checks the Input's placeholder stays put when an empty field takes focus | critical | 1 | web | KN-250 | A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name. |
 | `KN-249` | Setting value in the Input's Controls freezes the field | critical | 1 | web | none | After value is set in Controls, typing into the field changes it and the value control follows what was typed, the story binding value through Storybook's args; or no story offers value. A check sets value through Storybook's own arg update on a built Storybook, types into the field, and asserts both the field and the story's args show the typed text, and it fails with the binding taken out. |
 | `KN-250` | The document's direction and language are set after the first paint | critical | 1 | web | none | The document element's dir and lang are set in the commit that renders the tree, before paint, not in a passive effect: on a production Storybook build every story's play function starts with html dir and lang already matching its locale, recorded at the playing phase in both languages, and the Input's Focus story passes there; the built app, loaded with a stored English preference, has dir ltr by the time its first render's DOM exists; and a mutation back to useEffect fails the check. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
@@ -3126,7 +3126,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 ### `KN-248` Nothing checks the Input's placeholder stays put when an empty field takes focus
 
 - **status** backlog · **severity** critical · **points** 1 · **area** web
-- **blocked by** none
+- **blocked by** KN-250
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-243 roast and confirmed: the Focus story is filled through defaultValue, so no placeholder is drawn, and the input's computed style does not include its ::placeholder pseudo-element, so a focused-only rule such as '&.Mui-focused input::placeholder': { textIndent: '3px' } moves the placeholder of an empty field and nothing fails. Chromium does report placeholder styles through getComputedStyle(input, '::placeholder'): on Default it gives text/secondary, rgb(107, 114, 128), where the input itself gives rgb(17, 24, 39), and a planted pseudo-only text-indent reads back as 3px, so a story can measure it.
 
