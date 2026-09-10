@@ -14,4 +14,9 @@ export const messages: Record<string, string> = {
   'My job opportunities': 'فرصت‌های شغلی من',
   'Language': 'زبان',
   'Delete status': 'حذف وضعیت',
+  'Saved': 'ذخیره‌شده',
+  'Applied': 'درخواست‌شده',
+  'Interview': 'مصاحبه',
+  'Rejected': 'رد شده',
+  'Job offer': 'پیشنهاد کار',
 }

@@ -179,6 +179,11 @@ as a sixth role, which was wrong: it does not exist.
 
 - `Size=S`, 12px, height 24, is the default and is what almost everything uses.
 - `Size=M`, 14px, height 28, is **only** for the kanban column header.
+- Both hug their label with `spacing/xs` at each side and a full radius. S's
+  text is the `label` role exactly. M's is `body`'s size and line height, 14
+  and 22, with `label`'s weight and tracking, 500 and 0.2: node `398:6181` binds
+  no text style, so it is composed from the two roles rather than named as a
+  sixth.
 
 Reaching for the large size anywhere else is a departure from the design.
 
