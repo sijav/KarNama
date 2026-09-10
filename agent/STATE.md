@@ -21,7 +21,7 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**81 done, 177 open, 3 blocked, 2 dropped** of 264 (2026-09-10). Coverage 100
+**88 done, 183 open, 2 blocked, 2 dropped** of 275 (2026-09-10). Coverage 100
 percent on all four metrics. **Deployed**: https://sijav.github.io/KarNama/ and
 Storybook at https://sijav.github.io/KarNama/storybook/, both from
 `.github/workflows/pages.yml` on every push. The API needs
@@ -31,27 +31,32 @@ Storybook at https://sijav.github.io/KarNama/storybook/, both from
 Status Chip (KN-010), Input (KN-011). The live site is a placeholder shell
 until screens start, which is after components.
 
-**Open children.** KN-011: KN-244, KN-245, KN-251 (low), KN-253, KN-255, KN-256
-(low), KN-257 (medium), KN-260 (high), KN-261 (closing), KN-262 (planned, plan
-and verifier parked in the session scratchpad until it is taken). KN-010:
-KN-240 (low), KN-263, KN-264 (waits on KN-062). When a parent's last child
-closes, roast the parent with all its children.
+**Open children.** KN-011: KN-245 (next), KN-251 (low), KN-253, KN-255, KN-256
+(low), KN-257 (medium), KN-260 (high), KN-266, KN-267, KN-272, KN-274, KN-275.
+KN-010: KN-240 (low), KN-264 (waits on KN-062). A finding from a child's roast
+sits under the same parent, one level. When a parent's last child closes, roast
+the parent with all its children.
 
-**Step 2b was skipped for KN-205 to KN-259**, no plans; it resumed at KN-238,
-whose plan and KN-261's each changed under their checks. No plans are written
-after the fact.
+**This stretch, 2026-09-10.** KN-263: the Status Chip is the flex box again,
+the name in an inner span. KN-271: the dark border/focus and border/error are
+checked at 3:1, focus now `#3670ed`. KN-244: a focused invalid Input keeps two
+pixels of border/error and takes the product's ring, outline 2px border/focus
+at offset 2. KN-273: a question card, the owner chose a new 3:1 resting edge
+role for controls, KN-275 builds it. Filed: KN-272, the dark selected Filter
+Chip's text is 1.34:1 because bg/brand/container derives to a bright `#207df9`;
+KN-274, the invalid ring lies outside a field that fills its container, so a
+clipping host removes it. KN-273's roast was running at the time of writing.
 
 **KN-214 is deliberately held at high**: lingui compiles `ignore` with no flags,
 so `^[^\p{L}]*$` means "contains no p, {, L or }", and every Persian literal and
 every English word without a p passes the gate. Restore it to critical when the
 last component closes. Until then, strings go through lingui by hand.
 
-**The owner answered KN-196 and half of KN-073 on 2026-09-10**, recorded in
-DESIGN.md under "Settled by the owner on 2026-09-10": the drop onto the collapsed
-rejected column in full (500 ms hover, early drops land, recollapse only if the
-drag opened it, a flash and an announcement, no flash on a failed save, one
-keyboard target with its count), and employment type as eight values, more
-than one per job, KN-265. The job level list and KN-077 still wait.
+**Owner decisions of 2026-09-10**, in DESIGN.md under "Settled by the owner on
+2026-09-10": the drop onto the collapsed rejected column in full, KN-196;
+employment type as eight values, more than one per job, KN-265; and a 3:1
+resting edge role for controls, KN-273 and KN-275. The job level list and
+KN-077 still wait.
 
 ## The owner's rules, most recent first
 
@@ -69,7 +74,8 @@ than one per job, KN-265. The job level list and KN-077 still wait.
 - **A root task closes on the full suite; a child on the tests for its files**,
   plus lint and tsc.
 - **Plans live beside the work**, `#<id> - <title>.md`, checked by
-  `roast.py plan` before building, and they stay.
+  `roast.py plan` before building, and they stay. Roasts twice called them
+  misplaced documentation; that misreads step 2b and is dismissed each time.
 
 ## What keeps going wrong, one line each
 
@@ -81,13 +87,14 @@ than one per job, KN-265. The job level list and KN-077 still wait.
 - A silently ignored prop looks exactly like a working one; assert the DOM.
 - `npm run` truncates arguments at a newline on Windows: call `node agent/scripts/todo.mjs`.
 - Two roast harnesses: `roast.py plan` for plans, `roast.mjs <id>` for tasks.
+- A roast refuses a dirty worktree: never redirect its log into the repo; use the scratchpad.
 - `String.replace` with a string expands `$'` and `$&`: pass a function.
 - Read how a tool consumes an option; lingui's no-flag `ignore` is KN-214.
 - The hidden browser pane runs no animation frames; check a production build headless.
 - The production Storybook is not the Vitest one: body box-sizing, and act().
-- Vitest's act() flushes passive effects before play; the UI does not (KN-250).
 - storyFinished reports success for a play that threw; read the errored phase.
-- A story's pinned globals are `story.storyGlobals`.
+- A story's pinned globals are `story.storyGlobals`, and they beat URL globals:
+  AllStatuses and most Input stories are pinned light, so view dark through an unpinned one.
 - Arg changes re-render without remounting or rerunning play; Rerun remounts.
 - lingui's useTsTypes skips array-literal members, never rest arguments.
 - When a story changes run the whole unit project; when a config changes, rerun its verifiers.
@@ -95,15 +102,17 @@ than one per job, KN-265. The job level list and KN-077 still wait.
 - Write, Edit and heredocs rewrite backslash escapes: build a backslash from char code 92.
 - Hand-written lingui catalogs are never compiled: ICU renders raw in production (KN-221).
 - The real pointer stays where the last hover story left it (KN-260).
+- A derived palette is only as checked as its tests: text was, borders and fills were not (KN-271, KN-272).
+- Vitest hides console output by default: `--silent=false --reporter=verbose` for probes.
 
 ## The next step
 
-Close KN-261 when its sibling run is green, roast it, then `todo next`: KN-262
-(restore its plan and verifier from the scratchpad, `kn262-parked`), KN-263,
-then the two-point Input children, KN-206, KN-223, KN-226, KN-255, KN-221, and
-the components KN-019, KN-023, KN-062, KN-008, KN-009, KN-012. A new story title
-goes into `StoryTitle` in `src/shared/story-docs/story-meta.ts`; a story with a
-play function declares the controls it offers.
+KN-245, then by the law: the two-point Input children KN-253, KN-266, KN-267,
+KN-272, KN-274, then KN-275 (3), KN-206, KN-223 (blocked by KN-221), KN-226,
+KN-255, KN-221, and the components KN-019, KN-023, KN-062, KN-008, KN-009,
+KN-012. A new story title goes into `StoryTitle` in
+`src/shared/story-docs/story-meta.ts`; a story with a play function declares
+the controls it offers.
 
 ## What to read first
 
