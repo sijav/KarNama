@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 83 of 270 tasks done · 163 of 676 points.
+Project **KarNama** · 84 of 270 tasks done · 164 of 676 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-262` FromArgs copies the Input's blank-error rule instead of sharing it** (critical, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-262` | FromArgs copies the Input's blank-error rule instead of sharing it | critical | 1 | web | none | The blank rule lives in one module that the Input and its stories both import, with no second copy of the pattern anywhere under src; a unit test covers the rule's boundaries; and a mutation that widens the rule in that module changes what FromArgs expects without editing the story. |
+**Next up: `KN-263` The Status Chip centres its text with a 3px padding the spacing scale does not have** (critical, 1 pt, web)
 
 ## Blocked (2)
 
@@ -210,7 +204,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (83)
+## Done (84)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -238,6 +232,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-258` | Changing defaultValue while value is set remounts the Input's field for nothing | critical | 1 | web | none | With value set, changing defaultValue in Controls leaves the same input element in place, still focused if it was, showing the same value; with value unset a new default still starts the field over; a check on a built Storybook does both, and a mutation back to keying on defaultValue in both modes fails the first. |
 | `KN-259` | An Input error made only of invisible characters still turns the field red | critical | 1 | web | none | An error made only of whitespace and Unicode format characters is no error, while a message that merely contains them is still shown; BlankErrorIsNoError also renders an error of only a zero-width non-joiner and only a right-to-left mark and asserts they are no error, and a story with a real Persian message containing a ZWNJ still shows it; a mutation back to trim() fails the story by name. |
 | `KN-261` | An Input error of only combining marks or blank symbols still turns the field red | critical | 1 | web | none | An error made only of whitespace, format characters, combining marks, variation selectors and the blank symbols named here is no error, while a real message containing any of them is still shown; the blank rule is defined once and tested at its boundaries, including each of those characters alone and each inside a real Persian message; and the comment says exactly what the rule covers. |
+| `KN-262` | FromArgs copies the Input's blank-error rule instead of sharing it | critical | 1 | web | none | The blank rule lives in one module that the Input and its stories both import, with no second copy of the pattern anywhere under src; a unit test covers the rule's boundaries; and a mutation that widens the rule in that module changes what FromArgs expects without editing the story. |
 | `KN-058` | Run verify commands without a shell | critical | 2 | agent | KN-001 | A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done. |
 | `KN-065` | move done must require a verify command | critical | 2 | agent | KN-001 | move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one. |
 | `KN-088` | Prove the REAL test project reports a failure, not a separate config | critical | 2 | agent | KN-003 | The planted broken test is detected through the configuration npm test uses, and a mutation that empties the real unit project include makes agent/scripts/verify/KN-003.mjs fail rather than pass. |
@@ -3326,7 +3321,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-262` FromArgs copies the Input's blank-error rule instead of sharing it
 
-- **status** in_progress · **severity** critical · **points** 1 · **area** web
+- **status** done · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-259 roast and confirmed from the code: FromArgs in Input.stories.tsx decides what description to expect with its own copy of the component's pattern, /^[\s\p{Cf}]*$/u, rather than the component's rule. FromArgs leaves error unset by default, so the day the component's rule changes and the copy does not, no automated run notices; only a reviewer setting an error in Controls would see the play function disagree with the field.

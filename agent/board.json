@@ -6591,13 +6591,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The blank rule lives in one module that the Input and its stories both import, with no second copy of the pattern anywhere under src; a unit test covers the rule's boundaries; and a mutation that widens the rule in that module changes what FromArgs expects without editing the story.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T12:45:20.256Z",
-      "updatedAt": "2026-09-10T13:48:12.017Z",
-      "verify": "node agent/scripts/verify/KN-262.mjs"
+      "updatedAt": "2026-09-10T13:48:34.636Z",
+      "verify": "node agent/scripts/verify/KN-262.mjs",
+      "evidence": "node agent/scripts/verify/KN-262.mjs passed. It checks: (1) the rule's building blocks, the Cf, M and default-ignorable property escapes and a trim()-emptiness test, appear under src only in blank.ts and in src/i18n/catalog.test.ts, whose separate contract KN-268 is about, and both Input.tsx and FromArgs import isBlank, FromArgs asking it for its expected description; (2) blank.test.ts passes, 54 boundary cases; (3) a temporary story, FromArgs with error x7, appended to the stories file and run in the Storybook Vitest browser project where its play function runs, passes as the files stand; (4) THE CASE: with the rule in blank.ts widened to take letters and digits, so x7 is blank, and the story untouched, it still passes, the Input and FromArgs agreeing through the shared rule; (5) the control: with the same widening and the old copy of the pattern put back into FromArgs, it fails, which is what makes (4) mean the story follows the module. The guard in (1) was mutation-tested: a copy planted in Input.tsx is named. The files are restored after each run. The plan beside the Input was checked by a second model, which kept the pass, pass, fail control and replaced the first harness, three production builds reading Storybook's internal channel and story store, with the public Vitest path, and replaced KN-261's one-prefix guard with the building-block scan. No product code changed in this card: KN-261 made the import. A child, closing on its own verifier. NOT established: a copy written without any of those building blocks, a hand-rolled loop over code points for instance, which the guard cannot see.",
+      "closedAt": "2026-09-10T13:48:34.636Z"
     },
     {
       "id": "KN-263",
