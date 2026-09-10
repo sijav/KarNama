@@ -3831,13 +3831,15 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "move <id> in_progress, backlog, review or blocked all REFUSE when the task is done, and the refusal names the new-card route; dropped remains reachable if that is decided to be right; the refusal is proved by driving the real CLI in an isolated repository rather than by reading the source; and a mutation removing the guard fails the check with its own message.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T23:56:07.338Z",
-      "updatedAt": "2026-09-10T00:16:36.875Z",
-      "verify": "node agent/scripts/verify/KN-162.mjs"
+      "updatedAt": "2026-09-10T00:16:52.087Z",
+      "verify": "node agent/scripts/verify/KN-162.mjs",
+      "evidence": "node agent/scripts/verify/KN-162.mjs passes, 10 checks, driving the real CLI in a throwaway git repository. All five destinations out of done, in_progress, backlog, review, blocked and dropped, are refused; each refusal names the terminal rule and the new-card route; and the card is still done afterwards. The file is shaped around the trap the plan check named before it was written, a refusal proved FOR THE WRONG REASON: every attempt carries the flags that destination legitimately needs, so blocked and dropped cannot be refused for a missing --reason, and the board is asserted clear of other in-progress tasks, so in_progress cannot be refused by the one-at-a-time rule. A positive control proves the sandbox can close a task at all, since a CLI that refused everything would satisfy every refusal check, and an open task is moved in_progress then backlog to prove the guard is not catching everything. Five mutations were each caught with their own message and the file restored: the guard deleted, the guard narrowed to in_progress only, the refusal no longer naming the terminal rule, the refusal no longer naming the new-card route, and the no-op close turned back into an error. Two of those narrow rather than remove, so the CLI still refuses the move while no longer enforcing the rule, which is exactly what a weak verifier would pass. KN-001, KN-058, KN-065, KN-159 and KN-160 were all run and still pass, and the board still validates. A contradiction was found and fixed on the way: re-closing an already closed task fell through to the close gate, which answered take it with move <id> in_progress before closing it, telling the reader to make the one move the guard above forbids. What this does NOT establish: board.json is a plain file and nothing stops anything editing it directly, so this is enforcement at the CLI, which is the documented interface, and not at the data. That limit is inherent rather than an oversight.",
+      "closedAt": "2026-09-10T00:16:52.087Z"
     },
     {
       "id": "KN-163",
