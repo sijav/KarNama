@@ -5124,15 +5124,17 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-10T05:30:46.111Z",
-      "updatedAt": "2026-09-10T07:00:00.811Z",
-      "verify": "node agent/scripts/verify/KN-210.mjs"
+      "updatedAt": "2026-09-10T07:00:21.932Z",
+      "verify": "node agent/scripts/verify/KN-210.mjs",
+      "evidence": "Answered from the frame, not a screenshot: get_design_context on 410:469 reads w-[260px] with the text at flex-[1_0_0], and get_variable_defs binds no variable to the width, so the frame is a FIXED 260 (the card's 292 was wrong). Tooltip.tsx sets TIP_WIDTH = 260 as both width and maxWidth, so MUI's 300 default cap can no longer shape it. The OnHover story asserts the open tip's drawn surface has offsetWidth 260, a literal from the design rather than the component's constant (bounding box was rejected: MUI's Grow enters from scale(0.75), which read 195 mid-animation). DESIGN.md's component table row for 410:469 records the fixed width. agent/scripts/verify/KN-210.mjs, 6 checks green: stories pass; the constant is 260 and applied as width and cap; MUTATION removing the width (MUI default back) fails the story; MUTATION capping at 240 fails it, so a narrower library default is caught rather than absorbed; the story does not import the constant; DESIGN.md says FIXED 260. Tooltip stories 5 of 5, KN-032.mjs green, KN-004.mjs green (DESIGN.md still agrees with Figma), lint and tsc clean. Seen in the browser pane: fa-IR light, the tip is 260 wide, RTL, three lines; en-US dark, 260 wide, LTR, inverted fill rgb(216, 223, 238) on the rgb(31, 36, 46) page. Found on the way and filed as KN-218: py is 8 in the frame where the component pads 12 (the tip draws 90 tall against Figma's 82), and the frame's shadow is an unnamed third elevation the component does not draw.",
+      "closedAt": "2026-09-10T07:00:21.932Z"
     },
     {
       "id": "KN-211",
