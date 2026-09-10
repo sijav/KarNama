@@ -248,7 +248,12 @@ sits 16 from its edge in every state, KN-266.
 
 In CSS that is a border on a pseudo-element laid over the component, not a
 border on the component itself, which is laid out, and not an inset box-shadow,
-which Windows' forced colours removes, leaving no edge at all.
+which Windows' forced colours removes, leaving no edge at all. Except where
+the width is not a whole pixel: Chromium floors a border's width to whole CSS
+pixels, measured in Chromium 151 at device pixel ratios 1 to 2, where the
+standard would keep 1.5 at 2, so a 1.5 border draws 1. The Checkbox's 1.5 is
+an inset box-shadow, which draws it, with a one pixel `ButtonBorder` border
+under forced colours, where the shadow is removed. KN-281.
 
 ### Dark mode
 

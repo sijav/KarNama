@@ -28,6 +28,11 @@ const applyIndeterminate = (node: HTMLInputElement, value: boolean) => {
 // on the tick's svg too, and a focus ring was drawn around both. KN-205.
 const FRAME = 'KarnamaCheckbox-frame'
 
+// The frame's edge, 1.5 in all five variants of 204:11, inside the frame and
+// out of layout. No Figma variable binds a stroke weight, so it is a
+// component constant, like the Tooltip's width, KN-281.
+const EDGE = 1.5
+
 // The three marks the 20 by 20 square draws, before hover and disabled.
 type Mark = 'none' | 'tick' | 'dash'
 
@@ -48,18 +53,17 @@ const Frame = ({ mark, disabled }: { mark: Mark; disabled: boolean }) => (
         alignItems: 'center',
         justifyContent: 'center',
         boxSizing: 'border-box',
-        // Width and style rather than the shorthand: noLiterals refuses a pixel
-        // string outside src/theme, comments included. The width has no Figma
-        // variable; the file draws every border at one.
-        borderWidth: 1,
-        borderStyle: 'solid',
-        // Disabled reads as absent rather than off: the border disappears into
+        // Disabled reads as absent rather than off: the edge disappears into
         // the secondary surface.
-        ...(disabled
-          ? { backgroundColor: colour['bg/surface-secondary'], borderColor: colour['bg/surface-secondary'] }
-          : filled
-            ? { backgroundColor: colour['bg/brand/default'], borderColor: colour['bg/brand/default'] }
-            : { backgroundColor: colour['bg/surface'], borderColor: colour['border/default'] }),
+        backgroundColor: disabled ? colour['bg/surface-secondary'] : filled ? colour['bg/brand/default'] : colour['bg/surface'],
+        // The edge as an inset shadow, not a border: the file draws it at 1.5,
+        // and Chromium floors a border's width to whole CSS pixels, so a 1.5
+        // border draws 1 at every device pixel ratio, measured. A shadow draws
+        // the 1.5, inside the frame and out of layout, KN-281.
+        boxShadow: `inset 0 0 0 ${EDGE}px ${disabled ? colour['bg/surface-secondary'] : filled ? colour['bg/brand/default'] : colour['border/default']}`,
+        // Forced colours remove a shadow and keep a border, so there the edge is
+        // a one pixel border in the system's colour for a control's edge.
+        '@media (forced-colors: active)': { borderStyle: 'solid', borderWidth: 1, borderColor: 'ButtonBorder' },
       }
     }}
   >
@@ -124,7 +128,7 @@ export const Checkbox = ({ indeterminate = false, disabled = false, ...rest }: C
       // On the ROOT, not the frame: MUI's invisible input is the frame's
       // sibling and sits on top of it, so `.frame:hover` never matches.
       [`&:hover:not(.Mui-checked):not(.Mui-disabled):not(.MuiCheckbox-indeterminate) .${FRAME}`]: {
-        borderColor: theme.karnama.semantic['border/focus'],
+        boxShadow: `inset 0 0 0 ${EDGE}px ${theme.karnama.semantic['border/focus']}`,
       },
       // Scoped to the frame's own class. The focus ring belongs on the square,
       // and the glyph inside it must not get one of its own.

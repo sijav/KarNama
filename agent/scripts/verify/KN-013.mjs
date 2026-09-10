@@ -142,8 +142,8 @@ await check('THE CASE: breaking the DOM-property assignment fails the Indetermin
 await check('Hover asserts the drawn colour: reverting it to the default border fails Hover', () => {
   const { stale, outcomes } = withBreak(
     COMPONENT,
-    "        borderColor: theme.karnama.semantic['border/focus'],\n      },\n      // Scoped to the frame's own class.",
-    "        borderColor: theme.karnama.semantic['border/default'],\n      },\n      // Scoped to the frame's own class.",
+    "        boxShadow: `inset 0 0 0 ${EDGE}px ${theme.karnama.semantic['border/focus']}`,\n      },\n      // Scoped to the frame's own class.",
+    "        boxShadow: `inset 0 0 0 ${EDGE}px ${theme.karnama.semantic['border/default']}`,\n      },\n      // Scoped to the frame's own class.",
   )
   if (stale) return 'the hover rule changed shape, so this break no longer applies'
   return outcomes.get('Hover') === 'failed' ? null : `Hover was ${outcomes.get('Hover') ?? 'not run'} with no hover colour at all`

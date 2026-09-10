@@ -17,6 +17,41 @@ const computedColour = (host: HTMLElement, colour: string) => {
   return value
 }
 
+// The square the design draws, marked with its own class, KN-205.
+const frameOf = (canvasElement: HTMLElement) => {
+  const frame = canvasElement.querySelector<HTMLElement>('.KarnamaCheckbox-frame')
+  if (!frame) throw new Error('the checkbox frame was not found')
+  return frame
+}
+
+// The frame's edge, an inset shadow, read back from the computed box-shadow:
+// its colour, its three offsets, its width and whether it is inside, KN-281.
+// Parsed rather than compared to a string, since noLiterals refuses a pixel
+// string anywhere outside src/theme.
+const edgeOf = (frame: HTMLElement) => {
+  const shadow = getComputedStyle(frame).boxShadow
+  const close = shadow.indexOf(')') + 1
+  const [x = '', y = '', blur = '', spread = '', ...rest] = shadow.slice(close).trim().split(' ')
+  return {
+    colour: shadow.slice(0, close),
+    offsets: [x, y, blur].map(Number.parseFloat),
+    width: Number.parseFloat(spread),
+    inside: rest.includes('inset'),
+  }
+}
+
+// Node 204:11 draws the edge at 1.5 in every state, inside the 20 by 20 and
+// taking none of it, so the frame's own border is zero, KN-281.
+const edgeIsTheFiles = async (canvasElement: HTMLElement) => {
+  const frame = frameOf(canvasElement)
+  const edge = edgeOf(frame)
+  await expect([frame.offsetWidth, frame.offsetHeight]).toEqual([20, 20])
+  await expect(edge.width).toBe(1.5)
+  await expect(edge.inside).toBe(true)
+  await expect(edge.offsets).toEqual([0, 0, 0])
+  await expect(Number.parseFloat(getComputedStyle(frame).borderTopWidth)).toBe(0)
+}
+
 const meta = {
   title: 'Shared/Checkbox',
   component: Checkbox,
@@ -39,6 +74,7 @@ export const Unchecked: Story = {
     // checkbox that has no third state at all, which is the whole point of
     // KN-013, so the assertion has to read the element.
     await expect(box).toHaveProperty('indeterminate', false)
+    await edgeIsTheFiles(canvasElement)
   },
 }
 
@@ -46,6 +82,7 @@ export const Checked: Story = {
   args: { checked: true },
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByRole('checkbox')).toBeChecked()
+    await edgeIsTheFiles(canvasElement)
 
     // KN-205, and this is the regression test for it. The focus ring belongs on
     // the square and NOT on the tick inside it. Both used to be `MuiBox-root`,
@@ -80,6 +117,7 @@ export const Indeterminate: Story = {
     await expect(box).toHaveProperty('indeterminate', true)
     // And the accessible state that a screen reader actually announces.
     await expect(box).toHaveAttribute('data-indeterminate', 'true')
+    await edgeIsTheFiles(canvasElement)
   },
 }
 
@@ -89,9 +127,8 @@ export const Hover: Story = {
   globals: { colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     const box = within(canvasElement).getByRole('checkbox')
-    const frame = canvasElement.querySelector<HTMLElement>('.KarnamaCheckbox-frame')
-    if (!frame) throw new Error('the checkbox frame was not found')
-    await expect(getComputedStyle(frame).borderTopColor).toBe(computedColour(canvasElement, semantic['border/default']))
+    const frame = frameOf(canvasElement)
+    await expect(edgeOf(frame).colour).toBe(computedColour(canvasElement, semantic['border/default']))
 
     // A REAL pointer, not a dispatched event. `:hover` is the browser's own
     // hit-testing, and no synthetic mouseover sets it, so `storybook/test`'s
@@ -119,7 +156,7 @@ export const Hover: Story = {
     // so it is what a pointer over the square actually touches, and hovering it
     // is what turns on the root's `:hover`.
     await browser.userEvent.hover(box)
-    await expect(getComputedStyle(frame).borderTopColor).toBe(computedColour(canvasElement, semantic['border/focus']))
+    await expect(edgeOf(frame).colour).toBe(computedColour(canvasElement, semantic['border/focus']))
   },
 }
 
@@ -128,6 +165,7 @@ export const Disabled: Story = {
   play: async ({ canvasElement }) => {
     const box = within(canvasElement).getByRole('checkbox')
     await expect(box).toBeDisabled()
+    await edgeIsTheFiles(canvasElement)
     // The REFUSAL is the assertion, and getting here took two wrong turns worth
     // recording. `userEvent.click` throws on a disabled control because it has
     // no pointer events — that throw IS the proof a real user cannot reach it.
