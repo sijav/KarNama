@@ -4390,9 +4390,12 @@
       "status": "in_progress",
       "exit": "The normative block is identified by an explicit stable marker rather than by keywords in a heading; both fixtures the reviewer ran, an earlier step whose prose contains both words, and a real step whose heading uses different words, are covered as cases; and each fails before the fix and passes after.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "Verified by KN-184's script rather than one of its own: both cards are about the same check in the same file, and two scripts reading one thing drift, which is what KN-174 was filed for after the sandbox builder did exactly that within a session. The cases that prove THIS card are the two reviewer fixtures, the unmarked-prompt refusal, the detached-marker case, and the mutation reproducing the heading selector."
+      ],
       "createdAt": "2026-09-10T01:18:51.144Z",
-      "updatedAt": "2026-09-10T01:30:09.842Z"
+      "updatedAt": "2026-09-10T01:41:57.058Z",
+      "verify": "node agent/scripts/verify/KN-184.mjs"
     },
     {
       "id": "KN-190",
