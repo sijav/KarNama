@@ -5586,13 +5586,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Storybook's docgen is configured with the same children rule as the guard, the other defaults it depends on kept; a production Storybook build reports children among the Tooltip's argTypes, checked from the built page rather than the config; and a mutation dropping the option makes that check fail.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T08:08:34.318Z",
-      "updatedAt": "2026-09-10T08:11:52.566Z",
-      "verify": "node agent/scripts/verify/KN-229.mjs"
+      "updatedAt": "2026-09-10T08:12:11.414Z",
+      "verify": "node agent/scripts/verify/KN-229.mjs",
+      "evidence": ".storybook/main.ts sets typescript.reactDocgenTypescriptOptions with skipChildrenPropWithoutDoc: false, restating Storybook's defaults it replaces (shouldExtractLiteralValuesFromEnum, shouldRemoveUndefinedFromOptional, the node_modules propFilter, written as includes like the guard's). Measured from a production build before the fix: the Tooltip's children argType existed (inferred from args) with no docgen type and no required flag. agent/scripts/verify/KN-229.mjs, 3 checks green: main.ts restates the defaults and adds the rule; THE CASE, a production build served locally and read in headless Chromium through __STORYBOOK_PREVIEW__.currentRender.story.argTypes reports children as ReactElement<…> and required, and the Checkbox table carries only its own nine props; MUTATION, a build without the option reports children with no type. All 35 stories pass in the storybook project, lint and tsc clean.",
+      "closedAt": "2026-09-10T08:12:11.414Z"
     },
     {
       "id": "KN-230",

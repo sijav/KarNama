@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 59 of 230 tasks done · 129 of 619 points.
+Project **KarNama** · 60 of 230 tasks done · 130 of 619 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-229` The Tooltip's Controls table lost its children prop when its JSDoc went** (critical, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-229` | The Tooltip's Controls table lost its children prop when its JSDoc went | critical | 1 | web | none | Storybook's docgen is configured with the same children rule as the guard, the other defaults it depends on kept; a production Storybook build reports children among the Tooltip's argTypes, checked from the built page rather than the config; and a mutation dropping the option makes that check fail. |
+**Next up: `KN-211` The tooltip accepts triggers it cannot actually attach to** (critical, 2 pt, web)
 
 ## Blocked (3)
 
@@ -194,7 +188,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (59)
+## Done (60)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -206,6 +200,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-222` | The tooltip's 260 depends on the app's CSS reset, and the story finds the surface by its DOM position | critical | 1 | web | none | The tooltip surface sets its own box-sizing, and a story rendering it WITHOUT CssBaseline measures 260; the width story finds the surface by a marker the component puts on the tooltip slot itself rather than by DOM position; and a mutation removing the box-sizing fails the no-reset story. |
 | `KN-224` | The tokens.ts lingui exemption has no TECH-DEBT record and nothing stops copy being added to the file | critical | 1 | web | none | TECH-DEBT.md has an entry for the tokens.ts exemption in the file's what, why, fix and retiring-check format, and a unit test fails if any string exported from src/theme/tokens.ts is not a design value, a colour, a length, a shadow or the font stack, proved by a mutation adding a copy string to the file. |
 | `KN-225` | The Hover story tells Vitest from Storybook by an undocumented Vitest internal | critical | 1 | web | none | The story checks a flag this repository sets in the storybook project's Vitest setup, not a Vitest internal; the published Storybook still takes the canvas branch with no error; and a mutation removing the flag from the setup file fails the Hover story under npm test rather than passing it. |
+| `KN-229` | The Tooltip's Controls table lost its children prop when its JSDoc went | critical | 1 | web | none | Storybook's docgen is configured with the same children rule as the guard, the other defaults it depends on kept; a production Storybook build reports children among the Tooltip's argTypes, checked from the built page rather than the config; and a mutation dropping the option makes that check fail. |
 | `KN-058` | Run verify commands without a shell | critical | 2 | agent | KN-001 | A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done. |
 | `KN-065` | move done must require a verify command | critical | 2 | agent | KN-001 | move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one. |
 | `KN-088` | Prove the REAL test project reports a failure, not a separate config | critical | 2 | agent | KN-003 | The planted broken test is detected through the configuration npm test uses, and a mutation that empties the real unit project include makes agent/scripts/verify/KN-003.mjs fail rather than pass. |
@@ -2873,7 +2868,7 @@ CHILD OF KN-225, recorded in prose because board.json cannot express parent_task
 
 ### `KN-229` The Tooltip's Controls table lost its children prop when its JSDoc went
 
-- **status** in_progress · **severity** critical · **points** 1 · **area** web
+- **status** done · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-207, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-207 roast and confirmed: react-docgen-typescript hides an undocumented children prop by default. KN-207 removed the Tooltip's per-prop JSDoc and set skipChildrenPropWithoutDoc: false in the story-docs guard, but NOT in .storybook/main.ts, which configures the parser Storybook's own Controls table reads. So the published Controls table now shows title and icon and no children, while the story-docs markdown on the same page documents children. A regression KN-207 introduced and nothing caught.
