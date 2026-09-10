@@ -6040,13 +6040,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The Focus story fails whenever focus changes anything that lays out the text inside the field: it asserts the input element's box and every computed property of the input are unchanged by focus, naming any property it exempts and why, and a mutation adding a focused-only text-indent to the input fails Focus by name.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T09:45:56.652Z",
-      "updatedAt": "2026-09-10T09:52:50.288Z",
-      "verify": "node agent/scripts/verify/KN-243.mjs"
+      "updatedAt": "2026-09-10T09:53:08.510Z",
+      "verify": "node agent/scripts/verify/KN-243.mjs",
+      "evidence": "node agent/scripts/verify/KN-243.mjs passed. It checks: (1) the twelve Input stories pass; (2) THE CASE: adding '& input': { textIndent: '3px' } to the focused field fails Focus, and the failure names the change, 'text-indent: 0px → 3px'; (3) adding a focused-only fontFamily 'monospace' to the input fails Focus, naming font-family, the roast's own example; (4) the story has exactly one exemption, /^outline(-|$)/, with its reason written beside it. The verifier was itself mutation-tested: with the Focus assertion narrowed back to the box keys, the old proxy, checks 2 and 3 fail with 'the stories passed with the text moved'. Why the outline is exempt, measured rather than assumed: with no exemption the story failed on exactly one property, 'outline-width: 3px → 0px', because MUI sets outline 0 on the focused input and outline-style is none in both states; an outline takes no layout space, so it cannot move the text. Also rerun and passing: KN-241.mjs (its vertical-move mutation still fails Focus), KN-242.mjs and KN-011.mjs; workspace lint with zero warnings and tsc --noEmit clean. A child task, so per AGENTS.md section 5 it closes on the tests for the file it changed, not the full suite. NOT established: text position when the field is empty and shows its placeholder, since the Focus story is filled and a focused-only ::placeholder rule is on a pseudo-element getComputedStyle of the input does not report; and changes to the input's ancestors that move the text without changing the input's box or computed style, of which I know none.",
+      "closedAt": "2026-09-10T09:53:08.510Z"
     },
     {
       "id": "KN-244",
