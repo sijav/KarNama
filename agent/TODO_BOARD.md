@@ -2,19 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 85 of 270 tasks done · 165 of 676 points.
+Project **KarNama** · 85 of 271 tasks done · 165 of 677 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-244` A focused invalid Input shows focus by one pixel of the same red** (critical, 2 pt, web)
+**Next up: `KN-271` The derived dark focus colour is 2.81:1 on the surface, below the 3:1 a focus indicator needs** (critical, 1 pt, web)
 
 ## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-244` | A focused invalid Input shows focus by one pixel of the same red | critical | 2 | web | none | A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name. |
+| `KN-271` | The derived dark focus colour is 2.81:1 on the surface, below the 3:1 a focus indicator needs | critical | 1 | web | none | In the derived dark palette, border/focus and border/error each reach at least 3:1 against bg/page, bg/surface and bg/surface-secondary with their hue unchanged; darkMode.test.ts asserts all six ratios, and a mutation back to the unchecked derivation fails it; DESIGN.md's dark mode section says which borders are checked and at what ratio; and the Input's Focus state and the Checkbox's focus ring are seen in dark in both languages. |
 
 ## Blocked (2)
 
@@ -23,7 +23,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (180)
+## Backlog (181)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -32,6 +32,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
+| `KN-244` | A focused invalid Input shows focus by one pixel of the same red | critical | 2 | web | KN-271 | A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name. |
 | `KN-245` | The Input's Controls show empty values while the canvas draws the specimen's copy | critical | 2 | web | none | With no control touched, every Controls value in the args-driven Input stories is what the canvas draws, label, placeholder and helper, in either language; changing one in Controls changes the canvas to exactly that value, and clearing the placeholder or helper removes it; a story asserts the rendered copy equals the args, and a mutation reintroducing a hidden fallback fails it. |
 | `KN-253` | The Input's value binding loses keystrokes that arrive faster than Storybook's channel | critical | 2 | web | none | The field shows every edit as it happens and the arg follows without a stale value overwriting newer input: 20 keys typed with no delay all arrive in both the field and the arg, and a composition driven through the browser's own IME input ends with the composed text in both; a mutation back to the plain round trip loses keys again. |
 | `KN-266` | The Input's border takes layout space, so its text sits a pixel inward of the file | critical | 2 | web | none | In every state the Input's text sits spacing/md, 16px, from the field's outer edge, as 95:5 and 95:19 draw it, with the stroke painted inside that padding and taking no layout space; no padding in Input.tsx is computed from a border width; the Default and Focus stories measure the text's distance from the edge at 16; and the other bordered components are checked for the same offset, each matching or carrying a card. |
@@ -3108,8 +3109,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-244` A focused invalid Input shows focus by one pixel of the same red
 
-- **status** in_progress · **severity** critical · **points** 2 · **area** web
-- **blocked by** none
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** KN-271
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-241 roast and confirmed by measurement. The ordinary Focus state changes a two-pixel ring: the outer pixel goes from border/default #e5e7eb to border/focus #2563eb, 4.17:1, and the inner from bg/surface #ffffff to border/focus, 5.17:1, which meets the area and contrast measure of WCAG 2.4.13 Focus Appearance. The focused invalid state KN-241 decided in DESIGN.md changes only the inner pixel, #ffffff to border/error #ef4444, 3.76:1; the outer pixel is red before and after, 1:1. That is half the changed area, and someone who cannot resolve one pixel of thickness sees no focus at all. MUI's own outlined field and Material 3 do the same thing, so it is a convention, but it is weaker than this design's own Focus state, and the reason DESIGN.md gives only argues against staying at one pixel. The system already has a keyboard focus ring: the Checkbox draws a 2px border/focus outline at offset 2. Figma does not draw this state, so the treatment is a decision to record, not a reading.
 
@@ -3426,4 +3427,15 @@ CHILD OF KN-196, recorded in prose because board.json cannot express parent_task
 **Why.** Each is behaviour a person sees on the most-used status, and KN-061 would have to invent it. High rather than critical: it is decided before KN-061 is built, ideally with a running column to look at, as the owner asked for drag questions.
 
 **Exit condition.** DESIGN.md states, as the owner's decision, whether leaving the collapsed column during a drag resets the 500 ms, what a second drop does to a running flash, how the one-second flash relates to the 300 ms state change, and whether the keyboard target expands; KN-061's exit condition names each; and a verifier checks each detail exactly, the 500 ms, the count ticking up and the flash's length included.
+
+### `KN-271` The derived dark focus colour is 2.81:1 on the surface, below the 3:1 a focus indicator needs
+
+- **status** in_progress · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while planning KN-244 and measured from darkSemantic: the derived dark border/focus #2d69ec is 2.81:1 against the derived bg/surface #2e2e2e, 3.22:1 against bg/page #1f242e and 3.30:1 against bg/surface-secondary #1e2228. darkMode.ts walks every text token away from the surface with ensureContrast and no border token at all, so the derivation never checked it. It is the colour every focus indicator in the dark theme is drawn in: the Input's Focus border sits on the field's own bg/surface, and the Checkbox's ring sits on whatever surface holds it, so in dark both change their pixels at 2.81:1, under the 3:1 of WCAG 1.4.11 for a state indicator and of 2.4.13. border/error passes, narrowly: 3.23:1 on the surface, 3.70 on the page, 3.80 on surface-secondary.
+
+**Why.** Someone in the dark theme who moves by keyboard needs to see where focus is, and the dark palette is derived by rules this repository wrote, so no design review will catch it. KN-244's focus ring for an invalid field is drawn in border/focus as well, so its measure cannot hold in dark until this does. Critical on the owner's order of 2026-09-10, as a finding on built components.
+
+**Exit condition.** In the derived dark palette, border/focus and border/error each reach at least 3:1 against bg/page, bg/surface and bg/surface-secondary with their hue unchanged; darkMode.test.ts asserts all six ratios, and a mutation back to the unchecked derivation fails it; DESIGN.md's dark mode section says which borders are checked and at what ratio; and the Input's Focus state and the Checkbox's focus ring are seen in dark in both languages.
 

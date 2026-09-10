@@ -218,6 +218,33 @@ describe('the derived palette is readable', () => {
   })
 })
 
+/**
+ * The borders that show a state, focus and error, against every background a
+ * control sits on. Three to one is WCAG 1.4.11's bar for them, written here as
+ * the number rather than the imported constant, so lowering the constant fails
+ * these instead of lowering them with it, KN-271.
+ */
+describe('the borders that show a state can be seen', () => {
+  const borders = ['border/focus', 'border/error'] as const
+  const backgrounds = ['bg/page', 'bg/surface', 'bg/surface-secondary'] as const
+  const pairs = borders.flatMap((border) => backgrounds.map((background) => [border, background] as const))
+
+  it.each(pairs)('%s clears 3:1 on the dark %s', (border, background) => {
+    expect(contrast(darkSemantic[border], darkSemantic[background])).toBeGreaterThanOrEqual(3)
+  })
+
+  it.each(pairs)('and the light %s clears it on %s, so the design is checked too', (border, background) => {
+    expect(contrast(semantic[border], semantic[background])).toBeGreaterThanOrEqual(3)
+  })
+
+  // The check walks lightness only, so each border is still its own colour.
+  // Measured round the circle, so a red at 359 and one at 1 are 2 apart.
+  it.each(borders)('%s keeps the hue of its light token', (border) => {
+    const apart = Math.abs(hexToHsl(darkSemantic[border]).h - hexToHsl(semantic[border]).h)
+    expect(Math.min(apart, 360 - apart)).toBeLessThan(1)
+  })
+})
+
 describe('the old assertions, kept', () => {
   it('still is not the light palette wearing a different name', () => {
     // No dark value equals ANY light value, which is stronger than checking key

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 271,
+  "nextId": 272,
   "tasks": [
     {
       "id": "KN-001",
@@ -6118,13 +6118,17 @@
       "severity": "critical",
       "points": 2,
       "area": "web",
-      "parent": [],
-      "status": "in_progress",
+      "parent": [
+        "KN-271"
+      ],
+      "status": "backlog",
       "exit": "A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: taken, then put back before any file changed. Planning it found the derived dark border/focus at 2.81:1 on bg/surface, KN-271, and the focus ring this card adds is drawn in border/focus, so its 3:1 measure cannot hold in dark until KN-271 lands. Replan from step 2b after it: the ring is the Checkbox's, 2px border/focus at offset 2, beside a 2px border/error border."
+      ],
       "createdAt": "2026-09-10T09:45:56.913Z",
-      "updatedAt": "2026-09-10T14:04:11.077Z"
+      "updatedAt": "2026-09-10T14:09:14.405Z"
     },
     {
       "id": "KN-245",
@@ -6754,6 +6758,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T13:45:15.263Z"
+    },
+    {
+      "id": "KN-271",
+      "title": "The derived dark focus colour is 2.81:1 on the surface, below the 3:1 a focus indicator needs",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while planning KN-244 and measured from darkSemantic: the derived dark border/focus #2d69ec is 2.81:1 against the derived bg/surface #2e2e2e, 3.22:1 against bg/page #1f242e and 3.30:1 against bg/surface-secondary #1e2228. darkMode.ts walks every text token away from the surface with ensureContrast and no border token at all, so the derivation never checked it. It is the colour every focus indicator in the dark theme is drawn in: the Input's Focus border sits on the field's own bg/surface, and the Checkbox's ring sits on whatever surface holds it, so in dark both change their pixels at 2.81:1, under the 3:1 of WCAG 1.4.11 for a state indicator and of 2.4.13. border/error passes, narrowly: 3.23:1 on the surface, 3.70 on the page, 3.80 on surface-secondary.",
+      "why": "Someone in the dark theme who moves by keyboard needs to see where focus is, and the dark palette is derived by rules this repository wrote, so no design review will catch it. KN-244's focus ring for an invalid field is drawn in border/focus as well, so its measure cannot hold in dark until this does. Critical on the owner's order of 2026-09-10, as a finding on built components.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "in_progress",
+      "exit": "In the derived dark palette, border/focus and border/error each reach at least 3:1 against bg/page, bg/surface and bg/surface-secondary with their hue unchanged; darkMode.test.ts asserts all six ratios, and a mutation back to the unchecked derivation fails it; DESIGN.md's dark mode section says which borders are checked and at what ratio; and the Input's Focus state and the Checkbox's focus ring are seen in dark in both languages.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T14:09:07.310Z",
+      "updatedAt": "2026-09-10T14:19:29.761Z",
+      "verify": "node agent/scripts/verify/KN-271.mjs"
     }
   ]
 }

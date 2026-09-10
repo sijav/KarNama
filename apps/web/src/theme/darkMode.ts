@@ -142,6 +142,13 @@ export const contrast = (a: string, b: string): number => {
 export const MIN_CONTRAST = 4.5
 
 /**
+ * WCAG 1.4.11 for the parts of a control that show its state, a focus ring or an
+ * error border, against what sits next to them. Lower than the text bar because
+ * a border is seen rather than read. KN-271.
+ */
+export const NON_TEXT_CONTRAST = 3
+
+/**
  * Walks a colour's lightness away from a background until it is readable.
  *
  * Hue and saturation are untouched, so this is still the same colour: it is the
@@ -204,9 +211,15 @@ export const darkSemantic = {
   'text/on-accent': ensureContrast(deriveDark(semantic['text/on-accent']), deriveDarkSurface(semantic['bg/brand/default'])),
   'text/brand': ensureContrast(deriveDark(semantic['text/brand']), darkSurface),
   'text/error': ensureContrast(deriveDark(semantic['text/error']), darkSurface),
+  // The resting border shows no state, and the design itself draws it at 1.24
+  // to one on white, so it is derived and left there.
   'border/default': deriveDark(semantic['border/default']),
-  'border/focus': deriveDark(semantic['border/focus']),
-  'border/error': deriveDark(semantic['border/error']),
+  // The two borders that SHOW a state are derived and then checked, at 3:1,
+  // against the surface: the lightest of the dark backgrounds, so clearing it
+  // clears the page and the secondary surface too. The derivation alone left
+  // focus at 2.81 to one on the surface, KN-271.
+  'border/focus': ensureContrast(deriveDark(semantic['border/focus']), darkSurface, NON_TEXT_CONTRAST),
+  'border/error': ensureContrast(deriveDark(semantic['border/error']), darkSurface, NON_TEXT_CONTRAST),
   'accent/200': deriveDark(semantic['accent/200']),
   'accent/700': deriveDark(semantic['accent/700']),
   'gray/200': deriveDark(semantic['gray/200']),

@@ -239,6 +239,17 @@ preserved, from the narrow band they occupy near white onto a narrow band near
 black. The Storybook theme toolbar labels the option **Dark (derived)** for the
 same reason this paragraph exists.
 
+**Then what has to be seen is checked, not assumed.** Text is walked lighter
+in its own hue until it clears 4.5 to one on what it sits on. The two borders that
+show a state, `border/focus` and `border/error`, are walked the same way until
+they clear **3 to one**, WCAG 1.4.11's bar for the parts of a control that show
+its state, against `bg/page`, `bg/surface` and `bg/surface-secondary`: the
+derivation alone left the focus colour at 2.81 to one on the surface, KN-271.
+`border/default` is not checked, because it shows no state and the design
+itself draws it at 1.24 to one on white. The change between a focused and an
+unfocused control, WCAG 2.4.13's measure, is each component's own, KN-244 for
+the Input.
+
 ---
 
 ## 2. Component families
