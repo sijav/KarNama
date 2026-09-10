@@ -100,10 +100,12 @@ what the field announces.
 ### FocusedWhileInvalid
 
 An invalid field taking focus keeps the error colour at the focus width, two
-pixels of the error border, and the product's focus ring goes round it, two
-pixels of the focus colour just outside the field, because red staying red
-would show no focus at all. The field is shown on each of the three surfaces it
-sits on. The design does not draw this state; DESIGN.md records the decision.
+pixels of the error border, and the product's focus ring is drawn inside it,
+two pixels of the focus colour four pixels in from the edge, because red
+staying red would show no focus at all. The field sits in a box that clips
+whatever overflows it, flush with the field's sides, and nothing of the focus
+change is lost to it. The design does not draw this state; DESIGN.md records
+the decision.
 
 ### ControlsMatchTheCanvas
 

@@ -204,22 +204,38 @@ Node `95:38` draws six standalone states and no composite, so this one is a
 decision rather than a reading. **A focused invalid field keeps the error
 colour and takes the focus width**: two pixels of `border/error`, because
 turning it blue would hide the error exactly while the user is fixing it. **And
-the product's focus ring goes round it**: two pixels of `border/focus` at an
-offset of two, the ring the Checkbox and the Filter Chip draw, KN-244.
+the product's focus ring is drawn inside it**: two pixels of `border/focus`,
+four pixels in from the field's edge, the edge's two and a gap of two, its
+curve concentric with the edge's. It is the ring the Checkbox and the Filter
+Chip draw, KN-244, drawn inside the field's own box, KN-274.
 
 The red border alone changed one pixel on focus, the inner one, white to red at
 3.76 to one, with the outer pixel red before and after: half the perimeter WCAG
 2.4.13 asks a focus indicator to change, and no sign at all to someone who
-cannot resolve one pixel. The ring changes a two pixel band round the whole
-field from the surface behind it to `border/focus`, at 4.70 to one or more on
-the three light surfaces and 3.04 or more on the derived dark ones, KN-271,
-the measure the ordinary Focus state meets. A red ring would clear 3 to one
-too; blue is chosen so the product has one focus sign rather than two.
+cannot resolve one pixel. The ring changes a two pixel band from the field's
+own surface to `border/focus`, at 5.17 to one in light and 3.04 on the derived
+dark surface, KN-271. With the pixel the edge gains, the change is 6W + 172
+square pixels in a field W wide and 44 tall, against WCAG's two pixel
+perimeter of 4W + 4H, which is 4W + 176; the ring alone, being inset, is a
+little less, and the two bands count together, each a change of 3 to one or
+more. A red ring would clear 3 to one too; blue is chosen so the product has
+one focus sign rather than two.
 
-The ring is an outline, so it takes no space and nothing moves, and it shows on
-any focus, as the field's own focus border does. It sits four pixels outside
-the field, so a container that clips its overflow has to leave that room.
-Revisit if the file ever draws the state.
+**Inside the field, not round it, KN-274.** The ring was an outline four pixels
+outside the field, and the Input fills its container, so a host that clips its
+overflow at the field's edge, a modal or a scroll area, took the ring, and
+focus fell back to one red pixel. Keeping four pixels of room instead would
+inset the field from its own label and from every other field in a form. Drawn
+on a pseudo-element inside the field's own box, nothing of it lies outside the
+field, it is measured against the field's own surface wherever the field is
+put, and the text and the icons, 16 from the edge, have ten pixels to spare.
+The gap keeps red and blue, 1.37 to one against each other, from meeting and
+reading as one band. It shows on any focus, as the field's own focus border
+does, and nothing moves. Under forced colours a pseudo-element's border is
+kept, so the ring still shows there, as a second line inside the edge. The
+Checkbox's and the Filter Chip's rings are still outlines round them, which a
+flush host clips too: KN-293 and KN-294. Revisit if the file ever draws the
+state.
 
 ### An Input's error needs a message
 

@@ -21,7 +21,7 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**96 done, 190 open, 2 blocked, 2 dropped** of 290 (2026-09-10). Coverage 100
+**99 done, 191 open, 2 blocked, 2 dropped** of 294 (2026-09-10). Coverage 100
 percent on all four metrics. **Deployed**: https://sijav.github.io/KarNama/ and
 Storybook at https://sijav.github.io/KarNama/storybook/, both from
 `.github/workflows/pages.yml` on every push. The API needs
@@ -31,12 +31,13 @@ Storybook at https://sijav.github.io/KarNama/storybook/, both from
 Status Chip (KN-010), Input (KN-011). The live site is a placeholder shell
 until screens start, which is after components.
 
-**Open children.** KN-011: KN-251 (low), KN-255, KN-256 (low), KN-257
-(medium), KN-260 (high), KN-267 (in progress), KN-272, KN-274, KN-275, KN-277
-(low), KN-278 (low), KN-279 (waits on KN-272), KN-280, KN-282, KN-283, KN-286,
-KN-287, KN-289 (low), KN-290. KN-010: KN-240 (low), KN-264 (waits on KN-062).
-A finding from a child's roast sits under the same parent, one level. When a
-parent's last child closes, roast the parent with all its children.
+**Open children**, all critical unless marked. KN-011: KN-206, KN-251 (low),
+KN-255, KN-256 (low), KN-257 (medium), KN-260 (high), KN-268 (low), KN-274 (in
+progress), KN-275, KN-277 (low), KN-278 (low), KN-279, KN-280, KN-282, KN-283,
+KN-286, KN-287, KN-289 (low), KN-290, KN-292. KN-013: KN-293. KN-017: KN-294.
+KN-010: KN-240 (low), KN-264 (waits on KN-062). A finding from a child's roast
+sits under the same parent, one level. When a parent's last child closes,
+roast the parent with all its children.
 
 **This stretch, 2026-09-10.** Closed: KN-263, KN-271, KN-244, KN-273, KN-245,
 KN-276, KN-253, KN-266, KN-281 (the Checkbox edge is the file's 1.5, drawn as an
@@ -44,9 +45,21 @@ inset shadow, since Chromium floors border widths to whole CSS pixels), KN-284
 (its forced-colours fallback is a ::before), KN-285 (question: the owner chose
 to follow the screens, the message line drawn only when there is a helper or
 an error, KN-287 builds it), KN-288 (disabled takes GrayText under forced
-colours). KN-267 (icon slots) is built and verified, closing after the Input
-verifier batch. Every Input on the screens keeps its label and turns the
-helper line off (91 of 91).
+colours), KN-267 (icon slots), KN-272 (in dark the brand container is a navy
+fill, DARK_FILLS), KN-291 (an icon turned off draws no slot). Every Input on
+the screens keeps its label and turns the helper line off (91 of 91).
+
+**KN-274, in progress**: the invalid Input's focus ring moved inside the field,
+an `::after` four in from the edge, since the outline outside was lost to any
+host that clips at the field's edge. Built, story and DESIGN.md done, KN-244's
+verifier retargeted at it. Its verifier measures pixels in a production build:
+Tab selects a text field's text, and the highlight must be collapsed before
+counting, or it inflates the count. The Checkbox's and the Filter Chip's rings
+are outlines outside them too: KN-293 and KN-294.
+
+**The owner paused the loop at 2026-09-10 21:34** with
+`.claude/ralph-loop.paused`, gitignored: the Stop hook does not re-feed while it
+exists. Delete it to resume.
 
 **KN-214 is deliberately held at high**: lingui compiles `ignore` with no flags,
 so `^[^\p{L}]*$` means "contains no p, {, L or }", and every Persian literal and
@@ -113,14 +126,17 @@ screens draw it, KN-285 and KN-287. The job level list and KN-077 still wait.
 - Forced colours: box-shadow is removed, borders are kept, SVG author strokes are preserved (KN-290).
 - A roast base must be a real commit: check `git log` before passing --base.
 - Vitest hides console output by default: `--silent=false --reporter=verbose` for probes.
+- The Bash tool's heredocs turn a doubled backslash into one, and some long bodies fail outright: write long files with Write.
+- A pixel count of a focused text field includes the selection Tab makes: collapse it first (KN-274).
+- `roast.mjs` needs `--summary` and takes `--ask`; without a summary it refuses and exits.
 
 ## The next step
 
-Close KN-267 when the Input verifier batch passes, roast it, then by the law:
-KN-272, KN-274, KN-280, KN-282, KN-283, KN-286, KN-287, KN-290, then KN-275
-(3), KN-206, KN-226, KN-255, KN-221, and the components KN-019, KN-023,
-KN-062, KN-008, KN-009, KN-012. The KN-282 plan draft is in the session
-scratchpad.
+Close KN-274 when its verifier and the Input verifier batch pass, roast it,
+then by the law: KN-280, KN-282, KN-283, KN-286, KN-287, KN-290, KN-292,
+KN-293, KN-294, then KN-279 (3), KN-275 (3), KN-206, KN-226, KN-255, KN-221,
+and the components KN-019, KN-023, KN-062, KN-008, KN-009, KN-012. The KN-282
+plan draft is in the session scratchpad.
 
 ## What to read first
 

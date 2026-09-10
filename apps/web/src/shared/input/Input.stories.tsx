@@ -6,7 +6,7 @@ import { useArgs, useRef } from 'storybook/preview-api'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18n } from '../../i18n'
 import { contrast } from '../../theme/darkMode'
-import { iconSize, radius, semantic, spacing } from '../../theme/tokens'
+import { iconSize, radius, semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { isBlank } from './blank'
 import { Input, type InputProps } from './Input'
@@ -318,49 +318,128 @@ export const WithError: Story = {
   },
 }
 
-// The surfaces a field sits on, each rendered as an opaque backdrop, so the
-// focus ring is measured against the colour actually behind it, KN-244.
-const SURFACES: (keyof typeof semantic)[] = ['bg/surface', 'bg/page', 'bg/surface-secondary']
+// A box in the viewport, by its four edges.
+interface Extent {
+  left: number
+  top: number
+  right: number
+  bottom: number
+}
+
+const px = (value: string) => Number.parseFloat(value) || 0
+
+// How far past its own box a style paints: its outline, and any shadow cast
+// outside it, the largest of its offset, blur and spread. An inset shadow
+// paints inside, so it does not count.
+const reach = (style: CSSStyleDeclaration) => {
+  const outline = style.outlineStyle === 'none' ? 0 : px(style.outlineWidth) + px(style.outlineOffset)
+  const shadows = style.boxShadow === 'none' ? [] : style.boxShadow.split(/,(?![^(]*\))/).filter((shadow) => !/\binset\b/.test(shadow))
+  const cast = shadows.map((shadow) => {
+    const [x = 0, y = 0, blur = 0, spread = 0] = (shadow.replace(/rgba?\([^)]*\)/, '').match(/-?[\d.]+(?=px)/g) ?? []).map(Number)
+    return Math.max(Math.abs(x), Math.abs(y)) + blur + spread
+  })
+  return Math.max(0, outline, ...cast)
+}
+
+// Everything the field's focus can paint, as one box: the field's own box,
+// grown by what it paints past itself, and the boxes of its two
+// pseudo-elements, which an inset below zero would put outside it, grown the
+// same way. Filters and transforms, which nothing in the Input uses, are not
+// read, KN-274.
+const focusExtent = (field: HTMLElement): Extent => {
+  const box = field.getBoundingClientRect()
+  const grow = reach(getComputedStyle(field))
+  const extent = { left: box.left - grow, top: box.top - grow, right: box.right + grow, bottom: box.bottom + grow }
+  for (const style of [getComputedStyle(field, '::before'), getComputedStyle(field, '::after')]) {
+    if (style.content === 'none') continue
+    const out = reach(style)
+    extent.left = Math.min(extent.left, box.left + px(style.left) - out)
+    extent.top = Math.min(extent.top, box.top + px(style.top) - out)
+    extent.right = Math.max(extent.right, box.right - px(style.right) + out)
+    extent.bottom = Math.max(extent.bottom, box.bottom - px(style.bottom) + out)
+  }
+  return extent
+}
+
+// Every ancestor that clips what overflows it, on either axis.
+const clippingAncestors = (element: HTMLElement) => {
+  const found: HTMLElement[] = []
+  for (let node = element.parentElement; node; node = node.parentElement) {
+    const style = getComputedStyle(node)
+    if (style.overflowX !== 'visible' || style.overflowY !== 'visible') found.push(node)
+  }
+  return found
+}
+
+// Where an ancestor clips: its padding box, inside its borders. That is the
+// clip edge for hidden, auto and scroll; an auto or scroll ancestor's
+// scrollbars, overflow: clip with a margin, and a rounded clip are not
+// modelled, and the host here is square and hidden, with no scrollbar. The
+// verifier's screenshots are the rendered proof.
+const clipEdge = (node: HTMLElement): Extent => {
+  const box = node.getBoundingClientRect()
+  const style = getComputedStyle(node)
+  return { left: box.left + px(style.borderLeftWidth), top: box.top + px(style.borderTopWidth), right: box.right - px(style.borderRightWidth), bottom: box.bottom - px(style.borderBottomWidth) }
+}
+
+// How far an extent passes each side of a box: only the sides it passes, so
+// an extent inside the box gives none, and a failure names the side.
+const overshoot = (inner: Extent, outer: Extent) =>
+  Object.entries({ left: outer.left - inner.left, top: outer.top - inner.top, right: inner.right - outer.right, bottom: inner.bottom - outer.bottom }).filter(([, by]) => by > 0)
+
+// The area of the band between two insets of a w by h box.
+const band = (w: number, h: number, from: number, to: number) => (w - 2 * from) * (h - 2 * from) - (w - 2 * to) * (h - 2 * to)
 
 export const FocusedWhileInvalid: Story = {
   parameters: { controls: { disable: true } },
   globals: { colorScheme: 'light' },
   render: () => (
-    <Stack>
-      {SURFACES.map((surface) => (
-        <Box key={surface} data-testid={surface} sx={(theme) => ({ backgroundColor: theme.karnama.semantic[surface], padding: `${spacing.md}px` })}>
-          <JobTitle defaultValue="توسعه" withError />
-        </Box>
-      ))}
-    </Stack>
+    // A host that clips what overflows it and has no padding, so its inline
+    // edges are the field's, as a modal or a scroll area can be, KN-274.
+    <Box data-testid="clipping-host" sx={{ overflow: 'hidden' }}>
+      <JobTitle defaultValue="توسعه" withError />
+    </Box>
   ),
   play: async ({ canvasElement }) => {
-    for (const surface of SURFACES) {
-      const backdrop = within(canvasElement).getByTestId(surface)
-      await expect(getComputedStyle(backdrop).backgroundColor).toBe(computedColour(backdrop, semantic[surface]))
-      const box = within(backdrop).getByRole('textbox')
-      const field = fieldOf(backdrop)
-      const before = textLayout(box)
-      await userEvent.tab()
-      await expect(box).toHaveFocus()
-      // Not drawn in the file, decided in DESIGN.md. The border keeps the
-      // focus width in the error colour, so the error stays in view while it
-      // is being fixed, KN-241.
-      const style = getComputedStyle(field)
-      await expect(Number.parseFloat(edgeOf(field).borderTopWidth)).toBe(2)
-      await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/error']))
-      // And the focus ring goes round it, since red to red is no change: two
-      // pixels of border/focus outside the field, a band larger than the
-      // field's own two pixel perimeter, changing from the backdrop at 3:1 or
-      // more, WCAG 2.4.13, KN-244.
-      await expect(style.outlineStyle).toBe('solid')
-      await expect(Number.parseFloat(style.outlineWidth)).toBeGreaterThanOrEqual(2)
-      await expect(Number.parseFloat(style.outlineOffset)).toBeGreaterThanOrEqual(0)
-      await expect(style.outlineColor).toBe(computedColour(field, semantic['border/focus']))
-      await expect(contrast(hexOf(style.outlineColor), hexOf(getComputedStyle(backdrop).backgroundColor))).toBeGreaterThanOrEqual(3)
-      // And nothing that lays the text out moves for any of it.
-      await expect(changes(before, textLayout(box))).toEqual([])
-    }
+    const host = within(canvasElement).getByTestId('clipping-host')
+    const box = within(host).getByRole('textbox')
+    const field = fieldOf(host)
+    const before = textLayout(box)
+    const resting = px(edgeOf(field).borderTopWidth)
+    await userEvent.tab()
+    await expect(box).toHaveFocus()
+    // Every pixel the focus change paints lies inside the field's own box, so
+    // inside any host that holds the field, and inside every ancestor here
+    // that clips, the host flush with the field's inline edges among them. A
+    // ring round the field would lie four outside, KN-274.
+    const extent = focusExtent(field)
+    await expect(overshoot(extent, field.getBoundingClientRect())).toEqual([])
+    const clips = clippingAncestors(field)
+    await expect(clips).toContain(host)
+    for (const clip of clips) await expect(overshoot(extent, clipEdge(clip))).toEqual([])
+    // The ring, since red to red is no change: two pixels of border/focus,
+    // changing from the field's own surface at 3:1 or more, KN-244. Measured
+    // against the field, not the host, since it is drawn on the field.
+    const ring = getComputedStyle(field, '::after')
+    const surface = hexOf(getComputedStyle(field).backgroundColor)
+    await expect(px(ring.borderTopWidth)).toBeGreaterThanOrEqual(2)
+    await expect(contrast(hexOf(ring.borderTopColor), surface)).toBeGreaterThanOrEqual(3)
+    await expect(ring.borderTopColor).toBe(computedColour(field, semantic['border/focus']))
+    // With the pixel the edge gains, also a change from the surface at 3:1 or
+    // more, the change is at least the field's two-pixel perimeter, 4W + 4H,
+    // WCAG 2.4.13's measure. The ring alone, being inset, is a little less.
+    const edge = edgeOf(field)
+    await expect(contrast(hexOf(edge.borderTopColor), surface)).toBeGreaterThanOrEqual(3)
+    const { width, height } = field.getBoundingClientRect()
+    const changed = band(width, height, resting, px(edge.borderTopWidth)) + band(width, height, px(ring.top), px(ring.top) + px(ring.borderTopWidth))
+    await expect(changed - 4 * (width + height)).toBeGreaterThanOrEqual(0)
+    // Not drawn in the file, decided in DESIGN.md. The border keeps the focus
+    // width in the error colour, so the error stays in view while it is being
+    // fixed, KN-241.
+    await expect(px(edge.borderTopWidth)).toBe(2)
+    await expect(edge.borderTopColor).toBe(computedColour(field, semantic['border/error']))
+    // And nothing that lays the text out moves for any of it.
+    await expect(changes(before, textLayout(box))).toEqual([])
   },
 }
 

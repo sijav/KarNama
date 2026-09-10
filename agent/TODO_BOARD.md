@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 99 of 292 tasks done · 185 of 710 points.
+Project **KarNama** · 99 of 294 tasks done · 185 of 714 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -23,7 +23,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (188)
+## Backlog (190)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -39,6 +39,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-286` | An Input's error is not announced when it appears while the field has focus | critical | 2 | web | none | An error that appears on a focused Input is announced through a live region present before the error arrives, and the field keeps aria-invalid and its aria-describedby association; clearing the error restores the helper as the description or removes aria-describedby when there is none; a story asserts the live region's role and that it carries the error text after the error is set on a focused field, and a mutation removing the live region fails it by name. |
 | `KN-287` | Draw the Input's message line only when there is a helper or an error, as the screens draw it | critical | 2 | web | none | An Input with neither a helper nor an error draws no message line and is 64 tall, as the 91 screen instances draw it; with a helper or an error it is 90, the file's variants; an error appearing on a field without a helper adds the line with its message; an error on a field that has a helper replaces the helper with the error's message and the field's aria-describedby then names the error, and clearing the error brings the helper back; a blank error still draws no line; stories assert the 64 and the 90, the line appearing with the error, and the error replacing a helper, with a mutation that keeps the helper over the error failing by name, replacing ErrorDoesNotMoveTheField and WithoutAHelper's reserved line; every other place that asserts the reserved line is changed with it, KN-011's verifier and both languages' story docs included; DESIGN.md records the owner's reversal of KN-011's decision; and the Input's comment about the line always keeping its height is corrected. |
 | `KN-290` | Under forced colours the Checkbox's tick and dash keep their author colour, so a disabled mark looks enabled and a white one can vanish | critical | 2 | web | none | Under forced colours the tick and the dash are drawn in system colours, ButtonText when enabled and GrayText when disabled, the keyword kept so a check can read it whatever the palette, and each stays visible against the frame; a check in a production build reads checked and indeterminate, enabled and disabled, under forced colours, comparing the rendered mark with a same-page probe of its system colour, and a mutation back to the author colour fails it; and DESIGN.md's stroke section says what the mark takes there. |
+| `KN-293` | The Checkbox's focus ring sits four pixels outside a root with no padding, so a host that clips flush at its edge removes it | critical | 2 | web | none | A focused Checkbox inside a host that clips its overflow flush at the Checkbox's own box still changes at least a two-pixel perimeter at 3:1, drawn inside that box or with the room kept by the Checkbox itself; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which. |
+| `KN-294` | The Filter Chip's focus ring sits four pixels outside the chip, so a scrolling row of chips clips it at its edges | critical | 2 | web | none | A focused Filter Chip inside a host that clips its overflow flush at the chip's box still changes at least a two-pixel perimeter at 3:1, drawn inside the chip or with the room kept by the chip itself, selected and not; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which. |
 | `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
 | `KN-021` | Page header | critical | 3 | web | KN-005, KN-006, KN-007, KN-009, KN-008 | Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree. |
 | `KN-022` | Empty state and loading state | critical | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
@@ -3718,4 +3720,26 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** A slot with nothing to see is the hole KN-291 closed for false and null, reached by a blank string instead, and the Input already knows what blank means. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** An Input given a string icon that isBlank holds for, spaces, a line break, a zero-width space or a joiner, draws no slot and its text box sits 16 from that edge; IconsTurnedOff covers a space and a zero-width space among its cases and asserts no slot, and a mutation dropping the blank check fails it by name; and the story docs say the direct values draw no slot, while an element that renders nothing leaves a slot that collapses and takes no room.
+
+### `KN-293` The Checkbox's focus ring sits four pixels outside a root with no padding, so a host that clips flush at its edge removes it
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188: found while doing KN-274, which moves the Input's ring inside the field for the same reason. The Checkbox draws focus as an outline, two pixels of border/focus at an offset of two, on its 20 by 20 frame, and its root has no padding, so every pixel of the ring lies two to four pixels outside the root's box. A list row, a table cell or a scroll area that clips its overflow flush at the Checkbox removes the ring, and focus is then shown by nothing.
+
+**Why.** Someone moving through a list of checkboxes with the keyboard needs to see which one has focus in every host the product puts them in. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** A focused Checkbox inside a host that clips its overflow flush at the Checkbox's own box still changes at least a two-pixel perimeter at 3:1, drawn inside that box or with the room kept by the Checkbox itself; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which.
+
+### `KN-294` The Filter Chip's focus ring sits four pixels outside the chip, so a scrolling row of chips clips it at its edges
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-017, recorded in prose because board.json cannot express parent_task yet, KN-188: found while doing KN-274, which moves the Input's ring inside the field for the same reason. The Filter Chip draws focus as an outline, two pixels of border/focus at an offset of two, on the button itself, so every pixel of the ring lies two to four pixels outside the chip. A row of chips that scrolls sideways, overflow auto, clips in both directions, and with no padding it removes the ring from the first and last chips at the row's ends and from every chip's top and bottom.
+
+**Why.** The status counter is a row of chips, the kind of row that scrolls on a narrow screen, and the person moving along it with the keyboard needs to see which chip has focus. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** A focused Filter Chip inside a host that clips its overflow flush at the chip's box still changes at least a two-pixel perimeter at 3:1, drawn inside the chip or with the room kept by the chip itself, selected and not; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which.
 

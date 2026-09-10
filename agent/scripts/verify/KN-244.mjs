@@ -12,6 +12,11 @@
 //
 // Each clause gets a mutation that breaks it and must fail FocusedWhileInvalid.
 //
+// KN-274 moved the ring inside the field, so a host that clips at the field's
+// edge cannot take it: the clauses measure that ring, an ::after four in from
+// the edge, against the field's own surface, where they measured an outline
+// against three backdrops.
+//
 // NOT read-only: it edits Input.tsx and Input.stories.tsx and restores each in
 // a finally, and it runs KN-241's verifier, which does the same.
 
@@ -27,9 +32,11 @@ const COMPONENT = join(DIR, 'Input.tsx')
 const STORIES = join(DIR, 'Input.stories.tsx')
 const STORY = 'Focused While Invalid'
 
-const RING = "              ...(error === undefined ? {} : { outlineWidth: 2, outlineStyle: 'solid', outlineColor: colour['border/focus'], outlineOffset: 2 }),\n"
+const RING = "                    '&::after': {\n"
+const RING_WIDTH = 'const RING_WIDTH = 2\n'
+const RING_COLOUR = "                      borderColor: colour['border/focus'],\n"
+const EDGE_WIDTH = '              borderWidth: 2,\n'
 const BORDER = "              borderColor: error === undefined ? colour['border/focus'] : colour['border/error'],\n"
-const SURFACES = "const SURFACES: (keyof typeof semantic)[] = ['bg/surface', 'bg/page', 'bg/surface-secondary']\n"
 
 const failures = []
 const check = (label, run) => {
@@ -68,38 +75,33 @@ check('the Input stories pass, FocusedWhileInvalid included', () => {
   return code === 0 ? null : `they fail before anything is broken:\n${output.slice(-800)}`
 })
 
-check('FocusedWhileInvalid measures the field on the three surfaces it sits on', () => {
+check("FocusedWhileInvalid measures the ring against the field's own surface, and the area of the change", () => {
   const source = readFileSync(STORIES, 'utf8')
-  if (!source.includes(SURFACES)) return 'the three surfaces are not the story\'s backdrops'
   const story = /export const FocusedWhileInvalid: Story = \{\n([\s\S]*?)\n\}\n/.exec(source)?.[1] ?? ''
   const missing = [
-    ['each backdrop checked to be its token', 'toBe(computedColour(backdrop, semantic[surface]))'],
-    ['the ring measured against the backdrop', 'contrast(hexOf(style.outlineColor), hexOf(getComputedStyle(backdrop).backgroundColor))).toBeGreaterThanOrEqual(3)'],
+    ["the surface the field's own", 'const surface = hexOf(getComputedStyle(field).backgroundColor)'],
+    ['the ring measured against it', 'contrast(hexOf(ring.borderTopColor), surface)).toBeGreaterThanOrEqual(3)'],
+    ['the area against the two-pixel perimeter', 'changed - 4 * (width + height)).toBeGreaterThanOrEqual(0)'],
     ['the text measured before and after', 'changes(before, textLayout(box))).toEqual([])'],
   ].filter(([, text]) => !story.includes(text))
   return missing.length ? `the story does not assert ${missing.map(([what]) => what).join(', ')}` : null
 })
 
 check('THE CASE: the one-pixel treatment back, the ring removed, fails FocusedWhileInvalid', () =>
-  mutation(COMPONENT, RING, '', 'no focus ring'),
+  // A pseudo-element no browser knows: the rule is dropped, and no ring drawn.
+  mutation(COMPONENT, RING, "                    '&::kn244-removed': {\n", 'no focus ring'),
 )
 
-check('the contrast clause measures: a backdrop in the ring\'s own colour fails on the contrast assertion', () =>
-  mutation(
-    STORIES,
-    SURFACES,
-    "const SURFACES: (keyof typeof semantic)[] = ['bg/surface', 'bg/page', 'bg/surface-secondary', 'bg/brand/default']\n",
-    'a backdrop the ring cannot be seen on',
-    'to be greater than or equal to 3',
-  ),
+check("the contrast clause measures: a ring in the field's own surface colour fails on the contrast assertion", () =>
+  mutation(COMPONENT, RING_COLOUR, "                      borderColor: colour['bg/surface'],\n", 'a ring the field cannot show', 'to be greater than or equal to 3'),
 )
 
 check('the two pixel clause: a one pixel ring fails it', () =>
-  mutation(COMPONENT, RING, RING.replace('outlineWidth: 2', 'outlineWidth: 1'), 'a one pixel ring', 'to be greater than or equal to 2'),
+  mutation(COMPONENT, RING_WIDTH, 'const RING_WIDTH = 1\n', 'a one pixel ring', 'to be greater than or equal to 2'),
 )
 
-check('the area clause: a ring drawn inside the field fails it', () =>
-  mutation(COMPONENT, RING, RING.replace('outlineOffset: 2', 'outlineOffset: -4'), 'a ring inside the field', 'to be greater than or equal to 0'),
+check('the area clause: the ring alone, the edge not widening on focus, fails it', () =>
+  mutation(COMPONENT, EDGE_WIDTH, '              borderWidth: error === undefined ? 2 : 1,\n', 'only the ring changing', 'to be greater than or equal to 0'),
 )
 
 check('the border stays border/error: a blue focused invalid border fails it', () =>
@@ -107,7 +109,7 @@ check('the border stays border/error: a blue focused invalid border fails it', (
 )
 
 check('the text does not move: a padding change on an invalid field\'s focus fails it', () =>
-  mutation(COMPONENT, RING, RING.replace('outlineOffset: 2 }', 'outlineOffset: 2, paddingInline: `${spacing.sm}px` }'), 'the text moving on focus', 'box '),
+  mutation(COMPONENT, RING, "                    paddingInline: `${spacing.sm}px`,\n                    '&::after': {\n", 'the text moving on focus', 'box '),
 )
 
 check('DESIGN.md records the treatment, the measure and the reason', () => {
@@ -116,11 +118,11 @@ check('DESIGN.md records the treatment, the measure and the reason', () => {
   if (!section) return 'there is no DESIGN.md section for the state'
   const missing = [
     ['the error border kept', /two\s+pixels of `border\/error`/],
-    ['the ring', /two\s+pixels of `border\/focus`\s+at\s+an\s+offset/],
+    ['the ring', /two\s+pixels\s+of\s+`border\/focus`,\s+four\s+pixels\s+in/],
     ['the measure', /2\.4\.13/],
     ['the ratio', /3\s+to\s+one/],
     ['the reason', /cannot\s+resolve/],
-    ['the room the ring needs', /four\s+pixels\s+outside/],
+    ['the ring inside the field', /inside\s+the\s+field's\s+own\s+box/],
   ].filter(([, pattern]) => !pattern.test(section))
   return missing.length ? `the section does not state ${missing.map(([what]) => what).join(', ')}` : null
 })

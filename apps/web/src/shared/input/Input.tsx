@@ -21,6 +21,13 @@ export interface InputProps {
 // Node 95:38: the field is 44 tall, the same as Button M. No variable is bound.
 const FIELD_HEIGHT = 44
 
+// The focus ring on an invalid field, KN-244, drawn inside the field rather
+// than round it, so a host that clips its overflow at the field's edge cannot
+// take it, KN-274: two pixels of border/focus, four in from the edge, which is
+// the focused edge's two and a gap of two, the gap the ring had outside.
+const RING_INSET = 4
+const RING_WIDTH = 2
+
 const { label: labelText, body } = typeScale
 
 // Node 95:38's icon slots, off unless given: 20 by 20, text/secondary through
@@ -112,8 +119,8 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
             // The stroke: a border on a pseudo-element laid over the whole field
             // and painted over its padding. Not a border on the field, which is
             // laid out; not an inset shadow, which Windows' forced colours
-            // removes, leaving no edge; and not an outline, which is the focus
-            // ring below.
+            // removes, leaving no edge; and not an outline, which lies outside
+            // the field, where a host that clips can take it.
             '&::before': {
               content: '""',
               position: 'absolute',
@@ -129,15 +136,32 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
             ...(error === undefined ? { '&:hover:not(.Mui-focused):not(.Mui-disabled)::before': { borderColor: colour['text/secondary'] } } : {}),
             // Two wide on focus, drawn inside like the rest, so the text does not
             // move. In error the border stays the error colour, so the error is
-            // in view while it is being fixed, and the focus ring the Checkbox
-            // and the Filter Chip draw goes round it: red to red is no change,
-            // so the ring is what shows focus, KN-244.
+            // in view while it is being fixed; red to red is no change, so a
+            // ring shows focus, below, KN-244.
             '&.Mui-focused::before': {
               borderWidth: 2,
               borderColor: error === undefined ? colour['border/focus'] : colour['border/error'],
             },
             '&.Mui-focused': {
-              ...(error === undefined ? {} : { outlineWidth: 2, outlineStyle: 'solid', outlineColor: colour['border/focus'], outlineOffset: 2 }),
+              // In error, the ring the Checkbox and the Filter Chip draw, laid
+              // inside the field four in from its edge, its curve concentric
+              // with the edge's: nothing of it lies outside the field, so no
+              // host has to leave it room, KN-274.
+              ...(error === undefined
+                ? {}
+                : {
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      inset: RING_INSET,
+                      boxSizing: 'border-box',
+                      borderRadius: `${theme.karnama.radius.md - RING_INSET}px`,
+                      borderStyle: 'solid',
+                      borderWidth: RING_WIDTH,
+                      borderColor: colour['border/focus'],
+                      pointerEvents: 'none',
+                    },
+                  }),
             },
             '&.Mui-disabled': { backgroundColor: colour['bg/surface-secondary'] },
             '& input.Mui-disabled': { WebkitTextFillColor: colour['text/disabled'], color: colour['text/disabled'] },
