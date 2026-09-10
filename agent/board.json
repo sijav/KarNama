@@ -6534,13 +6534,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "An error made only of whitespace, format characters, combining marks, variation selectors and the blank symbols named here is no error, while a real message containing any of them is still shown; the blank rule is defined once and tested at its boundaries, including each of those characters alone and each inside a real Persian message; and the comment says exactly what the rule covers.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T12:45:20.009Z",
-      "updatedAt": "2026-09-10T13:20:14.527Z",
-      "verify": "node agent/scripts/verify/KN-261.mjs"
+      "updatedAt": "2026-09-10T13:20:34.541Z",
+      "verify": "node agent/scripts/verify/KN-261.mjs",
+      "evidence": "node agent/scripts/verify/KN-261.mjs passed. It checks: (1) blank.test.ts, the rule's boundary test in the unit project, passes, 54 cases: each of twenty characters alone is blank, among them U+200C, U+200F, U+00AD, U+0600, U+0301, U+034F, U+FE0F, U+E0100, U+3164, U+115F and U+2800, all of them together are blank, each of them inside the Input's real Persian error is not, and six readable characters, alone or among blanks, are not; (2) the test names each of those characters and uses the real Persian message; (3) THE CASE: with the rule narrowed back to KN-259's pattern, the unit test fails on the combining grapheme joiner, variation selector 16, the Hangul filler and the braille blank, AND BlankErrorIsNoError fails, since its new fifth field, an error of only the braille blank, turns red, which is what shows the Input itself uses the rule and not only the test; (4) BlankErrorIsNoError has that field and checks all five; (5) the anchored blank pattern exists in exactly one file under src, blank.ts, and both Input.tsx and FromArgs import isBlank, FromArgs's copy gone; (6) the comment names every class the rule takes and says it is not a test of sight, the Arabic number sign being a visible format character that alone says nothing; (7) the Input stories pass, WithError with its ZWNJ among them; (8) DESIGN.md says blank means nothing to read and lists the classes. The rule is /^[\\s\\p{Cf}\\p{M}\\p{Default_Ignorable_Code_Point}\\u2800]*$/u; the plan beside the work was checked by a second model with web search, which confirmed the property escape is in Vite 8's production targets and asked for three corrections, all made: the FromArgs import, the moved verifier anchors, and the story-level proof. KN-254's and KN-259's verifiers now read the rule in blank.ts. Full suite, lint, tsc, contract, and every Input sibling and every DESIGN.md-reading verifier pass: see the run recorded in the commit. A child task, closing on the tests for the files it changed plus those. NOT established: src/i18n/catalog.test.ts's own check, which strips only format characters from a translation, so a translation made only of marks would pass it as non-empty; no translator produces that, so it is noted here rather than carded. And glyph visibility is font-dependent: a font that draws a default-ignorable is outside what a pattern can know.",
+      "closedAt": "2026-09-10T13:20:34.541Z"
     },
     {
       "id": "KN-262",
