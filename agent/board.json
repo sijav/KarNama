@@ -4768,13 +4768,15 @@
       "points": 1,
       "area": "agent",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "KN-201.mjs plants a meta whose component is not a plain identifier, at least the two real shapes memo(Thing) and an inline arrow, and requires the guard to FAIL naming the file; that case fails before the guard fix and passes after. The verifier no longer leaves a tracked file modified if it is killed mid-run, or the residual risk is stated in its header with the reason it is accepted. The as-Error cast is gone, replaced by an instanceof narrowing, and no cast of that shape exists in apps/web/src or apps/api/src, checked rather than assumed.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T03:21:10.320Z",
-      "updatedAt": "2026-09-10T03:30:37.946Z",
-      "verify": "node agent/scripts/verify/KN-201.mjs"
+      "updatedAt": "2026-09-10T03:31:27.668Z",
+      "verify": "node agent/scripts/verify/KN-201.mjs",
+      "evidence": "node agent/scripts/verify/KN-201.mjs, 11 checks, all pass, up from 8. The two new ones are the clause KN-201 named and never tested: a meta whose component is written as an inline arrow, and as a memo() wrapper, must FAIL rather than be skipped. Each asserts the failure names the FILE, not only the phrase, because a plan check pointed out the guard reported only the story TITLE and the card says naming the file. The guard now reports both. A third new check holds the other side of that boundary: a meta with NO component at all is still legitimate and still skipped. MUTATIONS. CAUGHT: reverting the guard to the old skip on an unreadable component, which is exactly the regression these cases exist for. CAUGHT: emptying the story list so it no longer comes from indexInputs, which fails 9 of the 11 checks. My predicted message for the second was wrong and the harness said so; the mutation is caught, my expectation was not, and that is recorded rather than quietly corrected. The verifier no longer appends to a TRACKED story file. Each case writes a complete self-contained fixture, story file plus both markdown files, and removes all three. git status is identical before and after a run, asserted by a final check that the three paths do not exist and that the guard still passes. THE RESIDUAL RISK IS STATED ACCURATELY, and my first version of it was FALSE. I wrote that an interrupted run leaves a fixture that breaks the next guard run loudly. That is true only for the cases whose planted export is deliberately undocumented; for the class, __namedExportsOrder and no-component cases the leftover is a VALID documented story, so the next run passes and only git status shows it. The header now says interruption is made harmless for the tracked file, not harmless in general. I had pictured only the case where my claim held. The escape hatch is gone: (error as Error) replaced by an instanceof narrowing. AGENTS.md forbids TypeScript escape hatches without asking, and grep confirms no cast of that shape remains in apps/web/src, apps/api/src or packages. AN UNCERTAINTY I NAMED IS RESOLVED: moving the export-list and renaming export-list cases out of a real story file into standalone fixtures did not change any of their answers, so the export FORM was what they tested and the surrounding file was incidental. KN-204 is a CHILD of KN-201, so it closed on the files it changed: the 49 story-docs tests pass, eslint on src/shared/story-docs is clean, tsc is clean, and KN-007.mjs still passes, which matters because it is the verifier for the card this whole chain came out of.",
+      "closedAt": "2026-09-10T03:31:27.668Z"
     }
   ]
 }
