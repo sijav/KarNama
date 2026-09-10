@@ -113,7 +113,16 @@ check('the naming rule warns that a title is not a filename', () => {
     if (!existsSync(path)) continue
     const text = readFileSync(path, 'utf8')
     if (!/is not a filename/i.test(text)) problems.push(`${path} does not warn about illegal characters in a title`)
-    if (!/[Dd]elete the plan when the task closes/.test(text)) problems.push(`${path} does not say when a plan is removed`)
+    // The plan STAYS. An earlier version of this check required the opposite,
+    // and required it because the rule said so on the strength of "git holds
+    // every version", which was false: `.gitignore` carried `.claude/plan-*.md`
+    // and those files had never been committed. Two plans were deleted before
+    // the contradiction was caught. The check now asserts the surviving rule and
+    // refuses the deleted one by name, so it cannot come back quietly.
+    if (!/plan STAYS when the task closes/i.test(text)) problems.push(`${path} does not say the plan stays when the task closes`)
+    if (/[Dd]elete the plan when the task closes/.test(text)) {
+      problems.push(`${path} tells the reader to delete a plan on close, which destroyed KN-071's`)
+    }
   }
   return problems.length ? problems.join('; ') : null
 })

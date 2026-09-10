@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 167,
+  "nextId": 168,
   "tasks": [
     {
       "id": "KN-001",
@@ -3876,6 +3876,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T23:56:34.854Z"
+    },
+    {
+      "id": "KN-167",
+      "title": "The API schema-entry test is flaky under load and fails the gate at random",
+      "desc": "apps/api/src/graphql/schema-entry.test.ts failed one of its four cases during a full npm test run in apps/api, taking 19632ms for a file that takes 3.6 seconds when run alone, and the whole suite passed on an immediate re-run with no change in between. So the failure is timing, not logic: the case is slow enough that it crosses a timeout when the machine is loaded by the other eight test files. Observed on 2026-09-10 while running the API gate for an unrelated change.",
+      "why": "A gate that fails at random is worse than no gate, because the first thing anyone learns is to run it again, and after that a REAL failure gets re-run too. This one is especially bad placed: it guards the schema entry, which is the contract between the resolvers and the generated client, so the test everyone learns to ignore is the one protecting the thing that breaks silently.",
+      "severity": "high",
+      "points": 2,
+      "area": "api",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:09:27.247Z"
     }
   ]
 }

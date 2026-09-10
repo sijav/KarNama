@@ -84,16 +84,27 @@ the one that holds the substance of the change:
 - **Closed plans should not sit beside live code**, where the next reader takes
   a stale document for current intent.
 
-## Decided here: a plan is deleted when its task closes
+## Decided here, and WRONG: that a plan is deleted when its task closes
 
-The check argued for an explicit archive. I am choosing deletion instead, and
-the reason is that the archive already exists: **git has every version of the
-file**, and the commit that closed the task is exactly where anyone would look
-for why the work was shaped that way. A `plans-archive/` directory would be a
-second graveyard replacing the one this card abolishes, and it would need its
-own rule about when anything leaves it, which nothing ever would.
+I chose deletion over the check's suggested archive, reasoning that the archive
+already existed because **git has every version of the file**. So `KN-071` and
+`KN-100`, both closed, were deleted rather than moved.
 
-So `KN-071` and `KN-100`, both closed, are deleted rather than moved.
+**That reasoning was false and the deletion destroyed both files.**
+`.gitignore` line 30 carried `.claude/plan-*.md`. The plans had never been
+committed, so there was no version in git to fall back on. One `git check-ignore`
+would have shown it and I never ran one. KN-100's plan is recoverable only
+because it happened to have been read into this session's transcript; KN-071's
+is gone permanently, and a marker stands where it was.
+
+The corrected rule, which came from the owner via the loop skill: **the plan
+STAYS when the task closes.** It is committed with the work and left in place,
+which is the entire reason it lives in that folder. If a plan reads as stale
+beside the code, the fix is to correct the plan, not to remove the record.
+
+The transferable lesson is not about plans at all: **check that the fallback you
+are relying on actually exists before you rely on it.** "Version control has it"
+is a claim, and claims get checked.
 
 ## What I expect to be hard, and what I am unsure about
 

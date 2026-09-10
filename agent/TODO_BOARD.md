@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 23 of 166 tasks done · 68 of 514 points.
+Project **KarNama** · 23 of 167 tasks done · 68 of 516 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-160` | Plan files live beside the work, named #<id> - <title>.md | high | 2 | agent | none | agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree. |
 
-## Backlog (141)
+## Backlog (142)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -55,6 +55,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-154` | KN-072 verifier accepts the two failures it exists to prevent | high | 2 | agent | KN-072 | KN-072.mjs parses the ACTUAL tab list out of the decision line and requires exactly the five names in it rather than searching a character window, and checks KN-030 placement on the stripped text with an affirmative un-negatable assertion. Both reproductions above are added as committed mutation cases and each fails the verifier with its own message. |
 | `KN-163` | Adjudication is reported, not enforced, so findings can go unfiled forever | high | 2 | agent | none | todo roast refuses to record a round without --filed, accepting --filed none as the explicit honest answer; KN-001 and KN-065 are adjudicated so the board starts clean; validate still reports the count so a regression is visible; and driving the real CLI proves the refusal. |
 | `KN-166` | Check the loop rules are written correctly in the SkipBureau project | high | 2 | agent | none | ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed. |
+| `KN-167` | The API schema-entry test is flaky under load and fails the gate at random | high | 2 | api | none | The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -2069,4 +2070,15 @@ The owner's instruction of 2026-09-10: go to the sibling project at ../SkipBurea
 **Why.** The owner asked directly, and a loop running the wrong rules produces work that has to be redone. The rules here were settled through several expensive mistakes and the sibling project has no way to learn them except by being told.
 
 **Exit condition.** ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed.
+
+### `KN-167` The API schema-entry test is flaky under load and fails the gate at random
+
+- **status** backlog · **severity** high · **points** 2 · **area** api
+- **blocked by** none
+
+apps/api/src/graphql/schema-entry.test.ts failed one of its four cases during a full npm test run in apps/api, taking 19632ms for a file that takes 3.6 seconds when run alone, and the whole suite passed on an immediate re-run with no change in between. So the failure is timing, not logic: the case is slow enough that it crosses a timeout when the machine is loaded by the other eight test files. Observed on 2026-09-10 while running the API gate for an unrelated change.
+
+**Why.** A gate that fails at random is worse than no gate, because the first thing anyone learns is to run it again, and after that a REAL failure gets re-run too. This one is especially bad placed: it guards the schema entry, which is the contract between the resolvers and the generated client, so the test everyone learns to ignore is the one protecting the thing that breaks silently.
+
+**Exit condition.** The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure.
 

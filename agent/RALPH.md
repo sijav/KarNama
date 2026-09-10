@@ -144,10 +144,18 @@ Two practical rules that follow:
   `< > : " / \ | ? *`, and trailing dots and spaces, which Windows mangles
   silently. Shortening a long title is fine. **The id is what must be exact**,
   because the id is what ties the file to the card.
-- **Delete the plan when the task closes.** Git holds every version of it and
-  the closing commit is where anyone would look, so nothing is lost, and a
-  stale plan sitting beside live code reads as current intent to the next person
-  who opens that folder.
+- **The plan STAYS when the task closes.** It is committed with the work and
+  left in place. That is the whole reason it lives in that folder rather than
+  off to the side: whoever opens the folder later finds what was intended
+  there, beside what was built. If a plan reads as stale next to the code, the
+  fix is to correct the plan, not to remove the record.
+
+  This file said the opposite for one iteration, on the argument that "git holds
+  every version so nothing is lost". That argument was **false**: the old plan
+  directory was listed in `.gitignore`, so the plans it was reasoning about had
+  never been committed at all. Two were deleted on its say-so and one of them,
+  KN-071's, is gone for good. The lesson is not really about plans: **check that
+  the fallback you are relying on actually exists before you rely on it.**
 
 It should say:
 

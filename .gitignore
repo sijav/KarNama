@@ -27,4 +27,7 @@ apps/api/dist/
 .claude/roast-result.md
 .claude/roast-sessions.json
 .claude/roast-last-message.tmp
-.claude/plan-*.md
+# Plans are NOT ignored. They live beside the work they describe, named
+# "#<id> - <title>.md", and are committed with it. This line used to ignore
+# .claude/plan-*.md, which is how two plans came to be deleted on the reasoning
+# that git held them: it never had.
