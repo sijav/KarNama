@@ -4186,15 +4186,17 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The command block in ../SkipBureau/.claude/ralph-loop.local.md closes before it roasts, matching its own prose; its step 1 says a false done is repaired by filing a card rather than by reopening; and a check covers BOTH that project's rule files rather than CLAUDE.md alone, so a contradiction between them fails rather than passing.",
       "roasts": [],
       "notes": [
         "Verified by the shared SkipBureau rules check rather than a script of its own. Two scripts reading the same two files would drift, which is the defect KN-174 was filed for after exactly that happened to the sandbox builder. KN-182 moves the whole check to SkipBureau."
       ],
       "createdAt": "2026-09-10T00:34:27.362Z",
-      "updatedAt": "2026-09-10T00:48:49.445Z",
-      "verify": "node agent/scripts/verify/KN-166.mjs"
+      "updatedAt": "2026-09-10T00:49:13.954Z",
+      "verify": "node agent/scripts/verify/KN-166.mjs",
+      "evidence": "node agent/scripts/verify/KN-166.mjs passes, 10 checks, three of them new and specific to this card: the sibling loop prompt exists, its COMMAND BLOCK closes before it roasts, and its step 1 repairs a false done by filing a card rather than by reopening, with done stated as terminal. The order check reads the command block rather than the prose around it, which is the whole point: the prose was already right and the block was already wrong. Two mutations, each flipping one fix independently as the plan check asked, are each caught with their own message: the block flipped back to roast-then-close, and the filing wording removed. Verified by the shared SkipBureau rules check rather than a script of its own, because two scripts reading the same two files drift, which is exactly what KN-174 was filed for after the sandbox builder did it within one session. The change is EDITED IN PLACE in that project but NOT committed there. The plan check was unambiguous that a path-limited commit still advances shared HEAD and can invalidate an active session's index or branch assumptions, and that no operation both changes an active shared checkout and avoids coordinating with its user. That session is live: it has an SB-093 plan file and a modified e2e spec in flight. So the file is edited, because a rule file that is not live is not a rule, and the diff is committed HERE as agent/KN-181-skipbureau-loop-prompt.patch so a checkout or reset over there cannot destroy it, which is the KN-170 lesson applied rather than restated. What this does NOT establish: the owner or that session still has to commit the file over there, and until they do the fix survives only in their working tree and in this patch. It also does not establish that the prompt is what the hook actually reads at runtime; that was inferred from the file's own frontmatter and from the harness bumping its iteration counter, not observed.",
+      "closedAt": "2026-09-10T00:49:13.954Z"
     },
     {
       "id": "KN-182",

@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 28 of 182 tasks done · 76 of 539 points.
+Project **KarNama** · 29 of 182 tasks done · 78 of 539 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-181` SkipBureau's active loop prompt fires the roast BEFORE the close, contradicting its own line** (critical, 2 pt, agent)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-181` | SkipBureau's active loop prompt fires the roast BEFORE the close, contradicting its own line | critical | 2 | agent | none | The command block in ../SkipBureau/.claude/ralph-loop.local.md closes before it roasts, matching its own prose; its step 1 says a false done is repaired by filing a card rather than by reopening; and a check covers BOTH that project's rule files rather than CLAUDE.md alone, so a contradiction between them fails rather than passing. |
+**Next up: `KN-132` Pin the byte-compared generated files to LF, or stop comparing bytes** (high, 1 pt, infra)
 
 ## Backlog (152)
 
@@ -173,7 +167,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 
-## Done (28)
+## Done (29)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -183,6 +177,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-088` | Prove the REAL test project reports a failure, not a separate config | critical | 2 | agent | KN-003 | The planted broken test is detected through the configuration npm test uses, and a mutation that empties the real unit project include makes agent/scripts/verify/KN-003.mjs fail rather than pass. |
 | `KN-131` | Make the root build typecheck what it ships | critical | 2 | infra | none | Removing a selected field from the health operation and regenerating makes npm run build fail, proved by planting exactly that, and the failure names the consumer file rather than something incidental. Every workspace build either typechecks its own sources or the verifier records why it cannot. |
 | `KN-162` | A closed task is still freely reopenable, so done does not mean done | critical | 2 | agent | none | move <id> in_progress, backlog, review or blocked all REFUSE when the task is done, and the refusal names the new-card route; dropped remains reachable if that is decided to be right; the refusal is proved by driving the real CLI in an isolated repository rather than by reading the source; and a mutation removing the guard fails the check with its own message. |
+| `KN-181` | SkipBureau's active loop prompt fires the roast BEFORE the close, contradicting its own line | critical | 2 | agent | none | The command block in ../SkipBureau/.claude/ralph-loop.local.md closes before it roasts, matching its own prose; its step 1 says a false done is repaired by filing a card rather than by reopening; and a check covers BOTH that project's rule files rather than CLAUDE.md alone, so a contradiction between them fails rather than passing. |
 | `KN-001` | The loop, the board, and the tooling that runs them | critical | 3 | agent | none | "npm run todo -- validate" exits 0, "npm run todo -- next" names a task, agent/TODO_BOARD.md renders, "npm run roast" reaches Codex and archives a reply, and AGENTS.md plus DESIGN.md both exist with the Figma tokens transcribed. |
 | `KN-002` | Read the Figma Documentations canvas and fold it into the contract | critical | 3 | design | KN-001 | DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down. |
 | `KN-004` | Read the remaining type scale and any missing tokens from Figma | critical | 3 | design | KN-001 | A named sweep of the Foundations canvas finds no token absent from DESIGN.md, every value in the DESIGN.md tables is traceable to a Figma node id, and the KN-001 verify script's type-scale check still passes. |
@@ -2250,7 +2245,7 @@ Found by the KN-112 roast. KN-112's header says read-only, runs commands, writes
 
 ### `KN-181` SkipBureau's active loop prompt fires the roast BEFORE the close, contradicting its own line
 
-- **status** in_progress · **severity** critical · **points** 2 · **area** agent
+- **status** done · **severity** critical · **points** 2 · **area** agent
 - **blocked by** none
 
 Found by the KN-166 roast and confirmed by reading. ../SkipBureau/.claude/ralph-loop.local.md is the prompt its Stop hook feeds every iteration, so it is a rule file, and KN-166's check read only CLAUDE.md. Line 146 says THEN move it to done, and only then fire the roast, in the background. The code block immediately beneath it does the opposite: roast.py task ... & comes first and todo move <id> done second, so the reviewer can read and report on work before it is closed, which is the ordering the whole rule exists to prevent. That is the sijav failure mode, correct prose over a body that instructs the opposite, and KN-166 explicitly praised this project for not having it, on the strength of having read the wrong file. Separately, its step 1 says a false or premature done is repaired before any new work starts, which under the current rules means filing a card, but the wording invites reopening a closed task and should say which it means.
