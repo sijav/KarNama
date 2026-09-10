@@ -668,14 +668,17 @@
       "parent": [
         "KN-005",
         "KN-006",
-        "KN-007"
+        "KN-007",
+        "KN-205"
       ],
       "status": "backlog",
       "exit": "Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "Blocked on KN-205 - The Checkbox hover and focus selectors reach the glyph. KN-013 is the first component of the library and this is the second, so its hover and focus styling will be written by copying the first. That pattern is currently wrong: it selects by a MUI class name and matches the inner glyph as well as the frame. Fixing the template before replicating it costs one card; fixing it afterwards costs every component that copied it."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:56:14.255Z"
+      "updatedAt": "2026-09-10T04:52:54.403Z"
     },
     {
       "id": "KN-018",
@@ -4872,11 +4875,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The hover and focus rules are scoped to a marker the component owns rather than to a MUI class. Focusing a Checked and an Indeterminate checkbox outlines the FRAME ONLY, asserted by reading computed outline on every descendant and requiring exactly one to carry it. A mutation restoring the old descendant selector makes that assertion fail. The five Figma states still match tokens.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T04:52:10.345Z"
+      "notes": [
+        "Taken ahead of what next picked, deliberately and recorded rather than silently. next offered KN-017 then KN-032, both new components that would write their hover and focus styling by copying KN-013, the first one. That pattern selects by a MUI class name and matches the inner glyph as well as the frame, so replicating it is how one visible defect becomes thirty-seven. The loop's rule that the script picks exists to stop cherry-picking easy work; this is the opposite trade."
+      ],
+      "createdAt": "2026-09-10T04:52:10.345Z",
+      "updatedAt": "2026-09-10T05:01:10.518Z",
+      "verify": "node agent/scripts/verify/KN-205.mjs"
     },
     {
       "id": "KN-206",

@@ -31,6 +31,27 @@ export const Checked: Story = {
   args: { checked: true },
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByRole('checkbox')).toBeChecked()
+
+    // KN-205, and this is the regression test for it. The focus ring belongs on
+    // the square and NOT on the tick inside it. Both used to be `MuiBox-root`,
+    // so the descendant selector matched two elements and the white 12px glyph
+    // drew its own blue outline.
+    //
+    // `Mui-focusVisible` is added directly because `:focus-visible` depends on
+    // how focus arrived, and a play function cannot make the browser call a
+    // programmatic focus keyboard-originated.
+    const root = canvasElement.querySelector('.MuiCheckbox-root')
+    if (!root) throw new Error('the checkbox root was not found')
+    root.classList.add('Mui-focusVisible')
+
+    const outlined = [...root.querySelectorAll('*')].filter((element) => {
+      const style = getComputedStyle(element)
+      // Parsed rather than compared to a pixel string: noLiterals refuses one
+      // anywhere outside src/theme, stories included, and it is right to.
+      return style.outlineStyle === 'solid' && Number.parseFloat(style.outlineWidth) > 0
+    })
+    await expect(outlined).toHaveLength(1)
+    await expect(outlined[0]).toHaveClass('KarnamaCheckbox-frame')
   },
 }
 

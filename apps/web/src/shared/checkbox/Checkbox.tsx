@@ -47,6 +47,16 @@ const applyIndeterminate = (node: HTMLInputElement, value: boolean) => {
   node.indeterminate = value
 }
 
+/**
+ * The frame's own class, so styling never selects by a MUI class name.
+ *
+ * `.MuiBox-root` is on EVERY Box, including the `svg` glyph nested inside the
+ * frame, so a descendant selector matched two elements and the focus outline
+ * was drawn around the white tick as well as the frame. KN-205. One constant,
+ * used by both the element and the rules, so they cannot drift apart.
+ */
+const FRAME = 'KarnamaCheckbox-frame'
+
 /** The three ways the 20 by 20 square is drawn, before hover and disabled. */
 type Mark = 'none' | 'tick' | 'dash'
 
@@ -67,6 +77,7 @@ type Mark = 'none' | 'tick' | 'dash'
 const Frame = ({ mark, disabled }: { mark: Mark; disabled: boolean }) => (
   <Box
     aria-hidden
+    className={FRAME}
     sx={(theme) => {
       const colour = theme.karnama.semantic
       const filled = mark !== 'none'
@@ -182,13 +193,20 @@ export const Checkbox = ({ indeterminate = false, disabled = false, ...rest }: C
     disableRipple
     sx={(theme) => ({
       padding: 0,
-      // Hover is the one state that is not a different mark: the frame keeps its
-      // surface and takes the focus border. Only when it is off and enabled,
-      // since a filled square has no border of its own to change.
-      '&:hover:not(.Mui-checked):not(.Mui-disabled):not(.MuiCheckbox-indeterminate) .MuiBox-root': {
+      // Hover belongs on the ROOT, not on the frame, and this is not a style
+      // preference. MUI lays an invisible `input` over the whole control, and
+      // it is a SIBLING of the frame rather than a descendant, so it is the
+      // topmost element at the frame's centre and `.frame:hover` never matches.
+      // The label does. I moved this into the frame first, and hovering with a
+      // real pointer showed the border never changing.
+      //
+      // What WAS wrong is the target: `.MuiBox-root` matched the glyph too.
+      [`&:hover:not(.Mui-checked):not(.Mui-disabled):not(.MuiCheckbox-indeterminate) .${FRAME}`]: {
         borderColor: theme.karnama.semantic['border/focus'],
       },
-      '&.Mui-focusVisible .MuiBox-root': {
+      // Scoped to the frame's own class. The focus ring belongs on the square,
+      // and the glyph inside it must not get one of its own.
+      [`&.Mui-focusVisible .${FRAME}`]: {
         outlineWidth: 2,
         outlineStyle: 'solid',
         outlineColor: theme.karnama.semantic['border/focus'],
