@@ -5471,12 +5471,17 @@
       "severity": "critical",
       "points": 2,
       "area": "web",
-      "parent": [],
+      "parent": [
+        "KN-221"
+      ],
       "status": "backlog",
       "exit": "The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T07:05:35.906Z"
+      "notes": [
+        "2026-09-10: blocked by KN-221, the same reason as KN-212. The overlong-title story needs real copy through lingui, and the only designed long tooltip sentence, node 410:469's, carries a count, which renders as raw ICU in any production build until the catalogs are compiled. The short title can be 'Delete status', already a catalog message; the policy text for the docs does not depend on it and can be written in the same change."
+      ],
+      "createdAt": "2026-09-10T07:05:35.906Z",
+      "updatedAt": "2026-09-10T08:21:46.124Z"
     },
     {
       "id": "KN-224",
