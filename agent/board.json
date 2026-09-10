@@ -424,13 +424,15 @@
         "KN-003",
         "KN-006"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T02:48:44.072Z",
-      "verify": "node agent/scripts/verify/KN-007.mjs"
+      "updatedAt": "2026-09-10T02:49:32.229Z",
+      "verify": "node agent/scripts/verify/KN-007.mjs",
+      "evidence": "node agent/scripts/verify/KN-007.mjs, 8 checks, all pass, and it PROVES the exit condition rather than asserting it: it plants each named failure, runs the real guard, and requires the guard to fail for that specific reason, then restores and requires it to pass again. Planting a story with no markdown fails with 'is missing en/Planted-Nothing.md'. Planting a documented prop the component does not have fails with 'does not have'. Removing a real prop's entry fails with 'has no entry'. Removing a story from the Persian side fails with 'fa stories does not match en'. It opens with a positive control, the guard passing on the clean tree, and closes by re-running it so a leaked fixture is visible; git status was identical before and after. Mutation harness, 8 cases, all caught, worktree byte-identical afterwards. One case behaves differently from how I first wrote it and is recorded as it actually is: a non-literal story title is caught by Storybook's own indexer, 'CSF: unexpected dynamic title', before the guard runs at all, so the guard's own branch for it is covered by a direct test instead and is labelled a backstop in the source. VERIFIED IN A REAL STORYBOOK, which is the clause no test covers. Autodocs had to be enabled first: without it there is no Docs page and the failure is invisible, the tab simply does not appear. useGlobals from storybook/preview-api is the WRONG hook in a Docs page and the plan check caught it; the page subscribes to the preview channel's globalsUpdated instead, and I confirmed by clicking the toolbar that the page changes language with no reload. All four combinations seen: Persian light and Persian dark on Shared/LanguageSwitch with every section rendering Persian prose, English light on the same page, English dark on Foundations/Tokens. KN-007 has NO parent, so it closed on the FULL suite: npm run lint clean at zero warnings, npm run lint:tsc clean, npm test 396 passing across three projects (4 graphql, 296 web, 96 api), web coverage 100 percent on all four metrics, npm run build succeeds and schema.gql matches the resolvers. Coverage needed real work rather than a lowered threshold: every decision was moved out of the two Storybook-only files into docs-locale.ts and catalog.ts, which are tested, and only DocsPage.tsx and useDocsLocale.ts are excluded, for the same stated reason *.stories.tsx already is, that this repository covers React by rendering stories in a real browser and a Docs page cannot be a story. Two uncovered branches in parse.ts were REMOVED rather than excluded: they were '?? null' fallbacks on regex capture groups that can never be undefined, so the captures went instead. LIMITS STATED IN THE SOURCE: Storybook's own chrome, the Controls headings and 'Show code', stays English, because Storybook does not localize it and no parameter makes it; and Controls and Stories cannot be handed localized prose because they read argTypes fixed at load, which is why the page renders the prop and story prose itself.",
+      "closedAt": "2026-09-10T02:49:32.229Z"
     },
     {
       "id": "KN-008",
