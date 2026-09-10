@@ -1001,13 +1001,15 @@
         "KN-006",
         "KN-007"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T05:24:54.350Z",
-      "verify": "node agent/scripts/verify/KN-032.mjs"
+      "updatedAt": "2026-09-10T05:25:35.162Z",
+      "verify": "node agent/scripts/verify/KN-032.mjs",
+      "evidence": "node agent/scripts/verify/KN-032.mjs, 6 checks, all pass, worktree identical before and after. Two of them BREAK the component and require the stories to fail rather than reading the source and agreeing with it. MATCHES FIGMA, verified in a browser by reading computed styles rather than by eye: background rgb(17,24,39) which is text/primary, colour rgb(255,255,255) which is text/on-accent, border-radius 8px which is radius.md, padding 12px which is spacing.sm, gap 8px which is spacing.xs, icon 16x16 which is iconSize.sm, and type 14/22/400 which is the body role. Every value equals the Figma variable for node 410:469. A screenshot confirms the drawn shape: dark navy, three lines of Persian, the mark at the RTL start. THE FILL IS text/primary, and that is deliberate rather than a gap. Figma points this surface at the same variable as the darkest text colour, so a tooltip is the page inverted rather than a colour of its own. Recorded in the component and in the docs so nobody later files it as a missing token. THE POINTER CLAUSE WAS WRONG AT FIRST and a story caught it, which is the part worth keeping. I styled pointer-events to none and asserted the computed value; it read auto. MUI's tooltip is INTERACTIVE by default and sets pointer-events auto itself so a user can move into it. disableInteractive turns that off at the source. Without the assertion the tip would have shipped able to swallow a click aimed at the control it describes, and nothing visual would have shown it. MUTATIONS: removing disableInteractive FAILS, so the pointer clause is proved rather than asserted. Adding disableFocusListener FAILS, so keyboard focus is proved to be what opens the tip and not hover alone, which is the clause the card names and the one a hover-only tooltip quietly fails. FIVE STORIES, none of them a claim: hover, keyboard focus with no pointer anywhere, the pointer-trap assertion, the drawn frame with its icon, and dismissal by Escape. The verifier also checks the focus story does not reach for a pointer, because a focus story that hovers proves the wrong thing. KN-032 has no provenance parent, so it closed on the FULL suite: lint clean at zero warnings, tsc clean, npm test 438 passing across three projects (4 graphql, 333 web, 101 api), web coverage 100 percent on all four metrics, build succeeds and schema.gql matches the resolvers. Two eslint exemptions were added, both consistent with the reasoning already written in that config rather than new licence: queryByRole, which was missing while findByRole and queryByText were already there, and toHaveProperty, which asserts a computed CSS keyword such as none. There is no Persian for pointer-events none.",
+      "closedAt": "2026-09-10T05:25:35.162Z"
     },
     {
       "id": "KN-033",
