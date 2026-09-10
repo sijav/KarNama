@@ -73,6 +73,8 @@ export const buildTheme = (direction: 'rtl' | 'ltr', scheme: ColorScheme = 'ligh
     palette: {
       mode: scheme,
       background: { default: colour['bg/page'], paper: colour['bg/surface'] },
+      // light is the brand CONTAINER, a fill: in dark a navy tint of the brand hue,
+      // not a lighter blue, so nothing should use it as one, KN-272.
       primary: { main: colour['bg/brand/default'], dark: colour['bg/brand/hover'], light: colour['bg/brand/container'], contrastText: colour['text/on-accent'] },
       error: { main: colour['bg/danger/default'], dark: colour['bg/danger/hover'], contrastText: colour['text/on-accent'] },
       text: { primary: colour['text/primary'], secondary: colour['text/secondary'], disabled: colour['text/disabled'] },

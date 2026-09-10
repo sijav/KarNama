@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-272` In dark, a selected Filter Chip's text is 1.34:1 on its fill, and its pressed border 1.14:1** (critical, 2 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-272` | In dark, a selected Filter Chip's text is 1.34:1 on its fill, and its pressed border 1.14:1 | critical | 2 | web | none | In the derived dark palette bg/brand/container is a dark tint of its own hue, derived as a fill the way the status containers are, text/brand clears 4.5:1 on it and border/focus clears 3:1 on it, and every pair the tests already hold still holds; darkMode.test.ts asserts both pairs as the Filter Chip draws them, and a mutation back to the surface derivation fails them; and the selected Filter Chip, resting and pressed, is seen in dark in both languages. |
+
 ## Blocked (2)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -17,7 +23,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (189)
+## Backlog (188)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -26,7 +32,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
-| `KN-272` | In dark, a selected Filter Chip's text is 1.34:1 on its fill, and its pressed border 1.14:1 | critical | 2 | web | none | In the derived dark palette bg/brand/container is a dark tint of its own hue, derived as a fill the way the status containers are, text/brand clears 4.5:1 on it and border/focus clears 3:1 on it, and every pair the tests already hold still holds; darkMode.test.ts asserts both pairs as the Filter Chip draws them, and a mutation back to the surface derivation fails them; and the selected Filter Chip, resting and pressed, is seen in dark in both languages. |
 | `KN-274` | The Input's focus ring for an invalid field sits outside a field that fills its container, so a host that clips at its edge removes it | critical | 2 | web | none | An invalid Input focused inside a host that clips its overflow flush at the field's edges still changes at least a two-pixel perimeter at 3:1, KN-244's measure, either because the change is drawn inside the field's own box or because the Input keeps the room itself; a story renders the field in an overflow hidden host with no padding and asserts, from the rendered geometry, that every pixel of the focus change lies inside every clipping ancestor, and a mutation back to a ring the host clips fails it by name; DESIGN.md's section says which; and the Checkbox's and the Filter Chip's rings are checked for the same, each matching or carrying a card. |
 | `KN-280` | The bound Input takes a Controls value equal to an edit still in flight for its echo, and can stay apart from the arg | critical | 2 | web | none | Bound tells its own writes from anything else by a revision carried with each write, not by value, so an arg whose value is not the one sent at its revision is taken, whatever the queue holds; a check in a production build reproduces the sequence, an edit in flight, a Controls value equal to it arriving after a newer edit, and ends with the field and the arg equal; the exception is gone from the comment; the revision never reaches the Input or shows as a control; and KN-253's and KN-249's verifiers still pass. |
 | `KN-282` | The Filter Chip's text sits at 13 where the file draws 12, and its pressed edge is 1 where the file draws 1.5 | critical | 2 | web | none | In every state the Filter Chip's text sits spacing/sm, 12px, from the chip's outer edge as 159:63 to 159:69 draw it, with the edge painted inside and taking no layout space; the pressed edge is 1.5 as 159:67 draws it; nothing in FilterChip.tsx computes a padding from a border width; the stories measure the text's distance from the edge; and the selected edge is left to KN-279. |
@@ -3465,7 +3470,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-272` In dark, a selected Filter Chip's text is 1.34:1 on its fill, and its pressed border 1.14:1
 
-- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-271 roast, and KN-271 is itself a child of KN-011, so its findings sit beside it. The roast reported the pressed border; measuring it found the text as well. In the derived dark palette bg/brand/container comes out #207df9: darkSemantic sends it through deriveDarkSurface, which hands a chromatic colour to deriveDark, and the flip plus the chromatic floor turn the pale #dbeafe into a bright mid blue, the collapse the status containers had before deriveDarkFill. A selected Filter Chip paints that fill with text/brand #7494ec on it, 1.34:1, and its :active border in border/focus #3670ed, 1.14:1. Seen in production Storybook: shared-filterchip--selected in dark renders the chip light blue on bright blue. In light the same two pairs are 5.49 and 4.24. text/brand is checked only against the neutral surface and border/focus only against the three neutral backgrounds, so no test holds a pair a component actually draws.

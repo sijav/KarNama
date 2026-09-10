@@ -179,53 +179,6 @@ export const ensureContrast = (foreground: string, background: string, ratio = M
   return best
 }
 
-/** The surface everything is read against, computed once so the text rows can cite it. */
-const darkSurface = deriveDarkSurface(semantic['bg/surface'])
-
-/**
- * Every semantic token, derived. Not the design's values.
- *
- * Written out one line per token rather than mapped over `Object.entries`,
- * because mapping needs a cast to get the keys back and this codebase does not
- * use `as`. One line per token also makes the derivation visible at the point
- * of use: each row says which light token it came from, and whether it was then
- * checked for contrast.
- */
-export const darkSemantic = {
-  'bg/page': deriveDarkSurface(semantic['bg/page']),
-  'bg/surface': deriveDarkSurface(semantic['bg/surface']),
-  'bg/surface-secondary': deriveDarkSurface(semantic['bg/surface-secondary']),
-  'bg/brand/default': deriveDarkSurface(semantic['bg/brand/default']),
-  'bg/brand/hover': deriveDarkSurface(semantic['bg/brand/hover']),
-  'bg/brand/container': deriveDarkSurface(semantic['bg/brand/container']),
-  'bg/danger/default': deriveDarkSurface(semantic['bg/danger/default']),
-  'bg/danger/hover': deriveDarkSurface(semantic['bg/danger/hover']),
-  // Text is derived AND THEN checked against the surface it sits on. The
-  // derivation alone left secondary at 3.71 to one, brand at 2.62 and error at
-  // 3.38, all below the 4.5 that makes normal text readable, while every HSL
-  // assertion passed. `text/disabled` is exempt on purpose: disabled text is
-  // meant to recede, and WCAG does not require contrast from it.
-  'text/primary': ensureContrast(deriveDark(semantic['text/primary']), darkSurface),
-  'text/secondary': ensureContrast(deriveDark(semantic['text/secondary']), darkSurface),
-  'text/disabled': deriveDark(semantic['text/disabled']),
-  'text/on-accent': ensureContrast(deriveDark(semantic['text/on-accent']), deriveDarkSurface(semantic['bg/brand/default'])),
-  'text/brand': ensureContrast(deriveDark(semantic['text/brand']), darkSurface),
-  'text/error': ensureContrast(deriveDark(semantic['text/error']), darkSurface),
-  // The resting border shows no state, and the design itself draws it at 1.24
-  // to one on white, so it is derived and left there.
-  'border/default': deriveDark(semantic['border/default']),
-  // The two borders that SHOW a state are derived and then checked, at 3:1,
-  // against the surface: the lightest of the dark backgrounds, so clearing it
-  // clears the page and the secondary surface too. The derivation alone left
-  // focus at 2.81 to one on the surface, KN-271.
-  'border/focus': ensureContrast(deriveDark(semantic['border/focus']), darkSurface, NON_TEXT_CONTRAST),
-  'border/error': ensureContrast(deriveDark(semantic['border/error']), darkSurface, NON_TEXT_CONTRAST),
-  'accent/200': deriveDark(semantic['accent/200']),
-  'accent/700': deriveDark(semantic['accent/700']),
-  'gray/200': deriveDark(semantic['gray/200']),
-} satisfies Record<keyof typeof semantic, string>
-
-
 /**
  * A status pair, and the two halves need OPPOSITE treatment.
  *
@@ -260,6 +213,63 @@ export const deriveDarkFill = (hex: string): string => {
   const position = Math.min(1, Math.max(0, (l - LIGHT_FILL_BAND.from) / (LIGHT_FILL_BAND.to - LIGHT_FILL_BAND.from)))
   return hslToHex({ h, s, l: DARK_FILL_BAND.from + position * (DARK_FILL_BAND.to - DARK_FILL_BAND.from) })
 }
+
+/**
+ * The semantic tokens that are FILLS: a background something is read on, whose
+ * hue means something. They take `deriveDarkFill`, a dark tint of their own hue,
+ * and not the surface rule, whose floor made the brand container a bright blue
+ * under its own text, KN-272. One list, which the palette derives and the tests
+ * read, so the two cannot disagree about which tokens are fills.
+ */
+export const DARK_FILLS = ['bg/brand/container'] as const satisfies readonly (keyof typeof semantic)[]
+
+/** The surface everything is read against, computed once so the text rows can cite it. */
+const darkSurface = deriveDarkSurface(semantic['bg/surface'])
+
+/**
+ * Every semantic token, derived. Not the design's values.
+ *
+ * Written out one line per token rather than mapped over `Object.entries`,
+ * because mapping needs a cast to get the keys back and this codebase does not
+ * use `as`. One line per token also makes the derivation visible at the point
+ * of use: each row says which light token it came from, and whether it was then
+ * checked for contrast.
+ */
+export const darkSemantic = {
+  'bg/page': deriveDarkSurface(semantic['bg/page']),
+  'bg/surface': deriveDarkSurface(semantic['bg/surface']),
+  'bg/surface-secondary': deriveDarkSurface(semantic['bg/surface-secondary']),
+  'bg/brand/default': deriveDarkSurface(semantic['bg/brand/default']),
+  'bg/brand/hover': deriveDarkSurface(semantic['bg/brand/hover']),
+  // A fill, one of DARK_FILLS: a selected Filter Chip reads text/brand on it.
+  'bg/brand/container': deriveDarkFill(semantic['bg/brand/container']),
+  'bg/danger/default': deriveDarkSurface(semantic['bg/danger/default']),
+  'bg/danger/hover': deriveDarkSurface(semantic['bg/danger/hover']),
+  // Text is derived AND THEN checked against the surface it sits on. The
+  // derivation alone left secondary at 3.71 to one, brand at 2.62 and error at
+  // 3.38, all below the 4.5 that makes normal text readable, while every HSL
+  // assertion passed. `text/disabled` is exempt on purpose: disabled text is
+  // meant to recede, and WCAG does not require contrast from it.
+  'text/primary': ensureContrast(deriveDark(semantic['text/primary']), darkSurface),
+  'text/secondary': ensureContrast(deriveDark(semantic['text/secondary']), darkSurface),
+  'text/disabled': deriveDark(semantic['text/disabled']),
+  'text/on-accent': ensureContrast(deriveDark(semantic['text/on-accent']), deriveDarkSurface(semantic['bg/brand/default'])),
+  'text/brand': ensureContrast(deriveDark(semantic['text/brand']), darkSurface),
+  'text/error': ensureContrast(deriveDark(semantic['text/error']), darkSurface),
+  // The resting border shows no state, and the design itself draws it at 1.24
+  // to one on white, so it is derived and left there.
+  'border/default': deriveDark(semantic['border/default']),
+  // The two borders that SHOW a state are derived and then checked, at 3:1,
+  // against the surface: the lightest of the dark backgrounds, so clearing it
+  // clears the page and the secondary surface too. The derivation alone left
+  // focus at 2.81 to one on the surface, KN-271.
+  'border/focus': ensureContrast(deriveDark(semantic['border/focus']), darkSurface, NON_TEXT_CONTRAST),
+  'border/error': ensureContrast(deriveDark(semantic['border/error']), darkSurface, NON_TEXT_CONTRAST),
+  'accent/200': deriveDark(semantic['accent/200']),
+  'accent/700': deriveDark(semantic['accent/700']),
+  'gray/200': deriveDark(semantic['gray/200']),
+} satisfies Record<keyof typeof semantic, string>
+
 
 const pair = (name: keyof typeof status) => {
   const container = deriveDarkFill(status[name].container)

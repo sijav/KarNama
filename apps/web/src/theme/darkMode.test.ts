@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { MIN_CONTRAST, contrast, darkSemantic, darkStatus, deriveDark, deriveDarkSurface, ensureContrast, hexToHsl, hslToHex, luminance } from './darkMode'
+import { DARK_FILLS, MIN_CONTRAST, contrast, darkSemantic, darkStatus, deriveDark, deriveDarkFill, deriveDarkSurface, ensureContrast, hexToHsl, hslToHex, luminance } from './darkMode'
 import { semantic, status } from './tokens'
 
 /**
@@ -94,9 +94,12 @@ describe('the derivation does what it says', () => {
   })
 
   it('gives every chromatic colour a lightness floor, so it stays readable on dark', () => {
+    // Foregrounds and accents, that is: a fill is meant to be dark, and has its
+    // own assertions below, KN-272.
+    const fills = new Set<string>(DARK_FILLS)
     for (const [name, hex] of Object.entries(darkSemantic)) {
       const { s, l } = hexToHsl(hex)
-      if (s <= 0.2) continue
+      if (s <= 0.2 || fills.has(name)) continue
       expect(l, `${name} is too dark to read on a dark surface`).toBeGreaterThanOrEqual(0.54)
     }
   })
@@ -242,6 +245,36 @@ describe('the borders that show a state can be seen', () => {
   it.each(borders)('%s keeps the hue of its light token', (border) => {
     const apart = Math.abs(hexToHsl(darkSemantic[border]).h - hexToHsl(semantic[border]).h)
     expect(Math.min(apart, 360 - apart)).toBeLessThan(1)
+  })
+})
+
+/**
+ * The fills: a dark tint of their own hue, and what the product draws on them
+ * readable. The brand container is the selected Filter Chip: text/brand on it,
+ * and its pressed edge in border/focus, KN-272. The ratios are written as the
+ * numbers, WCAG's, so lowering a constant cannot lower them.
+ */
+describe('the fills are dark tints of their own hue, and what sits on them reads', () => {
+  it.each(DARK_FILLS)('%s is derived as a fill, a dark tint of its own hue', (fill) => {
+    expect(darkSemantic[fill]).toBe(deriveDarkFill(semantic[fill]))
+    const { h, l } = hexToHsl(darkSemantic[fill])
+    const apart = Math.abs(h - hexToHsl(semantic[fill]).h)
+    expect(Math.min(apart, 360 - apart)).toBeLessThan(1)
+    expect(l).toBeGreaterThanOrEqual(0.12)
+    expect(l).toBeLessThanOrEqual(0.22)
+  })
+
+  it('text/brand clears 4.5:1 on the dark brand container, as a selected Filter Chip draws it', () => {
+    expect(contrast(darkSemantic['text/brand'], darkSemantic['bg/brand/container'])).toBeGreaterThanOrEqual(4.5)
+  })
+
+  it('border/focus clears 3:1 on the dark brand container, as a pressed selected Filter Chip draws it', () => {
+    expect(contrast(darkSemantic['border/focus'], darkSemantic['bg/brand/container'])).toBeGreaterThanOrEqual(3)
+  })
+
+  it('and the light design holds both pairs too', () => {
+    expect(contrast(semantic['text/brand'], semantic['bg/brand/container'])).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(semantic['border/focus'], semantic['bg/brand/container'])).toBeGreaterThanOrEqual(3)
   })
 })
 

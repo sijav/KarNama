@@ -6886,11 +6886,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "In the derived dark palette bg/brand/container is a dark tint of its own hue, derived as a fill the way the status containers are, text/brand clears 4.5:1 on it and border/focus clears 3:1 on it, and every pair the tests already hold still holds; darkMode.test.ts asserts both pairs as the Filter Chip draws them, and a mutation back to the surface derivation fails them; and the selected Filter Chip, resting and pressed, is seen in dark in both languages.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T14:24:28.875Z"
+      "createdAt": "2026-09-10T14:24:28.875Z",
+      "updatedAt": "2026-09-10T18:54:56.726Z",
+      "verify": "node agent/scripts/verify/KN-272.mjs"
     },
     {
       "id": "KN-273",
