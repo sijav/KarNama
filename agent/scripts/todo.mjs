@@ -670,6 +670,51 @@ const commands = {
     if (!task) fail(`move: ${id} does not exist`)
     if (!STATUSES.includes(status)) fail(`move: status must be one of ${STATUSES.join(', ')}`)
 
+    // `done` is TERMINAL. Nothing moves out of it.
+    //
+    // This is the half of the 2026-09-10 order that was documentation until
+    // now. A task closes before its roast, so by the time a reviewer says
+    // anything the card is shut, and the rule is that findings become new cards
+    // rather than reopening it. Without this branch that rule was honour-based:
+    // `move <id> in_progress` on a closed task succeeded whenever no other task
+    // was active, because the only guard below asks whether some OTHER task is
+    // running, not what state THIS one is in. That is exactly the sequence the
+    // order exists to prevent, and this session performed it on KN-100 before
+    // the rule changed.
+    //
+    // It sits FIRST, ahead of every status-specific check, because a refusal
+    // that reports the wrong cause is its own defect: reopening a closed task
+    // while another was in progress would otherwise complain about the other
+    // task, and the reader would park that one and try again.
+    //
+    // Two routes out, and no third, because a rule with no legitimate escape
+    // gets worked around rather than followed:
+    //   - work that remains is a NEW card, which is the entire point of
+    //     closing first;
+    //   - a close that was an outright error, the wrong id, is `rm`, which is
+    //     destructive on purpose and leaves a stated reason behind.
+    // Re-closing an already-closed task is a no-op rather than an error, since
+    // refusing a retry only punishes the retry.
+    if (task.status === 'done' && status !== 'done') {
+      fail(
+        `move: ${id} is done, and done is terminal. A finding never reopens a closed task.\n` +
+          `  Work that remains: npm run todo -- add --title "..." (a new card, at its own severity)\n` +
+          `  Closed by mistake: npm run todo -- rm ${id} --reason "..."`,
+      )
+    }
+
+    // Closing something already closed is a no-op, and it has to be handled
+    // HERE rather than left to fall through. The close gate below refuses any
+    // status but `in_progress` or `review`, so a repeated close was answered
+    // with "take it with move <id> in_progress before closing it" — advice that
+    // contradicts the rule three lines above and walks the reader into the one
+    // move that is forbidden. Two guards giving opposite instructions is worse
+    // than either guard alone.
+    if (task.status === 'done' && status === 'done') {
+      process.stdout.write(`${id} is already done. Nothing to do.\n`)
+      return
+    }
+
     // Only one task may be in progress. The selection law puts in_progress
     // ahead of severity so that work gets finished before new work starts, and
     // that is only safe while there is exactly one of them. With two, a merely

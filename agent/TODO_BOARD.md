@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 24 of 171 tasks done · 70 of 522 points.
+Project **KarNama** · 24 of 172 tasks done · 70 of 523 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,7 +16,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-162` | A closed task is still freely reopenable, so done does not mean done | critical | 2 | agent | none | move <id> in_progress, backlog, review or blocked all REFUSE when the task is done, and the refusal names the new-card route; dropped remains reachable if that is decided to be right; the refusal is proved by driving the real CLI in an isolated repository rather than by reading the source; and a mutation removing the guard fails the check with its own message. |
 
-## Backlog (145)
+## Backlog (146)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -28,6 +28,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-153` | Separate the owner-settled own-tab decision from the author-chosen tab ORDER | high | 1 | design | KN-072 | DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message. |
 | `KN-155` | KN-045 still specifies the four-tab modal KN-072 replaced | high | 1 | web | KN-072 | KN-045 names five tabs with history in its own, its exit condition asserts where history renders, and a check proves NO open card still says four-tab modal or places history inside the info tab. |
 | `KN-171` | The loop prompt fed by the Stop hook still teaches the old order | high | 1 | agent | none | .claude/ralph-loop.local.md states finish, prove, close, roast in that order, carries no fix-in-task rule, and describes the close gate as it actually is; a check asserts the prompt and RALPH.md do not contradict each other on the order; and a mutation reintroducing either stale rule fails that check with its own message. |
+| `KN-172` | compact.py does the opposite of what the loop's compact step is for | high | 1 | agent | none | compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
@@ -2131,4 +2132,15 @@ The general rule behind today's data loss, offered by the KN-160 roast and worth
 **Why.** The loop is driven by whichever text is in front of you at the moment of deciding. A trigger prompt that contradicts the rule file is the most expensive kind of stale documentation, because it is re-read more often than the thing it contradicts.
 
 **Exit condition.** .claude/ralph-loop.local.md states finish, prove, close, roast in that order, carries no fix-in-task rule, and describes the close gate as it actually is; a check asserts the prompt and RALPH.md do not contradict each other on the order; and a mutation reintroducing either stale rule fails that check with its own message.
+
+### `KN-172` compact.py does the opposite of what the loop's compact step is for
+
+- **status** backlog · **severity** high · **points** 1 · **area** agent
+- **blocked by** none
+
+The owner's correction of 2026-09-10. Step 1 of the loop skill is called compact and its purpose is to FREE the context window, so that when the next iteration begins the first thing read is the loop's own rules rather than a stale conversation. ~/.claude/skills/loop/compact.py does the reverse: it prints the git branch, recent commits, uncommitted changes and the project's context files, which INJECTS a summary into the context every iteration. That is the thing the step was meant to avoid. What the owner wants is the harness's own /compact. That cannot be invoked by the agent: /compact is user-initiated or automatic when the window fills, and text the assistant emits is not executed as a slash command. So the honest resolution is to delete compact.py, say in the skill that the step means taking the harness's compaction where the harness offers it, and otherwise rebuilding from disk by READING the rule files rather than by printing a digest of them. This also narrows KN-161, since the loop skill then has no script needing a second runtime.
+
+**Why.** A step whose implementation does the opposite of its name will keep being run, because its name says it is right. It costs context on every single iteration, which is the resource the step exists to protect, and it does so silently.
+
+**Exit condition.** compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script.
 
