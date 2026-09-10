@@ -6157,13 +6157,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "With no control touched, every Controls value in the args-driven Input stories is what the canvas draws, label, placeholder and helper, in either language; changing one in Controls changes the canvas to exactly that value, and clearing the placeholder or helper removes it; a story asserts the rendered copy equals the args, and a mutation reintroducing a hidden fallback fails it.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T09:45:57.208Z",
-      "updatedAt": "2026-09-10T15:36:33.683Z",
-      "verify": "node agent/scripts/verify/KN-245.mjs"
+      "updatedAt": "2026-09-10T15:38:05.904Z",
+      "verify": "node agent/scripts/verify/KN-245.mjs",
+      "evidence": "The Input's meta args are the specimen's copy (label, placeholder, helper) in the language the stories load in; the meta render draws Input from the args exactly, and keeps the copy in the language on screen by writing it back with updateArgs from a React passive effect in FollowTheLanguage, a field counting as the specimen's while it holds what the story loaded with or last wrote (Storybook's useRef, which outlives the language switch's remount). JobTitle keeps its name for the fixed renders and states its copy outright. node agent/scripts/verify/KN-245.mjs passed: the Input stories pass under Vitest with ControlsMatchTheCanvas and its English twin; the old hidden fallback put back (label '' drawn as the copy) fails ControlsMatchTheCanvas by name; in a production Storybook, for all nine args-driven stories in fa-IR and en-US, the manager's real Controls panel shows the label, placeholder and helper the canvas draws, and every field a story does not set itself is the specimen in that language, read from the catalogs on disk; a label typed into the panel is drawn exactly; switching to English after it keeps the typed label and moves the untouched fields to English; emptying the placeholder and helper in the panel removes both; the write taken out fails the English twin in a production preview. The other fourteen Input verifiers (KN-011, 241-244, 246-249, 252, 254, 258, 259, 261, 262) pass, four with their anchors moved to the new render line. Unit 418 passed, full eslint and tsc clean, contract clean. Seen in the manager in both languages. Not established: under Vitest the copy does not follow a pinned language, since portable stories apply no args update, TECH-DEBT 16; and a value typed as exactly the copy the story put there follows the language, the one exception AGENTS.md now names.",
+      "closedAt": "2026-09-10T15:38:05.904Z"
     },
     {
       "id": "KN-246",
