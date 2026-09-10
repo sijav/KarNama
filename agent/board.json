@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 259,
+  "nextId": 260,
   "tasks": [
     {
       "id": "KN-001",
@@ -6347,7 +6347,22 @@
       "parent": [],
       "status": "done",
       "exit": "An error that is empty or only whitespace is no error: the field keeps its default border, is not aria-invalid, and shows its helper text; a story renders such an error and asserts all three; DESIGN.md or the component's story docs say the error state needs a message; and a mutation back to testing error against undefined fails that story by name.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-254-round-1.2026-09-10T12-07-05-910Z.md",
+          "filed": [
+            "KN-259"
+          ],
+          "cardDigest": "5eead64726d980552d0da21805855c5e2f75f2aedff65068c01e887caa76a708",
+          "head": "411ac11bfcb70ae9e9955ff23679297c582d6483",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "at": "2026-09-10T12:09:09.737Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T10:57:13.769Z",
       "updatedAt": "2026-09-10T12:06:49.383Z",
@@ -6409,11 +6424,27 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "With value set, changing defaultValue in Controls leaves the same input element in place, still focused if it was, showing the same value; with value unset a new default still starts the field over; a check on a built Storybook does both, and a mutation back to keying on defaultValue in both modes fails the first.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T11:47:12.847Z"
+      "createdAt": "2026-09-10T11:47:12.847Z",
+      "updatedAt": "2026-09-10T12:07:55.921Z"
+    },
+    {
+      "id": "KN-259",
+      "title": "An Input error made only of invisible characters still turns the field red",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-254 roast and confirmed in Node: KN-254 treats an error as blank when trim() empties it, and trim() leaves the Unicode format characters in place. A zero-width space, U+200B, a zero-width non-joiner, U+200C, a zero-width joiner, a left-to-right or right-to-left mark, or a word joiner each survive it as one character, so an error made only of them still draws border/error, sets aria-invalid and replaces the helper with a line a person cannot see. The zero-width non-joiner is part of ordinary Persian text. Whitespace plus the format characters, /^[\\s\\p{Cf}]*$/u, treats all of them as blank and still keeps a real message with a ZWNJ inside it.",
+      "why": "It is the exact inaccessible state KN-254 set out to remove, reached by the character Persian text uses most. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "An error made only of whitespace and Unicode format characters is no error, while a message that merely contains them is still shown; BlankErrorIsNoError also renders an error of only a zero-width non-joiner and only a right-to-left mark and asserts they are no error, and a story with a real Persian message containing a ZWNJ still shows it; a mutation back to trim() fails the story by name.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T12:09:09.497Z"
     }
   ]
 }
