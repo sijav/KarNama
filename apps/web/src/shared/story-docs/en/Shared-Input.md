@@ -88,8 +88,10 @@ what the field announces.
 ### FocusedWhileInvalid
 
 An invalid field taking focus keeps the error colour at the focus width, two
-pixels of the error border. The design does not draw this state; DESIGN.md
-records the decision.
+pixels of the error border, and the product's focus ring goes round it, two
+pixels of the focus colour just outside the field, because red staying red
+would show no focus at all. The field is shown on each of the three surfaces it
+sits on. The design does not draw this state; DESIGN.md records the decision.
 
 ### Disabled
 

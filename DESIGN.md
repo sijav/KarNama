@@ -202,9 +202,24 @@ script.
 
 Node `95:38` draws six standalone states and no composite, so this one is a
 decision rather than a reading. **A focused invalid field keeps the error
-colour and takes the focus width**: two pixels of `border/error`. Turning it
-blue would hide the error exactly while the user is fixing it, and keeping it
-at one pixel would leave no sign of focus. Revisit if the file ever draws it.
+colour and takes the focus width**: two pixels of `border/error`, because
+turning it blue would hide the error exactly while the user is fixing it. **And
+the product's focus ring goes round it**: two pixels of `border/focus` at an
+offset of two, the ring the Checkbox and the Filter Chip draw, KN-244.
+
+The red border alone changed one pixel on focus, the inner one, white to red at
+3.76 to one, with the outer pixel red before and after: half the perimeter WCAG
+2.4.13 asks a focus indicator to change, and no sign at all to someone who
+cannot resolve one pixel. The ring changes a two pixel band round the whole
+field from the surface behind it to `border/focus`, at 4.70 to one or more on
+the three light surfaces and 3.04 or more on the derived dark ones, KN-271,
+the measure the ordinary Focus state meets. A red ring would clear 3 to one
+too; blue is chosen so the product has one focus sign rather than two.
+
+The ring is an outline, so it takes no space and nothing moves, and it shows on
+any focus, as the field's own focus border does. It sits four pixels outside
+the field, so a container that clips its overflow has to leave that room.
+Revisit if the file ever draws the state.
 
 ### An Input's error needs a message
 

@@ -6128,7 +6128,8 @@
         "2026-09-10: taken, then put back before any file changed. Planning it found the derived dark border/focus at 2.81:1 on bg/surface, KN-271, and the focus ring this card adds is drawn in border/focus, so its 3:1 measure cannot hold in dark until KN-271 lands. Replan from step 2b after it: the ring is the Checkbox's, 2px border/focus at offset 2, beside a 2px border/error border."
       ],
       "createdAt": "2026-09-10T09:45:56.913Z",
-      "updatedAt": "2026-09-10T14:20:26.826Z"
+      "updatedAt": "2026-09-10T14:34:02.819Z",
+      "verify": "node agent/scripts/verify/KN-244.mjs"
     },
     {
       "id": "KN-245",

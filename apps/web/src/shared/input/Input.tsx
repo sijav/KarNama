@@ -76,11 +76,15 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
             // while focused, disabled or in error: those borders say more.
             ...(error === undefined ? { '&:hover:not(.Mui-focused):not(.Mui-disabled)': { borderColor: colour['text/secondary'] } } : {}),
             // Two wide, one less padding, so the text does not move a pixel when
-            // the field takes focus. In error the ring stays the error colour.
+            // the field takes focus. In error the border stays the error colour,
+            // so the error is in view while it is being fixed, and the focus ring
+            // the Checkbox and the Filter Chip draw goes round it: red to red is
+            // no change, so the ring is what shows focus, KN-244.
             '&.Mui-focused': {
               borderWidth: 2,
               borderColor: error === undefined ? colour['border/focus'] : colour['border/error'],
               paddingInline: `${spacing.md - 1}px`,
+              ...(error === undefined ? {} : { outlineWidth: 2, outlineStyle: 'solid', outlineColor: colour['border/focus'], outlineOffset: 2 }),
             },
             '&.Mui-disabled': { backgroundColor: colour['bg/surface-secondary'] },
             '& input.Mui-disabled': { WebkitTextFillColor: colour['text/disabled'], color: colour['text/disabled'] },

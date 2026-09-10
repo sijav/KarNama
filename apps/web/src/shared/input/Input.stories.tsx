@@ -1,10 +1,11 @@
 import { useLingui } from '@lingui/react'
-import { Stack } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import type { ChangeEvent } from 'react'
 import { useArgs } from 'storybook/preview-api'
 import { expect, fn, userEvent, within } from 'storybook/test'
-import { semantic } from '../../theme/tokens'
+import { contrast } from '../../theme/darkMode'
+import { semantic, spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { isBlank } from './blank'
 import { Input, type InputProps } from './Input'
@@ -17,6 +18,13 @@ const computedColour = (host: HTMLElement, colour: string) => {
   const value = getComputedStyle(host).color
   host.style.color = previous
   return value
+}
+
+// A computed rgb() colour as the hex the WCAG contrast formula takes.
+const hexOf = (rgb: string) => {
+  const channels = rgb.match(/\d+/g)?.slice(0, 3) ?? []
+  if (channels.length !== 3) throw new Error(`not an rgb colour: ${rgb}`)
+  return `#${channels.map((channel) => Number(channel).toString(16).padStart(2, '0')).join('')}`
 }
 
 // Everything that places the text inside the field: the input's box, how far
@@ -210,19 +218,49 @@ export const WithError: Story = {
   },
 }
 
+// The surfaces a field sits on, each rendered as an opaque backdrop, so the
+// focus ring is measured against the colour actually behind it, KN-244.
+const SURFACES: (keyof typeof semantic)[] = ['bg/surface', 'bg/page', 'bg/surface-secondary']
+
 export const FocusedWhileInvalid: Story = {
   parameters: { controls: { disable: true } },
   globals: { colorScheme: 'light' },
-  render: () => <JobTitle defaultValue="توسعه" withError />,
+  render: () => (
+    <Stack>
+      {SURFACES.map((surface) => (
+        <Box key={surface} data-testid={surface} sx={(theme) => ({ backgroundColor: theme.karnama.semantic[surface], padding: `${spacing.md}px` })}>
+          <JobTitle defaultValue="توسعه" withError />
+        </Box>
+      ))}
+    </Stack>
+  ),
   play: async ({ canvasElement }) => {
-    const field = fieldOf(canvasElement)
-    await userEvent.tab()
-    await expect(within(canvasElement).getByRole('textbox')).toHaveFocus()
-    // Not drawn in the file, decided in DESIGN.md: the focus width in the
-    // error colour, so the error stays visible while it is being fixed.
-    const style = getComputedStyle(field)
-    await expect(Number.parseFloat(style.borderTopWidth)).toBe(2)
-    await expect(style.borderTopColor).toBe(computedColour(field, semantic['border/error']))
+    for (const surface of SURFACES) {
+      const backdrop = within(canvasElement).getByTestId(surface)
+      await expect(getComputedStyle(backdrop).backgroundColor).toBe(computedColour(backdrop, semantic[surface]))
+      const box = within(backdrop).getByRole('textbox')
+      const field = fieldOf(backdrop)
+      const before = textLayout(box)
+      await userEvent.tab()
+      await expect(box).toHaveFocus()
+      // Not drawn in the file, decided in DESIGN.md. The border keeps the
+      // focus width in the error colour, so the error stays in view while it
+      // is being fixed, KN-241.
+      const style = getComputedStyle(field)
+      await expect(Number.parseFloat(style.borderTopWidth)).toBe(2)
+      await expect(style.borderTopColor).toBe(computedColour(field, semantic['border/error']))
+      // And the focus ring goes round it, since red to red is no change: two
+      // pixels of border/focus outside the field, a band larger than the
+      // field's own two pixel perimeter, changing from the backdrop at 3:1 or
+      // more, WCAG 2.4.13, KN-244.
+      await expect(style.outlineStyle).toBe('solid')
+      await expect(Number.parseFloat(style.outlineWidth)).toBeGreaterThanOrEqual(2)
+      await expect(Number.parseFloat(style.outlineOffset)).toBeGreaterThanOrEqual(0)
+      await expect(style.outlineColor).toBe(computedColour(field, semantic['border/focus']))
+      await expect(contrast(hexOf(style.outlineColor), hexOf(getComputedStyle(backdrop).backgroundColor))).toBeGreaterThanOrEqual(3)
+      // And nothing that lays the text out moves for any of it.
+      await expect(changes(before, textLayout(box))).toEqual([])
+    }
   },
 }
 
