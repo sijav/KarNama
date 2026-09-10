@@ -5218,15 +5218,17 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-10T05:30:46.379Z",
-      "updatedAt": "2026-09-10T08:20:11.982Z",
-      "verify": "node agent/scripts/verify/KN-211.mjs"
+      "updatedAt": "2026-09-10T08:20:32.849Z",
+      "verify": "node agent/scripts/verify/KN-211.mjs",
+      "evidence": "Tooltip.tsx passes its own ref to MUI's Tooltip, which MUI applies to the child, and after mount console.errors \"Tooltip: its child did not take a ref, so the tip can never open…\" when no node arrived. New story ReportsATriggerThatCannotAttach renders SwallowingButton, a wrapper that forwards nothing, captures console.error in beforeEach and asserts the report. agent/scripts/verify/KN-211.mjs, 5 checks green: tooltip stories pass (8 of 8); THE CASE, with the component's check removed the cannot-attach story fails, so MUI alone is silent when the ref never arrives; the swallowing trigger really forwards nothing; KeepsTheTriggersName fails when its DeleteStatusButton wrapper stops spreading its props (the wrapper-trigger clause); the Fragment case is documented as unsupported in en and fa story-docs. Full web npm test 343 of 343 with the 100 percent coverage threshold, so both branches of the check are covered; docs guard and catalog 79 of 79; lint and tsc clean; KN-209, KN-222 and KN-032 green; production Storybook build renders the cannot-attach and keeps-the-triggers-name stories with zero console errors.",
+      "closedAt": "2026-09-10T08:20:32.849Z"
     },
     {
       "id": "KN-212",
