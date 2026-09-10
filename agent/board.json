@@ -2511,13 +2511,15 @@
       "parent": [
         "KN-087"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "aria-label=\"delete/application\" and title=\"delete/application\" both fail npm run lint, a committed fixture holds both, the Foundations token story still passes, and agent/scripts/verify/KN-087.mjs requires the fixture by name.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T23:35:15.722Z",
-      "updatedAt": "2026-09-10T06:09:31.331Z",
-      "verify": "node agent/scripts/verify/KN-094.mjs"
+      "updatedAt": "2026-09-10T06:11:07.270Z",
+      "verify": "node agent/scripts/verify/KN-094.mjs",
+      "evidence": "The exemption ^[a-z-]+/[a-z0-9-/]+$ is removed, not narrowed: with it deleted, npm run lint is clean across apps/web, because the Foundations page reads token names from the token objects via Object.entries and its one literal token name sits inside getByText, already exempt as an assertion. src/gate-fixtures/unlocalized-tokenlike.tsx holds aria-label=\"delete/application\" and title=\"delete/application\" and both fail on lingui/no-unlocalized-strings (2 errors). KN-087.mjs lints the fixture by name and KN-003.mjs requires it by name. agent/scripts/verify/KN-094.mjs, 8 checks green: the fixture holds both; both fail on the lingui rule; THE MUTATION, restoring the exemption makes the fixture lint clean (exit 0), so it fails BECAUSE of the removal; the pattern is absent from the config with comments stripped; the whole workspace lints; the Foundations token story passes (vitest storybook src/theme); hiding the fixture makes KN-087 fail naming it; KN-003's required array names it. Four mutations, all caught on the check that names each: fixture loses its title export; exemption restored for good; KN-087 stops linting the fixture while still naming it in its other list (MISSED by the first version, which grepped the name anywhere in KN-087's source, so that check now runs KN-087 instead); KN-003's entry commented out. Two defects in my own verifier found on the way: the in-check mutation used String.replace with a replacement containing $', which pastes the rest of the file, so ESLint crashed and the check blamed the fixture; and its failure message guessed at causes it could not see. Both fixed. KN-003.mjs full gate green, 11 checks, every planted unlocalized string failing; KN-087.mjs green. No UI changed, so there is nothing to open in a browser.",
+      "closedAt": "2026-09-10T06:11:07.270Z"
     },
     {
       "id": "KN-095",
