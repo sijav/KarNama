@@ -3745,11 +3745,13 @@
       "parent": [
         "KN-072"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-09T22:23:26.951Z"
+      "createdAt": "2026-09-09T22:23:26.951Z",
+      "updatedAt": "2026-09-10T03:20:00.912Z",
+      "verify": "node agent/scripts/verify/KN-072.mjs"
     },
     {
       "id": "KN-154",

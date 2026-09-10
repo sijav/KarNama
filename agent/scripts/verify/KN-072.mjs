@@ -127,10 +127,15 @@ check('the two canonical tab lists are exactly the five tabs, in order', () => {
   if (!three) return 'section 3 no longer states the five tabs after a "has FIVE:" clause'
   const threeList = three[1].split(',').map((tab) => tab.trim())
 
-  const six = /> ([^>\n]*·[^>\n]*?)(?: |$)(?=\*\*History goes second|History goes second)/.exec(flat)
-    ?? /> ((?:[^>]*?·){3}[^>]*?) History goes second/.exec(flat)
-  if (!six) return 'section 6 no longer quotes the canonical tab list'
-  const sixList = six[1].replace(/\*\*/g, '').split('·').map((tab) => tab.trim()).filter(Boolean)
+  // The blockquote line ITSELF, found in the raw document rather than in the
+  // flattened one. The first version anchored on the sentence that follows the
+  // quote, and KN-153 rewrote that sentence, which broke the extraction — the
+  // same mistake as depending on prose, one level down. A quoted line carrying
+  // separators is a structural feature; the words around it are not.
+  const quoted = DESIGN.split('\n').filter((line) => /^>\s*\S/.test(line) && line.includes('·'))
+  if (quoted.length === 0) return 'section 6 no longer quotes the canonical tab list'
+  if (quoted.length > 1) return `${quoted.length} quoted tab lists were found, so which one is canonical is not stated`
+  const sixList = (quoted[0] ?? '').replace(/^>\s*/, '').replace(/\*\*/g, '').split('·').map((tab) => tab.trim()).filter(Boolean)
 
   // The label regression is looked for FIRST, and this order is load-bearing.
   // Checking the list against TABS first also catches it, but reports it as
@@ -160,6 +165,50 @@ check('the two canonical tab lists are exactly the five tabs, in order', () => {
     return 'the superseded label is gone from DESIGN.md entirely, so the rename is no longer recorded anywhere'
   }
   return SANCTIONED.some((marker) => flat.includes(marker)) ? null : 'nothing in DESIGN.md explains why the old label still appears'
+})
+
+check('the owner settled the OWN TAB; the second POSITION is marked as the author\'s', () => {
+  // KN-153. The settled block is the one place in this repository whose
+  // authority comes from the owner rather than from the agent. The owner was
+  // asked whether history gets its own tab and said yes. Nobody asked where
+  // that tab sits: the author chose second. Recording that inside the owner's
+  // entry launders an agent decision into an owner decision, and the owner
+  // loses the chance to say no to something they were never asked.
+  //
+  // The marker is declarative rather than inferred, for the reason this file
+  // has learned four times: a check that decides which prose is an owner claim
+  // by reading the words around it is defeated by rewording the words.
+  const PROPOSAL = /author proposal, not yet put to the owner/i
+  // A claim about WHERE the tab sits, as opposed to that it exists.
+  const POSITION = /history goes second|position,? second/i
+  const flat = DESIGN.split(/\s+/).join(' ')
+
+  // Every paragraph that claims the position must carry the marker ITSELF.
+  // Requiring the marker to exist somewhere in the document was not enough: a
+  // mutation deleting it from section 6 still passed, because section 3 has its
+  // own copy. Paragraphs are the unit because that is how the claim and its
+  // attribution are actually written, and unlike a character window it does not
+  // change meaning when a sentence is re-wrapped.
+  const paragraphs = DESIGN.split(/\n\s*\n/).map((block) => block.split(/\s+/).join(' '))
+  const claiming = paragraphs.filter((block) => POSITION.test(block))
+  if (claiming.length === 0) return 'DESIGN.md no longer states where the history tab sits at all'
+  const unmarked = claiming.filter((block) => !PROPOSAL.test(block))
+  if (unmarked.length) {
+    return `a paragraph claims the tab POSITION without marking it as an author proposal: "${unmarked[0]?.slice(0, 90)}..."`
+  }
+
+  // The owner's own entry, bounded by its heading and the next one, must not
+  // claim the position.
+  const from = flat.search(/\*\*Status history gets its own tab/i)
+  if (from === -1) return 'the owner-settled entry for status history could not be located'
+  const rest = flat.slice(from + 4)
+  const to = rest.search(/\*\*[A-Z]/)
+  const entry = to === -1 ? rest : rest.slice(0, to)
+
+  if (/\bsecond\b/i.test(entry) && !PROPOSAL.test(entry)) {
+    return 'the owner-settled entry claims the tab POSITION, which the owner was never asked about; mark it as an author proposal'
+  }
+  return null
 })
 
 check('section 3 says five, and no longer calls it open', () => {

@@ -330,7 +330,8 @@ must not copy that. Reversing an array in code to "fix" RTL is a defect.
 labelled «مخاطبین», which the rename below supersedes:
 اطلاعات آگهی, یادداشت, «مخاطبین» در فریم, فایل‌ها. It also puts status history at the
 bottom of the Info tab and flags that as open item 18, and **the owner settled
-that on 2026-09-08, KN-072: history is now its own tab**, second, so the modal
+that on 2026-09-08, KN-072: history is now its own tab**. Its POSITION, second,
+is an **author proposal, not yet put to the owner**, see section 6. So the modal
 has FIVE: اطلاعات آگهی, سابقه, یادداشت, افراد مرتبط, فایل‌ها. See section 6. This is
 the second place the build deliberately departs from the frame, the first being
 where رد شده sits on the board, and both are the owner's call rather than a
@@ -560,7 +561,13 @@ timestamps and per-transition notes instead of burying it under a scroll.
 
 > اطلاعات آگهی · **سابقه** · یادداشت · افراد مرتبط · فایل‌ها
 
-History goes second, directly after the information it is the history OF. The
+**Author proposal, not yet put to the owner: history goes SECOND**, directly
+after the information it is the history OF. The owner settled that history gets
+its own TAB; they were never asked where that tab sits. Second position is the
+author's reading of what follows from the decision, and it is recorded here so
+it can be argued with rather than inherited as settled.
+
+The
 question put to the owner illustrated the idea with a three-tab sketch, and that
 sketch was an illustration rather than the tab set: reading it as the answer
 would silently drop افراد مرتبط and فایل‌ها, which the design draws and the product
