@@ -6922,13 +6922,15 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The owner has answered, through the question tool, whether the selected Filter Chip keeps the file's fill as its only sign of selection or gains one that meets WCAG 1.4.11 and 1.4.1, with the options and their trade named; DESIGN.md records the answer as the owner's, with the date; and if it changes, a card for the change exists that also covers KN-272's dark fill.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T14:49:24.519Z",
-      "updatedAt": "2026-09-10T15:48:13.951Z",
-      "verify": "node agent/scripts/verify/KN-276.mjs"
+      "updatedAt": "2026-09-10T15:48:27.506Z",
+      "verify": "node agent/scripts/verify/KN-276.mjs",
+      "evidence": "Put to the owner through the question tool on 2026-09-10 with four options and the trade on each: a blue edge on the selected chip (recommended, naming that the blue is already the pressed edge), a check before the label (grows the chip as it toggles), keep the file's fill (DESIGN.md records the shortfall), or ask the designer first. The owner answered 'A blue edge'. DESIGN.md's 'Settled by the owner on 2026-09-10' now has four answers, and 'A selected Filter Chip shows a blue edge' records it as 'Owner, KN-276, put and answered through the question tool', with the 1.22 to one fill it fixes, the ratio (3 to one on every surface and against the fill inside it), the options not taken, the pressed overlap, and that KN-279 builds it after KN-272. KN-279 exists, critical, 3 points, blocked by KN-272, with the named-role edge at 3:1 in light and derived dark, the fill inside it, and a pressed-versus-selected story in its exit. node agent/scripts/verify/KN-276.mjs passed with its in-memory controls (paragraph removed, question tool removed from the paragraph, KN-279 missing, dropped or unblocked), and KN-196's and KN-273's verifiers still pass. Contract, board validation and the unit project (418) pass. Not established by a script: that the owner, not the author, answered; that rests on the question tool's record in this session.",
+      "closedAt": "2026-09-10T15:48:27.506Z"
     },
     {
       "id": "KN-277",
