@@ -21,6 +21,7 @@
     "todo": "node agent/scripts/todo.mjs",
     "roast": "node agent/scripts/roast.mjs",
     "board": "node agent/scripts/todo.mjs render",
+    "setup:browsers": "npm exec --workspace @karnama/web -- playwright install chromium",
     "contract": "node agent/scripts/verify/contract.mjs",
     "lint": "npm run lint --workspaces --if-present",
     "lint:tsc": "npm run lint:tsc --workspaces --if-present",

@@ -22,6 +22,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { childEnv } from './lib/child-env.mjs'
+import { chromiumStatus } from './lib/playwright-browser.mjs'
 
 const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
 const WEB = join(ROOT, 'apps', 'web')
@@ -64,6 +65,20 @@ if (!existsSync(WEB)) {
 
 const pkg = JSON.parse(readFileSync(join(WEB, 'package.json'), 'utf8'))
 const vitestConfig = readFileSync(join(WEB, 'vitest.config.ts'), 'utf8')
+
+// FIRST, and before anything slow, because everything below that runs the suite
+// depends on it. KN-089: the Storybook project runs in real Chromium, and
+// Playwright fetches the browser in a postinstall that the allow-scripts policy
+// blocks, so a clean clone has the package and not the browser. The failure npm
+// test then produces talks about a missing executable and does not say "install
+// a browser", which reads like a broken suite rather than a missing step.
+//
+// Named rather than merely detected: the point is that the message tells you
+// what to run.
+check('the browser the Storybook project needs is installed', () => {
+  const status = chromiumStatus(WEB)
+  return status.installed ? null : status.reason
+})
 
 check('the lint script treats a warning as a failure', () => {
   // Without --max-warnings 0 a rule set to warn is a rule that does nothing, and
