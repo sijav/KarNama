@@ -5431,15 +5431,17 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "TECH-DEBT.md has an entry for the tokens.ts exemption in the file's what, why, fix and retiring-check format, and a unit test fails if any string exported from src/theme/tokens.ts is not a design value, a colour, a length, a shadow or the font stack, proved by a mutation adding a copy string to the file.",
       "roasts": [],
       "notes": [
         "2026-09-10, from KN-222: TOOLTIP_SURFACE joins STORAGE_KEY as a NAMED lingui exemption for an identifier constant, the Tooltip's surface class. Neither has a TECH-DEBT.md entry either, so record the named identifier exemptions together with the tokens.ts one."
       ],
       "createdAt": "2026-09-10T07:27:50.354Z",
-      "updatedAt": "2026-09-10T07:46:43.570Z",
-      "verify": "node agent/scripts/verify/KN-224.mjs"
+      "updatedAt": "2026-09-10T07:46:58.719Z",
+      "verify": "node agent/scripts/verify/KN-224.mjs",
+      "evidence": "TECH-DEBT.md 13, \"The lingui rule skips one whole file and two named constants\", records the src/theme/tokens.ts exemption and the STORAGE_KEY and TOOLTIP_SURFACE named exemptions with What, Why it is like that, What it costs, and The check that retires this. src/theme/tokens.test.ts gains a guard that walks every export of the tokens module and fails on any string leaf that is not a hex colour, a box-shadow made of 4-length-plus-hex layers, or the fontFamily stack; 40 of 40 pass. agent/scripts/verify/KN-224.mjs, 4 checks green: the guard passes as the file stands; THE CASE, `export const helperText = 'Delete this application'` added to tokens.ts fails the guard naming helperText while `npx eslint src/theme/tokens.ts` on the same file stays green (the exemption, shown); a label nested inside elevation fails it naming elevation.label; the TECH-DEBT entry has all four parts and names all three exemptions. Lint and tsc clean.",
+      "closedAt": "2026-09-10T07:46:58.719Z"
     },
     {
       "id": "KN-225",
