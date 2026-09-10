@@ -3,7 +3,7 @@ import { basename, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { globSync } from 'node:fs'
 import { withDefaultConfig } from 'react-docgen-typescript'
-import ts from 'typescript'
+import { loadCsf } from 'storybook/internal/csf-tools'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { fileNameFor, TITLE_SHAPE } from './catalog'
 import { parseStoryDoc, type StoryDoc } from './parse'
@@ -30,22 +30,16 @@ interface StoryFile {
   title: string
   /** The identifier given to `component:` in the meta, if any. */
   component: string | null
+  /**
+   * The meta HAS a `component`, but it is not a plain identifier.
+   *
+   * Distinct from `component: null`, which means there is none at all and is
+   * legitimate. This third state exists because the previous version skipped
+   * the prop check whenever it could not read the component, which fails OPEN:
+   * the less a meta declared, the less it was asked to document.
+   */
+  componentUnreadable: boolean
   stories: string[]
-}
-
-/**
- * What the AST walk collects, as one object rather than three `let`s.
- *
- * Not a style choice. The walk assigns from inside a closure, and TypeScript's
- * control flow analysis cannot see that, so with separate `let` bindings it
- * narrows `title` to `null` and `titleIsLiteral` to `true` and then reports the
- * checks below as impossible. Properties of an object are re-widened after a
- * call, which is exactly the situation here.
- */
-interface MetaFound {
-  title: string | null
-  component: string | null
-  titleIsLiteral: boolean
 }
 
 /** Every story file Storybook is configured to pick up, `.ts` as well as `.tsx`. */
@@ -53,58 +47,71 @@ const storyFiles = (): string[] =>
   globSync('**/*.stories.@(ts|tsx)', { cwd: SRC }).map((name) => join(SRC, name)).sort()
 
 /**
- * Reads one story file's meta with the TypeScript parser rather than a regex.
+ * Reads one story file's meta and story list from **Storybook's own CSF
+ * parser**, not from a hand-rolled AST walk.
  *
- * A regex over `title:` matches the word in a comment, in a nested object, or
- * in a string that merely contains it. The AST knows which one is the meta's
- * own property, and it also lets a non-literal title be REJECTED rather than
- * silently mis-read.
+ * The walk this replaces was wrong twice in one card. It collected stories only
+ * from `export const`, so `export function KeyboardOnly()` needed no
+ * documentation; and it found the meta by looking for a variable literally
+ * called `meta`, so renaming it lost the title. Both were the same mistake:
+ * reimplementing CSF semantics from TypeScript syntax and drifting from what
+ * Storybook actually does.
+ *
+ * A plan check told me to widen the walk to classes and export lists. I checked
+ * the installed indexer instead of taking that on trust, and it is a mixed
+ * answer worth recording: `export { A }` and `export { A as B }` ARE indexed as
+ * stories by Storybook 10.5.10, and `export class` is NOT. Guarding classes
+ * would have made this stricter than Storybook, which is its own kind of wrong.
+ *
+ * So the parser IS the oracle. `loadCsf` also honours `includeStories`,
+ * `excludeStories` and the reserved `__namedExportsOrder` for free — three more
+ * rules the walk would have had to grow, and each of them a chance to disagree.
  */
 export const readStoryFile = (file: string): StoryFile => {
-  const source = ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true)
-  const found: MetaFound = { title: null, component: null, titleIsLiteral: true }
-  const stories: string[] = []
+  const relativePath = relative(WEB, file)
+  // A sentinel, so "the meta has no title" is distinguishable from a title
+  // that happens to equal whatever a fallback produces. `makeTitle` is required
+  // by `loadCsf` and its result is indistinguishable from a real title, so this
+  // is deliberately a shape `TITLE_SHAPE` would never accept.
+  const NO_TITLE = '<no title in meta>'
 
-  const readMeta = (object: ts.ObjectLiteralExpression) => {
-    for (const property of object.properties) {
-      if (!ts.isPropertyAssignment(property) || !ts.isIdentifier(property.name)) continue
-      if (property.name.text === 'title') {
-        if (ts.isStringLiteral(property.initializer)) found.title = property.initializer.text
-        else found.titleIsLiteral = false
-      }
-      if (property.name.text === 'component' && ts.isIdentifier(property.initializer)) {
-        found.component = property.initializer.text
-      }
-    }
+  let parsed
+  try {
+    // `makeTitle` receives the meta's own title and its RETURN value becomes
+    // `_meta.title`, so it is a filter rather than a fallback. I got that wrong
+    // once by ignoring the argument, which made every file look untitled.
+    //
+    // The parameter is annotated `string | undefined` because that is what
+    // arrives: Storybook's own type declares it non-nullable, and it genuinely
+    // passes `undefined` when the meta has no title. Without the annotation the
+    // linter calls the `??` unnecessary, on the strength of a type that is not
+    // true at runtime.
+    const makeTitle = (userTitle: string | undefined) => userTitle ?? NO_TITLE
+    parsed = loadCsf(readFileSync(file, 'utf8'), { makeTitle, fileName: file }).parse()
+  } catch (error) {
+    // Storybook refuses a dynamic title with "CSF: unexpected dynamic title",
+    // and refusing here for the same reason keeps the guard from silently
+    // treating an unreadable meta as an absent one.
+    throw new Error(`${relativePath} could not be parsed as CSF: ${(error as Error).message}`, { cause: error })
   }
 
-  const visit = (node: ts.Node) => {
-    // `const meta = { ... }`, with or without `satisfies Meta<...>`.
-    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.name.text === 'meta' && node.initializer) {
-      const initializer = ts.isSatisfiesExpression(node.initializer) || ts.isAsExpression(node.initializer) ? node.initializer.expression : node.initializer
-      if (ts.isObjectLiteralExpression(initializer)) readMeta(initializer)
-    }
-    // Every named export that is not the meta is a story, which is CSF 3.
-    if (ts.isVariableStatement(node) && node.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)) {
-      for (const declaration of node.declarationList.declarations) {
-        if (ts.isIdentifier(declaration.name) && declaration.name.text !== 'meta') stories.push(declaration.name.text)
-      }
-    }
-    ts.forEachChild(node, visit)
-  }
-  visit(source)
+  const title = parsed._meta?.title
+  if (title === undefined || title === NO_TITLE) throw new Error(`${relativePath} has no title in its meta`)
 
-  // A backstop, and honest about being one. Storybook's own indexer rejects a
-  // dynamic title first, with "CSF: unexpected dynamic title", so this branch is
-  // not reachable by editing a story file that Storybook also loads. It stays
-  // because this guard reads the source directly and must not silently treat a
-  // computed title as absent, and it is covered by a direct test rather than by
-  // a mutation, since the mutation never gets this far.
-  if (!found.titleIsLiteral) {
-    throw new Error(`${relative(WEB, file)} has a title that is not a string literal, so its docs file cannot be found`)
+  // `component` comes back as the SOURCE TEXT of whatever was written, so
+  // `LanguageSwitch`, `memo(Thing)` and `() => null` are all strings here. Only
+  // a plain identifier can be matched against react-docgen output; anything
+  // else is present-but-unreadable, which fails rather than skipping.
+  const component = parsed._meta?.component
+  const isIdentifier = typeof component === 'string' && /^[A-Za-z_$][\w$]*$/.test(component)
+
+  return {
+    file,
+    title,
+    component: isIdentifier ? component : null,
+    componentUnreadable: component !== undefined && !isIdentifier,
+    stories: parsed.indexInputs.map((input) => input.exportName),
   }
-  if (found.title === null) throw new Error(`${relative(WEB, file)} has no title in its meta`)
-  return { file, title: found.title, component: found.component, stories }
 }
 
 /** Props per component displayName, from one batched TypeScript program. */
@@ -173,6 +180,15 @@ describe('story-docs guard', () => {
 
   it('every documented prop exists, and every real prop is documented', () => {
     for (const entry of files) {
+      // Present but unreadable FAILS. Skipping here is what let a meta with an
+      // inline component owe no prop documentation at all: the guard declined
+      // to check whatever it could not understand, so being hard to understand
+      // was rewarded.
+      if (entry.componentUnreadable) {
+        expect.soft(entry.componentUnreadable, `${entry.title}: the meta's component is not a plain identifier, so its props cannot be checked`).toBe(false)
+        continue
+      }
+      // Genuinely absent is legitimate: a docs-only entry has no component.
       if (!entry.component) continue
       const real = props.get(entry.component)
       expect.soft(real, `${entry.title}: react-docgen found no component called ${entry.component}`).toBeDefined()
@@ -217,14 +233,17 @@ describe('story-docs guard', () => {
   })
 
   it('rejects a computed title instead of reading it as absent', () => {
-    // Direct, because Storybook's indexer refuses a dynamic title before the
-    // guard ever runs, so a repository mutation cannot reach this branch.
+    // No longer a backstop. Reading the file through Storybook's own CSF parser
+    // means the guard now reports Storybook's diagnostic, "unexpected dynamic
+    // title", which is the same refusal the indexer gives, from the same code.
+    // Still tested directly, because a story file with a dynamic title cannot
+    // be left in the tree for a mutation to run against.
     // Not named `.stories.tsx`, so it cannot be picked up by the glob above or
     // by Storybook if the process is interrupted between write and remove.
     const fixture = join(DOCS, '__title-fixture.tsx')
     writeFileSync(fixture, ['const meta = { title: `A/${"B"}` }', 'export default meta', ''].join('\n'))
     try {
-      expect(() => readStoryFile(fixture)).toThrow(/not a string literal/)
+      expect(() => readStoryFile(fixture)).toThrow(/unexpected dynamic title/)
     } finally {
       rmSync(fixture)
     }

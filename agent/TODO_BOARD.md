@@ -10,11 +10,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-201` The docs guard only sees export const stories, so other valid CSF exports need no documentation** (critical, 2 pt, web)
 
-## Backlog (164)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-201` | The docs guard only sees export const stories, so other valid CSF exports need no documentation | critical | 2 | web | none | The guard collects story names from every CSF export form: export const, export function, export class, and an export list. Each is a named failing case, planted in a real story file and run against the real guard, before the fix and passing after. A meta whose component is not a plain identifier is REPORTED rather than skipped, so the prop check never silently declines to run; if the component genuinely cannot be resolved, the guard says so and fails. The mutation that must survive: the existing export const stories keep working. |
+
+## Backlog (163)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-153` | Separate the owner-settled own-tab decision from the author-chosen tab ORDER | high | 1 | design | KN-072 | DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message. |
 | `KN-155` | KN-045 still specifies the four-tab modal KN-072 replaced | high | 1 | web | KN-072 | KN-045 names five tabs with history in its own, its exit condition asserts where history renders, and a check proves NO open card still says four-tab modal or places history inside the info tab. |
 | `KN-172` | compact.py does the opposite of what the loop's compact step is for | high | 1 | agent | none | compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script. |
@@ -2500,7 +2505,7 @@ Found on 2026-09-10 while planning KN-193, and verified three ways. FIRST, grep 
 
 ### `KN-201` The docs guard only sees export const stories, so other valid CSF exports need no documentation
 
-- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-007 roast and REPRODUCED here: I appended 'export function KeyboardOnly() { return null }' to LanguageSwitch.stories.tsx and the guard passed, 8 tests green, with no markdown entry for it. readStoryFile's AST walk collects story names only from ts.isVariableStatement, so a function-declaration export and an export-list export (export { Foo }) are invisible to it. That makes KN-007's stated exit condition, adding a story with no markdown entry fails the guard, FALSE for every CSF export form except export const. The same walk has a second hole with the same shape: 'component' is read only when it is an identifier, and the prop check then does 'if (!entry.component) continue', so a meta with an inline component expression skips prop documentation entirely and silently. Both are the AST reading being narrower than the thing it claims to cover, and both are fixed in the same function.

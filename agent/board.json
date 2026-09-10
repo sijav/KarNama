@@ -4699,11 +4699,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The guard collects story names from every CSF export form: export const, export function, export class, and an export list. Each is a named failing case, planted in a real story file and run against the real guard, before the fix and passing after. A meta whose component is not a plain identifier is REPORTED rather than skipped, so the prop check never silently declines to run; if the component genuinely cannot be resolved, the guard says so and fails. The mutation that must survive: the existing export const stories keep working.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T02:59:37.235Z"
+      "createdAt": "2026-09-10T02:59:37.235Z",
+      "updatedAt": "2026-09-10T03:14:21.405Z",
+      "verify": "node agent/scripts/verify/KN-201.mjs"
     },
     {
       "id": "KN-202",
