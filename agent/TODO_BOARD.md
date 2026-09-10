@@ -2,15 +2,21 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 26 of 176 tasks done · 73 of 530 points.
+Project **KarNama** · 26 of 180 tasks done · 73 of 536 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-114` The catalog test counts an empty string as a translation** (high, 1 pt, web)
+**Next up: `KN-166` Check the loop rules are written correctly in the SkipBureau project** (high, 2 pt, agent)
 
-## Backlog (149)
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-166` | Check the loop rules are written correctly in the SkipBureau project | high | 2 | agent | none | ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed. |
+
+## Backlog (152)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -48,12 +54,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-134` | ThemedTree sets i18n state while rendering | high | 2 | web | none | The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload. |
 | `KN-154` | KN-072 verifier accepts the two failures it exists to prevent | high | 2 | agent | KN-072 | KN-072.mjs parses the ACTUAL tab list out of the decision line and requires exactly the five names in it rather than searching a character window, and checks KN-030 placement on the stripped text with an affirmative un-negatable assertion. Both reproductions above are added as committed mutation cases and each fails the verifier with its own message. |
 | `KN-163` | Adjudication is reported, not enforced, so findings can go unfiled forever | high | 2 | agent | none | todo roast refuses to record a round without --filed, accepting --filed none as the explicit honest answer; KN-001 and KN-065 are adjudicated so the board starts clean; validate still reports the count so a regression is visible; and driving the real CLI proves the refusal. |
-| `KN-166` | Check the loop rules are written correctly in the SkipBureau project | high | 2 | agent | none | ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed. |
 | `KN-167` | The API schema-entry test is flaky under load and fails the gate at random | high | 2 | api | none | The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure. |
 | `KN-168` | KN-160's verifier passes on two blind spots it claims to cover | high | 2 | agent | none | The tree walk covers agent/ and every other directory, distinguishing a plan file from a plan-shaped one by its NAME rather than by which folder it is in; the instruction corpus is derived from a stated convention or from a registry that new instruction files must join, rather than from a hand-maintained list; and both blind spots are proved closed by mutations that currently pass and must then fail. |
 | `KN-170` | An irreversible action must prove its rollback path before it runs | high | 2 | agent | none | AGENTS.md and agent/RALPH.md both carry the rule, naming the three git commands as the concrete instance and stating the general form; the wording makes clear it applies to any irreversible action and not only to deletion; and a check asserts both files carry it so it cannot quietly disappear the way the plan lifecycle rule did. |
 | `KN-173` | rm destroys the card and its reason, so the terminal refusal promises something false | high | 2 | agent | none | A mis-closed card can be voided into a terminal tombstone that RETAINS the card, its reason and a link to its replacement; rm either keeps a record too or stops being named as the recovery route; the terminal refusal message describes what actually happens; and driving the real CLI proves the record survives. |
 | `KN-174` | Extract the verifier sandbox builder, which has already diverged between two copies | high | 2 | agent | none | One sandbox builder in agent/scripts/verify/lib/, used by KN-159 and KN-162, with the fixtures either shared or requested explicitly by the caller; both verifiers still pass; and a check proves neither file builds a repository of its own any more. |
+| `KN-177` | The global todo skill lets a closed task reopen, so SkipBureau's rule is honour-based | high | 2 | agent | none | The global todo skill refuses every transition out of done, naming the new-card route; re-closing is a no-op rather than an error; the refusal is proved by driving the real CLI against a throwaway database rather than by reading the source; a mutation removing the guard fails that check with its own message; and SkipBureau's board is unaffected apart from gaining the guard. |
+| `KN-178` | The preferences story's localStorage restore races with other stories | high | 2 | web | none | The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -121,6 +128,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-157` | The roast record cannot say a finding was fixed rather than dismissed | medium | 1 | agent | none | todo roast accepts a way to record findings that were fixed in-task rather than filed, the summary line distinguishes the three cases, dismissed, filed and fixed, and re-recording KN-100 round 1 with it shows three findings fixed rather than nothing survived. |
 | `KN-164` | CLI messages still instruct the obsolete close-after-roast flow | medium | 1 | agent | none | No message printed by todo.mjs instructs closing after a roast or implies a done task should be reopened; the post-adjudication line describes what is actually true, that the round is recorded and its findings are on the board; and a check asserts the obsolete phrasings are absent from the source's message strings. |
 | `KN-169` | The KN-071 loss marker impersonates the plan it says was destroyed | medium | 1 | agent | none | The KN-071 loss record lives somewhere named for what it is rather than under a plan filename, the decision it concerns links to it, no file matching the plan naming convention denies being a plan, and a check proves that last property so the next marker cannot repeat it. |
+| `KN-179` | no-restricted-globals does not cover stories, so a bare localStorage passed lint | medium | 1 | web | none | no-restricted-globals covers every file that runs in a browser including stories and .storybook, the existing bare uses are corrected, and a planted bare localStorage in a story FAILS npm run lint, proved by planting one rather than by reading the config. |
+| `KN-180` | Verifiers claim to be read-only while their test runs write to node_modules | medium | 1 | agent | none | No verifier claims to be read-only when the commands it spawns write anywhere; those that need a writable tree say so in one line naming what they write; and a verifier that cannot complete reports that it could not RUN a check rather than counting it as a pass or a failure. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -1469,6 +1478,8 @@ PreferencesProvider builds each setter over the locale and colorScheme captured 
 
 **Exit condition.** A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation.
 
+**Roasts.** round 1 scored 5.5 with 0 critical(s)
+
 ### `KN-113` Prove the portalled menu anchors correctly in RTL
 
 - **status** backlog · **severity** medium · **points** 2 · **area** web
@@ -2070,7 +2081,7 @@ Found by the KN-159 roast. agent/scripts/verify/KN-159.mjs proves a done task pa
 
 ### `KN-166` Check the loop rules are written correctly in the SkipBureau project
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** in_progress · **severity** high · **points** 2 · **area** agent
 - **blocked by** none
 
 The owner's instruction of 2026-09-10: go to the sibling project at ../SkipBureau and make sure these rules are written correctly there, because the agent working it has been getting them wrong. The rules to check are the ones settled here: finish and prove a task BEFORE closing it, close on its own verifier rather than on a review, roast the closed work once in the background, every finding becomes a new to-do and never reopens the closed task, and the one exception is a finding that blocks the task now in hand, which means revert that task and take the board's next item. Also the plan-before-building rule and where the plan file lives. Read what is there before changing anything: that project has its own history and its rules may differ deliberately.
@@ -2188,4 +2199,48 @@ Found by the KN-162 roast. The card's exit condition, written before the work, s
 **Why.** An exit condition is the one part of a card that has to be checkable, and a hedged clause is how a card closes on whatever was built rather than on what was asked. The decision itself is settled and the roast agrees with it; what is wrong is the record.
 
 **Exit condition.** KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail.
+
+### `KN-177` The global todo skill lets a closed task reopen, so SkipBureau's rule is honour-based
+
+- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **blocked by** none
+
+Found while checking SkipBureau's loop rules for KN-166. Its CLAUDE.md correctly says a finding is not a reason to reopen what was just finished, and its board is .claude/todo.db driven by the GLOBAL todo skill. ~/.claude/skills/todo/todo.mjs has no guard on a task's current status, so a done task moves back to in_progress freely, exactly as KarNama's board did until KN-162 added a terminal guard. The project whose agent was described as getting the rules wrong is therefore the one where the tool does not enforce them. KarNama's fix is the model: refuse every transition out of done, put the guard ahead of the other status checks so the refusal reports the right cause, name a new card as the route for remaining work, and make re-closing an explicit no-op rather than letting it fall through to a message that tells the reader to reopen.
+
+**Why.** A rule stated in a document and unenforced by the tool is followed exactly as often as the person reading it remembers, and the moment it matters most is when a reviewer has just found something. This is the same gap KN-162 closed here, still open in the shared tool that every other project uses.
+
+**Exit condition.** The global todo skill refuses every transition out of done, naming the new-card route; re-closing is a no-op rather than an error; the refusal is proved by driving the real CLI against a throwaway database rather than by reading the source; a mutation removing the guard fails that check with its own message; and SkipBureau's board is unaffected apart from gaining the guard.
+
+### `KN-178` The preferences story's localStorage restore races with other stories
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+Found by the KN-112 roast and the mechanism is concrete. PreferencesProvider.stories.tsx saves localStorage, clicks a button that makes the provider persist, and restores in a finally. That is not enough without serialization: story A captures the original value, story B starts while A's en-US and dark value is present and captures THAT as its own before, A restores the original, then B restores the polluted value, and the suite ends dirty. A story running between the write and the restore can also read the polluted value. The storybook project declares a browser instance and nothing about serial execution or storage isolation, so nothing rules the interleaving out. The symptom would be an unrelated story going flaky, which is the hardest kind of failure to trace back.
+
+**Why.** The story is the only proof of the state half of KN-112, so it has to be trustworthy, and a test that can corrupt the shared browser is a test that manufactures failures elsewhere. Any story that mounts a provider without a seed reads whatever is stored.
+
+**Exit condition.** The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler.
+
+### `KN-179` no-restricted-globals does not cover stories, so a bare localStorage passed lint
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+Found by the KN-112 roast. AGENTS.md says browser globals go through window.*, kept mockable and greppable, enforced by no-restricted-globals. PreferencesProvider.stories.tsx uses bare localStorage three times and the lint passed with --max-warnings 0, so the enforcement does not reach .stories.tsx, or localStorage is not in the restricted list. The violation is minor on its own; the hole is not, because the rule's whole value is that it is mechanical and it silently is not.
+
+**Why.** A convention documented as enforced, that is not enforced, is worse than one documented as a habit: nobody checks it by hand because the linter is supposed to. This one was found by a reviewer rather than by the gate that claims to cover it.
+
+**Exit condition.** no-restricted-globals covers every file that runs in a browser including stories and .storybook, the existing bare uses are corrected, and a planted bare localStorage in a story FAILS npm run lint, proved by planting one rather than by reading the config.
+
+### `KN-180` Verifiers claim to be read-only while their test runs write to node_modules
+
+- **status** backlog · **severity** medium · **points** 1 · **area** agent
+- **blocked by** none
+
+Found by the KN-112 roast. KN-112's header says read-only, runs commands, writes nothing to the repository. That is false: the vitest runs it spawns make Vite create apps/web/node_modules/.vite-temp files, which is why both of its runtime checks failed with EPERM in the reviewer's read-only environment while its static checks still ran and reported. So the file both overstates its own behaviour and can report a partial result that looks like a full one. Other verifiers that spawn vitest carry the same claim.
+
+**Why.** A verifier's header is what a reviewer trusts when deciding whether it can be run and what a failure means. One that claims read-only and then half-runs produces exactly the confusing outcome seen here: two checks failing for the environment and three passing, with a summary that does not distinguish them.
+
+**Exit condition.** No verifier claims to be read-only when the commands it spawns write anywhere; those that need a writable tree say so in one line naming what they write; and a verifier that cannot complete reports that it could not RUN a check rather than counting it as a pass or a failure.
 

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 177,
+  "nextId": 181,
   "tasks": [
     {
       "id": "KN-001",
@@ -2731,7 +2731,25 @@
       ],
       "status": "done",
       "exit": "A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-112-round-1.2026-09-10T00-25-27-596Z.md",
+          "filed": [
+            "KN-178",
+            "KN-179",
+            "KN-180"
+          ],
+          "cardDigest": "3a05e2d9989c840abcffe88de1d8243bfc164671668325d316bc9bac4b9cf9f0",
+          "head": "944d888ae8d23ab7ee1c539c836482370a42ed17",
+          "reviewerScore": 5.5,
+          "reviewerCriticals": 0,
+          "dismissed": "One major is rejected in part. The reviewer says the story puts user-facing documentation prose into source including a JSDoc block, violating the documentation contract. AGENTS.md forbids JSDoc above const meta and a docblock above a story export; the block it points at is above clickingBothSetters, a local helper, and it explains why the helper restores storage, which is code explanation and therefore a comment by that document's own test: if it explains the code to whoever edits it, it is a comment. So the placement is not a violation. The other half of that finding, that the story ships no bilingual Story Docs page, is REAL and is exactly KN-158, already filed: AGENTS.md mandates src/shared/story-docs/{en,fa} and a guard test, and none of it exists, no directory, no guard, and all three pre-existing stories carry the JSDoc the rule forbids. Adding the first story-docs page would mean building that system, which is KN-158's work and not a one point bug fix. The reviewer's answer to my ref question is also worth recording: it confirms the fix is correct for the synchronous handler case and correctly objects that my comment's absolute cannot disagree is too broad, since a transition can leave the ref ahead of rendered state without losing either field. Its counter-proposal for the click check, a handler-invocation counter asserted at runtime rather than a regex over the source, is better than what I wrote and is folded into KN-178's exit condition.",
+          "at": "2026-09-10T00:28:53.837Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-08T00:41:13.307Z",
       "updatedAt": "2026-09-10T00:25:08.007Z",
@@ -3917,11 +3935,12 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-09T23:56:34.854Z"
+      "createdAt": "2026-09-09T23:56:34.854Z",
+      "updatedAt": "2026-09-10T00:26:03.683Z"
     },
     {
       "id": "KN-167",
@@ -4072,6 +4091,66 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T00:20:10.009Z"
+    },
+    {
+      "id": "KN-177",
+      "title": "The global todo skill lets a closed task reopen, so SkipBureau's rule is honour-based",
+      "desc": "Found while checking SkipBureau's loop rules for KN-166. Its CLAUDE.md correctly says a finding is not a reason to reopen what was just finished, and its board is .claude/todo.db driven by the GLOBAL todo skill. ~/.claude/skills/todo/todo.mjs has no guard on a task's current status, so a done task moves back to in_progress freely, exactly as KarNama's board did until KN-162 added a terminal guard. The project whose agent was described as getting the rules wrong is therefore the one where the tool does not enforce them. KarNama's fix is the model: refuse every transition out of done, put the guard ahead of the other status checks so the refusal reports the right cause, name a new card as the route for remaining work, and make re-closing an explicit no-op rather than letting it fall through to a message that tells the reader to reopen.",
+      "why": "A rule stated in a document and unenforced by the tool is followed exactly as often as the person reading it remembers, and the moment it matters most is when a reviewer has just found something. This is the same gap KN-162 closed here, still open in the shared tool that every other project uses.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The global todo skill refuses every transition out of done, naming the new-card route; re-closing is a no-op rather than an error; the refusal is proved by driving the real CLI against a throwaway database rather than by reading the source; a mutation removing the guard fails that check with its own message; and SkipBureau's board is unaffected apart from gaining the guard.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:27:30.255Z"
+    },
+    {
+      "id": "KN-178",
+      "title": "The preferences story's localStorage restore races with other stories",
+      "desc": "Found by the KN-112 roast and the mechanism is concrete. PreferencesProvider.stories.tsx saves localStorage, clicks a button that makes the provider persist, and restores in a finally. That is not enough without serialization: story A captures the original value, story B starts while A's en-US and dark value is present and captures THAT as its own before, A restores the original, then B restores the polluted value, and the suite ends dirty. A story running between the write and the restore can also read the polluted value. The storybook project declares a browser instance and nothing about serial execution or storage isolation, so nothing rules the interleaving out. The symptom would be an unrelated story going flaky, which is the hardest kind of failure to trace back.",
+      "why": "The story is the only proof of the state half of KN-112, so it has to be trustworthy, and a test that can corrupt the shared browser is a test that manufactures failures elsewhere. Any story that mounts a provider without a seed reads whatever is stored.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:28:35.373Z"
+    },
+    {
+      "id": "KN-179",
+      "title": "no-restricted-globals does not cover stories, so a bare localStorage passed lint",
+      "desc": "Found by the KN-112 roast. AGENTS.md says browser globals go through window.*, kept mockable and greppable, enforced by no-restricted-globals. PreferencesProvider.stories.tsx uses bare localStorage three times and the lint passed with --max-warnings 0, so the enforcement does not reach .stories.tsx, or localStorage is not in the restricted list. The violation is minor on its own; the hole is not, because the rule's whole value is that it is mechanical and it silently is not.",
+      "why": "A convention documented as enforced, that is not enforced, is worse than one documented as a habit: nobody checks it by hand because the linter is supposed to. This one was found by a reviewer rather than by the gate that claims to cover it.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "no-restricted-globals covers every file that runs in a browser including stories and .storybook, the existing bare uses are corrected, and a planted bare localStorage in a story FAILS npm run lint, proved by planting one rather than by reading the config.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:28:35.466Z"
+    },
+    {
+      "id": "KN-180",
+      "title": "Verifiers claim to be read-only while their test runs write to node_modules",
+      "desc": "Found by the KN-112 roast. KN-112's header says read-only, runs commands, writes nothing to the repository. That is false: the vitest runs it spawns make Vite create apps/web/node_modules/.vite-temp files, which is why both of its runtime checks failed with EPERM in the reviewer's read-only environment while its static checks still ran and reported. So the file both overstates its own behaviour and can report a partial result that looks like a full one. Other verifiers that spawn vitest carry the same claim.",
+      "why": "A verifier's header is what a reviewer trusts when deciding whether it can be run and what a failure means. One that claims read-only and then half-runs produces exactly the confusing outcome seen here: two checks failing for the environment and three passing, with a summary that does not distinguish them.",
+      "severity": "medium",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "No verifier claims to be read-only when the commands it spawns write anywhere; those that need a writable tree say so in one line naming what they write; and a verifier that cannot complete reports that it could not RUN a check rather than counting it as a pass or a failure.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:28:35.574Z"
     }
   ]
 }
