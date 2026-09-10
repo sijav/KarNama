@@ -6104,13 +6104,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Changing defaultValue in Controls after the story has rendered changes the text in the field: a check renders an Input story, changes the arg through Storybook's own arg update, and asserts the field shows the new value, and it fails with the fix taken out.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T09:45:57.476Z",
-      "updatedAt": "2026-09-10T10:01:11.276Z",
-      "verify": "node agent/scripts/verify/KN-246.mjs"
+      "updatedAt": "2026-09-10T10:01:51.297Z",
+      "verify": "node agent/scripts/verify/KN-246.mjs",
+      "evidence": "node agent/scripts/verify/KN-246.mjs passed. It builds the production Storybook into a temp directory, serves it with its own HTTP server, and for every Input story whose controls are not disabled it renders the story in Playwright's Chromium, waits for Storybook's render phase to finish, emits updateStoryArgs on Storybook's own channel, as the Controls panel does, with defaultValue 'second' and a helperText marker in the same update, and reads the field. (1) All eight stories that offer controls (default, from-args, filled, focus, disabled, hover, label-is-bound, typing) show 'second', and the marker proves each update arrived; (2) THE CASE: with the key taken out of the meta render, a rebuild shows the fields ignoring the change; (3) the twelve Input stories pass. Before the fix the same check failed on five stories, the ones that mount with a defaultValue (from-args '7', filled, focus and disabled with the typed title, typing '42'); default, hover and label-is-bound followed the change even then, because a field mounted with no default is never marked dirty by React. Also rerun and passing: KN-242.mjs (its anchors now carry the key), KN-243.mjs, KN-241.mjs, KN-011.mjs; workspace lint zero warnings, tsc --noEmit clean. A child task, so it closes on the tests for the file it changed. NOT established: the same for value, which makes the field controlled and whose control is a separate question (typing into a field whose value comes from an arg that nothing updates); and that the Storybook manager's Controls panel emits exactly this event, which is Storybook's documented channel for it, not observed in the manager here. Remounting on a new default also drops focus and anything typed, which is what starting the field over means.",
+      "closedAt": "2026-09-10T10:01:51.297Z"
     },
     {
       "id": "KN-247",
