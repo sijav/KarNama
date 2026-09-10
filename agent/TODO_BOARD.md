@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 27 of 180 tasks done · 75 of 536 points.
+Project **KarNama** · 27 of 182 tasks done · 75 of 539 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -16,10 +16,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-114` | The catalog test counts an empty string as a translation | high | 1 | web | KN-006 | Setting any Persian message to an empty or whitespace-only string fails npm test, and the failure names the id. |
 
-## Backlog (151)
+## Backlog (153)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-181` | SkipBureau's active loop prompt fires the roast BEFORE the close, contradicting its own line | critical | 2 | agent | none | The command block in ../SkipBureau/.claude/ralph-loop.local.md closes before it roasts, matching its own prose; its step 1 says a false done is repaired by filing a card rather than by reopening; and a check covers BOTH that project's rule files rather than CLAUDE.md alone, so a contradiction between them fails rather than passing. |
 | `KN-132` | Pin the byte-compared generated files to LF, or stop comparing bytes | high | 1 | infra | none | A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand. |
 | `KN-149` | The board cards for the rejected column do not require it to collapse | high | 1 | design | none | The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered. |
 | `KN-152` | Use the current Contacts tab label in the history decision | high | 1 | design | KN-072 | DESIGN.md section 6 and section 3 name the modal tab افراد مرتبط, KN-030 and KN-045 use that label, KN-072.mjs requires it and REJECTS مخاطبین as the modal tab label, and a mutation restoring مخاطبین fails the verifier with its own message. |
@@ -129,6 +130,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-169` | The KN-071 loss marker impersonates the plan it says was destroyed | medium | 1 | agent | none | The KN-071 loss record lives somewhere named for what it is rather than under a plan filename, the decision it concerns links to it, no file matching the plan naming convention denies being a plan, and a check proves that last property so the next marker cannot repeat it. |
 | `KN-179` | no-restricted-globals does not cover stories, so a bare localStorage passed lint | medium | 1 | web | none | no-restricted-globals covers every file that runs in a browser including stories and .storybook, the existing bare uses are corrected, and a planted bare localStorage in a story FAILS npm run lint, proved by planting one rather than by reading the config. |
 | `KN-180` | Verifiers claim to be read-only while their test runs write to node_modules | medium | 1 | agent | none | No verifier claims to be read-only when the commands it spawns write anywhere; those that need a writable tree say so in one line naming what they write; and a verifier that cannot complete reports that it could not RUN a check rather than counting it as a pass or a failure. |
+| `KN-182` | KN-166's verifier makes this repository fail when a sibling project moves | medium | 1 | agent | none | KarNama's verification does not depend on any path outside this repository; a missing sibling is reported as unavailable rather than as a failure; and the rules check for SkipBureau lives in SkipBureau and gates SkipBureau, proved by running both with the sibling renamed. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -2090,6 +2092,8 @@ The owner's instruction of 2026-09-10: go to the sibling project at ../SkipBurea
 
 **Exit condition.** ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed.
 
+**Roasts.** round 1 scored 2.5 with 1 critical(s)
+
 ### `KN-167` The API schema-entry test is flaky under load and fails the gate at random
 
 - **status** backlog · **severity** high · **points** 2 · **area** api
@@ -2243,4 +2247,26 @@ Found by the KN-112 roast. KN-112's header says read-only, runs commands, writes
 **Why.** A verifier's header is what a reviewer trusts when deciding whether it can be run and what a failure means. One that claims read-only and then half-runs produces exactly the confusing outcome seen here: two checks failing for the environment and three passing, with a summary that does not distinguish them.
 
 **Exit condition.** No verifier claims to be read-only when the commands it spawns write anywhere; those that need a writable tree say so in one line naming what they write; and a verifier that cannot complete reports that it could not RUN a check rather than counting it as a pass or a failure.
+
+### `KN-181` SkipBureau's active loop prompt fires the roast BEFORE the close, contradicting its own line
+
+- **status** backlog · **severity** critical · **points** 2 · **area** agent
+- **blocked by** none
+
+Found by the KN-166 roast and confirmed by reading. ../SkipBureau/.claude/ralph-loop.local.md is the prompt its Stop hook feeds every iteration, so it is a rule file, and KN-166's check read only CLAUDE.md. Line 146 says THEN move it to done, and only then fire the roast, in the background. The code block immediately beneath it does the opposite: roast.py task ... & comes first and todo move <id> done second, so the reviewer can read and report on work before it is closed, which is the ordering the whole rule exists to prevent. That is the sijav failure mode, correct prose over a body that instructs the opposite, and KN-166 explicitly praised this project for not having it, on the strength of having read the wrong file. Separately, its step 1 says a false or premature done is repaired before any new work starts, which under the current rules means filing a card, but the wording invites reopening a closed task and should say which it means.
+
+**Why.** The prompt arrives at the start of every iteration and is read before any rule file, and a copyable command block is followed more literally than the sentence above it. This is the file that actually drives that loop, and it currently disagrees with itself in the one place the owner has corrected twice.
+
+**Exit condition.** The command block in ../SkipBureau/.claude/ralph-loop.local.md closes before it roasts, matching its own prose; its step 1 says a false done is repaired by filing a card rather than by reopening; and a check covers BOTH that project's rule files rather than CLAUDE.md alone, so a contradiction between them fails rather than passing.
+
+### `KN-182` KN-166's verifier makes this repository fail when a sibling project moves
+
+- **status** backlog · **severity** medium · **points** 1 · **area** agent
+- **blocked by** none
+
+Found by the KN-166 roast. agent/scripts/verify/KN-166.mjs derives ../SkipBureau from KarNama's own location and FAILS when it is absent, which I chose deliberately over skipping, on the grounds that a check passing when its subject is missing is worse. The reviewer's point is that both options are bad and a third exists: cloning KarNama alone, archiving the sibling, or checking out on another machine turns this repository's verification red for something that is not a KarNama defect. The rule verifier belongs in SkipBureau, gating SkipBureau. What can honestly live here is a non-gating cross-repo audit that reports subject unavailable as a distinct outcome from subject wrong.
+
+**Why.** A gate that goes red for a reason outside the repository teaches people to ignore red. That is the most expensive thing a gate can teach, and it is the same lesson a flaky test teaches, which is separately filed as KN-167.
+
+**Exit condition.** KarNama's verification does not depend on any path outside this repository; a missing sibling is reported as unavailable rather than as a failure; and the rules check for SkipBureau lives in SkipBureau and gates SkipBureau, proved by running both with the sibling renamed.
 

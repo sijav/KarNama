@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 181,
+  "nextId": 183,
   "tasks": [
     {
       "id": "KN-001",
@@ -3938,7 +3938,23 @@
       "parent": [],
       "status": "done",
       "exit": "../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 2.5,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-166-round-1.2026-09-10T00-31-53-052Z.md",
+          "filed": [
+            "KN-181",
+            "KN-182"
+          ],
+          "cardDigest": "773af1cb24426e50d8ae5a6d15ebed916894abcee1b11580aa6bcf56c1a607d9",
+          "head": "e1be6c914bc51d23cad7550b0c22c4d1e0b6a7b9",
+          "reviewerScore": 2.5,
+          "reviewerCriticals": 1,
+          "at": "2026-09-10T00:34:39.469Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-09T23:56:34.854Z",
       "updatedAt": "2026-09-10T00:31:34.605Z",
@@ -4155,6 +4171,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T00:28:35.574Z"
+    },
+    {
+      "id": "KN-181",
+      "title": "SkipBureau's active loop prompt fires the roast BEFORE the close, contradicting its own line",
+      "desc": "Found by the KN-166 roast and confirmed by reading. ../SkipBureau/.claude/ralph-loop.local.md is the prompt its Stop hook feeds every iteration, so it is a rule file, and KN-166's check read only CLAUDE.md. Line 146 says THEN move it to done, and only then fire the roast, in the background. The code block immediately beneath it does the opposite: roast.py task ... & comes first and todo move <id> done second, so the reviewer can read and report on work before it is closed, which is the ordering the whole rule exists to prevent. That is the sijav failure mode, correct prose over a body that instructs the opposite, and KN-166 explicitly praised this project for not having it, on the strength of having read the wrong file. Separately, its step 1 says a false or premature done is repaired before any new work starts, which under the current rules means filing a card, but the wording invites reopening a closed task and should say which it means.",
+      "why": "The prompt arrives at the start of every iteration and is read before any rule file, and a copyable command block is followed more literally than the sentence above it. This is the file that actually drives that loop, and it currently disagrees with itself in the one place the owner has corrected twice.",
+      "severity": "critical",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The command block in ../SkipBureau/.claude/ralph-loop.local.md closes before it roasts, matching its own prose; its step 1 says a false done is repaired by filing a card rather than by reopening; and a check covers BOTH that project's rule files rather than CLAUDE.md alone, so a contradiction between them fails rather than passing.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:34:27.362Z"
+    },
+    {
+      "id": "KN-182",
+      "title": "KN-166's verifier makes this repository fail when a sibling project moves",
+      "desc": "Found by the KN-166 roast. agent/scripts/verify/KN-166.mjs derives ../SkipBureau from KarNama's own location and FAILS when it is absent, which I chose deliberately over skipping, on the grounds that a check passing when its subject is missing is worse. The reviewer's point is that both options are bad and a third exists: cloning KarNama alone, archiving the sibling, or checking out on another machine turns this repository's verification red for something that is not a KarNama defect. The rule verifier belongs in SkipBureau, gating SkipBureau. What can honestly live here is a non-gating cross-repo audit that reports subject unavailable as a distinct outcome from subject wrong.",
+      "why": "A gate that goes red for a reason outside the repository teaches people to ignore red. That is the most expensive thing a gate can teach, and it is the same lesson a flaky test teaches, which is separately filed as KN-167.",
+      "severity": "medium",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "KarNama's verification does not depend on any path outside this repository; a missing sibling is reported as unavailable rather than as a failure; and the rules check for SkipBureau lives in SkipBureau and gates SkipBureau, proved by running both with the sibling renamed.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:34:27.440Z"
     }
   ]
 }
