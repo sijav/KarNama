@@ -6751,13 +6751,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "In every state the Input's text sits spacing/md, 16px, from the field's outer edge, as 95:5 and 95:19 draw it, with the stroke painted inside that padding and taking no layout space; no padding in Input.tsx is computed from a border width; the Default and Focus stories measure the text's distance from the edge at 16; and the other bordered components are checked for the same offset, each matching or carrying a card.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T13:19:54.737Z",
-      "updatedAt": "2026-09-10T16:47:46.682Z",
-      "verify": "node agent/scripts/verify/KN-266.mjs"
+      "updatedAt": "2026-09-10T16:51:01.550Z",
+      "verify": "node agent/scripts/verify/KN-266.mjs",
+      "evidence": "Input.tsx draws the edge as a border on a ::before laid over the whole field (inset 0, radius inherited, pointer events off): 1px border/default, border/error in error, text/secondary on hover, 2px border/focus or border/error on focus; the field has no border of its own and paddingInline spacing.md in every state. Read with use_figma: 95:5 and 95:19 stroke INSIDE, not in layout, padding 16, text at 16. node agent/scripts/verify/KN-266.mjs passed: the Input stories pass with Default and Focus asserting the text 16 from the edge on both sides; every padding in Input.tsx is a token or 0; a laid-out border put back on the field fails Default by name; a focused padding change fails Focus; in a production build, Default, Filled, Focus, WithError, FocusedWhileInvalid, Disabled and Hover in fa-IR and en-US all have the text at 16 and 16, a field border of 0 on all sides and a solid ::before edge of 1 (2 when focused); under emulated forced colours the edge is still drawn on the rendered pixels while the same field with an inset shadow has none; KN-281 (Checkbox 1.5 for 1) and KN-282 (Filter Chip 13 for 12, pressed 1.5 for 1) exist and the Tooltip and Status Chip draw no border; DESIGN.md's 'A stroke is drawn inside, and takes no space' records the widths and the reason; KN-011, 241, 243, 244 and 248 pass with anchors moved, and the twelve other Input verifiers pass. Unit 418, full eslint, tsc and contract clean. Seen in light and dark, both languages. Not established: text selection by drag and autofill styling, which nothing here exercises.",
+      "closedAt": "2026-09-10T16:51:01.550Z"
     },
     {
       "id": "KN-267",
