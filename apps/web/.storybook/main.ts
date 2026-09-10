@@ -12,7 +12,21 @@ const config: StorybookConfig = {
   // .tsx, so autodocs pulls its page from an .mdx sitting beside the component
   // rather than from comments the type checker also reads.
   docs: { defaultName: 'Docs' },
-  typescript: { reactDocgen: 'react-docgen-typescript' },
+  typescript: {
+    reactDocgen: 'react-docgen-typescript',
+    // Storybook's own defaults, restated because giving ANY option replaces the
+    // whole object, and dropping `propFilter` would fill every Controls table
+    // with the DOM's props. Plus the one that matters here, KN-229: props are
+    // documented in story-docs rather than JSDoc, and react-docgen hides an
+    // undocumented `children` by default, so the Tooltip's Controls table lost
+    // its type and its required flag. The story-docs guard sets the same rule.
+    reactDocgenTypescriptOptions: {
+      shouldExtractLiteralValuesFromEnum: true,
+      shouldRemoveUndefinedFromOptional: true,
+      propFilter: (prop) => !prop.parent?.fileName.includes('node_modules'),
+      skipChildrenPropWithoutDoc: false,
+    },
+  },
   // Storybook is published BESIDE the app, at `/KarNama/storybook/`, not inside
   // it. It needs its own base for the same reason the app does: every asset is
   // requested relative to it, so a wrong base 404s the whole page in production

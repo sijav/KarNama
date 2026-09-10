@@ -5586,11 +5586,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Storybook's docgen is configured with the same children rule as the guard, the other defaults it depends on kept; a production Storybook build reports children among the Tooltip's argTypes, checked from the built page rather than the config; and a mutation dropping the option makes that check fail.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T08:08:34.318Z"
+      "createdAt": "2026-09-10T08:08:34.318Z",
+      "updatedAt": "2026-09-10T08:11:52.566Z",
+      "verify": "node agent/scripts/verify/KN-229.mjs"
     },
     {
       "id": "KN-230",
