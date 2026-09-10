@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 193,
+  "nextId": 195,
   "tasks": [
     {
       "id": "KN-001",
@@ -3604,11 +3604,12 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-09T21:17:05.511Z"
+      "createdAt": "2026-09-09T21:17:05.511Z",
+      "updatedAt": "2026-09-10T01:56:19.079Z"
     },
     {
       "id": "KN-150",
@@ -4428,10 +4429,11 @@
       "exit": "The recognisers read a COMMAND rather than command-shaped text. The close is the head token of its line. The roast is matched among that line's tokens, because python <path>/roast.py task puts the roast in ARGUMENT position and an anchor would find nothing in the file this is written for. A quoted run stays ONE token, and a line whose head is a printer (echo, printf, cat) runs nothing, so a mention is not the command. The reviewer's echo fixture fails before the fix and passes after. A pipeline, a chain, a semicolon or a line continuation is REPORTED as unorderable rather than guessed at, and a single trailing ampersand is NOT, because backgrounding the roast is what the real prompt does.",
       "roasts": [],
       "notes": [
-        "EXIT CONDITION AMENDED 2026-09-10, original kept here. It read: 'The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident.' The clause 'at the start of the line' cannot be met, and the plan filed beside this card said so before the work started: the roast invocation is python <path>/roast.py task, so the roast is an ARGUMENT, and a rule demanding it start the line reports a correct prompt as having no roast command. The close does start its line and still must. Amended openly rather than declared satisfied by a check that does not check it."
+        "EXIT CONDITION AMENDED 2026-09-10, original kept here. It read: 'The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident.' The clause 'at the start of the line' cannot be met, and the plan filed beside this card said so before the work started: the roast invocation is python <path>/roast.py task, so the roast is an ARGUMENT, and a rule demanding it start the line reports a correct prompt as having no roast command. The close does start its line and still must. Amended openly rather than declared satisfied by a check that does not check it.",
+        "Roasted 2026-09-10 through the WRONG harness: I ran python ~/.claude/skills/roast/roast.py task, which RALPH.md line 199 reserves for PLAN checks, instead of npm run roast which line 297 names for task roasts. Only the local harness writes the .meta.json sidecar the board verifies, so that round could not be recorded here. The review itself was sound and I confirmed every reproducer by running it: the close recogniser is not head-anchored, so a marked block reading 'grep todo move <id> done' then the real roast then the real close returns ok true, which is the defect this card was opened for. Filed as KN-193 and KN-194. Re-roasted through the local harness for a recordable round. Done is terminal; this card is not reopening."
       ],
       "createdAt": "2026-09-10T01:18:51.245Z",
-      "updatedAt": "2026-09-10T01:53:28.824Z",
+      "updatedAt": "2026-09-10T02:01:48.802Z",
       "verify": "node agent/scripts/verify/KN-190.mjs",
       "evidence": "node agent/scripts/verify/KN-190.mjs, 13 checks, all pass. THE CASE is a named check: readCommand on echo \"todo move <id> done\" is not a close, and end to end a block of that echo, then the real roast, then the real close is rejected with 'the block fires the roast BEFORE the close'. The mutation that must SURVIVE reproduces the old unanchored regexes inside the verifier and confirms they DO pass the decoy, so the fix is load-bearing rather than a rule against something that was never broken. A floor check asserts the two real shapes still resolve, so the negative cases cannot pass by finding nothing. Mutation harness, 5 cases, run against the real verifier with the source patched and restored: CAUGHT emptying PRINTERS, CAUGHT accepting the unsupported shapes silently, CAUGHT comparing operators against the raw line instead of the quote-stripped one, CAUGHT adding a trailing ampersand to UNSUPPORTED (which would reject the real prompt). NOT CAUGHT, and stated rather than hidden: disabling the tokeniser's quote handling. The quoted fixture still fails, but because the quote characters glue onto the boundary words, so it fails safe by accident and no test can separate working quoting from dead quoting. Written into prompt-order.mjs, KN-190.mjs and the plan file, next to the code, so nobody reads the missing failure as coverage. What is proved is PRINTERS and UNSUPPORTED. CHILD OF KN-184, so the test scope is the files changed, not the full suite: prompt-order.mjs has exactly two consumers, KN-184.mjs and KN-190.mjs, both green; KN-166.mjs green because a new file was added under agent/scripts/verify; npm run todo -- validate says the board is valid, 192 tasks. The exit condition was AMENDED before closing, not after the fact, with the original text kept in a note on the card and the reason in the plan.",
       "closedAt": "2026-09-10T01:53:28.824Z"
@@ -4468,6 +4470,36 @@
       ],
       "createdAt": "2026-09-10T01:44:50.061Z",
       "updatedAt": "2026-09-10T01:54:45.044Z"
+    },
+    {
+      "id": "KN-193",
+      "title": "The close recogniser is not the head token, so any command's arguments can be the close",
+      "desc": "CHILD OF KN-184, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-190 roast, which reproduced it, and confirmed by running it here. KN-190 fixed the echo INSTANCE and left the CLASS. readCommand's close test is words.includes('move') and words.includes('done') and (command === 'todo' or words.includes('todo')), so the trailing disjunct lets any command whose ARGUMENTS happen to be the close shape count as the close. Confirmed reproducer: a marked block whose lines are grep todo move <id> done, then the real roast, then the real close returns ok true, so a block that roasts BEFORE it closes passes. That is the exact defect KN-190 was opened for. Also confirmed: env echo todo move <id> done and command echo ... bypass PRINTERS because their head is not a printer; a heredoc body is parsed as separate command lines, so cat <<EOF around a close masks the order; and the roast test accepts QUOTED tokens, so grep \"/tmp/roast.py\" task returns roasts true. KN-190's amended exit condition literally says the close is the head token of its line, and the implementation does not do it, so the card's green verifier did not establish its own exit condition. The reviewer also noted quote interpretation happens twice, in tokenise() and again in the line.replace() used for the operator check, and the two can disagree on escaped text; fold that into the fix rather than filing it separately.",
+      "why": "This is the check that guards the loop's own order, and it currently passes a block that roasts before it closes. Every downstream card that trusts it is trusting nothing. It also means a closed critical card did not fix the thing it was closed for, which is the most expensive shape of wrong here: the board says the defect is gone.",
+      "severity": "critical",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The close is recognised ONLY when the head token is todo, or npm with todo among its arguments, and the remaining tokens match the close shape; the roast is recognised only from UNQUOTED tokens. Each of these is a named failing case before the fix and passing after: grep todo move <id> done, env echo todo move <id> done, a cat heredoc whose body is a close, and grep \"/tmp/roast.py\" task. The end-to-end reproducer in this card returns ok false with the reason naming the order. The two places that interpret quotes agree, or there is one place. The legitimate shapes still pass: todo move <id> done, todo move <id> \"done\", npm run todo -- move <id> done, and python <path>/roast.py task --title ... &",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T02:00:17.784Z"
+    },
+    {
+      "id": "KN-194",
+      "title": "The prompt-order source states things that are false, including that a mutation is impossible",
+      "desc": "CHILD OF KN-184, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-190 roast. I wrote comments into prompt-order.mjs, KN-190.mjs and the plan file asserting that quote handling cannot be isolated by any mutation, and that tokenisation is what separates a mention from a command, and that quoted text is data rather than command. All three are false. The reviewer produced the distinguishing fixture in one line: readCommand('todo move <id> \"done\"') returns closes true with quote handling and closes false without it, which I verified by patching the source and running it. Quoted tokens also still participate in the roast test. The reason I missed it is worth keeping: I searched only NEGATIVE fixtures, mentions that should not count, and every one of those fails safe by accident when quoting is disabled. The isolating fixture is a POSITIVE one, a legitimate command with a quoted argument. That is the positive-control rule already written in STATE.md, applied to mutation testing rather than to absence.",
+      "why": "A comment that claims a protection cannot be tested is worse than no comment: it tells the next reader to stop looking, and it converts a gap into a settled fact. Declaring something unprovable is a strong claim and it needs the same standard of evidence as any other, which here means trying the positive case before concluding.",
+      "severity": "high",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The false claims are gone from prompt-order.mjs, KN-190.mjs and the KN-190 plan file, replaced by what is actually true. readCommand('todo move <id> \"done\"') is a named check in the verifier, and disabling the tokeniser's quote handling makes it FAIL, proved by the mutation harness rather than asserted. STATE.md's positive-control line names mutation testing as a place it applies, since that is where it was missed.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T02:00:18.441Z"
     }
   ]
 }

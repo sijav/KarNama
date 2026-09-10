@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 34 of 192 tasks done · 88 of 558 points.
+Project **KarNama** · 34 of 194 tasks done · 88 of 561 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -10,16 +10,23 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-149` The board cards for the rejected column do not require it to collapse** (high, 1 pt, design)
 
-## Backlog (156)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-149` | The board cards for the rejected column do not require it to collapse | high | 1 | design | none | The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered. |
+
+## Backlog (157)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-193` | The close recogniser is not the head token, so any command's arguments can be the close | critical | 2 | agent | none | The close is recognised ONLY when the head token is todo, or npm with todo among its arguments, and the remaining tokens match the close shape; the roast is recognised only from UNQUOTED tokens. Each of these is a named failing case before the fix and passing after: grep todo move <id> done, env echo todo move <id> done, a cat heredoc whose body is a close, and grep "/tmp/roast.py" task. The end-to-end reproducer in this card returns ok false with the reason naming the order. The two places that interpret quotes agree, or there is one place. The legitimate shapes still pass: todo move <id> done, todo move <id> "done", npm run todo -- move <id> done, and python <path>/roast.py task --title ... & |
 | `KN-152` | Use the current Contacts tab label in the history decision | high | 1 | design | KN-072 | DESIGN.md section 6 and section 3 name the modal tab افراد مرتبط, KN-030 and KN-045 use that label, KN-072.mjs requires it and REJECTS مخاطبین as the modal tab label, and a mutation restoring مخاطبین fails the verifier with its own message. |
 | `KN-153` | Separate the owner-settled own-tab decision from the author-chosen tab ORDER | high | 1 | design | KN-072 | DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message. |
 | `KN-155` | KN-045 still specifies the four-tab modal KN-072 replaced | high | 1 | web | KN-072 | KN-045 names five tabs with history in its own, its exit condition asserts where history renders, and a check proves NO open card still says four-tab modal or places history inside the info tab. |
 | `KN-171` | The loop prompt fed by the Stop hook still teaches the old order | high | 1 | agent | none | .claude/ralph-loop.local.md states finish, prove, close, roast in that order, carries no fix-in-task rule, and describes the close gate as it actually is; a check asserts the prompt and RALPH.md do not contradict each other on the order; and a mutation reintroducing either stale rule fails that check with its own message. |
 | `KN-172` | compact.py does the opposite of what the loop's compact step is for | high | 1 | agent | none | compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script. |
+| `KN-194` | The prompt-order source states things that are false, including that a mutation is impossible | high | 1 | agent | none | The false claims are gone from prompt-order.mjs, KN-190.mjs and the KN-190 plan file, replaced by what is actually true. readCommand('todo move <id> "done"') is a named check in the verifier, and disabling the tokeniser's quote handling makes it FAIL, proved by the mutation harness rather than asserted. STATE.md's positive-control line names mutation testing as a place it applies, since that is where it was missed. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
@@ -1895,7 +1902,7 @@ agent/scripts/verify/KN-123.mjs plants fifteen regressions and runs the ENTIRE d
 
 ### `KN-149` The board cards for the rejected column do not require it to collapse
 
-- **status** backlog · **severity** high · **points** 1 · **area** design
+- **status** in_progress · **severity** high · **points** 1 · **area** design
 - **blocked by** none
 
 KN-070 settled that رد شده sits last and is COLLAPSED to a count by default, expanding on click. That is a required interaction state, and the cards that build the board do not mention it: the full-height column card and KN-043 can both be satisfied completely while rendering رد شده as an ordinary always-open column. A roast found this by reading the downstream cards rather than the decision. Add the collapsed default, the count, and the expand interaction to the exit conditions of the column cards, and put the ordering exception there too, because someone building from a card does not necessarily re-read DESIGN.md section 3.
@@ -2392,4 +2399,26 @@ CHILD OF KN-184, recorded in prose because board.json cannot express parent_task
 **Why.** The whole point of KN-189 was to replace an inference with a declaration, because three inferences had each been defeated by words. A declaration that any line can carry, in any quantity, is not much better than an inference: it recreates the false-pass class one layer up, and it does it silently.
 
 **Exit condition.** The marker must be the only thing on its line, and there must be exactly ONE in a document; a second marker, an inline marker, and a stale marker above an old block with the real block unmarked are each reported by name; and each of the three is a case that fails before the change and passes after.
+
+### `KN-193` The close recogniser is not the head token, so any command's arguments can be the close
+
+- **status** backlog · **severity** critical · **points** 2 · **area** agent
+- **blocked by** none
+
+CHILD OF KN-184, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-190 roast, which reproduced it, and confirmed by running it here. KN-190 fixed the echo INSTANCE and left the CLASS. readCommand's close test is words.includes('move') and words.includes('done') and (command === 'todo' or words.includes('todo')), so the trailing disjunct lets any command whose ARGUMENTS happen to be the close shape count as the close. Confirmed reproducer: a marked block whose lines are grep todo move <id> done, then the real roast, then the real close returns ok true, so a block that roasts BEFORE it closes passes. That is the exact defect KN-190 was opened for. Also confirmed: env echo todo move <id> done and command echo ... bypass PRINTERS because their head is not a printer; a heredoc body is parsed as separate command lines, so cat <<EOF around a close masks the order; and the roast test accepts QUOTED tokens, so grep "/tmp/roast.py" task returns roasts true. KN-190's amended exit condition literally says the close is the head token of its line, and the implementation does not do it, so the card's green verifier did not establish its own exit condition. The reviewer also noted quote interpretation happens twice, in tokenise() and again in the line.replace() used for the operator check, and the two can disagree on escaped text; fold that into the fix rather than filing it separately.
+
+**Why.** This is the check that guards the loop's own order, and it currently passes a block that roasts before it closes. Every downstream card that trusts it is trusting nothing. It also means a closed critical card did not fix the thing it was closed for, which is the most expensive shape of wrong here: the board says the defect is gone.
+
+**Exit condition.** The close is recognised ONLY when the head token is todo, or npm with todo among its arguments, and the remaining tokens match the close shape; the roast is recognised only from UNQUOTED tokens. Each of these is a named failing case before the fix and passing after: grep todo move <id> done, env echo todo move <id> done, a cat heredoc whose body is a close, and grep "/tmp/roast.py" task. The end-to-end reproducer in this card returns ok false with the reason naming the order. The two places that interpret quotes agree, or there is one place. The legitimate shapes still pass: todo move <id> done, todo move <id> "done", npm run todo -- move <id> done, and python <path>/roast.py task --title ... &
+
+### `KN-194` The prompt-order source states things that are false, including that a mutation is impossible
+
+- **status** backlog · **severity** high · **points** 1 · **area** agent
+- **blocked by** none
+
+CHILD OF KN-184, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-190 roast. I wrote comments into prompt-order.mjs, KN-190.mjs and the plan file asserting that quote handling cannot be isolated by any mutation, and that tokenisation is what separates a mention from a command, and that quoted text is data rather than command. All three are false. The reviewer produced the distinguishing fixture in one line: readCommand('todo move <id> "done"') returns closes true with quote handling and closes false without it, which I verified by patching the source and running it. Quoted tokens also still participate in the roast test. The reason I missed it is worth keeping: I searched only NEGATIVE fixtures, mentions that should not count, and every one of those fails safe by accident when quoting is disabled. The isolating fixture is a POSITIVE one, a legitimate command with a quoted argument. That is the positive-control rule already written in STATE.md, applied to mutation testing rather than to absence.
+
+**Why.** A comment that claims a protection cannot be tested is worse than no comment: it tells the next reader to stop looking, and it converts a gap into a settled fact. Declaring something unprovable is a strong claim and it needs the same standard of evidence as any other, which here means trying the positive case before concluding.
+
+**Exit condition.** The false claims are gone from prompt-order.mjs, KN-190.mjs and the KN-190 plan file, replaced by what is actually true. readCommand('todo move <id> "done"') is a named check in the verifier, and disabling the tokeniser's quote handling makes it FAIL, proved by the mutation harness rather than asserted. STATE.md's positive-control line names mutation testing as a place it applies, since that is where it was missed.
 
