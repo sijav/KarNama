@@ -7162,7 +7162,20 @@
       "parent": [],
       "status": "done",
       "exit": "The owner has answered, through the question tool, whether an Input on a screen keeps its message line reserved as the component does or drops it as the 91 screen instances draw it, and where an error on a field with the line off is shown; DESIGN.md records the answer as the owner's, with the date; and if the line can be off, a card for the change exists.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6.8,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-285-round-1.2026-09-10T18-01-09-983Z.md",
+          "filed": [],
+          "cardDigest": "bdb1dd52dc3aa8f8c97be6eaefb0b6945e6b3215e0c6a898b6c913fe8e152e22",
+          "head": "edfb2ffd6dd3773432f104f12b44ddc3de0e5b92",
+          "reviewerScore": 6.8,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T18:04:17.079Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T17:20:16.518Z",
       "updatedAt": "2026-09-10T17:58:55.567Z",
@@ -7195,10 +7208,13 @@
       "area": "web",
       "parent": [],
       "status": "backlog",
-      "exit": "An Input with neither a helper nor an error draws no message line and is 64 tall, as the 91 screen instances draw it; with a helper or an error it is 90, the file's variants; an error appearing on a field without a helper adds the line with its message; a blank error still draws no line; stories assert the 64 and the 90 and the line appearing with the error, replacing ErrorDoesNotMoveTheField and WithoutAHelper's reserved line; DESIGN.md records the owner's reversal of KN-011's decision; and the Input's comment about the line always keeping its height is corrected.",
+      "exit": "An Input with neither a helper nor an error draws no message line and is 64 tall, as the 91 screen instances draw it; with a helper or an error it is 90, the file's variants; an error appearing on a field without a helper adds the line with its message; an error on a field that has a helper replaces the helper with the error's message and the field's aria-describedby then names the error, and clearing the error brings the helper back; a blank error still draws no line; stories assert the 64 and the 90, the line appearing with the error, and the error replacing a helper, with a mutation that keeps the helper over the error failing by name, replacing ErrorDoesNotMoveTheField and WithoutAHelper's reserved line; every other place that asserts the reserved line is changed with it, KN-011's verifier and both languages' story docs included; DESIGN.md records the owner's reversal of KN-011's decision; and the Input's comment about the line always keeping its height is corrected.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T17:57:44.885Z"
+      "notes": [
+        "2026-09-10: exit tightened after the KN-285 roast, which showed the first wording let the helper stay over an error, and let KN-011's verifier and the story docs keep asserting the reserved line after the change."
+      ],
+      "createdAt": "2026-09-10T17:57:44.885Z",
+      "updatedAt": "2026-09-10T18:04:14.898Z"
     },
     {
       "id": "KN-288",
@@ -7209,11 +7225,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Under forced colours a disabled Checkbox's edge is GrayText and every enabled state's is ButtonBorder, checked and indeterminate included; a check in a production build reads the rendered edge of all five states under forced colours, and a mutation giving disabled ButtonBorder again fails it; and DESIGN.md's stroke section says which colour each state takes there.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T17:59:43.680Z"
+      "createdAt": "2026-09-10T17:59:43.680Z",
+      "updatedAt": "2026-09-10T18:01:36.375Z"
     },
     {
       "id": "KN-289",
