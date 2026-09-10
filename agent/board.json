@@ -6140,14 +6140,14 @@
       "parent": [
         "KN-250"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control.",
       "roasts": [],
       "notes": [
         "2026-09-10: parked, blocked by KN-250. Its check runs every Input story on a production Storybook build, and Focus already fails there with nothing changed, because html dir is set in a passive effect after the play function starts. Verifier drafted and working (URL args per offered control, verdict from the errored phase and playFunctionThrewException, NOT storyFinished, whose status read success for a play that threw); saved to the session scratchpad as parked/KN-247.mjs. Planned allowlists: Default all but error; FromArgs reads defaultValue and disabled from args and offers those plus placeholder and name; Filled reads defaultValue from args, offers all but value; Focus all but disabled and error; Disabled all but disabled; Hover all but error and disabled; LabelIsBound all but disabled; Typing label, placeholder, helperText, error."
       ],
       "createdAt": "2026-09-10T09:45:57.752Z",
-      "updatedAt": "2026-09-10T10:15:35.646Z"
+      "updatedAt": "2026-09-10T10:39:01.087Z"
     },
     {
       "id": "KN-248",
@@ -6216,7 +6216,20 @@
       "parent": [],
       "status": "done",
       "exit": "The document element's dir and lang are set in the commit that renders the tree, before paint, not in a passive effect: on a production Storybook build every story's play function starts with html dir and lang already matching its locale, recorded at the playing phase in both languages, and the Input's Focus story passes there; the built app, loaded with a stored English preference, has dir ltr by the time its first render's DOM exists; and a mutation back to useEffect fails the check.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 9.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-250-round-1.2026-09-10T10-38-43-640Z.md",
+          "filed": [],
+          "cardDigest": "01fb6d748408eab7da39dd18a80256fc86c862021585ccdf28b635a4566ee5b4",
+          "head": "b8306385d147bc8db7b258a2f4984696352b8dab",
+          "reviewerScore": 9.5,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T10:41:06.890Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T10:15:35.330Z",
       "updatedAt": "2026-09-10T10:38:22.706Z",
