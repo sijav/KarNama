@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 67 of 237 tasks done · 146 of 632 points.
+Project **KarNama** · 67 of 240 tasks done · 146 of 636 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-019` Colour picker for the four custom status slots** (critical, 3 pt, web)
+**Next up: `KN-239` Two Status Chip stories ignore their args, so the Controls panel controls nothing** (critical, 1 pt, web)
 
 ## Blocked (3)
 
@@ -18,14 +18,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (165)
+## Backlog (168)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-239` | Two Status Chip stories ignore their args, so the Controls panel controls nothing | critical | 1 | web | none | Default renders from its args, so changing status, label or size in Controls changes the chip, asserted by a story that renders with non-default args; AllStatuses, a fixed matrix by design, disables the controls it cannot honour rather than showing them. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
+| `KN-238` | A long renamed status name pushes the Status Chip out of its column | critical | 2 | web | none | A status name longer than its container is truncated with an ellipsis inside the chip, which never grows past its container; the full name stays readable by a screen reader; a story renders a long name inside a 276px container and asserts nothing overflows; and DESIGN.md records the decision. |
 | `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
 | `KN-021` | Page header | critical | 3 | web | KN-005, KN-006, KN-007, KN-009, KN-008 | Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree. |
 | `KN-022` | Empty state and loading state | critical | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
@@ -162,6 +164,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-219` | KN-013's verifier reads the required states out of a prose sentence | low | 1 | agent | none | The required state list is read from a delimited, structured source that a reworded description cannot silently shorten, or KN-013.mjs refuses a description it cannot parse completely, proved by a description with a state added in a second sentence failing it. |
 | `KN-232` | The docgen comment in .storybook/main.ts says any option replaces Storybook's defaults, which is false | low | 1 | web | none | The comment above reactDocgenTypescriptOptions in .storybook/main.ts states how the Vite docgen plugin and the component-manifest path actually treat user options, checked against the installed preset source, and the KN-229 verifier still passes. |
 | `KN-237` | The Tooltip's children type rejects a trigger held as a plain ReactElement | low | 1 | web | none | A trigger typed as a plain ReactElement type-checks as the Tooltip's child, the merge of the trigger's own description still works and KeepsTheTriggersOwnDescription still passes, and no TypeScript escape hatch is used to get there. |
+| `KN-240` | Nothing proves the theme's status colours come from the token set | low | 1 | web | none | A test asserts the light theme's status pairs are the token set's objects or equal to them key by key, and a mutation replacing one pair in buildTheme with a literal of the same value is caught by a check that the theme reads the token module rather than restating it. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -392,6 +395,8 @@ A display-only chip for the nine statuses at sizes S and M, from Figma node 82:2
 **Why.** Status is the spine of the product, so its visual language appears on every card, column header and filter. The design separates display from interaction on purpose, and merging them here would put a focus ring on every card on the board. The label is data rather than a translated constant, because a user can rename any status and a catalog cannot represent that.
 
 **Exit condition.** Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account.
+
+**Roasts.** round 1 scored 5.4 with 0 critical(s)
 
 ### `KN-011` Input, 6 states
 
@@ -2985,4 +2990,37 @@ CHILD OF KN-235, recorded in prose because board.json cannot express parent_task
 **Why.** A public prop type stricter than the library it wraps turns valid call sites into type errors for no behavioural gain. Low: every current and planned caller writes its trigger inline as JSX, which the narrowed type accepts.
 
 **Exit condition.** A trigger typed as a plain ReactElement type-checks as the Tooltip's child, the merge of the trigger's own description still works and KeepsTheTriggersOwnDescription still passes, and no TypeScript escape hatch is used to get there.
+
+### `KN-238` A long renamed status name pushes the Status Chip out of its column
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-010 roast and confirmed: the chip is an inline-flex span with white-space nowrap and no maximum width, and the API puts no length bound on Status.name. A user who renames a status to a long name gets a chip wider than the 276px column header or the card it sits in, and the row overflows. The design shows only short names, so the behaviour for a long one is not drawn: truncating with an ellipsis inside the chip, the full name staying in the DOM for assistive technology, is the conventional answer and should be recorded in DESIGN.md as a decision.
+
+**Why.** Renaming statuses is a feature the product advertises, and the first long name a user types breaks the board's layout. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** A status name longer than its container is truncated with an ellipsis inside the chip, which never grows past its container; the full name stays readable by a screen reader; a story renders a long name inside a 276px container and asserts nothing overflows; and DESIGN.md records the decision.
+
+### `KN-239` Two Status Chip stories ignore their args, so the Controls panel controls nothing
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-010 roast and confirmed: Default always renders new at size S through a helper, and AllStatuses renders its fixed matrix, so the status, label and size controls in the Docs page and the canvas change nothing on either. The repository's rule is that stories render from their args.
+
+**Why.** A Controls panel that silently does nothing is worse than none: it tells a reviewer the component ignores its props. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** Default renders from its args, so changing status, label or size in Controls changes the chip, asserted by a story that renders with non-default args; AllStatuses, a fixed matrix by design, disables the controls it cannot honour rather than showing them.
+
+### `KN-240` Nothing proves the theme's status colours come from the token set
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-010 roast and confirmed: the AllStatuses story compares the chips with values read from tokens.ts, and theme.test.ts only counts the nine status keys, so a buildTheme that duplicated the nine light hexes inline instead of reading the status tokens would pass both.
+
+**Why.** The token module is the contract DESIGN.md is checked against, and the theme is what components draw from; the link between them is the one nothing asserts. Low: the theme does read the tokens today.
+
+**Exit condition.** A test asserts the light theme's status pairs are the token set's objects or equal to them key by key, and a mutation replacing one pair in buildTheme with a literal of the same value is caught by a check that the theme reads the token module rather than restating it.
 

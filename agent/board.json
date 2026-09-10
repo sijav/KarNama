@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 238,
+  "nextId": 241,
   "tasks": [
     {
       "id": "KN-001",
@@ -511,7 +511,25 @@
       ],
       "status": "done",
       "exit": "Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5.4,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-010-round-1.2026-09-10T09-04-24-913Z.md",
+          "filed": [
+            "KN-238",
+            "KN-239",
+            "KN-240",
+            "KN-092"
+          ],
+          "cardDigest": "85dac20a7c6200c812604a2ecbd17ce889548c5cbaa0c4803de3ad46e8c2e86d",
+          "head": "6c9857a4790b70151dcff8c27e586062d5f9dc9c",
+          "reviewerScore": 5.4,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T09:24:04.543Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -2544,8 +2562,11 @@
       "status": "backlog",
       "exit": "A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T23:28:59.911Z"
+      "notes": [
+        "2026-09-10, from the KN-010 roast: src/shared/status-chip is a multi-file folder with no barrel and imports ../../theme/tokens by a parent-relative path, the same as every other shared component today. Covered by this card's sweep rather than a card of its own."
+      ],
+      "createdAt": "2026-09-07T23:28:59.911Z",
+      "updatedAt": "2026-09-10T09:24:04.363Z"
     },
     {
       "id": "KN-093",
@@ -5856,6 +5877,51 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T09:04:49.587Z"
+    },
+    {
+      "id": "KN-238",
+      "title": "A long renamed status name pushes the Status Chip out of its column",
+      "desc": "CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-010 roast and confirmed: the chip is an inline-flex span with white-space nowrap and no maximum width, and the API puts no length bound on Status.name. A user who renames a status to a long name gets a chip wider than the 276px column header or the card it sits in, and the row overflows. The design shows only short names, so the behaviour for a long one is not drawn: truncating with an ellipsis inside the chip, the full name staying in the DOM for assistive technology, is the conventional answer and should be recorded in DESIGN.md as a decision.",
+      "why": "Renaming statuses is a feature the product advertises, and the first long name a user types breaks the board's layout. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A status name longer than its container is truncated with an ellipsis inside the chip, which never grows past its container; the full name stays readable by a screen reader; a story renders a long name inside a 276px container and asserts nothing overflows; and DESIGN.md records the decision.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T09:24:03.635Z"
+    },
+    {
+      "id": "KN-239",
+      "title": "Two Status Chip stories ignore their args, so the Controls panel controls nothing",
+      "desc": "CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-010 roast and confirmed: Default always renders new at size S through a helper, and AllStatuses renders its fixed matrix, so the status, label and size controls in the Docs page and the canvas change nothing on either. The repository's rule is that stories render from their args.",
+      "why": "A Controls panel that silently does nothing is worse than none: it tells a reviewer the component ignores its props. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Default renders from its args, so changing status, label or size in Controls changes the chip, asserted by a story that renders with non-default args; AllStatuses, a fixed matrix by design, disables the controls it cannot honour rather than showing them.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T09:24:03.933Z"
+    },
+    {
+      "id": "KN-240",
+      "title": "Nothing proves the theme's status colours come from the token set",
+      "desc": "CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-010 roast and confirmed: the AllStatuses story compares the chips with values read from tokens.ts, and theme.test.ts only counts the nine status keys, so a buildTheme that duplicated the nine light hexes inline instead of reading the status tokens would pass both.",
+      "why": "The token module is the contract DESIGN.md is checked against, and the theme is what components draw from; the link between them is the one nothing asserts. Low: the theme does read the tokens today.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A test asserts the light theme's status pairs are the token set's objects or equal to them key by key, and a mutation replacing one pair in buildTheme with a literal of the same value is caught by a check that the theme reads the token module rather than restating it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T09:24:04.253Z"
     }
   ]
 }
