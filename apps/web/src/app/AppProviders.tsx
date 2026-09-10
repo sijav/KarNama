@@ -3,7 +3,7 @@ import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
-import { useEffect, useMemo, type ReactNode } from 'react'
+import { useLayoutEffect, useMemo, type ReactNode } from 'react'
 import { PreferencesProvider, usePreferences } from '../core/preferences'
 import { directionFor, type Locale } from '../i18n'
 import { cacheFor } from '../theme/rtl'
@@ -65,7 +65,13 @@ const ThemedTree = ({ children }: { children: ReactNode }) => {
   // The document element carries dir and lang, not a wrapper div: a portalled
   // MUI Menu or Dialog renders outside the tree, so a direction set on a
   // wrapper would leave every popover laid out the wrong way round.
-  useEffect(() => {
+  //
+  // A layout effect, so it lands in the same commit as the tree and before
+  // the browser paints it. A passive effect runs after that first paint: the
+  // flash of the wrong direction the catalog above is activated during render
+  // to avoid, on every load with a stored English preference, and Storybook
+  // starts a play function before it runs, KN-250.
+  useLayoutEffect(() => {
     // Property assignment rather than setAttribute, so no string literal is
     // passed to a DOM call. That matters beyond style: exempting setAttribute
     // from the lingui rule, which is what the literal 'dir' needed, also
