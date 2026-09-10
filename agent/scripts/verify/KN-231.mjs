@@ -18,7 +18,10 @@ const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
 const WEB = join(ROOT, 'apps', 'web')
 const COMPONENT = join(WEB, 'src', 'shared', 'tooltip', 'Tooltip.tsx')
 const STORIES = join(WEB, 'src', 'shared', 'tooltip', 'Tooltip.stories.tsx')
-const LINK = '    aria-describedby={descriptionId}\n'
+// The always-present link, carried on the cloned child since KN-235 merged it
+// with the trigger's own. Replaced by an empty clone, the trigger is linked to
+// nothing until MUI's open-only link arrives.
+const LINK = "{ 'aria-describedby': own ? `${own} ${descriptionId}` : descriptionId }"
 
 const failures = []
 const check = (label, run) => {
@@ -48,7 +51,7 @@ check('THE CASE: without the always-present link both focus-time stories fail on
   const original = readFileSync(COMPONENT, 'utf8')
   if (!original.includes(LINK)) return 'the component no longer links the trigger to an always-present description'
   try {
-    writeFileSync(COMPONENT, original.replace(LINK, () => ''))
+    writeFileSync(COMPONENT, original.replace(LINK, () => '{}'))
     const { code, output } = stories()
     if (code === 0) return 'the stories passed with the description only present while open, so nothing tests focus time'
     const failed = ['Described At Focus', 'Described At Focus In Persian'].filter((name) => output.includes(`× ${name} `))

@@ -1,5 +1,5 @@
 import { Box, Tooltip as MuiTooltip } from '@mui/material'
-import { useCallback, useEffect, useId, useRef, type ReactElement, type ReactNode } from 'react'
+import { cloneElement, useCallback, useEffect, useId, useRef, type ReactElement, type ReactNode } from 'react'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 
 // The tip's width, from node `410:469`, KN-210. The frame is FIXED at 260 with
@@ -19,7 +19,7 @@ export const TOOLTIP_SURFACE = 'KarnamaTooltip-surface'
 export interface TooltipProps {
   title: string
   icon?: ReactNode
-  children: ReactElement
+  children: ReactElement<{ 'aria-describedby'?: string }>
 }
 
 // Node 410:469, on MUI's Tooltip, which already opens on keyboard focus as well
@@ -60,11 +60,18 @@ export const Tooltip = ({ title, icon, children }: TooltipProps) => {
       // only in development, or sets an aria-describedby of its own.
       if (element.getAttribute('aria-describedby')?.split(' ').includes(descriptionId)) return
       console.error(
-        "Tooltip: its child took the ref but not the props, so the tip can never open and is not its description. Spread every prop it is given onto the element, and do not set aria-describedby on it: that replaces the tooltip's.",
+        'Tooltip: its child took the ref but not the props, so the tip can never open and is not its description. Spread every prop it is given onto the element.',
       )
     },
     [descriptionId, expectNode],
   )
+  // The tooltip's description JOINS any the trigger already has, KN-235, on
+  // the child itself: MUI spreads the child's own props after the tooltip's,
+  // so a link passed through MUI was replaced by the child's, and a trigger
+  // with a field hint lost the tip's text and was then reported as broken.
+  const own = children.props['aria-describedby']
+  const described = cloneElement(children, { 'aria-describedby': own ? `${own} ${descriptionId}` : descriptionId })
+
   useEffect(() => {
     if (!node.current) expectNode()
     return () => {
@@ -76,8 +83,6 @@ export const Tooltip = ({ title, icon, children }: TooltipProps) => {
   <>
   <MuiTooltip
     ref={attach}
-    // Spread onto the child after MUI's own open-only link, so it wins.
-    aria-describedby={descriptionId}
     // The "does not trap the pointer" clause, and the sx below is not enough
     // on its own: MUI's tooltip is INTERACTIVE by default and sets
     // `pointer-events: auto` itself so you can hover into it. A story
@@ -133,7 +138,7 @@ export const Tooltip = ({ title, icon, children }: TooltipProps) => {
       },
     }}
   >
-    {children}
+    {described}
   </MuiTooltip>
   <Box component="span" id={descriptionId} hidden>
     {title}

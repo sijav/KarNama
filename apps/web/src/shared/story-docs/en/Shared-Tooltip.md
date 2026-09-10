@@ -97,6 +97,13 @@ reported, and this one opens the tip like any other.
 A working trigger replaced by one that cannot take the ref. The check runs
 whenever the trigger changes, not only once at mount, so the swap is reported.
 
+### KeepsTheTriggersOwnDescription
+
+A trigger already described by something beside it, a field hint in the
+product, the page subtitle standing in for one here. The tooltip's text JOINS
+that description, after it, rather than replacing it, and a trigger like
+this is not reported as broken.
+
 ### OnKeyboardFocus
 
 The clause the card names and the one a hover-only tooltip fails: Tab, with no

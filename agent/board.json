@@ -5779,11 +5779,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A trigger with its own aria-describedby keeps it AND gains the tooltip's, in that order, before and after focus, asserted by a story that checks the computed description contains both texts; no report is logged for it; the ref-only and cannot-attach reports still fire; and a mutation dropping the merge fails the story.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T08:44:08.898Z"
+      "createdAt": "2026-09-10T08:44:08.898Z",
+      "updatedAt": "2026-09-10T08:51:44.934Z",
+      "verify": "node agent/scripts/verify/KN-235.mjs"
     }
   ]
 }

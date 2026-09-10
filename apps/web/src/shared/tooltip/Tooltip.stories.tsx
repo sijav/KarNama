@@ -1,7 +1,8 @@
+import { i18n } from '@lingui/core'
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
-import { useEffect, useState, type ComponentPropsWithRef } from 'react'
+import { useEffect, useId, useState, type ComponentPropsWithRef } from 'react'
 import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { elevation } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -99,6 +100,25 @@ const SwappingTooltip = ({ title }: { title: string }) => {
     }
   }, [])
   return <Tooltip title={title}>{broken ? <SwallowingButton /> : <DeleteStatusButton />}</Tooltip>
+}
+
+// A trigger already described by something beside it, KN-235: a field hint in
+// the product, the page subtitle standing in for one here. The tooltip's
+// description must JOIN it, not replace it.
+const HintedExample = ({ title }: { title: string }) => {
+  // Named i18n: the lingui rule recognises a translation call by that name.
+  const { i18n } = useLingui()
+  const hintId = useId()
+  return (
+    <>
+      <span id={hintId}>{i18n._('My job opportunities')}</span>
+      <Tooltip title={title}>
+        <button type="button" aria-label={i18n._('Delete status')} aria-describedby={hintId}>
+          {InfoMark}
+        </button>
+      </Tooltip>
+    </>
+  )
 }
 
 // The reports are the point, so each story that expects one captures it
@@ -289,6 +309,23 @@ export const ReportsATriggerSwappedForOneThatCannotAttach: Story = {
     await waitFor(async () => {
       await expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/did not take a ref/))
     })
+  },
+}
+
+export const KeepsTheTriggersOwnDescription: Story = {
+  render: (args) => <HintedExample title={args.title} />,
+  beforeEach: captureConsoleErrors,
+  play: async ({ args, canvasElement }) => {
+    const button = within(canvasElement).getByRole('button')
+    // The trigger's own description first, then the tooltip's, before any
+    // interaction and again at focus.
+    const both = `${i18n._('My job opportunities')} ${args.title}`
+    await expect(button).toHaveAccessibleDescription(both)
+    await userEvent.tab()
+    await expect(button).toHaveAccessibleDescription(both)
+    // A valid trigger, so nothing is reported against it.
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    await expect(console.error).not.toHaveBeenCalled()
   },
 }
 
