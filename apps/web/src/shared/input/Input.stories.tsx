@@ -87,7 +87,9 @@ const meta = {
   // default only when the field mounts, so a new one needs a new field or the
   // Controls panel changes nothing, KN-246. And on whether value is set: one
   // input cannot turn from uncontrolled to controlled or back, so value
-  // arriving or being reset starts the field over too, KN-252. Value is bound
+  // arriving or being reset starts the field over too, KN-252. A controlled
+  // field ignores its default, so the default is in the key only while value
+  // is unset, or a new one would remount it for nothing, KN-258. Value is bound
   // to the args: set it in Controls and the field is controlled, so what is
   // typed has to go back into the arg, or the field refuses every keystroke,
   // KN-249.
@@ -97,7 +99,7 @@ const meta = {
       if (args.value !== undefined) updateArgs({ value })
       args.onChange?.(value, event)
     }
-    return <JobTitle key={`${args.value === undefined ? 0 : 1}${args.defaultValue ?? ''}`} {...args} onChange={onChange} />
+    return <JobTitle key={args.value === undefined ? `0${args.defaultValue ?? ''}` : '1'} {...args} onChange={onChange} />
   },
 } satisfies StoryMeta<typeof Input>
 
