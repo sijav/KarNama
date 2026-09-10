@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 292,
+  "nextId": 293,
   "tasks": [
     {
       "id": "KN-001",
@@ -6970,11 +6970,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "An invalid Input focused inside a host that clips its overflow flush at the field's edges still changes at least a two-pixel perimeter at 3:1, KN-244's measure, either because the change is drawn inside the field's own box or because the Input keeps the room itself; a story renders the field in an overflow hidden host with no padding and asserts, from the rendered geometry, that every pixel of the focus change lies inside every clipping ancestor, and a mutation back to a ring the host clips fails it by name; DESIGN.md's section says which; and the Checkbox's and the Filter Chip's rings are checked for the same, each matching or carrying a card.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T14:40:24.833Z"
+      "createdAt": "2026-09-10T14:40:24.833Z",
+      "updatedAt": "2026-09-10T19:14:58.980Z"
     },
     {
       "id": "KN-275",
@@ -7330,13 +7331,44 @@
       "parent": [],
       "status": "done",
       "exit": "An Input given null, false, true or an empty string for either icon draws no slot and its text sits 16 from that edge, as with no icon at all; a story passes false for one icon and null for the other and asserts no slot and the 16, and a mutation back to the undefined check fails it by name.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7.2,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-291-round-1.2026-09-10T19-14-23-727Z.md",
+          "filed": [
+            "KN-292"
+          ],
+          "cardDigest": "2ef3431074e859b9b800e3b7cc14604b24b976d398c51d23903732aaf839d631",
+          "head": "c131531653ffc0c366c3843235baf40e53588a3f",
+          "reviewerScore": 7.2,
+          "reviewerCriticals": 0,
+          "dismissed": "The major stands and is KN-292: a blank string draws a slot. The minor is folded into KN-292's exit, though drawn means painted and a collapsed slot is not painted. Both answers taken: [false], nested fragments and a component returning an empty string are covered by :empty, and both mechanisms stay.",
+          "at": "2026-09-10T19:17:56.162Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T18:56:33.060Z",
       "updatedAt": "2026-09-10T19:13:06.367Z",
       "verify": "node agent/scripts/verify/KN-291.mjs",
       "evidence": "Input.tsx draws a Slot only when drawn(node) holds, node neither undefined, null, a boolean nor an empty string, so hasIcon && <Icon /> turned off draws no slot; a Slot whose child rendered nothing, an empty fragment or an icon returning null, collapses through '&:empty': { display: 'none' }, out of the flex row and its gap. node agent/scripts/verify/KN-291.mjs passed: the Input stories pass with IconsTurnedOff, which renders (false, null), (true, '') and (<></>, a component returning null) and asserts no element beside the input for the first two, zero-width slots for the third, and the text box 16 from both edges for all three; the undefined check put back fails IconsTurnedOff by name, and the :empty rule removed fails it too; in a production build, in fa-IR and en-US, all three fields measure the same. KN-267's verifier passes with its anchors moved to the new lines. Unit 422, eslint on the Input and tsc clean. Measured, not looked at: nothing on screen changes from the field without icons. Not established: the text's own start, which KN-283 replaces the box proxy for.",
       "closedAt": "2026-09-10T19:13:06.367Z"
+    },
+    {
+      "id": "KN-292",
+      "title": "An Input icon given a blank string, a space or a zero-width character, still draws a slot with nothing in it",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-291 roast, KN-291 being a child of KN-011. drawn() in Input.tsx treats every string but the empty one as an icon, and a string of only spaces, a line break, a tab or a zero-width space renders a text node, so :empty does not collapse the slot either: the Input draws a 20 by 20 slot with nothing to see in it, and the text box sits 40 from that edge instead of 16. The error line already has a rule for blank text, isBlank, KN-254, which the slots do not use. And the story docs say an empty fragment or an icon that renders nothing draws no slot, where the slot is there and collapsed.",
+      "why": "A slot with nothing to see is the hole KN-291 closed for false and null, reached by a blank string instead, and the Input already knows what blank means. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "An Input given a string icon that isBlank holds for, spaces, a line break, a zero-width space or a joiner, draws no slot and its text box sits 16 from that edge; IconsTurnedOff covers a space and a zero-width space among its cases and asserts no slot, and a mutation dropping the blank check fails it by name; and the story docs say the direct values draw no slot, while an element that renders nothing leaves a slot that collapses and takes no room.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T19:17:47.448Z"
     }
   ]
 }

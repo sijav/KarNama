@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 99 of 291 tasks done · 185 of 709 points.
+Project **KarNama** · 99 of 292 tasks done · 185 of 710 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-274` The Input's focus ring for an invalid field sits outside a field that fills its container, so a host that clips at its edge removes it** (critical, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-274` | The Input's focus ring for an invalid field sits outside a field that fills its container, so a host that clips at its edge removes it | critical | 2 | web | none | An invalid Input focused inside a host that clips its overflow flush at the field's edges still changes at least a two-pixel perimeter at 3:1, KN-244's measure, either because the change is drawn inside the field's own box or because the Input keeps the room itself; a story renders the field in an overflow hidden host with no padding and asserts, from the rendered geometry, that every pixel of the focus change lies inside every clipping ancestor, and a mutation back to a ring the host clips fails it by name; DESIGN.md's section says which; and the Checkbox's and the Filter Chip's rings are checked for the same, each matching or carrying a card. |
 
 ## Blocked (2)
 
@@ -23,10 +29,10 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | critical | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
+| `KN-292` | An Input icon given a blank string, a space or a zero-width character, still draws a slot with nothing in it | critical | 1 | web | none | An Input given a string icon that isBlank holds for, spaces, a line break, a zero-width space or a joiner, draws no slot and its text box sits 16 from that edge; IconsTurnedOff covers a space and a zero-width space among its cases and asserts no slot, and a mutation dropping the blank check fails it by name; and the story docs say the direct values draw no slot, while an element that renders nothing leaves a slot that collapses and takes no room. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
-| `KN-274` | The Input's focus ring for an invalid field sits outside a field that fills its container, so a host that clips at its edge removes it | critical | 2 | web | none | An invalid Input focused inside a host that clips its overflow flush at the field's edges still changes at least a two-pixel perimeter at 3:1, KN-244's measure, either because the change is drawn inside the field's own box or because the Input keeps the room itself; a story renders the field in an overflow hidden host with no padding and asserts, from the rendered geometry, that every pixel of the focus change lies inside every clipping ancestor, and a mutation back to a ring the host clips fails it by name; DESIGN.md's section says which; and the Checkbox's and the Filter Chip's rings are checked for the same, each matching or carrying a card. |
 | `KN-280` | The bound Input takes a Controls value equal to an edit still in flight for its echo, and can stay apart from the arg | critical | 2 | web | none | Bound tells its own writes from anything else by a revision carried with each write, not by value, so an arg whose value is not the one sent at its revision is taken, whatever the queue holds; a check in a production build reproduces the sequence, an edit in flight, a Controls value equal to it arriving after a newer edit, and ends with the field and the arg equal; the exception is gone from the comment; the revision never reaches the Input or shows as a control; and KN-253's and KN-249's verifiers still pass. |
 | `KN-282` | The Filter Chip's text sits at 13 where the file draws 12, and its pressed edge is 1 where the file draws 1.5 | critical | 2 | web | none | In every state the Filter Chip's text sits spacing/sm, 12px, from the chip's outer edge as 159:63 to 159:69 draw it, with the edge painted inside and taking no layout space; the pressed edge is 1.5 as 159:67 draws it; nothing in FilterChip.tsx computes a padding from a border width; the stories measure the text's distance from the edge; and the selected edge is left to KN-279. |
 | `KN-283` | KN-266's text measurement reads the input's box, so a text-indent moves the text without failing a check | critical | 2 | web | none | The Input's stories and KN-266's production check measure where the text starts, the input's box edge plus its own padding, border and text-indent on the side the text starts from, given its direction and alignment, and read 16 as 95:5 draws it; a static text-indent, a padding on the input and a changed alignment, each present in every state, fail Default and the production check by name. |
@@ -3494,7 +3500,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-274` The Input's focus ring for an invalid field sits outside a field that fills its container, so a host that clips at its edge removes it
 
-- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-244 roast, KN-244 being a child of KN-011. KN-244 shows focus on an invalid field with an outline two pixels wide at an offset of two, so every pixel of the change lies four pixels outside the field's box, and the Input fills its container. Any host that clips its overflow with less than four pixels of inline padding, a scroll area or an exact-sized box, removes the ring completely, and the user is back to one red pixel. FocusedWhileInvalid gives each field 16 pixels of opaque padding and asserts computed styles, so it passes in that host, and so does every KN-244 mutation. DESIGN.md warns that a clipping container must leave the room, which is a rule nothing enforces. The Checkbox and the Filter Chip draw the same ring, but they are small and rarely sit flush with a clipping edge; an Input is flush with its container by design.
@@ -3699,4 +3705,17 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** The conditional that turns an icon off is the way callers write it, and it leaves a hole in the field the width of an icon. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** An Input given null, false, true or an empty string for either icon draws no slot and its text sits 16 from that edge, as with no icon at all; a story passes false for one icon and null for the other and asserts no slot and the 16, and a mutation back to the undefined check fails it by name.
+
+**Roasts.** round 1 scored 7.2 with 0 critical(s)
+
+### `KN-292` An Input icon given a blank string, a space or a zero-width character, still draws a slot with nothing in it
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-291 roast, KN-291 being a child of KN-011. drawn() in Input.tsx treats every string but the empty one as an icon, and a string of only spaces, a line break, a tab or a zero-width space renders a text node, so :empty does not collapse the slot either: the Input draws a 20 by 20 slot with nothing to see in it, and the text box sits 40 from that edge instead of 16. The error line already has a rule for blank text, isBlank, KN-254, which the slots do not use. And the story docs say an empty fragment or an icon that renders nothing draws no slot, where the slot is there and collapsed.
+
+**Why.** A slot with nothing to see is the hole KN-291 closed for false and null, reached by a blank string instead, and the Input already knows what blank means. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** An Input given a string icon that isBlank holds for, spaces, a line break, a zero-width space or a joiner, draws no slot and its text box sits 16 from that edge; IconsTurnedOff covers a space and a zero-width space among its cases and asserts no slot, and a mutation dropping the blank check fails it by name; and the story docs say the direct values draw no slot, while an element that renders nothing leaves a slot that collapses and takes no room.
 
