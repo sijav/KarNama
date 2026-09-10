@@ -6786,13 +6786,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The Input takes an optional leading and an optional trailing icon, each 20 by 20 at spacing/2xs from the text in text/secondary, matching 95:38 with the icons on, in both directions; stories show each and both; and the label's boolean in the file is either honoured, with the accessible name then required another way, or the decision not to is recorded in DESIGN.md.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T13:19:54.870Z",
-      "updatedAt": "2026-09-10T18:46:12.386Z",
-      "verify": "node agent/scripts/verify/KN-267.mjs"
+      "updatedAt": "2026-09-10T18:46:56.459Z",
+      "verify": "node agent/scripts/verify/KN-267.mjs",
+      "evidence": "Input.tsx takes leadingIcon and trailingIcon, each rendered in a Slot span (iconSize.md 20 by 20, inline-flex, colour text/secondary, its svg filling it) given to InputBase as startAdornment and endAdornment, and the field has columnGap spacing['2xs']. Read with use_figma: 95:38's icon placeholders are 20 by 20, radius 4, color/text/secondary, in the field at gap 4 with 16 padding, trailing first in Figma's array; all 91 Inputs on the Screens canvas keep the label and use no icon. node agent/scripts/verify/KN-267.mjs passed: the Input stories pass with LeadingIcon, TrailingIcon and BothIcons, which render the file's placeholder and assert each slot 20 by 20, 16 from its edge, in the helper line's text/secondary, and the text box at 40 from an icon's side and 16 from a side without; removing the gap fails BothIcons, a 16 wide slot fails LeadingIcon, and the slots swapped fail LeadingIcon; in a production build, in fa-IR (leading on the right) and en-US (leading on the left), all three stories measure the same, the slot colour rgb(107, 114, 128); DESIGN.md records the slots and that the Label boolean is not honoured and why. The eighteen earlier Input verifiers pass. Unit 418, full eslint, tsc and contract clean. Seen in fa-IR and en-US, light and dark. Not established: the distances to where the text itself starts, which KN-283 replaces the box proxy for.",
+      "closedAt": "2026-09-10T18:46:56.459Z"
     },
     {
       "id": "KN-268",
