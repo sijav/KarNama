@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 235,
+  "nextId": 236,
   "tasks": [
     {
       "id": "KN-001",
@@ -5696,7 +5696,22 @@
       "parent": [],
       "status": "done",
       "exit": "At the moment of keyboard focus, before the tip opens, the trigger already has an accessible description equal to the tip's text, asserted by a story that does not wait for the tip; the name is still the trigger's own; the same assertions run in fa-IR with the Persian name; and a mutation removing the always-present description fails the focus-time story.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-231-round-1.2026-09-10T08-32-35-864Z.md",
+          "filed": [
+            "KN-235"
+          ],
+          "cardDigest": "bc4c1cb995b581960c56b2c3bcfa8c5281aed76e3a6d4332b5ad0becd8b00b39",
+          "head": "b7a556ca10297f25e49f21937925ba1d07c7d2f0",
+          "reviewerScore": 5,
+          "reviewerCriticals": 1,
+          "at": "2026-09-10T08:44:09.072Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T08:13:01.177Z",
       "updatedAt": "2026-09-10T08:32:22.093Z",
@@ -5754,6 +5769,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T08:33:14.745Z"
+    },
+    {
+      "id": "KN-235",
+      "title": "A trigger's own aria-describedby replaces the tooltip's description instead of joining it",
+      "desc": "CHILD OF KN-231, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-231 roast and confirmed from MUI's source: MUI spreads the child's own props after the tooltip's, so <button aria-describedby=\"validation-help\"> keeps only its own id and the tooltip's text is described neither before nor after focus. Worse since KN-233: the attach check reads the node's aria-describedby for the tooltip's id, finds it missing, and falsely reports that the trigger dropped its props, when it is a perfectly valid trigger. The fix is to merge the child's id list with the tooltip's on the child itself, by cloning it, so MUI's last-wins spread carries both.",
+      "why": "A trigger that already has a description, a validation hint or a field help text, is exactly where a tooltip is common, and the tooltip currently erases one of the two descriptions and then blames the trigger for it. Critical on the owner's order of 2026-09-10, as a finding on a built component, and because KN-233's report made it actively misleading.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A trigger with its own aria-describedby keeps it AND gains the tooltip's, in that order, before and after focus, asserted by a story that checks the computed description contains both texts; no report is logged for it; the ref-only and cannot-attach reports still fire; and a mutation dropping the merge fails the story.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T08:44:08.898Z"
     }
   ]
 }

@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 64 of 234 tasks done · 138 of 626 points.
+Project **KarNama** · 64 of 235 tasks done · 138 of 628 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-010` Status chip, 9 statuses by 2 sizes, display only** (critical, 3 pt, web)
+**Next up: `KN-235` A trigger's own aria-describedby replaces the tooltip's description instead of joining it** (critical, 2 pt, web)
 
 ## Blocked (3)
 
@@ -18,7 +18,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (165)
+## Backlog (166)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -26,6 +26,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
+| `KN-235` | A trigger's own aria-describedby replaces the tooltip's description instead of joining it | critical | 2 | web | none | A trigger with its own aria-describedby keeps it AND gains the tooltip's, in that order, before and after focus, asserted by a story that checks the computed description contains both texts; no report is logged for it; the ref-only and cannot-attach reports still fire; and a mutation dropping the merge fails the story. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | critical | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | critical | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -2911,6 +2912,8 @@ CHILD OF KN-209, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** At the moment of keyboard focus, before the tip opens, the trigger already has an accessible description equal to the tip's text, asserted by a story that does not wait for the tip; the name is still the trigger's own; the same assertions run in fa-IR with the Persian name; and a mutation removing the always-present description fails the focus-time story.
 
+**Roasts.** round 1 scored 5 with 1 critical(s)
+
 ### `KN-232` The docgen comment in .storybook/main.ts says any option replaces Storybook's defaults, which is false
 
 - **status** backlog · **severity** low · **points** 1 · **area** web
@@ -2943,4 +2946,15 @@ CHILD OF KN-227, recorded in prose because board.json cannot express parent_task
 **Why.** Every shape this repository has used as an exemption has let copy through, and the guard repeats the pattern one level down. The retirement check is the one command that says when TECH-DEBT 13 can go, and as written it cannot tell a reason from a coincidence. High rather than critical: it guards against copy being ADDED to the token file, which nothing does today, and it follows the component work.
 
 **Exit condition.** Every string-literal key in tokens.ts must be a token name DESIGN.md documents, not a shape; the font stack must equal the documented value exactly; planted cases for a copy key, copy after Vazirmatn and a copy family each fail the guard; and the retirement check requires a clean baseline lint and lingui errors attributable to tokens.ts, STORAGE_KEY and TOOLTIP_SURFACE once they are removed, reporting an unrelated error as unjudgeable rather than as the debt standing.
+
+### `KN-235` A trigger's own aria-describedby replaces the tooltip's description instead of joining it
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-231, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-231 roast and confirmed from MUI's source: MUI spreads the child's own props after the tooltip's, so <button aria-describedby="validation-help"> keeps only its own id and the tooltip's text is described neither before nor after focus. Worse since KN-233: the attach check reads the node's aria-describedby for the tooltip's id, finds it missing, and falsely reports that the trigger dropped its props, when it is a perfectly valid trigger. The fix is to merge the child's id list with the tooltip's on the child itself, by cloning it, so MUI's last-wins spread carries both.
+
+**Why.** A trigger that already has a description, a validation hint or a field help text, is exactly where a tooltip is common, and the tooltip currently erases one of the two descriptions and then blames the trigger for it. Critical on the owner's order of 2026-09-10, as a finding on a built component, and because KN-233's report made it actively misleading.
+
+**Exit condition.** A trigger with its own aria-describedby keeps it AND gains the tooltip's, in that order, before and after focus, asserted by a story that checks the computed description contains both texts; no report is logged for it; the ref-only and cannot-attach reports still fire; and a mutation dropping the merge fails the story.
 
