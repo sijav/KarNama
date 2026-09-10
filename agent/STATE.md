@@ -29,18 +29,26 @@ second cold start the UI must handle honestly. lingui, **English is the source**
 
 ## Where things stand
 
-**43 done, 158 open, 1 blocked, 2 dropped. No open criticals. Nothing in
-progress.** `apps/web`: 305 tests over 20 files, 100 percent on all four
-metrics. `apps/api`: 96. `packages/graphql`: 4.
+**46 done, 159 open, 1 blocked, 2 dropped. No open criticals. Nothing in
+progress.** `apps/web`: 324 tests over 22 files, 100 percent on all four
+metrics. `apps/api`: 100. `packages/graphql`: 4.
 
-**The component library is unblocked and started.** KN-007 built the Storybook
-docs infrastructure, which gated KN-008 through KN-030; **KN-013, the Checkbox,
-is the first component built on it** and 37 more web cards now have no unmet
-blockers.
+**Two components exist**: KN-013 Checkbox and KN-017 Filter chip, both from
+Figma nodes, both verified by reading computed styles in a browser rather than
+by eye. 36 more web cards have no unmet blockers.
 
-**KN-196 is BLOCKED on the owner** and is the only thing waiting on a person:
-what happens when a card is dragged onto a column collapsed to a count. KN-070
-settled that the column collapses, not that. It blocks KN-061, drag and drop.
+**IT IS DEPLOYED.** The web app is at https://sijav.github.io/KarNama/ and
+Storybook, as a SEPARATE site, at https://sijav.github.io/KarNama/storybook/;
+both redeploy from `.github/workflows/pages.yml` on every push to `main`. The
+database is **Neon**, migrations applied, nine tables, and the API boots against
+it and answers `{ health { status } }`. The API is not yet on Render: the
+service needs `NPM_CONFIG_PRODUCTION=false` in its dashboard, because Render
+does not retroactively apply `render.yaml` to a service it already created.
+
+**KN-196 - Decide how a card is dropped onto a column collapsed to a count is
+BLOCKED on the owner**, and the reason matters: they were asked, said no
+preference, and then said to ask AGAIN once there is a running board to look at.
+Nobody can judge how a drag feels from three bullet points. Do not decide it.
 
 ## The owner's rules, most recent first
 
