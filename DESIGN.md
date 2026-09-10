@@ -187,6 +187,17 @@ as a sixth role, which was wrong: it does not exist.
 
 Reaching for the large size anywhere else is a departure from the design.
 
+### A long status name is cut, not wrapped
+
+A user can rename any status, and node `82:2` only ever draws short names, so
+this is a decision. **The chip never grows past where it sits**: a name longer
+than its container is cut with an ellipsis on one line, never wrapped onto a
+second, so a column header or a card keeps its height and its width. The whole
+name stays the chip's text, so a screen reader reads all of it. The chip takes
+its direction from the name, not the page, as the label in `84:4` does, so the
+ellipsis always cuts the end of a name and its start stays in view in either
+script.
+
 ### The Input focused while invalid
 
 Node `95:38` draws six standalone states and no composite, so this one is a

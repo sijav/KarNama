@@ -57,3 +57,15 @@ No role, no tabindex, and Tab passes it by.
 
 A built-in status the user renamed. The chip shows their name, from the record,
 not the catalog's.
+
+### LongName
+
+A status renamed to something long, in the 276 of a kanban column header: the
+chip stops at the column's edge and cuts the name with an ellipsis, and the whole
+name is still its text.
+
+### LongNameInEnglish
+
+The same Persian name with the English interface. The chip takes its direction
+from the name, so the ellipsis still cuts the end of it and its start stays in
+view.

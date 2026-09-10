@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react'
-import { Stack } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
 import { status as statusTokens, type StatusToken } from '../../theme/tokens'
@@ -18,6 +18,16 @@ const computedColour = (host: HTMLElement, colour: string) => {
 }
 
 const DEFAULTS: DefaultStatus[] = ['new', 'applied', 'interview', 'rejected', 'offer']
+
+// A status a user renamed to something long: record data, so not translated.
+const LONG = 'در انتظار پاسخ مصاحبهٔ فنی دوم با مدیر تیم مهندسی نرم‌افزار و منابع انسانی'
+
+// A long name in the 276 of a kanban column header, the width from 241:2.
+const InAColumn = () => (
+  <Box data-testid="column" sx={{ width: 276 }}>
+    <StatusChip status="interview" label={LONG} size="M" />
+  </Box>
+)
 // The custom slots have no default name: whatever the user called the status
 // is record data. The legend's names at node 410:470 stand in for it.
 const CUSTOM: [StatusToken, string][] = [
@@ -147,5 +157,41 @@ export const RenamedStatus: Story = {
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByText('رزومه فرستادم')).toBeInTheDocument()
     await expect(within(canvasElement).queryByText('درخواست‌شده')).not.toBeInTheDocument()
+  },
+}
+
+export const LongName: Story = {
+  // Renamed to something long. The chip stops at the column's edge and cuts
+  // the name with an ellipsis, on one line, and the whole name is still its
+  // text for a screen reader, KN-238. A fixed render, so no control applies.
+  parameters: { controls: { disable: true } },
+  render: () => <InAColumn />,
+  play: async ({ canvasElement }) => {
+    const column = within(canvasElement).getByTestId('column')
+    const chip = within(column).getByText(LONG)
+    // Nothing spills out of the column, and the chip is as wide as it, no wider.
+    await expect(column.scrollWidth).toBe(column.clientWidth)
+    await expect(chip.offsetWidth).toBe(column.clientWidth)
+    // Cut, with an ellipsis, and on one line at the same height.
+    await expect(chip.scrollWidth).toBeGreaterThan(chip.clientWidth)
+    await expect(getComputedStyle(chip)).toHaveProperty('textOverflow', 'ellipsis')
+    await expect(chip.offsetHeight).toBe(28)
+    // A screen reader reads the text, and all of it is there.
+    await expect(chip).toHaveTextContent(LONG)
+  },
+}
+
+export const LongNameInEnglish: Story = {
+  // The same Persian name with the English interface. The chip takes its
+  // direction from the name, not the page, so the ellipsis still cuts the END
+  // of the name and its start stays in view, KN-238.
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'en-US' },
+  render: () => <InAColumn />,
+  play: async ({ canvasElement }) => {
+    const chip = within(within(canvasElement).getByTestId('column')).getByText(LONG)
+    await expect(document.documentElement).toHaveAttribute('dir', 'ltr')
+    await expect(getComputedStyle(chip)).toHaveProperty('direction', 'rtl')
+    await expect(chip.scrollWidth).toBeGreaterThan(chip.clientWidth)
   },
 }
