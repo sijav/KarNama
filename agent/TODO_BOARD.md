@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 71 of 247 tasks done · 150 of 645 points.
+Project **KarNama** · 71 of 248 tasks done · 150 of 646 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -18,13 +18,14 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (171)
+## Backlog (172)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-246` | Changing defaultValue in the Input's Controls does not change the field | critical | 1 | web | none | Changing defaultValue in Controls after the story has rendered changes the text in the field: a check renders an Input story, changes the arg through Storybook's own arg update, and asserts the field shows the new value, and it fails with the fix taken out. |
 | `KN-247` | The Input's interaction stories keep controls that make their play functions untrue | critical | 1 | web | none | Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control. |
+| `KN-248` | Nothing checks the Input's placeholder stays put when an empty field takes focus | critical | 1 | web | none | A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -3072,6 +3073,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The Focus story fails whenever focus changes anything that lays out the text inside the field: it asserts the input element's box and every computed property of the input are unchanged by focus, naming any property it exempts and why, and a mutation adding a focused-only text-indent to the input fails Focus by name.
 
+**Roasts.** round 1 scored 5 with 1 critical(s)
+
 ### `KN-244` A focused invalid Input shows focus by one pixel of the same red
 
 - **status** backlog · **severity** critical · **points** 2 · **area** web
@@ -3115,4 +3118,15 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** The Interactions panel's ticks are worth something only if they describe the story on screen. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control.
+
+### `KN-248` Nothing checks the Input's placeholder stays put when an empty field takes focus
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-243 roast and confirmed: the Focus story is filled through defaultValue, so no placeholder is drawn, and the input's computed style does not include its ::placeholder pseudo-element, so a focused-only rule such as '&.Mui-focused input::placeholder': { textIndent: '3px' } moves the placeholder of an empty field and nothing fails. Chromium does report placeholder styles through getComputedStyle(input, '::placeholder'): on Default it gives text/secondary, rgb(107, 114, 128), where the input itself gives rgb(17, 24, 39), and a planted pseudo-only text-indent reads back as 3px, so a story can measure it.
+
+**Why.** The empty field is the one a user tabs into first on a new form, and DESIGN.md's promise for the Focus state is that the text does not move. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name.
 

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 248,
+  "nextId": 249,
   "tasks": [
     {
       "id": "KN-001",
@@ -6042,7 +6042,22 @@
       "parent": [],
       "status": "done",
       "exit": "The Focus story fails whenever focus changes anything that lays out the text inside the field: it asserts the input element's box and every computed property of the input are unchanged by focus, naming any property it exempts and why, and a mutation adding a focused-only text-indent to the input fails Focus by name.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-243-round-1.2026-09-10T09-53-29-523Z.md",
+          "filed": [
+            "KN-248"
+          ],
+          "cardDigest": "8af47c03d6bb6e02bbae71c73b0e0c2feeb2c1c13cd49efdd53dd760816aabd4",
+          "head": "d48746946fd9419d5edc4a68f32f3894e81b16d8",
+          "reviewerScore": 5,
+          "reviewerCriticals": 1,
+          "at": "2026-09-10T09:55:32.071Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T09:45:56.652Z",
       "updatedAt": "2026-09-10T09:53:08.510Z",
@@ -6109,6 +6124,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T09:45:57.752Z"
+    },
+    {
+      "id": "KN-248",
+      "title": "Nothing checks the Input's placeholder stays put when an empty field takes focus",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-243 roast and confirmed: the Focus story is filled through defaultValue, so no placeholder is drawn, and the input's computed style does not include its ::placeholder pseudo-element, so a focused-only rule such as '&.Mui-focused input::placeholder': { textIndent: '3px' } moves the placeholder of an empty field and nothing fails. Chromium does report placeholder styles through getComputedStyle(input, '::placeholder'): on Default it gives text/secondary, rgb(107, 114, 128), where the input itself gives rgb(17, 24, 39), and a planted pseudo-only text-indent reads back as 3px, so a story can measure it.",
+      "why": "The empty field is the one a user tabs into first on a new form, and DESIGN.md's promise for the Focus state is that the text does not move. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T09:55:31.957Z"
     }
   ]
 }
