@@ -4424,15 +4424,17 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The recognisers read a COMMAND rather than command-shaped text. The close is the head token of its line. The roast is matched among that line's tokens, because python <path>/roast.py task puts the roast in ARGUMENT position and an anchor would find nothing in the file this is written for. A quoted run stays ONE token, and a line whose head is a printer (echo, printf, cat) runs nothing, so a mention is not the command. The reviewer's echo fixture fails before the fix and passes after. A pipeline, a chain, a semicolon or a line continuation is REPORTED as unorderable rather than guessed at, and a single trailing ampersand is NOT, because backgrounding the roast is what the real prompt does.",
       "roasts": [],
       "notes": [
         "EXIT CONDITION AMENDED 2026-09-10, original kept here. It read: 'The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident.' The clause 'at the start of the line' cannot be met, and the plan filed beside this card said so before the work started: the roast invocation is python <path>/roast.py task, so the roast is an ARGUMENT, and a rule demanding it start the line reports a correct prompt as having no roast command. The close does start its line and still must. Amended openly rather than declared satisfied by a check that does not check it."
       ],
       "createdAt": "2026-09-10T01:18:51.245Z",
-      "updatedAt": "2026-09-10T01:52:46.148Z",
-      "verify": "node agent/scripts/verify/KN-190.mjs"
+      "updatedAt": "2026-09-10T01:53:28.824Z",
+      "verify": "node agent/scripts/verify/KN-190.mjs",
+      "evidence": "node agent/scripts/verify/KN-190.mjs, 13 checks, all pass. THE CASE is a named check: readCommand on echo \"todo move <id> done\" is not a close, and end to end a block of that echo, then the real roast, then the real close is rejected with 'the block fires the roast BEFORE the close'. The mutation that must SURVIVE reproduces the old unanchored regexes inside the verifier and confirms they DO pass the decoy, so the fix is load-bearing rather than a rule against something that was never broken. A floor check asserts the two real shapes still resolve, so the negative cases cannot pass by finding nothing. Mutation harness, 5 cases, run against the real verifier with the source patched and restored: CAUGHT emptying PRINTERS, CAUGHT accepting the unsupported shapes silently, CAUGHT comparing operators against the raw line instead of the quote-stripped one, CAUGHT adding a trailing ampersand to UNSUPPORTED (which would reject the real prompt). NOT CAUGHT, and stated rather than hidden: disabling the tokeniser's quote handling. The quoted fixture still fails, but because the quote characters glue onto the boundary words, so it fails safe by accident and no test can separate working quoting from dead quoting. Written into prompt-order.mjs, KN-190.mjs and the plan file, next to the code, so nobody reads the missing failure as coverage. What is proved is PRINTERS and UNSUPPORTED. CHILD OF KN-184, so the test scope is the files changed, not the full suite: prompt-order.mjs has exactly two consumers, KN-184.mjs and KN-190.mjs, both green; KN-166.mjs green because a new file was added under agent/scripts/verify; npm run todo -- validate says the board is valid, 192 tasks. The exit condition was AMENDED before closing, not after the fact, with the original text kept in a note on the card and the reason in the plan.",
+      "closedAt": "2026-09-10T01:53:28.824Z"
     },
     {
       "id": "KN-191",
