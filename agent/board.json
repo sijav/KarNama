@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 290,
+  "nextId": 291,
   "tasks": [
     {
       "id": "KN-001",
@@ -6786,11 +6786,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The Input takes an optional leading and an optional trailing icon, each 20 by 20 at spacing/2xs from the text in text/secondary, matching 95:38 with the icons on, in both directions; stories show each and both; and the label's boolean in the file is either honoured, with the accessible name then required another way, or the decision not to is recorded in DESIGN.md.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T13:19:54.870Z"
+      "createdAt": "2026-09-10T13:19:54.870Z",
+      "updatedAt": "2026-09-10T18:18:52.499Z"
     },
     {
       "id": "KN-268",
@@ -7227,7 +7228,23 @@
       "parent": [],
       "status": "done",
       "exit": "Under forced colours a disabled Checkbox's edge is GrayText and every enabled state's is ButtonBorder, checked and indeterminate included; a check in a production build reads the rendered edge of all five states under forced colours, and a mutation giving disabled ButtonBorder again fails it; and DESIGN.md's stroke section says which colour each state takes there.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-288-round-1.2026-09-10T18-18-05-225Z.md",
+          "filed": [
+            "KN-290"
+          ],
+          "cardDigest": "f31d9009fdf5a91209c18452293db5be51873bc7dc784b4e0b9d7e4b0e7ed997",
+          "head": "13633f42c31a9735d1bb3fb40b65dc127ea65327",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "dismissed": "The critical stands and is KN-290, with the first major, the verifier reading only the unchecked disabled frame, folded into its exit. The second major, a no-shell rule, does not exist: every verifier spawns npx through a shell because npx, like codex, is a .cmd shim Node will not spawn on Windows without one, which TECH-DEBT 3 records. The minor misreads agent/RALPH.md step 2b again, and the plan's earlier lines are kept on purpose with the check's corrections after them, so it reads as the record it is.",
+          "at": "2026-09-10T18:27:31.117Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T17:59:43.680Z",
       "updatedAt": "2026-09-10T18:17:45.763Z",
@@ -7249,6 +7266,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T17:59:43.802Z"
+    },
+    {
+      "id": "KN-290",
+      "title": "Under forced colours the Checkbox's tick and dash keep their author colour, so a disabled mark looks enabled and a white one can vanish",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-288 roast, KN-288 being a child of KN-011. The tick and the dash are SVG strokes in text/on-accent, set as an author colour. Under forced colours an SVG's forced-color-adjust is preserve-parent-color, which keeps an explicit author stroke, while the frame's brand fill is replaced by the system background. So a disabled checked or indeterminate Checkbox shows the same mark as an enabled one, where KN-288 made its edge GrayText, and a white mark on a light system background can disappear altogether. KN-288's checks read only the unchecked disabled frame's edge, so neither shows.",
+      "why": "A checkbox whose mark cannot be seen, or whose disabled mark looks enabled, fails exactly the people who turned on high contrast to see it. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Under forced colours the tick and the dash are drawn in system colours, ButtonText when enabled and GrayText when disabled, the keyword kept so a check can read it whatever the palette, and each stays visible against the frame; a check in a production build reads checked and indeterminate, enabled and disabled, under forced colours, comparing the rendered mark with a same-page probe of its system colour, and a mutation back to the author colour fails it; and DESIGN.md's stroke section says what the mark takes there.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T18:27:30.977Z"
     }
   ]
 }
