@@ -1401,15 +1401,17 @@
       "parent": [
         "KN-003"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The app loads at its Pages URL, a deep link to a route works on a hard refresh, Storybook is reachable at /storybook/, and the deploy runs from a push to main with no manual step.",
       "roasts": [],
       "notes": [
         "Re-pointed from KN-050 to KN-003. Deploying a static web app needs neither CI nor the API scaffold, and routing it through CI made the owner's pre-flight requirement, a deployed public page even if empty, wait on 22 points of unrelated work instead of 8. CI still lands, it is just not a prerequisite for the first deploy. If the deploy workflow and the CI workflow end up sharing steps, KN-050 can factor them afterwards."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T04:23:59.859Z",
-      "verify": "node agent/scripts/verify/KN-051.mjs"
+      "updatedAt": "2026-09-10T04:24:01.587Z",
+      "verify": "node agent/scripts/verify/KN-051.mjs",
+      "evidence": "node agent/scripts/verify/KN-051.mjs, 6 checks, all pass, and it FETCHES THE LIVE SITE rather than reading the workflow file, because three of the four exit clauses are facts about a running deploy and YAML always looks right. LIVE, at https://sijav.github.io/KarNama/ : the app returns 200 and is the app shell; its assets resolve under the /KarNama/ base; a deep link to /KarNama/board/some-deep-route serves the app shell so a hard refresh reaches the client router, verified in a browser with the URL preserved; Storybook returns 200 at /KarNama/storybook/ as its own site; and the Storybook preview iframe resolves its assets under /KarNama/storybook/. The workflow triggers on push to main, builds both, deploys with actions/deploy-pages, and is not cancellable in flight. BOTH LANGUAGES ON THE LIVE SITE, which is the gate clause no test covers: Persian renders کارنما right-to-left, and switching to English gives lang=en-US, dir=ltr and KarNama / My job opportunities. No console errors in either. Storybook live shows the full sidebar, the Docs page in Persian, and the story canvas rendering. THE TRAP, and it is the reason this card was not a five-minute job: Storybook does NOT inherit base from vite.config.ts. Its manager uses relative paths and looked completely fine, but the preview iframe is built by Vite and emitted 21 ABSOLUTE asset URLs, so without a base of its own the shell would have rendered and every single story would have 404d. viteFinal sets it, and the verifier asserts a preview asset resolves rather than only that the page loads. A local check nearly lied too: Git Bash rewrote KARNAMA_BASE=/KarNama/ into a Windows path, so the first build emitted /Program Files/Git/KarNama/assets/. MSYS_NO_PATHCONV=1 fixed it. That is a local artifact and not a CI problem, but it is why the assembled site was served at the real paths and checked with curl before anything was pushed. The two sites are SEPARATE, which is what the owner asked for: built independently with their own base paths and assembled into one artifact, so Storybook is not routed through the app and breaking one does not take the other down. index.html is copied to 404.html for deep links, and .nojekyll stops Jekyll dropping every underscore-prefixed file, which is most of what a bundler emits. Pages itself was enabled with gh api repos/sijav/KarNama/pages -X POST -f build_type=workflow. The run completed in 1m16s, conclusion success. KN-051 has no provenance parent, so the full gate applies and was run before the push: lint clean, tsc clean, 405 tests across three projects, coverage 100 percent on all four metrics, build succeeds.",
+      "closedAt": "2026-09-10T04:24:01.587Z"
     },
     {
       "id": "KN-052",

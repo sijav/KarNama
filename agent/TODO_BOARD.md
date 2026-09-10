@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 43 of 204 tasks done · 103 of 577 points.
+Project **KarNama** · 44 of 204 tasks done · 106 of 577 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-051` Deploy the web app to GitHub Pages** (high, 3 pt, deploy)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-051` | Deploy the web app to GitHub Pages | high | 3 | deploy | KN-003 | The app loads at its Pages URL, a deep link to a route works on a hard refresh, Storybook is reachable at /storybook/, and the deploy runs from a push to main with no manual step. |
+**Next up: `KN-017` Filter chip, doubling as the status counter** (high, 2 pt, web)
 
 ## Blocked (1)
 
@@ -184,7 +178,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (43)
+## Done (44)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -228,6 +222,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-159` | Close the task BEFORE the roast, and never let a finding reopen it | high | 2 | agent | none | move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source. |
 | `KN-160` | Plan files live beside the work, named #<id> - <title>.md | high | 2 | agent | none | agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree. |
 | `KN-166` | Check the loop rules are written correctly in the SkipBureau project | high | 2 | agent | none | ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed. |
+| `KN-051` | Deploy the web app to GitHub Pages | high | 3 | deploy | KN-003 | The app loads at its Pages URL, a deep link to a route works on a hard refresh, Storybook is reachable at /storybook/, and the deploy runs from a push to main with no manual step. |
 | `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
 | `KN-184` | The order check reads the whole document, not the fenced block it claims to | low | 2 | agent | none | The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed. |
@@ -813,7 +808,7 @@ A GitHub Actions workflow running the full gate on push and pull request, includ
 
 ### `KN-051` Deploy the web app to GitHub Pages
 
-- **status** in_progress · **severity** high · **points** 3 · **area** deploy
+- **status** done · **severity** high · **points** 3 · **area** deploy
 - **blocked by** KN-003
 
 Build with the repository base path, publish to Pages on push to main, serve index.html as the 404 so client-side deep links work, and publish Storybook alongside at /storybook/.
