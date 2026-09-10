@@ -3783,13 +3783,15 @@
       "parent": [
         "KN-072"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "KN-045 names five tabs with history in its own, its exit condition asserts WHERE history renders rather than only that it grows, and a check sweeps every OPEN card for the arrangement KN-072 replaced, refusing both the superseded tab count and any card that still puts the history block back where the owner took it from. This exit condition deliberately DESCRIBES those two shapes instead of quoting them: the sweep reads card prose, so a card quoting the banned wording is indistinguishable from a card instructing it, and this card would otherwise flag itself.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T22:23:50.956Z",
-      "updatedAt": "2026-09-10T03:35:17.377Z",
-      "verify": "node agent/scripts/verify/KN-072.mjs"
+      "updatedAt": "2026-09-10T03:35:35.616Z",
+      "verify": "node agent/scripts/verify/KN-072.mjs",
+      "evidence": "node agent/scripts/verify/KN-072.mjs, 9 checks, all pass, including a new board-wide sweep: no OPEN card still specifies the superseded modal arrangement, by tab count or by putting the history block back inside Info. KN-045 now names five tabs with history in its own, and its exit condition asserts WHERE history renders, which is the actual defect: it verified green before because it only asked that history GROW, and a history growing in the wrong place passes a test that counts entries. Mutations, 3 cases, board.json restored byte for byte. CAUGHT: an open card reverted to naming the four-tab modal. CAUGHT: an open card putting history back inside the Info tab. HELD: a card correctly saying history renders in its own tab RATHER THAN in the Info tab, which is the clearest way to write the right thing and which a greedy pattern would flag as the mistake. Contrast clauses are stripped before looking, the same way the KN-030 check in this file already does it. CLOSED CARDS ARE EXCLUDED ON PURPOSE. A closed card records what was true when it closed; rewriting that to satisfy a checker is worse than the contradiction it would hide. TWO CARDS HAD TO BE REWORDED TO STOP MATCHING THEIR OWN BAN, and this is worth recording because it is the self-matching trap STATE.md already names. KN-155 described the problem in the present tense while being an open card, so the sweep flagged it; past tense is now accurate because KN-045 is fixed. Its exit condition then flagged it too, because an exit condition that says a check must refuse a phrase necessarily contains that phrase. It now DESCRIBES the two banned shapes rather than quoting them, and says why in the card itself. The general shape stays uncomfortable and I am not hiding it: a sweep over free prose cannot distinguish a card quoting a ban from a card instructing it, which is why the two cases it does catch are narrow and the contrast stripping is there. KN-155 is a CHILD of KN-072, so it closed on the files it changed: every verifier that reads DESIGN.md or board.json passes, npm run contract finds no card tripping any of its 10 rules, and the board validates at 204 tasks.",
+      "closedAt": "2026-09-10T03:35:35.616Z"
     },
     {
       "id": "KN-156",
