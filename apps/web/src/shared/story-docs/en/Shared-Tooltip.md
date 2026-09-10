@@ -33,6 +33,13 @@ through `aria-describedby`; it never names it. An icon-only button needs its own
 deliberate: a tip that named its control would replace the control's name with
 a sentence about it, which is what this component did until KN-209.
 
+**A Fragment is not supported, and neither is a wrapper that drops its props.**
+The tip attaches through the child's ref and its event props, so the child
+must be ONE element that spreads its props, ref included, onto a DOM element.
+When no ref arrives the tip can never open; MUI is silent about that, so this
+component reports it in the console instead. A child that takes the ref but
+drops the other props is reported by MUI itself.
+
 ## Stories
 
 ### OnHover
@@ -52,6 +59,12 @@ removes the reset's box-sizing from every element and measures the tip anyway.
 An icon-only trigger labelled "Delete status". With the tip open, the button
 is still announced by its own name, and the tip is reachable as its
 description. Before KN-209 the tip replaced the name entirely.
+
+### ReportsATriggerThatCannotAttach
+
+A wrapper that drops everything the tooltip hands it, ref included. The tip
+can never open, and instead of staying silent the component reports why. The
+report is captured by the story, so this page shows a button with no tip.
 
 ### OnKeyboardFocus
 

@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-211` The tooltip accepts triggers it cannot actually attach to** (critical, 2 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-211` | The tooltip accepts triggers it cannot actually attach to | critical | 2 | web | none | A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported. |
+
 ## Blocked (3)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -18,14 +24,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (166)
+## Backlog (165)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
-| `KN-211` | The tooltip accepts triggers it cannot actually attach to | critical | 2 | web | none | A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | none | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-227` | The token-file guard can be passed by a function, a Map, or copy assigned to fontFamily, and its retirement is a wish | critical | 2 | web | none | The guard reads every string literal in the SOURCE of src/theme/tokens.ts, not the runtime values, so a literal inside a function, a Map or any other construct is checked; the font stack is checked by value; mutations adding copy as a function return, as a Map entry and as the fontFamily value each fail it; and TECH-DEBT.md 13's retiring check is a condition a command can test, such as the three exemptions removed and npm run lint still green with every planted fixture failing. |
 | `KN-231` | The tooltip's description appears only after the tip opens, so focus announces the trigger without it | critical | 2 | web | none | At the moment of keyboard focus, before the tip opens, the trigger already has an accessible description equal to the tip's text, asserted by a story that does not wait for the tip; the name is still the trigger's own; the same assertions run in fa-IR with the Persian name; and a mutation removing the always-present description fails the focus-time story. |
@@ -2663,7 +2668,7 @@ CHILD OF KN-032, recorded in prose because board.json cannot express parent_task
 
 ### `KN-211` The tooltip accepts triggers it cannot actually attach to
 
-- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast. children is typed ReactElement, which admits a Fragment and admits any component that does not forward the props and ref MUI injects. MUI attaches its hover and focus listeners by cloning the child, so for those triggers the tooltip silently never opens. Every story uses a native button, so all six checks pass while the case an icon-only wrapper component hits is untested. That matters immediately: KN-014 builds the Icon button, and it is the trigger this component is for.

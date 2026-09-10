@@ -1,5 +1,5 @@
 import { Box, Tooltip as MuiTooltip } from '@mui/material'
-import type { ReactElement, ReactNode } from 'react'
+import { useEffect, useRef, type ReactElement, type ReactNode } from 'react'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 
 // The tip's width, from node `410:469`, KN-210. The frame is FIXED at 260 with
@@ -24,8 +24,22 @@ export interface TooltipProps {
 
 // Node 410:469, on MUI's Tooltip, which already opens on keyboard focus as well
 // as hover, closes on Escape, and keeps the tip on screen.
-export const Tooltip = ({ title, icon, children }: TooltipProps) => (
+export const Tooltip = ({ title, icon, children }: TooltipProps) => {
+  // MUI applies the tooltip's OWN ref to the child, so this holds the trigger's
+  // DOM node when, and only when, the child forwards its ref. When it does not,
+  // the tip can never open and MUI says nothing, so this says it, KN-211. A
+  // child that forwards the ref but drops the other props is MUI's own check.
+  const trigger = useRef<Element>(null)
+  useEffect(() => {
+    if (trigger.current) return
+    console.error(
+      'Tooltip: its child did not take a ref, so the tip can never open. Pass one element that spreads its props, ref included, onto a DOM element; a Fragment cannot.',
+    )
+  }, [])
+
+  return (
   <MuiTooltip
+    ref={trigger}
     // The "does not trap the pointer" clause, and the sx below is not enough
     // on its own: MUI's tooltip is INTERACTIVE by default and sets
     // `pointer-events: auto` itself so you can hover into it. A story
@@ -83,4 +97,5 @@ export const Tooltip = ({ title, icon, children }: TooltipProps) => (
   >
     {children}
   </MuiTooltip>
-)
+  )
+}

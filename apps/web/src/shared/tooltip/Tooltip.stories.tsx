@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import type { ComponentPropsWithRef } from 'react'
-import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { elevation } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Tooltip, TOOLTIP_SURFACE } from './Tooltip'
@@ -42,6 +42,17 @@ const DeleteStatusButton = (props: ComponentPropsWithRef<'button'>) => {
   const { i18n } = useLingui()
   return (
     <button type="button" {...props} aria-label={i18n._('Delete status')}>
+      {InfoMark}
+    </button>
+  )
+}
+
+// The mistake KN-211 is about: a wrapper that drops everything MUI hands it,
+// ref included, so the tip has nothing to attach to and can never open.
+const SwallowingButton = () => {
+  const { i18n } = useLingui()
+  return (
+    <button type="button" aria-label={i18n._('Delete status')}>
       {InfoMark}
     </button>
   )
@@ -138,6 +149,25 @@ export const KeepsTheTriggersName: Story = {
     // And the tip is reachable, as the button's description.
     await expect(button.getAttribute('aria-describedby')).toBe(tip.id)
     await expect(button).not.toHaveAttribute('aria-labelledby')
+  },
+}
+
+export const ReportsATriggerThatCannotAttach: Story = {
+  args: { children: <SwallowingButton /> },
+  // The report is the point, so it is captured rather than printed: the
+  // published Storybook shows the silent button, the console stays clean.
+  beforeEach: () => {
+    const spy = spyOn(console, 'error').mockImplementation(() => undefined)
+    return () => {
+      spy.mockRestore()
+    }
+  },
+  play: async () => {
+    // KN-211. A trigger the tip cannot attach to is REPORTED, not silently
+    // left without a tip, which is all MUI does when the ref never arrives.
+    await waitFor(async () => {
+      await expect(console.error).toHaveBeenCalledWith(expect.stringContaining('did not take a ref'))
+    })
   },
 }
 
