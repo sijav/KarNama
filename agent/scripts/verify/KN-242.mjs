@@ -43,16 +43,16 @@ check('the Input stories pass', () => {
 
 check('the meta renders every arg through the specimen, and Default adds no render of its own', () => {
   const source = readFileSync(STORIES, 'utf8')
-  if (!/ {2}render: \(args\) => <JobTitle key=\{args\.defaultValue\} \{\.\.\.args\} \/>,/.test(source)) return 'the meta does not pass its args to the specimen'
+  if (!/ {4}return <JobTitle key=\{args\.defaultValue\} \{\.\.\.args\} onChange=\{onChange\} \/>\n/.test(source)) return 'the meta does not pass its args to the specimen'
   return /render:/.test(storyBody(source, 'Default')) ? 'Default overrides the args-driven render' : null
 })
 
 check('THE CASE: a render that ignores its args fails FromArgs', () => {
   const original = readFileSync(STORIES, 'utf8')
-  const anchor = '  render: (args) => <JobTitle key={args.defaultValue} {...args} />,\n'
+  const anchor = '    return <JobTitle key={args.defaultValue} {...args} onChange={onChange} />\n'
   if (!original.includes(anchor)) return 'the meta render changed shape, so this mutation no longer applies'
   try {
-    writeFileSync(STORIES, original.replace(anchor, () => '  render: () => <JobTitle />,\n'))
+    writeFileSync(STORIES, original.replace(anchor, () => '    return <JobTitle />\n'))
     const { code, output } = stories()
     if (code === 0) return 'the stories passed with the args ignored, so nothing asserts the field follows them'
     return output.includes('× From Args ') ? null : `it failed, but not in FromArgs:\n${output.slice(-500)}`

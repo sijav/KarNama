@@ -1,6 +1,8 @@
 import { useLingui } from '@lingui/react'
 import { Stack } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
+import type { ChangeEvent } from 'react'
+import { useArgs } from 'storybook/preview-api'
 import { expect, fn, userEvent, within } from 'storybook/test'
 import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -72,8 +74,17 @@ const meta = {
   args: { label: '', onChange: fn() },
   // Keyed on defaultValue: the field is uncontrolled, and React reads a
   // default only when the field mounts, so a new one needs a new field or the
-  // Controls panel changes nothing, KN-246.
-  render: (args) => <JobTitle key={args.defaultValue} {...args} />,
+  // Controls panel changes nothing, KN-246. And value is bound to the args:
+  // set it in Controls and the field is controlled, so what is typed has to
+  // go back into the arg, or the field refuses every keystroke, KN-249.
+  render: function Render(args) {
+    const [, updateArgs] = useArgs<InputProps>()
+    const onChange = (value: string, event: ChangeEvent<HTMLInputElement>) => {
+      if (args.value !== undefined) updateArgs({ value })
+      args.onChange?.(value, event)
+    }
+    return <JobTitle key={args.defaultValue} {...args} onChange={onChange} />
+  },
 } satisfies StoryMeta<typeof Input>
 
 export default meta

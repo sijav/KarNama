@@ -6178,11 +6178,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "After value is set in Controls, typing into the field changes it and the value control follows what was typed, the story binding value through Storybook's args; or no story offers value. A check sets value through Storybook's own arg update on a built Storybook, types into the field, and asserts both the field and the story's args show the typed text, and it fails with the binding taken out.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T10:05:57.447Z"
+      "createdAt": "2026-09-10T10:05:57.447Z",
+      "updatedAt": "2026-09-10T10:24:20.937Z",
+      "verify": "node agent/scripts/verify/KN-249.mjs"
     },
     {
       "id": "KN-250",

@@ -27,8 +27,8 @@ const WEB = join(ROOT, 'apps', 'web')
 const STORIES = join(WEB, 'src', 'shared', 'input', 'Input.stories.tsx')
 const { chromium } = createRequire(join(WEB, 'package.json'))('playwright')
 
-const KEYED = '  render: (args) => <JobTitle key={args.defaultValue} {...args} />,\n'
-const UNKEYED = '  render: (args) => <JobTitle {...args} />,\n'
+const KEYED = '    return <JobTitle key={args.defaultValue} {...args} onChange={onChange} />\n'
+const UNKEYED = '    return <JobTitle {...args} onChange={onChange} />\n'
 const NEXT = 'second'
 const MARKER = 'marker'
 
