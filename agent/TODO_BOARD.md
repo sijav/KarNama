@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 72 of 248 tasks done · 151 of 646 points.
+Project **KarNama** · 72 of 249 tasks done · 151 of 647 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -18,13 +18,14 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (171)
+## Backlog (172)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-247` | The Input's interaction stories keep controls that make their play functions untrue | critical | 1 | web | none | Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control. |
 | `KN-248` | Nothing checks the Input's placeholder stays put when an empty field takes focus | critical | 1 | web | none | A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name. |
+| `KN-249` | Setting value in the Input's Controls freezes the field | critical | 1 | web | none | After value is set in Controls, typing into the field changes it and the value control follows what was typed, the story binding value through Storybook's args; or no story offers value. A check sets value through Storybook's own arg update on a built Storybook, types into the field, and asserts both the field and the story's args show the typed text, and it fails with the binding taken out. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -3108,6 +3109,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Changing defaultValue in Controls after the story has rendered changes the text in the field: a check renders an Input story, changes the arg through Storybook's own arg update, and asserts the field shows the new value, and it fails with the fix taken out.
 
+**Roasts.** round 1 scored 7 with 0 critical(s)
+
 ### `KN-247` The Input's interaction stories keep controls that make their play functions untrue
 
 - **status** backlog · **severity** critical · **points** 1 · **area** web
@@ -3129,4 +3132,15 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** The empty field is the one a user tabs into first on a new form, and DESIGN.md's promise for the Focus state is that the text does not move. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name.
+
+### `KN-249` Setting value in the Input's Controls freezes the field
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-246 roast and confirmed from the code: every story that offers controls offers value, and setting it makes the Input controlled, while the meta's onChange is fn(), which records the call and never updates the story's args. So a reviewer who sets value to anything and then types sees the field refuse every keystroke, React putting the controlled value back each time, and the Controls panel still presents the field as live. KN-246 fixed defaultValue, the uncontrolled half; this is the controlled half, which its verifier never exercised.
+
+**Why.** A field that swallows typing looks like a broken component, not a story wired wrong, to anyone trying it in Storybook. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** After value is set in Controls, typing into the field changes it and the value control follows what was typed, the story binding value through Storybook's args; or no story offers value. A check sets value through Storybook's own arg update on a built Storybook, types into the field, and asserts both the field and the story's args show the typed text, and it fails with the binding taken out.
 

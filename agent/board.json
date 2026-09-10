@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 249,
+  "nextId": 250,
   "tasks": [
     {
       "id": "KN-001",
@@ -6106,7 +6106,22 @@
       "parent": [],
       "status": "done",
       "exit": "Changing defaultValue in Controls after the story has rendered changes the text in the field: a check renders an Input story, changes the arg through Storybook's own arg update, and asserts the field shows the new value, and it fails with the fix taken out.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-246-round-1.2026-09-10T10-02-07-569Z.md",
+          "filed": [
+            "KN-249"
+          ],
+          "cardDigest": "1628e5509c6bf0362aa146a59b4944f41d9695c6e19a514b92cb205826aa42c6",
+          "head": "7addeecca1ea4341efe2ea2ef44339ebcd0348ad",
+          "reviewerScore": 7,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T10:05:57.571Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T09:45:57.476Z",
       "updatedAt": "2026-09-10T10:01:51.297Z",
@@ -6143,6 +6158,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T09:55:31.957Z"
+    },
+    {
+      "id": "KN-249",
+      "title": "Setting value in the Input's Controls freezes the field",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-246 roast and confirmed from the code: every story that offers controls offers value, and setting it makes the Input controlled, while the meta's onChange is fn(), which records the call and never updates the story's args. So a reviewer who sets value to anything and then types sees the field refuse every keystroke, React putting the controlled value back each time, and the Controls panel still presents the field as live. KN-246 fixed defaultValue, the uncontrolled half; this is the controlled half, which its verifier never exercised.",
+      "why": "A field that swallows typing looks like a broken component, not a story wired wrong, to anyone trying it in Storybook. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "After value is set in Controls, typing into the field changes it and the value control follows what was typed, the story binding value through Storybook's args; or no story offers value. A check sets value through Storybook's own arg update on a built Storybook, types into the field, and asserts both the field and the story's args show the typed text, and it fails with the binding taken out.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T10:05:57.447Z"
     }
   ]
 }
