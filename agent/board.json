@@ -6119,11 +6119,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T09:45:56.913Z"
+      "createdAt": "2026-09-10T09:45:56.913Z",
+      "updatedAt": "2026-09-10T14:04:11.077Z"
     },
     {
       "id": "KN-245",
@@ -6625,7 +6626,21 @@
       "parent": [],
       "status": "done",
       "exit": "The chip is the designed flex box again, centred by alignment with no vertical padding, and the name truncates with an ellipsis in an inner element; every story that measures the chip measures the chip, not the name; KN-238's verifier still passes with its mutations; and no padding or spacing in StatusChip.tsx resolves to anything but a spacing token or zero.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8.7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-263-round-1.2026-09-10T14-03-40-449Z.md",
+          "filed": [],
+          "cardDigest": "04cba4ef5a647773b3bedb35039cf4af7b2d0bcdd9bb28cb4980eee877bb876a",
+          "head": "0278363aed31dfec101d46b4132cc2e3bcf26fd0",
+          "reviewerScore": 8.7,
+          "reviewerCriticals": 0,
+          "dismissed": "The one finding, that the plan file beside StatusChip.tsx breaks the documentation rule, misreads both rules: agent/RALPH.md step 2b puts a plan BESIDE THE WORK as #<id> - <title>.md and says it stays when the task closes, and the AGENTS.md rule it cites forbids documentation prose inside .ts and .tsx files, not a markdown plan. The three answers found no sizing, centring or chipOf problem.",
+          "at": "2026-09-10T14:06:31.903Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T12:57:36.792Z",
       "updatedAt": "2026-09-10T14:00:47.689Z",
