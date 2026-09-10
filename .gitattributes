@@ -7,3 +7,13 @@ agent/figma-capture/*.xml -text
 # generation, so a CRLF checkout would report it stale before any resolver
 # changed. Pinned to LF for the same reason the Figma captures are pinned.
 apps/api/schema.gql text eol=lf
+
+# The generated GraphQL client is compared literally against a fresh generation
+# by packages/graphql/scripts/check-generated.mjs, so a CRLF checkout reports it
+# stale before any schema changed. Third time this lesson is written down here.
+packages/graphql/src/generated.ts text eol=lf
+
+# The operation documents are edited by agent/scripts/verify/KN-128.mjs, which
+# matches a literal string containing a newline. Under CRLF the match stops
+# finding anything and the verifier fails on a clean clone.
+packages/graphql/src/operations/*.graphql text eol=lf
