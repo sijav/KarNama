@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 284,
+  "nextId": 286,
   "tasks": [
     {
       "id": "KN-001",
@@ -7061,7 +7061,23 @@
       "parent": [],
       "status": "done",
       "exit": "The Checkbox frame's edge is 1.5 in every state as the five variants of 204:11 draw it, painted inside the frame and taking no layout space; what a 1.5 edge renders as at device pixel ratios 1 and 2 is measured and recorded; the stories assert the width; and the comment that says the file draws every border at one is corrected.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5.5,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-281-round-1.2026-09-10T17-17-22-067Z.md",
+          "filed": [
+            "KN-284"
+          ],
+          "cardDigest": "f2d41759d025fc0594e90e5b042d6b031a7dffe3bed9990c137d98b32e9880af",
+          "head": "719760797bcfdd4c81230a63884cea2fd2c49a91",
+          "reviewerScore": 5.5,
+          "reviewerCriticals": 1,
+          "dismissed": "The major, that the plan file beside Checkbox.tsx is documentation prose in the wrong place, misreads agent/RALPH.md step 2b a fifth time: a plan lives beside the work and stays. The minor, that the forced-colours check compares two pixels and not the geometry, is folded into KN-284's exit rather than filed alone, since it is the same fix. The critical stands and is KN-284.",
+          "at": "2026-09-10T17:20:16.722Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T16:24:51.312Z",
       "updatedAt": "2026-09-10T17:16:53.692Z",
@@ -7098,6 +7114,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T16:55:24.869Z"
+    },
+    {
+      "id": "KN-284",
+      "title": "The Checkbox's forced-colours edge is a laid-out border, shrinking its frame's content box in that mode",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-281 roast, KN-281 being a child of KN-011. KN-281 draws the frame's 1.5 edge as an inset shadow and, under forced colours, where the shadow is removed, a real one pixel ButtonBorder border. With box-sizing border-box the frame stays 20 by 20, but that border takes layout: the content box shrinks to 18 by 18 in forced colours only. The glyph is centred, so it does not visibly move, but the edge is not the inside, out-of-layout stroke the file draws and the card promised, and KN-281's forced-colours check only compares two pixels, so it could not see it.",
+      "why": "An edge that takes layout space in one mode is the defect KN-266 and KN-281 exist to remove, and the check that should catch it reads a colour, not a size. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Under forced colours the Checkbox frame's edge is drawn over the frame without taking layout, a border on a pseudo-element for instance, so its content box stays 20 by 20 in that mode as in every other; KN-281's forced-colours check measures the content box and the glyph's position as well as the pixels, and a mutation back to a laid-out border fails it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T17:20:16.405Z"
+    },
+    {
+      "id": "KN-285",
+      "title": "Every Input on the file's screens turns its helper line off, while the Input always reserves it",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found while reading 95:38 for KN-267. All 91 Input instances on the Screens canvas, 5:7, read with use_figma, set Helper Text to false, keep Label on, and use no icon. The Input always draws its message line, 22 tall below a 4 gap, KN-011's decision that an error appearing never moves the field. So once screens are built from it, every field sits 26 taller than the file draws it, and a form of five fields is 130 taller. The file's boolean says the line can be off; the component's decision says it is always there. It is a choice between the drawn layout and a form that does not jump when an error appears, and whether a field with the line off can show an error at all, KN-254 having decided an error needs a message.",
+      "why": "Match the design exactly is the owner's standing rule, and every screen will be taller than drawn unless this is settled before screens are composed; the decision the component made is good for errors and wrong for the drawn layout, so the owner chooses. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "design",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The owner has answered, through the question tool, whether an Input on a screen keeps its message line reserved as the component does or drops it as the 91 screen instances draw it, and where an error on a field with the line off is shown; DESIGN.md records the answer as the owner's, with the date; and if the line can be off, a card for the change exists.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T17:20:16.518Z"
     }
   ]
 }

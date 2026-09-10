@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 93 of 283 tasks done · 177 of 698 points.
+Project **KarNama** · 93 of 285 tasks done · 177 of 700 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-267` The Input has no leading or trailing icon slot, which node 95:38 carries** (critical, 2 pt, web)
+**Next up: `KN-284` The Checkbox's forced-colours edge is a laid-out border, shrinking its frame's content box in that mode** (critical, 1 pt, web)
 
 ## Blocked (2)
 
@@ -17,12 +17,14 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (186)
+## Backlog (188)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | critical | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
+| `KN-284` | The Checkbox's forced-colours edge is a laid-out border, shrinking its frame's content box in that mode | critical | 1 | web | none | Under forced colours the Checkbox frame's edge is drawn over the frame without taking layout, a border on a pseudo-element for instance, so its content box stays 20 by 20 in that mode as in every other; KN-281's forced-colours check measures the content box and the glyph's position as well as the pixels, and a mutation back to a laid-out border fails it. |
+| `KN-285` | Every Input on the file's screens turns its helper line off, while the Input always reserves it | critical | 1 | design | none | The owner has answered, through the question tool, whether an Input on a screen keeps its message line reserved as the component does or drops it as the 91 screen instances draw it, and where an error on a field with the line off is shown; DESIGN.md records the answer as the owner's, with the date; and if the line can be off, a card for the change exists. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -3570,6 +3572,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The Checkbox frame's edge is 1.5 in every state as the five variants of 204:11 draw it, painted inside the frame and taking no layout space; what a 1.5 edge renders as at device pixel ratios 1 and 2 is measured and recorded; the stories assert the width; and the comment that says the file draws every border at one is corrected.
 
+**Roasts.** round 1 scored 5.5 with 1 critical(s)
+
 ### `KN-282` The Filter Chip's text sits at 13 where the file draws 12, and its pressed edge is 1 where the file draws 1.5
 
 - **status** backlog · **severity** critical · **points** 2 · **area** web
@@ -3591,4 +3595,26 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** The card that moved the Input's text to 16 has a check that would not notice it moving back, which is the check that says it was done. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** The Input's stories and KN-266's production check measure where the text starts, the input's box edge plus its own padding, border and text-indent on the side the text starts from, given its direction and alignment, and read 16 as 95:5 draws it; a static text-indent, a padding on the input and a changed alignment, each present in every state, fail Default and the production check by name.
+
+### `KN-284` The Checkbox's forced-colours edge is a laid-out border, shrinking its frame's content box in that mode
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-281 roast, KN-281 being a child of KN-011. KN-281 draws the frame's 1.5 edge as an inset shadow and, under forced colours, where the shadow is removed, a real one pixel ButtonBorder border. With box-sizing border-box the frame stays 20 by 20, but that border takes layout: the content box shrinks to 18 by 18 in forced colours only. The glyph is centred, so it does not visibly move, but the edge is not the inside, out-of-layout stroke the file draws and the card promised, and KN-281's forced-colours check only compares two pixels, so it could not see it.
+
+**Why.** An edge that takes layout space in one mode is the defect KN-266 and KN-281 exist to remove, and the check that should catch it reads a colour, not a size. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** Under forced colours the Checkbox frame's edge is drawn over the frame without taking layout, a border on a pseudo-element for instance, so its content box stays 20 by 20 in that mode as in every other; KN-281's forced-colours check measures the content box and the glyph's position as well as the pixels, and a mutation back to a laid-out border fails it.
+
+### `KN-285` Every Input on the file's screens turns its helper line off, while the Input always reserves it
+
+- **status** backlog · **severity** critical · **points** 1 · **area** design
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found while reading 95:38 for KN-267. All 91 Input instances on the Screens canvas, 5:7, read with use_figma, set Helper Text to false, keep Label on, and use no icon. The Input always draws its message line, 22 tall below a 4 gap, KN-011's decision that an error appearing never moves the field. So once screens are built from it, every field sits 26 taller than the file draws it, and a form of five fields is 130 taller. The file's boolean says the line can be off; the component's decision says it is always there. It is a choice between the drawn layout and a form that does not jump when an error appears, and whether a field with the line off can show an error at all, KN-254 having decided an error needs a message.
+
+**Why.** Match the design exactly is the owner's standing rule, and every screen will be taller than drawn unless this is settled before screens are composed; the decision the component made is good for errors and wrong for the drawn layout, so the owner chooses. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** The owner has answered, through the question tool, whether an Input on a screen keeps its message line reserved as the component does or drops it as the 91 screen instances draw it, and where an error on a field with the line off is shown; DESIGN.md records the answer as the owner's, with the date; and if the line can be off, a card for the change exists.
 
