@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 205,
+  "nextId": 209,
   "tasks": [
     {
       "id": "KN-001",
@@ -563,7 +563,26 @@
       ],
       "status": "done",
       "exit": "All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5.4,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-013-round-1.2026-09-10T03-58-24-148Z.md",
+          "filed": [
+            "KN-205",
+            "KN-206",
+            "KN-207",
+            "KN-208"
+          ],
+          "cardDigest": "c66c04da6c489c5c0f8eb5858392272d944b909fd767607f9be735c4d634aa4d",
+          "head": "d3434533b4cd8dea43cbc27ad34487c4f0bc0825",
+          "reviewerScore": 5.4,
+          "reviewerCriticals": 0,
+          "dismissed": "Nothing was rejected; all six findings stand and four cards were filed. The focus-outline one I reproduced in a browser rather than reasoned about: querying MuiBox-root inside a focused Checked story returns a DIV and an svg, and computed outline is 2px solid on both, so the white tick draws its own blue outline. The two that asserted repository RULES I checked against AGENTS.md rather than trusting, and both are real: the section headed Documentation lives in markdown never in the code, and line 246 requiring an fn() on every callback prop. The accessible-name and 24-pixel-target findings are true by inspection. Grouped into four cards rather than six because the pairs share a fix: the accessible name and the target size are both the control not being usable where it is actually placed, and the two rule breaches are one tidy-up. Score 5.4 accepted as recorded: the component matches Figma in all five states and the indeterminate property works, which was the hard part, and it also ships a visible focus defect and no accessible name, which for a bulk-selection control is not a detail.",
+          "at": "2026-09-10T04:52:28.942Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
       "updatedAt": "2026-09-10T03:56:53.397Z",
@@ -4843,6 +4862,66 @@
       "verify": "node agent/scripts/verify/KN-201.mjs",
       "evidence": "node agent/scripts/verify/KN-201.mjs, 11 checks, all pass, up from 8. The two new ones are the clause KN-201 named and never tested: a meta whose component is written as an inline arrow, and as a memo() wrapper, must FAIL rather than be skipped. Each asserts the failure names the FILE, not only the phrase, because a plan check pointed out the guard reported only the story TITLE and the card says naming the file. The guard now reports both. A third new check holds the other side of that boundary: a meta with NO component at all is still legitimate and still skipped. MUTATIONS. CAUGHT: reverting the guard to the old skip on an unreadable component, which is exactly the regression these cases exist for. CAUGHT: emptying the story list so it no longer comes from indexInputs, which fails 9 of the 11 checks. My predicted message for the second was wrong and the harness said so; the mutation is caught, my expectation was not, and that is recorded rather than quietly corrected. The verifier no longer appends to a TRACKED story file. Each case writes a complete self-contained fixture, story file plus both markdown files, and removes all three. git status is identical before and after a run, asserted by a final check that the three paths do not exist and that the guard still passes. THE RESIDUAL RISK IS STATED ACCURATELY, and my first version of it was FALSE. I wrote that an interrupted run leaves a fixture that breaks the next guard run loudly. That is true only for the cases whose planted export is deliberately undocumented; for the class, __namedExportsOrder and no-component cases the leftover is a VALID documented story, so the next run passes and only git status shows it. The header now says interruption is made harmless for the tracked file, not harmless in general. I had pictured only the case where my claim held. The escape hatch is gone: (error as Error) replaced by an instanceof narrowing. AGENTS.md forbids TypeScript escape hatches without asking, and grep confirms no cast of that shape remains in apps/web/src, apps/api/src or packages. AN UNCERTAINTY I NAMED IS RESOLVED: moving the export-list and renaming export-list cases out of a real story file into standalone fixtures did not change any of their answers, so the export FORM was what they tested and the surrounding file was incidental. KN-204 is a CHILD of KN-201, so it closed on the files it changed: the 49 story-docs tests pass, eslint on src/shared/story-docs is clean, tsc is clean, and KN-007.mjs still passes, which matters because it is the verifier for the card this whole chain came out of.",
       "closedAt": "2026-09-10T03:31:27.668Z"
+    },
+    {
+      "id": "KN-205",
+      "title": "The Checkbox hover and focus selectors reach the glyph, so the tick gets its own outline",
+      "desc": "CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-013 roast and REPRODUCED in a browser: the frame and the inner glyph are BOTH MuiBox-root, because the glyph is a Box rendered as an svg and MUI puts that class on every Box. The two descendant selectors in Checkbox.tsx, the hover one and the focus-visible one, therefore match two elements rather than one. Querying MuiBox-root inside a focused Checked story returns a DIV and an svg, and computed outline is 2px solid on BOTH. So tabbing to a checked or indeterminate checkbox draws a blue outline around the white 12px tick as well as around the frame. It is invisible on hover only because the glyph has no border to recolour, which means the same mistake is sitting unnoticed in the hover rule too. The fix is to stop selecting by a library class name: give the frame a marker the component owns and scope both rules to it.",
+      "why": "This is the FIRST component of the library and 37 more cards are queued behind it, so its shape is the template. A styling rule that reaches into another library's internal class names, and that happens to match a second element, is exactly the pattern not to copy 37 times. It is also a visible wrong state rather than a theoretical one.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The hover and focus rules are scoped to a marker the component owns rather than to a MUI class. Focusing a Checked and an Indeterminate checkbox outlines the FRAME ONLY, asserted by reading computed outline on every descendant and requiring exactly one to carry it. A mutation restoring the old descendant selector makes that assertion fail. The five Figma states still match tokens.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T04:52:10.345Z"
+    },
+    {
+      "id": "KN-206",
+      "title": "The Checkbox has no accessible name and a target smaller than WCAG allows",
+      "desc": "CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188. Two halves of one problem: the control is not yet usable in the places it is actually for. FIRST, no accessible name is guaranteed. aria-label and aria-labelledby are both optional, there is no id prop at all, and every story renders a control with no name, so the canonical examples model the unusable case. A board card needs something like Select Senior React developer at X, and a column header needs Select all Applied. A checkbox announced as merely checkbox is unusable by screen reader precisely where bulk selection matters most. SECOND, the interactive target is 20 by 20 because padding is explicitly zero, and WCAG 2.5.8 asks for 24 CSS pixels unless the spacing exception applies. The component comment claims the hit area comes back through a label that wraps it, which is neither implemented nor sufficient for an icon-only control on a card. Both were found by the KN-013 roast and both are true by inspection.",
+      "why": "Bulk selection is the feature this component exists for, and the people most likely to select in bulk are the ones a missing accessible name excludes. A 20 pixel target on a card that also drags is hard to hit for anyone, not only for people with motor impairments. Neither is a detail that gets fixed later once 37 components have copied the shape.",
+      "severity": "high",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The component takes an id, and rendering one with no accessible name is impossible without it being visible: either the type requires one of aria-label, aria-labelledby or a wrapping label, or a check fails on a story that omits all three. Every story names its control. The interactive target is at least 24 by 24 while the DRAWN frame stays 20 by 20 from Figma, or the spacing exception is demonstrated for the specific placement and written down. A test asserts the hit area, not the frame.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T04:52:10.607Z"
+    },
+    {
+      "id": "KN-207",
+      "title": "The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback",
+      "desc": "CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-013 roast, and I checked both claims against AGENTS.md rather than taking them on trust. Both are real. AGENTS.md, under Documentation lives in markdown never in the code: a tsx carries code and the SHORT comments that explain the code, and everything a Storybook Docs page prints belongs in story-docs. Checkbox.tsx carries long design and API documentation blocks, and its per-prop JSDoc is exactly what react-docgen prints into the Controls table, so that prose is duplicated: once in the tsx and once in the markdown the guard already requires. The markdown is the source; the JSDoc should be short or gone. AGENTS.md line 246: every callback prop gets an fn() so the Actions panel records it. onChange has none, and nothing asserts its documented event and checked contract.",
+      "why": "A rule that the first component of the library breaks is a rule the next 37 will break, and the reason the prose rule exists is that documentation kept in two places drifts. The fn() rule is smaller but it is the difference between a story a reviewer can interact with and one where nothing visible happens.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T04:52:10.882Z"
+    },
+    {
+      "id": "KN-208",
+      "title": "KN-013 claimed five Figma states from five stories that are not the five states",
+      "desc": "CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-013 roast. The card names five Figma states, Unchecked Checked Indeterminate Hover and Disabled, and the story file exports Unchecked Checked Indeterminate Disabled and KeyboardOnly. HOVER HAS NO STORY. KeyboardOnly is worth having and is behaviour coverage, not a design state. So KN-013.mjs, which asserts that five stories pass in a real browser, proves five stories ran and NOT that the five drawn states are covered, while reading as though it did. I verified hover by hand with a real pointer and recorded that in the evidence, so the state itself is correct; what is missing is anything that would catch it changing. This is the KN-190 shape again: a green count standing in for a clause nobody tests.",
+      "why": "A verifier whose passing message implies more than it checked is worse than a missing check, because it stops anyone looking. Hover is also the one state that cannot be asserted from a story that never hovers, so it stays unproven by default unless something forces it.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Every Figma state named on the card has a story, hover included, and hover is exercised with a real pointer rather than a dispatched event, since hover cannot be dispatched. KN-013.mjs checks the states by NAME against the card rather than counting stories, so adding a sixth story or renaming one cannot silently satisfy it. A mutation deleting the hover story fails it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T04:52:11.159Z"
     }
   ]
 }
