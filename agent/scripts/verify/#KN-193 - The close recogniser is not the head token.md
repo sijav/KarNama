@@ -1,21 +1,24 @@
 # Plan — KN-193, the close is not the head token, and KN-197, the checker parses shell badly
 
-## Two cards, one redesign, and I intend to say so rather than do it twice
+**Revision 2.** Revision 1 was checked and came back "not yet": the direction was
+right and the grammar still let text report a safe order the shell would not
+execute. What changed is at the bottom.
+
+## Two cards, one redesign
 
 KN-193 and KN-197 are both critical, both children of KN-184, both entirely
-inside `agent/scripts/verify/lib/prompt-order.mjs`, and both are symptoms the
-round-1 reviewer summed up in one line:
+inside `agent/scripts/verify/lib/prompt-order.mjs`, and both are symptoms of one
+sentence from the round-1 reviewer:
 
 > Stop treating shell text as tokenizable by two ad-hoc parsers, reject shell
 > expansion and escaped-quote syntax unless a real shell parser or a
 > deliberately narrow grammar can establish the order.
 
 KN-193's exit condition already contains "the two places that interpret quotes
-agree, or there is one place", which is KN-197's first clause. Building them
-separately means writing the same function twice. **So: one change, two exit
-conditions, a verifier each.** KN-197 closes on its own checks straight after,
-with evidence saying the change landed under KN-193. That is two contracts over
-one piece of work, not one card quietly eating another.
+agree, or there is one place", which is KN-197's first clause. **One change, two
+exit conditions, and a verifier each with its own fixtures and its own
+mutations.** The plan check was explicit that this is only legitimate on that
+condition: KN-197 may not close because KN-193's verifier is green.
 
 ## The confirmed false passes, every one reproduced by running it
 
@@ -23,80 +26,122 @@ one piece of work, not one card quietly eating another.
 | --- | --- | --- |
 | `grep todo move <id> done` | a close | greps |
 | `env echo todo move <id> done` | a close | echoes, past the printer list |
-| `todo move <id> done "$(python <p>/roast.py task)"` | a plain close | roasts FIRST, then closes |
+| `todo move <id> done "$(python <p>/roast.py task)"` | a plain close | roasts FIRST |
 | `sh -c 'python /x/roast.py task' \"; todo move <id> done \" # x` | nothing | roasts, then closes |
 | `grep "/tmp/roast.py" task` | a roast | greps |
+| `grep /tmp/roast.py task` | a roast | greps, and quoting is not why |
 | a `cat <<'EOF'` heredoc whose body is a close | a close on the body line | prints |
+| `todo move <id> done &` then a roast | ordered close-then-roast | no guarantee the close finished |
 
-Each puts a phantom close ahead of a real roast, so `closesBeforeRoasting`
-returns `ok: true` for a block whose real order is roast-then-close. That is the
-exact defect KN-190 was opened for and did not fix.
+## The design: an ALLOWLIST grammar, not a longer denylist
 
-## The design: a narrow grammar, and REFUSE the rest
+Revision 1 proposed adding `$(`, backtick, `${`, `<<` and `\"` to the refused
+list. The plan check's objection is the one that matters: **that is a list of
+things I happened to think of**, and it had already missed process substitution,
+`<(` and `>(`. A boundary rule replaces it.
 
-The mechanism already in this file that works is the `UNSUPPORTED` list. It does
-not try to understand `&&`; it says it cannot order that line and stops. Every
-defect above comes from the opposite instinct, parsing something almost right.
+**1. One lexer, and it refuses before anything is classified.** `lex(line)`
+walks the line once and returns either a word list or a refusal. It accepts only:
 
-**1. One place decides what is quoted.** `tokenise()` walks the line once and
-returns, besides the tokens, the text it saw OUTSIDE quotes. The operator check
-then runs against that, instead of against
-`line.replace(/"[^"]*"|'[^']*'/g, '')`, which is a second parser and disagrees
-with the first on escapes. Two parsers guarantee a disagreement exists; the only
-question is which input finds it. This deletes that question.
+- **bare words** of a safe character set: letters, digits, and `_ - . / : ~ = + @ ,`
+- **`<placeholder>`** as one bare word. A deliberate, narrow exception: `<` and
+  `>` are redirection in a real shell, and `todo move <id> done` is what the
+  loop prompt actually writes. A bare `<` or `>` NOT forming a placeholder is
+  refused.
+- **single-quoted literals**, which cannot expand.
+- **double-quoted literals containing no `$`, no backtick and no backslash.**
+  Bash expands `$(...)`, `${...}` and backticks *before* quote removal, so
+  quoted text is not categorically inert. That was the false premise under
+  KN-190 and it is why the reproducer above works.
+- **one trailing `&`**, recorded as a flag rather than a word.
 
-**2. Refuse expansion and escapes by name**, alongside `&&`, `||`, `|`, `;` and
-a trailing `\`: `$(`, a backtick, `${`, `<<`, and a backslash immediately before
-a quote. Each becomes a reported reason, not a guess. `<<` covers the heredoc,
-whose body lines are currently parsed as commands.
+Anything else — every other metacharacter, any backslash, an unterminated
+quote — is a refusal naming what it saw. `&&`, `||`, `|`, `;`, `<<`, `<(`, `>(`
+and a trailing `\` all fall out of this rather than being enumerated.
 
-**3. The close is the HEAD token.** `todo` with `move` and `done` among the rest,
-or `npm` with `todo`, `move` and `done` among the rest, which is
-`npm run todo -- move <id> done`. Nothing else is a close, so `grep`, `env` and
-every other command stop mattering, and **the `PRINTERS` list becomes dead**:
-`echo` is not `todo`. I intend to delete it rather than leave a list that no
-longer decides anything, since a comment claiming a protection that is not there
-is the thing KN-194 is about.
+The operator check stops being a second parser over
+`line.replace(/"[^"]*"|'[^']*'/g, '')`. There is one place that decides what is
+quoted, so the two cannot disagree.
 
-**4. The roast is matched only from UNQUOTED tokens.** It stays an argument
-match, because the real line is `python <path>/roast.py task` and anchoring it to
-the head finds nothing in the file this exists for. Quoted tokens stop
-participating, which kills `grep "/tmp/roast.py" task`.
+**2. The close is an exact command shape**, not `todo` plus the right words
+somewhere:
 
-Note the asymmetry, deliberately: the CLOSE still accepts a quoted token in its
-arguments, because `todo move <id> "done"` is a legitimate command someone may
-write, and its head is `todo` so no mention can reach it. The ROAST cannot,
-because its head is `python` and an argument is all it has to go on.
+- `todo move <arg> done` followed by any number of allowed trailing options
+- `npm run todo -- move <arg> done` likewise
+
+**and NOT backgrounded.** `todo move <id> done &` is refused with its own
+reason: backgrounding the close does not guarantee it completed before the next
+line runs, so the block's textual order is not its real order. This is the case
+I would never have thought of.
+
+**3. The roast is an exact executor shape too.** Revision 1 said "unquoted
+tokens", which the plan check killed in one example: `grep /tmp/roast.py task`
+is entirely unquoted. So:
+
+- `python <path ending in roast.py> task …`
+- `node <path ending in roast.mjs> task …`
+- `npm run roast -- …`
+
+with the trailing `&` allowed here, because backgrounding the roast is exactly
+what the real prompt does. The head must be the interpreter; `roast.py` staying
+an argument is why this cannot be anchored to column one.
+
+**4. `PRINTERS` becomes genuinely dead, and I will prove it rather than say it.**
+The plan check was right that revision 1 could not delete it: under an
+unquoted-token roast rule, dropping the printer skip reopens
+`echo /tmp/roast.py task`. Under a head-constrained roast grammar, `echo` is not
+`python`, so it cannot. The evidence is a mutation that must SURVIVE: delete
+`PRINTERS` and every fixture still behaves. If any changes, it was not dead and
+it stays.
 
 ## What must NOT break
 
-`todo move <id> done`, `todo move <id> "done"`, `npm run todo -- move <id> done`,
-`python ~/.claude/skills/roast/roast.py task --title ... &` including the
-trailing `&`, and a `#` comment line. These go in the verifier as positive
-fixtures, because every negative case in this file can pass by finding nothing
-and they all look identical when they do.
+`todo move <id> done`, `todo move <id> "done"`,
+`todo move <id> done --evidence "ran a; b; c"`,
+`npm run todo -- move <id> done`,
+`python ~/.claude/skills/roast/roast.py task --title ... &` including the `&`,
+and a `#` comment line. Positive fixtures, because every negative case in this
+file can pass by finding nothing and they all look identical when they do.
 
 ## What I am least sure of
 
-**Refusing `<<` and `$(` may be too blunt.** A prompt that legitimately shows a
-heredoc anywhere in its marked block will now be reported as unorderable rather
-than checked. I think that is right, because the alternative is the current
-behaviour, which parses the heredoc body as commands and gets the answer wrong
-silently. But it is a real cost and the check now refuses documents it used to
-accept.
+**The placeholder exception.** Allowing `<id>` means the lexer accepts a
+character that is redirection in every real shell. I think it is right, because
+the documents being checked are prompts full of placeholders and refusing them
+would refuse the file this exists for. But it is the one place the grammar
+knowingly diverges from shell, and if there is a way to build a redirection that
+looks like a placeholder, this is where it lives.
 
-**The escaped-quote refusal is a guess about how far to go.** `\"` is refused,
-but a lone `\` mid-line is not, and I have not convinced myself there is no third
-escape shape that makes the single tokeniser disagree with itself.
+**Whether an allowlist can be too strict to be useful.** A marked block that
+does something ordinary but unanticipated now gets refused rather than checked.
+Refusing loudly beats deciding wrongly in silence, but the cost is real and I
+would rather name it than discover it.
 
 ## How I will know it worked
 
-Every row of the table above is a named failing case before and refused or
-correctly read after. Every "must not break" line is a passing fixture.
-Mutations, each of which must make a specific fixture fail: the head-token check
-reverted to the `words.includes('todo')` disjunct; the roast allowed to read
-quoted tokens; each new `UNSUPPORTED` entry removed one at a time; and the
-operator check pointed back at its own regex instead of the tokeniser's bare
-text. Per RALPH.md step 3, a clause of the exit condition with no fixture and no
-mutation is a clause I have not tested, and I will say so rather than let 13
-green checks stand in for it again.
+Every row of the table is a named case: refused, or read correctly, and failing
+before. Every "must not break" line is a passing fixture. Mutations, each tied
+to one clause: the close relaxed to `words.includes('todo')`; the close allowed
+to be backgrounded; the roast relaxed to any command with `roast.py` among its
+arguments; double quotes allowed to contain `$`; the placeholder exception
+widened to bare `<`; and the mutation that must SURVIVE, deleting `PRINTERS`.
+Per RALPH.md step 3, a clause with no fixture and no mutation is a clause I have
+not tested, and I will say so rather than let green checks stand in for it.
+
+## What the check changed
+
+- **The close became an exact shape.** Revision 1 said "`todo` head plus `move`
+  and `done` among the rest", which the check named as the most likely wrong
+  step: loose "remaining tokens" is how `grep todo move <id> done` got in.
+- **The roast became an exact shape.** "Unquoted tokens" was insufficient, shown
+  with `grep /tmp/roast.py task`, which quoting has nothing to do with.
+- **`PRINTERS` is not dead yet.** My own question asked whether deleting it was
+  safe; the answer was no under revision 1's roast rule, and yes only once the
+  roast is head-constrained. Deleting it is now conditional on a surviving
+  mutation rather than on my reasoning.
+- **A denylist became an allowlist.** My refused list had already missed process
+  substitution, which is the argument against enumerating.
+- **The backgrounded close.** `todo move <id> done &` is textually ordered and
+  guarantees nothing. Entirely from the check.
+- **Quoted text is not inert**, because expansion happens before quote removal.
+  Revision 1 still half-believed the KN-190 premise.
