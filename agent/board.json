@@ -6904,7 +6904,20 @@
       "parent": [],
       "status": "done",
       "exit": "In the derived dark palette bg/brand/container is a dark tint of its own hue, derived as a fill the way the status containers are, text/brand clears 4.5:1 on it and border/focus clears 3:1 on it, and every pair the tests already hold still holds; darkMode.test.ts asserts both pairs as the Filter Chip draws them, and a mutation back to the surface derivation fails them; and the selected Filter Chip, resting and pressed, is seen in dark in both languages.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8.8,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-272-round-1.2026-09-10T18-55-38-086Z.md",
+          "cardDigest": "2d33575654e09a8e54359e0543edcf82ccde4f4fa315154aa699ef2b1ea7df1b",
+          "head": "e8a19e5031ef8228bec7d4c86bc896a1a9812aca",
+          "reviewerScore": 8.8,
+          "reviewerCriticals": 0,
+          "dismissed": "The one minor misreads agent/RALPH.md step 2b again: a plan lives beside the work it plans. Both answers taken as given: nothing in the product reads primary.light today, and the solid brand and danger fills stay derived as surfaces, their pairs held by their own tests.",
+          "at": "2026-09-10T19:10:30.128Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T14:24:28.875Z",
       "updatedAt": "2026-09-10T18:55:17.573Z",
@@ -7314,11 +7327,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "An Input given null, false, true or an empty string for either icon draws no slot and its text sits 16 from that edge, as with no icon at all; a story passes false for one icon and null for the other and asserts no slot and the 16, and a mutation back to the undefined check fails it by name.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T18:56:33.060Z"
+      "createdAt": "2026-09-10T18:56:33.060Z",
+      "updatedAt": "2026-09-10T18:57:10.381Z"
     }
   ]
 }
