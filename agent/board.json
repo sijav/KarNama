@@ -5431,14 +5431,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "TECH-DEBT.md has an entry for the tokens.ts exemption in the file's what, why, fix and retiring-check format, and a unit test fails if any string exported from src/theme/tokens.ts is not a design value, a colour, a length, a shadow or the font stack, proved by a mutation adding a copy string to the file.",
       "roasts": [],
       "notes": [
         "2026-09-10, from KN-222: TOOLTIP_SURFACE joins STORAGE_KEY as a NAMED lingui exemption for an identifier constant, the Tooltip's surface class. Neither has a TECH-DEBT.md entry either, so record the named identifier exemptions together with the tokens.ts one."
       ],
       "createdAt": "2026-09-10T07:27:50.354Z",
-      "updatedAt": "2026-09-10T07:33:19.662Z"
+      "updatedAt": "2026-09-10T07:46:43.570Z",
+      "verify": "node agent/scripts/verify/KN-224.mjs"
     },
     {
       "id": "KN-225",

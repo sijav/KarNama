@@ -92,3 +92,37 @@ describe('the token set agrees with DESIGN.md', () => {
     expect(Object.keys(status).filter((name) => name.startsWith('custom-'))).toHaveLength(4)
   })
 })
+
+/**
+ * Every string leaf of every export, with the path that reaches it. Walks the
+ * MODULE rather than a list of names, so an export added tomorrow is covered
+ * without anyone remembering to add it here.
+ */
+const stringLeaves = (value: unknown, path: string): [string, string][] => {
+  if (typeof value === 'string') return [[path, value]]
+  if (value !== null && typeof value === 'object') {
+    return Object.entries(value).flatMap(([key, child]) => stringLeaves(child, `${path}.${key}`))
+  }
+  return []
+}
+
+describe('the token module holds design values and nothing a person reads', () => {
+  // The lingui rule does not look at this file, TECH-DEBT.md 13, because every
+  // literal in it is a design value and the rule cannot tell a hex code from a
+  // word. So this is the check that stands where the lint would: a label or a
+  // helper string added here fails the unit suite even though no lint sees it.
+  const hex = /^#[0-9a-f]{6}([0-9a-f]{2})?$/i
+  // One layer of a box-shadow: four lengths and an eight-digit colour.
+  const shadowLayer = /^(-?\d+(px)? ){4}#[0-9a-f]{8}$/i
+
+  it('has no string that is not a colour, a shadow or the font stack', async () => {
+    const tokens: Record<string, unknown> = await import('./tokens')
+    const leaves = Object.entries(tokens).flatMap(([name, value]) => stringLeaves(value, name))
+    expect(leaves.length).toBeGreaterThan(0)
+    const copy = leaves.filter(([path, text]) => {
+      if (path === 'fontFamily') return false
+      return !hex.test(text) && !text.split(', ').every((layer) => shadowLayer.test(layer))
+    })
+    expect(copy).toEqual([])
+  })
+})

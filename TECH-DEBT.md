@@ -336,3 +336,35 @@ refusing, and the error message names this case and says what to do.
 **The check that retires this.** Recognising `BEGIN ATOMIC` as a function body
 rather than a transaction, with a planted case for both the body and a real
 `BEGIN` in the same migration. Filed as KN-145.
+
+---
+
+## 13. The lingui rule skips one whole file and two named constants
+
+**What.** `apps/web/eslint.config.js` keeps `lingui/no-unlocalized-strings` off
+`src/theme/tokens.ts` entirely, and exempts two constant NAMES everywhere:
+`STORAGE_KEY`, the localStorage key the preferences are stored under, and
+`TOOLTIP_SURFACE`, the class the Tooltip puts on its drawn surface so a test can
+find it.
+
+**Why it is like that.** The rule cannot tell a design value or an identifier
+from copy; to it `'0 6px 18px -2px #0000003D'` and `'KarnamaTooltip-surface'`
+are strings with letters in them. `tokens.ts` is the transcription of the Figma
+variables, so every literal in it is a design value, and it used to be let
+through by exempting the property names `card` and `modal`, which exempted any
+`card` or `modal` prop in the codebase. A third shadow, KN-218, would have
+needed `tooltip`, and a `tooltip` prop is copy. So the file is exempt by WHERE
+it is instead, and the two identifiers are exempt by their own names, never by
+the shape of their values.
+
+**What it costs.** Anything added to `tokens.ts` is unchecked by the rule, and
+so is any string assigned to something called `STORAGE_KEY` or
+`TOOLTIP_SURFACE`. The file half is guarded: `src/theme/tokens.test.ts` walks
+every export of the module and fails on any string that is not a colour, a
+shadow or the font stack, so a label added there fails the unit suite even
+though the lint cannot see it. The names are guarded only by being specific.
+
+**The check that retires this.** The lingui rule, or a rule beside it, telling
+design values and identifiers apart by type rather than by name, so none of the
+three needs to be named here. Until then, the guard test's mutation, a copy
+string added to `tokens.ts`, is in `agent/scripts/verify/KN-224.mjs`.

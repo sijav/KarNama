@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-224` The tokens.ts lingui exemption has no TECH-DEBT record and nothing stops copy being added to the file** (critical, 1 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-224` | The tokens.ts lingui exemption has no TECH-DEBT record and nothing stops copy being added to the file | critical | 1 | web | none | TECH-DEBT.md has an entry for the tokens.ts exemption in the file's what, why, fix and retiring-check format, and a unit test fails if any string exported from src/theme/tokens.ts is not a design value, a colour, a length, a shadow or the font stack, proved by a mutation adding a copy string to the file. |
+
 ## Blocked (3)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -18,12 +24,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (166)
+## Backlog (165)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-224` | The tokens.ts lingui exemption has no TECH-DEBT record and nothing stops copy being added to the file | critical | 1 | web | none | TECH-DEBT.md has an entry for the tokens.ts exemption in the file's what, why, fix and retiring-check format, and a unit test fails if any string exported from src/theme/tokens.ts is not a design value, a colour, a length, a shadow or the font stack, proved by a mutation adding a copy string to the file. |
 | `KN-225` | The Hover story tells Vitest from Storybook by an undocumented Vitest internal | critical | 1 | web | none | The story checks a flag this repository sets in the storybook project's Vitest setup, not a Vitest internal; the published Storybook still takes the canvas branch with no error; and a mutation removing the flag from the setup file fails the Hover story under npm test rather than passing it. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
@@ -2801,7 +2806,7 @@ CHILD OF KN-210, recorded in prose because board.json cannot express parent_task
 
 ### `KN-224` The tokens.ts lingui exemption has no TECH-DEBT record and nothing stops copy being added to the file
 
-- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **status** in_progress · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-218, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-218 roast and confirmed against AGENTS.md section 6: nothing gets silenced without an entry in TECH-DEBT.md, and that covers ignore patterns. KN-218 added src/theme/tokens.ts to the lingui block's ignores and wrote the reason only into eslint.config.js. It also added nothing that would notice copy arriving in that file: today every literal in it is a design value, but a label or helper string added there later would pass the lingui rule without a word.
