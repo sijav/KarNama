@@ -30,20 +30,27 @@ expires after thirty), with a 50 second cold start the UI must handle honestly. 
 
 ## Where things stand
 
-**57 done, 165 open, 3 blocked, 2 dropped.** Coverage 100 percent on all four
-metrics in every workspace. Counts live in `board.json`.
+**77 done, 175 open, 3 blocked, 2 dropped** (2026-09-10). Coverage 100 percent
+on all four metrics. Counts live in `board.json`.
 
-**This stretch closed the component findings one by one**: the Checkbox has
-its Hover story, driven by a REAL pointer and proved real by failing under a
-dispatched one (KN-208, KN-220, KN-225); the Tooltip is the frame's 260 by 82,
-padded 8 by 12, with its own unnamed shadow, sized by its own box-sizing and
-found by a marker class (KN-210, KN-218, KN-222). Three lint holes closed on
-the way (KN-094, KN-095, KN-224).
+**Six components exist**: KN-013 Checkbox, KN-017 Filter chip, KN-032 Tooltip,
+the language switch, KN-010 Status Chip and KN-011 Input, all from Figma nodes
+and verified by reading computed styles in a browser. **The live site is still
+a placeholder shell**, because screens come after components.
 
-**Four components exist**: KN-013 Checkbox, KN-017 Filter chip, KN-032 Tooltip
-and the language switch, all from Figma nodes and verified by reading computed
-styles in a browser. **The live site is still a placeholder shell**, because
-screens come after components, and the owner has seen it and said so.
+**This stretch worked through KN-011's children**, the Input's roast findings:
+its Controls now drive the canvas (KN-242, KN-246, KN-249, KN-252), each story
+offers only the controls its play function holds for (KN-247), and focus is
+proved not to move the text or an empty field's placeholder (KN-243, KN-248).
+Open children of KN-011: KN-244, KN-245, KN-251, KN-253, KN-254 (in progress),
+KN-255, KN-256, KN-257, KN-258. When the last one closes, KN-011 is roasted
+together with all of them.
+
+**KN-250 fixed a real product bug found by accident**: html dir and lang were
+set in a passive effect, so the app painted its first frame right to left for
+a user with English stored, and 89 of 122 production-Storybook renders started
+on a document with no direction. App/Shell had been failing on the published
+Storybook since it was written. No story fails there now, in either language.
 
 **KN-214 is the most important open defect and is deliberately held.** The
 lingui plugin compiles `ignore` patterns with NO flags, so `^[^\\p{L}]*$` means
@@ -168,17 +175,41 @@ raw `{count, plural, ...}` in the deployed app. KN-221, and it blocks KN-212.
 **Shell heredocs eat backslashes**, and one wrote a literal NUL byte into a
 source file this session. **Use Edit for code.**
 
+**Vitest wraps a story's render in act(), which flushes passive effects before
+the play function; the production Storybook does not.** Anything set in a
+useEffect is missing when a play function starts in the UI. KN-250.
+
+**storyFinished's status read success for a play function that threw.** The
+verdict is the errored render phase or playFunctionThrewException, recorded from
+the moment Storybook assigns its channel: a defineProperty setter on
+`__STORYBOOK_ADDONS_CHANNEL__` in an init script. A story's pinned globals are
+`story.storyGlobals`, not `story.globals`. KN-247, KN-250.
+
+**An arg change re-renders without remounting and does not rerun play; Rerun
+remounts.** An uncontrolled input ignores a new defaultValue, one input cannot
+change mode, and a useArgs binding loses keys closer than about 20ms. KN-246,
+KN-249, KN-252, KN-253.
+
+**lingui's useTsTypes checks a call argument only against the parameter at its
+index**, so rest arguments are never skipped; strings in an array literal get
+the contextual type. KN-247.
+
+**The unit project scans every source file, comments included**: a quoted
+'0px' in a story comment fails noLiterals. When a story changes, run the whole
+unit project; when a config changes, rerun every verifier that reads it. That
+is how KN-088's drift since KN-007 surfaced, KN-256. KN-248.
+
 ## The next step
 
 `node agent/scripts/todo.mjs next` picks it, and serves component work first by
-the owner's order. Open findings on the built components: KN-207, KN-209,
-KN-211, KN-206, KN-223, KN-227, KN-226 (the published-Storybook smoke test),
-KN-216; then the components themselves, KN-010, KN-011, KN-019, KN-023,
-KN-062, KN-008, KN-009, KN-012. KN-212 waits on KN-221. A new story's title
-goes into `StoryTitle` in `src/shared/story-docs/story-meta.ts` and its meta
-must satisfy `StoryMeta`, or the lingui rule flags the title. KN-214 is held
-at high on the owner's order; restore it to critical when the last
-component closes.
+the owner's order: KN-011's open children, then the other component findings
+(KN-238, KN-206, KN-223, KN-226 the published-Storybook smoke test, KN-255),
+then the components themselves, KN-019, KN-023, KN-062, KN-008, KN-009, KN-012.
+KN-212 waits on KN-221. A new story's title goes into `StoryTitle` in
+`src/shared/story-docs/story-meta.ts` and its meta must satisfy `StoryMeta`. A
+story with a play function must declare the controls it offers, KN-247 and
+KN-255. KN-214 is held at high on the owner's order; restore it to critical
+when the last component closes.
 
 ## What to read first
 
