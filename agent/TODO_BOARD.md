@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 82 of 268 tasks done · 162 of 674 points.
+Project **KarNama** · 83 of 268 tasks done · 163 of 674 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-196` Decide how a card is dropped onto a column that is collapsed to a count** (critical, 1 pt, design)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-196` | Decide how a card is dropped onto a column that is collapsed to a count | critical | 1 | design | none | DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker. |
+**Next up: `KN-262` FromArgs copies the Input's blank-error rule instead of sharing it** (critical, 1 pt, web)
 
 ## Blocked (2)
 
@@ -209,11 +203,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (82)
+## Done (83)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-087` | Stop the lingui rule exempting aria-label and title | critical | 1 | web | KN-003 | A component with aria-label="Delete this application" and one with title="Delete this application" both fail npm run lint, both are committed under src/gate-fixtures, and agent/scripts/verify/KN-003.mjs requires each to fail on the lingui rule by name. |
+| `KN-196` | Decide how a card is dropped onto a column that is collapsed to a count | critical | 1 | design | none | DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker. |
 | `KN-208` | KN-013 claimed five Figma states from five stories that are not the five states | critical | 1 | web | none | Every Figma state named on the card has a story, hover included, and hover is exercised with a real pointer rather than a dispatched event, since hover cannot be dispatched. KN-013.mjs checks the states by NAME against the card rather than counting stories, so adding a sixth story or renaming one cannot silently satisfy it. A mutation deleting the hover story fails it. |
 | `KN-210` | The tooltip's drawn width is neither implemented nor checkable | critical | 1 | web | none | Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed. |
 | `KN-218` | The tooltip pads 12 where Figma pads 8 vertically, and draws no shadow where Figma draws one | critical | 1 | web | none | A story measures the open tip's computed padding as 8 top and bottom and 12 at each side, and its computed box-shadow as the value read from node 410:469; that value lives in the token set beside Card and Modal and is recorded in DESIGN.md's elevation table with the node it was read from; and a mutation restoring padding 12 on all sides fails the story. |
@@ -2534,7 +2529,7 @@ Found on 2026-09-10 while roasting KN-190. npm run <script> -- <args> routes thr
 
 ### `KN-196` Decide how a card is dropped onto a column that is collapsed to a count
 
-- **status** in_progress · **severity** critical · **points** 1 · **area** design
+- **status** done · **severity** critical · **points** 1 · **area** design
 - **blocked by** none
 
 KN-070 settled that the rejected column sits last and renders collapsed to a count by default, expanding on click. It did NOT settle what happens when a card is DRAGGED onto it while collapsed, and rejected is the status cards are moved into most, so this is the common case rather than an edge. Open questions, all of them the owner's or the designer's call rather than a builder's: does the collapsed column expand on hover during a drag, and after what delay; does it accept a drop while still collapsed; does the count animate or does the column open to show where the card landed; and what does the keyboard path target, since a collapsed column has no visible slot to move a card into and the keyboard alternative is part of KN-061 rather than a later improvement. Raised while doing KN-149. I nearly folded these into KN-061's exit condition as though KN-070 had already answered them; a plan check pointed out that doing so would invent a design requirement while claiming to propagate an existing one. The frames may already draw some of this, so look at the Drag and Drop Done states before asking.

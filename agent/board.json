@@ -4901,7 +4901,7 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker.",
       "roasts": [],
       "notes": [
@@ -4910,8 +4910,10 @@
       ],
       "createdAt": "2026-09-10T02:06:44.051Z",
       "blockedReason": "Waiting on the owner. This is a design DECISION, not a build: KN-070 settled that the rejected column collapses to a count, and did not settle what a drag onto it does. Whether it expands on hover and after what delay, whether it accepts a drop while collapsed, what the user sees after the drop lands, and what the keyboard path targets are all the owner's or the designer's call. An agent choosing them silently is the exact failure KN-153 was about. Blocked rather than backlog so it stops being picked as though it were buildable.",
-      "updatedAt": "2026-09-10T13:39:32.819Z",
-      "verify": "node agent/scripts/verify/KN-196.mjs"
+      "updatedAt": "2026-09-10T13:39:33.779Z",
+      "verify": "node agent/scripts/verify/KN-196.mjs",
+      "evidence": "node agent/scripts/verify/KN-196.mjs passed. It checks: (1) DESIGN.md has a \"Settled by the owner on 2026-09-10\" section with the drop decision in it; (2) it names the owner and KN-196, says the owner confirmed the details through the question tool, and no line of it is marked as the author's; (3) the hover-expand with its delay, 500 ms; (4) that a drop onto the still-collapsed column lands; (5) what follows the drop: the recollapse with a brief highlight only if the drag opened it, the flash in the rejected status colour, the move announced to a screen reader, a column the user opened staying open, and no highlight when the save fails; (6) the keyboard path's one target, announced with its count; (7) section 6 does not list the question; (8) KN-061's exit condition names all of that and KN-196 is no longer among its blockers; (9) npm run contract passes. The verifier was mutation-tested: with \"and only if the drag opened it\" taken out of DESIGN.md and KN-196 put back among KN-061's blockers, checks 5 and 8 fail by name. How it was decided: the owner gave the three broad answers in chat on 2026-09-10; the plan beside DESIGN.md first recorded the delay, the early drop and the highlight as author proposals, and its check by a second model said proposals cannot close an exit condition that asks for a decision, and added lifecycle rules KN-061's optimistic update needs; so the details went to the owner through the question tool the same day and the owner took all three recommended answers. The Drag and Drop Done frames were read first, as the card asks: Drop Done 376:5997 predates the collapse and draws rejected open in the old order, with no highlight layer, so the file settles none of it. The same DESIGN.md change records the owner's employment type answer, eight values and more than one per job, with KN-265 carrying the migration, and narrows section 6's open item to the job level list. Every verifier that reads DESIGN.md or the board, KN-160 on plan files among them, and the contract pass. NOT established: that the 500 ms feels right on a running board, which the owner said at first they would judge by looking; KN-061 builds it, and a change there is a new decision. A root task, so it closed on the full gate: web 469 tests at 100 percent coverage, lint, tsc and build; API 101 tests, lint, tsc and build; graphql 4 tests. The browser check does not apply: nothing rendered changed.",
+      "closedAt": "2026-09-10T13:39:33.779Z"
     },
     {
       "id": "KN-197",
