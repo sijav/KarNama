@@ -1,6 +1,7 @@
 import { Box, InputBase } from '@mui/material'
 import { useId, type ChangeEvent } from 'react'
 import { spacing, type as typeScale } from '../../theme/tokens'
+import { isBlank } from './blank'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface InputProps {
@@ -20,11 +21,6 @@ const FIELD_HEIGHT = 44
 
 const { label: labelText, body } = typeScale
 
-// What a person cannot see: whitespace and the Unicode format characters, the
-// zero-width non-joiner of ordinary Persian text among them, which trim()
-// leaves in place, KN-259.
-const BLANK = /^[\s\p{Cf}]*$/u
-
 // Node 95:38, six states. The label is bound to the field for screen readers,
 // the helper or error line describes it, and that line always keeps its height,
 // so an error appearing never moves the field. It fills its container: the
@@ -34,7 +30,7 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
   const messageId = `${id}-message`
   // A blank error is no error: a form that clears one to '' rather than to
   // undefined leaves the field valid, with its helper under it, KN-254.
-  const error = given === undefined || BLANK.test(given) ? undefined : given
+  const error = given === undefined || isBlank(given) ? undefined : given
   const message = error ?? helperText
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing['2xs']}px` }}>

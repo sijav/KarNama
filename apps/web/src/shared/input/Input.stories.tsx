@@ -6,6 +6,7 @@ import { useArgs } from 'storybook/preview-api'
 import { expect, fn, userEvent, within } from 'storybook/test'
 import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
+import { isBlank } from './blank'
 import { Input, type InputProps } from './Input'
 
 // A token's colour as the browser computes it, so it compares with a computed
@@ -133,10 +134,9 @@ export const FromArgs: Story = {
     const box = within(canvasElement).getByRole('textbox')
     await expect(box).toHaveAccessibleName(args.label)
     await expect(box).toHaveValue(args.value ?? args.defaultValue ?? '')
-    // A blank error is no error, so the helper describes the field then: the
-    // Input's own rule, whitespace and invisible format characters, KN-254,
-    // KN-259.
-    const blank = args.error === undefined || /^[\s\p{Cf}]*$/u.test(args.error)
+    // A blank error is no error, so the helper describes the field then, by
+    // the Input's own rule rather than a copy of it, KN-254, KN-262.
+    const blank = args.error === undefined || isBlank(args.error)
     await expect(box).toHaveAccessibleDescription((blank ? args.helperText : args.error) ?? '')
     await (args.disabled === true ? expect(box).toBeDisabled() : expect(box).toBeEnabled())
   },
@@ -337,9 +337,10 @@ export const BlankErrorIsNoError: Story = {
   // A form may clear a field's error to '' rather than to undefined, or leave
   // spaces in it. Blank is no error: the default border, not invalid, and the
   // helper still under it, KN-254. Invisible is blank too: only a zero-width
-  // non-joiner, or only a right-to-left mark, KN-259. A fixed set, so no control
-  // applies. WithError is the other half: its Persian message contains a
-  // zero-width non-joiner and is still an error.
+  // non-joiner, or only a right-to-left mark, KN-259; and only the braille
+  // blank, which draws nothing and is no format character, KN-261. A fixed set,
+  // so no control applies. WithError is the other half: its Persian message
+  // contains a zero-width non-joiner and is still an error.
   parameters: { controls: { disable: true } },
   globals: { colorScheme: 'light' },
   render: () => (
@@ -350,11 +351,12 @@ export const BlankErrorIsNoError: Story = {
       <JobTitle error="   " />
       <JobTitle error={'\u200c'} />
       <JobTitle error={'\u200f'} />
+      <JobTitle error={'\u2800'} />
     </Stack>
   ),
   play: async ({ canvasElement }) => {
     const pair = [...within(canvasElement).getByTestId('blank').children]
-    await expect(pair).toHaveLength(4)
+    await expect(pair).toHaveLength(5)
     for (const input of pair) {
       if (!(input instanceof HTMLElement)) throw new Error('a field is not an element')
       const box = within(input).getByRole('textbox')

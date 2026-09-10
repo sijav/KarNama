@@ -209,11 +209,14 @@ at one pixel would leave no sign of focus. Revisit if the file ever draws it.
 ### An Input's error needs a message
 
 Node `95:38` draws the Error state with its message and never without one, so
-this is a decision too. **A blank error is no error**: a message that is empty,
-or made only of whitespace and invisible format characters such as the
-zero-width non-joiner of Persian text or a direction mark, leaves the field in
-its default state, not marked invalid, with its helper under it. A real message
-that merely contains those characters is still an error. A form that clears an
+this is a decision too. **A blank error is no error**, and blank means nothing to
+read: a message that is empty, or made only of whitespace, format characters
+such as the zero-width non-joiner of Persian text or a direction mark, marks
+with no letter under them, default-ignorable characters such as the variation
+selectors and the Hangul fillers, or the braille blank, leaves the field in its
+default state, not marked invalid, with its helper under it. One letter, digit,
+punctuation mark or symbol makes it a real message, and a real message that
+contains any of those characters is still an error. A form that clears an
 error to the empty string rather than to nothing would otherwise leave a valid
 field red, and a screen reader would announce it invalid with nothing to say why.
 
