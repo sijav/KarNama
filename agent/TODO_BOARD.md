@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 29 of 187 tasks done · 78 of 547 points.
+Project **KarNama** · 30 of 187 tasks done · 79 of 547 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-132` Pin the byte-compared generated files to LF, or stop comparing bytes** (high, 1 pt, infra)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-132` | Pin the byte-compared generated files to LF, or stop comparing bytes | high | 1 | infra | none | A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand. |
+**Next up: `KN-184` The order check reads the whole document, not the fenced block it claims to** (critical, 2 pt, agent)
 
 ## Backlog (155)
 
@@ -176,7 +170,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 
-## Done (29)
+## Done (30)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -205,6 +199,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-100` | Make the gate-fixtures flag hermetic | high | 1 | agent | KN-088 | KARNAMA_GATE_FIXTURES=0 npm test passes and runs no fixture, the ordinary run inside agent/scripts/verify/KN-003.mjs passes with the variable set to any value in the parent environment, and both are proved by planted environments. |
 | `KN-112` | Two preference setters called in one batch lose the first update | high | 1 | web | KN-006 | A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation. |
 | `KN-114` | The catalog test counts an empty string as a translation | high | 1 | web | KN-006 | Setting any Persian message to an empty or whitespace-only string fails npm test and the failure names the id; so does setting one to its English id with the punctuation or casing changed, which is the next spelling of the same evasion and is named in this card's description; each is proved by planting it and watching the suite go red rather than by reading the checks. |
+| `KN-132` | Pin the byte-compared generated files to LF, or stop comparing bytes | high | 1 | infra | none | A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand. |
 | `KN-151` | The design manifest still calls four settled questions open | high | 1 | design | none | node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that. |
 | `KN-159` | Close the task BEFORE the roast, and never let a finding reopen it | high | 2 | agent | none | move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source. |
 | `KN-160` | Plan files live beside the work, named #<id> - <title>.md | high | 2 | agent | none | agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree. |
@@ -1708,7 +1703,7 @@ apps/web/package.json build is "vite build" and nothing else. Vite transpiles pe
 
 ### `KN-132` Pin the byte-compared generated files to LF, or stop comparing bytes
 
-- **status** in_progress · **severity** high · **points** 1 · **area** infra
+- **status** done · **severity** high · **points** 1 · **area** infra
 - **blocked by** none
 
 .gitattributes pins apps/api/schema.gql to LF and the Figma captures to -text, both because they are compared byte for byte. Two files added since are compared the same way and are NOT pinned: packages/graphql/src/generated.ts, which packages/graphql/scripts/check-generated.mjs compares literally against a fresh generation, and packages/graphql/src/operations/health.graphql, which agent/scripts/verify/KN-128.mjs edits by matching the literal string "    environment\n". This machine has core.autocrlf=input so nothing converts on checkout and both work. On a machine with core.autocrlf=true the generated comparison reports the file stale when no schema changed, and the verifier's replacement stops matching. The verifier fails loudly there rather than silently passing, because it guards with "the operation could not be edited, so this check proves nothing", but a false failure on a clean clone is still a broken repository for whoever hits it. Either pin both files, or make the comparison normalise line endings and say so.

@@ -3345,13 +3345,15 @@
       "points": 1,
       "area": "infra",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T03:06:49.598Z",
-      "updatedAt": "2026-09-10T01:00:35.095Z",
-      "verify": "node agent/scripts/verify/KN-132.mjs"
+      "updatedAt": "2026-09-10T01:00:49.281Z",
+      "verify": "node agent/scripts/verify/KN-132.mjs",
+      "evidence": "node agent/scripts/verify/KN-132.mjs passes, 6 checks. It clones HEAD into a temp directory with core.autocrlf=true and core.eol=crlf and reads what comes out, which is the simulation the card asked for rather than a reading of git check-attr, which the plan check pointed out reports assigned attributes and current worktree state and not the result of a hypothetical checkout. The load-bearing check is the CONTROL, an unpinned AGENTS.md arriving with CRLF in the same checkout: no CR found is equally consistent with a simulation that converted nothing. It then removes the generated.ts pin INSIDE the clone, re-checks-out that one file, and requires it to convert, so the pin is shown to be the thing protecting it. All three byte-compared files, schema.gql, generated.ts and health.graphql, arrive with LF. The graphql build and KN-128 were both run and pass. Three mutations against the real .gitattributes were each caught: the generated.ts pin removed, the operations pin removed, and the reason above a pin removed. The third initially MISSED and the check was fixed for it: it looked for any comment within four hundred characters above the rule and was satisfied by the neighbouring pin's paragraph, so it now requires the line directly above. What this does NOT establish, and it is deliberate rather than an oversight. First, the exit condition was NARROWED before building, under rule zero: it asked for the pinned set to be DERIVED from the scripts rather than listed by hand, which means building a mechanism that refuses future unpinned files, and nobody asked for that. The list is a list, written in the verifier where a reader can see it and add to it, and a fourth byte-compared file added later will not be caught by anything. Second, it does not run npm run build inside the simulated checkout, which the original exit condition named, because that needs node_modules; it proves the mechanism a build failure would be a symptom of. Third, the pin checks read the CLONE, made from HEAD, while the reason check reads the working tree, so an uncommitted pin edit is invisible to the first and visible to the second.",
+      "closedAt": "2026-09-10T01:00:49.281Z"
     },
     {
       "id": "KN-133",
