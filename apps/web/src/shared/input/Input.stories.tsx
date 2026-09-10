@@ -21,14 +21,15 @@ const TYPED = 'توسعه‌دهنده فرانت‌اند'
 
 // The design's own specimen, node 95:38, with its copy through the catalog so
 // the Language toolbar changes it. The job title field of the add-job form.
-const JobTitle = (props: Partial<InputProps> & { withError?: boolean }) => {
+// Every arg passes through; the specimen's copy fills in only where an arg is
+// left empty, so the Controls panel drives the field, KN-242.
+const JobTitle = ({ withError = false, label, placeholder, helperText, ...rest }: Partial<InputProps> & { withError?: boolean }) => {
   const { i18n } = useLingui()
-  const { withError = false, ...rest } = props
   return (
     <Input
-      label={i18n._('Job title')}
-      placeholder={i18n._('e.g. Frontend developer')}
-      helperText={i18n._('A short explanation')}
+      label={label === undefined || label === '' ? i18n._('Job title') : label}
+      placeholder={placeholder ?? i18n._('e.g. Frontend developer')}
+      helperText={helperText ?? i18n._('A short explanation')}
       {...(withError ? { error: i18n._('This field cannot be empty') } : {})}
       {...rest}
     />
@@ -45,9 +46,10 @@ const fieldOf = (canvasElement: HTMLElement) => {
 const meta = {
   title: 'Shared/Input',
   component: Input,
-  // The copy comes from the catalog in each story's render; this only makes
-  // the required prop's type whole.
+  // An empty label means the specimen's, from the catalog; set one in
+  // Controls and it is used instead.
   args: { label: '', onChange: fn() },
+  render: (args) => <JobTitle {...args} />,
 } satisfies StoryMeta<typeof Input>
 
 export default meta
@@ -55,7 +57,6 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   globals: { colorScheme: 'light' },
-  render: (args) => <JobTitle {...(args.onChange === undefined ? {} : { onChange: args.onChange })} />,
   play: async ({ canvasElement }) => {
     const field = fieldOf(canvasElement)
     const style = getComputedStyle(field)
@@ -68,8 +69,21 @@ export const Default: Story = {
   },
 }
 
+export const FromArgs: Story = {
+  // Nothing like the specimen, so the field must be following its args.
+  // Letter-free values, since they are test data rather than copy.
+  args: { label: '42', defaultValue: '7', helperText: '#', disabled: true },
+  play: async ({ canvasElement }) => {
+    const box = within(canvasElement).getByRole('textbox')
+    await expect(box).toHaveAccessibleName('42')
+    await expect(box).toHaveValue('7')
+    await expect(box).toHaveAccessibleDescription('#')
+    await expect(box).toBeDisabled()
+  },
+}
+
 export const Filled: Story = {
-  render: () => <JobTitle defaultValue={TYPED} />,
+  args: { defaultValue: TYPED },
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByRole('textbox')).toHaveValue(TYPED)
   },
@@ -77,7 +91,7 @@ export const Filled: Story = {
 
 export const Focus: Story = {
   globals: { colorScheme: 'light' },
-  render: () => <JobTitle defaultValue={TYPED} />,
+  args: { defaultValue: TYPED },
   play: async ({ canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')
     const field = fieldOf(canvasElement)
@@ -96,6 +110,9 @@ export const Focus: Story = {
 }
 
 export const WithError: Story = {
+  // A fixed render: the error copy comes from the catalog, which an arg cannot
+  // carry, so the controls are not offered.
+  parameters: { controls: { disable: true } },
   globals: { colorScheme: 'light' },
   render: () => <JobTitle defaultValue="توسعه" withError />,
   play: async ({ canvasElement }) => {
@@ -114,6 +131,7 @@ export const WithError: Story = {
 }
 
 export const FocusedWhileInvalid: Story = {
+  parameters: { controls: { disable: true } },
   globals: { colorScheme: 'light' },
   render: () => <JobTitle defaultValue="توسعه" withError />,
   play: async ({ canvasElement }) => {
@@ -130,7 +148,7 @@ export const FocusedWhileInvalid: Story = {
 
 export const Disabled: Story = {
   globals: { colorScheme: 'light' },
-  render: () => <JobTitle defaultValue={TYPED} disabled />,
+  args: { defaultValue: TYPED, disabled: true },
   play: async ({ canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')
     const field = fieldOf(canvasElement)
@@ -143,7 +161,6 @@ export const Disabled: Story = {
 
 export const Hover: Story = {
   globals: { colorScheme: 'light' },
-  render: () => <JobTitle />,
   play: async ({ canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')
     const field = fieldOf(canvasElement)
@@ -163,7 +180,6 @@ export const Hover: Story = {
 }
 
 export const LabelIsBound: Story = {
-  render: () => <JobTitle />,
   play: async ({ canvasElement }) => {
     // Clicking the label reaches the field, and the field is named by it.
     const box = within(canvasElement).getByRole('textbox')
@@ -182,7 +198,7 @@ const Bare = (props: Partial<InputProps>) => {
 }
 
 export const Typing: Story = {
-  render: (args) => <Bare name="title" {...(args.onChange === undefined ? {} : { onChange: args.onChange })} />,
+  args: { name: 'title' },
   play: async ({ args, canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')
     await userEvent.type(box, '42')
@@ -195,6 +211,8 @@ export const Typing: Story = {
 }
 
 export const WithoutAHelper: Story = {
+  // A fixed render with no helper at all, which the specimen always has.
+  parameters: { controls: { disable: true } },
   render: () => <Bare />,
   play: async ({ canvasElement }) => {
     // Nothing to describe it by, so it points at nothing, and the empty line
@@ -204,6 +222,7 @@ export const WithoutAHelper: Story = {
 }
 
 export const ErrorDoesNotMoveTheField: Story = {
+  parameters: { controls: { disable: true } },
   // Side by side, with no message at all and with an error: the line under the
   // field keeps its height either way, so validation never shifts what comes
   // after it in a form. Aligned to the top, NOT stretched: a stretching row

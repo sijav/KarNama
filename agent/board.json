@@ -5988,11 +5988,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Default renders the Input from its args with the specimen copy as its defaults, a story with non-default args asserts the field follows them, and any story that is a fixed render by design disables the controls it cannot honour.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T09:27:16.288Z"
+      "createdAt": "2026-09-10T09:27:16.288Z",
+      "updatedAt": "2026-09-10T09:38:01.056Z",
+      "verify": "node agent/scripts/verify/KN-242.mjs"
     }
   ]
 }

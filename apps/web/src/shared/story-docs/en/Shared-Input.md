@@ -59,6 +59,11 @@ Called with the new text and the change event.
 Empty, showing the placeholder: 44 tall, 16 at each side, one pixel of the
 default border.
 
+### FromArgs
+
+Args nothing like the specimen, so the field must be following them: its
+name, value, description and disabled state all come from the Controls.
+
 ### Filled
 
 Holding what a user typed.

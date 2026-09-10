@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-242` Most Input stories ignore their args, so the Controls panel controls nothing** (critical, 1 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-242` | Most Input stories ignore their args, so the Controls panel controls nothing | critical | 1 | web | none | Default renders the Input from its args with the specimen copy as its defaults, a story with non-default args asserts the field follows them, and any story that is a fixed render by design disables the controls it cannot honour. |
+
 ## Blocked (3)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -18,12 +24,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (168)
+## Backlog (167)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-242` | Most Input stories ignore their args, so the Controls panel controls nothing | critical | 1 | web | none | Default renders the Input from its args with the specimen copy as its defaults, a story with non-default args asserts the field follows them, and any story that is a fixed render by design disables the controls it cannot honour. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -3043,7 +3048,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-242` Most Input stories ignore their args, so the Controls panel controls nothing
 
-- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **status** in_progress · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-011 roast and confirmed: every story renders a fixed specimen through a helper, and Default forwards only onChange, so changing label, value, placeholder, helperText, error or disabled in Controls changes nothing. KN-239 fixed the same thing in the Status Chip; the rule is that stories render from their args.
