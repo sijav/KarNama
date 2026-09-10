@@ -4,8 +4,8 @@ The only memory of earlier iterations that may be relied on. Rewritten at the
 end of every iteration. When this file and the repository disagree, the
 repository is right and this file is stale.
 
-Numbers live in `board.json`, not here: `npm run todo -- next`, `show <id>`,
-`list`.
+Numbers live in `board.json`, not here: `node agent/scripts/todo.mjs next`,
+`show <id>`, `list`.
 
 ---
 
@@ -20,7 +20,7 @@ the trail, not the listing.**
 is permanently out.** Two owner additions: third parties can leave comments or
 suggested changes, stored rather than applied, and an admin panel over them.
 
-Monorepo, npm workspaces. React 19, TypeScript, MUI, Storybook, Vitest,
+Monorepo, npm workspaces. React 19, TypeScript, MUI 9, Storybook 10, Vitest,
 Playwright, 100 percent coverage. NestJS, GraphQL code first, Prisma, Postgres.
 GitHub Pages for web, Render for the API, Supabase for the database, with a 50
 second cold start the UI must handle honestly. lingui, **English is the source**.
@@ -29,168 +29,97 @@ second cold start the UI must handle honestly. lingui, **English is the source**
 
 ## Where things stand
 
-35 done, 160 open, 2 dropped. **Two open criticals, and they are one redesign
-seen twice**: **KN-193 - The close recogniser is not the head token, so any
-command's arguments can be the close**, in progress, and **KN-197 - The order
-check parses shell badly instead of refusing the shapes it cannot parse**. Both
-are children of KN-184 and both live in `lib/prompt-order.mjs`. The reviewer's
-one line covers both: stop treating shell text as tokenisable by two ad-hoc
-parsers, and REFUSE expansion and escape syntax the way `&&` and `;` are already
-refused, since refusing is the mechanism in that file that actually works.
+**43 done, 158 open, 1 blocked, 2 dropped. No open criticals. Nothing in
+progress.** `apps/web`: 305 tests over 20 files, 100 percent on all four
+metrics. `apps/api`: 96. `packages/graphql`: 4.
 
-**KN-190 closed and did not fix its own class.** It removed the `echo` instance
-and left the general one: `readCommand('grep todo move <id> done')` is still
-`closes: true`, so a marked block of that line, then the real roast, then the
-real close returns `ok: true`. Its own amended exit condition says "the close is
-the head token of its line" and the code never did that, and its verifier had no
-counterexample for that clause, so 13 green checks established less than they
-looked like. KN-190 stays done, because done is terminal; KN-193 carries the
-work.
+**The component library is unblocked and started.** KN-007 built the Storybook
+docs infrastructure, which gated KN-008 through KN-030; **KN-013, the Checkbox,
+is the first component built on it** and 37 more web cards now have no unmet
+blockers.
 
-`apps/web`: 229 tests over 15 files, 100 percent on all four metrics, 8
-Playwright tests. The unit project alone is 208, worth knowing because a
-suite-wide count cannot say the unit project ran. `apps/api`: 96 tests.
-`packages/graphql`: 4, with operations validated against the schema at
-generation time.
+**KN-196 is BLOCKED on the owner** and is the only thing waiting on a person:
+what happens when a card is dragged onto a column collapsed to a count. KN-070
+settled that the column collapses, not that. It blocks KN-061, drag and drop.
 
 ## The owner's rules, most recent first
 
-**Do not invent gates.** Rule zero, now at the top of `agent/RALPH.md`. It gets
-broken by accident and looks like diligence: a roast finds something, the fix
-that suggests itself is a check that refuses the next occurrence, that becomes a
-card, and its exit condition is a gate nobody asked for. Four were removed on
-2026-09-10. **Above all, no gates in the SKILLS**: an agent may use them however
-it likes. Tests yes, refusals no.
+**100 percent coverage is a PRODUCT rule.** `apps/*` and `packages/*`, not
+`agent/scripts/**`, and **markdown has no tests**. In `AGENTS.md`.
 
-**Finish, prove, commit, CLOSE, then roast.** A task is done when its verifier
-passes, not when a reviewer approves. `done` is terminal, enforced. There is no
-fix-in-task rule any more; the roasted card is already closed.
+**The loop must not eat itself.** On 2026-09-10 the owner stopped the session:
+five cards had gone into a checker for the ordering of two lines in a markdown
+file, each filed critical, while 65 component cards sat untouched. A roast of
+the agent's own machinery always produces more machinery. **A finding about the
+LOOP rather than the PRODUCT is `low` unless it is actively breaking the work.**
+18 machinery cards were demoted on that basis; they are still real, they just do
+not outrank building KarNama.
 
-**A finding is a CHILD of the task it came out of**, one level. When the LAST
-open child closes, roast the parent together with all its children, and repeat
-until a round finds nothing. **KarNama's board cannot express this yet**, since
-its `parent` field means BLOCKED BY, so findings record their parent in prose.
-KN-188 carries the work; the global `todo` skill already has `--parent-task`.
+**Do not invent gates.** Rule zero, top of `agent/RALPH.md`. **Above all no
+gates in the SKILLS**: an agent may use them however it likes. Tests yes,
+refusals no.
+
+**Finish, prove, commit, CLOSE, then roast.** `done` is terminal, enforced.
+
+**A finding is a CHILD of the task it came from**, one level. When the LAST open
+child closes, roast the parent with all its children. **KarNama's board cannot
+express this**, since its `parent` field means BLOCKED BY, so provenance is
+recorded in prose as `CHILD OF KN-xxx`. KN-188 carries the work.
 
 **Test scope follows the same line**: no parent closes on the full suite, a
 child closes on the tests for the files it changed.
 
-**Plans live beside the work**, `#<id> - <title>.md`, and they STAY when the
-task closes.
-
-**Do not run this repository's machinery against another project.** SkipBureau's
-rules were to be CHECKED once, not driven from here. Nothing under
-`agent/scripts/verify` may name it or resolve a path above the root, and
-`KN-166.mjs` asserts that.
+**Plans live beside the work**, `#<id> - <title>.md`, and they STAY.
 
 ## What keeps going wrong, one line each
 
 **A check that searches for a string, and contains that string, flags itself.**
-Four times on 2026-09-10 alone. Stripping comments is not enough when the needle
-sits in a regex literal, which is code. Assemble the needle at runtime.
+Now SIX times. The newest two are the sharpest: KN-155's own EXIT CONDITION had
+to be reworded because an exit condition saying "a check must refuse phrase X"
+necessarily contains X; and `noLiterals.test.ts` rejected a COMMENT that spelled
+out the pixel shorthand it was explaining. **It reads comments too.**
 
-**A literal match against prose fails when the prose is REWORDED or WRAPPED.**
-"not a\nreason" across a line break; "CHILD" against "CHILDREN"; markdown bold
-splitting "**last** open child". Collapse whitespace, and match the concept.
+**An ABSENCE proves nothing without a positive control on the same instrument**,
+and **this applies to MUTATION testing**. I declared a mutation impossible after
+trying only NEGATIVE fixtures, which all fail safe by accident. The isolating
+fixture was a POSITIVE one.
 
-**An ABSENCE proves nothing without a positive control on the same instrument.**
-A listing that collected nothing looks exactly like a correctly scrubbed one.
-**This applies to MUTATION testing too, and that is where it was missed.** I
-declared a mutation impossible to catch after trying only NEGATIVE fixtures,
-mentions that should not count. Every one of those fails safe by accident when
-the rule is broken, so they all look identical. The isolating fixture was a
-POSITIVE one, a legitimate command with a quoted argument,
-`todo move <id> "done"`: `closes: true` with quote handling, `false` without.
-A reviewer found it in one line. **Declaring something unprovable is a strong
-claim and needs the same evidence as any other.**
-
-**`npm run` SILENTLY TRUNCATES every argument at its first newline on Windows**,
-because it routes through cmd.exe. Everything after line one, including every
-later flag, is dropped with no error. `npm run todo -- show "KN-190\nJUNK"`
-prints KN-190's card; the same call through `node agent/scripts/todo.mjs` says
-the two-line string does not exist. **So pass prose as ONE line, or call the
-script with `node` directly.** A multi-line `--evidence` through npm would close
-a card on half a sentence. KN-195. Nothing on the board was corrupted, checked.
-
-**There are TWO roast harnesses and only one is board-recordable.**
-`python ~/.claude/skills/roast/roast.py plan` checks a PLAN, writes to scratch,
-records nothing. `node agent/scripts/roast.mjs <id>` is the TASK roast: it
-archives to `agent/roasts/` with a `.meta.json` sidecar, and `todo roast --file`
-verifies that digest, so a review run any other way cannot be recorded on the
-card. RALPH.md line 199 and line 297 say exactly this and I still used the wrong
-one.
-
-**A proxy for the exit condition is not the exit condition.** KN-100 first
-proved its clause with `vitest list` instead of running the verifier the card
-named.
-
-**Every version of a check that INFERS which thing is normative will be
-defeated by words**, because words are what an editor changes. Three versions of
-the prompt-order check proved it. Make the thing declare itself.
-
-**The suite can CERTIFY a bug rather than miss it.** KN-112's test asserted the
-stale write as expected. Read the existing expectations before assuming a bug is
-merely uncovered.
-
-**Check that the fallback you rely on EXISTS before you rely on it.** Two plan
-files were deleted on the reasoning that git held them; `.gitignore` had been
-ignoring them all along and one is gone for good. `git check-ignore -v`,
-`git ls-files --error-unmatch`, `git cat-file -e HEAD:<path>`.
-
-**Shell heredocs eat backslashes**, and a python heredoc silently applied
-nothing three times on 2026-09-10 while reporting success. **Use the Edit tool
-for code.**
-
-**Do not edit source while a mutation harness or a roast is reading it.**
-
-**The mutation that must SURVIVE is the strongest evidence available**:
-reproduce the old implementation and watch it wave the defect through.
+**Mutate the CONTRACT, not only the implementation.** KN-149's harness broke the
+code eight ways and never touched the registry the code enforces, so dropping a
+card from the contract left every check green.
 
 **A verifier built from examples tests the examples.** Go clause by clause
-through the exit condition: each declared guarantee needs a fixture that passes
-because it holds AND a mutation that breaks it and makes that fixture fail.
-KN-190 was green on 13 checks with no test for its own central clause. Now in
-RALPH.md step 3.
+through the exit condition; each guarantee needs a fixture AND a mutation that
+makes that fixture fail. In `RALPH.md` step 3.
 
-**Mutate the CONTRACT, not only the implementation.** When a check's authority
-rests on a constant inside it, a list of ids, a registry, a threshold, that
-constant is the thing to break. KN-149's harness broke the code eight ways and
-never touched the registry, so dropping a card from the contract left all five
-checks green. It proved the code enforces the list and said nothing about
-whether the list is right. **The general fix is BOTH DIRECTIONS**: everything
-the registry names must comply, and everything that complies must be named.
+**Do not reimplement a tool's semantics — ASK THE TOOL.** The docs guard walked
+the TypeScript AST to find stories and was wrong twice in one card. Storybook's
+own `loadCsf(...).parse().indexInputs` is the oracle, and it corrected both me
+and a reviewer: `export { A }` IS indexed, `export class` is NOT.
 
-## The skills
+**A silently ignored prop looks exactly like a working one.** MUI 9 removed
+`inputRef` from `SwitchBase`; passing it did nothing and the component still
+looked right. Only a test asserting the DOM property caught it.
 
-`todo` and `roast` each ship a Node and a Python half, proved equivalent by
-parity harnesses that drive both real entry points and compare what they
-produced, not by asserting the files exist. `loop` ships no script on purpose.
-Roast results go to a scratch directory, never into a project; only the session
-list stays project-local, because it resumes conversations.
+**`npm run` SILENTLY TRUNCATES every argument at its first newline on Windows.**
+Use `node agent/scripts/todo.mjs` directly. KN-195.
 
-## Next step
+**There are TWO roast harnesses.** `roast.py plan` checks a PLAN and records
+nothing; `node agent/scripts/roast.mjs <id>` is the TASK roast and is the only
+one the board can record, because `todo roast --file` verifies its sidecar.
 
-**KN-193**, then **KN-197**. They are one piece of work: a narrow grammar for the
-command block, where the close is the HEAD token, the roast is matched only from
-UNQUOTED tokens, one place decides what is quoted, and `$(...)`, backticks,
-`${...}` and escaped quotes join `&&` and `;` in the REFUSED list. Confirmed
-false passes to kill, each reproduced by running it:
+**Shell heredocs eat backslashes**, and one wrote a literal NUL byte into a
+source file this session. **Use Edit for code.**
 
-- `grep todo move <id> done` reads as a close, and a block of that line, the
-  real roast, then the real close returns `ok: true`;
-- `env echo todo move <id> done` walks past the printer list;
-- `todo move <id> done "$(python <path>/roast.py task)"` is read as inert data
-  when a shell runs it first;
-- `sh -c '...' \"; todo move <id> done \" # x` hides its semicolon inside a fake
-  quoted span, because the operator check is a second, disagreeing parser;
-- `grep "/tmp/roast.py" task` reads as a roast.
+## The next step
 
-Legitimate shapes that must keep working: `todo move <id> done`,
-`todo move <id> "done"`, `npm run todo -- move <id> done`, and
-`python <path>/roast.py task --title ... &`.
+`node agent/scripts/todo.mjs next` picks it. The component library is the work:
+KN-008 icons, KN-009 Button, KN-010 Status chip, KN-011 Input, KN-012 Select and
+34 more are unblocked. Build the component, its stories, and its story-docs in
+both languages; the guard refuses a story with no markdown entry.
 
 ## What to read first
 
 `AGENTS.md`, `DESIGN.md`, `agent/RALPH.md`, `agent/TODO_BOARD.md`, in that order,
-every iteration. Then `npm run contract`, which is a regression checker over ten
-rules and not a proof that the board matches the design.
+every iteration. Then `npm run contract`, a regression checker over ten rules and
+not a proof that the board matches the design.
