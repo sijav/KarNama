@@ -1,32 +1,29 @@
 #!/usr/bin/env node
-// Verifies KN-166: the loop rules are written correctly in the sibling project.
+// Verifies KN-166, after the owner's correction of 2026-09-10.
 //
-// Exit condition: SkipBureau's loop and rule files state the finish, prove,
-// close, roast order, the findings-become-cards rule with its blocking
-// exception, and the plan-beside-the-work rule; anything that contradicts them
-// is corrected or recorded as deliberate; and the owner is told what was found.
+// The card was: go and CHECK that a sibling project's loop rules are written
+// correctly. That was a one-off reading task and it is recorded in the card's
+// evidence: the rules there were already right, and what was actually broken
+// was that its loop prompt contradicted itself, which became KN-181.
 //
-// This verifier reads a path OUTSIDE this repository, which is unusual and is
-// the point of the card. If the sibling project is not there it FAILS rather
-// than skipping: a check that quietly passes when its subject is missing is the
-// exact false pass this repository has been bitten by, and "SkipBureau moved"
-// is something the next reader should be told rather than shielded from.
+// What this file used to be was a standing check that READ that project on
+// every run and failed when it was absent or merely reworded. The owner's
+// words: its rules needed to be checked, not run. It made this repository's
+// verification depend on a project outside it, and it went red for a sibling
+// wording change within an hour of a reviewer predicting exactly that.
 //
-// The negative checks are deliberately narrow. `CLAUDE.md` legitimately says
-// "Never re-roast" and "Re-roasting until a number improves has no end", so a
-// grep for `re-roast` would flag the sentences that ENFORCE the rule. Only the
-// abandoned gates that have no honest mention are searched for.
+// So what is left to verify HERE is the correction itself: that KarNama's
+// verifiers reach nothing outside KarNama. That is a fact about this repository
+// and it is the only part of this card that belongs in this repository.
 //
-// Read-only: reads files, runs nothing, writes nothing.
+// Read-only.
 
-import { existsSync, readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { closesBeforeRoasting } from './lib/prompt-order.mjs'
 
 const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
-const SIBLING = join(dirname(ROOT), 'SkipBureau')
-const RULES = join(SIBLING, 'CLAUDE.md')
+const VERIFY = join(ROOT, 'agent', 'scripts', 'verify')
 
 const failures = []
 const check = (label, run) => {
@@ -39,128 +36,51 @@ const check = (label, run) => {
   }
 }
 
-check('the sibling project and its rule file are where the card says', () => {
-  if (!existsSync(SIBLING)) return `${SIBLING} does not exist, so nothing here was checked`
-  return existsSync(RULES) ? null : `${RULES} does not exist`
+// Assembled at runtime so the literal never appears in this file. A check that
+// searches for a string and contains that string flags ITSELF, which is what
+// happened on the first run here and is the same shape as a grep matching the
+// prose that explains the ban. Stripping comments is not enough when the needle
+// lives in a regex literal, which is code.
+const SIBLING = new RegExp(['Skip', 'Bureau'].join(''))
+
+const withoutComments = (text) => text.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1')
+
+const sources = () =>
+  readdirSync(VERIFY, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.mjs'))
+    .map((entry) => ({ name: entry.name, text: readFileSync(join(VERIFY, entry.name), 'utf8') }))
+
+check('this file no longer reads the sibling project', () => {
+  // Comments are stripped first: this file necessarily NAMES the project in
+  // order to explain why it stopped reading it, and a check that flagged its
+  // own explanation would be the mistake this repository keeps shipping.
+  const code = withoutComments(readFileSync(join(VERIFY, 'KN-166.mjs'), 'utf8'))
+  return SIBLING.test(code) ? 'it still names the sibling project in code' : null
 })
 
-const raw = existsSync(RULES) ? readFileSync(RULES, 'utf8') : ''
-// Prose is matched against a whitespace-collapsed copy. Markdown wraps at about
-// eighty columns, so a rule stated in one sentence arrives split across a
-// newline and a literal phrase match silently misses it. This check reported
-// "it does not forbid reopening" against a file whose next two words were
-// exactly that, because the sentence broke after "not a".
-const rules = raw.replace(/\s+/g, ' ')
-
-check('it states the order: finish and prove, THEN done, THEN roast', () => {
-  if (!rules) return 'no rule file to read'
-  const problems = []
-  if (!/THEN and only THEN you put it in done/.test(rules)) problems.push('the owner\'s wording is not quoted')
-  if (!/never closed pending a roast/i.test(rules)) problems.push('it does not say a task is never closed pending a roast')
-  if (!/fire the roast in the \*\*background\*\*|roast in the \*\*background\*\*/.test(rules)) {
-    problems.push('it does not say the roast runs in the background')
+check('no verifier in this repository reaches outside it', () => {
+  // The correction, stated as a property rather than as a promise. `..` in a
+  // path join is how a check escapes its own repository, and a sibling named in
+  // code is the other way.
+  const offenders = []
+  for (const { name, text } of sources()) {
+    const code = withoutComments(text)
+    if (SIBLING.test(code)) offenders.push(`${name} names the sibling project`)
+    if (/dirname\(ROOT\)/.test(code)) offenders.push(`${name} resolves a path above the repository root`)
   }
-  // Order, not just presence: the close has to be described before the roast.
-  const closeAt = rules.indexOf('move it to `done`')
-  const roastAt = rules.indexOf('fire the roast')
-  if (closeAt === -1 || roastAt === -1) problems.push('the close and roast steps cannot both be located')
-  else if (closeAt > roastAt) problems.push('the roast step is described before the close step')
-  return problems.length ? problems.join('; ') : null
+  return offenders.length ? offenders.join('; ') : null
 })
 
-check('it states that findings become tasks and never reopen the closed one', () => {
-  if (!rules) return 'no rule file to read'
-  const problems = []
-  if (!/becomes a new task on the board/i.test(rules)) problems.push('findings are not routed to the board')
-  if (!/not a reason to reopen what was just finished/i.test(rules)) problems.push('it does not forbid reopening')
-  if (!/One roast per task/i.test(rules)) problems.push('it does not say one roast per task')
-  return problems.length ? problems.join('; ') : null
-})
-
-check('it states the blocking exception, and forgetting otherwise', () => {
-  if (!rules) return 'no rule file to read'
-  const problems = []
-  if (!/revert what you did/i.test(rules)) problems.push('the blocking case does not say to revert')
-  if (!/todo next/i.test(rules)) problems.push('the blocking case does not hand the choice back to the board')
-  if (!/\*\*forget it\.\*\*|forget it\./i.test(rules)) problems.push('the non-blocking case does not say to forget it')
-  return problems.length ? problems.join('; ') : null
-})
-
-check('it states the plan-beside-the-work rule, with its name', () => {
-  if (!rules) return 'no rule file to read'
-  const problems = []
-  if (!/#SB-0XX - <the task's title>\.md|#\[task_number\] - \[title\]\.md/.test(rules)) {
-    problems.push('the plan filename shape is not given')
+check('the card still records what it found, since that is where the work lives', () => {
+  const board = JSON.parse(readFileSync(join(ROOT, 'agent', 'board.json'), 'utf8'))
+  const tasks = Array.isArray(board.tasks) ? board.tasks : Object.values(board.tasks)
+  const card = tasks.find((task) => task.id === 'KN-166')
+  if (!card) return 'KN-166 is not on the board'
+  const evidence = String(card.evidence ?? '')
+  if (!/rules there are already correct|premise was wrong/i.test(evidence)) {
+    return 'the evidence no longer says what the reading actually found'
   }
-  if (!/in the folder the task is about to build\s+in|related folder/i.test(rules)) {
-    problems.push('it does not say the plan goes in the work folder')
-  }
-  // Two assertions, not one alternation. This was written as
-  // `never a plans/ folder` OR `not a separate folder`, and the second phrase
-  // sits inside the owner's quoted instruction, which is always present, so the
-  // check could never fail: deleting the rule left the quote and it passed. A
-  // mutation caught it. The quote is evidence of INTENT and the sentence is the
-  // INSTRUCTION, and a file needs both for different reasons.
-  if (!/not a separate folder/i.test(rules)) problems.push('the owner\'s instruction is not quoted')
-  if (!/never a `plans\/` folder/i.test(rules)) problems.push('it does not rule out a separate folder in its own words')
-  return problems.length ? problems.join('; ') : null
-})
-
-check('it carries the two clauses that cost something to learn', () => {
-  if (!rules) return 'no rule file to read'
-  const problems = []
-  if (!/is not a filename/i.test(rules)) problems.push('nothing warns that a title is not a filename')
-  if (!/plan STAYS when the task closes/i.test(rules)) problems.push('the plan lifecycle is not stated')
-  if (!/check-ignore/.test(rules)) problems.push('the rule about proving a fallback exists names no command')
-  return problems.length ? problems.join('; ') : null
-})
-
-// The file KN-166 missed. `.claude/ralph-loop.local.md` is the prompt that
-// project's Stop hook feeds every iteration, so it is a rule file and it is the
-// one read FIRST. Checking `CLAUDE.md` alone let a contradiction sit in it: the
-// prose said close then roast, and the command block underneath ran the roast
-// first. KN-181. This is added here rather than in a new place because leaving
-// it unguarded is worse than deepening a coupling KN-182 already exists to
-// remove; when that card moves this check to SkipBureau, both files move.
-const PROMPT = join(SIBLING, '.claude', 'ralph-loop.local.md')
-const prompt = existsSync(PROMPT) ? readFileSync(PROMPT, 'utf8').replace(/\s+/g, ' ') : ''
-
-check('the loop prompt exists too, since it is the file read first', () => {
-  return existsSync(PROMPT) ? null : `${PROMPT} does not exist, so its rules were not checked`
-})
-
-check('the loop prompt CLOSES before it roasts, INSIDE the step 5 block', () => {
-  if (!existsSync(PROMPT)) return 'no loop prompt to read'
-  // The RAW text, not the collapsed copy: fences are line-structured and
-  // collapsing whitespace destroys them.
-  //
-  // This check used to take the first close command and the first roast command
-  // anywhere in the document and compare their positions, while its own comment
-  // claimed it read the block. Leaving a correctly ordered example higher up
-  // and reversing the real block passed it. The extraction now finds the block
-  // by its HEADING and reads only inside it. KN-184.
-  const verdict = closesBeforeRoasting(readFileSync(PROMPT, 'utf8'))
-  return verdict.ok ? null : verdict.why
-})
-
-check('the loop prompt repairs a false done by filing, not by reopening', () => {
-  if (!prompt) return 'no loop prompt to read'
-  if (!/by filing a card for what is actually left/i.test(prompt)) {
-    return 'it says a false done is repaired without saying that the repair is a new card'
-  }
-  return /`done` is terminal/i.test(prompt) ? null : 'it does not say done is terminal'
-})
-
-check('none of the abandoned gates survive anywhere in it', () => {
-  if (!rules) return 'no rule file to read'
-  // Narrow on purpose. "Never re-roast" is the rule, so the word itself is not
-  // evidence of anything; only a SCORE or CRITICALS gate is, and neither has an
-  // honest mention in that file.
-  const problems = []
-  if (/9\.5/.test(rules)) problems.push('a 9.5 score threshold is still in the file')
-  if (/zero criticals/i.test(rules)) problems.push('a zero-criticals gate is still in the file')
-  if (/roast again/i.test(rules)) problems.push('it still instructs roasting again after a fix')
-  return problems.length ? problems.join('; ') : null
+  return /KN-177/.test(evidence) ? null : 'the evidence does not name what it filed'
 })
 
 if (failures.length) {

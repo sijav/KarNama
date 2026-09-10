@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 32 of 190 tasks done · 84 of 554 points.
+Project **KarNama** · 32 of 191 tasks done · 84 of 556 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -10,11 +10,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-189` Heading keywords pick the wrong block, so a reversed real block still passes** (critical, 2 pt, agent)
 
-## Backlog (156)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-189` | Heading keywords pick the wrong block, so a reversed real block still passes | critical | 2 | agent | none | The normative block is identified by an explicit stable marker rather than by keywords in a heading; both fixtures the reviewer ran, an earlier step whose prose contains both words, and a real step whose heading uses different words, are covered as cases; and each fails before the fix and passes after. |
+
+## Backlog (156)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-190` | Command-shaped text inside a string counts as the command | critical | 2 | agent | none | The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident. |
 | `KN-149` | The board cards for the rejected column do not require it to collapse | high | 1 | design | none | The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered. |
 | `KN-152` | Use the current Contacts tab label in the history decision | high | 1 | design | KN-072 | DESIGN.md section 6 and section 3 name the modal tab افراد مرتبط, KN-030 and KN-045 use that label, KN-072.mjs requires it and REJECTS مخاطبین as the modal tab label, and a mutation restoring مخاطبین fails the verifier with its own message. |
@@ -144,6 +149,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-147` | Nothing proves the migration runner waits between lock attempts | medium | 2 | api | none | Deleting the retry delay makes the suite fail, proved by planting exactly that, and the test asserts elapsed time or scheduled timing rather than attempt count alone. |
 | `KN-148` | The mutation harnesses re-run the whole suite once per regression | medium | 2 | agent | none | A verify that plants N regressions runs one full suite plus N filtered runs, and completes in under five minutes for KN-123, with every regression still caught, proved by running the harness before and after and comparing both the time and the caught count. |
 | `KN-175` | Verifiers that need a scratch directory cannot run in the read-only review sandbox | medium | 2 | agent | none | The repository states, in AGENTS.md or RALPH.md, whether a verifier may require a writable scratch directory; verifiers that do are either made runnable in the review environment or carry a machine-readable marker saying they cannot be, and the roast prompt tells the reviewer which; and no future roast can raise this as a novel finding. |
+| `KN-191` | The roast skill writes its transient result into the project, not a scratch directory | medium | 2 | agent | none | The transient result file is written to a scratch location rather than into the project; roast-sessions.json stays project-local with its reason recorded; both halves agree on where and the parity test still passes; the gitignore entries for anything that no longer lands in the project are removed rather than left as fossils; and running a roast in a clean checkout leaves that checkout unchanged. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -2347,7 +2353,7 @@ The owner's rule of 2026-09-10: a roast's findings are filed as CHILDREN of the 
 
 ### `KN-189` Heading keywords pick the wrong block, so a reversed real block still passes
 
-- **status** backlog · **severity** critical · **points** 2 · **area** agent
+- **status** in_progress · **severity** critical · **points** 2 · **area** agent
 - **blocked by** none
 
 CHILD OF KN-184, recorded here because board.json cannot express parent_task yet, KN-188. Found by the KN-184 roast, which reproduced it. lib/prompt-order.mjs selects the normative block with findIndex over numbered lines containing both done and roast. Any EARLIER numbered step whose prose happens to contain both words wins. The reviewer ran a fixture with step 2 headed If a task is done, roast it only after closing it and step 5 headed Close the task, then request review, and closesBeforeRoasting returned ok true while step 5's block was reversed. The exit condition KN-184 closed against is therefore not met for that shape. I raised this risk in my own plan, asked whether heading keywords were more robust than counting fences or just more quietly brittle, and the plan check endorsed heading association without foreseeing it. The reviewer's answer is an explicit marker for the normative block rather than prose keywords.
@@ -2366,4 +2372,15 @@ CHILD OF KN-184, recorded here because board.json cannot express parent_task yet
 **Why.** A check that reads text rather than commands can be satisfied by anything that mentions a command, including documentation of the very mistake it is looking for. That is the same shape as a grep matching the prose explaining a ban, which this repository has now shipped three times.
 
 **Exit condition.** The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident.
+
+### `KN-191` The roast skill writes its transient result into the project, not a scratch directory
+
+- **status** backlog · **severity** medium · **points** 2 · **area** agent
+- **blocked by** none
+
+The owner asked why on 2026-09-10. Both halves of the roast skill write .claude/roast-result.md into whatever project they are run in. It is gitignored so it never reaches history, but it is still transient agent output living in a working tree: it shows up in file listings and editors, and gitignored-plus-untracked is precisely the category that vanishes without anyone noticing, which is how two plan files were destroyed earlier the same day. I did not choose the location, roast.py already used it and the Node port copied it faithfully, which explains it without justifying it. Note what must NOT move: roast-sessions.json holds the session ids that let a reviewer resume a conversation across sessions, so it has to stay project-local and persistent; a session-scoped scratch directory would silently start a fresh conversation every time. KarNama's own harness, agent/scripts/roast.mjs, archives to agent/roasts/ and that is tracked on purpose, since those are manifest-bound evidence rather than scratch.
+
+**Why.** A tool that leaves working files in someone's project is a tool they have to tidy up after, and the answer to why is currently because it always did that. The distinction worth getting right is between state the tool NEEDS to keep, which belongs to the project, and output it happened to produce, which does not.
+
+**Exit condition.** The transient result file is written to a scratch location rather than into the project; roast-sessions.json stays project-local with its reason recorded; both halves agree on where and the parity test still passes; the gitignore entries for anything that no longer lands in the project are removed rather than left as fossils; and running a roast in a clean checkout leaves that checkout unchanged.
 

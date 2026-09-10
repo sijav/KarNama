@@ -14,10 +14,10 @@
 //
 // Read-only: reads two files, runs nothing, writes nothing.
 
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { closeAndRoastBlock, closesBeforeRoasting } from './lib/prompt-order.mjs'
+import { MARKER, closesBeforeRoasting, markedBlocks } from './lib/prompt-order.mjs'
 
 const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
 
@@ -33,13 +33,13 @@ const check = (label, run) => {
 }
 
 /** A prompt shaped like the real one: a numbered step with an indented block. */
-const prompt = ({ decoy = false, reversed = false, fence = '```' } = {}) =>
+const prompt = ({ decoy = false, reversed = false, fence = '```', marked = true, renamedHeading = false } = {}) =>
   [
     '## Then work the loop',
     '',
     ...(decoy
       ? [
-          '3. **An earlier step that happens to show both commands.**',
+          '3. **An earlier step that happens to show both commands: done, roast.**',
           '',
           `   ${fence}bash`,
           '   todo move <id> done',
@@ -48,8 +48,11 @@ const prompt = ({ decoy = false, reversed = false, fence = '```' } = {}) =>
           '',
         ]
       : []),
-    '5. **THEN move it to `done`, and only then fire the roast, in the background.**',
+    renamedHeading
+      ? '5. **Close the task, then request review.**'
+      : '5. **THEN move it to `done`, and only then fire the roast, in the background.**',
     '',
+    ...(marked ? [`   ${MARKER}`] : []),
     `   ${fence}bash`,
     ...(reversed
       ? ['   python ~/.claude/skills/roast/roast.py task --title ... &', '   todo move <id> done']
@@ -90,7 +93,8 @@ check('the block is found even though it is indented inside a list item', () => 
   // In the real file the fence sits under a numbered step and is indented by
   // three spaces. Matching a fence only at the start of a line finds nothing
   // and reports the block as missing, which reads like a prompt with no block.
-  const block = closeAndRoastBlock(prompt())
+  const { blocks } = markedBlocks(prompt())
+  const block = blocks[0] ? { found: true, ...blocks[0] } : { found: false, why: 'no marked block' }
   if (!block.found) return `the indented fence was not found: ${block.why}`
   return block.body.some((line) => /todo move/.test(line)) ? null : 'the block was found but is empty'
 })
@@ -107,19 +111,50 @@ check('a commented-out command does not count as the command', () => {
   return /never closes the task/.test(verdict.why) ? null : `caught, but said: ${verdict.why}`
 })
 
-check('a missing block is reported as missing, not as an order problem', () => {
-  const verdict = closesBeforeRoasting('## Then work the loop\n\n5. **Move it to done and roast it.**\n\nNo block here.\n')
-  if (verdict.ok) return 'a prompt with no command block passed'
-  return /no command block/.test(verdict.why) ? null : `it said: ${verdict.why}`
+check('an UNMARKED prompt is reported as unmarked, never guessed at', () => {
+  // The refusal that replaces the guess. Falling back to a heuristic when no
+  // marker is present would restore the exact inference this change removes,
+  // and would do it silently, which is worse than saying so.
+  const verdict = closesBeforeRoasting(prompt({ marked: false, reversed: true }))
+  if (verdict.ok) return 'an unmarked prompt passed, so something guessed'
+  return /no block is marked/.test(verdict.why) ? null : `it said: ${verdict.why}`
 })
 
-check('the real sibling prompt still passes through the same function', () => {
-  // The fixtures prove the logic; this proves it against the file it is for.
-  const real = join(dirname(ROOT), 'SkipBureau', '.claude', 'ralph-loop.local.md')
-  if (!existsSync(real)) return `${real} does not exist, so the real case was not checked`
-  const verdict = closesBeforeRoasting(readFileSync(real, 'utf8'))
-  return verdict.ok ? null : verdict.why
+check("REVIEWER'S CASE: a decoy whose heading carries both words, real block reversed", () => {
+  // The fixture the KN-184 reviewer ran. Step 3's heading contains "done" and
+  // "roast", so the heading-keyword selector picked THAT block and passed while
+  // step 5 was backwards.
+  const verdict = closesBeforeRoasting(prompt({ decoy: true, reversed: true, renamedHeading: true }))
+  if (verdict.ok) return 'the decoy heading masked the reversed block, which is the reported bug'
+  return /BEFORE the close/.test(verdict.why) ? null : `caught, but said: ${verdict.why}`
 })
+
+check("REVIEWER'S CASE: the real step's heading uses different words entirely", () => {
+  // "Close the task, then request review" contains neither "done" nor "roast",
+  // so the previous selector could never have found it at all.
+  const verdict = closesBeforeRoasting(prompt({ renamedHeading: true }))
+  return verdict.ok ? null : `a correct block with a reworded heading was rejected: ${verdict.why}`
+})
+
+check('a marker floating above prose rather than a fence is reported', () => {
+  // The plan check's warning: letting the marker find "the next fence" through
+  // arbitrary text is the same inference problem wearing a marker.
+  const floating = prompt().replace(`   ${MARKER}`, `   ${MARKER}\n\n   Some prose in between.`)
+  const verdict = closesBeforeRoasting(floating)
+  if (verdict.ok) return 'a marker detached from its block was accepted'
+  return /not directly above/.test(verdict.why) ? null : `it said: ${verdict.why}`
+})
+
+// A check here used to read a SIBLING project's prompt and require it to pass.
+// It is gone, on the owner's instruction of 2026-09-10: he asked me to CHECK
+// that another project's rules were written correctly, once, and that is not a
+// standing licence for this repository's verifiers to execute against it. It
+// also made KarNama go red for a reason that was not a KarNama defect, which
+// happened within the hour of the reviewer predicting it. KN-182.
+//
+// Nothing is lost from this file. The fixtures prove the logic, and they prove
+// it on cases a real file does not contain: a decoy, a renamed heading, a
+// detached marker.
 
 check('the OLD logic would have passed the decoy, so this fix is load-bearing', () => {
   // The mutation that must SURVIVE, which is stronger evidence than any passing
@@ -135,12 +170,41 @@ check('the OLD logic would have passed the decoy, so this fix is load-bearing', 
     : 'the old logic caught the decoy too, so this card was fixing something that was not broken'
 })
 
-check('KN-166 calls this function rather than keeping its own copy', () => {
-  const source = readFileSync(join(ROOT, 'agent', 'scripts', 'verify', 'KN-166.mjs'), 'utf8')
-  if (!/closesBeforeRoasting/.test(source)) return 'KN-166 does not use the shared extraction'
-  // The old indexOf pair must be gone, or both live side by side and the weak
-  // one still decides.
-  return /indexOf\('roast\.py task'\)/.test(source) ? 'KN-166 still compares positions in the whole document' : null
+check('the HEADING selector would have passed the reviewer case, so KN-189 was real', () => {
+  // The second mutation that must SURVIVE. The first reproduces version one,
+  // the whole-document comparison; this reproduces version two, the heading
+  // keywords, against the fixture that defeated it. Without it, the marker
+  // change is equally consistent with having fixed nothing.
+  const lines = prompt({ decoy: true, reversed: true, renamedHeading: true }).split('\n')
+  const heading = lines.findIndex(
+    (line) => /^\s*\d+\.\s/.test(line) && /\bdone\b/i.test(line) && /\broast\b/i.test(line),
+  )
+  if (heading === -1) return 'the fixture has no step the old selector would have matched at all'
+  // It selects step 3, the decoy, whose block is correctly ordered.
+  const body = lines.slice(heading).join('\n')
+  const closeAt = body.indexOf('todo move <id> done')
+  const roastAt = body.indexOf('roast.py task')
+  return closeAt !== -1 && closeAt < roastAt
+    ? null
+    : 'the old heading selector would have caught this too, so KN-189 was not a real defect'
+})
+
+check('nobody keeps a private copy of this logic', () => {
+  // This check used to require KN-166 to call the shared extraction. KN-166 no
+  // longer reads any prompt at all: it read a sibling project's files, and the
+  // owner's instruction was that those rules be CHECKED once, not run from
+  // here. So the assertion that remains is the one that still means something:
+  // no verifier has its own hand-rolled version of this, which is how two
+  // copies come to disagree while both report success.
+  const directory = join(ROOT, 'agent', 'scripts', 'verify')
+  const offenders = readdirSync(directory)
+    .filter((name) => name.endsWith('.mjs') && name !== 'KN-184.mjs')
+    .filter((name) => {
+      const text = readFileSync(join(directory, name), 'utf8')
+      const code = text.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1')
+      return /indexOf\('roast\.py task'\)|roast-order/.test(code) && !/prompt-order\.mjs/.test(code)
+    })
+  return offenders.length ? `${offenders.join(', ')} reimplements the block reading` : null
 })
 
 if (failures.length) {

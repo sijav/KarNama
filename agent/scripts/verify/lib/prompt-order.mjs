@@ -1,80 +1,104 @@
-// Reads the ORDER of the commands inside a loop prompt's close-and-roast block.
+// Reads the ORDER of the commands inside a loop prompt's normative block.
 //
-// This exists because a prompt said the right thing in prose and the opposite
-// in the command block underneath it, and the first check written for that read
-// the whole document: it took the first `todo move <id> done` and the first
-// `roast.py task` anywhere in the text and compared their positions. An editor
-// who leaves a correctly ordered example higher up and reverses the real block
-// passes that. A block is what gets copied; the sentence above it is not.
+// This is the third version. The first two are worth recording, because they
+// failed the same way twice and the third fix is a different KIND of thing
+// rather than a better guess:
 //
-// It is a separate module so the check and its own tests can run the SAME
-// extraction. Testing a copy of the logic proves the copy works.
+//   1. It compared the first close command and the first roast command anywhere
+//      in the whole document. A correctly ordered EXAMPLE higher up defeated it.
+//   2. It selected the block by heading keywords, the first numbered step whose
+//      line contained both "done" and "roast". A step headed "If a task is done,
+//      roast it only after closing it" defeated it, because the real step was
+//      headed "Close the task, then request review" and came second.
+//
+// Both INFERRED which block was normative from the words around it, and words
+// are what an editor changes. So the block now says so itself:
+//
+//     <!-- roast-order -->
+//     ```bash
+//     todo move <id> done
+//     roast ... &
+//     ```
+//
+// Invisible in any renderer, impossible to produce by rewording, and greppable,
+// so "which block is normative" has a literal answer instead of a heuristic one.
+//
+// The marker binds to ONE fence. Blank lines between the two are allowed and
+// nothing else is: a marker floating above a paragraph that happens to precede a
+// fence is the same inference problem wearing a marker, which the plan check
+// named as the most likely way to get this wrong.
+
+export const MARKER = '<!-- roast-order -->'
+
+const FENCE = /^\s*(```|~~~)/
 
 /**
- * The step's block, found by its HEADING rather than by counting fences.
- *
- * Counting was the other option and it breaks the moment a third block is
- * added anywhere above. Checking every block that mentions both commands was
- * the other, and it cannot coexist with documentation that teaches by
- * counter-example. The heading says which block is normative, so the heading is
- * what selects it.
- *
- * The fence may be indented, and here it always is: the block sits inside a
- * numbered list item, so it is indented by three spaces. Matching a fence only
- * at the start of a line would find nothing at all and report the block as
- * missing, which reads exactly like a prompt that has no block.
+ * Every block a marker claims. A list, not one block, because two markers mean
+ * two normative blocks: either a mistake worth reporting or a file that has
+ * grown a second rule, and both want checking rather than silently taking the
+ * first. This is not the same as checking every fence, which would reject a
+ * document teaching by counter-example.
  */
-export const closeAndRoastBlock = (markdown) => {
+export const markedBlocks = (markdown) => {
   const lines = markdown.split('\n')
+  const blocks = []
+  const problems = []
 
-  // The step that closes and roasts, by what it says rather than by its number,
-  // since renumbering the loop is a normal edit and should not break this.
-  const heading = lines.findIndex(
-    (line) => /^\s*\d+\.\s/.test(line) && /\bdone\b/i.test(line) && /\broast\b/i.test(line),
-  )
-  if (heading === -1) return { found: false, why: 'no numbered step mentions both closing and roasting' }
+  for (let index = 0; index < lines.length; index += 1) {
+    if (!lines[index].includes(MARKER)) continue
 
-  let opening = -1
-  for (let index = heading + 1; index < lines.length; index += 1) {
-    // Stop at the next numbered step: a block belonging to a LATER step is not
-    // this step's block, and running past the boundary is how a check ends up
-    // reading somebody else's example.
-    if (index !== heading && /^\s*\d+\.\s/.test(lines[index])) break
-    if (/^\s*(```|~~~)/.test(lines[index])) {
-      opening = index
-      break
+    // Skip blank lines only. Anything else between the marker and the fence
+    // means the marker is not attached to a block.
+    let at = index + 1
+    while (at < lines.length && !lines[at].trim()) at += 1
+
+    if (at >= lines.length || !FENCE.test(lines[at])) {
+      problems.push(`the marker on line ${index + 1} is not directly above a command block`)
+      continue
     }
+
+    const marker = FENCE.exec(lines[at])[1]
+    const close = lines.findIndex((line, position) => position > at && line.trimStart().startsWith(marker))
+    if (close === -1) {
+      problems.push(`the block marked on line ${index + 1} is never closed`)
+      continue
+    }
+    blocks.push({ body: lines.slice(at + 1, close), from: at, to: close })
   }
-  if (opening === -1) return { found: false, why: 'that step has no command block under it' }
 
-  const marker = /^\s*(```|~~~)/.exec(lines[opening])?.[1] ?? '```'
-  const close = lines.findIndex((line, index) => index > opening && line.trimStart().startsWith(marker))
-  if (close === -1) return { found: false, why: 'the command block is never closed' }
-
-  return { found: true, body: lines.slice(opening + 1, close), from: opening, to: close }
+  return { blocks, problems }
 }
 
 /**
- * Whether that block closes the task before it hands it to a reviewer.
+ * Whether every marked block closes the task before handing it to a reviewer.
  *
- * Both commands are located by LINE, and a line that is only a comment does not
- * count: `# todo move <id> done` is documentation of a command, not the command.
- * Line order rather than character offset, because a shell block is a sequence
- * of lines and two commands on one line separated by a semicolon would be a
- * different shape worth failing on rather than guessing at.
+ * An unmarked file is reported as unmarked rather than guessed at. Falling back
+ * to a heuristic would restore the exact inference this file exists to remove,
+ * and it would do it silently, which is worse than saying the question cannot
+ * be answered from this input.
  */
 export const closesBeforeRoasting = (markdown) => {
-  const block = closeAndRoastBlock(markdown)
-  if (!block.found) return { ok: false, why: block.why }
+  const { blocks, problems } = markedBlocks(markdown)
+  if (problems.length) return { ok: false, why: problems.join('; ') }
+  if (!blocks.length) {
+    return { ok: false, why: `no block is marked with ${MARKER}, so which one is normative is not stated` }
+  }
 
-  const executable = block.body.filter((line) => line.trim() && !line.trimStart().startsWith('#'))
-  const closeAt = executable.findIndex((line) => /todo\s+move\s+\S+\s+done/.test(line))
-  const roastAt = executable.findIndex((line) => /roast(\.py|\.mjs)?\s+task|npm run roast/.test(line))
+  for (const block of blocks) {
+    // A line that is only a comment does not count: `# todo move <id> done` is
+    // documentation of a command, not the command. Recognising a command in
+    // command POSITION rather than command-shaped text anywhere on the line is
+    // KN-190 and is deliberately not solved here.
+    const executable = block.body.filter((line) => line.trim() && !line.trimStart().startsWith('#'))
+    const closeAt = executable.findIndex((line) => /todo\s+move\s+\S+\s+done/.test(line))
+    const roastAt = executable.findIndex((line) => /roast(\.py|\.mjs)?\s+task|npm run roast/.test(line))
 
-  if (closeAt === -1) return { ok: false, why: 'the block never closes the task' }
-  if (roastAt === -1) return { ok: false, why: 'the block never fires a roast' }
-  if (closeAt === roastAt) return { ok: false, why: 'both commands are on one line, so the order is not readable' }
-  return closeAt < roastAt
-    ? { ok: true }
-    : { ok: false, why: 'the block fires the roast BEFORE the close, whatever the prose above it says' }
+    if (closeAt === -1) return { ok: false, why: 'the marked block never closes the task' }
+    if (roastAt === -1) return { ok: false, why: 'the marked block never fires a roast' }
+    if (closeAt === roastAt) return { ok: false, why: 'both commands are on one line, so the order is not readable' }
+    if (closeAt > roastAt) {
+      return { ok: false, why: 'the block fires the roast BEFORE the close, whatever the prose above it says' }
+    }
+  }
+  return { ok: true }
 }

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 191,
+  "nextId": 192,
   "tasks": [
     {
       "id": "KN-001",
@@ -4387,11 +4387,12 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The normative block is identified by an explicit stable marker rather than by keywords in a heading; both fixtures the reviewer ran, an earlier step whose prose contains both words, and a real step whose heading uses different words, are covered as cases; and each fails before the fix and passes after.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T01:18:51.144Z"
+      "createdAt": "2026-09-10T01:18:51.144Z",
+      "updatedAt": "2026-09-10T01:30:09.842Z"
     },
     {
       "id": "KN-190",
@@ -4407,6 +4408,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T01:18:51.245Z"
+    },
+    {
+      "id": "KN-191",
+      "title": "The roast skill writes its transient result into the project, not a scratch directory",
+      "desc": "The owner asked why on 2026-09-10. Both halves of the roast skill write .claude/roast-result.md into whatever project they are run in. It is gitignored so it never reaches history, but it is still transient agent output living in a working tree: it shows up in file listings and editors, and gitignored-plus-untracked is precisely the category that vanishes without anyone noticing, which is how two plan files were destroyed earlier the same day. I did not choose the location, roast.py already used it and the Node port copied it faithfully, which explains it without justifying it. Note what must NOT move: roast-sessions.json holds the session ids that let a reviewer resume a conversation across sessions, so it has to stay project-local and persistent; a session-scoped scratch directory would silently start a fresh conversation every time. KarNama's own harness, agent/scripts/roast.mjs, archives to agent/roasts/ and that is tracked on purpose, since those are manifest-bound evidence rather than scratch.",
+      "why": "A tool that leaves working files in someone's project is a tool they have to tidy up after, and the answer to why is currently because it always did that. The distinction worth getting right is between state the tool NEEDS to keep, which belongs to the project, and output it happened to produce, which does not.",
+      "severity": "medium",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The transient result file is written to a scratch location rather than into the project; roast-sessions.json stays project-local with its reason recorded; both halves agree on where and the parity test still passes; the gitignore entries for anything that no longer lands in the project are removed rather than left as fossils; and running a roast in a clean checkout leaves that checkout unchanged.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T01:34:56.950Z"
     }
   ]
 }

@@ -24,9 +24,11 @@ apps/api/dist/
 .claude/todo.db
 
 # Roast output and session ids: this machine, not the project.
-.claude/roast-result.md
+# The roast RESULT and its temp file no longer land here at all: they are
+# transient output and go to a scratch directory instead. The session list
+# stays, because it holds the ids that let a reviewer resume a conversation
+# and a scratch directory would silently start a fresh one every session.
 .claude/roast-sessions.json
-.claude/roast-last-message.tmp
 # Plans are NOT ignored. They live beside the work they describe, named
 # "#<id> - <title>.md", and are committed with it. This line used to ignore
 # .claude/plan-*.md, which is how two plans came to be deleted on the reasoning
