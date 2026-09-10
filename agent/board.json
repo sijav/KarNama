@@ -4875,15 +4875,17 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The hover and focus rules are scoped to a marker the component owns rather than to a MUI class. Focusing a Checked and an Indeterminate checkbox outlines the FRAME ONLY, asserted by reading computed outline on every descendant and requiring exactly one to carry it. A mutation restoring the old descendant selector makes that assertion fail. The five Figma states still match tokens.",
       "roasts": [],
       "notes": [
         "Taken ahead of what next picked, deliberately and recorded rather than silently. next offered KN-017 then KN-032, both new components that would write their hover and focus styling by copying KN-013, the first one. That pattern selects by a MUI class name and matches the inner glyph as well as the frame, so replicating it is how one visible defect becomes thirty-seven. The loop's rule that the script picks exists to stop cherry-picking easy work; this is the opposite trade."
       ],
       "createdAt": "2026-09-10T04:52:10.345Z",
-      "updatedAt": "2026-09-10T05:01:10.518Z",
-      "verify": "node agent/scripts/verify/KN-205.mjs"
+      "updatedAt": "2026-09-10T05:01:46.786Z",
+      "verify": "node agent/scripts/verify/KN-205.mjs",
+      "evidence": "node agent/scripts/verify/KN-205.mjs, 4 checks, all pass, worktree identical before and after. It BREAKS the fix rather than reading it: restoring the MuiBox-root selector fails the focus assertion, and removing the frame marker fails too, so the class is load-bearing rather than decorative. REPRODUCED BEFORE AND AFTER, in a real browser. Before: querying MuiBox-root inside a focused Checked story returned a DIV and an svg, computed outline 2px solid on BOTH, so the white 12px tick drew its own blue outline. After: exactly ONE outlined element and it is DIV.KarnamaCheckbox-frame. The rules were also verified deterministically from the emitted stylesheet, which does not depend on simulating a pointer: the hover rule is MuiCheckbox-root:hover:not(.Mui-checked):not(.Mui-disabled):not(.MuiCheckbox-indeterminate) .KarnamaCheckbox-frame with border-color rgb(37,99,235), the focus rule is MuiCheckbox-root.Mui-focusVisible .KarnamaCheckbox-frame with outline rgb(37,99,235) solid 2px, the frame IS a child of the root so the descendant selector can reach it, and the glyph does NOT carry the frame class so neither rule can reach the glyph. I GOT THE FIX WRONG FIRST and the record matters more than the fix. I moved hover INTO the frame, reasoning that the frame already knows whether it is filled or disabled and that this removed a dependency on MUI state classes. Hovering with a real pointer showed the border never changing. MUI lays an invisible input over the whole control and it is a SIBLING of the frame, not a descendant, so it is the topmost element at the frame centre and .frame:hover never matches; the label does. elementFromPoint at the frame centre returns INPUT.PrivateSwitchBase-input and frameIsAncestorOfInput is false. Hover belongs on the root. Only the TARGET was ever wrong, which is what the card said. The regression test is in the Checked story rather than only in the verifier: it adds Mui-focusVisible and requires exactly one descendant to carry an outline and that it is the frame. A story that merely renders would pass either way, which is why the assertion is about the outline and not about the render. KN-205 is a CHILD of KN-013, so it closed on the files it changed: eslint on src/shared/checkbox clean, tsc clean across the workspaces, 305 web tests passing with coverage 100 percent on all four metrics, and KN-013.mjs still passes, which matters because it is the verifier for the card this came out of. One repository rule pushed back and was right: my assertion compared outlineWidth to a pixel string, and noLiterals refuses one anywhere outside src/theme, stories included. Parsing the number is cleaner anyway.",
+      "closedAt": "2026-09-10T05:01:46.786Z"
     },
     {
       "id": "KN-206",
