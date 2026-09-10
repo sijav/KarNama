@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 76 of 257 tasks done · 155 of 659 points.
+Project **KarNama** · 77 of 257 tasks done · 156 of 659 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-252` Resetting the Input's value control turns the same field from controlled to uncontrolled** (critical, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-252` | Resetting the Input's value control turns the same field from controlled to uncontrolled | critical | 1 | web | none | Switching the value control between set and unset starts the field over rather than changing its mode in place, so React never sees one input go from controlled to uncontrolled or back; a check in a development build, where React reports it, sets value, types, resets it, and finds no such report and a field showing its default again; a mutation removing the fix brings the report back. |
+**Next up: `KN-254` An empty error string puts the Input in its error state** (critical, 1 pt, web)
 
 ## Blocked (3)
 
@@ -204,7 +198,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (76)
+## Done (77)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -226,6 +220,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-248` | Nothing checks the Input's placeholder stays put when an empty field takes focus | critical | 1 | web | KN-250 | A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name. |
 | `KN-249` | Setting value in the Input's Controls freezes the field | critical | 1 | web | none | After value is set in Controls, typing into the field changes it and the value control follows what was typed, the story binding value through Storybook's args; or no story offers value. A check sets value through Storybook's own arg update on a built Storybook, types into the field, and asserts both the field and the story's args show the typed text, and it fails with the binding taken out. |
 | `KN-250` | The document's direction and language are set after the first paint | critical | 1 | web | none | The document element's dir and lang are set in the commit that renders the tree, before paint, not in a passive effect: on a production Storybook build every story's play function starts with html dir and lang already matching its locale, recorded at the playing phase in both languages, and the Input's Focus story passes there; the built app, loaded with a stored English preference, has dir ltr by the time its first render's DOM exists; and a mutation back to useEffect fails the check. |
+| `KN-252` | Resetting the Input's value control turns the same field from controlled to uncontrolled | critical | 1 | web | none | Switching the value control between set and unset starts the field over rather than changing its mode in place, so React never sees one input go from controlled to uncontrolled or back; a check in a development build, where React reports it, sets value, types, resets it, and finds no such report and a field showing its default again; a mutation removing the fix brings the report back. |
 | `KN-058` | Run verify commands without a shell | critical | 2 | agent | KN-001 | A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done. |
 | `KN-065` | move done must require a verify command | critical | 2 | agent | KN-001 | move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one. |
 | `KN-088` | Prove the REAL test project reports a failure, not a separate config | critical | 2 | agent | KN-003 | The planted broken test is detected through the configuration npm test uses, and a mutation that empties the real unit project include makes agent/scripts/verify/KN-003.mjs fail rather than pass. |
@@ -3189,7 +3184,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-252` Resetting the Input's value control turns the same field from controlled to uncontrolled
 
-- **status** in_progress · **severity** critical · **points** 1 · **area** web
+- **status** done · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-249 roast and confirmed from the code: value passes straight through to InputBase and the story's key changes only with defaultValue, so setting value in Controls and then resetting it to undefined turns the same input element from controlled to uncontrolled. React reports that in development as a component changing a controlled input to be uncontrolled, and the field is left holding whatever it last showed, with no arg behind it.

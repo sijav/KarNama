@@ -6296,13 +6296,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Switching the value control between set and unset starts the field over rather than changing its mode in place, so React never sees one input go from controlled to uncontrolled or back; a check in a development build, where React reports it, sets value, types, resets it, and finds no such report and a field showing its default again; a mutation removing the fix brings the report back.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T10:30:25.210Z",
-      "updatedAt": "2026-09-10T11:43:00.098Z",
-      "verify": "node agent/scripts/verify/KN-252.mjs"
+      "updatedAt": "2026-09-10T11:43:59.177Z",
+      "verify": "node agent/scripts/verify/KN-252.mjs",
+      "evidence": "node agent/scripts/verify/KN-252.mjs passed. React reports a changed input mode only in development, so it starts Storybook's dev server on port 6252, and for every Input story that offers value with an enabled field (default, filled, focus, hover, label-is-bound) it emits updateStoryArgs value 'x7', waits for the field to show it, types '42' over it at 60ms a key, emits resetStoryArgs for value, and records every console message matching React's controlled or uncontrolled report. (1) No story reports a change of mode, every field took the typing, and every field shows its default after the reset ('' or the typed title); before the fix all five reported both changes, uncontrolled to controlled on set and controlled to uncontrolled on reset, and showed '42' after the reset. (2) THE CASE: keyed on defaultValue alone again, the reports return. (3) The thirteen Input stories pass. The server it started is stopped with its process tree. The new key keeps its first character while value stays set, so typing does not remount the field, which check 1's typing shows. Also rerun and passing: KN-242 and KN-246 (anchors moved to the new key), KN-249, KN-243, KN-248, KN-241, KN-011, KN-247 (production sweep), KN-250 (no story fails on the production build); the whole unit project, 346 tests, since its scanners read every source file; workspace lint zero warnings, tsc clean. A child task, so it closes on the tests for the files it changed. NOT established: the Controls panel's own reset button, which emits the same resetStoryArgs but was not clicked; and a defaultValue changed while value is set, which starts the field over and drops the controlled value's focus, as KN-246 already does for a new default.",
+      "closedAt": "2026-09-10T11:43:59.177Z"
     },
     {
       "id": "KN-253",
