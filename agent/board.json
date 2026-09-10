@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 265,
+  "nextId": 268,
   "tasks": [
     {
       "id": "KN-001",
@@ -2151,10 +2151,11 @@
       "exit": "DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values.",
       "roasts": [],
       "notes": [
-        "THE RESEARCH IS DONE; the DECISION is the owner's and they asked to be asked later. Blocked rather than backlog so it stops being picked as buildable. The original environment could not reach either site; this one can, so the checking half of this card is finished and is recorded here. JOB LEVEL IS CONFIRMED. JobVision has a رده سازمانی filter carrying worker, employee, specialist, senior specialist, middle manager, deputy and senior manager, which is our list. TWO DISCREPANCIES remain and both need the owner: JobVision appears to treat معاون and مدیر ارشد as SEPARATE levels where we combine them into one, and مدیر عامل does not appear in their list at all. jobinja has no job-level filter, so it cannot confirm or deny. EMPLOYMENT TYPE CANNOT BE CONFIRMED, because the two sources disagree with each other and with us. jobinja calls the field نوع قرارداد and offers four: تمام‌وقت, پاره‌وقت, کارآموزی, دورکاری. JobVision offers seven: دورکاری, تمام‌وقت, پاره‌وقت, آنلاین, در منزل, فریلانسری, موقت. Ours has six. jobinja does NOT have قراردادی or پروژه‌ای; JobVision has موقت and فریلانسری which we do not. So there is no canonical list to match, and the card's other branch, the owner confirming them as final, is the only route. A MODELLING PROBLEM SURFACED and is NOT decided: دورکاری sits inside this enum on both boards and in our list, but a job can be full-time AND remote, so an enum forces a choice that reality does not. The owner said to skip it and ask later. Do not settle it in passing. Sources checked 2026-09-10: jobinja.ir/jobs and jobvision.ir/jobs."
+        "THE RESEARCH IS DONE; the DECISION is the owner's and they asked to be asked later. Blocked rather than backlog so it stops being picked as buildable. The original environment could not reach either site; this one can, so the checking half of this card is finished and is recorded here. JOB LEVEL IS CONFIRMED. JobVision has a رده سازمانی filter carrying worker, employee, specialist, senior specialist, middle manager, deputy and senior manager, which is our list. TWO DISCREPANCIES remain and both need the owner: JobVision appears to treat معاون and مدیر ارشد as SEPARATE levels where we combine them into one, and مدیر عامل does not appear in their list at all. jobinja has no job-level filter, so it cannot confirm or deny. EMPLOYMENT TYPE CANNOT BE CONFIRMED, because the two sources disagree with each other and with us. jobinja calls the field نوع قرارداد and offers four: تمام‌وقت, پاره‌وقت, کارآموزی, دورکاری. JobVision offers seven: دورکاری, تمام‌وقت, پاره‌وقت, آنلاین, در منزل, فریلانسری, موقت. Ours has six. jobinja does NOT have قراردادی or پروژه‌ای; JobVision has موقت and فریلانسری which we do not. So there is no canonical list to match, and the card's other branch, the owner confirming them as final, is the only route. A MODELLING PROBLEM SURFACED and is NOT decided: دورکاری sits inside this enum on both boards and in our list, but a job can be full-time AND remote, so an enum forces a choice that reality does not. The owner said to skip it and ask later. Do not settle it in passing. Sources checked 2026-09-10: jobinja.ir/jobs and jobvision.ir/jobs.",
+        "2026-09-10: the owner answered the employment type half, in chat: eight values, the six plus freelance فریلنسری and temporary موقت, a superset of both boards, and a job can be full-time and remote at once, so the field holds more than one. Carried by its own card, with the migration. The job level list was not answered; this card now waits on that alone."
       ],
       "createdAt": "2026-09-07T21:48:46.881Z",
-      "updatedAt": "2026-09-10T05:29:11.609Z",
+      "updatedAt": "2026-09-10T13:19:55.330Z",
       "blockedReason": "Waiting on the owner, who asked to be asked later. The CHECKING half is done and recorded in the notes: job level is confirmed against JobVision, employment type cannot be confirmed because jobinja and JobVision disagree with each other and with us. What is left is a decision about enum values that reach the database, the GraphQL schema and the Select components, so it is not an agent's to make."
     },
     {
@@ -4895,19 +4896,20 @@
       "title": "Decide how a card is dropped onto a column that is collapsed to a count",
       "desc": "KN-070 settled that the rejected column sits last and renders collapsed to a count by default, expanding on click. It did NOT settle what happens when a card is DRAGGED onto it while collapsed, and rejected is the status cards are moved into most, so this is the common case rather than an edge. Open questions, all of them the owner's or the designer's call rather than a builder's: does the collapsed column expand on hover during a drag, and after what delay; does it accept a drop while still collapsed; does the count animate or does the column open to show where the card landed; and what does the keyboard path target, since a collapsed column has no visible slot to move a card into and the keyboard alternative is part of KN-061 rather than a later improvement. Raised while doing KN-149. I nearly folded these into KN-061's exit condition as though KN-070 had already answered them; a plan check pointed out that doing so would invent a design requirement while claiming to propagate an existing one. The frames may already draw some of this, so look at the Drag and Drop Done states before asking.",
       "why": "KN-061 is drag a card between columns and it cannot be built correctly against an undecided target. Left open, whoever builds it picks an answer silently and the collapsed column either becomes undroppable, which breaks the main interaction for the most-used status, or springs open on hover in a way nobody chose. Deciding it costs a conversation now and a rebuild of the drag behaviour later, which is the same trade KN-070 was settled early to avoid.",
-      "severity": "high",
+      "severity": "critical",
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "blocked",
+      "status": "backlog",
       "exit": "DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker.",
       "roasts": [],
       "notes": [
-        "Closed by mistake on 2026-09-10 and REVERTED. I put the three questions to the owner, they answered no preference on all three, and I read that as delegation and decided it myself. That was wrong twice over: no preference is not delegation, and the owner then said plainly to ask again, after there is something running to look at. Nobody can judge how a drag onto a collapsed column should feel by reading three bullet points; they need a board in front of them. So this stays BLOCKED until the board screen runs, and the question gets asked again then, against something real."
+        "Closed by mistake on 2026-09-10 and REVERTED. I put the three questions to the owner, they answered no preference on all three, and I read that as delegation and decided it myself. That was wrong twice over: no preference is not delegation, and the owner then said plainly to ask again, after there is something running to look at. Nobody can judge how a drag onto a collapsed column should feel by reading three bullet points; they need a board in front of them. So this stays BLOCKED until the board screen runs, and the question gets asked again then, against something real.",
+        "2026-09-10: the owner answered, in chat. A card dragged onto the rejected column while it is collapsed to a count: it expands after a short hover. After the card lands: it recollapses with a brief highlight. The keyboard path: the collapsed column is one target, announced with its count. Unblocked, and raised to critical because recording the owner's answer in the design contract is not work to queue behind the component cards; the drag itself, KN-061, stays where the law puts it."
       ],
       "createdAt": "2026-09-10T02:06:44.051Z",
       "blockedReason": "Waiting on the owner. This is a design DECISION, not a build: KN-070 settled that the rejected column collapses to a count, and did not settle what a drag onto it does. Whether it expands on hover and after what delay, whether it accepts a drop while collapsed, what the user sees after the drop lands, and what the keyboard path targets are all the owner's or the designer's call. An agent choosing them silently is the exact failure KN-153 was about. Blocked rather than backlog so it stops being picked as though it were buildable.",
-      "updatedAt": "2026-09-10T04:15:46.796Z"
+      "updatedAt": "2026-09-10T13:19:55.178Z"
     },
     {
       "id": "KN-197",
@@ -6585,6 +6587,51 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T12:57:37.062Z"
+    },
+    {
+      "id": "KN-265",
+      "title": "Employment type becomes eight values, and a job can hold more than one",
+      "desc": "The owner's decision of 2026-09-10, answering KN-073's employment type question. Ship eight values, a superset of both Iranian job boards: the six in DESIGN.md, full-time تمام‌وقت, part-time پاره‌وقت, internship کارآموزی, remote دورکاری, contract قراردادی and project پروژه‌ای, plus freelance فریلنسری and temporary موقت. The owner accepted that contract and temporary, and freelance and project, overlap in practice. And a job can be full-time AND remote, so the field holds more than one value. KN-034's schema stores a single value from the old six, so this is a migration: the enum gains two values and the column becomes a list, carrying existing values over.",
+      "why": "These are database enum values, so the list and whether a job holds one or several are fixed by a migration, and today a posting that is full-time and remote cannot be recorded truthfully. High rather than critical: it is data, and the owner's order is components first.",
+      "severity": "high",
+      "points": 3,
+      "area": "api",
+      "parent": [],
+      "status": "backlog",
+      "exit": "DESIGN.md's employment type list gives the eight values as the owner's decision of 2026-09-10, with the overlap noted, and says the field holds more than one; the Prisma schema has the eight and a record holds a list of them, through a migration that carries existing values over and is tested; the GraphQL schema and the generated types expose a list; the catalogs carry English ids and Persian for the two new values; and KN-073 is left holding only the job level list.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T13:19:54.606Z"
+    },
+    {
+      "id": "KN-266",
+      "title": "The Input's border takes layout space, so its text sits a pixel inward of the file",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while reading 95:38 for KN-244. Both field frames, 95:5 Default and 95:19 Focus, have strokeAlign INSIDE and strokesIncludedInLayout false, with 16 of padding at each side, read with use_figma: the stroke is painted over the padding and the text sits 16 from the edge in every state. The Input draws a CSS border, which is laid out, so its text sits at 17, a pixel of border plus 16 of padding, and the focus state holds it at 17 by dropping the padding to 15, an off-scale value compensating for an offset the file does not have. A stroke that takes no space, an inset box-shadow for instance, with spacing/md padding in every state, is what the file draws.",
+      "why": "Every Input sits a pixel off the file, and the 15px focus padding is the same computed off-scale value KN-263 removes from the Status Chip. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "In every state the Input's text sits spacing/md, 16px, from the field's outer edge, as 95:5 and 95:19 draw it, with the stroke painted inside that padding and taking no layout space; no padding in Input.tsx is computed from a border width; the Default and Focus stories measure the text's distance from the edge at 16; and the other bordered components are checked for the same offset, each matching or carrying a card.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T13:19:54.737Z"
+    },
+    {
+      "id": "KN-267",
+      "title": "The Input has no leading or trailing icon slot, which node 95:38 carries",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while reading 95:38 for KN-244. The Input component set carries four boolean properties, the label, the helper text, and a leading and a trailing icon, 20 by 20 in text/secondary at spacing/2xs from the text, and its own description says so. The Input built for KN-011 has a required label, an optional helper, and no icon slot, so the Search Bar and anything else composed on an Input would each hand-roll one.",
+      "why": "A component missing part of what the file draws is not finished, and the icons are what later components build on. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The Input takes an optional leading and an optional trailing icon, each 20 by 20 at spacing/2xs from the text in text/secondary, matching 95:38 with the icons on, in both directions; stories show each and both; and the label's boolean in the file is either honoured, with the accessible name then required another way, or the decision not to is recorded in DESIGN.md.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T13:19:54.870Z"
     }
   ]
 }
