@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 54 of 224 tasks done · 122 of 610 points.
+Project **KarNama** · 54 of 226 tasks done · 122 of 614 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-222` The tooltip's 260 depends on the app's CSS reset, and the story finds the surface by its DOM position** (critical, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-222` | The tooltip's 260 depends on the app's CSS reset, and the story finds the surface by its DOM position | critical | 1 | web | none | The tooltip surface sets its own box-sizing, and a story rendering it WITHOUT CssBaseline measures 260; the width story finds the surface by a marker the component puts on the tooltip slot itself rather than by DOM position; and a mutation removing the box-sizing fails the no-reset story. |
 
 ## Blocked (3)
 
@@ -18,13 +24,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (165)
+## Backlog (166)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-222` | The tooltip's 260 depends on the app's CSS reset, and the story finds the surface by its DOM position | critical | 1 | web | none | The tooltip surface sets its own box-sizing, and a story rendering it WITHOUT CssBaseline measures 260; the width story finds the surface by a marker the component puts on the tooltip slot itself rather than by DOM position; and a mutation removing the box-sizing fails the no-reset story. |
 | `KN-224` | The tokens.ts lingui exemption has no TECH-DEBT record and nothing stops copy being added to the file | critical | 1 | web | none | TECH-DEBT.md has an entry for the tokens.ts exemption in the file's what, why, fix and retiring-check format, and a unit test fails if any string exported from src/theme/tokens.ts is not a design value, a colour, a length, a shadow or the font stack, proved by a mutation adding a copy string to the file. |
+| `KN-225` | The Hover story tells Vitest from Storybook by an undocumented Vitest internal | critical | 1 | web | none | The story checks a flag this repository sets in the storybook project's Vitest setup, not a Vitest internal; the published Storybook still takes the canvas branch with no error; and a mutation removing the flag from the setup file fails the Hover story under npm test rather than passing it. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-207` | The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback | critical | 2 | web | none | Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering. |
@@ -42,6 +48,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-062` | Shared story fixtures | critical | 3 | web | KN-003, KN-007 | Every component story that needs data uses the shared fixtures, a Docs page rendering many stories at once seeds without error, the fixtures never appear in the production bundle and a test asserts that, and each fixture set has a long value that exercises truncation in both languages. |
 | `KN-206` | The Checkbox has no accessible name and a target smaller than WCAG allows | critical | 3 | web | none | The component takes an id, and rendering one with no accessible name is impossible without it being visible: either the type requires one of aria-label, aria-labelledby or a wrapping label, or a check fails on a story that omits all three. Every story names its control. The interactive target is at least 24 by 24 while the DRAWN frame stays 20 by 20 from Figma, or the spacing exception is demonstrated for the specific placement and written down. A test asserts the hit area, not the frame. |
 | `KN-221` | The catalogs are never compiled, so a message with a count or a placeholder renders raw ICU in production | critical | 3 | web | none | A message with a plural and a placeholder renders correctly in BOTH locales in a production build, checked by rendering it from the built output or under NODE_ENV=production rather than in development, with Persian digits in fa-IR; a mutation that loads the catalogs uncompiled again makes that check fail; and the catalog tests still prove every English id has a non-empty Persian translation. |
+| `KN-226` | Nothing committed checks that the published Storybook renders its stories without errors | critical | 3 | infra | none | A committed check builds Storybook for production, opens every story in headless Chromium, and fails on any page error or console error; it runs before the Pages workflow publishes; and a mutation removing the Hover story's test-runner guard makes it fail on the emitted import error. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | critical | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | critical | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
 | `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
@@ -2762,6 +2769,8 @@ CHILD OF KN-208, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Under Vitest the Hover story imports the pointer API without a catch and fails loudly if it cannot, the published Storybook still renders it as a canvas with no error, and a mutation making the import fail under Vitest fails the story rather than passing it.
 
+**Roasts.** round 1 scored 3.8 with 2 critical(s)
+
 ### `KN-221` The catalogs are never compiled, so a message with a count or a placeholder renders raw ICU in production
 
 - **status** backlog · **severity** critical · **points** 3 · **area** web
@@ -2775,7 +2784,7 @@ Found while working KN-212, and reproduced rather than inferred. src/i18n/locale
 
 ### `KN-222` The tooltip's 260 depends on the app's CSS reset, and the story finds the surface by its DOM position
 
-- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **status** in_progress · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-210, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-210 roast, both rated critical by the reviewer, filed as one card because they are the same lines and the same test. FIRST: the tooltip surface sets width 260 and padding 12 but no box-sizing, so it is 260 outer only because AppProviders renders CssBaseline, which makes everything border-box; under a bare ThemeProvider the same surface is 284. SECOND: the OnHover story measures the firstElementChild of the element carrying role=tooltip, which is MUI's popper, so it relies on MUI placing the drawn surface first; a transition wrapper of the same width would pass while measuring the wrong element. My own view is that both are major rather than critical, since every real render sits under CssBaseline and the current DOM is correct, but the board records the reviewer's rating and the fixes are one line each.
@@ -2805,4 +2814,26 @@ CHILD OF KN-218, recorded in prose because board.json cannot express parent_task
 **Why.** It breaks a standing repository rule, in the one config the i18n guarantee rests on, and the exemption is only safe for as long as the file stays copy-free, which nothing checks. Critical on the owner's order of 2026-09-10 with the other findings on built components, since KN-218 was one.
 
 **Exit condition.** TECH-DEBT.md has an entry for the tokens.ts exemption in the file's what, why, fix and retiring-check format, and a unit test fails if any string exported from src/theme/tokens.ts is not a design value, a colour, a length, a shadow or the font stack, proved by a mutation adding a copy string to the file.
+
+### `KN-225` The Hover story tells Vitest from Storybook by an undocumented Vitest internal
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-220, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-220 roast and confirmed: the story returns early unless globalThis.__vitest_browser__ exists, and that global is a Vitest internal that Storybook's addon happens to read, not a documented API. If an upgrade renames it, every Hover run under Vitest takes the Storybook-UI branch and passes on the unhovered assertion: the exact false pass KN-220 closed, back without a single file in this repository changing. KN-013.mjs would notice through its hover mutations, but nothing in npm test or CI runs it.
+
+**Why.** A guard keyed to someone else's private name moves when they rename it, silently. The repository can own the signal instead: the storybook project's Vitest setup file is loaded only under Vitest and is version-controlled. Critical on the owner's order of 2026-09-10 with the other findings on built components.
+
+**Exit condition.** The story checks a flag this repository sets in the storybook project's Vitest setup, not a Vitest internal; the published Storybook still takes the canvas branch with no error; and a mutation removing the flag from the setup file fails the Hover story under npm test rather than passing it.
+
+### `KN-226` Nothing committed checks that the published Storybook renders its stories without errors
+
+- **status** backlog · **severity** critical · **points** 3 · **area** infra
+- **blocked by** none
+
+CHILD OF KN-220, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-220 roast and confirmed: the published path of the Hover story was proved by a scratch Playwright script against a production Storybook build, and that script is not in the repository. CI builds and publishes Storybook without opening a single story. The storybook Vitest project runs stories against the DEV build, so a failure that only exists in the production build, like a story importing a test-only module, ships to the public library unseen. The browser pane cannot stand in for it either: while hidden it runs no animation frames, so no play function starts there at all.
+
+**Why.** Storybook is where the components are delivered, and it is public. A story that throws in the published build is a broken component page in front of whoever opens it, and nothing between a push and that page would say so. Critical on the owner's order of 2026-09-10: it guards the component library.
+
+**Exit condition.** A committed check builds Storybook for production, opens every story in headless Chromium, and fails on any page error or console error; it runs before the Pages workflow publishes; and a mutation removing the Hover story's test-runner guard makes it fail on the emitted import error.
 

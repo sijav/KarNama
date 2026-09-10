@@ -37,7 +37,10 @@ const structuralProps =
   // A localStorage key is an identifier the browser stores things under, not
   // text anyone reads. Named, not pattern-matched, so one key does not exempt
   // every dotted string in the codebase.
-  '|STORAGE_KEY'
+  '|STORAGE_KEY' +
+  // The class the Tooltip puts on its drawn surface so a test can find it,
+  // KN-222. An identifier, named for the same reason as the storage key.
+  '|TOOLTIP_SURFACE'
 
 const linguiOptions = {
   ignore: [

@@ -3,7 +3,18 @@ import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { elevation } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
-import { Tooltip } from './Tooltip'
+import { Tooltip, TOOLTIP_SURFACE } from './Tooltip'
+
+/**
+ * The open tip's DRAWN surface, by the class the component puts on it. It used
+ * to be the first child of the element carrying the role, which is MUI's popper,
+ * so the test measured whatever MUI placed first. KN-222.
+ */
+const drawnSurface = () => {
+  const surface = document.body.querySelector(`.${TOOLTIP_SURFACE}`)
+  if (!(surface instanceof HTMLElement)) throw new Error('the tooltip has no drawn surface')
+  return surface
+}
 
 /**
  * A shadow token as the browser computes it, so it can be compared with a
@@ -51,14 +62,12 @@ export const OnHover: Story = {
     // KN-210. Node 410:469 is a FIXED 260 wide, read from its design context,
     // not from a screenshot. The number is the design's, written here rather
     // than imported from the component, so the component cannot move it and
-    // take the test along. The role sits on MUI's popper; the drawn surface is
-    // its first child.
+    // take the test along.
     //
     // The LAYOUT width, offsetWidth, and not the bounding box. MUI's Grow enters
     // from scale(0.75), the bounding box includes transforms, and the first
     // version of this read 195, exactly 260 times 0.75, mid-animation.
-    const surface = within(document.body).getByRole('tooltip').firstElementChild
-    if (!(surface instanceof HTMLElement)) throw new Error('the tooltip has no drawn surface')
+    const surface = drawnSurface()
     await expect(surface.offsetWidth).toBe(260)
 
     // KN-218. The frame is py 8 and px 12, read from its design context. The
@@ -70,6 +79,40 @@ export const OnHover: Story = {
     // And the frame's shadow, which is bound to no effect style. Both sides are
     // normalised by the browser, so the token's hex and the computed rgba agree.
     await expect(style.boxShadow).toBe(computedShadow(surface, elevation.tooltip))
+  },
+}
+
+export const WithoutCssBaseline: Story = {
+  // Every story renders inside AppProviders, and so under CssBaseline, whose
+  // `*` rule makes every element INHERIT box-sizing. Border-box enters that
+  // chain in two places: html, where the reset puts it, and body, where
+  // Storybook's own preview CSS puts it for a padded story. The first version
+  // undid only html, passed under Vitest, and failed in the production build,
+  // where the preview's body rule was still handing the tip border-box. Both
+  // are undone here, which is what a page with no reset looks like, and both
+  // are put back when the story ends.
+  beforeEach: () => {
+    const html = document.documentElement
+    const { body } = document
+    const htmlBefore = html.style.boxSizing
+    const bodyBefore = body.style.boxSizing
+    html.style.boxSizing = 'content-box'
+    body.style.boxSizing = 'content-box'
+    return () => {
+      html.style.boxSizing = htmlBefore
+      body.style.boxSizing = bodyBefore
+    }
+  },
+  play: async ({ canvasElement }) => {
+    await userEvent.hover(within(canvasElement).getByRole('button'))
+    const popper = await within(document.body).findByRole('tooltip')
+    // The precondition, checked rather than trusted: the tip's own container
+    // is content-box, so nothing above it hands the tip border-box, and any
+    // border-box the tip has is its own.
+    await expect(getComputedStyle(popper)).toHaveProperty('boxSizing', 'content-box')
+    // Still the frame's 260, padding included, because the tip sets its own
+    // box-sizing. Without it this reads 284: 260 plus 12 at each side.
+    await expect(drawnSurface().offsetWidth).toBe(260)
   },
 }
 

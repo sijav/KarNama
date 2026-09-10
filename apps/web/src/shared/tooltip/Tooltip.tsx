@@ -9,6 +9,12 @@ import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 // different for every other.
 const TIP_WIDTH = 260
 
+// A class on the DRAWN surface, KN-222, so a test finds the element it means
+// rather than whatever MUI happens to put first inside its popper, which is
+// where the role sits. A class rather than a test id because the tooltip slot
+// is typed without data attributes, the same marker the Checkbox's frame uses.
+export const TOOLTIP_SURFACE = 'KarnamaTooltip-surface'
+
 export interface TooltipProps {
   /** The text of the tip. */
   title: string
@@ -58,7 +64,12 @@ export const Tooltip = ({ title, icon, children }: TooltipProps) => (
     }
     slotProps={{
       tooltip: {
+        className: TOOLTIP_SURFACE,
         sx: (theme) => ({
+          // The frame's 260 INCLUDES its padding, which is border-box. Set here
+          // rather than inherited: the tip used to be 260 only because the app's
+          // CssBaseline makes everything border-box, and 284 without it. KN-222.
+          boxSizing: 'border-box',
           backgroundColor: theme.karnama.semantic['text/primary'],
           color: theme.karnama.semantic['text/on-accent'],
           borderRadius: `${theme.karnama.radius.md}px`,

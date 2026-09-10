@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 225,
+  "nextId": 227,
   "tasks": [
     {
       "id": "KN-001",
@@ -5349,7 +5349,23 @@
       "parent": [],
       "status": "done",
       "exit": "Under Vitest the Hover story imports the pointer API without a catch and fails loudly if it cannot, the published Storybook still renders it as a canvas with no error, and a mutation making the import fail under Vitest fails the story rather than passing it.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3.8,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-220-round-1.2026-09-10T07-27-01-608Z.md",
+          "filed": [
+            "KN-225",
+            "KN-226"
+          ],
+          "cardDigest": "229bd43ad1259a6b9fbeef7a4cb407f94d120b54110ec50c3de0df72cc25fe4c",
+          "head": "5c77c701593f278bce955f61a79466754ef00257",
+          "reviewerScore": 3.8,
+          "reviewerCriticals": 2,
+          "at": "2026-09-10T07:34:17.953Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T07:01:25.045Z",
       "updatedAt": "2026-09-10T07:26:46.964Z",
@@ -5381,11 +5397,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The tooltip surface sets its own box-sizing, and a story rendering it WITHOUT CssBaseline measures 260; the width story finds the surface by a marker the component puts on the tooltip slot itself rather than by DOM position; and a mutation removing the box-sizing fails the no-reset story.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T07:05:35.614Z"
+      "createdAt": "2026-09-10T07:05:35.614Z",
+      "updatedAt": "2026-09-10T07:44:04.571Z",
+      "verify": "node agent/scripts/verify/KN-222.mjs"
     },
     {
       "id": "KN-223",
@@ -5414,8 +5432,41 @@
       "status": "backlog",
       "exit": "TECH-DEBT.md has an entry for the tokens.ts exemption in the file's what, why, fix and retiring-check format, and a unit test fails if any string exported from src/theme/tokens.ts is not a design value, a colour, a length, a shadow or the font stack, proved by a mutation adding a copy string to the file.",
       "roasts": [],
+      "notes": [
+        "2026-09-10, from KN-222: TOOLTIP_SURFACE joins STORAGE_KEY as a NAMED lingui exemption for an identifier constant, the Tooltip's surface class. Neither has a TECH-DEBT.md entry either, so record the named identifier exemptions together with the tokens.ts one."
+      ],
+      "createdAt": "2026-09-10T07:27:50.354Z",
+      "updatedAt": "2026-09-10T07:33:19.662Z"
+    },
+    {
+      "id": "KN-225",
+      "title": "The Hover story tells Vitest from Storybook by an undocumented Vitest internal",
+      "desc": "CHILD OF KN-220, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-220 roast and confirmed: the story returns early unless globalThis.__vitest_browser__ exists, and that global is a Vitest internal that Storybook's addon happens to read, not a documented API. If an upgrade renames it, every Hover run under Vitest takes the Storybook-UI branch and passes on the unhovered assertion: the exact false pass KN-220 closed, back without a single file in this repository changing. KN-013.mjs would notice through its hover mutations, but nothing in npm test or CI runs it.",
+      "why": "A guard keyed to someone else's private name moves when they rename it, silently. The repository can own the signal instead: the storybook project's Vitest setup file is loaded only under Vitest and is version-controlled. Critical on the owner's order of 2026-09-10 with the other findings on built components.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The story checks a flag this repository sets in the storybook project's Vitest setup, not a Vitest internal; the published Storybook still takes the canvas branch with no error; and a mutation removing the flag from the setup file fails the Hover story under npm test rather than passing it.",
+      "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T07:27:50.354Z"
+      "createdAt": "2026-09-10T07:34:17.438Z"
+    },
+    {
+      "id": "KN-226",
+      "title": "Nothing committed checks that the published Storybook renders its stories without errors",
+      "desc": "CHILD OF KN-220, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-220 roast and confirmed: the published path of the Hover story was proved by a scratch Playwright script against a production Storybook build, and that script is not in the repository. CI builds and publishes Storybook without opening a single story. The storybook Vitest project runs stories against the DEV build, so a failure that only exists in the production build, like a story importing a test-only module, ships to the public library unseen. The browser pane cannot stand in for it either: while hidden it runs no animation frames, so no play function starts there at all.",
+      "why": "Storybook is where the components are delivered, and it is public. A story that throws in the published build is a broken component page in front of whoever opens it, and nothing between a push and that page would say so. Critical on the owner's order of 2026-09-10: it guards the component library.",
+      "severity": "critical",
+      "points": 3,
+      "area": "infra",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A committed check builds Storybook for production, opens every story in headless Chromium, and fails on any page error or console error; it runs before the Pages workflow publishes; and a mutation removing the Hover story's test-runner guard makes it fail on the emitted import error.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T07:34:17.764Z"
     }
   ]
 }

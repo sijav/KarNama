@@ -34,6 +34,13 @@ listeners, so it has to be a single element that forwards its props.
 The ordinary case. The tip is portalled, so it is found on the document rather
 than inside the story canvas.
 
+### WithoutCssBaseline
+
+The same tip on a page without the app's CSS reset. The frame's 260 includes
+its padding, so the tip sets its own border-box sizing rather than inheriting
+it; without that it would be 284 wide anywhere the reset is missing. The story
+removes the reset's box-sizing from every element and measures the tip anyway.
+
 ### OnKeyboardFocus
 
 The clause the card names and the one a hover-only tooltip fails: Tab, with no
