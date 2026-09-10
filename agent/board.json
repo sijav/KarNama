@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 251,
+  "nextId": 254,
   "tasks": [
     {
       "id": "KN-001",
@@ -6180,7 +6180,24 @@
       "parent": [],
       "status": "done",
       "exit": "After value is set in Controls, typing into the field changes it and the value control follows what was typed, the story binding value through Storybook's args; or no story offers value. A check sets value through Storybook's own arg update on a built Storybook, types into the field, and asserts both the field and the story's args show the typed text, and it fails with the binding taken out.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3.5,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-249-round-1.2026-09-10T10-25-22-490Z.md",
+          "filed": [
+            "KN-251",
+            "KN-252",
+            "KN-253"
+          ],
+          "cardDigest": "a6138f4ea580eaa11e6495de4a63b67cd625aa11dd318c96f6682ccc882c3bae",
+          "head": "e53a3c3dc47e36b4eb3e912fa62d6ece7945ec51",
+          "reviewerScore": 3.5,
+          "reviewerCriticals": 1,
+          "at": "2026-09-10T10:30:35.732Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T10:05:57.447Z",
       "updatedAt": "2026-09-10T10:25:05.143Z",
@@ -6197,11 +6214,57 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The document element's dir and lang are set in the commit that renders the tree, before paint, not in a passive effect: on a production Storybook build every story's play function starts with html dir and lang already matching its locale, recorded at the playing phase in both languages, and the Input's Focus story passes there; the built app, loaded with a stored English preference, has dir ltr by the time its first render's DOM exists; and a mutation back to useEffect fails the check.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T10:15:35.330Z"
+      "createdAt": "2026-09-10T10:15:35.330Z",
+      "updatedAt": "2026-09-10T10:27:15.394Z"
+    },
+    {
+      "id": "KN-251",
+      "title": "Nothing checks the Input's value control in the Controls panel follows what is typed",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-249 roast and confirmed: KN-249's verifier loads only iframe.html and reads the preview's own story store, storyStoreValue.args, after typing. It never loads the manager, where the Controls panel lives, so a manager that failed to redraw the value control would pass it, while KN-249's exit condition says the value control follows what was typed. KN-249's evidence named the gap.",
+      "why": "The Controls panel is what a reviewer looks at, and the card claimed a behaviour of it that nothing observed. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A check loads the whole Storybook, manager and preview, from a production build, sets value through the Controls panel's own field, types into the canvas, and reads the Controls panel's value field showing the typed text; and it fails with the binding taken out.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T10:30:24.953Z"
+    },
+    {
+      "id": "KN-252",
+      "title": "Resetting the Input's value control turns the same field from controlled to uncontrolled",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-249 roast and confirmed from the code: value passes straight through to InputBase and the story's key changes only with defaultValue, so setting value in Controls and then resetting it to undefined turns the same input element from controlled to uncontrolled. React reports that in development as a component changing a controlled input to be uncontrolled, and the field is left holding whatever it last showed, with no arg behind it.",
+      "why": "It puts a React warning in the console of anyone trying the control, and a field in a state no real caller should ever produce. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Switching the value control between set and unset starts the field over rather than changing its mode in place, so React never sees one input go from controlled to uncontrolled or back; a check in a development build, where React reports it, sets value, types, resets it, and finds no such report and a field showing its default again; a mutation removing the fix brings the report back.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T10:30:25.210Z"
+    },
+    {
+      "id": "KN-253",
+      "title": "The Input's value binding loses keystrokes that arrive faster than Storybook's channel",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-249 roast, and measured while closing KN-249: every edit goes through updateArgs and Storybook's channel before React sees the new value, and a stale arg that arrives after a newer keystroke overwrites it. 20 keys typed at 0ms apart kept 2 and at 10ms kept 11; at 20ms and slower all 20 arrived. The roast names composition input as a path that can produce values closer together than that, including Persian transliteration and mobile keyboards' predictive text, where the last composition update and its commit can land in the same moment; that path is not reproduced here.",
+      "why": "Pasted or composed text that silently loses characters makes the component look broken to the person trying it. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The field shows every edit as it happens and the arg follows without a stale value overwriting newer input: 20 keys typed with no delay all arrive in both the field and the arg, and a composition driven through the browser's own IME input ends with the composed text in both; a mutation back to the plain round trip loses keys again.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T10:30:25.462Z"
     }
   ]
 }
