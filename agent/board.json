@@ -4387,15 +4387,17 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The normative block is identified by an explicit stable marker rather than by keywords in a heading; both fixtures the reviewer ran, an earlier step whose prose contains both words, and a real step whose heading uses different words, are covered as cases; and each fails before the fix and passes after.",
       "roasts": [],
       "notes": [
         "Verified by KN-184's script rather than one of its own: both cards are about the same check in the same file, and two scripts reading one thing drift, which is what KN-174 was filed for after the sandbox builder did exactly that within a session. The cases that prove THIS card are the two reviewer fixtures, the unmarked-prompt refusal, the detached-marker case, and the mutation reproducing the heading selector."
       ],
       "createdAt": "2026-09-10T01:18:51.144Z",
-      "updatedAt": "2026-09-10T01:41:57.058Z",
-      "verify": "node agent/scripts/verify/KN-184.mjs"
+      "updatedAt": "2026-09-10T01:42:16.469Z",
+      "verify": "node agent/scripts/verify/KN-184.mjs",
+      "evidence": "node agent/scripts/verify/KN-184.mjs passes, 15 checks, and node agent/scripts/verify/KN-166.mjs still passes. The normative block is now identified by an explicit marker, an HTML comment above the fence, rather than by keywords in a heading. Both fixtures the KN-184 reviewer ran are covered as named cases and both are caught: a decoy step whose HEADING contains done and roast above a reversed real block, and a real step headed Close the task, then request review, which the previous selector could never have found at all. The marker binds to one fence with only blank lines allowed between, so a marker floating above prose is reported rather than followed, which is the failure the plan check predicted. An unmarked prompt is reported as unmarked instead of falling back to a guess, because a fallback would restore the inference this card removes and would do it silently. Two mutations that must SURVIVE are included: one reproduces the whole-document comparison against the decoy, one reproduces the heading selector against the reviewer's renamed-heading fixture, and each must PASS to show the defect was real rather than the change being a rewrite of code that already worked. Scope, per the owner's rule of 2026-09-10: this is a child of KN-184 in substance, so it ran the checks covering the files it changed, KN-184 and KN-166, plus board validation, rather than the full workspace gate, which has nothing to say about a change confined to agent/scripts/verify. What this does NOT establish: KN-190 is untouched and still open. The recognisers match command-shaped TEXT anywhere on a line, so echo of a close command still counts as a close, and this card deliberately did not solve that.",
+      "closedAt": "2026-09-10T01:42:16.469Z"
     },
     {
       "id": "KN-190",
