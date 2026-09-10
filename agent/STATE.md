@@ -29,10 +29,14 @@ second cold start the UI must handle honestly. lingui, **English is the source**
 
 ## Where things stand
 
-34 done, 159 open, 2 dropped. One open critical: **KN-193 - The close
-recogniser is not the head token, so any command's arguments can be the close**.
-**KN-149 - The board cards for the rejected column do not require it to
-collapse** is in progress, plan filed and checked.
+35 done, 160 open, 2 dropped. **Two open criticals, and they are one redesign
+seen twice**: **KN-193 - The close recogniser is not the head token, so any
+command's arguments can be the close**, in progress, and **KN-197 - The order
+check parses shell badly instead of refusing the shapes it cannot parse**. Both
+are children of KN-184 and both live in `lib/prompt-order.mjs`. The reviewer's
+one line covers both: stop treating shell text as tokenisable by two ad-hoc
+parsers, and REFUSE expansion and escape syntax the way `&&` and `;` are already
+refused, since refusing is the mechanism in that file that actually works.
 
 **KN-190 closed and did not fix its own class.** It removed the `echo` instance
 and left the general one: `readCommand('grep todo move <id> done')` is still
@@ -148,6 +152,14 @@ because it holds AND a mutation that breaks it and makes that fixture fail.
 KN-190 was green on 13 checks with no test for its own central clause. Now in
 RALPH.md step 3.
 
+**Mutate the CONTRACT, not only the implementation.** When a check's authority
+rests on a constant inside it, a list of ids, a registry, a threshold, that
+constant is the thing to break. KN-149's harness broke the code eight ways and
+never touched the registry, so dropping a card from the contract left all five
+checks green. It proved the code enforces the list and said nothing about
+whether the list is right. **The general fix is BOTH DIRECTIONS**: everything
+the registry names must comply, and everything that complies must be named.
+
 ## The skills
 
 `todo` and `roast` each ship a Node and a Python half, proved equivalent by
@@ -158,15 +170,24 @@ list stays project-local, because it resumes conversations.
 
 ## Next step
 
-`npm run todo -- next` picks it. **KN-149** is in progress: KN-070 settled that
-رد شده sits last and is collapsed to a count by default, and the cards that
-build the board never say so, so KN-043 and KN-060 can pass complete while
-rendering it as an ordinary open column. The plan is filed beside the verifier
-and its argument is that a POSITIVE prose grep is the wrong instrument here, the
-same one KN-184, KN-189 and KN-190 were about; the card should carry a
-machine-readable key instead, with a registry naming which cards must have it.
+**KN-193**, then **KN-197**. They are one piece of work: a narrow grammar for the
+command block, where the close is the HEAD token, the roast is matched only from
+UNQUOTED tokens, one place decides what is quoted, and `$(...)`, backticks,
+`${...}` and escaped quotes join `&&` and `;` in the REFUSED list. Confirmed
+false passes to kill, each reproduced by running it:
 
-Then **KN-193**, the open critical.
+- `grep todo move <id> done` reads as a close, and a block of that line, the
+  real roast, then the real close returns `ok: true`;
+- `env echo todo move <id> done` walks past the printer list;
+- `todo move <id> done "$(python <path>/roast.py task)"` is read as inert data
+  when a shell runs it first;
+- `sh -c '...' \"; todo move <id> done \" # x` hides its semicolon inside a fake
+  quoted span, because the operator check is a second, disagreeing parser;
+- `grep "/tmp/roast.py" task` reads as a roast.
+
+Legitimate shapes that must keep working: `todo move <id> done`,
+`todo move <id> "done"`, `npm run todo -- move <id> done`, and
+`python <path>/roast.py task --title ... &`.
 
 ## What to read first
 

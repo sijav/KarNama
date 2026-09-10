@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 35 of 197 tasks done · 89 of 566 points.
+Project **KarNama** · 35 of 199 tasks done · 89 of 568 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -10,11 +10,17 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-193` The close recogniser is not the head token, so any command's arguments can be the close** (critical, 2 pt, agent)
 
-## Backlog (160)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-193` | The close recogniser is not the head token, so any command's arguments can be the close | critical | 2 | agent | none | The close is recognised ONLY when the head token is todo, or npm with todo among its arguments, and the remaining tokens match the close shape; the roast is recognised only from UNQUOTED tokens. Each of these is a named failing case before the fix and passing after: grep todo move <id> done, env echo todo move <id> done, a cat heredoc whose body is a close, and grep "/tmp/roast.py" task. The end-to-end reproducer in this card returns ok false with the reason naming the order. The two places that interpret quotes agree, or there is one place. The legitimate shapes still pass: todo move <id> done, todo move <id> "done", npm run todo -- move <id> done, and python <path>/roast.py task --title ... & |
+
+## Backlog (161)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-198` | The required-card set is an unanchored constant, so shrinking the contract keeps the check green | critical | 1 | agent | none | The verifier fails when a card carrying the canonical clause is not named by the registry, and fails when a named card does not carry it. Shrinking DECISION.cards to ['KN-043'] is a named failing case, run as a mutation against the real verifier rather than argued. Whether a single edit that removes the clause from a card AND drops that card from the registry can be caught is answered in the check's own header, honestly, including a plain no if that is the answer. |
 | `KN-197` | The order check parses shell badly instead of refusing the shapes it cannot parse | critical | 2 | agent | none | There is ONE place that decides what is quoted. Command substitution, backticks and parameter expansion are REFUSED by name, as && and the semicolon already are, with a message saying the order cannot be read rather than guessing. A backslash before a quote is refused too, or handled by the single parser and proved. Both reproducers in this card are named failing cases before the fix and are refused after, each with a mutation that makes the case pass again. The real prompt's lines still resolve. |
 | `KN-152` | Use the current Contacts tab label in the history decision | high | 1 | design | KN-072 | DESIGN.md section 6 and section 3 name the modal tab افراد مرتبط, KN-030 and KN-045 use that label, KN-072.mjs requires it and REJECTS مخاطبین as the modal tab label, and a mutation restoring مخاطبین fails the verifier with its own message. |
 | `KN-153` | Separate the owner-settled own-tab decision from the author-chosen tab ORDER | high | 1 | design | KN-072 | DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message. |
@@ -23,6 +29,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-172` | compact.py does the opposite of what the loop's compact step is for | high | 1 | agent | none | compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script. |
 | `KN-194` | The prompt-order source states things that are false, including that a mutation is impossible | high | 1 | agent | none | The false claims are gone from prompt-order.mjs, KN-190.mjs and the KN-190 plan file, replaced by what is actually true. readCommand('todo move <id> "done"') is a named check in the verifier, and disabling the tokeniser's quote handling makes it FAIL, proved by the mutation harness rather than asserted. STATE.md's positive-control line names mutation testing as a place it applies, since that is where it was missed. |
 | `KN-196` | Decide how a card is dropped onto a column that is collapsed to a count | high | 1 | design | none | DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker. |
+| `KN-199` | KN-060 asks a reusable column component to own where the rejected column sits on the board | high | 1 | design | none | KN-043's exit condition names the rejected column's position after the offer column and its collapsed-to-a-count default; KN-060's names rendering collapsed to a count and expanding on click, and says nothing about where the column sits. KN-149's verifier requires the right clause of each card rather than one shared string, and a mutation that swaps the two clauses between the cards is caught. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
@@ -1909,6 +1916,8 @@ KN-070 settled that رد شده sits last and is COLLAPSED to a count by default
 
 **Exit condition.** The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered.
 
+**Roasts.** round 1 scored 3 with 1 critical(s)
+
 ### `KN-150` KN-070's open-question check reads lines, not list items
 
 - **status** backlog · **severity** low · **points** 1 · **area** agent
@@ -2402,7 +2411,7 @@ CHILD OF KN-184, recorded in prose because board.json cannot express parent_task
 
 ### `KN-193` The close recogniser is not the head token, so any command's arguments can be the close
 
-- **status** backlog · **severity** critical · **points** 2 · **area** agent
+- **status** in_progress · **severity** critical · **points** 2 · **area** agent
 - **blocked by** none
 
 CHILD OF KN-184, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-190 roast, which reproduced it, and confirmed by running it here. KN-190 fixed the echo INSTANCE and left the CLASS. readCommand's close test is words.includes('move') and words.includes('done') and (command === 'todo' or words.includes('todo')), so the trailing disjunct lets any command whose ARGUMENTS happen to be the close shape count as the close. Confirmed reproducer: a marked block whose lines are grep todo move <id> done, then the real roast, then the real close returns ok true, so a block that roasts BEFORE it closes passes. That is the exact defect KN-190 was opened for. Also confirmed: env echo todo move <id> done and command echo ... bypass PRINTERS because their head is not a printer; a heredoc body is parsed as separate command lines, so cat <<EOF around a close masks the order; and the roast test accepts QUOTED tokens, so grep "/tmp/roast.py" task returns roasts true. KN-190's amended exit condition literally says the close is the head token of its line, and the implementation does not do it, so the card's green verifier did not establish its own exit condition. The reviewer also noted quote interpretation happens twice, in tokenise() and again in the line.replace() used for the operator check, and the two can disagree on escaped text; fold that into the fix rather than filing it separately.
@@ -2454,4 +2463,26 @@ CHILD OF KN-184, recorded in prose because board.json cannot express parent_task
 **Why.** A checker that half-parses a language reports a confident answer about text it did not understand, which is worse than refusing, because refusing is visible. Two independent quote parsers guarantee a disagreement exists; the only question is which input finds it. Narrowing what the check accepts turns every one of these into a loud refusal instead of a silent pass.
 
 **Exit condition.** There is ONE place that decides what is quoted. Command substitution, backticks and parameter expansion are REFUSED by name, as && and the semicolon already are, with a message saying the order cannot be read rather than guessing. A backslash before a quote is refused too, or handled by the single parser and proved. Both reproducers in this card are named failing cases before the fix and are refused after, each with a mutation that makes the case pass again. The real prompt's lines still resolve.
+
+### `KN-198` The required-card set is an unanchored constant, so shrinking the contract keeps the check green
+
+- **status** backlog · **severity** critical · **points** 1 · **area** agent
+- **blocked by** none
+
+CHILD OF KN-149, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-149 roast and reproduced here by running it: change DECISION.cards in agent/scripts/verify/KN-149.mjs from ['KN-043', 'KN-060'] to ['KN-043'] and all five checks still pass, exit code 0. Nothing anchors the set. The 'real sentence' guard only asks that the list is non-empty, and the count consistency check compares the loop against DECISION.cards.length, which shrinks with it. So KN-060 can be dropped from the contract silently while the card that created the contract stays green, which defeats the exit condition's plural, the CARDS that build the board. The fix is a check I had in revision 1 of the plan and lost in revision 2: assert BOTH directions. Every card the registry names carries the clause, AND every card on the board that carries the clause is named by the registry. Shrinking the registry then fails loudly, because KN-060 still carries the clause and is no longer named. Consider anchoring the count outside the verifier as well, since both directions still passes if someone removes the clause from KN-060 AND drops it from the registry in one edit.
+
+**Why.** A check whose authority rests on a constant inside itself is a check that anyone can narrow to nothing by editing one line, and narrowing it looks exactly like passing it. The general lesson is the reason this is worth a card rather than a note: my mutation harness broke the IMPLEMENTATION eight ways and never touched the CONTRACT, so it proved the code enforces the registry and said nothing about whether the registry is the right one.
+
+**Exit condition.** The verifier fails when a card carrying the canonical clause is not named by the registry, and fails when a named card does not carry it. Shrinking DECISION.cards to ['KN-043'] is a named failing case, run as a mutation against the real verifier rather than argued. Whether a single edit that removes the clause from a card AND drops that card from the registry can be caught is answered in the check's own header, honestly, including a plain no if that is the answer.
+
+### `KN-199` KN-060 asks a reusable column component to own where the rejected column sits on the board
+
+- **status** backlog · **severity** high · **points** 1 · **area** design
+- **blocked by** none
+
+CHILD OF KN-149, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-149 roast, and I had raised it against myself in the questions sent with that roast, so this is agreed rather than contested. KN-149 put one identical clause into both KN-043 and KN-060: the rejected column is last, after the offer column, and renders collapsed to a count by default, expanding on click. Position on the board is the SCREEN's business, KN-043. KN-060 is a reusable column component and does not know which column it is or what sits beside it. As written its exit condition asks its implementer for something they cannot deliver from inside the component, and the likely response is to special-case layout in the component, which is the defect KN-149 existed to prevent, one card over. Split by ownership: KN-043 keeps position plus the collapsed default, KN-060 keeps the ability to render collapsed to a count and expand on click. Two clauses, each contracted to the card that can honour it, and KN-149's verifier registry becomes a clause per card rather than one shared string.
+
+**Why.** A card that demands something its scope cannot deliver is worse than a card that is silent, because the person building it will find SOME way to satisfy the words, and the way available inside a component is to hard-code the board around it. Components before screens is the owner's standing rule, and it only works if a component's contract stops at what the component owns.
+
+**Exit condition.** KN-043's exit condition names the rejected column's position after the offer column and its collapsed-to-a-count default; KN-060's names rendering collapsed to a count and expanding on click, and says nothing about where the column sits. KN-149's verifier requires the right clause of each card rather than one shared string, and a mutation that swaps the two clauses between the cards is caught.
 

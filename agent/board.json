@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 198,
+  "nextId": 200,
   "tasks": [
     {
       "id": "KN-001",
@@ -3609,7 +3609,24 @@
       "parent": [],
       "status": "done",
       "exit": "The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-149-round-1.2026-09-10T02-14-50-614Z.md",
+          "filed": [
+            "KN-198",
+            "KN-199"
+          ],
+          "cardDigest": "50ca131524cf97175601584c35b6e5639d6ca706f68470ad0e07dd2d474a1950",
+          "head": "47802bd292b015aec4af1e71c50613862c5dea5f",
+          "reviewerScore": 3.5,
+          "reviewerCriticals": 1,
+          "dismissed": "Nothing was rejected. Both findings were reproduced: I ran the registry-shrinking mutation and the verifier exits 0 with KN-060 silently dropped from the contract. The second I had already raised against myself in the questions sent with this roast, so it is agreed rather than contested. Score 3 rather than the reviewer's 3.5, because the critical is not just a missing mutation: my harness broke the implementation eight ways and never touched the CONTRACT the implementation enforces, and both-directions checking was in revision 1 of the plan and I lost it in revision 2.",
+          "at": "2026-09-10T02:17:58.239Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-09T21:17:05.511Z",
       "updatedAt": "2026-09-10T02:14:23.492Z",
@@ -4505,11 +4522,12 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The close is recognised ONLY when the head token is todo, or npm with todo among its arguments, and the remaining tokens match the close shape; the roast is recognised only from UNQUOTED tokens. Each of these is a named failing case before the fix and passing after: grep todo move <id> done, env echo todo move <id> done, a cat heredoc whose body is a close, and grep \"/tmp/roast.py\" task. The end-to-end reproducer in this card returns ok false with the reason naming the order. The two places that interpret quotes agree, or there is one place. The legitimate shapes still pass: todo move <id> done, todo move <id> \"done\", npm run todo -- move <id> done, and python <path>/roast.py task --title ... &",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T02:00:17.784Z"
+      "createdAt": "2026-09-10T02:00:17.784Z",
+      "updatedAt": "2026-09-10T02:15:29.525Z"
     },
     {
       "id": "KN-194",
@@ -4570,6 +4588,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T02:08:26.742Z"
+    },
+    {
+      "id": "KN-198",
+      "title": "The required-card set is an unanchored constant, so shrinking the contract keeps the check green",
+      "desc": "CHILD OF KN-149, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-149 roast and reproduced here by running it: change DECISION.cards in agent/scripts/verify/KN-149.mjs from ['KN-043', 'KN-060'] to ['KN-043'] and all five checks still pass, exit code 0. Nothing anchors the set. The 'real sentence' guard only asks that the list is non-empty, and the count consistency check compares the loop against DECISION.cards.length, which shrinks with it. So KN-060 can be dropped from the contract silently while the card that created the contract stays green, which defeats the exit condition's plural, the CARDS that build the board. The fix is a check I had in revision 1 of the plan and lost in revision 2: assert BOTH directions. Every card the registry names carries the clause, AND every card on the board that carries the clause is named by the registry. Shrinking the registry then fails loudly, because KN-060 still carries the clause and is no longer named. Consider anchoring the count outside the verifier as well, since both directions still passes if someone removes the clause from KN-060 AND drops it from the registry in one edit.",
+      "why": "A check whose authority rests on a constant inside itself is a check that anyone can narrow to nothing by editing one line, and narrowing it looks exactly like passing it. The general lesson is the reason this is worth a card rather than a note: my mutation harness broke the IMPLEMENTATION eight ways and never touched the CONTRACT, so it proved the code enforces the registry and said nothing about whether the registry is the right one.",
+      "severity": "critical",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The verifier fails when a card carrying the canonical clause is not named by the registry, and fails when a named card does not carry it. Shrinking DECISION.cards to ['KN-043'] is a named failing case, run as a mutation against the real verifier rather than argued. Whether a single edit that removes the clause from a card AND drops that card from the registry can be caught is answered in the check's own header, honestly, including a plain no if that is the answer.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T02:17:49.781Z"
+    },
+    {
+      "id": "KN-199",
+      "title": "KN-060 asks a reusable column component to own where the rejected column sits on the board",
+      "desc": "CHILD OF KN-149, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-149 roast, and I had raised it against myself in the questions sent with that roast, so this is agreed rather than contested. KN-149 put one identical clause into both KN-043 and KN-060: the rejected column is last, after the offer column, and renders collapsed to a count by default, expanding on click. Position on the board is the SCREEN's business, KN-043. KN-060 is a reusable column component and does not know which column it is or what sits beside it. As written its exit condition asks its implementer for something they cannot deliver from inside the component, and the likely response is to special-case layout in the component, which is the defect KN-149 existed to prevent, one card over. Split by ownership: KN-043 keeps position plus the collapsed default, KN-060 keeps the ability to render collapsed to a count and expand on click. Two clauses, each contracted to the card that can honour it, and KN-149's verifier registry becomes a clause per card rather than one shared string.",
+      "why": "A card that demands something its scope cannot deliver is worse than a card that is silent, because the person building it will find SOME way to satisfy the words, and the way available inside a component is to hard-code the board around it. Components before screens is the owner's standing rule, and it only works if a component's contract stops at what the component owns.",
+      "severity": "high",
+      "points": 1,
+      "area": "design",
+      "parent": [],
+      "status": "backlog",
+      "exit": "KN-043's exit condition names the rejected column's position after the offer column and its collapsed-to-a-count default; KN-060's names rendering collapsed to a count and expanding on click, and says nothing about where the column sits. KN-149's verifier requires the right clause of each card rather than one shared string, and a mutation that swaps the two clauses between the cards is caught.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T02:17:50.023Z"
     }
   ]
 }
