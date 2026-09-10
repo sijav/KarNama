@@ -6837,13 +6837,15 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The owner has answered, through the question tool, whether the resting edge of an enabled Input and an unchecked Checkbox stays border/default as the file draws it or is raised to at least 3:1 against the surfaces it sits on; DESIGN.md records the answer as the owner's, with the date; and if it is raised, a card for the change exists.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T14:24:29.018Z",
-      "updatedAt": "2026-09-10T14:44:27.716Z",
-      "verify": "node agent/scripts/verify/KN-273.mjs"
+      "updatedAt": "2026-09-10T14:44:29.438Z",
+      "verify": "node agent/scripts/verify/KN-273.mjs",
+      "evidence": "Put to the owner through the question tool on 2026-09-10 with four options, each with its trade: a new 3:1 edge role (recommended), keep the file's border, use text/secondary at rest, or ask the designer first. The owner answered 'New 3:1 edge role'. DESIGN.md's 'Settled by the owner on 2026-09-10' records it as 'Owner, KN-273', with what uses it (Input, Checkbox, the Select later), what keeps the file's colours (Hover edge, border/default for cards, dividers and the Filter Chip), and that KN-275 builds it; the section intro now says the third answer came through the question tool alone. KN-275 exists, critical, 3 points, with the light ratio at 3.3:1 or more on the three surfaces, the derived dark row checked at 3:1, and the Input and Checkbox stories in its exit. node agent/scripts/verify/KN-273.mjs passed, including its controls: the record check fails with the paragraph removed or the owner replaced, the card check fails with KN-275 missing or dropped, and KN-196's verifier still passes. Contract and unit project (418) pass. Not established by a script: that the owner, not the author, answered; that rests on the question tool's record in this session.",
+      "closedAt": "2026-09-10T14:44:29.438Z"
     },
     {
       "id": "KN-274",
