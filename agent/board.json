@@ -2548,13 +2548,15 @@
       "parent": [
         "KN-087"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A story containing <Box title=\"Delete this application\" /> fails npm run lint while the same file keeps its meta title App/Shell, a committed fixture holds both, and agent/scripts/verify/KN-087.mjs requires it by name.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T23:35:15.827Z",
-      "updatedAt": "2026-09-10T06:35:17.449Z",
-      "verify": "node agent/scripts/verify/KN-095.mjs"
+      "updatedAt": "2026-09-10T06:36:47.937Z",
+      "verify": "node agent/scripts/verify/KN-095.mjs",
+      "evidence": "The stories-only lingui block, which exempted the NAME title, is removed; stories are linted by the src block like any screen. A meta title passes by TYPE: StoryMeta (src/shared/story-docs/story-meta.ts) narrows it to the union of the seven registered story paths, and useTsTypes skips a literal typed as a union of string literals. All seven metas now satisfy StoryMeta. src/gate-fixtures/unlocalized-story-title.stories.tsx renders <Box title=\"Delete this application\" /> beside a meta title App/Shell; eslint reports exactly one lingui error, on the JSX title line, none on the meta title. agent/scripts/verify/KN-095.mjs, 9 checks green, with two mutations inside it: re-adding a stories block that exempts title by name makes the fixture pass (so it tests the name), and retyping the fixture's meta with plain Meta adds an error on the meta title (so the title passes BECAUSE of its type; App/Shell contains a p, so the KN-214 flag bug cannot whitelist it by accident). Storybook's glob now excludes src/gate-fixtures: a build indexes 39 entries from the 7 real story files and not the fixture; the control build with the old glob indexed 40 including it. The docs guard's glob mirrors the exclusion. Hiding the fixture makes KN-087 fail naming it; KN-003's required list names it. Gate: KN-003.mjs green (lint, tsc, suite with 100 percent coverage, both builds, every planted unlocalized string failing), KN-087.mjs green, storybook project 32 of 32 stories in 7 files. Two defects in my own verifier fixed on the way: it parsed eslint JSON with npm's stderr appended, and a mutation guard refused to run because the fixture's comment mentioned StoryMeta. Filed from this work: KN-214 (critical, the no-letter ignore pattern is compiled without flags). No product UI changed.",
+      "closedAt": "2026-09-10T06:36:47.937Z"
     },
     {
       "id": "KN-096",
