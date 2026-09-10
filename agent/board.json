@@ -6214,13 +6214,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The document element's dir and lang are set in the commit that renders the tree, before paint, not in a passive effect: on a production Storybook build every story's play function starts with html dir and lang already matching its locale, recorded at the playing phase in both languages, and the Input's Focus story passes there; the built app, loaded with a stored English preference, has dir ltr by the time its first render's DOM exists; and a mutation back to useEffect fails the check.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T10:15:35.330Z",
-      "updatedAt": "2026-09-10T10:35:25.537Z",
-      "verify": "node agent/scripts/verify/KN-250.mjs"
+      "updatedAt": "2026-09-10T10:38:22.706Z",
+      "verify": "node agent/scripts/verify/KN-250.mjs",
+      "evidence": "node agent/scripts/verify/KN-250.mjs passed. It builds the production Storybook and the production app into temp directories and serves both. Storybook: all 61 stories in both languages, 122 renders, 112 with a play function, each with its render phases recorded from the moment Storybook assigns its channel; html dir and lang are read at the first phase after rendering (playing, for a play function), and the expected locale is the story's own pinned one from storyGlobals where it has one. (1) Every render starts with the dir and lang of its locale; before the fix 89 did not, all at dir '' lang 'en', Storybook's own iframe defaults. (2) The Input's Focus story passes in both languages; before, it failed in Persian on direction ltr to rtl and in English on -webkit-locale en to en-US. (3) No story fails on the production build, which was not true before this change either: App/Shell Persian and English failed their own dir assertion there. (4) The app with localStorage karnama.preferences set to English: in the microtask after React first puts content into #root, html reads dir ltr and lang en-US; before the fix it read rtl and fa-IR, the index.html defaults, and only later ltr. (5) THE CASE: with useEffect restored, a rebuild shows 86 renders starting late and the app's first render at rtl fa-IR. The full suite also passes, since AppProviders wraps every story: 26 files, 407 tests, coverage 100 percent on statements, branches, functions and lines; workspace lint zero warnings, tsc --noEmit clean. NOT established: a language switch inside the running app, which React 18 and later flush synchronously for a click in either kind of effect, so it was never the failing path; and nested AppProviders, which no story renders and where the outermost would win the document either way.",
+      "closedAt": "2026-09-10T10:38:22.706Z"
     },
     {
       "id": "KN-251",
