@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 57 of 228 tasks done · 125 of 617 points.
+Project **KarNama** · 58 of 228 tasks done · 127 of 617 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-207` The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback** (critical, 2 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-207` | The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback | critical | 2 | web | none | Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering. |
+**Next up: `KN-209` The tooltip REPLACES an icon-only control's accessible name instead of describing it** (critical, 2 pt, web)
 
 ## Blocked (3)
 
@@ -194,7 +188,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (57)
+## Done (58)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -215,6 +209,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-189` | Heading keywords pick the wrong block, so a reversed real block still passes | critical | 2 | agent | none | The normative block is identified by an explicit stable marker rather than by keywords in a heading; both fixtures the reviewer ran, an earlier step whose prose contains both words, and a real step whose heading uses different words, are covered as cases; and each fails before the fix and passes after. |
 | `KN-190` | Command-shaped text inside a string counts as the command | critical | 2 | agent | none | The recognisers read a COMMAND rather than command-shaped text. The close is the head token of its line. The roast is matched among that line's tokens, because python <path>/roast.py task puts the roast in ARGUMENT position and an anchor would find nothing in the file this is written for. A quoted run stays ONE token, and a line whose head is a printer (echo, printf, cat) runs nothing, so a mention is not the command. The reviewer's echo fixture fails before the fix and passes after. A pipeline, a chain, a semicolon or a line continuation is REPORTED as unorderable rather than guessed at, and a single trailing ampersand is NOT, because backgrounding the roast is what the real prompt does. |
 | `KN-201` | The docs guard only sees export const stories, so other valid CSF exports need no documentation | critical | 2 | web | none | The guard collects story names from every CSF export form: export const, export function, export class, and an export list. Each is a named failing case, planted in a real story file and run against the real guard, before the fix and passing after. A meta whose component is not a plain identifier is REPORTED rather than skipped, so the prop check never silently declines to run; if the component genuinely cannot be resolved, the guard says so and fails. The mutation that must survive: the existing export const stories keep working. |
+| `KN-207` | The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback | critical | 2 | web | none | Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering. |
 | `KN-001` | The loop, the board, and the tooling that runs them | critical | 3 | agent | none | "npm run todo -- validate" exits 0, "npm run todo -- next" names a task, agent/TODO_BOARD.md renders, "npm run roast" reaches Codex and archives a reply, and AGENTS.md plus DESIGN.md both exist with the Figma tokens transcribed. |
 | `KN-002` | Read the Figma Documentations canvas and fold it into the contract | critical | 3 | design | KN-001 | DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down. |
 | `KN-004` | Read the remaining type scale and any missing tokens from Figma | critical | 3 | design | KN-001 | A named sweep of the Foundations canvas finds no token absent from DESIGN.md, every value in the DESIGN.md tables is traceable to a Figma node id, and the KN-001 verify script's type-scale check still passes. |
@@ -2613,7 +2608,7 @@ CHILD OF KN-013, recorded in prose because board.json cannot express parent_task
 
 ### `KN-207` The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback
 
-- **status** in_progress · **severity** critical · **points** 2 · **area** web
+- **status** done · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-013 roast, and I checked both claims against AGENTS.md rather than taking them on trust. Both are real. AGENTS.md, under Documentation lives in markdown never in the code: a tsx carries code and the SHORT comments that explain the code, and everything a Storybook Docs page prints belongs in story-docs. Checkbox.tsx carries long design and API documentation blocks, and its per-prop JSDoc is exactly what react-docgen prints into the Controls table, so that prose is duplicated: once in the tsx and once in the markdown the guard already requires. The markdown is the source; the JSDoc should be short or gone. AGENTS.md line 246: every callback prop gets an fn() so the Actions panel records it. onChange has none, and nothing asserts its documented event and checked contract.

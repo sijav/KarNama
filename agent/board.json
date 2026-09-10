@@ -5070,7 +5070,7 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering.",
       "roasts": [],
       "notes": [
@@ -5078,8 +5078,10 @@
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-10T04:52:10.882Z",
-      "updatedAt": "2026-09-10T08:02:26.050Z",
-      "verify": "node agent/scripts/verify/KN-207.mjs"
+      "updatedAt": "2026-09-10T08:02:46.723Z",
+      "verify": "node agent/scripts/verify/KN-207.mjs",
+      "evidence": "Checkbox.tsx and Tooltip.tsx carry no JSDoc: per-prop descriptions removed (story-docs markdown holds them), design blocks cut to short line comments explaining code; code lines unchanged (diff shows comment lines only). agent/scripts/verify/KN-207.mjs, 5 checks green: react-docgen-typescript, the parser behind Storybook's Controls, reports no component or prop description for either component; MUTATION restoring a /** */ on Checkbox.checked is reported by docgen, so the check can see prose; the story-docs guard passes with its new rule that every on* prop docgen finds has an fn() in the meta args, read from loadCsf's parsed _metaAnnotations.args; THE CASE, removing onChange: fn() from the Checkbox meta fails the guard with \"callback prop onChange has no fn()\"; the KeyboardOnly story asserts onChange last called with (an event whose target is the input, true) then (…, false), twice in all, and the Checkbox stories pass. Before the fn() was added the new guard rule failed on exactly Shared/Checkbox onChange and passed FilterChip's onToggle, so it detects both ways. The guard also passes skipChildrenPropWithoutDoc: false, since react-docgen otherwise hid the Tooltip's undocumented children. Docs guard 50 of 50, Checkbox and Tooltip stories 12 of 12, lint and tsc clean, KN-013, KN-032 and KN-222 still green (their anchors sit in the edited files). FilterChip and LanguageSwitch JSDoc noted on KN-091.",
+      "closedAt": "2026-09-10T08:02:46.723Z"
     },
     {
       "id": "KN-208",
