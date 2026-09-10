@@ -5902,13 +5902,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Default renders from its args, so changing status, label or size in Controls changes the chip, asserted by a story that renders with non-default args; AllStatuses, a fixed matrix by design, disables the controls it cannot honour rather than showing them.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T09:24:03.933Z",
-      "updatedAt": "2026-09-10T09:26:21.153Z",
-      "verify": "node agent/scripts/verify/KN-239.mjs"
+      "updatedAt": "2026-09-10T09:26:34.645Z",
+      "verify": "node agent/scripts/verify/KN-239.mjs",
+      "evidence": "StatusChip.stories.tsx: Default is `{}`, rendering the component from its args; new FromArgs sets status custom-2, label سفارشی ۲, size M and asserts the chip shows that label, is 28 tall and has the custom-2 container fill; the previous fixed Default became SeededName; SeededName and AllStatuses set parameters.controls.disable. Docs updated in en and fa. agent/scripts/verify/KN-239.mjs, 4 checks green: stories pass (7 of 7); Default has no render of its own; THE CASE, a meta-level render that ignores args fails FromArgs; the two fixed renders disable their controls. KN-010.mjs still green, docs guard 50 of 50, lint and tsc clean.",
+      "closedAt": "2026-09-10T09:26:34.645Z"
     },
     {
       "id": "KN-240",
