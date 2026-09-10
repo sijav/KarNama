@@ -22,6 +22,7 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { closesBeforeRoasting } from './lib/prompt-order.mjs'
 
 const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
 const SIBLING = join(dirname(ROOT), 'SkipBureau')
@@ -128,15 +129,18 @@ check('the loop prompt exists too, since it is the file read first', () => {
   return existsSync(PROMPT) ? null : `${PROMPT} does not exist, so its rules were not checked`
 })
 
-check('the loop prompt CLOSES before it roasts, in its command block as well as its prose', () => {
-  if (!prompt) return 'no loop prompt to read'
-  // The command block, not the sentence. A block gets copied; prose does not,
-  // and this file said the right thing above a block that did the opposite.
-  const closeAt = prompt.indexOf('todo move <id> done')
-  const roastAt = prompt.indexOf('roast.py task')
-  if (closeAt === -1) return 'it never shows the close command'
-  if (roastAt === -1) return 'it never shows the roast command'
-  return closeAt < roastAt ? null : 'its command block fires the roast BEFORE the close, contradicting its own line'
+check('the loop prompt CLOSES before it roasts, INSIDE the step 5 block', () => {
+  if (!existsSync(PROMPT)) return 'no loop prompt to read'
+  // The RAW text, not the collapsed copy: fences are line-structured and
+  // collapsing whitespace destroys them.
+  //
+  // This check used to take the first close command and the first roast command
+  // anywhere in the document and compare their positions, while its own comment
+  // claimed it read the block. Leaving a correctly ordered example higher up
+  // and reversing the real block passed it. The extraction now finds the block
+  // by its HEADING and reads only inside it. KN-184.
+  const verdict = closesBeforeRoasting(readFileSync(PROMPT, 'utf8'))
+  return verdict.ok ? null : verdict.why
 })
 
 check('the loop prompt repairs a false done by filing, not by reopening', () => {

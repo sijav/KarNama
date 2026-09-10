@@ -4286,7 +4286,8 @@
         "Kept, because this is not a new gate: the check already exists and already claims in its own comment to read the block. This fixes a check that lies about what it reads."
       ],
       "createdAt": "2026-09-10T00:52:09.116Z",
-      "updatedAt": "2026-09-10T01:01:24.956Z"
+      "updatedAt": "2026-09-10T01:10:01.021Z",
+      "verify": "node agent/scripts/verify/KN-184.mjs"
     },
     {
       "id": "KN-185",
