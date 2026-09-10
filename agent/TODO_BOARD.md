@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 26 of 180 tasks done · 73 of 536 points.
+Project **KarNama** · 27 of 180 tasks done · 75 of 536 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-166` Check the loop rules are written correctly in the SkipBureau project** (high, 2 pt, agent)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-166` | Check the loop rules are written correctly in the SkipBureau project | high | 2 | agent | none | ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed. |
+**Next up: `KN-114` The catalog test counts an empty string as a translation** (high, 1 pt, web)
 
 ## Backlog (152)
 
@@ -173,7 +167,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 
-## Done (26)
+## Done (27)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -203,6 +197,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-151` | The design manifest still calls four settled questions open | high | 1 | design | none | node agent/scripts/verify/KN-002.mjs passes, the manifest records each settled question with the card that settled it, and re-opening any of them in the manifest without re-opening it in DESIGN.md still fails the check, proved by planting that. |
 | `KN-159` | Close the task BEFORE the roast, and never let a finding reopen it | high | 2 | agent | none | move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source. |
 | `KN-160` | Plan files live beside the work, named #<id> - <title>.md | high | 2 | agent | none | agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree. |
+| `KN-166` | Check the loop rules are written correctly in the SkipBureau project | high | 2 | agent | none | ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed. |
 
 ## Dropped (1)
 
@@ -2081,7 +2076,7 @@ Found by the KN-159 roast. agent/scripts/verify/KN-159.mjs proves a done task pa
 
 ### `KN-166` Check the loop rules are written correctly in the SkipBureau project
 
-- **status** in_progress · **severity** high · **points** 2 · **area** agent
+- **status** done · **severity** high · **points** 2 · **area** agent
 - **blocked by** none
 
 The owner's instruction of 2026-09-10: go to the sibling project at ../SkipBureau and make sure these rules are written correctly there, because the agent working it has been getting them wrong. The rules to check are the ones settled here: finish and prove a task BEFORE closing it, close on its own verifier rather than on a review, roast the closed work once in the background, every finding becomes a new to-do and never reopens the closed task, and the one exception is a finding that blocks the task now in hand, which means revert that task and take the board's next item. Also the plan-before-building rule and where the plan file lives. Read what is there before changing anything: that project has its own history and its rules may differ deliberately.

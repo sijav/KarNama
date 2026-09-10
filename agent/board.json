@@ -3935,13 +3935,15 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T23:56:34.854Z",
-      "updatedAt": "2026-09-10T00:31:22.520Z",
-      "verify": "node agent/scripts/verify/KN-166.mjs"
+      "updatedAt": "2026-09-10T00:31:34.605Z",
+      "verify": "node agent/scripts/verify/KN-166.mjs",
+      "evidence": "node agent/scripts/verify/KN-166.mjs passes, 7 checks, reading ../SkipBureau/CLAUDE.md and failing rather than skipping if the sibling project is absent. It asserts that file states the finish-prove-close-roast order with the owner's wording quoted and the close described BEFORE the roast, that findings become tasks and never reopen a finished one, the blocking exception with revert and todo next plus forget it otherwise, the plan-beside-the-work rule with its filename shape and its refusal of a separate folder, and that none of the abandoned gates survive: no 9.5 threshold, no zero-criticals gate, no instruction to roast again after a fix. Six mutations were each caught with their own message and the sibling file restored and re-read to prove it. The finding of the exercise is that the PREMISE was wrong: the rules there are already correct and are in better shape than the sijav rule files, which had a corrected header over an uncorrected body. What is actually broken is that the tool does not enforce them, since that project's board is the global todo skill and ~/.claude/skills/todo/todo.mjs has no guard on current status, so a closed task reopens freely exactly as it did here before KN-162. Filed as KN-177. Two clauses were added to its plan section, a task title is not a filename and the plan STAYS when the task closes, and committed there by explicit path because that worktree holds 25 modified files belonging to another live session, which were left untouched. One mutation caught a real defect in my own check: two phrasings written as an alternation, one of which sits inside the owner's quoted instruction and is therefore always present, so deleting the actual rule left the check green. What this does NOT establish: I read its rule files, not its behaviour. Whether that agent FOLLOWS the rules it has is not something this check can see, and the owner's impression that it was getting them wrong may be about behaviour rather than documentation.",
+      "closedAt": "2026-09-10T00:31:34.605Z"
     },
     {
       "id": "KN-167",
