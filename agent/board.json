@@ -3745,13 +3745,15 @@
       "parent": [
         "KN-072"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T22:23:26.951Z",
-      "updatedAt": "2026-09-10T03:20:00.912Z",
-      "verify": "node agent/scripts/verify/KN-072.mjs"
+      "updatedAt": "2026-09-10T03:20:16.043Z",
+      "verify": "node agent/scripts/verify/KN-072.mjs",
+      "evidence": "node agent/scripts/verify/KN-072.mjs, 8 checks, all pass, including a new one for this card: the owner settled the OWN TAB, and the second POSITION is marked as the author proposal it is. DESIGN.md section 6 and section 3 both now say author proposal, not yet put to the owner, next to the position claim, and the owner-settled entry no longer contains it. Mutations, 4 cases, all caught, DESIGN.md restored byte for byte: the position moved back inside the owner-settled entry, the marker deleted from section 6 only, the marker deleted from section 3 only, and a second quoted tab list appearing. The second and third of those are the reason the check is paragraph-scoped. My first version only required the marker to exist SOMEWHERE in DESIGN.md, and the mutation deleting it from section 6 PASSED, because section 3 carries its own copy. So every paragraph that claims the position must carry the marker itself. Paragraphs rather than a character window, because a paragraph is how the claim and its attribution are actually written and it does not change meaning when a sentence is re-wrapped. One repair on the way, worth recording because it is the same mistake one level down: the section 6 tab-list extraction anchored on the SENTENCE that follows the quoted list, and this card rewrote that sentence, so the extraction broke. It now finds the quoted line by its own structure, a blockquote line carrying separators, and reports if there is more than one rather than taking the first. KN-153 is a CHILD of KN-072, so it closed on the files it changed: all 13 verifiers that read DESIGN.md pass, npm run contract finds no card tripping any of its 10 rules, and the board validates at 203 tasks.",
+      "closedAt": "2026-09-10T03:20:16.043Z"
     },
     {
       "id": "KN-154",
