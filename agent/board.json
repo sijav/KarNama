@@ -1782,15 +1782,16 @@
       "area": "web",
       "parent": [
         "KN-060",
-        "KN-020",
-        "KN-196"
+        "KN-020"
       ],
       "status": "backlog",
-      "exit": "A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology.",
+      "exit": "A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology. Onto the rejected column collapsed to a count, as the owner decided on 2026-09-10, KN-196: during a drag it expands after a short hover of 500 ms; it accepts a drop while still collapsed; once the card lands it recollapses with a brief highlight, and only if the drag opened it, the count ticking up, the header flashing the rejected status colour for about a second and the move announced, Moved to Rejected with the count; a column the user opened stays open; a failed save returns the card with no highlight; and the keyboard path offers it as one target, announced with its count.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-10: KN-196 answered by the owner and recorded in DESIGN.md, so it no longer blocks this card; its behaviour is now part of the exit condition."
+      ],
       "createdAt": "2026-09-07T21:10:27.314Z",
-      "updatedAt": "2026-09-10T02:06:50.976Z"
+      "updatedAt": "2026-09-10T13:31:27.716Z"
     },
     {
       "id": "KN-062",
@@ -4909,7 +4910,8 @@
       ],
       "createdAt": "2026-09-10T02:06:44.051Z",
       "blockedReason": "Waiting on the owner. This is a design DECISION, not a build: KN-070 settled that the rejected column collapses to a count, and did not settle what a drag onto it does. Whether it expands on hover and after what delay, whether it accepts a drop while collapsed, what the user sees after the drop lands, and what the keyboard path targets are all the owner's or the designer's call. An agent choosing them silently is the exact failure KN-153 was about. Blocked rather than backlog so it stops being picked as though it were buildable.",
-      "updatedAt": "2026-09-10T13:21:35.124Z"
+      "updatedAt": "2026-09-10T13:39:32.819Z",
+      "verify": "node agent/scripts/verify/KN-196.mjs"
     },
     {
       "id": "KN-197",

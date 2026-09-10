@@ -46,17 +46,12 @@ so `^[^\p{L}]*$` means "contains no p, {, L or }", and every Persian literal and
 every English word without a p passes the gate. Restore it to critical when the
 last component closes. Until then, strings go through lingui by hand.
 
-**The owner ANSWERED KN-196 and most of KN-073 on 2026-09-10**, in chat, not
-yet in DESIGN.md at the time of writing: record them there FIRST. KN-196, a card
-dragged onto the rejected column while it is collapsed to a count: it EXPANDS
-AFTER A SHORT HOVER; after the card lands it RECOLLAPSES WITH A BRIEF HIGHLIGHT;
-the keyboard path offers the collapsed column as ONE TARGET, ANNOUNCED WITH ITS
-COUNT. KN-073, employment type: EIGHT values, a superset of both Iranian boards,
-the six in DESIGN.md plus فریلنسری (freelance) and موقت (temporary), the owner
-accepting that قراردادی and موقت, and فریلنسری and پروژه‌ای, overlap in practice;
-and a job must be able to be full-time AND remote, so employment type holds MORE
-THAN ONE value. The job level list was not answered and stays provisional.
-KN-077 still waits.
+**The owner answered KN-196 and half of KN-073 on 2026-09-10**, recorded in
+DESIGN.md under "Settled by the owner on 2026-09-10": the drop onto the collapsed
+rejected column in full (500 ms hover, early drops land, recollapse only if the
+drag opened it, a flash and an announcement, no flash on a failed save, one
+keyboard target with its count), and employment type as eight values, more
+than one per job, KN-265. The job level list and KN-077 still wait.
 
 ## The owner's rules, most recent first
 

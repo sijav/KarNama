@@ -435,11 +435,14 @@ in either register.
 
 ### Enumerated field values, from `434:33`
 
-Provisional, see the open questions below. English on the left because message
-ids are English, Persian on the right because that is what ships by default.
+Job level is still **Provisional**, see the open questions below. Employment type
+is the owner's decision of 2026-09-10, see "Settled by the owner on 2026-09-10".
+English on the left because message ids are English, Persian on the right
+because that is what ships by default.
 
-**نوع همکاری, employment type:** full-time تمام‌وقت · part-time پاره‌وقت ·
-internship کارآموزی · remote دورکاری · contract قراردادی · project پروژه‌ای
+**نوع همکاری, employment type, more than one per job:** full-time تمام‌وقت ·
+part-time پاره‌وقت · internship کارآموزی · remote دورکاری · contract قراردادی ·
+project پروژه‌ای · freelance فریلنسری · temporary موقت
 
 **سطح شغلی, job level:** worker کارگر · employee کارمند · specialist کارشناس ·
 senior specialist کارشناس ارشد · middle manager مدیر میانی ·
@@ -561,9 +564,10 @@ These are flagged in the file itself. They are the designer's or the owner's
 call, not a build decision, and nothing should quietly resolve them by picking
 one while implementing.
 
-- **The employment type and job level option lists**, **open, tracked by KN-073**, at `434:33` are marked
-  **unconfirmed**: they were never checked against Jobinja and Jobvision because
-  the network blocked it. Treat the values as provisional.
+- **The job level option list**, **open, tracked by KN-073**, at `434:33` is marked
+  **unconfirmed**: it was never checked against Jobinja and Jobvision because the
+  network blocked it. Treat the values as provisional. The employment type list
+  beside it was settled by the owner on 2026-09-10, below.
 - **The two copy strings frame `505:3` marks as not applied.** **Open, tracked
   by KN-077.** Fourteen of its sixteen changes landed in the file. Item 10, the
   Review-step helper copy, records that no such node exists after searching all
@@ -634,6 +638,39 @@ sixteen copy changes, fourteen of the sixteen applied in the file, one of which
 reverts a wrong colloquial edit on a UI label. Principle 5 is superseded, do not
 re-apply it.
 
+### Settled by the owner on 2026-09-10
+
+Two more answers. The owner gave the broad answer to each in chat, and then
+confirmed the details through the question tool the same day, so every line
+below is the owner's, not a reading of it.
+
+**Dropping a card onto the rejected column while it is collapsed to a count.**
+Owner, KN-196. The file draws nothing for it: Drop Done `376:5997` predates the
+collapse decision and shows rejected open, in the old order.
+
+- **During a drag, the collapsed column expands after a short hover: 500 ms**
+  of the dragged card resting over it. Long enough that crossing it on the way
+  to another column does not open it, short enough to read as a response.
+- **It accepts a drop while still collapsed.** A card dropped before it opens
+  lands in rejected all the same: opening shows where the card will go, it is
+  not a condition of going there.
+- **After the card lands, it recollapses with a brief highlight, and only if
+  the drag opened it.** The count ticks up, the header flashes the rejected
+  status colour for about a second, and a screen reader hears the move, «رد شده،
+  ۱۴», Moved to Rejected, 14. A column the user opened themselves stays open.
+  If the save fails, the card goes back and there is no highlight.
+- **The keyboard path offers the collapsed column as one target, announced with
+  its count**, never as an empty slot to move into.
+
+**Employment type: eight values, and a job holds more than one.** Owner, the
+first half of KN-073. A superset of both Iranian job boards: the six in
+"Enumerated field values" plus freelance فریلنسری and temporary موقت. The owner
+accepted that contract قراردادی and temporary موقت overlap heavily in practice,
+and so do freelance فریلنسری and project پروژه‌ای, so the picker offers choices
+many people cannot tell apart; in exchange nothing an ad says goes unmatched.
+**A job can be full-time and remote at once**, so the field holds more than
+one value. The database enum and the list-valued field are a migration,
+KN-265. The job level list was not part of the answer and stays provisional.
 ## 7. The Documentation canvas, frame by frame
 
 Canvas `5:8`. Every frame, with what it settles and where that now lives, so a
