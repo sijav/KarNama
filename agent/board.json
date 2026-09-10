@@ -5902,11 +5902,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Default renders from its args, so changing status, label or size in Controls changes the chip, asserted by a story that renders with non-default args; AllStatuses, a fixed matrix by design, disables the controls it cannot honour rather than showing them.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T09:24:03.933Z"
+      "createdAt": "2026-09-10T09:24:03.933Z",
+      "updatedAt": "2026-09-10T09:26:21.153Z",
+      "verify": "node agent/scripts/verify/KN-239.mjs"
     },
     {
       "id": "KN-240",

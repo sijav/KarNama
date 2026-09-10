@@ -26,7 +26,17 @@ it is a departure from the design.
 
 ### Default
 
-The first built-in status, named as a fresh account first sees it.
+Rendered from its args: every control changes the chip.
+
+### FromArgs
+
+A custom slot at the column-header size, nothing like the defaults, to show the
+chip follows its args.
+
+### SeededName
+
+The first built-in status, named as a fresh account first sees it. A fixed
+render, so no control is offered.
 
 ### AllStatuses
 

@@ -58,11 +58,31 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
+// Rendered from its args, so every control changes the chip, KN-239.
+export const Default: Story = {}
+
+export const FromArgs: Story = {
+  // Nothing like the defaults: a custom slot at the column-header size. The
+  // chip must follow the args, or the Controls panel is controlling nothing.
+  globals: { colorScheme: 'light' },
+  args: { status: 'custom-2', label: 'سفارشی ۲', size: 'M' },
+  play: async ({ args, canvasElement }) => {
+    const chip = within(canvasElement).getByText(args.label)
+    await expect(chip.offsetHeight).toBe(28)
+    await expect(getComputedStyle(chip).backgroundColor).toBe(computedColour(chip, statusTokens['custom-2'].container))
+  },
+}
+
+export const SeededName: Story = {
+  // A fixed render: the first built-in, named as a fresh account first sees it.
+  // No control applies, so none is shown.
+  parameters: { controls: { disable: true } },
   render: () => <WithDefaultName status="new" size="S" />,
 }
 
 export const AllStatuses: Story = {
+  // A fixed matrix, so the controls it cannot honour are not offered.
+  parameters: { controls: { disable: true } },
   // Pinned to light, so every expected colour is the design's own token.
   globals: { colorScheme: 'light' },
   render: () => (
