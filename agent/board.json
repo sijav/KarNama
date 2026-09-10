@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 286,
+  "nextId": 288,
   "tasks": [
     {
       "id": "KN-001",
@@ -7143,11 +7143,43 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The owner has answered, through the question tool, whether an Input on a screen keeps its message line reserved as the component does or drops it as the 91 screen instances draw it, and where an error on a field with the line off is shown; DESIGN.md records the answer as the owner's, with the date; and if the line can be off, a card for the change exists.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T17:20:16.518Z"
+      "createdAt": "2026-09-10T17:20:16.518Z",
+      "updatedAt": "2026-09-10T17:58:53.095Z",
+      "verify": "node agent/scripts/verify/KN-285.mjs"
+    },
+    {
+      "id": "KN-286",
+      "title": "An Input's error is not announced when it appears while the field has focus",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the plan check on KN-285, KN-285 being a child of KN-011. The Input's message line is a plain element the field names in aria-describedby, with aria-invalid set while there is an error. When validation marks a focused field invalid, its description changes, but a changed description is not announced: a screen reader user typing into the field hears nothing until they leave it and come back. WCAG 4.1.3 treats an error that appears without moving focus as a status message, which needs a programmatic announcement, a live region such as role alert, present before the text arrives. Clearing the error must restore the helper as the description, or drop aria-describedby when there is none, as it does today.",
+      "why": "The person being told their input is wrong is the one who most needs to hear it, and today a screen reader says nothing at the moment it happens. It holds whichever way KN-285 is answered. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "An error that appears on a focused Input is announced through a live region present before the error arrives, and the field keeps aria-invalid and its aria-describedby association; clearing the error restores the helper as the description or removes aria-describedby when there is none; a story asserts the live region's role and that it carries the error text after the error is set on a focused field, and a mutation removing the live region fails it by name.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T17:37:15.021Z"
+    },
+    {
+      "id": "KN-287",
+      "title": "Draw the Input's message line only when there is a helper or an error, as the screens draw it",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: the owner's decision on KN-285, 2026-09-10, a KN-011 child. All 91 Input instances on the file's screens turn the Helper Text line off, and the Error variant's message is that line, so a field is 64 tall at rest (16 label, 4, 44 field) and the 90 tall Error variant when it fails. The Input always draws the line, KN-011's decision that an error never moves the field, which the owner reversed: the line is drawn only when there is something to say, a helper or an error, and an error appearing adds it with its message and moves what is below by 26. The ErrorDoesNotMoveTheField story asserts the old decision and WithoutAHelper that the empty line holds its place; both change. The blank-error rule, KN-254, still means no line for a blank error; the announcement of a new error is KN-286.",
+      "why": "Every screen is 26 taller per field than the file until this lands, and the owner chose the drawn layout over a form that never moves. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "An Input with neither a helper nor an error draws no message line and is 64 tall, as the 91 screen instances draw it; with a helper or an error it is 90, the file's variants; an error appearing on a field without a helper adds the line with its message; a blank error still draws no line; stories assert the 64 and the 90 and the line appearing with the error, replacing ErrorDoesNotMoveTheField and WithoutAHelper's reserved line; DESIGN.md records the owner's reversal of KN-011's decision; and the Input's comment about the line always keeping its height is corrected.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T17:57:44.885Z"
     }
   ]
 }

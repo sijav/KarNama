@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 94 of 285 tasks done · 178 of 700 points.
+Project **KarNama** · 94 of 287 tasks done · 178 of 704 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-285` Every Input on the file's screens turns its helper line off, while the Input always reserves it** (critical, 1 pt, design)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-285` | Every Input on the file's screens turns its helper line off, while the Input always reserves it | critical | 1 | design | none | The owner has answered, through the question tool, whether an Input on a screen keeps its message line reserved as the component does or drops it as the 91 screen instances draw it, and where an error on a field with the line off is shown; DESIGN.md records the answer as the owner's, with the date; and if the line can be off, a card for the change exists. |
 
 ## Blocked (2)
 
@@ -17,13 +23,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (187)
+## Backlog (188)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | critical | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
-| `KN-285` | Every Input on the file's screens turns its helper line off, while the Input always reserves it | critical | 1 | design | none | The owner has answered, through the question tool, whether an Input on a screen keeps its message line reserved as the component does or drops it as the 91 screen instances draw it, and where an error on a field with the line off is shown; DESIGN.md records the answer as the owner's, with the date; and if the line can be off, a card for the change exists. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -33,6 +38,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-280` | The bound Input takes a Controls value equal to an edit still in flight for its echo, and can stay apart from the arg | critical | 2 | web | none | Bound tells its own writes from anything else by a revision carried with each write, not by value, so an arg whose value is not the one sent at its revision is taken, whatever the queue holds; a check in a production build reproduces the sequence, an edit in flight, a Controls value equal to it arriving after a newer edit, and ends with the field and the arg equal; the exception is gone from the comment; the revision never reaches the Input or shows as a control; and KN-253's and KN-249's verifiers still pass. |
 | `KN-282` | The Filter Chip's text sits at 13 where the file draws 12, and its pressed edge is 1 where the file draws 1.5 | critical | 2 | web | none | In every state the Filter Chip's text sits spacing/sm, 12px, from the chip's outer edge as 159:63 to 159:69 draw it, with the edge painted inside and taking no layout space; the pressed edge is 1.5 as 159:67 draws it; nothing in FilterChip.tsx computes a padding from a border width; the stories measure the text's distance from the edge; and the selected edge is left to KN-279. |
 | `KN-283` | KN-266's text measurement reads the input's box, so a text-indent moves the text without failing a check | critical | 2 | web | none | The Input's stories and KN-266's production check measure where the text starts, the input's box edge plus its own padding, border and text-indent on the side the text starts from, given its direction and alignment, and read 16 as 95:5 draws it; a static text-indent, a padding on the input and a changed alignment, each present in every state, fail Default and the production check by name. |
+| `KN-286` | An Input's error is not announced when it appears while the field has focus | critical | 2 | web | none | An error that appears on a focused Input is announced through a live region present before the error arrives, and the field keeps aria-invalid and its aria-describedby association; clearing the error restores the helper as the description or removes aria-describedby when there is none; a story asserts the live region's role and that it carries the error text after the error is set on a focused field, and a mutation removing the live region fails it by name. |
+| `KN-287` | Draw the Input's message line only when there is a helper or an error, as the screens draw it | critical | 2 | web | none | An Input with neither a helper nor an error draws no message line and is 64 tall, as the 91 screen instances draw it; with a helper or an error it is 90, the file's variants; an error appearing on a field without a helper adds the line with its message; a blank error still draws no line; stories assert the 64 and the 90 and the line appearing with the error, replacing ErrorDoesNotMoveTheField and WithoutAHelper's reserved line; DESIGN.md records the owner's reversal of KN-011's decision; and the Input's comment about the line always keeping its height is corrected. |
 | `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
 | `KN-021` | Page header | critical | 3 | web | KN-005, KN-006, KN-007, KN-009, KN-008 | Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree. |
 | `KN-022` | Empty state and loading state | critical | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
@@ -3609,7 +3616,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-285` Every Input on the file's screens turns its helper line off, while the Input always reserves it
 
-- **status** backlog · **severity** critical · **points** 1 · **area** design
+- **status** in_progress · **severity** critical · **points** 1 · **area** design
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found while reading 95:38 for KN-267. All 91 Input instances on the Screens canvas, 5:7, read with use_figma, set Helper Text to false, keep Label on, and use no icon. The Input always draws its message line, 22 tall below a 4 gap, KN-011's decision that an error appearing never moves the field. So once screens are built from it, every field sits 26 taller than the file draws it, and a form of five fields is 130 taller. The file's boolean says the line can be off; the component's decision says it is always there. It is a choice between the drawn layout and a form that does not jump when an error appears, and whether a field with the line off can show an error at all, KN-254 having decided an error needs a message.
@@ -3617,4 +3624,26 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** Match the design exactly is the owner's standing rule, and every screen will be taller than drawn unless this is settled before screens are composed; the decision the component made is good for errors and wrong for the drawn layout, so the owner chooses. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** The owner has answered, through the question tool, whether an Input on a screen keeps its message line reserved as the component does or drops it as the 91 screen instances draw it, and where an error on a field with the line off is shown; DESIGN.md records the answer as the owner's, with the date; and if the line can be off, a card for the change exists.
+
+### `KN-286` An Input's error is not announced when it appears while the field has focus
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the plan check on KN-285, KN-285 being a child of KN-011. The Input's message line is a plain element the field names in aria-describedby, with aria-invalid set while there is an error. When validation marks a focused field invalid, its description changes, but a changed description is not announced: a screen reader user typing into the field hears nothing until they leave it and come back. WCAG 4.1.3 treats an error that appears without moving focus as a status message, which needs a programmatic announcement, a live region such as role alert, present before the text arrives. Clearing the error must restore the helper as the description, or drop aria-describedby when there is none, as it does today.
+
+**Why.** The person being told their input is wrong is the one who most needs to hear it, and today a screen reader says nothing at the moment it happens. It holds whichever way KN-285 is answered. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** An error that appears on a focused Input is announced through a live region present before the error arrives, and the field keeps aria-invalid and its aria-describedby association; clearing the error restores the helper as the description or removes aria-describedby when there is none; a story asserts the live region's role and that it carries the error text after the error is set on a focused field, and a mutation removing the live region fails it by name.
+
+### `KN-287` Draw the Input's message line only when there is a helper or an error, as the screens draw it
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: the owner's decision on KN-285, 2026-09-10, a KN-011 child. All 91 Input instances on the file's screens turn the Helper Text line off, and the Error variant's message is that line, so a field is 64 tall at rest (16 label, 4, 44 field) and the 90 tall Error variant when it fails. The Input always draws the line, KN-011's decision that an error never moves the field, which the owner reversed: the line is drawn only when there is something to say, a helper or an error, and an error appearing adds it with its message and moves what is below by 26. The ErrorDoesNotMoveTheField story asserts the old decision and WithoutAHelper that the empty line holds its place; both change. The blank-error rule, KN-254, still means no line for a blank error; the announcement of a new error is KN-286.
+
+**Why.** Every screen is 26 taller per field than the file until this lands, and the owner chose the drawn layout over a form that never moves. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** An Input with neither a helper nor an error draws no message line and is 64 tall, as the 91 screen instances draw it; with a helper or an error it is 90, the file's variants; an error appearing on a field without a helper adds the line with its message; a blank error still draws no line; stories assert the 64 and the 90 and the line appearing with the error, replacing ErrorDoesNotMoveTheField and WithoutAHelper's reserved line; DESIGN.md records the owner's reversal of KN-011's decision; and the Input's comment about the line always keeping its height is corrected.
 

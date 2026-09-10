@@ -686,10 +686,10 @@ re-apply it.
 
 ### Settled by the owner on 2026-09-10
 
-Four answers. The owner gave the broad answer to the first two in chat, and
-then confirmed the details through the question tool the same day; the third
-and the fourth were put and answered through the question tool alone. Every
-line below is the owner's, not a reading of it.
+Five answers. The owner gave the broad answer to the first two in chat, and
+then confirmed the details through the question tool the same day; the other
+three were put and answered through the question tool alone. Every line below
+is the owner's, not a reading of it.
 
 **Dropping a card onto the rejected column while it is collapsed to a count.**
 Owner, KN-196. The file draws nothing for it: Drop Done `376:5997` predates the
@@ -745,6 +745,20 @@ check before the label, which would grow the chip as it toggles, not keeping
 the file's fill, and not asking the designer first. That blue is already the
 chip's pressed edge, so selection gets an edge of its own or is proved apart
 from pressing. KN-279 builds it, after KN-272 fixes the dark fill.
+
+**A field's message line is drawn only when there is something to say.**
+Owner, KN-285, put and answered through the question tool. All 91 Input
+instances on the screens turn the Helper Text line off, and in the file the
+error message is that line, so a field is 64 tall at rest and the 90 tall
+Error variant when it fails. The Input reserved the line always, KN-011's
+decision that an error never moves the form, which made every screen 26
+taller per field than drawn. The owner chose **to follow the screens**: the
+line is drawn when there is a helper or an error, an error appearing adds it
+with its message and moves what is below by 26, and a field with neither is
+the screens' 64. Not keeping the line reserved, not reserving it only on
+fields that validate, and not asking the designer first. This reverses
+KN-011's decision; KN-287 builds it, and a new error is announced to a
+screen reader whichever way, KN-286.
 
 ## 7. The Documentation canvas, frame by frame
 
