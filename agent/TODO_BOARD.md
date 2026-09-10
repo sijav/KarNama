@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 63 of 233 tasks done · 136 of 624 points.
+Project **KarNama** · 63 of 234 tasks done · 136 of 626 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -18,7 +18,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (165)
+## Backlog (166)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -65,6 +65,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-195` | npm run silently truncates every argument at its first newline on Windows | high | 2 | agent | none | Either the scripts refuse an argument containing a newline with a message naming this cause, or the loop stops going through npm for anything carrying prose and RALPH.md and .claude/ralph-loop.local.md are updated to the invocation that works. A check demonstrates the truncation and its absence after the fix, using a free non-mutating command rather than a real roast. The existing board is audited for fields whose text ends mid-sentence, and the audit result is recorded whether or not it finds anything. |
 | `KN-202` | The story-docs markdown contract is documented as rigid but silently accepts malformed files | high | 2 | web | none | parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing. |
 | `KN-203` | The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian | high | 2 | web | none | The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository. |
+| `KN-234` | The token guard still accepts copy as a key or inside the font stack, and its retirement check trusts any lint failure | high | 2 | web | none | Every string-literal key in tokens.ts must be a token name DESIGN.md documents, not a shape; the font stack must equal the documented value exactly; planted cases for a copy key, copy after Vazirmatn and a copy family each fail the guard; and the retirement check requires a clean baseline lint and lingui errors attributable to tokens.ts, STORAGE_KEY and TOOLTIP_SURFACE once they are removed, reporting an unrelated error as unjudgeable rather than as the debt standing. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | high | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
@@ -2862,6 +2863,8 @@ CHILD OF KN-224, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The guard reads every string literal in the SOURCE of src/theme/tokens.ts, not the runtime values, so a literal inside a function, a Map or any other construct is checked; the font stack is checked by value; mutations adding copy as a function return, as a Map entry and as the fontFamily value each fail it; and TECH-DEBT.md 13's retiring check is a condition a command can test, such as the three exemptions removed and npm run lint still green with every planted fixture failing.
 
+**Roasts.** round 1 scored 2 with 3 critical(s)
+
 ### `KN-228` The Hover story's canvas branch still keys off Storybook's private preview global
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -2929,4 +2932,15 @@ CHILD OF KN-211, recorded in prose because board.json cannot express parent_task
 **Why.** KN-211 promised a clear failure instead of silence, and the case the roast built is the realistic one: a wrapper written carelessly with forwardRef. A tooltip that never opens in production, with no report anywhere, is the defect KN-211 was filed for. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** A trigger that forwards its ref but drops its other props is reported in a PRODUCTION build as well as in development, proved by a story with such a wrapper checked on the production Storybook; a trigger that mounts after the first render is not falsely reported; a working trigger swapped for a broken one is reported; and the ReportsATriggerThatCannotAttach and KeepsTheTriggersName stories still pass.
+
+### `KN-234` The token guard still accepts copy as a key or inside the font stack, and its retirement check trusts any lint failure
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-227, recorded in prose because board.json cannot express parent_task yet, KN-188. Three findings from the KN-227 roast, all confirmed by reading the guard and the verifier, filed together as one guard and one check. FIRST: keys are validated by a SHAPE, lowercase slash-separated, so delete/application passes as a key, and the Foundations page renders token keys as visible labels; the contract tests constrain the existing exports' keys, but a new export's keys are checked by the shape alone. SECOND: the font-stack pattern allows any text after Vazirmatn inside the first quoted family and any quoted family after it, so "'Vazirmatn', 'Delete this application'" passes. THIRD: KN-227.mjs's retirement check reads only the lint exit code, so an unrelated lint error makes the three exemptions look necessary forever.
+
+**Why.** Every shape this repository has used as an exemption has let copy through, and the guard repeats the pattern one level down. The retirement check is the one command that says when TECH-DEBT 13 can go, and as written it cannot tell a reason from a coincidence. High rather than critical: it guards against copy being ADDED to the token file, which nothing does today, and it follows the component work.
+
+**Exit condition.** Every string-literal key in tokens.ts must be a token name DESIGN.md documents, not a shape; the font stack must equal the documented value exactly; planted cases for a copy key, copy after Vazirmatn and a copy family each fail the guard; and the retirement check requires a clean baseline lint and lingui errors attributable to tokens.ts, STORAGE_KEY and TOOLTIP_SURFACE once they are removed, reporting an unrelated error as unjudgeable rather than as the debt standing.
 
