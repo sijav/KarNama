@@ -4721,13 +4721,15 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "KN-043's exit condition names the rejected column's position after the offer column and its collapsed-to-a-count default; KN-060's names rendering collapsed to a count and expanding on click, and says nothing about where the column sits. KN-149's verifier requires the right clause of each card rather than one shared string, and a mutation that swaps the two clauses between the cards is caught.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T02:17:50.023Z",
-      "updatedAt": "2026-09-10T03:38:29.959Z",
-      "verify": "node agent/scripts/verify/KN-149.mjs"
+      "updatedAt": "2026-09-10T03:38:45.341Z",
+      "verify": "node agent/scripts/verify/KN-149.mjs",
+      "evidence": "node agent/scripts/verify/KN-149.mjs, 5 checks, all pass. KN-043 and KN-060 now carry DIFFERENT clauses, split by what each card can deliver: the board screen names the rejected column last, after the offer column, collapsed to a count by default; the column component names that a column can render collapsed to a count and expands on click, and says explicitly that the board decides which column starts collapsed and the component does not know which one it is. THE MUTATION THE CARD ASKS FOR IS CAUGHT: swapping the two clauses between the cards fails with a message naming which card carries whose clause. That is the case the previous shape would have passed, because with one shared string each card still carried something from the registry, so a swap was invisible. Each card is now required to carry ITS OWN clause and no other. A second protection came out of the same reasoning and is checked: two cards contracted to the SAME clause is refused outright, because sharing is precisely how a board fact landed on a component in the first place. KN-199 is a CHILD of KN-149 in provenance, recorded in prose because board.json's parent field means BLOCKED BY rather than came-from, KN-188. So it closed on the files it changed rather than the full suite: KN-149.mjs and KN-072.mjs pass, npm run contract finds no card tripping any of its 10 rules, and the board validates at 204 tasks. NOT DONE HERE, deliberately: the registry is still an unanchored constant, so dropping a card from it entirely still passes. That is KN-198, filed from the same roast, and the fix is both-directions checking. This card narrowed what each card owes; it did not anchor the set of cards.",
+      "closedAt": "2026-09-10T03:38:45.341Z"
     },
     {
       "id": "KN-200",
