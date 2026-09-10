@@ -1,5 +1,7 @@
+import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
+import type { ComponentPropsWithRef } from 'react'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { elevation } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -32,6 +34,18 @@ const InfoMark = (
     <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 3a1 1 0 110 2 1 1 0 010-2zm1 8H7V7h2v5z" />
   </Box>
 )
+
+// An ICON-ONLY trigger, the case this component exists for, named by its own
+// aria-label from the catalog. It forwards its props and ref, as a tooltip
+// child must: MUI clones it to attach the listeners and the description.
+const DeleteStatusButton = (props: ComponentPropsWithRef<'button'>) => {
+  const { i18n } = useLingui()
+  return (
+    <button type="button" {...props} aria-label={i18n._('Delete status')}>
+      {InfoMark}
+    </button>
+  )
+}
 
 const meta = {
   title: 'Shared/Tooltip',
@@ -107,6 +121,23 @@ export const WithoutCssBaseline: Story = {
     // Still the frame's 260, padding included, because the tip sets its own
     // box-sizing. Without it this reads 284: 260 plus 12 at each side.
     await expect(drawnSurface().offsetWidth).toBe(260)
+  },
+}
+
+export const KeepsTheTriggersName: Story = {
+  args: { children: <DeleteStatusButton /> },
+  // English, so the expected name is one known string.
+  globals: { locale: 'en-US' },
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole('button')
+    await userEvent.tab()
+    const tip = await within(document.body).findByRole('tooltip')
+    // KN-209. While the tip is OPEN, the button is still called what it is,
+    // by its own label: a labelling tooltip replaced that with the tip's text.
+    await expect(button).toHaveAccessibleName('Delete status')
+    // And the tip is reachable, as the button's description.
+    await expect(button.getAttribute('aria-describedby')).toBe(tip.id)
+    await expect(button).not.toHaveAttribute('aria-labelledby')
   },
 }
 

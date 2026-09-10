@@ -10,4 +10,5 @@ export const messages: Record<string, string> = {
   'KarNama': 'KarNama',
   'My job opportunities': 'My job opportunities',
   'Language': 'Language',
+  'Delete status': 'Delete status',
 }

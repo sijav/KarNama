@@ -27,6 +27,12 @@ Optional, because most tips do not need one.
 The control the tip describes. MUI clones it to attach the hover and focus
 listeners, so it has to be a single element that forwards its props.
 
+**It must have an accessible name of its own.** The tip DESCRIBES the control,
+through `aria-describedby`; it never names it. An icon-only button needs its own
+`aria-label`, and one without a name stays unnamed with a tip beside it. That is
+deliberate: a tip that named its control would replace the control's name with
+a sentence about it, which is what this component did until KN-209.
+
 ## Stories
 
 ### OnHover
@@ -40,6 +46,12 @@ The same tip on a page without the app's CSS reset. The frame's 260 includes
 its padding, so the tip sets its own border-box sizing rather than inheriting
 it; without that it would be 284 wide anywhere the reset is missing. The story
 removes the reset's box-sizing from every element and measures the tip anyway.
+
+### KeepsTheTriggersName
+
+An icon-only trigger labelled "Delete status". With the tip open, the button
+is still announced by its own name, and the tip is reachable as its
+description. Before KN-209 the tip replaced the name entirely.
 
 ### OnKeyboardFocus
 

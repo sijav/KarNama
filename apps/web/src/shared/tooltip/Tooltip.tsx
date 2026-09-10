@@ -32,6 +32,12 @@ export const Tooltip = ({ title, icon, children }: TooltipProps) => (
     // asserting the computed value caught that. This turns the behaviour off
     // at the source; the sx keeps it off if MUI's default ever changes.
     disableInteractive
+    // DESCRIBE the trigger, never name it, KN-209. MUI's default LABELS its
+    // child through aria-labelledby, which outranks the child's own aria-label,
+    // so an icon-only "Delete status" button was announced as the tip's
+    // paragraph. With this the tip is its description and the trigger keeps
+    // its name, which means the trigger must HAVE a name of its own.
+    describeChild
     title={
       <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: `${spacing.xs}px` }}>
         {icon === undefined ? null : (

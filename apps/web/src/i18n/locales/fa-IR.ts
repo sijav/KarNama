@@ -13,4 +13,5 @@ export const messages: Record<string, string> = {
   'KarNama': 'کارنما',
   'My job opportunities': 'فرصت‌های شغلی من',
   'Language': 'زبان',
+  'Delete status': 'حذف وضعیت',
 }
