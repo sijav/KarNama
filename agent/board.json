@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 221,
+  "nextId": 224,
   "tasks": [
     {
       "id": "KN-001",
@@ -5142,7 +5142,23 @@
       "parent": [],
       "status": "done",
       "exit": "Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3.5,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-210-round-1.2026-09-10T07-00-35-995Z.md",
+          "filed": [
+            "KN-222",
+            "KN-223"
+          ],
+          "cardDigest": "f59f82eec80fcc28355e968ecf4dbdb6c027e25b7e79c6213b68ff3311e19767",
+          "head": "34332f3c2481f5bcf95e667d13975fcbf5c194d8",
+          "reviewerScore": 3.5,
+          "reviewerCriticals": 2,
+          "at": "2026-09-10T07:05:36.016Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -5178,15 +5194,18 @@
       "severity": "critical",
       "points": 1,
       "area": "web",
-      "parent": [],
+      "parent": [
+        "KN-221"
+      ],
       "status": "backlog",
       "exit": "At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through.",
       "roasts": [],
       "notes": [
-        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact.",
+        "2026-09-10: blocked by KN-221. The story's tip text should be the tooltip's real designed sentence through lingui, and that sentence has a count, which renders as raw ICU in any production build until the catalogs are compiled. A placeholder-free demo sentence would put copy in the product catalog that no product screen uses, so it waits."
       ],
       "createdAt": "2026-09-10T05:30:46.654Z",
-      "updatedAt": "2026-09-10T06:38:20.375Z"
+      "updatedAt": "2026-09-10T07:04:15.637Z"
     },
     {
       "id": "KN-213",
@@ -5310,6 +5329,51 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T07:01:25.045Z"
+    },
+    {
+      "id": "KN-221",
+      "title": "The catalogs are never compiled, so a message with a count or a placeholder renders raw ICU in production",
+      "desc": "Found while working KN-212, and reproduced rather than inferred. src/i18n/locales/*.ts are hand-written maps loaded straight into i18n.load, and nothing compiles them. @lingui/core 6.6.0 compiles an ICU message at runtime ONLY outside production: with NODE_ENV unset, 'This status has {count, plural, one {# job opportunity} other {# job opportunities}}...' rendered as 'This status has 3 job opportunities...' and the Persian as '...۳ فرصت شغلی...'; with NODE_ENV=production, which is what vite build sets for the deployed app and the published Storybook, both rendered the raw '{count, plural, ...}' text and lingui printed 'Uncompiled message detected'. Nothing is broken today only because no message has a placeholder yet. The designed tooltip copy on node 410:469 has a count, and so will column headers, the bulk action bar and every other 'N job opportunities'. @lingui/vite-plugin, cli and format-po are already dev dependencies, which is the intended route; KN-110 wires extraction on the same path.",
+      "why": "It is a production-only failure, the worst kind: development and the test suite, which do not set NODE_ENV to production, render every message perfectly, and the deployed site shows the user curly-brace syntax. It blocks KN-212, whose story needs the tooltip's real counted sentence, and every component whose copy carries a number. Critical on the owner's order of 2026-09-10: the components wait on it.",
+      "severity": "critical",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A message with a plural and a placeholder renders correctly in BOTH locales in a production build, checked by rendering it from the built output or under NODE_ENV=production rather than in development, with Persian digits in fa-IR; a mutation that loads the catalogs uncompiled again makes that check fail; and the catalog tests still prove every English id has a non-empty Persian translation.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T07:04:15.410Z"
+    },
+    {
+      "id": "KN-222",
+      "title": "The tooltip's 260 depends on the app's CSS reset, and the story finds the surface by its DOM position",
+      "desc": "CHILD OF KN-210, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-210 roast, both rated critical by the reviewer, filed as one card because they are the same lines and the same test. FIRST: the tooltip surface sets width 260 and padding 12 but no box-sizing, so it is 260 outer only because AppProviders renders CssBaseline, which makes everything border-box; under a bare ThemeProvider the same surface is 284. SECOND: the OnHover story measures the firstElementChild of the element carrying role=tooltip, which is MUI's popper, so it relies on MUI placing the drawn surface first; a transition wrapper of the same width would pass while measuring the wrong element. My own view is that both are major rather than critical, since every real render sits under CssBaseline and the current DOM is correct, but the board records the reviewer's rating and the fixes are one line each.",
+      "why": "A component whose drawn size depends on a global reset it does not own is correct by accident, and a test that finds its subject by position is checking whatever happens to be first. KN-210's whole point was to stop the width depending on something the component does not state. Critical on the owner's order of 2026-09-10, with the other component findings.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The tooltip surface sets its own box-sizing, and a story rendering it WITHOUT CssBaseline measures 260; the width story finds the surface by a marker the component puts on the tooltip slot itself rather than by DOM position; and a mutation removing the box-sizing fails the no-reset story.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T07:05:35.614Z"
+    },
+    {
+      "id": "KN-223",
+      "title": "The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title",
+      "desc": "CHILD OF KN-210, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-210 roast and confirmed: the component now makes every tip exactly 260 wide, which is what node 410:469 specifies, so a one-word title sits in a mostly empty 260 box and a long one wraps downward without limit. Figma draws one specimen, three lines, and its description says the tooltip's only current use is beside the disabled delete-status option. Nothing tells the next caller that the fixed width is deliberate, or what happens past three lines, and no story shows either case.",
+      "why": "A component's limits belong where its caller reads, and a caller who sees a 260 box around one word will assume it is a bug and override it. Critical on the owner's order of 2026-09-10, with the other component findings.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T07:05:35.906Z"
     }
   ]
 }

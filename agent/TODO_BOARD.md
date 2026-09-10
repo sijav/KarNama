@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 52 of 220 tasks done · 120 of 603 points.
+Project **KarNama** · 52 of 223 tasks done · 120 of 609 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-212` The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked** (critical, 1 pt, web)
+**Next up: `KN-218` The tooltip pads 12 where Figma pads 8 vertically, and draws no shadow where Figma draws one** (critical, 1 pt, web)
 
 ## Blocked (3)
 
@@ -18,18 +18,20 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (163)
+## Backlog (166)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | none | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-218` | The tooltip pads 12 where Figma pads 8 vertically, and draws no shadow where Figma draws one | critical | 1 | web | none | A story measures the open tip's computed padding as 8 top and bottom and 12 at each side, and its computed box-shadow as the value read from node 410:469; that value lives in the token set beside Card and Modal and is recorded in DESIGN.md's elevation table with the node it was read from; and a mutation restoring padding 12 on all sides fails the story. |
 | `KN-220` | The Checkbox Hover story passes on its baseline alone if the test runner cannot load its pointer | critical | 1 | web | none | Under Vitest the Hover story imports the pointer API without a catch and fails loudly if it cannot, the published Storybook still renders it as a canvas with no error, and a mutation making the import fail under Vitest fails the story rather than passing it. |
+| `KN-222` | The tooltip's 260 depends on the app's CSS reset, and the story finds the surface by its DOM position | critical | 1 | web | none | The tooltip surface sets its own box-sizing, and a story rendering it WITHOUT CssBaseline measures 260; the width story finds the surface by a marker the component puts on the tooltip slot itself rather than by DOM position; and a mutation removing the box-sizing fails the no-reset story. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-207` | The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback | critical | 2 | web | none | Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering. |
 | `KN-209` | The tooltip REPLACES an icon-only control's accessible name instead of describing it | critical | 2 | web | none | The tooltip DESCRIBES rather than labels: a trigger with its own aria-label keeps that name, and the tip is reachable through aria-describedby. A story asserts the computed accessible name of an icon-only trigger while the tip is open, and a mutation removing describeChild makes it fail. The case where the trigger has NO name of its own is decided deliberately and written down, because describing something unnamed leaves it unnamed. |
 | `KN-211` | The tooltip accepts triggers it cannot actually attach to | critical | 2 | web | none | A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported. |
+| `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | none | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | critical | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | critical | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -40,6 +42,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-025` | Bulk action bar | critical | 3 | web | KN-005, KN-006, KN-007, KN-013, KN-009 | Both types match Figma, the bar appears only when at least one row is selected, it reports the selection count, and it is reachable by keyboard when it appears rather than trapping focus behind the list. |
 | `KN-062` | Shared story fixtures | critical | 3 | web | KN-003, KN-007 | Every component story that needs data uses the shared fixtures, a Docs page rendering many stories at once seeds without error, the fixtures never appear in the production bundle and a test asserts that, and each fixture set has a long value that exercises truncation in both languages. |
 | `KN-206` | The Checkbox has no accessible name and a target smaller than WCAG allows | critical | 3 | web | none | The component takes an id, and rendering one with no accessible name is impossible without it being visible: either the type requires one of aria-label, aria-labelledby or a wrapping label, or a check fails on a story that omits all three. Every story names its control. The interactive target is at least 24 by 24 while the DRAWN frame stays 20 by 20 from Figma, or the spacing exception is demonstrated for the specific placement and written down. A test asserts the hit area, not the frame. |
+| `KN-221` | The catalogs are never compiled, so a message with a count or a placeholder renders raw ICU in production | critical | 3 | web | none | A message with a plural and a placeholder renders correctly in BOTH locales in a production build, checked by rendering it from the built output or under NODE_ENV=production rather than in development, with Persian digits in fa-IR; a mutation that loads the catalogs uncompiled again makes that check fail; and the catalog tests still prove every English id has a non-empty Persian translation. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | critical | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | critical | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
 | `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
@@ -2644,6 +2647,8 @@ CHILD OF KN-032, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed.
 
+**Roasts.** round 1 scored 3.5 with 2 critical(s)
+
 ### `KN-211` The tooltip accepts triggers it cannot actually attach to
 
 - **status** backlog · **severity** critical · **points** 2 · **area** web
@@ -2658,7 +2663,7 @@ CHILD OF KN-032, recorded in prose because board.json cannot express parent_task
 ### `KN-212` The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked
 
 - **status** backlog · **severity** critical · **points** 1 · **area** web
-- **blocked by** none
+- **blocked by** KN-221
 
 CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast. Both the tip text and the trigger label are Persian literals in the story args, so switching the Storybook Language toolbar to English changes nothing on screen. AGENTS.md section 5 requires every change to be seen in fa-IR and en-US, light and dark, and for this component two of those four are the same picture. The tip text is legitimately caller-provided and NOT a catalog message, so the fix is not to translate the component; it is that the STORY should pass something that changes with the locale, the way the FilterChip stories do. The lint rule does not catch it because the stories block exempts title, which is what the tooltip prop is called.
 
@@ -2753,4 +2758,37 @@ CHILD OF KN-208, recorded in prose because board.json cannot express parent_task
 **Why.** A story that turns an infrastructure failure into a pass is a test that can go green having tested nothing, which is exactly what KN-208 was filed to stop. Raised to critical with the other component findings, on the owner's order of 2026-09-10 to finish the components first.
 
 **Exit condition.** Under Vitest the Hover story imports the pointer API without a catch and fails loudly if it cannot, the published Storybook still renders it as a canvas with no error, and a mutation making the import fail under Vitest fails the story rather than passing it.
+
+### `KN-221` The catalogs are never compiled, so a message with a count or a placeholder renders raw ICU in production
+
+- **status** backlog · **severity** critical · **points** 3 · **area** web
+- **blocked by** none
+
+Found while working KN-212, and reproduced rather than inferred. src/i18n/locales/*.ts are hand-written maps loaded straight into i18n.load, and nothing compiles them. @lingui/core 6.6.0 compiles an ICU message at runtime ONLY outside production: with NODE_ENV unset, 'This status has {count, plural, one {# job opportunity} other {# job opportunities}}...' rendered as 'This status has 3 job opportunities...' and the Persian as '...۳ فرصت شغلی...'; with NODE_ENV=production, which is what vite build sets for the deployed app and the published Storybook, both rendered the raw '{count, plural, ...}' text and lingui printed 'Uncompiled message detected'. Nothing is broken today only because no message has a placeholder yet. The designed tooltip copy on node 410:469 has a count, and so will column headers, the bulk action bar and every other 'N job opportunities'. @lingui/vite-plugin, cli and format-po are already dev dependencies, which is the intended route; KN-110 wires extraction on the same path.
+
+**Why.** It is a production-only failure, the worst kind: development and the test suite, which do not set NODE_ENV to production, render every message perfectly, and the deployed site shows the user curly-brace syntax. It blocks KN-212, whose story needs the tooltip's real counted sentence, and every component whose copy carries a number. Critical on the owner's order of 2026-09-10: the components wait on it.
+
+**Exit condition.** A message with a plural and a placeholder renders correctly in BOTH locales in a production build, checked by rendering it from the built output or under NODE_ENV=production rather than in development, with Persian digits in fa-IR; a mutation that loads the catalogs uncompiled again makes that check fail; and the catalog tests still prove every English id has a non-empty Persian translation.
+
+### `KN-222` The tooltip's 260 depends on the app's CSS reset, and the story finds the surface by its DOM position
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-210, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-210 roast, both rated critical by the reviewer, filed as one card because they are the same lines and the same test. FIRST: the tooltip surface sets width 260 and padding 12 but no box-sizing, so it is 260 outer only because AppProviders renders CssBaseline, which makes everything border-box; under a bare ThemeProvider the same surface is 284. SECOND: the OnHover story measures the firstElementChild of the element carrying role=tooltip, which is MUI's popper, so it relies on MUI placing the drawn surface first; a transition wrapper of the same width would pass while measuring the wrong element. My own view is that both are major rather than critical, since every real render sits under CssBaseline and the current DOM is correct, but the board records the reviewer's rating and the fixes are one line each.
+
+**Why.** A component whose drawn size depends on a global reset it does not own is correct by accident, and a test that finds its subject by position is checking whatever happens to be first. KN-210's whole point was to stop the width depending on something the component does not state. Critical on the owner's order of 2026-09-10, with the other component findings.
+
+**Exit condition.** The tooltip surface sets its own box-sizing, and a story rendering it WITHOUT CssBaseline measures 260; the width story finds the surface by a marker the component puts on the tooltip slot itself rather than by DOM position; and a mutation removing the box-sizing fails the no-reset story.
+
+### `KN-223` The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-210, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-210 roast and confirmed: the component now makes every tip exactly 260 wide, which is what node 410:469 specifies, so a one-word title sits in a mostly empty 260 box and a long one wraps downward without limit. Figma draws one specimen, three lines, and its description says the tooltip's only current use is beside the disabled delete-status option. Nothing tells the next caller that the fixed width is deliberate, or what happens past three lines, and no story shows either case.
+
+**Why.** A component's limits belong where its caller reads, and a caller who sees a 260 box around one word will assume it is a bug and override it. Critical on the owner's order of 2026-09-10, with the other component findings.
+
+**Exit condition.** The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows.
 
