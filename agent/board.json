@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 237,
+  "nextId": 238,
   "tasks": [
     {
       "id": "KN-001",
@@ -5801,7 +5801,22 @@
       "parent": [],
       "status": "done",
       "exit": "A trigger with its own aria-describedby keeps it AND gains the tooltip's, in that order, before and after focus, asserted by a story that checks the computed description contains both texts; no report is logged for it; the ref-only and cannot-attach reports still fire; and a mutation dropping the merge fails the story.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-235-round-1.2026-09-10T08-52-13-792Z.md",
+          "filed": [
+            "KN-237"
+          ],
+          "cardDigest": "b5056fcb07ce46725b508ee375ef0d1735fa1ddd24b10907a39ba66425bfdab9",
+          "head": "d631e19d6407fc78f4ad1149998a9af287b13d62",
+          "reviewerScore": 8.5,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T09:04:49.765Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T08:44:08.898Z",
       "updatedAt": "2026-09-10T08:51:59.248Z",
@@ -5823,6 +5838,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T08:53:01.992Z"
+    },
+    {
+      "id": "KN-237",
+      "title": "The Tooltip's children type rejects a trigger held as a plain ReactElement",
+      "desc": "CHILD OF KN-235, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-235 roast and confirmed: to read the trigger's own aria-describedby, KN-235 narrowed children to ReactElement<{ 'aria-describedby'?: string }>, so const trigger: ReactElement = <button /> can no longer be passed, although MUI's Tooltip accepts it. Reading the prop through a narrowing guard on unknown props would keep the merge without narrowing the public type. The roast's other minor, a duplicated id, is dismissed: the tooltip's id comes from useId inside the component and is never exposed, so a caller cannot already carry it.",
+      "why": "A public prop type stricter than the library it wraps turns valid call sites into type errors for no behavioural gain. Low: every current and planned caller writes its trigger inline as JSX, which the narrowed type accepts.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A trigger typed as a plain ReactElement type-checks as the Tooltip's child, the merge of the trigger's own description still works and KeepsTheTriggersOwnDescription still passes, and no TypeScript escape hatch is used to get there.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T09:04:49.587Z"
     }
   ]
 }

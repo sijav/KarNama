@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 66 of 236 tasks done · 143 of 631 points.
+Project **KarNama** · 66 of 237 tasks done · 143 of 632 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -18,7 +18,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (165)
+## Backlog (166)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -162,6 +162,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-213` | The browser preflight does not stop KN-003, and KN-089 proves its order by reading source text | low | 1 | agent | none | Running KN-003.mjs with PLAYWRIGHT_BROWSERS_PATH pointed at an empty directory exits non-zero after the browser check alone, prints Chromium by name with the path and the command, and starts no lint, type-check or test process. KN-089.mjs proves that by RUNNING it that way rather than by reading its source, and a mutation that moves the preflight after lint, or discards its result, makes KN-089.mjs fail. A missing playwright package names npm install. |
 | `KN-219` | KN-013's verifier reads the required states out of a prose sentence | low | 1 | agent | none | The required state list is read from a delimited, structured source that a reworded description cannot silently shorten, or KN-013.mjs refuses a description it cannot parse completely, proved by a description with a state added in a second sentence failing it. |
 | `KN-232` | The docgen comment in .storybook/main.ts says any option replaces Storybook's defaults, which is false | low | 1 | web | none | The comment above reactDocgenTypescriptOptions in .storybook/main.ts states how the Vite docgen plugin and the component-manifest path actually treat user options, checked against the installed preset source, and the KN-229 verifier still passes. |
+| `KN-237` | The Tooltip's children type rejects a trigger held as a plain ReactElement | low | 1 | web | none | A trigger typed as a plain ReactElement type-checks as the Tooltip's child, the merge of the trigger's own description still works and KeepsTheTriggersOwnDescription still passes, and no TypeScript escape hatch is used to get there. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -2961,6 +2962,8 @@ CHILD OF KN-231, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** A trigger with its own aria-describedby keeps it AND gains the tooltip's, in that order, before and after focus, asserted by a story that checks the computed description contains both texts; no report is logged for it; the ref-only and cannot-attach reports still fire; and a mutation dropping the merge fails the story.
 
+**Roasts.** round 1 scored 8.5 with 0 critical(s)
+
 ### `KN-236` The tooltip's attach check guesses a trigger's lateness with a timer and its props from one attribute
 
 - **status** backlog · **severity** medium · **points** 3 · **area** web
@@ -2971,4 +2974,15 @@ CHILD OF KN-233, recorded in prose because board.json cannot express parent_task
 **Why.** The check promises a clear report instead of silence, and a check that cries wolf at a slow but correct trigger, or stays quiet for a selectively forwarding one, weakens that promise at its edges. Medium rather than critical: the careless wrapper that spreads nothing and the trigger that arrives a render late are both handled, MUI covers selective forwarding in development, and the tooltip's first real caller, the icon button, spreads its props.
 
 **Exit condition.** A trigger that renders nothing for a second and then attaches correctly is never reported; one that renders DOM without taking the ref is reported however late it appears; a wrapper forwarding only the ref and aria-describedby is reported in a production build; each proved by a story, and the existing report stories still pass.
+
+### `KN-237` The Tooltip's children type rejects a trigger held as a plain ReactElement
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-235, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-235 roast and confirmed: to read the trigger's own aria-describedby, KN-235 narrowed children to ReactElement<{ 'aria-describedby'?: string }>, so const trigger: ReactElement = <button /> can no longer be passed, although MUI's Tooltip accepts it. Reading the prop through a narrowing guard on unknown props would keep the merge without narrowing the public type. The roast's other minor, a duplicated id, is dismissed: the tooltip's id comes from useId inside the component and is never exposed, so a caller cannot already carry it.
+
+**Why.** A public prop type stricter than the library it wraps turns valid call sites into type errors for no behavioural gain. Low: every current and planned caller writes its trigger inline as JSX, which the narrowed type accepts.
+
+**Exit condition.** A trigger typed as a plain ReactElement type-checks as the Tooltip's child, the merge of the trigger's own description still works and KeepsTheTriggersOwnDescription still passes, and no TypeScript escape hatch is used to get there.
 
