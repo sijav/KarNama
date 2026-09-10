@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 60 of 230 tasks done · 130 of 619 points.
+Project **KarNama** · 60 of 231 tasks done · 130 of 621 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -18,7 +18,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (165)
+## Backlog (166)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -28,6 +28,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-211` | The tooltip accepts triggers it cannot actually attach to | critical | 2 | web | none | A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | none | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-227` | The token-file guard can be passed by a function, a Map, or copy assigned to fontFamily, and its retirement is a wish | critical | 2 | web | none | The guard reads every string literal in the SOURCE of src/theme/tokens.ts, not the runtime values, so a literal inside a function, a Map or any other construct is checked; the font stack is checked by value; mutations adding copy as a function return, as a Map entry and as the fontFamily value each fail it; and TECH-DEBT.md 13's retiring check is a condition a command can test, such as the three exemptions removed and npm run lint still green with every planted fixture failing. |
+| `KN-231` | The tooltip's description appears only after the tip opens, so focus announces the trigger without it | critical | 2 | web | none | At the moment of keyboard focus, before the tip opens, the trigger already has an accessible description equal to the tip's text, asserted by a story that does not wait for the tip; the name is still the trigger's own; the same assertions run in fa-IR with the Persian name; and a mutation removing the always-present description fails the focus-time story. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | critical | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | critical | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -2645,6 +2646,8 @@ CHILD OF KN-032, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The tooltip DESCRIBES rather than labels: a trigger with its own aria-label keeps that name, and the tip is reachable through aria-describedby. A story asserts the computed accessible name of an icon-only trigger while the tip is open, and a mutation removing describeChild makes it fail. The case where the trigger has NO name of its own is decided deliberately and written down, because describing something unnamed leaves it unnamed.
 
+**Roasts.** round 1 scored 7.2 with 0 critical(s)
+
 ### `KN-210` The tooltip's drawn width is neither implemented nor checkable
 
 - **status** done · **severity** critical · **points** 1 · **area** web
@@ -2887,4 +2890,15 @@ CHILD OF KN-207, recorded in prose because board.json cannot express parent_task
 **Why.** The rule's point is that every story's interactions are recorded, and it checks the default rather than what each story resolves to. Medium: nothing does this today, and the meta default covers every current story.
 
 **Exit condition.** The guard fails for a story whose own args override a callback with anything but Storybook's fn(), and for an fn not imported from storybook/test, proved by a planted story of each kind, while the current stories still pass.
+
+### `KN-231` The tooltip's description appears only after the tip opens, so focus announces the trigger without it
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-209, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-209 roast, filed together because they are the same story and component. FIRST, major and confirmed from MUI's source: with describeChild and a non-string title, which ours always is, MUI sets aria-describedby only while the tip is OPEN, and it opens about 100ms after focus. A screen reader announces the focused control first and many do not re-announce when the attribute arrives, so a keyboard user can hear the name and never the description. KeepsTheTriggersName waits for the tip before asserting, which is exactly the window that hides it. MUI spreads the child's own props after its own, so an always-present description the trigger points to would survive. SECOND, minor: the accessible name is asserted in en-US only; the Persian name comes from the catalog and is never checked on the rendered button.
+
+**Why.** KN-209 fixed the name and left the description timing-dependent, and the tooltip's whole reason to exist is telling a keyboard and screen-reader user what a control will do. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** At the moment of keyboard focus, before the tip opens, the trigger already has an accessible description equal to the tip's text, asserted by a story that does not wait for the tip; the name is still the trigger's own; the same assertions run in fa-IR with the Persian name; and a mutation removing the always-present description fails the focus-time story.
 

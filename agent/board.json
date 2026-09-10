@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 231,
+  "nextId": 232,
   "tasks": [
     {
       "id": "KN-001",
@@ -5147,7 +5147,22 @@
       "parent": [],
       "status": "done",
       "exit": "The tooltip DESCRIBES rather than labels: a trigger with its own aria-label keeps that name, and the tip is reachable through aria-describedby. A story asserts the computed accessible name of an icon-only trigger while the tip is open, and a mutation removing describeChild makes it fail. The case where the trigger has NO name of its own is decided deliberately and written down, because describing something unnamed leaves it unnamed.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7.2,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-209-round-1.2026-09-10T08-07-55-832Z.md",
+          "filed": [
+            "KN-231"
+          ],
+          "cardDigest": "e9b64a42e64c9516b191ab68c3d7b2e93b18f533c8d2823417809e02fad749f1",
+          "head": "b33d17f413a624bf334bf8af9330782b35a45cf5",
+          "reviewerScore": 7.2,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T08:13:01.350Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -5610,6 +5625,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T08:08:34.630Z"
+    },
+    {
+      "id": "KN-231",
+      "title": "The tooltip's description appears only after the tip opens, so focus announces the trigger without it",
+      "desc": "CHILD OF KN-209, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-209 roast, filed together because they are the same story and component. FIRST, major and confirmed from MUI's source: with describeChild and a non-string title, which ours always is, MUI sets aria-describedby only while the tip is OPEN, and it opens about 100ms after focus. A screen reader announces the focused control first and many do not re-announce when the attribute arrives, so a keyboard user can hear the name and never the description. KeepsTheTriggersName waits for the tip before asserting, which is exactly the window that hides it. MUI spreads the child's own props after its own, so an always-present description the trigger points to would survive. SECOND, minor: the accessible name is asserted in en-US only; the Persian name comes from the catalog and is never checked on the rendered button.",
+      "why": "KN-209 fixed the name and left the description timing-dependent, and the tooltip's whole reason to exist is telling a keyboard and screen-reader user what a control will do. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "At the moment of keyboard focus, before the tip opens, the trigger already has an accessible description equal to the tip's text, asserted by a story that does not wait for the tip; the name is still the trigger's own; the same assertions run in fa-IR with the Persian name; and a mutation removing the always-present description fails the focus-time story.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T08:13:01.177Z"
     }
   ]
 }
