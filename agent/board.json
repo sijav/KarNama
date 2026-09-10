@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 257,
+  "nextId": 258,
   "tasks": [
     {
       "id": "KN-001",
@@ -6179,7 +6179,22 @@
       ],
       "status": "done",
       "exit": "A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-248-round-1.2026-09-10T11-28-15-103Z.md",
+          "filed": [
+            "KN-257"
+          ],
+          "cardDigest": "10df9c2c154db7c2532b0b3e88b9749f6825bb90ab42b82dfb37ae5698221ced",
+          "head": "dc3c700c78317abc9934bb37648ab022728ba02b",
+          "reviewerScore": 7,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T11:31:28.472Z"
+        }
+      ],
       "notes": [
         "2026-09-10: blocked by KN-250. Its story snapshots the field before and after focus as Focus does, and on a production Storybook build html dir changes under any such snapshot until KN-250 sets it before paint, so it would ship a second story failing in the published Storybook."
       ],
@@ -6281,11 +6296,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Switching the value control between set and unset starts the field over rather than changing its mode in place, so React never sees one input go from controlled to uncontrolled or back; a check in a development build, where React reports it, sets value, types, resets it, and finds no such report and a field showing its default again; a mutation removing the fix brings the report back.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T10:30:25.210Z"
+      "createdAt": "2026-09-10T10:30:25.210Z",
+      "updatedAt": "2026-09-10T11:29:23.739Z"
     },
     {
       "id": "KN-253",
@@ -6346,6 +6362,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T11:23:37.618Z"
+    },
+    {
+      "id": "KN-257",
+      "title": "The getComputedStyle lingui exemption covers every string, not the one selector it is for",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-248 roast and confirmed: KN-248 put getComputedStyle in lingui's ignoreFunctions so a story could pass '::placeholder', and the comment beside it justifies exactly that selector, but a function exemption skips every literal in every getComputedStyle call, so getComputedStyle(element, 'Job title') would pass lint. An exact pattern, '^::placeholder$', in ignore would exempt that one selector wherever it appears and nothing else. Harmless as written, since getComputedStyle renders nothing, but wider than its reason, which is the shape of hole this config's own comments keep closing.",
+      "why": "Every exemption in the lingui config is written to be exactly as wide as its reason, and this one is wider. Medium: it cannot put untranslated copy on screen by itself.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "getComputedStyle is no longer in ignoreFunctions; the one selector the stories pass is exempted by an exact pattern with its reason beside it; lint passes; and a check shows a getComputedStyle call with a literal of copy is flagged while getComputedStyle(element, '::placeholder') is not.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T11:31:28.361Z"
     }
   ]
 }

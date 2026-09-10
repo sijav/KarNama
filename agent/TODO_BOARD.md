@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 76 of 256 tasks done · 155 of 658 points.
+Project **KarNama** · 76 of 257 tasks done · 155 of 659 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-252` Resetting the Input's value control turns the same field from controlled to uncontrolled** (critical, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-252` | Resetting the Input's value control turns the same field from controlled to uncontrolled | critical | 1 | web | none | Switching the value control between set and unset starts the field over rather than changing its mode in place, so React never sees one input go from controlled to uncontrolled or back; a check in a development build, where React reports it, sets value, types, resets it, and finds no such report and a field showing its default again; a mutation removing the fix brings the report back. |
 
 ## Blocked (3)
 
@@ -23,7 +29,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-252` | Resetting the Input's value control turns the same field from controlled to uncontrolled | critical | 1 | web | none | Switching the value control between set and unset starts the field over rather than changing its mode in place, so React never sees one input go from controlled to uncontrolled or back; a check in a development build, where React reports it, sets value, types, resets it, and finds no such report and a field showing its default again; a mutation removing the fix brings the report back. |
 | `KN-254` | An empty error string puts the Input in its error state | critical | 1 | web | none | An error that is empty or only whitespace is no error: the field keeps its default border, is not aria-invalid, and shows its helper text; a story renders such an error and asserts all three; DESIGN.md or the component's story docs say the error state needs a message; and a mutation back to testing error against undefined fails that story by name. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
@@ -122,6 +127,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-216` | The Storybook stories glob drops a story at the root of src, and the docs guard excludes by a different rule | medium | 1 | web | none | A story file directly under src is indexed by Storybook and run by the storybook project, src/gate-fixtures is still excluded from both, and the docs guard derives its list from the same rule Storybook uses rather than a second one, proved by a fixture at the root of src that appears in Storybook's index and in the guard alike. |
 | `KN-228` | The Hover story's canvas branch still keys off Storybook's private preview global | medium | 1 | web | none | The Hover story reads no Storybook or Vitest internal; the published Storybook still renders it as a canvas with no error, checked on a production build; and removing either repository flag makes the story fail in the environment that flag belonged to. |
 | `KN-230` | The callback fn() rule reads only the meta's args, not what each story actually passes | medium | 1 | web | none | The guard fails for a story whose own args override a callback with anything but Storybook's fn(), and for an fn not imported from storybook/test, proved by a planted story of each kind, while the current stories still pass. |
+| `KN-257` | The getComputedStyle lingui exemption covers every string, not the one selector it is for | medium | 1 | web | none | getComputedStyle is no longer in ignoreFunctions; the one selector the stories pass is exempted by an exact pattern with its reason beside it; lint passes; and a check shows a getComputedStyle call with a literal of copy is flagged while getComputedStyle(element, '::placeholder') is not. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -3142,6 +3148,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name.
 
+**Roasts.** round 1 scored 7 with 0 critical(s)
+
 ### `KN-249` Setting value in the Input's Controls freezes the field
 
 - **status** done · **severity** critical · **points** 1 · **area** web
@@ -3181,7 +3189,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-252` Resetting the Input's value control turns the same field from controlled to uncontrolled
 
-- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **status** in_progress · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-249 roast and confirmed from the code: value passes straight through to InputBase and the story's key changes only with defaultValue, so setting value in Controls and then resetting it to undefined turns the same input element from controlled to uncontrolled. React reports that in development as a component changing a controlled input to be uncontrolled, and the field is left holding whatever it last showed, with no arg behind it.
@@ -3233,4 +3241,15 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** A verifier that fails for a reason other than the one it names is a closed card whose proof has quietly stopped proving anything, and it is the proof that the done gate catches an empty test project.
 
 **Exit condition.** node agent/scripts/verify/KN-088.mjs passes against the vitest.config.ts as it is now: emptying the unit include makes KN-003 fail because the unit project ran nothing, shown by its own output rather than a type error, and the constant check matches the include as written today.
+
+### `KN-257` The getComputedStyle lingui exemption covers every string, not the one selector it is for
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-248 roast and confirmed: KN-248 put getComputedStyle in lingui's ignoreFunctions so a story could pass '::placeholder', and the comment beside it justifies exactly that selector, but a function exemption skips every literal in every getComputedStyle call, so getComputedStyle(element, 'Job title') would pass lint. An exact pattern, '^::placeholder$', in ignore would exempt that one selector wherever it appears and nothing else. Harmless as written, since getComputedStyle renders nothing, but wider than its reason, which is the shape of hole this config's own comments keep closing.
+
+**Why.** Every exemption in the lingui config is written to be exactly as wide as its reason, and this one is wider. Medium: it cannot put untranslated copy on screen by itself.
+
+**Exit condition.** getComputedStyle is no longer in ignoreFunctions; the one selector the stories pass is exempted by an exact pattern with its reason beside it; lint passes; and a check shows a getComputedStyle call with a literal of copy is flagged while getComputedStyle(element, '::placeholder') is not.
 
