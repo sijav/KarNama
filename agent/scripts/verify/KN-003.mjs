@@ -154,6 +154,7 @@ check('EVERY planted unlocalized string FAILS the lint', () => {
     'unlocalized-pathlike.tsx',
     'unlocalized-setattribute.tsx',
     'unlocalized-tokenlike.tsx',
+    'unlocalized-story-title.stories.tsx',
   ]
   const absent = required.filter((name) => !fixtures.includes(name))
   if (absent.length) return `these fixtures are required by name and are missing: ${absent.join(', ')}`

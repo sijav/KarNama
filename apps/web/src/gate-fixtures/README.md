@@ -29,8 +29,15 @@ was real and shipped:
 - `unlocalized-setattribute.tsx` — an `aria-label` assigned through
   `setAttribute`, which reached the same untranslated accessible name through a
   method call instead of a prop.
+- `unlocalized-story-title.stories.tsx` — a JSX `title` inside a STORY, beside a
+  meta title that must still pass. The stories block exempted the name `title`
+  so a meta could carry its sidebar path, and ESLint matches a name wherever it
+  appears. A meta title is exempt by TYPE now, through `StoryMeta`. Named
+  `.stories.tsx` so any stories-only block added later applies to it, and
+  excluded from Storybook in `.storybook/main.ts` so it is linted, never
+  indexed.
 
-Four of those five are one exemption written for one legitimate case that
+Five of those six are one exemption written for one legitimate case that
 quietly covered every case. That is the pattern to watch: an exemption is a
 hole, and the fix is always to narrow WHERE it applies rather than to make the
 pattern cleverer.

@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
+import type { StoryMeta } from '../story-docs/story-meta'
 import { FilterChip } from './FilterChip'
 
 const meta = {
@@ -10,7 +11,7 @@ const meta = {
     selected: { control: 'boolean' },
     count: { control: 'number' },
   },
-} satisfies Meta<typeof FilterChip>
+} satisfies StoryMeta<typeof FilterChip>
 
 export default meta
 type Story = StoryObj<typeof meta>

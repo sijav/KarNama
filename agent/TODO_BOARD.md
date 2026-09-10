@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 49 of 213 tasks done · 116 of 592 points.
+Project **KarNama** · 49 of 215 tasks done · 116 of 598 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-095` The stories-only title exemption covers every JSX title, not just meta.title** (high, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-095` | The stories-only title exemption covers every JSX title, not just meta.title | high | 2 | web | KN-087 | A story containing <Box title="Delete this application" /> fails npm run lint while the same file keeps its meta title App/Shell, a committed fixture holds both, and agent/scripts/verify/KN-087.mjs requires it by name. |
 
 ## Blocked (3)
 
@@ -18,13 +24,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (159)
+## Backlog (160)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-214` | The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag | critical | 5 | web | none | The no-letter entry is replaced by one that works WITHOUT flags, since the plugin passes none, and fails closed: only digits, whitespace, punctuation and symbols are exempt, so a letter in any script is checked. 'Delete', 'Save', 'مصاحبه' and 'حذف وضعیت' each fail npm run lint in a committed fixture, as aria-label, as title and as JSX text, and the existing fixtures fail only on the string under test rather than also on a child like x. Every one of the 82 strings is either localised or exempted by a named, scoped rule with a reason, never by a value shape. A check compiles each ignore entry exactly as the plugin does, new RegExp(entry) with no flags, and fails if any entry whitelists a known copy string, and that check is proved by a mutation restoring the \p{L} entry. |
 | `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
-| `KN-095` | The stories-only title exemption covers every JSX title, not just meta.title | high | 2 | web | KN-087 | A story containing <Box title="Delete this application" /> fails npm run lint while the same file keeps its meta title App/Shell, a committed fixture holds both, and agent/scripts/verify/KN-087.mjs requires it by name. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -109,6 +115,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-208` | KN-013 claimed five Figma states from five stories that are not the five states | medium | 1 | web | none | Every Figma state named on the card has a story, hover included, and hover is exercised with a real pointer rather than a dispatched event, since hover cannot be dispatched. KN-013.mjs checks the states by NAME against the card rather than counting stories, so adding a sixth story or renaming one cannot silently satisfy it. A mutation deleting the hover story fails it. |
 | `KN-210` | The tooltip's drawn width is neither implemented nor checkable | medium | 1 | web | none | Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | medium | 1 | web | none | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-215` | The props and stories value exemption is global, so aria-label="stories" passes | medium | 1 | web | none | aria-label="stories" and title="props" fail npm run lint in a committed fixture, the story-docs parser still recognises both headings, and the ignore array no longer names them. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -1319,9 +1326,11 @@ The lingui rule ignores any value matching ^[a-z-]+/[a-z0-9-/]+$, added so a tok
 
 **Exit condition.** aria-label="delete/application" and title="delete/application" both fail npm run lint, a committed fixture holds both, the Foundations token story still passes, and agent/scripts/verify/KN-087.mjs requires the fixture by name.
 
+**Roasts.** round 1 scored 5 with 0 critical(s)
+
 ### `KN-095` The stories-only title exemption covers every JSX title, not just meta.title
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** in_progress · **severity** high · **points** 2 · **area** web
 - **blocked by** KN-087
 
 The lingui block for *.stories.tsx exempts the property name title so a story meta can carry its sidebar path, App/Shell. ESLint matches the NAME wherever it appears, so <Box title="Delete this application" /> inside a story also passes, verified by probe, and that renders a real tooltip in Storybook. Exempt the meta object specifically, by shape or by position, rather than the property name across the whole file.
@@ -2663,4 +2672,26 @@ CHILD OF KN-089, recorded in prose because board.json cannot express parent_task
 **Why.** The only reason to put the browser check first was so nobody waits minutes for a failure that was knowable at once; a check that runs first and stops nothing buys none of that. It is also a false statement in closed evidence, and a verifier a comment can satisfy is the self-matching check again. The roast rated it critical against KN-089's own purpose. Filed LOW because it is gate tooling, nothing is broken on a machine that has the browser, and the loop rule of 2026-09-10 puts loop findings at low unless they are breaking the work.
 
 **Exit condition.** Running KN-003.mjs with PLAYWRIGHT_BROWSERS_PATH pointed at an empty directory exits non-zero after the browser check alone, prints Chromium by name with the path and the command, and starts no lint, type-check or test process. KN-089.mjs proves that by RUNNING it that way rather than by reading its source, and a mutation that moves the preflight after lint, or discards its result, makes KN-089.mjs fail. A missing playwright package names npm install.
+
+### `KN-214` The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag
+
+- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **blocked by** none
+
+Found while working KN-095, by reading eslint-plugin-lingui 0.14.0 rather than by probing. The rule compiles every entry of the ignore option with new RegExp(item) and NO flags. The first entry in apps/web/eslint.config.js is '^[^\\p{L}]*$', meant as 'anything with no letter in it'. Without the u flag, \p is not a Unicode property escape, it is a plain p, so the class excludes only the four characters p, {, L and }. Every string that contains none of those four is whitelisted before any other check runs. Proved with the plugin's own construction: 'Delete', 'Save', 'Cancel', 'Close', 'مصاحبه' and 'حذف وضعیت' are all whitelisted; 'Delete this application' is not, only because 'application' has a p. Every committed gate fixture happens to contain a p, which is the only reason the gate has ever looked like it worked. A probe with a pattern that means what it says found 82 strings in apps/web/src passing only because of this. About five are real untranslated copy: the health reason 'the API answered with nothing' (KN-130), the language names (KN-115), the Persian args of the FilterChip and Tooltip stories, and the story-docs fallback message. The rest are identifiers the rule now correctly sees and must be answered one class at a time: hex colours in tokens.ts, CSS and DOM selectors, Storybook control types and layout values, event names, import.meta.glob options, locale codes, SVG attribute values.
+
+**Why.** 'Every user-facing string goes through lingui with an ENGLISH id' is the rule the whole i18n design rests on, and the gate that enforces it has been passing almost all copy since the day it was written: all of the Persian, and every English word without a p. Sixty-five component cards are about to be built on that guarantee, and each one would report a clean lint over untranslated labels. It also explains why three roasts in a row found the rule's exemptions too wide and none found this: every probe string they used contained a p.
+
+**Exit condition.** The no-letter entry is replaced by one that works WITHOUT flags, since the plugin passes none, and fails closed: only digits, whitespace, punctuation and symbols are exempt, so a letter in any script is checked. 'Delete', 'Save', 'مصاحبه' and 'حذف وضعیت' each fail npm run lint in a committed fixture, as aria-label, as title and as JSX text, and the existing fixtures fail only on the string under test rather than also on a child like x. Every one of the 82 strings is either localised or exempted by a named, scoped rule with a reason, never by a value shape. A check compiles each ignore entry exactly as the plugin does, new RegExp(entry) with no flags, and fails if any entry whitelists a known copy string, and that check is proved by a mutation restoring the \p{L} entry.
+
+### `KN-215` The props and stories value exemption is global, so aria-label="stories" passes
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-094, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-094 roast and confirmed from the config: '^(props|stories)$' sits in the ignore array, which applies to every string in every file, so aria-label="stories" and title="props" pass. It exists for one comparison in the story-docs parser, and the comment above it says it is 'named rather than shape-matched', which is true of the value and says nothing about where it applies. The rule's useTsTypes option already exempts a literal whose contextual type is a union of string literals, so a typed constant in the parser makes the exemption unnecessary.
+
+**Why.** It is the same scope bug KN-087, KN-094 and KN-095 each closed a different instance of: an exemption written for one comparison that quietly applies to the whole codebase. The words themselves are unlikely copy, which is why it is medium rather than high, but a fourth instance left open after three were closed is the pattern continuing.
+
+**Exit condition.** aria-label="stories" and title="props" fail npm run lint in a committed fixture, the story-docs parser still recognises both headings, and the ignore array no longer names them.
 

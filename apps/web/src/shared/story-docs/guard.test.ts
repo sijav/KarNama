@@ -42,9 +42,17 @@ interface StoryFile {
   stories: string[]
 }
 
-/** Every story file Storybook is configured to pick up, `.ts` as well as `.tsx`. */
+/**
+ * Every story file Storybook is configured to pick up, `.ts` as well as `.tsx`.
+ *
+ * Minus `gate-fixtures`, because `.storybook/main.ts` excludes it: it holds a
+ * story that exists to FAIL the lint, KN-095, and it is not a component anyone
+ * documents.
+ */
 const storyFiles = (): string[] =>
-  globSync('**/*.stories.@(ts|tsx)', { cwd: SRC }).map((name) => join(SRC, name)).sort()
+  globSync('**/*.stories.@(ts|tsx)', { cwd: SRC, exclude: ['gate-fixtures/**'] })
+    .map((name) => join(SRC, name))
+    .sort()
 
 /**
  * Reads one story file's meta and story list from **Storybook's own CSF

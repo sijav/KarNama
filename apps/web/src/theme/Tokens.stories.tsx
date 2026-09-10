@@ -1,9 +1,10 @@
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
 import { useTheme } from '@mui/material/styles'
+import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { radius, spacing, type as typeScale } from './tokens'
 
 interface SwatchesProps {
@@ -89,7 +90,7 @@ const meta = {
   argTypes: {
     family: { control: 'inline-radio', options: ['semantic', 'status', 'spacing', 'radius', 'type'] },
   },
-} satisfies Meta<typeof Swatches>
+} satisfies StoryMeta<typeof Swatches>
 
 export default meta
 type Story = StoryObj<typeof meta>

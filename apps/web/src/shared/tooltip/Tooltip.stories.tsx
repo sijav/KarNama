@@ -1,6 +1,7 @@
 import { Box } from '@mui/material'
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
+import type { StoryMeta } from '../story-docs/story-meta'
 import { Tooltip } from './Tooltip'
 
 /**
@@ -20,7 +21,7 @@ const meta = {
     title: 'این وضعیت ۳ فرصت شغلی داره؛ برای حذفش اول باید فرصت‌های شغلی رو ببری به ستون دیگه.',
     children: <button type="button">حذف وضعیت</button>,
   },
-} satisfies Meta<typeof Tooltip>
+} satisfies StoryMeta<typeof Tooltip>
 
 export default meta
 type Story = StoryObj<typeof meta>

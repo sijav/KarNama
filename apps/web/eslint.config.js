@@ -19,8 +19,8 @@ import tseslint from 'typescript-eslint'
  * The options for `lingui/no-unlocalized-strings`, in one place because ESLint
  * REPLACES rule options rather than merging them. A later block that wants one
  * more exemption has to restate all of them, and a block that restates them by
- * hand drops the rest silently: the stories block did exactly that and quietly
- * removed every ignore the src block had.
+ * hand drops the rest silently: the old stories block did exactly that and
+ * quietly removed every ignore the src block had.
  *
  * `structuralProps` is the whole idea of the list. A prop whose value is an
  * identifier, a css value or a routing target is not copy. A prop whose value is
@@ -37,7 +37,7 @@ const structuralProps =
   // every dotted string in the codebase.
   '|STORAGE_KEY'
 
-const linguiOptions = (extraProps = '') => ({
+const linguiOptions = {
   ignore: [
     // Anything with no letter in it cannot be a sentence: css values, numbers
     // and punctuation.
@@ -58,7 +58,8 @@ const linguiOptions = (extraProps = '') => ({
     // `^[A-Z][A-Za-z]*(/[A-Z][A-Za-z ]*)+$`, and it reopened the exact hole
     // KN-087 closed: `New/Applied` matches it, so `aria-label="New/Applied"`
     // and `title="New/Applied"` both passed. Status-transition copy looks like
-    // a path. A story title is exempted by WHERE it is instead.
+    // a path. A story title is exempted by its TYPE instead: see the note where
+    // the stories block used to be, below.
     //
     // The lower-case version of the same mistake used to live here too,
     // `^[a-z-]+/[a-z0-9-/]+$`, added so a token name rendered as a label,
@@ -71,7 +72,7 @@ const linguiOptions = (extraProps = '') => ({
     // assertion. An exemption is a hole; an exemption nothing uses is a hole
     // for nothing.
   ],
-  ignoreNames: [{ regex: { pattern: `^(${structuralProps}${extraProps})$` } }],
+  ignoreNames: [{ regex: { pattern: `^(${structuralProps})$` } }],
   ignoreFunctions: [
     // Developer-facing text, not user-facing. An Error thrown at mount because
     // index.html has no #root is read by whoever broke the build, never by a
@@ -116,7 +117,7 @@ const linguiOptions = (extraProps = '') => ({
     '*.keyboard',
   ],
   useTsTypes: true,
-})
+}
 
 export default defineConfig(
   {
@@ -182,7 +183,7 @@ export default defineConfig(
     ignores: ['src/i18n/locales/**', 'src/**/*.test.{ts,tsx}'],
     plugins: { lingui },
     rules: {
-      'lingui/no-unlocalized-strings': ['error', linguiOptions()],
+      'lingui/no-unlocalized-strings': ['error', linguiOptions],
       'lingui/t-call-in-function': 'error',
       'lingui/no-single-variables-to-translate': 'error',
       'lingui/no-trans-inside-trans': 'error',
@@ -195,23 +196,22 @@ export default defineConfig(
     rules: { ...storybook.configs['flat/recommended'].at(-1)?.rules },
   },
 
-  {
-    // lingui applies to STORIES, which render product components, and not to
-    // `.storybook/**`, which is build configuration for a developer tool: its
-    // `defaultName: 'Docs'` and its toolbar labels are not product copy and
-    // never reach a user.
-    files: ['**/*.stories.tsx'],
-    plugins: { lingui },
-    rules: {
-      // A story's `title` is its path in the sidebar, `App/Shell`, not copy.
-      // Exempted HERE, where only stories are in scope, rather than globally by
-      // the shape of the string: the shape-based version let `New/Applied`
-      // through on a real `aria-label`, which is exactly the hole this rule is
-      // for. Built from the same options as the src block, with `title` added,
-      // because restating them by hand drops every other exemption silently.
-      'lingui/no-unlocalized-strings': ['error', linguiOptions('|title')],
-    },
-  },
+  // There is deliberately NO stories-only lingui block any more. Stories are in
+  // `src`, so the block above lints them exactly as it lints a screen, and that
+  // is the point: a story renders the same components a screen does, and its
+  // JSX is not metadata.
+  //
+  // The block that used to be here added `title` to the exempt names so a meta
+  // could carry its sidebar path, `App/Shell`. ESLint matches a NAME wherever it
+  // appears, so it also exempted `<Box title="Delete this application" />`
+  // inside a story, and every string nested anywhere under a `title` property.
+  // KN-095. A meta title is exempt by TYPE now: `StoryMeta` narrows it to the
+  // union of registered story paths in `src/shared/story-docs/story-meta.ts`,
+  // and `useTsTypes` skips a literal typed as a union of string literals.
+  // Nothing else in a story has that type, so nothing else is skipped.
+  //
+  // `.storybook/**` stays out of lingui entirely: it is build configuration for
+  // a developer tool, and its toolbar labels never reach a user.
 
   {
     // Configuration and tooling files are not shipped to a user, so the string

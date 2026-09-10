@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 214,
+  "nextId": 216,
   "tasks": [
     {
       "id": "KN-001",
@@ -2513,7 +2513,23 @@
       ],
       "status": "done",
       "exit": "aria-label=\"delete/application\" and title=\"delete/application\" both fail npm run lint, a committed fixture holds both, the Foundations token story still passes, and agent/scripts/verify/KN-087.mjs requires the fixture by name.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-094-round-1.2026-09-10T06-11-23-143Z.md",
+          "filed": [
+            "KN-215",
+            "KN-101"
+          ],
+          "cardDigest": "8f4a897061cc0e79bd65fc8ccf6273f94c82fa489d960c38abe8eac76b7ad790",
+          "head": "b5f07782f1d9e63bd6a8cc4ba36cf3605d58a477",
+          "reviewerScore": 5,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T06:20:55.335Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T23:35:15.722Z",
       "updatedAt": "2026-09-10T06:11:07.270Z",
@@ -2532,11 +2548,13 @@
       "parent": [
         "KN-087"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A story containing <Box title=\"Delete this application\" /> fails npm run lint while the same file keeps its meta title App/Shell, a committed fixture holds both, and agent/scripts/verify/KN-087.mjs requires it by name.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T23:35:15.827Z"
+      "createdAt": "2026-09-07T23:35:15.827Z",
+      "updatedAt": "2026-09-10T06:35:17.449Z",
+      "verify": "node agent/scripts/verify/KN-095.mjs"
     },
     {
       "id": "KN-096",
@@ -2662,8 +2680,11 @@
       "status": "backlog",
       "exit": "agent/scripts/verify/KN-088.mjs performs its mutation in a temporary git worktree, killing it mid-run leaves apps/web/vitest.config.ts byte-identical, and two concurrent runs both pass and leave the file byte-identical.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T23:46:47.916Z"
+      "notes": [
+        "2026-09-10, from the KN-094 roast: agent/scripts/verify/KN-094.mjs is another instance. It writes apps/web/eslint.config.js and renames a committed fixture inside try/finally, and a killed process skips the finally. The worst leftover is the exemption restored in the config, which ordinary lint does not notice because src/gate-fixtures is ignored. Filed here rather than as a new card because it is this card's class exactly."
+      ],
+      "createdAt": "2026-09-07T23:46:47.916Z",
+      "updatedAt": "2026-09-10T06:20:55.200Z"
     },
     {
       "id": "KN-102",
@@ -5064,6 +5085,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T05:57:09.932Z"
+    },
+    {
+      "id": "KN-214",
+      "title": "The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag",
+      "desc": "Found while working KN-095, by reading eslint-plugin-lingui 0.14.0 rather than by probing. The rule compiles every entry of the ignore option with new RegExp(item) and NO flags. The first entry in apps/web/eslint.config.js is '^[^\\\\p{L}]*$', meant as 'anything with no letter in it'. Without the u flag, \\p is not a Unicode property escape, it is a plain p, so the class excludes only the four characters p, {, L and }. Every string that contains none of those four is whitelisted before any other check runs. Proved with the plugin's own construction: 'Delete', 'Save', 'Cancel', 'Close', 'مصاحبه' and 'حذف وضعیت' are all whitelisted; 'Delete this application' is not, only because 'application' has a p. Every committed gate fixture happens to contain a p, which is the only reason the gate has ever looked like it worked. A probe with a pattern that means what it says found 82 strings in apps/web/src passing only because of this. About five are real untranslated copy: the health reason 'the API answered with nothing' (KN-130), the language names (KN-115), the Persian args of the FilterChip and Tooltip stories, and the story-docs fallback message. The rest are identifiers the rule now correctly sees and must be answered one class at a time: hex colours in tokens.ts, CSS and DOM selectors, Storybook control types and layout values, event names, import.meta.glob options, locale codes, SVG attribute values.",
+      "why": "'Every user-facing string goes through lingui with an ENGLISH id' is the rule the whole i18n design rests on, and the gate that enforces it has been passing almost all copy since the day it was written: all of the Persian, and every English word without a p. Sixty-five component cards are about to be built on that guarantee, and each one would report a clean lint over untranslated labels. It also explains why three roasts in a row found the rule's exemptions too wide and none found this: every probe string they used contained a p.",
+      "severity": "critical",
+      "points": 5,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The no-letter entry is replaced by one that works WITHOUT flags, since the plugin passes none, and fails closed: only digits, whitespace, punctuation and symbols are exempt, so a letter in any script is checked. 'Delete', 'Save', 'مصاحبه' and 'حذف وضعیت' each fail npm run lint in a committed fixture, as aria-label, as title and as JSX text, and the existing fixtures fail only on the string under test rather than also on a child like x. Every one of the 82 strings is either localised or exempted by a named, scoped rule with a reason, never by a value shape. A check compiles each ignore entry exactly as the plugin does, new RegExp(entry) with no flags, and fails if any entry whitelists a known copy string, and that check is proved by a mutation restoring the \\p{L} entry.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T06:20:44.279Z"
+    },
+    {
+      "id": "KN-215",
+      "title": "The props and stories value exemption is global, so aria-label=\"stories\" passes",
+      "desc": "CHILD OF KN-094, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-094 roast and confirmed from the config: '^(props|stories)$' sits in the ignore array, which applies to every string in every file, so aria-label=\"stories\" and title=\"props\" pass. It exists for one comparison in the story-docs parser, and the comment above it says it is 'named rather than shape-matched', which is true of the value and says nothing about where it applies. The rule's useTsTypes option already exempts a literal whose contextual type is a union of string literals, so a typed constant in the parser makes the exemption unnecessary.",
+      "why": "It is the same scope bug KN-087, KN-094 and KN-095 each closed a different instance of: an exemption written for one comparison that quietly applies to the whole codebase. The words themselves are unlikely copy, which is why it is medium rather than high, but a fourth instance left open after three were closed is the pattern continuing.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "aria-label=\"stories\" and title=\"props\" fail npm run lint in a committed fixture, the story-docs parser still recognises both headings, and the ignore array no longer names them.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T06:20:44.506Z"
     }
   ]
 }

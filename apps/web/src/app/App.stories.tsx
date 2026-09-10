@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
+import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { App } from './App'
 
 /**
@@ -15,7 +16,7 @@ const meta = {
   title: 'App/Shell',
   component: App,
   parameters: { layout: 'fullscreen' },
-} satisfies Meta<typeof App>
+} satisfies StoryMeta<typeof App>
 
 /** Relative luminance of an `rgb(r, g, b)` string, 0 for black and 1 for white. */
 const luminanceOf = (colour: string) => {

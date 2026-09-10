@@ -1,7 +1,11 @@
 import type { StorybookConfig } from '@storybook/react-vite'
 
 const config: StorybookConfig = {
-  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(ts|tsx)'],
+  // `src/gate-fixtures` is excluded. It holds a story that is SUPPOSED to fail
+  // the lint, KN-095, and it borrows a real title to prove a registered title
+  // still passes, so indexing it would put a second `App/Shell` in the sidebar
+  // and run a probe as if it were a component.
+  stories: ['../src/**/*.mdx', '../src/!(gate-fixtures)/**/*.stories.@(ts|tsx)'],
   addons: ['@storybook/addon-docs', '@storybook/addon-a11y', '@storybook/addon-vitest'],
   framework: { name: '@storybook/react-vite', options: {} },
   // Documentation prose lives in markdown under story-docs, never as JSDoc in a

@@ -1,7 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { StoryObj } from '@storybook/react-vite'
 import { useContext } from 'react'
 import { expect, userEvent, within } from 'storybook/test'
 import type { Locale } from '../../i18n'
+import type { StoryMeta } from '../../shared/story-docs/story-meta'
 import type { ColorSchemePreference } from '../../theme/useColorScheme'
 import { PreferencesContext, PreferencesProvider } from './PreferencesProvider'
 import { STORAGE_KEY } from './storage'
@@ -55,7 +56,7 @@ const meta = {
   title: 'Core/PreferencesProvider',
   component: SeededProbe,
   args: { initialLocale: 'fa-IR', initialColorScheme: 'light' },
-} satisfies Meta<typeof SeededProbe>
+} satisfies StoryMeta<typeof SeededProbe>
 
 export default meta
 type Story = StoryObj<typeof meta>

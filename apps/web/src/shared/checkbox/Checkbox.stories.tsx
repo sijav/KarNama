@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
+import type { StoryMeta } from '../story-docs/story-meta'
 import { Checkbox } from './Checkbox'
 
 const meta = {
@@ -11,7 +12,7 @@ const meta = {
     disabled: { control: 'boolean' },
     checked: { control: 'boolean' },
   },
-} satisfies Meta<typeof Checkbox>
+} satisfies StoryMeta<typeof Checkbox>
 
 export default meta
 type Story = StoryObj<typeof meta>

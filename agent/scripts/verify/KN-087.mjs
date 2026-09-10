@@ -72,6 +72,7 @@ check('the behaviour is checked, not only the config, on every known hole', () =
     ['unlocalized-pathlike.tsx', 'copy shaped like a Storybook path, New/Applied'],
     ['unlocalized-setattribute.tsx', "an aria-label set through setAttribute"],
     ['unlocalized-tokenlike.tsx', 'copy shaped like a design token, delete/application'],
+    ['unlocalized-story-title.stories.tsx', 'a JSX title inside a story, beside a meta title that must pass'],
   ]
   const problems = []
   for (const [file, what] of cases) {
@@ -133,6 +134,7 @@ check("KN-003's verifier requires each fixture BY NAME, and discovers the rest",
     'unlocalized-pathlike.tsx',
     'unlocalized-setattribute.tsx',
     'unlocalized-tokenlike.tsx',
+    'unlocalized-story-title.stories.tsx',
   ]
   const missing = named.filter((name) => !other.includes(name))
   return missing.length ? `not required by name in KN-003: ${missing.join(', ')}` : null

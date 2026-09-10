@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
+import type { StoryMeta } from '../story-docs/story-meta'
 import { LanguageSwitch } from './LanguageSwitch'
 
 const meta = {
@@ -7,7 +8,7 @@ const meta = {
   component: LanguageSwitch,
   args: { placement: 'sidebar' },
   argTypes: { placement: { control: 'inline-radio', options: ['sidebar', 'header'] } },
-} satisfies Meta<typeof LanguageSwitch>
+} satisfies StoryMeta<typeof LanguageSwitch>
 
 export default meta
 type Story = StoryObj<typeof meta>
