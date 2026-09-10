@@ -5067,15 +5067,17 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Every Figma state named on the card has a story, hover included, and hover is exercised with a real pointer rather than a dispatched event, since hover cannot be dispatched. KN-013.mjs checks the states by NAME against the card rather than counting stories, so adding a sixth story or renaming one cannot silently satisfy it. A mutation deleting the hover story fails it.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-10T04:52:11.159Z",
-      "updatedAt": "2026-09-10T06:50:41.417Z",
-      "verify": "node agent/scripts/verify/KN-208.mjs"
+      "updatedAt": "2026-09-10T06:52:11.787Z",
+      "verify": "node agent/scripts/verify/KN-208.mjs",
+      "evidence": "Every state the card names now has a story: Unchecked, Checked, Indeterminate, Hover, Disabled, plus KeyboardOnly as behaviour. Hover moves a REAL pointer through vitest/browser's userEvent under Vitest browser mode and asserts the frame border goes from border/default rgb(229, 231, 235) to border/focus rgb(37, 99, 235); outside Vitest the import throws and is caught, so the published story is a canvas to hover by hand. KN-013.mjs now reads the states from the KN-013 card and checks each BY NAME via Storybook's loadCsf and vitest's per-test JSON report, and cross-checks the title's \"5 states\" against the list. 9 checks green, including two new mutations inside it: swapping the real hover for storybook/test's dispatched userEvent.hover FAILS the Hover story (the proof the pointer is real, since a dispatched event never sets :hover), and reverting the hover colour to border/default fails it with \"expected rgb(229, 231, 235) to be rgb(37, 99, 235)\". agent/scripts/verify/KN-208.mjs: KN-013.mjs passes, deleting the Hover story fails it with \"no story for Hover\", renaming it to HoverState fails it the same way, so neither a sixth story nor a rename can satisfy it. Checkbox stories 6 of 6, docs guard 49 of 49 (Hover documented in en and fa), lint and tsc clean, Storybook builds with the dynamic vitest/browser import. Seen in the browser pane: in Storybook's own UI the Hover story shows PASS with its one baseline assertion and no error; a real hover in fa-IR light turns the border rgb(37, 99, 235) and back to rgb(229, 231, 235) on leaving; en-US renders LTR on the left; fa-IR dark hovers to rgb(45, 105, 236) from rgb(20, 22, 26).",
+      "closedAt": "2026-09-10T06:52:11.787Z"
     },
     {
       "id": "KN-209",
