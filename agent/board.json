@@ -671,14 +671,15 @@
         "KN-007",
         "KN-205"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown.",
       "roasts": [],
       "notes": [
         "Blocked on KN-205 - The Checkbox hover and focus selectors reach the glyph. KN-013 is the first component of the library and this is the second, so its hover and focus styling will be written by copying the first. That pattern is currently wrong: it selects by a MUI class name and matches the inner glyph as well as the frame. Fixing the template before replicating it costs one card; fixing it afterwards costs every component that copied it."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T04:52:54.403Z"
+      "updatedAt": "2026-09-10T05:14:01.954Z",
+      "verify": "node agent/scripts/verify/KN-017.mjs"
     },
     {
       "id": "KN-018",

@@ -90,6 +90,12 @@ const linguiOptions = (extraProps = '') => ({
     '*.toHaveTextContent',
     '*.toHaveAttribute',
     '*.toHaveAccessibleName',
+    // A key descriptor, not copy. `userEvent.keyboard('{Enter}')` names a key
+    // the way testing-library spells it; there is no Persian for Enter and
+    // translating it would break the test rather than localise anything.
+    // Listed as a function rather than as a pattern over braces, so it exempts
+    // this one call and not every string that happens to contain them.
+    '*.keyboard',
   ],
   useTsTypes: true,
 })
