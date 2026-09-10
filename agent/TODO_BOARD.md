@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 91 of 279 tasks done · 174 of 691 points.
+Project **KarNama** · 91 of 280 tasks done · 174 of 693 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-266` The Input's border takes layout space, so its text sits a pixel inward of the file** (critical, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-266` | The Input's border takes layout space, so its text sits a pixel inward of the file | critical | 2 | web | none | In every state the Input's text sits spacing/md, 16px, from the field's outer edge, as 95:5 and 95:19 draw it, with the stroke painted inside that padding and taking no layout space; no padding in Input.tsx is computed from a border width; the Default and Focus stories measure the text's distance from the edge at 16; and the other bordered components are checked for the same offset, each matching or carrying a card. |
 
 ## Blocked (2)
 
@@ -26,10 +32,10 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
-| `KN-266` | The Input's border takes layout space, so its text sits a pixel inward of the file | critical | 2 | web | none | In every state the Input's text sits spacing/md, 16px, from the field's outer edge, as 95:5 and 95:19 draw it, with the stroke painted inside that padding and taking no layout space; no padding in Input.tsx is computed from a border width; the Default and Focus stories measure the text's distance from the edge at 16; and the other bordered components are checked for the same offset, each matching or carrying a card. |
 | `KN-267` | The Input has no leading or trailing icon slot, which node 95:38 carries | critical | 2 | web | none | The Input takes an optional leading and an optional trailing icon, each 20 by 20 at spacing/2xs from the text in text/secondary, matching 95:38 with the icons on, in both directions; stories show each and both; and the label's boolean in the file is either honoured, with the accessible name then required another way, or the decision not to is recorded in DESIGN.md. |
 | `KN-272` | In dark, a selected Filter Chip's text is 1.34:1 on its fill, and its pressed border 1.14:1 | critical | 2 | web | none | In the derived dark palette bg/brand/container is a dark tint of its own hue, derived as a fill the way the status containers are, text/brand clears 4.5:1 on it and border/focus clears 3:1 on it, and every pair the tests already hold still holds; darkMode.test.ts asserts both pairs as the Filter Chip draws them, and a mutation back to the surface derivation fails them; and the selected Filter Chip, resting and pressed, is seen in dark in both languages. |
 | `KN-274` | The Input's focus ring for an invalid field sits outside a field that fills its container, so a host that clips at its edge removes it | critical | 2 | web | none | An invalid Input focused inside a host that clips its overflow flush at the field's edges still changes at least a two-pixel perimeter at 3:1, KN-244's measure, either because the change is drawn inside the field's own box or because the Input keeps the room itself; a story renders the field in an overflow hidden host with no padding and asserts, from the rendered geometry, that every pixel of the focus change lies inside every clipping ancestor, and a mutation back to a ring the host clips fails it by name; DESIGN.md's section says which; and the Checkbox's and the Filter Chip's rings are checked for the same, each matching or carrying a card. |
+| `KN-280` | The bound Input takes a Controls value equal to an edit still in flight for its echo, and can stay apart from the arg | critical | 2 | web | none | Bound tells its own writes from anything else by a revision carried with each write, not by value, so an arg whose value is not the one sent at its revision is taken, whatever the queue holds; a check in a production build reproduces the sequence, an edit in flight, a Controls value equal to it arriving after a newer edit, and ends with the field and the arg equal; the exception is gone from the comment; the revision never reaches the Input or shows as a control; and KN-253's and KN-249's verifiers still pass. |
 | `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
 | `KN-021` | Page header | critical | 3 | web | KN-005, KN-006, KN-007, KN-009, KN-008 | Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree. |
 | `KN-022` | Empty state and loading state | critical | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
@@ -3236,6 +3242,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The field shows every edit as it happens and the arg follows without a stale value overwriting newer input: 20 keys typed with no delay all arrive in both the field and the arg, and a composition driven through the browser's own IME input ends with the composed text in both; a mutation back to the plain round trip loses keys again.
 
+**Roasts.** round 1 scored 4 with 1 critical(s)
+
 ### `KN-254` An empty error string puts the Input in its error state
 
 - **status** done · **severity** critical · **points** 1 · **area** web
@@ -3382,7 +3390,7 @@ The owner's decision of 2026-09-10, answering KN-073's employment type question.
 
 ### `KN-266` The Input's border takes layout space, so its text sits a pixel inward of the file
 
-- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while reading 95:38 for KN-244. Both field frames, 95:5 Default and 95:19 Focus, have strokeAlign INSIDE and strokesIncludedInLayout false, with 16 of padding at each side, read with use_figma: the stroke is painted over the padding and the text sits 16 from the edge in every state. The Input draws a CSS border, which is laid out, so its text sits at 17, a pixel of border plus 16 of padding, and the focus state holds it at 17 by dropping the padding to 15, an off-scale value compensating for an offset the file does not have. A stroke that takes no space, an inset box-shadow for instance, with spacing/md padding in every state, is what the file draws.
@@ -3539,4 +3547,15 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** Someone who cannot see a 1.2:1 fill cannot tell which filters are on, and the Filter Chip is the status counter above the board. The owner chose the edge on 2026-09-10. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** A selected Filter Chip's edge is drawn in a named role at 3:1 or more against bg/surface, bg/page, bg/surface-secondary and its own fill, in light and in the derived dark, each ratio asserted by a unit test with a mutation back to the fill-coloured edge failing it; the Selected story asserts the edge; a pressed unselected chip is still told apart from a selected one, by at least 3:1 between their two indicators or by a difference that is not colour, such as the edge's width, and a focused chip beside a selected one keeps its ring visibly apart from the selected edge, both asserted on rendered chips side by side, including a chip held pressed from the keyboard; DESIGN.md records the edge under the owner's decision of KN-276; and the chip is seen unselected, selected and pressed in all four combinations.
+
+### `KN-280` The bound Input takes a Controls value equal to an edit still in flight for its echo, and can stay apart from the arg
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-253 roast, KN-253 being a child of KN-011. Bound tells its own writes from Controls by value: an arg found in its queue of sent values is taken as an echo. Storybook applies the preview's updateArgs to the store at once and rerenders with whatever the store holds when the rerender runs, so renders coalesce. Sequence: an edit x7a in flight, Controls set to x7a after a newer edit x7ab has reached the store, and a coalesced rerender delivering only the final x7a: it is found in the queue, taken as the echo of the first edit, and the field keeps x7ab while the arg is x7a, with no later change to repair it. KN-253 named the case as an exception rather than fixing it. A revision carried with each write, compared with the value sent at that revision, tells them apart where a value cannot.
+
+**Why.** Controls are how a reviewer drives a story, and a panel value the canvas silently ignores describes the field wrongly, the failure KN-245 fixed for the copy. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** Bound tells its own writes from anything else by a revision carried with each write, not by value, so an arg whose value is not the one sent at its revision is taken, whatever the queue holds; a check in a production build reproduces the sequence, an edit in flight, a Controls value equal to it arriving after a newer edit, and ends with the field and the arg equal; the exception is gone from the comment; the revision never reaches the Input or shows as a control; and KN-253's and KN-249's verifiers still pass.
 

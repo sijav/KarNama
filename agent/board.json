@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 280,
+  "nextId": 281,
   "tasks": [
     {
       "id": "KN-001",
@@ -6423,7 +6423,23 @@
       "parent": [],
       "status": "done",
       "exit": "The field shows every edit as it happens and the arg follows without a stale value overwriting newer input: 20 keys typed with no delay all arrive in both the field and the arg, and a composition driven through the browser's own IME input ends with the composed text in both; a mutation back to the plain round trip loses keys again.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-253-round-1.2026-09-10T16-19-51-897Z.md",
+          "filed": [
+            "KN-280"
+          ],
+          "cardDigest": "c1b4f26db1af91d0f883e8952c8e03b32b4ace4ca41fe3157e69823a9ab53f6e",
+          "head": "f32a4d4e09429ae5c9905334faa7aad866308508",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "dismissed": "The major, that the plan file beside Input.stories.tsx breaks the documentation rule, misreads it for the third time: agent/RALPH.md step 2b puts a plan beside the work and keeps it, and the documentation rule is about prose inside .ts and .tsx files. The critical stands and is KN-280.",
+          "at": "2026-09-10T16:23:23.953Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T10:30:25.462Z",
       "updatedAt": "2026-09-10T16:19:33.154Z",
@@ -6735,11 +6751,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "In every state the Input's text sits spacing/md, 16px, from the field's outer edge, as 95:5 and 95:19 draw it, with the stroke painted inside that padding and taking no layout space; no padding in Input.tsx is computed from a border width; the Default and Focus stories measure the text's distance from the edge at 16; and the other bordered components are checked for the same offset, each matching or carrying a card.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T13:19:54.737Z"
+      "createdAt": "2026-09-10T13:19:54.737Z",
+      "updatedAt": "2026-09-10T16:20:37.580Z"
     },
     {
       "id": "KN-267",
@@ -6998,6 +7015,21 @@
       ],
       "createdAt": "2026-09-10T15:47:06.702Z",
       "updatedAt": "2026-09-10T15:52:00.439Z"
+    },
+    {
+      "id": "KN-280",
+      "title": "The bound Input takes a Controls value equal to an edit still in flight for its echo, and can stay apart from the arg",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-253 roast, KN-253 being a child of KN-011. Bound tells its own writes from Controls by value: an arg found in its queue of sent values is taken as an echo. Storybook applies the preview's updateArgs to the store at once and rerenders with whatever the store holds when the rerender runs, so renders coalesce. Sequence: an edit x7a in flight, Controls set to x7a after a newer edit x7ab has reached the store, and a coalesced rerender delivering only the final x7a: it is found in the queue, taken as the echo of the first edit, and the field keeps x7ab while the arg is x7a, with no later change to repair it. KN-253 named the case as an exception rather than fixing it. A revision carried with each write, compared with the value sent at that revision, tells them apart where a value cannot.",
+      "why": "Controls are how a reviewer drives a story, and a panel value the canvas silently ignores describes the field wrongly, the failure KN-245 fixed for the copy. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Bound tells its own writes from anything else by a revision carried with each write, not by value, so an arg whose value is not the one sent at its revision is taken, whatever the queue holds; a check in a production build reproduces the sequence, an edit in flight, a Controls value equal to it arriving after a newer edit, and ends with the field and the arg equal; the exception is gone from the comment; the revision never reaches the Input or shows as a control; and KN-253's and KN-249's verifiers still pass.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T16:23:23.839Z"
     }
   ]
 }
