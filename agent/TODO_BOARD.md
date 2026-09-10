@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 33 of 191 tasks done · 86 of 556 points.
+Project **KarNama** · 33 of 192 tasks done · 86 of 558 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -14,9 +14,9 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-190` | Command-shaped text inside a string counts as the command | critical | 2 | agent | none | The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident. |
+| `KN-190` | Command-shaped text inside a string counts as the command | critical | 2 | agent | none | The recognisers read a COMMAND rather than command-shaped text. The close is the head token of its line. The roast is matched among that line's tokens, because python <path>/roast.py task puts the roast in ARGUMENT position and an anchor would find nothing in the file this is written for. A quoted run stays ONE token, and a line whose head is a printer (echo, printf, cat) runs nothing, so a mention is not the command. The reviewer's echo fixture fails before the fix and passes after. A pipeline, a chain, a semicolon or a line continuation is REPORTED as unorderable rather than guessed at, and a single trailing ampersand is NOT, because backgrounding the roast is what the real prompt does. |
 
-## Backlog (155)
+## Backlog (156)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -61,6 +61,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-178` | The preferences story's localStorage restore races with other stories | high | 2 | web | none | The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler. |
 | `KN-183` | KN-114's verifier can silently overwrite a concurrent catalog edit | high | 2 | web | none | The blank and untranslated rules live in a pure function that takes the catalogs as an argument; catalog.test.ts calls it on the real imported ones; a test drives it with in-memory catalogs containing each evasion, empty, whitespace, format characters only, the id exactly and the id with punctuation and casing changed, and requires each to be reported naming the id; KN-114's verifier no longer writes to any tracked file; and its header no longer needs to warn that an interrupted run leaves the catalog planted. |
 | `KN-185` | Nothing establishes which prompt file the sibling Stop hook actually feeds | high | 2 | agent | none | The Stop-hook registration is traced to the exact prompt pathname it feeds, for both projects, and recorded where the next reader will find it; where a project's hook feeds a file nobody has been maintaining, that is filed; and the claim is supported by the resolved configuration rather than by the prompt's own text. |
+| `KN-192` | A stale or inline marker masks the real block, so the marker is not yet a declaration | high | 2 | agent | none | The marker must be the only thing on its line, and there must be exactly ONE in a document; a second marker, an inline marker, and a stale marker above an old block with the real block unmarked are each reported by name; and each of the three is a case that fails before the change and passes after. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -2362,6 +2363,8 @@ CHILD OF KN-184, recorded here because board.json cannot express parent_task yet
 
 **Exit condition.** The normative block is identified by an explicit stable marker rather than by keywords in a heading; both fixtures the reviewer ran, an earlier step whose prose contains both words, and a real step whose heading uses different words, are covered as cases; and each fails before the fix and passes after.
 
+**Roasts.** round 1 scored 3 with 1 critical(s)
+
 ### `KN-190` Command-shaped text inside a string counts as the command
 
 - **status** in_progress · **severity** critical · **points** 2 · **area** agent
@@ -2371,7 +2374,7 @@ CHILD OF KN-184, recorded here because board.json cannot express parent_task yet
 
 **Why.** A check that reads text rather than commands can be satisfied by anything that mentions a command, including documentation of the very mistake it is looking for. That is the same shape as a grep matching the prose explaining a ban, which this repository has now shipped three times.
 
-**Exit condition.** The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident.
+**Exit condition.** The recognisers read a COMMAND rather than command-shaped text. The close is the head token of its line. The roast is matched among that line's tokens, because python <path>/roast.py task puts the roast in ARGUMENT position and an anchor would find nothing in the file this is written for. A quoted run stays ONE token, and a line whose head is a printer (echo, printf, cat) runs nothing, so a mention is not the command. The reviewer's echo fixture fails before the fix and passes after. A pipeline, a chain, a semicolon or a line continuation is REPORTED as unorderable rather than guessed at, and a single trailing ampersand is NOT, because backgrounding the roast is what the real prompt does.
 
 ### `KN-191` The roast skill writes its transient result into the project, not a scratch directory
 
@@ -2383,4 +2386,15 @@ The owner asked why on 2026-09-10. Both halves of the roast skill write .claude/
 **Why.** A tool that leaves working files in someone's project is a tool they have to tidy up after, and the answer to why is currently because it always did that. The distinction worth getting right is between state the tool NEEDS to keep, which belongs to the project, and output it happened to produce, which does not.
 
 **Exit condition.** The transient result file is written to a scratch location rather than into the project; roast-sessions.json stays project-local with its reason recorded; both halves agree on where and the parity test still passes; the gitignore entries for anything that no longer lands in the project are removed rather than left as fossils; and running a roast in a clean checkout leaves that checkout unchanged.
+
+### `KN-192` A stale or inline marker masks the real block, so the marker is not yet a declaration
+
+- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **blocked by** none
+
+CHILD OF KN-189, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-189 roast, which reproduced both halves. lib/prompt-order.mjs accepts the marker ANYWHERE in a line, so Note: <!-- roast-order --> above a correct fence counts as a declaration, and it accepts ANY NUMBER of marked blocks provided each is ordered. The reviewer ran a document with that inline marker above a correct fence plus a later UNMARKED reversed real fence and got ok true: the stale marker masked the moved real block. Two correctly ordered marked fences also pass. So the marker is not yet the declaration the card claimed; it is a token that anything can carry and that nothing is required to be unique. I chose checking every marked block deliberately, reasoning that two markers mean two normative blocks; the reviewer is right that it means a leftover marker satisfies the check while the block that matters drifts away unmarked.
+
+**Why.** The whole point of KN-189 was to replace an inference with a declaration, because three inferences had each been defeated by words. A declaration that any line can carry, in any quantity, is not much better than an inference: it recreates the false-pass class one layer up, and it does it silently.
+
+**Exit condition.** The marker must be the only thing on its line, and there must be exactly ONE in a document; a second marker, an inline marker, and a stale marker above an old block with the real block unmarked are each reported by name; and each of the three is a case that fails before the change and passes after.
 

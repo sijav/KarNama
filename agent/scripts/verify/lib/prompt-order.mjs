@@ -70,6 +70,131 @@ export const markedBlocks = (markdown) => {
 }
 
 /**
+ * Splits one shell line into words, remembering which were QUOTED.
+ *
+ * Quoted text is data, not command. That distinction is the whole of KN-190:
+ * `echo "todo move <id> done"` was read as a close, so a block could roast
+ * first and still look correct.
+ *
+ * The plan check warned against the obvious alternative, stripping quotes and
+ * then searching the rest, because it "keeps rediscovering shell syntax one
+ * exception at a time". This does not try to understand shell. It splits on
+ * whitespace outside quotes, stops at an unquoted `#`, and hands back enough to
+ * decide, plus enough to notice a shape it should not be deciding about.
+ *
+ * One honest gap. The quote handling below is NOT independently provable by
+ * mutation, and I tried. Disable it and `grep "todo move <id> done" notes.md`
+ * is still not read as a close, but for the wrong reason: the quote characters
+ * glue onto the boundary words, so the tokens become `"todo` and `done"` and
+ * the match fails on the punctuation rather than on the quoting. Every mutation
+ * of this loop fails safe by accident, which means no test here can distinguish
+ * "quoting works" from "quoting is dead code that happens to break the string".
+ * What IS proved is the PRINTERS list and the UNSUPPORTED list, each caught by
+ * its own mutation. Do not read the absence of a failing mutation for quoting
+ * as evidence that it earns its place.
+ */
+const tokenise = (line) => {
+  const tokens = []
+  let current = ''
+  let quote = null
+  let quoted = false
+  let index = 0
+
+  const push = () => {
+    if (current !== '' || quoted) tokens.push({ text: current, quoted })
+    current = ''
+    quoted = false
+  }
+
+  for (; index < line.length; index += 1) {
+    const character = line[index]
+    if (quote) {
+      if (character === quote) quote = null
+      else current += character
+      continue
+    }
+    if (character === '"' || character === "'") {
+      quote = character
+      quoted = true
+      continue
+    }
+    // A comment runs to the end of the line, and only outside quotes.
+    if (character === '#' && current === '' && !tokens.length) return { tokens: [], comment: true }
+    if (character === '#' && current === '') break
+    if (/\s/.test(character)) {
+      push()
+      continue
+    }
+    current += character
+  }
+  push()
+  return { tokens, unterminated: quote !== null }
+}
+
+// Shapes this deliberately does not decide about. `&&`, `;` and a pipe put two
+// commands on one line, and a trailing backslash continues onto the next, so the
+// ORDER within the block stops being the order of its lines. Reporting is the
+// honest answer: guessing at them is the class of inference these cards keep
+// removing. A single trailing `&` is NOT here, because backgrounding one command
+// is exactly what the real prompt does.
+const UNSUPPORTED = [
+  [/&&/, 'a && chain puts two commands on one line, which this cannot order'],
+  [/\|\|/, 'a || chain puts two commands on one line, which this cannot order'],
+  [/(^|[^|])\|([^|]|$)/, 'a pipeline puts two commands on one line, which this cannot order'],
+  [/;/, 'a semicolon puts two commands on one line, which this cannot order'],
+  [/\\$/, 'a line continuation splits one command over two lines, which this cannot order'],
+]
+
+// Commands that print rather than run. `echo "todo move x done"` is caught by
+// the quoting alone, but `echo todo move x done` is not, and a printer is never
+// the command the order is about.
+const PRINTERS = new Set(['echo', 'printf', 'cat'])
+
+/** What one line of a command block actually does. */
+export const readCommand = (line) => {
+  if (!line.trim()) return { skip: true }
+
+  for (const [pattern, why] of UNSUPPORTED) {
+    // Checked against the line with quoted text removed, so a semicolon INSIDE
+    // a quoted argument is not mistaken for a command separator.
+    const bare = line.replace(/"[^"]*"|'[^']*'/g, '')
+    if (pattern.test(bare)) return { unsupported: why }
+  }
+
+  const { tokens, comment } = tokenise(line)
+  if (comment || !tokens.length) return { skip: true }
+
+  const [head, ...rest] = tokens
+  if (head.quoted) return { skip: true }
+  const command = head.text.split(/[\\/]/).pop()
+  if (PRINTERS.has(command)) return { skip: true }
+
+  // Quoted arguments are KEPT, and the reason is worth writing down because I
+  // had it wrong. I first dropped them, reasoning that a quoted string is data.
+  // A mutation showed the filter protected nothing: the tokeniser already keeps
+  // `"todo move <id> done"` as ONE token, so `includes('move')` is false with
+  // or without it. What it could do is harm, by refusing to recognise
+  // `todo move <id> "done"`, which is a real command someone might write.
+  //
+  // Tokenisation is what actually separates a mention from a command here, and
+  // the printer list covers the unquoted case. Keeping a filter that changes no
+  // outcome would have been a comment claiming a protection that was not there.
+  const words = [command, ...rest.map((token) => token.text)]
+
+  // `todo move <id> done`, or the same through npm.
+  const closes = words.includes('move') && words.includes('done') && (command === 'todo' || words.includes('todo'))
+
+  // `python .../roast.py task`, `node .../roast.mjs task`, `npm run roast`.
+  // The roast is usually an ARGUMENT rather than the command, which is why
+  // anchoring the match to the start of the line would find nothing in the file
+  // this is written for.
+  const roastScript = words.some((word) => /(^|[\\/])roast(\.py|\.mjs)?$/.test(word))
+  const roasts = (roastScript && words.includes('task')) || (command === 'npm' && words.includes('roast'))
+
+  return { closes, roasts, command }
+}
+
+/**
  * Whether every marked block closes the task before handing it to a reviewer.
  *
  * An unmarked file is reported as unmarked rather than guessed at. Falling back
@@ -85,17 +210,20 @@ export const closesBeforeRoasting = (markdown) => {
   }
 
   for (const block of blocks) {
-    // A line that is only a comment does not count: `# todo move <id> done` is
-    // documentation of a command, not the command. Recognising a command in
-    // command POSITION rather than command-shaped text anywhere on the line is
-    // KN-190 and is deliberately not solved here.
-    const executable = block.body.filter((line) => line.trim() && !line.trimStart().startsWith('#'))
-    const closeAt = executable.findIndex((line) => /todo\s+move\s+\S+\s+done/.test(line))
-    const roastAt = executable.findIndex((line) => /roast(\.py|\.mjs)?\s+task|npm run roast/.test(line))
+    const executable = []
+    for (const line of block.body) {
+      const command = readCommand(line)
+      if (command.skip) continue
+      if (command.unsupported) return { ok: false, why: `${command.unsupported}: ${line.trim()}` }
+      executable.push(command)
+    }
+
+    const closeAt = executable.findIndex((command) => command.closes)
+    const roastAt = executable.findIndex((command) => command.roasts)
 
     if (closeAt === -1) return { ok: false, why: 'the marked block never closes the task' }
     if (roastAt === -1) return { ok: false, why: 'the marked block never fires a roast' }
-    if (closeAt === roastAt) return { ok: false, why: 'both commands are on one line, so the order is not readable' }
+    if (closeAt === roastAt) return { ok: false, why: 'one line both closes and roasts, so the order is not readable' }
     if (closeAt > roastAt) {
       return { ok: false, why: 'the block fires the roast BEFORE the close, whatever the prose above it says' }
     }

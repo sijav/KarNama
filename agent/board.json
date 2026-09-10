@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 192,
+  "nextId": 193,
   "tasks": [
     {
       "id": "KN-001",
@@ -4389,7 +4389,23 @@
       "parent": [],
       "status": "done",
       "exit": "The normative block is identified by an explicit stable marker rather than by keywords in a heading; both fixtures the reviewer ran, an earlier step whose prose contains both words, and a real step whose heading uses different words, are covered as cases; and each fails before the fix and passes after.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-189-round-1.2026-09-10T01-42-30-977Z.md",
+          "filed": [
+            "KN-192"
+          ],
+          "cardDigest": "f3f37e450cc8c4ae461023e5daa496583b09b5db0613c3a5971521ef2c41c92d",
+          "head": "f997a3aeb04000e7f027bcf1250af293c9a41459",
+          "reviewerScore": 3,
+          "reviewerCriticals": 1,
+          "dismissed": "The critical is real in substance and misattributed to this card. It says no LIVE prompt is validated or marked, and that KarNama's own .claude/ralph-loop.local.md still roasts at line 70 and closes at line 87. Both facts are true and I confirmed them. But KN-189's exit condition was about the SELECTOR, replacing heading keywords with a declaration, proved on fixtures that cover cases a real file does not contain; it did not undertake to validate a live prompt. The live prompt's wrong order, and the absence of a check over it, is KN-171, already open, whose exit condition names both: that the prompt state finish, prove, close, roast in that order, and that a check assert the prompt and RALPH.md do not contradict each other. Filing it again would duplicate an open card rather than record a new finding. Recorded as one critical rather than dismissed to zero, because the reviewer is right that a fixture-only pass reads as more than it is.",
+          "at": "2026-09-10T01:45:01.109Z"
+        }
+      ],
       "notes": [
         "Verified by KN-184's script rather than one of its own: both cards are about the same check in the same file, and two scripts reading one thing drift, which is what KN-174 was filed for after the sandbox builder did exactly that within a session. The cases that prove THIS card are the two reviewer fixtures, the unmarked-prompt refusal, the detached-marker case, and the mutation reproducing the heading selector."
       ],
@@ -4409,11 +4425,14 @@
       "area": "agent",
       "parent": [],
       "status": "in_progress",
-      "exit": "The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident.",
+      "exit": "The recognisers read a COMMAND rather than command-shaped text. The close is the head token of its line. The roast is matched among that line's tokens, because python <path>/roast.py task puts the roast in ARGUMENT position and an anchor would find nothing in the file this is written for. A quoted run stays ONE token, and a line whose head is a printer (echo, printf, cat) runs nothing, so a mention is not the command. The reviewer's echo fixture fails before the fix and passes after. A pipeline, a chain, a semicolon or a line continuation is REPORTED as unorderable rather than guessed at, and a single trailing ampersand is NOT, because backgrounding the roast is what the real prompt does.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "EXIT CONDITION AMENDED 2026-09-10, original kept here. It read: 'The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident.' The clause 'at the start of the line' cannot be met, and the plan filed beside this card said so before the work started: the roast invocation is python <path>/roast.py task, so the roast is an ARGUMENT, and a rule demanding it start the line reports a correct prompt as having no roast command. The close does start its line and still must. Amended openly rather than declared satisfied by a check that does not check it."
+      ],
       "createdAt": "2026-09-10T01:18:51.245Z",
-      "updatedAt": "2026-09-10T01:42:57.622Z"
+      "updatedAt": "2026-09-10T01:52:46.148Z",
+      "verify": "node agent/scripts/verify/KN-190.mjs"
     },
     {
       "id": "KN-191",
@@ -4429,6 +4448,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T01:34:56.950Z"
+    },
+    {
+      "id": "KN-192",
+      "title": "A stale or inline marker masks the real block, so the marker is not yet a declaration",
+      "desc": "CHILD OF KN-189, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-189 roast, which reproduced both halves. lib/prompt-order.mjs accepts the marker ANYWHERE in a line, so Note: <!-- roast-order --> above a correct fence counts as a declaration, and it accepts ANY NUMBER of marked blocks provided each is ordered. The reviewer ran a document with that inline marker above a correct fence plus a later UNMARKED reversed real fence and got ok true: the stale marker masked the moved real block. Two correctly ordered marked fences also pass. So the marker is not yet the declaration the card claimed; it is a token that anything can carry and that nothing is required to be unique. I chose checking every marked block deliberately, reasoning that two markers mean two normative blocks; the reviewer is right that it means a leftover marker satisfies the check while the block that matters drifts away unmarked.",
+      "why": "The whole point of KN-189 was to replace an inference with a declaration, because three inferences had each been defeated by words. A declaration that any line can carry, in any quantity, is not much better than an inference: it recreates the false-pass class one layer up, and it does it silently.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The marker must be the only thing on its line, and there must be exactly ONE in a document; a second marker, an inline marker, and a stale marker above an old block with the real block unmarked are each reported by name; and each of the three is a case that fails before the change and passes after.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T01:44:50.061Z"
     }
   ]
 }
