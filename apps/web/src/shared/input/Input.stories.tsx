@@ -16,6 +16,27 @@ const computedColour = (host: HTMLElement, colour: string) => {
   return value
 }
 
+// Everything that places the text inside the field: the input's box, how far
+// its content is scrolled, and every computed property of the input, since any
+// of them (its own padding, text-indent, the font, letter spacing) can move the
+// text inside a box that stays where it was, KN-243. The one exemption is the
+// outline: it takes no space, so it cannot move the text, and MUI zeroes the
+// input's outline width on focus with no outline drawn in either state.
+const NOT_LAYOUT = /^outline(-|$)/
+const textLayout = (box: HTMLElement): Record<string, string> => {
+  const { left, top, width, height } = box.getBoundingClientRect()
+  const style = getComputedStyle(box)
+  return {
+    ...Object.fromEntries(Array.from(style).filter((name) => !NOT_LAYOUT.test(name)).map((name) => [name, style.getPropertyValue(name)])),
+    // Prefixed, since left, top, width and height are CSS properties too.
+    ...Object.fromEntries(Object.entries({ left, top, width, height, scrollLeft: box.scrollLeft, scrollTop: box.scrollTop }).map(([name, value]) => [`box ${name}`, String(value)])),
+  }
+}
+
+// What differs between two layouts, by name, so a failure says what moved.
+const changes = (before: Record<string, string>, after: Record<string, string>) =>
+  [...new Set([...Object.keys(before), ...Object.keys(after)])].filter((name) => before[name] !== after[name]).map((name) => `${name}: ${before[name] ?? 'unset'} → ${after[name] ?? 'unset'}`)
+
 // What a user typed: record data, so it is not translated.
 const TYPED = 'توسعه‌دهنده فرانت‌اند'
 
@@ -95,16 +116,16 @@ export const Focus: Story = {
   play: async ({ canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')
     const field = fieldOf(canvasElement)
-    const before = box.getBoundingClientRect()
+    const before = textLayout(box)
     await userEvent.tab()
     await expect(box).toHaveFocus()
     const style = getComputedStyle(field)
     // Node 95:17: TWO pixels of border/focus, and the text does not move for
-    // it, sideways or up and down: the field is border-box and 44 tall either way.
+    // it: the field is border-box and 44 tall either way, and nothing that lays
+    // the text out inside it changes.
     await expect(Number.parseFloat(style.borderTopWidth)).toBe(2)
     await expect(style.borderTopColor).toBe(computedColour(field, semantic['border/focus']))
-    const after = box.getBoundingClientRect()
-    await expect([after.left, after.top]).toEqual([before.left, before.top])
+    await expect(changes(before, textLayout(box))).toEqual([])
     await expect(field.offsetHeight).toBe(44)
   },
 }

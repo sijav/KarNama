@@ -6040,11 +6040,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The Focus story fails whenever focus changes anything that lays out the text inside the field: it asserts the input element's box and every computed property of the input are unchanged by focus, naming any property it exempts and why, and a mutation adding a focused-only text-indent to the input fails Focus by name.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T09:45:56.652Z"
+      "createdAt": "2026-09-10T09:45:56.652Z",
+      "updatedAt": "2026-09-10T09:52:50.288Z",
+      "verify": "node agent/scripts/verify/KN-243.mjs"
     },
     {
       "id": "KN-244",
