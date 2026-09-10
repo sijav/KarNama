@@ -68,6 +68,14 @@ The brand fill with a white tick.
 The brand fill with a white dash, and the assertion that the property survives
 rather than the markup.
 
+### Hover
+
+The default border turns to the focus colour while a pointer is over the box,
+and only while it is unchecked, enabled and not partial. The story moves a
+REAL pointer when it runs as a test, because `:hover` is the browser's own
+hit-testing and no synthetic event can set it. In Storybook itself there is
+nothing to move a pointer, so hover the box yourself.
+
 ### Disabled
 
 Greyed and inert. The story clicks it to prove it does not change, because a

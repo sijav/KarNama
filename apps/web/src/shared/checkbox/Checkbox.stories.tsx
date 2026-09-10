@@ -1,7 +1,23 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
+import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Checkbox } from './Checkbox'
+
+/**
+ * A token's colour as the browser computes it, so it can be compared with a
+ * computed style. The browser does the conversion rather than a hand-written
+ * parser, so the two sides of the comparison are normalised the same way. The
+ * host's own inline colour is borrowed and put back within the same tick, so
+ * nothing is ever painted with it.
+ */
+const computedColour = (host: HTMLElement, colour: string) => {
+  const previous = host.style.color
+  host.style.color = colour
+  const value = getComputedStyle(host).color
+  host.style.color = previous
+  return value
+}
 
 const meta = {
   title: 'Shared/Checkbox',
@@ -66,6 +82,34 @@ export const Indeterminate: Story = {
     await expect(box).toHaveProperty('indeterminate', true)
     // And the accessible state that a screen reader actually announces.
     await expect(box).toHaveAttribute('data-indeterminate', 'true')
+  },
+}
+
+export const Hover: Story = {
+  // Pinned to light so the expected colour is one known token, not whichever
+  // palette the toolbar happens to be on.
+  globals: { colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    const box = within(canvasElement).getByRole('checkbox')
+    const frame = canvasElement.querySelector<HTMLElement>('.KarnamaCheckbox-frame')
+    if (!frame) throw new Error('the checkbox frame was not found')
+    await expect(getComputedStyle(frame).borderTopColor).toBe(computedColour(canvasElement, semantic['border/default']))
+
+    // A REAL pointer, not a dispatched event. `:hover` is the browser's own
+    // hit-testing, and no synthetic mouseover sets it, so `storybook/test`'s
+    // userEvent cannot reach this state at all. Under Vitest's browser mode,
+    // `vitest/browser` is a virtual module that drives Playwright's actual
+    // mouse; anywhere else the real file throws on import, which is how
+    // Storybook's own vitest addon tells the two apart. In the published
+    // Storybook there is no test runner to move a pointer, so the story is a
+    // canvas: hover it yourself.
+    const browser = await import('vitest/browser').catch(() => null)
+    if (!browser) return
+    // The INPUT, not the frame: MUI's invisible input sits on top of the square,
+    // so it is what a pointer over the square actually touches, and hovering it
+    // is what turns on the root's `:hover`.
+    await browser.userEvent.hover(box)
+    await expect(getComputedStyle(frame).borderTopColor).toBe(computedColour(canvasElement, semantic['border/focus']))
   },
 }
 
