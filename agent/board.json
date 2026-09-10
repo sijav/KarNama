@@ -509,15 +509,17 @@
         "KN-006",
         "KN-007"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T09:03:44.129Z",
-      "verify": "node agent/scripts/verify/KN-010.mjs"
+      "updatedAt": "2026-09-10T09:04:09.691Z",
+      "verify": "node agent/scripts/verify/KN-010.mjs",
+      "evidence": "New src/shared/status-chip/StatusChip.tsx from node 82:2 (get_design_context on variants 84:2, 84:6 and 398:6181; get_variable_defs binds only the status pair, spacing/xs and radius/full): an inline-flex span hugging its label, height 24 (S) or 28 (M), paddingInline spacing.xs, radius full, status container fill and base text; S uses the label role, M uses body's 14/22 with label's weight 500 and tracking 0.2, recorded in DESIGN.md. Label is a prop from the status record; defaultStatusName.ts maps the five built-ins to catalog messages Saved, Applied, Interview, Rejected, Job offer, Persian exactly as the legend at 410:470, tested in both locales (defaultStatusName.test.ts). Stories: Default, AllStatuses (all 18 variants measured: offsetHeight 24 or 28, padding 8 and 8, radius 999, font size 12 or 14, background and text equal to the token pair as the browser computes it, light pinned), ColumnHeaderSize, DisplayOnly (no role, no tabindex, Tab passes it), RenamedStatus. Story-docs in en and fa; StoryTitle registered. agent/scripts/verify/KN-010.mjs, 7 checks green: stories pass; THE CASE, swapping fill and text fails AllStatuses; shrinking M to 24 fails it; no StatusChip size M outside the chip; react-docgen shows no on* or tabIndex prop and a story asserts no focus; the chip imports no i18n and RenamedStatus exists; exactly the five default names ship, no custom slot name, and the seed and catalog tests pass. Full gate as a parent card: KN-003 green (lint, tsc, suite with 100 percent coverage, both builds, every planted fixture failing), KN-004 green, root npm test 4 + 381 + 101. Seen on a production Storybook build: fa-IR light, all nine pairs at both sizes match the Figma sheet; en-US shows the English seed names with the custom slots' Persian record names; fa-IR dark renders the derived pair, navy rgb(0, 21, 92) with indigo text, 28 tall.",
+      "closedAt": "2026-09-10T09:04:09.691Z"
     },
     {
       "id": "KN-011",
