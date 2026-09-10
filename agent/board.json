@@ -6424,13 +6424,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "With value set, changing defaultValue in Controls leaves the same input element in place, still focused if it was, showing the same value; with value unset a new default still starts the field over; a check on a built Storybook does both, and a mutation back to keying on defaultValue in both modes fails the first.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T11:47:12.847Z",
-      "updatedAt": "2026-09-10T12:18:28.137Z",
-      "verify": "node agent/scripts/verify/KN-258.mjs"
+      "updatedAt": "2026-09-10T12:19:15.857Z",
+      "verify": "node agent/scripts/verify/KN-258.mjs",
+      "evidence": "node agent/scripts/verify/KN-258.mjs passed. It builds the production Storybook, serves it, and for every Input story that offers value with an enabled field (default, filled, focus, hover, label-is-bound) it sets value 'x7' through updateStoryArgs, clicks the field, marks the element, changes defaultValue to 'zz', and reads whether the field is the same element, still focused, and still 'x7'; then, on a fresh load with value unset, it changes defaultValue and reads the field showing 'zz'. (1) All five keep the same focused element showing 'x7', and all five start over with 'zz' while uncontrolled; before the fix all five lost the element and its focus. (2) THE CASE: the KN-252 key, defaultValue in both modes, restored and rebuilt, remounts the controlled field again. (3) The Input stories pass. Also rerun and passing: KN-252, KN-246, KN-242 (all three anchor on the key line and follow it), KN-249, KN-247 (production sweep), KN-254, KN-248, KN-243, KN-241, KN-011; the unit project, 346 tests; lint on the Input and tsc clean. A child task, so it closes on the tests for the files it changed. NOT established: other DOM-only state than focus surviving, such as a selection range or scroll position inside the field, which the same element keeps by construction but no check reads.",
+      "closedAt": "2026-09-10T12:19:15.857Z"
     },
     {
       "id": "KN-259",
