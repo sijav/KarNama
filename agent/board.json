@@ -7124,11 +7124,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Under forced colours the Checkbox frame's edge is drawn over the frame without taking layout, a border on a pseudo-element for instance, so its content box stays 20 by 20 in that mode as in every other; KN-281's forced-colours check measures the content box and the glyph's position as well as the pixels, and a mutation back to a laid-out border fails it.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T17:20:16.405Z"
+      "createdAt": "2026-09-10T17:20:16.405Z",
+      "updatedAt": "2026-09-10T17:29:19.122Z",
+      "verify": "node agent/scripts/verify/KN-284.mjs"
     },
     {
       "id": "KN-285",

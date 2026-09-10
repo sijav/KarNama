@@ -188,8 +188,11 @@ const main = async () => {
       const drawn = async (withoutFallback) => {
         const page = await open(browser, base, 'unchecked', { forcedColors: 'active' })
         try {
-          if (withoutFallback) await page.addStyleTag({ content: '.KarnamaCheckbox-frame { border-width: 0 !important; }' })
+          if (withoutFallback) await page.addStyleTag({ content: '.KarnamaCheckbox-frame, .KarnamaCheckbox-frame::before { border-width: 0 !important; }' })
           const [edge, , , , , , , , inside] = await leftEdge(page, 9)
+          // And the edge takes none of the frame's space in that mode, KN-284.
+          const content = await page.evaluate(() => { const frame = document.querySelector('.KarnamaCheckbox-frame'); return [frame.clientWidth, frame.clientHeight].join() })
+          if (content !== '20,20') throw new Error(`under forced colours the frame's content box is ${content}, not 20,20`)
           return edge !== inside
         } finally {
           await page.close()

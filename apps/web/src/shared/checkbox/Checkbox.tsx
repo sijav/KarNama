@@ -53,6 +53,7 @@ const Frame = ({ mark, disabled }: { mark: Mark; disabled: boolean }) => (
         alignItems: 'center',
         justifyContent: 'center',
         boxSizing: 'border-box',
+        position: 'relative',
         // Disabled reads as absent rather than off: the edge disappears into
         // the secondary surface.
         backgroundColor: disabled ? colour['bg/surface-secondary'] : filled ? colour['bg/brand/default'] : colour['bg/surface'],
@@ -62,8 +63,22 @@ const Frame = ({ mark, disabled }: { mark: Mark; disabled: boolean }) => (
         // the 1.5, inside the frame and out of layout, KN-281.
         boxShadow: `inset 0 0 0 ${EDGE}px ${disabled ? colour['bg/surface-secondary'] : filled ? colour['bg/brand/default'] : colour['border/default']}`,
         // Forced colours remove a shadow and keep a border, so there the edge is
-        // a one pixel border in the system's colour for a control's edge.
-        '@media (forced-colors: active)': { borderStyle: 'solid', borderWidth: 1, borderColor: 'ButtonBorder' },
+        // a one pixel border in the system's colour for a control's edge, on a
+        // pseudo-element laid over the frame so it takes none of its space and
+        // the content box stays 20 by 20, KN-284.
+        '@media (forced-colors: active)': {
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            inset: 0,
+            boxSizing: 'border-box',
+            borderRadius: 'inherit',
+            borderStyle: 'solid',
+            borderWidth: 1,
+            borderColor: 'ButtonBorder',
+            pointerEvents: 'none',
+          },
+        },
       }
     }}
   >
