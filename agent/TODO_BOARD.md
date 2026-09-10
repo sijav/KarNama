@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 25 of 172 tasks done · 72 of 523 points.
+Project **KarNama** · 25 of 176 tasks done · 72 of 530 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -10,11 +10,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-112` Two preference setters called in one batch lose the first update** (high, 1 pt, web)
 
-## Backlog (146)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-112` | Two preference setters called in one batch lose the first update | high | 1 | web | KN-006 | A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation. |
+
+## Backlog (149)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-114` | The catalog test counts an empty string as a translation | high | 1 | web | KN-006 | Setting any Persian message to an empty or whitespace-only string fails npm test, and the failure names the id. |
 | `KN-132` | Pin the byte-compared generated files to LF, or stop comparing bytes | high | 1 | infra | none | A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand. |
 | `KN-149` | The board cards for the rejected column do not require it to collapse | high | 1 | design | none | The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered. |
@@ -53,6 +58,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-167` | The API schema-entry test is flaky under load and fails the gate at random | high | 2 | api | none | The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure. |
 | `KN-168` | KN-160's verifier passes on two blind spots it claims to cover | high | 2 | agent | none | The tree walk covers agent/ and every other directory, distinguishing a plan file from a plan-shaped one by its NAME rather than by which folder it is in; the instruction corpus is derived from a stated convention or from a registry that new instruction files must join, rather than from a hand-maintained list; and both blind spots are proved closed by mutations that currently pass and must then fail. |
 | `KN-170` | An irreversible action must prove its rollback path before it runs | high | 2 | agent | none | AGENTS.md and agent/RALPH.md both carry the rule, naming the three git commands as the concrete instance and stating the general form; the wording makes clear it applies to any irreversible action and not only to deletion; and a check asserts both files carry it so it cannot quietly disappear the way the plan lifecycle rule did. |
+| `KN-173` | rm destroys the card and its reason, so the terminal refusal promises something false | high | 2 | agent | none | A mis-closed card can be voided into a terminal tombstone that RETAINS the card, its reason and a link to its replacement; rm either keeps a record too or stops being named as the recovery route; the terminal refusal message describes what actually happens; and driving the real CLI proves the record survives. |
+| `KN-174` | Extract the verifier sandbox builder, which has already diverged between two copies | high | 2 | agent | none | One sandbox builder in agent/scripts/verify/lib/, used by KN-159 and KN-162, with the fixtures either shared or requested explicitly by the caller; both verifiers still pass; and a check proves neither file builds a repository of its own any more. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -135,6 +142,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-137` | KN-128's verifier checks the exported type but never the exported document | medium | 2 | agent | none | Exporting a hand-built or widened document from apps/web/src/core/api makes the KN-128 verifier fail, proved by planting both cases, and the check that catches the widened one reads the document rather than its type, since the optional brand makes the type-level check unable to see it. |
 | `KN-147` | Nothing proves the migration runner waits between lock attempts | medium | 2 | api | none | Deleting the retry delay makes the suite fail, proved by planting exactly that, and the test asserts elapsed time or scheduled timing rather than attempt count alone. |
 | `KN-148` | The mutation harnesses re-run the whole suite once per regression | medium | 2 | agent | none | A verify that plants N regressions runs one full suite plus N filtered runs, and completes in under five minutes for KN-123, with every regression still caught, proved by running the harness before and after and comparing both the time and the caught count. |
+| `KN-175` | Verifiers that need a scratch directory cannot run in the read-only review sandbox | medium | 2 | agent | none | The repository states, in AGENTS.md or RALPH.md, whether a verifier may require a writable scratch directory; verifiers that do are either made runnable in the review environment or carry a machine-readable marker saying they cannot be, and the roast prompt tells the reviewer which; and no future roast can raise this as a novel finding. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -158,6 +166,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-138` | KN-128's verifier attributes compiler errors by substring, not by path | low | 1 | agent | none | A file elsewhere in the web app whose path ends with the probe's name is not counted as the probe, proved by creating one, running the verifier and removing it, rather than by editing the matcher and reasoning about it. |
 | `KN-141` | NO_COLOR makes KN-131's verifier reject a correct compiler refusal | low | 1 | agent | none | The verifier passes with NO_COLOR=1 set, proved by running it that way, and the assertion names the planted file and the TypeScript error code rather than the source excerpt. |
 | `KN-150` | KN-070's open-question check reads lines, not list items | low | 1 | agent | none | A wrapped bullet asking about رد شده makes the verifier fail, proved by planting one. |
+| `KN-176` | KN-162 closed against an exit condition it deliberately did not meet | low | 1 | agent | none | KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail. |
 | `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 
@@ -1456,7 +1465,7 @@ src/i18n/catalog.test.ts finds used ids with two regexes, <Trans id="..."> and i
 
 ### `KN-112` Two preference setters called in one batch lose the first update
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** KN-006
 
 PreferencesProvider builds each setter over the locale and colorScheme captured in that render, so setLocale("en-US") followed synchronously by setColorScheme("dark") computes the second update from the stale locale: the state and the stored value both end up {locale: "fa-IR", colorScheme: "dark"} and the language change is gone. Use a functional state update and persist the value the updater computed.
@@ -2029,6 +2038,8 @@ Found by the KN-159 roast. move has no transition guard on the CURRENT status. I
 
 **Exit condition.** move <id> in_progress, backlog, review or blocked all REFUSE when the task is done, and the refusal names the new-card route; dropped remains reachable if that is decided to be right; the refusal is proved by driving the real CLI in an isolated repository rather than by reading the source; and a mutation removing the guard fails the check with its own message.
 
+**Roasts.** round 1 scored 4 with 0 critical(s)
+
 ### `KN-163` Adjudication is reported, not enforced, so findings can go unfiled forever
 
 - **status** backlog · **severity** high · **points** 2 · **area** agent
@@ -2138,4 +2149,48 @@ The owner's correction of 2026-09-10. Step 1 of the loop skill is called compact
 **Why.** A step whose implementation does the opposite of its name will keep being run, because its name says it is right. It costs context on every single iteration, which is the resource the step exists to protect, and it does so silently.
 
 **Exit condition.** compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script.
+
+### `KN-173` rm destroys the card and its reason, so the terminal refusal promises something false
+
+- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **blocked by** none
+
+Found by the KN-162 roast and confirmed by reading. rm requires --reason, PRINTS it to stdout, then splices the task out of board.tasks. Neither the task nor the reason survives in board.json. KN-162's terminal refusal names rm as the route for a close that was an outright error and says it leaves a stated reason behind, which is not true: it destroys the completed card, its evidence, its roast history and the explanation of why it vanished. The roast's suggestion is a tombstone instead, a terminal voided record that keeps the card, its reason and a link to whatever replaced it, and that cannot reopen work, so any actual remaining work is still a new card.
+
+**Why.** The only escape route from a terminal state is currently the most destructive command on the board, and it is advertised with a promise it does not keep. Someone following that advice after a mis-close loses the evidence and roast history of real work, and finds out afterwards.
+
+**Exit condition.** A mis-closed card can be voided into a terminal tombstone that RETAINS the card, its reason and a link to its replacement; rm either keeps a record too or stops being named as the recovery route; the terminal refusal message describes what actually happens; and driving the real CLI proves the record survives.
+
+### `KN-174` Extract the verifier sandbox builder, which has already diverged between two copies
+
+- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **blocked by** none
+
+Found by the KN-162 roast. KN-159 and KN-162 each build a throwaway git repository, copy agent/scripts into it, seed a board and commit, and I duplicated rather than extracted on the plan check's advice that the third caller is the moment to share it. The roast disagreed and it is right on the evidence: the two copies ALREADY differ. KN-159 writes both a passing and a failing sandbox verifier fixture; KN-162 writes only the passing one. So the isolation guarantee the two files claim is not the same guarantee, and nothing says which is correct. The threshold third caller is wrong for a helper that DEFINES what the tests are isolating from.
+
+**Why.** Duplicated test infrastructure diverges silently, and when it does, two verifiers are testing subtly different worlds while both report success. The divergence here appeared within one session of the duplication being made.
+
+**Exit condition.** One sandbox builder in agent/scripts/verify/lib/, used by KN-159 and KN-162, with the fixtures either shared or requested explicitly by the caller; both verifiers still pass; and a check proves neither file builds a repository of its own any more.
+
+### `KN-175` Verifiers that need a scratch directory cannot run in the read-only review sandbox
+
+- **status** backlog · **severity** medium · **points** 2 · **area** agent
+- **blocked by** none
+
+Found by the KN-162 roast, and raised once before by the KN-159 roast which declined to call it a defect. KN-162's verifier fails immediately with EPERM at mkdtempSync in the reviewer's read-only environment, before any check runs, so the reviewer cannot reproduce the evidence the close was granted on and has to take it on trust. The same is true of KN-058, KN-065 and KN-159. Two readings are available and the board should pick one rather than leaving it to whichever roast raises it: either isolation-testing verifiers are exempt and the exemption is written down so a reviewer knows not to treat it as a finding, or they are given a writable location the sandbox permits and become reproducible.
+
+**Why.** A verifier a reviewer cannot run is a verifier whose result is a claim rather than a check, which is the thing this whole loop exists to avoid. It has now been raised by two separate roasts, which means it will keep being raised until it is decided.
+
+**Exit condition.** The repository states, in AGENTS.md or RALPH.md, whether a verifier may require a writable scratch directory; verifiers that do are either made runnable in the review environment or carry a machine-readable marker saying they cannot be, and the roast prompt tells the reviewer which; and no future roast can raise this as a novel finding.
+
+### `KN-176` KN-162 closed against an exit condition it deliberately did not meet
+
+- **status** backlog · **severity** low · **points** 1 · **area** agent
+- **blocked by** none
+
+Found by the KN-162 roast. The card's exit condition, written before the work, said a task can still be dropped or re-closed idempotently IF THAT IS DECIDED TO BE RIGHT. The implementation decided it was not: dropped is refused along with every other transition out of done, and the verifier asserts the refusal. So the card's stated contract and the shipped behaviour disagree, and the close was granted against the hedge rather than against a decision. The hedge was the mistake: an exit condition containing if that is decided to be right cannot be satisfied or failed, which makes it unusable as a gate.
+
+**Why.** An exit condition is the one part of a card that has to be checkable, and a hedged clause is how a card closes on whatever was built rather than on what was asked. The decision itself is settled and the roast agrees with it; what is wrong is the record.
+
+**Exit condition.** KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail.
 

@@ -1,4 +1,4 @@
-import { createContext, useCallback, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Locale } from '../../i18n'
 import type { ColorSchemePreference } from '../../theme/useColorScheme'
 import { defaults, readPreferences, writePreferences, type Preferences } from './storage'
@@ -44,7 +44,26 @@ export const PreferencesProvider = ({ initial, children }: PreferencesProviderPr
   // call rather than one per render.
   const [stored, setStored] = useState<Preferences>(() => ({ ...readPreferences(), ...initial }))
 
-  const update = useCallback((next: Preferences) => {
+  // What the LAST call produced, which is not what this render can see.
+  //
+  // Each setter used to pass the sibling field from its own render, so two calls
+  // before the next render both read the same snapshot and the second one wrote
+  // the first one's field back to its old value: change the language and the
+  // colour scheme together and the language change vanished, from the state and
+  // from storage. Composing onto this ref instead means the second call sees the
+  // first call's result.
+  //
+  // A ref rather than a functional updater because the value has to be
+  // PERSISTED as well as stored, and writing inside an updater makes the updater
+  // impure: React invokes it twice under StrictMode, so localStorage would be
+  // written twice per action. Nothing but `update` assigns here, and `update`
+  // runs from event handlers, which StrictMode does not double-invoke, so the
+  // ref and the state cannot disagree.
+  const latest = useRef(stored)
+
+  const update = useCallback((change: Partial<Preferences>) => {
+    const next = { ...latest.current, ...change }
+    latest.current = next
     setStored(next)
     writePreferences(next)
   }, [])
@@ -59,11 +78,13 @@ export const PreferencesProvider = ({ initial, children }: PreferencesProviderPr
     () => ({
       locale,
       colorScheme,
+      // Each setter names ONLY its own field. Passing the sibling is what made
+      // two calls in one batch lose the first one.
       setLocale: (next: Locale) => {
-        update({ locale: next, colorScheme })
+        update({ locale: next })
       },
       setColorScheme: (next: ColorSchemePreference) => {
-        update({ locale, colorScheme: next })
+        update({ colorScheme: next })
       },
     }),
     [locale, colorScheme, update],

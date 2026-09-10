@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 173,
+  "nextId": 177,
   "tasks": [
     {
       "id": "KN-001",
@@ -2729,12 +2729,13 @@
       "parent": [
         "KN-006"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A test calls both setters in the same batch and both changes survive in the state and in what was written, and it fails against the current closure-based implementation.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T00:41:13.307Z",
-      "updatedAt": "2026-09-09T23:54:04.749Z"
+      "updatedAt": "2026-09-10T00:24:45.485Z",
+      "verify": "node agent/scripts/verify/KN-112.mjs"
     },
     {
       "id": "KN-113",
@@ -3833,7 +3834,26 @@
       "parent": [],
       "status": "done",
       "exit": "move <id> in_progress, backlog, review or blocked all REFUSE when the task is done, and the refusal names the new-card route; dropped remains reachable if that is decided to be right; the refusal is proved by driving the real CLI in an isolated repository rather than by reading the source; and a mutation removing the guard fails the check with its own message.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-162-round-1.2026-09-10T00-17-09-983Z.md",
+          "filed": [
+            "KN-173",
+            "KN-174",
+            "KN-175",
+            "KN-176"
+          ],
+          "cardDigest": "1a95d5ec0b7a8b95016b86546651762c6ae1efb97a0a29e5c79b6b1a164689ff",
+          "head": "5b11898b8e789d5f6da7a8ed0ad6300bf556e8e9",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "dismissed": "The critical, that the required mutation test does not exist, is rejected as stated and accepted in its substance. It DID exist and it DID run: five cases against the real todo.mjs, each caught with its own message and each file restored, including two that NARROW the guard rather than removing it so the CLI still refuses while no longer enforcing the rule. The reviewer could not see that because the cases live in a scratch directory and are thrown away, which is the real defect and is already filed as KN-136, open and high. The reviewer's sharper point, that the final source grep for the phrase done is terminal would pass if the guard were deleted and the phrase left in a comment, is correct about that one check and wrong about the file: the nine checks above it drive the real CLI and the guard-removal mutation was caught by them, not by the grep. So the exit condition's mutation clause was satisfied by an actual run, and what is missing is reproducibility rather than the test. Downgraded from one critical to none on that basis; the other three findings and the minor are all real, confirmed by reading, and filed.",
+          "at": "2026-09-10T00:20:20.543Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-09T23:56:07.338Z",
       "updatedAt": "2026-09-10T00:16:52.087Z",
@@ -3990,6 +4010,66 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T00:16:08.084Z"
+    },
+    {
+      "id": "KN-173",
+      "title": "rm destroys the card and its reason, so the terminal refusal promises something false",
+      "desc": "Found by the KN-162 roast and confirmed by reading. rm requires --reason, PRINTS it to stdout, then splices the task out of board.tasks. Neither the task nor the reason survives in board.json. KN-162's terminal refusal names rm as the route for a close that was an outright error and says it leaves a stated reason behind, which is not true: it destroys the completed card, its evidence, its roast history and the explanation of why it vanished. The roast's suggestion is a tombstone instead, a terminal voided record that keeps the card, its reason and a link to whatever replaced it, and that cannot reopen work, so any actual remaining work is still a new card.",
+      "why": "The only escape route from a terminal state is currently the most destructive command on the board, and it is advertised with a promise it does not keep. Someone following that advice after a mis-close loses the evidence and roast history of real work, and finds out afterwards.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A mis-closed card can be voided into a terminal tombstone that RETAINS the card, its reason and a link to its replacement; rm either keeps a record too or stops being named as the recovery route; the terminal refusal message describes what actually happens; and driving the real CLI proves the record survives.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:19:50.097Z"
+    },
+    {
+      "id": "KN-174",
+      "title": "Extract the verifier sandbox builder, which has already diverged between two copies",
+      "desc": "Found by the KN-162 roast. KN-159 and KN-162 each build a throwaway git repository, copy agent/scripts into it, seed a board and commit, and I duplicated rather than extracted on the plan check's advice that the third caller is the moment to share it. The roast disagreed and it is right on the evidence: the two copies ALREADY differ. KN-159 writes both a passing and a failing sandbox verifier fixture; KN-162 writes only the passing one. So the isolation guarantee the two files claim is not the same guarantee, and nothing says which is correct. The threshold third caller is wrong for a helper that DEFINES what the tests are isolating from.",
+      "why": "Duplicated test infrastructure diverges silently, and when it does, two verifiers are testing subtly different worlds while both report success. The divergence here appeared within one session of the duplication being made.",
+      "severity": "high",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "One sandbox builder in agent/scripts/verify/lib/, used by KN-159 and KN-162, with the fixtures either shared or requested explicitly by the caller; both verifiers still pass; and a check proves neither file builds a repository of its own any more.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:19:50.192Z"
+    },
+    {
+      "id": "KN-175",
+      "title": "Verifiers that need a scratch directory cannot run in the read-only review sandbox",
+      "desc": "Found by the KN-162 roast, and raised once before by the KN-159 roast which declined to call it a defect. KN-162's verifier fails immediately with EPERM at mkdtempSync in the reviewer's read-only environment, before any check runs, so the reviewer cannot reproduce the evidence the close was granted on and has to take it on trust. The same is true of KN-058, KN-065 and KN-159. Two readings are available and the board should pick one rather than leaving it to whichever roast raises it: either isolation-testing verifiers are exempt and the exemption is written down so a reviewer knows not to treat it as a finding, or they are given a writable location the sandbox permits and become reproducible.",
+      "why": "A verifier a reviewer cannot run is a verifier whose result is a claim rather than a check, which is the thing this whole loop exists to avoid. It has now been raised by two separate roasts, which means it will keep being raised until it is decided.",
+      "severity": "medium",
+      "points": 2,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The repository states, in AGENTS.md or RALPH.md, whether a verifier may require a writable scratch directory; verifiers that do are either made runnable in the review environment or carry a machine-readable marker saying they cannot be, and the roast prompt tells the reviewer which; and no future roast can raise this as a novel finding.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:20:09.896Z"
+    },
+    {
+      "id": "KN-176",
+      "title": "KN-162 closed against an exit condition it deliberately did not meet",
+      "desc": "Found by the KN-162 roast. The card's exit condition, written before the work, said a task can still be dropped or re-closed idempotently IF THAT IS DECIDED TO BE RIGHT. The implementation decided it was not: dropped is refused along with every other transition out of done, and the verifier asserts the refusal. So the card's stated contract and the shipped behaviour disagree, and the close was granted against the hedge rather than against a decision. The hedge was the mistake: an exit condition containing if that is decided to be right cannot be satisfied or failed, which makes it unusable as a gate.",
+      "why": "An exit condition is the one part of a card that has to be checkable, and a hedged clause is how a card closes on whatever was built rather than on what was asked. The decision itself is settled and the roast agrees with it; what is wrong is the record.",
+      "severity": "low",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:20:10.009Z"
     }
   ]
 }
