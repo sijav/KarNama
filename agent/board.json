@@ -5579,13 +5579,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The guard reads every string literal in the SOURCE of src/theme/tokens.ts, not the runtime values, so a literal inside a function, a Map or any other construct is checked; the font stack is checked by value; mutations adding copy as a function return, as a Map entry and as the fontFamily value each fail it; and TECH-DEBT.md 13's retiring check is a condition a command can test, such as the three exemptions removed and npm run lint still green with every planted fixture failing.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T07:53:29.626Z",
-      "updatedAt": "2026-09-10T08:25:34.309Z",
-      "verify": "node agent/scripts/verify/KN-227.mjs"
+      "updatedAt": "2026-09-10T08:25:56.170Z",
+      "verify": "node agent/scripts/verify/KN-227.mjs",
+      "evidence": "src/theme/tokens.test.ts now parses tokens.ts with ts.createSourceFile and checks every StringLiteral and NoSubstitutionTemplateLiteral: property-name literals must match the token-name shape, every other literal must be a hex colour, a box-shadow of 4-lengths-plus-hex layers, or the Vazirmatn-first font stack, and any template with substitutions is refused; plus four planted cases in the test itself (function return, Map, fontFamily copy, nested label) that must be refused. 44 of 44 pass. agent/scripts/verify/KN-227.mjs, 6 checks green: the source-level guard passes; THE CASE three times on the real file, copy returned from a function, copy inside a Map, and copy as the fontFamily value each fail the guard naming the literal; TECH-DEBT 13 still stands, since with tokens.ts un-ignored and STORAGE_KEY and TOOLTIP_SURFACE removed from the exempt names npm run lint fails (the verifier fails with \"retire TECH-DEBT 13\" the day it passes); TECH-DEBT 13's retiring check names that command. KN-224.mjs updated to the new guard's output and green. Lint and tsc clean.",
+      "closedAt": "2026-09-10T08:25:56.170Z"
     },
     {
       "id": "KN-228",
