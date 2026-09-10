@@ -2030,11 +2030,15 @@
       "parent": [
         "KN-002"
       ],
-      "status": "backlog",
+      "status": "blocked",
       "exit": "DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T21:48:46.881Z"
+      "notes": [
+        "THE RESEARCH IS DONE; the DECISION is the owner's and they asked to be asked later. Blocked rather than backlog so it stops being picked as buildable. The original environment could not reach either site; this one can, so the checking half of this card is finished and is recorded here. JOB LEVEL IS CONFIRMED. JobVision has a رده سازمانی filter carrying worker, employee, specialist, senior specialist, middle manager, deputy and senior manager, which is our list. TWO DISCREPANCIES remain and both need the owner: JobVision appears to treat معاون and مدیر ارشد as SEPARATE levels where we combine them into one, and مدیر عامل does not appear in their list at all. jobinja has no job-level filter, so it cannot confirm or deny. EMPLOYMENT TYPE CANNOT BE CONFIRMED, because the two sources disagree with each other and with us. jobinja calls the field نوع قرارداد and offers four: تمام‌وقت, پاره‌وقت, کارآموزی, دورکاری. JobVision offers seven: دورکاری, تمام‌وقت, پاره‌وقت, آنلاین, در منزل, فریلانسری, موقت. Ours has six. jobinja does NOT have قراردادی or پروژه‌ای; JobVision has موقت and فریلانسری which we do not. So there is no canonical list to match, and the card's other branch, the owner confirming them as final, is the only route. A MODELLING PROBLEM SURFACED and is NOT decided: دورکاری sits inside this enum on both boards and in our list, but a job can be full-time AND remote, so an enum forces a choice that reality does not. The owner said to skip it and ask later. Do not settle it in passing. Sources checked 2026-09-10: jobinja.ir/jobs and jobvision.ir/jobs."
+      ],
+      "createdAt": "2026-09-07T21:48:46.881Z",
+      "updatedAt": "2026-09-10T05:29:11.609Z",
+      "blockedReason": "Waiting on the owner, who asked to be asked later. The CHECKING half is done and recorded in the notes: job level is confirmed against JobVision, employment type cannot be confirmed because jobinja and JobVision disagree with each other and with us. What is left is a decision about enum values that reach the database, the GraphQL schema and the Select components, so it is not an agent's to make."
     },
     {
       "id": "KN-074",

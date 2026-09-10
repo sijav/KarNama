@@ -8,21 +8,21 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-073` Confirm the employment type and job level option lists** (high, 2 pt, design)
+**Next up: `KN-077` Settle the two copy strings that frame 505:3 records as not yet applied** (high, 2 pt, design)
 
-## Blocked (1)
+## Blocked (2)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-196` | Decide how a card is dropped onto a column that is collapsed to a count | high | 1 | design | none | DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker. |
+| `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 
-## Backlog (158)
+## Backlog (157)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
-| `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-089` | Make a clean clone able to run the gate without a manual browser download | high | 2 | infra | KN-003 | On a machine with no Playwright browsers, a documented single command brings the gate to green, agent/scripts/verify/KN-003.mjs reports the missing browser by name rather than failing opaquely, and the README says what to run. |
 | `KN-094` | The token-name value exemption reaches aria-label and title | high | 2 | web | KN-087 | aria-label="delete/application" and title="delete/application" both fail npm run lint, a committed fixture holds both, the Foundations token story still passes, and agent/scripts/verify/KN-087.mjs requires the fixture by name. |
@@ -1066,7 +1066,7 @@ The Components canvas flags this as its open item 18: status history currently s
 
 ### `KN-073` Confirm the employment type and job level option lists
 
-- **status** backlog · **severity** high · **points** 2 · **area** design
+- **status** blocked · **severity** high · **points** 2 · **area** design
 - **blocked by** KN-002
 
 Frame 434:33 carries a red warning: the two enumerations came from the product owner and were never matched against jobinja.ir or jobvision.ir, because that environment's network blocked both. Check them against the real sources, or get the owner to confirm them as final, then remove the provisional marking.
