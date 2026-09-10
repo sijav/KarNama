@@ -59,6 +59,12 @@ const JobTitle = ({ withError = false, label, placeholder, helperText, ...rest }
   )
 }
 
+// The controls a story offers: only the args its play function holds for, so
+// changing one in Controls and pressing Rerun never has the story report
+// something untrue about the canvas. Storybook offers every control unless
+// told otherwise, including any prop added later, KN-247.
+const offers = (names: (keyof InputProps)[]) => ({ controls: { include: names } })
+
 // The field itself: MUI's input root, the element that draws the border.
 const fieldOf = (canvasElement: HTMLElement) => {
   const field = within(canvasElement).getByRole('textbox').parentElement
@@ -91,6 +97,8 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
+  // Not error: it asserts the default border.
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'disabled', 'name']),
   globals: { colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     const field = fieldOf(canvasElement)
@@ -105,26 +113,33 @@ export const Default: Story = {
 }
 
 export const FromArgs: Story = {
-  // Nothing like the specimen, so the field must be following its args.
-  // Letter-free values, since they are test data rather than copy.
+  // Nothing like the specimen, so the field must be following its args, and
+  // what it expects is read from them, so it holds for whatever is set. Not
+  // the label: an empty one means the specimen's. Letter-free values, since
+  // they are test data rather than copy.
+  parameters: offers(['value', 'defaultValue', 'placeholder', 'helperText', 'error', 'disabled', 'name']),
   args: { label: '42', defaultValue: '7', helperText: '#', disabled: true },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')
-    await expect(box).toHaveAccessibleName('42')
-    await expect(box).toHaveValue('7')
-    await expect(box).toHaveAccessibleDescription('#')
-    await expect(box).toBeDisabled()
+    await expect(box).toHaveAccessibleName(args.label)
+    await expect(box).toHaveValue(args.value ?? args.defaultValue ?? '')
+    await expect(box).toHaveAccessibleDescription(args.error ?? args.helperText ?? '')
+    await (args.disabled === true ? expect(box).toBeDisabled() : expect(box).toBeEnabled())
   },
 }
 
 export const Filled: Story = {
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'error', 'disabled', 'name']),
   args: { defaultValue: TYPED },
-  play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByRole('textbox')).toHaveValue(TYPED)
+  play: async ({ args, canvasElement }) => {
+    await expect(within(canvasElement).getByRole('textbox')).toHaveValue(args.value ?? args.defaultValue ?? '')
   },
 }
 
 export const Focus: Story = {
+  // Not error, whose focus is FocusedWhileInvalid, and not disabled, which
+  // cannot take focus.
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'name']),
   globals: { colorScheme: 'light' },
   args: { defaultValue: TYPED },
   play: async ({ canvasElement }) => {
@@ -182,6 +197,7 @@ export const FocusedWhileInvalid: Story = {
 }
 
 export const Disabled: Story = {
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'error', 'name']),
   globals: { colorScheme: 'light' },
   args: { defaultValue: TYPED, disabled: true },
   play: async ({ canvasElement }) => {
@@ -195,6 +211,9 @@ export const Disabled: Story = {
 }
 
 export const Hover: Story = {
+  // Not error and not disabled: neither takes the hover border. Only the test
+  // runner's real pointer reaches that assertion, so this list is read, not run.
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'name']),
   globals: { colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')
@@ -215,6 +234,8 @@ export const Hover: Story = {
 }
 
 export const LabelIsBound: Story = {
+  // Not disabled: a disabled field does not take focus from its label.
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'error', 'name']),
   play: async ({ canvasElement }) => {
     // Clicking the label reaches the field, and the field is named by it.
     const box = within(canvasElement).getByRole('textbox')
@@ -233,6 +254,9 @@ const Bare = (props: Partial<InputProps>) => {
 }
 
 export const Typing: Story = {
+  // What it types and the name it checks are fixed, so neither the field's
+  // content, its name nor disabled is offered.
+  parameters: offers(['label', 'placeholder', 'helperText', 'error']),
   args: { name: 'title' },
   play: async ({ args, canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')

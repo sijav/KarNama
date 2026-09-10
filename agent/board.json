@@ -6147,7 +6147,8 @@
         "2026-09-10: parked, blocked by KN-250. Its check runs every Input story on a production Storybook build, and Focus already fails there with nothing changed, because html dir is set in a passive effect after the play function starts. Verifier drafted and working (URL args per offered control, verdict from the errored phase and playFunctionThrewException, NOT storyFinished, whose status read success for a play that threw); saved to the session scratchpad as parked/KN-247.mjs. Planned allowlists: Default all but error; FromArgs reads defaultValue and disabled from args and offers those plus placeholder and name; Filled reads defaultValue from args, offers all but value; Focus all but disabled and error; Disabled all but disabled; Hover all but error and disabled; LabelIsBound all but disabled; Typing label, placeholder, helperText, error."
       ],
       "createdAt": "2026-09-10T09:45:57.752Z",
-      "updatedAt": "2026-09-10T10:39:01.087Z"
+      "updatedAt": "2026-09-10T10:53:24.589Z",
+      "verify": "node agent/scripts/verify/KN-247.mjs"
     },
     {
       "id": "KN-248",

@@ -61,8 +61,9 @@ default border.
 
 ### FromArgs
 
-Args nothing like the specimen, so the field must be following them: its
-name, value, description and disabled state all come from the Controls.
+Args nothing like the specimen, so the field must be following them: its value,
+description and disabled state come from the Controls, and the check reads what
+to expect from them. The label stays 42, since an empty one means the specimen's.
 
 ### Filled
 
