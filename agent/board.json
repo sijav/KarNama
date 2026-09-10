@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 183,
+  "nextId": 184,
   "tasks": [
     {
       "id": "KN-001",
@@ -2787,7 +2787,22 @@
       ],
       "status": "done",
       "exit": "Setting any Persian message to an empty or whitespace-only string fails npm test and the failure names the id; so does setting one to its English id with the punctuation or casing changed, which is the next spelling of the same evasion and is named in this card's description; each is proved by planting it and watching the suite go red rather than by reading the checks.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-114-round-1.2026-09-10T00-43-49-189Z.md",
+          "filed": [
+            "KN-183"
+          ],
+          "cardDigest": "e7c58865a4fe202ed8be04819be0f157b6fcb1f60b189b94999ec8032ddbcb61",
+          "head": "fc8e0755fdaef4d80e80d70296babd896e69f53a",
+          "reviewerScore": 7,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T00:50:03.019Z"
+        }
+      ],
       "notes": [
         "Exit condition widened before building, on the plan check's point that the description asked for the punctuation case and the exit condition did not, so the implementation would have been stronger than the contract with nothing recording why."
       ],
@@ -4212,6 +4227,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T00:34:27.440Z"
+    },
+    {
+      "id": "KN-183",
+      "title": "KN-114's verifier can silently overwrite a concurrent catalog edit",
+      "desc": "Found by the KN-114 roast. agent/scripts/verify/KN-114.mjs snapshots apps/web/src/i18n/locales/fa-IR.ts, rewrites it seven times to plant evasions, and then restores that SNAPSHOT unconditionally in a finally. Anything that changes the catalog while it runs, a developer, a generator, a concurrent agent, is silently reverted to the snapshot with no warning and no diff to notice. Killing the run leaves a planted catalog behind, which the file's own header admits. The roast's alternative is better and hermetic: extract the two predicates, blank and untranslated, into a pure function taking an object of the two catalogs; have catalog.test.ts call it on the real imported catalogs so npm test runs the real validator; and unit-test that same function against invalid in-memory catalogs. Nothing is written, nothing is restored, and the thing proved is the exact validator the suite uses rather than a copy of it.",
+      "why": "This is the same class of defect that destroyed a plan file earlier today: a destructive operation whose safety rests on an assumption nobody checks, here that the file has not changed underneath. It is also unnecessary, because the proof can be made without writing to the repository at all.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The blank and untranslated rules live in a pure function that takes the catalogs as an argument; catalog.test.ts calls it on the real imported ones; a test drives it with in-memory catalogs containing each evasion, empty, whitespace, format characters only, the id exactly and the id with punctuation and casing changed, and requires each to be reported naming the id; KN-114's verifier no longer writes to any tracked file; and its header no longer needs to warn that an interrupted run leaves the catalog planted.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T00:50:02.857Z"
     }
   ]
 }
