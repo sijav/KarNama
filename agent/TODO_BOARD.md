@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-220` The Checkbox Hover story passes on its baseline alone if the test runner cannot load its pointer** (critical, 1 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-220` | The Checkbox Hover story passes on its baseline alone if the test runner cannot load its pointer | critical | 1 | web | none | Under Vitest the Hover story imports the pointer API without a catch and fails loudly if it cannot, the published Storybook still renders it as a canvas with no error, and a mutation making the import fail under Vitest fails the story rather than passing it. |
+
 ## Blocked (3)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -18,12 +24,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (165)
+## Backlog (164)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-220` | The Checkbox Hover story passes on its baseline alone if the test runner cannot load its pointer | critical | 1 | web | none | Under Vitest the Hover story imports the pointer API without a catch and fails loudly if it cannot, the published Storybook still renders it as a canvas with no error, and a mutation making the import fail under Vitest fails the story rather than passing it. |
 | `KN-222` | The tooltip's 260 depends on the app's CSS reset, and the story finds the surface by its DOM position | critical | 1 | web | none | The tooltip surface sets its own box-sizing, and a story rendering it WITHOUT CssBaseline measures 260; the width story finds the surface by a marker the component puts on the tooltip slot itself rather than by DOM position; and a mutation removing the box-sizing fails the no-reset story. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
@@ -2750,7 +2755,7 @@ CHILD OF KN-208, recorded in prose because board.json cannot express parent_task
 
 ### `KN-220` The Checkbox Hover story passes on its baseline alone if the test runner cannot load its pointer
 
-- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **status** in_progress · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-208, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-208 roast and confirmed: the story catches EVERY rejection of import('vitest/browser') and returns, so under Vitest a resolution or initialisation failure makes Hover pass after asserting only the unhovered border. KN-013.mjs notices, because its two hover mutations then fail to fail, but an ordinary npm test does not. The fallback is meant only for Storybook's own UI, where there is no test runner, and Storybook's addon tells the two apart with globalThis.__vitest_browser__.

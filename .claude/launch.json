@@ -4,14 +4,45 @@
     {
       "name": "storybook",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "storybook", "--workspace", "@karnama/web", "--", "--no-open", "--host", "localhost"],
+      "runtimeArgs": [
+        "run",
+        "storybook",
+        "--workspace",
+        "@karnama/web",
+        "--",
+        "--no-open",
+        "--host",
+        "localhost"
+      ],
       "port": 6006
     },
     {
       "name": "web",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--workspace", "@karnama/web", "--", "--host", "localhost"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--workspace",
+        "@karnama/web",
+        "--",
+        "--host",
+        "localhost"
+      ],
       "port": 5173
+    },
+    {
+      "name": "storybook-static",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "6007",
+        "--bind",
+        "localhost",
+        "--directory",
+        "apps/web/storybook-static"
+      ],
+      "port": 6007
     }
   ]
 }

@@ -99,12 +99,16 @@ export const Hover: Story = {
     // hit-testing, and no synthetic mouseover sets it, so `storybook/test`'s
     // userEvent cannot reach this state at all. Under Vitest's browser mode,
     // `vitest/browser` is a virtual module that drives Playwright's actual
-    // mouse; anywhere else the real file throws on import, which is how
-    // Storybook's own vitest addon tells the two apart. In the published
-    // Storybook there is no test runner to move a pointer, so the story is a
-    // canvas: hover it yourself.
-    const browser = await import('vitest/browser').catch(() => null)
-    if (!browser) return
+    // mouse.
+    //
+    // In the published Storybook there is no test runner to move a pointer, so
+    // the story is a canvas: hover it yourself. The two are told apart BEFORE
+    // importing, by `__vitest_browser__`, the flag Storybook's own vitest addon
+    // checks. The first version caught any failed import instead, so a runner
+    // that could not load its pointer passed this story on the unhovered
+    // assertion alone, KN-220. Under Vitest the import now has to succeed.
+    if (!('__vitest_browser__' in globalThis)) return
+    const browser = await import('vitest/browser')
     // The INPUT, not the frame: MUI's invisible input sits on top of the square,
     // so it is what a pointer over the square actually touches, and hovering it
     // is what turns on the root's `:hover`.

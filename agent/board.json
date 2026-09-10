@@ -5328,11 +5328,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Under Vitest the Hover story imports the pointer API without a catch and fails loudly if it cannot, the published Storybook still renders it as a canvas with no error, and a mutation making the import fail under Vitest fails the story rather than passing it.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T07:01:25.045Z"
+      "createdAt": "2026-09-10T07:01:25.045Z",
+      "updatedAt": "2026-09-10T07:26:01.774Z",
+      "verify": "node agent/scripts/verify/KN-220.mjs"
     },
     {
       "id": "KN-221",
