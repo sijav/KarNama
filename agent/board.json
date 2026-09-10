@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 243,
+  "nextId": 248,
   "tasks": [
     {
       "id": "KN-001",
@@ -5971,7 +5971,23 @@
       "parent": [],
       "status": "done",
       "exit": "DESIGN.md records what a focused invalid field looks like and why; a story focuses an invalid field and asserts exactly that; the Focus story asserts the text keeps both its horizontal and vertical position when the border widens; and a mutation changing the focused-error border fails the new story.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-241-round-1.2026-09-10T09-30-30-894Z.md",
+          "filed": [
+            "KN-243",
+            "KN-244"
+          ],
+          "cardDigest": "b2b53ff7fcce104ba9148d6e15721a0d2cd9074ab922510f7c46f3d9418bd2e7",
+          "head": "b49769f555b75f3b4de41f5c878762429f05b1c0",
+          "reviewerScore": 3,
+          "reviewerCriticals": 2,
+          "at": "2026-09-10T09:46:11.482Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T09:27:16.092Z",
       "updatedAt": "2026-09-10T09:30:17.569Z",
@@ -5990,13 +6006,105 @@
       "parent": [],
       "status": "done",
       "exit": "Default renders the Input from its args with the specimen copy as its defaults, a story with non-default args asserts the field follows them, and any story that is a fixed render by design disables the controls it cannot honour.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3.5,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-242-round-1.2026-09-10T09-39-15-230Z.md",
+          "filed": [
+            "KN-245",
+            "KN-246",
+            "KN-247"
+          ],
+          "cardDigest": "212d41ce0b76ee22f7d0f8442d2e43484630b54b2387a6ae8b12a1d6e03fee33",
+          "head": "c12b9060b12d1031f1d7732caee548f00721db1a",
+          "reviewerScore": 3.5,
+          "reviewerCriticals": 2,
+          "at": "2026-09-10T09:46:11.598Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T09:27:16.288Z",
-      "updatedAt": "2026-09-10T09:38:46.019Z",
+      "updatedAt": "2026-09-10T09:46:11.874Z",
       "verify": "node agent/scripts/verify/KN-242.mjs",
-      "evidence": "node agent/scripts/verify/KN-242.mjs passed. It checks: (1) the thirteen Input stories pass; (2) the meta renders every story through the specimen as (args) => <JobTitle {...args} />, and Default has no render of its own; (3) THE CASE: replacing the meta render with one that ignores its args, () => <JobTitle />, fails FromArgs by name, and FromArgs renders label '42', defaultValue '7', helperText '#' and disabled and asserts each on the field (accessible name, value, accessible description, disabled); (4) every story that carries its own render (WithError, FocusedWhileInvalid, WithoutAHelper, ErrorDoesNotMoveTheField) disables its controls. Also rerun and passing: KN-011.mjs and KN-241.mjs, whose anchors live in the same files. NOT established: that the Storybook manager's Controls panel actually shows and edits these args, since nothing drives the manager UI; that placeholder and error follow Controls, since FromArgs does not set them (placeholder passes through by the same spread, error is fixed by design because its copy must come from the catalog); and check (4) is a text scan of the stories file, not a behavioural test, so a fixed render written in a shape the regex does not see would slip past it.",
+      "evidence": "node agent/scripts/verify/KN-242.mjs passed. It checks: (1) the twelve Input stories pass; (2) the meta renders every story through the specimen as (args) => <JobTitle {...args} />, and Default has no render of its own; (3) THE CASE: replacing the meta render with one that ignores its args, () => <JobTitle />, fails FromArgs by name, and FromArgs renders label '42', defaultValue '7', helperText '#' and disabled and asserts each on the field (accessible name, value, accessible description, disabled); (4) every story that carries its own render (WithError, FocusedWhileInvalid, WithoutAHelper, ErrorDoesNotMoveTheField) disables its controls. Also rerun and passing: KN-011.mjs and KN-241.mjs, whose anchors live in the same files. NOT established: that the Storybook manager's Controls panel actually shows and edits these args, since nothing drives the manager UI; that placeholder and error follow Controls, since FromArgs does not set them (placeholder passes through by the same spread, error is fixed by design because its copy must come from the catalog); and check (4) is a text scan of the stories file, not a behavioural test, so a fixed render written in a shape the regex does not see would slip past it.",
       "closedAt": "2026-09-10T09:38:46.019Z"
+    },
+    {
+      "id": "KN-243",
+      "title": "The Input's Focus story measures the field's box, not its text",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-241 roast and reproduced: the Focus story compares the input element's bounding box before and after focus, and the text is not that box. A focused-only rule on the input itself, '& input': { textIndent: '3px' } inside .Mui-focused, moves the text three pixels when the field takes focus and leaves the box where it was, and all twelve Input stories pass with it. A focused change to the input's font family or letter spacing would slip past the same way. KN-241 asked that the text keep both its positions; the story checks a proxy for them.",
+      "why": "DESIGN.md's promise for the Focus state is that the text does not move a pixel when the field takes focus, and this story is the only thing holding it. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The Focus story fails whenever focus changes anything that lays out the text inside the field: it asserts the input element's box and every computed property of the input are unchanged by focus, naming any property it exempts and why, and a mutation adding a focused-only text-indent to the input fails Focus by name.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T09:45:56.652Z"
+    },
+    {
+      "id": "KN-244",
+      "title": "A focused invalid Input shows focus by one pixel of the same red",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-241 roast and confirmed by measurement. The ordinary Focus state changes a two-pixel ring: the outer pixel goes from border/default #e5e7eb to border/focus #2563eb, 4.17:1, and the inner from bg/surface #ffffff to border/focus, 5.17:1, which meets the area and contrast measure of WCAG 2.4.13 Focus Appearance. The focused invalid state KN-241 decided in DESIGN.md changes only the inner pixel, #ffffff to border/error #ef4444, 3.76:1; the outer pixel is red before and after, 1:1. That is half the changed area, and someone who cannot resolve one pixel of thickness sees no focus at all. MUI's own outlined field and Material 3 do the same thing, so it is a convention, but it is weaker than this design's own Focus state, and the reason DESIGN.md gives only argues against staying at one pixel. The system already has a keyboard focus ring: the Checkbox draws a 2px border/focus outline at offset 2. Figma does not draw this state, so the treatment is a decision to record, not a reading.",
+      "why": "The person tabbing back into a field that failed validation is exactly the person who needs to see where focus is. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T09:45:56.913Z"
+    },
+    {
+      "id": "KN-245",
+      "title": "The Input's Controls show empty values while the canvas draws the specimen's copy",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-242 roast and confirmed from the code: the meta's args are label '' with no placeholder or helper, and JobTitle substitutes the catalog's specimen copy for each, so a reviewer opening Default sees an empty label control above a field labelled Job title, and empty placeholder and helper controls above a field that has both. Setting the helper to '' clears it, but resetting the control brings the specimen back, and an untouched control looks the same as an explicit empty one. The label cannot be emptied at all, since '' is the sentinel for the specimen's.",
+      "why": "Controls are how a reviewer reads a story's state, and values that disagree with the canvas describe it wrongly. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "With no control touched, every Controls value in the args-driven Input stories is what the canvas draws, label, placeholder and helper, in either language; changing one in Controls changes the canvas to exactly that value, and clearing the placeholder or helper removes it; a story asserts the rendered copy equals the args, and a mutation reintroducing a hidden fallback fails it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T09:45:57.208Z"
+    },
+    {
+      "id": "KN-246",
+      "title": "Changing defaultValue in the Input's Controls does not change the field",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-242 roast and reproduced on the production Storybook build: after Filled and FromArgs render, an updateStoryArgs on Storybook's own channel setting defaultValue to 'second' and helperText to a marker re-renders the same input node; the helper shows the marker, the value attribute becomes 'second', and the field still shows its first text. The Input is uncontrolled, React applies defaultValue when the input mounts and afterwards only updates the attribute, and Storybook re-renders on an arg change without remounting. So the defaultValue control on Filled, Focus, Disabled and FromArgs does nothing on the canvas, and FromArgs proves only that the first render reads its args.",
+      "why": "A control that does nothing tells a reviewer the component ignores the prop, which is what KN-242 was filed to stop. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Changing defaultValue in Controls after the story has rendered changes the text in the field: a check renders an Input story, changes the arg through Storybook's own arg update, and asserts the field shows the new value, and it fails with the fix taken out.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T09:45:57.476Z"
+    },
+    {
+      "id": "KN-247",
+      "title": "The Input's interaction stories keep controls that make their play functions untrue",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-242 roast and confirmed from the code: the stories that prove a behaviour from fixed inputs keep every control. Typing types 42 and asserts onChange received it and the field is named title; set disabled, value, defaultValue or name in Controls and those claims are false for what the canvas shows, while the Interactions panel still reports the run that passed. Focus, Hover and LabelIsBound go wrong the same way under disabled or error. KN-242 disabled controls only on the fixed renders.",
+      "why": "The Interactions panel's ticks are worth something only if they describe the story on screen. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T09:45:57.752Z"
     }
   ]
 }

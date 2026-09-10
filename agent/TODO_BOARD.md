@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 70 of 242 tasks done · 149 of 638 points.
+Project **KarNama** · 70 of 247 tasks done · 149 of 645 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-238` A long renamed status name pushes the Status Chip out of its column** (critical, 2 pt, web)
+**Next up: `KN-243` The Input's Focus story measures the field's box, not its text** (critical, 1 pt, web)
 
 ## Blocked (3)
 
@@ -18,15 +18,20 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (167)
+## Backlog (172)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-243` | The Input's Focus story measures the field's box, not its text | critical | 1 | web | none | The Focus story fails whenever focus changes anything that lays out the text inside the field: it asserts the input element's box and every computed property of the input are unchanged by focus, naming any property it exempts and why, and a mutation adding a focused-only text-indent to the input fails Focus by name. |
+| `KN-246` | Changing defaultValue in the Input's Controls does not change the field | critical | 1 | web | none | Changing defaultValue in Controls after the story has rendered changes the text in the field: a check renders an Input story, changes the arg through Storybook's own arg update, and asserts the field shows the new value, and it fails with the fix taken out. |
+| `KN-247` | The Input's interaction stories keep controls that make their play functions untrue | critical | 1 | web | none | Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-238` | A long renamed status name pushes the Status Chip out of its column | critical | 2 | web | none | A status name longer than its container is truncated with an ellipsis inside the chip, which never grows past its container; the full name stays readable by a screen reader; a story renders a long name inside a 276px container and asserts nothing overflows; and DESIGN.md records the decision. |
+| `KN-244` | A focused invalid Input shows focus by one pixel of the same red | critical | 2 | web | none | A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name. |
+| `KN-245` | The Input's Controls show empty values while the canvas draws the specimen's copy | critical | 2 | web | none | With no control touched, every Controls value in the args-driven Input stories is what the canvas draws, label, placeholder and helper, in either language; changing one in Controls changes the canvas to exactly that value, and clearing the placeholder or helper removes it; a story asserts the rendered copy equals the args, and a mutation reintroducing a hidden fallback fails it. |
 | `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
 | `KN-021` | Page header | critical | 3 | web | KN-005, KN-006, KN-007, KN-009, KN-008 | Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree. |
 | `KN-022` | Empty state and loading state | critical | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
@@ -3041,6 +3046,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** DESIGN.md records what a focused invalid field looks like and why; a story focuses an invalid field and asserts exactly that; the Focus story asserts the text keeps both its horizontal and vertical position when the border widens; and a mutation changing the focused-error border fails the new story.
 
+**Roasts.** round 1 scored 3 with 2 critical(s)
+
 ### `KN-242` Most Input stories ignore their args, so the Controls panel controls nothing
 
 - **status** done · **severity** critical · **points** 1 · **area** web
@@ -3051,4 +3058,61 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** A Controls panel that silently does nothing tells a reviewer the component ignores its props. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** Default renders the Input from its args with the specimen copy as its defaults, a story with non-default args asserts the field follows them, and any story that is a fixed render by design disables the controls it cannot honour.
+
+**Roasts.** round 1 scored 3.5 with 2 critical(s)
+
+### `KN-243` The Input's Focus story measures the field's box, not its text
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-241 roast and reproduced: the Focus story compares the input element's bounding box before and after focus, and the text is not that box. A focused-only rule on the input itself, '& input': { textIndent: '3px' } inside .Mui-focused, moves the text three pixels when the field takes focus and leaves the box where it was, and all twelve Input stories pass with it. A focused change to the input's font family or letter spacing would slip past the same way. KN-241 asked that the text keep both its positions; the story checks a proxy for them.
+
+**Why.** DESIGN.md's promise for the Focus state is that the text does not move a pixel when the field takes focus, and this story is the only thing holding it. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** The Focus story fails whenever focus changes anything that lays out the text inside the field: it asserts the input element's box and every computed property of the input are unchanged by focus, naming any property it exempts and why, and a mutation adding a focused-only text-indent to the input fails Focus by name.
+
+### `KN-244` A focused invalid Input shows focus by one pixel of the same red
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-241 roast and confirmed by measurement. The ordinary Focus state changes a two-pixel ring: the outer pixel goes from border/default #e5e7eb to border/focus #2563eb, 4.17:1, and the inner from bg/surface #ffffff to border/focus, 5.17:1, which meets the area and contrast measure of WCAG 2.4.13 Focus Appearance. The focused invalid state KN-241 decided in DESIGN.md changes only the inner pixel, #ffffff to border/error #ef4444, 3.76:1; the outer pixel is red before and after, 1:1. That is half the changed area, and someone who cannot resolve one pixel of thickness sees no focus at all. MUI's own outlined field and Material 3 do the same thing, so it is a convention, but it is weaker than this design's own Focus state, and the reason DESIGN.md gives only argues against staying at one pixel. The system already has a keyboard focus ring: the Checkbox draws a 2px border/focus outline at offset 2. Figma does not draw this state, so the treatment is a decision to record, not a reading.
+
+**Why.** The person tabbing back into a field that failed validation is exactly the person who needs to see where focus is. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name.
+
+### `KN-245` The Input's Controls show empty values while the canvas draws the specimen's copy
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-242 roast and confirmed from the code: the meta's args are label '' with no placeholder or helper, and JobTitle substitutes the catalog's specimen copy for each, so a reviewer opening Default sees an empty label control above a field labelled Job title, and empty placeholder and helper controls above a field that has both. Setting the helper to '' clears it, but resetting the control brings the specimen back, and an untouched control looks the same as an explicit empty one. The label cannot be emptied at all, since '' is the sentinel for the specimen's.
+
+**Why.** Controls are how a reviewer reads a story's state, and values that disagree with the canvas describe it wrongly. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** With no control touched, every Controls value in the args-driven Input stories is what the canvas draws, label, placeholder and helper, in either language; changing one in Controls changes the canvas to exactly that value, and clearing the placeholder or helper removes it; a story asserts the rendered copy equals the args, and a mutation reintroducing a hidden fallback fails it.
+
+### `KN-246` Changing defaultValue in the Input's Controls does not change the field
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-242 roast and reproduced on the production Storybook build: after Filled and FromArgs render, an updateStoryArgs on Storybook's own channel setting defaultValue to 'second' and helperText to a marker re-renders the same input node; the helper shows the marker, the value attribute becomes 'second', and the field still shows its first text. The Input is uncontrolled, React applies defaultValue when the input mounts and afterwards only updates the attribute, and Storybook re-renders on an arg change without remounting. So the defaultValue control on Filled, Focus, Disabled and FromArgs does nothing on the canvas, and FromArgs proves only that the first render reads its args.
+
+**Why.** A control that does nothing tells a reviewer the component ignores the prop, which is what KN-242 was filed to stop. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** Changing defaultValue in Controls after the story has rendered changes the text in the field: a check renders an Input story, changes the arg through Storybook's own arg update, and asserts the field shows the new value, and it fails with the fix taken out.
+
+### `KN-247` The Input's interaction stories keep controls that make their play functions untrue
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-242 roast and confirmed from the code: the stories that prove a behaviour from fixed inputs keep every control. Typing types 42 and asserts onChange received it and the field is named title; set disabled, value, defaultValue or name in Controls and those claims are false for what the canvas shows, while the Interactions panel still reports the run that passed. Focus, Hover and LabelIsBound go wrong the same way under disabled or error. KN-242 disabled controls only on the fixed renders.
+
+**Why.** The Interactions panel's ticks are worth something only if they describe the story on screen. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control.
 
