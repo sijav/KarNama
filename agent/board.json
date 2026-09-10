@@ -5679,13 +5679,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "At the moment of keyboard focus, before the tip opens, the trigger already has an accessible description equal to the tip's text, asserted by a story that does not wait for the tip; the name is still the trigger's own; the same assertions run in fa-IR with the Persian name; and a mutation removing the always-present description fails the focus-time story.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T08:13:01.177Z",
-      "updatedAt": "2026-09-10T08:32:09.124Z",
-      "verify": "node agent/scripts/verify/KN-231.mjs"
+      "updatedAt": "2026-09-10T08:32:22.093Z",
+      "verify": "node agent/scripts/verify/KN-231.mjs",
+      "evidence": "Tooltip.tsx renders <Box component=\"span\" id={descriptionId} hidden>{title}</Box> from the first render (useId) and passes aria-describedby={descriptionId} through MUI's Tooltip, which spreads it onto the child after its own open-only link. New stories DescribedAtFocus (en-US) and DescribedAtFocusInPersian (fa-IR) share describedBeforeTheTip: with no interaction and no tooltip in the document, toHaveAccessibleDescription(args.title); then tab, focus, the same description; then the name, 'Delete status' and 'حذف وضعیت' written out. KeepsTheTriggersName now asserts toHaveAccessibleDescription(args.title) instead of the popper id. agent/scripts/verify/KN-231.mjs, 4 checks green: tooltip stories pass (10 of 10); THE CASE, removing the always-present link fails BOTH focus-time stories with \"Expected element to have accessible description\" (KeepsTheTriggersName still passes, since MUI's open-state link covers it once open); the hidden copy exists and the description is checked before the tab; the Persian story is pinned to fa-IR and asserts the Persian name literally. Full web npm test 349 of 349 with coverage, docs guard and catalog 79 of 79 (both stories documented in en and fa), lint and tsc clean, KN-209, KN-211 and KN-222 green, production Storybook build renders both focus-time stories with zero errors.",
+      "closedAt": "2026-09-10T08:32:22.093Z"
     },
     {
       "id": "KN-232",
