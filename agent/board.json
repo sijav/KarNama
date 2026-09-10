@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 227,
+  "nextId": 228,
   "tasks": [
     {
       "id": "KN-001",
@@ -5399,10 +5399,25 @@
       "parent": [],
       "status": "done",
       "exit": "The tooltip surface sets its own box-sizing, and a story rendering it WITHOUT CssBaseline measures 260; the width story finds the surface by a marker the component puts on the tooltip slot itself rather than by DOM position; and a mutation removing the box-sizing fails the no-reset story.",
-      "roasts": [],
-      "notes": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-222-round-1.2026-09-10T07-44-38-646Z.md",
+          "filed": [],
+          "cardDigest": "ba04ad5825b810d362632a307dbc0c26f222ba2d19c4cbbe725b22d35172c350",
+          "head": "a8c2f90ce1257b2ca9b14a41e5bda7e115b62024",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "at": "2026-09-10T07:53:36.847Z"
+        }
+      ],
+      "notes": [
+        "2026-09-10, roast round 1 dismissed: its failure scenario is CssBaseline's body typography changing the tip's size, but MUI's TooltipTooltip sets fontFamily from the theme itself (node_modules/@mui/material/Tooltip/Tooltip.js:127), the tip's width is fixed, and the only CssBaseline rule that can change the measured box is box-sizing, which WithoutCssBaseline removes and asserts gone at the popper. True that the story counteracts the reset rather than omitting it; KN-222's evidence says so."
+      ],
       "createdAt": "2026-09-10T07:05:35.614Z",
-      "updatedAt": "2026-09-10T07:44:23.404Z",
+      "updatedAt": "2026-09-10T07:53:46.997Z",
       "verify": "node agent/scripts/verify/KN-222.mjs",
       "evidence": "Tooltip.tsx sets boxSizing border-box on the tooltip slot and puts className TOOLTIP_SURFACE ('KarnamaTooltip-surface') on it; the stories find the surface with querySelector on that class, never firstElementChild. New story WithoutCssBaseline sets html AND body to content-box inline (the app's CssBaseline puts border-box on html, Storybook's preview CSS puts it on body for a padded story, and CssBaseline's * rule makes everything inherit), asserts the popper, the tip's own container, computes content-box, then asserts the surface's offsetWidth is 260; cleanup restores both. Documented in en and fa story-docs. agent/scripts/verify/KN-222.mjs, 5 checks green: stories pass with the no-reset story; THE CASE, removing the component's box-sizing fails exactly that story with \"expected 284 to be 260\" while the other five pass; the story undoes html and body and checks the popper; the surface is found by class; MUTATION removing the marker fails the stories. Also green: KN-210, KN-218, KN-032 (tooltip), KN-087, KN-094, KN-095, KN-003 full gate (the lint config gained the TOOLTIP_SURFACE named exemption), lint, tsc, docs guard 49 of 49, tooltip stories 6 of 6. Production Storybook build probed in headless Chromium: without-css-baseline and on-hover render with zero page or console errors. That probe is what found the first version wrong: undoing only html passed under Vitest and failed in the built Storybook because the preview's body rule still handed the tip border-box.",
       "closedAt": "2026-09-10T07:44:23.404Z"
@@ -5433,7 +5448,22 @@
       "parent": [],
       "status": "done",
       "exit": "TECH-DEBT.md has an entry for the tokens.ts exemption in the file's what, why, fix and retiring-check format, and a unit test fails if any string exported from src/theme/tokens.ts is not a design value, a colour, a length, a shadow or the font stack, proved by a mutation adding a copy string to the file.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 2,
+          "criticals": 3,
+          "file": "./agent/roasts/KN-224-round-1.2026-09-10T07-47-13-196Z.md",
+          "filed": [
+            "KN-227"
+          ],
+          "cardDigest": "5f62bbaf1b533b440795bfc4cb962244301dacd6c0eedaf464e6b61d85e41224",
+          "head": "c9bc8c57d427305b6acfbd7eb0f3efac54a32be2",
+          "reviewerScore": 2,
+          "reviewerCriticals": 3,
+          "at": "2026-09-10T07:53:29.811Z"
+        }
+      ],
       "notes": [
         "2026-09-10, from KN-222: TOOLTIP_SURFACE joins STORAGE_KEY as a NAMED lingui exemption for an identifier constant, the Tooltip's surface class. Neither has a TECH-DEBT.md entry either, so record the named identifier exemptions together with the tokens.ts one."
       ],
@@ -5476,6 +5506,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T07:34:17.764Z"
+    },
+    {
+      "id": "KN-227",
+      "title": "The token-file guard can be passed by a function, a Map, or copy assigned to fontFamily, and its retirement is a wish",
+      "desc": "CHILD OF KN-224, recorded in prose because board.json cannot express parent_task yet, KN-188. Three findings from the KN-224 roast, all confirmed by reading the guard, filed together because they are one test and one TECH-DEBT entry. FIRST: the guard skips the path fontFamily outright instead of checking its value, so fontFamily = 'Delete this application' passes. SECOND: it walks runtime values through Object.entries, which returns nothing for a function or a Map, so export const deleteLabel = () => 'Delete this application' and a Map of labels both pass while lingui still ignores the file. THIRD: TECH-DEBT.md 13's retiring check names a hoped-for rule rather than a condition anyone can test, so nothing can say when the exemption may go.",
+      "why": "The guard was written to stand where the lint cannot see, and a guard with three ways round it is the same silence with a green test on top. The roast scored KN-224 at 2 for exactly this. Critical on the owner's order of 2026-09-10 with the other findings on built components.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The guard reads every string literal in the SOURCE of src/theme/tokens.ts, not the runtime values, so a literal inside a function, a Map or any other construct is checked; the font stack is checked by value; mutations adding copy as a function return, as a Map entry and as the fontFamily value each fail it; and TECH-DEBT.md 13's retiring check is a condition a command can test, such as the three exemptions removed and npm run lint still green with every planted fixture failing.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T07:53:29.626Z"
     }
   ]
 }
