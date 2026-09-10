@@ -2786,11 +2786,14 @@
         "KN-006"
       ],
       "status": "in_progress",
-      "exit": "Setting any Persian message to an empty or whitespace-only string fails npm test, and the failure names the id.",
+      "exit": "Setting any Persian message to an empty or whitespace-only string fails npm test and the failure names the id; so does setting one to its English id with the punctuation or casing changed, which is the next spelling of the same evasion and is named in this card's description; each is proved by planting it and watching the suite go red rather than by reading the checks.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "Exit condition widened before building, on the plan check's point that the description asked for the punctuation case and the exit condition did not, so the implementation would have been stronger than the contract with nothing recording why."
+      ],
       "createdAt": "2026-09-08T00:45:32.304Z",
-      "updatedAt": "2026-09-10T00:32:46.371Z"
+      "updatedAt": "2026-09-10T00:42:56.601Z",
+      "verify": "node agent/scripts/verify/KN-114.mjs"
     },
     {
       "id": "KN-115",

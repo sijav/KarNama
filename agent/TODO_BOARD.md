@@ -14,7 +14,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-114` | The catalog test counts an empty string as a translation | high | 1 | web | KN-006 | Setting any Persian message to an empty or whitespace-only string fails npm test, and the failure names the id. |
+| `KN-114` | The catalog test counts an empty string as a translation | high | 1 | web | KN-006 | Setting any Persian message to an empty or whitespace-only string fails npm test and the failure names the id; so does setting one to its English id with the punctuation or casing changed, which is the next spelling of the same evasion and is named in this card's description; each is proved by planting it and watching the suite go red rather than by reading the checks. |
 
 ## Backlog (153)
 
@@ -1502,7 +1502,7 @@ src/i18n/catalog.test.ts checks that every used id is a KEY in both catalogs and
 
 **Why.** A roast rated this critical and it is the clause the whole test exists for: the exit condition says the fa-IR catalog is 100 percent translated and a test fails when it is not, and an empty string is not a translation. An empty label is also worse than an English one, because English text tells a Persian user the string was missed and a blank tells them nothing.
 
-**Exit condition.** Setting any Persian message to an empty or whitespace-only string fails npm test, and the failure names the id.
+**Exit condition.** Setting any Persian message to an empty or whitespace-only string fails npm test and the failure names the id; so does setting one to its English id with the punctuation or casing changed, which is the next spelling of the same evasion and is named in this card's description; each is proved by planting it and watching the suite go red rather than by reading the checks.
 
 ### `KN-115` The language names bypass the catalog entirely
 
