@@ -46,9 +46,19 @@ const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
  */
 const DECISION = {
   id: 'rejected-column-collapsed',
-  cards: ['KN-043', 'KN-060'],
-  clause:
-    'رد شده is the last column, after پیشنهاد کار, and renders collapsed to a count by default, expanding on click.',
+  // ONE CLAUSE PER CARD, split by what the card can actually deliver. KN-199:
+  // both used to carry an identical sentence naming the column's POSITION, and
+  // KN-060 is a reusable column component that does not know which column it is.
+  // Asking its implementer for a board-placement fact leaves them one way to
+  // satisfy the words, which is to hard-code the board inside the component —
+  // the very defect KN-149 exists to prevent, one card over.
+  clauses: {
+    // The board screen owns where a column sits.
+    'KN-043': 'رد شده is the last column, after پیشنهاد کار, and the board renders it collapsed to a count by default.',
+    // The column component owns how it renders when collapsed, and nothing about
+    // where it is.
+    'KN-060': 'A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is.',
+  },
   design: [
     '«رد شده» stays as the last column, collapsed to a count by default.',
     'The owner moved رد شده after پیشنهاد کار, so it is last.',
@@ -77,9 +87,14 @@ const check = (label, run) => {
 check('the clause is a real sentence, not something that matches everything', () => {
   // The trivially-true clause. An empty or one-word contract would make every
   // card below pass while contracting nothing, and it would look identical.
-  const words = flat(DECISION.clause).split(' ')
+  const words = Object.values(DECISION.clauses).flatMap((clause) => flat(clause).split(' '))
   if (words.length < 8) return `the clause is only ${words.length} words, which contracts almost nothing`
-  return DECISION.cards.length ? null : 'the registry names no cards, so the loop below checks nothing'
+  const cards = Object.keys(DECISION.clauses)
+  if (!cards.length) return 'the registry names no cards, so the loop below checks nothing'
+  // KN-199: two cards sharing one sentence is what put a board fact into a
+  // component's contract, so identical clauses are refused outright.
+  const distinct = new Set(Object.values(DECISION.clauses).map(flat))
+  return distinct.size === cards.length ? null : 'two cards are contracted to the SAME clause, which is how a fact lands on a card that cannot deliver it'
 })
 
 check('the instrument can say NO as well as YES', () => {
@@ -87,16 +102,17 @@ check('the instrument can say NO as well as YES', () => {
   // shown producing a presence, and vice versa. Synthetic strings, so this does
   // not quietly depend on some other card's wording staying as it is.
   const without = 'An e2e test seeds an archive and drags a card between two columns.'
-  const with_ = `Something before it. ${DECISION.clause} Something after it.`
-  if (carries(without, DECISION.clause)) return 'text lacking the clause was reported as carrying it'
-  if (!carries(with_, DECISION.clause)) return 'text containing the clause was reported as lacking it'
+  const sample = DECISION.clauses['KN-043'] ?? ''
+  const with_ = `Something before it. ${sample} Something after it.`
+  if (carries(without, sample)) return 'text lacking the clause was reported as carrying it'
+  if (!carries(with_, sample)) return 'text containing the clause was reported as lacking it'
   // Re-wrapped, because the board stores one string and renders it wrapped.
-  const wrapped = DECISION.clause.replace(/ /g, '\n   ')
-  return carries(wrapped, DECISION.clause) ? null : 'the same clause re-wrapped was not recognised'
+  const wrapped = sample.replace(/ /g, '\n   ')
+  return carries(wrapped, sample) ? null : 'the same clause re-wrapped was not recognised'
 })
 
 check('every card the decision names is still on the board', () => {
-  const missing = DECISION.cards.filter((id) => !byId.has(id))
+  const missing = Object.keys(DECISION.clauses).filter((id) => !byId.has(id))
   return missing.length
     ? `${missing.join(', ')} is named by the decision but not on the board, so the registry is stale`
     : null
@@ -108,14 +124,21 @@ check('every named card carries the clause in its EXIT condition', () => {
   // the card without reading.
   const checked = []
   const bare = []
-  for (const id of DECISION.cards) {
+  const wrong = []
+  for (const [id, clause] of Object.entries(DECISION.clauses)) {
     const task = byId.get(id)
     if (!task) continue
     checked.push(id)
-    if (!carries(task.exit, DECISION.clause)) bare.push(id)
+    if (!carries(task.exit, clause)) bare.push(id)
+    // Its OWN clause, not any clause. Swapping the two between the cards would
+    // otherwise pass: each would still carry something from the registry.
+    for (const [otherId, otherClause] of Object.entries(DECISION.clauses)) {
+      if (otherId !== id && carries(task.exit, otherClause)) wrong.push(`${id} carries the clause contracted to ${otherId}`)
+    }
   }
-  if (checked.length !== DECISION.cards.length) {
-    return `only ${checked.length} of ${DECISION.cards.length} cards were examined`
+  if (wrong.length) return wrong.join('; ')
+  if (checked.length !== Object.keys(DECISION.clauses).length) {
+    return `only ${checked.length} of ${Object.keys(DECISION.clauses).length} cards were examined`
   }
   return bare.length ? `${bare.join(', ')} does not name the collapsed rejected column in its exit condition` : null
 })

@@ -8,30 +8,31 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-172` compact.py does the opposite of what the loop's compact step is for** (high, 1 pt, agent)
+**Next up: `KN-199` KN-060 asks a reusable column component to own where the rejected column sits on the board** (high, 1 pt, design)
 
-## Backlog (161)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-172` | compact.py does the opposite of what the loop's compact step is for | high | 1 | agent | none | compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script. |
-| `KN-196` | Decide how a card is dropped onto a column that is collapsed to a count | high | 1 | design | none | DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker. |
 | `KN-199` | KN-060 asks a reusable column component to own where the rejected column sits on the board | high | 1 | design | none | KN-043's exit condition names the rejected column's position after the offer column and its collapsed-to-a-count default; KN-060's names rendering collapsed to a count and expanding on click, and says nothing about where the column sits. KN-149's verifier requires the right clause of each card rather than one shared string, and a mutation that swaps the two clauses between the cards is caught. |
+
+## Blocked (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-196` | Decide how a card is dropped onto a column that is collapsed to a count | high | 1 | design | none | DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker. |
+
+## Backlog (159)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
-| `KN-054` | Turn the verify report into a failure once the debt is gone | high | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
-| `KN-055` | Record where a task started, so a roast can diff the whole task | high | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
-| `KN-066` | Apply contract exceptions per sentence, not per field | high | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
-| `KN-067` | Recording an adjudication must not overwrite the last one | high | 2 | agent | KN-001 | Re-recording a round preserves the earlier adjudication as an entry in a history, the card shows the latest while the history remains readable, and a test proves an earlier filed list cannot be erased. |
-| `KN-068` | Make verifyGate's revalidator mandatory, and test the real invocation | high | 2 | agent | KN-058 | verifyGate refuses to run without a revalidator, verifyGate with the real revalidator rejects bare node, node --version, a missing target and a symlinked target, and the KN-058 verifier runs to completion in a read-only working tree without writing into the repository. |
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
-| `KN-074` | The harness stamps a round number that goes stale before it is recorded | high | 2 | agent | KN-001 | Two roast rounds run back to back can both be recorded, in order, with their own verdicts and filed lists, and a manifest that has already been recorded is still refused a second time. |
-| `KN-076` | Let a settled open question be recorded as a decision, not only as a task | high | 2 | agent | KN-002 | An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision whose text does not appear under the heading it claims still fails; a capturePending entry disposed of as a decision is held to the same standard; and closing KN-070 as decided leaves the verifier green. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
-| `KN-080` | Bound the fix-in-task carve-out to once per task, and make the board enforce it | high | 2 | agent | KN-001 | A task whose roast rounds record a second fix-in-task is refused by move done with a message naming the first one, agent/RALPH.md states the bound in the same paragraph as the mechanical test, and a planted second carve-out on a scratch task proves the refusal fires. |
 | `KN-089` | Make a clean clone able to run the gate without a manual browser download | high | 2 | infra | KN-003 | On a machine with no Playwright browsers, a documented single command brings the gate to green, agent/scripts/verify/KN-003.mjs reports the missing browser by name rather than failing opaquely, and the README says what to run. |
 | `KN-094` | The token-name value exemption reaches aria-label and title | high | 2 | web | KN-087 | aria-label="delete/application" and title="delete/application" both fail npm run lint, a committed fixture holds both, the Foundations token story still passes, and agent/scripts/verify/KN-087.mjs requires the fixture by name. |
 | `KN-095` | The stories-only title exemption covers every JSX title, not just meta.title | high | 2 | web | KN-087 | A story containing <Box title="Delete this application" /> fails npm run lint while the same file keeps its meta title App/Shell, a committed fixture holds both, and agent/scripts/verify/KN-087.mjs requires it by name. |
@@ -41,17 +42,9 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-108` | Dark destructive controls fail contrast, because on-accent is one token for two fills | high | 2 | web | KN-005 | Every derived contrastText clears 4.5 to one against every fill the theme pairs it with, a test enumerates those pairs from the theme rather than from a hand-written list, and it fails when a fill changes without its text following. |
 | `KN-111` | Forbid the message-id forms the catalog scan cannot see | high | 2 | web | KN-006 | A Trans with a braced or template-literal id fails npm run lint, a committed fixture holds each form, and the catalog test still finds every id the codebase uses. |
 | `KN-134` | ThemedTree sets i18n state while rendering | high | 2 | web | none | The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload. |
-| `KN-154` | KN-072 verifier accepts the two failures it exists to prevent | high | 2 | agent | KN-072 | KN-072.mjs parses the ACTUAL tab list out of the decision line and requires exactly the five names in it rather than searching a character window, and checks KN-030 placement on the stripped text with an affirmative un-negatable assertion. Both reproductions above are added as committed mutation cases and each fails the verifier with its own message. |
-| `KN-163` | Adjudication is reported, not enforced, so findings can go unfiled forever | high | 2 | agent | none | KN-001 and KN-065 have their roast rounds adjudicated and re-recorded with what was filed, so the board carries no round whose findings were never judged. validate keeps REPORTING the count, which is how a regression becomes visible without refusing anything. |
 | `KN-167` | The API schema-entry test is flaky under load and fails the gate at random | high | 2 | api | none | The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure. |
-| `KN-168` | KN-160's verifier passes on two blind spots it claims to cover | high | 2 | agent | none | The tree walk covers agent/ and every other directory, distinguishing a plan file from a plan-shaped one by its NAME rather than by which folder it is in; the instruction corpus is derived from a stated convention or from a registry that new instruction files must join, rather than from a hand-maintained list; and both blind spots are proved closed by mutations that currently pass and must then fail. |
-| `KN-170` | An irreversible action must prove its rollback path before it runs | high | 2 | agent | none | AGENTS.md and agent/RALPH.md both carry the rule, naming the three git commands as the concrete instance and stating the general form; the wording makes clear it applies to any irreversible action and not only to deletion; and a check asserts both files carry it so it cannot quietly disappear the way the plan lifecycle rule did. |
-| `KN-173` | rm destroys the card and its reason, so the terminal refusal promises something false | high | 2 | agent | none | A mis-closed card can be voided into a terminal tombstone that RETAINS the card, its reason and a link to its replacement; rm either keeps a record too or stops being named as the recovery route; the terminal refusal message describes what actually happens; and driving the real CLI proves the record survives. |
-| `KN-174` | Extract the verifier sandbox builder, which has already diverged between two copies | high | 2 | agent | none | One sandbox builder in agent/scripts/verify/lib/, used by KN-159 and KN-162, with the fixtures either shared or requested explicitly by the caller; both verifiers still pass; and a check proves neither file builds a repository of its own any more. |
-| `KN-177` | The global todo skill lets a closed task reopen, so SkipBureau's rule is honour-based | high | 2 | agent | none | The global todo skill refuses every transition out of done, naming the new-card route; re-closing is a no-op rather than an error; the refusal is proved by driving the real CLI against a throwaway database rather than by reading the source; a mutation removing the guard fails that check with its own message; and SkipBureau's board is unaffected apart from gaining the guard. |
 | `KN-178` | The preferences story's localStorage restore races with other stories | high | 2 | web | none | The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler. |
 | `KN-183` | KN-114's verifier can silently overwrite a concurrent catalog edit | high | 2 | web | none | The blank and untranslated rules live in a pure function that takes the catalogs as an argument; catalog.test.ts calls it on the real imported ones; a test drives it with in-memory catalogs containing each evasion, empty, whitespace, format characters only, the id exactly and the id with punctuation and casing changed, and requires each to be reported naming the id; KN-114's verifier no longer writes to any tracked file; and its header no longer needs to warn that an interrupted run leaves the catalog planted. |
-| `KN-185` | Nothing establishes which prompt file the sibling Stop hook actually feeds | high | 2 | agent | none | The Stop-hook registration is traced to the exact prompt pathname it feeds, for both projects, and recorded where the next reader will find it; where a project's hook feeds a file nobody has been maintaining, that is filed; and the claim is supported by the resolved configuration rather than by the prompt's own text. |
 | `KN-195` | npm run silently truncates every argument at its first newline on Windows | high | 2 | agent | none | Either the scripts refuse an argument containing a newline with a message naming this cause, or the loop stops going through npm for anything carrying prose and RALPH.md and .claude/ralph-loop.local.md are updated to the invocation that works. A check demonstrates the truncation and its absence after the fix, using a free non-mutating command rather than a real roast. The existing board is audited for fields whose text ends mid-sentence, and the audit result is recorded whether or not it finds anything. |
 | `KN-202` | The story-docs markdown contract is documented as rigid but silently accepts malformed files | high | 2 | web | none | parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing. |
 | `KN-203` | The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian | high | 2 | web | none | The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository. |
@@ -78,7 +71,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-119` | Nothing tests CORS, the port binding or the startup path | high | 3 | api | KN-033 | A preflight from an unexpected origin does not receive that origin back, a test covers the CORS options and the port resolution without binding a port, main.ts is no longer excluded from coverage wholesale, and changing origin to true fails the run. |
 | `KN-124` | Status history is documented as immutable and nothing enforces it | high | 3 | api | KN-034 | An UPDATE or a DELETE against status_history is rejected by the database, deleting a job record still removes its history through the cascade, and both are proved against PGlite. |
 | `KN-127` | The resolver-registration check reads text rather than the container | high | 3 | api | KN-120 | A resolver registered in a way the text scan cannot see, a default export in a file not named *.resolver.ts, is detected, and the check reads the resolvers from a booted Nest context rather than from source text. |
-| `KN-136` | Commit the mutation cases, so a verifier's claim can be re-run | high | 3 | agent | none | One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass. |
 | `KN-158` | The story-docs rule in AGENTS.md describes a system that does not exist | high | 3 | web | none | Either src/shared/story-docs/{en,fa} exists with a page for every story, the three existing stories are migrated off JSDoc on meta, and a guard test fails when either language is missing a prop or story; or AGENTS.md is corrected to describe what the repository actually does and the main.ts comment with it. Whichever is chosen, no story in the tree contradicts the written rule afterwards, proved by a check rather than by reading. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | high | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | high | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
@@ -94,7 +86,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-045` | Job detail modal, wired | high | 5 | web | KN-043, KN-030, KN-038, KN-039 | An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries. |
 | `KN-046` | Auth screens: login, code, signup | high | 5 | web | KN-042, KN-036 | An e2e test signs in with a number and the code from the mock provider and reaches the board, a wrong or expired code shows an honest message with a way to resend, first login collects the name, and signing out clears the token and the Apollo cache rather than only the UI. |
 | `KN-052` | Deploy the API to Render with Supabase Postgres | high | 5 | deploy | KN-033, KN-034, KN-050 | The deployed app talks to the deployed API from the Pages origin, a cold start shows the loading state and completes rather than timing out, migrations ran, and no secret is in the repository. |
-| `KN-060` | Kanban column component | high | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-015, KN-018 | The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. رد شده is the last column, after پیشنهاد کار, and renders collapsed to a count by default, expanding on click. |
+| `KN-060` | Kanban column component | high | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-015, KN-018 | The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is. |
 | `KN-061` | Drag a card between columns, with a keyboard path | high | 5 | web | KN-060, KN-020, KN-196 | A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology. |
 | `KN-063` | Accessibility gate | high | 5 | web | KN-003, KN-007 | An a11y violation planted in a story fails the test run, every action reachable by hover is reachable by keyboard, every icon-only control has an accessible name and a test asserts it, and each of the nine status base-on-container pairs is measured against the contrast bar with the result recorded. |
 | `KN-146` | The migration guard should stop lexing SQL and ask Postgres instead | high | 5 | api | none | A migration containing an early COMMIT or an ABORT cannot produce a ledger row saying applied, proved by planting both against PGlite using syntax the scanner does NOT recognise, so the protection is demonstrably the structure rather than the screen. |
@@ -109,7 +101,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-049` | Coverage to 100 percent, enforced | high | 8 | web | KN-048 | Coverage reports 100 percent against the stated exclusions, the build fails when a line is uncovered, and every exclusion has a written reason. |
 | `KN-056` | The standalone network screen | high | 8 | web | KN-042, KN-026, KN-032, KN-039 | An e2e test opens the network route, adds a contact, edits it, selects two and deletes them through the bottom bar, and sees the empty state on a fresh account. The grid reads right to left and row by row in Persian and mirrors in English, with no array reversal in the code. |
 | `KN-057` | Posting extraction: turn a pasted link or text into a Review payload | high | 8 | api | KN-034 | Extraction from raw text returns the documented field set with a named test fixture, a URL pointing at a private or link-local address is refused, a slow or oversized response is aborted within the configured bound, every failure path returns the error shape the UI maps to the Error state, and the mock provider makes all of it runnable with no network. |
-| `KN-043` | The kanban board screen | high | 13 | web | KN-042, KN-015, KN-016, KN-017, KN-024, KN-025, KN-022, KN-037, KN-060, KN-061 | An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and renders collapsed to a count by default, expanding on click. |
+| `KN-043` | The kanban board screen | high | 13 | web | KN-042, KN-015, KN-016, KN-017, KN-024, KN-025, KN-022, KN-037, KN-060, KN-061 | An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and the board renders it collapsed to a count by default. |
 | `KN-075` | Decide which fields the Review step of the add flow shows | medium | 1 | design | KN-002 | DESIGN.md names the Review field list with the reason for it, section 6 no longer lists the Review step as open, and agent/design-manifest.json records the disposition instead of the open item. |
 | `KN-081` | Replace the truncation-cap frequency guess with a stated cap | medium | 1 | agent | KN-002 | The truncation figure in DESIGN.md is derived from a cap the manifest records with its provenance, or from per-name evidence of cutting, and a fixture capture with eleven repeated 36-character labels and no truncation does not report any name as truncated. |
 | `KN-116` | Move the language switch out of the placeholder shell into the drawn chrome | medium | 1 | web | KN-006 | The switch renders at the bottom of the sidebar on desktop and as a Page Header trailing action on mobile, App.tsx contains no language control, and an e2e test finds it in both places at the two drawn viewports. |
@@ -164,15 +156,33 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-141` | NO_COLOR makes KN-131's verifier reject a correct compiler refusal | low | 1 | agent | none | The verifier passes with NO_COLOR=1 set, proved by running it that way, and the assertion names the planted file and the TypeScript error code rather than the source excerpt. |
 | `KN-150` | KN-070's open-question check reads lines, not list items | low | 1 | agent | none | A wrapped bullet asking about رد شده makes the verifier fail, proved by planting one. |
 | `KN-171` | The loop prompt fed by the Stop hook still teaches the old order | low | 1 | agent | none | .claude/ralph-loop.local.md states finish, prove, close, roast in that order, carries no fix-in-task rule, and describes the close gate as it actually is; a check asserts the prompt and RALPH.md do not contradict each other on the order; and a mutation reintroducing either stale rule fails that check with its own message. |
+| `KN-172` | compact.py does the opposite of what the loop's compact step is for | low | 1 | agent | none | compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script. |
 | `KN-187` | An em dash reached a rule file that forbids em dashes | low | 1 | docs | none | The em dashes written into markdown during this session are replaced with commas, in both projects, found with a Unicode-aware search so Persian text produces no false hit. |
 | `KN-194` | The prompt-order source states things that are false, including that a mutation is impossible | low | 1 | agent | none | The false claims are gone from prompt-order.mjs, KN-190.mjs and the KN-190 plan file, replaced by what is actually true. readCommand('todo move <id> "done"') is a named check in the verifier, and disabling the tokeniser's quote handling makes it FAIL, proved by the mutation harness rather than asserted. STATE.md's positive-control line names mutation testing as a place it applies, since that is where it was missed. |
 | `KN-198` | The required-card set is an unanchored constant, so shrinking the contract keeps the check green | low | 1 | agent | none | The verifier fails when a card carrying the canonical clause is not named by the registry, and fails when a named card does not carry it. Shrinking DECISION.cards to ['KN-043'] is a named failing case, run as a mutation against the real verifier rather than argued. Whether a single edit that removes the clause from a card AND drops that card from the registry can be caught is answered in the check's own header, honestly, including a plain no if that is the answer. |
+| `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
+| `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
+| `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
+| `KN-067` | Recording an adjudication must not overwrite the last one | low | 2 | agent | KN-001 | Re-recording a round preserves the earlier adjudication as an entry in a history, the card shows the latest while the history remains readable, and a test proves an earlier filed list cannot be erased. |
+| `KN-068` | Make verifyGate's revalidator mandatory, and test the real invocation | low | 2 | agent | KN-058 | verifyGate refuses to run without a revalidator, verifyGate with the real revalidator rejects bare node, node --version, a missing target and a symlinked target, and the KN-058 verifier runs to completion in a read-only working tree without writing into the repository. |
+| `KN-074` | The harness stamps a round number that goes stale before it is recorded | low | 2 | agent | KN-001 | Two roast rounds run back to back can both be recorded, in order, with their own verdicts and filed lists, and a manifest that has already been recorded is still refused a second time. |
+| `KN-076` | Let a settled open question be recorded as a decision, not only as a task | low | 2 | agent | KN-002 | An open-questions item written as a decision, with no task, passes agent/scripts/verify/KN-002.mjs; the same item with an invented decision whose text does not appear under the heading it claims still fails; a capturePending entry disposed of as a decision is held to the same standard; and closing KN-070 as decided leaves the verifier green. |
+| `KN-080` | Bound the fix-in-task carve-out to once per task, and make the board enforce it | low | 2 | agent | KN-001 | A task whose roast rounds record a second fix-in-task is refused by move done with a message naming the first one, agent/RALPH.md states the bound in the same paragraph as the mechanical test, and a planted second carve-out on a scratch task proves the refusal fires. |
 | `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
+| `KN-154` | KN-072 verifier accepts the two failures it exists to prevent | low | 2 | agent | KN-072 | KN-072.mjs parses the ACTUAL tab list out of the decision line and requires exactly the five names in it rather than searching a character window, and checks KN-030 placement on the stripped text with an affirmative un-negatable assertion. Both reproductions above are added as committed mutation cases and each fails the verifier with its own message. |
+| `KN-163` | Adjudication is reported, not enforced, so findings can go unfiled forever | low | 2 | agent | none | KN-001 and KN-065 have their roast rounds adjudicated and re-recorded with what was filed, so the board carries no round whose findings were never judged. validate keeps REPORTING the count, which is how a regression becomes visible without refusing anything. |
+| `KN-168` | KN-160's verifier passes on two blind spots it claims to cover | low | 2 | agent | none | The tree walk covers agent/ and every other directory, distinguishing a plan file from a plan-shaped one by its NAME rather than by which folder it is in; the instruction corpus is derived from a stated convention or from a registry that new instruction files must join, rather than from a hand-maintained list; and both blind spots are proved closed by mutations that currently pass and must then fail. |
+| `KN-170` | An irreversible action must prove its rollback path before it runs | low | 2 | agent | none | AGENTS.md and agent/RALPH.md both carry the rule, naming the three git commands as the concrete instance and stating the general form; the wording makes clear it applies to any irreversible action and not only to deletion; and a check asserts both files carry it so it cannot quietly disappear the way the plan lifecycle rule did. |
+| `KN-173` | rm destroys the card and its reason, so the terminal refusal promises something false | low | 2 | agent | none | A mis-closed card can be voided into a terminal tombstone that RETAINS the card, its reason and a link to its replacement; rm either keeps a record too or stops being named as the recovery route; the terminal refusal message describes what actually happens; and driving the real CLI proves the record survives. |
+| `KN-174` | Extract the verifier sandbox builder, which has already diverged between two copies | low | 2 | agent | none | One sandbox builder in agent/scripts/verify/lib/, used by KN-159 and KN-162, with the fixtures either shared or requested explicitly by the caller; both verifiers still pass; and a check proves neither file builds a repository of its own any more. |
+| `KN-177` | The global todo skill lets a closed task reopen, so SkipBureau's rule is honour-based | low | 2 | agent | none | The global todo skill refuses every transition out of done, naming the new-card route; re-closing is a no-op rather than an error; the refusal is proved by driving the real CLI against a throwaway database rather than by reading the source; a mutation removing the guard fails that check with its own message; and SkipBureau's board is unaffected apart from gaining the guard. |
+| `KN-185` | Nothing establishes which prompt file the sibling Stop hook actually feeds | low | 2 | agent | none | The Stop-hook registration is traced to the exact prompt pathname it feeds, for both projects, and recorded where the next reader will find it; where a project's hook feeds a file nobody has been maintaining, that is filed; and the claim is supported by the resolved configuration rather than by the prompt's own text. |
 | `KN-191` | The roast skill writes its transient result into the project, not a scratch directory | low | 2 | agent | none | The transient result file is written to a scratch location rather than into the project; roast-sessions.json stays project-local with its reason recorded; both halves agree on where and the parity test still passes; the gitignore entries for anything that no longer lands in the project are removed rather than left as fossils; and running a roast in a clean checkout leaves that checkout unchanged. |
 | `KN-192` | A stale or inline marker masks the real block, so the marker is not yet a declaration | low | 2 | agent | none | The marker must be the only thing on its line, and there must be exactly ONE in a document; a second marker, an inline marker, and a stale marker above an old block with the real block unmarked are each reported by name; and each of the three is a case that fails before the change and passes after. |
 | `KN-193` | The close recogniser is not the head token, so any command's arguments can be the close | low | 2 | agent | none | The close is recognised ONLY when the head token is todo, or npm with todo among its arguments, and the remaining tokens match the close shape; the roast is recognised only from UNQUOTED tokens. Each of these is a named failing case before the fix and passing after: grep todo move <id> done, env echo todo move <id> done, a cat heredoc whose body is a close, and grep "/tmp/roast.py" task. The end-to-end reproducer in this card returns ok false with the reason naming the order. The two places that interpret quotes agree, or there is one place. The legitimate shapes still pass: todo move <id> done, todo move <id> "done", npm run todo -- move <id> done, and python <path>/roast.py task --title ... & |
 | `KN-197` | The order check parses shell badly instead of refusing the shapes it cannot parse | low | 2 | agent | none | There is ONE place that decides what is quoted. Command substitution, backticks and parameter expansion are REFUSED by name, as && and the semicolon already are, with a message saying the order cannot be read rather than guessing. A backslash before a quote is refused too, or handled by the single parser and proved. Both reproducers in this card are named failing cases before the fix and are refused after, each with a mutation that makes the case pass again. The real prompt's lines still resolve. |
 | `KN-200` | The order check has never been run against a real loop prompt, and neither prompt carries the marker | low | 2 | agent | KN-171 | agent/RALPH.md and .claude/ralph-loop.local.md each carry exactly one marked block, and a verifier runs closesBeforeRoasting against BOTH real files by path rather than against a fixture, failing if either is unmarked, ambiguous or reversed. The check is proved by mutation on the real files: reversing the two lines in each prompt makes it fail, and removing a marker makes it fail with the unmarked reason. Any verifier that would pass when handed a file containing no marked block at all is a defect, and the check for that is named. KN-171's fix to the prompt's order lands with or before this, since a marked block that records the wrong order is worse than none. |
+| `KN-136` | Commit the mutation cases, so a verifier's claim can be re-run | low | 3 | agent | none | One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
@@ -722,7 +732,7 @@ The board, not a list. Columns ARE statuses, laid out RTL so the rightmost colum
 
 **Why.** This is scenario 4, the archive, and it is the screen the product is judged on. The kanban form is the point rather than a decoration: seeing how many sit in each stage IS the view of where you stand, which is the thing nobody else keeps for you. An earlier version of this card described a plain list, which the Documentation canvas supersedes.
 
-**Exit condition.** An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and renders collapsed to a count by default, expanding on click.
+**Exit condition.** An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and the board renders it collapsed to a count by default.
 
 ### `KN-044` Add job flow
 
@@ -836,7 +846,7 @@ README.md and README.fa.md describing what the product is, what was deliberately
 
 ### `KN-054` Turn the verify report into a failure once the debt is gone
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** KN-001
 
 KN-065 made a verify command mandatory to close and made validate REPORT how many open tasks lack one. This is the other half: once that count reaches zero, make validate FAIL on a task with no verify command rather than reporting, so the rule holds for cards filed in future rather than only for cards being closed.
@@ -847,7 +857,7 @@ KN-065 made a verify command mandatory to close and made validate REPORT how man
 
 ### `KN-055` Record where a task started, so a roast can diff the whole task
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** KN-001
 
 When a task moves to in_progress, record the current HEAD on it as startHead. Make the roast harness default --base to that instead of HEAD~1, so a roast sees everything the task changed rather than only its last commit. Show it on the card.
@@ -911,7 +921,7 @@ The column itself, 300 by 684 from node 241:125: the 276 by 40 header carrying i
 
 **Why.** Components before screens, and the column is a component the board screen composes rather than part of the screen. Building it inside the screen would mean its header, its empty state and its Add Card row never get reviewed in isolation, and the Size=M status chip has exactly one legitimate use which lives here.
 
-**Exit condition.** The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. رد شده is the last column, after پیشنهاد کار, and renders collapsed to a count by default, expanding on click.
+**Exit condition.** The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is.
 
 ### `KN-061` Drag a card between columns, with a keyboard path
 
@@ -972,7 +982,7 @@ Make verify mandatory rather than optional at close. Today a task with no verify
 
 ### `KN-066` Apply contract exceptions per sentence, not per field
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** KN-001
 
 The contract checker exempts an entire card field when any part of it matches an allowed pattern. So a card reading On desktop, status is a dropdown; it is not a dropdown on mobile passes, and the same flaw defeats the sidebar and fourth-tab rules. Match and exempt at sentence level. Add the missing staleness anchors for sidebar-on-the-right and no-fourth-tab.
@@ -983,7 +993,7 @@ The contract checker exempts an entire card field when any part of it matches an
 
 ### `KN-067` Recording an adjudication must not overwrite the last one
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** KN-001
 
 Re-running roast against the same archive rebuilds and replaces that round, so the previous filed list, dismissal rationale, score and critical count are destroyed. Append an adjudication event to the round instead, keeping every recorded judgement in order, and render the latest while preserving the history.
@@ -994,7 +1004,7 @@ Re-running roast against the same archive rebuilds and replaces that round, so t
 
 ### `KN-068` Make verifyGate's revalidator mandatory, and test the real invocation
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** KN-058
 
 verifyGate takes revalidate as an optional argument. move done passes verifyCommand; KN-058's verifier passes nothing, so it exercises a weaker mode than the close does and would stay green if close-time revalidation broke. Without the callback verifyGate accepts bare node and node --version, neither of which runs a verifier, so its documented string-or-null contract is false: null can mean node exited zero rather than an approved verifier ran. Make revalidate required, add cases for a missing target and for the symlink and real-path checks, and make the verifier runnable in a read-only sandbox, which it currently is not because it writes scratch files.
@@ -1066,7 +1076,7 @@ Frame 434:33 carries a red warning: the two enumerations came from the product o
 
 ### `KN-074` The harness stamps a round number that goes stale before it is recorded
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** KN-001
 
 roast.mjs computes the round number from the board at RUN time, as roasts.length + 1, and readArchive later requires meta.round to equal roasts.length + 1 at RECORD time. Running two roasts before recording either makes the first unrecordable, because both manifests claim the same round and only one can be next. Either stamp something order-independent, such as the reviewed commit plus a sequence within it, or let the record command accept any manifest for this task whose round has not already been recorded.
@@ -1088,7 +1098,7 @@ Frame 376:31 draws the add flow as one modal with Paste, Loading and Review, and
 
 ### `KN-076` Let a settled open question be recorded as a decision, not only as a task
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** KN-002
 
 agent/scripts/verify/KN-002.mjs recognises a "**Decided ...**" disposition when it parses an open-questions item, then discards that path: it requires a named board task, and requires the manifest to say that task owns the item, so an item settled with a written decision and no task is rejected. Citing the task that made the decision does not help either, because a closed task trips the "tracked by a closed task while still open" branch. Give a decision its own shape in the manifest and let the verifier accept it.
@@ -1132,7 +1142,7 @@ agent/figma-capture/documentation-5-8.xml is a get_metadata dump, and get_metada
 
 ### `KN-080` Bound the fix-in-task carve-out to once per task, and make the board enforce it
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** KN-001
 
 agent/RALPH.md step 5 allows fixing in-task when the verify script fails OR when the verifier passes dishonestly. The second clause has no bound, so it can be invoked every round: KN-002 used it three rounds running, because every roast of a verifier can be phrased as "it passes without establishing the exit condition". Bound it: the carve-out may be used at most once per task, after which every finding is a card. Record fixed-in-task on the roast round so the board can count it, and have move done refuse a close where the carve-out was used more than once without an explicit owner override.
@@ -1766,7 +1776,7 @@ packages/graphql/vitest.config.ts sets thresholds of 100 for statements, branche
 
 ### `KN-136` Commit the mutation cases, so a verifier's claim can be re-run
 
-- **status** backlog · **severity** high · **points** 3 · **area** agent
+- **status** backlog · **severity** low · **points** 3 · **area** agent
 - **blocked by** none
 
 Every verifier under agent/scripts/verify has been mutation-tested and several commit messages state a count, but the mutation cases themselves are written to a scratch directory and thrown away. Nobody else can re-run them, which a roast pointed out when it declined to certify a claimed count it had no way to check. The cost is not only external: a mutation silently stops applying when the verifier it targets is edited, and the only reason that was caught three times while working KN-128 was a harness that reports MUTATION DID NOT APPLY instead of counting it as a pass. Give the cases a home, one file per verifier next to it, each case naming what it breaks and the message that must appear, run by a single command. Start with KN-128, whose eighteen cases exist and are known to pass, then backfill the ones whose counts are already in commit messages.
@@ -1968,7 +1978,7 @@ DESIGN.md section 6 puts History goes second, directly after the information it 
 
 ### `KN-154` KN-072 verifier accepts the two failures it exists to prevent
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** KN-072
 
 Two holes, both reproduced. FIRST, at KN-072.mjs line 78 the five tab names are searched for anywhere inside entry.slice(0, 1200), so explanatory prose that merely MENTIONS a tab satisfies the check; the decision can drop a tab from the actual list and still pass. That is the same coincidence bug KN-002 and KN-071 were already fixed for. SECOND, at line 104 the contrast strip removes everything after not up to the next period, and the final clause then tests own tab against the UNSTRIPPED exit rather than against the stripped text. Confirmed by running: the card text All five tabs render. Status history does not render in its own tab; it renders in the Info tab. strips to All five tabs render. Status history does . and PASSES every check, although it states the exact opposite of the decision.
@@ -2073,7 +2083,7 @@ Found by the KN-159 roast. move has no transition guard on the CURRENT status. I
 
 ### `KN-163` Adjudication is reported, not enforced, so findings can go unfiled forever
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** none
 
 Found by the KN-159 roast. todo roast records a round with no filed field, and validate prints how many such rounds exist but still exits 0. So the honest sequence is unenforced: record an authentic roast of closed work without --filed and simply never come back. KN-001 and KN-065 already sit in exactly that state and have for some time, which is the proof that a report does not hold. The old close gate used to enforce this and KN-159 removed it, correctly, because it put the reviewer in front of the close; the enforcement has to move rather than disappear. The reviewer suggested requiring --filed on the first board recording after adjudication, which fits: under the new order you record the round AFTER judging it, so you always know what you filed.
@@ -2130,7 +2140,7 @@ apps/api/src/graphql/schema-entry.test.ts failed one of its four cases during a 
 
 ### `KN-168` KN-160's verifier passes on two blind spots it claims to cover
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** none
 
 Found by the KN-160 roast, both reproduced by reading. FIRST, the check named every plan file in the tree walks the repository but skips the whole agent directory, which is exactly where agent work puts its plans and where two of them already live. Creating agent/plan-KN-999.md leaves the verifier green. The skip was added so the walk would not match the verifier's own plan file, and it blinded the check to the directory that matters most. SECOND, no instruction file still sends a plan to the old directory inspects three hardcoded paths, so a new operative file, say agent/WORKFLOW.md, instructing the old path is invisible and the verifier still passes. The source admits this, and the roast is right that documenting a hole does not make the exit condition true.
@@ -2152,7 +2162,7 @@ Found by the KN-160 roast. apps/api/prisma/#KN-071 - A contact needs only a full
 
 ### `KN-170` An irreversible action must prove its rollback path before it runs
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** none
 
 The general rule behind today's data loss, offered by the KN-160 roast and worth writing down because the specific fix, keep plan files, does not generalise. I deleted two files justified by the claim that git held them. It did not. The concrete guard is that the claim is one command away from being tested: git check-ignore -v <path> says whether it is ignored, git ls-files --error-unmatch <path> says whether it is tracked, git cat-file -e HEAD:<path> says whether a committed version exists. Any of those would have stopped the deletion. Stated generally: an irreversible action justified by a fallback needs a command that PROVES the fallback exists, run before the action, not an argument that it should.
@@ -2174,7 +2184,7 @@ The general rule behind today's data loss, offered by the KN-160 roast and worth
 
 ### `KN-172` compact.py does the opposite of what the loop's compact step is for
 
-- **status** backlog · **severity** high · **points** 1 · **area** agent
+- **status** backlog · **severity** low · **points** 1 · **area** agent
 - **blocked by** none
 
 The owner's correction of 2026-09-10. Step 1 of the loop skill is called compact and its purpose is to FREE the context window, so that when the next iteration begins the first thing read is the loop's own rules rather than a stale conversation. ~/.claude/skills/loop/compact.py does the reverse: it prints the git branch, recent commits, uncommitted changes and the project's context files, which INJECTS a summary into the context every iteration. That is the thing the step was meant to avoid. What the owner wants is the harness's own /compact. That cannot be invoked by the agent: /compact is user-initiated or automatic when the window fills, and text the assistant emits is not executed as a slash command. So the honest resolution is to delete compact.py, say in the skill that the step means taking the harness's compaction where the harness offers it, and otherwise rebuilding from disk by READING the rule files rather than by printing a digest of them. This also narrows KN-161, since the loop skill then has no script needing a second runtime.
@@ -2185,7 +2195,7 @@ The owner's correction of 2026-09-10. Step 1 of the loop skill is called compact
 
 ### `KN-173` rm destroys the card and its reason, so the terminal refusal promises something false
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** none
 
 Found by the KN-162 roast and confirmed by reading. rm requires --reason, PRINTS it to stdout, then splices the task out of board.tasks. Neither the task nor the reason survives in board.json. KN-162's terminal refusal names rm as the route for a close that was an outright error and says it leaves a stated reason behind, which is not true: it destroys the completed card, its evidence, its roast history and the explanation of why it vanished. The roast's suggestion is a tombstone instead, a terminal voided record that keeps the card, its reason and a link to whatever replaced it, and that cannot reopen work, so any actual remaining work is still a new card.
@@ -2196,7 +2206,7 @@ Found by the KN-162 roast and confirmed by reading. rm requires --reason, PRINTS
 
 ### `KN-174` Extract the verifier sandbox builder, which has already diverged between two copies
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** none
 
 Found by the KN-162 roast. KN-159 and KN-162 each build a throwaway git repository, copy agent/scripts into it, seed a board and commit, and I duplicated rather than extracted on the plan check's advice that the third caller is the moment to share it. The roast disagreed and it is right on the evidence: the two copies ALREADY differ. KN-159 writes both a passing and a failing sandbox verifier fixture; KN-162 writes only the passing one. So the isolation guarantee the two files claim is not the same guarantee, and nothing says which is correct. The threshold third caller is wrong for a helper that DEFINES what the tests are isolating from.
@@ -2229,7 +2239,7 @@ Found by the KN-162 roast. The card's exit condition, written before the work, s
 
 ### `KN-177` The global todo skill lets a closed task reopen, so SkipBureau's rule is honour-based
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** none
 
 Found while checking SkipBureau's loop rules for KN-166. Its CLAUDE.md correctly says a finding is not a reason to reopen what was just finished, and its board is .claude/todo.db driven by the GLOBAL todo skill. ~/.claude/skills/todo/todo.mjs has no guard on a task's current status, so a done task moves back to in_progress freely, exactly as KarNama's board did until KN-162 added a terminal guard. The project whose agent was described as getting the rules wrong is therefore the one where the tool does not enforce them. KarNama's fix is the model: refuse every transition out of done, put the guard ahead of the other status checks so the refusal reports the right cause, name a new card as the route for remaining work, and make re-closing an explicit no-op rather than letting it fall through to a message that tells the reader to reopen.
@@ -2321,7 +2331,7 @@ Found by the KN-181 roast. agent/scripts/verify/KN-166.mjs claims in its own com
 
 ### `KN-185` Nothing establishes which prompt file the sibling Stop hook actually feeds
 
-- **status** backlog · **severity** high · **points** 2 · **area** agent
+- **status** backlog · **severity** low · **points** 2 · **area** agent
 - **blocked by** none
 
 Found by the KN-181 roast, and KN-181's own evidence admits it: that .claude/ralph-loop.local.md is what the hook injects was INFERRED from the file's frontmatter and from the harness bumping its iteration counter, not observed. Those show the file has loop-like state, not that the hook resolves that path. SkipBureau has no checked-in hook registration or settings file naming it, so the only support is the prompt's own self-description. If the hook resolves a different prompt, the live behaviour KN-181 set out to fix is still wrong and the card closed on a premise nobody checked. The observation available without running that loop is tracing the installed Stop-hook registration, the plugin or settings entry, to the pathname it resolves.
@@ -2446,7 +2456,7 @@ Found on 2026-09-10 while roasting KN-190. npm run <script> -- <args> routes thr
 
 ### `KN-196` Decide how a card is dropped onto a column that is collapsed to a count
 
-- **status** backlog · **severity** high · **points** 1 · **area** design
+- **status** blocked · **severity** high · **points** 1 · **area** design
 - **blocked by** none
 
 KN-070 settled that the rejected column sits last and renders collapsed to a count by default, expanding on click. It did NOT settle what happens when a card is DRAGGED onto it while collapsed, and rejected is the status cards are moved into most, so this is the common case rather than an edge. Open questions, all of them the owner's or the designer's call rather than a builder's: does the collapsed column expand on hover during a drag, and after what delay; does it accept a drop while still collapsed; does the count animate or does the column open to show where the card landed; and what does the keyboard path target, since a collapsed column has no visible slot to move a card into and the keyboard alternative is part of KN-061 rather than a later improvement. Raised while doing KN-149. I nearly folded these into KN-061's exit condition as though KN-070 had already answered them; a plan check pointed out that doing so would invent a design requirement while claiming to propagate an existing one. The frames may already draw some of this, so look at the Drag and Drop Done states before asking.
@@ -2479,7 +2489,7 @@ CHILD OF KN-149, recorded in prose because board.json cannot express parent_task
 
 ### `KN-199` KN-060 asks a reusable column component to own where the rejected column sits on the board
 
-- **status** backlog · **severity** high · **points** 1 · **area** design
+- **status** in_progress · **severity** high · **points** 1 · **area** design
 - **blocked by** none
 
 CHILD OF KN-149, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-149 roast, and I had raised it against myself in the questions sent with that roast, so this is agreed rather than contested. KN-149 put one identical clause into both KN-043 and KN-060: the rejected column is last, after the offer column, and renders collapsed to a count by default, expanding on click. Position on the board is the SCREEN's business, KN-043. KN-060 is a reusable column component and does not know which column it is or what sits beside it. As written its exit condition asks its implementer for something they cannot deliver from inside the component, and the likely response is to special-case layout in the component, which is the defect KN-149 existed to prevent, one card over. Split by ownership: KN-043 keeps position plus the collapsed default, KN-060 keeps the ability to render collapsed to a count and expand on click. Two clauses, each contracted to the card that can honour it, and KN-149's verifier registry becomes a clause per card rather than one shared string.

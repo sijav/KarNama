@@ -1247,11 +1247,11 @@
         "KN-061"
       ],
       "status": "backlog",
-      "exit": "An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and renders collapsed to a count by default, expanding on click.",
+      "exit": "An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and the board renders it collapsed to a count by default.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T02:09:49.190Z"
+      "updatedAt": "2026-09-10T03:37:11.145Z"
     },
     {
       "id": "KN-044",
@@ -1449,7 +1449,7 @@
       "title": "Turn the verify report into a failure once the debt is gone",
       "desc": "KN-065 made a verify command mandatory to close and made validate REPORT how many open tasks lack one. This is the other half: once that count reaches zero, make validate FAIL on a task with no verify command rather than reporting, so the rule holds for cards filed in future rather than only for cards being closed.",
       "why": "The original framing of this task, backfill a verifier onto every card, is superseded and would have been the wrong work: each task now writes its own verifier as part of being closed, because the close gate refuses without one. Writing sixty verifiers up front would mean writing each check before its work exists, and a check written that early describes what is easy to assert rather than what the task must prove. What is genuinely left is flipping the report to a failure, which can only happen once the count is zero, so this task waits for the board rather than driving it.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [
@@ -1460,17 +1460,18 @@
       "roasts": [],
       "notes": [
         "See the ordering note on KN-065. Once move done requires a verify command, every task written after that carries its own, so this task is not a prerequisite for anything: its job is the tasks that predate the rule, plus making validate report on tasks that still lack one.",
-        "Re-scoped after KN-065. Do not pick this up until validate reports zero tasks without a verify command; before that it would fail the board on work that has not been done yet. Check with: npm run todo -- validate"
+        "Re-scoped after KN-065. Do not pick this up until validate reports zero tasks without a verify command; before that it would fail the board on work that has not been done yet. Check with: npm run todo -- validate",
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
       ],
       "createdAt": "2026-09-07T20:18:24.566Z",
-      "updatedAt": "2026-09-07T21:30:31.187Z"
+      "updatedAt": "2026-09-10T03:36:29.617Z"
     },
     {
       "id": "KN-055",
       "title": "Record where a task started, so a roast can diff the whole task",
       "desc": "When a task moves to in_progress, record the current HEAD on it as startHead. Make the roast harness default --base to that instead of HEAD~1, so a roast sees everything the task changed rather than only its last commit. Show it on the card.",
       "why": "A task spans several commits. The harness defaults to HEAD~1, so from task two onward every roast reviews only the final commit of the task and silently misses the rest, which is a reviewer looking at a fraction of the work while reporting on all of it. KN-001 only avoided this because it passed the empty tree as an explicit base.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [
@@ -1479,9 +1480,11 @@
       "status": "backlog",
       "exit": "Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
       "createdAt": "2026-09-07T20:33:44.264Z",
-      "updatedAt": "2026-09-07T20:55:11.902Z"
+      "updatedAt": "2026-09-10T03:36:29.746Z"
     },
     {
       "id": "KN-056",
@@ -1614,11 +1617,11 @@
         "KN-018"
       ],
       "status": "backlog",
-      "exit": "The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. رد شده is the last column, after پیشنهاد کار, and renders collapsed to a count by default, expanding on click.",
+      "exit": "The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T21:10:26.914Z",
-      "updatedAt": "2026-09-10T02:09:49.327Z"
+      "updatedAt": "2026-09-10T03:37:11.296Z"
     },
     {
       "id": "KN-061",
@@ -1774,7 +1777,7 @@
       "title": "Apply contract exceptions per sentence, not per field",
       "desc": "The contract checker exempts an entire card field when any part of it matches an allowed pattern. So a card reading On desktop, status is a dropdown; it is not a dropdown on mobile passes, and the same flaw defeats the sidebar and fourth-tab rules. Match and exempt at sentence level. Add the missing staleness anchors for sidebar-on-the-right and no-fourth-tab.",
       "why": "An exception that covers a whole field means any card can be exempted from any rule by mentioning the prohibition somewhere in it, which is the easiest possible thing to do by accident when a card explains why a decision was made. A checker with that hole reports clean while the board drifts, which is worse than no checker because it is trusted.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [
@@ -1783,15 +1786,18 @@
       "status": "backlog",
       "exit": "Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T21:12:13.062Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-07T21:12:13.062Z",
+      "updatedAt": "2026-09-10T03:36:29.872Z"
     },
     {
       "id": "KN-067",
       "title": "Recording an adjudication must not overwrite the last one",
       "desc": "Re-running roast against the same archive rebuilds and replaces that round, so the previous filed list, dismissal rationale, score and critical count are destroyed. Append an adjudication event to the round instead, keeping every recorded judgement in order, and render the latest while preserving the history.",
       "why": "The board is meant to be the audit trail of what was reviewed and what the author accepted. Overwriting means an author can quietly lower criticals, swap a filed list for none, or erase that adjudication happened at all, and only the raw Codex reply survives to contradict it. The whole point of recording the adjudication separately from the reviewer verdict is that both are visible.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [
@@ -1800,15 +1806,18 @@
       "status": "backlog",
       "exit": "Re-recording a round preserves the earlier adjudication as an entry in a history, the card shows the latest while the history remains readable, and a test proves an earlier filed list cannot be erased.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T21:12:13.494Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-07T21:12:13.494Z",
+      "updatedAt": "2026-09-10T03:36:30.007Z"
     },
     {
       "id": "KN-068",
       "title": "Make verifyGate's revalidator mandatory, and test the real invocation",
       "desc": "verifyGate takes revalidate as an optional argument. move done passes verifyCommand; KN-058's verifier passes nothing, so it exercises a weaker mode than the close does and would stay green if close-time revalidation broke. Without the callback verifyGate accepts bare node and node --version, neither of which runs a verifier, so its documented string-or-null contract is false: null can mean node exited zero rather than an approved verifier ran. Make revalidate required, add cases for a missing target and for the symlink and real-path checks, and make the verifier runnable in a read-only sandbox, which it currently is not because it writes scratch files.",
       "why": "A test that calls a function differently from the way production calls it proves the wrong thing, and this one has now been flagged three rounds running in three different forms. The optional argument is the root cause rather than the test: an interface whose contract only holds when an optional argument is supplied will eventually be called without it. It also cannot run in the read-only sandbox a reviewer uses, so the one place an outsider could check it is the one place it does not work.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [
@@ -1817,8 +1826,11 @@
       "status": "backlog",
       "exit": "verifyGate refuses to run without a revalidator, verifyGate with the real revalidator rejects bare node, node --version, a missing target and a symlinked target, and the KN-058 verifier runs to completion in a read-only working tree without writing into the repository.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T21:26:11.198Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-07T21:26:11.198Z",
+      "updatedAt": "2026-09-10T03:36:30.137Z"
     },
     {
       "id": "KN-069",
@@ -1993,7 +2005,7 @@
       "title": "The harness stamps a round number that goes stale before it is recorded",
       "desc": "roast.mjs computes the round number from the board at RUN time, as roasts.length + 1, and readArchive later requires meta.round to equal roasts.length + 1 at RECORD time. Running two roasts before recording either makes the first unrecordable, because both manifests claim the same round and only one can be next. Either stamp something order-independent, such as the reviewed commit plus a sequence within it, or let the record command accept any manifest for this task whose round has not already been recorded.",
       "why": "It bit on KN-002: two rounds ran before either was recorded, so the first round's verdict cannot be entered on the board at all and survives only as a file on disk. The board is meant to be the audit trail of what was reviewed, and a round it structurally cannot accept is a hole in that trail. It also pushes toward recording immediately, which is the opposite of the adjudicate-then-record flow the loop asks for.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [
@@ -2002,8 +2014,11 @@
       "status": "backlog",
       "exit": "Two roast rounds run back to back can both be recorded, in order, with their own verdicts and filed lists, and a manifest that has already been recorded is still refused a second time.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T21:57:29.299Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-07T21:57:29.299Z",
+      "updatedAt": "2026-09-10T03:36:30.262Z"
     },
     {
       "id": "KN-075",
@@ -2027,7 +2042,7 @@
       "title": "Let a settled open question be recorded as a decision, not only as a task",
       "desc": "agent/scripts/verify/KN-002.mjs recognises a \"**Decided ...**\" disposition when it parses an open-questions item, then discards that path: it requires a named board task, and requires the manifest to say that task owns the item, so an item settled with a written decision and no task is rejected. Citing the task that made the decision does not help either, because a closed task trips the \"tracked by a closed task while still open\" branch. Give a decision its own shape in the manifest and let the verifier accept it.",
       "why": "The exit condition of KN-002 says every open item is \"either reflected in the board as a task or recorded as a decision\". Only the first can pass today, so KN-070 through KN-073 and KN-075 cannot be closed the way the contract says they may be: the moment one of them is decided and marked done, this verifier starts failing. Found by a roast as a major.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [
@@ -2038,10 +2053,11 @@
       "roasts": [],
       "notes": [
         "PROVEN BLOCKING, not theoretical. A planted mutation finished KN-077 the way the manifest shape now intends: task done, its capturePending entries flipped from decidedBy to decided plus landedIn, and the section 6 bullet rewritten as a decision. The capture-pending check went green. The section 6 check still failed with \"a decision does not own this item\", so the disposition is unreachable and NO open question on this board can ever be closed as decided. That makes this card a blocker for KN-070, KN-071, KN-072, KN-073, KN-075 and KN-077, not a tidy-up. The mutation is in the scratchpad script that proves the KN-002 verifier can fail; re-plant it as the regression test.",
-        "ROAST FINDING FOLDED IN, rated major. The decision branch this card adds must not be forgeable. As shaped today in the capture-pending check, decided can be any string and landedIn any existing heading, so {decided: \"resolved\", landedIn: \"What the product is\"} passes without anyone having decided anything and without the decision text appearing in that section. Whatever this card builds for section 6 has to require the decision to be EVIDENCED in the document under the heading it names, not merely to name a heading that exists. Exit condition extended accordingly."
+        "ROAST FINDING FOLDED IN, rated major. The decision branch this card adds must not be forgeable. As shaped today in the capture-pending check, decided can be any string and landedIn any existing heading, so {decided: \"resolved\", landedIn: \"What the product is\"} passes without anyone having decided anything and without the decision text appearing in that section. Whatever this card builds for section 6 has to require the decision to be EVIDENCED in the document under the heading it names, not merely to name a heading that exists. Exit condition extended accordingly.",
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
       ],
       "createdAt": "2026-09-07T22:11:19.267Z",
-      "updatedAt": "2026-09-07T22:30:49.959Z"
+      "updatedAt": "2026-09-10T03:36:30.381Z"
     },
     {
       "id": "KN-077",
@@ -2102,7 +2118,7 @@
       "title": "Bound the fix-in-task carve-out to once per task, and make the board enforce it",
       "desc": "agent/RALPH.md step 5 allows fixing in-task when the verify script fails OR when the verifier passes dishonestly. The second clause has no bound, so it can be invoked every round: KN-002 used it three rounds running, because every roast of a verifier can be phrased as \"it passes without establishing the exit condition\". Bound it: the carve-out may be used at most once per task, after which every finding is a card. Record fixed-in-task on the roast round so the board can count it, and have move done refuse a close where the carve-out was used more than once without an explicit owner override.",
       "why": "The owner corrected this loop once already, for exactly this failure: roast, fix, re-roast, over and over, while the rest of the board waited. The mechanical test was meant to end the argument, and the second clause quietly reopened it. Three rounds on a three point task is the same mistake in a smaller size, and the loop file currently licenses it.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [
@@ -2111,8 +2127,11 @@
       "status": "backlog",
       "exit": "A task whose roast rounds record a second fix-in-task is refused by move done with a message naming the first one, agent/RALPH.md states the bound in the same paragraph as the mechanical test, and a planted second carve-out on a scratch task proves the refusal fires.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T22:29:30.075Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-07T22:29:30.075Z",
+      "updatedAt": "2026-09-10T03:36:30.510Z"
     },
     {
       "id": "KN-081",
@@ -3431,15 +3450,18 @@
       "title": "Commit the mutation cases, so a verifier's claim can be re-run",
       "desc": "Every verifier under agent/scripts/verify has been mutation-tested and several commit messages state a count, but the mutation cases themselves are written to a scratch directory and thrown away. Nobody else can re-run them, which a roast pointed out when it declined to certify a claimed count it had no way to check. The cost is not only external: a mutation silently stops applying when the verifier it targets is edited, and the only reason that was caught three times while working KN-128 was a harness that reports MUTATION DID NOT APPLY instead of counting it as a pass. Give the cases a home, one file per verifier next to it, each case naming what it breaks and the message that must appear, run by a single command. Start with KN-128, whose eighteen cases exist and are known to pass, then backfill the ones whose counts are already in commit messages.",
       "why": "This repository's rule is that a check nobody has seen fail is not a check. The mutation cases ARE the evidence that a verifier can fail, so throwing them away leaves the verifier and a number in a commit message that cannot be reproduced. It matters most when a verifier is edited, because a mutation that no longer applies looks exactly like a mutation that passed, and that is the failure that hides a broken checker.",
-      "severity": "high",
+      "severity": "low",
       "points": 3,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-08T04:01:31.724Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-08T04:01:31.724Z",
+      "updatedAt": "2026-09-10T03:36:30.635Z"
     },
     {
       "id": "KN-137",
@@ -3760,7 +3782,7 @@
       "title": "KN-072 verifier accepts the two failures it exists to prevent",
       "desc": "Two holes, both reproduced. FIRST, at KN-072.mjs line 78 the five tab names are searched for anywhere inside entry.slice(0, 1200), so explanatory prose that merely MENTIONS a tab satisfies the check; the decision can drop a tab from the actual list and still pass. That is the same coincidence bug KN-002 and KN-071 were already fixed for. SECOND, at line 104 the contrast strip removes everything after not up to the next period, and the final clause then tests own tab against the UNSTRIPPED exit rather than against the stripped text. Confirmed by running: the card text All five tabs render. Status history does not render in its own tab; it renders in the Info tab. strips to All five tabs render. Status history does . and PASSES every check, although it states the exact opposite of the decision.",
       "why": "This verifier exists because the first draft of the decision silently dropped two tabs. It currently certifies the failure it was written to catch, so the card it guards can be reversed without the gate noticing.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [
@@ -3769,8 +3791,11 @@
       "status": "backlog",
       "exit": "KN-072.mjs parses the ACTUAL tab list out of the decision line and requires exactly the five names in it rather than searching a character window, and checks KN-030 placement on the stripped text with an affirmative un-negatable assertion. Both reproductions above are added as committed mutation cases and each fails the verifier with its own message.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-09T22:23:41.373Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-09T22:23:41.373Z",
+      "updatedAt": "2026-09-10T03:36:30.762Z"
     },
     {
       "id": "KN-155",
@@ -3974,7 +3999,7 @@
       "title": "Adjudication is reported, not enforced, so findings can go unfiled forever",
       "desc": "Found by the KN-159 roast. todo roast records a round with no filed field, and validate prints how many such rounds exist but still exits 0. So the honest sequence is unenforced: record an authentic roast of closed work without --filed and simply never come back. KN-001 and KN-065 already sit in exactly that state and have for some time, which is the proof that a report does not hold. The old close gate used to enforce this and KN-159 removed it, correctly, because it put the reviewer in front of the close; the enforcement has to move rather than disappear. The reviewer suggested requiring --filed on the first board recording after adjudication, which fits: under the new order you record the round AFTER judging it, so you always know what you filed.",
       "why": "Every finding becomes a card is the mechanism that makes closing before review safe. If findings can be recorded and forgotten, closing early just loses them, and the loop gets the speed without the safety.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
@@ -3982,10 +4007,11 @@
       "exit": "KN-001 and KN-065 have their roast rounds adjudicated and re-recorded with what was filed, so the board carries no round whose findings were never judged. validate keeps REPORTING the count, which is how a regression becomes visible without refusing anything.",
       "roasts": [],
       "notes": [
-        "Exit condition rewritten by the owner's correction: it demanded that todo roast REFUSE to record a round without --filed. That is a gate nobody asked for. The rule is put the findings in the to-do list, and the report is enough to show when that has not happened."
+        "Exit condition rewritten by the owner's correction: it demanded that todo roast REFUSE to record a round without --filed. That is a gate nobody asked for. The rule is put the findings in the to-do list, and the report is enough to show when that has not happened.",
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
       ],
       "createdAt": "2026-09-09T23:56:07.447Z",
-      "updatedAt": "2026-09-10T00:55:26.409Z"
+      "updatedAt": "2026-09-10T03:36:30.886Z"
     },
     {
       "id": "KN-164",
@@ -4072,15 +4098,18 @@
       "title": "KN-160's verifier passes on two blind spots it claims to cover",
       "desc": "Found by the KN-160 roast, both reproduced by reading. FIRST, the check named every plan file in the tree walks the repository but skips the whole agent directory, which is exactly where agent work puts its plans and where two of them already live. Creating agent/plan-KN-999.md leaves the verifier green. The skip was added so the walk would not match the verifier's own plan file, and it blinded the check to the directory that matters most. SECOND, no instruction file still sends a plan to the old directory inspects three hardcoded paths, so a new operative file, say agent/WORKFLOW.md, instructing the old path is invisible and the verifier still passes. The source admits this, and the roast is right that documenting a hole does not make the exit condition true.",
       "why": "A verifier whose stated coverage is wider than its real coverage is worse than a narrow one honestly described, because the next person reads the check name and stops looking. Both of these are the exact shape this repository keeps shipping: a check that passes for a reason unrelated to the thing it claims.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "The tree walk covers agent/ and every other directory, distinguishing a plan file from a plan-shaped one by its NAME rather than by which folder it is in; the instruction corpus is derived from a stated convention or from a registry that new instruction files must join, rather than from a hand-maintained list; and both blind spots are proved closed by mutations that currently pass and must then fail.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:12:39.418Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-10T00:12:39.418Z",
+      "updatedAt": "2026-09-10T03:36:31.013Z"
     },
     {
       "id": "KN-169",
@@ -4102,15 +4131,18 @@
       "title": "An irreversible action must prove its rollback path before it runs",
       "desc": "The general rule behind today's data loss, offered by the KN-160 roast and worth writing down because the specific fix, keep plan files, does not generalise. I deleted two files justified by the claim that git held them. It did not. The concrete guard is that the claim is one command away from being tested: git check-ignore -v <path> says whether it is ignored, git ls-files --error-unmatch <path> says whether it is tracked, git cat-file -e HEAD:<path> says whether a committed version exists. Any of those would have stopped the deletion. Stated generally: an irreversible action justified by a fallback needs a command that PROVES the fallback exists, run before the action, not an argument that it should.",
       "why": "This class of mistake is not about plans and will not be prevented by the rule that fixed plans. Every future delete, overwrite, force push, revert, prune or reset carries the same shape: a confident sentence about recoverability that nobody checked. The cost is unbounded and the check costs one command.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "AGENTS.md and agent/RALPH.md both carry the rule, naming the three git commands as the concrete instance and stating the general form; the wording makes clear it applies to any irreversible action and not only to deletion; and a check asserts both files carry it so it cannot quietly disappear the way the plan lifecycle rule did.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:12:58.637Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-10T00:12:58.637Z",
+      "updatedAt": "2026-09-10T03:36:31.139Z"
     },
     {
       "id": "KN-171",
@@ -4136,45 +4168,54 @@
       "title": "compact.py does the opposite of what the loop's compact step is for",
       "desc": "The owner's correction of 2026-09-10. Step 1 of the loop skill is called compact and its purpose is to FREE the context window, so that when the next iteration begins the first thing read is the loop's own rules rather than a stale conversation. ~/.claude/skills/loop/compact.py does the reverse: it prints the git branch, recent commits, uncommitted changes and the project's context files, which INJECTS a summary into the context every iteration. That is the thing the step was meant to avoid. What the owner wants is the harness's own /compact. That cannot be invoked by the agent: /compact is user-initiated or automatic when the window fills, and text the assistant emits is not executed as a slash command. So the honest resolution is to delete compact.py, say in the skill that the step means taking the harness's compaction where the harness offers it, and otherwise rebuilding from disk by READING the rule files rather than by printing a digest of them. This also narrows KN-161, since the loop skill then has no script needing a second runtime.",
       "why": "A step whose implementation does the opposite of its name will keep being run, because its name says it is right. It costs context on every single iteration, which is the resource the step exists to protect, and it does so silently.",
-      "severity": "high",
+      "severity": "low",
       "points": 1,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:16:08.084Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-10T00:16:08.084Z",
+      "updatedAt": "2026-09-10T03:36:31.261Z"
     },
     {
       "id": "KN-173",
       "title": "rm destroys the card and its reason, so the terminal refusal promises something false",
       "desc": "Found by the KN-162 roast and confirmed by reading. rm requires --reason, PRINTS it to stdout, then splices the task out of board.tasks. Neither the task nor the reason survives in board.json. KN-162's terminal refusal names rm as the route for a close that was an outright error and says it leaves a stated reason behind, which is not true: it destroys the completed card, its evidence, its roast history and the explanation of why it vanished. The roast's suggestion is a tombstone instead, a terminal voided record that keeps the card, its reason and a link to whatever replaced it, and that cannot reopen work, so any actual remaining work is still a new card.",
       "why": "The only escape route from a terminal state is currently the most destructive command on the board, and it is advertised with a promise it does not keep. Someone following that advice after a mis-close loses the evidence and roast history of real work, and finds out afterwards.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "A mis-closed card can be voided into a terminal tombstone that RETAINS the card, its reason and a link to its replacement; rm either keeps a record too or stops being named as the recovery route; the terminal refusal message describes what actually happens; and driving the real CLI proves the record survives.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:19:50.097Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-10T00:19:50.097Z",
+      "updatedAt": "2026-09-10T03:36:31.392Z"
     },
     {
       "id": "KN-174",
       "title": "Extract the verifier sandbox builder, which has already diverged between two copies",
       "desc": "Found by the KN-162 roast. KN-159 and KN-162 each build a throwaway git repository, copy agent/scripts into it, seed a board and commit, and I duplicated rather than extracted on the plan check's advice that the third caller is the moment to share it. The roast disagreed and it is right on the evidence: the two copies ALREADY differ. KN-159 writes both a passing and a failing sandbox verifier fixture; KN-162 writes only the passing one. So the isolation guarantee the two files claim is not the same guarantee, and nothing says which is correct. The threshold third caller is wrong for a helper that DEFINES what the tests are isolating from.",
       "why": "Duplicated test infrastructure diverges silently, and when it does, two verifiers are testing subtly different worlds while both report success. The divergence here appeared within one session of the duplication being made.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "One sandbox builder in agent/scripts/verify/lib/, used by KN-159 and KN-162, with the fixtures either shared or requested explicitly by the caller; both verifiers still pass; and a check proves neither file builds a repository of its own any more.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:19:50.192Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-10T00:19:50.192Z",
+      "updatedAt": "2026-09-10T03:36:31.523Z"
     },
     {
       "id": "KN-175",
@@ -4213,15 +4254,18 @@
       "title": "The global todo skill lets a closed task reopen, so SkipBureau's rule is honour-based",
       "desc": "Found while checking SkipBureau's loop rules for KN-166. Its CLAUDE.md correctly says a finding is not a reason to reopen what was just finished, and its board is .claude/todo.db driven by the GLOBAL todo skill. ~/.claude/skills/todo/todo.mjs has no guard on a task's current status, so a done task moves back to in_progress freely, exactly as KarNama's board did until KN-162 added a terminal guard. The project whose agent was described as getting the rules wrong is therefore the one where the tool does not enforce them. KarNama's fix is the model: refuse every transition out of done, put the guard ahead of the other status checks so the refusal reports the right cause, name a new card as the route for remaining work, and make re-closing an explicit no-op rather than letting it fall through to a message that tells the reader to reopen.",
       "why": "A rule stated in a document and unenforced by the tool is followed exactly as often as the person reading it remembers, and the moment it matters most is when a reviewer has just found something. This is the same gap KN-162 closed here, still open in the shared tool that every other project uses.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "The global todo skill refuses every transition out of done, naming the new-card route; re-closing is a no-op rather than an error; the refusal is proved by driving the real CLI against a throwaway database rather than by reading the source; a mutation removing the guard fails that check with its own message; and SkipBureau's board is unaffected apart from gaining the guard.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:27:30.255Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-10T00:27:30.255Z",
+      "updatedAt": "2026-09-10T03:36:31.649Z"
     },
     {
       "id": "KN-178",
@@ -4381,15 +4425,18 @@
       "title": "Nothing establishes which prompt file the sibling Stop hook actually feeds",
       "desc": "Found by the KN-181 roast, and KN-181's own evidence admits it: that .claude/ralph-loop.local.md is what the hook injects was INFERRED from the file's frontmatter and from the harness bumping its iteration counter, not observed. Those show the file has loop-like state, not that the hook resolves that path. SkipBureau has no checked-in hook registration or settings file naming it, so the only support is the prompt's own self-description. If the hook resolves a different prompt, the live behaviour KN-181 set out to fix is still wrong and the card closed on a premise nobody checked. The observation available without running that loop is tracing the installed Stop-hook registration, the plugin or settings entry, to the pathname it resolves.",
       "why": "KN-181 was filed critical because a live loop was following the wrong order. If the file that was fixed is not the file being read, nothing was fixed and the board records a critical as closed. The same question applies to KarNama's own prompt, which KN-171 assumes without checking.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "The Stop-hook registration is traced to the exact prompt pathname it feeds, for both projects, and recorded where the next reader will find it; where a project's hook feeds a file nobody has been maintaining, that is filed; and the claim is supported by the resolved configuration rather than by the prompt's own text.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:52:09.209Z"
+      "notes": [
+        "Demoted to low on 2026-09-10, applying the owner's correction and the rule now in .claude/ralph-loop.local.md step 6: a finding about the LOOP rather than the PRODUCT is low unless it is actively breaking the work. The board had 23 high-severity agent-machinery cards against 65 open web cards, and because they are high and small, next kept handing them back while the component library sat untouched. That is the roast loop feeding on itself: roasting the agent's own machinery always produces more machinery. This card is still real and still on the board; it just does not outrank building KarNama. Raise it again the moment it actually blocks product work."
+      ],
+      "createdAt": "2026-09-10T00:52:09.209Z",
+      "updatedAt": "2026-09-10T03:36:31.772Z"
     },
     {
       "id": "KN-186",
@@ -4621,11 +4668,13 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "backlog",
+      "status": "blocked",
       "exit": "DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T02:06:44.051Z"
+      "createdAt": "2026-09-10T02:06:44.051Z",
+      "blockedReason": "Waiting on the owner. This is a design DECISION, not a build: KN-070 settled that the rejected column collapses to a count, and did not settle what a drag onto it does. Whether it expands on hover and after what delay, whether it accepts a drop while collapsed, what the user sees after the drop lands, and what the keyboard path targets are all the owner's or the designer's call. An agent choosing them silently is the exact failure KN-153 was about. Blocked rather than backlog so it stops being picked as though it were buildable.",
+      "updatedAt": "2026-09-10T03:36:49.702Z"
     },
     {
       "id": "KN-197",
@@ -4672,11 +4721,13 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "KN-043's exit condition names the rejected column's position after the offer column and its collapsed-to-a-count default; KN-060's names rendering collapsed to a count and expanding on click, and says nothing about where the column sits. KN-149's verifier requires the right clause of each card rather than one shared string, and a mutation that swaps the two clauses between the cards is caught.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T02:17:50.023Z"
+      "createdAt": "2026-09-10T02:17:50.023Z",
+      "updatedAt": "2026-09-10T03:38:29.959Z",
+      "verify": "node agent/scripts/verify/KN-149.mjs"
     },
     {
       "id": "KN-200",
