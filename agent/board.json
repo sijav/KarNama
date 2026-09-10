@@ -1001,11 +1001,13 @@
         "KN-006",
         "KN-007"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T05:24:54.350Z",
+      "verify": "node agent/scripts/verify/KN-032.mjs"
     },
     {
       "id": "KN-033",

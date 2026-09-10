@@ -87,9 +87,18 @@ const linguiOptions = (extraProps = '') => ({
     '*.findByText',
     '*.findByRole',
     '*.queryByText',
+    // `queryByRole` was missing while `findByRole` and `queryByText` were here,
+    // which is the sort of gap a list of names grows: it is the same helper
+    // asking the same question, in the negative.
+    '*.queryByRole',
     '*.toHaveTextContent',
     '*.toHaveAttribute',
     '*.toHaveAccessibleName',
+    // Asserts a COMPUTED CSS value, so the literal is a CSS keyword such as
+    // `none` or `solid`. Those are API values, not copy: there is no Persian
+    // for `pointer-events: none` and translating it would break the assertion
+    // rather than localise anything.
+    '*.toHaveProperty',
     // A key descriptor, not copy. `userEvent.keyboard('{Enter}')` names a key
     // the way testing-library spells it; there is no Persian for Enter and
     // translating it would break the test rather than localise anything.
