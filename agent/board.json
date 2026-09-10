@@ -7225,13 +7225,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Under forced colours a disabled Checkbox's edge is GrayText and every enabled state's is ButtonBorder, checked and indeterminate included; a check in a production build reads the rendered edge of all five states under forced colours, and a mutation giving disabled ButtonBorder again fails it; and DESIGN.md's stroke section says which colour each state takes there.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T17:59:43.680Z",
-      "updatedAt": "2026-09-10T18:11:42.055Z",
-      "verify": "node agent/scripts/verify/KN-288.mjs"
+      "updatedAt": "2026-09-10T18:17:45.763Z",
+      "verify": "node agent/scripts/verify/KN-288.mjs",
+      "evidence": "Checkbox.tsx's forced-colours ::before sets --karnama-forced-edge to GrayText when disabled and ButtonBorder otherwise, and borderColor var(--karnama-forced-edge). node agent/scripts/verify/KN-288.mjs passed: the Checkbox stories pass; in a production build under emulated forced colours, unchecked, checked, indeterminate and hover (a real pointer) choose ButtonBorder and render it (0,0,0 in this palette, equal to a same-page ButtonBorder probe), and disabled chooses GrayText and renders it (96,0,0, equal to a same-page GrayText probe); disabled given ButtonBorder again, rebuilt, is caught; DESIGN.md's stroke section says which state takes which; KN-284's verifier passes (and through it KN-281, KN-013, KN-205, KN-207, KN-266). Unit 418, full eslint, tsc and contract clean. Not established: a real Windows high-contrast theme, and that the two colours differ in every user palette, which the check deliberately does not require.",
+      "closedAt": "2026-09-10T18:17:45.763Z"
     },
     {
       "id": "KN-289",
