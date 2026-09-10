@@ -1,0 +1,52 @@
+# Render Blueprint for the KarNama API.
+#
+# Render reads this from the repository, so the service is created from the file
+# rather than from twenty fields in a web form that nobody can review later.
+#
+# WHY THERE IS NO `databases:` BLOCK, which is the whole point of this comment:
+# Render's free Postgres **expires 30 days after it is created** and the data is
+# deleted after a 14 day grace period. A demo that dies a month after it ships is
+# not deployed, it is scheduled for deletion. Supabase's free tier has the same
+# shape of problem for a different reason — it PAUSES a project after 7 days of
+# no traffic, which is exactly the traffic pattern a portfolio project has.
+#
+# So the database is **Neon**, whose free tier scales compute to zero but keeps
+# the project reachable and does not expire. `DATABASE_URL` is set from Neon's
+# pooled connection string and is marked `sync: false` so it is entered once in
+# the dashboard and never committed here.
+
+services:
+  - type: web
+    name: karnama-api
+    runtime: node
+    plan: free
+    # Closest free region to the users this is built for.
+    region: frankfurt
+
+    # The repository is an npm workspace, so install at the root and build only
+    # the API. `npm ci` honours the lockfile, which is the point of committing
+    # one.
+    buildCommand: npm ci && npm run build --workspace @karnama/api
+    startCommand: node apps/api/dist/main.js
+
+    # Rebuild on every push to the default branch, so there is no manual step.
+    autoDeployTrigger: commit
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      # Required, with NO default on purpose: `env.ts` refuses to boot without
+      # it, because a default here is a permissive CORS policy nobody chose.
+      # This is the GitHub Pages origin the web app is served from.
+      - key: WEB_ORIGIN
+        value: https://sijav.github.io
+
+      # Set once in the Render dashboard from Neon's POOLED connection string.
+      # `sync: false` keeps it out of this file and out of git.
+      - key: DATABASE_URL
+        sync: false
+
+    # Free instances spin down after 15 minutes of inactivity and take about a
+    # minute to wake. That is not a surprise to this product: DESIGN.md already
+    # requires the UI to handle a cold start honestly rather than look broken.

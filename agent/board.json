@@ -1415,8 +1415,8 @@
     },
     {
       "id": "KN-052",
-      "title": "Deploy the API to Render with Supabase Postgres",
-      "desc": "A Render free web service running the API against Supabase Postgres, with CORS for the Pages origin, migrations run on deploy, secrets in the environment, plus a warm ping from the web app and an honest loading state for the cold start.",
+      "title": "Deploy the API to Render free, with Neon free Postgres",
+      "desc": "Deploy the API to Render free and the database to NEON free, not Supabase. The change from Supabase is forced by a fact rather than a preference, and it is recorded in DEPLOY.md so it is not re-litigated: Supabase pauses a free project after 7 days with no traffic and needs a manual unpause, which is exactly the traffic pattern a portfolio project has. Render's own free Postgres is worse: it EXPIRES 30 days after creation and the data is deleted after a 14 day grace period. Neon scales compute to zero but keeps the project reachable and does not expire. Render still hosts the API itself: free, no card, 750 instance-hours a month, sleeps after 15 minutes and wakes in about a minute, which DESIGN.md already requires the UI to handle honestly. render.yaml is committed at the repository root, so Render builds from the file rather than from form fields. It pins the free plan, the Frankfurt region, the workspace-aware build and start commands, autoDeploy on commit, NODE_ENV and WEB_ORIGIN. DATABASE_URL is sync false so the Neon pooled string is entered once in the dashboard and never committed. The remaining work needs a person, because creating the accounts does: sign in to Neon and Render with GitHub, create the project, connect the blueprint, paste the pooled connection string, and run the migrations once. DEPLOY.md has the exact steps. If it is to be automated instead, RENDER_API_KEY and NEON_API_KEY go in .env.deploy.local, which git check-ignore confirms is ignored by the *.local rule.",
       "why": "The free tier sleeps after 15 minutes, so the first request after a nap takes about 50 seconds. That is a real user experience and it has to be designed for rather than discovered.",
       "severity": "high",
       "points": 5,
@@ -1427,10 +1427,11 @@
         "KN-050"
       ],
       "status": "backlog",
-      "exit": "The deployed app talks to the deployed API from the Pages origin, a cold start shows the loading state and completes rather than timing out, migrations ran, and no secret is in the repository.",
+      "exit": "The API answers at its Render URL, the web app reaches it across origins with the CORS policy WEB_ORIGIN sets, migrations have run against the Neon database, and a deploy follows a push to main with no manual step. The database choice is recorded with its reason so it is not silently reverted to a provider that expires or pauses. A check proves the deployed API responds and that render.yaml still pins the free plan and carries no DATABASE_URL value.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T04:29:43.615Z"
     },
     {
       "id": "KN-053",
