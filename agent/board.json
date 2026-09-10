@@ -6593,7 +6593,20 @@
       "parent": [],
       "status": "done",
       "exit": "The blank rule lives in one module that the Input and its stories both import, with no second copy of the pattern anywhere under src; a unit test covers the rule's boundaries; and a mutation that widens the rule in that module changes what FromArgs expects without editing the story.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 9,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-262-round-1.2026-09-10T13-48-51-101Z.md",
+          "filed": [],
+          "cardDigest": "a00a81c0d5f8a72240bb6f8f0cab555ab5d8c77d86db55d57574ea118c366cbb",
+          "head": "f239b609d840faa8863c010eb41a8f7f1eca60a3",
+          "reviewerScore": 9,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T13:51:09.012Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T12:45:20.256Z",
       "updatedAt": "2026-09-10T13:48:34.636Z",
@@ -6610,11 +6623,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The chip is the designed flex box again, centred by alignment with no vertical padding, and the name truncates with an ellipsis in an inner element; every story that measures the chip measures the chip, not the name; KN-238's verifier still passes with its mutations; and no padding or spacing in StatusChip.tsx resolves to anything but a spacing token or zero.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T12:57:36.792Z"
+      "createdAt": "2026-09-10T12:57:36.792Z",
+      "updatedAt": "2026-09-10T13:49:06.443Z"
     },
     {
       "id": "KN-264",
