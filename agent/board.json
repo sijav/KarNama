@@ -5954,13 +5954,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "DESIGN.md records what a focused invalid field looks like and why; a story focuses an invalid field and asserts exactly that; the Focus story asserts the text keeps both its horizontal and vertical position when the border widens; and a mutation changing the focused-error border fails the new story.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T09:27:16.092Z",
-      "updatedAt": "2026-09-10T09:29:58.355Z",
-      "verify": "node agent/scripts/verify/KN-241.mjs"
+      "updatedAt": "2026-09-10T09:30:17.569Z",
+      "verify": "node agent/scripts/verify/KN-241.mjs",
+      "evidence": "DESIGN.md gains \"The Input focused while invalid\": the file draws no composite, so a focused invalid field keeps the error colour at the focus width, two pixels of border/error, because blue would hide the error while it is being fixed and one pixel would show no focus. New story FocusedWhileInvalid tabs into an invalid field and asserts a 2px border in border/error; the Focus story now compares the text's left AND top before and after focus. Docs in en and fa. agent/scripts/verify/KN-241.mjs, 4 checks green: stories pass (11 of 11); THE CASE, turning the focused invalid border to border/focus fails FocusedWhileInvalid; a pixel of top padding on focus fails Focus (the previous one-axis check would have passed it); DESIGN.md records the state and its reason. KN-011.mjs and KN-004.mjs still green, docs guard 50 of 50, lint and tsc clean.",
+      "closedAt": "2026-09-10T09:30:17.569Z"
     },
     {
       "id": "KN-242",
