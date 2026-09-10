@@ -7059,13 +7059,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The Checkbox frame's edge is 1.5 in every state as the five variants of 204:11 draw it, painted inside the frame and taking no layout space; what a 1.5 edge renders as at device pixel ratios 1 and 2 is measured and recorded; the stories assert the width; and the comment that says the file draws every border at one is corrected.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T16:24:51.312Z",
-      "updatedAt": "2026-09-10T17:10:38.061Z",
-      "verify": "node agent/scripts/verify/KN-281.mjs"
+      "updatedAt": "2026-09-10T17:16:53.692Z",
+      "verify": "node agent/scripts/verify/KN-281.mjs",
+      "evidence": "Checkbox.tsx draws the frame's edge as an inset box-shadow of EDGE = 1.5 in the state's colour (border/default unchecked, bg/brand/default checked and indeterminate, bg/surface-secondary disabled, border/focus on hover), with no border on the frame, and a one pixel ButtonBorder border under @media (forced-colors: active). Read with use_figma: all five variants of 204:11 are 20 by 20 with a 1.5 stroke, INSIDE, not in layout. Measured in Chromium 151.0.7922.34: a 1.5px border computes and renders as 1px at ratios 1, 1.25, 1.5 and 2; the inset shadow renders one full device pixel and one half covered at ratio 1 (red channel 37 146 255, blue over white) and three full at ratio 2 (37 37 37 255). node agent/scripts/verify/KN-281.mjs passed: the Checkbox stories pass with Unchecked, Checked, Indeterminate and Disabled asserting an inset 1.5 edge, no offset and no border, and Hover the colour; the comment no longer says the file draws every border at one and EDGE is one constant; the old one pixel border put back fails Unchecked by name; in a production build all five states are 20 by 20 with no border and the exact shadow; the rendered edge is 1.5 at ratios 1 and 2; under emulated forced colours the edge is drawn on the pixels and is not without the fallback border; DESIGN.md records it; KN-013 (hover anchor moved), KN-205, KN-207 and KN-266 pass. Unit 418, full eslint, tsc and contract clean. Seen in fa-IR and en-US, light and dark. Not established: Firefox and WebKit, whose builds for this Playwright are not installed; the CSS standard would keep a 1.5 border at ratio 2 there.",
+      "closedAt": "2026-09-10T17:16:53.692Z"
     },
     {
       "id": "KN-282",
