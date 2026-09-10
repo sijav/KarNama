@@ -666,10 +666,10 @@ re-apply it.
 
 ### Settled by the owner on 2026-09-10
 
-Three answers. The owner gave the broad answer to the first two in chat, and
+Four answers. The owner gave the broad answer to the first two in chat, and
 then confirmed the details through the question tool the same day; the third
-was put and answered through the question tool alone. Every line below is the
-owner's, not a reading of it.
+and the fourth were put and answered through the question tool alone. Every
+line below is the owner's, not a reading of it.
 
 **Dropping a card onto the rejected column while it is collapsed to a count.**
 Owner, KN-196. The file draws nothing for it: Drop Done `376:5997` predates the
@@ -712,6 +712,19 @@ The Input, the Checkbox and the Select when it is built use it; the Hover edge
 keeps its drawn colour, and cards, dividers and the Filter Chip keep
 `border/default`. Like the order of the columns and the history tab, this
 departs from the file on the owner's call. KN-275 builds it.
+
+**A selected Filter Chip shows a blue edge.** Owner, KN-276, put and answered
+through the question tool. Node `159:71` shows selection only by the pale
+`bg/brand/container` fill, 1.22 to one on white and 1.11 on the secondary
+surface, and by a change of text colour, so the state fails WCAG 1.4.11's 3 to
+one and rests on colour alone, against 1.4.1. Of four options, the owner chose
+**a blue edge on the selected chip**: the fill stays as drawn, and the chip's
+one pixel edge, which it has in both states, turns a blue at 3 to one or more
+on every surface and against the fill inside it, `#2563eb` in light. Not a
+check before the label, which would grow the chip as it toggles, not keeping
+the file's fill, and not asking the designer first. That blue is already the
+chip's pressed edge, so selection gets an edge of its own or is proved apart
+from pressing. KN-279 builds it, after KN-272 fixes the dark fill.
 
 ## 7. The Documentation canvas, frame by frame
 

@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 89 of 278 tasks done · 171 of 688 points.
+Project **KarNama** · 89 of 279 tasks done · 171 of 691 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -23,7 +23,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (184)
+## Backlog (185)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -49,6 +49,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-226` | Nothing committed checks that the published Storybook renders its stories without errors | critical | 3 | infra | none | A committed check builds Storybook for production, opens every story in headless Chromium, and fails on any page error or console error; it runs before the Pages workflow publishes; and a mutation removing the Hover story's test-runner guard makes it fail on the emitted import error. |
 | `KN-255` | The other components' stories keep controls that make their play functions untrue | critical | 3 | web | none | Every story with a play function, in every component, either reads its expectations from the active args or offers only the controls its assertions hold for, and no story offers a control whose values the component cannot take, such as the Tooltip's children; KN-247's check, run over every story and changing each control by its own type (booleans flipped, every option of a select, a number changed, text changed and emptied), fails on none; and a repository guard fails any story file with a story that has a play function and neither declares its controls nor disables them. |
 | `KN-275` | Add a resting edge role for controls at 3:1, and draw the Input and the Checkbox with it | critical | 3 | web | none | tokens.ts carries a named role for a control's resting edge, a neutral in text/secondary's hue at 3.3:1 or more on bg/surface, bg/page and bg/surface-secondary, and darkMode.ts derives it and checks it at 3:1 or more on the three dark backgrounds, each ratio asserted by a unit test with a mutation back to border/default failing it; the Input's resting border and the Checkbox's unchecked frame use it, and the Input's Default story and the Checkbox's Unchecked story assert it; every other state of both still renders as drawn; DESIGN.md's token tables list the role as the owner's addition under KN-273; the token verifier and the contract pass; and the Input and the Checkbox are seen at rest in all four combinations. |
+| `KN-279` | Give the selected Filter Chip a blue edge at 3:1, apart from its pressed edge | critical | 3 | web | KN-272 | A selected Filter Chip's edge is drawn in a named role at 3:1 or more against bg/surface, bg/page, bg/surface-secondary and its own fill, in light and in the derived dark, each ratio asserted by a unit test with a mutation back to the fill-coloured edge failing it; the Selected story asserts the edge; a story proves a pressed unselected chip is still told apart from a selected one; DESIGN.md records the edge under the owner's decision of KN-276; and the chip is seen unselected, selected and pressed in all four combinations. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | critical | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | critical | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
 | `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
@@ -3530,4 +3531,15 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** A retirement check that can pass while the thing it retires is still true removes the record of a gap without closing it. Low: it is about the suppression record, not the product, and nothing is broken today.
 
 **Exit condition.** TECH-DEBT 16's retirement check is behavioural: take the early return out of ControlsMatchTheCanvas and run ControlsMatchTheCanvasInEnglish under Vitest; the entry retires only when that passes, and the entry says so.
+
+### `KN-279` Give the selected Filter Chip a blue edge at 3:1, apart from its pressed edge
+
+- **status** backlog · **severity** critical · **points** 3 · **area** web
+- **blocked by** KN-272
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: the owner's decision on KN-276, 2026-09-10, a KN-011 child. The selected Filter Chip keeps the file's pale bg/brand/container fill, and its one pixel edge turns a blue at 3:1 or more on every surface: #2563eb in light is 5.17 on bg/surface, 4.82 on bg/page, 4.70 on bg/surface-secondary and 4.24 against the fill inside it. That blue is border/focus, which the chip already draws as its pressed edge (&:active) and as its focus ring, so pressing an unselected chip would look selected until it is released: the selected edge gets a named role of its own, or a story proves pressed and selected stay apart. In dark the fill is KN-272's, which derives it today to a bright #207df9, so this waits for KN-272 and then checks the edge against the dark fill and the dark surfaces.
+
+**Why.** Someone who cannot see a 1.2:1 fill cannot tell which filters are on, and the Filter Chip is the status counter above the board. The owner chose the edge on 2026-09-10. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** A selected Filter Chip's edge is drawn in a named role at 3:1 or more against bg/surface, bg/page, bg/surface-secondary and its own fill, in light and in the derived dark, each ratio asserted by a unit test with a mutation back to the fill-coloured edge failing it; the Selected story asserts the edge; a story proves a pressed unselected chip is still told apart from a selected one; DESIGN.md records the edge under the owner's decision of KN-276; and the chip is seen unselected, selected and pressed in all four combinations.
 

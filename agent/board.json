@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 279,
+  "nextId": 280,
   "tasks": [
     {
       "id": "KN-001",
@@ -6927,7 +6927,8 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T14:49:24.519Z",
-      "updatedAt": "2026-09-10T15:39:22.527Z"
+      "updatedAt": "2026-09-10T15:48:13.951Z",
+      "verify": "node agent/scripts/verify/KN-276.mjs"
     },
     {
       "id": "KN-277",
@@ -6958,6 +6959,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T15:43:01.758Z"
+    },
+    {
+      "id": "KN-279",
+      "title": "Give the selected Filter Chip a blue edge at 3:1, apart from its pressed edge",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: the owner's decision on KN-276, 2026-09-10, a KN-011 child. The selected Filter Chip keeps the file's pale bg/brand/container fill, and its one pixel edge turns a blue at 3:1 or more on every surface: #2563eb in light is 5.17 on bg/surface, 4.82 on bg/page, 4.70 on bg/surface-secondary and 4.24 against the fill inside it. That blue is border/focus, which the chip already draws as its pressed edge (&:active) and as its focus ring, so pressing an unselected chip would look selected until it is released: the selected edge gets a named role of its own, or a story proves pressed and selected stay apart. In dark the fill is KN-272's, which derives it today to a bright #207df9, so this waits for KN-272 and then checks the edge against the dark fill and the dark surfaces.",
+      "why": "Someone who cannot see a 1.2:1 fill cannot tell which filters are on, and the Filter Chip is the status counter above the board. The owner chose the edge on 2026-09-10. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 3,
+      "area": "web",
+      "parent": [
+        "KN-272"
+      ],
+      "status": "backlog",
+      "exit": "A selected Filter Chip's edge is drawn in a named role at 3:1 or more against bg/surface, bg/page, bg/surface-secondary and its own fill, in light and in the derived dark, each ratio asserted by a unit test with a mutation back to the fill-coloured edge failing it; the Selected story asserts the edge; a story proves a pressed unselected chip is still told apart from a selected one; DESIGN.md records the edge under the owner's decision of KN-276; and the chip is seen unselected, selected and pressed in all four combinations.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T15:47:06.702Z"
     }
   ]
 }
