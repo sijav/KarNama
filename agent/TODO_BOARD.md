@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 86 of 271 tasks done · 166 of 677 points.
+Project **KarNama** · 86 of 273 tasks done · 166 of 680 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-244` A focused invalid Input shows focus by one pixel of the same red** (critical, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-244` | A focused invalid Input shows focus by one pixel of the same red | critical | 2 | web | KN-271 | A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name. |
 
 ## Blocked (2)
 
@@ -17,20 +23,21 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (181)
+## Backlog (182)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | critical | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
+| `KN-273` | The Input and the Checkbox are bounded by a 1.24:1 border, under the 3:1 WCAG 1.4.11 asks of a control's edge | critical | 1 | design | none | The owner has answered, through the question tool, whether the resting edge of an enabled Input and an unchecked Checkbox stays border/default as the file draws it or is raised to at least 3:1 against the surfaces it sits on; DESIGN.md records the answer as the owner's, with the date; and if it is raised, a card for the change exists. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
-| `KN-244` | A focused invalid Input shows focus by one pixel of the same red | critical | 2 | web | KN-271 | A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name. |
 | `KN-245` | The Input's Controls show empty values while the canvas draws the specimen's copy | critical | 2 | web | none | With no control touched, every Controls value in the args-driven Input stories is what the canvas draws, label, placeholder and helper, in either language; changing one in Controls changes the canvas to exactly that value, and clearing the placeholder or helper removes it; a story asserts the rendered copy equals the args, and a mutation reintroducing a hidden fallback fails it. |
 | `KN-253` | The Input's value binding loses keystrokes that arrive faster than Storybook's channel | critical | 2 | web | none | The field shows every edit as it happens and the arg follows without a stale value overwriting newer input: 20 keys typed with no delay all arrive in both the field and the arg, and a composition driven through the browser's own IME input ends with the composed text in both; a mutation back to the plain round trip loses keys again. |
 | `KN-266` | The Input's border takes layout space, so its text sits a pixel inward of the file | critical | 2 | web | none | In every state the Input's text sits spacing/md, 16px, from the field's outer edge, as 95:5 and 95:19 draw it, with the stroke painted inside that padding and taking no layout space; no padding in Input.tsx is computed from a border width; the Default and Focus stories measure the text's distance from the edge at 16; and the other bordered components are checked for the same offset, each matching or carrying a card. |
 | `KN-267` | The Input has no leading or trailing icon slot, which node 95:38 carries | critical | 2 | web | none | The Input takes an optional leading and an optional trailing icon, each 20 by 20 at spacing/2xs from the text in text/secondary, matching 95:38 with the icons on, in both directions; stories show each and both; and the label's boolean in the file is either honoured, with the accessible name then required another way, or the decision not to is recorded in DESIGN.md. |
+| `KN-272` | In dark, a selected Filter Chip's text is 1.34:1 on its fill, and its pressed border 1.14:1 | critical | 2 | web | none | In the derived dark palette bg/brand/container is a dark tint of its own hue, derived as a fill the way the status containers are, text/brand clears 4.5:1 on it and border/focus clears 3:1 on it, and every pair the tests already hold still holds; darkMode.test.ts asserts both pairs as the Filter Chip draws them, and a mutation back to the surface derivation fails them; and the selected Filter Chip, resting and pressed, is seen in dark in both languages. |
 | `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
 | `KN-021` | Page header | critical | 3 | web | KN-005, KN-006, KN-007, KN-009, KN-008 | Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree. |
 | `KN-022` | Empty state and loading state | critical | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
@@ -3104,7 +3111,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-244` A focused invalid Input shows focus by one pixel of the same red
 
-- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
 - **blocked by** KN-271
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-241 roast and confirmed by measurement. The ordinary Focus state changes a two-pixel ring: the outer pixel goes from border/default #e5e7eb to border/focus #2563eb, 4.17:1, and the inner from bg/surface #ffffff to border/focus, 5.17:1, which meets the area and contrast measure of WCAG 2.4.13 Focus Appearance. The focused invalid state KN-241 decided in DESIGN.md changes only the inner pixel, #ffffff to border/error #ef4444, 3.76:1; the outer pixel is red before and after, 1:1. That is half the changed area, and someone who cannot resolve one pixel of thickness sees no focus at all. MUI's own outlined field and Material 3 do the same thing, so it is a convention, but it is weaker than this design's own Focus state, and the reason DESIGN.md gives only argues against staying at one pixel. The system already has a keyboard focus ring: the Checkbox draws a 2px border/focus outline at offset 2. Figma does not draw this state, so the treatment is a decision to record, not a reading.
@@ -3433,4 +3440,28 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** Someone in the dark theme who moves by keyboard needs to see where focus is, and the dark palette is derived by rules this repository wrote, so no design review will catch it. KN-244's focus ring for an invalid field is drawn in border/focus as well, so its measure cannot hold in dark until this does. Critical on the owner's order of 2026-09-10, as a finding on built components.
 
 **Exit condition.** In the derived dark palette, border/focus and border/error each reach at least 3:1 against bg/page, bg/surface and bg/surface-secondary with their hue unchanged; darkMode.test.ts asserts all six ratios, and a mutation back to the unchecked derivation fails it; DESIGN.md's dark mode section says which borders are checked and at what ratio; and the Input's Focus state and the Checkbox's focus ring are seen in dark in both languages.
+
+**Roasts.** round 1 scored 6 with 1 critical(s)
+
+### `KN-272` In dark, a selected Filter Chip's text is 1.34:1 on its fill, and its pressed border 1.14:1
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-271 roast, and KN-271 is itself a child of KN-011, so its findings sit beside it. The roast reported the pressed border; measuring it found the text as well. In the derived dark palette bg/brand/container comes out #207df9: darkSemantic sends it through deriveDarkSurface, which hands a chromatic colour to deriveDark, and the flip plus the chromatic floor turn the pale #dbeafe into a bright mid blue, the collapse the status containers had before deriveDarkFill. A selected Filter Chip paints that fill with text/brand #7494ec on it, 1.34:1, and its :active border in border/focus #3670ed, 1.14:1. Seen in production Storybook: shared-filterchip--selected in dark renders the chip light blue on bright blue. In light the same two pairs are 5.49 and 4.24. text/brand is checked only against the neutral surface and border/focus only against the three neutral backgrounds, so no test holds a pair a component actually draws.
+
+**Why.** A selected filter is the one the user is looking at, and in the dark theme its label cannot be read. The Filter Chip doubles as the status counter above the board, so this lands on the main screen once screens exist. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** In the derived dark palette bg/brand/container is a dark tint of its own hue, derived as a fill the way the status containers are, text/brand clears 4.5:1 on it and border/focus clears 3:1 on it, and every pair the tests already hold still holds; darkMode.test.ts asserts both pairs as the Filter Chip draws them, and a mutation back to the surface derivation fails them; and the selected Filter Chip, resting and pressed, is seen in dark in both languages.
+
+### `KN-273` The Input and the Checkbox are bounded by a 1.24:1 border, under the 3:1 WCAG 1.4.11 asks of a control's edge
+
+- **status** backlog · **severity** critical · **points** 1 · **area** design
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-271 roast. The resting edge of an enabled Input and of an unchecked Checkbox is border/default #e5e7eb, 1.24:1 on bg/surface and 1.16:1 on bg/page, and the Input's own fill is bg/surface, 1.07:1 against the page, so nothing else draws its boundary. WCAG 1.4.11 asks 3:1 of the visual information needed to identify a control. The derived dark palette follows the design, 1.33 on the dark surface and 1.16 on the dark page. It is the file's own value, read from node 95:3 and the Checkbox frame, and matching the file exactly is the owner's standing rule, so raising it is a departure from the design and not a build decision.
+
+**Why.** Someone with low vision may not find the field, or see where the checkbox is, which is the first thing a form asks of them. It cannot be fixed without departing from the file, so the owner has to choose between the design as drawn and the contrast rule. Critical on the owner's order of 2026-09-10, as a finding on built components.
+
+**Exit condition.** The owner has answered, through the question tool, whether the resting edge of an enabled Input and an unchecked Checkbox stays border/default as the file draws it or is raised to at least 3:1 against the surfaces it sits on; DESIGN.md records the answer as the owner's, with the date; and if it is raised, a card for the change exists.
 

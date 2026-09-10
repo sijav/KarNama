@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 272,
+  "nextId": 274,
   "tasks": [
     {
       "id": "KN-001",
@@ -6121,14 +6121,14 @@
       "parent": [
         "KN-271"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name.",
       "roasts": [],
       "notes": [
         "2026-09-10: taken, then put back before any file changed. Planning it found the derived dark border/focus at 2.81:1 on bg/surface, KN-271, and the focus ring this card adds is drawn in border/focus, so its 3:1 measure cannot hold in dark until KN-271 lands. Replan from step 2b after it: the ring is the Checkbox's, 2px border/focus at offset 2, beside a 2px border/error border."
       ],
       "createdAt": "2026-09-10T09:45:56.913Z",
-      "updatedAt": "2026-09-10T14:09:14.405Z"
+      "updatedAt": "2026-09-10T14:20:26.826Z"
     },
     {
       "id": "KN-245",
@@ -6770,13 +6770,60 @@
       "parent": [],
       "status": "done",
       "exit": "In the derived dark palette, border/focus and border/error each reach at least 3:1 against bg/page, bg/surface and bg/surface-secondary with their hue unchanged; darkMode.test.ts asserts all six ratios, and a mutation back to the unchecked derivation fails it; DESIGN.md's dark mode section says which borders are checked and at what ratio; and the Input's Focus state and the Checkbox's focus ring are seen in dark in both languages.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-271-round-1.2026-09-10T14-20-18-042Z.md",
+          "filed": [
+            "KN-272",
+            "KN-273"
+          ],
+          "cardDigest": "b773e3da526166fab2015371e2b0f8d10ffee53896c99699260cc490cb7f8e08",
+          "head": "7094cf23b4583e5ce5417cfc663fbd9e75254162",
+          "reviewerScore": 3.5,
+          "reviewerCriticals": 1,
+          "dismissed": "Score raised from 3.5. KN-271 met its exit condition for the three backgrounds it named; the critical is real but predates it, in how bg/brand/container is derived, and measuring it found the selected chip's text at 1.34:1 as well, filed as KN-272 rather than weighed against KN-271's own change. The resting border finding is real and is the file's own value, filed for the owner as KN-273. The plan-file finding is dismissed: agent/RALPH.md step 2b puts a plan beside the work and keeps it, and the documentation rule it cites is about prose inside .ts and .tsx files.",
+          "at": "2026-09-10T14:24:37.551Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T14:09:07.310Z",
       "updatedAt": "2026-09-10T14:19:58.208Z",
       "verify": "node agent/scripts/verify/KN-271.mjs",
       "evidence": "darkMode.ts walks border/focus and border/error lighter in their own hue with ensureContrast until they clear NON_TEXT_CONTRAST, 3, against the dark surface, the lightest dark background. border/focus is #3670ed (was #2d69ec): 3.48 on bg/page, 3.04 on bg/surface, 3.57 on bg/surface-secondary; border/error unchanged #ed2c2c at 3.70, 3.23, 3.80. node agent/scripts/verify/KN-271.mjs passed: all six ratio cases and both hue cases pass by name; border/focus back to the unchecked derivation fails 'border/focus clears 3:1 on the dark bg/surface'; NON_TEXT_CONTRAST lowered to 2.5 fails it too, since the test states 3; the surface colour in the error row fails the error surface case; a red focus colour fails the hue case; DESIGN.md's dark mode section names both borders, the three backgrounds and 3 to one. Unit project 418 passed, Storybook project 65 passed, eslint and tsc clean, contract clean, KN-005 verify passed. Seen in production Storybook in dark, fa-IR and en-US: the focused Input (Filled story) reads 2px rgb(54,112,237) on rgb(46,46,46); the Checkbox ring and the Filter Chip outline read 2px rgb(54,112,237); the focused invalid Input keeps 2px rgb(237,44,44). Not established: backgrounds other than the three, such as the brand and danger fills, which no built focus treatment sits on.",
       "closedAt": "2026-09-10T14:19:58.208Z"
+    },
+    {
+      "id": "KN-272",
+      "title": "In dark, a selected Filter Chip's text is 1.34:1 on its fill, and its pressed border 1.14:1",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-271 roast, and KN-271 is itself a child of KN-011, so its findings sit beside it. The roast reported the pressed border; measuring it found the text as well. In the derived dark palette bg/brand/container comes out #207df9: darkSemantic sends it through deriveDarkSurface, which hands a chromatic colour to deriveDark, and the flip plus the chromatic floor turn the pale #dbeafe into a bright mid blue, the collapse the status containers had before deriveDarkFill. A selected Filter Chip paints that fill with text/brand #7494ec on it, 1.34:1, and its :active border in border/focus #3670ed, 1.14:1. Seen in production Storybook: shared-filterchip--selected in dark renders the chip light blue on bright blue. In light the same two pairs are 5.49 and 4.24. text/brand is checked only against the neutral surface and border/focus only against the three neutral backgrounds, so no test holds a pair a component actually draws.",
+      "why": "A selected filter is the one the user is looking at, and in the dark theme its label cannot be read. The Filter Chip doubles as the status counter above the board, so this lands on the main screen once screens exist. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "In the derived dark palette bg/brand/container is a dark tint of its own hue, derived as a fill the way the status containers are, text/brand clears 4.5:1 on it and border/focus clears 3:1 on it, and every pair the tests already hold still holds; darkMode.test.ts asserts both pairs as the Filter Chip draws them, and a mutation back to the surface derivation fails them; and the selected Filter Chip, resting and pressed, is seen in dark in both languages.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T14:24:28.875Z"
+    },
+    {
+      "id": "KN-273",
+      "title": "The Input and the Checkbox are bounded by a 1.24:1 border, under the 3:1 WCAG 1.4.11 asks of a control's edge",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-271 roast. The resting edge of an enabled Input and of an unchecked Checkbox is border/default #e5e7eb, 1.24:1 on bg/surface and 1.16:1 on bg/page, and the Input's own fill is bg/surface, 1.07:1 against the page, so nothing else draws its boundary. WCAG 1.4.11 asks 3:1 of the visual information needed to identify a control. The derived dark palette follows the design, 1.33 on the dark surface and 1.16 on the dark page. It is the file's own value, read from node 95:3 and the Checkbox frame, and matching the file exactly is the owner's standing rule, so raising it is a departure from the design and not a build decision.",
+      "why": "Someone with low vision may not find the field, or see where the checkbox is, which is the first thing a form asks of them. It cannot be fixed without departing from the file, so the owner has to choose between the design as drawn and the contrast rule. Critical on the owner's order of 2026-09-10, as a finding on built components.",
+      "severity": "critical",
+      "points": 1,
+      "area": "design",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The owner has answered, through the question tool, whether the resting edge of an enabled Input and an unchecked Checkbox stays border/default as the file draws it or is raised to at least 3:1 against the surfaces it sits on; DESIGN.md records the answer as the owner's, with the date; and if it is raised, a card for the change exists.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T14:24:29.018Z"
     }
   ]
 }
