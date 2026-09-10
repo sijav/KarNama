@@ -46,6 +46,20 @@ describe('render.yaml', () => {
     ).toBe(true)
   })
 
+  it('rescues a stale build command with NPM_CONFIG_PRODUCTION', () => {
+    // Editing `buildCommand` does not change a service Render already created
+    // from an earlier version of this file; it keeps its settings until the
+    // Blueprint is re-synced. So the `--include=dev` fix was correct and still
+    // produced an identical failure. An environment variable is read by every
+    // npm invocation in the service, including a stale command, which is why
+    // both belong here rather than either alone.
+    expect(
+      /key:\s*NPM_CONFIG_PRODUCTION[\s\S]{0,60}?value:\s*'?false'?/.test(directives),
+      'render.yaml must set NPM_CONFIG_PRODUCTION=false, so devDependencies install ' +
+        'even if Render is still running the build command it was created with.',
+    ).toBe(true)
+  })
+
   it('carries no connection string, so no credential is committed', () => {
     // `sync: false` means Render prompts for it once and it never lands in git.
     expect(directives).toMatch(/key:\s*DATABASE_URL[\s\S]{0,80}?sync:\s*false/)

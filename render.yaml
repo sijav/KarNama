@@ -47,6 +47,19 @@ services:
       - key: NODE_ENV
         value: production
 
+      # The SAME fix as `--include=dev` in the build command, by a route that
+      # does not depend on the build command at all.
+      #
+      # Editing `buildCommand` here does not retroactively change a service that
+      # Render already created from an earlier version of this file: the service
+      # keeps the settings it was made with until the Blueprint is re-synced. So
+      # the first fix was correct and still produced an identical failure.
+      #
+      # An environment variable is read by EVERY npm invocation in the service,
+      # including a stale build command, so this works whichever one runs.
+      - key: NPM_CONFIG_PRODUCTION
+        value: 'false'
+
       # Required, with NO default on purpose: `env.ts` refuses to boot without
       # it, because a default here is a permissive CORS policy nobody chose.
       # This is the GitHub Pages origin the web app is served from.
