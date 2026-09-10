@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 236,
+  "nextId": 237,
   "tasks": [
     {
       "id": "KN-001",
@@ -5747,7 +5747,23 @@
       ],
       "status": "done",
       "exit": "A trigger that forwards its ref but drops its other props is reported in a PRODUCTION build as well as in development, proved by a story with such a wrapper checked on the production Storybook; a trigger that mounts after the first render is not falsely reported; a working trigger swapped for a broken one is reported; and the ReportsATriggerThatCannotAttach and KeepsTheTriggersName stories still pass.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-233-round-1.2026-09-10T08-43-41-761Z.md",
+          "filed": [
+            "KN-236",
+            "KN-235"
+          ],
+          "cardDigest": "8e55c05d82d5aec66418611c91f0e52cc26587f202674e3f3de598116d0a5b96",
+          "head": "6321ed082fc986983f8a3426593b427476083eda",
+          "reviewerScore": 3,
+          "reviewerCriticals": 2,
+          "at": "2026-09-10T08:53:02.180Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T08:26:44.927Z",
       "updatedAt": "2026-09-10T08:43:25.987Z",
@@ -5788,6 +5804,21 @@
       "verify": "node agent/scripts/verify/KN-235.mjs",
       "evidence": "Tooltip.tsx types children as ReactElement<{ 'aria-describedby'?: string }> and clones it with aria-describedby set to `${own} ${descriptionId}` when the trigger has its own, else descriptionId; the separate prop through MUI is gone, since MUI's child-props-last spread would replace it. The report for a props-dropping trigger no longer tells callers to avoid their own aria-describedby. New story KeepsTheTriggersOwnDescription renders a trigger pointing at a hint span (the 'My job opportunities' message standing in for a field hint) and asserts toHaveAccessibleDescription(`${hint} ${args.title}`) before interaction and after tab, and that console.error was not called after 300ms. agent/scripts/verify/KN-235.mjs, 3 checks green: 14 of 14 tooltip stories pass; THE CASE, with the merge dropped the story fails on the accessible description; the story checks both texts in order, before and at focus, and no report. KN-231.mjs repointed at the clone and green; KN-233, KN-211, KN-209, KN-222, KN-032 green; full web npm test 353 of 353 with coverage; docs guard 50 of 50 with the story documented in en and fa; lint and tsc clean.",
       "closedAt": "2026-09-10T08:51:59.248Z"
+    },
+    {
+      "id": "KN-236",
+      "title": "The tooltip's attach check guesses a trigger's lateness with a timer and its props from one attribute",
+      "desc": "CHILD OF KN-233, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-233 roast, both confirmed, filed together because they are the same check. FIRST: a missing node is reported after a fixed 100ms, so a trigger that legitimately renders nothing for longer, while a permission or feature flag resolves, is falsely reported. SECOND: arriving props are inferred from one attribute, the description link, so a wrapper that forwards exactly the ref and aria-describedby but drops onFocus and onMouseOver passes while the tip can never open; MUI's own check catches that only in development. A sounder shape: hidden markers on both sides of the child, so 'rendered something but took no ref' is told from 'rendered nothing yet' without a timer, and the props proof taken from something the event handlers themselves produce. The roast's third finding, a trigger with its own description, was fixed by KN-235.",
+      "why": "The check promises a clear report instead of silence, and a check that cries wolf at a slow but correct trigger, or stays quiet for a selectively forwarding one, weakens that promise at its edges. Medium rather than critical: the careless wrapper that spreads nothing and the trigger that arrives a render late are both handled, MUI covers selective forwarding in development, and the tooltip's first real caller, the icon button, spreads its props.",
+      "severity": "medium",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A trigger that renders nothing for a second and then attaches correctly is never reported; one that renders DOM without taking the ref is reported however late it appears; a wrapper forwarding only the ref and aria-describedby is reported in a production build; each proved by a story, and the existing report stories still pass.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T08:53:01.992Z"
     }
   ]
 }

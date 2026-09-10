@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 65 of 235 tasks done · 140 of 628 points.
+Project **KarNama** · 65 of 236 tasks done · 140 of 631 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -18,7 +18,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (165)
+## Backlog (166)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -141,6 +141,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-142` | Nothing checks that a tsconfig still covers what the bundler ships | medium | 3 | infra | none | Narrowing any workspace's tsconfig include so a file the bundler ships leaves the compiler program makes the gate fail, proved by planting exactly the health-only include a roast used, and the check derives the shipped files rather than listing them by hand. |
 | `KN-143` | The mutation harnesses match test names in output, not test outcomes | medium | 3 | agent | none | A planted regression whose designated test still PASSES while some other test fails is reported as a MISS, proved by planting exactly that, and every verifier that plants regressions reads a machine-readable result rather than console text. |
 | `KN-165` | Prove the roast recording path end to end with a stubbed reviewer | medium | 3 | agent | none | A verifier drives roast.mjs against a stubbed reviewer in an isolated repository, gets a genuine archive and manifest, records the round against a DONE task with todo.mjs roast, and asserts the round appears on the card; the stub is confined to the sandbox and no production path accepts it; and mutations to the manifest digest check are caught. |
+| `KN-236` | The tooltip's attach check guesses a trigger's lateness with a timer and its props from one attribute | medium | 3 | web | none | A trigger that renders nothing for a second and then attaches correctly is never reported; one that renders DOM without taking the ref is reported however late it appears; a wrapper forwarding only the ref and aria-describedby is reported in a production build; each proved by a story, and the existing report stories still pass. |
 | `KN-040` | Third-party feedback, stored for later evaluation | medium | 5 | api | KN-034 | A submission is stored with its target and a pending state, it never mutates the target, a submission whose target was deleted between submit and review is handled rather than orphaned, and rate limiting stops a flood from one source. |
 | `KN-041` | Admin API: the moderation queue | medium | 5 | api | KN-040, KN-036 | A non-admin is refused every operation at the resolver, approving and rejecting both record who did it and when, and the queue paginates rather than loading everything. |
 | `KN-064` | Third-party feedback submission surface | medium | 5 | web | KN-042, KN-040 | An anonymous visitor can submit a comment and a suggested change against a record, both arrive in the moderation queue in a pending state, the target record is not altered, the submitter is told it is pending review, and a flood from one source is rate limited. |
@@ -2936,6 +2937,8 @@ CHILD OF KN-211, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** A trigger that forwards its ref but drops its other props is reported in a PRODUCTION build as well as in development, proved by a story with such a wrapper checked on the production Storybook; a trigger that mounts after the first render is not falsely reported; a working trigger swapped for a broken one is reported; and the ReportsATriggerThatCannotAttach and KeepsTheTriggersName stories still pass.
 
+**Roasts.** round 1 scored 3 with 2 critical(s)
+
 ### `KN-234` The token guard still accepts copy as a key or inside the font stack, and its retirement check trusts any lint failure
 
 - **status** backlog · **severity** high · **points** 2 · **area** web
@@ -2957,4 +2960,15 @@ CHILD OF KN-231, recorded in prose because board.json cannot express parent_task
 **Why.** A trigger that already has a description, a validation hint or a field help text, is exactly where a tooltip is common, and the tooltip currently erases one of the two descriptions and then blames the trigger for it. Critical on the owner's order of 2026-09-10, as a finding on a built component, and because KN-233's report made it actively misleading.
 
 **Exit condition.** A trigger with its own aria-describedby keeps it AND gains the tooltip's, in that order, before and after focus, asserted by a story that checks the computed description contains both texts; no report is logged for it; the ref-only and cannot-attach reports still fire; and a mutation dropping the merge fails the story.
+
+### `KN-236` The tooltip's attach check guesses a trigger's lateness with a timer and its props from one attribute
+
+- **status** backlog · **severity** medium · **points** 3 · **area** web
+- **blocked by** none
+
+CHILD OF KN-233, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-233 roast, both confirmed, filed together because they are the same check. FIRST: a missing node is reported after a fixed 100ms, so a trigger that legitimately renders nothing for longer, while a permission or feature flag resolves, is falsely reported. SECOND: arriving props are inferred from one attribute, the description link, so a wrapper that forwards exactly the ref and aria-describedby but drops onFocus and onMouseOver passes while the tip can never open; MUI's own check catches that only in development. A sounder shape: hidden markers on both sides of the child, so 'rendered something but took no ref' is told from 'rendered nothing yet' without a timer, and the props proof taken from something the event handlers themselves produce. The roast's third finding, a trigger with its own description, was fixed by KN-235.
+
+**Why.** The check promises a clear report instead of silence, and a check that cries wolf at a slow but correct trigger, or stays quiet for a selectively forwarding one, weakens that promise at its edges. Medium rather than critical: the careless wrapper that spreads nothing and the trigger that arrives a render late are both handled, MUI covers selective forwarding in development, and the tooltip's first real caller, the icon button, spreads its props.
+
+**Exit condition.** A trigger that renders nothing for a second and then attaches correctly is never reported; one that renders DOM without taking the ref is reported however late it appears; a wrapper forwarding only the ref and aria-describedby is reported in a production build; each proved by a story, and the existing report stories still pass.
 
