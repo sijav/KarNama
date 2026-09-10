@@ -422,3 +422,28 @@ nothing it renders sits under the spot.
 **The check that retires this.** KN-260 puts the pointer somewhere neutral
 before every story, once for the whole suite. Then the `pointerEvents` line
 comes out of the story, the full suite still passes, and this entry is deleted.
+
+## 16. The Input stories check their args follow the language only in Storybook's preview
+
+**What.** `ControlsMatchTheCanvas` and its English twin assert everywhere that the
+canvas draws exactly the args it was given, and assert that untouched args are
+the specimen's copy in the language on screen only outside the test runner,
+returning early when `__KARNAMA_STORY_TEST__` is set. Added by KN-245.
+
+**Why it is like that.** The Input's meta render writes the copy for the
+language on screen into the args with `updateArgs`. Portable stories, which
+`@storybook/addon-vitest` runs, apply no args update: nothing in that path listens
+for `updateStoryArgs`, so under the test runner the write changes nothing and the
+args stay in the language the stories file loaded in. There is no Controls panel
+there to follow either.
+
+**What it costs.** `npm test` alone does not prove the copy follows the Language
+toolbar, and a story that pins English shows the Input's copy in Persian under
+Vitest. `agent/scripts/verify/KN-245.mjs` runs the other half against a
+production Storybook and its real Controls panel instead.
+
+**The check that retires this.** A search of `node_modules/@storybook/addon-vitest`
+and the portable-story code in `node_modules/storybook/dist` finds a listener for
+`updateStoryArgs` that rerenders the composed story with the new args. Then the
+early return comes out, the English twin passes under Vitest, and this entry is
+deleted.

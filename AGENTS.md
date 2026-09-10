@@ -241,9 +241,14 @@ Through `window.*`. Keeps them mockable and greppable, enforced by
 ### Stories render from their args
 
 A Docs page exists to demonstrate a component through its props, so the Controls
-panel has to actually drive what is on screen. Spread args and fall back per
-field, so sample copy follows the Language toolbar while a typed-in value wins.
-Every callback prop gets an `fn()` so the Actions panel records it.
+panel has to actually drive what is on screen, and show what is on screen.
+Sample copy lives IN the args and follows the Language toolbar there, written
+back with `updateArgs`; a value typed in Controls wins, except one typed as
+exactly the copy the story put there, which the args cannot tell apart from that
+copy and which follows the language with it; and a story never draws a value
+its Controls do not show, so no field falls back to copy behind an empty
+control. The Input's stories are the worked example, KN-245. Every callback prop
+gets an `fn()` so the Actions panel records it.
 
 A story composing several instances has no single component to drive: either
 spread args across all of them, or disable the panel and say why. An empty panel

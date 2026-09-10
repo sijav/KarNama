@@ -93,6 +93,19 @@ pixels of the focus colour just outside the field, because red staying red
 would show no focus at all. The field is shown on each of the three surfaces it
 sits on. The design does not draw this state; DESIGN.md records the decision.
 
+### ControlsMatchTheCanvas
+
+With no control touched, the Controls show the specimen's label, placeholder and
+helper in the language on screen, and the field draws exactly those. Type in a
+control and the field draws what was typed; empty the placeholder or the helper
+and it is gone.
+
+### ControlsMatchTheCanvasInEnglish
+
+The same in English, which is not the language the stories load in, so the
+copy has to follow the Language toolbar into the Controls rather than stay
+where it started.
+
 ### Disabled
 
 The secondary surface, with the text in the disabled colour.

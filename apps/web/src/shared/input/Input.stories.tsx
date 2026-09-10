@@ -1,9 +1,10 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
-import type { ChangeEvent } from 'react'
-import { useArgs } from 'storybook/preview-api'
-import { expect, fn, userEvent, within } from 'storybook/test'
+import { useEffect, type ChangeEvent } from 'react'
+import { useArgs, useRef } from 'storybook/preview-api'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { i18n } from '../../i18n'
 import { contrast } from '../../theme/darkMode'
 import { semantic, spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -56,22 +57,39 @@ const changes = (before: Record<string, string>, after: Record<string, string>) 
 // What a user typed: record data, so it is not translated.
 const TYPED = 'توسعه‌دهنده فرانت‌اند'
 
-// The design's own specimen, node 95:38, with its copy through the catalog so
-// the Language toolbar changes it. The job title field of the add-job form.
-// Every arg passes through; the specimen's copy fills in only where an arg is
-// left empty, so the Controls panel drives the field, KN-242.
-const JobTitle = ({ withError = false, label, placeholder, helperText, ...rest }: Partial<InputProps> & { withError?: boolean }) => {
-  const { i18n } = useLingui()
-  return (
-    <Input
-      label={label === undefined || label === '' ? i18n._('Job title') : label}
-      placeholder={placeholder ?? i18n._('e.g. Frontend developer')}
-      helperText={helperText ?? i18n._('A short explanation')}
-      {...(withError ? { error: i18n._('This field cannot be empty') } : {})}
-      {...rest}
-    />
-  )
+// The design's own specimen, node 95:38: the job title field of the add-job
+// form, its copy through the catalog in the language active when it is read.
+type CopyField = 'label' | 'placeholder' | 'helperText'
+const COPY_FIELDS: CopyField[] = ['label', 'placeholder', 'helperText']
+const specimenCopy = (): Record<CopyField, string> => ({
+  label: i18n._('Job title'),
+  placeholder: i18n._('e.g. Frontend developer'),
+  helperText: i18n._('A short explanation'),
+})
+
+// The args start as the specimen's copy in the language this file loads in,
+// so the Controls show what the canvas draws from the first frame, KN-245.
+const AT_LOAD = specimenCopy()
+
+// Writes the specimen's copy for the language on screen back into the args,
+// after the commit, as React's passive effect. Storybook's own effects run
+// only once play has finished in its preview, where a play could never see
+// their write, and Storybook's hooks may not share a function with React's,
+// so the effect lives here and the story render owns the args. Portable
+// stories apply no args update, so under the test runner the write changes
+// nothing, TECH-DEBT 16.
+const FollowTheLanguage = ({ pending, write }: { pending: boolean; write: () => void }) => {
+  useEffect(() => {
+    if (pending) write()
+  })
+  return null
 }
+
+// The specimen for the fixed renders, which offer no controls: its copy is
+// stated here, in the language on screen, and any prop given replaces it.
+const JobTitle = ({ withError = false, ...rest }: Partial<InputProps> & { withError?: boolean }) => (
+  <Input {...specimenCopy()} {...(withError ? { error: i18n._('This field cannot be empty') } : {})} {...rest} />
+)
 
 // The controls a story offers: only the args its play function holds for, so
 // changing one in Controls and pressing Rerun never has the story report
@@ -89,9 +107,9 @@ const fieldOf = (canvasElement: HTMLElement) => {
 const meta = {
   title: 'Shared/Input',
   component: Input,
-  // An empty label means the specimen's, from the catalog; set one in
-  // Controls and it is used instead.
-  args: { label: '', onChange: fn() },
+  // The specimen's copy is IN the args, so the Controls show it, and the
+  // render keeps it in the language on screen, KN-245.
+  args: { ...AT_LOAD, onChange: fn() },
   // Keyed on defaultValue: the field is uncontrolled, and React reads a
   // default only when the field mounts, so a new one needs a new field or the
   // Controls panel changes nothing, KN-246. And on whether value is set: one
@@ -102,13 +120,46 @@ const meta = {
   // to the args: set it in Controls and the field is controlled, so what is
   // typed has to go back into the arg, or the field refuses every keystroke,
   // KN-249.
+  //
+  // The specimen's copy follows the Language toolbar IN the args, KN-245. A
+  // field still holding what this story put there, what it loaded with or
+  // what it last wrote, takes this language's copy, written back with
+  // updateArgs; anything else was typed in Controls and is drawn exactly as
+  // it is, an emptied one included. A typed value equal to what the story
+  // put there cannot be told apart from it, and follows the language too.
   render: function Render(args) {
     const [, updateArgs] = useArgs<InputProps>()
+    // What this story last wrote into each copy field. Storybook's ref, kept
+    // with the story's hooks rather than React's, so it outlives the remount a
+    // language switch causes.
+    const written = useRef<Record<CopyField, string>>({ ...AT_LOAD })
+    // In the language on screen: the providers activate it before this runs,
+    // and a switch remounts the tree, so this reads it fresh.
+    const copy = specimenCopy()
+    const update: Partial<Record<CopyField, string>> = {}
+    for (const field of COPY_FIELDS) {
+      const value = args[field]
+      if ((value === written.current[field] || value === AT_LOAD[field]) && value !== copy[field]) update[field] = copy[field]
+    }
+    const write = () => {
+      for (const field of COPY_FIELDS) {
+        const value = update[field]
+        if (value !== undefined) written.current[field] = value
+      }
+      updateArgs(update)
+    }
     const onChange = (value: string, event: ChangeEvent<HTMLInputElement>) => {
       if (args.value !== undefined) updateArgs({ value })
       args.onChange?.(value, event)
     }
-    return <JobTitle key={args.value === undefined ? `0${args.defaultValue ?? ''}` : '1'} {...args} onChange={onChange} />
+    // Drawn exactly as the args say, and nothing else: a value the Controls
+    // do not show is the hidden fallback this story used to have.
+    return (
+      <>
+        <FollowTheLanguage pending={COPY_FIELDS.some((field) => update[field] !== undefined)} write={write} />
+        <Input key={args.value === undefined ? `0${args.defaultValue ?? ''}` : '1'} {...args} onChange={onChange} />
+      </>
+    )
   },
 } satisfies StoryMeta<typeof Input>
 
@@ -133,10 +184,9 @@ export const Default: Story = {
 
 export const FromArgs: Story = {
   // Nothing like the specimen, so the field must be following its args, and
-  // what it expects is read from them, so it holds for whatever is set. Not
-  // the label: an empty one means the specimen's. Letter-free values, since
-  // they are test data rather than copy.
-  parameters: offers(['value', 'defaultValue', 'placeholder', 'helperText', 'error', 'disabled', 'name']),
+  // what it expects is read from them, so it holds for whatever is set.
+  // Letter-free values, since they are test data rather than copy.
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'error', 'disabled', 'name']),
   args: { label: '42', defaultValue: '7', helperText: '#', disabled: true },
   play: async ({ args, canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')
@@ -313,6 +363,50 @@ export const LabelIsBound: Story = {
     await userEvent.click(label)
     await expect(box).toHaveFocus()
   },
+}
+
+// The args this render was given, which are the store's and so the Controls
+// panel's, recorded beside the field they drive. An unset one records
+// nothing, so unset and emptied stay apart.
+const WithTheArgs: NonNullable<Story['render']> = (args) => (
+  <Box data-testid="args" data-label={args.label} data-placeholder={args.placeholder} data-helper={args.helperText}>
+    {meta.render(args)}
+  </Box>
+)
+
+export const ControlsMatchTheCanvas: Story = {
+  // The canvas draws exactly the args, label, placeholder and helper, and
+  // untouched they are the specimen's copy in the language on screen, KN-245.
+  // A fixed assertion about the untouched state, so no control is offered.
+  parameters: { controls: { disable: true } },
+  render: WithTheArgs,
+  play: async ({ canvasElement }) => {
+    const box = within(canvasElement).getByRole('textbox')
+    const recorded = within(canvasElement).getByTestId('args').dataset
+    const helper = canvasElement.ownerDocument.getElementById(box.getAttribute('aria-describedby') ?? '')
+    await expect(canvasElement.querySelector('label')?.textContent).toBe(recorded.label)
+    await expect(box).toHaveAttribute('placeholder', recorded.placeholder)
+    await expect(helper?.textContent).toBe(recorded.helper)
+    // In Storybook itself, where the Controls panel is, the render writes the
+    // copy for the language on screen into the args, so wait for it. Portable
+    // stories apply no args update, so under the test runner the args stay in
+    // the language this file loaded in and this half cannot run, TECH-DEBT 16.
+    if ('__KARNAMA_STORY_TEST__' in globalThis) return
+    const copy = specimenCopy()
+    await waitFor(async () => {
+      await expect(recorded.label).toBe(copy.label)
+      await expect(recorded.placeholder).toBe(copy.placeholder)
+      await expect(recorded.helper).toBe(copy.helperText)
+    })
+    await expect(canvasElement.querySelector('label')?.textContent).toBe(recorded.label)
+  },
+}
+
+export const ControlsMatchTheCanvasInEnglish: Story = {
+  ...ControlsMatchTheCanvas,
+  // Not the language this file loads in, so the copy has to be written into
+  // the args, not only kept there.
+  globals: { locale: 'en-US' },
 }
 
 // The bare field: a label and nothing under it, not even a helper.
