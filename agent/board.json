@@ -6177,15 +6177,17 @@
       "parent": [
         "KN-250"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name.",
       "roasts": [],
       "notes": [
         "2026-09-10: blocked by KN-250. Its story snapshots the field before and after focus as Focus does, and on a production Storybook build html dir changes under any such snapshot until KN-250 sets it before paint, so it would ship a second story failing in the published Storybook."
       ],
       "createdAt": "2026-09-10T09:55:31.957Z",
-      "updatedAt": "2026-09-10T11:27:43.995Z",
-      "verify": "node agent/scripts/verify/KN-248.mjs"
+      "updatedAt": "2026-09-10T11:27:57.723Z",
+      "verify": "node agent/scripts/verify/KN-248.mjs",
+      "evidence": "node agent/scripts/verify/KN-248.mjs passed. It checks: (1) the thirteen Input stories pass, FocusWhileEmpty among them; (2) FocusWhileEmpty sets no value or defaultValue in its args, asserts the field is empty, compares textLayout before and after Tab, and textLayout reads getComputedStyle(box, '::placeholder'); (3) THE CASE: a focused-only '& input::placeholder': { textIndent: '3px' } in Input.tsx fails FocusWhileEmpty by name, and the failure names '::text-indent: 0px → 3px'; (4) getComputedStyle is in lingui's ignoreFunctions with its reason beside it. The verifier was mutation-tested: with the placeholder read taken out of textLayout, checks 2 and 3 fail, the second with 'the stories passed with the placeholder moved'. Before building it, Chromium was shown to report placeholder styles through getComputedStyle(input, '::placeholder') on the production build: text/secondary where the input gives text/primary, and a planted pseudo-only text-indent read back as 3px. Siblings rerun and passing: KN-243, KN-242, KN-246, KN-249, KN-241, KN-011, KN-247 (its production sweep now covers FocusWhileEmpty's offered controls), KN-250 (no story fails on the production build in either language, the new one included); and, because eslint.config.js changed, every verifier that reads the lint or test config: KN-003 (full suite, coverage 100 percent), KN-006, KN-010, KN-087, KN-094, KN-095, KN-100, KN-227 pass. KN-088 fails, for a reason that predates this work: KN-007 rewrote the unit include it anchors on; filed as KN-256. A first run of KN-003 and KN-100 caught my own slip, a quoted px literal in a comment that the noLiterals test rejects, fixed before closing. Workspace lint zero warnings, tsc clean. NOT established: placeholder properties Chromium does not enumerate for the pseudo-element, and other browsers, where getComputedStyle with '::placeholder' may not report the pseudo-element at all.",
+      "closedAt": "2026-09-10T11:27:57.723Z"
     },
     {
       "id": "KN-249",
