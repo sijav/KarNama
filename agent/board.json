@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 250,
+  "nextId": 251,
   "tasks": [
     {
       "id": "KN-001",
@@ -6137,12 +6137,17 @@
       "severity": "critical",
       "points": 1,
       "area": "web",
-      "parent": [],
+      "parent": [
+        "KN-250"
+      ],
       "status": "backlog",
       "exit": "Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T09:45:57.752Z"
+      "notes": [
+        "2026-09-10: parked, blocked by KN-250. Its check runs every Input story on a production Storybook build, and Focus already fails there with nothing changed, because html dir is set in a passive effect after the play function starts. Verifier drafted and working (URL args per offered control, verdict from the errored phase and playFunctionThrewException, NOT storyFinished, whose status read success for a play that threw); saved to the session scratchpad as parked/KN-247.mjs. Planned allowlists: Default all but error; FromArgs reads defaultValue and disabled from args and offers those plus placeholder and name; Filled reads defaultValue from args, offers all but value; Focus all but disabled and error; Disabled all but disabled; Hover all but error and disabled; LabelIsBound all but disabled; Typing label, placeholder, helperText, error."
+      ],
+      "createdAt": "2026-09-10T09:45:57.752Z",
+      "updatedAt": "2026-09-10T10:15:35.646Z"
     },
     {
       "id": "KN-248",
@@ -6173,6 +6178,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T10:05:57.447Z"
+    },
+    {
+      "id": "KN-250",
+      "title": "The document's direction and language are set after the first paint",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while doing KN-247 and traced on a production Storybook build: ThemedTree in src/app/AppProviders.tsx sets document.documentElement.dir and lang in a useEffect, which React runs after the browser paints a render that no user input triggered. Storybook's iframe starts with no dir and lang en, so every story's play function starts on a tree laid out left to right: recorded at each render phase, the Input's Focus story reaches 'playing' with html dir unset and the input's direction ltr, and 'errored' with dir rtl, lang fa-IR; its snapshot, since KN-243, sees direction change under it and fails with nothing changed. So the published Storybook shows Focus failing, which Vitest never did: it wraps the render in act(), which flushes effects before the play function. The app has the same gap on load: index.html ships dir rtl, so a user whose stored language is English gets a first frame laid out right to left. The comment directly above the effect explains why the catalog is activated during render rather than in an effect, the flash of the wrong language; direction has the same problem and was left in the effect.",
+      "why": "A tree painted in the wrong direction is the one bug an RTL-first product cannot have, and here it makes the deployed Storybook report a component as failing. It blocks KN-247, whose check runs every story on a production build. Critical on the owner's order of 2026-09-10.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The document element's dir and lang are set in the commit that renders the tree, before paint, not in a passive effect: on a production Storybook build every story's play function starts with html dir and lang already matching its locale, recorded at the playing phase in both languages, and the Input's Focus story passes there; the built app, loaded with a stored English preference, has dir ltr by the time its first render's DOM exists; and a mutation back to useEffect fails the check.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T10:15:35.330Z"
     }
   ]
 }

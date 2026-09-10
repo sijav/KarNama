@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 72 of 249 tasks done · 151 of 647 points.
+Project **KarNama** · 72 of 250 tasks done · 151 of 648 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-247` The Input's interaction stories keep controls that make their play functions untrue** (critical, 1 pt, web)
+**Next up: `KN-248` Nothing checks the Input's placeholder stays put when an empty field takes focus** (critical, 1 pt, web)
 
 ## Blocked (3)
 
@@ -18,14 +18,15 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (172)
+## Backlog (173)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-247` | The Input's interaction stories keep controls that make their play functions untrue | critical | 1 | web | none | Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control. |
+| `KN-247` | The Input's interaction stories keep controls that make their play functions untrue | critical | 1 | web | KN-250 | Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control. |
 | `KN-248` | Nothing checks the Input's placeholder stays put when an empty field takes focus | critical | 1 | web | none | A story focuses an empty Input and asserts that neither the input's layout nor its placeholder's computed style changes with focus, reading the placeholder through getComputedStyle(input, '::placeholder'), and a mutation adding a focused-only placeholder text-indent fails that story by name. |
 | `KN-249` | Setting value in the Input's Controls freezes the field | critical | 1 | web | none | After value is set in Controls, typing into the field changes it and the value control follows what was typed, the story binding value through Storybook's args; or no story offers value. A check sets value through Storybook's own arg update on a built Storybook, types into the field, and asserts both the field and the story's args show the typed text, and it fails with the binding taken out. |
+| `KN-250` | The document's direction and language are set after the first paint | critical | 1 | web | none | The document element's dir and lang are set in the commit that renders the tree, before paint, not in a passive effect: on a production Storybook build every story's play function starts with html dir and lang already matching its locale, recorded at the playing phase in both languages, and the Input's Focus story passes there; the built app, loaded with a stored English preference, has dir ltr by the time its first render's DOM exists; and a mutation back to useEffect fails the check. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -3114,7 +3115,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 ### `KN-247` The Input's interaction stories keep controls that make their play functions untrue
 
 - **status** backlog · **severity** critical · **points** 1 · **area** web
-- **blocked by** none
+- **blocked by** KN-250
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-242 roast and confirmed from the code: the stories that prove a behaviour from fixed inputs keep every control. Typing types 42 and asserts onChange received it and the field is named title; set disabled, value, defaultValue or name in Controls and those claims are false for what the canvas shows, while the Interactions panel still reports the run that passed. Focus, Hover and LabelIsBound go wrong the same way under disabled or error. KN-242 disabled controls only on the fixed renders.
 
@@ -3143,4 +3144,15 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** A field that swallows typing looks like a broken component, not a story wired wrong, to anyone trying it in Storybook. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** After value is set in Controls, typing into the field changes it and the value control follows what was typed, the story binding value through Storybook's args; or no story offers value. A check sets value through Storybook's own arg update on a built Storybook, types into the field, and asserts both the field and the story's args show the typed text, and it fails with the binding taken out.
+
+### `KN-250` The document's direction and language are set after the first paint
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while doing KN-247 and traced on a production Storybook build: ThemedTree in src/app/AppProviders.tsx sets document.documentElement.dir and lang in a useEffect, which React runs after the browser paints a render that no user input triggered. Storybook's iframe starts with no dir and lang en, so every story's play function starts on a tree laid out left to right: recorded at each render phase, the Input's Focus story reaches 'playing' with html dir unset and the input's direction ltr, and 'errored' with dir rtl, lang fa-IR; its snapshot, since KN-243, sees direction change under it and fails with nothing changed. So the published Storybook shows Focus failing, which Vitest never did: it wraps the render in act(), which flushes effects before the play function. The app has the same gap on load: index.html ships dir rtl, so a user whose stored language is English gets a first frame laid out right to left. The comment directly above the effect explains why the catalog is activated during render rather than in an effect, the flash of the wrong language; direction has the same problem and was left in the effect.
+
+**Why.** A tree painted in the wrong direction is the one bug an RTL-first product cannot have, and here it makes the deployed Storybook report a component as failing. It blocks KN-247, whose check runs every story on a production build. Critical on the owner's order of 2026-09-10.
+
+**Exit condition.** The document element's dir and lang are set in the commit that renders the tree, before paint, not in a passive effect: on a production Storybook build every story's play function starts with html dir and lang already matching its locale, recorded at the playing phase in both languages, and the Input's Focus story passes there; the built app, loaded with a stored English preference, has dir ltr by the time its first render's DOM exists; and a mutation back to useEffect fails the check.
 
