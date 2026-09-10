@@ -4279,15 +4279,17 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed.",
       "roasts": [],
       "notes": [
         "Kept, because this is not a new gate: the check already exists and already claims in its own comment to read the block. This fixes a check that lies about what it reads."
       ],
       "createdAt": "2026-09-10T00:52:09.116Z",
-      "updatedAt": "2026-09-10T01:10:01.021Z",
-      "verify": "node agent/scripts/verify/KN-184.mjs"
+      "updatedAt": "2026-09-10T01:10:24.426Z",
+      "verify": "node agent/scripts/verify/KN-184.mjs",
+      "evidence": "node agent/scripts/verify/KN-184.mjs passes, 11 checks, and node agent/scripts/verify/KN-166.mjs still passes with the shared extraction wired in. The extraction lives in agent/scripts/verify/lib/prompt-order.mjs and finds the block by its HEADING, the numbered step mentioning both closing and roasting, takes the first fence under it, and stops at the next numbered step so a later step's example is never read as this one's. The plan check rejected my first idea of checking EVERY block containing both commands, on the grounds that it cannot coexist with documentation that teaches by counter-example, and heading association is closer to the exit condition; that correction is what is built. It reads the RAW text because fences are line-structured and the previous code collapsed whitespace first, handles the three-space indentation the real file has since the fence sits inside a list item, handles tilde fences, and ignores a commented-out command. The decisive check is the case the roast described: a correctly ordered decoy block ABOVE a reversed real block, which the previous implementation passed. The strongest is the last one, which reproduces that previous implementation against the same fixture and requires it to PASS: a fix nobody has watched failing beforehand is a fix for something that may not have been broken, and this is the mutation that must SURVIVE rather than be caught. Everything runs against in-memory fixtures through the same function the real check calls, so nothing had to be planted into another session's tracked prompt, which the plan check named as the alternative's cost. A real-file check runs the sibling prompt through the same function, and a structural check requires KN-166 to call it rather than keep a copy, with the old indexOf pair gone rather than living beside it. What this does NOT establish: it reads ONE step's block, the close-and-roast step, so a contradiction inside any other step's block is not covered.",
+      "closedAt": "2026-09-10T01:10:24.426Z"
     },
     {
       "id": "KN-185",
