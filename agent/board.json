@@ -6178,13 +6178,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "After value is set in Controls, typing into the field changes it and the value control follows what was typed, the story binding value through Storybook's args; or no story offers value. A check sets value through Storybook's own arg update on a built Storybook, types into the field, and asserts both the field and the story's args show the typed text, and it fails with the binding taken out.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T10:05:57.447Z",
-      "updatedAt": "2026-09-10T10:24:20.937Z",
-      "verify": "node agent/scripts/verify/KN-249.mjs"
+      "updatedAt": "2026-09-10T10:25:05.143Z",
+      "verify": "node agent/scripts/verify/KN-249.mjs",
+      "evidence": "node agent/scripts/verify/KN-249.mjs passed. It builds the production Storybook into a temp directory, serves it, and for every Input story that offers the value control (filtered the way the Controls panel filters) and whose field is enabled, it emits updateStoryArgs with value 'x7' on Storybook's own channel, waits for the field to show 'x7' (the positive control that the update arrived), clicks, selects all and types '42' at 60ms a key, then reads the field and the story store's args, which is what the Controls panel shows. (1) All six such stories (default, filled, focus, hover, label-is-bound, typing) end with field '42' and arg '42'; before the fix all six ended 'x7' and 'x7'. from-args and disabled were skipped as disabled fields. (2) THE CASE: with the updateArgs line taken out, a rebuild freezes the fields at 'x7' again. (3) The twelve Input stories pass in Vitest, so useArgs works in the portable stories too. Also rerun and passing: KN-242.mjs and KN-246.mjs, whose anchors moved to the render's return line, KN-243.mjs, KN-241.mjs, KN-011.mjs; workspace lint zero warnings, tsc --noEmit clean. A child task, so it closes on the tests for the file it changed. Measured, not assumed: the binding goes through Storybook's channel, so keys arriving faster than every 10 to 20ms lose characters (20 keys at 0ms kept 2, at 10ms 11; at 20, 30, 40, 50, 80 and 120ms all 20), which is faster than a person types or a key repeats. NOT established: the manager's Controls panel redrawing the typed value, since only the preview's store was read; and resetting value to undefined after typing, which returns the field to uncontrolled with whatever it last showed.",
+      "closedAt": "2026-09-10T10:25:05.143Z"
     },
     {
       "id": "KN-250",
