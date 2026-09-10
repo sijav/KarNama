@@ -4,241 +4,127 @@ The only memory of earlier iterations that may be relied on. Rewritten at the
 end of every iteration. When this file and the repository disagree, the
 repository is right and this file is stale.
 
-**This file does not restate anything the board already knows.** Numbers that
-live in `board.json` are read from there:
-
-```bash
-npm run todo -- next            # what to work on
-npm run todo -- show KN-035     # a card, its roast rounds and its notes
-npm run todo -- list            # everything, with blockers marked
-```
+Numbers live in `board.json`, not here: `npm run todo -- next`, `show <id>`,
+`list`.
 
 ---
 
 ## The task spec
 
-Build **KarNama** (کارنما), a job application tracker, and drive it with a Ralph
-loop.
+Build **KarNama** (کارنما), a job application tracker, driven by a Ralph loop.
+A job seeker adds a posting themselves, by link or text; the product structures
+it into a record; the record carries a status through the search. **The value is
+the trail, not the listing.**
 
-A job seeker adds a posting themselves, by link or by text, the product
-structures it into a record, and the record carries a status through the search.
-**The value is the trail, not the listing.**
+**Scope is closed.** Searching boards and aggregating ads were cut. **Crawling
+is permanently out.** Two owner additions: third parties can leave comments or
+suggested changes, stored rather than applied, and an admin panel over them.
 
-**Scope is closed.** Searching boards and showing aggregated ads were cut.
-**Crawling job sites is permanently out.** Two owner additions: third parties can
-leave comments or suggested changes, stored for later evaluation rather than
-applied, and an admin panel over what users submit.
-
-Stack and standing decisions:
-
-- Monorepo, npm workspaces. `apps/web`, `apps/api` and `packages/graphql` exist.
-- React 19, TypeScript, MUI, Storybook, Playwright, Vitest, 100 percent
-  coverage. **Components first with their stories, then screens.**
-- GraphQL with NestJS. Render free tier, Supabase Postgres, cold start about 50
-  seconds which the UI must handle honestly.
-- GitHub Pages for the web app.
-- lingui, **English is the source**, Persian is the translation.
-- **Match the design exactly**, not approximately.
-- **Auth is phone OTP**, mobile number then a five digit code, email as a
-  fallback behind the same interface, **provider mocked for the MVP**.
-- **The Documentation canvas beats the Components canvas**: a kanban board, not
-  a list, and three nav destinations, not two.
+Monorepo, npm workspaces. React 19, TypeScript, MUI, Storybook, Vitest,
+Playwright, 100 percent coverage. NestJS, GraphQL code first, Prisma, Postgres.
+GitHub Pages for web, Render for the API, Supabase for the database, with a 50
+second cold start the UI must handle honestly. lingui, **English is the source**.
+**Components first with their stories, then screens. Match the design exactly.**
+**Auth is phone OTP**, provider mocked for the MVP.
 
 ## Where things stand
 
-`sijav/KarNama` is live and pushed. **No open criticals.** Both are closed:
-KN-123, the migration runner, and KN-128, the GraphQL chain.
+33 done, 155 open, 2 dropped. One open critical: **KN-190 - Command-shaped text
+inside a string counts as the command**, in progress.
 
-**`apps/web`**: 222 tests across 14 files, 100 percent on all four coverage
-metrics, 8 Playwright tests on the two drawn viewports. The unit project alone is
-208 tests in 11 files, which is worth knowing because a suite-wide count cannot
-tell you the unit project ran. The token set, a light theme and a DERIVED dark
-one, the RTL emotion cache, lingui with English source ids, a persisted
-preference store, and a working `LanguageSwitch`.
+`apps/web`: 229 tests over 15 files, 100 percent on all four metrics, 8
+Playwright tests. The unit project alone is 208, worth knowing because a
+suite-wide count cannot say the unit project ran. `apps/api`: 96 tests.
+`packages/graphql`: 4, with operations validated against the schema at
+generation time.
 
-**`apps/api`**: 60 tests, 100 percent on all four. NestJS 12, GraphQL code first,
-the full Prisma data model with two migrations, and a seed. The migrations run
-against PGlite, which is Postgres in process, so the SQL is executed by the
-engine Supabase runs.
+## The owner's rules, most recent first
 
-**`packages/graphql`**: 4 tests. Types AND operations generated from
-`apps/api/schema.gql`, validated against the schema at generation time.
+**Do not invent gates.** Rule zero, now at the top of `agent/RALPH.md`. It gets
+broken by accident and looks like diligence: a roast finds something, the fix
+that suggests itself is a check that refuses the next occurrence, that becomes a
+card, and its exit condition is a gate nobody asked for. Four were removed on
+2026-09-10. **Above all, no gates in the SKILLS**: an agent may use them however
+it likes. Tests yes, refusals no.
 
-Every verifier here has been mutation tested. Nothing is trusted because it
-passed; it is trusted because it was made to fail. **But the mutation cases are
-written to a scratch directory and thrown away**, so no count in a commit message
-can be re-run by anyone, including the next iteration. Filed as KN-136.
+**Finish, prove, commit, CLOSE, then roast.** A task is done when its verifier
+passes, not when a reviewer approves. `done` is terminal, enforced. There is no
+fix-in-task rule any more; the roasted card is already closed.
 
-## The two facts that shape what to do next
+**A finding is a CHILD of the task it came out of**, one level. When the LAST
+open child closes, roast the parent together with all its children, and repeat
+until a round finds nothing. **KarNama's board cannot express this yet**, since
+its `parent` field means BLOCKED BY, so findings record their parent in prose.
+KN-188 carries the work; the global `todo` skill already has `--parent-task`.
 
-**`validate` reporting that 133 of 134 open tasks have no `verify` command is
-NOT a blocker, and reading it as one is a trap this file fell into once.** A card
-gets its verifier when it is worked, because `move done` refuses without one, so
-the count is supposed to be high and falls one card at a time. KN-054's original
-framing, backfill a verifier onto every card, is superseded ON THE CARD: writing
-sixty verifiers up front means writing each check before its work exists, which
-produces checks describing what is easy to assert. What is actually left of
-KN-054 is flipping that report into a failure, and it must NOT be picked up until
-the count is already zero, or it fails the board on work nobody has done yet.
-Read the card before believing a validate message.
+**Test scope follows the same line**: no parent closes on the full suite, a
+child closes on the tests for the files it changed.
 
-**Severity has stopped discriminating.** 88 high, 35 medium, 11 low. The
-selection law orders by severity first, so it is effectively choosing by points
-and id. Filed as KN-117.
+**Plans live beside the work**, `#<id> - <title>.md`, and they STAY when the
+task closes.
 
-## Rule zero, and the way I keep breaking it
+**Do not run this repository's machinery against another project.** SkipBureau's
+rules were to be CHECKED once, not driven from here. Nothing under
+`agent/scripts/verify` may name it or resolve a path above the root, and
+`KN-166.mjs` asserts that.
 
-**Do not invent gates the owner did not ask for.** It is written at the top of
-`agent/RALPH.md` now because it was only in the loop skill and this project
-reads RALPH.md.
+## What keeps going wrong, one line each
 
-It gets broken by accident and it looks like diligence. A roast finds something
-real, the obvious fix is a check that refuses the next occurrence, the check
-becomes a card, and that card's exit condition is a gate nobody wanted. In one
-session that produced four: a refusal to record a roast without a filed list, a
-refusal of a card whose exit condition hedged, a refusal of a plan file in the
-wrong folder, and an em-dash checker. All four were removed or rewritten.
+**A check that searches for a string, and contains that string, flags itself.**
+Four times on 2026-09-10 alone. Stripping comments is not enough when the needle
+sits in a regex literal, which is code. Assemble the needle at runtime.
 
-**Above all, do not build gates into the SKILLS.** The owner's words: an agent
-can use them however it likes, and you do not stop them. Tests are welcome, and
-fixing what does not work is welcome. A refusal in a shared tool is not.
-
-The test, before writing an exit condition that refuses anything: did the owner
-ask for this refusal, or am I adding it because I found something? If the
-second, DO the work or write the rule down. Enforcing a rule the owner DID give
-is not inventing one.
-
-## What the roasts keep proving, one line each
-
-**An unchecked claim replaced by another unchecked claim is not a fix.** KN-002
-spent four rounds on it. Derive the number from a committed artefact.
-
-**A test that measures the wrong quantity passes while the thing is broken.**
-KN-005's dark palette had every HSL assertion green while eight of nine status
-chips sat at 1.0 to 1.5 contrast. Lightness is not contrast.
-
-**"It is written" is not "it works".** KN-006 wrote the language preference,
-read it back and discarded it on the next mount. Only a reload test found it.
+**A literal match against prose fails when the prose is REWORDED or WRAPPED.**
+"not a\nreason" across a line break; "CHILD" against "CHILDREN"; markdown bold
+splitting "**last** open child". Collapse whitespace, and match the concept.
 
 **An ABSENCE proves nothing without a positive control on the same instrument.**
-A listing that fails, collects nothing, or names its files differently produces
-exactly the result a correct run produces. KN-100 pairs every absence with a
-run that must SHOW the thing, and requires every listing to be non-empty first.
+A listing that collected nothing looks exactly like a correctly scrubbed one.
 
-**A proxy for the exit condition is not the exit condition.** KN-100 first proved
-its second clause with `vitest list` instead of running the verifier the card
-names. A config can branch on how it was invoked and a resolved file set is not
-an executed one, so that proof sat next to the claim rather than on it. The cheap
-checks earn their place by localising a failure, not by standing in for the run.
+**A proxy for the exit condition is not the exit condition.** KN-100 first
+proved its clause with `vitest list` instead of running the verifier the card
+named.
 
-**A source grep cannot establish "no way around it".** `spawnSync(cmd, {cwd})`
-with no `env` option inherits the parent environment by default: it spreads
-nothing and removes nothing, so a grep for `...process.env` passes it. Count the
-launches against the guard instead, and read the launcher names out of the import
-so `/pattern/.exec(s)` is not miscounted as a child process.
+**Every version of a check that INFERS which thing is normative will be
+defeated by words**, because words are what an editor changes. Three versions of
+the prompt-order check proved it. Make the thing declare itself.
 
-**A grep for a banned construct finds the prose explaining the ban.** KN-128's
-check reported the defect it had just fixed. Strip comments before every such
-grep, and assert the stripped file is not empty.
+**The suite can CERTIFY a bug rather than miss it.** KN-112's test asserted the
+stale write as expected. Read the existing expectations before assuming a bug is
+merely uncovered.
 
-**A substring survives negation, and independent matches pass on coincidence.**
-KN-072's verifier accepts "status history does not render in its own tab; it
-renders in the Info tab", because the contrast strip ate the clause and the final
-check read the UNSTRIPPED text. Bind the assertion to one entry and one sentence.
+**Check that the fallback you rely on EXISTS before you rely on it.** Two plan
+files were deleted on the reasoning that git held them; `.gitignore` had been
+ignoring them all along and one is gone for good. `git check-ignore -v`,
+`git ls-files --error-unmatch`, `git cat-file -e HEAD:<path>`.
 
-**The suite can CERTIFY the bug rather than miss it.** KN-112's existing test
-asserts the stale write as the expected value, so fixing the defect means
-rewriting an assertion, not adding one beside it. Read the existing expectations
-before assuming a bug is merely uncovered.
+**Shell heredocs eat backslashes**, and a python heredoc silently applied
+nothing three times on 2026-09-10 while reporting success. **Use the Edit tool
+for code.**
 
-**Every finding is a card. There is no longer any fix-in-task case.** KN-128
-took SIX rounds for a three point card under the old order. The rule that once
-sat here, fix in-task when the verifier passes dishonestly, is DELETED along
-with the order that needed it: the task is already closed when the roast
-arrives, so there is nothing open to fix in. A finding that the verifier proves
-less than it claims is still a good card, often the best one, and it gets filed
-with the same care as any other.
+**Do not edit source while a mutation harness or a roast is reading it.**
 
-**A tool's REPORT is not a diagnosis.** `validate` says how many open cards lack
-a verifier, and this file previously read that as "the board cannot close
-anything" and called KN-054 the thing standing in the way. The card says the
-opposite in as many words. One `todo -- show` would have settled it, and the
-inference felt so obvious it did not seem to need checking, which is the whole
-failure mode.
+**The mutation that must SURVIVE is the strongest evidence available**:
+reproduce the old implementation and watch it wave the defect through.
 
-**Attach `--verify` BEFORE the roast.** The card digest includes it, so setting
-it afterwards invalidates the round that cleared the task. Filed as KN-139.
+## The skills
 
-**A gate that names the tool is not a gate that runs it.** KN-131's verifier
-accepted `tsc --noEmit --noCheck`. Prove a workspace-level claim with that
-workspace's own command.
-
-**The mutation that must SURVIVE is the strongest evidence you can produce.**
-
-**Shell heredocs eat backslashes**, and in this session a `cat > file <<'EOF'`
-also aborted mid-write. Use the Write and Edit tools for code, every time.
-
-**Do not mutate the worktree while a roast is reading it**, and do not edit
-source while a mutation harness is running: its cases would test the edit.
-
-## The order changed on 2026-10-09, and it is the owner's
-
-**Finish, prove, commit, CLOSE, then roast.** A task is done when its own
-verifier passes, not when a reviewer approves. The roast runs afterwards against
-the closed work, in the background, and everything it finds becomes a NEW card.
-Nothing reopens a closed task, and `move` now refuses every transition out of
-`done` so that is behaviour rather than documentation, KN-159 and KN-162.
-
-There is **no fix-in-task rule any more.** It was rewritten three times, each
-version more elaborate, and each still asked for a judgement call at the exact
-moment the pull to polish is strongest. Closing first deletes the question.
-
-**Plans live beside the work**, `#<id> - <title>.md` in the folder the change
-lands in, and they STAY when the task closes, KN-160.
-
-## Roasts now run in the BACKGROUND
-
-The owner's standing instruction: fire the roast, take the next card, and
-adjudicate when it lands. Consequences already felt:
-
-- **Unrelated work lands between a roast and its close.** The close gate refuses
-  that and offers only `--fixed-since`, which is worded "this change IS the fix
-  the round asked for". That is now the abnormal case. Filed as KN-156.
-- **The exception is a finding that BLOCKS the task in hand**: cancel it, revert
-  what was built for it, do the blocking card first, then replan.
+`todo` and `roast` each ship a Node and a Python half, proved equivalent by
+parity harnesses that drive both real entry points and compare what they
+produced, not by asserting the files exist. `loop` ships no script on purpose.
+Roast results go to a scratch directory, never into a project; only the session
+list stays project-local, because it resumes conversations.
 
 ## Next step
 
-`npm run todo -- next` picks it. Do not choose by hand.
-
-**Recently closed:** KN-159 close-before-roast, KN-160 plans beside the work,
-KN-162 done is terminal, KN-112 the preference-batch bug, KN-166 the sibling
-project's rules. Board: 29 done, 149 open, no criticals.
-
-**KN-166's finding is worth carrying:** SkipBureau's rules were already correct;
-what is broken there is that the GLOBAL todo skill has no terminal-done guard,
-so the rule it states is unenforced. KN-177.
-
-**KN-100 is done.** The gate-fixtures flag is hermetic in both directions and,
-more usefully, its verifier was made to prove the clause the card names rather
-than something adjacent to it. `agent/scripts/verify/lib/child-env.mjs` is the
-shared scrub, and it is the place to reach for when a verifier spawns a child.
-Its round is worth reading before writing another verifier: all three findings
-were "passes without establishing the exit condition", which is the failure a
-passing test can never report about itself.
-
-**KN-112 is planned and the plan has been checked**, and the plan sits beside
-the work it describes, `apps/web/src/core/preferences/`.
-Two setters built over one render's snapshot lose the first update when both are
-called before the next render. The fix composes onto a ref rather than onto the
-snapshot. The plan check corrected two things: the setters do NOT become stable,
-because `contextValue` is a `useMemo` over the two fields and is rebuilt anyway,
-and a new story owes Persian and English variants. The trap to avoid is proving
-the easy case: two calls after `renderToString` returns are not a React batch, so
-the story's probe needs ONE button whose handler calls both.
+`npm run todo -- next` picks it. **KN-190** is in progress: the recognisers match
+command-shaped TEXT anywhere on a line, so `echo "todo move <id> done"` counts as
+a close. Anchoring to line start is the obvious fix and breaks the real file,
+because the roast invocation is `python <path>/roast.py task` and the roast is an
+argument.
 
 ## What to read first
 
-`AGENTS.md`, `DESIGN.md`, `agent/RALPH.md`, `agent/TODO_BOARD.md`. In that
-order, every iteration, before touching anything. Then `npm run contract`, which
-is the only trustworthy answer to "do the cards still agree with the design".
+`AGENTS.md`, `DESIGN.md`, `agent/RALPH.md`, `agent/TODO_BOARD.md`, in that order,
+every iteration. Then `npm run contract`, which is a regression checker over ten
+rules and not a proof that the board matches the design.

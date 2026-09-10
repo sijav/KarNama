@@ -10,11 +10,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-190` Command-shaped text inside a string counts as the command** (critical, 2 pt, agent)
 
-## Backlog (156)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-190` | Command-shaped text inside a string counts as the command | critical | 2 | agent | none | The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident. |
+
+## Backlog (155)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-149` | The board cards for the rejected column do not require it to collapse | high | 1 | design | none | The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered. |
 | `KN-152` | Use the current Contacts tab label in the history decision | high | 1 | design | KN-072 | DESIGN.md section 6 and section 3 name the modal tab افراد مرتبط, KN-030 and KN-045 use that label, KN-072.mjs requires it and REJECTS مخاطبین as the modal tab label, and a mutation restoring مخاطبین fails the verifier with its own message. |
 | `KN-153` | Separate the owner-settled own-tab decision from the author-chosen tab ORDER | high | 1 | design | KN-072 | DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message. |
@@ -2359,7 +2364,7 @@ CHILD OF KN-184, recorded here because board.json cannot express parent_task yet
 
 ### `KN-190` Command-shaped text inside a string counts as the command
 
-- **status** backlog · **severity** critical · **points** 2 · **area** agent
+- **status** in_progress · **severity** critical · **points** 2 · **area** agent
 - **blocked by** none
 
 CHILD OF KN-184, recorded here because board.json cannot express parent_task yet, KN-188. Found by the KN-184 roast, which reproduced it. lib/prompt-order.mjs finds the close and the roast with unanchored regexes over each line, so any line CONTAINING the text counts. The reviewer ran a block whose first line is echo "todo move <id> done", followed by the real roast command and then the real close, and got ok true: the echo was read as the close, so the order looked right while the actual commands ran the wrong way round. Skipping lines that start with a hash is not enough, because the text does not have to be in a comment to be inert. The fix is to recognise an actual command at the start of a line rather than command-shaped text anywhere in it.

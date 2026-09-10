@@ -4408,11 +4408,12 @@
       "points": 2,
       "area": "agent",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The recognisers match a command in command POSITION, at the start of the line after optional whitespace, and not text embedded in a string or an argument; the reviewer's echo fixture is a case that fails before the fix and passes after; and a line that genuinely runs the command in a pipeline or after a semicolon is decided deliberately rather than by accident.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T01:18:51.245Z"
+      "createdAt": "2026-09-10T01:18:51.245Z",
+      "updatedAt": "2026-09-10T01:42:57.622Z"
     },
     {
       "id": "KN-191",
