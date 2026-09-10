@@ -16,11 +16,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-132` | Pin the byte-compared generated files to LF, or stop comparing bytes | high | 1 | infra | none | A checkout with core.autocrlf=true passes npm run build and agent/scripts/verify/KN-128.mjs, proved by simulating that checkout rather than by reasoning about it, and .gitattributes covers every file any script compares byte for byte, derived from the scripts rather than listed by hand. |
 
-## Backlog (156)
+## Backlog (155)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-184` | The order check reads the whole document, not the fenced block it claims to | critical | 2 | agent | none | The check extracts the fenced code block belonging to the close-and-roast step, by fence rather than by document position, and compares the order of the commands WITHIN it; a document carrying an earlier correctly-ordered example and a reversed real block FAILS; and that document is one of the mutation cases rather than an argument. |
+| `KN-184` | The order check reads the whole document, not the fenced block it claims to | critical | 2 | agent | none | The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed. |
 | `KN-149` | The board cards for the rejected column do not require it to collapse | high | 1 | design | none | The cards that build the board name the collapsed-by-default count, the expand interaction, and رد شده's position after پیشنهاد کار in their exit conditions, and a check derives that from board.json rather than from a person having remembered. |
 | `KN-152` | Use the current Contacts tab label in the history decision | high | 1 | design | KN-072 | DESIGN.md section 6 and section 3 name the modal tab افراد مرتبط, KN-030 and KN-045 use that label, KN-072.mjs requires it and REJECTS مخاطبین as the modal tab label, and a mutation restoring مخاطبین fails the verifier with its own message. |
 | `KN-153` | Separate the owner-settled own-tab decision from the author-chosen tab ORDER | high | 1 | design | KN-072 | DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message. |
@@ -52,7 +52,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-111` | Forbid the message-id forms the catalog scan cannot see | high | 2 | web | KN-006 | A Trans with a braced or template-literal id fails npm run lint, a committed fixture holds each form, and the catalog test still finds every id the codebase uses. |
 | `KN-134` | ThemedTree sets i18n state while rendering | high | 2 | web | none | The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload. |
 | `KN-154` | KN-072 verifier accepts the two failures it exists to prevent | high | 2 | agent | KN-072 | KN-072.mjs parses the ACTUAL tab list out of the decision line and requires exactly the five names in it rather than searching a character window, and checks KN-030 placement on the stripped text with an affirmative un-negatable assertion. Both reproductions above are added as committed mutation cases and each fails the verifier with its own message. |
-| `KN-163` | Adjudication is reported, not enforced, so findings can go unfiled forever | high | 2 | agent | none | todo roast refuses to record a round without --filed, accepting --filed none as the explicit honest answer; KN-001 and KN-065 are adjudicated so the board starts clean; validate still reports the count so a regression is visible; and driving the real CLI proves the refusal. |
+| `KN-163` | Adjudication is reported, not enforced, so findings can go unfiled forever | high | 2 | agent | none | KN-001 and KN-065 have their roast rounds adjudicated and re-recorded with what was filed, so the board carries no round whose findings were never judged. validate keeps REPORTING the count, which is how a regression becomes visible without refusing anything. |
 | `KN-167` | The API schema-entry test is flaky under load and fails the gate at random | high | 2 | api | none | The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure. |
 | `KN-168` | KN-160's verifier passes on two blind spots it claims to cover | high | 2 | agent | none | The tree walk covers agent/ and every other directory, distinguishing a plan file from a plan-shaped one by its NAME rather than by which folder it is in; the instruction corpus is derived from a stated convention or from a registry that new instruction files must join, rather than from a hand-maintained list; and both blind spots are proved closed by mutations that currently pass and must then fail. |
 | `KN-170` | An irreversible action must prove its rollback path before it runs | high | 2 | agent | none | AGENTS.md and agent/RALPH.md both carry the rule, naming the three git commands as the concrete instance and stating the general form; the wording makes clear it applies to any irreversible action and not only to deletion; and a check asserts both files carry it so it cannot quietly disappear the way the plan lifecycle rule did. |
@@ -132,7 +132,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-179` | no-restricted-globals does not cover stories, so a bare localStorage passed lint | medium | 1 | web | none | no-restricted-globals covers every file that runs in a browser including stories and .storybook, the existing bare uses are corrected, and a planted bare localStorage in a story FAILS npm run lint, proved by planting one rather than by reading the config. |
 | `KN-180` | Verifiers claim to be read-only while their test runs write to node_modules | medium | 1 | agent | none | No verifier claims to be read-only when the commands it spawns write anywhere; those that need a writable tree say so in one line naming what they write; and a verifier that cannot complete reports that it could not RUN a check rather than counting it as a pass or a failure. |
 | `KN-182` | KN-166's verifier makes this repository fail when a sibling project moves | medium | 1 | agent | none | KarNama's verification does not depend on any path outside this repository; a missing sibling is reported as unavailable rather than as a failure; and the rules check for SkipBureau lives in SkipBureau and gates SkipBureau, proved by running both with the sibling renamed. |
-| `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen; the KN-181 plan is moved there and tracked; and a check refuses a plan file in a location the rules forbid rather than relying on the author noticing. |
+| `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -172,8 +172,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-138` | KN-128's verifier attributes compiler errors by substring, not by path | low | 1 | agent | none | A file elsewhere in the web app whose path ends with the probe's name is not counted as the probe, proved by creating one, running the verifier and removing it, rather than by editing the matcher and reasoning about it. |
 | `KN-141` | NO_COLOR makes KN-131's verifier reject a correct compiler refusal | low | 1 | agent | none | The verifier passes with NO_COLOR=1 set, proved by running it that way, and the assertion names the planted file and the TypeScript error code rather than the source excerpt. |
 | `KN-150` | KN-070's open-question check reads lines, not list items | low | 1 | agent | none | A wrapped bullet asking about رد شده makes the verifier fail, proved by planting one. |
-| `KN-176` | KN-162 closed against an exit condition it deliberately did not meet | low | 1 | agent | none | KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail. |
-| `KN-187` | An em dash reached a rule file that forbids em dashes | low | 1 | docs | none | No .md or .mdx in either project contains an em dash; a check enforces it with a Unicode-aware matcher so Persian text produces no false hit; and a planted em dash in a markdown file FAILS that check, proved by planting one. |
+| `KN-187` | An em dash reached a rule file that forbids em dashes | low | 1 | docs | none | The em dashes written into markdown during this session are replaced with commas, in both projects, found with a Unicode-aware search so Persian text produces no false hit. |
 | `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 
@@ -211,11 +210,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-160` | Plan files live beside the work, named #<id> - <title>.md | high | 2 | agent | none | agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree. |
 | `KN-166` | Check the loop rules are written correctly in the SkipBureau project | high | 2 | agent | none | ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed. |
 
-## Dropped (1)
+## Dropped (2)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-084` | Make the AGENTS.md section 5 gate runnable before any workspace exists | low | 1 | infra | KN-001 | npm run lint, npm run lint:tsc, npm test and npm run build each exit zero and say what they did on a clean checkout with no workspace directories, and each still fails honestly once apps/web exists and contains a failing check. |
+| `KN-176` | KN-162 closed against an exit condition it deliberately did not meet | low | 1 | agent | none | KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail. |
 
 ## Cards
 
@@ -2064,7 +2064,7 @@ Found by the KN-159 roast. todo roast records a round with no filed field, and v
 
 **Why.** Every finding becomes a card is the mechanism that makes closing before review safe. If findings can be recorded and forgotten, closing early just loses them, and the loop gets the speed without the safety.
 
-**Exit condition.** todo roast refuses to record a round without --filed, accepting --filed none as the explicit honest answer; KN-001 and KN-065 are adjudicated so the board starts clean; validate still reports the count so a regression is visible; and driving the real CLI proves the refusal.
+**Exit condition.** KN-001 and KN-065 have their roast rounds adjudicated and re-recorded with what was filed, so the board carries no round whose findings were never judged. validate keeps REPORTING the count, which is how a regression becomes visible without refusing anything.
 
 ### `KN-164` CLI messages still instruct the obsolete close-after-roast flow
 
@@ -2202,7 +2202,7 @@ Found by the KN-162 roast, and raised once before by the KN-159 roast which decl
 
 ### `KN-176` KN-162 closed against an exit condition it deliberately did not meet
 
-- **status** backlog · **severity** low · **points** 1 · **area** agent
+- **status** dropped · **severity** low · **points** 1 · **area** agent
 - **blocked by** none
 
 Found by the KN-162 roast. The card's exit condition, written before the work, said a task can still be dropped or re-closed idempotently IF THAT IS DECIDED TO BE RIGHT. The implementation decided it was not: dropped is refused along with every other transition out of done, and the verifier asserts the refusal. So the card's stated contract and the shipped behaviour disagree, and the close was granted against the hedge rather than against a decision. The hedge was the mistake: an exit condition containing if that is decided to be right cannot be satisfied or failed, which makes it unusable as a gate.
@@ -2299,7 +2299,7 @@ Found by the KN-181 roast. agent/scripts/verify/KN-166.mjs claims in its own com
 
 **Why.** The check exists because prose and a command block disagreed and the block is what gets copied. A check that reads the whole document cannot tell those apart, so it is blind to the exact defect it was written for while asserting the opposite.
 
-**Exit condition.** The check extracts the fenced code block belonging to the close-and-roast step, by fence rather than by document position, and compares the order of the commands WITHIN it; a document carrying an earlier correctly-ordered example and a reversed real block FAILS; and that document is one of the mutation cases rather than an argument.
+**Exit condition.** The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed.
 
 ### `KN-185` Nothing establishes which prompt file the sibling Stop hook actually feeds
 
@@ -2321,7 +2321,7 @@ Found by the KN-181 roast. That card's plan was written to ../SkipBureau/.claude
 
 **Why.** A rule pair that contradicts itself on a whole class of work gets resolved differently each time by whoever hits it, and the resolution is invisible afterwards. This one produced a plan in a location its own project forbids, justified in the plan.
 
-**Exit condition.** Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen; the KN-181 plan is moved there and tracked; and a check refuses a plan file in a location the rules forbid rather than relying on the author noticing.
+**Exit condition.** Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish.
 
 ### `KN-187` An em dash reached a rule file that forbids em dashes
 
@@ -2332,5 +2332,5 @@ Found by the KN-181 roast. The text added to ../SkipBureau/.claude/ralph-loop.lo
 
 **Why.** It is a small rule and it is stated twice, which makes an unenforced version of it worse than none: everybody believes it holds. The sweep matters more than the single line, because a session that wrote many markdown files probably introduced more than one.
 
-**Exit condition.** No .md or .mdx in either project contains an em dash; a check enforces it with a Unicode-aware matcher so Persian text produces no false hit; and a planted em dash in a markdown file FAILS that check, proved by planting one.
+**Exit condition.** The em dashes written into markdown during this session are replaced with commas, in both projects, found with a Unicode-aware search so Persian text produces no false hit.
 

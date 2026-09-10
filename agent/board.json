@@ -3913,10 +3913,13 @@
       "area": "agent",
       "parent": [],
       "status": "backlog",
-      "exit": "todo roast refuses to record a round without --filed, accepting --filed none as the explicit honest answer; KN-001 and KN-065 are adjudicated so the board starts clean; validate still reports the count so a regression is visible; and driving the real CLI proves the refusal.",
+      "exit": "KN-001 and KN-065 have their roast rounds adjudicated and re-recorded with what was filed, so the board carries no round whose findings were never judged. validate keeps REPORTING the count, which is how a regression becomes visible without refusing anything.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-09T23:56:07.447Z"
+      "notes": [
+        "Exit condition rewritten by the owner's correction: it demanded that todo roast REFUSE to record a round without --filed. That is a gate nobody asked for. The rule is put the findings in the to-do list, and the report is enough to show when that has not happened."
+      ],
+      "createdAt": "2026-09-09T23:56:07.447Z",
+      "updatedAt": "2026-09-10T00:55:26.409Z"
     },
     {
       "id": "KN-164",
@@ -4127,11 +4130,13 @@
       "points": 1,
       "area": "agent",
       "parent": [],
-      "status": "backlog",
+      "status": "dropped",
       "exit": "KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T00:20:10.009Z"
+      "createdAt": "2026-09-10T00:20:10.009Z",
+      "droppedReason": "Invented gate. Its exit condition demanded a check that REFUSES any open card whose exit condition contains a hedge. The owner never asked for that and rule zero says not to invent one. What was actually true, that KN-162's recorded exit condition hedged where the implementation was definite, is a bookkeeping note and not worth a card, let alone a gate.",
+      "updatedAt": "2026-09-10T00:55:26.325Z"
     },
     {
       "id": "KN-177",
@@ -4272,10 +4277,13 @@
       "area": "agent",
       "parent": [],
       "status": "backlog",
-      "exit": "The check extracts the fenced code block belonging to the close-and-roast step, by fence rather than by document position, and compares the order of the commands WITHIN it; a document carrying an earlier correctly-ordered example and a reversed real block FAILS; and that document is one of the mutation cases rather than an argument.",
+      "exit": "The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:52:09.116Z"
+      "notes": [
+        "Kept, because this is not a new gate: the check already exists and already claims in its own comment to read the block. This fixes a check that lies about what it reads."
+      ],
+      "createdAt": "2026-09-10T00:52:09.116Z",
+      "updatedAt": "2026-09-10T00:55:36.521Z"
     },
     {
       "id": "KN-185",
@@ -4302,10 +4310,13 @@
       "area": "agent",
       "parent": [],
       "status": "backlog",
-      "exit": "Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen; the KN-181 plan is moved there and tracked; and a check refuses a plan file in a location the rules forbid rather than relying on the author noticing.",
+      "exit": "Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:52:26.699Z"
+      "notes": [
+        "De-gated by the owner's correction: the exit condition demanded a check that REFUSES a plan file in a forbidden location. Nobody asked for that. Writing down which folder wins is the whole fix."
+      ],
+      "createdAt": "2026-09-10T00:52:26.699Z",
+      "updatedAt": "2026-09-10T00:55:36.304Z"
     },
     {
       "id": "KN-187",
@@ -4317,10 +4328,13 @@
       "area": "docs",
       "parent": [],
       "status": "backlog",
-      "exit": "No .md or .mdx in either project contains an em dash; a check enforces it with a Unicode-aware matcher so Persian text produces no false hit; and a planted em dash in a markdown file FAILS that check, proved by planting one.",
+      "exit": "The em dashes written into markdown during this session are replaced with commas, in both projects, found with a Unicode-aware search so Persian text produces no false hit.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:52:26.787Z"
+      "notes": [
+        "De-gated by the owner's correction: the exit condition demanded a check enforcing the rule and a planted em dash failing it. The rule is already written down twice; the work is to fix what was written, not to build a gate."
+      ],
+      "createdAt": "2026-09-10T00:52:26.787Z",
+      "updatedAt": "2026-09-10T00:55:36.409Z"
     }
   ]
 }

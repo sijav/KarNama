@@ -74,6 +74,34 @@ build, and to say so plainly rather than claim the exit condition's words. If
 that is not enough, the honest answer is to say the clause is unmet rather than
 to describe a weaker proof in the card's language.
 
+## Corrected by the plan check
+
+- **`git check-attr` and `git ls-files --eol` are diagnostics, not a
+  substitute.** They report assigned attributes and the CURRENT index and
+  worktree state, not the result of a hypothetical checkout under another
+  configuration. So the simulation stays.
+- **Step 4 is the weak step and it is dropped.** Inferring a byte comparison
+  from `readFileSync` plus nearby syntax fails in the dangerous direction.
+- **Mutation-test by removing each new attribute IN the temporary checkout**,
+  and require the file to gain CRLF for it. That proves the attribute is what
+  protects the file, which is the actual claim.
+
+## What replaces the derivation
+
+Stop deriving and RUN the conversion. Two things make that sound:
+
+1. **A positive control on the simulation itself.** An unpinned markdown file
+   in the same checkout must come out with CRLF. Without that, every "no CR
+   found" result is equally consistent with a checkout that converted nothing,
+   which is the shape of vacuous pass this repository keeps shipping.
+2. **A positive control on the derivation.** The heuristic cannot be proved
+   complete, but it CAN be required to find the files already known to be
+   byte-compared. If it returns fewer, the derivation is broken and the check
+   fails saying so, rather than passing because it found nothing.
+
+That turns "derived from the scripts rather than listed by hand" into a check
+with a floor under it, instead of a heuristic trusted on its own word.
+
 ## What I am unsure about
 
 - Whether the derivation above is honest enough to be worth having, or whether

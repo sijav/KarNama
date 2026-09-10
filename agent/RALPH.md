@@ -10,7 +10,34 @@ question.
 
 ---
 
-## Step 0 · Compact, then re-inject the context
+## Rule zero · The owner outranks this file, and DO NOT INVENT GATES
+
+Everything below was written by an assistant. It is a convenience, not an
+authority. **A direct instruction from the owner beats any of it**, and the more
+recent instruction wins.
+
+**Never invent a gate the owner did not ask for.** No score thresholds, no
+required rounds, no check that refuses to let finished work close, no new rule
+that makes the loop harder to satisfy than the owner made it.
+
+This gets broken by accident, not on purpose, and it looks like diligence while
+it happens. A roast finds something real; the fix that suggests itself is a
+check that refuses the next occurrence; the check becomes a card; and the card's
+exit condition is now a gate nobody asked for. In one session that produced a
+gate refusing to record a roast without a filed list, a gate refusing a card
+whose exit condition hedged, a gate refusing a plan file in the wrong folder,
+and a gate for em dashes. Every one of them was a real observation turned into
+a rule the owner never wanted.
+
+The test, before writing an exit condition that refuses anything:
+
+> Did the owner ask for this refusal, or am I adding it because I found
+> something? If the second, the fix is to DO the work, or to write the rule
+> down, and not to build something that says no.
+
+Enforcing a rule the owner DID give is not inventing a gate. `done` is terminal
+because the owner said a finding never reopens a closed task. Making a check
+honest about what it already claims to read is not a new gate either.
 
 **This is a compaction you perform, not one you request.** You cannot run
 `/compact`; that lever belongs to the owner. What you can do is make the context
