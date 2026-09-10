@@ -26,7 +26,18 @@ services:
     # The repository is an npm workspace, so install at the root and build only
     # the API. `npm ci` honours the lockfile, which is the point of committing
     # one.
-    buildCommand: npm ci && npm run build --workspace @karnama/api
+    #
+    # `--include=dev` is NOT optional here, and leaving it out is exactly how
+    # the first deploy failed. `NODE_ENV` is set to `production` below, and npm
+    # SKIPS devDependencies when it sees that — so `typescript` and `@types/pg`
+    # were never installed and `tsc` died on the first typed import:
+    #
+    #   src/database/cli.ts(2,16): error TS7016: Could not find a declaration
+    #   file for module 'pg'
+    #
+    # The build needs the dev tools; the RUNTIME does not, and does not get
+    # them, because `startCommand` runs compiled JavaScript.
+    buildCommand: npm ci --include=dev && npm run build --workspace @karnama/api
     startCommand: node apps/api/dist/main.js
 
     # Rebuild on every push to the default branch, so there is no manual step.
