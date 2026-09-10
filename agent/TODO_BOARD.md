@@ -3127,6 +3127,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control.
 
+**Roasts.** round 1 scored 7 with 0 critical(s)
+
 ### `KN-248` Nothing checks the Input's placeholder stays put when an empty field takes focus
 
 - **status** backlog · **severity** critical · **points** 1 · **area** web

@@ -6142,7 +6142,21 @@
       ],
       "status": "done",
       "exit": "Every Input story with a play function either reads its expectations from the active args or offers, through controls.include or by disabling controls, only the args its assertions follow; a check enumerates the stories and fails on one that offers any other control.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-247-round-1.2026-09-10T10-56-24-623Z.md",
+          "filed": [],
+          "cardDigest": "9cc2d01ce1e398100f32d18a83e8acf8499570b19ceb43e0af35af4b53320371",
+          "head": "92cf9eaab73be8036c172aba27a5b63f7c13dddd",
+          "reviewerScore": 3,
+          "reviewerCriticals": 1,
+          "dismissed": "The one critical says set value, reset it, press Rerun, and FromArgs and Filled fail because the field keeps x7. Reproduced on the production build and it does not: Rerun is forceRemount, which unmounts the story, so the rerun play function runs on a fresh input showing the default and passes for both (phases played, no exception). What is real is the state after the reset and before any rerun, the field showing x7 with no arg behind it, and that is KN-252, filed from the KN-249 roast. The other remarks, that URL args are not a stateful Controls sequence and that Hover's hover assertion never runs in the UI, are the limitations the verifier and the close evidence already name.",
+          "at": "2026-09-10T10:59:29.130Z"
+        }
+      ],
       "notes": [
         "2026-09-10: parked, blocked by KN-250. Its check runs every Input story on a production Storybook build, and Focus already fails there with nothing changed, because html dir is set in a passive effect after the play function starts. Verifier drafted and working (URL args per offered control, verdict from the errored phase and playFunctionThrewException, NOT storyFinished, whose status read success for a play that threw); saved to the session scratchpad as parked/KN-247.mjs. Planned allowlists: Default all but error; FromArgs reads defaultValue and disabled from args and offers those plus placeholder and name; Filled reads defaultValue from args, offers all but value; Focus all but disabled and error; Disabled all but disabled; Hover all but error and disabled; LabelIsBound all but disabled; Typing label, placeholder, helperText, error."
       ],
