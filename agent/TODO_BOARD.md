@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 31 of 190 tasks done · 81 of 554 points.
+Project **KarNama** · 32 of 190 tasks done · 84 of 554 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-161` Give the roast, todo and loop skills BOTH a python and a node script** (high, 3 pt, agent)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
+**Next up: `KN-189` Heading keywords pick the wrong block, so a reversed real block still passes** (critical, 2 pt, agent)
 
 ## Backlog (156)
 
@@ -177,7 +171,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-144` | A NULL checksum in the ledger is adopted without proving the SQL ever ran | low | 2 | api | none | Adoption of a NULL checksum is either recorded in TECH-DEBT.md with what it does and does not prove, or gated behind an explicit acknowledgement, and a test covers whichever was chosen. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 
-## Done (31)
+## Done (32)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -212,6 +206,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-159` | Close the task BEFORE the roast, and never let a finding reopen it | high | 2 | agent | none | move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source. |
 | `KN-160` | Plan files live beside the work, named #<id> - <title>.md | high | 2 | agent | none | agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree. |
 | `KN-166` | Check the loop rules are written correctly in the SkipBureau project | high | 2 | agent | none | ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed. |
+| `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
 
 ## Dropped (2)
 
@@ -2036,7 +2031,7 @@ The owner's rule of 2026-09-10: the plan written before a task starts goes in th
 
 ### `KN-161` Give the roast, todo and loop skills BOTH a python and a node script
 
-- **status** in_progress · **severity** high · **points** 3 · **area** agent
+- **status** done · **severity** high · **points** 3 · **area** agent
 - **blocked by** none
 
 The owner's rule of 2026-09-10: a skill should work whichever runtime is present. Today roast ships roast.py only, loop ships compact.py only, and todo ships todo.mjs only, so a project with node and no usable python cannot roast, and a project with python and no node cannot use the board. Each skill needs both entry points, behaving identically, and its SKILL.md has to say how to run each so the caller can pick without reading the directory.

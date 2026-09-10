@@ -3862,13 +3862,15 @@
       "points": 3,
       "area": "agent",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-09T23:54:04.957Z",
-      "updatedAt": "2026-09-10T01:28:43.678Z",
-      "verify": "node agent/scripts/verify/KN-161.mjs"
+      "updatedAt": "2026-09-10T01:29:04.392Z",
+      "verify": "node agent/scripts/verify/KN-161.mjs",
+      "evidence": "node agent/scripts/verify/KN-161.mjs passes, 7 checks, and it RUNS the two parity harnesses rather than asserting the files exist, which is the clause the card turns on: two files with the same name in different languages prove nothing, since the whole risk of a second implementation is silent drift. todo ships todo.mjs and todo.py, and test-parity.py drives 25 commands through each against a fresh board comparing stdout, stderr and exit code character for character. roast ships roast.py and roast.mjs, and test-parity-roast.py puts a STUB codex on PATH and drives both REAL entry points end to end, comparing the prompt each sent, the argv each built, the session file and result file each wrote and what each printed, plus eleven rate-limit strings through the reset parser with a frozen clock. Both SKILL.md files document both invocations and say the halves are checked against each other. The verifier requires a non-trivial number of compared cases, because a harness that compared nothing would also exit 0. Three mutations were each caught with their own message and every file restored: todo.py drifting from todo.mjs by one word, roast.mjs dropping its shell quoting, and the roast SKILL.md no longer naming the node half. The harness earned its keep three times while being built, on defects reading would not have found: a PRE-EXISTING operator-precedence bug in roast.py, where args.title or args.ask[0] if args.ask else unstated parses as (title or ask[0]) if ask else unstated, so any roast carrying a title and no --ask recorded its subject as unstated; a Node quoting bug where shell true let cmd.exe strip the config quotes so codex would have received an unquoted model_reasoning_effort; and a second where any path containing a space would have split into two arguments. The correct escaping was chosen by running all three candidates through the stub rather than by reasoning about cmd.exe. What this does NOT establish: the LOOP skill is not ported, deliberately, because its only script prints a project digest into the context at the step whose purpose is to free it, and KN-172 deletes it rather than doubling it; its SKILL.md now records that and that compaction is the harness's to perform, so the absence does not read as an oversight. Neither parity harness invokes a real reviewer, so what is proved is everything up to and including the subprocess call, not the reviewer's answer. This task changed no repository source beyond its own verifier, so the full workspace gate has nothing to say about it; the board still validates at 190 tasks.",
+      "closedAt": "2026-09-10T01:29:04.392Z"
     },
     {
       "id": "KN-162",
