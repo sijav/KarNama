@@ -1,0 +1,16 @@
+1. Yes. The 2px solid, outside outline meets the area requirement even at rounded corners. WCAG explicitly treats a solid 2px outline as the straightforward passing technique, permits a bounding-box outline for non-rectangular shapes, and says an offset does not reduce the required area. [W3C’s Focus Appearance guidance](https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html)
+
+2. Yes. The test can pass while no user-visible ring is painted. It verifies only computed CSS declarations, not the visible pixels. A parent with `overflow: hidden` and no 4px clearance clips the entire external ring when the field fills that parent; an opaque positioned sibling can cover it too. MUI is not currently suppressing the outline, but the test does not establish that the browser can display it in a real composition.
+
+3. No, changing this to focus-visible is not necessary for text fields. Native text inputs conventionally match `:focus-visible` for pointer focus too, because they accept keyboard text input. `.Mui-focused` is therefore not a practical regression here, and it follows the field’s existing focus-border behavior.
+
+Findings:
+
+- critical — The claimed focus indicator is not actually tested as visible, so the exit condition is not established. [`Input.stories.tsx:229`](D:/Kar/Gandom/KarNama/apps/web/src/shared/input/Input.stories.tsx:229) deliberately gives every fixture 16px of opaque padding, then [`Input.stories.tsx:256`](D:/Kar/Gandom/KarNama/apps/web/src/shared/input/Input.stories.tsx:256)-[`260`](D:/Kar/Gandom/KarNama/apps/web/src/shared/input/Input.stories.tsx:260) assert only `getComputedStyle()`. The implementation itself puts all meaningful focus pixels four pixels outside the field, [`Input.tsx:83`](D:/Kar/Gandom/KarNama/apps/web/src/shared/input/Input.tsx:83)-[`87`](D:/Kar/Gandom/KarNama/apps/web/src/shared/input/Input.tsx:87), while [`DESIGN.md:219`](D:/Kar/Gandom/KarNama/DESIGN.md:219)-[`221`](D:/Kar/Gandom/KarNama/DESIGN.md:221) admits an overflow-clipping container removes that space. Concrete failure: render the full-width `Input` in an exact-sized `overflow: hidden` parent without padding, tab into an invalid field, and the parent clips all four external pixels. The computed outline still has `solid / 2px / 2px / blue`, so this story and every KN-244 mutation pass, while the user is back to the unchanged red outer border and gets no focus indication. The verifier reinforces this blind spot by only mutating source declarations, [`KN-244.mjs:97`](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-244.mjs:97)-[`102`](D:/Kar/Gandom/KarNama/agent/scripts/verify/KN-244.mjs:102). Do not mark this done until the production host layout guarantees the four-pixel clearance and a rendered-pixel or visual assertion proves it, or use an indicator that remains sufficient inside a clipped host.
+
+`node agent/scripts/todo.mjs validate` passes. I did not run the mutation verifier because this review environment is read-only and that verifier rewrites source files.
+
+VERDICT
+score: 5.5
+criticals: 1
+one-line: Prove the ring remains visibly painted in the actual host layout, not merely present in computed CSS.

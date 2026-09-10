@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 87 of 273 tasks done · 168 of 680 points.
+Project **KarNama** · 87 of 274 tasks done · 168 of 682 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-273` The Input and the Checkbox are bounded by a 1.24:1 border, under the 3:1 WCAG 1.4.11 asks of a control's edge** (critical, 1 pt, design)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-273` | The Input and the Checkbox are bounded by a 1.24:1 border, under the 3:1 WCAG 1.4.11 asks of a control's edge | critical | 1 | design | none | The owner has answered, through the question tool, whether the resting edge of an enabled Input and an unchecked Checkbox stays border/default as the file draws it or is raised to at least 3:1 against the surfaces it sits on; DESIGN.md records the answer as the owner's, with the date; and if it is raised, a card for the change exists. |
 
 ## Blocked (2)
 
@@ -23,7 +29,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | critical | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
-| `KN-273` | The Input and the Checkbox are bounded by a 1.24:1 border, under the 3:1 WCAG 1.4.11 asks of a control's edge | critical | 1 | design | none | The owner has answered, through the question tool, whether the resting edge of an enabled Input and an unchecked Checkbox stays border/default as the file draws it or is raised to at least 3:1 against the surfaces it sits on; DESIGN.md records the answer as the owner's, with the date; and if it is raised, a card for the change exists. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -32,6 +37,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-266` | The Input's border takes layout space, so its text sits a pixel inward of the file | critical | 2 | web | none | In every state the Input's text sits spacing/md, 16px, from the field's outer edge, as 95:5 and 95:19 draw it, with the stroke painted inside that padding and taking no layout space; no padding in Input.tsx is computed from a border width; the Default and Focus stories measure the text's distance from the edge at 16; and the other bordered components are checked for the same offset, each matching or carrying a card. |
 | `KN-267` | The Input has no leading or trailing icon slot, which node 95:38 carries | critical | 2 | web | none | The Input takes an optional leading and an optional trailing icon, each 20 by 20 at spacing/2xs from the text in text/secondary, matching 95:38 with the icons on, in both directions; stories show each and both; and the label's boolean in the file is either honoured, with the accessible name then required another way, or the decision not to is recorded in DESIGN.md. |
 | `KN-272` | In dark, a selected Filter Chip's text is 1.34:1 on its fill, and its pressed border 1.14:1 | critical | 2 | web | none | In the derived dark palette bg/brand/container is a dark tint of its own hue, derived as a fill the way the status containers are, text/brand clears 4.5:1 on it and border/focus clears 3:1 on it, and every pair the tests already hold still holds; darkMode.test.ts asserts both pairs as the Filter Chip draws them, and a mutation back to the surface derivation fails them; and the selected Filter Chip, resting and pressed, is seen in dark in both languages. |
+| `KN-274` | The Input's focus ring for an invalid field sits outside a field that fills its container, so a host that clips at its edge removes it | critical | 2 | web | none | An invalid Input focused inside a host that clips its overflow flush at the field's edges still changes at least a two-pixel perimeter at 3:1, KN-244's measure, either because the change is drawn inside the field's own box or because the Input keeps the room itself; a story renders the field in an overflow hidden host with no padding and asserts, from the rendered geometry, that every pixel of the focus change lies inside every clipping ancestor, and a mutation back to a ring the host clips fails it by name; DESIGN.md's section says which; and the Checkbox's and the Filter Chip's rings are checked for the same, each matching or carrying a card. |
 | `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
 | `KN-021` | Page header | critical | 3 | web | KN-005, KN-006, KN-007, KN-009, KN-008 | Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree. |
 | `KN-022` | Empty state and loading state | critical | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
@@ -3115,6 +3121,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name.
 
+**Roasts.** round 1 scored 5.5 with 1 critical(s)
+
 ### `KN-245` The Input's Controls show empty values while the canvas draws the specimen's copy
 
 - **status** backlog · **severity** critical · **points** 2 · **area** web
@@ -3451,7 +3459,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-273` The Input and the Checkbox are bounded by a 1.24:1 border, under the 3:1 WCAG 1.4.11 asks of a control's edge
 
-- **status** backlog · **severity** critical · **points** 1 · **area** design
+- **status** in_progress · **severity** critical · **points** 1 · **area** design
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-271 roast. The resting edge of an enabled Input and of an unchecked Checkbox is border/default #e5e7eb, 1.24:1 on bg/surface and 1.16:1 on bg/page, and the Input's own fill is bg/surface, 1.07:1 against the page, so nothing else draws its boundary. WCAG 1.4.11 asks 3:1 of the visual information needed to identify a control. The derived dark palette follows the design, 1.33 on the dark surface and 1.16 on the dark page. It is the file's own value, read from node 95:3 and the Checkbox frame, and matching the file exactly is the owner's standing rule, so raising it is a departure from the design and not a build decision.
@@ -3459,4 +3467,15 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** Someone with low vision may not find the field, or see where the checkbox is, which is the first thing a form asks of them. It cannot be fixed without departing from the file, so the owner has to choose between the design as drawn and the contrast rule. Critical on the owner's order of 2026-09-10, as a finding on built components.
 
 **Exit condition.** The owner has answered, through the question tool, whether the resting edge of an enabled Input and an unchecked Checkbox stays border/default as the file draws it or is raised to at least 3:1 against the surfaces it sits on; DESIGN.md records the answer as the owner's, with the date; and if it is raised, a card for the change exists.
+
+### `KN-274` The Input's focus ring for an invalid field sits outside a field that fills its container, so a host that clips at its edge removes it
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-244 roast, KN-244 being a child of KN-011. KN-244 shows focus on an invalid field with an outline two pixels wide at an offset of two, so every pixel of the change lies four pixels outside the field's box, and the Input fills its container. Any host that clips its overflow with less than four pixels of inline padding, a scroll area or an exact-sized box, removes the ring completely, and the user is back to one red pixel. FocusedWhileInvalid gives each field 16 pixels of opaque padding and asserts computed styles, so it passes in that host, and so does every KN-244 mutation. DESIGN.md warns that a clipping container must leave the room, which is a rule nothing enforces. The Checkbox and the Filter Chip draw the same ring, but they are small and rarely sit flush with a clipping edge; an Input is flush with its container by design.
+
+**Why.** The person tabbing back into a field that failed validation needs to see where focus is in the form the product actually ships, not only in the story, and forms sit in modals and scroll areas, the hosts most likely to clip. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** An invalid Input focused inside a host that clips its overflow flush at the field's edges still changes at least a two-pixel perimeter at 3:1, KN-244's measure, either because the change is drawn inside the field's own box or because the Input keeps the room itself; a story renders the field in an overflow hidden host with no padding and asserts, from the rendered geometry, that every pixel of the focus change lies inside every clipping ancestor, and a mutation back to a ring the host clips fails it by name; DESIGN.md's section says which; and the Checkbox's and the Filter Chip's rings are checked for the same, each matching or carrying a card.
 

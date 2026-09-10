@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 274,
+  "nextId": 275,
   "tasks": [
     {
       "id": "KN-001",
@@ -6123,7 +6123,22 @@
       ],
       "status": "done",
       "exit": "A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5.5,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-244-round-1.2026-09-10T14-35-51-008Z.md",
+          "filed": [
+            "KN-274"
+          ],
+          "cardDigest": "22cf9b54f0b88b7b38d45e67e7fd703e5f64e91d15d560e29f5059b14a08a2d0",
+          "head": "d242be25c6a075264befe594b4f28299ef8b6bcd",
+          "reviewerScore": 5.5,
+          "reviewerCriticals": 1,
+          "at": "2026-09-10T14:40:24.952Z"
+        }
+      ],
       "notes": [
         "2026-09-10: taken, then put back before any file changed. Planning it found the derived dark border/focus at 2.81:1 on bg/surface, KN-271, and the focus ring this card adds is drawn in border/focus, so its 3:1 measure cannot hold in dark until KN-271 lands. Replan from step 2b after it: the ring is the Checkbox's, 2px border/focus at offset 2, beside a 2px border/error border."
       ],
@@ -6822,11 +6837,27 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The owner has answered, through the question tool, whether the resting edge of an enabled Input and an unchecked Checkbox stays border/default as the file draws it or is raised to at least 3:1 against the surfaces it sits on; DESIGN.md records the answer as the owner's, with the date; and if it is raised, a card for the change exists.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T14:24:29.018Z"
+      "createdAt": "2026-09-10T14:24:29.018Z",
+      "updatedAt": "2026-09-10T14:36:46.765Z"
+    },
+    {
+      "id": "KN-274",
+      "title": "The Input's focus ring for an invalid field sits outside a field that fills its container, so a host that clips at its edge removes it",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-244 roast, KN-244 being a child of KN-011. KN-244 shows focus on an invalid field with an outline two pixels wide at an offset of two, so every pixel of the change lies four pixels outside the field's box, and the Input fills its container. Any host that clips its overflow with less than four pixels of inline padding, a scroll area or an exact-sized box, removes the ring completely, and the user is back to one red pixel. FocusedWhileInvalid gives each field 16 pixels of opaque padding and asserts computed styles, so it passes in that host, and so does every KN-244 mutation. DESIGN.md warns that a clipping container must leave the room, which is a rule nothing enforces. The Checkbox and the Filter Chip draw the same ring, but they are small and rarely sit flush with a clipping edge; an Input is flush with its container by design.",
+      "why": "The person tabbing back into a field that failed validation needs to see where focus is in the form the product actually ships, not only in the story, and forms sit in modals and scroll areas, the hosts most likely to clip. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "An invalid Input focused inside a host that clips its overflow flush at the field's edges still changes at least a two-pixel perimeter at 3:1, KN-244's measure, either because the change is drawn inside the field's own box or because the Input keeps the room itself; a story renders the field in an overflow hidden host with no padding and asserts, from the rendered geometry, that every pixel of the focus change lies inside every clipping ancestor, and a mutation back to a ring the host clips fails it by name; DESIGN.md's section says which; and the Checkbox's and the Filter Chip's rings are checked for the same, each matching or carrying a card.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T14:40:24.833Z"
     }
   ]
 }
