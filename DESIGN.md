@@ -666,9 +666,10 @@ re-apply it.
 
 ### Settled by the owner on 2026-09-10
 
-Two more answers. The owner gave the broad answer to each in chat, and then
-confirmed the details through the question tool the same day, so every line
-below is the owner's, not a reading of it.
+Three answers. The owner gave the broad answer to the first two in chat, and
+then confirmed the details through the question tool the same day; the third
+was put and answered through the question tool alone. Every line below is the
+owner's, not a reading of it.
 
 **Dropping a card onto the rejected column while it is collapsed to a count.**
 Owner, KN-196. The file draws nothing for it: Drop Done `376:5997` predates the
@@ -697,6 +698,21 @@ many people cannot tell apart; in exchange nothing an ad says goes unmatched.
 **A job can be full-time and remote at once**, so the field holds more than
 one value. The database enum and the list-valued field are a migration,
 KN-265. The job level list was not part of the answer and stays provisional.
+
+**A control's resting edge clears 3 to one.** Owner, KN-273. The file draws the
+resting edge of the Input, `95:3`, and of the unchecked Checkbox in
+`border/default`, 1.24 to one on white and 1.13 on the secondary surface, and
+nothing else outlines an empty field, while WCAG 1.4.11 asks 3 to one of the
+edge that identifies a control. Put to the owner with the trade named on each
+option, they chose **a new named role for a control's resting edge**: a grey in
+the file's own hue at 3 to one or more on every surface a control sits on,
+picked with margin and derived for dark like the other borders. Not keeping the
+file's colour, not taking `text/secondary`, and not asking the designer first.
+The Input, the Checkbox and the Select when it is built use it; the Hover edge
+keeps its drawn colour, and cards, dividers and the Filter Chip keep
+`border/default`. Like the order of the columns and the history tab, this
+departs from the file on the owner's call. KN-275 builds it.
+
 ## 7. The Documentation canvas, frame by frame
 
 Canvas `5:8`. Every frame, with what it settles and where that now lives, so a

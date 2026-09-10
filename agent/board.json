@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 275,
+  "nextId": 276,
   "tasks": [
     {
       "id": "KN-001",
@@ -6842,7 +6842,8 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T14:24:29.018Z",
-      "updatedAt": "2026-09-10T14:36:46.765Z"
+      "updatedAt": "2026-09-10T14:44:27.716Z",
+      "verify": "node agent/scripts/verify/KN-273.mjs"
     },
     {
       "id": "KN-274",
@@ -6858,6 +6859,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T14:40:24.833Z"
+    },
+    {
+      "id": "KN-275",
+      "title": "Add a resting edge role for controls at 3:1, and draw the Input and the Checkbox with it",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: the owner's decision on KN-273, 2026-09-10, a KN-011 child. The file draws the resting edge of the Input, 95:3, and of the unchecked Checkbox in border/default #e5e7eb, 1.24:1 on white and 1.13:1 on bg/surface-secondary, under WCAG 1.4.11's 3:1 for the edge that identifies a control. The owner chose a new named palette role for a control's resting edge, a grey in the file's own hue, over keeping the file's colour. It is used by the Input's resting border (the edge in Input.tsx) and the Checkbox's unchecked frame (Checkbox.tsx), and by the Select when KN-012 builds it; the Hover edge text/secondary and border/default for cards, dividers and the Filter Chip stay as drawn. The value is picked with margin, not at the line: text/secondary's hue and saturation walked lighter to the last value clearing 3.3:1 on all three light surfaces gives #7f8694, 3.66, 3.41 and 3.32, while #868d9a clears 3:1 by only 0.03. It is not a Figma variable, so the token tables mark it as the owner's addition and the token verifier must still pass, and its derived dark row needs its own check, since KN-271 covers only border/focus and border/error. The hover change becomes subtler, about 1.3:1 between rest and hover, which WCAG does not ask about and the owner accepted by keeping hover as drawn.",
+      "why": "An empty field or an unchecked box has nothing but its edge to be found by, and at 1.24:1 someone with low vision may not find it. The owner chose the fix on 2026-09-10. Critical on the owner's order of 2026-09-10, as a finding on built components.",
+      "severity": "critical",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "tokens.ts carries a named role for a control's resting edge, a neutral in text/secondary's hue at 3.3:1 or more on bg/surface, bg/page and bg/surface-secondary, and darkMode.ts derives it and checks it at 3:1 or more on the three dark backgrounds, each ratio asserted by a unit test with a mutation back to border/default failing it; the Input's resting border and the Checkbox's unchecked frame use it, and the Input's Default story and the Checkbox's Unchecked story assert it; every other state of both still renders as drawn; DESIGN.md's token tables list the role as the owner's addition under KN-273; the token verifier and the contract pass; and the Input and the Checkbox are seen at rest in all four combinations.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T14:42:46.699Z"
     }
   ]
 }
