@@ -2,18 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 37 of 200 tasks done · 95 of 570 points.
+Project **KarNama** · 37 of 203 tasks done · 95 of 576 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-153` Separate the owner-settled own-tab decision from the author-chosen tab ORDER** (high, 1 pt, design)
+**Next up: `KN-201` The docs guard only sees export const stories, so other valid CSF exports need no documentation** (critical, 2 pt, web)
 
-## Backlog (161)
+## Backlog (164)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-201` | The docs guard only sees export const stories, so other valid CSF exports need no documentation | critical | 2 | web | none | The guard collects story names from every CSF export form: export const, export function, export class, and an export list. Each is a named failing case, planted in a real story file and run against the real guard, before the fix and passing after. A meta whose component is not a plain identifier is REPORTED rather than skipped, so the prop check never silently declines to run; if the component genuinely cannot be resolved, the guard says so and fails. The mutation that must survive: the existing export const stories keep working. |
 | `KN-153` | Separate the owner-settled own-tab decision from the author-chosen tab ORDER | high | 1 | design | KN-072 | DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message. |
 | `KN-155` | KN-045 still specifies the four-tab modal KN-072 replaced | high | 1 | web | KN-072 | KN-045 names five tabs with history in its own, its exit condition asserts where history renders, and a check proves NO open card still says four-tab modal or places history inside the info tab. |
 | `KN-172` | compact.py does the opposite of what the loop's compact step is for | high | 1 | agent | none | compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script. |
@@ -55,6 +56,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-183` | KN-114's verifier can silently overwrite a concurrent catalog edit | high | 2 | web | none | The blank and untranslated rules live in a pure function that takes the catalogs as an argument; catalog.test.ts calls it on the real imported ones; a test drives it with in-memory catalogs containing each evasion, empty, whitespace, format characters only, the id exactly and the id with punctuation and casing changed, and requires each to be reported naming the id; KN-114's verifier no longer writes to any tracked file; and its header no longer needs to warn that an interrupted run leaves the catalog planted. |
 | `KN-185` | Nothing establishes which prompt file the sibling Stop hook actually feeds | high | 2 | agent | none | The Stop-hook registration is traced to the exact prompt pathname it feeds, for both projects, and recorded where the next reader will find it; where a project's hook feeds a file nobody has been maintaining, that is filed; and the claim is supported by the resolved configuration rather than by the prompt's own text. |
 | `KN-195` | npm run silently truncates every argument at its first newline on Windows | high | 2 | agent | none | Either the scripts refuse an argument containing a newline with a message naming this cause, or the loop stops going through npm for anything carrying prose and RALPH.md and .claude/ralph-loop.local.md are updated to the invocation that works. A check demonstrates the truncation and its absence after the fix, using a free non-mutating command rather than a real roast. The existing board is audited for fields whose text ends mid-sentence, and the audit result is recorded whether or not it finds anything. |
+| `KN-202` | The story-docs markdown contract is documented as rigid but silently accepts malformed files | high | 2 | web | none | parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing. |
+| `KN-203` | The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian | high | 2 | web | none | The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | high | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | high | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | high | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -315,6 +318,8 @@ src/shared/story-docs with en/ and fa/ markdown per story, a loader that applies
 **Why.** Documentation prose is banned from tsx files, so it needs somewhere else to live before the first component ships with a story. The guard is what stops the Persian side rotting into a stale copy of an older English page.
 
 **Exit condition.** Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught.
+
+**Roasts.** round 1 scored 2.8 with 1 critical(s)
 
 ### `KN-008` Icon set, 30 icons at 24 by 24
 
@@ -2492,4 +2497,37 @@ Found on 2026-09-10 while planning KN-193, and verified three ways. FIRST, grep 
 **Why.** An instrument with no subject reports success forever. Four cards of effort went into making this check hard to fool, and none of that effort has ever been applied to a document that matters, which is why the wrong order has sat in the live loop prompt through every one of them. This is the most expensive shape of wrong in the repository, a green check over an unexamined thing, and it is the shape STATE.md already names twice under absence proving nothing.
 
 **Exit condition.** agent/RALPH.md and .claude/ralph-loop.local.md each carry exactly one marked block, and a verifier runs closesBeforeRoasting against BOTH real files by path rather than against a fixture, failing if either is unmarked, ambiguous or reversed. The check is proved by mutation on the real files: reversing the two lines in each prompt makes it fail, and removing a marker makes it fail with the unmarked reason. Any verifier that would pass when handed a file containing no marked block at all is a defect, and the check for that is named. KN-171's fix to the prompt's order lands with or before this, since a marked block that records the wrong order is worse than none.
+
+### `KN-201` The docs guard only sees export const stories, so other valid CSF exports need no documentation
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-007 roast and REPRODUCED here: I appended 'export function KeyboardOnly() { return null }' to LanguageSwitch.stories.tsx and the guard passed, 8 tests green, with no markdown entry for it. readStoryFile's AST walk collects story names only from ts.isVariableStatement, so a function-declaration export and an export-list export (export { Foo }) are invisible to it. That makes KN-007's stated exit condition, adding a story with no markdown entry fails the guard, FALSE for every CSF export form except export const. The same walk has a second hole with the same shape: 'component' is read only when it is an identifier, and the prop check then does 'if (!entry.component) continue', so a meta with an inline component expression skips prop documentation entirely and silently. Both are the AST reading being narrower than the thing it claims to cover, and both are fixed in the same function.
+
+**Why.** This guard is the foundation twenty component cards are about to be built on, and its whole value is that nobody can forget to document a story. A hole that depends on which syntax an author happened to use is worse than no guard, because the green result is read as permission. The skip on a missing component is the more dangerous of the two: it fails OPEN by design, so the less a meta declares, the less it is asked for.
+
+**Exit condition.** The guard collects story names from every CSF export form: export const, export function, export class, and an export list. Each is a named failing case, planted in a real story file and run against the real guard, before the fix and passing after. A meta whose component is not a plain identifier is REPORTED rather than skipped, so the prop check never silently declines to run; if the component genuinely cannot be resolved, the guard says so and fails. The mutation that must survive: the existing export const stories keep working.
+
+### `KN-202` The story-docs markdown contract is documented as rigid but silently accepts malformed files
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-007 roast. parse.ts calls its format rigid and says the guard CHECKS it rather than reads it, but two malformed shapes pass silently. An unknown level-two section, say ## Accessibility written after the stories, is not a section the parser knows, so every line under it is folded into the PREVIOUS story's prose instead of being reported. And a duplicate ### name overwrites the earlier entry with no complaint, so documenting a prop twice quietly discards the first attempt. Neither is caught anywhere: parse.ts returns a best effort and the guard only compares the names it got back.
+
+**Why.** An author who writes a section the format does not support gets no error, sees their prose swallowed into the wrong entry, and concludes the docs system is unreliable. That is the failure mode that gets a documentation convention abandoned, and it is the one this card exists to prevent, since twenty component cards are about to be written against this format.
+
+**Exit condition.** parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing.
+
+### `KN-203` The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-007 roast, and I had named it as the risk when sending that roast. localeInContext probes DocsContext at four guessed shapes because Storybook publishes no accessor for the current globals. If a Storybook upgrade moves all four, the page falls back to the product default and shows Persian regardless of what the toolbar or the URL actually says, and the channel listener does not repair it until somebody changes the toolbar by hand. Nothing fails: the page just quietly shows the wrong language, which is the exact failure the Language toolbar exists to make visible. The related half is that DocsPage.tsx and useDocsLocale.ts are excluded from coverage, so no automated test protects the subscription either; the exclusion is argued in vitest.config.ts and the argument may be right, but the consequence is that this whole path is checked by hand or not at all.
+
+**Why.** A silent fallback to the default language is indistinguishable from working correctly whenever the default happens to be what you wanted, which for this product is most of the time. It would be found by a reader who does not read Persian, which is the worst possible discovery path.
+
+**Exit condition.** The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository.
 

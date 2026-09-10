@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 201,
+  "nextId": 204,
   "tasks": [
     {
       "id": "KN-001",
@@ -426,7 +426,25 @@
       ],
       "status": "done",
       "exit": "Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 2.8,
+          "criticals": 1,
+          "file": "agent/roasts/KN-007-round-1.2026-09-10T02-50-04-555Z.md",
+          "filed": [
+            "KN-201",
+            "KN-202",
+            "KN-203"
+          ],
+          "cardDigest": "e1284cc3745e62803426868b6d3b5416b0d789535f1d1fb94695a7446d5d8cb6",
+          "head": "714516b9d58b69ae0c7ba7f283a4eed5c73c5195",
+          "reviewerScore": 2.8,
+          "reviewerCriticals": 1,
+          "dismissed": "Nothing was rejected. The critical was reproduced by planting export function KeyboardOnly() in a real story file and watching the guard pass with 8 green tests and no markdown entry, which makes this card's stated exit condition false for every CSF export form except export const. Filed as KN-201 together with the inline-component prop skip, because both are the same AST walk being narrower than what it claims and both are fixed in one function. The parser-strictness and DocsContext findings are KN-202 and KN-203. One correction rather than a rejection: the reviewer called the coverage exclusion a conflict with the total-coverage rule, and the owner clarified on 2026-09-10 that 100 percent is a PRODUCT rule; these two files are product, so the concern stands and is folded into KN-203, but the framing that any exclusion is a rule violation is not right, since *.stories.tsx has always been excluded for the same stated reason. Score 2.8 accepted as 2.8: the card shipped a working bilingual docs system that I verified in a browser in all four combinations, and it also shipped a guard whose headline promise is false for three of the four ways to export a story.",
+          "at": "2026-09-10T02:59:52.386Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
       "updatedAt": "2026-09-10T02:49:32.229Z",
@@ -4671,6 +4689,51 @@
       ],
       "createdAt": "2026-09-10T02:22:29.038Z",
       "updatedAt": "2026-09-10T02:24:32.346Z"
+    },
+    {
+      "id": "KN-201",
+      "title": "The docs guard only sees export const stories, so other valid CSF exports need no documentation",
+      "desc": "CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-007 roast and REPRODUCED here: I appended 'export function KeyboardOnly() { return null }' to LanguageSwitch.stories.tsx and the guard passed, 8 tests green, with no markdown entry for it. readStoryFile's AST walk collects story names only from ts.isVariableStatement, so a function-declaration export and an export-list export (export { Foo }) are invisible to it. That makes KN-007's stated exit condition, adding a story with no markdown entry fails the guard, FALSE for every CSF export form except export const. The same walk has a second hole with the same shape: 'component' is read only when it is an identifier, and the prop check then does 'if (!entry.component) continue', so a meta with an inline component expression skips prop documentation entirely and silently. Both are the AST reading being narrower than the thing it claims to cover, and both are fixed in the same function.",
+      "why": "This guard is the foundation twenty component cards are about to be built on, and its whole value is that nobody can forget to document a story. A hole that depends on which syntax an author happened to use is worse than no guard, because the green result is read as permission. The skip on a missing component is the more dangerous of the two: it fails OPEN by design, so the less a meta declares, the less it is asked for.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The guard collects story names from every CSF export form: export const, export function, export class, and an export list. Each is a named failing case, planted in a real story file and run against the real guard, before the fix and passing after. A meta whose component is not a plain identifier is REPORTED rather than skipped, so the prop check never silently declines to run; if the component genuinely cannot be resolved, the guard says so and fails. The mutation that must survive: the existing export const stories keep working.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T02:59:37.235Z"
+    },
+    {
+      "id": "KN-202",
+      "title": "The story-docs markdown contract is documented as rigid but silently accepts malformed files",
+      "desc": "CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-007 roast. parse.ts calls its format rigid and says the guard CHECKS it rather than reads it, but two malformed shapes pass silently. An unknown level-two section, say ## Accessibility written after the stories, is not a section the parser knows, so every line under it is folded into the PREVIOUS story's prose instead of being reported. And a duplicate ### name overwrites the earlier entry with no complaint, so documenting a prop twice quietly discards the first attempt. Neither is caught anywhere: parse.ts returns a best effort and the guard only compares the names it got back.",
+      "why": "An author who writes a section the format does not support gets no error, sees their prose swallowed into the wrong entry, and concludes the docs system is unreliable. That is the failure mode that gets a documentation convention abandoned, and it is the one this card exists to prevent, since twenty component cards are about to be written against this format.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T02:59:37.515Z"
+    },
+    {
+      "id": "KN-203",
+      "title": "The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian",
+      "desc": "CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-007 roast, and I had named it as the risk when sending that roast. localeInContext probes DocsContext at four guessed shapes because Storybook publishes no accessor for the current globals. If a Storybook upgrade moves all four, the page falls back to the product default and shows Persian regardless of what the toolbar or the URL actually says, and the channel listener does not repair it until somebody changes the toolbar by hand. Nothing fails: the page just quietly shows the wrong language, which is the exact failure the Language toolbar exists to make visible. The related half is that DocsPage.tsx and useDocsLocale.ts are excluded from coverage, so no automated test protects the subscription either; the exclusion is argued in vitest.config.ts and the argument may be right, but the consequence is that this whole path is checked by hand or not at all.",
+      "why": "A silent fallback to the default language is indistinguishable from working correctly whenever the default happens to be what you wanted, which for this product is most of the time. It would be found by a reader who does not read Persian, which is the worst possible discovery path.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T02:59:37.807Z"
     }
   ]
 }
