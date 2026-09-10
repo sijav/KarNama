@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 53 of 223 tasks done · 121 of 609 points.
+Project **KarNama** · 54 of 223 tasks done · 122 of 609 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-220` The Checkbox Hover story passes on its baseline alone if the test runner cannot load its pointer** (critical, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-220` | The Checkbox Hover story passes on its baseline alone if the test runner cannot load its pointer | critical | 1 | web | none | Under Vitest the Hover story imports the pointer API without a catch and fails loudly if it cannot, the published Storybook still renders it as a canvas with no error, and a mutation making the import fail under Vitest fails the story rather than passing it. |
+**Next up: `KN-222` The tooltip's 260 depends on the app's CSS reset, and the story finds the surface by its DOM position** (critical, 1 pt, web)
 
 ## Blocked (3)
 
@@ -193,7 +187,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (53)
+## Done (54)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -201,6 +195,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-208` | KN-013 claimed five Figma states from five stories that are not the five states | critical | 1 | web | none | Every Figma state named on the card has a story, hover included, and hover is exercised with a real pointer rather than a dispatched event, since hover cannot be dispatched. KN-013.mjs checks the states by NAME against the card rather than counting stories, so adding a sixth story or renaming one cannot silently satisfy it. A mutation deleting the hover story fails it. |
 | `KN-210` | The tooltip's drawn width is neither implemented nor checkable | critical | 1 | web | none | Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed. |
 | `KN-218` | The tooltip pads 12 where Figma pads 8 vertically, and draws no shadow where Figma draws one | critical | 1 | web | none | A story measures the open tip's computed padding as 8 top and bottom and 12 at each side, and its computed box-shadow as the value read from node 410:469; that value lives in the token set beside Card and Modal and is recorded in DESIGN.md's elevation table with the node it was read from; and a mutation restoring padding 12 on all sides fails the story. |
+| `KN-220` | The Checkbox Hover story passes on its baseline alone if the test runner cannot load its pointer | critical | 1 | web | none | Under Vitest the Hover story imports the pointer API without a catch and fails loudly if it cannot, the published Storybook still renders it as a canvas with no error, and a mutation making the import fail under Vitest fails the story rather than passing it. |
 | `KN-058` | Run verify commands without a shell | critical | 2 | agent | KN-001 | A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done. |
 | `KN-065` | move done must require a verify command | critical | 2 | agent | KN-001 | move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one. |
 | `KN-088` | Prove the REAL test project reports a failure, not a separate config | critical | 2 | agent | KN-003 | The planted broken test is detected through the configuration npm test uses, and a mutation that empties the real unit project include makes agent/scripts/verify/KN-003.mjs fail rather than pass. |
@@ -2755,7 +2750,7 @@ CHILD OF KN-208, recorded in prose because board.json cannot express parent_task
 
 ### `KN-220` The Checkbox Hover story passes on its baseline alone if the test runner cannot load its pointer
 
-- **status** in_progress · **severity** critical · **points** 1 · **area** web
+- **status** done · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-208, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-208 roast and confirmed: the story catches EVERY rejection of import('vitest/browser') and returns, so under Vitest a resolution or initialisation failure makes Hover pass after asserting only the unhovered border. KN-013.mjs notices, because its two hover mutations then fail to fail, but an ordinary npm test does not. The fallback is meant only for Storybook's own UI, where there is no test runner, and Storybook's addon tells the two apart with globalThis.__vitest_browser__.

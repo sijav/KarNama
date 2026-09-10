@@ -5328,13 +5328,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Under Vitest the Hover story imports the pointer API without a catch and fails loudly if it cannot, the published Storybook still renders it as a canvas with no error, and a mutation making the import fail under Vitest fails the story rather than passing it.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T07:01:25.045Z",
-      "updatedAt": "2026-09-10T07:26:01.774Z",
-      "verify": "node agent/scripts/verify/KN-220.mjs"
+      "updatedAt": "2026-09-10T07:26:46.964Z",
+      "verify": "node agent/scripts/verify/KN-220.mjs",
+      "evidence": "Checkbox.stories.tsx Hover now returns only when !('__vitest_browser__' in globalThis), the flag Storybook's own addon checks, and otherwise imports vitest/browser with no catch. agent/scripts/verify/KN-220.mjs, 5 checks green: Checkbox stories pass; THE CASE, an import made to reject under Vitest fails Hover with the simulated error; CONTROL, the old catch-and-return given the same rejection PASSES, so the mutation isolates exactly this defect; the flag check precedes the import and the import is uncaught; KN-013.mjs passes including its two hover mutations, which is the proof the flag is set under Vitest and the real pointer still runs. Checkbox stories 6 of 6, lint and tsc clean. Published path checked on the production Storybook build (served by the new storybook-static launch config) in headless Chromium via Playwright, because the browser pane is hidden and ran no animation frames, so no play function could start in it (every story, Unchecked included, sat on WAIT; requestAnimationFrame never fired in 1.5s): shared-checkbox--hover, shared-checkbox--unchecked and shared-tooltip--on-hover all render with the Vitest flag absent and zero page or console errors. Positive control on that same probe: a build with the flag check removed logs \"vitest/browser can be imported only inside the Browser Mode\" on Hover, so the probe does see the failure the guard prevents (and Storybook's render phase reads finished either way, so the errors, not the phase, are the signal).",
+      "closedAt": "2026-09-10T07:26:46.964Z"
     },
     {
       "id": "KN-221",
