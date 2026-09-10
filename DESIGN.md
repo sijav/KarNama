@@ -224,7 +224,7 @@ of the contract.
 | Select              | `183:26`  | Default, Filled, Focus, Disabled, Open                                                          |
 | Option Row          | `408:465` | Default, Hover, Selected, Disabled                                                              |
 | Sort Control        | `408:512` | Default, Hover, Open                                                                            |
-| Tooltip             | `410:469` |                                                                                                 |
+| Tooltip             | `410:469` | FIXED 260 wide, text fills the rest; no variable bound to the width, so it is a component constant |
 | Nav Item / Side     | `184:14`  | Default, Active, Hover                                                                          |
 | Nav / Sidebar       | `185:11`  | desktop, on the RIGHT                                                                           |
 | Nav / Tab Bar       | `185:19`  | mobile, at the bottom                                                                           |

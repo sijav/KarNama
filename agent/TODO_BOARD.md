@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 51 of 217 tasks done · 119 of 600 points.
+Project **KarNama** · 51 of 218 tasks done · 119 of 601 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-210` The tooltip's drawn width is neither implemented nor checkable** (critical, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-210` | The tooltip's drawn width is neither implemented nor checkable | critical | 1 | web | none | Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed. |
 
 ## Blocked (3)
 
@@ -22,8 +28,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-210` | The tooltip's drawn width is neither implemented nor checkable | critical | 1 | web | none | Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | none | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-218` | The tooltip pads 12 where Figma pads 8 vertically, and draws no shadow where Figma draws one | critical | 1 | web | none | A story measures the open tip's computed padding as 8 top and bottom and 12 at each side, and its computed box-shadow as the value read from node 410:469; that value lives in the token set beside Card and Modal and is recorded in DESIGN.md's elevation table with the node it was read from; and a mutation restoring padding 12 on all sides fails the story. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-207` | The Checkbox breaks two standing repository rules: prose in the tsx, and no fn() on the callback | critical | 2 | web | none | Checkbox.tsx carries only comments that explain the code, and no prose that a Docs page prints; the prop descriptions live in story-docs, which already have them. onChange has an fn() in the shared args and a story asserts it is called with the event and the new checked value. A check catches a callback prop with no fn(), so this does not rest on remembering. |
@@ -2630,7 +2636,7 @@ CHILD OF KN-032, recorded in prose because board.json cannot express parent_task
 
 ### `KN-210` The tooltip's drawn width is neither implemented nor checkable
 
-- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **status** in_progress · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast, and I had flagged it against myself when sending that roast. Figma node 410:469 is 292 wide. Nothing in the component sets a width or maxWidth, so wrapping comes from MUI's 300px default. For the one string in the frame the two are close enough to look identical, which is why it passed a visual check; for a longer title they wrap differently. The honest uncertainty is whether 292 is a SET width or just the natural wrap of that particular sentence. get_variable_defs returns no width variable for the node, so it cannot be settled from the variables alone and needs the frame's own layout properties. Until that is known, the component has an unstated dependency on a third-party default, and the evidence for KN-032 said the width was the one dimension not taken from a token without resolving it.
@@ -2715,4 +2721,15 @@ CHILD OF KN-095, recorded in prose because board.json cannot express parent_task
 **Why.** Every exemption this rule has had was written for one legitimate case and covered every case, and this one needs no configuration at all: it is built into the plugin. It is an escape hatch in the same sense AGENTS.md already forbids 'as' for, a place where the checker is told to stop checking, and it applies to accessible names and tooltips exactly as much as to anything else.
 
 **Exit condition.** <Box title={'Delete this application' as const} /> and aria-label={'Delete' as const} fail npm run lint in a committed fixture, a story meta title written with 'as const' fails too, and 'as const' on an object or array literal, which is the idiom that is actually used, still passes.
+
+### `KN-218` The tooltip pads 12 where Figma pads 8 vertically, and draws no shadow where Figma draws one
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+Found while working KN-210, from get_design_context on node 410:469 rather than from a screenshot. The frame is px spacing-sm (12) and py spacing-xs (8); the component pads spacing.sm on all four sides, so every tip is 8px taller than the design. The frame also carries a drop shadow, 0 6px 18px -2px at 24 percent black, and the component sets none. get_variable_defs shows the shadow is NOT bound to an effect style: it matches neither Elevation/Card nor Elevation/Modal, which DESIGN.md says are the only two. So it is an unnamed third shadow, and the decision is whether the token set gains a third elevation or the tooltip is mapped to an existing one. Match-the-design says the former, recorded in DESIGN.md in the same change.
+
+**Why.** Both were missed by KN-032's check, which asserted that the right TOKENS were referenced and not that they were applied to the right sides, so a padding of 12 everywhere read as correct because 12 is a real token. The shadow is the only thing separating a dark tip from a dark page in the dark theme.
+
+**Exit condition.** A story measures the open tip's computed padding as 8 top and bottom and 12 at each side, and its computed box-shadow as the value read from node 410:469; that value lives in the token set beside Card and Modal and is recorded in DESIGN.md's elevation table with the node it was read from; and a mutation restoring padding 12 on all sides fails the story.
 

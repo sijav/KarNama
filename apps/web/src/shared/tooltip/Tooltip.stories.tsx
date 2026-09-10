@@ -33,6 +33,19 @@ export const OnHover: Story = {
     await waitFor(async () => {
       await expect(within(document.body).getByRole('tooltip')).toBeInTheDocument()
     })
+
+    // KN-210. Node 410:469 is a FIXED 260 wide, read from its design context,
+    // not from a screenshot. The number is the design's, written here rather
+    // than imported from the component, so the component cannot move it and
+    // take the test along. The role sits on MUI's popper; the drawn surface is
+    // its first child.
+    //
+    // The LAYOUT width, offsetWidth, and not the bounding box. MUI's Grow enters
+    // from scale(0.75), the bounding box includes transforms, and the first
+    // version of this read 195, exactly 260 times 0.75, mid-animation.
+    const surface = within(document.body).getByRole('tooltip').firstElementChild
+    if (!(surface instanceof HTMLElement)) throw new Error('the tooltip has no drawn surface')
+    await expect(surface.offsetWidth).toBe(260)
   },
 }
 

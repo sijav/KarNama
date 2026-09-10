@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 218,
+  "nextId": 219,
   "tasks": [
     {
       "id": "KN-001",
@@ -5124,14 +5124,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Either the component sets the width the frame actually specifies, from the frame rather than from the screenshot, or DESIGN.md records that the frame has no fixed width and that wrapping is content driven, with the component's reliance on a default stated where a reader will find it. A test pins whichever answer is true, so a MUI default change is caught rather than absorbed.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-10T05:30:46.111Z",
-      "updatedAt": "2026-09-10T06:38:20.198Z"
+      "updatedAt": "2026-09-10T07:00:00.811Z",
+      "verify": "node agent/scripts/verify/KN-210.mjs"
     },
     {
       "id": "KN-211",
@@ -5246,6 +5247,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T06:53:19.840Z"
+    },
+    {
+      "id": "KN-218",
+      "title": "The tooltip pads 12 where Figma pads 8 vertically, and draws no shadow where Figma draws one",
+      "desc": "Found while working KN-210, from get_design_context on node 410:469 rather than from a screenshot. The frame is px spacing-sm (12) and py spacing-xs (8); the component pads spacing.sm on all four sides, so every tip is 8px taller than the design. The frame also carries a drop shadow, 0 6px 18px -2px at 24 percent black, and the component sets none. get_variable_defs shows the shadow is NOT bound to an effect style: it matches neither Elevation/Card nor Elevation/Modal, which DESIGN.md says are the only two. So it is an unnamed third shadow, and the decision is whether the token set gains a third elevation or the tooltip is mapped to an existing one. Match-the-design says the former, recorded in DESIGN.md in the same change.",
+      "why": "Both were missed by KN-032's check, which asserted that the right TOKENS were referenced and not that they were applied to the right sides, so a padding of 12 everywhere read as correct because 12 is a real token. The shadow is the only thing separating a dark tip from a dark page in the dark theme.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A story measures the open tip's computed padding as 8 top and bottom and 12 at each side, and its computed box-shadow as the value read from node 410:469; that value lives in the token set beside Card and Modal and is recorded in DESIGN.md's elevation table with the node it was read from; and a mutation restoring padding 12 on all sides fails the story.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T06:56:21.840Z"
     }
   ]
 }

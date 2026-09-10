@@ -2,6 +2,13 @@ import { Box, Tooltip as MuiTooltip } from '@mui/material'
 import type { ReactElement, ReactNode } from 'react'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 
+// The tip's width, from node `410:469`, KN-210. The frame is FIXED at 260 with
+// the text set to fill what is left, not sized by its text, and no variable is
+// bound to it, so it is a constant here rather than a token. The tip used to
+// inherit MUI's 300 cap instead: identical for the one string in the file,
+// different for every other.
+const TIP_WIDTH = 260
+
 export interface TooltipProps {
   /** The text of the tip. */
   title: string
@@ -55,6 +62,10 @@ export const Tooltip = ({ title, icon, children }: TooltipProps) => (
           backgroundColor: theme.karnama.semantic['text/primary'],
           color: theme.karnama.semantic['text/on-accent'],
           borderRadius: `${theme.karnama.radius.md}px`,
+          // Both, so the tip is exactly the frame's width and MUI's own cap
+          // cannot narrow it if its default ever drops below 260.
+          width: TIP_WIDTH,
+          maxWidth: TIP_WIDTH,
           padding: `${spacing.sm}px`,
           fontSize: `${typeScale.body.size}px`,
           lineHeight: `${typeScale.body.lineHeight}px`,
