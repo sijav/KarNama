@@ -2404,13 +2404,15 @@
       "parent": [
         "KN-003"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "On a machine with no Playwright browsers, a documented single command brings the gate to green, agent/scripts/verify/KN-003.mjs reports the missing browser by name rather than failing opaquely, and the README says what to run.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T23:11:00.628Z",
-      "updatedAt": "2026-09-10T05:43:53.697Z",
-      "verify": "node agent/scripts/verify/KN-089.mjs"
+      "updatedAt": "2026-09-10T05:46:10.698Z",
+      "verify": "node agent/scripts/verify/KN-089.mjs",
+      "evidence": "A clean clone now runs the gate after `npm install` then `npm run setup:browsers`, and when the second is skipped `node agent/scripts/verify/KN-003.mjs` names Chromium, prints the path Playwright expected, prints the command, and says why npm install did not fetch it. The check is the FIRST check in KN-003, so the failure lands in a second rather than after minutes of lint and tsc. README.md documents both commands and the reason. agent/scripts/verify/KN-089.mjs: 6 checks green, including a positive control that the detector can see the browser that IS installed here, so a detector hard-wired to \"missing\" cannot pass. Four mutations, all caught: setup:browsers dropping `chromium` (installs three browsers, one configured); README losing the command; the browser check moved to the END of KN-003; KN-003 dropping chromiumStatus entirely. A fifth mutation rewrote the check's human label and broke a check that had no business caring, so that check was rewritten to locate the browser check by its `chromiumStatus(` call instead. Gate green: lint 0 warnings, tsc 0 errors, 438 tests (4 graphql, 333 web, 101 api), build 227ms, schema.gql matches the resolvers.",
+      "closedAt": "2026-09-10T05:46:10.698Z"
     },
     {
       "id": "KN-090",
