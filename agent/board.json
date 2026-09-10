@@ -1401,14 +1401,14 @@
       "parent": [
         "KN-003"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The app loads at its Pages URL, a deep link to a route works on a hard refresh, Storybook is reachable at /storybook/, and the deploy runs from a push to main with no manual step.",
       "roasts": [],
       "notes": [
         "Re-pointed from KN-050 to KN-003. Deploying a static web app needs neither CI nor the API scaffold, and routing it through CI made the owner's pre-flight requirement, a deployed public page even if empty, wait on 22 points of unrelated work instead of 8. CI still lands, it is just not a prerequisite for the first deploy. If the deploy workflow and the CI workflow end up sharing steps, KN-050 can factor them afterwards."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T21:38:25.921Z"
+      "updatedAt": "2026-09-10T04:16:23.506Z"
     },
     {
       "id": "KN-052",

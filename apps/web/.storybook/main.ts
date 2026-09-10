@@ -9,6 +9,21 @@ const config: StorybookConfig = {
   // rather than from comments the type checker also reads.
   docs: { defaultName: 'Docs' },
   typescript: { reactDocgen: 'react-docgen-typescript' },
+  // Storybook is published BESIDE the app, at `/KarNama/storybook/`, not inside
+  // it. It needs its own base for the same reason the app does: every asset is
+  // requested relative to it, so a wrong base 404s the whole page in production
+  // while the dev server, served from `/`, looks perfectly fine. That is the
+  // deploy failure that is invisible until it ships.
+  //
+  // Storybook does not inherit `base` from `vite.config.ts`, so it is set here
+  // rather than assumed.
+  // Returned unchanged when the variable is unset, rather than spreading an
+  // `undefined` base over it: `exactOptionalPropertyTypes` rejects that, and it
+  // is the honest shape anyway — there is no override, so do not override.
+  viteFinal: (config) => {
+    const base = process.env.KARNAMA_STORYBOOK_BASE
+    return base === undefined ? config : { ...config, base }
+  },
 }
 
 export default config

@@ -1,0 +1,90 @@
+name: Pages
+
+# Publishes two SEPARATE static sites from one repository:
+#
+#   /KarNama/           the web app
+#   /KarNama/storybook/ the component library
+#
+# They are built independently, with their own base paths, and assembled into
+# one artifact. GitHub Pages serves one site per repository, so "separated"
+# here means separate builds at separate paths rather than one bundle that
+# happens to contain both — Storybook is not routed through the app, and
+# breaking one does not take the other down.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time, and do NOT cancel one in flight: a cancelled
+# deploy-pages can leave the site pointing at a half-uploaded artifact.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+
+      # The app is served from /KarNama/, a dev server from /. Vite's `base`
+      # has to match or every asset 404s in production while looking fine
+      # locally.
+      - name: Build the web app
+        run: npm run build --workspace @karnama/web
+        env:
+          KARNAMA_BASE: /KarNama/
+
+      - name: Build Storybook
+        run: npm run build-storybook --workspace @karnama/web
+        env:
+          KARNAMA_STORYBOOK_BASE: /KarNama/storybook/
+
+      - name: Assemble the two sites
+        run: |
+          set -euo pipefail
+          mkdir -p site/storybook
+          cp -r apps/web/dist/. site/
+          cp -r apps/web/storybook-static/. site/storybook/
+          # Pages has no server-side routing, so a hard refresh on a deep link
+          # asks for a file that does not exist. Serving the app's index.html as
+          # the 404 hands the request to the client router instead.
+          cp site/index.html site/404.html
+          # Jekyll would otherwise drop every _-prefixed file, which is most of
+          # what a bundler emits.
+          touch site/.nojekyll
+
+      - name: Fail if either site is missing
+        run: |
+          set -euo pipefail
+          test -f site/index.html
+          test -f site/404.html
+          test -f site/storybook/index.html
+          echo "app and storybook both present"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
