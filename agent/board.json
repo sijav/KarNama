@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 232,
+  "nextId": 233,
   "tasks": [
     {
       "id": "KN-001",
@@ -5606,10 +5606,27 @@
       "parent": [],
       "status": "done",
       "exit": "Storybook's docgen is configured with the same children rule as the guard, the other defaults it depends on kept; a production Storybook build reports children among the Tooltip's argTypes, checked from the built page rather than the config; and a mutation dropping the option makes that check fail.",
-      "roasts": [],
-      "notes": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-229-round-1.2026-09-10T08-12-26-356Z.md",
+          "filed": [
+            "KN-232"
+          ],
+          "cardDigest": "5b3626d7286d5170fb781094f8dc1994f216e9b0cd851c10bfe747dedf9b9c6c",
+          "head": "fdd1cea74aed4446e0d42d4089cfcdd981f0cf3c",
+          "reviewerScore": 8,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T08:21:21.170Z"
+        }
+      ],
+      "notes": [
+        "2026-09-10, roast round 1: the shell finding is dismissed. KN-058, which it cites, is about todo.mjs running a card's verify command without a shell so an appended operator cannot mask a failing verifier; it says nothing about the commands a verifier spawns inside itself, whose arguments here are static literals that cannot mask the verifier's own exit. TECH-DEBT.md 3 records why npx needs a shell on Windows."
+      ],
       "createdAt": "2026-09-10T08:08:34.318Z",
-      "updatedAt": "2026-09-10T08:12:11.414Z",
+      "updatedAt": "2026-09-10T08:21:21.300Z",
       "verify": "node agent/scripts/verify/KN-229.mjs",
       "evidence": ".storybook/main.ts sets typescript.reactDocgenTypescriptOptions with skipChildrenPropWithoutDoc: false, restating Storybook's defaults it replaces (shouldExtractLiteralValuesFromEnum, shouldRemoveUndefinedFromOptional, the node_modules propFilter, written as includes like the guard's). Measured from a production build before the fix: the Tooltip's children argType existed (inferred from args) with no docgen type and no required flag. agent/scripts/verify/KN-229.mjs, 3 checks green: main.ts restates the defaults and adds the rule; THE CASE, a production build served locally and read in headless Chromium through __STORYBOOK_PREVIEW__.currentRender.story.argTypes reports children as ReactElement<…> and required, and the Checkbox table carries only its own nine props; MUTATION, a build without the option reports children with no type. All 35 stories pass in the storybook project, lint and tsc clean.",
       "closedAt": "2026-09-10T08:12:11.414Z"
@@ -5643,6 +5660,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T08:13:01.177Z"
+    },
+    {
+      "id": "KN-232",
+      "title": "The docgen comment in .storybook/main.ts says any option replaces Storybook's defaults, which is false",
+      "desc": "CHILD OF KN-229, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-229 roast and confirmed from @storybook/react-vite's preset: the user's reactDocgenTypescriptOptions are passed to the Vite docgen plugin, which supplies its own default propFilter only when none is given. So the comment's reason for restating the defaults, that supplying any option replaces the whole default object, is wrong. The values set are still correct and match @storybook/react's component-manifest path; only the stated reasoning is false.",
+      "why": "A comment that explains configuration wrongly is how the next person reasons wrongly about an upgrade: they will trust it and remove or add options on a false model of how Storybook merges them. Low: nothing behaves wrongly today.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The comment above reactDocgenTypescriptOptions in .storybook/main.ts states how the Vite docgen plugin and the component-manifest path actually treat user options, checked against the installed preset source, and the KN-229 verifier still passes.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T08:21:20.977Z"
     }
   ]
 }

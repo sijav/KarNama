@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 61 of 231 tasks done · 132 of 621 points.
+Project **KarNama** · 61 of 232 tasks done · 132 of 622 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -18,7 +18,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (165)
+## Backlog (166)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -162,6 +162,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-198` | The required-card set is an unanchored constant, so shrinking the contract keeps the check green | low | 1 | agent | none | The verifier fails when a card carrying the canonical clause is not named by the registry, and fails when a named card does not carry it. Shrinking DECISION.cards to ['KN-043'] is a named failing case, run as a mutation against the real verifier rather than argued. Whether a single edit that removes the clause from a card AND drops that card from the registry can be caught is answered in the check's own header, honestly, including a plain no if that is the answer. |
 | `KN-213` | The browser preflight does not stop KN-003, and KN-089 proves its order by reading source text | low | 1 | agent | none | Running KN-003.mjs with PLAYWRIGHT_BROWSERS_PATH pointed at an empty directory exits non-zero after the browser check alone, prints Chromium by name with the path and the command, and starts no lint, type-check or test process. KN-089.mjs proves that by RUNNING it that way rather than by reading its source, and a mutation that moves the preflight after lint, or discards its result, makes KN-089.mjs fail. A missing playwright package names npm install. |
 | `KN-219` | KN-013's verifier reads the required states out of a prose sentence | low | 1 | agent | none | The required state list is read from a delimited, structured source that a reworded description cannot silently shorten, or KN-013.mjs refuses a description it cannot parse completely, proved by a description with a state added in a second sentence failing it. |
+| `KN-232` | The docgen comment in .storybook/main.ts says any option replaces Storybook's defaults, which is false | low | 1 | web | none | The comment above reactDocgenTypescriptOptions in .storybook/main.ts states how the Vite docgen plugin and the component-manifest path actually treat user options, checked against the installed preset source, and the KN-229 verifier still passes. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -2880,6 +2881,8 @@ CHILD OF KN-207, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Storybook's docgen is configured with the same children rule as the guard, the other defaults it depends on kept; a production Storybook build reports children among the Tooltip's argTypes, checked from the built page rather than the config; and a mutation dropping the option makes that check fail.
 
+**Roasts.** round 1 scored 8 with 0 critical(s)
+
 ### `KN-230` The callback fn() rule reads only the meta's args, not what each story actually passes
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -2901,4 +2904,15 @@ CHILD OF KN-209, recorded in prose because board.json cannot express parent_task
 **Why.** KN-209 fixed the name and left the description timing-dependent, and the tooltip's whole reason to exist is telling a keyboard and screen-reader user what a control will do. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
 **Exit condition.** At the moment of keyboard focus, before the tip opens, the trigger already has an accessible description equal to the tip's text, asserted by a story that does not wait for the tip; the name is still the trigger's own; the same assertions run in fa-IR with the Persian name; and a mutation removing the always-present description fails the focus-time story.
+
+### `KN-232` The docgen comment in .storybook/main.ts says any option replaces Storybook's defaults, which is false
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-229, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-229 roast and confirmed from @storybook/react-vite's preset: the user's reactDocgenTypescriptOptions are passed to the Vite docgen plugin, which supplies its own default propFilter only when none is given. So the comment's reason for restating the defaults, that supplying any option replaces the whole default object, is wrong. The values set are still correct and match @storybook/react's component-manifest path; only the stated reasoning is false.
+
+**Why.** A comment that explains configuration wrongly is how the next person reasons wrongly about an upgrade: they will trust it and remove or add options on a false model of how Storybook merges them. Low: nothing behaves wrongly today.
+
+**Exit condition.** The comment above reactDocgenTypescriptOptions in .storybook/main.ts states how the Vite docgen plugin and the component-manifest path actually treat user options, checked against the installed preset source, and the KN-229 verifier still passes.
 
