@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 258,
+  "nextId": 259,
   "tasks": [
     {
       "id": "KN-001",
@@ -6298,7 +6298,22 @@
       "parent": [],
       "status": "done",
       "exit": "Switching the value control between set and unset starts the field over rather than changing its mode in place, so React never sees one input go from controlled to uncontrolled or back; a check in a development build, where React reports it, sets value, types, resets it, and finds no such report and a field showing its default again; a mutation removing the fix brings the report back.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8.4,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-252-round-1.2026-09-10T11-44-14-529Z.md",
+          "filed": [
+            "KN-258"
+          ],
+          "cardDigest": "abcb1c33517bf160fadc6da54c7161e080fbd6d86621e95e3bb5395706a5b912",
+          "head": "27407dbfb75dad06c451d0a79dd8d0141156930e",
+          "reviewerScore": 8.4,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T11:47:12.966Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T10:30:25.210Z",
       "updatedAt": "2026-09-10T11:43:59.177Z",
@@ -6380,6 +6395,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T11:31:28.361Z"
+    },
+    {
+      "id": "KN-258",
+      "title": "Changing defaultValue while value is set remounts the Input's field for nothing",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-252 roast and confirmed from the code: the story's key carries defaultValue in both modes, and a controlled field ignores defaultValue, so with value set a new defaultValue in Controls remounts the field, dropping focus and anything only the DOM holds, while what it shows stays the same. KN-252's evidence named it. The key should carry defaultValue only while the field is uncontrolled: the mode, then the default only when value is undefined.",
+      "why": "A reviewer adjusting the default of a controlled field sees it lose focus and flicker for a prop it does not even use. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "With value set, changing defaultValue in Controls leaves the same input element in place, still focused if it was, showing the same value; with value unset a new default still starts the field over; a check on a built Storybook does both, and a mutation back to keying on defaultValue in both modes fails the first.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T11:47:12.847Z"
     }
   ]
 }
