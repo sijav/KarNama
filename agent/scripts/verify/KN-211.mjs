@@ -61,7 +61,9 @@ check('the tooltip stories pass, the cannot-attach story included', () => {
 })
 
 check('THE CASE: without the component\'s check the cannot-attach story fails, because MUI alone is silent', () =>
-  withEdit(COMPONENT, '    if (trigger.current) return\n', '    return\n', () => {
+  // The missing-node report sits inside the grace timer since KN-233; turning
+  // its guard into an unconditional return silences exactly that report.
+  withEdit(COMPONENT, '      if (node.current) return\n', '      return\n', () => {
     const { code, output } = stories()
     if (code === 0) return 'the story passed with no check, so something else reports it and this check proves nothing'
     return /Reports A Trigger That Cannot Attach/.test(output) ? null : `it failed, but not in the cannot-attach story:\n${output.slice(-600)}`

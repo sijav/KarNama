@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
-import type { ComponentPropsWithRef } from 'react'
+import { useEffect, useState, type ComponentPropsWithRef } from 'react'
 import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { elevation } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -56,6 +56,58 @@ const SwallowingButton = () => {
       {InfoMark}
     </button>
   )
+}
+
+// Takes the ref and drops everything else: the wrapper written carelessly with
+// a ref, KN-233. The tip gets a node, so MUI sees nothing wrong, and never
+// gets the listeners that open it.
+const RefOnlyButton = ({ ref }: ComponentPropsWithRef<'button'>) => {
+  const { i18n } = useLingui()
+  return (
+    <button type="button" ref={ref} aria-label={i18n._('Delete status')}>
+      {InfoMark}
+    </button>
+  )
+}
+
+// Renders nothing on its first render and the real trigger on its second,
+// which is not a mistake and must not be reported as one, KN-233.
+const LateButton = (props: ComponentPropsWithRef<'button'>) => {
+  const [ready, setReady] = useState(false)
+  useEffect(() => {
+    // A separate task, so the trigger really arrives a render late.
+    const timer = setTimeout(() => {
+      setReady(true)
+    }, 0)
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [])
+  return ready ? <DeleteStatusButton {...props} /> : null
+}
+
+// Starts with a trigger the tip can attach to and swaps it for one it cannot,
+// which a check made once at mount never saw, KN-233.
+const SwappingTooltip = ({ title }: { title: string }) => {
+  const [broken, setBroken] = useState(false)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setBroken(true)
+    }, 0)
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [])
+  return <Tooltip title={title}>{broken ? <SwallowingButton /> : <DeleteStatusButton />}</Tooltip>
+}
+
+// The reports are the point, so each story that expects one captures it
+// rather than printing it: the published Storybook console stays clean.
+const captureConsoleErrors = () => {
+  const spy = spyOn(console, 'error').mockImplementation(() => undefined)
+  return () => {
+    spy.mockRestore()
+  }
 }
 
 const meta = {
@@ -159,17 +211,12 @@ export const ReportsATriggerThatCannotAttach: Story = {
   args: { children: <SwallowingButton /> },
   // The report is the point, so it is captured rather than printed: the
   // published Storybook shows the silent button, the console stays clean.
-  beforeEach: () => {
-    const spy = spyOn(console, 'error').mockImplementation(() => undefined)
-    return () => {
-      spy.mockRestore()
-    }
-  },
+  beforeEach: captureConsoleErrors,
   play: async () => {
     // KN-211. A trigger the tip cannot attach to is REPORTED, not silently
     // left without a tip, which is all MUI does when the ref never arrives.
     await waitFor(async () => {
-      await expect(console.error).toHaveBeenCalledWith(expect.stringContaining('did not take a ref'))
+      await expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/did not take a ref/))
     })
   },
 }
@@ -205,6 +252,43 @@ export const DescribedAtFocusInPersian: Story = {
     // The Persian name, written out, so a missing translation cannot pass by
     // comparing the English id with itself.
     await expect(button).toHaveAccessibleName('حذف وضعیت')
+  },
+}
+
+export const ReportsATriggerThatDropsItsProps: Story = {
+  args: { children: <RefOnlyButton /> },
+  beforeEach: captureConsoleErrors,
+  play: async () => {
+    // KN-233. The node arrived, the props did not. MUI reports this only in
+    // development; this is reported in every build, which the production
+    // Storybook check proves by this assertion passing there too.
+    await waitFor(async () => {
+      await expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/took the ref but not the props/))
+    })
+  },
+}
+
+export const AcceptsATriggerThatMountsLate: Story = {
+  args: { children: <LateButton /> },
+  beforeEach: captureConsoleErrors,
+  play: async ({ canvasElement }) => {
+    // Past the grace a missing trigger is given, and nothing is reported.
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    await expect(console.error).not.toHaveBeenCalled()
+    // And it works: the late trigger opens the tip like any other.
+    await userEvent.tab()
+    await expect(within(canvasElement).getByRole('button')).toHaveFocus()
+    await within(document.body).findByRole('tooltip')
+  },
+}
+
+export const ReportsATriggerSwappedForOneThatCannotAttach: Story = {
+  render: (args) => <SwappingTooltip title={args.title} />,
+  beforeEach: captureConsoleErrors,
+  play: async () => {
+    await waitFor(async () => {
+      await expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/did not take a ref/))
+    })
   },
 }
 

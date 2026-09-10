@@ -1,5 +1,5 @@
 import { Box, Tooltip as MuiTooltip } from '@mui/material'
-import { useEffect, useId, useRef, type ReactElement, type ReactNode } from 'react'
+import { useCallback, useEffect, useId, useRef, type ReactElement, type ReactNode } from 'react'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 
 // The tip's width, from node `410:469`, KN-210. The frame is FIXED at 260 with
@@ -25,27 +25,57 @@ export interface TooltipProps {
 // Node 410:469, on MUI's Tooltip, which already opens on keyboard focus as well
 // as hover, closes on Escape, and keeps the tip on screen.
 export const Tooltip = ({ title, icon, children }: TooltipProps) => {
-  // MUI applies the tooltip's OWN ref to the child, so this holds the trigger's
-  // DOM node when, and only when, the child forwards its ref. When it does not,
-  // the tip can never open and MUI says nothing, so this says it, KN-211. A
-  // child that forwards the ref but drops the other props is MUI's own check.
-  const trigger = useRef<Element>(null)
   // The description, present from the first render, KN-231. MUI links the
   // tip only while it is OPEN, and it opens about 100ms after focus, so a
   // screen reader announcing the focused trigger heard no description at
   // all. A hidden copy is still read when something points at it.
   const descriptionId = useId()
-  useEffect(() => {
-    if (trigger.current) return
-    console.error(
-      'Tooltip: its child did not take a ref, so the tip can never open. Pass one element that spreads its props, ref included, onto a DOM element; a Fragment cannot.',
-    )
+
+  // Whether the tip can attach, checked in every environment and whenever the
+  // trigger changes, KN-211 and KN-233. MUI applies the tooltip's OWN ref to the
+  // child, so `attach` is called with the trigger's node when the child forwards
+  // its ref, and with null when it goes. A missing node is reported only after
+  // a short grace, so a trigger that mounts a render late is not a mistake.
+  const node = useRef<Element | null>(null)
+  const grace = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const expectNode = useCallback(() => {
+    clearTimeout(grace.current)
+    grace.current = setTimeout(() => {
+      if (node.current) return
+      console.error(
+        'Tooltip: its child did not take a ref, so the tip can never open. Pass one element that spreads its props, ref included, onto a DOM element; a Fragment cannot.',
+      )
+    }, 100)
   }, [])
+  const attach = useCallback(
+    (element: Element | null) => {
+      node.current = element
+      if (!element) {
+        expectNode()
+        return
+      }
+      // MUI spreads the tooltip's props onto the child together with its ref,
+      // so the node that took the ref must carry the description link as well.
+      // It does not when the child drops its props, which MUI itself reports
+      // only in development, or sets an aria-describedby of its own.
+      if (element.getAttribute('aria-describedby')?.split(' ').includes(descriptionId)) return
+      console.error(
+        "Tooltip: its child took the ref but not the props, so the tip can never open and is not its description. Spread every prop it is given onto the element, and do not set aria-describedby on it: that replaces the tooltip's.",
+      )
+    },
+    [descriptionId, expectNode],
+  )
+  useEffect(() => {
+    if (!node.current) expectNode()
+    return () => {
+      clearTimeout(grace.current)
+    }
+  }, [expectNode])
 
   return (
   <>
   <MuiTooltip
-    ref={trigger}
+    ref={attach}
     // Spread onto the child after MUI's own open-only link, so it wins.
     aria-describedby={descriptionId}
     // The "does not trap the pointer" clause, and the sx below is not enough

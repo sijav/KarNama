@@ -5730,11 +5730,13 @@
       "parent": [
         "KN-231"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A trigger that forwards its ref but drops its other props is reported in a PRODUCTION build as well as in development, proved by a story with such a wrapper checked on the production Storybook; a trigger that mounts after the first render is not falsely reported; a working trigger swapped for a broken one is reported; and the ReportsATriggerThatCannotAttach and KeepsTheTriggersName stories still pass.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T08:26:44.927Z"
+      "createdAt": "2026-09-10T08:26:44.927Z",
+      "updatedAt": "2026-09-10T08:42:45.097Z",
+      "verify": "node agent/scripts/verify/KN-233.mjs"
     },
     {
       "id": "KN-234",

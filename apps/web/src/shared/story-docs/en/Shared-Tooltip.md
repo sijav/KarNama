@@ -79,6 +79,24 @@ from the first render instead.
 The same, in Persian, with the trigger's Persian name written out so a
 missing translation cannot pass by comparing the English with itself.
 
+### ReportsATriggerThatDropsItsProps
+
+A wrapper that takes the tooltip's ref and drops every other prop. The tip
+gets a node, so MUI sees nothing wrong outside development, and never gets
+the listeners that open it. The component checks that the node it received
+carries the description link too, and reports it in every build.
+
+### AcceptsATriggerThatMountsLate
+
+A trigger that renders nothing at first and appears a render later. That is
+not a mistake: a missing trigger is given a short grace before it is
+reported, and this one opens the tip like any other.
+
+### ReportsATriggerSwappedForOneThatCannotAttach
+
+A working trigger replaced by one that cannot take the ref. The check runs
+whenever the trigger changes, not only once at mount, so the swap is reported.
+
 ### OnKeyboardFocus
 
 The clause the card names and the one a hover-only tooltip fails: Tab, with no
