@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 48 of 212 tasks done · 114 of 591 points.
+Project **KarNama** · 48 of 213 tasks done · 114 of 592 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-094` The token-name value exemption reaches aria-label and title** (high, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-094` | The token-name value exemption reaches aria-label and title | high | 2 | web | KN-087 | aria-label="delete/application" and title="delete/application" both fail npm run lint, a committed fixture holds both, the Foundations token story still passes, and agent/scripts/verify/KN-087.mjs requires the fixture by name. |
 
 ## Blocked (3)
 
@@ -24,7 +30,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
-| `KN-094` | The token-name value exemption reaches aria-label and title | high | 2 | web | KN-087 | aria-label="delete/application" and title="delete/application" both fail npm run lint, a committed fixture holds both, the Foundations token story still passes, and agent/scripts/verify/KN-087.mjs requires the fixture by name. |
 | `KN-095` | The stories-only title exemption covers every JSX title, not just meta.title | high | 2 | web | KN-087 | A story containing <Box title="Delete this application" /> fails npm run lint while the same file keeps its meta title App/Shell, a committed fixture holds both, and agent/scripts/verify/KN-087.mjs requires it by name. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
@@ -156,6 +161,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-187` | An em dash reached a rule file that forbids em dashes | low | 1 | docs | none | The em dashes written into markdown during this session are replaced with commas, in both projects, found with a Unicode-aware search so Persian text produces no false hit. |
 | `KN-194` | The prompt-order source states things that are false, including that a mutation is impossible | low | 1 | agent | none | The false claims are gone from prompt-order.mjs, KN-190.mjs and the KN-190 plan file, replaced by what is actually true. readCommand('todo move <id> "done"') is a named check in the verifier, and disabling the tokeniser's quote handling makes it FAIL, proved by the mutation harness rather than asserted. STATE.md's positive-control line names mutation testing as a place it applies, since that is where it was missed. |
 | `KN-198` | The required-card set is an unanchored constant, so shrinking the contract keeps the check green | low | 1 | agent | none | The verifier fails when a card carrying the canonical clause is not named by the registry, and fails when a named card does not carry it. Shrinking DECISION.cards to ['KN-043'] is a named failing case, run as a mutation against the real verifier rather than argued. Whether a single edit that removes the clause from a card AND drops that card from the registry can be caught is answered in the check's own header, honestly, including a plain no if that is the answer. |
+| `KN-213` | The browser preflight does not stop KN-003, and KN-089 proves its order by reading source text | low | 1 | agent | none | Running KN-003.mjs with PLAYWRIGHT_BROWSERS_PATH pointed at an empty directory exits non-zero after the browser check alone, prints Chromium by name with the path and the command, and starts no lint, type-check or test process. KN-089.mjs proves that by RUNNING it that way rather than by reading its source, and a mutation that moves the preflight after lint, or discards its result, makes KN-089.mjs fail. A missing playwright package names npm install. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -1261,6 +1267,8 @@ The exit condition of KN-003 says the gate passes on a clean checkout. It does n
 
 **Exit condition.** On a machine with no Playwright browsers, a documented single command brings the gate to green, agent/scripts/verify/KN-003.mjs reports the missing browser by name rather than failing opaquely, and the README says what to run.
 
+**Roasts.** round 1 scored 4 with 1 critical(s)
+
 ### `KN-090` Stop AppProviders mutating the lingui singleton during render
 
 - **status** backlog · **severity** high · **points** 3 · **area** web
@@ -1307,7 +1315,7 @@ ESLint replaces rule options rather than merging them, so a config block added l
 
 ### `KN-094` The token-name value exemption reaches aria-label and title
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** in_progress · **severity** high · **points** 2 · **area** web
 - **blocked by** KN-087
 
 The lingui rule ignores any value matching ^[a-z-]+/[a-z0-9-/]+$, added so a token name rendered as a label, bg/page, would pass. It applies to EVERY value, so aria-label="delete/application" and title="delete/application" both pass, verified by probe. Scope the exemption to where token names actually appear rather than to every string in the codebase, or drop it and localise the Foundations story labels.
@@ -2649,4 +2657,15 @@ CHILD OF KN-032, recorded in prose because board.json cannot express parent_task
 **Why.** The four-combination rule exists because English strings are longer and the direction flips, and a tooltip is a box sized by its text: it is one of the components most likely to break on a longer string. A story that shows the same Persian in both languages cannot show that.
 
 **Exit condition.** At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through.
+
+### `KN-213` The browser preflight does not stop KN-003, and KN-089 proves its order by reading source text
+
+- **status** backlog · **severity** low · **points** 1 · **area** agent
+- **blocked by** none
+
+CHILD OF KN-089, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-089 roast, filed as one card because they are one fix and its proof. FIRST, confirmed by reading the code: check() in agent/scripts/verify/KN-003.mjs pushes a failure onto a list and returns, and nothing exits until the summary at the end. With Chromium absent the browser check fails first, then lint, the type checker, npm test and the builds all run anyway, and npm test adds the opaque missing-executable failure to the same list. The named message is first in that list, but it is printed after minutes, not in a second. The KN-089 evidence says the failure 'lands in a second rather than after minutes of lint and tsc', and the comment above the check says the same. Both are false. SECOND, confirmed: agent/scripts/verify/KN-089.mjs checks the order by finding the first 'chromiumStatus(' in the raw file and testing that it sits inside the first check block. A comment holding that text, or an 'if (false)' call, satisfies it while the real preflight is moved or its result thrown away. The injection test beside it only proves the message formatter, not that KN-003 prints it. Also from the roast: when the playwright PACKAGE cannot be loaded, the reason names no command, and the fix there is npm install, not setup:browsers.
+
+**Why.** The only reason to put the browser check first was so nobody waits minutes for a failure that was knowable at once; a check that runs first and stops nothing buys none of that. It is also a false statement in closed evidence, and a verifier a comment can satisfy is the self-matching check again. The roast rated it critical against KN-089's own purpose. Filed LOW because it is gate tooling, nothing is broken on a machine that has the browser, and the loop rule of 2026-09-10 puts loop findings at low unless they are breaking the work.
+
+**Exit condition.** Running KN-003.mjs with PLAYWRIGHT_BROWSERS_PATH pointed at an empty directory exits non-zero after the browser check alone, prints Chromium by name with the path and the command, and starts no lint, type-check or test process. KN-089.mjs proves that by RUNNING it that way rather than by reading its source, and a mutation that moves the preflight after lint, or discards its result, makes KN-089.mjs fail. A missing playwright package names npm install.
 

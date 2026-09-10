@@ -42,8 +42,6 @@ const linguiOptions = (extraProps = '') => ({
     // Anything with no letter in it cannot be a sentence: css values, numbers
     // and punctuation.
     '^[^\\p{L}]*$',
-    // Token names, which are identifiers rendered as labels: `bg/page`.
-    '^[a-z-]+/[a-z0-9-/]+$',
     '^(rtl|ltr|fa-IR|en-US)$',
     // A Storybook preview-channel event name. An API string the docs page
     // subscribes to, not something a person reads.
@@ -61,6 +59,17 @@ const linguiOptions = (extraProps = '') => ({
     // KN-087 closed: `New/Applied` matches it, so `aria-label="New/Applied"`
     // and `title="New/Applied"` both passed. Status-transition copy looks like
     // a path. A story title is exempted by WHERE it is instead.
+    //
+    // The lower-case version of the same mistake used to live here too,
+    // `^[a-z-]+/[a-z0-9-/]+$`, added so a token name rendered as a label,
+    // `bg/page`, would pass. It matched `delete/application` just as happily,
+    // in `aria-label` and in `title`, which is the third route into the hole
+    // KN-087 closed twice. It is not narrowed, it is GONE: nothing in `src`
+    // needs it. The Foundations page reads its labels out of the token objects
+    // with `Object.entries`, so they are data rather than literals, and the one
+    // literal token name left is inside a `getByText` query, exempt as a test
+    // assertion. An exemption is a hole; an exemption nothing uses is a hole
+    // for nothing.
   ],
   ignoreNames: [{ regex: { pattern: `^(${structuralProps}${extraProps})$` } }],
   ignoreFunctions: [

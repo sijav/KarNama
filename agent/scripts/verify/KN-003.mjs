@@ -147,7 +147,14 @@ check('EVERY planted unlocalized string FAILS the lint', () => {
   // and the hole open. Each hole that has actually been found is named, and the
   // discovered set is checked on top of that so a new fixture is covered for
   // free.
-  const required = ['unlocalized.tsx', 'unlocalized-aria.tsx', 'unlocalized-title.tsx', 'unlocalized-pathlike.tsx', 'unlocalized-setattribute.tsx']
+  const required = [
+    'unlocalized.tsx',
+    'unlocalized-aria.tsx',
+    'unlocalized-title.tsx',
+    'unlocalized-pathlike.tsx',
+    'unlocalized-setattribute.tsx',
+    'unlocalized-tokenlike.tsx',
+  ]
   const absent = required.filter((name) => !fixtures.includes(name))
   if (absent.length) return `these fixtures are required by name and are missing: ${absent.join(', ')}`
 

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 213,
+  "nextId": 214,
   "tasks": [
     {
       "id": "KN-001",
@@ -2406,7 +2406,22 @@
       ],
       "status": "done",
       "exit": "On a machine with no Playwright browsers, a documented single command brings the gate to green, agent/scripts/verify/KN-003.mjs reports the missing browser by name rather than failing opaquely, and the README says what to run.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-089-round-1.2026-09-10T05-46-43-008Z.md",
+          "filed": [
+            "KN-213"
+          ],
+          "cardDigest": "bf489bb3bf7e006a5edb919a8da275e1cccf4053bc3843a661aa27b0501447f3",
+          "head": "b7b4f76d65146e247931da94f32e73b69d913c8e",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "at": "2026-09-10T05:57:14.388Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T23:11:00.628Z",
       "updatedAt": "2026-09-10T05:46:10.698Z",
@@ -2496,11 +2511,13 @@
       "parent": [
         "KN-087"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "aria-label=\"delete/application\" and title=\"delete/application\" both fail npm run lint, a committed fixture holds both, the Foundations token story still passes, and agent/scripts/verify/KN-087.mjs requires the fixture by name.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T23:35:15.722Z"
+      "createdAt": "2026-09-07T23:35:15.722Z",
+      "updatedAt": "2026-09-10T06:09:31.331Z",
+      "verify": "node agent/scripts/verify/KN-094.mjs"
     },
     {
       "id": "KN-095",
@@ -5030,6 +5047,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T05:30:46.654Z"
+    },
+    {
+      "id": "KN-213",
+      "title": "The browser preflight does not stop KN-003, and KN-089 proves its order by reading source text",
+      "desc": "CHILD OF KN-089, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-089 roast, filed as one card because they are one fix and its proof. FIRST, confirmed by reading the code: check() in agent/scripts/verify/KN-003.mjs pushes a failure onto a list and returns, and nothing exits until the summary at the end. With Chromium absent the browser check fails first, then lint, the type checker, npm test and the builds all run anyway, and npm test adds the opaque missing-executable failure to the same list. The named message is first in that list, but it is printed after minutes, not in a second. The KN-089 evidence says the failure 'lands in a second rather than after minutes of lint and tsc', and the comment above the check says the same. Both are false. SECOND, confirmed: agent/scripts/verify/KN-089.mjs checks the order by finding the first 'chromiumStatus(' in the raw file and testing that it sits inside the first check block. A comment holding that text, or an 'if (false)' call, satisfies it while the real preflight is moved or its result thrown away. The injection test beside it only proves the message formatter, not that KN-003 prints it. Also from the roast: when the playwright PACKAGE cannot be loaded, the reason names no command, and the fix there is npm install, not setup:browsers.",
+      "why": "The only reason to put the browser check first was so nobody waits minutes for a failure that was knowable at once; a check that runs first and stops nothing buys none of that. It is also a false statement in closed evidence, and a verifier a comment can satisfy is the self-matching check again. The roast rated it critical against KN-089's own purpose. Filed LOW because it is gate tooling, nothing is broken on a machine that has the browser, and the loop rule of 2026-09-10 puts loop findings at low unless they are breaking the work.",
+      "severity": "low",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Running KN-003.mjs with PLAYWRIGHT_BROWSERS_PATH pointed at an empty directory exits non-zero after the browser check alone, prints Chromium by name with the path and the command, and starts no lint, type-check or test process. KN-089.mjs proves that by RUNNING it that way rather than by reading its source, and a mutation that moves the preflight after lint, or discards its result, makes KN-089.mjs fail. A missing playwright package names npm install.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T05:57:09.932Z"
     }
   ]
 }

@@ -71,6 +71,7 @@ check('the behaviour is checked, not only the config, on every known hole', () =
     ['unlocalized-title.tsx', 'a bare title'],
     ['unlocalized-pathlike.tsx', 'copy shaped like a Storybook path, New/Applied'],
     ['unlocalized-setattribute.tsx', "an aria-label set through setAttribute"],
+    ['unlocalized-tokenlike.tsx', 'copy shaped like a design token, delete/application'],
   ]
   const problems = []
   for (const [file, what] of cases) {
@@ -109,10 +110,11 @@ check('a bare title is rejected', () => {
 
 check('a Storybook story path still passes, so the fix did not just break the build', () => {
   // `title: 'App/Shell'` is a path in the sidebar, not copy. It used to be
-  // exempt by NAME, which is what swept the tooltip in with it. It is now
-  // exempt by SHAPE, capitalised segments separated by slashes, and this check
-  // is what stops someone reverting to the name-based exemption to make the
-  // stories lint again.
+  // exempt by NAME, which swept the tooltip in with it, and then by SHAPE,
+  // which swept in any copy shaped like a path. It is exempt by WHERE it is
+  // now: `title` is added to the prop list only in the block scoped to
+  // `**/*.stories.tsx`. This check is what stops someone widening it again to
+  // make the stories lint.
   const result = spawnSync('npm run lint', { cwd: WEB, encoding: 'utf8', shell: true, env: { ...process.env, FORCE_COLOR: '0' } })
   return result.status === 0 ? null : (result.stdout || result.stderr || '').split('\n').slice(-20).join('\n')
 })
@@ -125,7 +127,13 @@ check("KN-003's verifier requires each fixture BY NAME, and discovers the rest",
   const other = readFileSync(join(ROOT, 'agent', 'scripts', 'verify', 'KN-003.mjs'), 'utf8')
   if (!other.includes('readdirSync')) return 'it no longer discovers, so a new fixture would be added and never run'
   if (!/startsWith\('unlocalized'\)/.test(other)) return 'it discovers files but not by the unlocalized prefix'
-  const named = ['unlocalized-aria.tsx', 'unlocalized-title.tsx', 'unlocalized-pathlike.tsx', 'unlocalized-setattribute.tsx']
+  const named = [
+    'unlocalized-aria.tsx',
+    'unlocalized-title.tsx',
+    'unlocalized-pathlike.tsx',
+    'unlocalized-setattribute.tsx',
+    'unlocalized-tokenlike.tsx',
+  ]
   const missing = named.filter((name) => !other.includes(name))
   return missing.length ? `not required by name in KN-003: ${missing.join(', ')}` : null
 })
