@@ -6421,13 +6421,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The field shows every edit as it happens and the arg follows without a stale value overwriting newer input: 20 keys typed with no delay all arrive in both the field and the arg, and a composition driven through the browser's own IME input ends with the composed text in both; a mutation back to the plain round trip loses keys again.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T10:30:25.462Z",
-      "updatedAt": "2026-09-10T16:17:54.143Z",
-      "verify": "node agent/scripts/verify/KN-253.mjs"
+      "updatedAt": "2026-09-10T16:19:33.154Z",
+      "verify": "node agent/scripts/verify/KN-253.mjs",
+      "evidence": "The Input meta's render draws Bound, which holds its own copy of a bound value in React state: an edit shows at once and goes to the args with updateArgs; a queue of sent values, adjusted during render when args.value changes, makes a returning arg an echo that changes nothing and takes one never sent (set in Controls). node agent/scripts/verify/KN-253.mjs passed: the Input stories pass under Vitest with TypingIntoABoundValue; the plain round trip back fails TypingIntoABoundValue under Vitest by name; in a production Storybook with value bound to x7 by URL args, twenty keys typed with no delay end as x7 plus all twenty in the field and in the story store's args; a Persian composition through Input.imeSetComposition step by step and Input.insertText ends as x7سلام in both, with compositionstart, an update per step, composing input events and compositionend carrying the text recorded on the field; a value then set with updateStoryArgs that the field never sent is taken; and the plain round trip rebuilt loses keys again. KN-249's verifier passes with its mutation now reading the arg staying behind rather than the field freezing, and the other fourteen Input verifiers pass, KN-242, 245, 246, 252 and 258 with anchors moved. Unit 418, full eslint, tsc and contract clean. The story plays in the published Storybook in fa-IR and en-US and its Docs entry reads in both. Not established: a real IME rather than the protocol's, and a Controls value equal to an edit still in flight, which is taken as its echo, the exception the component names.",
+      "closedAt": "2026-09-10T16:19:33.154Z"
     },
     {
       "id": "KN-254",
