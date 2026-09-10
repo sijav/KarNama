@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 83 of 268 tasks done · 163 of 674 points.
+Project **KarNama** · 83 of 270 tasks done · 163 of 676 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-262` FromArgs copies the Input's blank-error rule instead of sharing it** (critical, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-262` | FromArgs copies the Input's blank-error rule instead of sharing it | critical | 1 | web | none | The blank rule lives in one module that the Input and its stories both import, with no second copy of the pattern anywhere under src; a unit test covers the rule's boundaries; and a mutation that widens the rule in that module changes what FromArgs expects without editing the story. |
 
 ## Blocked (2)
 
@@ -17,12 +23,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (181)
+## Backlog (182)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-262` | FromArgs copies the Input's blank-error rule instead of sharing it | critical | 1 | web | none | The blank rule lives in one module that the Input and its stories both import, with no second copy of the pattern anywhere under src; a unit test covers the rule's boundaries; and a mutation that widens the rule in that module changes what FromArgs expects without editing the story. |
 | `KN-263` | The Status Chip centres its text with a 3px padding the spacing scale does not have | critical | 1 | web | none | The chip is the designed flex box again, centred by alignment with no vertical padding, and the name truncates with an ellipsis in an inner element; every story that measures the chip measures the chip, not the name; KN-238's verifier still passes with its mutations; and no padding or spacing in StatusChip.tsx resolves to anything but a spacing token or zero. |
 | `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | critical | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
@@ -59,6 +64,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-030` | Job modal, five tabs | critical | 8 | web | KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020 | All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text. |
 | `KN-217` | A string literal written 'as const' skips the lingui rule entirely, in any file | high | 1 | web | none | <Box title={'Delete this application' as const} /> and aria-label={'Delete' as const} fail npm run lint in a committed fixture, a story meta title written with 'as const' fails too, and 'as const' on an object or array literal, which is the idiom that is actually used, still passes. |
 | `KN-260` | Stories inherit the real pointer where the last hover story left it | high | 1 | web | none | Every story starts with the test runner's pointer somewhere that hovers nothing, set once for the whole suite rather than per story; BlankErrorIsNoError drops its pointer-events workaround and TECH-DEBT 15 is deleted; and a check runs a story that leaves the pointer on a field followed by one asserting a resting border in the same spot, which fails without the reset. |
+| `KN-269` | When a failed save arrives after the collapsed column has flashed is not decided | high | 1 | design | none | DESIGN.md states, as the owner's decision, when the collapsed column's success flash plays relative to the save and what happens to an optimistic move and its flash when the save fails; KN-061's exit condition names it; and a verifier checks the stated rule word for word in both places. |
+| `KN-270` | The collapsed column's hover timer and flash have no rule for leaving, returning or a second drop | high | 1 | design | none | DESIGN.md states, as the owner's decision, whether leaving the collapsed column during a drag resets the 500 ms, what a second drop does to a running flash, how the one-second flash relates to the 300 ms state change, and whether the keyboard target expands; KN-061's exit condition names each; and a verifier checks each detail exactly, the 500 ms, the count ticking up and the flash's length included. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -93,7 +100,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-045` | Job detail modal, wired | high | 5 | web | KN-043, KN-030, KN-038, KN-039 | An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries. |
 | `KN-046` | Auth screens: login, code, signup | high | 5 | web | KN-042, KN-036 | An e2e test signs in with a number and the code from the mock provider and reaches the board, a wrong or expired code shows an honest message with a way to resend, first login collects the name, and signing out clears the token and the Apollo cache rather than only the UI. |
 | `KN-052` | Deploy the API to Render free, with Neon free Postgres | high | 5 | deploy | KN-033, KN-034, KN-050 | The API answers at its Render URL, the web app reaches it across origins with the CORS policy WEB_ORIGIN sets, migrations have run against the Neon database, and a deploy follows a push to main with no manual step. The database choice is recorded with its reason so it is not silently reverted to a provider that expires or pauses. A check proves the deployed API responds and that render.yaml still pins the free plan and carries no DATABASE_URL value. |
-| `KN-061` | Drag a card between columns, with a keyboard path | high | 5 | web | KN-060, KN-020 | A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology. Onto the rejected column collapsed to a count, as the owner decided on 2026-09-10, KN-196: during a drag it expands after a short hover of 500 ms; it accepts a drop while still collapsed; once the card lands it recollapses with a brief highlight, and only if the drag opened it, the count ticking up, the header flashing the rejected status colour for about a second and the move announced, Moved to Rejected with the count; a column the user opened stays open; a failed save returns the card with no highlight; and the keyboard path offers it as one target, announced with its count. |
+| `KN-061` | Drag a card between columns, with a keyboard path | high | 5 | web | KN-060, KN-020, KN-269, KN-270 | A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology. Onto the rejected column collapsed to a count, as the owner decided on 2026-09-10, KN-196: during a drag it expands after a short hover of 500 ms; it accepts a drop while still collapsed; once the card lands it recollapses with a brief highlight, and only if the drag opened it, the count ticking up, the header flashing the rejected status colour for about a second and the move announced, Moved to Rejected with the count; a column the user opened stays open; a failed save returns the card with no highlight; and the keyboard path offers it as one target, announced with its count. |
 | `KN-063` | Accessibility gate | high | 5 | web | KN-003, KN-007 | An a11y violation planted in a story fails the test run, every action reachable by hover is reachable by keyboard, every icon-only control has an accessible name and a test asserts it, and each of the nine status base-on-container pairs is measured against the contrast bar with the result recorded. |
 | `KN-146` | The migration guard should stop lexing SQL and ask Postgres instead | high | 5 | api | none | A migration containing an early COMMIT or an ABORT cannot produce a ledger row saying applied, proved by planting both against PGlite using syntax the scanner does NOT recognise, so the protection is demonstrably the structure rather than the screen. |
 | `KN-214` | The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag | high | 5 | web | none | The no-letter entry is replaced by one that works WITHOUT flags, since the plugin passes none, and fails closed: only digits, whitespace, punctuation and symbols are exempt, so a letter in any script is checked. 'Delete', 'Save', 'مصاحبه' and 'حذف وضعیت' each fail npm run lint in a committed fixture, as aria-label, as title and as JSX text, and the existing fixtures fail only on the string under test rather than also on a child like x. Every one of the 82 strings is either localised or exempted by a named, scoped rule with a reason, never by a value shape. A check compiles each ignore entry exactly as the plugin does, new RegExp(entry) with no flags, and fails if any entry whitelists a known copy string, and that check is proved by a mutation restoring the \p{L} entry. |
@@ -993,7 +1000,7 @@ The column itself, 300 by 684 from node 241:125: the 276 by 40 header carrying i
 ### `KN-061` Drag a card between columns, with a keyboard path
 
 - **status** backlog · **severity** high · **points** 5 · **area** web
-- **blocked by** KN-060, KN-020
+- **blocked by** KN-060, KN-020, KN-269, KN-270
 
 Dragging a card from one column to another changes its status, with the Drag and Drop Done states the design draws. Includes a keyboard-accessible alternative, since drag alone is unusable without a pointer, and the optimistic update plus rollback when the mutation fails.
 
@@ -2538,6 +2545,8 @@ KN-070 settled that the rejected column sits last and renders collapsed to a cou
 
 **Exit condition.** DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker.
 
+**Roasts.** round 1 scored 4 with 2 critical(s)
+
 ### `KN-197` The order check parses shell badly instead of refusing the shapes it cannot parse
 
 - **status** backlog · **severity** low · **points** 2 · **area** agent
@@ -3317,7 +3326,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-262` FromArgs copies the Input's blank-error rule instead of sharing it
 
-- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **status** in_progress · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-259 roast and confirmed from the code: FromArgs in Input.stories.tsx decides what description to expect with its own copy of the component's pattern, /^[\s\p{Cf}]*$/u, rather than the component's rule. FromArgs leaves error unset by default, so the day the component's rule changes and the copy does not, no automated run notices; only a reviewer setting an error in Controls would see the play function disagree with the field.
@@ -3391,4 +3400,26 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** A test whose name claims more than it checks lets the case it names through. Low: no translator types a braille blank, and the catalogs are hand-written.
 
 **Exit condition.** The catalog test and the Input decide blankness with the same predicate, moved to a module both can import without the i18n tests depending on an Input file, or the catalog test states and tests a deliberately different contract; either way a translation of only U+2800, U+034F or U+FE0F is caught by a planted case that fails the test.
+
+### `KN-269` When a failed save arrives after the collapsed column has flashed is not decided
+
+- **status** backlog · **severity** high · **points** 1 · **area** design
+- **blocked by** none
+
+CHILD OF KN-196, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-196 roast and confirmed against DESIGN.md: the owner's decision has the column recollapse and flash once the card lands, and no highlight when the save fails. KN-061 updates optimistically, so the card lands at once and the server's answer can come seconds later, on a cold Render start fifty, after the flash has run. Whether the flash waits for the save, is cancelled when the save fails, or plays and is followed by the rollback is observable behaviour nobody has chosen.
+
+**Why.** KN-061 would otherwise pick the commit point silently, and a flash that confirms a move the server then refused is the opposite of what the owner asked for. High rather than critical: it is decided before KN-061 is built, which follows the components.
+
+**Exit condition.** DESIGN.md states, as the owner's decision, when the collapsed column's success flash plays relative to the save and what happens to an optimistic move and its flash when the save fails; KN-061's exit condition names it; and a verifier checks the stated rule word for word in both places.
+
+### `KN-270` The collapsed column's hover timer and flash have no rule for leaving, returning or a second drop
+
+- **status** backlog · **severity** high · **points** 1 · **area** design
+- **blocked by** none
+
+CHILD OF KN-196, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-196 roast and confirmed against DESIGN.md: 500 ms of the card resting over the collapsed column opens it, but whether leaving and coming back restarts the 500 ms or resumes it is not said; a second card dropped within the one-second flash could restart, extend or be swallowed by it; the one-second flash sits beside the design's 300 ms state change without saying which is which; and choosing the collapsed column as the keyboard target does not say whether it expands. Each is ordinary use, not an edge.
+
+**Why.** Each is behaviour a person sees on the most-used status, and KN-061 would have to invent it. High rather than critical: it is decided before KN-061 is built, ideally with a running column to look at, as the owner asked for drag questions.
+
+**Exit condition.** DESIGN.md states, as the owner's decision, whether leaving the collapsed column during a drag resets the 500 ms, what a second drop does to a running flash, how the one-second flash relates to the 300 ms state change, and whether the keyboard target expands; KN-061's exit condition names each; and a verifier checks each detail exactly, the 500 ms, the count ticking up and the flash's length included.
 

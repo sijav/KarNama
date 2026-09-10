@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 269,
+  "nextId": 271,
   "tasks": [
     {
       "id": "KN-001",
@@ -1782,16 +1782,19 @@
       "area": "web",
       "parent": [
         "KN-060",
-        "KN-020"
+        "KN-020",
+        "KN-269",
+        "KN-270"
       ],
       "status": "backlog",
       "exit": "A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology. Onto the rejected column collapsed to a count, as the owner decided on 2026-09-10, KN-196: during a drag it expands after a short hover of 500 ms; it accepts a drop while still collapsed; once the card lands it recollapses with a brief highlight, and only if the drag opened it, the count ticking up, the header flashing the rejected status colour for about a second and the move announced, Moved to Rejected with the count; a column the user opened stays open; a failed save returns the card with no highlight; and the keyboard path offers it as one target, announced with its count.",
       "roasts": [],
       "notes": [
-        "2026-09-10: KN-196 answered by the owner and recorded in DESIGN.md, so it no longer blocks this card; its behaviour is now part of the exit condition."
+        "2026-09-10: KN-196 answered by the owner and recorded in DESIGN.md, so it no longer blocks this card; its behaviour is now part of the exit condition.",
+        "2026-09-10: the KN-196 roast found the drop lifecycle still open for a failed save and for leave, return and repeat; KN-269 and KN-270 decide those first."
       ],
       "createdAt": "2026-09-07T21:10:27.314Z",
-      "updatedAt": "2026-09-10T13:31:27.716Z"
+      "updatedAt": "2026-09-10T13:45:21.830Z"
     },
     {
       "id": "KN-062",
@@ -4903,7 +4906,23 @@
       "parent": [],
       "status": "done",
       "exit": "DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 2,
+          "file": "./agent/roasts/KN-196-round-1.2026-09-10T13-39-51-845Z.md",
+          "filed": [
+            "KN-269",
+            "KN-270"
+          ],
+          "cardDigest": "77ddb62a9482e76613cd1c8c932e00f9c50350e4595b33395f6157939a577491",
+          "head": "dca17286ff307abc03d42d0445485caa2c3e563c",
+          "reviewerScore": 4,
+          "reviewerCriticals": 2,
+          "at": "2026-09-10T13:45:21.945Z"
+        }
+      ],
       "notes": [
         "Closed by mistake on 2026-09-10 and REVERTED. I put the three questions to the owner, they answered no preference on all three, and I read that as delegation and decided it myself. That was wrong twice over: no preference is not delegation, and the owner then said plainly to ask again, after there is something running to look at. Nobody can judge how a drag onto a collapsed column should feel by reading three bullet points; they need a board in front of them. So this stays BLOCKED until the board screen runs, and the question gets asked again then, against something real.",
         "2026-09-10: the owner answered, in chat. A card dragged onto the rejected column while it is collapsed to a count: it expands after a short hover. After the card lands: it recollapses with a brief highlight. The keyboard path: the collapsed column is one target, announced with its count. Unblocked, and raised to critical because recording the owner's answer in the design contract is not work to queue behind the component cards; the drag itself, KN-061, stays where the law puts it."
@@ -6572,11 +6591,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The blank rule lives in one module that the Input and its stories both import, with no second copy of the pattern anywhere under src; a unit test covers the rule's boundaries; and a mutation that widens the rule in that module changes what FromArgs expects without editing the story.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T12:45:20.256Z"
+      "createdAt": "2026-09-10T12:45:20.256Z",
+      "updatedAt": "2026-09-10T13:40:06.697Z"
     },
     {
       "id": "KN-263",
@@ -6669,6 +6689,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T13:24:03.388Z"
+    },
+    {
+      "id": "KN-269",
+      "title": "When a failed save arrives after the collapsed column has flashed is not decided",
+      "desc": "CHILD OF KN-196, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-196 roast and confirmed against DESIGN.md: the owner's decision has the column recollapse and flash once the card lands, and no highlight when the save fails. KN-061 updates optimistically, so the card lands at once and the server's answer can come seconds later, on a cold Render start fifty, after the flash has run. Whether the flash waits for the save, is cancelled when the save fails, or plays and is followed by the rollback is observable behaviour nobody has chosen.",
+      "why": "KN-061 would otherwise pick the commit point silently, and a flash that confirms a move the server then refused is the opposite of what the owner asked for. High rather than critical: it is decided before KN-061 is built, which follows the components.",
+      "severity": "high",
+      "points": 1,
+      "area": "design",
+      "parent": [],
+      "status": "backlog",
+      "exit": "DESIGN.md states, as the owner's decision, when the collapsed column's success flash plays relative to the save and what happens to an optimistic move and its flash when the save fails; KN-061's exit condition names it; and a verifier checks the stated rule word for word in both places.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T13:45:15.025Z"
+    },
+    {
+      "id": "KN-270",
+      "title": "The collapsed column's hover timer and flash have no rule for leaving, returning or a second drop",
+      "desc": "CHILD OF KN-196, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-196 roast and confirmed against DESIGN.md: 500 ms of the card resting over the collapsed column opens it, but whether leaving and coming back restarts the 500 ms or resumes it is not said; a second card dropped within the one-second flash could restart, extend or be swallowed by it; the one-second flash sits beside the design's 300 ms state change without saying which is which; and choosing the collapsed column as the keyboard target does not say whether it expands. Each is ordinary use, not an edge.",
+      "why": "Each is behaviour a person sees on the most-used status, and KN-061 would have to invent it. High rather than critical: it is decided before KN-061 is built, ideally with a running column to look at, as the owner asked for drag questions.",
+      "severity": "high",
+      "points": 1,
+      "area": "design",
+      "parent": [],
+      "status": "backlog",
+      "exit": "DESIGN.md states, as the owner's decision, whether leaving the collapsed column during a drag resets the 500 ms, what a second drop does to a running flash, how the one-second flash relates to the 300 ms state change, and whether the keyboard target expands; KN-061's exit condition names each; and a verifier checks each detail exactly, the 500 ms, the count ticking up and the flash's length included.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T13:45:15.263Z"
     }
   ]
 }
