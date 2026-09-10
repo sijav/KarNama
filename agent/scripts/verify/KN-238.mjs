@@ -63,7 +63,8 @@ check('LongName puts a long name in a 276 column and asserts no overflow, a cut 
   const missing = [
     ['nothing spilling out of the column', 'await expect(column.scrollWidth).toBe(column.clientWidth)'],
     ['the chip no wider than the column', 'await expect(chip.offsetWidth).toBe(column.clientWidth)'],
-    ['the name actually cut', 'await expect(chip.scrollWidth).toBeGreaterThan(chip.clientWidth)'],
+    // Since KN-263 the name truncates in its own span inside the chip.
+    ['the name actually cut', 'await expect(name.scrollWidth).toBeGreaterThan(name.clientWidth)'],
     ['the ellipsis', "toHaveProperty('textOverflow', 'ellipsis')"],
     ['the whole name as the chip text', 'await expect(chip).toHaveTextContent(LONG)'],
   ].filter(([, text]) => !story.includes(text))
@@ -75,7 +76,7 @@ check('THE CASE: a chip allowed to grow past its container fails LongName', () =
 )
 
 check('a chip that cuts the name without an ellipsis fails LongName', () =>
-  mutation("        textOverflow: 'ellipsis',\n", '', 'no ellipsis'),
+  mutation("overflow: 'hidden', textOverflow: 'ellipsis' }}", "overflow: 'hidden' }}", 'no ellipsis'),
 )
 
 check('a chip that takes the page direction instead of the name fails LongNameInEnglish', () =>

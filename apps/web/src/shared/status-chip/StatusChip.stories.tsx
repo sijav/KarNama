@@ -17,6 +17,15 @@ const computedColour = (host: HTMLElement, colour: string) => {
   return value
 }
 
+// The chip around a name. The name sits in its own span, which is what
+// truncates, so the chip, the box the design draws, is its parent. Stories
+// measure the chip for its geometry and the name for the cut, KN-263.
+const chipOf = (name: HTMLElement) => {
+  const chip = name.parentElement
+  if (!chip) throw new Error('the name has no chip around it')
+  return chip
+}
+
 const DEFAULTS: DefaultStatus[] = ['new', 'applied', 'interview', 'rejected', 'offer']
 
 // A status a user renamed to something long: record data, so not translated.
@@ -77,7 +86,7 @@ export const FromArgs: Story = {
   globals: { colorScheme: 'light' },
   args: { status: 'custom-2', label: 'سفارشی ۲', size: 'M' },
   play: async ({ args, canvasElement }) => {
-    const chip = within(canvasElement).getByText(args.label)
+    const chip = chipOf(within(canvasElement).getByText(args.label))
     await expect(chip.offsetHeight).toBe(28)
     await expect(getComputedStyle(chip).backgroundColor).toBe(computedColour(chip, statusTokens['custom-2'].container))
   },
@@ -117,6 +126,8 @@ export const AllStatuses: Story = {
         // the status's container fill and its base text, at 12 or at 14.
         await expect(chip.offsetHeight).toBe(height)
         await expect([style.paddingLeft, style.paddingRight].map(Number.parseFloat)).toEqual([8, 8])
+        // And none above or below: alignment centres the line, KN-263.
+        await expect([style.paddingTop, style.paddingBottom].map(Number.parseFloat)).toEqual([0, 0])
         await expect(Number.parseFloat(style.borderTopLeftRadius)).toBe(999)
         await expect(Number.parseFloat(style.fontSize)).toBe(fontSize)
         await expect(style.backgroundColor).toBe(computedColour(chip, pair.container))
@@ -129,7 +140,7 @@ export const AllStatuses: Story = {
 export const ColumnHeaderSize: Story = {
   args: { size: 'M' },
   play: async ({ canvasElement }) => {
-    const chip = within(canvasElement).getByText('درخواست‌شده')
+    const chip = chipOf(within(canvasElement).getByText('درخواست‌شده'))
     // Size=M: 28 tall, body's 14 and 22 with label's weight and tracking.
     await expect(chip.offsetHeight).toBe(28)
     const style = getComputedStyle(chip)
@@ -139,7 +150,7 @@ export const ColumnHeaderSize: Story = {
 
 export const DisplayOnly: Story = {
   play: async ({ canvasElement }) => {
-    const chip = within(canvasElement).getByText('درخواست‌شده')
+    const chip = chipOf(within(canvasElement).getByText('درخواست‌شده'))
     // Nothing to press and nothing to land on: no role, no tabindex, and Tab
     // passes it by. A focus ring on every card is exactly what this avoids.
     await expect(chip).not.toHaveAttribute('role')
@@ -168,13 +179,14 @@ export const LongName: Story = {
   render: () => <InAColumn />,
   play: async ({ canvasElement }) => {
     const column = within(canvasElement).getByTestId('column')
-    const chip = within(column).getByText(LONG)
+    const name = within(column).getByText(LONG)
+    const chip = chipOf(name)
     // Nothing spills out of the column, and the chip is as wide as it, no wider.
     await expect(column.scrollWidth).toBe(column.clientWidth)
     await expect(chip.offsetWidth).toBe(column.clientWidth)
-    // Cut, with an ellipsis, and on one line at the same height.
-    await expect(chip.scrollWidth).toBeGreaterThan(chip.clientWidth)
-    await expect(getComputedStyle(chip)).toHaveProperty('textOverflow', 'ellipsis')
+    // The name is cut, with an ellipsis, on one line, in a chip of the same height.
+    await expect(name.scrollWidth).toBeGreaterThan(name.clientWidth)
+    await expect(getComputedStyle(name)).toHaveProperty('textOverflow', 'ellipsis')
     await expect(chip.offsetHeight).toBe(28)
     // A screen reader reads the text, and all of it is there.
     await expect(chip).toHaveTextContent(LONG)
@@ -189,9 +201,10 @@ export const LongNameInEnglish: Story = {
   globals: { locale: 'en-US' },
   render: () => <InAColumn />,
   play: async ({ canvasElement }) => {
-    const chip = within(within(canvasElement).getByTestId('column')).getByText(LONG)
+    const name = within(within(canvasElement).getByTestId('column')).getByText(LONG)
+    const chip = chipOf(name)
     await expect(document.documentElement).toHaveAttribute('dir', 'ltr')
     await expect(getComputedStyle(chip)).toHaveProperty('direction', 'rtl')
-    await expect(chip.scrollWidth).toBeGreaterThan(chip.clientWidth)
+    await expect(name.scrollWidth).toBeGreaterThan(name.clientWidth)
   },
 }

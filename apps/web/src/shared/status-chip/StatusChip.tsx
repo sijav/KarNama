@@ -36,16 +36,16 @@ export const StatusChip = ({ status, label, size = 'S' }: StatusChipProps) => {
       // cuts the END of it, KN-238.
       dir="auto"
       sx={(theme) => ({
-        // An inline block, not an inline flex: text-overflow cuts the text of a
-        // block container, and a flex container's text is an anonymous item it
-        // cannot reach. The padding the height leaves centres the line.
-        display: 'inline-block',
-        verticalAlign: 'middle',
+        // The flex box 84:4 draws, centred by alignment with no vertical
+        // padding, KN-263. It stops at its container; the name inside it is
+        // what truncates.
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         boxSizing: 'border-box',
         maxWidth: '100%',
         height: HEIGHT[size],
         paddingInline: `${spacing.xs}px`,
-        paddingBlock: `${(HEIGHT[size] - text.lineHeight) / 2}px`,
         borderRadius: `${theme.karnama.radius.full}px`,
         backgroundColor: theme.karnama.status[status].container,
         color: theme.karnama.status[status].base,
@@ -54,11 +54,14 @@ export const StatusChip = ({ status, label, size = 'S' }: StatusChipProps) => {
         fontWeight: text.weight,
         letterSpacing: `${text.letterSpacing}px`,
         whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
       })}
     >
-      {label}
+      {/* The name in its own span: a flex item shrinks below its text only
+          with min-width 0, and text-overflow cuts a block's text, which the
+          flex box cannot reach, KN-263. */}
+      <Box component="span" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        {label}
+      </Box>
     </Box>
   )
 }
