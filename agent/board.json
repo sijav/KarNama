@@ -1636,14 +1636,15 @@
       "area": "web",
       "parent": [
         "KN-060",
-        "KN-020"
+        "KN-020",
+        "KN-196"
       ],
       "status": "backlog",
-      "exit": "A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology. Dropping onto the collapsed رد شده column follows the decision recorded in DESIGN.md section 6, KN-196: hovering over it for about 500ms expands it, it does NOT accept a drop while collapsed, it re-collapses afterwards with the count ticking up and a brief highlight, and the keyboard path treats it as ONE target announced with its count, placing the card at the top.",
+      "exit": "A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T21:10:27.314Z",
-      "updatedAt": "2026-09-10T04:13:13.965Z"
+      "updatedAt": "2026-09-10T02:06:50.976Z"
     },
     {
       "id": "KN-062",
@@ -4670,14 +4671,13 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "in_progress",
+      "status": "blocked",
       "exit": "DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T02:06:44.051Z",
       "blockedReason": "Waiting on the owner. This is a design DECISION, not a build: KN-070 settled that the rejected column collapses to a count, and did not settle what a drag onto it does. Whether it expands on hover and after what delay, whether it accepts a drop while collapsed, what the user sees after the drop lands, and what the keyboard path targets are all the owner's or the designer's call. An agent choosing them silently is the exact failure KN-153 was about. Blocked rather than backlog so it stops being picked as though it were buildable.",
-      "updatedAt": "2026-09-10T04:14:13.678Z",
-      "verify": "node agent/scripts/verify/KN-196.mjs"
+      "updatedAt": "2026-09-10T03:36:49.702Z"
     },
     {
       "id": "KN-197",
