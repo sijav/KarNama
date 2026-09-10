@@ -4768,11 +4768,13 @@
       "points": 1,
       "area": "agent",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "KN-201.mjs plants a meta whose component is not a plain identifier, at least the two real shapes memo(Thing) and an inline arrow, and requires the guard to FAIL naming the file; that case fails before the guard fix and passes after. The verifier no longer leaves a tracked file modified if it is killed mid-run, or the residual risk is stated in its header with the reason it is accepted. The as-Error cast is gone, replaced by an instanceof narrowing, and no cast of that shape exists in apps/web/src or apps/api/src, checked rather than assumed.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T03:21:10.320Z"
+      "createdAt": "2026-09-10T03:21:10.320Z",
+      "updatedAt": "2026-09-10T03:30:37.946Z",
+      "verify": "node agent/scripts/verify/KN-201.mjs"
     }
   ]
 }

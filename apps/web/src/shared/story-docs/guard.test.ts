@@ -92,7 +92,11 @@ export const readStoryFile = (file: string): StoryFile => {
     // Storybook refuses a dynamic title with "CSF: unexpected dynamic title",
     // and refusing here for the same reason keeps the guard from silently
     // treating an unreadable meta as an absent one.
-    throw new Error(`${relativePath} could not be parsed as CSF: ${(error as Error).message}`, { cause: error })
+    // Narrowed rather than cast. `AGENTS.md` forbids TypeScript escape hatches
+    // without asking, and this was the only `as` cast of its kind anywhere in
+    // the application source, so it made the rule look negotiable.
+    const because = error instanceof Error ? error.message : String(error)
+    throw new Error(`${relativePath} could not be parsed as CSF: ${because}`, { cause: error })
   }
 
   const title = parsed._meta?.title
@@ -185,7 +189,7 @@ describe('story-docs guard', () => {
       // to check whatever it could not understand, so being hard to understand
       // was rewarded.
       if (entry.componentUnreadable) {
-        expect.soft(entry.componentUnreadable, `${entry.title}: the meta's component is not a plain identifier, so its props cannot be checked`).toBe(false)
+        expect.soft(entry.componentUnreadable, `${relative(WEB, entry.file)} (${entry.title}): the meta's component is not a plain identifier, so its props cannot be checked`).toBe(false)
         continue
       }
       // Genuinely absent is legitimate: a docs-only entry has no component.
