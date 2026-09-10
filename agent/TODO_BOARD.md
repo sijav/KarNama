@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 39 of 203 tasks done · 98 of 576 points.
+Project **KarNama** · 39 of 204 tasks done · 98 of 577 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -10,7 +10,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-155` KN-045 still specifies the four-tab modal KN-072 replaced** (high, 1 pt, web)
 
-## Backlog (162)
+## Backlog (163)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -18,6 +18,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-172` | compact.py does the opposite of what the loop's compact step is for | high | 1 | agent | none | compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script. |
 | `KN-196` | Decide how a card is dropped onto a column that is collapsed to a count | high | 1 | design | none | DESIGN.md records the answer as a decision with who made it and when, covering hover-expand and its delay, whether a collapsed column accepts a drop, what the user sees after the drop lands, and what the keyboard path targets. Section 6 no longer lists it as open. KN-061's exit condition names the decided behaviour, and this card is removed as its blocker. |
 | `KN-199` | KN-060 asks a reusable column component to own where the rejected column sits on the board | high | 1 | design | none | KN-043's exit condition names the rejected column's position after the offer column and its collapsed-to-a-count default; KN-060's names rendering collapsed to a count and expanding on click, and says nothing about where the column sits. KN-149's verifier requires the right clause of each card rather than one shared string, and a mutation that swaps the two clauses between the cards is caught. |
+| `KN-204` | KN-201 closed on a verifier that never tested one of its own exit-condition clauses | high | 1 | agent | none | KN-201.mjs plants a meta whose component is not a plain identifier, at least the two real shapes memo(Thing) and an inline arrow, and requires the guard to FAIL naming the file; that case fails before the guard fix and passes after. The verifier no longer leaves a tracked file modified if it is killed mid-run, or the residual risk is stated in its header with the reason it is accepted. The as-Error cast is gone, replaced by an instanceof narrowing, and no cast of that shape exists in apps/web/src or apps/api/src, checked rather than assumed. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-014` | Icon button, 2 tones by 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | high | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
@@ -2509,6 +2510,8 @@ CHILD OF KN-007, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The guard collects story names from every CSF export form: export const, export function, export class, and an export list. Each is a named failing case, planted in a real story file and run against the real guard, before the fix and passing after. A meta whose component is not a plain identifier is REPORTED rather than skipped, so the prop check never silently declines to run; if the component genuinely cannot be resolved, the guard says so and fails. The mutation that must survive: the existing export const stories keep working.
 
+**Roasts.** round 1 scored 4 with 1 critical(s)
+
 ### `KN-202` The story-docs markdown contract is documented as rigid but silently accepts malformed files
 
 - **status** backlog · **severity** high · **points** 2 · **area** web
@@ -2530,4 +2533,15 @@ CHILD OF KN-007, recorded in prose because board.json cannot express parent_task
 **Why.** A silent fallback to the default language is indistinguishable from working correctly whenever the default happens to be what you wanted, which for this product is most of the time. It would be found by a reader who does not read Persian, which is the worst possible discovery path.
 
 **Exit condition.** The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository.
+
+### `KN-204` KN-201 closed on a verifier that never tested one of its own exit-condition clauses
+
+- **status** backlog · **severity** high · **points** 1 · **area** agent
+- **blocked by** none
+
+CHILD OF KN-201, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-201 roast and confirmed by grep: agent/scripts/verify/KN-201.mjs contains ZERO tests planting a meta whose component is not a plain identifier, although the card exit condition names it and the evidence claims four mutations caught including that one. The protection is real, the scratchpad harness proved it, but the COMMITTED artifact does not, so the claim is not reproducible from the repository. This is the KN-190 failure again in a milder form: green checks standing in for a clause nothing tests. Two more from the same round. The verifier writes into a TRACKED story file and restores it in a finally, which handles normal unwinding but not a kill or a crash mid-write, and this runs on every close of the card. It should work on a copy, or the guard should accept a directory to scan. And apps/web/src/shared/story-docs/guard.test.ts line 95 uses (error as Error), which AGENTS.md section headed No TypeScript escape hatches without asking forbids, and which is the ONLY such cast anywhere in apps/web/src or apps/api/src. It should be error instanceof Error ? error.message : String(error).
+
+**Why.** A verifier that does not test a clause of its own exit condition is the exact thing this repository has now been burned by twice, and the second time it was in the fix for the first. The escape hatch is smaller but worse in one way: it is a standing rule broken in committed code, and it was the only instance in the whole application, so leaving it makes the rule negotiable.
+
+**Exit condition.** KN-201.mjs plants a meta whose component is not a plain identifier, at least the two real shapes memo(Thing) and an inline arrow, and requires the guard to FAIL naming the file; that case fails before the guard fix and passes after. The verifier no longer leaves a tracked file modified if it is killed mid-run, or the residual risk is stated in its header with the reason it is accepted. The as-Error cast is gone, replaced by an instanceof narrowing, and no cast of that shape exists in apps/web/src or apps/api/src, checked rather than assumed.
 

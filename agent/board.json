@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 204,
+  "nextId": 205,
   "tasks": [
     {
       "id": "KN-001",
@@ -4705,7 +4705,23 @@
       "parent": [],
       "status": "done",
       "exit": "The guard collects story names from every CSF export form: export const, export function, export class, and an export list. Each is a named failing case, planted in a real story file and run against the real guard, before the fix and passing after. A meta whose component is not a plain identifier is REPORTED rather than skipped, so the prop check never silently declines to run; if the component genuinely cannot be resolved, the guard says so and fails. The mutation that must survive: the existing export const stories keep working.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-201-round-1.2026-09-10T03-15-54-826Z.md",
+          "filed": [
+            "KN-204"
+          ],
+          "cardDigest": "9f6207678a7022120f11b32c841118c4cbb6c6d2dd934c79bf422cca9b53364d",
+          "head": "273cd246ff2982214361a963e0995c554c0de330",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "dismissed": "Nothing rejected. The critical was confirmed by grep: KN-201.mjs has no non-identifier-component case at all, so a clause the card names and the evidence claims is not reproducible from the committed artifact. The escape-hatch minor was confirmed too, and is worse than minor in one respect: AGENTS.md forbids it and it was the only such cast in apps/web/src or apps/api/src. The reviewer's note that it could not run the verifier because its environment is read-only is a sandbox limitation, correctly labelled as such by the reviewer, and not a finding.",
+          "at": "2026-09-10T03:21:10.482Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T02:59:37.235Z",
       "updatedAt": "2026-09-10T03:15:24.402Z",
@@ -4742,6 +4758,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T02:59:37.807Z"
+    },
+    {
+      "id": "KN-204",
+      "title": "KN-201 closed on a verifier that never tested one of its own exit-condition clauses",
+      "desc": "CHILD OF KN-201, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-201 roast and confirmed by grep: agent/scripts/verify/KN-201.mjs contains ZERO tests planting a meta whose component is not a plain identifier, although the card exit condition names it and the evidence claims four mutations caught including that one. The protection is real, the scratchpad harness proved it, but the COMMITTED artifact does not, so the claim is not reproducible from the repository. This is the KN-190 failure again in a milder form: green checks standing in for a clause nothing tests. Two more from the same round. The verifier writes into a TRACKED story file and restores it in a finally, which handles normal unwinding but not a kill or a crash mid-write, and this runs on every close of the card. It should work on a copy, or the guard should accept a directory to scan. And apps/web/src/shared/story-docs/guard.test.ts line 95 uses (error as Error), which AGENTS.md section headed No TypeScript escape hatches without asking forbids, and which is the ONLY such cast anywhere in apps/web/src or apps/api/src. It should be error instanceof Error ? error.message : String(error).",
+      "why": "A verifier that does not test a clause of its own exit condition is the exact thing this repository has now been burned by twice, and the second time it was in the fix for the first. The escape hatch is smaller but worse in one way: it is a standing rule broken in committed code, and it was the only instance in the whole application, so leaving it makes the rule negotiable.",
+      "severity": "high",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "KN-201.mjs plants a meta whose component is not a plain identifier, at least the two real shapes memo(Thing) and an inline arrow, and requires the guard to FAIL naming the file; that case fails before the guard fix and passes after. The verifier no longer leaves a tracked file modified if it is killed mid-run, or the residual risk is stated in its header with the reason it is accepted. The as-Error cast is gone, replaced by an instanceof narrowing, and no cast of that shape exists in apps/web/src or apps/api/src, checked rather than assumed.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T03:21:10.320Z"
     }
   ]
 }
