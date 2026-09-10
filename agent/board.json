@@ -6421,11 +6421,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The field shows every edit as it happens and the arg follows without a stale value overwriting newer input: 20 keys typed with no delay all arrive in both the field and the arg, and a composition driven through the browser's own IME input ends with the composed text in both; a mutation back to the plain round trip loses keys again.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T10:30:25.462Z"
+      "createdAt": "2026-09-10T10:30:25.462Z",
+      "updatedAt": "2026-09-10T15:49:59.047Z"
     },
     {
       "id": "KN-254",
@@ -6924,7 +6925,20 @@
       "parent": [],
       "status": "done",
       "exit": "The owner has answered, through the question tool, whether the selected Filter Chip keeps the file's fill as its only sign of selection or gains one that meets WCAG 1.4.11 and 1.4.1, with the options and their trade named; DESIGN.md records the answer as the owner's, with the date; and if it changes, a card for the change exists that also covers KN-272's dark fill.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-276-round-1.2026-09-10T15-48-45-290Z.md",
+          "filed": [],
+          "cardDigest": "9c2e3ed7ec9fe1eb2740365a8e06351faaf4b3601d90f53a686d3f9c4bff4ee6",
+          "head": "200d2782cec3c92d516f3a6c8eeb80e0e9eea834",
+          "reviewerScore": 7,
+          "reviewerCriticals": 0,
+          "at": "2026-09-10T15:52:01.767Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T14:49:24.519Z",
       "updatedAt": "2026-09-10T15:48:27.506Z",
@@ -6974,10 +6988,13 @@
         "KN-272"
       ],
       "status": "backlog",
-      "exit": "A selected Filter Chip's edge is drawn in a named role at 3:1 or more against bg/surface, bg/page, bg/surface-secondary and its own fill, in light and in the derived dark, each ratio asserted by a unit test with a mutation back to the fill-coloured edge failing it; the Selected story asserts the edge; a story proves a pressed unselected chip is still told apart from a selected one; DESIGN.md records the edge under the owner's decision of KN-276; and the chip is seen unselected, selected and pressed in all four combinations.",
+      "exit": "A selected Filter Chip's edge is drawn in a named role at 3:1 or more against bg/surface, bg/page, bg/surface-secondary and its own fill, in light and in the derived dark, each ratio asserted by a unit test with a mutation back to the fill-coloured edge failing it; the Selected story asserts the edge; a pressed unselected chip is still told apart from a selected one, by at least 3:1 between their two indicators or by a difference that is not colour, such as the edge's width, and a focused chip beside a selected one keeps its ring visibly apart from the selected edge, both asserted on rendered chips side by side, including a chip held pressed from the keyboard; DESIGN.md records the edge under the owner's decision of KN-276; and the chip is seen unselected, selected and pressed in all four combinations.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T15:47:06.702Z"
+      "notes": [
+        "2026-09-10: exit tightened after the KN-276 roast, which showed the first wording let a colour nominally distinct from border/focus, such as #2563ec, pass while pressed and selected looked the same. The owner's decision asked that selection get its own edge or be proved apart from pressing; this makes 'apart' measurable."
+      ],
+      "createdAt": "2026-09-10T15:47:06.702Z",
+      "updatedAt": "2026-09-10T15:52:00.439Z"
     }
   ]
 }
