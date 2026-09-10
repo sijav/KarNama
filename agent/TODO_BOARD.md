@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 31 of 187 tasks done · 81 of 547 points.
+Project **KarNama** · 31 of 188 tasks done · 81 of 550 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-149` The board cards for the rejected column do not require it to collapse** (high, 1 pt, design)
+**Next up: `KN-161` Give the roast, todo and loop skills BOTH a python and a node script** (high, 3 pt, agent)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
 
 ## Backlog (154)
 
@@ -80,7 +86,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-127` | The resolver-registration check reads text rather than the container | high | 3 | api | KN-120 | A resolver registered in a way the text scan cannot see, a default export in a file not named *.resolver.ts, is detected, and the check reads the resolvers from a booted Nest context rather than from source text. |
 | `KN-136` | Commit the mutation cases, so a verifier's claim can be re-run | high | 3 | agent | none | One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass. |
 | `KN-158` | The story-docs rule in AGENTS.md describes a system that does not exist | high | 3 | web | none | Either src/shared/story-docs/{en,fa} exists with a page for every story, the three existing stories are migrated off JSDoc on meta, and a guard test fails when either language is missing a prop or story; or AGENTS.md is corrected to describe what the repository actually does and the main.ts comment with it. Whichever is chosen, no story in the tree contradicts the written rule afterwards, proved by a check rather than by reading. |
-| `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
+| `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | high | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | high | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | high | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
@@ -2028,7 +2034,7 @@ The owner's rule of 2026-09-10: the plan written before a task starts goes in th
 
 ### `KN-161` Give the roast, todo and loop skills BOTH a python and a node script
 
-- **status** backlog · **severity** high · **points** 3 · **area** agent
+- **status** in_progress · **severity** high · **points** 3 · **area** agent
 - **blocked by** none
 
 The owner's rule of 2026-09-10: a skill should work whichever runtime is present. Today roast ships roast.py only, loop ships compact.py only, and todo ships todo.mjs only, so a project with node and no usable python cannot roast, and a project with python and no node cannot use the board. Each skill needs both entry points, behaving identically, and its SKILL.md has to say how to run each so the caller can pick without reading the directory.
@@ -2328,4 +2334,15 @@ Found by the KN-181 roast. The text added to ../SkipBureau/.claude/ralph-loop.lo
 **Why.** It is a small rule and it is stated twice, which makes an unenforced version of it worse than none: everybody believes it holds. The sweep matters more than the single line, because a session that wrote many markdown files probably introduced more than one.
 
 **Exit condition.** The em dashes written into markdown during this session are replaced with commas, in both projects, found with a Unicode-aware search so Persian text produces no false hit.
+
+### `KN-188` KarNama's board cannot record a finding as a child of the task it came from
+
+- **status** backlog · **severity** high · **points** 3 · **area** agent
+- **blocked by** none
+
+The owner's rule of 2026-09-10: a roast's findings are filed as CHILDREN of the roasted task, one level, and when the last open child closes the parent and all its children are roasted together. The global todo skill now carries this as a parent_task column, with --parent-task on add and edit, and move done printing what to roast next. KarNama's own board cannot do it: board.json has a parent field and it means BLOCKED BY, a different relation entirely. A blocker must finish before the task can start; a finding comes out of a task that is already closed, so filing one as a blocker would deadlock it, and the selection law would refuse to hand it out. RALPH.md now states the rule and says the tool does not support it, which is honest and not a substitute.
+
+**Why.** The rule is the thing that makes done mean something: a task is finished when everything its review turned up has been dealt with, not when somebody says so. Stating it in the loop file while the board cannot express it means every finding here is still a loose card, and the group roast that closes the cycle can never be triggered by anything but memory.
+
+**Exit condition.** A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source.
 

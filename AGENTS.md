@@ -249,6 +249,32 @@ pass with zero warnings.
 
 ## 5. Before saying you are done
 
+**A parent and a child, since the rest of this section turns on it.** A roast's
+findings are filed as CHILDREN of the task that was roasted, one level deep. That
+is provenance, not blocking: a child exists BECAUSE its parent was reviewed, and
+the parent is usually already `done`. When the last open child closes, the parent
+and all its children are roasted together, and what that round finds becomes a
+new child, until a round finds nothing.
+
+**How much of this you run depends on whether the task has a parent.** The
+owner's rule of 2026-09-10:
+
+- **A task with NO parent closes on the FULL suite.** Everything below, all of
+  it. A root task is a whole piece of work and the whole gate is what says it
+  landed.
+- **A CHILD task closes on the tests for the FILES IT CHANGED.** Not the full
+  suite. A child is one slice of a parent, usually a few lines, and paying for
+  the entire gate on each of them buys nothing: the parent's own group roast
+  and its full-suite close are where the whole thing gets checked together.
+
+So a child runs the test files covering what it touched, plus lint and the type
+checker on the workspace it touched, and stops there. The full suite comes back
+when the parent closes.
+
+This is a rule about COST, not about rigour: the same checks still run, once,
+at the point where they mean something. If you cannot tell which tests cover
+what you changed, that is a reason to run more rather than to guess.
+
 1. `npm run lint`, zero warnings.
 2. `npm run lint:tsc`, clean.
 3. `npm test`, passing, and read the output rather than the exit code.

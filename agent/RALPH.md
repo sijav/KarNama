@@ -231,8 +231,17 @@ Two ordering rules the owner set explicitly:
   design is genuinely ambiguous, read the node again before guessing, and ask
   the owner if it is still ambiguous.
 
-Then run the gate in `AGENTS.md` section 5. All of it, including actually
-opening the thing in a browser and looking at it in both languages.
+Then run the gate in `AGENTS.md` section 5, including actually opening the
+thing in a browser and looking at it in both languages.
+
+**How much of the gate you run depends on whether the task has a parent**, the
+owner's rule of 2026-09-10: a task with **no parent** closes on the **full
+suite**; a **child** closes on the **tests for the files it changed**, plus lint
+and the type checker where it touched. A child is one slice of a parent, and the
+whole gate runs again when the parent closes. It is a rule about cost, not
+rigour: the same checks run, once, where they mean something. If you cannot tell
+which tests cover what you changed, run more rather than guess.
+
 
 **Then commit.** A roast has to be *of* something, and the harness refuses to
 run against a dirty worktree, so the review is bound to a revision instead of to
@@ -327,6 +336,31 @@ Then, and there is no longer any exception to this:
 > **Every finding that survives adjudication becomes its OWN board entry, with
 > all ten fields filled, at its own severity. The roasted task is already
 > `done` and it STAYS done. Nothing here reopens it.**
+
+### A finding is a CHILD of the task it came out of
+
+The owner's rule of 2026-09-10. A finding is not a loose card: it is filed
+against the task that was roasted, as its child.
+
+- **One level.** A child never gets children of its own. Anything found while
+  doing a child belongs to the same parent.
+- **When the LAST open child of a parent closes**, roast the parent **together
+  with all of its children**: a review of what was done for the whole task, not
+  for the last piece. The question that round asks is whether the parent is
+  actually finished now.
+- Anything THAT round finds becomes a new child of the same parent, and it
+  repeats until a round finds nothing.
+
+That is what makes "done" mean something. Without it, a task is finished when
+somebody says so; with it, a task is finished when everything its review turned
+up has also been dealt with, and the board can tell you which.
+
+**The board tool here does not support this yet.** `agent/board.json` has a
+`parent` field and it means BLOCKED BY, which is a different relation: a
+blocker must finish before the task can start, while a finding comes out of a
+task that is already closed. Filing a finding as a blocker would deadlock it.
+Until the tool carries both, record the parent in the finding's description and
+say so. The global `todo` skill already has `--parent-task`.
 
 **There is no fix-in-task rule any more, because there is no open task to fix
 in.** The roasted card closed at step 4, before the reviewer ever saw it. This

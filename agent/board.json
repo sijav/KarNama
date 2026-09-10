@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 188,
+  "nextId": 189,
   "tasks": [
     {
       "id": "KN-001",
@@ -3862,11 +3862,12 @@
       "points": 3,
       "area": "agent",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-09T23:54:04.957Z"
+      "createdAt": "2026-09-09T23:54:04.957Z",
+      "updatedAt": "2026-09-10T01:10:33.807Z"
     },
     {
       "id": "KN-162",
@@ -4341,6 +4342,21 @@
       ],
       "createdAt": "2026-09-10T00:52:26.787Z",
       "updatedAt": "2026-09-10T00:55:36.409Z"
+    },
+    {
+      "id": "KN-188",
+      "title": "KarNama's board cannot record a finding as a child of the task it came from",
+      "desc": "The owner's rule of 2026-09-10: a roast's findings are filed as CHILDREN of the roasted task, one level, and when the last open child closes the parent and all its children are roasted together. The global todo skill now carries this as a parent_task column, with --parent-task on add and edit, and move done printing what to roast next. KarNama's own board cannot do it: board.json has a parent field and it means BLOCKED BY, a different relation entirely. A blocker must finish before the task can start; a finding comes out of a task that is already closed, so filing one as a blocker would deadlock it, and the selection law would refuse to hand it out. RALPH.md now states the rule and says the tool does not support it, which is honest and not a substitute.",
+      "why": "The rule is the thing that makes done mean something: a task is finished when everything its review turned up has been dealt with, not when somebody says so. Stating it in the loop file while the board cannot express it means every finding here is still a loose card, and the group roast that closes the cycle can never be triggered by anything but memory.",
+      "severity": "high",
+      "points": 3,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T01:13:45.273Z"
     }
   ]
 }
