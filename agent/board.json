@@ -6121,15 +6121,17 @@
       "parent": [
         "KN-271"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A focused invalid field differs from the same field unfocused by at least a two-pixel perimeter changed at 3:1 contrast or more, the WCAG 2.4.13 measure the ordinary Focus state already meets; the field's border stays border/error so the error is still visible; the text does not move; DESIGN.md's section records the treatment, the measure and the reason; and FocusedWhileInvalid asserts it, with a mutation back to the one-pixel treatment failing that story by name.",
       "roasts": [],
       "notes": [
         "2026-09-10: taken, then put back before any file changed. Planning it found the derived dark border/focus at 2.81:1 on bg/surface, KN-271, and the focus ring this card adds is drawn in border/focus, so its 3:1 measure cannot hold in dark until KN-271 lands. Replan from step 2b after it: the ring is the Checkbox's, 2px border/focus at offset 2, beside a 2px border/error border."
       ],
       "createdAt": "2026-09-10T09:45:56.913Z",
-      "updatedAt": "2026-09-10T14:34:02.819Z",
-      "verify": "node agent/scripts/verify/KN-244.mjs"
+      "updatedAt": "2026-09-10T14:35:28.037Z",
+      "verify": "node agent/scripts/verify/KN-244.mjs",
+      "evidence": "Input.tsx: a focused invalid field keeps 2px border/error and takes outline 2px solid border/focus at offset 2, the Checkbox and Filter Chip ring; the valid Focus state is unchanged. node agent/scripts/verify/KN-244.mjs passed: the Input stories pass; FocusedWhileInvalid renders the field on bg/surface, bg/page and bg/surface-secondary backdrops, each asserted to be its token, and for each asserts the 2px border/error, outline solid, width >= 2, offset >= 0, colour border/focus, contrast with the backdrop >= 3, and no change in the text's layout; the ring removed fails FocusedWhileInvalid by name (THE CASE); a bg/brand/default backdrop fails it on 'to be greater than or equal to 3'; a 1px ring fails on '>= 2'; offset -4 fails on '>= 0'; a blue invalid border fails it; dropping the padding compensation for an invalid field fails it on the text layout; DESIGN.md's section names the kept error border, the ring, 2.4.13, 3 to one, the reason and the four pixels of room; KN-241's verifier still passes. Measured ratios for the ring's band: light 5.17, 4.82, 4.70 on surface, page, secondary; dark 3.04, 3.48, 3.57. Unit project 418 passed, eslint and tsc clean, contract clean. Seen in production Storybook: FocusedWhileInvalid in fa-IR and en-US light, and FromArgs with an error, focused by keyboard, in fa-IR and en-US dark, all reading 2px red border plus 2px solid ring offset 2 (rgb 37,99,235 light, 54,112,237 dark); the Docs page shows the new FocusedWhileInvalid text in both languages with no page errors. Not established: forced colours mode, where the outline stays but takes a system colour, and clipping by a future overflow container, which DESIGN.md warns about.",
+      "closedAt": "2026-09-10T14:35:28.037Z"
     },
     {
       "id": "KN-245",
