@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 233,
+  "nextId": 234,
   "tasks": [
     {
       "id": "KN-001",
@@ -5220,7 +5220,22 @@
       "parent": [],
       "status": "done",
       "exit": "A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-211-round-1.2026-09-10T08-20-46-192Z.md",
+          "filed": [
+            "KN-233"
+          ],
+          "cardDigest": "64493859cf3c54a12acb02a55f5895ce3de480a839ef11948a44790de7280cbd",
+          "head": "c06a8e62feb9032974289c177eb865b1aa02a18e",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "at": "2026-09-10T08:26:45.051Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -5684,6 +5699,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T08:21:20.977Z"
+    },
+    {
+      "id": "KN-233",
+      "title": "A trigger that takes the tooltip's ref but drops its event props is still silent in production",
+      "desc": "CHILD OF KN-211, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-211 roast, filed together because they are one check. FIRST, critical and confirmed: KN-211's check only asks whether a node arrived through the ref. A wrapper that forwards the ref and drops the rest, forwardRef((_props, ref) => <button ref={ref} />), passes it, and loses MUI's hover and focus listeners, so the tip never opens. MUI's own check for that case runs only when NODE_ENV is not production, so the published app is silent. SECOND, major: the check runs once, after the first commit, so a trigger that mounts conditionally is falsely reported and a working trigger later swapped for a broken one is not reported at all. Once KN-231 gives the trigger an always-present aria-describedby through the props, the check can require that attribute on the node it received, which proves the props arrived as well as the ref, in every environment and after every change. Blocked by KN-231 for that reason.",
+      "why": "KN-211 promised a clear failure instead of silence, and the case the roast built is the realistic one: a wrapper written carelessly with forwardRef. A tooltip that never opens in production, with no report anywhere, is the defect KN-211 was filed for. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-231"
+      ],
+      "status": "backlog",
+      "exit": "A trigger that forwards its ref but drops its other props is reported in a PRODUCTION build as well as in development, proved by a story with such a wrapper checked on the production Storybook; a trigger that mounts after the first render is not falsely reported; a working trigger swapped for a broken one is reported; and the ReportsATriggerThatCannotAttach and KeepsTheTriggersName stories still pass.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T08:26:44.927Z"
     }
   ]
 }

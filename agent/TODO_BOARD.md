@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 62 of 232 tasks done · 134 of 622 points.
+Project **KarNama** · 62 of 233 tasks done · 134 of 624 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -18,7 +18,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (165)
+## Backlog (166)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -27,6 +27,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-231` | The tooltip's description appears only after the tip opens, so focus announces the trigger without it | critical | 2 | web | none | At the moment of keyboard focus, before the tip opens, the trigger already has an accessible description equal to the tip's text, asserted by a story that does not wait for the tip; the name is still the trigger's own; the same assertions run in fa-IR with the Persian name; and a mutation removing the always-present description fails the focus-time story. |
+| `KN-233` | A trigger that takes the tooltip's ref but drops its event props is still silent in production | critical | 2 | web | KN-231 | A trigger that forwards its ref but drops its other props is reported in a PRODUCTION build as well as in development, proved by a story with such a wrapper checked on the production Storybook; a trigger that mounts after the first render is not falsely reported; a working trigger swapped for a broken one is reported; and the ReportsATriggerThatCannotAttach and KeepsTheTriggersName stories still pass. |
 | `KN-010` | Status chip, 9 statuses by 2 sizes, display only | critical | 3 | web | KN-005, KN-006, KN-007 | Nine statuses at both sizes match their Figma nodes, Size=M is used only where the design uses it, the chip has no tabindex and no click handler and a test asserts that, and the label is rendered from the STATUS RECORD rather than from the lingui catalog, so a status the user has renamed shows its new name. Only the five default names ship as catalog messages, as the seed values for a fresh account. |
 | `KN-011` | Input, 6 states | critical | 3 | web | KN-005, KN-006, KN-007 | All six states match Figma, the error state shows border/error with text/error helper copy, the helper line reserves its space so the field does not jump when an error appears, and the label is bound to the input for screen readers. |
 | `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -2673,6 +2674,8 @@ CHILD OF KN-032, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** A trigger that does not forward props is either impossible to pass, by typing, or produces a clear failure rather than silence. A story covers a WRAPPER component trigger and not only a native button, and it fails if the wrapper stops forwarding. The Fragment case is handled or explicitly documented as unsupported.
 
+**Roasts.** round 1 scored 4 with 1 critical(s)
+
 ### `KN-212` The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked
 
 - **status** backlog · **severity** critical · **points** 1 · **area** web
@@ -2915,4 +2918,15 @@ CHILD OF KN-229, recorded in prose because board.json cannot express parent_task
 **Why.** A comment that explains configuration wrongly is how the next person reasons wrongly about an upgrade: they will trust it and remove or add options on a false model of how Storybook merges them. Low: nothing behaves wrongly today.
 
 **Exit condition.** The comment above reactDocgenTypescriptOptions in .storybook/main.ts states how the Vite docgen plugin and the component-manifest path actually treat user options, checked against the installed preset source, and the KN-229 verifier still passes.
+
+### `KN-233` A trigger that takes the tooltip's ref but drops its event props is still silent in production
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** KN-231
+
+CHILD OF KN-211, recorded in prose because board.json cannot express parent_task yet, KN-188. Two findings from the KN-211 roast, filed together because they are one check. FIRST, critical and confirmed: KN-211's check only asks whether a node arrived through the ref. A wrapper that forwards the ref and drops the rest, forwardRef((_props, ref) => <button ref={ref} />), passes it, and loses MUI's hover and focus listeners, so the tip never opens. MUI's own check for that case runs only when NODE_ENV is not production, so the published app is silent. SECOND, major: the check runs once, after the first commit, so a trigger that mounts conditionally is falsely reported and a working trigger later swapped for a broken one is not reported at all. Once KN-231 gives the trigger an always-present aria-describedby through the props, the check can require that attribute on the node it received, which proves the props arrived as well as the ref, in every environment and after every change. Blocked by KN-231 for that reason.
+
+**Why.** KN-211 promised a clear failure instead of silence, and the case the roast built is the realistic one: a wrapper written carelessly with forwardRef. A tooltip that never opens in production, with no report anywhere, is the defect KN-211 was filed for. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** A trigger that forwards its ref but drops its other props is reported in a PRODUCTION build as well as in development, proved by a story with such a wrapper checked on the production Storybook; a trigger that mounts after the first render is not falsely reported; a working trigger swapped for a broken one is reported; and the ReportsATriggerThatCannotAttach and KeepsTheTriggersName stories still pass.
 
