@@ -6,7 +6,7 @@ import { useArgs, useRef } from 'storybook/preview-api'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18n } from '../../i18n'
 import { contrast } from '../../theme/darkMode'
-import { semantic, spacing } from '../../theme/tokens'
+import { iconSize, radius, semantic, spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { isBlank } from './blank'
 import { Input, type InputProps } from './Input'
@@ -481,6 +481,71 @@ export const TypingIntoABoundValue: Story = {
       await expect(recorded.value).toBe(`7${KEYS}`)
     })
     await expect(box).toHaveValue(`7${KEYS}`)
+  },
+}
+
+// The file's own placeholder for an icon, nodes 95:6 and 95:8: a 20 by 20
+// square of radius sm, in the colour its slot gives it.
+const Placeholder = () => (
+  <svg viewBox={`0 0 ${iconSize.md} ${iconSize.md}`} aria-hidden>
+    <rect width={iconSize.md} height={iconSize.md} rx={radius.sm} fill="currentColor" />
+  </svg>
+)
+
+// Node 95:38 with its icons on: each slot 20 by 20 in text/secondary, 16 from
+// its edge of the field and 4 from the text box, on the side the direction
+// gives it: the leading one at the inline start, KN-267. The text box moves
+// along by the icon and the gap, to 40.
+const slotsAreTheFiles = async (canvasElement: HTMLElement, sides: { leading: boolean; trailing: boolean }) => {
+  const field = fieldOf(canvasElement)
+  const box = within(canvasElement).getByRole('textbox')
+  const rtl = getComputedStyle(field).direction === 'rtl'
+  const outer = field.getBoundingClientRect()
+  const fromStart = (rect: DOMRect) => (rtl ? outer.right - rect.right : rect.left - outer.left)
+  const fromEnd = (rect: DOMRect) => (rtl ? rect.left - outer.left : outer.right - rect.right)
+  const text = box.getBoundingClientRect()
+  // text/secondary in whichever theme is on: the helper line under the field
+  // is drawn in it, so the stories need no pin to one palette.
+  const helper = canvasElement.ownerDocument.getElementById(box.getAttribute('aria-describedby') ?? '')
+  if (!helper) throw new Error('the specimen has no helper line to compare with')
+  const secondary = getComputedStyle(helper).color
+  const slot = async (element: Element | null, distance: (rect: DOMRect) => number) => {
+    if (!(element instanceof HTMLElement)) throw new Error('the slot is not there')
+    const rect = element.getBoundingClientRect()
+    await expect([rect.width, rect.height]).toEqual([20, 20])
+    await expect(distance(rect)).toBe(16)
+    await expect(getComputedStyle(element).color).toBe(secondary)
+  }
+  if (sides.leading) await slot(box.previousElementSibling, fromStart)
+  else await expect(box.previousElementSibling).toBeNull()
+  if (sides.trailing) await slot(box.nextElementSibling, fromEnd)
+  else await expect(box.nextElementSibling).toBeNull()
+  await expect([fromStart(text), fromEnd(text)]).toEqual([sides.leading ? 40 : 16, sides.trailing ? 40 : 16])
+}
+
+export const LeadingIcon: Story = {
+  // The leading slot on, with the file's placeholder. A fixed render, so no
+  // control is offered.
+  parameters: { controls: { disable: true } },
+  render: () => <JobTitle leadingIcon={<Placeholder />} />,
+  play: async ({ canvasElement }) => {
+    await slotsAreTheFiles(canvasElement, { leading: true, trailing: false })
+  },
+}
+
+export const TrailingIcon: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => <JobTitle trailingIcon={<Placeholder />} />,
+  play: async ({ canvasElement }) => {
+    await slotsAreTheFiles(canvasElement, { leading: false, trailing: true })
+  },
+}
+
+export const BothIcons: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => <JobTitle leadingIcon={<Placeholder />} trailingIcon={<Placeholder />} />,
+  play: async ({ canvasElement }) => {
+    await slotsAreTheFiles(canvasElement, { leading: true, trailing: true })
   },
 }
 

@@ -50,6 +50,17 @@ Greys the field to the secondary surface and stops it responding.
 
 Form field name, for an input inside a form.
 
+### leadingIcon
+
+An icon at the start of the field, 20 by 20, in the secondary text colour when
+the icon paints in `currentColor`. For decorative icons only: the icon hides
+itself from assistive technology, and the slot is not a button, which would
+need its own name and a larger target.
+
+### trailingIcon
+
+The same, at the end of the field.
+
 ### onChange
 
 Called with the new text and the change event.
@@ -129,6 +140,19 @@ after it, and a name reaches the input element for a form.
 A value set in the args and twenty keys typed with no pause between them. The
 field shows every key as it is typed, and the value control catches up with it
 rather than dragging it back.
+
+### LeadingIcon
+
+The file's icon placeholder in the leading slot, at the start of the field: 16
+from the edge and 4 from the text, which moves along by the icon and the gap.
+
+### TrailingIcon
+
+The placeholder in the trailing slot, at the end of the field.
+
+### BothIcons
+
+Both slots at once.
 
 ### WithoutAHelper
 

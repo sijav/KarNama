@@ -1,6 +1,6 @@
 import { Box, InputBase } from '@mui/material'
-import { useId, type ChangeEvent } from 'react'
-import { spacing, type as typeScale } from '../../theme/tokens'
+import { useId, type ChangeEvent, type ReactNode } from 'react'
+import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 import { isBlank } from './blank'
 
 // The props are documented in story-docs, not here, KN-207.
@@ -13,6 +13,8 @@ export interface InputProps {
   error?: string
   disabled?: boolean
   name?: string
+  leadingIcon?: ReactNode
+  trailingIcon?: ReactNode
   onChange?: (value: string, event: ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -21,11 +23,30 @@ const FIELD_HEIGHT = 44
 
 const { label: labelText, body } = typeScale
 
+// Node 95:38's icon slots, off unless given: 20 by 20, text/secondary through
+// currentColor, at the inline start and end, KN-267. Not hidden here: a
+// decorative icon hides itself, and a slot is not a button.
+const Slot = ({ children }: { children: ReactNode }) => (
+  <Box
+    component="span"
+    sx={(theme) => ({
+      display: 'inline-flex',
+      flexShrink: 0,
+      width: iconSize.md,
+      height: iconSize.md,
+      color: theme.karnama.semantic['text/secondary'],
+      '& > svg': { width: '100%', height: '100%' },
+    })}
+  >
+    {children}
+  </Box>
+)
+
 // Node 95:38, six states. The label is bound to the field for screen readers,
 // the helper or error line describes it, and that line always keeps its height,
 // so an error appearing never moves the field. It fills its container: the
 // 240 in the file is the specimen's width, not the field's.
-export const Input = ({ label, helperText, error: given, disabled = false, onChange, ...field }: InputProps) => {
+export const Input = ({ label, helperText, error: given, disabled = false, onChange, leadingIcon, trailingIcon, ...field }: InputProps) => {
   const id = useId()
   const messageId = `${id}-message`
   // A blank error is no error: a form that clears one to '' rather than to
@@ -54,6 +75,10 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
         {...field}
         {...(onChange === undefined ? {} : { onChange: (event: ChangeEvent<HTMLInputElement>) => { onChange(event.target.value, event) } })}
         inputProps={{ 'aria-describedby': message === undefined ? undefined : messageId, 'aria-invalid': error === undefined ? undefined : true }}
+        // Direct flex children of the field, before and after the input: the
+        // direction puts the leading one at the start, the right in Persian.
+        startAdornment={leadingIcon === undefined ? undefined : <Slot>{leadingIcon}</Slot>}
+        endAdornment={trailingIcon === undefined ? undefined : <Slot>{trailingIcon}</Slot>}
         sx={(theme) => {
           const colour = theme.karnama.semantic
           const edge = error === undefined ? colour['border/default'] : colour['border/error']
@@ -65,6 +90,9 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
             height: FIELD_HEIGHT,
             boxSizing: 'border-box',
             paddingInline: `${spacing.md}px`,
+            // The file's gap between an icon and the text, spacing/2xs; with no
+            // icon the input is the only item and it does nothing, KN-267.
+            columnGap: `${spacing['2xs']}px`,
             borderRadius: `${theme.karnama.radius.md}px`,
             backgroundColor: colour['bg/surface'],
             color: colour['text/primary'],

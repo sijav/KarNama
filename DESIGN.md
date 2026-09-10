@@ -235,6 +235,23 @@ contains any of those characters is still an error. A form that clears an
 error to the empty string rather than to nothing would otherwise leave a valid
 field red, and a screen reader would announce it invalid with nothing to say why.
 
+### The Input's icon slots, and its label
+
+Node `95:38` carries four booleans: Label, Helper Text, Leading Icon and
+Trailing Icon, the icons off by default. Its icon slots are 20 by 20
+placeholders of radius sm in `text/secondary`, spacing/2xs from the text inside
+the field's 16 of padding, the leading one at the inline start. The Input
+takes `leadingIcon` and `trailingIcon` for them, coloured through the icon's
+`currentColor`, for decorative icons only: an icon hides itself from assistive
+technology, and a slot is not a button, which would need its own name and a
+target of 24. KN-267.
+
+**The Label boolean is not honoured.** All 91 Input instances on the screens
+keep the label on, and the label is the field's accessible name, so the Input
+requires one; a field without a visible label would need an aria-label
+contract first, and nothing on the screens asks for it. The Helper Text boolean
+is the owner's decision of KN-285.
+
 ### A stroke is drawn inside, and takes no space
 
 Every stroke on a component in the file is aligned INSIDE and left out of
