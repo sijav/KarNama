@@ -25,7 +25,37 @@ const byId = new Map((Array.isArray(board.tasks) ? board.tasks : Object.values(b
 
 // Every tab the frame draws, plus the one the owner added. Named here so a
 // decision that quietly loses one is caught by name rather than by count.
-const TABS = ['اطلاعات آگهی', 'سابقه', 'یادداشت', 'مخاطبین', 'فایل‌ها']
+//
+// The third one is «افراد مرتبط», NOT «مخاطبین». KN-152: DESIGN.md states a
+// terminology rename without exception — the nav item became «شبکه من» and the
+// tab inside the job modal became «افراد مرتبط» — and this array used to
+// require the superseded word, so the verifier told a builder the wrong label
+// was right.
+const TABS = ['اطلاعات آگهی', 'سابقه', 'یادداشت', 'افراد مرتبط', 'فایل‌ها']
+
+// The superseded label, and the two places it is still TRUE.
+//
+// It cannot simply be banned from DESIGN.md: the document has to be able to say
+// what the frame draws and to record the rename itself. A check that forbids
+// the word outright would flag the sentence that fixes the problem, which is
+// the mistake this repository has shipped three times, so each occurrence is
+// classified by the context around it instead.
+//
+// Matched against the document with whitespace collapsed, because both
+// sanctioned sentences wrap across lines and a line-based check would see half
+// of one and call it unexplained.
+const SUPERSEDED = 'مخاطبین'
+// Written out rather than read from TABS, so that when a mutation reverts TABS
+// itself the message still names the label that is actually correct instead of
+// echoing the mistake back.
+const NEW_TAB = 'افراد مرتبط'
+const SANCTIONED = [
+  // The label Figma itself draws, marked as the frame's rather than the build's.
+  'در فریم',
+  'the rename below supersedes',
+  // The sentence that RECORDS the rename, identified by the new nav label.
+  'شبکه من',
+]
 
 const failures = []
 const check = (label, run) => {
@@ -77,6 +107,59 @@ check('the decision names ALL FIVE tabs, so nothing is silently dropped', () => 
   if (!entry) return 'the history decision could not be located'
   const missing = TABS.filter((tab) => !entry.slice(0, 1200).includes(tab))
   return missing.length ? `the decision does not name ${missing.join(', ')}, so a reader would build without them` : null
+})
+
+check('the two canonical tab lists are exactly the five tabs, in order', () => {
+  // KN-152, and the shape matters. My first attempt scanned DESIGN.md for the
+  // old word and classified each hit by a window of surrounding text. The plan
+  // check killed it: turning a list into five bullets makes such a locator miss
+  // a bad entry, and a sentence naming all five and then saying "Figma calls
+  // this one X" is falsely rejected. It is also the weakness KN-154 already
+  // files against the 1200-character window above.
+  //
+  // So the two AUTHORITATIVE lists are extracted by their own boundaries and
+  // required to be exactly TABS, in order. Prose elsewhere is not searched,
+  // which is what lets the frame description and the rename sentence stand
+  // without an exception being written for them.
+  const flat = DESIGN.split(/\s+/).join(' ')
+
+  const three = /has FIVE:\s*([^.]+)\./.exec(flat)
+  if (!three) return 'section 3 no longer states the five tabs after a "has FIVE:" clause'
+  const threeList = three[1].split(',').map((tab) => tab.trim())
+
+  const six = /> ([^>\n]*·[^>\n]*?)(?: |$)(?=\*\*History goes second|History goes second)/.exec(flat)
+    ?? /> ((?:[^>]*?·){3}[^>]*?) History goes second/.exec(flat)
+  if (!six) return 'section 6 no longer quotes the canonical tab list'
+  const sixList = six[1].replace(/\*\*/g, '').split('·').map((tab) => tab.trim()).filter(Boolean)
+
+  // The label regression is looked for FIRST, and this order is load-bearing.
+  // Checking the list against TABS first also catches it, but reports it as
+  // "these five are not those five", which is the generic message every other
+  // way of breaking the list produces. KN-152 asks for its own message, and a
+  // mutation proved the generic one fired instead.
+  if (TABS.includes(SUPERSEDED)) {
+    return `this verifier still REQUIRES the superseded tab label «${SUPERSEDED}»; the modal tab is «${NEW_TAB}»`
+  }
+  for (const [where, list] of [['section 3', threeList], ['section 6', sixList]]) {
+    if (list.includes(SUPERSEDED)) {
+      return `${where} still uses the superseded tab label «${SUPERSEDED}»; the modal tab is «${NEW_TAB}»`
+    }
+  }
+
+  for (const [where, list] of [['section 3', threeList], ['section 6', sixList]]) {
+    if (list.length !== TABS.length || list.some((tab, at) => tab !== TABS[at])) {
+      return `${where} lists [${list.join(' | ')}], not the five tabs in order [${TABS.join(' | ')}]`
+    }
+  }
+
+  // The survivor, asserted rather than assumed. DESIGN.md must STILL contain
+  // the old word, because it has to be able to say what Figma draws and to
+  // record the rename. A check that drove it out of the document entirely would
+  // be destroying the history it depends on.
+  if (!flat.includes(SUPERSEDED)) {
+    return 'the superseded label is gone from DESIGN.md entirely, so the rename is no longer recorded anywhere'
+  }
+  return SANCTIONED.some((marker) => flat.includes(marker)) ? null : 'nothing in DESIGN.md explains why the old label still appears'
 })
 
 check('section 3 says five, and no longer calls it open', () => {

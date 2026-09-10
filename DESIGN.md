@@ -326,11 +326,12 @@ outright, twice, for the contacts grid and as a general principle. Figma reverse
 its arrays because horizontal Auto Layout always lays out left to right; code
 must not copy that. Reversing an array in code to "fix" RTL is a defect.
 
-**The Job Modal replaces a detail page.** The file draws four tabs at `210:276`:
-اطلاعات آگهی, یادداشت, مخاطبین, فایل‌ها. It also puts status history at the
+**The Job Modal replaces a detail page.** The file draws four tabs at `210:276`, and the third one it draws is
+labelled «مخاطبین», which the rename below supersedes:
+اطلاعات آگهی, یادداشت, «مخاطبین» در فریم, فایل‌ها. It also puts status history at the
 bottom of the Info tab and flags that as open item 18, and **the owner settled
 that on 2026-09-08, KN-072: history is now its own tab**, second, so the modal
-has FIVE: اطلاعات آگهی, سابقه, یادداشت, مخاطبین, فایل‌ها. See section 6. This is
+has FIVE: اطلاعات آگهی, سابقه, یادداشت, افراد مرتبط, فایل‌ها. See section 6. This is
 the second place the build deliberately departs from the frame, the first being
 where رد شده sits on the board, and both are the owner's call rather than a
 reading of the file.
@@ -453,7 +454,7 @@ message**, because the user can rename any status.
 `employmentType` نوع همکاری · `jobLevel` سطح شغلی · `experience` سابقه‌ی موردنیاز
 · `salary` حقوق · `postedAt` تاریخ انتشار · `expiresAt` تاریخ انقضا ·
 `source` منبع · `description` شرح شغل · `skills` مهارت‌ها · `note` یادداشت ·
-`contacts` مخاطبین · `files` فایل‌ها
+`contacts` افراد مرتبط · `files` فایل‌ها
 
 The last three are relations rather than columns, and they are the Note,
 Related People and Files tabs of the job modal.
@@ -557,12 +558,12 @@ timestamps and per-transition notes instead of burying it under a scroll.
 `Tab=Info` `210:101`, `Tab=Note` `210:145`, `Tab=Contacts` `210:208`,
 `Tab=Files` `210:275`, each 720x617 — and this decision inserts a fifth:
 
-> اطلاعات آگهی · **سابقه** · یادداشت · مخاطبین · فایل‌ها
+> اطلاعات آگهی · **سابقه** · یادداشت · افراد مرتبط · فایل‌ها
 
 History goes second, directly after the information it is the history OF. The
 question put to the owner illustrated the idea with a three-tab sketch, and that
 sketch was an illustration rather than the tab set: reading it as the answer
-would silently drop مخاطبین and فایل‌ها, which the design draws and the product
+would silently drop افراد مرتبط and فایل‌ها, which the design draws and the product
 needs. The decision adds a tab; it does not replace the others.
 
 **The Review step shows everything the parse filled, with the required fields

@@ -10,11 +10,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-152` Use the current Contacts tab label in the history decision** (high, 1 pt, design)
 
-## Backlog (162)
+## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-152` | Use the current Contacts tab label in the history decision | high | 1 | design | KN-072 | DESIGN.md section 6 and section 3 name the modal tab افراد مرتبط, KN-030 and KN-045 use that label, KN-072.mjs requires it and REJECTS مخاطبین as the modal tab label, and a mutation restoring مخاطبین fails the verifier with its own message. |
+
+## Backlog (161)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-153` | Separate the owner-settled own-tab decision from the author-chosen tab ORDER | high | 1 | design | KN-072 | DESIGN.md marks the own-tab placement as owner-settled and the second position as an author proposal awaiting the owner, section 3 matches, and agent/scripts/verify/KN-072.mjs asserts the two are attributed separately so a mutation that moves the order back inside the owner block fails with its own message. |
 | `KN-155` | KN-045 still specifies the four-tab modal KN-072 replaced | high | 1 | web | KN-072 | KN-045 names five tabs with history in its own, its exit condition asserts where history renders, and a check proves NO open card still says four-tab modal or places history inside the info tab. |
 | `KN-172` | compact.py does the opposite of what the loop's compact step is for | high | 1 | agent | none | compact.py is gone; the loop skill's step 1 states plainly that compaction is the harness's to perform, that the agent cannot trigger it, and that the fallback is re-reading the rule files from disk; no instruction anywhere tells the agent to run a script that prints a context digest; and KN-161 is updated to reflect that the loop skill no longer ships a script. |
@@ -563,7 +568,7 @@ The Add/Edit modal at Figma node 166:82 with Step=Paste, PasteFilled, Loading, R
 - **status** backlog · **severity** high · **points** 8 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020
 
-The job detail modal at Figma node 210:276. The file draws four tab variants: Tab=Info 210:101, Tab=Note 210:145, Tab=Contacts 210:208, Tab=Files 210:275, each 720 by 617. The owner settled open item 18 on 2026-09-08 and status history is now its OWN tab rather than a block at the bottom of Info, so the modal has FIVE: اطلاعات آگهی, سابقه, یادداشت, مخاطبین, فایل‌ها, with سابقه second, directly after the information it is the history of. That is a deliberate departure from the frame, recorded in DESIGN.md section 3 and section 6 under KN-072. Everything else comes from the frame unchanged.
+The job detail modal at Figma node 210:276. The file draws four tab variants: Tab=Info 210:101, Tab=Note 210:145, Tab=Contacts 210:208, Tab=Files 210:275, each 720 by 617. The owner settled open item 18 on 2026-09-08 and status history is now its OWN tab rather than a block at the bottom of Info, so the modal has FIVE: اطلاعات آگهی, سابقه, یادداشت, افراد مرتبط, فایل‌ها, with سابقه second, directly after the information it is the history of. That is a deliberate departure from the frame, recorded in DESIGN.md section 3 and section 6 under KN-072. Everything else comes from the frame unchanged.
 
 **Why.** The design replaced a detail page with this modal, so it is the only place the full record is visible. Status history is the record of the trail, which is the anchor of the whole product.
 
@@ -734,7 +739,7 @@ The add route driving the modal through Paste, Loading, Review and save, with Ma
 - **status** backlog · **severity** high · **points** 5 · **area** web
 - **blocked by** KN-043, KN-030, KN-038, KN-039
 
-The four-tab modal reading and writing real data: info and status with history, notes, contacts and files.
+The modal reading and writing real data: info and status with history, notes, the افراد مرتبط tab, and files. The tab is افراد مرتبط, not مخاطبین: DESIGN.md renames it without exception, and the nav item مخاطبین became a different thing. This card still says four tabs where KN-072 settled five; that contradiction belongs to KN-155 and is deliberately NOT repaired here, so this card is not quietly credited with work it did not do.
 
 **Why.** It is where the trail is actually read. Status history in particular is the payoff of the whole data model, and this is the only place it surfaces.
 
@@ -1940,7 +1945,7 @@ agent/design-manifest.json carries an openItems list naming each question the de
 
 ### `KN-152` Use the current Contacts tab label in the history decision
 
-- **status** backlog · **severity** high · **points** 1 · **area** design
+- **status** in_progress · **severity** high · **points** 1 · **area** design
 - **blocked by** KN-072
 
 DESIGN.md section 6 settles the five-tab list as اطلاعات آگهی · سابقه · یادداشت · مخاطبین · فایل‌ها, but DESIGN.md around line 368 already renamed things: the NAV ITEM مخاطبین became شبکه من, and the contacts tab inside the job modal became افراد مرتبط. So the settled tab list names the tab with a label that now belongs to a different thing, and it is the superseded one. agent/scripts/verify/KN-072.mjs hardcodes مخاطبین in its TABS array and REQUIRES it, so the verifier now enforces the obsolete label. apps/api/prisma/schema.prisma already says the tab is Related People, so the repository contradicts itself across files.

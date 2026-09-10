@@ -898,7 +898,7 @@
     {
       "id": "KN-030",
       "title": "Job modal, five tabs",
-      "desc": "The job detail modal at Figma node 210:276. The file draws four tab variants: Tab=Info 210:101, Tab=Note 210:145, Tab=Contacts 210:208, Tab=Files 210:275, each 720 by 617. The owner settled open item 18 on 2026-09-08 and status history is now its OWN tab rather than a block at the bottom of Info, so the modal has FIVE: اطلاعات آگهی, سابقه, یادداشت, مخاطبین, فایل‌ها, with سابقه second, directly after the information it is the history of. That is a deliberate departure from the frame, recorded in DESIGN.md section 3 and section 6 under KN-072. Everything else comes from the frame unchanged.",
+      "desc": "The job detail modal at Figma node 210:276. The file draws four tab variants: Tab=Info 210:101, Tab=Note 210:145, Tab=Contacts 210:208, Tab=Files 210:275, each 720 by 617. The owner settled open item 18 on 2026-09-08 and status history is now its OWN tab rather than a block at the bottom of Info, so the modal has FIVE: اطلاعات آگهی, سابقه, یادداشت, افراد مرتبط, فایل‌ها, with سابقه second, directly after the information it is the history of. That is a deliberate departure from the frame, recorded in DESIGN.md section 3 and section 6 under KN-072. Everything else comes from the frame unchanged.",
       "why": "The design replaced a detail page with this modal, so it is the only place the full record is visible. Status history is the record of the trail, which is the anchor of the whole product.",
       "severity": "high",
       "points": 8,
@@ -917,7 +917,7 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-09T21:48:31.689Z"
+      "updatedAt": "2026-09-10T02:54:36.877Z"
     },
     {
       "id": "KN-031",
@@ -1257,7 +1257,7 @@
     {
       "id": "KN-045",
       "title": "Job detail modal, wired",
-      "desc": "The four-tab modal reading and writing real data: info and status with history, notes, contacts and files.",
+      "desc": "The modal reading and writing real data: info and status with history, notes, the افراد مرتبط tab, and files. The tab is افراد مرتبط, not مخاطبین: DESIGN.md renames it without exception, and the nav item مخاطبین became a different thing. This card still says four tabs where KN-072 settled five; that contradiction belongs to KN-155 and is deliberately NOT repaired here, so this card is not quietly credited with work it did not do.",
       "why": "It is where the trail is actually read. Status history in particular is the payoff of the whole data model, and this is the only place it surfaces.",
       "severity": "high",
       "points": 5,
@@ -1272,7 +1272,8 @@
       "exit": "An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T19:58:07.065Z"
+      "createdAt": "2026-09-07T19:58:07.065Z",
+      "updatedAt": "2026-09-10T02:54:37.014Z"
     },
     {
       "id": "KN-046",
@@ -3705,11 +3706,13 @@
       "parent": [
         "KN-072"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "DESIGN.md section 6 and section 3 name the modal tab افراد مرتبط, KN-030 and KN-045 use that label, KN-072.mjs requires it and REJECTS مخاطبین as the modal tab label, and a mutation restoring مخاطبین fails the verifier with its own message.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-09T22:23:17.409Z"
+      "createdAt": "2026-09-09T22:23:17.409Z",
+      "updatedAt": "2026-09-10T02:57:39.965Z",
+      "verify": "node agent/scripts/verify/KN-072.mjs"
     },
     {
       "id": "KN-153",
