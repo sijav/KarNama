@@ -549,6 +549,49 @@ export const BothIcons: Story = {
   },
 }
 
+// An icon that renders nothing, the way a component can.
+const Nothing = () => null
+
+export const IconsTurnedOff: Story = {
+  // Every way a caller turns an icon off: false and null, true and an empty
+  // string, an empty fragment and an icon that renders nothing. None draws a
+  // slot, and the text stays 16 from both edges, KN-291. A fixed render.
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <Stack>
+      <Box data-testid="no-slot">
+        <JobTitle leadingIcon={false} trailingIcon={null} />
+      </Box>
+      <Box data-testid="no-slot">
+        <JobTitle leadingIcon={true} trailingIcon={''} />
+      </Box>
+      <Box data-testid="empty-slot">
+        <JobTitle leadingIcon={<></>} trailingIcon={<Nothing />} />
+      </Box>
+    </Stack>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const plain = canvas.getAllByTestId('no-slot')
+    await expect(plain).toHaveLength(2)
+    // The four values that draw nothing get no slot at all.
+    for (const field of plain) {
+      const box = within(field).getByRole('textbox')
+      await expect([box.previousElementSibling, box.nextElementSibling]).toEqual([null, null])
+      await expect(textInsets(fieldOf(field), box)).toEqual([16, 16])
+    }
+    // An empty fragment and an icon that renders nothing, which the Input
+    // cannot see before React renders them, get slots that collapse to nothing.
+    const field = canvas.getByTestId('empty-slot')
+    const box = within(field).getByRole('textbox')
+    for (const side of [box.previousElementSibling, box.nextElementSibling]) {
+      if (!(side instanceof HTMLElement)) throw new Error('the slot is not there')
+      await expect(side.getBoundingClientRect().width).toBe(0)
+    }
+    await expect(textInsets(fieldOf(field), box)).toEqual([16, 16])
+  },
+}
+
 // The bare field: a label and nothing under it, not even a helper.
 const Bare = (props: Partial<InputProps>) => {
   const { i18n } = useLingui()

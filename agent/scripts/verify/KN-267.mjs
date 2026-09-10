@@ -31,8 +31,8 @@ const STORIES = join(WEB, 'src', 'shared', 'input', 'Input.stories.tsx')
 const { chromium } = createRequire(join(WEB, 'package.json'))('playwright')
 
 const GAP = "            columnGap: `${spacing['2xs']}px`,\n"
-const START = '        startAdornment={leadingIcon === undefined ? undefined : <Slot>{leadingIcon}</Slot>}\n'
-const END = '        endAdornment={trailingIcon === undefined ? undefined : <Slot>{trailingIcon}</Slot>}\n'
+const START = '        startAdornment={drawn(leadingIcon) ? <Slot>{leadingIcon}</Slot> : undefined}\n'
+const END = '        endAdornment={drawn(trailingIcon) ? <Slot>{trailingIcon}</Slot> : undefined}\n'
 const SIDES = { 'leading-icon': [true, false], 'trailing-icon': [false, true], 'both-icons': [true, true] }
 
 const failures = []
@@ -122,8 +122,8 @@ const main = async () => {
   await check('the slots swapped, leading drawn at the end, fails LeadingIcon', () =>
     mutation(
       [
-        [START, '        startAdornment={trailingIcon === undefined ? undefined : <Slot>{trailingIcon}</Slot>}\n'],
-        [END, '        endAdornment={leadingIcon === undefined ? undefined : <Slot>{leadingIcon}</Slot>}\n'],
+        [START, '        startAdornment={drawn(trailingIcon) ? <Slot>{trailingIcon}</Slot> : undefined}\n'],
+        [END, '        endAdornment={drawn(leadingIcon) ? <Slot>{leadingIcon}</Slot> : undefined}\n'],
       ],
       'the slots swapped',
       'Leading Icon',

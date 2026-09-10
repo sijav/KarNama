@@ -36,11 +36,19 @@ const Slot = ({ children }: { children: ReactNode }) => (
       height: iconSize.md,
       color: theme.karnama.semantic['text/secondary'],
       '& > svg': { width: '100%', height: '100%' },
+      // A child that rendered nothing, an empty fragment or an icon that
+      // returned null, leaves the slot empty: then it is no slot, KN-291.
+      '&:empty': { display: 'none' },
     })}
   >
     {children}
   </Box>
 )
+
+// Whether a node draws anything: React renders nothing for undefined, null, a
+// boolean or an empty string, so `hasIcon && <Icon />` turning an icon off
+// draws no slot rather than an empty 20 by 20 one, KN-291.
+const drawn = (node: ReactNode) => node !== undefined && node !== null && typeof node !== 'boolean' && node !== ''
 
 // Node 95:38, six states. The label is bound to the field for screen readers,
 // the helper or error line describes it, and that line always keeps its height,
@@ -77,8 +85,8 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
         inputProps={{ 'aria-describedby': message === undefined ? undefined : messageId, 'aria-invalid': error === undefined ? undefined : true }}
         // Direct flex children of the field, before and after the input: the
         // direction puts the leading one at the start, the right in Persian.
-        startAdornment={leadingIcon === undefined ? undefined : <Slot>{leadingIcon}</Slot>}
-        endAdornment={trailingIcon === undefined ? undefined : <Slot>{trailingIcon}</Slot>}
+        startAdornment={drawn(leadingIcon) ? <Slot>{leadingIcon}</Slot> : undefined}
+        endAdornment={drawn(trailingIcon) ? <Slot>{trailingIcon}</Slot> : undefined}
         sx={(theme) => {
           const colour = theme.karnama.semantic
           const edge = error === undefined ? colour['border/default'] : colour['border/error']
