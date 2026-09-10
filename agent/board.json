@@ -5779,13 +5779,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A trigger with its own aria-describedby keeps it AND gains the tooltip's, in that order, before and after focus, asserted by a story that checks the computed description contains both texts; no report is logged for it; the ref-only and cannot-attach reports still fire; and a mutation dropping the merge fails the story.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T08:44:08.898Z",
-      "updatedAt": "2026-09-10T08:51:44.934Z",
-      "verify": "node agent/scripts/verify/KN-235.mjs"
+      "updatedAt": "2026-09-10T08:51:59.248Z",
+      "verify": "node agent/scripts/verify/KN-235.mjs",
+      "evidence": "Tooltip.tsx types children as ReactElement<{ 'aria-describedby'?: string }> and clones it with aria-describedby set to `${own} ${descriptionId}` when the trigger has its own, else descriptionId; the separate prop through MUI is gone, since MUI's child-props-last spread would replace it. The report for a props-dropping trigger no longer tells callers to avoid their own aria-describedby. New story KeepsTheTriggersOwnDescription renders a trigger pointing at a hint span (the 'My job opportunities' message standing in for a field hint) and asserts toHaveAccessibleDescription(`${hint} ${args.title}`) before interaction and after tab, and that console.error was not called after 300ms. agent/scripts/verify/KN-235.mjs, 3 checks green: 14 of 14 tooltip stories pass; THE CASE, with the merge dropped the story fails on the accessible description; the story checks both texts in order, before and at focus, and no report. KN-231.mjs repointed at the clone and green; KN-233, KN-211, KN-209, KN-222, KN-032 green; full web npm test 353 of 353 with coverage; docs guard 50 of 50 with the story documented in en and fa; lint and tsc clean.",
+      "closedAt": "2026-09-10T08:51:59.248Z"
     }
   ]
 }
