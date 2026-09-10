@@ -120,6 +120,10 @@ const linguiOptions = {
     // Listed as a function rather than as a pattern over braces, so it exempts
     // this one call and not every string that happens to contain them.
     '*.keyboard',
+    // Its second argument names a pseudo-element, '::placeholder', a CSS
+    // selector the browser resolves styles for. It never renders anything, so
+    // there is no copy in it to translate. KN-248.
+    'getComputedStyle',
   ],
   useTsTypes: true,
 }

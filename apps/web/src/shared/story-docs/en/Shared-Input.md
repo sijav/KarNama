@@ -73,6 +73,11 @@ Holding what a user typed.
 
 Two pixels of the focus colour, and the text does not move a pixel for it.
 
+### FocusWhileEmpty
+
+The empty field takes focus and its placeholder does not move: the placeholder's
+own style is measured before and after, not only the input's.
+
 ### WithError
 
 The error border, and the error message as the line under the field and as

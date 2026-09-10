@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 256,
+  "nextId": 257,
   "tasks": [
     {
       "id": "KN-001",
@@ -6184,7 +6184,8 @@
         "2026-09-10: blocked by KN-250. Its story snapshots the field before and after focus as Focus does, and on a production Storybook build html dir changes under any such snapshot until KN-250 sets it before paint, so it would ship a second story failing in the published Storybook."
       ],
       "createdAt": "2026-09-10T09:55:31.957Z",
-      "updatedAt": "2026-09-10T11:00:15.296Z"
+      "updatedAt": "2026-09-10T11:27:43.995Z",
+      "verify": "node agent/scripts/verify/KN-248.mjs"
     },
     {
       "id": "KN-249",
@@ -6328,6 +6329,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T11:01:50.818Z"
+    },
+    {
+      "id": "KN-256",
+      "title": "KN-088's verifier stopped proving its claim when KN-007 changed the unit include",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while doing KN-248, rerunning every verifier that reads the lint or test config: node agent/scripts/verify/KN-088.mjs fails two checks. Its proof that an emptied unit project fails the gate empties unitInclude, and KN-003 now fails on a TypeScript error instead, 'unitInclude' implicitly has an 'any[]' type at vitest.config.ts line 80, so the proof no longer shows what it names. And its check that the ordinary include is a named constant carrying the .test.ts pattern no longer matches. KN-007, ad81b72, rewrote that constant after KN-088's last commit, dbfb656, and nothing reran KN-088 since. The gate may still work; what is broken is the evidence for it.",
+      "why": "A verifier that fails for a reason other than the one it names is a closed card whose proof has quietly stopped proving anything, and it is the proof that the done gate catches an empty test project.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "node agent/scripts/verify/KN-088.mjs passes against the vitest.config.ts as it is now: emptying the unit include makes KN-003 fail because the unit project ran nothing, shown by its own output rather than a type error, and the constant check matches the include as written today.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-10T11:23:37.618Z"
     }
   ]
 }

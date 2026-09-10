@@ -25,11 +25,16 @@ const computedColour = (host: HTMLElement, colour: string) => {
 // outline: it takes no space, so it cannot move the text, and MUI zeroes the
 // input's outline width on focus with no outline drawn in either state.
 const NOT_LAYOUT = /^outline(-|$)/
+const propertiesOf = (style: CSSStyleDeclaration, prefix = '') =>
+  Object.fromEntries(Array.from(style).filter((name) => !NOT_LAYOUT.test(name)).map((name) => [`${prefix}${name}`, style.getPropertyValue(name)]))
 const textLayout = (box: HTMLElement): Record<string, string> => {
   const { left, top, width, height } = box.getBoundingClientRect()
-  const style = getComputedStyle(box)
   return {
-    ...Object.fromEntries(Array.from(style).filter((name) => !NOT_LAYOUT.test(name)).map((name) => [name, style.getPropertyValue(name)])),
+    ...propertiesOf(getComputedStyle(box)),
+    // What an empty field shows is its placeholder, a pseudo-element the
+    // input's own style does not report. Its properties are keyed with a
+    // leading '::', so a failure names the placeholder's own, KN-248.
+    ...propertiesOf(getComputedStyle(box, '::placeholder'), '::'),
     // Prefixed, since left, top, width and height are CSS properties too.
     ...Object.fromEntries(Object.entries({ left, top, width, height, scrollLeft: box.scrollLeft, scrollTop: box.scrollTop }).map(([name, value]) => [`box ${name}`, String(value)])),
   }
@@ -156,6 +161,22 @@ export const Focus: Story = {
     await expect(style.borderTopColor).toBe(computedColour(field, semantic['border/focus']))
     await expect(changes(before, textLayout(box))).toEqual([])
     await expect(field.offsetHeight).toBe(44)
+  },
+}
+
+export const FocusWhileEmpty: Story = {
+  // Empty, so what it shows is the placeholder, and that must not move on
+  // focus either, KN-248. Not value or defaultValue, which would fill it, and
+  // not disabled, which cannot take focus.
+  parameters: offers(['label', 'placeholder', 'helperText', 'error', 'name']),
+  globals: { colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    const box = within(canvasElement).getByRole('textbox')
+    await expect(box).toHaveValue('')
+    const before = textLayout(box)
+    await userEvent.tab()
+    await expect(box).toHaveFocus()
+    await expect(changes(before, textLayout(box))).toEqual([])
   },
 }
 
