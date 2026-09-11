@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 139 of 375 tasks done · 318 of 815 points.
+Project **KarNama** · 139 of 377 tasks done · 318 of 817 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-303` Tab and panel ids are built from tab values, so a value with a space breaks the tab's link to its panel** (high, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-303` | Tab and panel ids are built from tab values, so a value with a space breaks the tab's link to its panel | high | 1 | web | none | Tab and panel ids are well-formed whatever the tab values, derived from the component's own id and each tab's position or an escaped value; a story with a value holding a space shows each tab's aria-controls naming its panel and the panel labelled by its tab. |
 
 ## Blocked (4)
 
@@ -19,12 +25,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (230)
+## Backlog (231)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-303` | Tab and panel ids are built from tab values, so a value with a space breaks the tab's link to its panel | high | 1 | web | none | Tab and panel ids are well-formed whatever the tab values, derived from the component's own id and each tab's position or an escaped value; a story with a value holding a space shows each tab's aria-controls naming its panel and the panel labelled by its tab. |
 | `KN-311` | An Icon Button's required name is proved on a helper, not on the rendered button, and a blank one throws during render | high | 1 | web | none | Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case. |
 | `KN-314` | A controlled Search Bar still runs a pending search for a value its parent has since replaced | high | 1 | web | none | In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call. |
 | `KN-320` | The Page Header's back control is a 20 by 20 target, under the 24 the product asks of a control | high | 1 | web | none | The back control's target is 24 or more each way while the arrow stays 20 and stays 12 from the title, and the WithBack story measures both. |
@@ -226,6 +231,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-372` | NoLettersFollowsThePage shows the page fallback in the English interface only, and DESIGN.md's emoji claim has no fixture | low | 1 | web | none | The digit-only name renders rtl in the Persian interface and ltr in the English one, each with the document's direction asserted, and an emoji-only fixture is rendered in both, or the emoji clause leaves DESIGN.md. |
 | `KN-374` | The Color Picker's contract and stories never say where an arrow goes at a row's end | low | 1 | web | none | DESIGN.md's Color Picker sentence and the picker's story docs say that at a row's end the arrows go on to the next row in reading order and wrap from the last swatch to the first, as the radio group pattern does, and a story presses the left arrow in Persian from custom-4 and from rejected and lands on new and on offer. |
 | `KN-375` | A focused tab panel draws the browser's own outline, not the product's focus ring | low | 1 | web | none | A focused panel draws the product's focus ring in border/focus where the scrolling body cannot clip it, read from the file's focus treatment or DESIGN.md's rule for rings, and TabReachesTheText asserts the ring's style and colour after a real Tab in light and dark. |
+| `KN-376` | The tab panel's tabbable test misses a contenteditable and a summary, so a panel holding only one keeps an extra stop | low | 1 | web | none | A panel whose only tab stop is a summary, or a contenteditable, carries no tabindex, and a real Tab from its tab lands on that element, in a story. |
+| `KN-377` | The tab panel's tabbable test counts a control inside an inert subtree, so a panel of text can lose its only stop | low | 1 | web | none | A panel whose only control sits inside an inert subtree keeps tabindex 0, and a real Tab from its tab lands on the panel, in a story. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -3985,9 +3992,11 @@ CHILD OF KN-023, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** A panel with focusable content is not itself a tab stop and one with none is, decided from what it renders; a story with a field in a panel shows Tab going from the tab to the field, and one with only text shows the panel reached.
 
+**Roasts.** round 1 scored 6.5 with 0 critical(s)
+
 ### `KN-303` Tab and panel ids are built from tab values, so a value with a space breaks the tab's link to its panel
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-023, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-023 roast. Tabs.tsx builds each tab's id and aria-controls from the tab's value; a value such as 'application note' puts whitespace in the id, and aria-controls then reads as two id references, neither of them the panel.
@@ -4787,4 +4796,26 @@ CHILD OF KN-023, recorded in prose because board.json cannot express parent_task
 **Why.** A keyboard user reaching the History panel, text alone, should see the same focus ring the rest of the product draws; the browser's outline differs by browser and scheme and does not follow the tokens.
 
 **Exit condition.** A focused panel draws the product's focus ring in border/focus where the scrolling body cannot clip it, read from the file's focus treatment or DESIGN.md's rule for rings, and TabReachesTheText asserts the ring's style and colour after a real Tab in light and dark.
+
+### `KN-376` The tab panel's tabbable test misses a contenteditable and a summary, so a panel holding only one keeps an extra stop
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-023, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-302 roast. watchStops in Tabs.tsx queries 'a[href], button, input, select, textarea, [tabindex]', so a details element's summary and a contenteditable element, both keyboard stops by default, are never looked at: a panel holding only '<details><summary>' keeps tabindex 0 and Tab stops on the panel before the summary. A contenteditable's tabIndex also reads -1 by the HTML standard's getter though it is a tab stop, so adding it to the selector is not enough: it needs isContentEditable. No panel in the product renders either today.
+
+**Why.** The rule KN-302 set, a panel is a stop only when nothing in it is, should hold for whatever a caller puts in a panel, not only for the controls the Job Modal happens to use.
+
+**Exit condition.** A panel whose only tab stop is a summary, or a contenteditable, carries no tabindex, and a real Tab from its tab lands on that element, in a story.
+
+### `KN-377` The tab panel's tabbable test counts a control inside an inert subtree, so a panel of text can lose its only stop
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-023, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-302 roast. watchStops in Tabs.tsx counts an element tabbable when its tabIndex is 0 or more, it is not disabled and checkVisibility() is true; checkVisibility does not look at inert, so in a panel holding text and '<div inert><button>' the button counts, the panel loses its tabindex, and Tab, which cannot reach the inert button, skips the panel and its text. No panel in the product renders an inert subtree today.
+
+**Why.** A panel's text must stay reachable by keyboard whenever nothing else in it can take focus, including content a caller has made inert while it loads or waits.
+
+**Exit condition.** A panel whose only control sits inside an inert subtree keeps tabindex 0, and a real Tab from its tab lands on the panel, in a story.
 

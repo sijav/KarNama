@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 376,
+  "nextId": 378,
   "tasks": [
     {
       "id": "KN-001",
@@ -8313,7 +8313,24 @@
       "parent": [],
       "status": "done",
       "exit": "A panel with focusable content is not itself a tab stop and one with none is, decided from what it renders; a story with a field in a panel shows Tab going from the tab to the field, and one with only text shows the panel reached.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-302-round-1.2026-09-11T18-54-05-137Z.md",
+          "filed": [
+            "KN-376",
+            "KN-377"
+          ],
+          "cardDigest": "eeb5015f0c805db6b8ebca8b8d7c4ba7aa877b82199726fc74799481c3ef1aa9",
+          "head": "53bd49c13871699458cdbd651aeda901533a3c20",
+          "reviewerScore": 4,
+          "reviewerCriticals": 2,
+          "dismissed": "Both criticals are latent gaps in the tabbable predicate: no panel in the product renders a contenteditable, a summary or an inert subtree today, so the exit condition holds for everything the Tabs render. Filed low as KN-376 and KN-377 under the owner's rule of 2026-09-11 that a finding on a built component is high or lower. Its answers found no loop, no React conflict over the attribute, and the MUI Select's combobox counted.",
+          "at": "2026-09-11T18:56:46.085Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T12:04:17.135Z",
       "updatedAt": "2026-09-11T18:53:45.517Z",
@@ -8329,11 +8346,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Tab and panel ids are well-formed whatever the tab values, derived from the component's own id and each tab's position or an escaped value; a story with a value holding a space shows each tab's aria-controls naming its panel and the panel labelled by its tab.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T12:04:17.253Z"
+      "createdAt": "2026-09-11T12:04:17.253Z",
+      "updatedAt": "2026-09-11T18:54:33.501Z"
     },
     {
       "id": "KN-304",
@@ -9439,6 +9457,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T18:53:24.418Z"
+    },
+    {
+      "id": "KN-376",
+      "title": "The tab panel's tabbable test misses a contenteditable and a summary, so a panel holding only one keeps an extra stop",
+      "desc": "CHILD OF KN-023, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-302 roast. watchStops in Tabs.tsx queries 'a[href], button, input, select, textarea, [tabindex]', so a details element's summary and a contenteditable element, both keyboard stops by default, are never looked at: a panel holding only '<details><summary>' keeps tabindex 0 and Tab stops on the panel before the summary. A contenteditable's tabIndex also reads -1 by the HTML standard's getter though it is a tab stop, so adding it to the selector is not enough: it needs isContentEditable. No panel in the product renders either today.",
+      "why": "The rule KN-302 set, a panel is a stop only when nothing in it is, should hold for whatever a caller puts in a panel, not only for the controls the Job Modal happens to use.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A panel whose only tab stop is a summary, or a contenteditable, carries no tabindex, and a real Tab from its tab lands on that element, in a story.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T18:56:37.619Z"
+    },
+    {
+      "id": "KN-377",
+      "title": "The tab panel's tabbable test counts a control inside an inert subtree, so a panel of text can lose its only stop",
+      "desc": "CHILD OF KN-023, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-302 roast. watchStops in Tabs.tsx counts an element tabbable when its tabIndex is 0 or more, it is not disabled and checkVisibility() is true; checkVisibility does not look at inert, so in a panel holding text and '<div inert><button>' the button counts, the panel loses its tabindex, and Tab, which cannot reach the inert button, skips the panel and its text. No panel in the product renders an inert subtree today.",
+      "why": "A panel's text must stay reachable by keyboard whenever nothing else in it can take focus, including content a caller has made inert while it loads or waits.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A panel whose only control sits inside an inert subtree keeps tabindex 0, and a real Tab from its tab lands on the panel, in a story.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T18:56:37.777Z"
     }
   ]
 }
