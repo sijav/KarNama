@@ -27,6 +27,7 @@ export type StoryTitle =
   | 'Shared/ColorPicker'
   | 'Shared/FilterChip'
   | 'Shared/Icon'
+  | 'Shared/IconButton'
   | 'Shared/Input'
   | 'Shared/LanguageSwitch'
   | 'Shared/StatusChip'

@@ -1,0 +1,152 @@
+import { useLingui } from '@lingui/react'
+import { Box } from '@mui/material'
+import type { StoryObj } from '@storybook/react-vite'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { semantic, spacing, status } from '../../theme/tokens'
+import { ICON_NAMES } from '../icon'
+import type { StoryMeta } from '../story-docs/story-meta'
+import { IconButton, type IconButtonProps } from './IconButton'
+
+// The button's name is copy, drawn in the reader's language inside the render,
+// so its arg is a placeholder no control shows; the icon, the tone and the
+// disabled state are the controls.
+const Named = (args: IconButtonProps) => {
+  const { i18n } = useLingui()
+  return <IconButton {...args} aria-label={i18n._('Delete status')} />
+}
+
+const meta = {
+  title: 'Shared/IconButton',
+  component: IconButton,
+  args: { icon: 'trash', 'aria-label': '', tone: 'neutral', disabled: false, onClick: fn() },
+  argTypes: {
+    icon: { control: 'select', options: ICON_NAMES },
+    tone: { control: 'radio', options: ['neutral', 'danger'] },
+    disabled: { control: 'boolean' },
+  },
+  parameters: { controls: { include: ['icon', 'tone', 'disabled'] } },
+  render: (args) => <Named {...args} />,
+} satisfies StoryMeta<typeof IconButton>
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+const px = (value: string) => Number.parseFloat(value) || 0
+
+// A token's colour as the browser computes it, borrowed on the host's own
+// inline style and put back in the same tick.
+const computedColour = (host: HTMLElement, colour: string) => {
+  const previous = host.style.color
+  host.style.color = colour
+  const value = getComputedStyle(host).color
+  host.style.color = previous
+  return value
+}
+
+// What node 460:672 draws at rest: a 32 square of radius md, no fill, and the
+// 16 icon in text/secondary.
+const atRest = async (button: HTMLElement) => {
+  const style = getComputedStyle(button)
+  const box = button.getBoundingClientRect()
+  await expect([box.width, box.height]).toEqual([32, 32])
+  await expect(px(style.borderTopLeftRadius)).toBe(8)
+  await expect(style.backgroundColor).toBe('rgba(0, 0, 0, 0)')
+  await expect(style.color).toBe(computedColour(button, semantic['text/secondary']))
+  const icon = button.querySelector('svg')?.getBoundingClientRect()
+  await expect([icon?.width, icon?.height]).toEqual([16, 16])
+}
+
+export const Default: Story = {
+  globals: { colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // Named, since an icon alone says nothing to a screen reader.
+    const button = within(canvasElement).getByRole('button')
+    await expect(button.getAttribute('aria-label')?.length).toBeGreaterThan(0)
+    await atRest(button)
+  },
+}
+
+export const Danger: Story = {
+  args: { tone: 'danger' },
+  globals: { colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // At rest the danger tone looks as the neutral one does; it shows only on
+    // hover, node 460:667.
+    await atRest(within(canvasElement).getByRole('button'))
+  },
+}
+
+export const Hover: Story = {
+  globals: { colorScheme: 'light' },
+  // Both tones side by side, so the tone is not a control here.
+  parameters: { controls: { include: ['icon'] } },
+  render: (args) => (
+    <Box sx={{ display: 'flex', gap: `${spacing.md}px` }}>
+      <Named {...args} tone="neutral" />
+      <Named {...args} tone="danger" />
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const [neutral, danger] = within(canvasElement).getAllByRole('button')
+    if (!neutral || !danger) throw new Error('fewer than two buttons')
+    // A real pointer, since :hover is the browser's hit-testing; in the
+    // published Storybook there is none to move, so hover a button yourself.
+    // The runner is known by the flag .storybook/vitest.setup.ts sets, KN-225.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
+      if ('__STORYBOOK_PREVIEW__' in globalThis) return
+      throw new Error('Hover is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
+    }
+    const browser = await import('vitest/browser')
+    // The colours wanted, worked out BEFORE waiting: computedColour borrows the
+    // element's inline style, and waitFor reruns on every change to the DOM,
+    // so called inside it, each check set off the next, for ever.
+    const [neutralFill, dangerFill] = [computedColour(neutral, semantic['bg/surface-secondary']), computedColour(danger, status.rejected.container)]
+    // Neutral, 460:663: the secondary surface and the primary text. MUI eases
+    // the fill in over 150 ms, so the end of it is waited for.
+    await browser.userEvent.hover(neutral)
+    await waitFor(() => expect(getComputedStyle(neutral).backgroundColor).toBe(neutralFill))
+    await expect(getComputedStyle(neutral).color).toBe(computedColour(neutral, semantic['text/primary']))
+    // Danger, 460:671: the rejected container and the error text.
+    await browser.userEvent.hover(danger)
+    await waitFor(() => expect(getComputedStyle(danger).backgroundColor).toBe(dangerFill))
+    await expect(getComputedStyle(danger).color).toBe(computedColour(danger, semantic['text/error']))
+  },
+}
+
+export const Disabled: Story = {
+  globals: { colorScheme: 'light' },
+  parameters: { controls: { include: ['icon'] } },
+  render: (args) => (
+    <Box sx={{ display: 'flex', gap: `${spacing.md}px` }}>
+      <Named {...args} tone="neutral" disabled />
+      <Named {...args} tone="danger" disabled />
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    // 512:742 and 512:745: both tones at 0.7, the icon in text/disabled, and
+    // out of the tab order.
+    for (const button of within(canvasElement).getAllByRole('button')) {
+      await expect(button).toBeDisabled()
+      await expect(Number(getComputedStyle(button).opacity)).toBe(0.7)
+      await expect(getComputedStyle(button).color).toBe(computedColour(button, semantic['text/disabled']))
+    }
+    await userEvent.tab()
+    await expect(canvasElement.ownerDocument.activeElement?.tagName).not.toBe('BUTTON')
+  },
+}
+
+export const KeyboardOnly: Story = {
+  play: async ({ args, canvasElement }) => {
+    const button = within(canvasElement).getByRole('button')
+    // Reached by Tab, pressed by Enter and by Space, with no pointer.
+    await userEvent.tab()
+    await expect(button).toHaveFocus()
+    await userEvent.keyboard('{Enter}')
+    await userEvent.keyboard(' ')
+    await expect(args.onClick).toHaveBeenCalledTimes(2)
+    // The ring, three pixels inside the button, in border/focus.
+    await expect(button).toHaveClass('Mui-focusVisible')
+    const ring = getComputedStyle(button, '::after')
+    await expect([ring.borderTopStyle, px(ring.borderTopWidth), px(ring.top)]).toEqual(['solid', 3, 1])
+  },
+}

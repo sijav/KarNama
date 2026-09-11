@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 307,
+  "nextId": 310,
   "tasks": [
     {
       "id": "KN-001",
@@ -467,7 +467,24 @@
       ],
       "status": "done",
       "exit": "Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8.3,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-008-round-1.2026-09-11T12-16-19-522Z.md",
+          "filed": [
+            "KN-307",
+            "KN-308",
+            "KN-309"
+          ],
+          "cardDigest": "c53eb6d7deab54497398fb4867ecb775ce09ed6fe8d8893c3283b0e29d6cfb55",
+          "head": "af63e616257b91f3d028e5ef98d202772b4b61eb",
+          "reviewerScore": 8.3,
+          "reviewerCriticals": 0,
+          "at": "2026-09-11T12:29:51.678Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -661,14 +678,14 @@
         "KN-007",
         "KN-008"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:18.013Z"
+      "updatedAt": "2026-09-11T12:16:26.043Z"
     },
     {
       "id": "KN-015",
@@ -7895,6 +7912,51 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:11:36.342Z"
+    },
+    {
+      "id": "KN-307",
+      "title": "An Icon given a blank aria-label becomes an unnamed image instead of decoration",
+      "desc": "CHILD OF KN-008, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-008 roast. Icon.tsx takes the named branch whenever aria-label is defined, so aria-label='' renders role img with an empty name, an unnamed graphic in the accessibility tree.",
+      "why": "A screen reader announces an unnamed image as a graphic with nothing to say, noise where decoration was meant.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "An Icon whose aria-label is empty or blank renders as decoration, aria-hidden with no role; a story renders one and asserts it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:29:44.451Z"
+    },
+    {
+      "id": "KN-308",
+      "title": "The Icon's default size and colour are never exercised by a story",
+      "desc": "CHILD OF KN-008, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-008 roast. Every Icon story passes size base and color text/secondary through the meta's args, so the component's own defaults never run in a story, and changing either would leave the stories green.",
+      "why": "The defaults are what nearly every caller gets; a regression there would change every icon in the product without a test noticing.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A story renders an Icon with only its name and asserts 24 by 24 and text/secondary.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:29:44.594Z"
+    },
+    {
+      "id": "KN-309",
+      "title": "Every component imports the theme through relative parent paths, which AGENTS.md forbids",
+      "desc": "Found by the KN-008 roast, which flagged the Icon's import of ../../theme/tokens. AGENTS.md section 4 says no relative parent imports, absolute src/... always, and cross-module imports through the barrel; every component in src/shared imports ../../theme/tokens and ../story-docs/story-meta, and no lint rule enforces the convention.",
+      "why": "A written convention nobody follows or checks misleads whoever reads AGENTS.md, and moving a folder breaks every relative parent path in it.",
+      "severity": "low",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Either the components import through absolute src/ paths and a lint rule refuses a relative parent import, or AGENTS.md is corrected to the convention the code keeps; whichever, lint and tsc pass.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:29:44.732Z"
     }
   ]
 }

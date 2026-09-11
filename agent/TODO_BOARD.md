@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 115 of 306 tasks done · 220 of 730 points.
+Project **KarNama** · 115 of 309 tasks done · 220 of 734 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-014` Icon button, 2 tones by 3 states** (critical, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 
 ## Blocked (2)
 
@@ -17,11 +23,10 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (187)
+## Backlog (189)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-021` | Page header | critical | 3 | web | KN-005, KN-006, KN-007, KN-009, KN-008 | Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree. |
 | `KN-022` | Empty state and loading state | critical | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
@@ -182,6 +187,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-278` | TECH-DEBT 16 retires on a text search, not on the English twin passing under Vitest | low | 1 | docs | none | TECH-DEBT 16's retirement check is behavioural: take the early return out of ControlsMatchTheCanvas and run ControlsMatchTheCanvasInEnglish under Vitest; the entry retires only when that passes, and the entry says so. |
 | `KN-289` | KN-281's forced-colours check does not measure the tick's position, as KN-284's exit says it does | low | 1 | agent | none | KN-281's forced-colours check also opens the checked frame and asserts the tick at the same offset with forced colours on and off, or KN-284's exit is amended to name where that measurement lives. |
 | `KN-299` | KN-286's verifier reads the first alert and textbox in the tree, not the ones of the field it types into | low | 1 | agent | none | KN-286's verifier resolves the described field's input and its own alert span through the DevTools protocol, reads the accessibility nodes whose backendDOMNodeId are theirs, and fails when either id is missing; a story order swapped, the bare field first, still reads the described field's nodes; and KN-286's and KN-298's verifiers pass. |
+| `KN-307` | An Icon given a blank aria-label becomes an unnamed image instead of decoration | low | 1 | web | none | An Icon whose aria-label is empty or blank renders as decoration, aria-hidden with no role; a story renders one and asserts it. |
+| `KN-308` | The Icon's default size and colour are never exercised by a story | low | 1 | web | none | A story renders an Icon with only its name and asserts 24 by 24 and text/secondary. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -205,6 +212,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-197` | The order check parses shell badly instead of refusing the shapes it cannot parse | low | 2 | agent | none | There is ONE place that decides what is quoted. Command substitution, backticks and parameter expansion are REFUSED by name, as && and the semicolon already are, with a message saying the order cannot be read rather than guessing. A backslash before a quote is refused too, or handled by the single parser and proved. Both reproducers in this card are named failing cases before the fix and are refused after, each with a mutation that makes the case pass again. The real prompt's lines still resolve. |
 | `KN-200` | The order check has never been run against a real loop prompt, and neither prompt carries the marker | low | 2 | agent | KN-171 | agent/RALPH.md and .claude/ralph-loop.local.md each carry exactly one marked block, and a verifier runs closesBeforeRoasting against BOTH real files by path rather than against a fixture, failing if either is unmarked, ambiguous or reversed. The check is proved by mutation on the real files: reversing the two lines in each prompt makes it fail, and removing a marker makes it fail with the unmarked reason. Any verifier that would pass when handed a file containing no marked block at all is a defect, and the check for that is named. KN-171's fix to the prompt's order lands with or before this, since a marked block that records the wrong order is worse than none. |
 | `KN-251` | Nothing checks the Input's value control in the Controls panel follows what is typed | low | 2 | web | none | A check loads the whole Storybook, manager and preview, from a production build, sets value through the Controls panel's own field, types into the canvas, and reads the Controls panel's value field showing the typed text; and it fails with the binding taken out. |
+| `KN-309` | Every component imports the theme through relative parent paths, which AGENTS.md forbids | low | 2 | web | none | Either the components import through absolute src/ paths and a lint rule refuses a relative parent import, or AGENTS.md is corrected to the convention the code keeps; whichever, lint and tsc pass. |
 | `KN-136` | Commit the mutation cases, so a verifier's claim can be re-run | low | 3 | agent | none | One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
@@ -440,6 +448,8 @@ An Icon component rendering the 30 icons drawn at Figma node 239:44, each 24 by 
 
 **Exit condition.** Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md.
 
+**Roasts.** round 1 scored 8.3 with 0 critical(s)
+
 ### `KN-009` Button, 3 sizes by 5 styles by 5 states
 
 - **status** backlog · **severity** critical · **points** 5 · **area** web
@@ -503,7 +513,7 @@ Unchecked, Checked, Indeterminate, Hover and Disabled from Figma node 204:11, at
 
 ### `KN-014` Icon button, 2 tones by 3 states
 
-- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-008
 
 Neutral and Danger tones, each with Default, Hover and Disabled, from Figma node 460:672, at 32 by 32 wrapping a 20px icon.
@@ -3911,4 +3921,37 @@ CHILD OF KN-062, recorded in prose because board.json cannot express parent_task
 **Why.** KN-062's exit condition says the fixtures never appear in the production bundle and a test asserts it; sample names and contacts shipping to users is the thing it guards, and a source convention is not the bundle.
 
 **Exit condition.** A check builds the web app for production and asserts that no fixture value, a sentinel only the fixtures hold, appears in the emitted files; a planted import of the fixtures from app code makes it fail.
+
+### `KN-307` An Icon given a blank aria-label becomes an unnamed image instead of decoration
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-008, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-008 roast. Icon.tsx takes the named branch whenever aria-label is defined, so aria-label='' renders role img with an empty name, an unnamed graphic in the accessibility tree.
+
+**Why.** A screen reader announces an unnamed image as a graphic with nothing to say, noise where decoration was meant.
+
+**Exit condition.** An Icon whose aria-label is empty or blank renders as decoration, aria-hidden with no role; a story renders one and asserts it.
+
+### `KN-308` The Icon's default size and colour are never exercised by a story
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-008, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-008 roast. Every Icon story passes size base and color text/secondary through the meta's args, so the component's own defaults never run in a story, and changing either would leave the stories green.
+
+**Why.** The defaults are what nearly every caller gets; a regression there would change every icon in the product without a test noticing.
+
+**Exit condition.** A story renders an Icon with only its name and asserts 24 by 24 and text/secondary.
+
+### `KN-309` Every component imports the theme through relative parent paths, which AGENTS.md forbids
+
+- **status** backlog · **severity** low · **points** 2 · **area** web
+- **blocked by** none
+
+Found by the KN-008 roast, which flagged the Icon's import of ../../theme/tokens. AGENTS.md section 4 says no relative parent imports, absolute src/... always, and cross-module imports through the barrel; every component in src/shared imports ../../theme/tokens and ../story-docs/story-meta, and no lint rule enforces the convention.
+
+**Why.** A written convention nobody follows or checks misleads whoever reads AGENTS.md, and moving a folder breaks every relative parent path in it.
+
+**Exit condition.** Either the components import through absolute src/ paths and a lint rule refuses a relative parent import, or AGENTS.md is corrected to the convention the code keeps; whichever, lint and tsc pass.
 
