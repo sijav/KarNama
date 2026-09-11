@@ -6,7 +6,9 @@ phone, the job opportunity they are linked to and their LinkedIn, each after its
 icon; a field the contact lacks is left out. Email and phone are links that open
 the mail app and the dialler. Pressing the card anywhere else opens the contact,
 ready to edit. On hover, with focus inside, or when selected, a checkbox appears
-before the name and a delete at the other end. The compact card, for the phone,
+before the name and a delete at the other end; at rest both are folded away but
+still in the keyboard's path, so Tab meets the checkbox, the name and the delete
+in the order they are drawn. The compact card, for the phone,
 shows an avatar, the name and role, and keeps its mail and delete in view. Long
 values are cut with an ellipsis rather than wrapped.
 
@@ -47,6 +49,12 @@ The full card at rest, measured against the design.
 ### FullHover
 
 The full card under the pointer, the checkbox and delete in view.
+
+### FullTabOrder
+
+Tab from before the card reaches the checkbox, then the name, then the delete,
+each unfolding as it takes focus. The story presses a real key when it runs as
+a test; in Storybook itself, press Tab yourself.
 
 ### FullSelected
 

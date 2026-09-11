@@ -533,7 +533,10 @@ the linked job opportunity written «company — title», and LinkedIn in
 `text/brand`, each row its 16 icon in a 20 box at the inline start and its
 value at the other end. Hover draws one and a half of `border/focus` and brings
 the delete and the Checkbox into the row, the name moving over by 28, as the
-set's description says; Selected adds `bg/brand/container`. **Compact**, for
+set's description says; Selected adds `bg/brand/container`. At rest the two
+fold to no room and fade rather than leave the layout, so Tab meets the
+checkbox, the name and the delete in the order they are drawn, as on the job
+card, KN-341. **Compact**, for
 the phone, is a row of 12 padding and gap, radius md: a 40 avatar in
 `bg/brand/container`, the name at 14 and 500 over the role at 12 and 400 on
 CSS's normal line height, and the mail and delete Icon Buttons; its Hover adds

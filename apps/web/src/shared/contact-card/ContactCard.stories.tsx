@@ -71,13 +71,21 @@ const cardOf = (canvasElement: HTMLElement) => {
 // The card's own button is the one named by the contact's name.
 const openerOf = (canvasElement: HTMLElement, name: string) => within(canvasElement).getByRole('button', { name })
 
+// Whether the checkbox is seen: its root's, since the native input the role
+// sits on is always transparent under the drawn frame.
+const seen = (checkbox: HTMLElement) => checkbox.parentElement?.checkVisibility({ opacityProperty: true }) ?? false
+
+// The full card's delete, named in either language.
+const deleteOf = (card: HTMLElement) => within(card).getByRole('button', { name: /حذف|Delete/u })
+
 export const Full: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
     // Node 248:54: 24 of padding, 12 between its rows, radius lg, one pixel of
     // border/default; the name at 16 and 600, the role line in text/secondary,
     // a divider, then email, phone, the linked job and LinkedIn, each with its
-    // icon; the checkbox and delete out of the row at rest.
+    // icon; the checkbox and delete folded out of the row at rest, unseen but
+    // still in the keyboard's path, KN-341.
     const card = cardOf(canvasElement)
     const style = getComputedStyle(card)
     await expect([
@@ -89,8 +97,8 @@ export const Full: Story = {
     await expect(style.backgroundColor).toBe(computedColour(card, semantic['bg/surface']))
     const name = openerOf(canvasElement, args.contact.name)
     await expect([px(getComputedStyle(name).fontSize), Number(getComputedStyle(name).fontWeight)]).toEqual([16, 600])
-    await expect(within(card).queryByRole('checkbox')).toBeNull()
-    await expect(within(card).queryByRole('button', { name: /./u, hidden: false })).toBe(name)
+    await expect(seen(within(card).getByRole('checkbox'))).toBe(false)
+    await expect(deleteOf(card).getBoundingClientRect().width).toBe(0)
     // Email and phone are links that act: mailto and tel.
     const [email, phone, linkedin] = within(card).getAllByRole('link')
     await expect([email?.getAttribute('href'), phone?.getAttribute('href')]).toEqual([
@@ -133,6 +141,34 @@ export const FullHover: Story = {
   },
 }
 
+export const FullTabOrder: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args, canvasElement }) => {
+    // Tab from before the card meets its controls in the order they are
+    // drawn, KN-341: the checkbox, folded at rest and unfolding as it takes
+    // focus, then the name, then the delete; the row keeps its 30 and the name
+    // has moved over by 28. The browser's own Tab, which only the runner has,
+    // KN-225.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const browser = await import('vitest/browser')
+    const card = cardOf(canvasElement)
+    const name = openerOf(canvasElement, args.contact.name)
+    const before = name.getBoundingClientRect()
+    const checkbox = within(card).getByRole('checkbox')
+    // Focus starts just before the card.
+    canvasElement.tabIndex = -1
+    canvasElement.focus()
+    for (const control of [checkbox, name, deleteOf(card)]) {
+      await browser.userEvent.tab()
+      await expect(control).toHaveFocus()
+    }
+    canvasElement.removeAttribute('tabindex')
+    await expect(seen(checkbox)).toBe(true)
+    await expect(Math.round(Math.abs(name.getBoundingClientRect().right - before.right))).toBe(28)
+    await expect(name.parentElement?.parentElement?.getBoundingClientRect().height).toBe(30)
+  },
+}
+
 export const FullSelected: Story = {
   args: { selected: true },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
@@ -142,7 +178,7 @@ export const FullSelected: Story = {
     const card = cardOf(canvasElement)
     await expect(getComputedStyle(card).backgroundColor).toBe(computedColour(card, semantic['bg/brand/container']))
     await expect(within(card).getByRole('checkbox')).toBeChecked()
-    await userEvent.click(within(card).getByRole('button', { name: /حذف|Delete/u }))
+    await userEvent.click(deleteOf(card))
     await expect(args.onDelete).toHaveBeenCalledTimes(1)
   },
 }

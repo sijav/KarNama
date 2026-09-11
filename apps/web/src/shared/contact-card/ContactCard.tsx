@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react'
 import { Box, ButtonBase, type Theme } from '@mui/material'
 import type { ReactNode } from 'react'
 import { usePreferences } from '../../core/preferences'
-import { spacing, type as typeScale } from '../../theme/tokens'
+import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 import { Checkbox } from '../checkbox'
 import { Icon, type IconName } from '../icon'
 import { IconButton } from '../icon-button'
@@ -41,10 +41,18 @@ const EDGE = 1
 const HOVER_EDGE = 1.5
 const FOCUS_RING = 3
 
-// The class on what appears only on hover, with focus inside, or selected: the
-// full card's checkbox and delete. They join the layout then, so the name moves
-// over by the checkbox, as the file's description says, and the row keeps its 30.
-const REVEAL = 'KarnamaContactCard-reveal'
+// What appears only on hover, with focus inside, or selected: the full card's
+// checkbox and delete. The file hides them at rest, and a hidden layer gives up
+// its room, so they fold to none and fade, and unfold as the card is hovered or
+// takes focus, moving the name over by 28 while the row keeps its 30. Never
+// display none, which took them out of the keyboard's path, so Tab met the name
+// before the checkbox and only Shift+Tab reached it, KN-341: the job card's
+// way, KN-015.
+const CHECK = 'KarnamaContactCard-check'
+const BIN = 'KarnamaContactCard-delete'
+// Folded, the checkbox gives up its 20 frame, the 8 after it and the four its
+// root already gives back, so the name starts where it would alone.
+const FOLDED_CHECK = iconSize.md + spacing.xs + spacing['2xs']
 
 // The name is 16 at SemiBold on the file's automatic line height, composed as the
 // Empty State's title is: Title's size and line height with Heading/M's weight.
@@ -85,8 +93,8 @@ const frame = {
         layout === 'compact' && !selected
           ? { ...lifted, boxShadow: `${lifted.boxShadow}, ${theme.karnama.elevation.contactCardHover}` }
           : lifted,
-      [`& .${REVEAL}`]: { display: selected ? 'flex' : 'none' },
-      [`&:hover .${REVEAL}, &:focus-within .${REVEAL}`]: { display: 'flex' },
+      [`&:hover .${CHECK}, &:focus-within .${CHECK}`]: { marginInlineEnd: `-${spacing['2xs']}px`, opacity: 1, pointerEvents: 'auto' },
+      [`&:hover .${BIN}, &:focus-within .${BIN}`]: { width: DELETE, marginInlineStart: 0, opacity: 1, pointerEvents: 'auto' },
     } as const
   },
 }
@@ -271,7 +279,16 @@ export const ContactCard = ({ contact, layout = 'full', selected = false, onOpen
             name. The Checkbox's 28 root gives its four back with a negative
             margin, and nothing here clips, so its ring is whole, KN-293. */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: `${spacing.xs}px`, minWidth: 0 }}>
-          <Box className={REVEAL} sx={{ position: 'relative', zIndex: 1, flexShrink: 0, margin: `-${spacing['2xs']}px` }}>
+          <Box
+            className={CHECK}
+            sx={{
+              position: 'relative',
+              zIndex: 1,
+              flexShrink: 0,
+              margin: `-${spacing['2xs']}px`,
+              ...(selected ? {} : { marginInlineEnd: `-${FOLDED_CHECK}px`, opacity: 0, pointerEvents: 'none' }),
+            }}
+          >
             <Checkbox
               checked={selected}
               aria-label={`${i18n._('Select')} ${contact.name}`}
@@ -285,7 +302,7 @@ export const ContactCard = ({ contact, layout = 'full', selected = false, onOpen
           </Name>
         </Box>
         <ButtonBase
-          className={REVEAL}
+          className={BIN}
           disableRipple
           aria-label={i18n._('Delete contact')}
           onClick={onDelete}
@@ -293,12 +310,15 @@ export const ContactCard = ({ contact, layout = 'full', selected = false, onOpen
             position: 'relative',
             zIndex: 1,
             flexShrink: 0,
+            overflow: 'hidden',
             alignItems: 'center',
             justifyContent: 'center',
             width: DELETE,
             height: DELETE,
             borderRadius: `${theme.karnama.radius.md}px`,
             color: theme.karnama.semantic['text/secondary'],
+            // Folded: no width, and the row's 8 before it taken back.
+            ...(selected ? {} : { width: 0, marginInlineStart: `-${spacing.xs}px`, opacity: 0, pointerEvents: 'none' }),
             '&:hover': { backgroundColor: theme.karnama.semantic['bg/surface-secondary'], color: theme.karnama.semantic['text/error'] },
             '&.Mui-focusVisible::after': {
               content: '""',
