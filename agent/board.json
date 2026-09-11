@@ -4159,12 +4159,14 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T03:07:02.115Z",
-      "updatedAt": "2026-09-11T20:49:58.105Z"
+      "updatedAt": "2026-09-11T20:58:17.773Z",
+      "evidence": "Per-locale catalog instances replace activating the singleton in render; the Select takes the standard variant; react-warnings.setup.ts fails a test that makes React warn, and fails LanguageOnAPhone with the old activate planted back; unit 993 of 993 and storybook 265 of 267 under it, the two failures KN-365's flakes; in the real app English survives a reload.",
+      "closedAt": "2026-09-11T20:58:17.773Z"
     },
     {
       "id": "KN-135",
