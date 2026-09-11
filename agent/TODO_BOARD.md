@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 145 of 382 tasks done · 324 of 823 points.
+Project **KarNama** · 145 of 383 tasks done · 324 of 824 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-341` The full Contact Card's checkbox is reached only by Shift+Tab, after the name** (high, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-341` | The full Contact Card's checkbox is reached only by Shift+Tab, after the name | high | 1 | web | none | Tab from before the card reaches the checkbox, then the name, then the delete, in that order, with the row still keeping its 30 and the name still moving by 28, and a story tabs through them. |
 
 ## Blocked (4)
 
@@ -24,7 +30,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-341` | The full Contact Card's checkbox is reached only by Shift+Tab, after the name | high | 1 | web | none | Tab from before the card reaches the checkbox, then the name, then the delete, in that order, with the row still keeping its 30 and the name still moving by 28, and a story tabs through them. |
 | `KN-342` | A contact with no role draws an empty role line and its divider | high | 1 | web | none | Role is optional in the card's type, the role line and its divider are left out when there is neither role nor company, and a story shows a name-only contact. |
 | `KN-347` | The Contact Modal wipes what is typed when its parent passes a fresh copy of the record | high | 1 | web | none | The form resets on opening and on a change of the record's identity, an id, not on a new object with the same contents, and a story rerenders the parent mid-typing and keeps the text. |
 | `KN-351` | The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn | high | 1 | web | none | The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must. |
@@ -227,6 +232,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-379` | BlankName reads the console before the Icon Button's report effect is sure to have run outside the test runner | low | 1 | web | none | BlankName waits for the report with waitFor before asserting it, and passes in the published Storybook's interaction panel as well as under Vitest. |
 | `KN-381` | The Type story proves Vazirmatn's faces are loaded, not that any text is drawn in them | low | 1 | web | none | A story shows text drawn in Vazirmatn by a measurement that differs from the same text in the fallback family, in Persian and in Latin, and fails with the face removed. |
 | `KN-382` | Storybook waits for Vazirmatn's Persian and Latin faces but not its extended Latin one | low | 1 | web | none | The preview waits for the extended Latin face too, and the Type story finds all three Vazirmatn faces loaded. |
+| `KN-383` | The Change Status modal opened on a status its list does not hold focuses its bare panel and confirms that status unchanged | low | 1 | web | none | Opened on a status its list does not hold, the Change Status modal puts focus on the first status and Confirm stays disabled until one is chosen, and a story renders the case. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4389,6 +4395,8 @@ CHILD OF KN-020, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter.
 
+**Roasts.** round 1 scored 6.5 with 0 critical(s)
+
 ### `KN-338` The Status Picker's add chip is a child of its radio group
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -4424,7 +4432,7 @@ Found by running npm test on 2026-09-11 after KN-020: all 904 tests pass, but li
 
 ### `KN-341` The full Contact Card's checkbox is reached only by Shift+Tab, after the name
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-026, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-026 roast. The checkbox and delete are display none until the card is hovered, holds focus, or is selected, so Tab from before the card lands on the name first; that reveals the checkbox, which sits before the name, so only Shift+Tab reaches it, and Tab goes on to the delete.
@@ -4883,4 +4891,15 @@ CHILD OF KN-322, recorded in prose because board.json cannot express parent_task
 **Why.** Names in the product are the user's, and a company or a person's name in Polish, Czech or Turkish is extended Latin.
 
 **Exit condition.** The preview waits for the extended Latin face too, and the Type story finds all three Vazirmatn faces loaded.
+
+### `KN-383` The Change Status modal opened on a status its list does not hold focuses its bare panel and confirms that status unchanged
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-020, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-337 roast. When the job's status is not among the statuses offered, the Status Picker checks no radio, so autoFocus lands on none and the Dialog's trap focuses its panel, and Confirm hands the same unknown id back. DESIGN.md disables deleting a status while its column holds postings, so the product's rules never reach this; inconsistent data, or another device deleting the status between loads, would.
+
+**Why.** A keyboard user should land on a choice whatever the data says, and Confirm should never hand over a status the board no longer has.
+
+**Exit condition.** Opened on a status its list does not hold, the Change Status modal puts focus on the first status and Confirm stays disabled until one is chosen, and a story renders the case.
 

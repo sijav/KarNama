@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 383,
+  "nextId": 384,
   "tasks": [
     {
       "id": "KN-001",
@@ -8964,7 +8964,23 @@
       "parent": [],
       "status": "done",
       "exit": "The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-337-round-1.2026-09-11T19-30-19-880Z.md",
+          "filed": [
+            "KN-383"
+          ],
+          "cardDigest": "51e7348faa13ebcb8df7b1174bc804c1ddd3d0789fa358738755a785228d0985",
+          "head": "159bfa64d8b9d1f4c97c4815a68de394ef5061da",
+          "reviewerScore": 4.5,
+          "reviewerCriticals": 1,
+          "dismissed": "Its major is KN-364, already filed at high, which the modal's Confirm step narrows but was never KN-337's to fix. Its critical needs a job whose status the list lacks, which DESIGN.md's rule that a status cannot be deleted while its column holds postings keeps out of reach; filed low as KN-383 under the owner's rule that a finding on a built component is high or lower.",
+          "at": "2026-09-11T19:34:01.366Z"
+        }
+      ],
       "notes": [
         "2026-09-11: the Change Status modal now exists, KN-028; the file's job modal opens it from the Status Control, 377:6244, which would make the control's popup a real named dialog."
       ],
@@ -9030,11 +9046,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Tab from before the card reaches the checkbox, then the name, then the delete, in that order, with the row still keeping its 30 and the name still moving by 28, and a story tabs through them.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T15:05:28.397Z"
+      "createdAt": "2026-09-11T15:05:28.397Z",
+      "updatedAt": "2026-09-11T19:30:29.332Z"
     },
     {
       "id": "KN-342",
@@ -9378,8 +9395,11 @@
       "status": "backlog",
       "exit": "Save sends the status last chosen in the header, or none at all, and a story changes the status and saves before the job prop changes, and sees the new status or no status in onSave.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-11T17:28:38.606Z"
+      "notes": [
+        "2026-09-11, the KN-337 roast: still reproducible after KN-337, which made the header's Status Control confirm in the Change Status modal; Confirm then Save before the parent passes a new job still saves job.draft.status, the old one. The confirmation step narrows the window only."
+      ],
+      "createdAt": "2026-09-11T17:28:38.606Z",
+      "updatedAt": "2026-09-11T19:34:01.498Z"
     },
     {
       "id": "KN-365",
@@ -9658,6 +9678,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T19:27:33.662Z"
+    },
+    {
+      "id": "KN-383",
+      "title": "The Change Status modal opened on a status its list does not hold focuses its bare panel and confirms that status unchanged",
+      "desc": "CHILD OF KN-020, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-337 roast. When the job's status is not among the statuses offered, the Status Picker checks no radio, so autoFocus lands on none and the Dialog's trap focuses its panel, and Confirm hands the same unknown id back. DESIGN.md disables deleting a status while its column holds postings, so the product's rules never reach this; inconsistent data, or another device deleting the status between loads, would.",
+      "why": "A keyboard user should land on a choice whatever the data says, and Confirm should never hand over a status the board no longer has.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Opened on a status its list does not hold, the Change Status modal puts focus on the first status and Confirm stays disabled until one is chosen, and a story renders the case.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T19:34:01.238Z"
     }
   ]
 }
