@@ -162,4 +162,5 @@ export const messages: Record<string, string> = {
   'Choose file': 'انتخاب فایل',
   'KB': 'کیلوبایت',
   'MB': 'مگابایت',
+  'The Language toolbar could not be read, so this page is in Persian until the toolbar is changed.': 'زبانِ نوار ابزار Language خوانده نشد، پس این صفحه تا وقتی نوار ابزار عوض نشود فارسی است.',
 }

@@ -159,4 +159,5 @@ export const messages: Record<string, string> = {
   'Choose file': 'Choose file',
   'KB': 'KB',
   'MB': 'MB',
+  'The Language toolbar could not be read, so this page is in Persian until the toolbar is changed.': 'The Language toolbar could not be read, so this page is in Persian until the toolbar is changed.',
 }

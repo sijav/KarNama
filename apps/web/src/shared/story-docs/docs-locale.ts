@@ -12,37 +12,51 @@ import { isLocale, type Locale } from '../../i18n'
 
 /** The `locale` global, or null when it is absent or not one of ours. */
 export const localeIn = (globals: unknown): Locale | null => {
-  if (typeof globals !== 'object' || globals === null) return null
-  const value = (globals as Record<string, unknown>).locale
-  return typeof value === 'string' && isLocale(value) ? value : null
+  if (typeof globals !== 'object' || globals === null || !('locale' in globals)) return null
+  const { locale } = globals
+  return typeof locale === 'string' && isLocale(locale) ? locale : null
+}
+
+/** The two calls of Storybook's published `DocsContextProps` this reads. */
+export interface DocsContextCalls<TStory> {
+  storyById: () => TStory
+  getStoryContext: (story: TStory) => unknown
 }
 
 /**
- * Where the docs context keeps the current globals.
+ * The toolbar's language when a Docs page mounts, or null when it cannot be read.
  *
- * Storybook publishes no documented accessor for this, so the shape is probed
- * rather than asserted: every candidate is checked and the first that yields one
- * of our locales wins. When none does, the caller falls back to the product
- * default and the toolbar still drives the page from its first change onwards,
- * which degrades to slightly-wrong-until-touched instead of crashing.
+ * The page mounts after the event that set the globals, so the channel cannot
+ * supply the first value. It comes from the docs context's own calls instead,
+ * `storyById` for the file's primary story and `getStoryContext` for that
+ * story's context, both on the published interface, KN-203; this used to probe
+ * four guessed shapes of Storybook's internals, and a Storybook that moved all
+ * four would have shown Persian with nothing said.
  *
- * The initial value has to come from somewhere like this because the page mounts
- * AFTER the event that set the globals, so the channel cannot supply it.
+ * `userGlobals`, not `globals`: the context's `globals` have the primary story's
+ * own laid over the toolbar's, and a page whose first story pins Persian then
+ * reads Persian whatever the toolbar says, which the running Storybook showed.
+ * `userGlobals` is in the declared return of Storybook's `DocsContext` class but
+ * not of the interface, so it is read by shape; a Storybook without it makes
+ * this null, and the page says so rather than guessing.
  */
-export const localeInContext = (context: unknown): Locale | null => {
-  if (typeof context !== 'object' || context === null) return null
-  const seen = context as Record<string, unknown>
-  const nested = (value: unknown, key: string): unknown =>
-    typeof value === 'object' && value !== null ? (value as Record<string, unknown>)[key] : undefined
-  const candidates = [
-    seen.globals,
-    nested(seen.store, 'globals'),
-    nested(nested(seen.store, 'userGlobals'), 'globals'),
-    nested(seen.userGlobals, 'globals'),
-  ]
-  for (const candidate of candidates) {
-    const found = localeIn(candidate)
-    if (found) return found
+export const localeInContext = <TStory>(context: DocsContextCalls<TStory>): Locale | null => {
+  let story: unknown
+  try {
+    story = context.getStoryContext(context.storyById())
+  } catch {
+    // `storyById` throws for a page with no CSF file attached.
+    return null
   }
-  return null
+  if (typeof story !== 'object' || story === null || !('userGlobals' in story)) return null
+  return localeIn(story.userGlobals)
 }
+
+/**
+ * The toolbar's language from a `globalsUpdated` event, or null.
+ *
+ * Its `userGlobals`, for the reason above; they are in Storybook's
+ * `GlobalsUpdatedPayload`.
+ */
+export const localeInEvent = (event: unknown): Locale | null =>
+  typeof event === 'object' && event !== null && 'userGlobals' in event ? localeIn(event.userGlobals) : null

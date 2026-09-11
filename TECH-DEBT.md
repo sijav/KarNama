@@ -528,3 +528,27 @@ and a machine that needs a minute for a one-second start fails it too.
 or check a schema, or a start of it stays under a second on the busiest gate
 run, give the hook its default budget back, delete `HUNG_AFTER_MS` and this
 entry, and the file still passes in a full `npm test` in apps/api.
+
+## 21. The Docs page reads `userGlobals`, which Storybook declares on its class and not on its interface
+
+**What.** `apps/web/src/shared/story-docs/docs-locale.ts` asks the docs context
+for the primary story's context through `storyById` and `getStoryContext`, both
+on Storybook's published `DocsContextProps`, and reads the toolbar's language
+from that context's `userGlobals`, by shape, KN-203.
+
+**Why it is like that.** Storybook publishes no accessor for a Docs page's
+current globals. The context's typed `globals` have the primary story's own laid
+over the toolbar's, so a page whose first story pins Persian read Persian
+whatever the toolbar said, which the running Storybook 10.5.10 showed on the
+Language Switch page. `userGlobals` holds the toolbar's value; Storybook's
+`DocsContext` class declares it in `getStoryContext`'s return, and
+`GlobalsUpdatedPayload` carries it, but the interface's return type does not.
+
+**What it costs.** A Storybook that drops the field makes the read null. The
+page then says, in both languages, that the toolbar could not be read and it is
+in Persian, rather than showing Persian with nothing said.
+
+**The check that retires this.** After a Storybook upgrade, look for a published
+way to read a Docs page's globals, or `userGlobals` in `DocsContextProps`: read
+it typed, delete the shape check and this entry, and the Language Switch Docs
+page still follows the toolbar in both directions.

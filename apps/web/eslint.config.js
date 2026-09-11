@@ -85,9 +85,9 @@ const linguiOptions = {
     // it, ª, µ and º, through, KN-366. lingui-ignore.test.ts reads the plugin's
     // pattern as installed and holds both halves.
     '^(rtl|ltr|fa-IR|en-US)$',
-    // A Storybook preview-channel event name. An API string the docs page
-    // subscribes to, not something a person reads.
-    '^globalsUpdated$',
+    // The entry for `globalsUpdated`, the preview-channel event the docs page
+    // subscribes to, went with KN-203: the page takes Storybook's own
+    // GLOBALS_UPDATED constant, so no literal of it is left to exempt.
     // The two section headings of the story-docs markdown format, matched while
     // PARSING a file. Named rather than shape-matched, so this exempts the
     // parser's comparison and not every occurrence of the words.

@@ -1,6 +1,29 @@
 import { Controls, Markdown, Primary, Stories, Subtitle, Title, useOf } from '@storybook/addon-docs/blocks'
+import { directionFor, i18nFor, type Locale } from '../../i18n'
 import { storyDocFor } from './catalog'
 import { useDocsLocale } from './useDocsLocale'
+
+// English first: the reader this note is for is the one who asked for English
+// and got Persian, KN-203.
+const NOTE_ORDER: readonly Locale[] = ['en-US', 'fa-IR']
+
+/**
+ * Said on the page when the toolbar's language could not be read, in both
+ * languages, each in its own direction so the Persian line is not laid out
+ * inside an English paragraph.
+ */
+const UnreadLanguage = () => (
+  <div>
+    {NOTE_ORDER.map((each) => {
+      const i18n = i18nFor(each)
+      return (
+        <div key={each} lang={each} dir={directionFor(each)}>
+          <Markdown>{`> ${i18n._('The Language toolbar could not be read, so this page is in Persian until the toolbar is changed.')}`}</Markdown>
+        </div>
+      )
+    })}
+  </div>
+)
 
 /**
  * The Docs page for every story, in whichever language the toolbar is set to.
@@ -21,7 +44,7 @@ import { useDocsLocale } from './useDocsLocale'
  * blocks keep doing what they do, which is types, defaults and canvases.
  */
 export const DocsPage = () => {
-  const locale = useDocsLocale()
+  const { locale, known } = useDocsLocale()
   const resolved = useOf('meta', ['meta'])
   const title = resolved.preparedMeta.title
   const doc = storyDocFor(title, locale)
@@ -30,6 +53,7 @@ export const DocsPage = () => {
     <>
       <Title />
       <Subtitle />
+      {known ? null : <UnreadLanguage />}
       {doc ? (
         <Markdown>{doc.description}</Markdown>
       ) : (

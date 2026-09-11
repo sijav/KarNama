@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { localeIn, localeInContext } from './docs-locale'
+import { localeIn, localeInContext, localeInEvent } from './docs-locale'
 
 describe('localeIn', () => {
   it('reads one of our locales', () => {
@@ -25,28 +25,55 @@ describe('localeIn', () => {
   })
 })
 
+/** A docs context whose primary story's context is the one given. */
+const contextGiving = (storyContext: unknown) => ({
+  storyById: () => 'primary',
+  getStoryContext: (story: string) => (story === 'primary' ? storyContext : undefined),
+})
+
 describe('localeInContext', () => {
-  it.each([
-    ['globals directly on the context', { globals: { locale: 'en-US' } }],
-    ['globals under store', { store: { globals: { locale: 'en-US' } } }],
-    ['globals under store.userGlobals', { store: { userGlobals: { globals: { locale: 'en-US' } } } }],
-    ['globals under userGlobals', { userGlobals: { globals: { locale: 'en-US' } } }],
-  ])('finds the locale with %s', (_name, context) => {
-    expect(localeInContext(context)).toBe('en-US')
+  it("reads the primary story's userGlobals through storyById and getStoryContext", () => {
+    expect(localeInContext(contextGiving({ userGlobals: { locale: 'en-US' }, globals: { locale: 'en-US' } }))).toBe('en-US')
   })
 
-  it('takes the first candidate that yields a locale, ignoring earlier empty ones', () => {
-    expect(localeInContext({ globals: {}, store: { globals: { locale: 'fa-IR' } } })).toBe('fa-IR')
+  it("takes the toolbar's userGlobals over the globals a story pins", () => {
+    // KN-203, as the running Storybook showed it: the LanguageSwitch page with
+    // the toolbar on English, whose first story pins Persian.
+    expect(localeInContext(contextGiving({ userGlobals: { locale: 'en-US' }, globals: { locale: 'fa-IR' } }))).toBe('en-US')
+  })
+
+  it('is null when the page has no primary story to ask about', () => {
+    const noStory = {
+      storyById: (): string => {
+        throw new Error('no CSF file attached')
+      },
+      getStoryContext: () => ({ userGlobals: { locale: 'en-US' } }),
+    }
+    expect(localeInContext(noStory)).toBeNull()
   })
 
   it.each([
-    ['an empty object', {}],
+    ['a context without userGlobals', { globals: { locale: 'en-US' } }],
+    ['userGlobals holding no known locale', { userGlobals: { locale: 'de-DE' } }],
+    ['userGlobals that are not an object', { userGlobals: 3 }],
+    ['a context that is null', null],
+    ['a context that is a primitive', 7],
+  ])('is null for %s, which the page then says', (_name, storyContext) => {
+    expect(localeInContext(contextGiving(storyContext))).toBeNull()
+  })
+})
+
+describe('localeInEvent', () => {
+  it("reads a globalsUpdated event's userGlobals", () => {
+    expect(localeInEvent({ userGlobals: { locale: 'en-US' }, globals: { locale: 'fa-IR' } })).toBe('en-US')
+  })
+
+  it.each([
+    ['an event without userGlobals', { globals: { locale: 'en-US' } }],
+    ['userGlobals holding no known locale', { userGlobals: { locale: 'de-DE' } }],
+    ['no event', undefined],
     ['null', null],
-    ['a primitive', 7],
-    ['a store that is not an object', { store: 'nope' }],
-    ['a userGlobals that is not an object', { store: { userGlobals: 3 } }],
-    ['globals present but holding no known locale', { globals: { locale: 'de-DE' } }],
-  ])('is null for %s', (_name, context) => {
-    expect(localeInContext(context)).toBeNull()
+  ])('is null for %s', (_name, event) => {
+    expect(localeInEvent(event)).toBeNull()
   })
 })
