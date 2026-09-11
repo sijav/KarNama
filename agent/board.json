@@ -465,14 +465,16 @@
         "KN-006",
         "KN-007"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T12:08:57.808Z"
+      "updatedAt": "2026-09-11T12:16:04.406Z",
+      "evidence": "30 icons from node 239:44 exported into glyphs.json; Icon at 16/20/24 with a non-scaling 2px round stroke, text/secondary by default, colour roles or inherit, decorative unless named; glyphs.test.ts holds the set to DESIGN.md's thirty in order; the five stories and the Color Picker's pass; lint, tsc and docs guard clean; the grid seen in fa light and dark and the sizes in en.",
+      "closedAt": "2026-09-11T12:16:04.406Z"
     },
     {
       "id": "KN-009",
