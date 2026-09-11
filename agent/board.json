@@ -5786,7 +5786,7 @@
       "title": "The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag",
       "desc": "Found while working KN-095, by reading eslint-plugin-lingui 0.14.0 rather than by probing. The rule compiles every entry of the ignore option with new RegExp(item) and NO flags. The first entry in apps/web/eslint.config.js is '^[^\\\\p{L}]*$', meant as 'anything with no letter in it'. Without the u flag, \\p is not a Unicode property escape, it is a plain p, so the class excludes only the four characters p, {, L and }. Every string that contains none of those four is whitelisted before any other check runs. Proved with the plugin's own construction: 'Delete', 'Save', 'Cancel', 'Close', 'مصاحبه' and 'حذف وضعیت' are all whitelisted; 'Delete this application' is not, only because 'application' has a p. Every committed gate fixture happens to contain a p, which is the only reason the gate has ever looked like it worked. A probe with a pattern that means what it says found 82 strings in apps/web/src passing only because of this. About five are real untranslated copy: the health reason 'the API answered with nothing' (KN-130), the language names (KN-115), the Persian args of the FilterChip and Tooltip stories, and the story-docs fallback message. The rest are identifiers the rule now correctly sees and must be answered one class at a time: hex colours in tokens.ts, CSS and DOM selectors, Storybook control types and layout values, event names, import.meta.glob options, locale codes, SVG attribute values.",
       "why": "'Every user-facing string goes through lingui with an ENGLISH id' is the rule the whole i18n design rests on, and the gate that enforces it has been passing almost all copy since the day it was written: all of the Persian, and every English word without a p. Sixty-five component cards are about to be built on that guarantee, and each one would report a clean lint over untranslated labels. It also explains why three roasts in a row found the rule's exemptions too wide and none found this: every probe string they used contained a p.",
-      "severity": "high",
+      "severity": "critical",
       "points": 5,
       "area": "web",
       "parent": [],
@@ -5794,10 +5794,11 @@
       "exit": "The no-letter entry is replaced by one that works WITHOUT flags, since the plugin passes none, and fails closed: only digits, whitespace, punctuation and symbols are exempt, so a letter in any script is checked. 'Delete', 'Save', 'مصاحبه' and 'حذف وضعیت' each fail npm run lint in a committed fixture, as aria-label, as title and as JSX text, and the existing fixtures fail only on the string under test rather than also on a child like x. Every one of the 82 strings is either localised or exempted by a named, scoped rule with a reason, never by a value shape. A check compiles each ignore entry exactly as the plugin does, new RegExp(entry) with no flags, and fails if any entry whitelists a known copy string, and that check is proved by a mutation restoring the \\p{L} entry.",
       "roasts": [],
       "notes": [
-        "2026-09-10: held at high on the owner's order, 'finish the components first'. Its impact is critical, since it is the check on every component's copy, and it is held below the component cards ONLY so the selection law serves them first. Restore it to critical when the last component card closes. Until then, component copy goes through lingui by hand and every story asserts both languages."
+        "2026-09-10: held at high on the owner's order, 'finish the components first'. Its impact is critical, since it is the check on every component's copy, and it is held below the component cards ONLY so the selection law serves them first. Restore it to critical when the last component card closes. Until then, component copy goes through lingui by hand and every story asserts both languages.",
+        "2026-09-11: restored to critical now that the last component card, KN-030, has closed, as STATE.md held it: the components came first under the owner's rule of that day, and every string since went through lingui by hand around this bug."
       ],
       "createdAt": "2026-09-10T06:20:44.279Z",
-      "updatedAt": "2026-09-10T06:38:20.472Z"
+      "updatedAt": "2026-09-11T17:24:40.060Z"
     },
     {
       "id": "KN-215",
