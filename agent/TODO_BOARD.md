@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 127 of 343 tasks done · 266 of 775 points.
+Project **KarNama** · 127 of 346 tasks done · 266 of 779 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-031` Contact modal, add and edit** (critical, 5 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-031` | Contact modal, add and edit | critical | 5 | web | KN-005, KN-006, KN-007, KN-028, KN-011, KN-026 | Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route. |
 
 ## Blocked (2)
 
@@ -17,11 +23,10 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (212)
+## Backlog (214)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-031` | Contact modal, add and edit | critical | 5 | web | KN-005, KN-006, KN-007, KN-028, KN-011, KN-026 | Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route. |
 | `KN-060` | Kanban column component | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-015, KN-018 | The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is. |
 | `KN-015` | Card, desktop and mobile, with the status stripe | critical | 8 | web | KN-005, KN-006, KN-007, KN-010, KN-008, KN-062 | All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the title, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293. |
 | `KN-027` | Navigation: nav item, desktop sidebar, mobile tab bar, and the language switch | critical | 8 | web | KN-005, KN-006, KN-007, KN-008, KN-009 | The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added. |
@@ -65,6 +70,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-316` | The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input | high | 2 | web | none | A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4. |
 | `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
+| `KN-344` | Focus is lost when the Confirm modal's action removes the control that opened it | high | 2 | web | none | The shell takes a fallback for focus, used when the opener is gone, and a story deletes the opener and finds focus on the fallback. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | high | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
@@ -140,6 +146,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-336` | A sort change is read out twice, and the keyboard story never shows the new order on the control | medium | 1 | web | none | A change is read out once, by the focused control or by the status but not both, and a story holding the value in state shows the new order on the closed control. |
 | `KN-338` | The Status Picker's add chip is a child of its radio group | medium | 1 | web | none | The add chip is a sibling of the radio group in one wrapping row that still lays it out after the last choice, and a story finds it outside the group. |
 | `KN-343` | The compact Contact Card's mail is a button that assigns a location, not a mailto link | medium | 1 | web | none | The compact mail is an anchor with a mailto href styled as the Icon Button, and a story reads its href. |
+| `KN-345` | A modal given a blank title has no accessible name | medium | 1 | web | none | A blank title is refused, by the type or with a thrown error in development, and a story or test shows it. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -206,6 +213,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-333` | A Select option whose value is the empty string reads as nothing chosen | low | 1 | web | none | An option cannot have an empty value, by its type or by a check that says so, or an empty value renders as its option. |
 | `KN-334` | An edge-to-edge Select's menu is capped 32 short of the screen, narrower than its field | low | 1 | web | none | The menu is as wide as its field at any width the field takes, and a story at 390 edge to edge measures both. |
 | `KN-339` | StatusChoice is exported with no story of its own | low | 1 | web | none | StatusChoice is either internal to the picker or has a story showing Default, Hover and Selected from its own args. |
+| `KN-346` | The Change Status modal can confirm a status that is no longer offered | low | 1 | web | none | A pending choice that leaves the statuses goes back to the job's status, and a story removes it while open. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -731,6 +739,8 @@ The modal shell with focus trap and Escape handling, Modal/Confirm at Figma node
 
 **Exit condition.** Both modals match Figma, focus is trapped and returns to the trigger on close, Escape closes, the backdrop click behaviour matches the design, and the dialog has an accessible name and is announced as a dialog.
 
+**Roasts.** round 1 scored 5.5 with 0 critical(s)
+
 ### `KN-029` Add and edit job modal, all six steps
 
 - **status** backlog · **severity** critical · **points** 8 · **area** web
@@ -755,7 +765,7 @@ The job detail modal at Figma node 210:276. The file draws four tab variants: Ta
 
 ### `KN-031` Contact modal, add and edit
 
-- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **status** in_progress · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-028, KN-011, KN-026
 
 Mode=Add and Mode=Edit from Figma node 270:152.
@@ -4379,4 +4389,37 @@ CHILD OF KN-026, recorded in prose because board.json cannot express parent_task
 **Why.** The exit asks that email be an actionable link, and a link is what a screen reader and a browser treat as one.
 
 **Exit condition.** The compact mail is an anchor with a mailto href styled as the Icon Button, and a story reads its href.
+
+### `KN-344` Focus is lost when the Confirm modal's action removes the control that opened it
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-028, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-028 roast. The shell leaves focus restoration to MUI, which calls focus() on the element that had it when the modal opened. Deleting a job opportunity from its card's menu removes that card, so the saved element is detached and focus lands on the page body, with no fallback.
+
+**Why.** Deleting is the flow the Confirm modal exists for, and a keyboard user who deletes must land somewhere sensible, the next card or the list.
+
+**Exit condition.** The shell takes a fallback for focus, used when the opener is gone, and a story deletes the opener and finds focus on the fallback.
+
+### `KN-345` A modal given a blank title has no accessible name
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-028, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-028 roast. The title is an unrestricted string and labels the dialog through aria-labelledby, so an empty or blank title leaves the dialog unnamed.
+
+**Why.** The exit asks for a named dialog, and the shell is reusable, so its type or its render should refuse what cannot name it.
+
+**Exit condition.** A blank title is refused, by the type or with a thrown error in development, and a story or test shows it.
+
+### `KN-346` The Change Status modal can confirm a status that is no longer offered
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-028, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-028 roast. Its pending choice resets when it opens or the job's status changes, not when the statuses do, so a status removed while the modal is open can still be confirmed with no radio showing it.
+
+**Why.** Confirming an id that no longer exists is a write the server must reject or, worse, accept.
+
+**Exit condition.** A pending choice that leaves the statuses goes back to the job's status, and a story removes it while open.
 

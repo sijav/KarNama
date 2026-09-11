@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 344,
+  "nextId": 347,
   "tasks": [
     {
       "id": "KN-001",
@@ -1271,7 +1271,25 @@
       ],
       "status": "done",
       "exit": "Both modals match Figma, focus is trapped and returns to the trigger on close, Escape closes, the backdrop click behaviour matches the design, and the dialog has an accessible name and is announced as a dialog.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5.5,
+          "criticals": 0,
+          "file": "agent/roasts/KN-028-round-1.2026-09-11T15-12-27-192Z.md",
+          "filed": [
+            "KN-344",
+            "KN-345",
+            "KN-346"
+          ],
+          "cardDigest": "02489410f1642375d3c68be045398f671aca94766abf6992459f25b195f35f10",
+          "head": "0c9eff1f4861f6843eac232faa6092e164da5e49",
+          "reviewerScore": 4.5,
+          "reviewerCriticals": 2,
+          "dismissed": "The two criticals and the major are filed at high, medium and low under the owner's rule of 2026-09-11. The minor about prose in the implementation is dismissed as the codebase's practice, KN-207 being about prop documentation. The score rises from 4.5 because the roast confirms autoFocus inside the trap, the reset across openings, and the scrim's exception.",
+          "at": "2026-09-11T15:16:04.325Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -1348,14 +1366,14 @@
         "KN-011",
         "KN-026"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:19.616Z"
+      "updatedAt": "2026-09-11T15:12:35.701Z"
     },
     {
       "id": "KN-032",
@@ -8707,6 +8725,51 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T15:05:28.708Z"
+    },
+    {
+      "id": "KN-344",
+      "title": "Focus is lost when the Confirm modal's action removes the control that opened it",
+      "desc": "CHILD OF KN-028, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-028 roast. The shell leaves focus restoration to MUI, which calls focus() on the element that had it when the modal opened. Deleting a job opportunity from its card's menu removes that card, so the saved element is detached and focus lands on the page body, with no fallback.",
+      "why": "Deleting is the flow the Confirm modal exists for, and a keyboard user who deletes must land somewhere sensible, the next card or the list.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The shell takes a fallback for focus, used when the opener is gone, and a story deletes the opener and finds focus on the fallback.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T15:16:03.732Z"
+    },
+    {
+      "id": "KN-345",
+      "title": "A modal given a blank title has no accessible name",
+      "desc": "CHILD OF KN-028, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-028 roast. The title is an unrestricted string and labels the dialog through aria-labelledby, so an empty or blank title leaves the dialog unnamed.",
+      "why": "The exit asks for a named dialog, and the shell is reusable, so its type or its render should refuse what cannot name it.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A blank title is refused, by the type or with a thrown error in development, and a story or test shows it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T15:16:03.932Z"
+    },
+    {
+      "id": "KN-346",
+      "title": "The Change Status modal can confirm a status that is no longer offered",
+      "desc": "CHILD OF KN-028, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-028 roast. Its pending choice resets when it opens or the job's status changes, not when the statuses do, so a status removed while the modal is open can still be confirmed with no radio showing it.",
+      "why": "Confirming an id that no longer exists is a write the server must reject or, worse, accept.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A pending choice that leaves the statuses goes back to the job's status, and a story removes it while open.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T15:16:04.119Z"
     }
   ]
 }
