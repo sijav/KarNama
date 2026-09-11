@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 393,
+  "nextId": 394,
   "tasks": [
     {
       "id": "KN-001",
@@ -1830,9 +1830,11 @@
       "status": "backlog",
       "exit": "An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-11, from the KN-364 roast: the Job Modal's onSave carries no status since KN-364, and the status reaches the page only through onStatusChange. The page must save the fields as a patch, or merge the status from its own confirmed state; a whole record built from a job the page has not yet updated after a status change would write the old status back."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T03:32:14.522Z"
+      "updatedAt": "2026-09-11T20:12:04.857Z"
     },
     {
       "id": "KN-046",
@@ -9529,7 +9531,23 @@
       "parent": [],
       "status": "done",
       "exit": "Save sends the status last chosen in the header, or none at all, and a story changes the status and saves before the job prop changes, and sees the new status or no status in onSave.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-364-round-1.2026-09-11T20-06-59-883Z.md",
+          "filed": [
+            "KN-393"
+          ],
+          "cardDigest": "0f66241207288e776bcf83a2bfc16aecd9ad96901859dfd9fb3565922824c072",
+          "head": "69690f03c3163c07f71fc4bcbd5df28c73169a28",
+          "reviewerScore": 5.5,
+          "reviewerCriticals": 0,
+          "dismissed": "Its first major, a whole-record page merging a stale record, is the page's save contract, not the component's: noted on KN-045, the card that wires the Job Modal, rather than filed twice. The second is KN-393, low.",
+          "at": "2026-09-11T20:12:17.981Z"
+        }
+      ],
       "notes": [
         "2026-09-11, the KN-337 roast: still reproducible after KN-337, which made the header's Status Control confirm in the Change Status modal; Confirm then Save before the parent passes a new job still saves job.draft.status, the old one. The confirmation step narrows the window only."
       ],
@@ -9969,6 +9987,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T20:07:41.542Z"
+    },
+    {
+      "id": "KN-393",
+      "title": "The Job Modal's stories prove Save omits the old status, not that it carries no status at all",
+      "desc": "CHILD OF KN-030, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-364 roast. ChangeStatus and Note assert onSave was not called with the job's old status, so a Save that sent any other status, the new one or a wrong one, would pass. JobSaved omits the status in its type, but a value typed as JobDraft spread into it would still carry one at run time. storybook/test's mocked() reads the last call's argument, so the story can ask for the key itself.",
+      "why": "KN-364 chose no status at all; a check that only rules out one value cannot tell that from a status sneaking back.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "ChangeStatus and Note read onSave's last argument through mocked() and find no status key in it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T20:12:17.852Z"
     }
   ]
 }
