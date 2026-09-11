@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 115 of 309 tasks done · 220 of 734 points.
+Project **KarNama** · 116 of 309 tasks done · 222 of 734 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-014` Icon button, 2 tones by 3 states** (critical, 2 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
+**Next up: `KN-016` Search bar, 3 states** (critical, 2 pt, web)
 
 ## Blocked (2)
 
@@ -217,7 +211,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (115)
+## Done (116)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -258,6 +252,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-292` | An Input icon given a blank string, a space or a zero-width character, still draws a slot with nothing in it | critical | 1 | web | none | An Input given a string icon that isBlank holds for, spaces, a line break, a zero-width space or a joiner, draws no slot and its text box sits 16 from that edge; IconsTurnedOff covers a space and a zero-width space among its cases and asserts no slot, and a mutation dropping the blank check fails it by name; and the story docs say the direct values draw no slot, while an element that renders nothing leaves a slot that collapses and takes no room. |
 | `KN-297` | The Input's text measurement takes its direction from the input, so a placeholder with its own direction moves the text without failing a check | critical | 1 | web | none | textInsets and KN-266's production check refuse by name unicode-bidi plaintext on the input, which lets the content set the direction, a writing mode other than horizontal-tb on the input, and an input whose direction is not the field's; unicode-bidi plaintext on the input, a vertical writing mode on it, and the input set to the other direction, each present in every state, fail Default and the production check by name; and KN-283's verifier still passes. |
 | `KN-298` | An Input's error replaced by another while the field has focus is not shown to reach its live region | critical | 1 | web | none | A story replaces one error with another on a focused Input, focus kept, and asserts the same alert holds the second error and the field is described by it; KN-286's verifier reads Chromium's accessibility tree after the replacement, the alert holding the second error, in both languages; and KN-286's plan says what is tested and that no check here hears a screen reader. |
+| `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-058` | Run verify commands without a shell | critical | 2 | agent | KN-001 | A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done. |
 | `KN-065` | move done must require a verify command | critical | 2 | agent | KN-001 | move done refuses a task with no verify command, the message names KN-054 as where the backfill happens, a task with a deliberately failing verify still cannot close, and validate reports the count of tasks lacking one. |
 | `KN-088` | Prove the REAL test project reports a failure, not a separate config | critical | 2 | agent | KN-003 | The planted broken test is detected through the configuration npm test uses, and a mutation that empties the real unit project include makes agent/scripts/verify/KN-003.mjs fail rather than pass. |
@@ -513,7 +508,7 @@ Unchecked, Checked, Indeterminate, Hover and Disabled from Figma node 204:11, at
 
 ### `KN-014` Icon button, 2 tones by 3 states
 
-- **status** in_progress · **severity** critical · **points** 2 · **area** web
+- **status** done · **severity** critical · **points** 2 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-008
 
 Neutral and Danger tones, each with Default, Hover and Disabled, from Figma node 460:672, at 32 by 32 wrapping a 20px icon.
