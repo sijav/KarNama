@@ -10501,11 +10501,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "done",
       "exit": "documentedNames is built from the token tables' name column and the spacing block alone, so a code span in the component notes is not a key; every key in tokens.ts still passes; a planted key documented only in the prose of section 1 fails the guard, and the positive control still names bg/page, custom-4, heading/l and 3xl.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T22:30:59.682Z"
+      "createdAt": "2026-09-11T22:30:59.682Z",
+      "updatedAt": "2026-09-11T22:32:50.912Z",
+      "evidence": "documentedNames is built from the first cell of each table row in DESIGN.md's Tokens section when that cell is one code span, plus the spacing block's words: 47 names, all tokens. currentcolor, graytext, log-out and the deleted body/small, all written in the section's prose, are not among them, asserted; a planted 'body/small' key fails the guard; 53 tests in the file pass",
+      "closedAt": "2026-09-11T22:32:50.912Z"
     }
   ]
 }

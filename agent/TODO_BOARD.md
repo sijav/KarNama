@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 167 of 409 tasks done · 356 of 862 points.
+Project **KarNama** · 168 of 409 tasks done · 357 of 862 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-409` The token guard's allowed names are every code span in DESIGN.md's Tokens section, not the token tables' own names** (high, 1 pt, web)
+**Next up: `KN-296` An Input icon given as an array, a fragment or a component that renders only blank text still draws an empty slot** (high, 2 pt, web)
 
 ## Blocked (5)
 
@@ -20,12 +20,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (235)
+## Backlog (234)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-409` | The token guard's allowed names are every code span in DESIGN.md's Tokens section, not the token tables' own names | high | 1 | web | none | documentedNames is built from the token tables' name column and the spacing block alone, so a code span in the component notes is not a key; every key in tokens.ts still passes; a planted key documented only in the prose of section 1 fails the guard, and the positive control still names bg/page, custom-4, heading/l and 3xl. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-296` | An Input icon given as an array, a fragment or a component that renders only blank text still draws an empty slot | high | 2 | web | none | An Input whose icon renders only blank text, through an array, a fragment or a component, draws no slot that takes room and its text box sits 16 from that edge, decided from what the slot rendered rather than from the prop; IconsTurnedOff covers an array of a space, a fragment holding a zero-width space and a component returning a space, each asserting a slot that takes no room; a mutation removing the rendered check fails it by name; and the comment on drawn() says nothing to read, with the lone-mark case named as deliberate. |
 | `KN-305` | The story fixtures have no seeded board and no job opportunity in three of the nine statuses | high | 2 | web | none | Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages. |
@@ -260,7 +259,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (167)
+## Done (168)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -407,6 +406,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-369` | KN-260's pointer park sat at (0,0), on an open modal's backdrop, and was believed to repeat a Storybook reset that never runs here | high | 1 | web | none | The suite's pointer park moves the pointer off the page, not to its corner, and says why it exists; whether Storybook's own resetMousePosition runs in this repository is established from the resolved Vitest config, and TECH-DEBT says what retires the park; a whole storybook run passes but for KN-365's flakes. |
 | `KN-373` | In Persian the Status Picker's left and right arrows move against its choices in Safari, as the Color Picker's did | high | 1 | web | none | The Status Picker's radio group takes arrowsAcross, and a story presses real left and right arrows in both languages through vitest/browser, landing on the choice beside the chosen one on screen and choosing it, while an arrow pressed on the New status button moves nothing. |
 | `KN-391` | A step, source or draft change during the add modal's reading lets the old answer overwrite the restarted flow | high | 1 | web | none | A restart from changed props drops any reading in flight, by the flow the answer belongs to rather than a ref written during render, so a late answer applies only to the flow that started it; a story changes the step while the loading panel waits and resolves the reading after, and the new step stays. |
+| `KN-409` | The token guard's allowed names are every code span in DESIGN.md's Tokens section, not the token tables' own names | high | 1 | web | none | documentedNames is built from the token tables' name column and the spacing block alone, so a code span in the component notes is not a key; every key in tokens.ts still passes; a planted key documented only in the prose of section 1 fails the guard, and the positive control still names bg/page, custom-4, heading/l and 3xl. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -5243,7 +5243,7 @@ CHILD OF KN-007, recorded in prose because board.json cannot express parent_task
 
 ### `KN-409` The token guard's allowed names are every code span in DESIGN.md's Tokens section, not the token tables' own names
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-227, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-234 roast, judged real. KN-234 replaced the key shape with a set of names read from DESIGN.md, and the slice it reads runs from "## 1. Tokens" to "## 2. Component families", which is lines 41 to 837: the whole of the design notes for every component, not the token tables. So every inline code span in all of it is an allowed key once it fits the name shape, Elevation/Card as elevation/card among them, and a prose edit anywhere in those eight hundred lines can authorise a token-shaped key. The tighter rule is there to be read: the name column of the token tables, the first cell of each row when it is one code span, plus the words of the spacing, radius and icon block.
