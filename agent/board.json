@@ -8277,12 +8277,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "In Persian and in English the left and right arrows move to the swatch that sits in that direction and choose it, established by where the focused swatch lands on screen after a real key press, and up and down still move through the order; a story presses both arrows in both languages.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T11:56:11.153Z",
-      "updatedAt": "2026-09-11T18:23:27.332Z"
+      "updatedAt": "2026-09-11T18:42:22.125Z",
+      "evidence": "Real arrow keys through vitest/browser: in fa-IR and en-US the left arrow lands on the swatch 8 to the left in the same row, the right on the one 8 to the right, up and down move through the order, the row took left and right; a planted synthetic walk fails the Persian story; acrossTo unit tested; looked at in all four combinations.",
+      "closedAt": "2026-09-11T18:42:22.125Z"
     },
     {
       "id": "KN-302",
