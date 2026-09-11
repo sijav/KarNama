@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 121 of 329 tasks done · 238 of 759 points.
+Project **KarNama** · 121 of 331 tasks done · 238 of 762 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-012` Select, option row and options menu** (critical, 5 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
 
 ## Blocked (2)
 
@@ -17,12 +23,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (204)
+## Backlog (205)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-024` | Sort control | critical | 3 | web | KN-005, KN-006, KN-007, KN-018 | Three states match Figma, the four permitted options are the only ones offered, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced. |
-| `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
 | `KN-018` | Menu and menu item | critical | 5 | web | KN-005, KN-006, KN-007, KN-008 | All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone. |
 | `KN-020` | Status choice, status picker and status control | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-018, KN-019 | All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own. |
 | `KN-026` | Contact card, full and compact | critical | 5 | web | KN-005, KN-006, KN-007, KN-008, KN-014, KN-062 | Both layouts and all three states match Figma, every field the design draws is present, long values truncate rather than reflow the card, and email and phone are actionable links. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the name, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293. |
@@ -66,6 +71,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-310` | The Icon Button cannot be a Tooltip's trigger: it forwards no ref and drops the props a Tooltip injects | high | 2 | web | none | A Tooltip wrapped round an Icon Button shows on hover and on focus and describes the button, the ref and the injected props reaching the button; a story composes them and asserts aria-describedby names the tooltip. |
 | `KN-315` | The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one | high | 2 | web | none | The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them. |
 | `KN-316` | The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input | high | 2 | web | none | A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4. |
+| `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | high | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
@@ -135,6 +141,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-325` | A Loading State whose startedAt moves past fifteen seconds shows the reading line for a render first | medium | 1 | web | none | A startedAt already past fifteen seconds shows the slow line on its first render, whether mounted with it or changed to it, and a story changes it while mounted. |
 | `KN-326` | The Loading State's first line is not reliably announced, since its status region mounts already holding it | medium | 1 | web | none | The status region is in the page before its first line is written, so the first line is a change, and a story shows the region empty when it mounts and filled after. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
+| `KN-331` | A Jobs Bulk Action Bar given no onSelectAll or onChangeStatus silently drops the file's buttons | medium | 1 | web | none | A Jobs bar cannot be written without both callbacks, by its type or by two components, and the docs guard still reads every prop. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -506,7 +513,7 @@ Text input with Default, Filled, Focus, Error, Disabled and Hover, from Figma no
 
 ### `KN-012` Select, option row and options menu
 
-- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **status** in_progress · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007
 
 Select with Default, Filled, Focus, Disabled and Open from node 183:26, Option Row with Default, Hover, Selected and Disabled from 408:465, and the popover at 408:487. Includes the two domain selects the file draws, employment type and job level.
@@ -671,6 +678,8 @@ Type=Jobs and Type=Contacts from Figma node 401:436, appearing when a selection 
 **Why.** Managing an archive of hundreds means acting on many at once. Without it, cleaning up a stale search means opening every card.
 
 **Exit condition.** Both types match Figma, the bar appears only when at least one row is selected, it reports the selection count, and it is reachable by keyboard when it appears rather than trapping focus behind the list.
+
+**Roasts.** round 1 scored 5 with 0 critical(s)
 
 ### `KN-026` Contact card, full and compact
 
@@ -4199,4 +4208,26 @@ Found while building KN-025. Node 205:18's count reads «۲ آگهی انتخا�
 **Why.** The rule is the file's own and says without exception, and the next reader of the component will see the file and the code disagree.
 
 **Exit condition.** The file's count reads «فرصت شغلی», or the owner exempts it and the code follows.
+
+### `KN-330` The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-025, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-025 roast. The contract is that the page renders the bar before the list, which helps only when Tab starts above the list. A keyboard user selects a card while focus is on it, deep in the list; the bar mounts before the list, so it is behind focus and a forward Tab carries on through the cards. ReachedBeforeTheList tabs from the top of the page with nothing selected by keyboard, so it proves only the order.
+
+**Why.** The exit asks that the bar be reachable by keyboard when it appears rather than behind the list, and selecting by keyboard is exactly when it appears.
+
+**Exit condition.** A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar.
+
+### `KN-331` A Jobs Bulk Action Bar given no onSelectAll or onChangeStatus silently drops the file's buttons
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-025, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-025 roast. Both callbacks are optional so the Contacts type need not pass them, and the Jobs type draws each button only when its callback is given, so a Jobs bar missing one draws a bar the file does not, with no warning. react-docgen reads only the props common to a union, which is why the type is not discriminated.
+
+**Why.** A bar that quietly loses Change status looks finished and is not, and the next screen to use it is the board.
+
+**Exit condition.** A Jobs bar cannot be written without both callbacks, by its type or by two components, and the docs guard still reads every prop.
 

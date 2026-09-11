@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 330,
+  "nextId": 332,
   "tasks": [
     {
       "id": "KN-001",
@@ -634,14 +634,14 @@
         "KN-006",
         "KN-007"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:17.924Z"
+      "updatedAt": "2026-09-11T13:44:38.777Z"
     },
     {
       "id": "KN-013",
@@ -1082,7 +1082,24 @@
       ],
       "status": "done",
       "exit": "Both types match Figma, the bar appears only when at least one row is selected, it reports the selection count, and it is reachable by keyboard when it appears rather than trapping focus behind the list.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "agent/roasts/KN-025-round-1.2026-09-11T13-44-27-187Z.md",
+          "filed": [
+            "KN-330",
+            "KN-331"
+          ],
+          "cardDigest": "b7a635e810e7dbb61fcd8f1c078e9e2f6309cd35838da473f179eca29a28a7f8",
+          "head": "6a1af8dc7b45d80103b12f6dc2767f9b49a9e717",
+          "reviewerScore": 4,
+          "reviewerCriticals": 3,
+          "dismissed": "The mobile critical is KN-328: the file's phone bar holds 448 in 358 and hangs its close and count outside it, so matching it is not a choice, and the wrap is interim until the owner settles it. The keyboard and callback criticals are filed at high and medium under the owner's rule of 2026-09-11. The minor about comments is dismissed: the markdown rule is for prop documentation, KN-207, and the implementation's comments are the codebase's practice. The score rises from 4.0 because the roast confirms the announcement pattern is sound and both directions and the plural are right.",
+          "at": "2026-09-11T13:48:19.581Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -8370,6 +8387,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T13:43:05.150Z"
+    },
+    {
+      "id": "KN-330",
+      "title": "The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list",
+      "desc": "CHILD OF KN-025, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-025 roast. The contract is that the page renders the bar before the list, which helps only when Tab starts above the list. A keyboard user selects a card while focus is on it, deep in the list; the bar mounts before the list, so it is behind focus and a forward Tab carries on through the cards. ReachedBeforeTheList tabs from the top of the page with nothing selected by keyboard, so it proves only the order.",
+      "why": "The exit asks that the bar be reachable by keyboard when it appears rather than behind the list, and selecting by keyboard is exactly when it appears.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T13:48:19.285Z"
+    },
+    {
+      "id": "KN-331",
+      "title": "A Jobs Bulk Action Bar given no onSelectAll or onChangeStatus silently drops the file's buttons",
+      "desc": "CHILD OF KN-025, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-025 roast. Both callbacks are optional so the Contacts type need not pass them, and the Jobs type draws each button only when its callback is given, so a Jobs bar missing one draws a bar the file does not, with no warning. react-docgen reads only the props common to a union, which is why the type is not discriminated.",
+      "why": "A bar that quietly loses Change status looks finished and is not, and the next screen to use it is the board.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A Jobs bar cannot be written without both callbacks, by its type or by two components, and the docs guard still reads every prop.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T13:48:19.429Z"
     }
   ]
 }
