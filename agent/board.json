@@ -9568,12 +9568,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T17:54:20.497Z",
-      "updatedAt": "2026-09-11T20:08:01.386Z"
+      "updatedAt": "2026-09-11T20:11:31.034Z",
+      "evidence": "The entry is gone because the plugin's own /^[^\\p{L}]+$/u already skips letterless strings; lingui-ignore.test.ts reads that pattern from the installed rule and finds «1ª», «5µ» and «º» checked; the new gate fixture gets 3 errors, 0 under the old config; the workspace lints clean.",
+      "closedAt": "2026-09-11T20:11:31.034Z"
     },
     {
       "id": "KN-367",

@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 153 of 392 tasks done · 332 of 835 points.
+Project **KarNama** · 154 of 392 tasks done · 333 of 835 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-366` The lingui gate's no-letter class still exempts three letters: ª, µ and º** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-366` | The lingui gate's no-letter class still exempts three letters: ª, µ and º | high | 1 | web | none | The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary. |
+**Next up: `KN-369` KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal** (high, 1 pt, web)
 
 ## Blocked (4)
 
@@ -262,7 +256,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (153)
+## Done (154)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -405,6 +399,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-355` | Below 900 the shell has no language switch: the sidebar took it and the shell draws no Page Header | high | 1 | web | none | At the phone's width the shell shows the Page Header with its language switch, choosing a language there changes it and persists, and a story at 390 finds and uses the switch. |
 | `KN-361` | The add modal's Controls do not drive it while it is open: step, source and draft are read only on opening | high | 1 | web | none | Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step. |
 | `KN-364` | Saving right after changing the status in the Job Modal's header can send the old status | high | 1 | web | none | Save sends the status last chosen in the header, or none at all, and a story changes the status and saves before the job prop changes, and sees the new status or no status in onSave. |
+| `KN-366` | The lingui gate's no-letter class still exempts three letters: ª, µ and º | high | 1 | web | none | The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -4730,7 +4725,7 @@ Found while closing KN-214. The full storybook project failed the JobCard Presse
 
 ### `KN-366` The lingui gate's no-letter class still exempts three letters: ª, µ and º
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-214, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-214 roast. The class in apps/web/eslint.config.js takes U+00A0 to U+00BF whole, the Latin-1 punctuation, and three of those are letters: U+00AA ª, U+00B5 µ and U+00BA º. So title="1ª" passes the rule. The exit condition of KN-214 said a letter in any script is checked.
