@@ -30,6 +30,7 @@ export type StoryTitle =
   | 'Shared/IconButton'
   | 'Shared/Input'
   | 'Shared/LanguageSwitch'
+  | 'Shared/SearchBar'
   | 'Shared/StatusChip'
   | 'Shared/Tabs'
   | 'Shared/Tooltip'

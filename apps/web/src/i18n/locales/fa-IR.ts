@@ -41,4 +41,7 @@ export const messages: Record<string, string> = {
   'Note': 'یادداشت',
   'Related people': 'افراد مرتبط',
   'Files': 'فایل‌ها',
+  'Search in title, company or note': 'جستجو در عنوان، شرکت یا یادداشت',
+  'Search job opportunities': 'جستجوی فرصت‌های شغلی',
+  'Clear search': 'پاک کردن جستجو',
 }

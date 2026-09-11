@@ -38,4 +38,7 @@ export const messages: Record<string, string> = {
   'Note': 'Note',
   'Related people': 'Related people',
   'Files': 'Files',
+  'Search in title, company or note': 'Search in title, company or note',
+  'Search job opportunities': 'Search job opportunities',
+  'Clear search': 'Clear search',
 }
