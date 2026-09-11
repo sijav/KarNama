@@ -21,7 +21,7 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**134 done, 227 open, 2 blocked, 2 dropped** of 365 (2026-09-11). Coverage
+**137 done, 226 open, 4 blocked, 2 dropped** of 369 (2026-09-11). Coverage
 99.33 percent on the full `npm test`; KN-340 carries the gap. **Deployed** on every push by
 `.github/workflows/pages.yml`: https://sijav.github.io/KarNama/ and Storybook
 at https://sijav.github.io/KarNama/storybook/. **Pushed after every close since
@@ -154,10 +154,13 @@ and KN-287. The job level list and KN-077 still wait.
 
 ## The next step
 
-KN-214's roast is running; judge it, file at high or lower, record, push. Then
-the law's next card, high and smallest first: KN-217 ('as const' skips the
-lingui rule; the setAttribute gate fixture uses it for the attribute's name,
-so fix both). The board screen will want KN-305 (fixtures need a board and all
+Since the last head: KN-217 ('as const' copy fails the lint), KN-260 (a
+pointer park before every story, which the roast showed repeats Storybook's own
+resetMousePosition and is worse, KN-369 filed to remove it) and KN-264 (the
+Status Chip's direction both ways) closed and pushed; KN-264's roast is running,
+judge and record it. KN-269 and KN-270 are blocked on the owner's decisions
+about the collapsed column, put to him in the session summary; KN-358, the
+phone form's field order, is his too. Then the law: KN-301 next, then KN-369. The board screen will want KN-305 (fixtures need a board and all
 nine statuses), KN-310, KN-341, KN-352, KN-356 (the tab bar gives way to the
 Bulk Action Bar), KN-363 and KN-364 (the Job Modal's record identity and
 status on Save), and KN-355 (the phone shell lost the language switch).
