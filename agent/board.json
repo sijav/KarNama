@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 324,
+  "nextId": 328,
   "tasks": [
     {
       "id": "KN-001",
@@ -973,7 +973,26 @@
       ],
       "status": "done",
       "exit": "Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "agent/roasts/KN-022-round-1.2026-09-11T13-26-02-819Z.md",
+          "filed": [
+            "KN-324",
+            "KN-325",
+            "KN-326",
+            "KN-327"
+          ],
+          "cardDigest": "2f639af0c9fa796889f84ad2e5a76bceeeffcc0ef12cee8fca5b6c90a5a91ca7",
+          "head": "afc219190bb98e9fa498accce0bbd0b9b7a26267",
+          "reviewerScore": 2.5,
+          "reviewerCriticals": 3,
+          "dismissed": "The three criticals are filed at medium under the owner's rule of 2026-09-11 or moved: the first frame, KN-324, which the animation passes through every cycle; the transient line on a changed startedAt, KN-325, which only a Controls edit causes; and the add-flow wiring, which belongs to the board screen, KN-043, and the network screen, KN-056, since the add flow does not exist yet and the component requires its action. The score rises from 2.5 because the layout, the colours, the fifteen second turn and reduced motion match the file and were seen in a production build.",
+          "at": "2026-09-11T13:30:22.501Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -1061,14 +1080,14 @@
         "KN-013",
         "KN-009"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Both types match Figma, the bar appears only when at least one row is selected, it reports the selection count, and it is reachable by keyboard when it appears rather than trapping focus behind the list.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:18.961Z"
+      "updatedAt": "2026-09-11T13:26:08.551Z"
     },
     {
       "id": "KN-026",
@@ -1535,9 +1554,11 @@
       "status": "backlog",
       "exit": "An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and the board renders it collapsed to a count by default.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-11: from the KN-022 roast. The board's empty state is the Empty State with the job list's copy, and its action must open the add flow; a story or the end-to-end scenario proves the press lands in the add modal. KN-022 built the component with a required action, not the wiring."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T03:37:11.145Z"
+      "updatedAt": "2026-09-11T13:30:13.804Z"
     },
     {
       "id": "KN-044",
@@ -1793,8 +1814,11 @@
       "status": "backlog",
       "exit": "An e2e test opens the network route, adds a contact, edits it, selects two and deletes them through the bottom bar, and sees the empty state on a fresh account. The grid reads right to left and row by row in Persian and mirrors in English, with no array reversal in the code.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T20:49:25.116Z"
+      "notes": [
+        "2026-09-11: from the KN-022 roast. The network screen's empty state is the Empty State with the contacts' copy, 305:2266, and its action must open the add contact flow."
+      ],
+      "createdAt": "2026-09-07T20:49:25.116Z",
+      "updatedAt": "2026-09-11T13:30:13.948Z"
     },
     {
       "id": "KN-057",
@@ -8252,6 +8276,66 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T13:25:31.828Z"
+    },
+    {
+      "id": "KN-324",
+      "title": "The Loading State's dots start on a frame with all three dim, and no story reads their opacity",
+      "desc": "CHILD OF KN-022, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-022 roast. The delays of -900, -600 and -300 ms put the three dots at 0, 66.7 and 33.3 percent of the cycle when it starts, all at 0.4, so the first frame painted is not the file's, whose middle dot is lit; that frame first appears 450 ms in. The stories check that the delays differ, never an opacity.",
+      "why": "The first frame is the one a fast answer shows and the one a screenshot catches, and the file draws the middle dot lit.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The first painted frame is the file's, the middle dot at 1 and the others at 0.4, and a story reads the three opacities at the start and one turn later.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T13:30:13.226Z"
+    },
+    {
+      "id": "KN-325",
+      "title": "A Loading State whose startedAt moves past fifteen seconds shows the reading line for a render first",
+      "desc": "CHILD OF KN-022, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-022 roast. useSlow compares the start it has seen run past with the current one, so when startedAt changes while mounted to a time already more than fifteen seconds back, the first render shows the reading line and only the zero-delay timer turns it, which a status region can announce as an extra change.",
+      "why": "The component promises the slow line for a wait already past fifteen seconds, and a status region reads out every change.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A startedAt already past fifteen seconds shows the slow line on its first render, whether mounted with it or changed to it, and a story changes it while mounted.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T13:30:13.373Z"
+    },
+    {
+      "id": "KN-326",
+      "title": "The Loading State's first line is not reliably announced, since its status region mounts already holding it",
+      "desc": "CHILD OF KN-022, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-022 roast. A role=status region inserted with its text inside it is not announced by every screen reader; only a change to a region already in the page is. So the reading line may go unread and only the fifteen second change is announced.",
+      "why": "A screen reader user who presses extract and hears nothing cannot tell the press worked.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The status region is in the page before its first line is written, so the first line is a change, and a story shows the region empty when it mounts and filled after.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T13:30:13.516Z"
+    },
+    {
+      "id": "KN-327",
+      "title": "A long unbroken Empty State title overflows a narrow screen",
+      "desc": "CHILD OF KN-022, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-022 roast. The root is capped at 100 percent, but the centred h2 has no maxWidth or overflow-wrap, so a title with a word wider than the state, a pasted link or a long company name, overflows a 320 wide screen; ordinary Persian titles wrap at their spaces.",
+      "why": "The contacts and search titles carry user text in time, and a phone is where a title is narrowest.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The title wraps anywhere when a word is wider than the state, and a story at 320 wide with a long unbroken title shows no overflow.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T13:30:13.656Z"
     }
   ]
 }

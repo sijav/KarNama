@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 120 of 323 tasks done · 235 of 753 points.
+Project **KarNama** · 120 of 327 tasks done · 235 of 757 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-025` Bulk action bar** (critical, 3 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-025` | Bulk action bar | critical | 3 | web | KN-005, KN-006, KN-007, KN-013, KN-009 | Both types match Figma, the bar appears only when at least one row is selected, it reports the selection count, and it is reachable by keyboard when it appears rather than trapping focus behind the list. |
 
 ## Blocked (2)
 
@@ -17,12 +23,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (199)
+## Backlog (202)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-024` | Sort control | critical | 3 | web | KN-005, KN-006, KN-007, KN-018 | Three states match Figma, the four permitted options are the only ones offered, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced. |
-| `KN-025` | Bulk action bar | critical | 3 | web | KN-005, KN-006, KN-007, KN-013, KN-009 | Both types match Figma, the bar appears only when at least one row is selected, it reports the selection count, and it is reachable by keyboard when it appears rather than trapping focus behind the list. |
 | `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
 | `KN-018` | Menu and menu item | critical | 5 | web | KN-005, KN-006, KN-007, KN-008 | All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone. |
 | `KN-020` | Status choice, status picker and status control | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-018, KN-019 | All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own. |
@@ -132,6 +137,9 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-318` | A Button's hover fill stays after a tap on a touch screen | medium | 1 | web | none | Under hover: none the Button shows its resting fill after a tap, established with an emulated touch device, and hovering still fills it where there is a pointer. |
 | `KN-319` | In the derived dark palette a pressed Destructive button is brighter than its default | medium | 1 | web | none | In dark the Destructive default, hover and pressed fills keep the light design's order of lightness, each still carrying text/on-accent at 4.5:1, and a unit test holds the order and the contrast. |
 | `KN-321` | The Page Header's language switch is tested at 390 and 1440, not either side of the 900 it turns on | medium | 1 | web | none | The story shows the switch at 899 wide and hides it at 900. |
+| `KN-324` | The Loading State's dots start on a frame with all three dim, and no story reads their opacity | medium | 1 | web | none | The first painted frame is the file's, the middle dot at 1 and the others at 0.4, and a story reads the three opacities at the start and one turn later. |
+| `KN-325` | A Loading State whose startedAt moves past fifteen seconds shows the reading line for a render first | medium | 1 | web | none | A startedAt already past fifteen seconds shows the slow line on its first render, whether mounted with it or changed to it, and a story changes it while mounted. |
+| `KN-326` | The Loading State's first line is not reliably announced, since its status region mounts already holding it | medium | 1 | web | none | The status region is in the page before its first line is written, so the first line is a change, and a story shows the region empty when it mounts and filled after. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -193,6 +201,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-307` | An Icon given a blank aria-label becomes an unnamed image instead of decoration | low | 1 | web | none | An Icon whose aria-label is empty or blank renders as decoration, aria-hidden with no role; a story renders one and asserts it. |
 | `KN-308` | The Icon's default size and colour are never exercised by a story | low | 1 | web | none | A story renders an Icon with only its name and asserts 24 by 24 and text/secondary. |
 | `KN-323` | The Empty State's round mark is about 1.02 to one on the bg/page every screen puts it on | low | 1 | design | none | The owner chooses whether the mark stays, turns bg/surface or becomes an illustration, and the file, DESIGN.md and the component follow. |
+| `KN-327` | A long unbroken Empty State title overflows a narrow screen | low | 1 | web | none | The title wraps anywhere when a word is wider than the state, and a story at 320 wide with a long unbroken title shows no overflow. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -629,6 +638,8 @@ Empty State at Figma node 159:80 for a job list with nothing in it, and Loading 
 
 **Exit condition.** Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case.
 
+**Roasts.** round 1 scored 5 with 0 critical(s)
+
 ### `KN-023` Tabs
 
 - **status** done · **severity** critical · **points** 3 · **area** web
@@ -655,7 +666,7 @@ Default, Hover and Open from Figma node 408:512.
 
 ### `KN-025` Bulk action bar
 
-- **status** backlog · **severity** critical · **points** 3 · **area** web
+- **status** in_progress · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-013, KN-009
 
 Type=Jobs and Type=Contacts from Figma node 401:436, appearing when a selection exists.
@@ -4125,4 +4136,48 @@ Found while building KN-022. Node 159:80's mark is bg/surface-secondary, #f3f4f6
 **Why.** A shape the design places and nobody can see is either a mistake in the file or a placeholder for an illustration, and only the owner can say which.
 
 **Exit condition.** The owner chooses whether the mark stays, turns bg/surface or becomes an illustration, and the file, DESIGN.md and the component follow.
+
+### `KN-324` The Loading State's dots start on a frame with all three dim, and no story reads their opacity
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-022, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-022 roast. The delays of -900, -600 and -300 ms put the three dots at 0, 66.7 and 33.3 percent of the cycle when it starts, all at 0.4, so the first frame painted is not the file's, whose middle dot is lit; that frame first appears 450 ms in. The stories check that the delays differ, never an opacity.
+
+**Why.** The first frame is the one a fast answer shows and the one a screenshot catches, and the file draws the middle dot lit.
+
+**Exit condition.** The first painted frame is the file's, the middle dot at 1 and the others at 0.4, and a story reads the three opacities at the start and one turn later.
+
+### `KN-325` A Loading State whose startedAt moves past fifteen seconds shows the reading line for a render first
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-022, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-022 roast. useSlow compares the start it has seen run past with the current one, so when startedAt changes while mounted to a time already more than fifteen seconds back, the first render shows the reading line and only the zero-delay timer turns it, which a status region can announce as an extra change.
+
+**Why.** The component promises the slow line for a wait already past fifteen seconds, and a status region reads out every change.
+
+**Exit condition.** A startedAt already past fifteen seconds shows the slow line on its first render, whether mounted with it or changed to it, and a story changes it while mounted.
+
+### `KN-326` The Loading State's first line is not reliably announced, since its status region mounts already holding it
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-022, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-022 roast. A role=status region inserted with its text inside it is not announced by every screen reader; only a change to a region already in the page is. So the reading line may go unread and only the fifteen second change is announced.
+
+**Why.** A screen reader user who presses extract and hears nothing cannot tell the press worked.
+
+**Exit condition.** The status region is in the page before its first line is written, so the first line is a change, and a story shows the region empty when it mounts and filled after.
+
+### `KN-327` A long unbroken Empty State title overflows a narrow screen
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-022, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-022 roast. The root is capped at 100 percent, but the centred h2 has no maxWidth or overflow-wrap, so a title with a word wider than the state, a pasted link or a long company name, overflows a 320 wide screen; ordinary Persian titles wrap at their spaces.
+
+**Why.** The contacts and search titles carry user text in time, and a phone is where a title is narrowest.
+
+**Exit condition.** The title wraps anywhere when a word is wider than the state, and a story at 320 wide with a long unbroken title shows no overflow.
 
