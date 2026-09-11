@@ -7340,7 +7340,7 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "An Input with neither a helper nor an error draws no message line and is 64 tall, as the 91 screen instances draw it; with a helper or an error it is 90, the file's variants; an error appearing on a field without a helper adds the line with its message; an error on a field that has a helper replaces the helper with the error's message and the field's aria-describedby then names the error, and clearing the error brings the helper back; a blank error still draws no line; stories assert the 64 and the 90, the line appearing with the error, and the error replacing a helper, with a mutation that keeps the helper over the error failing by name, replacing ErrorDoesNotMoveTheField and WithoutAHelper's reserved line; every other place that asserts the reserved line is changed with it, KN-011's verifier and both languages' story docs included; DESIGN.md records the owner's reversal of KN-011's decision; and the Input's comment about the line always keeping its height is corrected.",
       "roasts": [],
       "notes": [
@@ -7348,8 +7348,10 @@
         "2026-09-11, from the plan check: a helper made only of blank characters is treated as no helper, by KN-254's blank-error rule, so it draws no line and describes nothing; stated here and asserted by WithoutAHelper, since the exit does not name it. Under the reserved line a blank helper cost nothing; with the line drawn on demand it would draw an empty line under a gap."
       ],
       "createdAt": "2026-09-10T17:57:44.885Z",
-      "updatedAt": "2026-09-11T08:45:32.104Z",
-      "verify": "node agent/scripts/verify/KN-287.mjs"
+      "updatedAt": "2026-09-11T09:48:08.222Z",
+      "verify": "node agent/scripts/verify/KN-287.mjs",
+      "evidence": "Input.tsx draws the message line only when there is a helper or an error, the owner's decision of KN-285 reversing KN-011's reserved line: the column has no gap, the label keeps marginBottom spacing 2xs, and the line takes marginTop spacing 2xs only when there is a message and has no minimum height, so with nothing to say it holds only KN-286's empty alert span, zero tall, mounted and exposed. A helper of only blank characters is no helper, by KN-254's rule, stated on the card and in DESIGN.md. The line holds the error in the alert or else the helper, never both; aria-describedby names it while there is a message. WithoutAHelper renders a bare field and one with a blank helper, each 64 tall with a zero line, no description and an empty alert present; ErrorAddsTheLine renders a bare field beside the same with an error, 64 and 90, the second's line 22 holding the error; ErrorReplacesTheHelper renders the specimen with an error, 90, its line the error alone and the field described by it; ErrorAnnouncedWhileTyping asserts the described field 90 throughout and the bare one 64, then 90 with each error, then 64. node agent/scripts/verify/KN-287.mjs passed: those stories pass and ErrorDoesNotMoveTheField is gone; the helper kept over the error fails ErrorReplacesTheHelper by name; a reserved line put back and the column's gap put back each fail WithoutAHelper by name; in a production build, in fa-IR and en-US, the bare fields read 64 with a zero line and an alert each in Chromium's accessibility tree, the error beside a bare field 90 with a 22 line, and the helper and error 90; KN-011's verifier, its reserved-line clause turned to the owner's rule and its story list naming ErrorAddsTheLine, passes, as does KN-286's with its anchor on the renamed helper, and KN-285's with its pattern accepting the built wording; DESIGN.md says KN-287 built it and names the blank helper, and neither doc nor the comment says the line is reserved. Every other Input verifier, twenty-six, passed as a regression pass. Unit project, eslint on the Input and tsc clean. Not established: looked at by eye; measured in production in both languages, not in dark.",
+      "closedAt": "2026-09-11T09:48:08.222Z"
     },
     {
       "id": "KN-288",
