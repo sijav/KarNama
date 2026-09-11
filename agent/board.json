@@ -7540,7 +7540,8 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T19:28:42.674Z",
-      "updatedAt": "2026-09-11T10:11:06.181Z"
+      "updatedAt": "2026-09-11T10:53:20.850Z",
+      "verify": "node agent/scripts/verify/KN-293.mjs"
     },
     {
       "id": "KN-294",
