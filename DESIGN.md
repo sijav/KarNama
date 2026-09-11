@@ -200,7 +200,10 @@ as a sixth role, which was wrong: it does not exist.
 ### The Status Chip has two sizes, and the large one is not general
 
 - `Size=S`, 12px, height 24, is the default and is what almost everything uses.
-- `Size=M`, 14px, height 28, is **only** for the kanban column header.
+- `Size=M`, 14px, height 28, is for the kanban column header and the Status
+  Choice, `427:567`, which the file builds on it in all three of its states;
+  nowhere else. An earlier reading here said the column header only, which the
+  file contradicts, read with use_figma on 2026-09-11 over the KN-060 roast.
 - Both hug their label with `spacing/xs` at each side and a full radius. S's
   text is the `label` role exactly. M's is `body`'s size and line height, 14
   and 22, with `label`'s weight and tracking, 500 and 0.2: node `398:6181` binds
@@ -630,7 +633,7 @@ title's is given back. KN-015.
 Node `241:125`, a frame on the board screen rather than a component: 300 wide
 and the board's height, `bg/surface-secondary`, radius lg, 12 of padding and 8
 between its parts. The header, `241:126`, is 40 tall: 4 of padding above and at
-the sides and 8 below, the Size=M Status Chip, its one use, with the count 8
+the sides and 8 below, the Size=M Status Chip, with the count 8
 after it at 12 and Medium in `text/secondary`, in the reader's digits where the
 file writes «3», and at its other end the 16 more icon that opens the column's
 Menu, `259:2`. The code puts the 32 Icon Button there, giving back two above and

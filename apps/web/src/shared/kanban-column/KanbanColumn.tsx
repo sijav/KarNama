@@ -73,7 +73,7 @@ const ring = {
   }),
 }
 
-// The header's chip and count: the Size=M chip, its one use, and the count 8
+// The header's chip and count: the Size=M chip and the count 8
 // after it in the reader's digits.
 const Title = ({ name, token, count }: { name: string; token: StatusToken; count: number }) => {
   const { locale } = usePreferences()

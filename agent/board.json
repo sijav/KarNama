@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 353,
+  "nextId": 355,
   "tasks": [
     {
       "id": "KN-001",
@@ -1263,14 +1263,14 @@
         "KN-008",
         "KN-009"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:19.167Z"
+      "updatedAt": "2026-09-11T16:12:36.415Z"
     },
     {
       "id": "KN-028",
@@ -8904,6 +8904,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T15:57:50.849Z"
+    },
+    {
+      "id": "KN-353",
+      "title": "A column whose cards are all false or null shows a blank region instead of its empty message",
+      "desc": "CHILD OF KN-060, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-060 roast. KanbanColumn.tsx decides it is empty by Children.count(children) === 0, which counts null and false entries, so jobs.map(job => job.visible && <JobCard />) with nothing visible renders an empty scroll region and no 241:46 message.",
+      "why": "A board that filters its cards, by search or by status, hands a column exactly such a list, and a blank column reads as broken rather than empty.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The column shows the empty message whenever no child renders, null, false and empty arrays included (Children.toArray), and a story passes such a list.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T16:15:57.688Z"
+    },
+    {
+      "id": "KN-354",
+      "title": "A column shorter than 116 clips its own Add Card row",
+      "desc": "CHILD OF KN-060, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-060 roast. The column is height 100 percent with overflow hidden; below 116, the header's 40, the Add Card row's 36, the frame's 24 of padding and two gaps of 8 do not fit, and the row is clipped at the bottom.",
+      "why": "The pinned row is the column's way to add; a board squeezed short, a small window or a zoomed page, should not lose it.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The column never gets shorter than its header, gaps, padding and Add Card row, and a story in a short container sees the row whole.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T16:15:57.876Z"
     }
   ]
 }

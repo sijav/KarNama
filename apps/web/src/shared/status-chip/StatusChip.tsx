@@ -9,7 +9,7 @@ export interface StatusChipProps {
 }
 
 // Heights from node 82:2, where no variable is bound to them: S everywhere, M
-// only in the kanban column header.
+// in the kanban column header and the Status Choice, 427:567.
 const HEIGHT = { S: 24, M: 28 } as const
 
 // S draws the label role. M draws body's size and line height with label's
