@@ -9446,11 +9446,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T17:03:01.577Z"
+      "createdAt": "2026-09-11T17:03:01.577Z",
+      "updatedAt": "2026-09-11T19:58:20.460Z"
     },
     {
       "id": "KN-362",

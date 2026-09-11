@@ -102,3 +102,8 @@ On a phone's width, the fields in one column.
 ### InEnglish
 
 The paste field in English.
+
+### StepFromItsArgs
+
+The step changed while the modal is open, as the Controls change it: the modal
+starts again on that step.

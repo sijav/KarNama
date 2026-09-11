@@ -96,11 +96,16 @@ export const AddJobModal = ({
   })
   const [flow, setFlow] = useState(start)
   const [confirming, setConfirming] = useState(false)
-  // Each opening starts over: React's pattern for state that follows a prop,
-  // adjusted during render.
-  const [wasOpen, setWasOpen] = useState(open)
-  if (open !== wasOpen) {
-    setWasOpen(open)
+  // Each opening starts over, and so does a change, while open, to what it
+  // opens on, the step, the source or the draft, as Storybook's Controls make
+  // one, KN-361: React's pattern for state that follows a prop, adjusted during
+  // render. The draft is compared by what it holds, since a parent that renders
+  // again hands over a new object with the same draft in it, KN-347's trap.
+  const given = { open, step: opening, source: openingSource, draft: JSON.stringify(openingDraft ?? {}) }
+  const [seen, setSeen] = useState(given)
+  const changed = given.step !== seen.step || given.source !== seen.source || given.draft !== seen.draft
+  if (given.open !== seen.open || (open && changed)) {
+    setSeen(given)
     if (open) {
       setFlow(start())
       setConfirming(false)

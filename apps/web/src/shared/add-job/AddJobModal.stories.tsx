@@ -1,6 +1,7 @@
 import { setupI18n } from '@lingui/core'
 import type { StoryObj } from '@storybook/react-vite'
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { useState } from 'react'
+import { expect, fireEvent, fn, userEvent, waitFor, within } from 'storybook/test'
 import type { Locale } from '../../i18n'
 import { messages as en } from '../../i18n/locales/en-US'
 import type { JobLevel } from '../job-selects'
@@ -272,5 +273,41 @@ export const InEnglish: Story = {
     const dialog = await dialogNamed(i18n._('Add job opportunity'))
     await expect(within(dialog).getByRole('textbox', { name: i18n._('Posting link or full text') })).toBeInTheDocument()
     await expect(within(dialog).getByRole('button', { name: i18n._('Extract details') })).toBeDisabled()
+  },
+}
+
+// A parent that changes the open modal's step, as Storybook's Controls change
+// an arg, through a hidden button only a story's play presses, KN-361. A
+// portable story applies no updateArgs, so the prop changes where the Controls
+// would change it, on the component.
+const PASTE: NonNullable<AddJobModalProps['step']> = 'paste'
+const Restepped = (args: AddJobModalProps) => {
+  const [step, setStep] = useState(args.step ?? PASTE)
+  return (
+    <>
+      <AddJobModal {...args} step={step} />
+      <button
+        hidden
+        data-testid="to-manual"
+        onClick={() => {
+          setStep('manual')
+        }}
+      />
+    </>
+  )
+}
+
+export const StepFromItsArgs: Story = {
+  // The step changed while the modal is open restarts the flow there: from
+  // Paste to the empty form, as choosing Manual in the Controls does. A fixed
+  // parent, so no control applies.
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  render: (args) => <Restepped {...args} />,
+  play: async ({ canvasElement }) => {
+    const dialog = await dialogNamed('افزودن فرصت شغلی')
+    await expect(within(dialog).getByRole('textbox', { name: 'لینک آگهی یا متن کامل آگهی' })).toBeInTheDocument()
+    await fireEvent.click(within(canvasElement).getByTestId('to-manual'))
+    await expect(await within(dialog).findByRole('textbox', { name: 'عنوان شغلی' })).toHaveValue('')
   },
 }
