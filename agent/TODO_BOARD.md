@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 159 of 396 tasks done · 340 of 839 points.
+Project **KarNama** · 159 of 397 tasks done · 340 of 840 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -20,7 +20,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (230)
+## Backlog (231)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -223,6 +223,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-393` | The Job Modal's stories prove Save omits the old status, not that it carries no status at all | low | 1 | web | none | ChangeStatus and Note read onSave's last argument through mocked() and find no status key in it. |
 | `KN-394` | The lingui ignore test reads the plugin's no-letter pattern from its source, not from what the rule does | low | 1 | web | none | A test lints real code with the project's ESLint config, programmatically or through a fixture that must pass, and finds letterless titles, labels and text accepted and the three Latin-1 letters rejected. |
 | `KN-395` | RestartWhileReading settles its held reading with an optional call, so it passes if the reading was never made | low | 1 | web | none | RestartWhileReading fails when no reading was made: it asserts onExtract was called with the source and throws if settleReading is unset before settling it. |
+| `KN-397` | The stories-glob test searches the patterns' text for mdx, not whether any pattern would index the MDX fixture | low | 1 | web | none | The test matches the fixture's path, and a few story paths that must be indexed, against each configured pattern with glob semantics, extglobs included, and finds the MDX fixture matched by none; AGENTS.md says a docs-only page is a CSF entry with its story-docs markdown. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -1586,6 +1587,8 @@ With useTsTypes enabled, assigning a string through a literal type alias and pas
 **Why.** A roast rated this critical. It is worse than the other routes because it needs no trick at all, and it lands exactly where KN-091 is heading: that card moves story prose into markdown, so MDX is about to carry real copy rather than being a theoretical path.
 
 **Exit condition.** An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it.
+
+**Roasts.** round 1 scored 7 with 0 critical(s)
 
 ### `KN-098` Prove the STORYBOOK test project reports a failure too
 
@@ -5077,4 +5080,15 @@ Found while doing KN-108, which enumerated every text and fill the Button pairs:
 **Why.** A delete is the button where a misread is expensive, and the light palette is the one the design draws and most users see.
 
 **Exit condition.** The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason.
+
+### `KN-397` The stories-glob test searches the patterns' text for mdx, not whether any pattern would index the MDX fixture
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-087, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-097 roast. stories-glob.test.ts checks that no stories pattern in .storybook/main.ts contains the substring 'mdx'; a pattern such as *.stories.@(ts|tsx|m*) would index src/gate-fixtures/unlinted-copy.mdx and the test would stay green. The roast also noted that AGENTS.md does not say how a future docs-only page is written now that MDX is out: as a CSF .stories.ts(x) entry backed by the two story-docs files.
+
+**Why.** A fixture that proves the policy only if nobody writes an unusual glob proves the text of today's config, not the policy.
+
+**Exit condition.** The test matches the fixture's path, and a few story paths that must be indexed, against each configured pattern with glob semantics, extglobs included, and finds the MDX fixture matched by none; AGENTS.md says a docs-only page is a CSF entry with its story-docs markdown.
 

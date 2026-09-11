@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 397,
+  "nextId": 398,
   "tasks": [
     {
       "id": "KN-001",
@@ -3161,7 +3161,23 @@
       ],
       "status": "done",
       "exit": "An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-097-round-1.2026-09-11T20-31-56-332Z.md",
+          "filed": [
+            "KN-397"
+          ],
+          "cardDigest": "1e2a83df7e81baa2d5a1c4367bc46f83d132b5991ea58f7cbadcc7fe2230e715",
+          "head": "91bb9abc9b291231f371089a20be9eb35772dd02",
+          "reviewerScore": 7,
+          "reviewerCriticals": 1,
+          "dismissed": "Nothing dismissed. Its critical is real but needs a deliberately odd glob to bite, a finding on test machinery that the owner's rule of 2026-09-11 files low: KN-397.",
+          "at": "2026-09-11T20:44:10.270Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-07T23:35:32.790Z",
       "updatedAt": "2026-09-11T20:31:40.113Z",
@@ -10138,6 +10154,21 @@
       "createdAt": "2026-09-11T20:42:08.652Z",
       "blockedReason": "The owner's decision: the design's own bg/danger/default under white text is 3.76 to one in the light palette; darken it in the file, or accept it, is a change to Figma's tokens.",
       "updatedAt": "2026-09-11T20:42:14.488Z"
+    },
+    {
+      "id": "KN-397",
+      "title": "The stories-glob test searches the patterns' text for mdx, not whether any pattern would index the MDX fixture",
+      "desc": "CHILD OF KN-087, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-097 roast. stories-glob.test.ts checks that no stories pattern in .storybook/main.ts contains the substring 'mdx'; a pattern such as *.stories.@(ts|tsx|m*) would index src/gate-fixtures/unlinted-copy.mdx and the test would stay green. The roast also noted that AGENTS.md does not say how a future docs-only page is written now that MDX is out: as a CSF .stories.ts(x) entry backed by the two story-docs files.",
+      "why": "A fixture that proves the policy only if nobody writes an unusual glob proves the text of today's config, not the policy.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The test matches the fixture's path, and a few story paths that must be indexed, against each configured pattern with glob semantics, extglobs included, and finds the MDX fixture matched by none; AGENTS.md says a docs-only page is a CSF entry with its story-docs markdown.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T20:44:10.139Z"
     }
   ]
 }
