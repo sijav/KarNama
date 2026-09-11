@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react'
 import type { StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { expect, fireEvent, fn, userEvent, waitFor, within } from 'storybook/test'
 import type { Locale } from '../../i18n'
 import { Button } from '../button'
 import type { SelectOption } from '../select'
@@ -50,6 +50,30 @@ const WithTrigger = ({ onSave, onCancel, ...args }: ContactModalProps) => {
         onCancel={() => {
           setOpen(false)
           onCancel()
+        }}
+      />
+    </>
+  )
+}
+
+// The fixture record's id, and a second contact's name to type over it.
+const [FIRST_CONTACT, SECOND_CONTACT] = fixtures('fa-IR').contacts
+if (!FIRST_CONTACT || !SECOND_CONTACT) throw new Error('the story fixtures have fewer than two contacts')
+
+// A parent that hands the modal a fresh copy of the record on every render, a
+// new object with the same contents, as a query or a timer would, and renders
+// again when its hidden tick is pressed, which only a story's play does,
+// KN-347.
+const Rerendering = ({ initial, ...args }: ContactModalProps) => {
+  const [, setTick] = useState(0)
+  return (
+    <>
+      <WithTrigger {...args} {...(initial ? { initial: { ...initial } } : {})} />
+      <button
+        hidden
+        data-testid="rerender"
+        onClick={() => {
+          setTick((tick) => tick + 1)
         }}
       />
     </>
@@ -174,6 +198,26 @@ export const CancelDiscards: Story = {
     dialog = await open(canvasElement)
     await expect(within(dialog).getAllByRole('textbox')[0]).toHaveValue('')
     await userEvent.keyboard('{Escape}')
+  },
+}
+
+export const KeepsTypingThroughARerender: Story = {
+  // The parent renders again while a name is being typed, handing over a new
+  // copy of the same record: the form keeps what is typed, since it starts
+  // again only on opening or on another record's id, KN-347. A fixed parent,
+  // so no control applies.
+  args: { mode: 'edit', initial: recordIn('fa-IR'), recordId: FIRST_CONTACT.id },
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  render: (args) => <Rerendering {...args} />,
+  play: async ({ canvasElement }) => {
+    const dialog = await open(canvasElement)
+    const [name] = within(dialog).getAllByRole('textbox')
+    if (!name) throw new Error('no name field')
+    await userEvent.clear(name)
+    await userEvent.type(name, SECOND_CONTACT.fullName)
+    await fireEvent.click(within(canvasElement).getByTestId('rerender'))
+    await expect(name).toHaveValue(SECOND_CONTACT.fullName)
   },
 }
 

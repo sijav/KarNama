@@ -22,6 +22,7 @@ export interface ContactModalProps {
   open: boolean
   mode: 'add' | 'edit'
   initial?: ContactModalValues
+  recordId?: string
   jobs: readonly SelectOption[]
   onSave: (values: ContactModalValues) => void
   onCancel: () => void
@@ -52,17 +53,19 @@ const Pair = ({ children }: { children: ReactNode }) => (
 // error. Edit opens filled from the record and offers the delete. Cancel,
 // Escape, the close and the scrim discard what was typed; each opening starts
 // from the record, or from nothing.
-export const ContactModal = ({ open, mode, initial, jobs, onSave, onCancel, onDelete }: ContactModalProps) => {
+export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCancel, onDelete }: ContactModalProps) => {
   const { i18n } = useLingui()
-  const start = initial ?? EMPTY
-  const [values, setValues] = useState(start)
+  const [values, setValues] = useState(initial ?? EMPTY)
   const [tried, setTried] = useState(false)
   // React's pattern for state that follows a prop, adjusted during render: an
-  // opening, or another record, starts the form again.
-  const [seen, setSeen] = useState({ open, start })
-  if (seen.open !== open || seen.start !== start) {
-    setSeen({ open, start })
-    setValues(start)
+  // opening, or another record by its id, starts the form again. Never a new
+  // object with the same record in it, which a parent that renders again for a
+  // query or a timer hands over, and which put the record back over what was
+  // being typed, KN-347.
+  const [seen, setSeen] = useState({ open, recordId })
+  if (seen.open !== open || seen.recordId !== recordId) {
+    setSeen({ open, recordId })
+    setValues(initial ?? EMPTY)
     setTried(false)
   }
   const set = (field: keyof Omit<ContactModalValues, 'jobId'>) => (value: string) => {

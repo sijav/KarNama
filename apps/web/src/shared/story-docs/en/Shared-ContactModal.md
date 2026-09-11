@@ -20,6 +20,12 @@ Whether the modal is showing.
 
 The record Edit opens with. Leave it out to start empty.
 
+### recordId
+
+The id of the record being edited. The form starts again when the modal opens
+or this id changes, never when the same record arrives as a new object, so a
+page that renders again while someone types does not undo their typing.
+
 ### jobs
 
 The job opportunities the contact can belong to: each an id and a label in the
@@ -58,6 +64,11 @@ Save pressed with no name: the name field shows its error.
 ### CancelDiscards
 
 Typing, then cancelling, and the next opening empty again.
+
+### KeepsTypingThroughARerender
+
+The page renders again while a name is being typed, handing over a new copy of
+the same record, and what was typed stays.
 
 ### InEnglish
 

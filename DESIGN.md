@@ -520,7 +520,8 @@ the Select of the job opportunity the contact belongs to, which the file calls
 Save at the inline end; Edit fills from the record and moves them to the inline
 start, «حذف مخاطب» taking the end, as the file's Edit draws it. A contact saves
 with a full name alone, KN-071, so the name is the only field that can be in
-error. KN-031.
+error. The form starts again on opening and on another record's id, never on
+a fresh copy of the same record, KN-347. KN-031.
 
 ### The Contact Card
 
