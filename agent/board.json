@@ -8323,14 +8323,16 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "done",
       "exit": "FocusedWhileInvalid's area accounts for the rounded corners, from the exact quarter-ring areas of the edge's radius and the ring's or from a rendered reading, and still clears 4W + 4H; focusExtent requires what it does not model, transform, filter, clip-path and mask, to be none on the field, both pseudo-elements and the input, and counts the input's own outline; a transform and a filter on the ::after each fail FocusedWhileInvalid by name; the verifier also reads the rendered change on a field 80 wide or less, in light and dark, clearing 4W + 4H with nothing changed outside; and DESIGN.md's arithmetic states the corners' loss and the width above which the change clears the perimeter.",
       "roasts": [],
       "notes": [
         "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
       ],
       "createdAt": "2026-09-11T04:43:33.877Z",
-      "updatedAt": "2026-09-11T11:29:35.107Z"
+      "updatedAt": "2026-09-11T22:29:49.477Z",
+      "evidence": "The area is now the difference of two contours with their corners, edge and ring each read from the computed styles, 3558.5 square pixels against the 3536 measured where the rectangle model said 3580; unmodelled() refuses a transform, filter, clip-path or mask image on the field, both pseudo-elements and the input, failing by name when each of a filter and a transform was planted on the ring; focusExtent counts the input's box and reach; the story measures an 80 wide field beside the full width one; DESIGN.md states the corners' 21.5 square pixels, 6W + 150.5, clearing 4W + 176 from 13 wide. 27 Input stories pass",
+      "closedAt": "2026-09-11T22:29:49.477Z"
     },
     {
       "id": "KN-296",
