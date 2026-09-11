@@ -1366,14 +1366,16 @@
         "KN-011",
         "KN-026"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T15:12:35.701Z"
+      "updatedAt": "2026-09-11T15:22:15.224Z",
+      "evidence": "Contact Modal (270:152) Add and Edit on the new PanelModal: every field in the file's order, name-only saves, missing name in the Input error state, Edit prefilled with the delete, cancel discards; 8 stories and the unit suite pass",
+      "closedAt": "2026-09-11T15:22:15.224Z"
     },
     {
       "id": "KN-032",
