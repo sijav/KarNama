@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 296,
+  "nextId": 297,
   "tasks": [
     {
       "id": "KN-001",
@@ -7102,11 +7102,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Bound tells its own writes from anything else by a revision carried with each write, not by value, so an arg whose value is not the one sent at its revision is taken, whatever the queue holds; a check in a production build reproduces the sequence, an edit in flight, a Controls value equal to it arriving after a newer edit, and ends with the field and the arg equal; the exception is gone from the comment; the revision never reaches the Input or shows as a control; and KN-253's and KN-249's verifiers still pass.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T16:23:23.839Z"
+      "createdAt": "2026-09-10T16:23:23.839Z",
+      "updatedAt": "2026-09-11T05:01:28.371Z"
     },
     {
       "id": "KN-281",
@@ -7385,7 +7386,23 @@
       "parent": [],
       "status": "done",
       "exit": "An Input given a string icon that isBlank holds for, spaces, a line break, a zero-width space or a joiner, draws no slot and its text box sits 16 from that edge; IconsTurnedOff covers a space and a zero-width space among its cases and asserts no slot, and a mutation dropping the blank check fails it by name; and the story docs say the direct values draw no slot, while an element that renders nothing leaves a slot that collapses and takes no room.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-292-round-1.2026-09-11T05-00-30-471Z.md",
+          "filed": [
+            "KN-296"
+          ],
+          "cardDigest": "dcbd2d6b39b8982984921ec9157b2b59b9439976919c92a4a16b32730a73fd8b",
+          "head": "2e89b9c593f40349a9d6c54fe8a7da9fc04a8aef",
+          "reviewerScore": 5.5,
+          "reviewerCriticals": 0,
+          "dismissed": "The first major stands and is KN-296: blank text rendered through an array, a fragment or a component still draws a slot. The second is folded into KN-296 as a wording fix: hiding a lone mark is the Input's deliberate nothing-to-read rule, and the comment's nothing to see overclaimed it. The minor misreads agent/RALPH.md step 2b: a plan stays beside the work.",
+          "at": "2026-09-11T05:04:04.140Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T19:17:47.448Z",
       "updatedAt": "2026-09-11T04:59:56.528Z",
@@ -7437,6 +7454,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T04:43:33.877Z"
+    },
+    {
+      "id": "KN-296",
+      "title": "An Input icon given as an array, a fragment or a component that renders only blank text still draws an empty slot",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-292 roast, KN-292 being a child of KN-011. drawn() decides from the prop, and applies the blank rule only when the prop itself is a string. An array such as [' '], a fragment such as <>{' '}</>, or a component that returns whitespace is an element or an array to drawn(), so a Slot is drawn, and what it renders is a text node, which keeps the slot from matching :empty: a 20 by 20 slot with nothing in it, the text box pushed to 40. And the comment on drawn() says a blank string gives nothing to see, where the Input's rule is nothing to read: a lone combining mark such as U+20DD, which isBlank calls blank, can draw in some fonts, and is hidden by design.",
+      "why": "The slot exists to hold an icon, and any way a caller hands it nothing to read should leave the field as it is without one; a hole the width of an icon, reached through an ordinary composition, is the defect KN-291 and KN-292 closed for the prop's own values. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "An Input whose icon renders only blank text, through an array, a fragment or a component, draws no slot that takes room and its text box sits 16 from that edge, decided from what the slot rendered rather than from the prop; IconsTurnedOff covers an array of a space, a fragment holding a zero-width space and a component returning a space, each asserting a slot that takes no room; a mutation removing the rendered check fails it by name; and the comment on drawn() says nothing to read, with the lone-mark case named as deliberate.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T05:03:54.532Z"
     }
   ]
 }
