@@ -1,0 +1,32 @@
+{
+  "statuses": [
+    { "token": "new", "name": "ذخیره‌شده", "count": 12 },
+    { "token": "applied", "name": "درخواست‌شده", "count": 7 },
+    { "token": "interview", "name": "مصاحبه", "count": 3 },
+    { "token": "rejected", "name": "رد شده", "count": 14 },
+    { "token": "offer", "name": "پیشنهاد کار", "count": 1 },
+    { "token": "custom-1", "name": "سفارشی ۱", "count": 2 },
+    { "token": "custom-2", "name": "سفارشی ۲", "count": 0 },
+    { "token": "custom-3", "name": "سفارشی ۳", "count": 5 },
+    { "token": "custom-4", "name": "سفارشی ۴", "count": 1 }
+  ],
+  "renamedStatus": { "token": "applied", "name": "رزومه فرستادم", "count": 7 },
+  "longStatusName": "در انتظار پاسخ مصاحبهٔ فنی دوم با مدیر تیم مهندسی نرم‌افزار و منابع انسانی",
+  "jobs": [
+    { "id": "job-1", "title": "توسعه‌دهنده فرانت‌اند", "company": "فناوران نوین پارس", "status": "applied", "location": "تهران", "postedAt": "2026-08-30", "link": "https://example.com/jobs/1" },
+    { "id": "job-2", "title": "مهندس ارشد نرم‌افزار بک‌اند با تمرکز بر سامانه‌های توزیع‌شده و پرداخت آنلاین", "company": "شرکت خدمات و زیرساخت ابری مهر آسمان پارسیان", "status": "interview", "location": "تهران، دورکاری", "postedAt": "2026-08-21", "link": "https://example.com/jobs/2" },
+    { "id": "job-3", "title": "طراح محصول", "company": "دیجی‌نو", "status": "new", "location": "اصفهان", "postedAt": "2026-09-02", "link": null },
+    { "id": "job-4", "title": "کارشناس تضمین کیفیت", "company": "گروه نرم‌افزاری آسمان", "status": "rejected", "location": "شیراز", "postedAt": "2026-07-15", "link": "https://example.com/jobs/4" },
+    { "id": "job-5", "title": "مدیر محصول", "company": "راهکار داده", "status": "offer", "location": "تهران", "postedAt": "2026-08-01", "link": "https://example.com/jobs/5" },
+    { "id": "job-6", "title": "تحلیل‌گر داده", "company": "بینش هوشمند", "status": "custom-1", "location": "مشهد", "postedAt": "2026-08-25", "link": null }
+  ],
+  "contacts": [
+    { "id": "contact-1", "fullName": "سارا محمدی", "role": "مدیر منابع انسانی", "company": "فناوران نوین پارس", "email": "sara@example.com", "phone": "09121234567" },
+    { "id": "contact-2", "fullName": "سید محمدرضا حسینی‌نژاد طباطبایی", "role": "سرپرست جذب استعداد و توسعهٔ منابع انسانی سازمان", "company": "شرکت خدمات و زیرساخت ابری مهر آسمان پارسیان", "email": "mohammadreza.hosseininezhad.tabatabaei@example.com", "phone": "09351234567" },
+    { "id": "contact-3", "fullName": "علی رضایی", "role": "مصاحبه‌کنندهٔ فنی", "company": null, "email": null, "phone": null }
+  ],
+  "notes": [
+    { "id": "note-1", "jobId": "job-2", "text": "تماس گرفتند؛ مصاحبهٔ حضوری هفتهٔ بعد." },
+    { "id": "note-2", "jobId": "job-1", "text": "در مصاحبهٔ اول دربارهٔ تجربه‌ام با ری‌اکت و طراحی سیستم‌های رابط کاربری پرسیدند. گفتند تیم پنج نفر است و بیشتر روی داشبوردهای داخلی کار می‌کنند. قرار شد تا آخر هفته یک تمرین کوچک بفرستند و بعد از بررسی آن، جلسهٔ دوم را با مدیر فنی هماهنگ کنند. حقوق را هنوز مطرح نکرده‌ام." }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "statuses": [
+    { "token": "new", "name": "Saved", "count": 12 },
+    { "token": "applied", "name": "Applied", "count": 7 },
+    { "token": "interview", "name": "Interview", "count": 3 },
+    { "token": "rejected", "name": "Rejected", "count": 14 },
+    { "token": "offer", "name": "Job offer", "count": 1 },
+    { "token": "custom-1", "name": "Custom 1", "count": 2 },
+    { "token": "custom-2", "name": "Custom 2", "count": 0 },
+    { "token": "custom-3", "name": "Custom 3", "count": 5 },
+    { "token": "custom-4", "name": "Custom 4", "count": 1 }
+  ],
+  "renamedStatus": { "token": "applied", "name": "Sent my CV", "count": 7 },
+  "longStatusName": "Waiting to hear back after the second technical interview with the engineering manager and HR",
+  "jobs": [
+    { "id": "job-1", "title": "Frontend developer", "company": "Pars New Technologies", "status": "applied", "location": "Tehran", "postedAt": "2026-08-30", "link": "https://example.com/jobs/1" },
+    { "id": "job-2", "title": "Senior backend software engineer focused on distributed systems and online payments", "company": "Mehr Aseman Parsian Cloud Services and Infrastructure Company", "status": "interview", "location": "Tehran, remote", "postedAt": "2026-08-21", "link": "https://example.com/jobs/2" },
+    { "id": "job-3", "title": "Product designer", "company": "Diginow", "status": "new", "location": "Isfahan", "postedAt": "2026-09-02", "link": null },
+    { "id": "job-4", "title": "Quality assurance specialist", "company": "Aseman Software Group", "status": "rejected", "location": "Shiraz", "postedAt": "2026-07-15", "link": "https://example.com/jobs/4" },
+    { "id": "job-5", "title": "Product manager", "company": "Rahkar Data", "status": "offer", "location": "Tehran", "postedAt": "2026-08-01", "link": "https://example.com/jobs/5" },
+    { "id": "job-6", "title": "Data analyst", "company": "Binesh Hooshmand", "status": "custom-1", "location": "Mashhad", "postedAt": "2026-08-25", "link": null }
+  ],
+  "contacts": [
+    { "id": "contact-1", "fullName": "Sara Mohammadi", "role": "HR manager", "company": "Pars New Technologies", "email": "sara@example.com", "phone": "09121234567" },
+    { "id": "contact-2", "fullName": "Seyed Mohammad-Reza Hosseini-Nezhad Tabatabaei", "role": "Head of talent acquisition and organisational people development", "company": "Mehr Aseman Parsian Cloud Services and Infrastructure Company", "email": "mohammadreza.hosseininezhad.tabatabaei@example.com", "phone": "09351234567" },
+    { "id": "contact-3", "fullName": "Ali Rezaei", "role": "Technical interviewer", "company": null, "email": null, "phone": null }
+  ],
+  "notes": [
+    { "id": "note-1", "jobId": "job-2", "text": "They called; in-person interview next week." },
+    { "id": "note-2", "jobId": "job-1", "text": "The first interview was about my experience with React and designing interface systems. They said the team has five people and mostly works on internal dashboards. They will send a small exercise by the end of the week, and after reviewing it they will set up a second meeting with the engineering lead. I have not raised salary yet." }
+  ]
+}

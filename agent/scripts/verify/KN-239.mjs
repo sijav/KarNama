@@ -46,7 +46,7 @@ check('Default has no render of its own, so it renders the component from its ar
 
 check('THE CASE: a render that ignores its args fails the non-default-args story', () => {
   const original = readFileSync(STORIES, 'utf8')
-  const anchor = "  args: { status: 'applied', label: 'درخواست‌شده', size: 'S' },\n"
+  const anchor = "  args: { status: 'applied', label: statusName('fa-IR', 'applied'), size: 'S' },\n"
   if (!original.includes(anchor)) return 'the meta args changed shape, so this mutation no longer applies'
   try {
     // A meta-level render that draws the same chip whatever the args say.

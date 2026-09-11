@@ -8,6 +8,7 @@ import { i18n } from '../../i18n'
 import { contrast } from '../../theme/darkMode'
 import { iconSize, radius, semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
+import { fixtures } from '../story-fixtures'
 import { isBlank } from './blank'
 import { Input, type InputProps } from './Input'
 
@@ -55,7 +56,11 @@ const changes = (before: Record<string, string>, after: Record<string, string>) 
   [...new Set([...Object.keys(before), ...Object.keys(after)])].filter((name) => before[name] !== after[name]).map((name) => `${name}: ${before[name] ?? 'unset'} → ${after[name] ?? 'unset'}`)
 
 // What a user typed: record data, so it is not translated.
-const TYPED = 'توسعه‌دهنده فرانت‌اند'
+const [FIRST_JOB] = fixtures('fa-IR').jobs
+if (!FIRST_JOB) throw new Error('the story fixtures have no job opportunity')
+const TYPED = FIRST_JOB.title
+// The first word of it, as someone types it before the rest.
+const SHORT = TYPED.slice(0, 5)
 
 // The design's own specimen, node 95:38: the job title field of the add-job
 // form, its copy through the catalog in the language active when it is read.
@@ -351,7 +356,7 @@ export const WithError: Story = {
   // carry, so the controls are not offered.
   parameters: { controls: { disable: true } },
   globals: { colorScheme: 'light' },
-  render: () => <JobTitle defaultValue="توسعه" withError />,
+  render: () => <JobTitle defaultValue={SHORT} withError />,
   play: async ({ canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')
     const field = fieldOf(canvasElement)
@@ -445,7 +450,7 @@ export const FocusedWhileInvalid: Story = {
     // A host that clips what overflows it and has no padding, so its inline
     // edges are the field's, as a modal or a scroll area can be, KN-274.
     <Box data-testid="clipping-host" sx={{ overflow: 'hidden' }}>
-      <JobTitle defaultValue="توسعه" withError />
+      <JobTitle defaultValue={SHORT} withError />
     </Box>
   ),
   play: async ({ canvasElement }) => {

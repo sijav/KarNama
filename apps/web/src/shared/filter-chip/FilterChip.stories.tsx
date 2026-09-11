@@ -4,6 +4,7 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import { contrast } from '../../theme/darkMode'
 import { spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
+import { statusName } from '../story-fixtures'
 import { FilterChip } from './FilterChip'
 
 const px = (value: string) => Number.parseFloat(value) || 0
@@ -87,7 +88,7 @@ const rounded = (w: number, h: number, r: number) => w * h - (4 - Math.PI) * r *
 const meta = {
   title: 'Shared/FilterChip',
   component: FilterChip,
-  args: { label: 'مصاحبه', count: 3, selected: false, onToggle: fn() },
+  args: { label: statusName('fa-IR', 'interview'), count: 3, selected: false, onToggle: fn() },
   argTypes: {
     selected: { control: 'boolean' },
     count: { control: 'number' },
@@ -121,7 +122,7 @@ export const Default: Story = {
     const chip = within(canvasElement).getByRole('button')
     // The count is in the reader's own digits, which is the whole reason it
     // goes through i18n.number rather than into the string raw.
-    await expect(chip).toHaveTextContent('مصاحبه (۳)')
+    await expect(chip).toHaveTextContent(`${statusName('fa-IR', 'interview')} (۳)`)
     await expect(chip).toHaveAttribute('aria-pressed', 'false')
     // Node 159:63: a one pixel edge, inside, and the text 12 from each side.
     const edge = await isTheFiles(canvasElement)
@@ -148,7 +149,7 @@ export const InEnglish: Story = {
   play: async ({ canvasElement }) => {
     // Same component, Latin digits. The label is record data and arrives as
     // whatever the user named the status, so it does not translate.
-    await expect(within(canvasElement).getByRole('button')).toHaveTextContent('مصاحبه (3)')
+    await expect(within(canvasElement).getByRole('button')).toHaveTextContent(`${statusName('fa-IR', 'interview')} (3)`)
     // And the same 12 either side, the direction turned.
     await isTheFiles(canvasElement)
   },

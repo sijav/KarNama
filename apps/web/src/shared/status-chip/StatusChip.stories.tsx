@@ -4,6 +4,7 @@ import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
 import { status as statusTokens, type StatusToken } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
+import { fixtures, statusName } from '../story-fixtures'
 import { defaultStatusName, type DefaultStatus } from './defaultStatusName'
 import { StatusChip } from './StatusChip'
 
@@ -29,7 +30,7 @@ const chipOf = (name: HTMLElement) => {
 const DEFAULTS: DefaultStatus[] = ['new', 'applied', 'interview', 'rejected', 'offer']
 
 // A status a user renamed to something long: record data, so not translated.
-const LONG = 'در انتظار پاسخ مصاحبهٔ فنی دوم با مدیر تیم مهندسی نرم‌افزار و منابع انسانی'
+const LONG = fixtures('fa-IR').longStatusName
 
 // A long name in the 276 of a kanban column header, the width from 241:2.
 const InAColumn = () => (
@@ -40,10 +41,10 @@ const InAColumn = () => (
 // The custom slots have no default name: whatever the user called the status
 // is record data. The legend's names at node 410:470 stand in for it.
 const CUSTOM: [StatusToken, string][] = [
-  ['custom-1', 'سفارشی ۱'],
-  ['custom-2', 'سفارشی ۲'],
-  ['custom-3', 'سفارشی ۳'],
-  ['custom-4', 'سفارشی ۴'],
+  ['custom-1', statusName('fa-IR', 'custom-1')],
+  ['custom-2', statusName('fa-IR', 'custom-2')],
+  ['custom-3', statusName('fa-IR', 'custom-3')],
+  ['custom-4', statusName('fa-IR', 'custom-4')],
 ]
 
 // A default status, named as a fresh account first sees it.
@@ -67,7 +68,7 @@ const Row = ({ size }: { size: 'S' | 'M' }) => (
 const meta = {
   title: 'Shared/StatusChip',
   component: StatusChip,
-  args: { status: 'applied', label: 'درخواست‌شده', size: 'S' },
+  args: { status: 'applied', label: statusName('fa-IR', 'applied'), size: 'S' },
   argTypes: {
     status: { control: 'select', options: Object.keys(statusTokens) },
     size: { control: 'inline-radio', options: ['S', 'M'] },
@@ -84,7 +85,7 @@ export const FromArgs: Story = {
   // Nothing like the defaults: a custom slot at the column-header size. The
   // chip must follow the args, or the Controls panel is controlling nothing.
   globals: { colorScheme: 'light' },
-  args: { status: 'custom-2', label: 'سفارشی ۲', size: 'M' },
+  args: { status: 'custom-2', label: statusName('fa-IR', 'custom-2'), size: 'M' },
   play: async ({ args, canvasElement }) => {
     const chip = chipOf(within(canvasElement).getByText(args.label))
     await expect(chip.offsetHeight).toBe(28)
@@ -140,7 +141,7 @@ export const AllStatuses: Story = {
 export const ColumnHeaderSize: Story = {
   args: { size: 'M' },
   play: async ({ canvasElement }) => {
-    const chip = chipOf(within(canvasElement).getByText('درخواست‌شده'))
+    const chip = chipOf(within(canvasElement).getByText(statusName('fa-IR', 'applied')))
     // Size=M: 28 tall, body's 14 and 22 with label's weight and tracking.
     await expect(chip.offsetHeight).toBe(28)
     const style = getComputedStyle(chip)
@@ -150,7 +151,7 @@ export const ColumnHeaderSize: Story = {
 
 export const DisplayOnly: Story = {
   play: async ({ canvasElement }) => {
-    const chip = chipOf(within(canvasElement).getByText('درخواست‌شده'))
+    const chip = chipOf(within(canvasElement).getByText(statusName('fa-IR', 'applied')))
     // Nothing to press and nothing to land on: no role, no tabindex, and Tab
     // passes it by. A focus ring on every card is exactly what this avoids.
     await expect(chip).not.toHaveAttribute('role')
@@ -164,10 +165,10 @@ export const DisplayOnly: Story = {
 export const RenamedStatus: Story = {
   // The user renamed Applied. The chip shows THEIR name, from the record, and
   // not the catalog's, which no longer describes this status.
-  args: { status: 'applied', label: 'رزومه فرستادم' },
+  args: { status: 'applied', label: fixtures('fa-IR').renamedStatus.name },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByText('رزومه فرستادم')).toBeInTheDocument()
-    await expect(within(canvasElement).queryByText('درخواست‌شده')).not.toBeInTheDocument()
+    await expect(within(canvasElement).getByText(fixtures('fa-IR').renamedStatus.name)).toBeInTheDocument()
+    await expect(within(canvasElement).queryByText(statusName('fa-IR', 'applied'))).not.toBeInTheDocument()
   },
 }
 

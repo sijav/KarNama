@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 302,
+  "nextId": 305,
   "tasks": [
     {
       "id": "KN-001",
@@ -896,7 +896,24 @@
       ],
       "status": "done",
       "exit": "Three states match Figma, the tablist follows the roving tabindex pattern with arrow key navigation, the active tab is announced as selected, and panels are associated with their tabs.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6.8,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-023-round-1.2026-09-11T12-00-55-412Z.md",
+          "filed": [
+            "KN-302",
+            "KN-303",
+            "KN-304"
+          ],
+          "cardDigest": "af75294b71ca906568682e88a4e458b95012ae13f74746ecd6186a2c8329e306",
+          "head": "dde81498f467369cfbf821735e3cd7422f59510d",
+          "reviewerScore": 6.8,
+          "reviewerCriticals": 0,
+          "at": "2026-09-11T12:04:22.657Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -1833,7 +1850,7 @@
         "KN-003",
         "KN-007"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Every component story that needs data uses the shared fixtures, a Docs page rendering many stories at once seeds without error, the fixtures never appear in the production bundle and a test asserts that, and each fixture set has a long value that exercises truncation in both languages.",
       "roasts": [],
       "notes": [
@@ -1841,7 +1858,7 @@
         "2026-09-10, from KN-010: the Status Chip stories hold record data as literals, the custom-slot names from the legend and a renamed status's name, following the FilterChip precedent. Those belong in shared story fixtures when this card builds them, and KN-214's fix will flag them as literals until then."
       ],
       "createdAt": "2026-09-07T21:10:45.923Z",
-      "updatedAt": "2026-09-10T09:00:49.232Z"
+      "updatedAt": "2026-09-11T12:01:45.630Z"
     },
     {
       "id": "KN-063",
@@ -7782,6 +7799,51 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T11:56:11.153Z"
+    },
+    {
+      "id": "KN-302",
+      "title": "Every tab panel is a tab stop, so a panel holding a field puts an extra stop before it",
+      "desc": "CHILD OF KN-023, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-023 roast. Tabs.tsx gives every tabpanel tabIndex 0, so Tab from the tab list lands on the panel itself and only then on the note field inside it. The WAI-ARIA tabs pattern gives a panel a tab stop only when it has no focusable content.",
+      "why": "Someone moving through the job opportunity window with the keyboard meets a stop that does nothing before every field in a panel, which is noise in the tab order of the product's busiest window.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A panel with focusable content is not itself a tab stop and one with none is, decided from what it renders; a story with a field in a panel shows Tab going from the tab to the field, and one with only text shows the panel reached.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:04:17.135Z"
+    },
+    {
+      "id": "KN-303",
+      "title": "Tab and panel ids are built from tab values, so a value with a space breaks the tab's link to its panel",
+      "desc": "CHILD OF KN-023, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-023 roast. Tabs.tsx builds each tab's id and aria-controls from the tab's value; a value such as 'application note' puts whitespace in the id, and aria-controls then reads as two id references, neither of them the panel.",
+      "why": "The tab-to-panel association is what tells a screen reader which panel a tab shows; a caller free to pick any value can break it without any error.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Tab and panel ids are well-formed whatever the tab values, derived from the component's own id and each tab's position or an escaped value; a story with a value holding a space shows each tab's aria-controls naming its panel and the panel labelled by its tab.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:04:17.253Z"
+    },
+    {
+      "id": "KN-304",
+      "title": "On a hovered or chosen tab the indicator paints over the focus ring's bottom edge",
+      "desc": "CHILD OF KN-023, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-023 roast. The tab's indicator is its ::after and the focus ring its ::before; ::after paints later, so the two pixel indicator covers the ring's bottom band where they overlap, grey over blue on a hovered tab that has focus.",
+      "why": "The focus ring should read as one unbroken ring; a hovered, focused tab shows it cut along the bottom by the grey hover line.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A focused tab's ring is unbroken in every state, the indicator drawn beneath it or clear of it, shown in a story that focuses a hovered tab and reads the ring's bottom band as border/focus.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:04:17.356Z"
     }
   ]
 }
