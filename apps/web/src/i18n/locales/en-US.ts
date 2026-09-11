@@ -97,4 +97,7 @@ export const messages: Record<string, string> = {
   'Sorted by': 'Sorted by',
   'Status': 'Status',
   'New status': 'New status',
+  'Select': 'Select',
+  'Delete contact': 'Delete contact',
+  'Send an email': 'Send an email',
 }

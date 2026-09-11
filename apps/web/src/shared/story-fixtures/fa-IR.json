@@ -21,9 +21,9 @@
     { "id": "job-6", "title": "تحلیل‌گر داده", "company": "بینش هوشمند", "status": "custom-1", "location": "مشهد", "postedAt": "2026-08-25", "link": null }
   ],
   "contacts": [
-    { "id": "contact-1", "fullName": "سارا محمدی", "role": "مدیر منابع انسانی", "company": "فناوران نوین پارس", "email": "sara@example.com", "phone": "09121234567" },
-    { "id": "contact-2", "fullName": "سید محمدرضا حسینی‌نژاد طباطبایی", "role": "سرپرست جذب استعداد و توسعهٔ منابع انسانی سازمان", "company": "شرکت خدمات و زیرساخت ابری مهر آسمان پارسیان", "email": "mohammadreza.hosseininezhad.tabatabaei@example.com", "phone": "09351234567" },
-    { "id": "contact-3", "fullName": "علی رضایی", "role": "مصاحبه‌کنندهٔ فنی", "company": null, "email": null, "phone": null }
+    { "id": "contact-1", "fullName": "سارا محمدی", "role": "مدیر منابع انسانی", "company": "فناوران نوین پارس", "email": "sara@example.com", "phone": "09121234567", "linkedin": "linkedin.com/in/saramohammadi", "jobId": "job-1" },
+    { "id": "contact-2", "fullName": "سید محمدرضا حسینی‌نژاد طباطبایی", "role": "سرپرست جذب استعداد و توسعهٔ منابع انسانی سازمان", "company": "شرکت خدمات و زیرساخت ابری مهر آسمان پارسیان", "email": "mohammadreza.hosseininezhad.tabatabaei@example.com", "phone": "09351234567", "linkedin": "linkedin.com/in/mohammadreza-hosseininezhad-tabatabaei-talent", "jobId": "job-2" },
+    { "id": "contact-3", "fullName": "علی رضایی", "role": "مصاحبه‌کنندهٔ فنی", "company": null, "email": null, "phone": null, "linkedin": null, "jobId": null }
   ],
   "notes": [
     { "id": "note-1", "jobId": "job-2", "text": "تماس گرفتند؛ مصاحبهٔ حضوری هفتهٔ بعد." },

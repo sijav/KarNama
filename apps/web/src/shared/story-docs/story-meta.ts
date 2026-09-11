@@ -28,6 +28,7 @@ export type StoryTitle =
   | 'Shared/CardMenu'
   | 'Shared/Checkbox'
   | 'Shared/ColorPicker'
+  | 'Shared/ContactCard'
   | 'Shared/EmploymentTypeSelect'
   | 'Shared/EmptyState'
   | 'Shared/FilterChip'

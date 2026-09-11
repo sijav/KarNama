@@ -8631,8 +8631,11 @@
       "status": "backlog",
       "exit": "npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-11T14:54:20.307Z"
+      "notes": [
+        "2026-09-11: KN-026 adds one: the compact Contact Card's mail button, which assigns a mailto location, is not pressed by any story."
+      ],
+      "createdAt": "2026-09-11T14:54:20.307Z",
+      "updatedAt": "2026-09-11T14:58:16.875Z"
     }
   ]
 }

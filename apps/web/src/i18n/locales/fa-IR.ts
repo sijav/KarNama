@@ -100,4 +100,7 @@ export const messages: Record<string, string> = {
   'Sorted by': 'مرتب‌شده بر اساس',
   'Status': 'وضعیت',
   'New status': 'وضعیت تازه',
+  'Select': 'انتخاب',
+  'Delete contact': 'حذف مخاطب',
+  'Send an email': 'ارسال ایمیل',
 }

@@ -142,6 +142,7 @@ shadows, and each value below was read from the named node with
 | no style, tooltip | `410:469` | `#0000003D` `0 6` blur 18 spread -2 | none                            |
 | no style, bulk bar | `401:436` | `#00000029` `0 8` blur 24 spread -4 | none                           |
 | no style, options menu | `408:487` | `#0000001F` `0 8` blur 24 spread -4 | none                       |
+| no style, contact hover | `463:698` | `#0000000F` `0 2` blur 8 spread 0 | none                        |
 
 The third row is **not an effect style**. The tooltip at `410:469` draws its own
 shadow, 24 percent black, read from the frame's `get_design_context` because
@@ -153,7 +154,8 @@ at `401:436` draws one shadow of 16 percent black, the Modal style's first
 layer at a heavier alpha, bound to no style, read with use_figma on 2026-09-11.
 It is `elevation.bulkBar`. KN-025. The fifth is the Options Menu at `408:487`, the list a Select opens: the
 Modal style's first layer alone, at its own 12 percent, bound to no style,
-`elevation.optionsMenu`. KN-012. The thirteen-frame sweep below did not include `410:469`,
+`elevation.optionsMenu`. KN-012. The sixth is the compact Contact Card's hover,
+`463:698`, 6 percent black, `elevation.contactCardHover`. KN-026. The thirteen-frame sweep below did not include `410:469`,
 which is how it was missed until KN-218 read the frame itself.
 
 An earlier version of this document said Card was the only elevation in the
@@ -470,6 +472,28 @@ when they do not fit. The two selects the file names, «نوع همکاری» an
 شغلی», are `EmploymentTypeSelect` and `JobLevelSelect`, their values English
 ids and their names from the catalog. On the screens the only Select drawn is
 the contact modal's «آگهی مربوطه», whose own prompt is why the prompt is a prop.
+
+### The Contact Card
+
+Node `248:116`, Full and Compact, each Default, Hover and Selected. **Full** is
+360 wide: 24 of padding, 12 between rows, radius lg, one pixel of
+`border/default`; a title row of 30 with the name, 16 at SemiBold composed as
+the Empty State's title is, and at its other end a 24 square delete; the role
+and company in `text/secondary` joined by « · »; a divider; then email, phone,
+the linked job opportunity written «company — title», and LinkedIn in
+`text/brand`, each row its 16 icon in a 20 box at the inline start and its
+value at the other end. Hover draws one and a half of `border/focus` and brings
+the delete and the Checkbox into the row, the name moving over by 28, as the
+set's description says; Selected adds `bg/brand/container`. **Compact**, for
+the phone, is a row of 12 padding and gap, radius md: a 40 avatar in
+`bg/brand/container`, the name at 14 and 500 over the role at 12 and 400 on
+CSS's normal line height, and the mail and delete Icon Buttons; its Hover adds
+a shadow of its own, `elevation.contactCardHover`. Email and phone are mailto
+and tel links, LinkedIn opens in a new tab, a field the contact lacks draws no
+row, and every value is cut with an ellipsis. The name is the card's button,
+stretched over the card, so a press anywhere else opens the contact. The
+Checkbox keeps its ring whole in the Title Group, which clips nothing, KN-293.
+KN-026.
 
 ### The Status Picker, its choices and the Status Control
 

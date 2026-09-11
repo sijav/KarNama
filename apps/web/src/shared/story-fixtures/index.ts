@@ -37,6 +37,8 @@ export interface ContactFixture {
   company: string | null
   email: string | null
   phone: string | null
+  linkedin: string | null
+  jobId: string | null
 }
 
 export interface NoteFixture {

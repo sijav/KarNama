@@ -21,9 +21,9 @@
     { "id": "job-6", "title": "Data analyst", "company": "Binesh Hooshmand", "status": "custom-1", "location": "Mashhad", "postedAt": "2026-08-25", "link": null }
   ],
   "contacts": [
-    { "id": "contact-1", "fullName": "Sara Mohammadi", "role": "HR manager", "company": "Pars New Technologies", "email": "sara@example.com", "phone": "09121234567" },
-    { "id": "contact-2", "fullName": "Seyed Mohammad-Reza Hosseini-Nezhad Tabatabaei", "role": "Head of talent acquisition and organisational people development", "company": "Mehr Aseman Parsian Cloud Services and Infrastructure Company", "email": "mohammadreza.hosseininezhad.tabatabaei@example.com", "phone": "09351234567" },
-    { "id": "contact-3", "fullName": "Ali Rezaei", "role": "Technical interviewer", "company": null, "email": null, "phone": null }
+    { "id": "contact-1", "fullName": "Sara Mohammadi", "role": "HR manager", "company": "Pars New Technologies", "email": "sara@example.com", "phone": "09121234567", "linkedin": "linkedin.com/in/saramohammadi", "jobId": "job-1" },
+    { "id": "contact-2", "fullName": "Seyed Mohammad-Reza Hosseini-Nezhad Tabatabaei", "role": "Head of talent acquisition and organisational people development", "company": "Mehr Aseman Parsian Cloud Services and Infrastructure Company", "email": "mohammadreza.hosseininezhad.tabatabaei@example.com", "phone": "09351234567", "linkedin": "linkedin.com/in/mohammadreza-hosseininezhad-tabatabaei-talent", "jobId": "job-2" },
+    { "id": "contact-3", "fullName": "Ali Rezaei", "role": "Technical interviewer", "company": null, "email": null, "phone": null, "linkedin": null, "jobId": null }
   ],
   "notes": [
     { "id": "note-1", "jobId": "job-2", "text": "They called; in-person interview next week." },
