@@ -80,6 +80,11 @@ export const Select = ({ label, options, value, multiple = false, placeholder, d
         labelId={labelId}
         multiple={multiple}
         displayEmpty
+        // The field is our own InputBase. MUI's default variant, outlined, hands
+        // a displayEmpty select's input a notched prop meant for its outline,
+        // which InputBase passes on to a div, and React warned of it on every
+        // run, KN-134.
+        variant="standard"
         disabled={disabled}
         value={multiple ? [...value] : (value[0] ?? '')}
         onChange={change}

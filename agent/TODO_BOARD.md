@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-134` ThemedTree sets i18n state while rendering** (high, 2 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-134` | ThemedTree sets i18n state while rendering | high | 2 | web | none | The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload. |
+
 ## Blocked (5)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -20,12 +26,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (232)
+## Backlog (231)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-134` | ThemedTree sets i18n state while rendering | high | 2 | web | none | The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload. |
 | `KN-167` | The API schema-entry test is flaky under load and fails the gate at random | high | 2 | api | none | The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure. |
 | `KN-178` | The preferences story's localStorage restore races with other stories | high | 2 | web | none | The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler. |
 | `KN-183` | KN-114's verifier can silently overwrite a concurrent catalog edit | high | 2 | web | none | The blank and untranslated rules live in a pure function that takes the catalogs as an argument; catalog.test.ts calls it on the real imported ones; a test drives it with in-memory catalogs containing each evasion, empty, whitespace, format characters only, the id exactly and the id with punctuation and casing changed, and requires each to be reported naming the id; KN-114's verifier no longer writes to any tracked file; and its header no longer needs to warn that an interrupted run leaves the catalog planted. |
@@ -2006,7 +2011,7 @@ packages/graphql/scripts/check-generated.mjs defines fail() at line 24 as a func
 
 ### `KN-134` ThemedTree sets i18n state while rendering
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** in_progress · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 The web test suite prints, on every run: "Cannot update a component (I18nProvider) while rendering a different component (ThemedTree). To locate the bad setState() call inside ThemedTree...". apps/web/src/app/AppProviders.tsx activates the locale on i18n during ThemedTree's render rather than in an effect or before mount, so a render of one component schedules a state update in another. React names this specifically because the update is not part of the render it interrupts: under concurrent rendering the two can disagree about which locale is active, which shows up as a flash of the wrong language or a catalog read before activation. Nothing currently fails because of it, which is why it has survived. It is 222 passing tests loud.

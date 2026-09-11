@@ -2992,10 +2992,11 @@
       "exit": "A story that mounts a Persian and an English AppProviders side by side renders each in its own language and direction, the switch still shows no flash of the previous catalog, and a test covers both.",
       "roasts": [],
       "notes": [
-        "Seen on 2026-09-11 while doing KN-301: with the Language toolbar on Persian, the Color Picker's and the Status Chip's Docs pages end with the preview document at dir=ltr lang=en-US, and the Color Picker's canvases draw 'Status colour' in English, left to right, because their stories pinned to en-US (InEnglish, ArrowsInEnglish, LongNameInEnglish) render last. The Button's page, with no English story, stays Persian. The page AGENTS.md section 5 item 7 calls the failure mode: Persian at the top and English once you scroll."
+        "Seen on 2026-09-11 while doing KN-301: with the Language toolbar on Persian, the Color Picker's and the Status Chip's Docs pages end with the preview document at dir=ltr lang=en-US, and the Color Picker's canvases draw 'Status colour' in English, left to right, because their stories pinned to en-US (InEnglish, ArrowsInEnglish, LongNameInEnglish) render last. The Button's page, with no English story, stays Persian. The page AGENTS.md section 5 item 7 calls the failure mode: Persian at the top and English once you scroll.",
+        "2026-09-11, KN-134: the tree no longer reads the shared singleton; each AppProviders hands its I18nProvider the catalog instance for its own locale, i18nFor, so two providers on one page render each in its own language. What is left of this card is the document's dir and lang, still set by whichever provider commits last, and a side-by-side story proving the catalogs."
       ],
       "createdAt": "2026-09-07T23:11:17.210Z",
-      "updatedAt": "2026-09-11T18:39:48.635Z"
+      "updatedAt": "2026-09-11T20:57:58.009Z"
     },
     {
       "id": "KN-091",
@@ -4158,11 +4159,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-08T03:07:02.115Z"
+      "createdAt": "2026-09-08T03:07:02.115Z",
+      "updatedAt": "2026-09-11T20:49:58.105Z"
     },
     {
       "id": "KN-135",

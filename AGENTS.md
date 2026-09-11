@@ -169,7 +169,10 @@ deliberate supply-chain protection. Do not override it.
 ### Coverage is total, and the tests have to be real
 
 The target is 100 percent, and it is a floor rather than a trophy. A test that
-asserts nothing is worse than no test, because it reports green. A component
+asserts nothing is worse than no test, because it reports green. A test that
+makes React warn fails, in both projects, through
+`.storybook/react-warnings.setup.ts`, KN-134: a warning printed into a log
+nobody reads trains everyone to skip the next one. A component
 whose behaviour is never exercised has not been finished, whatever the line
 count says.
 

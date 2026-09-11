@@ -92,6 +92,8 @@ export default defineConfig({
           name: 'unit',
           environment: 'node',
           include: gateMode ? [...unitInclude, 'src/gate-fixtures/**/*.gate.ts'] : unitInclude,
+          // Both projects fail a test that makes React warn, KN-134.
+          setupFiles: ['.storybook/react-warnings.setup.ts'],
         },
       },
       {
@@ -105,7 +107,7 @@ export default defineConfig({
             instances: [{ browser: 'chromium' }],
             commands: { parkPointer },
           },
-          setupFiles: ['.storybook/vitest.setup.ts'],
+          setupFiles: ['.storybook/react-warnings.setup.ts', '.storybook/vitest.setup.ts'],
         },
       },
     ],

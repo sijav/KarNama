@@ -5,7 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { useLayoutEffect, useMemo, type ReactNode } from 'react'
 import { PreferencesProvider, usePreferences } from '../core/preferences'
-import { directionFor, type Locale } from '../i18n'
+import { directionFor, i18nFor, type Locale } from '../i18n'
 import { cacheFor } from '../theme/rtl'
 import { buildTheme } from '../theme/theme'
 import { resolveScheme, useSystemScheme, type ColorSchemePreference } from '../theme/useColorScheme'
@@ -56,11 +56,13 @@ const ThemedTree = ({ children }: { children: ReactNode }) => {
   const theme = useMemo(() => buildTheme(direction, scheme), [direction, scheme])
   const cache = useMemo(() => cacheFor(direction), [direction])
 
-  // Activated during render, not in an effect. An effect runs after the first
-  // paint, so the tree would render once against the previous catalog and then
-  // swap, which is a visible flash of the wrong language on every switch.
-  // `activate` is idempotent, and the guard keeps it from looping.
-  if (i18n.locale !== locale) i18n.activate(locale)
+  // The catalog for this locale, its own instance, KN-134. A switch hands the
+  // provider another instance, and @lingui/react 6's provider reads it through
+  // useSyncExternalStore on a store made from the prop, so the new language is
+  // in the same render: no flash of the old one, and no state of another
+  // component changed while this one renders, which activating the shared
+  // instance here did.
+  const catalog = i18nFor(locale)
 
   // The document element carries dir and lang, not a wrapper div: a portalled
   // MUI Menu or Dialog renders outside the tree, so a direction set on a
@@ -79,10 +81,13 @@ const ThemedTree = ({ children }: { children: ReactNode }) => {
     // untranslated copy a screen reader reads out. KN-087.
     document.documentElement.dir = direction
     document.documentElement.lang = locale
+    // The shared instance, for code outside the tree, follows after the commit,
+    // where changing it updates no component during another's render.
+    i18n.activate(locale)
   }, [direction, locale])
 
   return (
-    <I18nProvider i18n={i18n}>
+    <I18nProvider i18n={catalog}>
       <CacheProvider value={cache}>
         <ThemeProvider theme={theme}>
           <CssBaseline />

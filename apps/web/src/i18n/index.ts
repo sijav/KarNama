@@ -1,4 +1,4 @@
-import { i18n } from '@lingui/core'
+import { i18n, setupI18n, type I18n } from '@lingui/core'
 import { messages as en } from './locales/en-US'
 import { messages as fa } from './locales/fa-IR'
 
@@ -42,5 +42,20 @@ export const isLocale = (value: string): value is Locale => value in locales
 
 i18n.load({ 'en-US': en, 'fa-IR': fa })
 i18n.activate(defaultLocale)
+
+/**
+ * One catalog instance per locale, made once with its locale active and never
+ * switched. A tree takes the one for its locale, so rendering never changes
+ * shared state: activating the one shared instance during a render updated
+ * the I18nProvider from inside another component, which React warned of on
+ * every run, KN-134, and let two trees on one Docs page fight over it, KN-090.
+ * The shared `i18n` stays for code outside a tree, and the provider keeps it on
+ * the tree's locale after each commit.
+ */
+const catalogs: Record<Locale, I18n> = {
+  'fa-IR': setupI18n({ locale: 'fa-IR', messages: { 'fa-IR': fa } }),
+  'en-US': setupI18n({ locale: 'en-US', messages: { 'en-US': en } }),
+}
+export const i18nFor = (locale: Locale): I18n => catalogs[locale]
 
 export { i18n }
