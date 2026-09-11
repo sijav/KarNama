@@ -38,9 +38,38 @@ const { label: labelText, body } = typeScale
 // Node 95:38's icon slots, off unless given: 20 by 20, text/secondary through
 // currentColor, at the inline start and end, KN-267. Not hidden here: a
 // decorative icon hides itself, and a slot is not a button.
+/** Whether what a slot rendered has anything to read in it: any element, or text that is not blank. */
+const readable = (node: HTMLElement) => node.querySelector('*') !== null || !isBlank(node.textContent)
+
+/**
+ * Hides a slot whose rendered content has nothing to read, and keeps watching.
+ *
+ * Decided from what the slot RENDERED, not from what it was handed, KN-296.
+ * `drawn` below reads the prop, which is all it can do, and an array of a
+ * space, a fragment holding a zero-width space or a component that returns one
+ * are an array and elements to it; each renders a text node, which keeps the
+ * slot off `:empty` and leaves a hole the width of an icon with nothing in it.
+ * A ref callback, as the tab panels' stops are, so the reading happens in the
+ * commit before the browser paints, and an observer for content that arrives or
+ * changes later.
+ */
+const watchContent = (slot: HTMLSpanElement) => {
+  const read = () => {
+    const nothing = !readable(slot)
+    if (nothing !== slot.hidden) slot.hidden = nothing
+  }
+  read()
+  const observer = new window.MutationObserver(read)
+  observer.observe(slot, { subtree: true, childList: true, characterData: true })
+  return () => {
+    observer.disconnect()
+  }
+}
+
 const Slot = ({ children }: { children: ReactNode }) => (
   <Box
     component="span"
+    ref={watchContent}
     sx={(theme) => ({
       display: 'inline-flex',
       flexShrink: 0,
@@ -51,6 +80,11 @@ const Slot = ({ children }: { children: ReactNode }) => (
       // A child that rendered nothing, an empty fragment or an icon that
       // returned null, leaves the slot empty: then it is no slot, KN-291.
       '&:empty': { display: 'none' },
+      // And one that rendered only blank text is no slot either, KN-296. The
+      // display above would otherwise beat the hidden attribute's own, which is
+      // what `watchContent` sets, and the slot would keep its 20 pixels and the
+      // gap beside them.
+      '&[hidden]': { display: 'none' },
     })}
   >
     {children}
@@ -59,9 +93,13 @@ const Slot = ({ children }: { children: ReactNode }) => (
 
 // Whether a node draws anything: React renders nothing for undefined, null or
 // a boolean, so `hasIcon && <Icon />` turning an icon off draws no slot rather
-// than an empty 20 by 20 one, KN-291. And a string gives nothing to see when
-// the Input's own blank rule holds for it, the empty string, spaces or a
-// zero-width character, KN-254, KN-292. A number draws, as React draws it.
+// than an empty 20 by 20 one, KN-291. And a string has nothing to READ when the
+// Input's own blank rule holds for it, the empty string, spaces or a zero-width
+// character, KN-254, KN-292: nothing to read rather than nothing to see, so a
+// lone combining mark such as U+20DD, which draws a circle in some fonts, is
+// hidden here on purpose, as it is in a message. A number draws, as React draws
+// it. What this cannot see, an array, a fragment or a component holding blank
+// text, the slot itself catches after rendering, KN-296.
 const drawn = (node: ReactNode) => node !== undefined && node !== null && typeof node !== 'boolean' && !(typeof node === 'string' && isBlank(node))
 
 // Node 95:38, six states. The label is bound to the field for screen readers,

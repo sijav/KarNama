@@ -172,9 +172,10 @@ Both slots at once.
 
 Every way of turning an icon off. False or null, true, and a string with
 nothing to read, empty, a space, a zero-width space, a line break or a joiner,
-draw no slot at all. An empty fragment or an icon that renders nothing leaves a
-slot that collapses and takes no room. Either way the text stays where it is
-without an icon.
+draw no slot at all. What can only be seen once it has rendered leaves a slot
+that collapses and takes no room: an empty fragment, an icon that renders
+nothing, and an array, a fragment or a component holding only blank text.
+Either way the text stays where it is without an icon.
 
 ### WithoutAHelper
 

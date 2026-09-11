@@ -765,6 +765,10 @@ export const BothIcons: Story = {
 // An icon that renders nothing, the way a component can.
 const Nothing = () => null
 
+// An icon that renders a space: blank text the Input cannot see in the prop,
+// since a component is an element whatever it returns, KN-296.
+const Blank = () => ' '
+
 // Strings with nothing to see, spelled by code point so the source shows what
 // they are: a zero-width space, a line break and a zero-width joiner.
 const ZERO_WIDTH_SPACE = String.fromCodePoint(0x200b)
@@ -774,8 +778,10 @@ const ZERO_WIDTH_JOINER = String.fromCodePoint(0x200d)
 export const IconsTurnedOff: Story = {
   // Every way a caller turns an icon off: false and null, true and an empty
   // string, a space and a zero-width space, a line break and a joiner, an empty
-  // fragment and an icon that renders nothing. None draws a slot, and the text
-  // stays 16 from both edges, KN-291, KN-292. A fixed render.
+  // fragment and an icon that renders nothing, and the three that hand the slot
+  // blank text where the prop cannot show it, an array, a fragment and a
+  // component, KN-296. None draws a slot that takes room, and the text stays 16
+  // from both edges, KN-291, KN-292. A fixed render.
   parameters: { controls: { disable: true } },
   render: () => (
     <Stack>
@@ -794,6 +800,12 @@ export const IconsTurnedOff: Story = {
       <Box data-testid="empty-slot">
         <JobTitle leadingIcon={<></>} trailingIcon={<Nothing />} />
       </Box>
+      <Box data-testid="empty-slot">
+        <JobTitle leadingIcon={[' ']} trailingIcon={<>{ZERO_WIDTH_SPACE}</>} />
+      </Box>
+      <Box data-testid="empty-slot">
+        <JobTitle leadingIcon={<Blank />} trailingIcon={<Blank />} />
+      </Box>
     </Stack>
   ),
   play: async ({ canvasElement }) => {
@@ -807,15 +819,20 @@ export const IconsTurnedOff: Story = {
       await expect([box.previousElementSibling, box.nextElementSibling]).toEqual([null, null])
       await expect(textInsets(fieldOf(field), box)).toEqual([16, 16])
     }
-    // An empty fragment and an icon that renders nothing, which the Input
-    // cannot see before React renders them, get slots that collapse to nothing.
-    const field = canvas.getByTestId('empty-slot')
-    const box = within(field).getByRole('textbox')
-    for (const side of [box.previousElementSibling, box.nextElementSibling]) {
-      if (!(side instanceof HTMLElement)) throw new Error('the slot is not there')
-      await expect(side.getBoundingClientRect().width).toBe(0)
+    // What the Input cannot see before React renders it: an empty fragment and
+    // an icon that renders nothing, an array and a fragment holding blank text,
+    // and a component that returns a space. Each gets a slot that collapses to
+    // nothing, measured from what it rendered, KN-291, KN-296.
+    const rendered = canvas.getAllByTestId('empty-slot')
+    await expect(rendered).toHaveLength(3)
+    for (const field of rendered) {
+      const box = within(field).getByRole('textbox')
+      for (const side of [box.previousElementSibling, box.nextElementSibling]) {
+        if (!(side instanceof HTMLElement)) throw new Error('the slot is not there')
+        await expect(side.getBoundingClientRect().width).toBe(0)
+      }
+      await expect(textInsets(fieldOf(field), box)).toEqual([16, 16])
     }
-    await expect(textInsets(fieldOf(field), box)).toEqual([16, 16])
   },
 }
 
