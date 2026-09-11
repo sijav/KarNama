@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 352,
+  "nextId": 353,
   "tasks": [
     {
       "id": "KN-001",
@@ -767,7 +767,23 @@
       ],
       "status": "done",
       "exit": "All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the title, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-015-round-1.2026-09-11T15-54-01-824Z.md",
+          "filed": [
+            "KN-352"
+          ],
+          "cardDigest": "87a4077890ba70808b3f4d360246b752901154d2679afa38ebce6cf217bcd7e6",
+          "head": "f43e37bad607063bf6e11ce111448876385e9be4",
+          "reviewerScore": 5,
+          "reviewerCriticals": 1,
+          "dismissed": "The critical asks for the Title Group clipping mutation the exit condition names; the owner's rule of 2026-09-11 dropped mutation proofs at the close and the later instruction wins, and the story checks the real Title Group. The major, the phone checkbox unmounting while focused, stands and is filed.",
+          "at": "2026-09-11T15:57:58.131Z"
+        }
+      ],
       "notes": [
         "Card hover is Smart Animate 300ms in the prototype: the checkbox and the delete icon appear and the title moves forward. Per frame 416:14 these are component-level variant reactions rather than separate screens.",
         "From frame 376:43: the card keeps its height on hover by toggling visibility rather than removing the node. In CSS that means visibility hidden or opacity 0 for the checkbox and delete icon, never display none, or the card reflows and jumps under the cursor as it is hovered.",
@@ -2089,14 +2105,14 @@
         "KN-015",
         "KN-018"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T21:10:26.914Z",
-      "updatedAt": "2026-09-10T06:38:19.720Z"
+      "updatedAt": "2026-09-11T15:54:11.818Z"
     },
     {
       "id": "KN-061",
@@ -8871,6 +8887,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T15:49:47.336Z"
+    },
+    {
+      "id": "KN-352",
+      "title": "Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page",
+      "desc": "CHILD OF KN-015, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-015 roast. JobCard.tsx renders the phone card's checkbox only while the card is selected, so unchecking it by keyboard asks the parent to clear selected, the checkbox unmounts, and focus drops to body. The MobileSelected story checks only the initial checked state.",
+      "why": "A keyboard or switch user who unchecks a card has to start again from the top of the page, on the screen where they select most.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Unchecking the phone card's checkbox leaves focus on the card, either on a checkbox that stays and folds as the desktop's does or on the title, and a story unchecks it by keyboard and asserts where focus is.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T15:57:50.849Z"
     }
   ]
 }
