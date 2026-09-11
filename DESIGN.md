@@ -354,6 +354,50 @@ requires one; a field without a visible label would need an aria-label
 contract first, and nothing on the screens asks for it. The Helper Text boolean
 is the owner's decision of KN-285.
 
+### The Empty State, and the line height its title does not have
+
+Node `159:80` is a round mark of 64 in `bg/surface-secondary`, a title, a body
+and a Primary M button, 12 apart, with an 8 pixel spacer frame and a second 12
+above the button, so the button sits 32 below the body. It exposes the title
+and the body as text properties, and the screens use it three times: the empty
+job list, `243:64` and `305:1833`, the contacts, `305:2266`, and a search that
+finds nothing, `305:1684`, which keeps the button that adds a job opportunity.
+The body is fixed at 220 and wraps; the title hugs one line and may be the
+wider, as the contacts' is at 236, making that instance 300. Every instance
+carries the button, and the component has no boolean to hide it, so the code's
+action is required. KN-022.
+
+**The title binds no text style.** It is 16 at SemiBold on the file's automatic
+line height, 25 in Vazirmatn. It is composed from the roles, as the Status
+Chip's M is: Title's size and line height, 16 and 24, with SemiBold. So the
+state is 296 tall where the frame is 297.
+
+**The mark is all but invisible where it is used.** Every screen puts the Empty
+State on `bg/page`, `#f6f7f9`, and the mark is `#f3f4f6`, about 1.02 to one.
+It is decorative, so no contrast rule applies, and it is drawn as the file
+draws it; whether it should be `bg/surface` or carry an illustration is the
+owner's call.
+
+### The Loading State says why it is slow
+
+Node `159:92` is three dots of 10, spacing/2xs apart, in `border/focus`, the
+middle one lit and the others at 0.4, and the line «داره آگهی رو می‌خونه…» 16
+below them in Body, `text/secondary`. Its only use is the Loading Panel of the
+add flow, `243:965`, on `bg/surface`, so the dots frame's own `bg/surface` fill
+is left out. The file draws one frame and its description leaves the motion to
+code: each dot takes a turn of 300 ms, the state change of section 7, so the lit
+dot crosses the three in 900, and the moment the middle one is lit is the
+file's frame. A reader who asks for less motion gets that frame, standing
+still.
+
+**Past fifteen seconds the line changes.** Render's free tier sleeps and takes
+up to a minute to wake, DEPLOY.md, and three dots alone for that long look
+hung. So from fifteen seconds the line reads «هنوز داره می‌خونه. اگه سرور خواب
+بوده، بیدار شدنش تا یه دقیقه طول می‌کشه.», which says it is still working and
+names the likely cause without claiming it. The state is a status region, so a
+screen reader reads the change out. The file draws no second line; the copy is
+KN-022's, in the file's register. KN-022.
+
 ### A stroke is drawn inside, and takes no space
 
 Every stroke on a component in the file is aligned INSIDE and left out of
@@ -437,8 +481,8 @@ of the contract.
 | Page Header         | `155:56`  | title, optional back button, optional primary action                                            |
 | Search Bar          | `155:92`  | Default, Focus, Filled                                                                          |
 | Filter Chip         | `159:71`  | Default, Hover, Pressed, Selected, doubles as the status counter                                |
-| Empty State         | `159:80`  |                                                                                                 |
-| Loading State       | `159:92`  |                                                                                                 |
+| Empty State         | `159:80`  | title and body as text properties, a required Primary M action; used for jobs, contacts and search |
+| Loading State       | `159:92`  | three dots taking 300 ms turns; the line says why past fifteen seconds                          |
 | Menu Item           | `181:22`  | Default, Hover, Disabled, Destructive                                                           |
 | Menu                | `512:8350`| Type=Status, Type=Card                                                                          |
 | Select              | `183:26`  | Default, Filled, Focus, Disabled, Open                                                          |

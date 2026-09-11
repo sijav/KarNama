@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 322,
+  "nextId": 324,
   "tasks": [
     {
       "id": "KN-001",
@@ -8220,6 +8220,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T13:05:16.563Z"
+    },
+    {
+      "id": "KN-322",
+      "title": "Storybook never loads Vazirmatn, so every story draws its type in the system font",
+      "desc": "Found while building KN-022. '@fontsource-variable/vazirmatn' is imported only by apps/web/src/main.tsx; .storybook/preview.tsx imports no font, so the published library and the story tests draw Persian and English in whatever system-ui resolves to, Segoe UI on Windows. A text's width, a line break or a hugging component's size in a story is therefore not the design's.",
+      "why": "The library is where a component is compared with Figma, and the design's type is Vazirmatn.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T13:16:02.486Z"
+    },
+    {
+      "id": "KN-323",
+      "title": "The Empty State's round mark is about 1.02 to one on the bg/page every screen puts it on",
+      "desc": "Found while building KN-022. Node 159:80's mark is bg/surface-secondary, #f3f4f6, and all four instances on the screens, 243:64, 305:1833, 305:2266 and 305:1684, sit on bg/page, #f6f7f9, so the mark is all but invisible where it is used; on the Components canvas it sits on white and shows. It is decorative, so no contrast rule applies, and the code draws it as the file does.",
+      "why": "A shape the design places and nobody can see is either a mistake in the file or a placeholder for an illustration, and only the owner can say which.",
+      "severity": "low",
+      "points": 1,
+      "area": "design",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The owner chooses whether the mark stays, turns bg/surface or becomes an illustration, and the file, DESIGN.md and the component follow.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T13:25:31.828Z"
     }
   ]
 }

@@ -47,4 +47,13 @@ export const messages: Record<string, string> = {
   'Button': 'دکمه',
   'Back': 'بازگشت',
   'Add job opportunity': 'افزودن فرصت شغلی',
+  'You have not added a job posting yet': 'هنوز آگهی‌ای اضافه نکردی',
+  'Add your first posting by its link or its text, and follow it from here.': 'اولین آگهی‌ات را با لینک یا متن آگهی اضافه کن تا از همین‌جا پیگیری‌اش کنی.',
+  'You have not added anyone to your network yet': 'هنوز کسی رو به شبکه‌ت اضافه نکردی',
+  'Keep the people you meet on the way to a job here: recruiters, managers, future teammates.': 'آدم‌هایی را که در مسیر استخدام با آن‌ها در ارتباطی اینجا نگه دار: ریکروترها، مدیرها، هم‌تیمی‌های آینده.',
+  'Add contact': 'افزودن مخاطب',
+  'No results found': 'نتیجه‌ای پیدا نشد',
+  'Nothing matches this search. Try other words or remove the filters.': 'چیزی با این عبارت پیدا نشد. عبارت دیگری امتحان کن یا فیلترها را بردار.',
+  'Reading the job posting…': 'داره آگهی رو می‌خونه…',
+  'Still reading. If the server was asleep, waking it takes up to a minute.': 'هنوز داره می‌خونه. اگه سرور خواب بوده، بیدار شدنش تا یه دقیقه طول می‌کشه.',
 }

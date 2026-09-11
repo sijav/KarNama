@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 119 of 321 tasks done · 232 of 751 points.
+Project **KarNama** · 119 of 323 tasks done · 232 of 753 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -23,7 +23,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (197)
+## Backlog (199)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -52,6 +52,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-311` | An Icon Button's required name is proved on a helper, not on the rendered button, and a blank one throws during render | high | 1 | web | none | Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case. |
 | `KN-314` | A controlled Search Bar still runs a pending search for a value its parent has since replaced | high | 1 | web | none | In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call. |
 | `KN-320` | The Page Header's back control is a 20 by 20 target, under the 24 the product asks of a control | high | 1 | web | none | The back control's target is 24 or more each way while the arrow stays 20 and stays 12 from the title, and the WithBack story measures both. |
+| `KN-322` | Storybook never loads Vazirmatn, so every story draws its type in the system font | high | 1 | web | none | preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -197,6 +198,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-299` | KN-286's verifier reads the first alert and textbox in the tree, not the ones of the field it types into | low | 1 | agent | none | KN-286's verifier resolves the described field's input and its own alert span through the DevTools protocol, reads the accessibility nodes whose backendDOMNodeId are theirs, and fails when either id is missing; a story order swapped, the bare field first, still reads the described field's nodes; and KN-286's and KN-298's verifiers pass. |
 | `KN-307` | An Icon given a blank aria-label becomes an unnamed image instead of decoration | low | 1 | web | none | An Icon whose aria-label is empty or blank renders as decoration, aria-hidden with no role; a story renders one and asserts it. |
 | `KN-308` | The Icon's default size and colour are never exercised by a story | low | 1 | web | none | A story renders an Icon with only its name and asserts 24 by 24 and text/secondary. |
+| `KN-323` | The Empty State's round mark is about 1.02 to one on the bg/page every screen puts it on | low | 1 | design | none | The owner chooses whether the mark stays, turns bg/surface or becomes an illustration, and the file, DESIGN.md and the component follow. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4106,4 +4108,26 @@ CHILD OF KN-021, recorded in prose because board.json cannot express parent_task
 **Why.** Between 600 and 900 a tablet shows the header's switch, and only the two widths either side of 900 prove where it turns.
 
 **Exit condition.** The story shows the switch at 899 wide and hides it at 900.
+
+### `KN-322` Storybook never loads Vazirmatn, so every story draws its type in the system font
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+Found while building KN-022. '@fontsource-variable/vazirmatn' is imported only by apps/web/src/main.tsx; .storybook/preview.tsx imports no font, so the published library and the story tests draw Persian and English in whatever system-ui resolves to, Segoe UI on Windows. A text's width, a line break or a hugging component's size in a story is therefore not the design's.
+
+**Why.** The library is where a component is compared with Figma, and the design's type is Vazirmatn.
+
+**Exit condition.** preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text.
+
+### `KN-323` The Empty State's round mark is about 1.02 to one on the bg/page every screen puts it on
+
+- **status** backlog · **severity** low · **points** 1 · **area** design
+- **blocked by** none
+
+Found while building KN-022. Node 159:80's mark is bg/surface-secondary, #f3f4f6, and all four instances on the screens, 243:64, 305:1833, 305:2266 and 305:1684, sit on bg/page, #f6f7f9, so the mark is all but invisible where it is used; on the Components canvas it sits on white and shows. It is decorative, so no contrast rule applies, and the code draws it as the file does.
+
+**Why.** A shape the design places and nobody can see is either a mistake in the file or a placeholder for an illustration, and only the owner can say which.
+
+**Exit condition.** The owner chooses whether the mark stays, turns bg/surface or becomes an illustration, and the file, DESIGN.md and the component follow.
 

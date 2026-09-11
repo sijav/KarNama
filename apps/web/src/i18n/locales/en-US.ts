@@ -44,4 +44,13 @@ export const messages: Record<string, string> = {
   'Button': 'Button',
   'Back': 'Back',
   'Add job opportunity': 'Add job opportunity',
+  'You have not added a job posting yet': 'You have not added a job posting yet',
+  'Add your first posting by its link or its text, and follow it from here.': 'Add your first posting by its link or its text, and follow it from here.',
+  'You have not added anyone to your network yet': 'You have not added anyone to your network yet',
+  'Keep the people you meet on the way to a job here: recruiters, managers, future teammates.': 'Keep the people you meet on the way to a job here: recruiters, managers, future teammates.',
+  'Add contact': 'Add contact',
+  'No results found': 'No results found',
+  'Nothing matches this search. Try other words or remove the filters.': 'Nothing matches this search. Try other words or remove the filters.',
+  'Reading the job posting…': 'Reading the job posting…',
+  'Still reading. If the server was asleep, waking it takes up to a minute.': 'Still reading. If the server was asleep, waking it takes up to a minute.',
 }
