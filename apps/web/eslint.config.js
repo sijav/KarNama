@@ -75,14 +75,15 @@ const structuralProps =
 
 const linguiOptions = {
   ignore: [
-    // Anything with no letter in it cannot be a sentence: digits in the three
-    // scripts, whitespace, punctuation and symbols, Persian's own included.
-    // Written with no \p escape, because the plugin compiles every entry with
-    // new RegExp(entry) and no flags, and without the u flag \p{L} is the four
-    // characters p, {, L and }: the old entry whitelisted every string without
-    // one of them, all the Persian and most of the English, KN-214. A letter
-    // in any script falls outside this class and is checked.
-    '^[\\s0-9\\u0660-\\u0669\\u06F0-\\u06F9!-/:-@\\[-`{-~\\u00A0-\\u00BF\\u00D7\\u00F7\\u2000-\\u206F\\u2190-\\u21FF\\u2200-\\u22FF\\u25A0-\\u25FF\\u060C\\u061B\\u061F\\u066A-\\u066D\\u06D4]*$',
+    // No entry for a string with no letter in it: the plugin's own whitelist,
+    // /^[^\p{L}]+$/u, with the u flag this option cannot give, already skips any
+    // string with no letter in any script, and the rule drops a blank one
+    // before any whitelist. The entry that stood here repeated it: first as
+    // ^[^\p{L}]*$, which with no flags meant "no p, {, L or }" and let all the
+    // Persian and most of the English through, KN-214; then as a class of
+    // \u ranges that took U+00A0 to U+00BF whole and let the three letters in
+    // it, ª, µ and º, through, KN-366. lingui-ignore.test.ts reads the plugin's
+    // pattern as installed and holds both halves.
     '^(rtl|ltr|fa-IR|en-US)$',
     // A Storybook preview-channel event name. An API string the docs page
     // subscribes to, not something a person reads.

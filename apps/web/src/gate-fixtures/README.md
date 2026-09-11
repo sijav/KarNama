@@ -47,6 +47,11 @@ RegExp(entry)` and no flags, so the no-letter entry `^[^\p{L}]*$` meant "no
   same with no flags. The fixtures above have no letter child any more, so each
   fails on the string under test alone.
 
+- `unlocalized-latin-1-letters.tsx` — «1ª», «5µ» and «º», as a `title`, an
+  `aria-label` and text. The class the no-letter entry became took U+00A0 to
+  U+00BF whole, and three of those are letters, KN-366. The entry is gone: the
+  plugin's own `/^[^\p{L}]+$/u` already skips what has no letter.
+
 - `as-const-copy.tsx` and `as-const-story-title.stories.tsx` — copy and a
   meta title written `'…' as const`. lingui's rule returns early for a literal
   inside an `as const` assertion, before any other check, so both passed in any

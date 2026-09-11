@@ -9568,11 +9568,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T17:54:20.497Z"
+      "createdAt": "2026-09-11T17:54:20.497Z",
+      "updatedAt": "2026-09-11T20:08:01.386Z"
     },
     {
       "id": "KN-367",
