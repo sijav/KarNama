@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 152 of 389 tasks done · 331 of 832 points.
+Project **KarNama** · 152 of 390 tasks done · 331 of 833 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -19,7 +19,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (231)
+## Backlog (232)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -227,6 +227,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-383` | The Change Status modal opened on a status its list does not hold focuses its bare panel and confirms that status unchanged | low | 1 | web | none | Opened on a status its list does not hold, the Change Status modal puts focus on the first status and Confirm stays disabled until one is chosen, and a story renders the case. |
 | `KN-384` | FullTabOrder proves the Contact Card's forward Tab order, not that its controls stay unfolded while focused and fold once focus leaves | low | 1 | web | none | A story unticks a selected card's checkbox by keyboard and finds it still seen and focused, then tabs past the delete out of the card and finds the checkbox unseen and the delete at no width. |
 | `KN-388` | The kanban column counts a card component that renders nothing as a card, so a filtering wrapper still leaves a blank region | low | 1 | web | none | The column is told whether it has cards to show, by a prop or by the data it is given, and DESIGN.md or the column's docs say how a board filters before handing cards over; a story shows a filtered column with a wrapper that renders nothing drawing the empty state. |
+| `KN-390` | LanguageOnAPhone puts storage and the screen back, but leaves the live language English | low | 1 | web | none | LanguageOnAPhone chooses Persian again in its finally, or remounts the provider, so the document is rtl, fa-IR and the stored value what it was, even when an assertion before it throws, which the story checks at its end. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4606,6 +4607,8 @@ CHILD OF KN-027, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** At the phone's width the shell shows the Page Header with its language switch, choosing a language there changes it and persists, and a story at 390 finds and uses the switch.
 
+**Roasts.** round 1 scored 7 with 0 critical(s)
+
 ### `KN-356` Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected
 
 - **status** backlog · **severity** high · **points** 2 · **area** web
@@ -4979,4 +4982,15 @@ CHILD OF KN-060, recorded in prose because board.json cannot express parent_task
 **Why.** Search is how a user with a long board finds a job opportunity, and a column that contradicts itself while searching reads as losing data.
 
 **Exit condition.** Read the file for a search or filtered state of the board and its columns and settle, in DESIGN.md, what a column shows when a search hides its cards and what its count counts, asking the owner if the file is silent; the column does that, and a story renders a filtered column with a live count of one.
+
+### `KN-390` LanguageOnAPhone puts storage and the screen back, but leaves the live language English
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-027, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-355 roast. The story chooses English in the shell's header and its finally restores the viewport and the stored preference, but not the mounted provider's state, the document's dir and lang, or the lingui singleton: the tree stays English under the story's Persian globals, and a story that reuses the same provider, same seed and same key, would inherit it.
+
+**Why.** A story should leave the preview as it found it, or the next one passes or fails for a reason nobody can see.
+
+**Exit condition.** LanguageOnAPhone chooses Persian again in its finally, or remounts the provider, so the document is rtl, fa-IR and the stored value what it was, even when an assertion before it throws, which the story checks at its end.
 

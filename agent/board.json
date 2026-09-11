@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 390,
+  "nextId": 391,
   "tasks": [
     {
       "id": "KN-001",
@@ -9355,7 +9355,23 @@
       "parent": [],
       "status": "done",
       "exit": "At the phone's width the shell shows the Page Header with its language switch, choosing a language there changes it and persists, and a story at 390 finds and uses the switch.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-355-round-1.2026-09-11T19-57-01-065Z.md",
+          "filed": [
+            "KN-390"
+          ],
+          "cardDigest": "5b7512c6de2d84cde66bf8b4524775b10a27c633743891c53b30917225bc7b27",
+          "head": "09fa0ae4f902536bcb0dec60d5796957088e2f0e",
+          "reviewerScore": 7,
+          "reviewerCriticals": 0,
+          "dismissed": "Its major, the header switch in MUI's default styling, is KN-387, filed while doing KN-355 and not filed twice.",
+          "at": "2026-09-11T20:03:04.925Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T16:35:53.189Z",
       "updatedAt": "2026-09-11T19:56:44.421Z",
@@ -9886,6 +9902,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T19:57:38.148Z"
+    },
+    {
+      "id": "KN-390",
+      "title": "LanguageOnAPhone puts storage and the screen back, but leaves the live language English",
+      "desc": "CHILD OF KN-027, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-355 roast. The story chooses English in the shell's header and its finally restores the viewport and the stored preference, but not the mounted provider's state, the document's dir and lang, or the lingui singleton: the tree stays English under the story's Persian globals, and a story that reuses the same provider, same seed and same key, would inherit it.",
+      "why": "A story should leave the preview as it found it, or the next one passes or fails for a reason nobody can see.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "LanguageOnAPhone chooses Persian again in its finally, or remounts the provider, so the document is rtl, fa-IR and the stored value what it was, even when an assertion before it throws, which the story checks at its end.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T20:03:04.782Z"
     }
   ]
 }
