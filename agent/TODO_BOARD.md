@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 167 of 408 tasks done · 356 of 861 points.
+Project **KarNama** · 167 of 409 tasks done · 356 of 862 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-296` An Input icon given as an array, a fragment or a component that renders only blank text still draws an empty slot** (high, 2 pt, web)
+**Next up: `KN-409` The token guard's allowed names are every code span in DESIGN.md's Tokens section, not the token tables' own names** (high, 1 pt, web)
 
 ## Blocked (5)
 
@@ -20,11 +20,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (234)
+## Backlog (235)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-409` | The token guard's allowed names are every code span in DESIGN.md's Tokens section, not the token tables' own names | high | 1 | web | none | documentedNames is built from the token tables' name column and the spacing block alone, so a code span in the component notes is not a key; every key in tokens.ts still passes; a planted key documented only in the prose of section 1 fails the guard, and the positive control still names bg/page, custom-4, heading/l and 3xl. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-296` | An Input icon given as an array, a fragment or a component that renders only blank text still draws an empty slot | high | 2 | web | none | An Input whose icon renders only blank text, through an array, a fragment or a component, draws no slot that takes room and its text box sits 16 from that edge, decided from what the slot rendered rather than from the prop; IconsTurnedOff covers an array of a space, a fragment holding a zero-width space and a component returning a space, each asserting a slot that takes no room; a mutation removing the rendered check fails it by name; and the comment on drawn() says nothing to read, with the lone-mark case named as deliberate. |
 | `KN-305` | The story fixtures have no seeded board and no job opportunity in three of the nine statuses | high | 2 | web | none | Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages. |
@@ -3192,6 +3193,8 @@ CHILD OF KN-227, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Every string-literal key in tokens.ts must be a token name DESIGN.md documents, not a shape; the font stack must equal the documented value exactly; planted cases for a copy key, copy after Vazirmatn and a copy family each fail the guard; and the retirement check requires a clean baseline lint and lingui errors attributable to tokens.ts, STORAGE_KEY and TOOLTIP_SURFACE once they are removed, reporting an unrelated error as unjudgeable rather than as the debt standing.
 
+**Roasts.** round 1 scored 3.5 with 0 critical(s)
+
 ### `KN-235` A trigger's own aria-describedby replaces the tooltip's description instead of joining it
 
 - **status** done · **severity** critical · **points** 2 · **area** web
@@ -5237,4 +5240,15 @@ CHILD OF KN-007, recorded in prose because board.json cannot express parent_task
 **Why.** The note is the whole of the card's loud failure, and these are the two states where the page still goes quiet.
 
 **Exit condition.** A docs page with no attached CSF file shows the note rather than throwing, and an event that yields no locale puts the page back to not known, each with a test; the existing pages are unchanged.
+
+### `KN-409` The token guard's allowed names are every code span in DESIGN.md's Tokens section, not the token tables' own names
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-227, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-234 roast, judged real. KN-234 replaced the key shape with a set of names read from DESIGN.md, and the slice it reads runs from "## 1. Tokens" to "## 2. Component families", which is lines 41 to 837: the whole of the design notes for every component, not the token tables. So every inline code span in all of it is an allowed key once it fits the name shape, Elevation/Card as elevation/card among them, and a prose edit anywhere in those eight hundred lines can authorise a token-shaped key. The tighter rule is there to be read: the name column of the token tables, the first cell of each row when it is one code span, plus the words of the spacing, radius and icon block.
+
+**Why.** The card was about replacing a shape with the contract, and a set this wide is a shape again with more steps: nothing in the guard now says what a token name IS.
+
+**Exit condition.** documentedNames is built from the token tables' name column and the spacing block alone, so a code span in the component notes is not a key; every key in tokens.ts still passes; a planted key documented only in the prose of section 1 fails the guard, and the positive control still names bg/page, custom-4, heading/l and 3xl.
 

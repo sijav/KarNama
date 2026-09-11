@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 409,
+  "nextId": 410,
   "tasks": [
     {
       "id": "KN-001",
@@ -6525,7 +6525,23 @@
       "parent": [],
       "status": "done",
       "exit": "Every string-literal key in tokens.ts must be a token name DESIGN.md documents, not a shape; the font stack must equal the documented value exactly; planted cases for a copy key, copy after Vazirmatn and a copy family each fail the guard; and the retirement check requires a clean baseline lint and lingui errors attributable to tokens.ts, STORAGE_KEY and TOOLTIP_SURFACE once they are removed, reporting an unrelated error as unjudgeable rather than as the debt standing.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3.5,
+          "criticals": 0,
+          "file": "agent/roasts/KN-234-round-1.2026-09-11T22-19-47-950Z.md",
+          "filed": [
+            "KN-409"
+          ],
+          "cardDigest": "602d8bef0e3c94898a2a0650a55797a90ba18571adb1779fac41f0ef6e9ec6aa",
+          "head": "50c303d74d55d27cb0eea4a944e58fee924aaa5a",
+          "reviewerScore": 3,
+          "reviewerCriticals": 1,
+          "dismissed": "The critical, that closing KN-234 without the retirement check leaves an exit clause unmet: the clause was moved, not dropped. agent/scripts/verify/KN-227.mjs is loop machinery that nothing runs since verifiers left the close on 2026-09-11, and the owner's rule of that day puts a finding about the loop at low unless it is actively breaking the work; the clause is KN-406, at low, with its exit verbatim. Recorded as 0 criticals for that reason, and 3.5 rather than 3.0.",
+          "at": "2026-09-11T22:30:59.816Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T08:33:14.745Z",
       "updatedAt": "2026-09-11T22:18:26.489Z",
@@ -10475,6 +10491,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T22:19:19.595Z"
+    },
+    {
+      "id": "KN-409",
+      "title": "The token guard's allowed names are every code span in DESIGN.md's Tokens section, not the token tables' own names",
+      "desc": "CHILD OF KN-227, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-234 roast, judged real. KN-234 replaced the key shape with a set of names read from DESIGN.md, and the slice it reads runs from \"## 1. Tokens\" to \"## 2. Component families\", which is lines 41 to 837: the whole of the design notes for every component, not the token tables. So every inline code span in all of it is an allowed key once it fits the name shape, Elevation/Card as elevation/card among them, and a prose edit anywhere in those eight hundred lines can authorise a token-shaped key. The tighter rule is there to be read: the name column of the token tables, the first cell of each row when it is one code span, plus the words of the spacing, radius and icon block.",
+      "why": "The card was about replacing a shape with the contract, and a set this wide is a shape again with more steps: nothing in the guard now says what a token name IS.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "documentedNames is built from the token tables' name column and the spacing block alone, so a code span in the component notes is not a key; every key in tokens.ts still passes; a planted key documented only in the prose of section 1 fails the guard, and the positive control still names bg/page, custom-4, heading/l and 3xl.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T22:30:59.682Z"
     }
   ]
 }
