@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 417,
+  "nextId": 422,
   "tasks": [
     {
       "id": "KN-001",
@@ -11087,6 +11087,88 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T23:20:48.621Z"
+    },
+    {
+      "id": "KN-417",
+      "title": "A session in the browser is trusted whole: anyone who writes one into storage is signed in",
+      "desc": "CHILD OF KN-046, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-046 roast, its second critical, judged real and bounded. readSession accepts any object with a phone-shaped string, a name and a since, so writing one into localStorage from the developer tools opens the board without a code. It is what a mocked provider can be: nothing is issued that could be checked, since no server issues anything. The answer is the API's: a token from the auth endpoint, kept and sent with every request and refused when it is not valid, KN-036, which the shell wiring carries, KN-416. Until then the product holds only what this browser holds.",
+      "why": "Until a token exists, the sign-in is a door with no lock; whoever builds the API half has to know that the client half is waiting for it rather than assuming it was done.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-036"
+      ],
+      "status": "backlog",
+      "exit": "The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser.",
+      "okr": "OKR-2",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T23:54:11.729Z"
+    },
+    {
+      "id": "KN-418",
+      "title": "A phone reader cannot sign out: the tab bar takes no sign-out and the design draws none",
+      "desc": "CHILD OF KN-046, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-046 roast, judged real. Navigation passes the sidebar's props to the tab bar, which has room for the three destinations and nothing else, so onSignOut reaches nothing below the md breakpoint and the e2e skips its sign-out case on the phone. The design's mobile screens at page-map rows 1 to 6 draw no sign-out either, so where it goes is a question for the owner as much as a gap in the build: the Page Header already carries the language switch on a phone, KN-355, and could carry this.",
+      "why": "A reader who signs in on their phone cannot sign out at all, which on a shared phone is the whole of the ownership model gone.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A phone reader can sign out from a control the design agrees with, with the owner asked where it goes if the file draws none; the e2e covers signing out on the phone as well as the desktop, and its skip is gone.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T23:54:11.863Z"
+    },
+    {
+      "id": "KN-419",
+      "title": "Two tabs of KarNama do not agree about who is signed in",
+      "desc": "CHILD OF KN-046, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-046 roast, judged real and small. Nothing listens for the storage event, so signing out in one tab leaves the other showing the board, and two tabs finishing a first login write different names over each other. The same is true of the board itself, which is written whole on every change under one key per reader.",
+      "why": "A reader who signs out on a shared machine expects every tab to close, and the one that did not is the one somebody else finds open.",
+      "severity": "low",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A storage event moves both providers: signing out in one tab signs the other out, and a board changed in one tab is what the other shows, each with a test.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T23:54:11.992Z"
+    },
+    {
+      "id": "KN-420",
+      "title": "The expired code is never driven through the screen, only through its checker",
+      "desc": "CHILD OF KN-046, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-046 roast, its minor. checkCode is unit-tested for an expiry, but nothing drives the screen through one: no story and no e2e waits out the two minutes or moves the clock, so the message the reader sees and the resend that follows it are untested.",
+      "why": "The expired code is the ordinary experience of an OTP flow, and the path nobody exercises is the one that breaks.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A story or a test drives the screen through an expired code with the clock under its control, asserting the message and that a resend then works.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T23:54:12.116Z"
+    },
+    {
+      "id": "KN-421",
+      "title": "One reader's archive reached the next reader on the same browser",
+      "desc": "CHILD OF KN-046, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-046 roast, its first critical, and fixed at once because it is a reader seeing another reader's records. RecordsProvider read and wrote one key, karnama.records, whatever session was open, so signing in as one person, keeping job opportunities, signing out and signing in as another showed the second person the first one's whole board. The key now carries whoever it belongs to, karnama.records:<number>, and AppProviders keys the provider on the reader so a change mounts a fresh one rather than keeping the last reader's in memory.",
+      "why": "Every record in this product belongs to someone, and a shared browser handing one person's archive to the next is the ownership model gone.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "in_progress",
+      "exit": "The board is kept per reader and a fresh provider is mounted when the reader changes; an e2e signs in, keeps a job opportunity, signs out, signs in as somebody else and sees an empty board with no trace of the first reader's.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T23:54:27.076Z"
     }
   ],
   "okrs": [

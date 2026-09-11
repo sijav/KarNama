@@ -21,3 +21,12 @@ export const signedIn = async (page: Page, name = 'سارا محمدی', phone =
     { phone, name, since: new Date(Date.UTC(2026, 8, 1)).toISOString() },
   )
 }
+
+/** Every board this browser holds, whoever it belongs to, KN-421. */
+export const emptyBoard = async (page: Page) => {
+  await page.evaluate(() => {
+    for (const key of Object.keys(window.localStorage)) {
+      if (key.startsWith('karnama.records')) window.localStorage.removeItem(key)
+    }
+  })
+}

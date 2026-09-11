@@ -10,6 +10,16 @@ import { emptyRecords, jobFrom, newId, nextCustomToken, readRecords, withSaved, 
 /** Where the board is kept between visits, beside the preferences. */
 export const STORAGE_KEY = 'karnama.records'
 
+/**
+ * One board per reader, KN-421.
+ *
+ * The key carries whoever it belongs to: without it, signing out and signing in
+ * as somebody else showed the first reader's whole archive to the second, on a
+ * product whose every record belongs to someone. A board with no owner, which
+ * is a story or a test rendering the provider on its own, keeps the bare key.
+ */
+const keyFor = (owner: string) => (owner === '' ? STORAGE_KEY : `${STORAGE_KEY}:${owner}`)
+
 export interface RecordsValue extends Records {
   addJob: (draft: JobDraft) => void
   saveJob: (id: string, saved: JobSaved) => void
@@ -63,9 +73,9 @@ const storage = (): Storage | undefined => {
   }
 }
 
-const stored = (fallback: Records): Records => {
+const stored = (owner: string, fallback: Records): Records => {
   try {
-    const raw = storage()?.getItem(STORAGE_KEY)
+    const raw = storage()?.getItem(keyFor(owner))
     if (typeof raw !== 'string') return fallback
     return readRecords(JSON.parse(raw), fallback)
   } catch {
@@ -73,9 +83,9 @@ const stored = (fallback: Records): Records => {
   }
 }
 
-const keep = (records: Records) => {
+const keep = (owner: string, records: Records) => {
   try {
-    storage()?.setItem(STORAGE_KEY, JSON.stringify(records))
+    storage()?.setItem(keyFor(owner), JSON.stringify(records))
   } catch {
     // A reader with storage blocked still gets a board for this visit.
   }
@@ -84,10 +94,16 @@ const keep = (records: Records) => {
 export interface RecordsProviderProps {
   /** Seeds the set instead of what is stored, for a story or a test. */
   initial?: Records
+  /**
+   * Whose board this is, which is the signed-in reader's number. It is part of
+   * where the board is kept, so one reader never sees another's, KN-421, and
+   * the provider is keyed on it by the tree above so a change starts afresh.
+   */
+  owner?: string
   children: ReactNode
 }
 
-export const RecordsProvider = ({ initial, children }: RecordsProviderProps) => {
+export const RecordsProvider = ({ initial, owner = '', children }: RecordsProviderProps) => {
   const { i18n } = useLingui()
   // The catalog names the five the product starts with; a status the reader
   // renames is their own text from then on.
@@ -106,18 +122,21 @@ export const RecordsProvider = ({ initial, children }: RecordsProviderProps) => 
       ),
     [i18n],
   )
-  const [records, setRecords] = useState<Records>(() => initial ?? stored(empty))
+  const [records, setRecords] = useState<Records>(() => initial ?? stored(owner, empty))
   // What the last change produced, which is not what this render can see: two
   // changes in one batch would otherwise both build on the same snapshot, the
   // defect KN-112 closed for the preferences.
   const latest = useRef(records)
 
-  const change = useCallback((next: (from: Records) => Records) => {
-    const answer = next(latest.current)
-    latest.current = answer
-    setRecords(answer)
-    keep(answer)
-  }, [])
+  const change = useCallback(
+    (next: (from: Records) => Records) => {
+      const answer = next(latest.current)
+      latest.current = answer
+      setRecords(answer)
+      keep(owner, answer)
+    },
+    [owner],
+  )
 
   const value = useMemo<RecordsValue>(() => {
     const changeJobs = (ids: readonly string[], how: (job: JobEntry) => JobEntry) => {

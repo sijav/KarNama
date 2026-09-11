@@ -4,7 +4,7 @@ import { I18nProvider } from '@lingui/react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { useLayoutEffect, useMemo, type ReactNode } from 'react'
-import { AuthProvider } from '../core/auth'
+import { AuthProvider, useAuth } from '../core/auth'
 import { PreferencesProvider, usePreferences } from '../core/preferences'
 import { RecordsProvider } from '../core/records'
 import { directionFor, i18nFor, type Locale } from '../i18n'
@@ -95,10 +95,27 @@ const ThemedTree = ({ children }: { children: ReactNode }) => {
           {/* The board's records, inside the catalog so the five statuses the
               product starts with are named in the reader's language, KN-042. */}
           <AuthProvider>
-            <RecordsProvider>{children}</RecordsProvider>
+            <OwnBoard>{children}</OwnBoard>
           </AuthProvider>
         </ThemeProvider>
       </CacheProvider>
     </I18nProvider>
+  )
+}
+
+/**
+ * The board of whoever is signed in, KN-421.
+ *
+ * Keyed on the reader, so signing out and in as somebody else mounts a fresh
+ * provider that reads that reader's own board rather than keeping the last
+ * one's in memory.
+ */
+const OwnBoard = ({ children }: { children: ReactNode }) => {
+  const { session } = useAuth()
+  const owner = session?.phone ?? ''
+  return (
+    <RecordsProvider key={owner} owner={owner}>
+      {children}
+    </RecordsProvider>
   )
 }

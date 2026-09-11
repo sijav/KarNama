@@ -9,6 +9,8 @@ import { expect, test, type Page } from '@playwright/test'
  */
 const PHONE = '09120000000'
 const NAME = 'سارا محمدی'
+const OTHER_PHONE = '09121111111'
+const SECRET = 'کار محرمانه'
 
 /** The codes the mock says it sent, in the order it sent them. */
 const codesFrom = (page: Page): string[] => {
@@ -87,4 +89,36 @@ test('signing out clears the session and asks for a number again', async ({ page
   await expect(page.getByRole('button', { name: 'ارسال کد' })).toBeVisible()
   const kept = await page.evaluate(() => window.localStorage.getItem('karnama.session'))
   expect(kept).toBeNull()
+})
+
+test("one reader never sees another reader's archive", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'mobile', 'signing out is in the sidebar, which a phone does not draw')
+  const codes = codesFrom(page)
+
+  // The first reader signs in and keeps a job opportunity.
+  await signIn(page, codes)
+  await page.getByLabel('کد پنج رقمی').fill(codes[0] ?? '')
+  await page.getByRole('button', { name: 'ورود' }).click()
+  await page.getByLabel('اسم و فامیل').fill(NAME)
+  await page.getByRole('button', { name: 'ادامه' }).click()
+  await page.getByRole('button', { name: 'افزودن فرصت شغلی' }).first().click()
+  await page.getByRole('dialog').getByRole('button', { name: 'خودت دستی وارد کن' }).click()
+  await page.getByRole('dialog').getByLabel('عنوان شغلی*').fill(SECRET)
+  await page.getByRole('dialog').getByLabel('نام شرکت*').fill('جایی')
+  await page.getByRole('dialog').getByRole('button', { name: 'ذخیره' }).click()
+  await expect(page.getByRole('article').filter({ hasText: SECRET })).toBeVisible()
+
+  // They sign out, and somebody else signs in on the same browser.
+  await page.getByRole('button', { name: 'خروج' }).click()
+  await page.getByLabel('شماره موبایل').fill(OTHER_PHONE)
+  await page.getByRole('button', { name: 'ارسال کد' }).click()
+  await expect.poll(() => codes.length).toBeGreaterThan(1)
+  await page.getByLabel('کد پنج رقمی').fill(codes.at(-1) ?? '')
+  await page.getByRole('button', { name: 'ورود' }).click()
+  await page.getByLabel('اسم و فامیل').fill('کسی دیگر')
+  await page.getByRole('button', { name: 'ادامه' }).click()
+
+  // The board they get is their own, which is empty, KN-421.
+  await expect(page.getByText('هنوز آگهی‌ای اضافه نکردی')).toBeVisible()
+  await expect(page.getByRole('article').filter({ hasText: SECRET })).toHaveCount(0)
 })

@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 174 of 416 tasks done · 383 of 873 points.
+Project **KarNama** · 174 of 421 tasks done · 383 of 882 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-043` The kanban board screen** (critical, 13 pt, web)
+**Next up: `KN-421` One reader's archive reached the next reader on the same browser** (critical, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-421` | One reader's archive reached the next reader on the same browser | critical | 2 | web | none | The board is kept per reader and a fresh provider is mounted when the reader changes; an e2e signs in, keeps a job opportunity, signs out, signs in as somebody else and sees an empty board with no trace of the first reader's. |
 
 ## Blocked (5)
 
@@ -20,7 +26,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (235)
+## Backlog (239)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -45,6 +51,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-401` | The React-warning guard hears only a console.error with %s in it: React's plain-string errors and every console.warn pass, and nothing tests the guard | high | 2 | web | none | Every console.error and console.warn during a test of either project fails it unless it is one of the product's own diagnostics, recognised by an explicit mark rather than by the absence of %s, and a story that provokes one says so; a committed test drives the guard with a printf warning, a plain-string console.error, a console.warn and a product diagnostic and fails if any is classified differently; both projects pass apart from KN-365's flakes. |
 | `KN-403` | KN-167 traded the schema-entry test's 5 second budget for a 60 second one: test runSchemaCommand in process and start only light processes | high | 2 | api | none | No test in apps/api starts a process that loads NestJS or GraphQL; runSchemaCommand lives outside the entry file and its generate, current check, stale check and unknown command are tested in process against the source, covered; the schema entry's process test runs only commands that answer without loading the schema, in the default budget; HUNG_AFTER_MS, the hook budget of 0 and TECH-DEBT 20 are gone; the apps/api suite passes. |
 | `KN-405` | The story-docs parser still absorbs a # or #### heading, an unclosed fence and an empty entry without a problem | high | 2 | web | none | parseStoryDoc reports, with its line, a heading of level one or of level four and deeper outside a fence, a fence still open at the end of the file, at the line it opened, and an entry with no prose; each has a unit test asserting its message; the guard still passes on every docs file; AGENTS.md's sentence on the format lists what fails it and claims no more. |
+| `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
+| `KN-418` | A phone reader cannot sign out: the tab bar takes no sign-out and the design draws none | high | 2 | web | none | A phone reader can sign out from a control the design agrees with, with the owner asked where it goes if the file draws none; the e2e covers signing out on the phone as well as the desktop, and its skip is gone. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -226,6 +234,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-410` | The focus model's insetArea goes negative on a box narrower than its contour, and reads one circular corner for all four | low | 1 | web | none | insetArea clamps each side at zero as well as the radius, and takes the corner radii it is given rather than assuming the top left one; a contour wider than its box contributes nothing instead of a negative area, with a test for each; the Input stories still pass. |
 | `KN-411` | The Input's per-card verifiers still read the story's old shape, so they would fail if anyone ran them | low | 1 | agent | none | Each of the two verifiers runs against the current stories: the KN-244 check finds the area assertion in whatever form the story writes it, and KN-274 names the field it shoots rather than taking the first; or both are deleted with a line in their cards saying the stories now carry the check. |
 | `KN-414` | Nothing exercises the icon slot's observer: the story only reads the slot as it first rendered | low | 1 | web | none | A story drives an icon through blank, readable and blank again while the field stays mounted, asserting at each step that the slot is hidden or 20 wide as the content says, and that the text sits 16 or 40 from that edge to match; the Input stories pass. |
+| `KN-420` | The expired code is never driven through the screen, only through its checker | low | 1 | web | none | A story or a test drives the screen through an expired code with the clock under its control, asserting the message and that a resend then works. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -255,6 +264,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-251` | Nothing checks the Input's value control in the Controls panel follows what is typed | low | 2 | web | none | A check loads the whole Storybook, manager and preview, from a production build, sets value through the Controls panel's own field, types into the canvas, and reads the Controls panel's value field showing the typed text; and it fails with the binding taken out. |
 | `KN-309` | Every component imports the theme through relative parent paths, which AGENTS.md forbids | low | 2 | web | none | Either the components import through absolute src/ paths and a lint rule refuses a relative parent import, or AGENTS.md is corrected to the convention the code keeps; whichever, lint and tsc pass. |
 | `KN-404` | The API's process tests run whatever dist exists, so a stale build passes them | low | 2 | api | none | Each process test fails, rather than passing or skipping, when dist was built from source other than what is checked out, shown by editing an entry without rebuilding, or it runs against a build it makes itself; the apps/api suite passes after a build. |
+| `KN-419` | Two tabs of KarNama do not agree about who is signed in | low | 2 | web | none | A storage event moves both providers: signing out in one tab signs the other out, and a board changed in one tab is what the other shows, each with a test. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | low | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-136` | Commit the mutation cases, so a verifier's claim can be re-run | low | 3 | agent | none | One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
@@ -5341,4 +5351,59 @@ KN-042 put the three routes, the responsive navigation and the language switch i
 **Why.** A page that throws shows a blank screen to a job seeker, and the front and the back meet at the shell: until this lands, nothing that talks to the server can.
 
 **Exit condition.** AppProviders creates the Apollo client against the API's URL with the honest slow-start handling the design asks for, the shell holds who is signed in, and a screen that throws renders the error state rather than a blank page, each with a story or a test; a deep link to a screen that throws still shows the shell.
+
+### `KN-417` A session in the browser is trusted whole: anyone who writes one into storage is signed in
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** KN-036
+
+CHILD OF KN-046, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-046 roast, its second critical, judged real and bounded. readSession accepts any object with a phone-shaped string, a name and a since, so writing one into localStorage from the developer tools opens the board without a code. It is what a mocked provider can be: nothing is issued that could be checked, since no server issues anything. The answer is the API's: a token from the auth endpoint, kept and sent with every request and refused when it is not valid, KN-036, which the shell wiring carries, KN-416. Until then the product holds only what this browser holds.
+
+**Why.** Until a token exists, the sign-in is a door with no lock; whoever builds the API half has to know that the client half is waiting for it rather than assuming it was done.
+
+**Exit condition.** The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser.
+
+### `KN-418` A phone reader cannot sign out: the tab bar takes no sign-out and the design draws none
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-046, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-046 roast, judged real. Navigation passes the sidebar's props to the tab bar, which has room for the three destinations and nothing else, so onSignOut reaches nothing below the md breakpoint and the e2e skips its sign-out case on the phone. The design's mobile screens at page-map rows 1 to 6 draw no sign-out either, so where it goes is a question for the owner as much as a gap in the build: the Page Header already carries the language switch on a phone, KN-355, and could carry this.
+
+**Why.** A reader who signs in on their phone cannot sign out at all, which on a shared phone is the whole of the ownership model gone.
+
+**Exit condition.** A phone reader can sign out from a control the design agrees with, with the owner asked where it goes if the file draws none; the e2e covers signing out on the phone as well as the desktop, and its skip is gone.
+
+### `KN-419` Two tabs of KarNama do not agree about who is signed in
+
+- **status** backlog · **severity** low · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-046, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-046 roast, judged real and small. Nothing listens for the storage event, so signing out in one tab leaves the other showing the board, and two tabs finishing a first login write different names over each other. The same is true of the board itself, which is written whole on every change under one key per reader.
+
+**Why.** A reader who signs out on a shared machine expects every tab to close, and the one that did not is the one somebody else finds open.
+
+**Exit condition.** A storage event moves both providers: signing out in one tab signs the other out, and a board changed in one tab is what the other shows, each with a test.
+
+### `KN-420` The expired code is never driven through the screen, only through its checker
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-046, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-046 roast, its minor. checkCode is unit-tested for an expiry, but nothing drives the screen through one: no story and no e2e waits out the two minutes or moves the clock, so the message the reader sees and the resend that follows it are untested.
+
+**Why.** The expired code is the ordinary experience of an OTP flow, and the path nobody exercises is the one that breaks.
+
+**Exit condition.** A story or a test drives the screen through an expired code with the clock under its control, asserting the message and that a resend then works.
+
+### `KN-421` One reader's archive reached the next reader on the same browser
+
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-046, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-046 roast, its first critical, and fixed at once because it is a reader seeing another reader's records. RecordsProvider read and wrote one key, karnama.records, whatever session was open, so signing in as one person, keeping job opportunities, signing out and signing in as another showed the second person the first one's whole board. The key now carries whoever it belongs to, karnama.records:<number>, and AppProviders keys the provider on the reader so a change mounts a fresh one rather than keeping the last reader's in memory.
+
+**Why.** Every record in this product belongs to someone, and a shared browser handing one person's archive to the next is the ownership model gone.
+
+**Exit condition.** The board is kept per reader and a fresh provider is mounted when the reader changes; an e2e signs in, keeps a job opportunity, signs out, signs in as somebody else and sees an empty board with no trace of the first reader's.
 

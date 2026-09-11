@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { signedIn } from './session'
+import { emptyBoard, signedIn } from './session'
 
 /**
  * The add flow, end to end: the only way data enters the product, KN-044.
@@ -19,9 +19,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/')
   // An empty board to start from, cleared once rather than on every load: a
   // reload is part of the first test and what it saved has to survive it.
-  await page.evaluate(() => {
-    window.localStorage.removeItem('karnama.records')
-  })
+  await emptyBoard(page)
   await page.reload()
 })
 

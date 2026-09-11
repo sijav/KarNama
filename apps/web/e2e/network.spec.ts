@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { signedIn } from './session'
+import { emptyBoard, signedIn } from './session'
 
 /**
  * The network page, end to end, KN-056.
@@ -16,9 +16,7 @@ const REZA = 'رضا کریمی'
 test.beforeEach(async ({ page }) => {
   await signedIn(page)
   await page.goto('/#/network')
-  await page.evaluate(() => {
-    window.localStorage.removeItem('karnama.records')
-  })
+  await emptyBoard(page)
   await page.reload()
 })
 
