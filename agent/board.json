@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 297,
+  "nextId": 298,
   "tasks": [
     {
       "id": "KN-001",
@@ -7205,7 +7205,22 @@
       "parent": [],
       "status": "done",
       "exit": "The Input's stories and KN-266's production check measure where the text starts, the input's box edge plus its own padding, border and text-indent on the side the text starts from, given its direction and alignment, and read 16 as 95:5 draws it; a static text-indent, a padding on the input and a changed alignment, each present in every state, fail Default and the production check by name.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-283-round-1.2026-09-11T06-40-30-372Z.md",
+          "filed": [
+            "KN-297"
+          ],
+          "cardDigest": "73b62ab403bc8f40c64d8b9d4c4390f768bd505c5ae3106a4dc3e3f937005563",
+          "head": "583fc9fc5747fc954c4d17de478bd22eb5cdaff0",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "at": "2026-09-11T06:44:13.332Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T16:55:24.869Z",
       "updatedAt": "2026-09-11T06:40:06.195Z",
@@ -7290,11 +7305,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "An error that appears on a focused Input is announced through a live region present before the error arrives, and the field keeps aria-invalid and its aria-describedby association; clearing the error restores the helper as the description or removes aria-describedby when there is none; a story asserts the live region's role and that it carries the error text after the error is set on a focused field, and a mutation removing the live region fails it by name.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T17:37:15.021Z"
+      "createdAt": "2026-09-10T17:37:15.021Z",
+      "updatedAt": "2026-09-11T06:40:31.129Z"
     },
     {
       "id": "KN-287",
@@ -7508,6 +7524,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T05:03:54.532Z"
+    },
+    {
+      "id": "KN-297",
+      "title": "The Input's text measurement takes its direction from the input, so a placeholder with its own direction moves the text without failing a check",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-283 roast, KN-283 being a child of KN-011. textInsets in Input.stories.tsx, and KN-266's production check with it, read the placeholder's alignment and indent when the field is empty, but take the direction from the input. A static input::placeholder rule giving the placeholder its own direction, rtl in an English field, draws it from the right while the check still reports 16 from the left; unicode-bidi plaintext on the input lets a Persian value in an English field run from the right, and a writing mode other than horizontal-tb turns the axis the check measures along; none is guarded.",
+      "why": "KN-283 exists so that a check which says the text sits 16 from its edge notices the text moving, and this is a way the text moves that it does not notice. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "textInsets and KN-266's production check take the direction from the style of what the field shows, the placeholder's when it is empty, and refuse by name a writing mode other than horizontal-tb and a unicode-bidi that lets the content set the direction; a placeholder given the other direction and unicode-bidi plaintext on the input with a value in the other script, each present in every state, fail Default and the production check by name; and KN-283's verifier still passes.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T06:44:04.872Z"
     }
   ]
 }
