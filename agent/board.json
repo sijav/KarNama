@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 298,
+  "nextId": 299,
   "tasks": [
     {
       "id": "KN-001",
@@ -7307,7 +7307,23 @@
       "parent": [],
       "status": "done",
       "exit": "An error that appears on a focused Input is announced through a live region present before the error arrives, and the field keeps aria-invalid and its aria-describedby association; clearing the error restores the helper as the description or removes aria-describedby when there is none; a story asserts the live region's role and that it carries the error text after the error is set on a focused field, and a mutation removing the live region fails it by name.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7.2,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-286-round-1.2026-09-11T06-52-08-236Z.md",
+          "filed": [
+            "KN-298"
+          ],
+          "cardDigest": "cc53e27f909b412ade060ba84deed2bf1bad9f0c3984114198c64a0f10fdb6cc",
+          "head": "bbee6ea63271cd948611e1543ae3fef8cb9fbcfe",
+          "reviewerScore": 7.2,
+          "reviewerCriticals": 0,
+          "dismissed": "The major misreads agent/RALPH.md step 2b: a plan stays beside the work, and this one was committed with it, not untracked. The minor stands and is KN-298: one error replaced by another is not tested. The first answer is recorded in KN-286's evidence as not established: what a screen reader speaks, NVDA's reported double reading included.",
+          "at": "2026-09-11T06:57:49.379Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T17:37:15.021Z",
       "updatedAt": "2026-09-11T06:51:49.330Z",
@@ -7331,7 +7347,7 @@
         "2026-09-10: exit tightened after the KN-285 roast, which showed the first wording let the helper stay over an error, and let KN-011's verifier and the story docs keep asserting the reserved line after the change."
       ],
       "createdAt": "2026-09-10T17:57:44.885Z",
-      "updatedAt": "2026-09-10T18:04:14.898Z"
+      "updatedAt": "2026-09-11T06:52:20.246Z"
     },
     {
       "id": "KN-288",
@@ -7537,11 +7553,29 @@
       "points": 1,
       "area": "web",
       "parent": [],
+      "status": "in_progress",
+      "exit": "textInsets and KN-266's production check refuse by name unicode-bidi plaintext on the input, which lets the content set the direction, a writing mode other than horizontal-tb on the input, and an input whose direction is not the field's; unicode-bidi plaintext on the input, a vertical writing mode on it, and the input set to the other direction, each present in every state, fail Default and the production check by name; and KN-283's verifier still passes.",
+      "roasts": [],
+      "notes": [
+        "2026-09-11, measured in Chromium 151 before building: direction and writing-mode set on ::placeholder are ignored, the computed style stays the input's and the placeholder's pixels do not move, as CSS Pseudo-Elements 4 limits ::placeholder to the ::first-line properties; text-align on ::placeholder is honoured, and KN-283's helper already refuses it. So a placeholder cannot run the other way, and the exit is narrowed from a placeholder given the other direction to the input: unicode-bidi plaintext on the input moved a Persian value in the English field from x 0 to x 511 while its computed direction still read ltr, and a vertical writing mode turned the axis."
+      ],
+      "createdAt": "2026-09-11T06:44:04.872Z",
+      "updatedAt": "2026-09-11T06:57:15.053Z"
+    },
+    {
+      "id": "KN-298",
+      "title": "An Input's error replaced by another while the field has focus is not shown to reach its live region",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-286 roast, KN-286 being a child of KN-011. ErrorAnnouncedWhileTyping takes the alert from empty to one error and back, and KN-286's verifier reads the accessibility tree once after that; nothing replaces one error with another while the field keeps focus, a validator moving from too short to cannot be empty, say, though KN-286's plan says the alert reads again when the error changes. Whether a screen reader then speaks the second error is for a listening check, but whether the region carries it is not.",
+      "why": "A field whose error changes as the user types is the ordinary case for a form that validates as it goes, and the person typing needs the error that is true now, not the first one. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
       "status": "backlog",
-      "exit": "textInsets and KN-266's production check take the direction from the style of what the field shows, the placeholder's when it is empty, and refuse by name a writing mode other than horizontal-tb and a unicode-bidi that lets the content set the direction; a placeholder given the other direction and unicode-bidi plaintext on the input with a value in the other script, each present in every state, fail Default and the production check by name; and KN-283's verifier still passes.",
+      "exit": "A story replaces one error with another on a focused Input, focus kept, and asserts the same alert holds the second error and the field is described by it; KN-286's verifier reads Chromium's accessibility tree after the replacement, the alert holding the second error, in both languages; and KN-286's plan says what is tested and that no check here hears a screen reader.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T06:44:04.872Z"
+      "createdAt": "2026-09-11T06:57:49.127Z"
     }
   ]
 }

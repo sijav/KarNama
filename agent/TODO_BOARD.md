@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 105 of 297 tasks done · 196 of 719 points.
+Project **KarNama** · 105 of 298 tasks done · 196 of 720 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-297` The Input's text measurement takes its direction from the input, so a placeholder with its own direction moves the text without failing a check** (critical, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-297` | The Input's text measurement takes its direction from the input, so a placeholder with its own direction moves the text without failing a check | critical | 1 | web | none | textInsets and KN-266's production check refuse by name unicode-bidi plaintext on the input, which lets the content set the direction, a writing mode other than horizontal-tb on the input, and an input whose direction is not the field's; unicode-bidi plaintext on the input, a vertical writing mode on it, and the input set to the other direction, each present in every state, fail Default and the production check by name; and KN-283's verifier still passes. |
 
 ## Blocked (2)
 
@@ -23,7 +29,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | critical | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | critical | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
-| `KN-297` | The Input's text measurement takes its direction from the input, so a placeholder with its own direction moves the text without failing a check | critical | 1 | web | none | textInsets and KN-266's production check take the direction from the style of what the field shows, the placeholder's when it is empty, and refuse by name a writing mode other than horizontal-tb and a unicode-bidi that lets the content set the direction; a placeholder given the other direction and unicode-bidi plaintext on the input with a value in the other script, each present in every state, fail Default and the production check by name; and KN-283's verifier still passes. |
+| `KN-298` | An Input's error replaced by another while the field has focus is not shown to reach its live region | critical | 1 | web | none | A story replaces one error with another on a focused Input, focus kept, and asserts the same alert holds the second error and the field is described by it; KN-286's verifier reads Chromium's accessibility tree after the replacement, the alert holding the second error, in both languages; and KN-286's plan says what is tested and that no check here hears a screen reader. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -3657,6 +3663,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** An error that appears on a focused Input is announced through a live region present before the error arrives, and the field keeps aria-invalid and its aria-describedby association; clearing the error restores the helper as the description or removes aria-describedby when there is none; a story asserts the live region's role and that it carries the error text after the error is set on a focused field, and a mutation removing the live region fails it by name.
 
+**Roasts.** round 1 scored 7.2 with 0 critical(s)
+
 ### `KN-287` Draw the Input's message line only when there is a helper or an error, as the screens draw it
 
 - **status** backlog · **severity** critical · **points** 2 · **area** web
@@ -3775,12 +3783,23 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-297` The Input's text measurement takes its direction from the input, so a placeholder with its own direction moves the text without failing a check
 
-- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **status** in_progress · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-283 roast, KN-283 being a child of KN-011. textInsets in Input.stories.tsx, and KN-266's production check with it, read the placeholder's alignment and indent when the field is empty, but take the direction from the input. A static input::placeholder rule giving the placeholder its own direction, rtl in an English field, draws it from the right while the check still reports 16 from the left; unicode-bidi plaintext on the input lets a Persian value in an English field run from the right, and a writing mode other than horizontal-tb turns the axis the check measures along; none is guarded.
 
 **Why.** KN-283 exists so that a check which says the text sits 16 from its edge notices the text moving, and this is a way the text moves that it does not notice. Critical on the owner's order of 2026-09-10, as a finding on a built component.
 
-**Exit condition.** textInsets and KN-266's production check take the direction from the style of what the field shows, the placeholder's when it is empty, and refuse by name a writing mode other than horizontal-tb and a unicode-bidi that lets the content set the direction; a placeholder given the other direction and unicode-bidi plaintext on the input with a value in the other script, each present in every state, fail Default and the production check by name; and KN-283's verifier still passes.
+**Exit condition.** textInsets and KN-266's production check refuse by name unicode-bidi plaintext on the input, which lets the content set the direction, a writing mode other than horizontal-tb on the input, and an input whose direction is not the field's; unicode-bidi plaintext on the input, a vertical writing mode on it, and the input set to the other direction, each present in every state, fail Default and the production check by name; and KN-283's verifier still passes.
+
+### `KN-298` An Input's error replaced by another while the field has focus is not shown to reach its live region
+
+- **status** backlog · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-286 roast, KN-286 being a child of KN-011. ErrorAnnouncedWhileTyping takes the alert from empty to one error and back, and KN-286's verifier reads the accessibility tree once after that; nothing replaces one error with another while the field keeps focus, a validator moving from too short to cannot be empty, say, though KN-286's plan says the alert reads again when the error changes. Whether a screen reader then speaks the second error is for a listening check, but whether the region carries it is not.
+
+**Why.** A field whose error changes as the user types is the ordinary case for a form that validates as it goes, and the person typing needs the error that is true now, not the first one. Critical on the owner's order of 2026-09-10, as a finding on a built component.
+
+**Exit condition.** A story replaces one error with another on a focused Input, focus kept, and asserts the same alert holds the second error and the field is described by it; KN-286's verifier reads Chromium's accessibility tree after the replacement, the alert holding the second error, in both languages; and KN-286's plan says what is tested and that no check here hears a screen reader.
 
