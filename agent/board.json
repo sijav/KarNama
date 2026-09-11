@@ -7203,13 +7203,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The Input's stories and KN-266's production check measure where the text starts, the input's box edge plus its own padding, border and text-indent on the side the text starts from, given its direction and alignment, and read 16 as 95:5 draws it; a static text-indent, a padding on the input and a changed alignment, each present in every state, fail Default and the production check by name.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T16:55:24.869Z",
-      "updatedAt": "2026-09-11T06:26:21.199Z",
-      "verify": "node agent/scripts/verify/KN-283.mjs"
+      "updatedAt": "2026-09-11T06:40:06.195Z",
+      "verify": "node agent/scripts/verify/KN-283.mjs",
+      "evidence": "textInsets in Input.stories.tsx measures where the text starts and ends from the field's outer edge, start first: on the start side of the input's direction, the input's box edge plus its own border and padding there plus its text-indent, read from the placeholder's computed style when the field is empty; on the other side the box less its border and padding; it throws, naming the reason, when the text is aligned anything but start or the direction's own side, when the input is scrolled sideways, or when its text-indent is not a length in pixels. Default, Focus, WithError and IconsTurnedOff assert 16 at both sides through it, and slotsAreTheFiles asserts 40 on an icon's side through it instead of its own box arithmetic. KN-266's production check measures the same way in the page and reports the alignment when it fails. node agent/scripts/verify/KN-283.mjs passed: the stories pass with the helper reading the input's style, the placeholder's, the alignment, the scroll, the padding, the border and the text-indent; KN-266's verifier passes with its production check; and three mutations of the input's own style, present in every state, a one pixel text-indent, a one pixel inline-start padding, and the text centred, each fail Default by name and each fail KN-266's production check, run as KN-266's own verifier against the mutated component, saying text at 17 and 16 for the first two and aligned center for the third. Unit project, eslint on the Input and tsc clean. Not established: KN-267's, KN-274's and KN-291's own production readings still measure the input's box, backed now by the stories that measure the start.",
+      "closedAt": "2026-09-11T06:40:06.195Z"
     },
     {
       "id": "KN-284",
