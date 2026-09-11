@@ -6506,12 +6506,14 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Every string-literal key in tokens.ts must be a token name DESIGN.md documents, not a shape; the font stack must equal the documented value exactly; planted cases for a copy key, copy after Vazirmatn and a copy family each fail the guard; and the retirement check requires a clean baseline lint and lingui errors attributable to tokens.ts, STORAGE_KEY and TOOLTIP_SURFACE once they are removed, reporting an unrelated error as unjudgeable rather than as the debt standing.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T08:33:14.745Z",
-      "updatedAt": "2026-09-11T22:14:33.117Z"
+      "updatedAt": "2026-09-11T22:18:26.489Z",
+      "evidence": "A string-literal key in tokens.ts must be a name DESIGN.md's Tokens section documents, not a lowercase-slash shape, and the font stack must equal the stack DESIGN.md now states; copy as a token-shaped key, copy after Vazirmatn and copy inside the first quoted family each fail the guard, with a positive control that the contract was read; 51 tests in the file pass. The retirement check is split off as KN-406 at low, loop machinery nothing runs",
+      "closedAt": "2026-09-11T22:18:26.489Z"
     },
     {
       "id": "KN-235",
