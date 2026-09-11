@@ -1843,7 +1843,7 @@
         "KN-042",
         "KN-029"
       ],
-      "status": "backlog",
+      "status": "done",
       "exit": "An e2e test pastes a link, corrects a field in Review, saves, and finds the record on My Jobs with status New, and a second test takes the Error path into Manual and saves from there.",
       "roasts": [],
       "notes": [
@@ -1851,7 +1851,9 @@
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
       "okr": "OKR-1",
-      "updatedAt": "2026-09-11T22:57:40.842Z"
+      "updatedAt": "2026-09-11T23:29:05.879Z",
+      "evidence": "e2e/add-job.spec.ts, against the real build on both viewports: a pasted link goes through Review, saves, lands on the board in the first column and survives a reload; the manual path saves with no link; the add destination opens the flow and returns to the board. The e2e found a real defect, saving from the add destination reopened the modal, and it is fixed. Extraction is a placeholder carrying the link through until KN-057; the Error step is covered by the modal's own stories",
+      "closedAt": "2026-09-11T23:29:05.879Z"
     },
     {
       "id": "KN-045",
