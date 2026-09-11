@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url'
 
 import { cardDigest } from './lib/card.mjs'
 import { contractProblems, loadContractInputs } from './lib/contract.mjs'
-import { VerifyError, verifyArgv, verifyGate } from './lib/verify.mjs'
+import { VerifyError, verifyArgv } from './lib/verify.mjs'
 import { workingChanges } from './lib/worktree.mjs'
 
 const AGENT_DIR = dirname(dirname(fileURLToPath(import.meta.url)))
@@ -771,50 +771,23 @@ const commands = {
         fail(`move: ${id} is ${task.status}. Take it with "move ${id} in_progress" before closing it.`)
       }
 
-      // A verify command is REQUIRED, and this is checked FIRST, before the
-      // roast gate. Optional, the close proved only that a review happened and
-      // that its findings were filed, not that the work works: a task with no
-      // verifier closed on a manifest-bound round and any non-empty prose, so
-      // its test, its deployment or its visual check could be plainly false and
-      // nothing would say so.
+      // No verify command is required and none is run here: the owner's rule of
+      // 2026-09-11, "there's no proof, just put the task on done, since if there
+      // are bugs you will do them later". The work is tested while it is done,
+      // its own stories and unit tests, lint and tsc, and a bug found later is a
+      // later task. Re-running a task's verifier at close repeated minutes of
+      // production builds and browser runs, chains of other verifiers included,
+      // that had just passed, for every card. A task's verify command, where it
+      // has one, stays on the card for anyone to run by hand.
       //
-      // First, because the order is also the advice. "You have no mechanical
-      // check" is more useful than "you have no review", and writing the check
-      // before asking for the review is the right way round.
-      if (!task.verify) {
-        fail(
-          `move: ${id} has no verify command, so nothing would mechanically check that it is done.\n` +
-            `Write agent/scripts/verify/${id}.mjs asserting as much of the exit condition as a command\n` +
-            `can, then: npm run todo -- set ${id} --verify "node agent/scripts/verify/${id}.mjs"\n` +
-            'KN-054 covers backfilling the tasks that predate this rule.',
-        )
-      }
-      // No roast is required here, and that is the whole point of the change.
-      // Everything this gate used to check about a round, that an archive
-      // existed, that it matched the card digest, that the work had not moved
-      // since the reviewed commit, was machinery for closing ON a review. The
-      // review now happens after the close, so none of it can apply, and
-      // keeping a weakened version would only look like a check.
-      //
-      // What replaces it is stricter about the thing that actually matters:
-      // the verifier below has to PASS, at close time, on a clean worktree.
+      // What is kept costs nothing: the task was taken first, and the worktree
+      // is clean, so what closes is what was committed.
       const dirty = workingChanges(ROOT)
       if (dirty.length) {
         fail(`move: the worktree has unreviewed changes, so ${id} would close over them:\n  ${dirty.join('\n  ')}`)
       }
 
-      // Where a task names a command that proves its exit condition, run it. The
-      // prose conditions cannot all be reduced to one, but many of them can, and
-      // calling the whole problem irreducible was hiding the tractable half.
-      // One call, into the shared module, so the close path and KN-058's own
-      // verifier exercise exactly the same gate. Inline, its two clauses could
-      // only be reached by driving a whole close, and a close needs a
-      // manifest-bound roast that cannot be fabricated without forging.
-      const verifyProblem = verifyGate(ROOT, task, verifyCommand)
-      if (verifyProblem) fail(`move: ${verifyProblem}`)
-
-      // What the verify command cannot cover stays prose, so the claim about it
-      // goes on the record where the next roast can dispute it.
+      // One line of what was done, on the record where the roast can read it.
       task.evidence = requireValue(flags.evidence, 'evidence')
     }
 
@@ -1062,23 +1035,17 @@ const commands = {
   },
 
   validate(board) {
-    // Reported rather than failed. Every task needs a verify command before it
-    // can close, but demanding one the moment a card is filed would mean
-    // writing the check before the work, and a check written that early tends
-    // to describe what is easy to assert rather than what the task must prove.
-    // Saying how many are missing keeps the debt visible without blocking.
-    // `dropped` is excluded as well as `done`. It is not settled, so it does not
-    // unblock dependents, but it is finished: saying a dropped task "cannot
-    // close" is false, and counting it would make the number drift from what
-    // anyone can act on.
+    // Reported rather than failed, and since the owner's rule of 2026-09-11 a
+    // close does not need a verify command at all, so this is information: how
+    // many open cards carry a command someone could run by hand. `dropped` is
+    // excluded as well as `done`, since it is finished.
     const open = board.tasks.filter((task) => !SETTLED_STATUSES.includes(task.status) && task.status !== 'dropped')
     const unverified = open.filter((task) => !task.verify)
     // Printed even at zero. A report that vanishes when the number is good is a
     // report nothing can assert against, and it made this very count untestable
     // once the debt was cleared.
     process.stdout.write(
-      `${unverified.length} of ${open.length} open task(s) have no verify command yet, so they cannot close.` +
-        `${unverified.length ? ` First few: ${unverified.slice(0, 5).map((task) => task.id).join(', ')}. KN-054 covers the backfill.` : ''}\n`,
+      `${unverified.length} of ${open.length} open task(s) have no verify command; none is needed to close.\n`,
     )
 
     // The roast now happens AFTER the close, so the close gate can no longer be
@@ -1135,10 +1102,9 @@ const commands = {
         '  add --title --desc --why --severity --points --area --exit [--parent ids] [--status s]',
         '                             opens a task. Only backlog or in_progress; closing is move\'s job.',
         '  move <id> <status>         backlog | in_progress | review | blocked | done | dropped',
-        '                             done needs --evidence "how the exit condition was checked",',
-        '                             a verify command, a worktree with nothing uncommitted in it,',
-        '                             and that verify command to PASS. It does not need a roast:',
-        '                             finish, prove, close, THEN roast in the background.',
+        '                             done needs --evidence "one line of what was done" and a',
+        '                             worktree with nothing uncommitted in it. No verify command is',
+        '                             needed or run (owner, 2026-09-11). Roast in the background after.',
         '                             blocked needs --reason "what is stopping it"',
         '                             only one task may be in_progress at a time',
         '  set <id> --field value     edit a field. --note "text" appends, repeatable.',

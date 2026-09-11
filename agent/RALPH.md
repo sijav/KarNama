@@ -68,6 +68,28 @@ current one if unfinished), and what to read first. Keep it under about 120
 lines. A context reset that loses work is a failure of this step, not of the
 harness.
 
+## The owner's rules of 2026-09-11, which override anything older below
+
+Asked why six components had taken 111 tasks, the owner answered:
+
+- **A new component outranks a finding on a built one.** "New component should
+  be more critical than a missing feature of another": the site cannot be built
+  until the components exist. Only new component cards, and what they are
+  blocked by, are `critical`. A finding on a built component is a missing
+  feature of something that exists and is filed `high` or lower by its content,
+  never above a component card. This replaces the 2026-09-10 order that made
+  every finding on a built component critical, which let 63 findings, 38 of
+  them on the Input, go ahead of 22 components.
+- **No proof at the close.** "There's no proof, just put the task on done,
+  since if there's bugs you'll do it later." `move done` needs a clean worktree
+  and one line of what was done; no verify command is needed or run. The work
+  is tested while it is done, its stories and unit tests, lint and tsc, and it
+  is looked at; per-task verifier scripts with production builds, mutations and
+  regression batches are no longer written for every card, and a bug found
+  later is a later card.
+- **Roasts stay**, in the background after each close, with their findings
+  filed by the rule above.
+
 ## Step 1 · Roast the previous iteration, before anything new
 
 Ask this of the last summary in `agent/STATE.md`, out loud, every time:
@@ -246,13 +268,12 @@ stops you closing a card.
 Then run the gate in `AGENTS.md` section 5, including actually opening the
 thing in a browser and looking at it in both languages.
 
-**How much of the gate you run depends on whether the task has a parent**, the
-owner's rule of 2026-09-10: a task with **no parent** closes on the **full
-suite**; a **child** closes on the **tests for the files it changed**, plus lint
-and the type checker where it touched. A child is one slice of a parent, and the
-whole gate runs again when the parent closes. It is a rule about cost, not
-rigour: the same checks run, once, where they mean something. If you cannot tell
-which tests cover what you changed, run more rather than guess.
+**How much you run, the owner's rule of 2026-09-11**: the tests for what you
+changed, its stories and unit tests, lint and the type checker, and a look at it
+in both languages and both schemes. No per-task verifier script, no production
+build pixel check, no regression batch over other cards' verifiers, and nothing
+re-run at the close; a bug found later is a later card. This replaces the
+2026-09-10 rule that a root task closes on the full suite.
 
 
 **Then commit.** A roast has to be *of* something, and the harness refuses to
@@ -270,16 +291,14 @@ round.
 npm run todo -- move KN-014 done --evidence "how the exit condition was actually checked"
 ```
 
-The board asks for four things, and a roast is not among them:
+The board asks for three things, and neither a roast nor a verifier is among
+them, the owner's rule of 2026-09-11:
 
-1. The task's own **`verify` command passes**, run at close time, not quoted
-   from memory.
-2. **`--evidence`**, because the exit condition is prose and no script covers
-   all of it. Writing down how it was checked puts the claim on the record where
-   the roast can dispute it. Say what it does NOT establish, too.
-3. A **clean worktree**, so the thing being closed is the thing that was
+1. **`--evidence`**, one line of what was done, on the record where the roast
+   can read it.
+2. A **clean worktree**, so the thing being closed is the thing that was
    committed.
-4. The task was actually **taken** first. Closing a `backlog` card means the
+3. The task was actually **taken** first. Closing a `backlog` card means the
    work happened off the board.
 
 **Finish it properly before you close it.** Tests written, gate run, actually

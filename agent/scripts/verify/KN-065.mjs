@@ -6,6 +6,13 @@
 // failing verify still cannot close, and validate reports the count of tasks
 // lacking one.
 //
+// **Reversed by the owner on 2026-09-11**: "there's no proof, just put the task
+// on done, since if there are bugs you will do them later". So the first check
+// now asserts the new rule, that move done closes a taken task with no verify
+// command and runs none; the shared gate still reports a failing verifier for
+// anyone running a card's command by hand; and validate still reports the
+// count, as information.
+//
 // **Genuinely read-only with respect to the repository.** The first version
 // snapshotted board.json, let the CLI rewrite it, and restored it in a finally,
 // which is not read-only however carefully it is written: in the read-only tree
@@ -80,7 +87,7 @@ const board = JSON.parse(readFileSync(REAL_BOARD, 'utf8'))
 const isOpen = (task) => task.status !== 'done' && task.status !== 'dropped'
 
 try {
-  check('move done refuses a task with no verify command, before the roast gate', () => {
+  check('move done closes a taken task with no verify command, and runs none, the owner\'s rule of 2026-09-11', () => {
     if (!scratchBoard) return SKIP
     const subject = board.tasks.find((task) => !task.verify && task.status === 'backlog')
     if (!subject) return 'no task without a verify command to test against'
@@ -98,33 +105,25 @@ try {
       if (moved.status !== 0) return `could not move ${subject.id} to ${to}: ${moved.stderr.trim()}`
     }
 
-    const result = todo('move', subject.id, 'done', '--evidence', 'testing the verify requirement')
-    if (result.status === 0) return `${subject.id} closed with no verify command`
-
-    // This is also the ORDERING assertion, behaviourally: the subject has no
-    // roast round either, so if the roast gate fired first this would name the
-    // roast instead. An earlier version asserted ordering by reading source
-    // positions, which a comment could satisfy and a refactor could break.
-    if (!/has no verify command/.test(result.stderr)) {
-      return `the roast gate fired first, or another guard did: ${result.stderr.trim().split('\n')[0]}`
-    }
-    if (!/KN-054/.test(result.stderr)) return 'the message does not name KN-054 as where the backfill happens'
-    if (!new RegExp(`agent/scripts/verify/${subject.id}\\.mjs`).test(result.stderr)) {
-      return 'the message does not name the file to write'
-    }
-    return null
+    const result = todo('move', subject.id, 'done', '--evidence', 'testing the close without a verify command')
+    // The one thing still asked of the close besides the evidence is a clean
+    // worktree, which is the real repository's; on a dirty one it refuses for
+    // that, and that is not the rule under test.
+    if (result.status !== 0 && /unreviewed changes/.test(result.stderr)) return SKIP
+    if (result.status !== 0) return `${subject.id} did not close: ${result.stderr.trim().split('\n')[0]}`
+    return /has no verify command/.test(result.stderr) ? 'the close still complained about a verify command' : null
   })
 
-  check('a task whose verify FAILS still cannot close', () => {
+  check('the shared gate still reports a failing verifier, for a card run by hand', () => {
     const problem = verifyGate(ROOT, { id: 'SCRATCH', verify: 'node agent/scripts/verify/fixtures/always-fails.mjs' })
-    return problem ? null : 'the close gate accepted a task whose verifier exited non-zero'
+    return problem ? null : 'the gate accepted a task whose verifier exited non-zero'
   })
 
   check('validate reports the count, including when it is zero', () => {
     if (!scratchBoard) return SKIP
     const result = todo('validate')
     if (result.status !== 0) return `validate exited ${result.status}: ${result.stderr.trim()}`
-    const match = /(\d+) of (\d+) open task\(s\) have no verify command/.exec(result.stdout)
+    const match = /(\d+) of (\d+) open task\(s\) have no verify command; none is needed to close/.exec(result.stdout)
     // Asserted unconditionally: a report that disappears at zero is one nothing
     // can assert against, and it would make this check fail the moment the
     // backfill succeeded.

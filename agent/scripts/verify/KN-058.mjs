@@ -158,15 +158,14 @@ try {
     return problem ? `a passing verifier was rejected: ${problem}` : null
   })
 
-  check('the close gate is what move done actually calls', () => {
-    // Not source-text matching for a behaviour, which is what was wrong before:
-    // this asserts that todo.mjs imports the shared gate, so the two cannot be
-    // different implementations that drift apart.
+  check('move done runs no verifier, the owner\'s rule of 2026-09-11, and keeps no second gate of its own', () => {
+    // This asserted the opposite until 2026-09-11, when the owner took proof
+    // out of the close: "there's no proof, just put the task on done". The
+    // shared gate above stays for anyone running a card's command by hand, and
+    // todo.mjs neither calls it nor carries a copy of it.
     const source = readFileSync(TODO, 'utf8')
-    if (!/import \{[^}]*verifyGate[^}]*\} from '\.\/lib\/verify\.mjs'/.test(source)) {
-      return 'todo.mjs does not import verifyGate, so the close path is a separate implementation'
-    }
-    return /verifyGate\(ROOT, task, verifyCommand\)/.test(source) ? null : 'todo.mjs does not call verifyGate at close'
+    if (/verifyGate|runVerify/.test(source)) return 'todo.mjs still runs a verifier at close'
+    return /owner's rule of\s+(\/\/\s+)?2026-09-11/.test(source) ? null : 'todo.mjs does not say why the close runs nothing'
   })
 
   check('cmd.exe expansion characters are still refused', () => {

@@ -5124,7 +5124,7 @@
       "title": "The Checkbox has no accessible name and a target smaller than WCAG allows",
       "desc": "CHILD OF KN-013, recorded in prose because board.json cannot express parent_task yet, KN-188. Two halves of one problem: the control is not yet usable in the places it is actually for. FIRST, no accessible name is guaranteed. aria-label and aria-labelledby are both optional, there is no id prop at all, and every story renders a control with no name, so the canonical examples model the unusable case. A board card needs something like Select Senior React developer at X, and a column header needs Select all Applied. A checkbox announced as merely checkbox is unusable by screen reader precisely where bulk selection matters most. SECOND, the interactive target is 20 by 20 because padding is explicitly zero, and WCAG 2.5.8 asks for 24 CSS pixels unless the spacing exception applies. The component comment claims the hit area comes back through a label that wraps it, which is neither implemented nor sufficient for an icon-only control on a card. Both were found by the KN-013 roast and both are true by inspection.",
       "why": "Bulk selection is the feature this component exists for, and the people most likely to select in bulk are the ones a missing accessible name excludes. A 20 pixel target on a card that also drags is hard to hit for anyone, not only for people with motor impairments. Neither is a detail that gets fixed later once 37 components have copied the shape.",
-      "severity": "critical",
+      "severity": "high",
       "points": 3,
       "area": "web",
       "parent": [],
@@ -5133,10 +5133,11 @@
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact.",
-        "2026-09-11, KN-293: the root now carries spacing/2xs of padding on every side for the focus ring, and MUI's hidden input fills the root's padding box, so the target is 28 by 28 round the 20 by 20 frame. This card still owns the test that asserts the hit area and the accessible-name clause."
+        "2026-09-11, KN-293: the root now carries spacing/2xs of padding on every side for the focus ring, and MUI's hidden input fills the root's padding box, so the target is 28 by 28 round the 20 by 20 frame. This card still owns the test that asserts the hit area and the accessible-name clause.",
+        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
       ],
       "createdAt": "2026-09-10T04:52:10.607Z",
-      "updatedAt": "2026-09-11T10:33:28.214Z"
+      "updatedAt": "2026-09-11T11:29:34.190Z"
     },
     {
       "id": "KN-207",
@@ -5327,7 +5328,7 @@
       "title": "The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked",
       "desc": "CHILD OF KN-032, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-032 roast. Both the tip text and the trigger label are Persian literals in the story args, so switching the Storybook Language toolbar to English changes nothing on screen. AGENTS.md section 5 requires every change to be seen in fa-IR and en-US, light and dark, and for this component two of those four are the same picture. The tip text is legitimately caller-provided and NOT a catalog message, so the fix is not to translate the component; it is that the STORY should pass something that changes with the locale, the way the FilterChip stories do. The lint rule does not catch it because the stories block exempts title, which is what the tooltip prop is called.",
       "why": "The four-combination rule exists because English strings are longer and the direction flips, and a tooltip is a box sized by its text: it is one of the components most likely to break on a longer string. A story that shows the same Persian in both languages cannot show that.",
-      "severity": "critical",
+      "severity": "high",
       "points": 1,
       "area": "web",
       "parent": [
@@ -5338,10 +5339,11 @@
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact.",
-        "2026-09-10: blocked by KN-221. The story's tip text should be the tooltip's real designed sentence through lingui, and that sentence has a count, which renders as raw ICU in any production build until the catalogs are compiled. A placeholder-free demo sentence would put copy in the product catalog that no product screen uses, so it waits."
+        "2026-09-10: blocked by KN-221. The story's tip text should be the tooltip's real designed sentence through lingui, and that sentence has a count, which renders as raw ICU in any production build until the catalogs are compiled. A placeholder-free demo sentence would put copy in the product catalog that no product screen uses, so it waits.",
+        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
       ],
       "createdAt": "2026-09-10T05:30:46.654Z",
-      "updatedAt": "2026-09-10T07:04:15.637Z"
+      "updatedAt": "2026-09-11T11:29:34.286Z"
     },
     {
       "id": "KN-213",
@@ -5511,15 +5513,18 @@
       "title": "The catalogs are never compiled, so a message with a count or a placeholder renders raw ICU in production",
       "desc": "Found while working KN-212, and reproduced rather than inferred. src/i18n/locales/*.ts are hand-written maps loaded straight into i18n.load, and nothing compiles them. @lingui/core 6.6.0 compiles an ICU message at runtime ONLY outside production: with NODE_ENV unset, 'This status has {count, plural, one {# job opportunity} other {# job opportunities}}...' rendered as 'This status has 3 job opportunities...' and the Persian as '...۳ فرصت شغلی...'; with NODE_ENV=production, which is what vite build sets for the deployed app and the published Storybook, both rendered the raw '{count, plural, ...}' text and lingui printed 'Uncompiled message detected'. Nothing is broken today only because no message has a placeholder yet. The designed tooltip copy on node 410:469 has a count, and so will column headers, the bulk action bar and every other 'N job opportunities'. @lingui/vite-plugin, cli and format-po are already dev dependencies, which is the intended route; KN-110 wires extraction on the same path.",
       "why": "It is a production-only failure, the worst kind: development and the test suite, which do not set NODE_ENV to production, render every message perfectly, and the deployed site shows the user curly-brace syntax. It blocks KN-212, whose story needs the tooltip's real counted sentence, and every component whose copy carries a number. Critical on the owner's order of 2026-09-10: the components wait on it.",
-      "severity": "critical",
+      "severity": "high",
       "points": 3,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "A message with a plural and a placeholder renders correctly in BOTH locales in a production build, checked by rendering it from the built output or under NODE_ENV=production rather than in development, with Persian digits in fa-IR; a mutation that loads the catalogs uncompiled again makes that check fail; and the catalog tests still prove every English id has a non-empty Persian translation.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T07:04:15.410Z"
+      "notes": [
+        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
+      ],
+      "createdAt": "2026-09-10T07:04:15.410Z",
+      "updatedAt": "2026-09-11T11:29:42.221Z"
     },
     {
       "id": "KN-222",
@@ -5560,7 +5565,7 @@
       "title": "The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title",
       "desc": "CHILD OF KN-210, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-210 roast and confirmed: the component now makes every tip exactly 260 wide, which is what node 410:469 specifies, so a one-word title sits in a mostly empty 260 box and a long one wraps downward without limit. Figma draws one specimen, three lines, and its description says the tooltip's only current use is beside the disabled delete-status option. Nothing tells the next caller that the fixed width is deliberate, or what happens past three lines, and no story shows either case.",
       "why": "A component's limits belong where its caller reads, and a caller who sees a 260 box around one word will assume it is a bug and override it. Critical on the owner's order of 2026-09-10, with the other component findings.",
-      "severity": "critical",
+      "severity": "high",
       "points": 2,
       "area": "web",
       "parent": [
@@ -5570,10 +5575,11 @@
       "exit": "The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows.",
       "roasts": [],
       "notes": [
-        "2026-09-10: blocked by KN-221, the same reason as KN-212. The overlong-title story needs real copy through lingui, and the only designed long tooltip sentence, node 410:469's, carries a count, which renders as raw ICU in any production build until the catalogs are compiled. The short title can be 'Delete status', already a catalog message; the policy text for the docs does not depend on it and can be written in the same change."
+        "2026-09-10: blocked by KN-221, the same reason as KN-212. The overlong-title story needs real copy through lingui, and the only designed long tooltip sentence, node 410:469's, carries a count, which renders as raw ICU in any production build until the catalogs are compiled. The short title can be 'Delete status', already a catalog message; the policy text for the docs does not depend on it and can be written in the same change.",
+        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
       ],
       "createdAt": "2026-09-10T07:05:35.906Z",
-      "updatedAt": "2026-09-10T08:21:46.124Z"
+      "updatedAt": "2026-09-11T11:29:34.480Z"
     },
     {
       "id": "KN-224",
@@ -5652,15 +5658,18 @@
       "title": "Nothing committed checks that the published Storybook renders its stories without errors",
       "desc": "CHILD OF KN-220, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-220 roast and confirmed: the published path of the Hover story was proved by a scratch Playwright script against a production Storybook build, and that script is not in the repository. CI builds and publishes Storybook without opening a single story. The storybook Vitest project runs stories against the DEV build, so a failure that only exists in the production build, like a story importing a test-only module, ships to the public library unseen. The browser pane cannot stand in for it either: while hidden it runs no animation frames, so no play function starts there at all.",
       "why": "Storybook is where the components are delivered, and it is public. A story that throws in the published build is a broken component page in front of whoever opens it, and nothing between a push and that page would say so. Critical on the owner's order of 2026-09-10: it guards the component library.",
-      "severity": "critical",
+      "severity": "high",
       "points": 3,
       "area": "infra",
       "parent": [],
       "status": "backlog",
       "exit": "A committed check builds Storybook for production, opens every story in headless Chromium, and fails on any page error or console error; it runs before the Pages workflow publishes; and a mutation removing the Hover story's test-runner guard makes it fail on the emitted import error.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T07:34:17.764Z"
+      "notes": [
+        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
+      ],
+      "createdAt": "2026-09-10T07:34:17.764Z",
+      "updatedAt": "2026-09-11T11:29:34.585Z"
     },
     {
       "id": "KN-227",
@@ -6492,15 +6501,18 @@
       "title": "The other components' stories keep controls that make their play functions untrue",
       "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188. Found while doing KN-247: its sweep, pointed at every story outside the Input on a production build, finds the same fault in five more places, under controls a reviewer can really produce. Checkbox: Unchecked under indeterminate, Checked under checked false, Indeterminate under indeterminate false, Hover under indeterminate or disabled, Disabled under disabled false, KeyboardOnly under disabled. FilterChip: Default under selected or a new label, Selected under selected false, InEnglish under a new label, Toggling and KeyboardOnly under selected. StatusChip: ColumnHeaderSize, DisplayOnly and RenamedStatus under a new label, FromArgs under an empty one. Tooltip: every story under children, which Controls offers as text though the Tooltip needs an element, and WithIcon under icon. PreferencesProvider: Persian and English under the other locale. The sweep tried strings where some controls are selects or numbers, so its results for status, size, placement, family, count and a made-up locale are artifacts, not findings; the check has to change each control by its type.",
       "why": "As in KN-247, the Interactions panel's ticks are worth something only if they describe the story on screen, and a Controls panel that offers the Tooltip's children as text invites a reviewer to break every Tooltip story. Critical on the owner's order of 2026-09-10, as a finding on built components.",
-      "severity": "critical",
+      "severity": "high",
       "points": 3,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "Every story with a play function, in every component, either reads its expectations from the active args or offers only the controls its assertions hold for, and no story offers a control whose values the component cannot take, such as the Tooltip's children; KN-247's check, run over every story and changing each control by its own type (booleans flipped, every option of a select, a number changed, text changed and emptied), fails on none; and a repository guard fails any story file with a story that has a play function and neither declares its controls nor disables them.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T11:01:50.818Z"
+      "notes": [
+        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
+      ],
+      "createdAt": "2026-09-10T11:01:50.818Z",
+      "updatedAt": "2026-09-11T11:29:34.698Z"
     },
     {
       "id": "KN-256",
@@ -6721,7 +6733,7 @@
       "title": "The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it",
       "desc": "CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-238 roast and confirmed: LongNameInEnglish proves a Persian-led name resolves rtl in the English interface, not the case that motivated dir=auto, a Latin-led name in the Persian interface such as 'Google استخدام', nor a digit-led one such as '۱۲۳ استخدام'. And DESIGN.md says the ellipsis ALWAYS cuts the end of a name, which is false for a name with no letter at all: digits or emoji alone have no strong character, so the chip falls back to the page's direction. A long Latin name as record data is a literal the lingui rule flags, which is why KN-238 left it to KN-062's fixtures; this card waits on them.",
       "why": "A claim in the design contract should be exactly as strong as what the code does, and the mixed-script case is the one users of a Persian product actually type. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
-      "severity": "critical",
+      "severity": "high",
       "points": 1,
       "area": "web",
       "parent": [
@@ -6730,8 +6742,11 @@
       "status": "backlog",
       "exit": "With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T12:57:37.062Z"
+      "notes": [
+        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
+      ],
+      "createdAt": "2026-09-10T12:57:37.062Z",
+      "updatedAt": "2026-09-11T11:29:34.793Z"
     },
     {
       "id": "KN-265",
@@ -7007,15 +7022,18 @@
       "title": "Add a resting edge role for controls at 3:1, and draw the Input and the Checkbox with it",
       "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: the owner's decision on KN-273, 2026-09-10, a KN-011 child. The file draws the resting edge of the Input, 95:3, and of the unchecked Checkbox in border/default #e5e7eb, 1.24:1 on white and 1.13:1 on bg/surface-secondary, under WCAG 1.4.11's 3:1 for the edge that identifies a control. The owner chose a new named palette role for a control's resting edge, a grey in the file's own hue, over keeping the file's colour. It is used by the Input's resting border (the edge in Input.tsx) and the Checkbox's unchecked frame (Checkbox.tsx), and by the Select when KN-012 builds it; the Hover edge text/secondary and border/default for cards, dividers and the Filter Chip stay as drawn. The value is picked with margin, not at the line: text/secondary's hue and saturation walked lighter to the last value clearing 3.3:1 on all three light surfaces gives #7f8694, 3.66, 3.41 and 3.32, while #868d9a clears 3:1 by only 0.03. It is not a Figma variable, so the token tables mark it as the owner's addition and the token verifier must still pass, and its derived dark row needs its own check, since KN-271 covers only border/focus and border/error. The hover change becomes subtler, about 1.3:1 between rest and hover, which WCAG does not ask about and the owner accepted by keeping hover as drawn.",
       "why": "An empty field or an unchecked box has nothing but its edge to be found by, and at 1.24:1 someone with low vision may not find it. The owner chose the fix on 2026-09-10. Critical on the owner's order of 2026-09-10, as a finding on built components.",
-      "severity": "critical",
+      "severity": "high",
       "points": 3,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "tokens.ts carries a named role for a control's resting edge, a neutral in text/secondary's hue at 3.3:1 or more on bg/surface, bg/page and bg/surface-secondary, and darkMode.ts derives it and checks it at 3:1 or more on the three dark backgrounds, each ratio asserted by a unit test with a mutation back to border/default failing it; the Input's resting border and the Checkbox's unchecked frame use it, and the Input's Default story and the Checkbox's Unchecked story assert it; every other state of both still renders as drawn; DESIGN.md's token tables list the role as the owner's addition under KN-273; the token verifier and the contract pass; and the Input and the Checkbox are seen at rest in all four combinations.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T14:42:46.699Z"
+      "notes": [
+        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
+      ],
+      "createdAt": "2026-09-10T14:42:46.699Z",
+      "updatedAt": "2026-09-11T11:29:34.905Z"
     },
     {
       "id": "KN-276",
@@ -7084,7 +7102,7 @@
       "title": "Give the selected Filter Chip a blue edge at 3:1, apart from its pressed edge",
       "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: the owner's decision on KN-276, 2026-09-10, a KN-011 child. The selected Filter Chip keeps the file's pale bg/brand/container fill, and its one pixel edge turns a blue at 3:1 or more on every surface: #2563eb in light is 5.17 on bg/surface, 4.82 on bg/page, 4.70 on bg/surface-secondary and 4.24 against the fill inside it. That blue is border/focus, which the chip already draws as its pressed edge (&:active) and as its focus ring, so pressing an unselected chip would look selected until it is released: the selected edge gets a named role of its own, or a story proves pressed and selected stay apart. In dark the fill is KN-272's, which derives it today to a bright #207df9, so this waits for KN-272 and then checks the edge against the dark fill and the dark surfaces.",
       "why": "Someone who cannot see a 1.2:1 fill cannot tell which filters are on, and the Filter Chip is the status counter above the board. The owner chose the edge on 2026-09-10. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
-      "severity": "critical",
+      "severity": "high",
       "points": 3,
       "area": "web",
       "parent": [
@@ -7095,10 +7113,11 @@
       "roasts": [],
       "notes": [
         "2026-09-10: exit tightened after the KN-276 roast, which showed the first wording let a colour nominally distinct from border/focus, such as #2563ec, pass while pressed and selected looked the same. The owner's decision asked that selection get its own edge or be proved apart from pressing; this makes 'apart' measurable.",
-        "KN-282, 2026-09-11: pressing any chip, selected or not, shows the 1.5 pressed edge in border/focus, as the laid-out border turned blue on :active before KN-282; the file draws Selected and Pressed as exclusive states, so the look of a selected chip held pressed is KN-279's to decide with the selected edge."
+        "KN-282, 2026-09-11: pressing any chip, selected or not, shows the 1.5 pressed edge in border/focus, as the laid-out border turned blue on :active before KN-282; the file draws Selected and Pressed as exclusive states, so the look of a selected chip held pressed is KN-279's to decide with the selected edge.",
+        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
       ],
       "createdAt": "2026-09-10T15:47:06.702Z",
-      "updatedAt": "2026-09-11T06:10:50.310Z"
+      "updatedAt": "2026-09-11T11:29:35.016Z"
     },
     {
       "id": "KN-280",
@@ -7582,30 +7601,36 @@
       "title": "KN-274's story measures the focus change from a model: rounded bands counted as rectangles, and transforms and filters not read",
       "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-274 roast, KN-274 being a child of KN-011. FocusedWhileInvalid computes the area the focus change covers with band(), which counts the widened error edge and the ::after ring as rectangles though both have rounded corners, and the verifier reads rendered pixels only on a 568 wide field. The corners and their anti-aliasing cost about 44 square pixels there, 3536 measured against 3580 computed, a loss that does not shrink with the field, so the story's margin is a model rather than a reading, and no narrow field is measured. And focusExtent reads only outlines, outer shadows and the pseudo-elements' insets: a transform, a filter, a clip-path or a mask on the field, its pseudo-elements or the input can move paint past the field's edge while the helper still reports it inside.",
       "why": "The story is the proof that focus shows on an invalid field whatever holds it, and a proof that counts a shape the field does not draw, or cannot see a paint effect, can pass while the ring is clipped or short. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
-      "severity": "critical",
+      "severity": "high",
       "points": 2,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "FocusedWhileInvalid's area accounts for the rounded corners, from the exact quarter-ring areas of the edge's radius and the ring's or from a rendered reading, and still clears 4W + 4H; focusExtent requires what it does not model, transform, filter, clip-path and mask, to be none on the field, both pseudo-elements and the input, and counts the input's own outline; a transform and a filter on the ::after each fail FocusedWhileInvalid by name; the verifier also reads the rendered change on a field 80 wide or less, in light and dark, clearing 4W + 4H with nothing changed outside; and DESIGN.md's arithmetic states the corners' loss and the width above which the change clears the perimeter.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-11T04:43:33.877Z"
+      "notes": [
+        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
+      ],
+      "createdAt": "2026-09-11T04:43:33.877Z",
+      "updatedAt": "2026-09-11T11:29:35.107Z"
     },
     {
       "id": "KN-296",
       "title": "An Input icon given as an array, a fragment or a component that renders only blank text still draws an empty slot",
       "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-292 roast, KN-292 being a child of KN-011. drawn() decides from the prop, and applies the blank rule only when the prop itself is a string. An array such as [' '], a fragment such as <>{' '}</>, or a component that returns whitespace is an element or an array to drawn(), so a Slot is drawn, and what it renders is a text node, which keeps the slot from matching :empty: a 20 by 20 slot with nothing in it, the text box pushed to 40. And the comment on drawn() says a blank string gives nothing to see, where the Input's rule is nothing to read: a lone combining mark such as U+20DD, which isBlank calls blank, can draw in some fonts, and is hidden by design.",
       "why": "The slot exists to hold an icon, and any way a caller hands it nothing to read should leave the field as it is without one; a hole the width of an icon, reached through an ordinary composition, is the defect KN-291 and KN-292 closed for the prop's own values. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
-      "severity": "critical",
+      "severity": "high",
       "points": 2,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "An Input whose icon renders only blank text, through an array, a fragment or a component, draws no slot that takes room and its text box sits 16 from that edge, decided from what the slot rendered rather than from the prop; IconsTurnedOff covers an array of a space, a fragment holding a zero-width space and a component returning a space, each asserting a slot that takes no room; a mutation removing the rendered check fails it by name; and the comment on drawn() says nothing to read, with the lone-mark case named as deliberate.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-11T05:03:54.532Z"
+      "notes": [
+        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
+      ],
+      "createdAt": "2026-09-11T05:03:54.532Z",
+      "updatedAt": "2026-09-11T11:29:35.193Z"
     },
     {
       "id": "KN-297",

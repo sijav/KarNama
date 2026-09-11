@@ -21,7 +21,7 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**109 done, 187 open, 2 blocked, 2 dropped** of 300 (2026-09-11). Coverage 100
+**111 done, 185 open, 2 blocked, 2 dropped** of 300 (2026-09-11). Coverage 100
 percent on all four metrics. **Deployed**: https://sijav.github.io/KarNama/ and
 Storybook at https://sijav.github.io/KarNama/storybook/, both from
 `.github/workflows/pages.yml` on every push. The API needs
@@ -31,12 +31,11 @@ Storybook at https://sijav.github.io/KarNama/storybook/, both from
 Status Chip (KN-010), Input (KN-011). The live site is a placeholder shell
 until screens start, which is after components.
 
-**Open children**, critical unless marked. KN-011: KN-251 (low), KN-255,
-KN-256 (low), KN-257 (medium), KN-260 (high), KN-268 (low), KN-275, KN-277
-(low), KN-278 (low), KN-279, KN-289 (low), KN-295, KN-296, KN-299 (low).
-KN-013: KN-206, KN-293 (in progress). KN-017: KN-294. KN-010: KN-240 (low),
-KN-264 (waits on KN-062). When a parent's last child closes, roast the parent
-with all its children.
+**Open children**, high unless marked, since 2026-09-11. KN-011: KN-251
+(low), KN-255, KN-256 (low), KN-257 (medium), KN-260, KN-268 (low), KN-275,
+KN-277 (low), KN-278 (low), KN-279, KN-289 (low), KN-295, KN-296, KN-299 (low).
+KN-013: KN-206. KN-010: KN-240 (low), KN-264 (waits on KN-062). When a
+parent's last child closes, roast the parent with all its children.
 
 **2026-09-10 and 2026-09-11, closed and roasted**: KN-263, 271, 244, 273, 245,
 276, 253, 266, 281 (the Checkbox edge is the file's 1.5 as an inset shadow),
@@ -51,15 +50,13 @@ is a positive control, and reporting "could not run" there is KN-180's clause,
 noted on it). KN-300 filed (medium, docs): em dashes in four story docs and two
 plans.
 
-**KN-293 in progress.** Figma, read 2026-09-11: every Checkbox instance, ten
-on Components and eight on Screens, sits flush at the inline start of a
-card's Title Group, 2.5 from its top and bottom, in a frame that clips. The
-ring cannot go inside the frame (a checked frame is the ring's blue; a two
-pixel band inside 20 is 144, short of 160), so the plan gives the root
-`spacing/2xs` of padding: 28 by 28 round the 20 frame, the ring's ~184 inside,
-measured on the frame's 4W + 4H. Plan beside Checkbox.tsx, checked by
-roast.py plan (scratchpad kn293plan.out) before building. KN-274's verifier's
-Checkbox row must move its perimeter to the frame.
+**KN-293 and KN-294 closed, 2026-09-11.** The Checkbox's root carries
+`spacing/2xs` of room round its 20 by 20 frame, 28 by 28, so its focus ring
+lies inside its own box (9.1, nothing filed); KN-015 and KN-026 carry the host
+contract for the Title Groups. The Filter Chip draws a three pixel ring inside
+itself, since its Chips row is 32 and clips. Then the owner changed the
+priorities and the close, above: 111 done, 22 component cards critical, every
+other open card high or lower.
 
 **KN-214 is deliberately held at high**: lingui compiles `ignore` with no flags,
 so `^[^\p{L}]*$` means "contains no p, {, L or }". Restore it to critical when
@@ -71,18 +68,22 @@ and KN-287. The job level list and KN-077 still wait.
 
 ## The owner's rules, most recent first
 
-- **Finish the components first**, 2026-09-10: every open component card and
-  finding on a built component is `critical`. KN-061 stays high, behind KN-196.
+- **New components first, 2026-09-11**, replacing 2026-09-10's rule: only new
+  component cards and their blockers are `critical`; a finding on a built
+  component is `high` or lower ("a missing feature of another"). Eleven cards
+  dropped to high that day. KN-061 stays high, behind KN-196.
+- **No proof at the close, 2026-09-11**: `move done` needs one line of evidence
+  and a clean worktree, and runs nothing. Test what changed, stories, unit
+  tests, lint, tsc, look at it, close; no per-task verifier scripts, pixel
+  checks or regression batches. Later bugs are later cards. Roasts stay.
 - **A finding about the loop rather than the product is `low`** unless it is
   actively breaking the work.
 - **100 percent coverage is a product rule**: `apps/*`, `packages/*`, not
   `agent/scripts/**`, and markdown has no tests.
 - **Do not invent gates.** Rule zero of `agent/RALPH.md`. Tests yes, refusals no.
-- **Finish, prove, commit, close, then roast.** `done` is terminal.
+- **Finish, test what changed, commit, close, then roast.** `done` is terminal.
 - **A finding is a CHILD of its task**, one level, recorded in prose as
   `CHILD OF KN-xxx` because `parent` means BLOCKED BY (KN-188).
-- **A root task closes on the full suite; a child on the tests for its files**,
-  plus lint and tsc.
 - **Plans live beside the work**, `#<id> - <title>.md`, checked by
   `roast.py plan` before building, and they stay. A roast calling them
   misplaced misreads step 2b and is dismissed.
@@ -114,12 +115,10 @@ and KN-287. The job level list and KN-077 still wait.
 
 ## The next step
 
-Judge KN-293's plan check, fix the plan, then build it: Checkbox.tsx padding,
-the FocusedInAClippingHost story and its docs, DESIGN.md's section, KN-274's
-verifier retargeted, KN-293.mjs, the notes on KN-206, KN-015 and KN-026. Then
-by the law: KN-294, KN-295, KN-296, then KN-206, KN-279, KN-275, KN-226,
-KN-255, KN-221, and the components KN-019, KN-023, KN-062, KN-008, KN-009,
-KN-012.
+KN-293 (9.1, nothing filed) and KN-294 closed; KN-294's roast is owed. Then
+the components, by the law: KN-019 Colour picker, KN-023 Tabs, KN-062 Shared
+story fixtures, KN-008 Icon set (it unblocks Button, Icon button, Search, Menu
+and more), KN-009 Button, KN-012 Select, and on. Findings wait at high.
 
 ## What to read first
 
