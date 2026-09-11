@@ -21,15 +21,18 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**111 done, 185 open, 2 blocked, 2 dropped** of 300 (2026-09-11). Coverage 100
+**117 done, 192 open, 2 blocked, 2 dropped** of 313 (2026-09-11). Coverage 100
 percent on all four metrics. **Deployed**: https://sijav.github.io/KarNama/ and
 Storybook at https://sijav.github.io/KarNama/storybook/, both from
 `.github/workflows/pages.yml` on every push. The API needs
 `NPM_CONFIG_PRODUCTION=false` in Render's dashboard before it runs there.
 
-**Six components exist**: Checkbox, Filter chip, Tooltip, language switch,
-Status Chip (KN-010), Input (KN-011). The live site is a placeholder shell
-until screens start, which is after components.
+**Eleven components exist**: Checkbox, Filter chip, Tooltip, language switch,
+Status Chip (KN-010), Input (KN-011), and since the owner's 2026-09-11 order
+the Color Picker (KN-019, nine swatches as the file draws, not four), Tabs
+(KN-023), the Icon set (KN-008, 30 glyphs in glyphs.json), the Icon Button
+(KN-014) and the Search Bar (KN-016); shared story fixtures (KN-062) in
+per-locale JSON. The live site is a placeholder shell until screens start.
 
 **Open children**, high unless marked, since 2026-09-11. KN-011: KN-251
 (low), KN-255, KN-256 (low), KN-257 (medium), KN-260, KN-268 (low), KN-275,
@@ -112,13 +115,20 @@ and KN-287. The job level list and KN-077 still wait.
 - A mutation that fails to fail is a finding about the mutation first.
 - `git add` of a roast's `.prompt.md` fails: it is gitignored; add the archive and its meta only.
 - `:focus-visible` after Storybook's untrusted `userEvent.tab()` depends on the page's earlier input; a real Tab comes from Playwright.
+- Never compute a colour with computedColour INSIDE waitFor: it rewrites the element's style, waitFor's observer reruns on it, and the loop kills the browser connection (KN-014).
+- The lingui rule's KN-214 bug flags any string with a lowercase p or a capital L: type strings against a union (skipped), keep path data and Persian sample data in JSON, find nodes by instanceof, and name an English catalog instance `i18n` so `i18n._()` is recognised.
+- A story that writes args back must carry a revision (the KN-280 Held pattern) or a late render brings an older value back; the production build shows it, the runner does not.
+- Importing a verifier module runs it: never `import()` one to read a constant.
+- In RTL the story root puts inline content at the right: clip screenshots to the element, not to the root's left.
 
 ## The next step
 
-KN-293 (9.1, nothing filed) and KN-294 closed; KN-294's roast is owed. Then
-the components, by the law: KN-019 Colour picker, KN-023 Tabs, KN-062 Shared
-story fixtures, KN-008 Icon set (it unblocks Button, Icon button, Search, Menu
-and more), KN-009 Button, KN-012 Select, and on. Findings wait at high.
+KN-016's roast is running. Then the components, by the law: KN-009 Button,
+KN-012 Select, KN-018 Menu, KN-021 Page header, KN-022 Empty and loading,
+KN-024 Sort, KN-025 Bulk bar, and on. Findings filed today wait at high or
+lower: KN-301 to KN-313, among them KN-310 (the Icon Button cannot be a
+Tooltip trigger) and KN-305 (fixtures need a board and all nine statuses),
+which the Card and Board will want.
 
 ## What to read first
 
