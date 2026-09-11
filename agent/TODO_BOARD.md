@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 141 of 377 tasks done · 320 of 817 points.
+Project **KarNama** · 141 of 379 tasks done · 320 of 819 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-314` A controlled Search Bar still runs a pending search for a value its parent has since replaced** (high, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-314` | A controlled Search Bar still runs a pending search for a value its parent has since replaced | high | 1 | web | none | In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call. |
 
 ## Blocked (4)
 
@@ -19,12 +25,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (230)
+## Backlog (231)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-314` | A controlled Search Bar still runs a pending search for a value its parent has since replaced | high | 1 | web | none | In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call. |
 | `KN-320` | The Page Header's back control is a 20 by 20 target, under the 24 the product asks of a control | high | 1 | web | none | The back control's target is 24 or more each way while the arrow stays 20 and stays 12 from the title, and the WithBack story measures both. |
 | `KN-322` | Storybook never loads Vazirmatn, so every story draws its type in the system font | high | 1 | web | none | preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text. |
 | `KN-337` | The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel | high | 1 | web | none | The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter. |
@@ -226,6 +231,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-375` | A focused tab panel draws the browser's own outline, not the product's focus ring | low | 1 | web | none | A focused panel draws the product's focus ring in border/focus where the scrolling body cannot clip it, read from the file's focus treatment or DESIGN.md's rule for rings, and TabReachesTheText asserts the ring's style and colour after a real Tab in light and dark. |
 | `KN-376` | The tab panel's tabbable test misses a contenteditable and a summary, so a panel holding only one keeps an extra stop | low | 1 | web | none | A panel whose only tab stop is a summary, or a contenteditable, carries no tabindex, and a real Tab from its tab lands on that element, in a story. |
 | `KN-377` | The tab panel's tabbable test counts a control inside an inert subtree, so a panel of text can lose its only stop | low | 1 | web | none | A panel whose only control sits inside an inert subtree keeps tabindex 0, and a real Tab from its tab lands on the panel, in a story. |
+| `KN-378` | The Icon Button's stories draw a name no control shows, so its aria-label is not driven by its args | low | 1 | web | none | The Icon Button's aria-label is an arg shown in Controls, holding the catalog's copy in the reader's language by the Input's KN-245 pattern, and a value typed there, blank included, reaches the rendered button, which a story checks. |
+| `KN-379` | BlankName reads the console before the Icon Button's report effect is sure to have run outside the test runner | low | 1 | web | none | BlankName waits for the report with waitFor before asserting it, and passes in the published Storybook's interaction panel as well as under Vitest. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4090,6 +4097,8 @@ CHILD OF KN-014, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case.
 
+**Roasts.** round 1 scored 7 with 0 critical(s)
+
 ### `KN-312` The Icon Button's hover eases in over MUI's 150 ms where the design's state changes take 300
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -4114,7 +4123,7 @@ CHILD OF KN-014, recorded in prose because board.json cannot express parent_task
 
 ### `KN-314` A controlled Search Bar still runs a pending search for a value its parent has since replaced
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-016, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-016 roast. change() captures the typed value in a timeout, and nothing cancels it when the parent changes value; type foo, have the parent reset value to empty before 300 ms, and the field shows empty while onSearch('foo') still fires. A parent that ignores onChange also gets searches for text the field never showed.
@@ -4815,4 +4824,26 @@ CHILD OF KN-023, recorded in prose because board.json cannot express parent_task
 **Why.** A panel's text must stay reachable by keyboard whenever nothing else in it can take focus, including content a caller has made inert while it loads or waits.
 
 **Exit condition.** A panel whose only control sits inside an inert subtree keeps tabindex 0, and a real Tab from its tab lands on the panel, in a story.
+
+### `KN-378` The Icon Button's stories draw a name no control shows, so its aria-label is not driven by its args
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-311 roast. IconButton.stories.tsx's Named wrapper overwrites the aria-label arg with the catalog's 'Delete status', and the meta's controls include only icon, tone, iconSize and disabled, so a reviewer cannot give the button a different, blank or whitespace name in Controls and see it reach the component. AGENTS.md's 'Stories render from their args' puts sample copy IN the args, following the Language toolbar and written back with updateArgs, the Input's KN-245 pattern.
+
+**Why.** The name is the one thing an icon-only button must carry, and the Docs page is where a caller learns what it does with one; a control that cannot set it hides the component's most important prop.
+
+**Exit condition.** The Icon Button's aria-label is an arg shown in Controls, holding the catalog's copy in the reader's language by the Input's KN-245 pattern, and a value typed there, blank included, reaches the rendered button, which a story checks.
+
+### `KN-379` BlankName reads the console before the Icon Button's report effect is sure to have run outside the test runner
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-311 roast. The Icon Button reports a blank name from a passive effect, and BlankName's play asserts console.error was called at once; under Vitest the portable story's render is wrapped in act, which flushes the effect first, but in the published Storybook's interaction panel nothing guarantees the effect ran before the play reads the spy.
+
+**Why.** A story that passes under the runner and can fail in the Storybook a reviewer opens teaches them to distrust the panel.
+
+**Exit condition.** BlankName waits for the report with waitFor before asserting it, and passes in the published Storybook's interaction panel as well as under Vitest.
 

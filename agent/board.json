@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 378,
+  "nextId": 380,
   "tasks": [
     {
       "id": "KN-001",
@@ -8487,7 +8487,24 @@
       "parent": [],
       "status": "done",
       "exit": "Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-311-round-1.2026-09-11T19-06-06-850Z.md",
+          "filed": [
+            "KN-378",
+            "KN-379"
+          ],
+          "cardDigest": "d837176578d49342403272deaa8c31868d01f0ee015c124b9f019bce8f5a3fae",
+          "head": "08605b8bea14cf309f99a49f511f97b163c0e564",
+          "reviewerScore": 5.8,
+          "reviewerCriticals": 0,
+          "dismissed": "Its second major, that leaving the button out gives the host no signal, is dismissed: the exit condition asks the failure to be contained to the button, which it is; the product has no error channel beyond the console, which the Tooltip uses the same way; and a fallback name or a nameless disabled button is what the card forbids. The first major predates KN-311, KN-014's Named wrapper, filed low as KN-378; the minor is KN-379, low.",
+          "at": "2026-09-11T19:09:45.954Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T12:43:24.678Z",
       "updatedAt": "2026-09-11T19:05:51.516Z",
@@ -8536,11 +8553,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T12:47:18.390Z"
+      "createdAt": "2026-09-11T12:47:18.390Z",
+      "updatedAt": "2026-09-11T19:06:12.515Z"
     },
     {
       "id": "KN-315",
@@ -9509,6 +9527,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T18:56:37.777Z"
+    },
+    {
+      "id": "KN-378",
+      "title": "The Icon Button's stories draw a name no control shows, so its aria-label is not driven by its args",
+      "desc": "CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-311 roast. IconButton.stories.tsx's Named wrapper overwrites the aria-label arg with the catalog's 'Delete status', and the meta's controls include only icon, tone, iconSize and disabled, so a reviewer cannot give the button a different, blank or whitespace name in Controls and see it reach the component. AGENTS.md's 'Stories render from their args' puts sample copy IN the args, following the Language toolbar and written back with updateArgs, the Input's KN-245 pattern.",
+      "why": "The name is the one thing an icon-only button must carry, and the Docs page is where a caller learns what it does with one; a control that cannot set it hides the component's most important prop.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The Icon Button's aria-label is an arg shown in Controls, holding the catalog's copy in the reader's language by the Input's KN-245 pattern, and a value typed there, blank included, reaches the rendered button, which a story checks.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T19:09:37.408Z"
+    },
+    {
+      "id": "KN-379",
+      "title": "BlankName reads the console before the Icon Button's report effect is sure to have run outside the test runner",
+      "desc": "CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-311 roast. The Icon Button reports a blank name from a passive effect, and BlankName's play asserts console.error was called at once; under Vitest the portable story's render is wrapped in act, which flushes the effect first, but in the published Storybook's interaction panel nothing guarantees the effect ran before the play reads the spy.",
+      "why": "A story that passes under the runner and can fail in the Storybook a reviewer opens teaches them to distrust the panel.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "BlankName waits for the report with waitFor before asserting it, and passes in the published Storybook's interaction panel as well as under Vitest.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T19:09:37.531Z"
     }
   ]
 }
