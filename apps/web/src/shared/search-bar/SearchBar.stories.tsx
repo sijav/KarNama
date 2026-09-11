@@ -2,7 +2,7 @@ import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { useRef, useState } from 'react'
 import { useArgs } from 'storybook/preview-api'
-import { expect, fn, userEvent, within } from 'storybook/test'
+import { expect, fireEvent, fn, userEvent, within } from 'storybook/test'
 import { semantic } from '../../theme/tokens'
 import { fixtures } from '../story-fixtures'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -195,5 +195,60 @@ export const InEnglish: Story = {
   play: async ({ canvasElement }) => {
     // Left to right: the icon at the left, 16 in.
     await isTheFiles(canvasElement)
+  },
+}
+
+// A parent that replaces the value while a search is pending, KN-314: it
+// follows what is typed and empties the bar when its hidden reset is pressed,
+// which only a story's play does, as a navigation or a reset elsewhere would.
+const Resetting = ({ onSearch }: { onSearch?: (value: string) => void }) => {
+  const [value, setValue] = useState('')
+  return (
+    <Box sx={{ width: 320 }}>
+      <SearchBar value={value} onChange={setValue} {...(onSearch ? { onSearch } : {})} />
+      <button
+        hidden
+        data-testid="reset"
+        onClick={() => {
+          setValue('')
+        }}
+      />
+    </Box>
+  )
+}
+
+export const ResetWhilePending: Story = {
+  // Typed, and emptied by the parent before the pause ends: the field shows
+  // nothing, and the search for what it no longer shows never runs. A fixed
+  // parent, so no control applies.
+  parameters: { controls: { disable: true } },
+  render: (args) => <Resetting {...(args.onSearch ? { onSearch: args.onSearch } : {})} />,
+  play: async ({ args, canvasElement }) => {
+    const { field } = partsOf(canvasElement)
+    await userEvent.type(field, TYPED)
+    await fireEvent.click(within(canvasElement).getByTestId('reset'))
+    await expect(field).toHaveValue('')
+    await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_MS + 150))
+    await expect(args.onSearch).not.toHaveBeenCalled()
+  },
+}
+
+export const IgnoredKeystrokes: Story = {
+  // A parent that holds the value and ignores what is typed: the keys are
+  // reported, the field keeps showing nothing, and nothing is searched for
+  // text it never showed. A fixed parent, so no control applies.
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <Box sx={{ width: 320 }}>
+      <SearchBar value="" {...(args.onChange ? { onChange: args.onChange } : {})} {...(args.onSearch ? { onSearch: args.onSearch } : {})} />
+    </Box>
+  ),
+  play: async ({ args, canvasElement }) => {
+    const { field } = partsOf(canvasElement)
+    await userEvent.type(field, TYPED)
+    await expect(field).toHaveValue('')
+    await expect(args.onChange).toHaveBeenCalled()
+    await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_MS + 150))
+    await expect(args.onSearch).not.toHaveBeenCalled()
   },
 }

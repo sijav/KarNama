@@ -39,25 +39,35 @@ export const SearchBar = ({ value, defaultValue = '', onChange, onSearch }: Sear
   const [own, setOwn] = useState(defaultValue)
   const text = value ?? own
   const field = useRef<HTMLInputElement | null>(null)
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  // The value last typed, and the latest onSearch, which the search below reads
+  // when it runs rather than when it was started.
+  const typed = useRef<string | null>(null)
+  const search = useRef(onSearch)
+  useEffect(() => {
+    search.current = onSearch
+  })
 
-  // A pending search does not outlive the bar.
-  useEffect(
-    () => () => {
-      clearTimeout(timer.current)
-    },
-    [],
-  )
+  // The search runs once typing pauses, with the value the field shows, KN-314:
+  // started when the shown text becomes what was just typed, and cancelled by
+  // any change to it. So a parent that replaces the value while a search is
+  // pending, or ignores a keystroke, never has a search run for text the field
+  // did not show; and a pending search does not outlive the bar.
+  useEffect(() => {
+    if (typed.current !== text) return
+    const timer = setTimeout(() => search.current?.(text), DEBOUNCE_MS)
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [text])
 
   const change = (next: string) => {
+    typed.current = next
     setOwn(next)
     onChange?.(next)
-    clearTimeout(timer.current)
-    timer.current = setTimeout(() => onSearch?.(next), DEBOUNCE_MS)
   }
 
   const clear = () => {
-    clearTimeout(timer.current)
+    typed.current = null
     setOwn('')
     onChange?.('')
     onSearch?.('')

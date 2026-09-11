@@ -26,6 +26,8 @@ Fired with the text on every change, including a clear.
 ### onSearch
 
 Fired with the text once typing pauses, and at once when the field is cleared.
+Only ever with text the field shows: when the page replaces the value while a
+search is waiting, or does not take what was typed, that search is dropped.
 
 ## Stories
 
@@ -54,3 +56,13 @@ whole word.
 ### InEnglish
 
 The bar in English, the icon at the left.
+
+### ResetWhilePending
+
+Typed, then emptied by the page before the pause ends: the field shows nothing,
+and no search runs for the text it no longer shows.
+
+### IgnoredKeystrokes
+
+A page that keeps the value and ignores what is typed: each key is reported, the
+field stays empty, and nothing is searched.
