@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-282` The Filter Chip's text sits at 13 where the file draws 12, and its pressed edge is 1 where the file draws 1.5** (critical, 2 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-282` | The Filter Chip's text sits at 13 where the file draws 12, and its pressed edge is 1 where the file draws 1.5 | critical | 2 | web | none | In every state the Filter Chip's text sits spacing/sm, 12px, from the chip's outer edge as 159:63 to 159:69 draw it, with the edge painted inside and taking no layout space; the pressed edge is 1.5 as 159:67 draws it; nothing in FilterChip.tsx computes a padding from a border width; the stories measure the text's distance from the edge; and the selected edge is left to KN-279. |
+
 ## Blocked (2)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -17,7 +23,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (190)
+## Backlog (189)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -26,7 +32,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
-| `KN-282` | The Filter Chip's text sits at 13 where the file draws 12, and its pressed edge is 1 where the file draws 1.5 | critical | 2 | web | none | In every state the Filter Chip's text sits spacing/sm, 12px, from the chip's outer edge as 159:63 to 159:69 draw it, with the edge painted inside and taking no layout space; the pressed edge is 1.5 as 159:67 draws it; nothing in FilterChip.tsx computes a padding from a border width; the stories measure the text's distance from the edge; and the selected edge is left to KN-279. |
 | `KN-283` | KN-266's text measurement reads the input's box, so a text-indent moves the text without failing a check | critical | 2 | web | none | The Input's stories and KN-266's production check measure where the text starts, the input's box edge plus its own padding, border and text-indent on the side the text starts from, given its direction and alignment, and read 16 as 95:5 draws it; a static text-indent, a padding on the input and a changed alignment, each present in every state, fail Default and the production check by name. |
 | `KN-286` | An Input's error is not announced when it appears while the field has focus | critical | 2 | web | none | An error that appears on a focused Input is announced through a live region present before the error arrives, and the field keeps aria-invalid and its aria-describedby association; clearing the error restores the helper as the description or removes aria-describedby when there is none; a story asserts the live region's role and that it carries the error text after the error is set on a focused field, and a mutation removing the live region fails it by name. |
 | `KN-287` | Draw the Input's message line only when there is a helper or an error, as the screens draw it | critical | 2 | web | none | An Input with neither a helper nor an error draws no message line and is 64 tall, as the 91 screen instances draw it; with a helper or an error it is 90, the file's variants; an error appearing on a field without a helper adds the line with its message; an error on a field that has a helper replaces the helper with the error's message and the field's aria-describedby then names the error, and clearing the error brings the helper back; a blank error still draws no line; stories assert the 64 and the 90, the line appearing with the error, and the error replacing a helper, with a mutation that keeps the helper over the error failing by name, replacing ErrorDoesNotMoveTheField and WithoutAHelper's reserved line; every other place that asserts the reserved line is changed with it, KN-011's verifier and both languages' story docs included; DESIGN.md records the owner's reversal of KN-011's decision; and the Input's comment about the line always keeping its height is corrected. |
@@ -3578,6 +3583,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Bound tells its own writes from anything else by a revision carried with each write, not by value, so an arg whose value is not the one sent at its revision is taken, whatever the queue holds; a check in a production build reproduces the sequence, an edit in flight, a Controls value equal to it arriving after a newer edit, and ends with the field and the arg equal; the exception is gone from the comment; the revision never reaches the Input or shows as a control; and KN-253's and KN-249's verifiers still pass.
 
+**Roasts.** round 1 scored 9.5 with 0 critical(s)
+
 ### `KN-281` The Checkbox frame draws a 1px edge where every state in the file draws 1.5
 
 - **status** done · **severity** critical · **points** 1 · **area** web
@@ -3593,7 +3600,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-282` The Filter Chip's text sits at 13 where the file draws 12, and its pressed edge is 1 where the file draws 1.5
 
-- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found while checking the other bordered components for KN-266, a KN-011 child. Read with use_figma: the Filter Chip variants of 159:71 are 32 tall with padding 12 at each side and 0 above and below, their stroke INSIDE and not included in layout, and the text at x 12 and y 5. FilterChip.tsx draws a one pixel CSS border, which is laid out, with paddingInline spacing.sm, so its text sits 13 from the edge, a pixel inward, the offset KN-266 removes from the Input. The file's Pressed variant, 159:67, draws its edge at 1.5, where FilterChip.tsx keeps 1 and only changes the colour. The Selected variant, 159:69, draws no stroke at all; the owner's KN-276 decision replaces that with a blue edge, which KN-279 builds, so this card leaves the selected edge to it.

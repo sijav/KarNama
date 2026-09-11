@@ -7104,7 +7104,20 @@
       "parent": [],
       "status": "done",
       "exit": "Bound tells its own writes from anything else by a revision carried with each write, not by value, so an arg whose value is not the one sent at its revision is taken, whatever the queue holds; a check in a production build reproduces the sequence, an edit in flight, a Controls value equal to it arriving after a newer edit, and ends with the field and the arg equal; the exception is gone from the comment; the revision never reaches the Input or shows as a control; and KN-253's and KN-249's verifiers still pass.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 9.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-280-round-1.2026-09-11T05-31-34-343Z.md",
+          "filed": [],
+          "cardDigest": "b84c5bb91665ab9574f1bdcbb33c9c31e8dd21f02d9ee42d8cc1cd9d6dbee96c",
+          "head": "c43850976e204294d6b3f33ead39da8b16471ea8",
+          "reviewerScore": 9.5,
+          "reviewerCriticals": 0,
+          "at": "2026-09-11T05:36:01.915Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T16:23:23.839Z",
       "updatedAt": "2026-09-11T05:31:04.055Z",
@@ -7156,11 +7169,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "In every state the Filter Chip's text sits spacing/sm, 12px, from the chip's outer edge as 159:63 to 159:69 draw it, with the edge painted inside and taking no layout space; the pressed edge is 1.5 as 159:67 draws it; nothing in FilterChip.tsx computes a padding from a border width; the stories measure the text's distance from the edge; and the selected edge is left to KN-279.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T16:24:51.439Z"
+      "createdAt": "2026-09-10T16:24:51.439Z",
+      "updatedAt": "2026-09-11T05:31:35.376Z"
     },
     {
       "id": "KN-283",
