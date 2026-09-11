@@ -7553,15 +7553,17 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "textInsets and KN-266's production check refuse by name unicode-bidi plaintext on the input, which lets the content set the direction, a writing mode other than horizontal-tb on the input, and an input whose direction is not the field's; unicode-bidi plaintext on the input, a vertical writing mode on it, and the input set to the other direction, each present in every state, fail Default and the production check by name; and KN-283's verifier still passes.",
       "roasts": [],
       "notes": [
         "2026-09-11, measured in Chromium 151 before building: direction and writing-mode set on ::placeholder are ignored, the computed style stays the input's and the placeholder's pixels do not move, as CSS Pseudo-Elements 4 limits ::placeholder to the ::first-line properties; text-align on ::placeholder is honoured, and KN-283's helper already refuses it. So a placeholder cannot run the other way, and the exit is narrowed from a placeholder given the other direction to the input: unicode-bidi plaintext on the input moved a Persian value in the English field from x 0 to x 511 while its computed direction still read ltr, and a vertical writing mode turned the axis."
       ],
       "createdAt": "2026-09-11T06:44:04.872Z",
-      "updatedAt": "2026-09-11T08:03:20.745Z",
-      "verify": "node agent/scripts/verify/KN-297.mjs"
+      "updatedAt": "2026-09-11T08:25:28.403Z",
+      "verify": "node agent/scripts/verify/KN-297.mjs",
+      "evidence": "Measured before building, in Chromium 151: direction and writing-mode set on ::placeholder are ignored, the computed style staying the input's and the placeholder's pixels not moving, and text-align there is honoured and already refused; unicode-bidi plaintext on the input moved a Persian value in the English field from x 0 to x 511 while its computed direction still read ltr. So the exit was narrowed on the card to the input. textInsets in Input.stories.tsx throws, naming why, on unicode-bidi plaintext on the input, a writing mode other than horizontal-tb, and an input whose direction is not its field's, before its alignment, scroll and indent checks; KN-266's production check measures the same way and names the refusal. node agent/scripts/verify/KN-297.mjs passed: the stories pass with the helper reading unicode-bidi, the writing mode and the field's direction; unicode-bidi plaintext on the input, writing-mode vertical-rl on it, and a dir attribute against the theme's direction, each present in every state, fail Default by name with the helper's reason and fail KN-266's production check, run as its own verifier against the mutated component, saying unicode-bidi plaintext, writing vertical-rl, or running one way in a field running the other; and KN-283's verifier still passes. A direction set in styles did not work as the mutation: the Emotion cache's RTL plugin flips it back in Persian, and it matches the field in English. Unit project, eslint on the Input and tsc clean. Not established: a future dir=auto on the Input, which would let content set the direction and would be a design decision of its own.",
+      "closedAt": "2026-09-11T08:25:28.403Z"
     },
     {
       "id": "KN-298",
