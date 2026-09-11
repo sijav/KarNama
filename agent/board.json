@@ -1080,14 +1080,16 @@
         "KN-013",
         "KN-009"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Both types match Figma, the bar appears only when at least one row is selected, it reports the selection count, and it is reachable by keyboard when it appears rather than trapping focus behind the list.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T13:26:08.551Z"
+      "updatedAt": "2026-09-11T13:44:10.680Z",
+      "evidence": "Bulk Action Bar (401:436) built for jobs and contacts: fixed bottom centre, count in the reader's digits with a pre-mounted status region, Icon Button close at 20, elevation.bulkBar token; 6 stories incl. Tab reaching it before a list pass, seen headless at 1440 and 390 light and dark",
+      "closedAt": "2026-09-11T13:44:10.680Z"
     },
     {
       "id": "KN-026",
