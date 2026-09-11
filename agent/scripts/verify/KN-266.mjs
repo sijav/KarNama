@@ -12,7 +12,10 @@
 // The states are read in a production Storybook served here, in Playwright's
 // Chromium, in both directions; forced colours are checked on the rendered
 // pixels, not the computed style, since the browser substitutes border colours
-// at paint time.
+// at paint time. The text is measured where it starts, since KN-283: the
+// input's box plus its own border, padding and text-indent on the side the
+// text starts from, the placeholder's alignment and indent when it is empty,
+// and no start at all when it is aligned elsewhere or scrolled.
 //
 // NOT read-only: it edits Input.tsx for its mutations and restores it in a
 // finally, and runs five older verifiers that do the same. The build goes to
@@ -89,7 +92,8 @@ const serve = (dir) =>
   })
 
 // In the page: the field that has focus, or the first one, its own border, its
-// edge on ::before, and the text's distance from its outer edge on each side.
+// edge on ::before, and where its text starts and ends from its outer edge,
+// start first, as the stories' textInsets measures it, KN-283.
 const measure = () => {
   const focused = document.activeElement?.closest('.MuiInputBase-root')
   const field = focused ?? document.querySelector('#storybook-root .MuiInputBase-root')
@@ -98,13 +102,24 @@ const measure = () => {
   const own = getComputedStyle(field)
   const edge = getComputedStyle(field, '::before')
   const outer = field.getBoundingClientRect()
-  const text = box.getBoundingClientRect()
+  const inner = box.getBoundingClientRect()
+  const style = getComputedStyle(box)
+  const shown = box.value === '' ? getComputedStyle(box, '::placeholder') : style
+  const rtl = style.direction === 'rtl'
+  const px = (value) => Number.parseFloat(value) || 0
+  const aligned = shown.textAlign === 'start' || shown.textAlign === (rtl ? 'right' : 'left')
+  const [start, end] = rtl
+    ? [outer.right - inner.right + px(style.borderRightWidth) + px(style.paddingRight), inner.left - outer.left + px(style.borderLeftWidth) + px(style.paddingLeft)]
+    : [inner.left - outer.left + px(style.borderLeftWidth) + px(style.paddingLeft), outer.right - inner.right + px(style.borderRightWidth) + px(style.paddingRight)]
   return {
     focused: Boolean(focused),
     own: [own.borderTopWidth, own.borderRightWidth, own.borderBottomWidth, own.borderLeftWidth].map(Number.parseFloat),
     edge: Number.parseFloat(edge.borderTopWidth),
     edgeStyle: edge.borderTopStyle,
-    insets: [text.left - outer.left, outer.right - text.right],
+    // No start to measure when the text is aligned elsewhere, scrolled, or
+    // indented by something other than a length.
+    insets: aligned && box.scrollLeft === 0 && /px$/.test(shown.textIndent) ? [start + px(shown.textIndent), end] : [Number.NaN, Number.NaN],
+    align: shown.textAlign,
   }
 }
 
@@ -152,7 +167,7 @@ const main = async () => {
             if (!read) { problems.push(`${story} ${locale}: no field`); continue }
             const width = read.focused ? 2 : 1
             const wrong = []
-            if (read.insets.some((inset) => inset !== 16)) wrong.push(`text at ${read.insets.join(' and ')}`)
+            if (read.insets.some((inset) => inset !== 16)) wrong.push(`text at ${read.insets.join(' and ')}, aligned ${read.align}`)
             if (read.own.some((border) => border !== 0)) wrong.push(`a border on the field itself, ${read.own.join(' ')}`)
             if (read.edge !== width || read.edgeStyle !== 'solid') wrong.push(`an edge of ${read.edge} ${read.edgeStyle} where ${width} is drawn`)
             if (story.startsWith('focus') && !read.focused) wrong.push('nothing is focused')

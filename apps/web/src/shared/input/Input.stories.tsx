@@ -159,13 +159,30 @@ const offers = (names: (keyof InputProps)[]) => ({ controls: { include: names } 
 // takes no layout space, KN-266.
 const edgeOf = (field: HTMLElement) => getComputedStyle(field, '::before')
 
-// How far the text starts from the field's outer edge, on each side. The input
-// fills the field between its paddings, so both are the padding: 95:5 draws
-// 16, and a stroke that took space would make them 17.
+// A computed length as a number of pixels; none, or auto, is 0.
+const px = (value: string) => Number.parseFloat(value) || 0
+
+// Where the text starts and ends inside the field, from its outer edge, start
+// first: on the side the text starts from, the input's box plus its own border
+// and padding there plus its text-indent, which moves the text inside a box
+// that stays put; on the other side, the box less its border and padding. So
+// an indent or a padding on the input counts, as a stroke that took space
+// would: 95:5 draws 16, KN-266, KN-283. The start is only where the text starts
+// while it is aligned there and not scrolled, and an empty field shows its
+// placeholder, whose own alignment and indent count then.
 const textInsets = (field: HTMLElement, box: HTMLElement) => {
   const outer = field.getBoundingClientRect()
-  const text = box.getBoundingClientRect()
-  return [text.left - outer.left, outer.right - text.right]
+  const inner = box.getBoundingClientRect()
+  const style = getComputedStyle(box)
+  const shown = box instanceof HTMLInputElement && box.value === '' ? getComputedStyle(box, '::placeholder') : style
+  const rtl = style.direction === 'rtl'
+  if (shown.textAlign !== 'start' && shown.textAlign !== (rtl ? 'right' : 'left')) throw new Error(`the text is aligned ${shown.textAlign}, so it does not start at the field's start`)
+  if (box.scrollLeft !== 0) throw new Error(`the text is scrolled by ${box.scrollLeft}, so it does not start at its origin`)
+  if (!/^-?[\d.]+px$/.test(shown.textIndent)) throw new Error(`the text-indent is ${shown.textIndent}, not a length`)
+  const [start, end] = rtl
+    ? [outer.right - inner.right + px(style.borderRightWidth) + px(style.paddingRight), inner.left - outer.left + px(style.borderLeftWidth) + px(style.paddingLeft)]
+    : [inner.left - outer.left + px(style.borderLeftWidth) + px(style.paddingLeft), outer.right - inner.right + px(style.borderRightWidth) + px(style.paddingRight)]
+  return [start + px(shown.textIndent), end]
 }
 
 // The field itself: MUI's input root, the element that carries the edge.
@@ -350,8 +367,6 @@ interface Extent {
   right: number
   bottom: number
 }
-
-const px = (value: string) => Number.parseFloat(value) || 0
 
 // How far past its own box a style paints: its outline, and any shadow cast
 // outside it, the largest of its offset, blur and spread. An inset shadow
@@ -597,9 +612,9 @@ const Placeholder = () => (
 )
 
 // Node 95:38 with its icons on: each slot 20 by 20 in text/secondary, 16 from
-// its edge of the field and 4 from the text box, on the side the direction
-// gives it: the leading one at the inline start, KN-267. The text box moves
-// along by the icon and the gap, to 40.
+// its edge of the field and 4 from the text, on the side the direction gives
+// it: the leading one at the inline start, KN-267. The text moves along by the
+// icon and the gap, to 40, measured where it starts, KN-283.
 const slotsAreTheFiles = async (canvasElement: HTMLElement, sides: { leading: boolean; trailing: boolean }) => {
   const field = fieldOf(canvasElement)
   const box = within(canvasElement).getByRole('textbox')
@@ -607,7 +622,6 @@ const slotsAreTheFiles = async (canvasElement: HTMLElement, sides: { leading: bo
   const outer = field.getBoundingClientRect()
   const fromStart = (rect: DOMRect) => (rtl ? outer.right - rect.right : rect.left - outer.left)
   const fromEnd = (rect: DOMRect) => (rtl ? rect.left - outer.left : outer.right - rect.right)
-  const text = box.getBoundingClientRect()
   // text/secondary in whichever theme is on: the helper line under the field
   // is drawn in it, so the stories need no pin to one palette.
   const helper = canvasElement.ownerDocument.getElementById(box.getAttribute('aria-describedby') ?? '')
@@ -624,7 +638,7 @@ const slotsAreTheFiles = async (canvasElement: HTMLElement, sides: { leading: bo
   else await expect(box.previousElementSibling).toBeNull()
   if (sides.trailing) await slot(box.nextElementSibling, fromEnd)
   else await expect(box.nextElementSibling).toBeNull()
-  await expect([fromStart(text), fromEnd(text)]).toEqual([sides.leading ? 40 : 16, sides.trailing ? 40 : 16])
+  await expect(textInsets(field, box)).toEqual([sides.leading ? 40 : 16, sides.trailing ? 40 : 16])
 }
 
 export const LeadingIcon: Story = {
