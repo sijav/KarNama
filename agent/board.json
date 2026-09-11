@@ -1263,14 +1263,16 @@
         "KN-008",
         "KN-009"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T16:12:36.415Z"
+      "updatedAt": "2026-09-11T16:31:53.790Z",
+      "evidence": "NavItem, Sidebar, TabBar and Navigation built from 184:14, 185:11 and 185:19, three destinations, the switch at the sidebar's foot, md the line between sidebar and tab bar, the shell wired; 14 navigation stories and the shell's pass, unit suite 864 green, seen at 1440 and 390 in a production build",
+      "closedAt": "2026-09-11T16:31:53.790Z"
     },
     {
       "id": "KN-028",
