@@ -49,6 +49,10 @@ const computedColour = (host: HTMLElement, colour: string) => {
 }
 
 type Role = keyof typeof semantic
+// Token names and a CSS colour a computed style is compared with, KN-214: a
+// fill may be none, so the table is typed Role or null, which the lint rule
+// does not read as a union of names.
+/* eslint-disable lingui/no-unlocalized-strings -- token names and a CSS value, not copy */
 const CLEAR = 'rgba(0, 0, 0, 0)'
 
 // Node 31:4, read with use_figma: each style's fill and text in each state.
@@ -59,6 +63,7 @@ const EXPECTED: Record<ButtonVariant, Record<'rest' | 'hover' | 'pressed' | 'dis
   destructive: { rest: ['bg/danger/default', 'text/on-accent'], hover: ['bg/danger/hover', 'text/on-accent'], pressed: ['red/700', 'text/on-accent'], disabled: ['gray/200', 'text/disabled'] },
   ghost: { rest: [null, 'text/secondary'], hover: ['bg/surface-secondary', 'text/primary'], pressed: ['bg/surface-secondary', 'text/primary'], disabled: [null, 'text/disabled'] },
 }
+/* eslint-enable lingui/no-unlocalized-strings */
 
 const HEIGHTS: Record<ButtonSize, number> = { S: 36, M: 44, L: 52 }
 const PADDING: Record<ButtonSize, number> = { S: 12, M: 16, L: 24 }

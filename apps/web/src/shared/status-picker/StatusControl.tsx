@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { Box, ButtonBase, Popover, useTheme } from '@mui/material'
 import { useState } from 'react'
+import { inlineEndOf } from '../../theme/sides'
 import { spacing } from '../../theme/tokens'
 import { Icon } from '../icon'
 import { optionsMenuPaper } from '../select'
@@ -33,7 +34,7 @@ const PANEL_WIDTH = 372
 // with nothing changed. Either way focus is back on the control.
 export const StatusControl = ({ statuses, value, onChange, onAdd }: StatusControlProps) => {
   const { i18n } = useLingui()
-  const end = useTheme().direction === 'rtl' ? 'left' : 'right'
+  const end = inlineEndOf(useTheme().direction)
   const [anchor, setAnchor] = useState<HTMLElement | null>(null)
   const current = statuses.find((option) => option.id === value)
   const close = () => {

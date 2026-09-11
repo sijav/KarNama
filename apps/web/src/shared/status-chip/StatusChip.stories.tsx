@@ -6,7 +6,14 @@ import { status as statusTokens, type StatusToken } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures, statusName } from '../story-fixtures'
 import { defaultStatusName, type DefaultStatus } from './defaultStatusName'
-import { StatusChip } from './StatusChip'
+import { StatusChip, type StatusChipProps } from './StatusChip'
+
+// Each size, its height and its text, and the status an unmatched chip falls back to.
+const MEASURES: readonly (readonly [NonNullable<StatusChipProps['size']>, number, number])[] = [
+  ['S', 24, 12],
+  ['M', 28, 14],
+]
+const NEW: StatusToken = 'new'
 
 // A token's colour as the browser computes it, so it compares with a computed
 // style. Borrowed on the host's own inline style and put back in the same tick.
@@ -113,16 +120,13 @@ export const AllStatuses: Story = {
   ),
   play: async ({ canvasElement }) => {
     const order: StatusToken[] = [...DEFAULTS, ...CUSTOM.map(([status]) => status)]
-    for (const [size, height, fontSize] of [
-      ['S', 24, 12],
-      ['M', 28, 14],
-    ] as const) {
+    for (const [size, height, fontSize] of MEASURES) {
       const chips = [...within(canvasElement).getByTestId(`size-${size}`).children]
       await expect(chips).toHaveLength(9)
       for (const [index, chip] of chips.entries()) {
         if (!(chip instanceof HTMLElement)) throw new Error('a chip is not an element')
         const style = getComputedStyle(chip)
-        const pair = statusTokens[order[index] ?? 'new']
+        const pair = statusTokens[order[index] ?? NEW]
         // Node 82:2, each variant: its height, 8 at each side, a full radius,
         // the status's container fill and its base text, at 12 or at 14.
         await expect(chip.offsetHeight).toBe(height)

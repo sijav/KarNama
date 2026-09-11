@@ -8,6 +8,6 @@ import { Box, IconButton } from '@mui/material'
 // the prop NAME, then a capitalised SHAPE, then a lower-case one. The exemption
 // is gone rather than narrowed, because nothing in `src` needed it. See
 // README.md in this directory.
-export const UnlocalizedTokenlikeAria = () => <IconButton aria-label="delete/application">x</IconButton>
+export const UnlocalizedTokenlikeAria = () => <IconButton aria-label="delete/application" />
 
-export const UnlocalizedTokenlikeTitle = () => <Box title="delete/application">x</Box>
+export const UnlocalizedTokenlikeTitle = () => <Box title="delete/application" />

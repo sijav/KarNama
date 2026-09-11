@@ -83,6 +83,8 @@ export const Input = ({
   ...field
 }: InputProps) => {
   const id = useId()
+  // An element id, never shown.
+  // eslint-disable-next-line lingui/no-unlocalized-strings -- KN-214
   const messageId = `${id}-message`
   // A blank error is no error: a form that clears one to '' rather than to
   // undefined leaves the field valid, with its helper under it, KN-254.

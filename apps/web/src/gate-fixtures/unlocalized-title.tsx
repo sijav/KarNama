@@ -5,4 +5,4 @@ import { Box } from '@mui/material'
 // `title` outright, to let a Storybook story path through, and this fixture
 // passed. A story path is exempted by WHERE it is now, in the stories block,
 // rather than by its shape: the shape matched real copy. See README.md.
-export const UnlocalizedTitle = () => <Box title="Delete this application">x</Box>
+export const UnlocalizedTitle = () => <Box title="Delete this application" />

@@ -40,10 +40,13 @@ type Mark = 'none' | 'tick' | 'dash'
 // an SVG would keep: ButtonText on the frame's ButtonFace, or GrayText when
 // disabled, so it neither vanishes nor reads as enabled. The keyword is kept in
 // a property so a check can read which was chosen whatever the palette
-// resolves it to, KN-290.
-const forcedMark = (disabled: boolean) => ({
-  '@media (forced-colors: active)': { '--karnama-forced-mark': disabled ? 'GrayText' : 'ButtonText', stroke: 'var(--karnama-forced-mark)' },
-})
+// resolves it to, KN-290. Under an sx key, which the lint rule reads as CSS:
+// GrayText and ButtonText are system colour keywords.
+const forcedMark = {
+  sx: (disabled: boolean) => ({
+    '@media (forced-colors: active)': { '--karnama-forced-mark': disabled ? 'GrayText' : 'ButtonText', stroke: 'var(--karnama-forced-mark)' },
+  }),
+}
 
 // The square, node 204:11, every value from the tokens. The tick and the dash
 // are inline SVG because Material's own glyph is a different shape and size.
@@ -103,7 +106,7 @@ const Frame = ({ mark, disabled }: { mark: Mark; disabled: boolean }) => (
       <Box
         component="svg"
         viewBox="0 0 12 12"
-        sx={(theme) => ({ width: 12, height: 12, fill: 'none', stroke: theme.karnama.semantic['text/on-accent'], ...forcedMark(disabled) })}
+        sx={(theme) => ({ width: 12, height: 12, fill: 'none', stroke: theme.karnama.semantic['text/on-accent'], ...forcedMark.sx(disabled) })}
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -115,7 +118,7 @@ const Frame = ({ mark, disabled }: { mark: Mark; disabled: boolean }) => (
       <Box
         component="svg"
         viewBox="0 0 12 12"
-        sx={(theme) => ({ width: 12, height: 12, stroke: theme.karnama.semantic['text/on-accent'], ...forcedMark(disabled) })}
+        sx={(theme) => ({ width: 12, height: 12, stroke: theme.karnama.semantic['text/on-accent'], ...forcedMark.sx(disabled) })}
         strokeWidth={2}
         strokeLinecap="round"
       >

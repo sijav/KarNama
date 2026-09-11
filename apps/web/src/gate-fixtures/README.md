@@ -37,6 +37,16 @@ was real and shipped:
   excluded from Storybook in `.storybook/main.ts` so it is linted, never
   indexed.
 
+- `unlocalized-word-delete.tsx`, `-save`, `-interview` and `-delete-status` —
+  'Delete', 'Save', «مصاحبه» and «حذف وضعیت», each as an `aria-label`, a
+  `title` and text. The rule compiles every ignore entry with `new
+RegExp(entry)` and no flags, so the no-letter entry `^[^\p{L}]*$` meant "no
+  p, {, L or }": every string without one of those four passed, all the Persian
+  and most of the English, and every fixture above passed only because it had
+  a p, KN-214. The entry is written with `\s` and `\uXXXX` now, which mean the
+  same with no flags. The fixtures above have no letter child any more, so each
+  fails on the string under test alone.
+
 Five of those six are one exemption written for one legitimate case that
 quietly covered every case. That is the pattern to watch: an exemption is a
 hole, and the fix is always to narrow WHERE it applies rather than to make the

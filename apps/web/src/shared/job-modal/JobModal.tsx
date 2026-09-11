@@ -550,6 +550,15 @@ export const JobModal = ({
     </Box>
   )
 
+  const labels: Record<JobModalTab, string> = {
+    info: i18n._('Job opportunity info'),
+    history: i18n._('History'),
+    note: i18n._('Note'),
+    contacts: i18n._('Related people'),
+    files: i18n._('Files'),
+  }
+  const panels: Record<JobModalTab, ReactNode> = { info, history: changes, note: noteTab, contacts: people, files }
+
   return (
     <Dialog
       open={open}
@@ -649,13 +658,7 @@ export const JobModal = ({
           onChange={(chosen) => {
             if (isTab(chosen)) setTab(chosen)
           }}
-          tabs={[
-            { value: 'info', label: i18n._('Job opportunity info'), panel: info },
-            { value: 'history', label: i18n._('History'), panel: changes },
-            { value: 'note', label: i18n._('Note'), panel: noteTab },
-            { value: 'contacts', label: i18n._('Related people'), panel: people },
-            { value: 'files', label: i18n._('Files'), panel: files },
-          ]}
+          tabs={TABS.map((value) => ({ value, label: labels[value], panel: panels[value] }))}
         />
       </Box>
       <Rule />

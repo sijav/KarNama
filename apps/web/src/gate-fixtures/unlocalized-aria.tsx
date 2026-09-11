@@ -4,4 +4,4 @@ import { IconButton } from '@mui/material'
 // speaks, so an untranslated one is untranslated user-facing copy that no
 // sighted reviewer will ever notice. The rule used to exempt every `aria-*`
 // prop and this fixture passed. See README.md in this directory.
-export const UnlocalizedAria = () => <IconButton aria-label="Delete this application">x</IconButton>
+export const UnlocalizedAria = () => <IconButton aria-label="Delete this application" />

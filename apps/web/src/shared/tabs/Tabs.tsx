@@ -33,8 +33,11 @@ const EDGE = 1
 // what is typed in one survives a switch.
 export const Tabs = ({ 'aria-label': label, value, onChange, tabs }: TabsProps) => {
   const base = useId()
+  // Element ids, never shown.
+  /* eslint-disable lingui/no-unlocalized-strings -- KN-214: element ids */
   const tabId = (item: TabsItem) => `${base}-tab-${item.value}`
   const panelId = (item: TabsItem) => `${base}-body-${item.value}`
+  /* eslint-enable lingui/no-unlocalized-strings */
 
   return (
     <Box>

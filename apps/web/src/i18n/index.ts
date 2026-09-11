@@ -15,6 +15,10 @@ import { messages as fa } from './locales/fa-IR'
  * The default locale is Persian, because the product is Persian. English is the
  * source language, not the default one.
  */
+// Each language names itself in its own language, the one label that must not
+// be translated: a reader who cannot read the current language has to find
+// their own, KN-115.
+// eslint-disable-next-line lingui/no-unlocalized-strings -- KN-115
 export const locales = { 'fa-IR': 'فارسی', 'en-US': 'English' } as const
 
 export type Locale = keyof typeof locales

@@ -3,6 +3,7 @@ import { Popover, useTheme } from '@mui/material'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { usePreferences } from '../../core/preferences'
 import { formatCount } from '../../i18n/formatCount'
+import { inlineEndOf } from '../../theme/sides'
 import { spacing, type StatusToken } from '../../theme/tokens'
 import { ColorPicker } from '../color-picker'
 import { Menu } from './Menu'
@@ -17,6 +18,11 @@ export interface StatusMenuProps {
   onColourChange: (colour: StatusToken) => void
   onDelete: () => void
 }
+
+// The menu's two views: its actions, and the Color Picker in their place.
+type View = 'actions' | 'colour'
+const ACTIONS: View = 'actions'
+const COLOUR: View = 'colour'
 
 // Why a status that holds job opportunities cannot be deleted, 259:295: the
 // number in the reader's digits between the catalog's two halves, since both
@@ -39,14 +45,14 @@ const useBlockedReason = (jobCount: number) => {
 export const StatusMenu = ({ anchorEl, colour, jobCount, onClose, onRename, onColourChange, onDelete }: StatusMenuProps) => {
   const { i18n } = useLingui()
   const reason = useBlockedReason(jobCount)
-  const end = useTheme().direction === 'rtl' ? 'left' : 'right'
-  const [view, setView] = useState<'actions' | 'colour'>('actions')
+  const end = inlineEndOf(useTheme().direction)
+  const [view, setView] = useState<View>(ACTIONS)
   // Each opening starts at the actions: React's pattern for state that follows
   // a prop, adjusted during render.
   const [openedFrom, setOpenedFrom] = useState(anchorEl)
   if (anchorEl !== openedFrom) {
     setOpenedFrom(anchorEl)
-    setView('actions')
+    setView(ACTIONS)
   }
   // What had focus when the menu opened, the trigger. The menu gives focus back
   // to it by itself; the colour view cannot, since its own opener, the menu
@@ -81,7 +87,7 @@ export const StatusMenu = ({ anchorEl, colour, jobCount, onClose, onRename, onCo
             id: 'colour',
             label: i18n._('Change colour'),
             onSelect: () => {
-              setView('colour')
+              setView(COLOUR)
             },
           },
           {

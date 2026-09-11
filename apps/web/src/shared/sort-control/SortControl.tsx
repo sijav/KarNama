@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { Box, InputBase, MenuItem, Select as MuiSelect, useTheme } from '@mui/material'
 import { useId, useState } from 'react'
+import { inlineEndOf } from '../../theme/sides'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { Icon } from '../icon'
 import { OptionLabel, optionRow, optionsMenuList, optionsMenuPaper } from '../select'
@@ -41,7 +42,7 @@ export const SortControl = ({ value, onChange }: SortControlProps) => {
   const { i18n } = useLingui()
   const labels = sortLabels(i18n)
   const prefixId = useId()
-  const end = useTheme().direction === 'rtl' ? 'left' : 'right'
+  const end = inlineEndOf(useTheme().direction)
   // What the status region says: nothing until the order changes.
   const [said, setSaid] = useState('')
   return (

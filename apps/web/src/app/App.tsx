@@ -4,6 +4,9 @@ import Typography from '@mui/material/Typography'
 import { useState } from 'react'
 import { Navigation, type Destination } from '../shared/navigation'
 
+// The page the shell opens on, the board.
+const BOARD: Destination = 'jobs'
+
 /**
  * The application shell.
  *
@@ -21,7 +24,7 @@ import { Navigation, type Destination } from '../shared/navigation'
  * is no user and no signing out, so the sidebar draws neither.
  */
 export const App = () => {
-  const [current, setCurrent] = useState<Destination>('jobs')
+  const [current, setCurrent] = useState<Destination>(BOARD)
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
       <Navigation current={current} onNavigate={setCurrent} />

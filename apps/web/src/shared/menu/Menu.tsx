@@ -1,4 +1,5 @@
 import { Divider, MenuItem, Menu as MuiMenu, useTheme } from '@mui/material'
+import { inlineEndOf } from '../../theme/sides'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { Tooltip } from '../tooltip'
 
@@ -38,7 +39,7 @@ const FOCUS_RING = 3
 export const Menu = ({ label, anchorEl, actions, onClose }: MenuProps) => {
   // It hangs from the trigger's inline end, as 259:2 hangs it from the column
   // header's three dots; MUI's Popover places by left and right.
-  const end = useTheme().direction === 'rtl' ? 'left' : 'right'
+  const end = inlineEndOf(useTheme().direction)
   const firstDestructive = actions.findIndex((action) => action.destructive === true)
   return (
     <MuiMenu

@@ -41,6 +41,9 @@ export type HealthState =
 export const toHealthState = (input: { loading: boolean; data?: HealthQuery; error?: { message: string } }): HealthState => {
   if (input.loading) return { kind: 'waking' }
   if (input.error) return { kind: 'down', reason: input.error.message }
+  // A reason for whoever reads the health state, not yet copy a screen shows;
+  // KN-130 moves it into the catalog when the status page draws it.
+  // eslint-disable-next-line lingui/no-unlocalized-strings -- KN-130
   if (!input.data) return { kind: 'down', reason: 'the API answered with nothing' }
   const { health } = input.data
   if (health.status !== 'ok') return { kind: 'degraded', status: health.status }

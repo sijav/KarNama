@@ -34,6 +34,8 @@ const WIDTH = 560
 // The email's example, an address and not copy: the same in every language.
 type EmailExample = 'name@example.com'
 const EMAIL_EXAMPLE: EmailExample = 'name@example.com'
+type SocialExample = 'linkedin.com/in/…'
+const SOCIAL_EXAMPLE: SocialExample = 'linkedin.com/in/…'
 
 const EMPTY: ContactModalValues = { name: '', role: '', company: '', email: '', phone: '', linkedin: '', jobId: null }
 
@@ -110,7 +112,7 @@ export const ContactModal = ({ open, mode, initial, jobs, onSave, onCancel, onDe
         <Input label={i18n._('Email')} placeholder={EMAIL_EXAMPLE} value={values.email} onChange={set('email')} />
         <Input label={i18n._('Phone')} placeholder={i18n._('0912 000 0000')} value={values.phone} onChange={set('phone')} />
       </Pair>
-      <Input label={i18n._('Social link')} placeholder="linkedin.com/in/…" value={values.linkedin} onChange={set('linkedin')} />
+      <Input label={i18n._('Social link')} placeholder={SOCIAL_EXAMPLE} value={values.linkedin} onChange={set('linkedin')} />
       <Select
         label={i18n._('Related job opportunity')}
         placeholder={i18n._('Choose a job opportunity…')}

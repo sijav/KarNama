@@ -47,12 +47,16 @@ const textLayout = (box: HTMLElement): Record<string, string> => {
     // leading '::', so a failure names the placeholder's own, KN-248.
     ...propertiesOf(getComputedStyle(box, '::placeholder'), '::'),
     // Prefixed, since left, top, width and height are CSS properties too.
+    // A measure's name in a failure message, for the developer who reads it.
+    // eslint-disable-next-line lingui/no-unlocalized-strings -- KN-214
     ...Object.fromEntries(Object.entries({ left, top, width, height, scrollLeft: box.scrollLeft, scrollTop: box.scrollTop }).map(([name, value]) => [`box ${name}`, String(value)])),
   }
 }
 
 // What differs between two layouts, by name, so a failure says what moved.
 const changes = (before: Record<string, string>, after: Record<string, string>) =>
+  // A failure message, for the developer who reads it.
+  // eslint-disable-next-line lingui/no-unlocalized-strings -- KN-214
   [...new Set([...Object.keys(before), ...Object.keys(after)])].filter((name) => before[name] !== after[name]).map((name) => `${name}: ${before[name] ?? 'unset'} → ${after[name] ?? 'unset'}`)
 
 // What a user typed: record data, so it is not translated.
@@ -189,6 +193,8 @@ const textInsets = (field: HTMLElement, box: HTMLElement) => {
   if (style.writingMode !== 'horizontal-tb') throw new Error(`the text runs ${style.writingMode}, not across`)
   const along = getComputedStyle(field).direction
   if (style.direction !== along) throw new Error(`the text runs ${style.direction} in a field that runs ${along}`)
+  // CSS text-align keywords a computed style is compared with.
+  // eslint-disable-next-line lingui/no-unlocalized-strings -- KN-214
   if (shown.textAlign !== 'start' && shown.textAlign !== (rtl ? 'right' : 'left')) throw new Error(`the text is aligned ${shown.textAlign}, so it does not start at the field's start`)
   if (box.scrollLeft !== 0) throw new Error(`the text is scrolled by ${box.scrollLeft}, so it does not start at its origin`)
   if (!/^-?[\d.]+px$/.test(shown.textIndent)) throw new Error(`the text-indent is ${shown.textIndent}, not a length`)

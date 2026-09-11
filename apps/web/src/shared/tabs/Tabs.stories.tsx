@@ -13,7 +13,9 @@ import { Tabs, type TabsProps } from './Tabs'
 
 // The Job Modal's five tabs, in its order: the four the file draws at 210:276
 // and the history the owner put second, KN-072. Values are story plumbing.
-const VALUES = ['info', 'history', 'note', 'related', 'files']
+type TabValue = 'info' | 'history' | 'note' | 'related' | 'files'
+const VALUES: readonly TabValue[] = ['info', 'history', 'note', 'related', 'files']
+const FIRST: TabValue = 'info'
 
 // The args the meta's render takes: the Tabs' props and the revision each
 // choice is written back with, the Input's way, KN-280. The tablist's name and
@@ -71,7 +73,7 @@ const Held = ({ args: given, updateArgs }: { args: HeldArgs; updateArgs: (update
 const meta = {
   title: 'Shared/Tabs',
   component: Tabs,
-  args: { 'aria-label': '', tabs: [], value: 'info', onChange: fn(), revision: 0 },
+  args: { 'aria-label': '', tabs: [], value: FIRST, onChange: fn(), revision: 0 },
   argTypes: {
     value: { control: 'select', options: VALUES },
     revision: { type: { name: 'number' }, table: { disable: true } },

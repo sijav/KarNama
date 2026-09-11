@@ -12,7 +12,7 @@ import { StatusMenu, type StatusMenuProps } from './StatusMenu'
 
 // The column header's three dots, 259:2, and the menu that hangs from them.
 const WithTrigger = ({ onClose, ...args }: StatusMenuProps) => {
-  const { i18n: active } = useLingui()
+  const { i18n } = useLingui()
   const trigger = useRef<HTMLElement>(null)
   const [anchor, setAnchor] = useState<HTMLElement | null>(null)
   return (
@@ -20,7 +20,7 @@ const WithTrigger = ({ onClose, ...args }: StatusMenuProps) => {
       <Box ref={trigger} sx={{ display: 'inline-flex' }}>
         <IconButton
           icon="more"
-          aria-label={active._('Status actions')}
+          aria-label={i18n._('Status actions')}
           onClick={() => {
             setAnchor(trigger.current)
           }}

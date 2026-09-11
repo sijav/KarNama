@@ -10,6 +10,12 @@ import { EMPLOYMENT_TYPES, employmentTypeLabels } from '../job-selects'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Select, type SelectProps } from './Select'
 
+import type { EmploymentType } from '../job-selects'
+
+// Two employment types the stories choose.
+const FULL_TIME: EmploymentType = 'full-time'
+const REMOTE: EmploymentType = 'remote'
+
 // The file's specimen, node 183:26: «نوع همکاری» and the employment types, its
 // copy read from the catalog in the language a story pins, so the args hold
 // what the canvas draws and the Controls show it.
@@ -121,7 +127,7 @@ export const Default: Story = {
 }
 
 export const Filled: Story = {
-  args: { value: ['full-time'] },
+  args: { value: [FULL_TIME] },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
     // Node 183:13: the chosen option's name in text/primary.
@@ -132,7 +138,7 @@ export const Filled: Story = {
 }
 
 export const Focused: Story = {
-  args: { value: ['full-time'] },
+  args: { value: [FULL_TIME] },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     // Node 183:19: focused by the keyboard, two pixels of border/focus inside.
@@ -161,7 +167,7 @@ export const Disabled: Story = {
 
 export const Open: Story = {
   args: {
-    value: ['full-time'],
+    value: [FULL_TIME],
     // A disabled option, to show 408:464 beside the others.
     options: FA.options.map((option) => (option.value === 'temporary' ? { ...option, disabled: true } : option)),
   },
@@ -231,7 +237,7 @@ export const Open: Story = {
 }
 
 export const ByKeyboard: Story = {
-  args: { value: ['full-time'] },
+  args: { value: [FULL_TIME] },
   globals: { locale: 'fa-IR' },
   play: async ({ args, canvasElement }) => {
     // Arrows, Home, End and type-ahead move through the options; Enter picks
@@ -279,7 +285,7 @@ export const ByKeyboard: Story = {
 }
 
 export const Multiple: Story = {
-  args: { value: ['full-time', 'remote'], multiple: true },
+  args: { value: [FULL_TIME, REMOTE], multiple: true },
   globals: { locale: 'fa-IR' },
   play: async ({ args, canvasElement }) => {
     // More than one, as the employment type holds: the names listed in the
@@ -300,7 +306,7 @@ export const Multiple: Story = {
 }
 
 export const InEnglish: Story = {
-  args: { ...EN, value: ['full-time'] },
+  args: { ...EN, value: [FULL_TIME] },
   globals: { locale: 'en-US', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     // Left to right: the value from the left, the chevron at the right.

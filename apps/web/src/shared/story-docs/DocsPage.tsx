@@ -30,7 +30,14 @@ export const DocsPage = () => {
     <>
       <Title />
       <Subtitle />
-      {doc ? <Markdown>{doc.description}</Markdown> : <Markdown>{`_No story-docs entry for \`${title}\` in ${locale}._`}</Markdown>}
+      {doc ? (
+        <Markdown>{doc.description}</Markdown>
+      ) : (
+        // For the developer who opened Storybook: the guard test fails on a
+        // missing docs file first, so no reader ever sees this.
+        // eslint-disable-next-line lingui/no-unlocalized-strings -- KN-214
+        <Markdown>{`_No story-docs entry for \`${title}\` in ${locale}._`}</Markdown>
+      )}
 
       <Primary />
       <Controls />

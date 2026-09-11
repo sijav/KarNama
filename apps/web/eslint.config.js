@@ -39,14 +39,50 @@ const structuralProps =
   // every dotted string in the codebase.
   '|STORAGE_KEY' +
   // The class the Tooltip puts on its drawn surface so a test can find it,
-  // KN-222. An identifier, named for the same reason as the storage key.
-  '|TOOLTIP_SURFACE'
+  // KN-222. An identifier, named for the same reason as the storage key. The
+  // same for the class each component puts on the part its own rules select,
+  // the Checkbox's frame, the Color Picker's swatch, the reveal, check, delete
+  // and opener of the two cards, and the Status Choice's shell.
+  '|TOOLTIP_SURFACE|FRAME|SWATCH|REVEAL|CHECK|BIN|OPENER|CHOICE' +
+  // Storybook's own vocabulary, KN-214: the colour scheme a story pins, the
+  // control a prop gets and the canvas layout. Each value is one of a few
+  // names Storybook defines; none is ever shown to a reader as text.
+  '|colorScheme|control|layout' +
+  // Props whose values are a design size, tone or placement from a closed
+  // set, such as 'M', 'sm' or 'bottom', and the edge MUI anchors a popover to.
+  // They choose a look; they are never read out.
+  '|size|iconSize|tone|placement|vertical|horizontal' +
+  // Where a link opens and what it carries, '_blank' and 'noopener': browser
+  // keywords, not words for a reader.
+  '|target|rel' +
+  // ARIA attributes whose values are tokens from the ARIA vocabulary, 'menu',
+  // 'dialog', 'page', never text a screen reader speaks as words. aria-label
+  // and aria-describedby carry words, and stay checked.
+  '|aria-haspopup|aria-current' +
+  // SVG presentation attributes: 'round', 'none', a colour name. Drawing
+  // instructions, not copy.
+  '|fill|stroke|strokeLinecap|strokeLinejoin' +
+  // The options of Intl's formatters, 'numeric', 'long', 'short': how a date
+  // or a list is written, never the words themselves.
+  '|day|month|year|numeric|style' +
+  // import.meta.glob's options, a query suffix and an export name, read by
+  // Vite at build time.
+  '|query|import' +
+  // The props a story's Controls list, by their names; a status's token or id,
+  // which the board names from its data; a person's name, shown as they wrote
+  // it, never translated; and a CSS box model keyword assigned in a test.
+  '|include|status|userName|boxSizing'
 
 const linguiOptions = {
   ignore: [
-    // Anything with no letter in it cannot be a sentence: css values, numbers
-    // and punctuation.
-    '^[^\\p{L}]*$',
+    // Anything with no letter in it cannot be a sentence: digits in the three
+    // scripts, whitespace, punctuation and symbols, Persian's own included.
+    // Written with no \p escape, because the plugin compiles every entry with
+    // new RegExp(entry) and no flags, and without the u flag \p{L} is the four
+    // characters p, {, L and }: the old entry whitelisted every string without
+    // one of them, all the Persian and most of the English, KN-214. A letter
+    // in any script falls outside this class and is checked.
+    '^[\\s0-9\\u0660-\\u0669\\u06F0-\\u06F9!-/:-@\\[-`{-~\\u00A0-\\u00BF\\u00D7\\u00F7\\u2000-\\u206F\\u2190-\\u21FF\\u2200-\\u22FF\\u25A0-\\u25FF\\u060C\\u061B\\u061F\\u066A-\\u066D\\u06D4]*$',
     '^(rtl|ltr|fa-IR|en-US)$',
     // A Storybook preview-channel event name. An API string the docs page
     // subscribes to, not something a person reads.
@@ -124,6 +160,65 @@ const linguiOptions = {
     // selector the browser resolves styles for. It never renders anything, so
     // there is no copy in it to translate. KN-248.
     'getComputedStyle',
+    // The rest of testing-library's queries, the plural forms of those above,
+    // and the matchers a play function asserts rendered output with, KN-214:
+    // the literal is the expected value, as for the queries above.
+    '*.getAllByRole',
+    '*.findAllByRole',
+    '*.queryAllByRole',
+    '*.getAllByText',
+    '*.findAllByText',
+    '*.queryAllByText',
+    '*.toBe',
+    '*.toEqual',
+    '*.toContain',
+    '*.toHaveValue',
+    '*.toHaveAccessibleDescription',
+    '*.toHaveBeenCalledWith',
+    '*.toHaveBeenLastCalledWith',
+    'expect.objectContaining',
+    // What a play function types into a field is test input, as a key
+    // descriptor is.
+    'userEvent.type',
+    // A story helper that finds a dialog by its accessible name, findByRole
+    // under another name, for the same reason as findByRole.
+    'dialogNamed',
+    // The DOM's own lookups and attributes: a selector, an element id, an
+    // attribute's name or an event's name is an identifier the browser
+    // resolves, never text shown to a reader.
+    '*.getElementById',
+    '*.querySelector',
+    '*.querySelectorAll',
+    '*.closest',
+    '*.getAttribute',
+    '*.hasAttribute',
+    '*.removeAttribute',
+    '*.addEventListener',
+    '*.removeEventListener',
+    '*.classList.contains',
+    // Where a link goes, and the target it opens in: a URL and a browser
+    // keyword.
+    'window.open',
+    'window.location.assign',
+    // MUI's breakpoint keys, 'md', named in the theme.
+    '*.breakpoints.up',
+    // Storybook's and Vite's APIs: the name of a docs block, a glob of files,
+    // and the keys of Storybook's preview store read by the docs page.
+    'useOf',
+    'import.meta.glob',
+    'nested',
+    // A class a test looks for or sets, a CSS value a test compares a computed
+    // style against, a test id, a test's file and a console method a test
+    // silences: what the test reads, never what a reader sees.
+    '*.toHaveClass',
+    '*.classList.add',
+    '*.endsWith',
+    '*.startsWith',
+    '*.includes',
+    '*.matches',
+    '*.getAllByTestId',
+    'File',
+    'spyOn',
   ],
   useTsTypes: true,
 }

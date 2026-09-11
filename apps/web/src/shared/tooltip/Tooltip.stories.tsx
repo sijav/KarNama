@@ -1,9 +1,11 @@
-import { i18n } from '@lingui/core'
+import { i18n, setupI18n } from '@lingui/core'
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { useEffect, useId, useState, type ComponentPropsWithRef } from 'react'
 import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
+import { formatCount } from '../../i18n/formatCount'
+import { messages as fa } from '../../i18n/locales/fa-IR'
 import { elevation } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Tooltip, TOOLTIP_SURFACE } from './Tooltip'
@@ -130,12 +132,22 @@ const captureConsoleErrors = () => {
   }
 }
 
+// The blocked delete of 259:295, its reason and its button, read from the
+// Persian catalog the stories draw in, KN-214.
+const BLOCKED = (() => {
+  const i18n = setupI18n({ locale: 'fa-IR', messages: { 'fa-IR': fa } })
+  return {
+    reason: `${i18n._('This status has')} ${formatCount('fa-IR', 3)} ${i18n._('job opportunities; to delete it, first move them to another column.')}`,
+    label: i18n._('Delete status'),
+  }
+})()
+
 const meta = {
   title: 'Shared/Tooltip',
   component: Tooltip,
   args: {
-    title: 'این وضعیت ۳ فرصت شغلی داره؛ برای حذفش اول باید فرصت‌های شغلی رو ببری به ستون دیگه.',
-    children: <button type="button">حذف وضعیت</button>,
+    title: BLOCKED.reason,
+    children: <button type="button">{BLOCKED.label}</button>,
   },
 } satisfies StoryMeta<typeof Tooltip>
 

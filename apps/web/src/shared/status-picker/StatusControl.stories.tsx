@@ -7,6 +7,11 @@ import { fixtures } from '../story-fixtures'
 import { StatusControl } from './StatusControl'
 import type { StatusOption } from './StatusPicker'
 
+import type { StatusToken } from '../../theme/tokens'
+
+// The status the story opens on.
+const INTERVIEW: StatusToken = 'interview'
+
 // The board's five statuses, their names in the language a story pins.
 const statusesIn = (locale: Locale): StatusOption[] =>
   fixtures(locale).statuses.map((status) => ({ id: status.token, token: status.token, name: status.name }))
@@ -14,7 +19,7 @@ const statusesIn = (locale: Locale): StatusOption[] =>
 const meta = {
   title: 'Shared/StatusControl',
   component: StatusControl,
-  args: { statuses: statusesIn('fa-IR'), value: 'interview', onChange: fn(), onAdd: fn() },
+  args: { statuses: statusesIn('fa-IR'), value: INTERVIEW, onChange: fn(), onAdd: fn() },
   parameters: { controls: { include: ['value'] } },
 } satisfies StoryMeta<typeof StatusControl>
 

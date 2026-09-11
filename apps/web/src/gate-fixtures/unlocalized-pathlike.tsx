@@ -8,6 +8,6 @@ import { Box, IconButton } from '@mui/material'
 // shows, so the exemption reopened the hole KN-087 had just closed, in both
 // `aria-label` and `title`. Story titles are exempted by WHERE they are now.
 // See README.md in this directory.
-export const UnlocalizedPathlikeAria = () => <IconButton aria-label="New/Applied">x</IconButton>
+export const UnlocalizedPathlikeAria = () => <IconButton aria-label="New/Applied" />
 
-export const UnlocalizedPathlikeTitle = () => <Box title="New/Applied">x</Box>
+export const UnlocalizedPathlikeTitle = () => <Box title="New/Applied" />

@@ -5,10 +5,13 @@ import { expect, within } from 'storybook/test'
 import { iconSize, semantic, spacing, type as typeScale } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { ICON_NAMES } from './glyphs'
-import { Icon } from './Icon'
+import { Icon, type IconProps } from './Icon'
 
 const SIZES = Object.keys(iconSize).filter((size): size is keyof typeof iconSize => size in iconSize)
-const COLOURS = [...Object.keys(semantic).filter((role): role is keyof typeof semantic => role in semantic), 'inherit'] as const
+// The size an icon takes unless told, and the colour that follows its parent.
+const BASE: keyof typeof iconSize = 'base'
+const INHERIT: NonNullable<IconProps['color']> = 'inherit'
+const COLOURS = [...Object.keys(semantic).filter((role): role is keyof typeof semantic => role in semantic), INHERIT] as const
 
 const meta = {
   title: 'Shared/Icon',
@@ -56,7 +59,7 @@ export const Default: Story = {
   play: async ({ args, canvasElement }) => {
     const svg = canvasElement.querySelector('svg')
     if (!svg) throw new Error('no icon rendered')
-    await isTheFiles(svg, iconSize[args.size ?? 'base'])
+    await isTheFiles(svg, iconSize[args.size ?? BASE])
     // Decorative unless named, and text/secondary unless told otherwise.
     await expect(svg).toHaveAttribute('aria-hidden', 'true')
     await expect(getComputedStyle(svg).color).toBe(computedColour(svg, semantic['text/secondary']))
@@ -82,7 +85,7 @@ export const AllIcons: Story = {
     const icons = [...canvasElement.querySelectorAll('svg')]
     await expect(icons).toHaveLength(30)
     for (const svg of icons) {
-      await isTheFiles(svg, iconSize[args.size ?? 'base'])
+      await isTheFiles(svg, iconSize[args.size ?? BASE])
       await expect(shapesOf(svg).length).toBeGreaterThan(0)
     }
     // More is the one the file fills: three dots.

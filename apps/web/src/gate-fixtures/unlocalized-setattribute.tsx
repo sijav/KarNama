@@ -1,6 +1,9 @@
 import { Box } from '@mui/material'
 import { useEffect, useRef } from 'react'
 
+// The attribute's name, typed, so the value is the only string under test.
+const LABEL = 'aria-label' as const
+
 // The same untranslated accessible name, reached through a method call instead
 // of a prop.
 //
@@ -14,8 +17,8 @@ export const UnlocalizedSetAttribute = () => {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    ref.current?.setAttribute('aria-label', 'Delete this application')
+    ref.current?.setAttribute(LABEL, 'Delete this application')
   }, [])
 
-  return <Box ref={ref}>x</Box>
+  return <Box ref={ref} />
 }

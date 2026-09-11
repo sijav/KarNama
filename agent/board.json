@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 365,
+  "nextId": 366,
   "tasks": [
     {
       "id": "KN-001",
@@ -9162,6 +9162,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T17:28:38.606Z"
+    },
+    {
+      "id": "KN-365",
+      "title": "Stories that drive the real pointer fail when the storybook run executes files in parallel",
+      "desc": "Found while closing KN-214. The full storybook project failed the JobCard Pressed and NavItem Hover stories while both pass run alone. Stories under __KARNAMA_STORY_TEST__ move the one real Playwright pointer and hold keys, KN-225, and vitest's browser mode runs story files side by side in one page, so one file's hover or press can land while another's assertion waits.",
+      "why": "A suite that fails on its own interleaving teaches everyone to rerun instead of read, and hides the real failure when it comes.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The full storybook project passes three runs in a row, either with pointer-driven story files run alone or with each such story moving the pointer to its own target before it asserts, and the reason is written where the choice is made.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T17:43:31.970Z"
     }
   ]
 }

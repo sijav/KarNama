@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { expect, fireEvent, fn, userEvent, waitFor, within } from 'storybook/test'
 import type { Locale } from '../../i18n'
 import { messages as en } from '../../i18n/locales/en-US'
+import type { StatusToken } from '../../theme/tokens'
 import { emptyDraft } from '../add-job'
 import { JobCard } from '../job-card'
 import type { JobLevel } from '../job-selects'
@@ -14,6 +15,9 @@ import { fixtures } from '../story-fixtures'
 import { JobModal, type JobModalProps, type JobModalTab, type JobRecord } from './JobModal'
 
 const LEVEL: JobLevel = 'senior-specialist'
+// The status the record is in, and the tab a page asks for first.
+const INTERVIEW: StatusToken = 'interview'
+const FIRST_TAB: JobModalTab = 'info'
 // The event a drop is, typed so the lint rule reads it as a value and not as copy.
 const DROP: keyof HTMLElementEventMap = 'drop'
 const TABS: JobModalTab[] = ['info', 'history', 'note', 'contacts', 'files']
@@ -34,7 +38,7 @@ const recordIn = (locale: Locale): JobRecord => {
   const detail = set.jobDetail
   return {
     draft: {
-      ...emptyDraft('interview'),
+      ...emptyDraft(INTERVIEW),
       title: job?.title ?? '',
       company: job?.company ?? '',
       employmentTypes: ['full-time'],
@@ -310,7 +314,8 @@ export const OpensFromCard: Story = {
 
 // The tab asked for while the modal is open, as a page moving to a tab would.
 const AskedTab = (args: JobModalProps) => {
-  const [tab, setTab] = useState<JobModalTab>('info')
+  const [tab, setTab] = useState<JobModalTab>(FIRST_TAB)
+  const i18n = english
   return (
     <>
       <button
@@ -319,7 +324,7 @@ const AskedTab = (args: JobModalProps) => {
           setTab('files')
         }}
       >
-        {english._('Files')}
+        {i18n._('Files')}
       </button>
       <JobModal {...args} tab={tab} />
     </>
@@ -331,7 +336,8 @@ export const TabFollowsItsProp: Story = {
   render: (args) => <AskedTab {...args} />,
   play: async ({ args, canvasElement }) => {
     const dialog = await dialogNamed(args.job.draft.title)
-    await fireEvent.click(within(canvasElement.ownerDocument.body).getByRole('button', { name: english._('Files'), hidden: true }))
+    const i18n = english
+    await fireEvent.click(within(canvasElement.ownerDocument.body).getByRole('button', { name: i18n._('Files'), hidden: true }))
     await waitFor(() => expect(within(dialog).getByRole('tab', { name: 'فایل‌ها' })).toHaveAttribute('aria-selected', 'true'))
   },
 }
