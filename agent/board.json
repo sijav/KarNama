@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 366,
+  "nextId": 369,
   "tasks": [
     {
       "id": "KN-001",
@@ -5809,7 +5809,25 @@
       "parent": [],
       "status": "done",
       "exit": "The no-letter entry is replaced by one that works WITHOUT flags, since the plugin passes none, and fails closed: only digits, whitespace, punctuation and symbols are exempt, so a letter in any script is checked. 'Delete', 'Save', 'مصاحبه' and 'حذف وضعیت' each fail npm run lint in a committed fixture, as aria-label, as title and as JSX text, and the existing fixtures fail only on the string under test rather than also on a child like x. Every one of the 82 strings is either localised or exempted by a named, scoped rule with a reason, never by a value shape. A check compiles each ignore entry exactly as the plugin does, new RegExp(entry) with no flags, and fails if any entry whitelists a known copy string, and that check is proved by a mutation restoring the \\p{L} entry.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-214-round-1.2026-09-11T17-46-53-382Z.md",
+          "filed": [
+            "KN-366",
+            "KN-367",
+            "KN-368"
+          ],
+          "cardDigest": "5baecc69203793f8bd39c1e608c3c69878ffbe0be33ea4b5888d09295c6d5687",
+          "head": "07c4a2573fa4c57fdd72b37ce32cd6986031754d",
+          "reviewerScore": 3,
+          "reviewerCriticals": 2,
+          "dismissed": "Both criticals are real and filed high, KN-366 and KN-367, rather than critical, under the owner's rule of 2026-09-11 that findings on built work are high or lower; the verifier gap is about the loop and filed low, KN-368.",
+          "at": "2026-09-11T17:54:21.002Z"
+        }
+      ],
       "notes": [
         "2026-09-10: held at high on the owner's order, 'finish the components first'. Its impact is critical, since it is the check on every component's copy, and it is held below the component cards ONLY so the selection law serves them first. Restore it to critical when the last component card closes. Until then, component copy goes through lingui by hand and every story asserts both languages.",
         "2026-09-11: restored to critical now that the last component card, KN-030, has closed, as STATE.md held it: the components came first under the owner's rule of that day, and every string since went through lingui by hand around this bug."
@@ -7067,11 +7085,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Every story starts with the test runner's pointer somewhere that hovers nothing, set once for the whole suite rather than per story; BlankErrorIsNoError drops its pointer-events workaround and TECH-DEBT 15 is deleted; and a check runs a story that leaves the pointer on a field followed by one asserting a resting border in the same spot, which fails without the reset.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T12:35:20.710Z"
+      "createdAt": "2026-09-10T12:35:20.710Z",
+      "updatedAt": "2026-09-11T17:51:37.479Z"
     },
     {
       "id": "KN-261",
@@ -9182,6 +9201,51 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T17:43:31.970Z"
+    },
+    {
+      "id": "KN-366",
+      "title": "The lingui gate's no-letter class still exempts three letters: ª, µ and º",
+      "desc": "CHILD OF KN-214, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-214 roast. The class in apps/web/eslint.config.js takes U+00A0 to U+00BF whole, the Latin-1 punctuation, and three of those are letters: U+00AA ª, U+00B5 µ and U+00BA º. So title=\"1ª\" passes the rule. The exit condition of KN-214 said a letter in any script is checked.",
+      "why": "A gate that fails closed except for three characters is one person's ordinal away from passing copy, and the whole point of KN-214 was that the class names non-letters only.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T17:54:20.497Z"
+    },
+    {
+      "id": "KN-367",
+      "title": "lingui-ignore.test.ts reads the config's text, so an ignore entry it cannot parse whitelists copy unseen",
+      "desc": "CHILD OF KN-214, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-214 roast. The test finds the ignore array in eslint.config.js as text and takes single-quoted one-line entries. A double-quoted, template, multi-line or concatenated entry, \".*\" for one, would whitelist every string in ESLint while the test's entries, compiled patterns and assertions stayed the same and green.",
+      "why": "A check that reads a different thing than the tool it guards proves nothing about the tool.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The test takes the ignore array from the configuration ESLint actually loads, not from the file's text, and a story or test shows an entry written in another quote style is seen.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T17:54:20.658Z"
+    },
+    {
+      "id": "KN-368",
+      "title": "The KN-003 verifier finds the four word fixtures but does not require them by name",
+      "desc": "CHILD OF KN-214, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-214 roast. agent/scripts/verify/KN-003.mjs discovers every unlocalized-*.tsx and requires the seven older fixtures by name; unlocalized-word-delete, -save, -interview and -delete-status are only discovered, so deleting all four leaves it green and KN-214's committed proof gone.",
+      "why": "The verifier's own comment says discovery alone let a fixture be deleted and replaced; the new ones repeat that gap.",
+      "severity": "low",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The verifier requires the four word fixtures and the two as-const fixtures by name.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T17:54:20.834Z"
     }
   ]
 }
