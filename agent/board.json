@@ -8553,12 +8553,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:47:18.390Z",
-      "updatedAt": "2026-09-11T19:06:12.515Z"
+      "updatedAt": "2026-09-11T19:11:07.779Z",
+      "evidence": "ResetWhilePending types, has the parent empty the value before the pause ends, and finds the field empty and no onSearch after it; IgnoredKeystrokes types into a parent that ignores it and finds no search; both failed on the old code; the Search Bar's 8 stories pass; looked at in Persian light and English dark.",
+      "closedAt": "2026-09-11T19:11:07.779Z"
     },
     {
       "id": "KN-315",
