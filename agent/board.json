@@ -8346,12 +8346,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Tab and panel ids are well-formed whatever the tab values, derived from the component's own id and each tab's position or an escaped value; a story with a value holding a space shows each tab's aria-controls naming its panel and the panel labelled by its tab.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:04:17.253Z",
-      "updatedAt": "2026-09-11T18:54:33.501Z"
+      "updatedAt": "2026-09-11T18:58:30.646Z",
+      "evidence": "ValuesWithSpaces renders tabs whose values hold a space: each tab's id and aria-controls hold no whitespace and name its panel, labelled by the tab; failed on the old value ids, passes on position ids; Tabs and Job Modal stories 18 of 18; looked at in Persian light and English dark.",
+      "closedAt": "2026-09-11T18:58:30.646Z"
     },
     {
       "id": "KN-304",
