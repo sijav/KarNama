@@ -7305,13 +7305,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "An error that appears on a focused Input is announced through a live region present before the error arrives, and the field keeps aria-invalid and its aria-describedby association; clearing the error restores the helper as the description or removes aria-describedby when there is none; a story asserts the live region's role and that it carries the error text after the error is set on a focused field, and a mutation removing the live region fails it by name.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T17:37:15.021Z",
-      "updatedAt": "2026-09-11T06:51:26.898Z",
-      "verify": "node agent/scripts/verify/KN-286.mjs"
+      "updatedAt": "2026-09-11T06:51:49.330Z",
+      "verify": "node agent/scripts/verify/KN-286.mjs",
+      "evidence": "Input.tsx's message line holds a span with role alert from the first render, the error inside it and empty otherwise, and the helper beside it only while there is no error; aria-describedby still names the line while there is a message and is dropped when there is none, and aria-invalid follows the error. role alert brings its own assertive, atomic live region, so no aria-live is added; a comment and DESIGN.md tell KN-287 to keep the empty span mounted and exposed when the line collapses. ErrorAnnouncedWhileTyping renders a field that validates as it is typed in, with its helper and bare: the play finds the alert empty before anything happens, clears the focused field, and asserts, focus kept, the same alert carries the error, the field is aria-invalid and described by it; then types a letter and asserts the alert empty, the field valid, and the helper its description again, or no aria-describedby for the bare one. node agent/scripts/verify/KN-286.mjs passed: the stories pass; the old single-text line put back, no live region, fails ErrorAnnouncedWhileTyping by name; in Chromium's accessibility tree, read over the DevTools protocol in a production build, in fa-IR and en-US, the alert is there before the error, live assertive, atomic and empty, and after the focused field is cleared it holds the error, with the textbox invalid and described by it; and DESIGN.md's error section says so. KN-011's, KN-254's and KN-262's verifiers pass. Unit project, eslint on the Input and tsc clean. Not established: what a given screen reader speaks, NVDA, JAWS or VoiceOver, which only a person listening can confirm; and an Input that mounts with its error already set, which this card leaves as it was.",
+      "closedAt": "2026-09-11T06:51:49.330Z"
     },
     {
       "id": "KN-287",
