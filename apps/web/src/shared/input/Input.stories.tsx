@@ -169,13 +169,21 @@ const px = (value: string) => Number.parseFloat(value) || 0
 // an indent or a padding on the input counts, as a stroke that took space
 // would: 95:5 draws 16, KN-266, KN-283. The start is only where the text starts
 // while it is aligned there and not scrolled, and an empty field shows its
-// placeholder, whose own alignment and indent count then.
+// placeholder, whose own alignment and indent count then. The direction is the
+// input's, and the placeholder's too, since Chromium ignores direction set on a
+// placeholder; and it is one fixed direction, from the field's start, only
+// while nothing lets the content choose it, the text runs across, and the
+// input runs the field's way, KN-297.
 const textInsets = (field: HTMLElement, box: HTMLElement) => {
   const outer = field.getBoundingClientRect()
   const inner = box.getBoundingClientRect()
   const style = getComputedStyle(box)
   const shown = box instanceof HTMLInputElement && box.value === '' ? getComputedStyle(box, '::placeholder') : style
   const rtl = style.direction === 'rtl'
+  if (/^plaintext$/.test(style.unicodeBidi)) throw new Error('the content sets the direction, unicode-bidi plaintext')
+  if (style.writingMode !== 'horizontal-tb') throw new Error(`the text runs ${style.writingMode}, not across`)
+  const along = getComputedStyle(field).direction
+  if (style.direction !== along) throw new Error(`the text runs ${style.direction} in a field that runs ${along}`)
   if (shown.textAlign !== 'start' && shown.textAlign !== (rtl ? 'right' : 'left')) throw new Error(`the text is aligned ${shown.textAlign}, so it does not start at the field's start`)
   if (box.scrollLeft !== 0) throw new Error(`the text is scrolled by ${box.scrollLeft}, so it does not start at its origin`)
   if (!/^-?[\d.]+px$/.test(shown.textIndent)) throw new Error(`the text-indent is ${shown.textIndent}, not a length`)

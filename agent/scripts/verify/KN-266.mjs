@@ -111,15 +111,22 @@ const measure = () => {
   const [start, end] = rtl
     ? [outer.right - inner.right + px(style.borderRightWidth) + px(style.paddingRight), inner.left - outer.left + px(style.borderLeftWidth) + px(style.paddingLeft)]
     : [inner.left - outer.left + px(style.borderLeftWidth) + px(style.paddingLeft), outer.right - inner.right + px(style.borderRightWidth) + px(style.paddingRight)]
+  // One fixed direction, from the field's start, only while nothing lets the
+  // content choose it, the text runs across, and the input runs the field's
+  // way; Chromium ignores direction on a placeholder, so the input's is the
+  // placeholder's too, KN-297.
+  const along = own.direction
+  const refused =
+    style.unicodeBidi === 'plaintext' ? 'unicode-bidi plaintext' : style.writingMode !== 'horizontal-tb' ? `writing ${style.writingMode}` : style.direction !== along ? `running ${style.direction} in a field running ${along}` : null
   return {
     focused: Boolean(focused),
     own: [own.borderTopWidth, own.borderRightWidth, own.borderBottomWidth, own.borderLeftWidth].map(Number.parseFloat),
     edge: Number.parseFloat(edge.borderTopWidth),
     edgeStyle: edge.borderTopStyle,
     // No start to measure when the text is aligned elsewhere, scrolled, or
-    // indented by something other than a length.
-    insets: aligned && box.scrollLeft === 0 && /px$/.test(shown.textIndent) ? [start + px(shown.textIndent), end] : [Number.NaN, Number.NaN],
-    align: shown.textAlign,
+    // indented by something other than a length, or refused above.
+    insets: !refused && aligned && box.scrollLeft === 0 && /px$/.test(shown.textIndent) ? [start + px(shown.textIndent), end] : [Number.NaN, Number.NaN],
+    align: refused ? `${shown.textAlign}, ${refused}` : shown.textAlign,
   }
 }
 
