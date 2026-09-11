@@ -781,7 +781,7 @@
         "KN-006",
         "KN-007"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The picker offers exactly the nine status colour pairs node 257:17 draws, in its order, matches Figma, marks the current one, is keyboard navigable, and cannot produce a colour outside the nine.",
       "roasts": [],
       "notes": [
@@ -789,7 +789,9 @@
         "2026-09-11: the card said the four reserved pairs, from DESIGN.md's reading. Node 257:17 and the Column Colour screen 259:184 both draw nine swatches, every status pair, and the Documentation frame 376:30 says a status's colour is chosen automatically and the user can change it. Figma wins, so the title and exit condition follow the file, and DESIGN.md is corrected in the same change."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T11:47:10.315Z"
+      "updatedAt": "2026-09-11T11:50:42.023Z",
+      "evidence": "Built from node 257:17 and screen 259:184: nine swatches in the drawn order, the chosen one with its base edge and check, a MUI radio group with colour names; the four stories pass in the test runner and every play finishes in a production build (KeyboardOnly ends on applied), lint, tsc, docs guard and catalog tests clean, seen in fa and en, light and dark. DESIGN.md and the card corrected from four slots to the nine the file draws.",
+      "closedAt": "2026-09-11T11:50:42.023Z"
     },
     {
       "id": "KN-020",
