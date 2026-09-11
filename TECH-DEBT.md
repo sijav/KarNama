@@ -440,7 +440,10 @@ and attributes, `userEvent.type`, `window.open`, the font set's `load`, KN-322,
 and a few more, each group with its reason beside it. A handful of lines carry an
 `eslint-disable-next-line lingui/no-unlocalized-strings` with a reason: the
 language names, KN-115, the health reason, KN-130, element ids, file globs, a
-file name and the story-docs page's missing-file message.
+file name and the story-docs page's missing-file message. One block carries the
+same disable: the Input story's list of paint effects the focus extent cannot
+model, CSS property names with the place each is read from, printed when that
+assertion fails, KN-295.
 
 **Why it is like that.** The rule reads a string with a letter in it as copy. It
 cannot tell a Storybook control name, a CSS keyword, a status token or a person's

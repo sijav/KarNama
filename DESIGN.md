@@ -249,10 +249,14 @@ The red border alone changed one pixel on focus, the inner one, white to red at
 cannot resolve one pixel. The ring changes a two pixel band from the field's
 own surface to `border/focus`, at 5.17 to one in light and 3.04 on the derived
 dark surface, KN-271. With the pixel the edge gains, the change is 6W + 172
-square pixels in a field W wide and 44 tall, against WCAG's two pixel
-perimeter of 4W + 4H, which is 4W + 176; the ring alone, being inset, is a
-little less, and the two bands count together, each a change of 3 to one or
-more. A red ring would clear 3 to one too; blue is chosen so the product has
+square pixels in a field W wide and 44 tall, less what the corners cut: each
+band is a rounded contour, not a rectangle, and the four corners of the two
+bands take (4 − π)(7² − 6²) and (4 − π)(4² − 2²), 21.5 square pixels together,
+so the change is **6W + 150.5** against WCAG's two pixel perimeter of 4W + 4H,
+which is 4W + 176. It clears from **13 pixels of width** upward, and the
+design's narrowest field is far wider; the story measures an 80 wide field as
+well as a full width one, KN-295. The ring alone, being inset, is a little
+less, and the two bands count together, each a change of 3 to one or more. A red ring would clear 3 to one too; blue is chosen so the product has
 one focus sign rather than two.
 
 **Inside the field, not round it, KN-274.** The ring was an outline four pixels
