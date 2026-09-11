@@ -74,14 +74,20 @@ export const WithBack: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   render: (args) => <Drawn onBack={args.onBack} withAction={false} />,
   play: async ({ args, canvasElement }) => {
-    // Node 155:72: the back arrow before the title, 12 from it, in
-    // text/secondary, and no action.
+    // Node 155:72: the back arrow before the title, 20 and 12 from it, in
+    // text/secondary, and no action; the control round it a target of 24 each
+    // way, KN-206 and KN-320, reaching into the gap rather than moving the
+    // arrow.
     const heading = await titleOf(canvasElement)
     const [back] = within(canvasElement).getAllByRole('button').filter((button) => !opensMenu(button))
     if (!back) throw new Error('no back control rendered')
     await expect(back.getAttribute('aria-label')?.length).toBeGreaterThan(0)
-    const [backBox, titleBox] = [back.getBoundingClientRect(), heading.getBoundingClientRect()]
-    await expect(Math.round(backBox.left - titleBox.right)).toBe(12)
+    const arrow = back.querySelector('svg')
+    if (!arrow) throw new Error('the back control has no arrow')
+    const [backBox, arrowBox, titleBox] = [back.getBoundingClientRect(), arrow.getBoundingClientRect(), heading.getBoundingClientRect()]
+    await expect([backBox.width, backBox.height]).toEqual([24, 24])
+    await expect([arrowBox.width, arrowBox.height]).toEqual([20, 20])
+    await expect(Math.round(arrowBox.left - titleBox.right)).toBe(12)
     await expect(getComputedStyle(back.querySelector('svg') ?? back).color).toBe(computedColour(back, semantic['text/secondary']))
     await userEvent.click(back)
     await expect(args.onBack).toHaveBeenCalledTimes(1)

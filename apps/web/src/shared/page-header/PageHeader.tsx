@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { Box, ButtonBase } from '@mui/material'
 import type { ReactNode } from 'react'
-import { spacing, type as typeScale } from '../../theme/tokens'
+import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 import { Icon } from '../icon'
 import { LanguageSwitch } from '../language-switch'
 
@@ -15,6 +15,12 @@ export interface PageHeaderProps {
 // The back control's ring, the product's two pixels at an offset of two; the
 // header has room round it, 12 to the title and nothing that clips.
 const FOCUS_EDGE = 2
+
+// The target a control asks for, 24 each way, KN-206: the back arrow is 20, so
+// the control carries the difference as padding and takes it back as margin,
+// reaching into the gap round the arrow without moving it, KN-320.
+const TARGET = 24
+const REACH = (TARGET - iconSize.md) / 2
 
 // The Page Header of node 155:56: the title at the inline start, with the
 // back arrow of 155:72 before it when there is somewhere to go back to, and
@@ -34,6 +40,8 @@ export const PageHeader = ({ title, onBack, action }: PageHeaderProps) => {
             onClick={onBack}
             sx={(theme) => ({
               flexShrink: 0,
+              padding: `${REACH}px`,
+              margin: `-${REACH}px`,
               borderRadius: `${theme.karnama.radius.sm}px`,
               transform: theme.direction === 'rtl' ? 'none' : 'scaleX(-1)',
               '&.Mui-focusVisible': { outlineWidth: FOCUS_EDGE, outlineStyle: 'solid', outlineColor: theme.karnama.semantic['border/focus'], outlineOffset: FOCUS_EDGE },

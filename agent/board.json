@@ -8650,11 +8650,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The back control's target is 24 or more each way while the arrow stays 20 and stays 12 from the title, and the WithBack story measures both.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T13:05:16.428Z"
+      "createdAt": "2026-09-11T13:05:16.428Z",
+      "updatedAt": "2026-09-11T19:11:29.548Z"
     },
     {
       "id": "KN-321",
