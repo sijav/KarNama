@@ -696,8 +696,8 @@
           "head": "2ebba7ed680dfde7b27a765ed030d4d6bcc66e64",
           "reviewerScore": 3.8,
           "reviewerCriticals": 2,
-          "dismissed": "The two criticals are real and filed, KN-311 for the name tested at the component and KN-312's sibling KN-310 for the motion; their severity follows the owner's rule of 2026-09-11, a finding on a built component at high or lower, never above a new component. The minor about relative parent imports is KN-309, filed from the KN-008 roast for the whole repository. The score rises from 3.8 because the six drawn combinations, the 32 target and the required prop stand.",
-          "at": "2026-09-11T12:43:34.443Z"
+          "dismissed": "The two criticals are real and filed: KN-311 for the name tested at the rendered component, KN-312 for the 300 ms motion; the majors are KN-310, the Tooltip trigger, and KN-313, the touch hover. Their severity follows the owner's rule of 2026-09-11, a finding on a built component at high or lower, never above a new component. The minor about relative parent imports is KN-309, filed from the KN-008 roast for the whole repository. The score rises from 3.8 because the six drawn combinations, the 32 target and the required prop stand.",
+          "at": "2026-09-11T12:43:45.804Z"
         }
       ],
       "notes": [
