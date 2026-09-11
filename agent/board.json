@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 369,
+  "nextId": 370,
   "tasks": [
     {
       "id": "KN-001",
@@ -7101,7 +7101,23 @@
       "parent": [],
       "status": "done",
       "exit": "Every story starts with the test runner's pointer somewhere that hovers nothing, set once for the whole suite rather than per story; BlankErrorIsNoError drops its pointer-events workaround and TECH-DEBT 15 is deleted; and a check runs a story that leaves the pointer on a field followed by one asserting a resting border in the same spot, which fails without the reset.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-260-round-1.2026-09-11T18-10-50-111Z.md",
+          "filed": [
+            "KN-369"
+          ],
+          "cardDigest": "1ae20c48b11bb703815160b451321e6414fcdd4cec9c9e95aa9599f9abb54575",
+          "head": "c205f604375c3968b5ed9496948f8f28f82d3249",
+          "reviewerScore": 2,
+          "reviewerCriticals": 2,
+          "dismissed": "Both criticals stand as facts and are filed high as KN-369 rather than critical, under the owner's rule that findings on built work are high or lower: Storybook's plugin already resets the pointer to (-1000, -1000), so the (0,0) park is redundant and worse. The mutation proof was dropped by the owner's rule of 2026-09-11. The major, the order-dependent pair, goes with KN-369.",
+          "at": "2026-09-11T18:15:28.725Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T12:35:20.710Z",
       "updatedAt": "2026-09-11T18:10:28.722Z",
@@ -9222,10 +9238,11 @@
       "exit": "The full storybook project passes three runs in a row, either with pointer-driven story files run alone or with each such story moving the pointer to its own target before it asserts, and the reason is written where the choice is made.",
       "roasts": [],
       "notes": [
-        "2026-09-11, KN-260: the pointer park before every story made the whole storybook project pass, 245 of 245, where the run before it failed JobCard Pressed and NavItem Hover; those were the lingering pointer. Two more clean full runs would close this."
+        "2026-09-11, KN-260: the pointer park before every story made the whole storybook project pass, 245 of 245, where the run before it failed JobCard Pressed and NavItem Hover; those were the lingering pointer. Two more clean full runs would close this.",
+        "2026-09-11, correction: Storybook's own resetMousePosition already moved the pointer off the page before every test when the JobCard Pressed and NavItem Hover stories failed, so the lingering pointer was not their cause; the one clean full run after KN-260 is not evidence, and the cause is still open."
       ],
       "createdAt": "2026-09-11T17:43:31.970Z",
-      "updatedAt": "2026-09-11T18:10:28.265Z"
+      "updatedAt": "2026-09-11T18:15:28.560Z"
     },
     {
       "id": "KN-366",
@@ -9271,6 +9288,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T17:54:20.834Z"
+    },
+    {
+      "id": "KN-369",
+      "title": "KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal",
+      "desc": "CHILD OF KN-260, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-260 roast and confirmed in node_modules/@storybook/addon-vitest/dist/vitest-plugin/index.js: the Storybook plugin registers a resetMousePosition command, Playwright's mouse.move(-1000, -1000), and its setup-file.browser.4 calls it before every test. The parkPointer command KN-260 added runs as well and moves the pointer to (0,0), which in a story that opens a modal at once, AddJobModal's or JobModal's, lies on the modal's backdrop. LeavesThePointerOnTheField and StartsAtRest pass with either reset and prove neither.",
+      "why": "A second reset that is worse than the first, and a check that cannot tell them apart, is debt that looks like a fix.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "parkPointer and its command are gone, the suite relies on Storybook's resetMousePosition, DESIGN or TECH-DEBT says so where the next person would look, and the Input's pair of stories is kept only if it asserts something the reset decides.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T18:15:28.417Z"
     }
   ]
 }

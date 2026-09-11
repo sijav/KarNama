@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 137 of 368 tasks done · 316 of 808 points.
+Project **KarNama** · 137 of 369 tasks done · 316 of 809 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -19,7 +19,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (225)
+## Backlog (226)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -41,6 +41,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-361` | The add modal's Controls do not drive it while it is open: step, source and draft are read only on opening | high | 1 | web | none | Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step. |
 | `KN-364` | Saving right after changing the status in the Job Modal's header can send the old status | high | 1 | web | none | Save sends the status last chosen in the header, or none at all, and a story changes the status and saves before the job prop changes, and sees the new status or no status in onSave. |
 | `KN-366` | The lingui gate's no-letter class still exempts three letters: ª, µ and º | high | 1 | web | none | The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary. |
+| `KN-369` | KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal | high | 1 | web | none | parkPointer and its command are gone, the suite relies on Storybook's resetMousePosition, DESIGN or TECH-DEBT says so where the next person would look, and the Input's pair of stories is kept only if it asserts something the reset decides. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -3458,6 +3459,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Every story starts with the test runner's pointer somewhere that hovers nothing, set once for the whole suite rather than per story; BlankErrorIsNoError drops its pointer-events workaround and TECH-DEBT 15 is deleted; and a check runs a story that leaves the pointer on a field followed by one asserting a resting border in the same spot, which fails without the reset.
 
+**Roasts.** round 1 scored 4 with 0 critical(s)
+
 ### `KN-261` An Input error of only combining marks or blank symbols still turns the field red
 
 - **status** done · **severity** critical · **points** 1 · **area** web
@@ -4697,4 +4700,15 @@ CHILD OF KN-214, recorded in prose because board.json cannot express parent_task
 **Why.** The verifier's own comment says discovery alone let a fixture be deleted and replaced; the new ones repeat that gap.
 
 **Exit condition.** The verifier requires the four word fixtures and the two as-const fixtures by name.
+
+### `KN-369` KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-260, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-260 roast and confirmed in node_modules/@storybook/addon-vitest/dist/vitest-plugin/index.js: the Storybook plugin registers a resetMousePosition command, Playwright's mouse.move(-1000, -1000), and its setup-file.browser.4 calls it before every test. The parkPointer command KN-260 added runs as well and moves the pointer to (0,0), which in a story that opens a modal at once, AddJobModal's or JobModal's, lies on the modal's backdrop. LeavesThePointerOnTheField and StartsAtRest pass with either reset and prove neither.
+
+**Why.** A second reset that is worse than the first, and a check that cannot tell them apart, is debt that looks like a fix.
+
+**Exit condition.** parkPointer and its command are gone, the suite relies on Storybook's resetMousePosition, DESIGN or TECH-DEBT says so where the next person would look, and the Input's pair of stories is kept only if it asserts something the reset decides.
 
