@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 122 of 331 tasks done · 243 of 762 points.
+Project **KarNama** · 122 of 334 tasks done · 243 of 765 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-018` Menu and menu item** (critical, 5 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-018` | Menu and menu item | critical | 5 | web | KN-005, KN-006, KN-007, KN-008 | All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone. |
 
 ## Blocked (2)
 
@@ -17,12 +23,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (205)
+## Backlog (207)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-024` | Sort control | critical | 3 | web | KN-005, KN-006, KN-007, KN-018 | Three states match Figma, the four permitted options are the only ones offered, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced. |
-| `KN-018` | Menu and menu item | critical | 5 | web | KN-005, KN-006, KN-007, KN-008 | All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone. |
 | `KN-020` | Status choice, status picker and status control | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-018, KN-019 | All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own. |
 | `KN-026` | Contact card, full and compact | critical | 5 | web | KN-005, KN-006, KN-007, KN-008, KN-014, KN-062 | Both layouts and all three states match Figma, every field the design draws is present, long values truncate rather than reflow the card, and email and phone are actionable links. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the name, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293. |
 | `KN-028` | Modal shell, confirm, and change status | critical | 5 | web | KN-005, KN-006, KN-007, KN-009, KN-014 | Both modals match Figma, focus is trapped and returns to the trigger on close, Escape closes, the backdrop click behaviour matches the design, and the dialog has an accessible name and is announced as a dialog. |
@@ -136,6 +141,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-326` | The Loading State's first line is not reliably announced, since its status region mounts already holding it | medium | 1 | web | none | The status region is in the page before its first line is written, so the first line is a change, and a story shows the region empty when it mounts and filled after. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
 | `KN-331` | A Jobs Bulk Action Bar given no onSelectAll or onChangeStatus silently drops the file's buttons | medium | 1 | web | none | A Jobs bar cannot be written without both callbacks, by its type or by two components, and the docs guard still reads every prop. |
+| `KN-332` | A single Select given two values checks both rows and shows one | medium | 1 | web | none | A single Select reads only the first value everywhere, its field and its checks, and a story gives it two and sees one checked. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -199,6 +205,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-323` | The Empty State's round mark is about 1.02 to one on the bg/page every screen puts it on | low | 1 | design | none | The owner chooses whether the mark stays, turns bg/surface or becomes an illustration, and the file, DESIGN.md and the component follow. |
 | `KN-327` | A long unbroken Empty State title overflows a narrow screen | low | 1 | web | none | The title wraps anywhere when a word is wider than the state, and a story at 320 wide with a long unbroken title shows no overflow. |
 | `KN-329` | The Bulk Action Bar's count says «آگهی» for selected job opportunities, against the file's terminology rule | low | 1 | design | none | The file's count reads «فرصت شغلی», or the owner exempts it and the code follows. |
+| `KN-333` | A Select option whose value is the empty string reads as nothing chosen | low | 1 | web | none | An option cannot have an empty value, by its type or by a check that says so, or an empty value renders as its option. |
+| `KN-334` | An edge-to-edge Select's menu is capped 32 short of the screen, narrower than its field | low | 1 | web | none | The menu is as wide as its field at any width the field takes, and a story at 390 edge to edge measures both. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -517,6 +525,8 @@ Select with Default, Filled, Focus, Disabled and Open from node 183:26, Option R
 
 **Exit condition.** All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger.
 
+**Roasts.** round 1 scored 5.5 with 0 critical(s)
+
 ### `KN-013` Checkbox, 5 states
 
 - **status** done · **severity** high · **points** 2 · **area** web
@@ -580,7 +590,7 @@ Default, Hover, Pressed and Selected from Figma node 159:71, carrying a count. O
 
 ### `KN-018` Menu and menu item
 
-- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **status** in_progress · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-008
 
 Menu Item with Default, Hover, Disabled and Destructive from node 181:22, and the two menus at 512:8350, Type=Status and Type=Card.
@@ -4225,4 +4235,37 @@ CHILD OF KN-025, recorded in prose because board.json cannot express parent_task
 **Why.** A bar that quietly loses Change status looks finished and is not, and the next screen to use it is the board.
 
 **Exit condition.** A Jobs bar cannot be written without both callbacks, by its type or by two components, and the docs guard still reads every prop.
+
+### `KN-332` A single Select given two values checks both rows and shows one
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-012, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-012 roast. The value is always a list, and a single Select hands only its first entry to MUI, but the rows' checks read the whole list, so value ['worker', 'employee'] without multiple shows «کارگر» in the field and checks two rows in a list that allows one.
+
+**Why.** A caller's stale or merged value makes the list contradict the field, and a single select must never show two choices.
+
+**Exit condition.** A single Select reads only the first value everywhere, its field and its checks, and a story gives it two and sees one checked.
+
+### `KN-333` A Select option whose value is the empty string reads as nothing chosen
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-012, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-012 roast. renderValue treats '' as no value, so an option with value '' can be chosen and checked while the field shows the prompt. Nothing in the types forbids such an option.
+
+**Why.** The prompt then says nothing is chosen when something is.
+
+**Exit condition.** An option cannot have an empty value, by its type or by a check that says so, or an empty value renders as its option.
+
+### `KN-334` An edge-to-edge Select's menu is capped 32 short of the screen, narrower than its field
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-012, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-012 roast. MUI's Popover caps its paper at calc(100% - 32px), so a Select spanning a 390 wide screen opens a menu of 358 under a field of 390. Inside the pages' 16 of margin the two are equal.
+
+**Why.** The design draws the menu exactly as wide as its field.
+
+**Exit condition.** The menu is as wide as its field at any width the field takes, and a story at 390 edge to edge measures both.
 

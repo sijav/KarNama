@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 332,
+  "nextId": 335,
   "tasks": [
     {
       "id": "KN-001",
@@ -636,7 +636,25 @@
       ],
       "status": "done",
       "exit": "All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5.5,
+          "criticals": 0,
+          "file": "agent/roasts/KN-012-round-1.2026-09-11T14-03-09-301Z.md",
+          "filed": [
+            "KN-332",
+            "KN-333",
+            "KN-334"
+          ],
+          "cardDigest": "0da634d874fe8b2fa45226e44d3943043e59d3c302f09c8b9a041d50c322f1ef",
+          "head": "aa19d80717f4083fdf5dee16c84c27d0abe1e179",
+          "reviewerScore": 4.2,
+          "reviewerCriticals": 1,
+          "dismissed": "The critical is KN-275's: the owner's resting-edge role of KN-273 does not exist yet, the Input still draws border/default, and KN-275 builds the role and puts it on the Input, the Checkbox and now, by note, the Select. The minor about options in Controls is noted on KN-317. The majors are filed at medium and low under the owner's rule of 2026-09-11. The score rises from 4.2 because the roast confirms the overrides win in both directions, the keyboard contract is complete and the option ring clears 3 to one.",
+          "at": "2026-09-11T14:07:21.307Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -841,14 +859,14 @@
         "KN-007",
         "KN-008"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:18.281Z"
+      "updatedAt": "2026-09-11T14:03:17.233Z"
     },
     {
       "id": "KN-019",
@@ -7237,10 +7255,11 @@
       "exit": "tokens.ts carries a named role for a control's resting edge, a neutral in text/secondary's hue at 3.3:1 or more on bg/surface, bg/page and bg/surface-secondary, and darkMode.ts derives it and checks it at 3:1 or more on the three dark backgrounds, each ratio asserted by a unit test with a mutation back to border/default failing it; the Input's resting border and the Checkbox's unchecked frame use it, and the Input's Default story and the Checkbox's Unchecked story assert it; every other state of both still renders as drawn; DESIGN.md's token tables list the role as the owner's addition under KN-273; the token verifier and the contract pass; and the Input and the Checkbox are seen at rest in all four combinations.",
       "roasts": [],
       "notes": [
-        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
+        "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical.",
+        "2026-09-11: from the KN-012 roast. The Select built in KN-012 draws its resting edge in border/default like the Input; the new resting-edge role goes on its field too, as DESIGN.md's decision of KN-273 names the Select."
       ],
       "createdAt": "2026-09-10T14:42:46.699Z",
-      "updatedAt": "2026-09-11T11:29:34.905Z"
+      "updatedAt": "2026-09-11T14:07:21.006Z"
     },
     {
       "id": "KN-276",
@@ -8205,10 +8224,11 @@
       "exit": "The Button, Icon Button, Tabs, Page Header and Color Picker stories keep their copy in args that follow the Language toolbar, the Input's way, or disable the panel with the reason stated, and no story draws copy its Controls do not show.",
       "roasts": [],
       "notes": [
-        "2026-09-11: the KN-021 roast raised this again, as a critical, for the Page Header, whose back arrow and action are also switched by the story's wrapper rather than by args. It stays here at medium under the owner's rule of 2026-09-11."
+        "2026-09-11: the KN-021 roast raised this again, as a critical, for the Page Header, whose back arrow and action are also switched by the story's wrapper rather than by args. It stays here at medium under the owner's rule of 2026-09-11.",
+        "2026-09-11: from the KN-012 roast. The Select's stories draw their options' names and disabled states from args the Controls do not offer."
       ],
       "createdAt": "2026-09-11T12:57:43.977Z",
-      "updatedAt": "2026-09-11T13:05:26.419Z"
+      "updatedAt": "2026-09-11T14:07:21.151Z"
     },
     {
       "id": "KN-318",
@@ -8419,6 +8439,51 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T13:48:19.429Z"
+    },
+    {
+      "id": "KN-332",
+      "title": "A single Select given two values checks both rows and shows one",
+      "desc": "CHILD OF KN-012, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-012 roast. The value is always a list, and a single Select hands only its first entry to MUI, but the rows' checks read the whole list, so value ['worker', 'employee'] without multiple shows «کارگر» in the field and checks two rows in a list that allows one.",
+      "why": "A caller's stale or merged value makes the list contradict the field, and a single select must never show two choices.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A single Select reads only the first value everywhere, its field and its checks, and a story gives it two and sees one checked.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T14:07:20.568Z"
+    },
+    {
+      "id": "KN-333",
+      "title": "A Select option whose value is the empty string reads as nothing chosen",
+      "desc": "CHILD OF KN-012, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-012 roast. renderValue treats '' as no value, so an option with value '' can be chosen and checked while the field shows the prompt. Nothing in the types forbids such an option.",
+      "why": "The prompt then says nothing is chosen when something is.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "An option cannot have an empty value, by its type or by a check that says so, or an empty value renders as its option.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T14:07:20.707Z"
+    },
+    {
+      "id": "KN-334",
+      "title": "An edge-to-edge Select's menu is capped 32 short of the screen, narrower than its field",
+      "desc": "CHILD OF KN-012, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-012 roast. MUI's Popover caps its paper at calc(100% - 32px), so a Select spanning a 390 wide screen opens a menu of 358 under a field of 390. Inside the pages' 16 of margin the two are equal.",
+      "why": "The design draws the menu exactly as wide as its field.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The menu is as wide as its field at any width the field takes, and a story at 390 edge to edge measures both.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T14:07:20.867Z"
     }
   ]
 }
