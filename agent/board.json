@@ -9305,7 +9305,24 @@
       "parent": [],
       "status": "done",
       "exit": "The column shows the empty message whenever no child renders, null, false and empty arrays included (Children.toArray), and a story passes such a list.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-353-round-1.2026-09-11T19-51-04-264Z.md",
+          "filed": [
+            "KN-388",
+            "KN-389"
+          ],
+          "cardDigest": "cf5f43ed5be5bbb441f7cc9926b4ae5b8a1a008723833ff33ab7ab3bad936b84",
+          "head": "0bd0a2a620f9b8def9a52d6d06fd28d7b3aa3bb1",
+          "reviewerScore": 3,
+          "reviewerCriticals": 1,
+          "dismissed": "Nothing dismissed. Kinder because the exit named Children.toArray, which the change does, and its critical, a card component that renders nothing, needs a board that filters by rendering null rather than by filtering its data, a finding on a built component that the owner's rule of 2026-09-11 files at high or lower: KN-388, low. The count against the empty message is a design question, KN-389, medium.",
+          "at": "2026-09-11T19:58:01.552Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T16:15:57.688Z",
       "updatedAt": "2026-09-11T19:50:51.958Z",

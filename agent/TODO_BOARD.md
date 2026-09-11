@@ -4582,6 +4582,8 @@ CHILD OF KN-060, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The column shows the empty message whenever no child renders, null, false and empty arrays included (Children.toArray), and a story passes such a list.
 
+**Roasts.** round 1 scored 5 with 0 critical(s)
+
 ### `KN-354` A column shorter than 116 clips its own Add Card row
 
 - **status** backlog · **severity** low · **points** 1 · **area** web
