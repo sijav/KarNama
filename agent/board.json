@@ -4545,8 +4545,11 @@
       "status": "backlog",
       "exit": "No verifier claims to be read-only when the commands it spawns write anywhere; those that need a writable tree say so in one line naming what they write; and a verifier that cannot complete reports that it could not RUN a check rather than counting it as a pass or a failure.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:28:35.574Z"
+      "notes": [
+        "2026-09-11, from the KN-290 roast: KN-290.mjs fails outright when the palette resolves ButtonText and GrayText to the same colour, where its pixel comparison cannot discriminate the disabled mark; under this card's last clause it should report that it could not run that comparison, keeping the keyword check, rather than fail."
+      ],
+      "createdAt": "2026-09-10T00:28:35.574Z",
+      "updatedAt": "2026-09-11T10:15:15.031Z"
     },
     {
       "id": "KN-181",
@@ -7428,7 +7431,21 @@
       "parent": [],
       "status": "done",
       "exit": "Under forced colours the tick and the dash are drawn in system colours, ButtonText when enabled and GrayText when disabled, the keyword kept so a check can read it whatever the palette, and each stays visible against the frame; a check in a production build reads checked and indeterminate, enabled and disabled, under forced colours, comparing the rendered mark with a same-page probe of its system colour, and a mutation back to the author colour fails it; and DESIGN.md's stroke section says what the mark takes there.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-290-round-1.2026-09-11T10-10-47-019Z.md",
+          "filed": [],
+          "cardDigest": "a013ca92a948bbbfe8773fcdc29cd5fca16e2cf20219b849b1804e12310a2ef1",
+          "head": "0da67d8b7ee3f2855cd4f29b49ddc355287051b3",
+          "reviewerScore": 6,
+          "reviewerCriticals": 1,
+          "dismissed": "The one critical, that KN-290.mjs lines 163-165 reject a valid palette by failing when ButtonText equals GrayText. The product takes those keywords whatever the palette, and the keyword check reads them from --karnama-forced-mark independently of the pixels. The distinctness line is a positive control on the pixel comparison, which cannot tell a disabled mark drawn in ButtonText from one in GrayText in a palette that makes them equal; the verifier runs only in Chromium's emulated palette, where they are 0,0,0 and 96,0,0, so it discriminates where it runs. What survives is narrower: in a palette where the two match it should report that it could not discriminate rather than fail, which is KN-180's exit condition, a verifier that cannot complete reports that it could not RUN; noted there. KN-288's choice not to require GrayText and ButtonBorder to differ is the same keyword-first approach, with KN-290 adding a stricter guard on its pixels, not an inconsistency in the product.",
+          "at": "2026-09-11T10:15:14.941Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T18:27:30.977Z",
       "updatedAt": "2026-09-11T10:10:01.927Z",
@@ -7515,11 +7532,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A focused Checkbox inside a host that clips its overflow flush at the Checkbox's own box still changes at least a two-pixel perimeter at 3:1, drawn inside that box or with the room kept by the Checkbox itself; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T19:28:42.674Z"
+      "createdAt": "2026-09-10T19:28:42.674Z",
+      "updatedAt": "2026-09-11T10:11:06.181Z"
     },
     {
       "id": "KN-294",
