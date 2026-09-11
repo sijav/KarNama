@@ -71,17 +71,18 @@ export const type = {
 } as const
 
 /**
- * The two effect styles, and two shadows that are not styles. A card sits on
- * the page, a modal sits above everything. The tooltip at `410:469` and the
- * Bulk Action Bar at `401:436` each draw their own unnamed shadow, bound to no
- * effect style, so each is named here for the one surface that uses it.
- * KN-218, KN-025.
+ * The two effect styles, and three shadows that are not styles. A card sits on
+ * the page, a modal sits above everything. The tooltip at `410:469`, the Bulk
+ * Action Bar at `401:436` and the Options Menu at `408:487` each draw their own
+ * unnamed shadow, bound to no effect style, so each is named here for the
+ * surface that uses it. KN-218, KN-025, KN-012.
  */
 export const elevation = {
   card: '0 1px 3px 0 #0000000F, 0 1px 2px 0 #0000000A',
   modal: '0 8px 24px -4px #0000001F, 0 2px 6px -2px #00000014',
   tooltip: '0 6px 18px -2px #0000003D',
   bulkBar: '0 8px 24px -4px #00000029',
+  optionsMenu: '0 8px 24px -4px #0000001F',
 } as const
 
 export const fontFamily = "'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif"

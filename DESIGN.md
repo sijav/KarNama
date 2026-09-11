@@ -141,6 +141,7 @@ shadows, and each value below was read from the named node with
 | `Elevation/Modal` | `210:276` | `#0000001F` `0 8` blur 24 spread -4 | `#00000014` `0 2` blur 6 spread -2 |
 | no style, tooltip | `410:469` | `#0000003D` `0 6` blur 18 spread -2 | none                            |
 | no style, bulk bar | `401:436` | `#00000029` `0 8` blur 24 spread -4 | none                           |
+| no style, options menu | `408:487` | `#0000001F` `0 8` blur 24 spread -4 | none                       |
 
 The third row is **not an effect style**. The tooltip at `410:469` draws its own
 shadow, 24 percent black, read from the frame's `get_design_context` because
@@ -150,7 +151,9 @@ named for the one surface that uses it, because a component may not state a
 shadow of its own. The fourth row is not one either: the Bulk Action Bar
 at `401:436` draws one shadow of 16 percent black, the Modal style's first
 layer at a heavier alpha, bound to no style, read with use_figma on 2026-09-11.
-It is `elevation.bulkBar`. KN-025. The thirteen-frame sweep below did not include `410:469`,
+It is `elevation.bulkBar`. KN-025. The fifth is the Options Menu at `408:487`, the list a Select opens: the
+Modal style's first layer alone, at its own 12 percent, bound to no style,
+`elevation.optionsMenu`. KN-012. The thirteen-frame sweep below did not include `410:469`,
 which is how it was missed until KN-218 read the frame itself.
 
 An earlier version of this document said Card was the only elevation in the
@@ -433,6 +436,40 @@ its order, so Tab reaches it without crossing the list, and while it shows the
 page keeps room at its foot, 60 and 24, or the last rows can be focused under
 it. The count's status region is in the page from the start, empty while
 nothing is selected, so the first selection is announced.
+
+### The Select, its options and its menu
+
+Node `183:26` is the Input's family, its description says: the label above, a
+field 44 tall of radius md with one pixel of `border/default` inside, 16 of
+padding, the value in Body and the 20 chevron-down in `text/secondary` at the
+inline end, 8 from the value. Default shows «انتخاب کنید…» in `text/secondary`;
+Filled the choice in `text/primary`; Focus two pixels of `border/focus`;
+Disabled `bg/surface-secondary` with the text and chevron `text/disabled`; Open
+one and a half of `border/focus`, an inset shadow over the one pixel border
+since Chromium floors a border of 1.5, and the chevron not turned. The set
+draws **no Hover**, so the field has none, where the Input has one. The label
+is the Input's, Label role. KN-012.
+
+The menu, `408:487`, sits 4 below the field and as wide: `bg/surface`, one
+pixel of `border/default` inside, radius md, 4 above and below its rows, and
+its own shadow, `elevation.optionsMenu`. It opens instantly, the motion for
+menus in section 7. Its rows, the Option Row `408:465`, are 40 tall with 12 of
+padding and 8 between the name and the check: Default `text/primary`, Hover
+`bg/surface-secondary`, Selected `bg/brand/container` and `text/brand` with the
+16 check at the inline end, Disabled `text/disabled`. The name is Body's size
+and line height at Label's weight, no tracking, as the Bulk Action Bar's count
+is. The file draws no focused row, so the keyboard's row takes the Hover fill
+and the three pixel ring drawn inside that the Filter Chip and the Icon Button
+use.
+
+**More than one.** The employment type holds several, the owner's decision of
+2026-09-10, and the file draws only one value. A multiple select keeps its menu
+open after each choice, checks each chosen row, and lists the names in the
+field in the reader's own list style, `Intl.ListFormat`, cut with an ellipsis
+when they do not fit. The two selects the file names, «نوع همکاری» and «سطح
+شغلی», are `EmploymentTypeSelect` and `JobLevelSelect`, their values English
+ids and their names from the catalog. On the screens the only Select drawn is
+the contact modal's «آگهی مربوطه», whose own prompt is why the prompt is a prop.
 
 ### A stroke is drawn inside, and takes no space
 
