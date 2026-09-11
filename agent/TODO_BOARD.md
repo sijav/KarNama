@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 153 of 390 tasks done · 332 of 833 points.
+Project **KarNama** · 153 of 392 tasks done · 332 of 835 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -19,7 +19,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (231)
+## Backlog (233)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -27,6 +27,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-366` | The lingui gate's no-letter class still exempts three letters: ª, µ and º | high | 1 | web | none | The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary. |
 | `KN-369` | KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal | high | 1 | web | none | parkPointer and its command are gone, the suite relies on Storybook's resetMousePosition, DESIGN or TECH-DEBT says so where the next person would look, and the Input's pair of stories is kept only if it asserts something the reset decides. |
 | `KN-373` | In Persian the Status Picker's left and right arrows move against its choices in Safari, as the Color Picker's did | high | 1 | web | none | The Status Picker's radio group takes arrowsAcross, and a story presses real left and right arrows in both languages through vitest/browser, landing on the choice beside the chosen one on screen and choosing it, while an arrow pressed on the New status button moves nothing. |
+| `KN-391` | A step, source or draft change during the add modal's reading lets the old answer overwrite the restarted flow | high | 1 | web | none | A restart from changed props drops any reading in flight, by the flow the answer belongs to rather than a ref written during render, so a late answer applies only to the flow that started it; a story changes the step while the loading panel waits and resolves the reading after, and the new step stays. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -227,6 +228,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-384` | FullTabOrder proves the Contact Card's forward Tab order, not that its controls stay unfolded while focused and fold once focus leaves | low | 1 | web | none | A story unticks a selected card's checkbox by keyboard and finds it still seen and focused, then tabs past the delete out of the card and finds the checkbox unseen and the delete at no width. |
 | `KN-388` | The kanban column counts a card component that renders nothing as a card, so a filtering wrapper still leaves a blank region | low | 1 | web | none | The column is told whether it has cards to show, by a prop or by the data it is given, and DESIGN.md or the column's docs say how a board filters before handing cards over; a story shows a filtered column with a wrapper that renders nothing drawing the empty state. |
 | `KN-390` | LanguageOnAPhone puts storage and the screen back, but leaves the live language English | low | 1 | web | none | LanguageOnAPhone chooses Persian again in its finally, or remounts the provider, so the document is rtl, fa-IR and the stored value what it was, even when an assertion before it throws, which the story checks at its end. |
+| `KN-392` | The add modal compares its draft prop as JSON, so key order restarts it and an undefined field does not | low | 1 | web | none | The draft is compared field by field over JobDraft's keys, arrays by their items, so key order and an undefined field compare as the draft they make, and a unit test holds both cases. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4675,6 +4677,8 @@ CHILD OF KN-029, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step.
 
+**Roasts.** round 1 scored 5 with 0 critical(s)
+
 ### `KN-362` Reading a posting moves focus to an unnamed box rather than to the status that says what is happening
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -4993,4 +4997,26 @@ CHILD OF KN-027, recorded in prose because board.json cannot express parent_task
 **Why.** A story should leave the preview as it found it, or the next one passes or fails for a reason nobody can see.
 
 **Exit condition.** LanguageOnAPhone chooses Persian again in its finally, or remounts the provider, so the document is rtl, fa-IR and the stored value what it was, even when an assertion before it throws, which the story checks at its end.
+
+### `KN-391` A step, source or draft change during the add modal's reading lets the old answer overwrite the restarted flow
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-361 roast, a regression of KN-361. KN-361 restarts the flow during render when the open modal's step, source or draft change, but the reading in flight is dropped only when reading.current moves, which the restart does not do; so extract source A, change the step to manual while the loading panel shows, and when A's answer lands it replaces the new flow with A's Review and takes focus to its form.
+
+**Why.** What the user asked for last must win; an answer from a flow they have left writing over the one they are in is the kind of silent substitution the add flow's reading counter exists to prevent.
+
+**Exit condition.** A restart from changed props drops any reading in flight, by the flow the answer belongs to rather than a ref written during render, so a late answer applies only to the flow that started it; a story changes the step while the loading panel waits and resolves the reading after, and the new step stays.
+
+### `KN-392` The add modal compares its draft prop as JSON, so key order restarts it and an undefined field does not
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-361 roast. KN-361 restarts the flow when JSON.stringify of the draft prop changes: a parent that builds the same draft with its keys in another order restarts the flow and loses the user's work without the leave guard, and a field set to undefined stringifies the same as one left out.
+
+**Why.** A comparison that says two equal drafts differ throws away typing, and one that says two different drafts are equal ignores the caller.
+
+**Exit condition.** The draft is compared field by field over JobDraft's keys, arrays by their items, so key order and an undefined field compare as the draft they make, and a unit test holds both cases.
 

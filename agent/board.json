@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 391,
+  "nextId": 393,
   "tasks": [
     {
       "id": "KN-001",
@@ -9464,7 +9464,24 @@
       "parent": [],
       "status": "done",
       "exit": "Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-361-round-1.2026-09-11T20-02-40-195Z.md",
+          "filed": [
+            "KN-391",
+            "KN-392"
+          ],
+          "cardDigest": "8e9f778c75c8ab3ca094cece70c94f9ccac5d055805a2aaf46f608cf753e1fd8",
+          "head": "835d1e27219c27d5e5e58a6e01ba091675df2951",
+          "reviewerScore": 3,
+          "reviewerCriticals": 2,
+          "dismissed": "Its critical that draft is not a Control is dismissed: draft was never on the controls list, and the exit asks that the component restart on a changed draft, which it does. Its major that the story changes no arg is dismissed: a portable story applies no updateArgs, and the real Controls path, the manager channel's updateStoryArgs, was driven in the Storybook UI and recorded beside the work. The reading-in-flight critical, a regression, is KN-391 at high; the JSON comparison is KN-392, low.",
+          "at": "2026-09-11T20:07:51.201Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T17:03:01.577Z",
       "updatedAt": "2026-09-11T20:02:23.952Z",
@@ -9919,6 +9936,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T20:03:04.782Z"
+    },
+    {
+      "id": "KN-391",
+      "title": "A step, source or draft change during the add modal's reading lets the old answer overwrite the restarted flow",
+      "desc": "CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-361 roast, a regression of KN-361. KN-361 restarts the flow during render when the open modal's step, source or draft change, but the reading in flight is dropped only when reading.current moves, which the restart does not do; so extract source A, change the step to manual while the loading panel shows, and when A's answer lands it replaces the new flow with A's Review and takes focus to its form.",
+      "why": "What the user asked for last must win; an answer from a flow they have left writing over the one they are in is the kind of silent substitution the add flow's reading counter exists to prevent.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A restart from changed props drops any reading in flight, by the flow the answer belongs to rather than a ref written during render, so a late answer applies only to the flow that started it; a story changes the step while the loading panel waits and resolves the reading after, and the new step stays.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T20:07:41.405Z"
+    },
+    {
+      "id": "KN-392",
+      "title": "The add modal compares its draft prop as JSON, so key order restarts it and an undefined field does not",
+      "desc": "CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-361 roast. KN-361 restarts the flow when JSON.stringify of the draft prop changes: a parent that builds the same draft with its keys in another order restarts the flow and loses the user's work without the leave guard, and a field set to undefined stringifies the same as one left out.",
+      "why": "A comparison that says two equal drafts differ throws away typing, and one that says two different drafts are equal ignores the caller.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The draft is compared field by field over JobDraft's keys, arrays by their items, so key order and an undefined field compare as the draft they make, and a unit test holds both cases.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T20:07:41.542Z"
     }
   ]
 }
