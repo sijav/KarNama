@@ -2100,7 +2100,7 @@
         "KN-026",
         "KN-032"
       ],
-      "status": "backlog",
+      "status": "done",
       "exit": "An e2e test opens the network route, adds a contact, edits it, selects two and deletes them through the bottom bar, and sees the empty state on a fresh account. The grid reads right to left and row by row in Persian and mirrors in English, with no array reversal in the code.",
       "roasts": [],
       "notes": [
@@ -2109,8 +2109,10 @@
         "2026-09-12, owner: the pages are needed now, within six hours; a missing or broken component may be a placeholder with a card behind it. The screens are the critical path until they are real, and they no longer wait on the API cards: the board is held in the browser until KN-037 to KN-039 land."
       ],
       "createdAt": "2026-09-07T20:49:25.116Z",
-      "updatedAt": "2026-09-11T22:57:41.221Z",
-      "okr": "OKR-1"
+      "updatedAt": "2026-09-11T23:51:25.210Z",
+      "okr": "OKR-1",
+      "evidence": "The network is a destination with its own records: add, edit, search, select several and delete through the bottom bar with a confirm, the empty state on a fresh account and the no-results state on a search; the grid repeats over the inline axis with the array in natural order, so it mirrors with no reversal. e2e on desktop and phone: the empty state and the first person added and surviving a reload, an edit the page shows, and two selected and deleted. Docs in both languages; the job modal's related people read the same contacts",
+      "closedAt": "2026-09-11T23:51:25.210Z"
     },
     {
       "id": "KN-057",
