@@ -1400,14 +1400,16 @@
         "KN-026",
         "KN-020"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T16:59:02.303Z"
+      "updatedAt": "2026-09-11T17:24:07.188Z",
+      "evidence": "JobModal built from 210:276 with five tabs, history second and newest first, note kept across tabs, opens from a card; 11 modal stories and 44 touched stories pass, unit suite 960 green, seen at 1000 and 390 in a production build",
+      "closedAt": "2026-09-11T17:24:07.188Z"
     },
     {
       "id": "KN-031",
