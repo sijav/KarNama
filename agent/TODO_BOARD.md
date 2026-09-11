@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 133 of 362 tasks done · 308 of 799 points.
+Project **KarNama** · 133 of 364 tasks done · 308 of 802 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-214` The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag** (critical, 5 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-214` | The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag | critical | 5 | web | none | The no-letter entry is replaced by one that works WITHOUT flags, since the plugin passes none, and fails closed: only digits, whitespace, punctuation and symbols are exempt, so a letter in any script is checked. 'Delete', 'Save', 'مصاحبه' and 'حذف وضعیت' each fail npm run lint in a committed fixture, as aria-label, as title and as JSX text, and the existing fixtures fail only on the string under test rather than also on a child like x. Every one of the 82 strings is either localised or exempted by a named, scoped rule with a reason, never by a value shape. A check compiles each ignore entry exactly as the plugin does, new RegExp(entry) with no flags, and fails if any entry whitelists a known copy string, and that check is proved by a mutation restoring the \p{L} entry. |
 
 ## Blocked (2)
 
@@ -17,11 +23,10 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (225)
+## Backlog (226)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-214` | The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag | critical | 5 | web | none | The no-letter entry is replaced by one that works WITHOUT flags, since the plugin passes none, and fails closed: only digits, whitespace, punctuation and symbols are exempt, so a letter in any script is checked. 'Delete', 'Save', 'مصاحبه' and 'حذف وضعیت' each fail npm run lint in a committed fixture, as aria-label, as title and as JSX text, and the existing fixtures fail only on the string under test rather than also on a child like x. Every one of the 82 strings is either localised or exempted by a named, scoped rule with a reason, never by a value shape. A check compiles each ignore entry exactly as the plugin does, new RegExp(entry) with no flags, and fails if any entry whitelists a known copy string, and that check is proved by a mutation restoring the \p{L} entry. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-217` | A string literal written 'as const' skips the lingui rule entirely, in any file | high | 1 | web | none | <Box title={'Delete this application' as const} /> and aria-label={'Delete' as const} fail npm run lint in a committed fixture, a story meta title written with 'as const' fails too, and 'as const' on an object or array literal, which is the idiom that is actually used, still passes. |
 | `KN-260` | Stories inherit the real pointer where the last hover story left it | high | 1 | web | none | Every story starts with the test runner's pointer somewhere that hovers nothing, set once for the whole suite rather than per story; BlankErrorIsNoError drops its pointer-events workaround and TECH-DEBT 15 is deleted; and a check runs a story that leaves the pointer on a field followed by one asserting a resting border in the same spot, which fails without the reset. |
@@ -43,6 +48,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-353` | A column whose cards are all false or null shows a blank region instead of its empty message | high | 1 | web | none | The column shows the empty message whenever no child renders, null, false and empty arrays included (Children.toArray), and a story passes such a list. |
 | `KN-355` | Below 900 the shell has no language switch: the sidebar took it and the shell draws no Page Header | high | 1 | web | none | At the phone's width the shell shows the Page Header with its language switch, choosing a language there changes it and persists, and a story at 390 finds and uses the switch. |
 | `KN-361` | The add modal's Controls do not drive it while it is open: step, source and draft are read only on opening | high | 1 | web | none | Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step. |
+| `KN-364` | Saving right after changing the status in the Job Modal's header can send the old status | high | 1 | web | none | Save sends the status last chosen in the header, or none at all, and a story changes the status and saves before the job prop changes, and sees the new status or no status in onSave. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -68,6 +74,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-344` | Focus is lost when the Confirm modal's action removes the control that opened it | high | 2 | web | none | The shell takes a fallback for focus, used when the opener is gone, and a story deletes the opener and finds focus on the fallback. |
 | `KN-352` | Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page | high | 2 | web | none | Unchecking the phone card's checkbox leaves focus on the card, either on a checkbox that stays and folds as the desktop's does or on the title, and a story unchecks it by keyboard and asserts where focus is. |
 | `KN-356` | Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected | high | 2 | web | none | Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot. |
+| `KN-363` | The Job Modal keeps one job's edits when the page hands it another while it is open | high | 2 | web | none | The record carries its id, the modal starts over from a record with a different id while open, keeps edits across new objects of the same record, and a story swaps the job while open and saves the new one's fields. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | high | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
@@ -779,6 +786,8 @@ The job detail modal at Figma node 210:276. The file draws four tab variants: Ta
 **Why.** The design replaced a detail page with this modal, so it is the only place the full record is visible. Status history is the record of the trail, which is the anchor of the whole product.
 
 **Exit condition.** All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text.
+
+**Roasts.** round 1 scored 5.5 with 0 critical(s)
 
 ### `KN-031` Contact modal, add and edit
 
@@ -2877,7 +2886,7 @@ CHILD OF KN-089, recorded in prose because board.json cannot express parent_task
 
 ### `KN-214` The lingui gate exempts every Persian string and most English words, because its no-letter pattern is compiled without the u flag
 
-- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **status** in_progress · **severity** critical · **points** 5 · **area** web
 - **blocked by** none
 
 Found while working KN-095, by reading eslint-plugin-lingui 0.14.0 rather than by probing. The rule compiles every entry of the ignore option with new RegExp(item) and NO flags. The first entry in apps/web/eslint.config.js is '^[^\\p{L}]*$', meant as 'anything with no letter in it'. Without the u flag, \p is not a Unicode property escape, it is a plain p, so the class excludes only the four characters p, {, L and }. Every string that contains none of those four is whitelisted before any other check runs. Proved with the plugin's own construction: 'Delete', 'Save', 'Cancel', 'Close', 'مصاحبه' and 'حذف وضعیت' are all whitelisted; 'Delete this application' is not, only because 'application' has a p. Every committed gate fixture happens to contain a p, which is the only reason the gate has ever looked like it worked. A probe with a pattern that means what it says found 82 strings in apps/web/src passing only because of this. About five are real untranslated copy: the health reason 'the API answered with nothing' (KN-130), the language names (KN-115), the Persian args of the FilterChip and Tooltip stories, and the story-docs fallback message. The rest are identifiers the rule now correctly sees and must be answered one class at a time: hex colours in tokens.ts, CSS and DOM selectors, Storybook control types and layout values, event names, import.meta.glob options, locale codes, SVG attribute values.
@@ -4619,4 +4628,26 @@ CHILD OF KN-029, recorded in prose because board.json cannot express parent_task
 **Why.** Focus is how a screen reader user learns where they are after the button they pressed disappears.
 
 **Exit condition.** Focus goes to an element named by the loading message, or to the status region itself, and a story reads the focused element's accessible name.
+
+### `KN-363` The Job Modal keeps one job's edits when the page hands it another while it is open
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-030, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-030 roast. JobModal resets its draft, description and note only when open turns true. A page that swaps the job prop while the modal stays open, from a list or after a move, renders the new job's header, history, contacts and files over the old job's editable fields, and Save sends those fields as the new job's. The record carries no id the modal could notice the change by.
+
+**Why.** Saving one job opportunity's edits onto another corrupts the record the product exists to keep.
+
+**Exit condition.** The record carries its id, the modal starts over from a record with a different id while open, keeps edits across new objects of the same record, and a story swaps the job while open and saves the new one's fields.
+
+### `KN-364` Saving right after changing the status in the Job Modal's header can send the old status
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-030, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-030 roast. The header's Status Control calls onStatusChange at once, and Save sends job.draft.status from the props. If Save is pressed before the page has handed back a job with the new status, onSave carries the old one, which a page that saves the whole record would write back over the change.
+
+**Why.** A status change is the trail the product records; Save must not undo it.
+
+**Exit condition.** Save sends the status last chosen in the header, or none at all, and a story changes the status and saves before the job prop changes, and sees the new status or no status in onSave.
 
