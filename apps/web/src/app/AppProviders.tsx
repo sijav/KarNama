@@ -4,6 +4,7 @@ import { I18nProvider } from '@lingui/react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { useLayoutEffect, useMemo, type ReactNode } from 'react'
+import { AuthProvider } from '../core/auth'
 import { PreferencesProvider, usePreferences } from '../core/preferences'
 import { RecordsProvider } from '../core/records'
 import { directionFor, i18nFor, type Locale } from '../i18n'
@@ -93,7 +94,9 @@ const ThemedTree = ({ children }: { children: ReactNode }) => {
           <CssBaseline />
           {/* The board's records, inside the catalog so the five statuses the
               product starts with are named in the reader's language, KN-042. */}
-          <RecordsProvider>{children}</RecordsProvider>
+          <AuthProvider>
+            <RecordsProvider>{children}</RecordsProvider>
+          </AuthProvider>
         </ThemeProvider>
       </CacheProvider>
     </I18nProvider>

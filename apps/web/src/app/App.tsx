@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box'
 import { useEffect, useState } from 'react'
-import { JobsScreen, NetworkScreen } from '../screens'
+import { useAuth } from '../core/auth'
+import { AuthScreen, JobsScreen, NetworkScreen } from '../screens'
 import { Navigation, type Destination } from '../shared/navigation'
 import { addressOf, destinationIn } from './routes'
 
@@ -26,6 +27,7 @@ import { addressOf, destinationIn } from './routes'
  */
 export const App = () => {
   const [current, setCurrent] = useState<Destination>(() => destinationIn(window.location.hash))
+  const { session, signingUp, signOut } = useAuth()
 
   // The address and the state follow each other: the navigation sets the hash,
   // and the back button, a typed address or a shared link sets the state.
@@ -44,9 +46,13 @@ export const App = () => {
     setCurrent(destination)
   }
 
+  // Everything in the archive belongs to someone, so there is nothing to show
+  // until somebody has signed in and said who they are, KN-046.
+  if (!session || signingUp) return <AuthScreen />
+
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
-      <Navigation current={current} onNavigate={navigate} />
+      <Navigation current={current} onNavigate={navigate} userName={session.name} userPhone={session.phone} onSignOut={signOut} />
       {/* Below md the tab bar is pinned over the page's foot, so the page
           keeps its 72 clear there. */}
       <Box component="main" sx={{ flex: '1 1 auto', minWidth: 0, display: 'flex', flexDirection: 'column', p: 6, pb: { xs: 15, md: 6 } }}>

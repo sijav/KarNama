@@ -1,8 +1,14 @@
 import { expect, test } from '@playwright/test'
+import { signedIn } from './session'
 
 // The viewports come from the design: the Screens canvas draws desktop at
 // 1440 by 900 and mobile at 390 by 844, so the e2e projects use exactly those
 // rather than Playwright's defaults.
+
+// Every test here is about the shell, which is behind signing in, KN-046.
+test.beforeEach(async ({ page }) => {
+  await signedIn(page)
+})
 
 test('the shell renders in Persian, right to left', async ({ page }, testInfo) => {
   await page.goto('/')

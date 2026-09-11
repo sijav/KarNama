@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { signedIn } from './session'
 
 /**
  * The add flow, end to end: the only way data enters the product, KN-044.
@@ -13,7 +14,11 @@ const TITLE = 'توسعه‌دهنده فرانت‌اند'
 const COMPANY = 'دیجی‌کالا'
 
 test.beforeEach(async ({ page }) => {
+  // The add flow is behind signing in, KN-046, and this spec is about the flow.
+  await signedIn(page)
   await page.goto('/')
+  // An empty board to start from, cleared once rather than on every load: a
+  // reload is part of the first test and what it saved has to survive it.
   await page.evaluate(() => {
     window.localStorage.removeItem('karnama.records')
   })
