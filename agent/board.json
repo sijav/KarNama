@@ -7535,13 +7535,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A focused Checkbox inside a host that clips its overflow flush at the Checkbox's own box still changes at least a two-pixel perimeter at 3:1, drawn inside that box or with the room kept by the Checkbox itself; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T19:28:42.674Z",
-      "updatedAt": "2026-09-11T10:53:20.850Z",
-      "verify": "node agent/scripts/verify/KN-293.mjs"
+      "updatedAt": "2026-09-11T10:56:07.110Z",
+      "verify": "node agent/scripts/verify/KN-293.mjs",
+      "evidence": "KN-293.mjs passed at 4537c07. The Checkbox stories pass with FocusedInAClippingHost by name: the Checkbox in an overflow-hidden host with no padding or border whose box equals the root's, the ring's extent (the frame grown by outline offset plus width) inside every clipping ancestor with the host among them, the ring solid, 2 wide, 3:1 against the host's bg/surface, and its rounded band clearing the frame's 4W + 4H. With the root's padding back to 0 the story fails by name on the overshoot, [['left', 4], ['top', 4], ...]. In a production Storybook, a real Tab in every mark, fa-IR and en-US, light and dark, at device pixel ratios 1 and 2: the host is 28 by 28, the ring's own colour changes the surface at 5.17:1 in light and 3.04:1 in dark, its area counted by each pixel's coverage is 183 to 185 square pixels against the frame's 160 (WCAG's rounded figure is 146.3), nothing changes outside the host; with no room the host is 20 by 20 and the ring covers 0.0 inside it. Counted only by pixels at 3:1 on their own, dark falls to 136 and 158, because the derived dark ring clears 3:1 by 0.04 and its anti-aliased corners do not; WCAG 2.4.13's note lets those pixels be ignored, and DESIGN.md records it. DESIGN.md's new section states the Figma reading (all 18 instances flush in a clipped Title Group), why not inside, the area, the target, and what a host owes it; KN-015 and KN-026 carry the host contract in their exit conditions. KN-274's verifier, its Checkbox perimeter moved to the frame, passes. Regression: KN-013, 205, 207, 208, 220, 225, 229, 288 (with KN-284 and its chain) and 290 pass; eslint on the Checkbox, tsc and the story-docs guard are clean; seen in all four combinations and the Docs page read in both languages. Not established: the composed Card and Contact Card Title Groups, which do not exist yet, and forced colours for the ring.",
+      "closedAt": "2026-09-11T10:56:07.110Z"
     },
     {
       "id": "KN-294",
