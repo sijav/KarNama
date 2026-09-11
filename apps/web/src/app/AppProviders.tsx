@@ -69,10 +69,9 @@ const ThemedTree = ({ children }: { children: ReactNode }) => {
   // wrapper would leave every popover laid out the wrong way round.
   //
   // A layout effect, so it lands in the same commit as the tree and before
-  // the browser paints it. A passive effect runs after that first paint: the
-  // flash of the wrong direction the catalog above is activated during render
-  // to avoid, on every load with a stored English preference, and Storybook
-  // starts a play function before it runs, KN-250.
+  // the browser paints it. A passive effect runs after that first paint: a
+  // flash of the wrong direction on every load with a stored English
+  // preference, and Storybook starts a play function before it runs, KN-250.
   useLayoutEffect(() => {
     // Property assignment rather than setAttribute, so no string literal is
     // passed to a DOM call. That matters beyond style: exempting setAttribute

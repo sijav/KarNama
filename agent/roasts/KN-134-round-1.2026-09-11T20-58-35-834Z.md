@@ -1,0 +1,16 @@
+1. No. The `%s` heuristic is not “React warnings.” React 19 also emits plain `console.error` calls, including “Cannot call startTransition while rendering” and “useInsertionEffect must not schedule updates”; those pass this guard silently. It captures current key warnings because they use placeholders, but not every hydration/internal warning, and it ignores every `console.warn`. A component stack as a later argument is not itself a problem if the format string has `%s`, but the guard discards that context. The predicate can also false-positive on any non-React printf logger, for example the installed `pg` package has `console.error('You supplied %s (%s)', ...)`.
+
+2. React-rendered product components are mostly safe: they use `useLingui()`, formatters take an explicit locale, and the Docs page derives its locale from Storybook globals. `msg` is only a descriptor until resolved. But the singleton remains stale from render until `ThemedTree`’s layout effect, and it cannot represent two provider trees. A child layout effect or external callback that reads it during a locale change can see the old locale; with two provider instances, the last committed provider wins globally. The change removes the render-time React update, but it does not make the singleton safe for all “non-React readers.”
+
+Findings:
+
+- **critical** — The required guard does not assert “no React warnings at all.” It records only `console.error` whose first argument contains `%s`, so React 19 warnings with plain strings are not failures, and all `console.warn` warnings are ignored. React itself has direct counterexamples in the installed version, including `react-dom-client.development.js:7237` and `:14265`. The claimed exit condition is therefore not met. Fix the guard to capture both console methods and establish an explicit, narrowly scoped mechanism for the few intentional product diagnostics. [react-warnings.setup.ts:14](D:\Kar\Gandom\KarNama\apps\web\.storybook\react-warnings.setup.ts:14)
+
+- **major** — The shared singleton is deliberately updated only after the provider commit, so it is guaranteed to lag the selected provider during a language transition. A child layout effect that calls external translation code, or any two simultaneously mounted provider trees with different locales, has no coherent singleton locale. The code’s claim that it supports “code outside a tree” is false without passing a locale or an `I18n` instance to that code. [AppProviders.tsx:76](D:\Kar\Gandom\KarNama\apps\web\src\app\AppProviders.tsx:76) [index.ts:47](D:\Kar\Gandom\KarNama\apps\web\src\i18n\index.ts:47)
+
+- **minor** — The new warning guard has no committed test proving its classification. The only gate fixture is an unrelated failing arithmetic assertion, so it would remain green if the `%s` condition were removed, inverted, or narrowed further. The reported “old activate planted back” is manual evidence, not a durable regression test for the guard. [failing.gate.ts:5](D:\Kar\Gandom\KarNama\apps\web\src\gate-fixtures\failing.gate.ts:5) [react-warnings.setup.ts:16](D:\Kar\Gandom\KarNama\apps\web\.storybook\react-warnings.setup.ts:16)
+
+VERDICT
+score: 3.8
+criticals: 1
+one-line: Replace the `%s`-only console.error heuristic with a tested guard that fails on every unapproved React warning channel.

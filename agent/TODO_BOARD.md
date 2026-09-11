@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 161 of 400 tasks done · 344 of 848 points.
+Project **KarNama** · 161 of 402 tasks done · 344 of 851 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-167` The API schema-entry test is flaky under load and fails the gate at random** (high, 2 pt, api)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-167` | The API schema-entry test is flaky under load and fails the gate at random | high | 2 | api | none | The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure. |
 
 ## Blocked (5)
 
@@ -20,12 +26,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (232)
+## Backlog (233)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-167` | The API schema-entry test is flaky under load and fails the gate at random | high | 2 | api | none | The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure. |
 | `KN-178` | The preferences story's localStorage restore races with other stories | high | 2 | web | none | The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler. |
 | `KN-183` | KN-114's verifier can silently overwrite a concurrent catalog edit | high | 2 | web | none | The blank and untranslated rules live in a pure function that takes the catalogs as an argument; catalog.test.ts calls it on the real imported ones; a test drives it with in-memory catalogs containing each evasion, empty, whitespace, format characters only, the id exactly and the id with punctuation and casing changed, and requires each to be reported naming the id; KN-114's verifier no longer writes to any tracked file; and its header no longer needs to warn that an interrupted run leaves the catalog planted. |
 | `KN-202` | The story-docs markdown contract is documented as rigid but silently accepts malformed files | high | 2 | web | none | parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing. |
@@ -48,6 +53,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-367` | lingui-ignore.test.ts reads the config's text, so an ignore entry it cannot parse whitelists copy unseen | high | 2 | web | none | The test takes the ignore array from the configuration ESLint actually loads, not from the file's text, and a story or test shows an entry written in another quote style is seen. |
 | `KN-386` | The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one | high | 2 | web | none | Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it. |
 | `KN-398` | In dark the Tooltip draws white on text/primary, 1.34 to one, since its fill is a text role that turns light | high | 2 | web | none | In dark the tooltip's text clears 4.5 to one on its fill, by a role the tooltip's fill takes that stays dark in dark, or a text that follows it, and the theme's pair test reads the Tooltip's pair from the component rather than from a list; the Tooltip's dark story measures it. |
+| `KN-401` | The React-warning guard hears only a console.error with %s in it: React's plain-string errors and every console.warn pass, and nothing tests the guard | high | 2 | web | none | Every console.error and console.warn during a test of either project fails it unless it is one of the product's own diagnostics, recognised by an explicit mark rather than by the absence of %s, and a story that provokes one says so; a committed test drives the guard with a printf warning, a plain-string console.error, a console.warn and a product diagnostic and fails if any is classified differently; both projects pass apart from KN-365's flakes. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -225,6 +231,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-394` | The lingui ignore test reads the plugin's no-letter pattern from its source, not from what the rule does | low | 1 | web | none | A test lints real code with the project's ESLint config, programmatically or through a fixture that must pass, and finds letterless titles, labels and text accepted and the three Latin-1 letters rejected. |
 | `KN-395` | RestartWhileReading settles its held reading with an optional call, so it passes if the reading was never made | low | 1 | web | none | RestartWhileReading fails when no reading was made: it asserts onExtract was called with the source and throws if settleReading is unset before settling it. |
 | `KN-397` | The stories-glob test searches the patterns' text for mdx, not whether any pattern would index the MDX fixture | low | 1 | web | none | The test matches the fixture's path, and a few story paths that must be indexed, against each configured pattern with glob semantics, extglobs included, and finds the MDX fixture matched by none; AGENTS.md says a docs-only page is a CSF entry with its story-docs markdown. |
+| `KN-402` | The shared i18n singleton trails the provider by a commit, and nothing stops product code from reading it | low | 1 | web | none | npm run lint fails when product code outside src/i18n and AppProviders imports i18n from @lingui/core or from src/i18n, with a committed fixture that holds each import, and the comment in AppProviders says who may read the singleton and from when it is current. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -2018,6 +2025,8 @@ The web test suite prints, on every run: "Cannot update a component (I18nProvide
 
 **Exit condition.** The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload.
 
+**Roasts.** round 1 scored 3.8 with 1 critical(s)
+
 ### `KN-135` The graphql package's coverage thresholds pass on zero files
 
 - **status** backlog · **severity** low · **points** 1 · **area** graphql
@@ -2384,7 +2393,7 @@ The owner's instruction of 2026-09-10: go to the sibling project at ../SkipBurea
 
 ### `KN-167` The API schema-entry test is flaky under load and fails the gate at random
 
-- **status** backlog · **severity** high · **points** 2 · **area** api
+- **status** in_progress · **severity** high · **points** 2 · **area** api
 - **blocked by** none
 
 apps/api/src/graphql/schema-entry.test.ts failed one of its four cases during a full npm test run in apps/api, taking 19632ms for a file that takes 3.6 seconds when run alone, and the whole suite passed on an immediate re-run with no change in between. So the failure is timing, not logic: the case is slow enough that it crosses a timeout when the machine is loaded by the other eight test files. Observed on 2026-09-10 while running the API gate for an unrelated change.
@@ -5131,4 +5140,26 @@ CHILD OF KN-006, recorded in prose because board.json cannot express parent_task
 **Why.** The Persian catalog's 100 percent claim rests on the scan seeing every id; a scan that sees spellings is one habit away from a Persian screen showing English.
 
 **Exit condition.** The catalog test finds used ids by parsing each file with the TypeScript compiler, every i18n._ call whatever sits between its bracket and its argument, and fails on any first argument that is not a string literal; the lint forbids importing Trans and the t and msg macros, which the codebase does not use, and AGENTS.md says ids are written i18n._('...'); the unit test reads unscannable-ids.tsx and finds each form refused.
+
+### `KN-401` The React-warning guard hears only a console.error with %s in it: React's plain-string errors and every console.warn pass, and nothing tests the guard
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-134, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-134 roast, its critical and its minor, one file and one fix. apps/web/.storybook/react-warnings.setup.ts records a console.error only when its first argument contains %s. React itself sends plain strings: the installed react-dom-client.development.js has console.error("Cannot call startTransition while rendering.") and console.error("useInsertionEffect must not schedule updates."), both checked on 2026-09-11, and it has console.warn calls the guard never hears. So KN-134's exit, no React warnings at all asserted by a check, holds only for the printf-style ones. The guard's own rule is untested too: the only gate fixture, failing.gate.ts, is an unrelated arithmetic failure, so narrowing or inverting the %s test would stay green.
+
+**Why.** A guard that hears some warnings is read as proof there are none; the next plain-string warning prints into a log nobody reads, which is what KN-134 set out to end.
+
+**Exit condition.** Every console.error and console.warn during a test of either project fails it unless it is one of the product's own diagnostics, recognised by an explicit mark rather than by the absence of %s, and a story that provokes one says so; a committed test drives the guard with a printf warning, a plain-string console.error, a console.warn and a product diagnostic and fails if any is classified differently; both projects pass apart from KN-365's flakes.
+
+### `KN-402` The shared i18n singleton trails the provider by a commit, and nothing stops product code from reading it
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-134, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-134 roast, which rated it major. Since KN-134 the provider takes a catalog per locale and the shared i18n of @lingui/core is activated in ThemedTree's layout effect, which React runs after its children's layout effects. Code that reads the singleton during a switch, a child's layout effect or a callback fired in that commit, gets the old locale, and with two provider trees mounted the last to commit wins. No product code reads it today: only src/app/AppProviders.tsx and src/i18n/index.ts import it, found by grep on 2026-09-11, and stories read it in play functions, after the commit. The comment in AppProviders still says it serves code outside the tree, which overclaims.
+
+**Why.** A reader added later gets the wrong language for one commit, in a way no test shows. Low, because no such reader exists yet.
+
+**Exit condition.** npm run lint fails when product code outside src/i18n and AppProviders imports i18n from @lingui/core or from src/i18n, with a committed fixture that holds each import, and the comment in AppProviders says who may read the singleton and from when it is current.
 

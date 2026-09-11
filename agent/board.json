@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 401,
+  "nextId": 403,
   "tasks": [
     {
       "id": "KN-001",
@@ -4177,7 +4177,23 @@
       "parent": [],
       "status": "done",
       "exit": "The full web suite produces no React warnings at all, asserted by a check that fails when one appears rather than by reading the output, and switching language still works in fa-IR and en-US with the choice surviving a reload.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3.8,
+          "criticals": 1,
+          "file": "agent/roasts/KN-134-round-1.2026-09-11T20-58-35-834Z.md",
+          "filed": [
+            "KN-401",
+            "KN-402"
+          ],
+          "cardDigest": "702650dd0e7ccdc0378a2652d02bf91929f7831511ef5e5dbb97d870f95a905c",
+          "head": "8ec7cacca5cf9ef2b190a71e5bdb8292786313f5",
+          "reviewerScore": 3.8,
+          "reviewerCriticals": 1,
+          "at": "2026-09-11T21:04:51.309Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-08T03:07:02.115Z",
       "updatedAt": "2026-09-11T20:58:17.773Z",
@@ -4841,11 +4857,12 @@
       "points": 2,
       "area": "api",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T00:09:27.247Z"
+      "createdAt": "2026-09-10T00:09:27.247Z",
+      "updatedAt": "2026-09-11T20:59:34.800Z"
     },
     {
       "id": "KN-168",
@@ -10253,6 +10270,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T20:59:18.671Z"
+    },
+    {
+      "id": "KN-401",
+      "title": "The React-warning guard hears only a console.error with %s in it: React's plain-string errors and every console.warn pass, and nothing tests the guard",
+      "desc": "CHILD OF KN-134, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-134 roast, its critical and its minor, one file and one fix. apps/web/.storybook/react-warnings.setup.ts records a console.error only when its first argument contains %s. React itself sends plain strings: the installed react-dom-client.development.js has console.error(\"Cannot call startTransition while rendering.\") and console.error(\"useInsertionEffect must not schedule updates.\"), both checked on 2026-09-11, and it has console.warn calls the guard never hears. So KN-134's exit, no React warnings at all asserted by a check, holds only for the printf-style ones. The guard's own rule is untested too: the only gate fixture, failing.gate.ts, is an unrelated arithmetic failure, so narrowing or inverting the %s test would stay green.",
+      "why": "A guard that hears some warnings is read as proof there are none; the next plain-string warning prints into a log nobody reads, which is what KN-134 set out to end.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Every console.error and console.warn during a test of either project fails it unless it is one of the product's own diagnostics, recognised by an explicit mark rather than by the absence of %s, and a story that provokes one says so; a committed test drives the guard with a printf warning, a plain-string console.error, a console.warn and a product diagnostic and fails if any is classified differently; both projects pass apart from KN-365's flakes.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T21:04:39.486Z"
+    },
+    {
+      "id": "KN-402",
+      "title": "The shared i18n singleton trails the provider by a commit, and nothing stops product code from reading it",
+      "desc": "CHILD OF KN-134, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-134 roast, which rated it major. Since KN-134 the provider takes a catalog per locale and the shared i18n of @lingui/core is activated in ThemedTree's layout effect, which React runs after its children's layout effects. Code that reads the singleton during a switch, a child's layout effect or a callback fired in that commit, gets the old locale, and with two provider trees mounted the last to commit wins. No product code reads it today: only src/app/AppProviders.tsx and src/i18n/index.ts import it, found by grep on 2026-09-11, and stories read it in play functions, after the commit. The comment in AppProviders still says it serves code outside the tree, which overclaims.",
+      "why": "A reader added later gets the wrong language for one commit, in a way no test shows. Low, because no such reader exists yet.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "npm run lint fails when product code outside src/i18n and AppProviders imports i18n from @lingui/core or from src/i18n, with a committed fixture that holds each import, and the comment in AppProviders says who may read the singleton and from when it is current.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T21:04:39.606Z"
     }
   ]
 }
