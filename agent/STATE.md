@@ -21,8 +21,8 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**125 done, 207 open, 2 blocked, 2 dropped** of 336 (2026-09-11). Coverage 100
-percent on all four metrics. **Deployed** on every push by
+**130 done, 218 open, 2 blocked, 2 dropped** of 352 (2026-09-11). Coverage
+99.33 percent on the full `npm test`; KN-340 carries the gap. **Deployed** on every push by
 `.github/workflows/pages.yml`: https://sijav.github.io/KarNama/ and Storybook
 at https://sijav.github.io/KarNama/storybook/. **Pushed after every close since
 the owner asked, 2026-09-11**; before that 83 commits had sat unpushed and the
@@ -35,11 +35,12 @@ Tabs (KN-023), Icon (KN-008), Icon Button (KN-014), Search Bar (KN-016), Button
 (KN-009), Page Header (KN-021), Empty State and Loading State (KN-022), Bulk
 Action Bar (KN-025), Select with the option rows and the employment type and
 job level selects (KN-012), Menu with the Status and Card menus (KN-018), Sort
-Control (KN-024), and Status Choice, Picker and Control (KN-020). Story
-fixtures (KN-062). **Left, critical**: KN-026 Contact card, KN-015 Card, KN-027
-Navigation, KN-028 Modal, KN-060 Kanban column, KN-029 Add and edit modal,
-KN-030 Job modal, KN-031 Contact modal. The live site is a placeholder shell
-until screens start.
+Control (KN-024), Status Choice, Picker and Control (KN-020), Contact Card
+(KN-026), the Modal with Confirm, Change Status and the panel modal (KN-028),
+the Contact Modal (KN-031), the job card (KN-015) and the kanban column with
+the Add Column tile (KN-060). Story fixtures (KN-062). **Left, critical**:
+KN-027 Navigation, KN-029 Add and edit modal, KN-030 Job modal. The live site
+is a placeholder shell until screens start.
 
 **Open children**, high unless marked, since 2026-09-11. KN-011: KN-251
 (low), KN-255, KN-256 (low), KN-257 (medium), KN-260, KN-268 (low), KN-275,
@@ -102,6 +103,13 @@ and KN-287. The job level list and KN-077 still wait.
 
 ## What keeps going wrong, one line each
 
+- A ButtonBase with text draws in the browser's button font: give it `fontFamily: 'inherit'` (KN-351 for the two built ones).
+- A flex item with `overflow: hidden` may shrink below its content: a list of cards in a scrolling flex column needs `flex-shrink: 0` on them.
+- MUI's Chip is `max-width: 100%` of its group: beside a count, hold it in a `min-width: 0` item or the count is pushed out.
+- Figma's hidden layer gives up its room: fold a control to no room and fade it, never `display: none`, which drops it from the Tab order.
+- The component's own prototype reaction beats the prototype map's summary: hovers are 200 ms ease in and out or 120 ms ease out, never the map's 300 (KN-350).
+- `prettier --write` on a file committed unformatted rewrites all of it: the catalogs and DESIGN.md are kept by hand, so restore and re-apply only the change.
+
 - An absence proves nothing without a positive control, in mutation testing too.
 - Mutate the contract, not only the implementation; go clause by clause.
 - A silently ignored prop looks exactly like a working one; assert the DOM.
@@ -139,12 +147,13 @@ and KN-287. The job level list and KN-077 still wait.
 
 ## The next step
 
-KN-020's roast is running; judge it, file at high or lower, record, push. Then
-the components, by the law: KN-026 Contact card, KN-015 Card, KN-027 Navigation,
-KN-028 Modal, KN-060 Kanban column, KN-029, KN-030, KN-031. When the last one
-closes, restore KN-214 to critical. Findings filed today wait at high or lower,
-KN-300 to KN-336; the Card and Board will want KN-305 (fixtures need a board
-and all nine statuses) and KN-310 (the Icon Button cannot be a Tooltip trigger).
+KN-060's roast is running; judge it, file at high or lower, record, push. Then
+the components, by the law: KN-027 Navigation, KN-029 Add and edit modal,
+KN-030 Job modal. When the last one closes, restore KN-214 to critical.
+Findings filed today wait at high or lower, KN-300 to KN-352; the board screen
+will want KN-305 (fixtures need a board and all nine statuses), KN-310 (the
+Icon Button cannot be a Tooltip trigger), KN-341 and KN-352 (the checkbox's
+keyboard path on the Contact Card and the phone card).
 
 ## What to read first
 
