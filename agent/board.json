@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 388,
+  "nextId": 390,
   "tasks": [
     {
       "id": "KN-001",
@@ -9258,7 +9258,21 @@
       "parent": [],
       "status": "done",
       "exit": "The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-351-round-1.2026-09-11T19-51-20-545Z.md",
+          "filed": [],
+          "cardDigest": "e42ed42ad3dc385723f441f90b605f78d295ecdb2056298752d08abb6a69d8bf",
+          "head": "0bd0a2a620f9b8def9a52d6d06fd28d7b3aa3bb1",
+          "reviewerScore": 8.5,
+          "reviewerCriticals": 0,
+          "dismissed": "Its one major, closing without all four language and scheme combinations, is dismissed: the owner's rule of 2026-09-11 replaced the four-combination gate with a look in both languages and both schemes, which Persian light and English dark covered, and the change, a font family, does not depend on the scheme.",
+          "at": "2026-09-11T19:57:37.854Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T15:49:47.336Z",
       "updatedAt": "2026-09-11T19:48:48.616Z",
@@ -9822,6 +9836,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T19:56:24.666Z"
+    },
+    {
+      "id": "KN-388",
+      "title": "The kanban column counts a card component that renders nothing as a card, so a filtering wrapper still leaves a blank region",
+      "desc": "CHILD OF KN-060, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-353 roast. KN-353 decides emptiness by Children.toArray, which drops false, null and empty lists but keeps an element, so a child such as a card wrapper that returns null when a search hides it counts as one, the empty message is skipped and the column draws a blank region. The column cannot know what another component renders.",
+      "why": "Whether a column is empty is the board's knowledge, not the column's guess, and the board screen will filter its cards.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The column is told whether it has cards to show, by a prop or by the data it is given, and DESIGN.md or the column's docs say how a board filters before handing cards over; a story shows a filtered column with a wrapper that renders nothing drawing the empty state.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T19:57:37.996Z"
+    },
+    {
+      "id": "KN-389",
+      "title": "A column whose cards a search filtered away says it has none at this stage, while its count says it has one",
+      "desc": "CHILD OF KN-060, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-353 roast. The column's count is a prop, the status's live count, shown in the header, the collapsed column and the Status Menu; its empty message, 241:46, says «هنوز فرصت شغلی‌ای تو این مرحله نیست», none at this stage yet. When a search hides a column's only card, the column shows that message beside a count of one: the message is false and the count reads as broken. EveryCardFiltered used count 0 and did not show it. What a filtered column shows, and whether its count counts all or only the matches, is a design question for the file's search states.",
+      "why": "Search is how a user with a long board finds a job opportunity, and a column that contradicts itself while searching reads as losing data.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Read the file for a search or filtered state of the board and its columns and settle, in DESIGN.md, what a column shows when a search hides its cards and what its count counts, asking the owner if the file is silent; the column does that, and a story renders a filtered column with a live count of one.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T19:57:38.148Z"
     }
   ]
 }

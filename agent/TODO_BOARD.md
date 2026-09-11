@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 151 of 387 tasks done · 330 of 829 points.
+Project **KarNama** · 151 of 389 tasks done · 330 of 832 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -19,7 +19,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (230)
+## Backlog (232)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -159,6 +159,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-175` | Verifiers that need a scratch directory cannot run in the read-only review sandbox | medium | 2 | agent | none | The repository states, in AGENTS.md or RALPH.md, whether a verifier may require a writable scratch directory; verifiers that do are either made runnable in the review environment or carry a machine-readable marker saying they cannot be, and the roast prompt tells the reviewer which; and no future roast can raise this as a novel finding. |
 | `KN-306` | The fixtures' never-bundled test reads source imports, not the production bundle | medium | 2 | web | none | A check builds the web app for production and asserts that no fixture value, a sentinel only the fixtures hold, appears in the emitted files; a planted import of the fixtures from app code makes it fail. |
 | `KN-380` | The Search Bar decides whether to search by comparing typed text with shown text, which a normalising, restoring or clear-ignoring parent defeats | medium | 2 | web | none | Stories, each failing on KN-314's code: a parent ignoring the clear gets no search and no late one; a parent lowercasing input gets one search for the lowercased text; a parent restoring a reset value gets none; and the Search Bar's existing stories still pass. |
+| `KN-389` | A column whose cards a search filtered away says it has none at this stage, while its count says it has one | medium | 2 | web | none | Read the file for a search or filtered state of the board and its columns and settle, in DESIGN.md, what a column shows when a search hides its cards and what its count counts, asking the owner if the file is silent; the column does that, and a story renders a filtered column with a live count of one. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -226,6 +227,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-382` | Storybook waits for Vazirmatn's Persian and Latin faces but not its extended Latin one | low | 1 | web | none | The preview waits for the extended Latin face too, and the Type story finds all three Vazirmatn faces loaded. |
 | `KN-383` | The Change Status modal opened on a status its list does not hold focuses its bare panel and confirms that status unchanged | low | 1 | web | none | Opened on a status its list does not hold, the Change Status modal puts focus on the first status and Confirm stays disabled until one is chosen, and a story renders the case. |
 | `KN-384` | FullTabOrder proves the Contact Card's forward Tab order, not that its controls stay unfolded while focused and fold once focus leaves | low | 1 | web | none | A story unticks a selected card's checkbox by keyboard and finds it still seen and focused, then tabs past the delete out of the card and finds the checkbox unseen and the delete at no width. |
+| `KN-388` | The kanban column counts a card component that renders nothing as a card, so a filtering wrapper still leaves a blank region | low | 1 | web | none | The column is told whether it has cards to show, by a prop or by the data it is given, and DESIGN.md or the column's docs say how a board filters before handing cards over; a story shows a filtered column with a wrapper that renders nothing drawing the empty state. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4556,6 +4558,8 @@ CHILD OF KN-026 and KN-028, recorded in prose because board.json cannot express 
 
 **Exit condition.** The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must.
 
+**Roasts.** round 1 scored 8.5 with 0 critical(s)
+
 ### `KN-352` Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page
 
 - **status** backlog · **severity** high · **points** 2 · **area** web
@@ -4951,4 +4955,26 @@ CHILD OF KN-021, recorded in prose because board.json cannot express parent_task
 **Why.** It is the one control a phone reader in the wrong language looks for, and a word in capitals in MUI's type reads as a stray from another product.
 
 **Exit condition.** In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages.
+
+### `KN-388` The kanban column counts a card component that renders nothing as a card, so a filtering wrapper still leaves a blank region
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-060, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-353 roast. KN-353 decides emptiness by Children.toArray, which drops false, null and empty lists but keeps an element, so a child such as a card wrapper that returns null when a search hides it counts as one, the empty message is skipped and the column draws a blank region. The column cannot know what another component renders.
+
+**Why.** Whether a column is empty is the board's knowledge, not the column's guess, and the board screen will filter its cards.
+
+**Exit condition.** The column is told whether it has cards to show, by a prop or by the data it is given, and DESIGN.md or the column's docs say how a board filters before handing cards over; a story shows a filtered column with a wrapper that renders nothing drawing the empty state.
+
+### `KN-389` A column whose cards a search filtered away says it has none at this stage, while its count says it has one
+
+- **status** backlog · **severity** medium · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-060, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-353 roast. The column's count is a prop, the status's live count, shown in the header, the collapsed column and the Status Menu; its empty message, 241:46, says «هنوز فرصت شغلی‌ای تو این مرحله نیست», none at this stage yet. When a search hides a column's only card, the column shows that message beside a count of one: the message is false and the count reads as broken. EveryCardFiltered used count 0 and did not show it. What a filtered column shows, and whether its count counts all or only the matches, is a design question for the file's search states.
+
+**Why.** Search is how a user with a long board finds a job opportunity, and a column that contradicts itself while searching reads as losing data.
+
+**Exit condition.** Read the file for a search or filtered state of the board and its columns and settle, in DESIGN.md, what a column shows when a search hides its cards and what its count counts, asking the owner if the file is silent; the column does that, and a story renders a filtered column with a live count of one.
 
