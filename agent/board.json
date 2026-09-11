@@ -9286,11 +9286,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The column shows the empty message whenever no child renders, null, false and empty arrays included (Children.toArray), and a story passes such a list.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T16:15:57.688Z"
+      "createdAt": "2026-09-11T16:15:57.688Z",
+      "updatedAt": "2026-09-11T19:49:11.632Z"
     },
     {
       "id": "KN-354",

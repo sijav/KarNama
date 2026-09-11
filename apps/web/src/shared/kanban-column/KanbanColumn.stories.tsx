@@ -171,6 +171,18 @@ export const Empty: Story = {
   },
 }
 
+export const EveryCardFiltered: Story = {
+  // A board that filters its cards hands the column a list in which nothing
+  // renders, false and null and an empty list: the column says it is empty,
+  // as it does with no children at all, KN-353.
+  args: { ...columnOf('fa-IR', 'offer', 0), children: [false, null, []] },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    const column = columnIn(canvasElement)
+    await expect(within(column).getByText(/هنوز فرصت شغلی‌ای تو این مرحله نیست/u)).toBeVisible()
+  },
+}
+
 export const Collapsed: Story = {
   args: { ...columnOf('fa-IR', 'rejected', 0), count: 14, collapsed: true },
   globals: { locale: 'fa-IR', colorScheme: 'light' },

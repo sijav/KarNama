@@ -73,6 +73,11 @@ More cards than the column holds: they scroll, and the plus stays at the bottom.
 
 A column with no cards, saying so.
 
+### EveryCardFiltered
+
+A column handed a list in which nothing renders, as a board that filters its
+cards hands over: it says it is empty, as a column with no cards does.
+
 ### Collapsed
 
 A column collapsed to its header and count; pressing it asks to open it.

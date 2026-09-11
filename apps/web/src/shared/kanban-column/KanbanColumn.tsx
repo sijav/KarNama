@@ -173,7 +173,9 @@ export const KanbanColumn = ({
   const token = tokenOf(colour)
   const trigger = useRef<HTMLElement>(null)
   const [menu, setMenu] = useState<HTMLElement | null>(null)
-  const cards = Children.count(children) === 0 ? <EmptyColumn /> : children
+  // Empty when nothing renders: Children.count counts false, null and an empty
+  // list, which a board that filters its cards hands over, KN-353.
+  const cards = Children.toArray(children).length === 0 ? <EmptyColumn /> : children
 
   if (layout === 'mobile') {
     return (
