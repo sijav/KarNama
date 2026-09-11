@@ -47,6 +47,15 @@ RegExp(entry)` and no flags, so the no-letter entry `^[^\p{L}]*$` meant "no
   same with no flags. The fixtures above have no letter child any more, so each
   fails on the string under test alone.
 
+- `as-const-copy.tsx` and `as-const-story-title.stories.tsx` — copy and a
+  meta title written `'…' as const`. lingui's rule returns early for a literal
+  inside an `as const` assertion, before any other check, so both passed in any
+  file, KN-217. A `no-restricted-syntax` rule rejects `as const` on a bare
+  string or template literal; on an object or an array, the idiom this codebase
+  uses, it stays allowed, and `as-const-copy.tsx` keeps one such line that must
+  not fail. They are not named `unlocalized-*`, since the rule that fails them
+  is not lingui's.
+
 Five of those six are one exemption written for one legitimate case that
 quietly covered every case. That is the pattern to watch: an exemption is a
 hole, and the fix is always to narrow WHERE it applies rather than to make the

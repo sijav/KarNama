@@ -1,8 +1,11 @@
 import { Box } from '@mui/material'
 import { useEffect, useRef } from 'react'
 
-// The attribute's name, typed, so the value is the only string under test.
-const LABEL = 'aria-label' as const
+// The attribute's name, typed against a union rather than written 'as const',
+// which would hide it from the rule, KN-217; so the value is the only string
+// under test.
+type Attribute = 'aria-label'
+const LABEL: Attribute = 'aria-label'
 
 // The same untranslated accessible name, reached through a method call instead
 // of a prop.

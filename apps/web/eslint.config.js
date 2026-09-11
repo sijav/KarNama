@@ -295,6 +295,20 @@ export default defineConfig(
     plugins: { lingui },
     rules: {
       'lingui/no-unlocalized-strings': ['error', linguiOptions],
+      // A bare literal written 'as const' is skipped by no-unlocalized-strings
+      // before any other check: the plugin returns early for a literal whose
+      // parent is an 'as const' assertion, so title={'Delete' as const} passed
+      // in any file, a story's meta title too, KN-217. A bare literal never
+      // needs it, since a const binding or a contextual type already gives it
+      // a literal type; on an object or an array, the idiom this codebase
+      // uses, it stays allowed.
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "TSAsExpression[typeAnnotation.typeName.name='const'][expression.type=/^(Literal|TemplateLiteral)$/]",
+          message: "A bare literal 'as const' hides it from lingui's no-unlocalized-strings, KN-217: type the binding against a union, or translate the copy.",
+        },
+      ],
       'lingui/t-call-in-function': 'error',
       'lingui/no-single-variables-to-translate': 'error',
       'lingui/no-trans-inside-trans': 'error',

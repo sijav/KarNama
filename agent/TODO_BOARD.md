@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-217` A string literal written 'as const' skips the lingui rule entirely, in any file** (high, 1 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-217` | A string literal written 'as const' skips the lingui rule entirely, in any file | high | 1 | web | none | <Box title={'Delete this application' as const} /> and aria-label={'Delete' as const} fail npm run lint in a committed fixture, a story meta title written with 'as const' fails too, and 'as const' on an object or array literal, which is the idiom that is actually used, still passes. |
+
 ## Blocked (2)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -17,12 +23,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (227)
+## Backlog (226)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-217` | A string literal written 'as const' skips the lingui rule entirely, in any file | high | 1 | web | none | <Box title={'Delete this application' as const} /> and aria-label={'Delete' as const} fail npm run lint in a committed fixture, a story meta title written with 'as const' fails too, and 'as const' on an object or array literal, which is the idiom that is actually used, still passes. |
 | `KN-260` | Stories inherit the real pointer where the last hover story left it | high | 1 | web | none | Every story starts with the test runner's pointer somewhere that hovers nothing, set once for the whole suite rather than per story; BlankErrorIsNoError drops its pointer-events workaround and TECH-DEBT 15 is deleted; and a check runs a story that leaves the pointer on a field followed by one asserting a resting border in the same spot, which fails without the reset. |
 | `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | high | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
 | `KN-269` | When a failed save arrives after the collapsed column has flashed is not decided | high | 1 | design | none | DESIGN.md states, as the owner's decision, when the collapsed column's success flash plays relative to the save and what happens to an optimistic move and its flash when the save fails; KN-061's exit condition names it; and a verifier checks the stated rule word for word in both places. |
@@ -2915,7 +2920,7 @@ CHILD OF KN-095, recorded in prose because board.json cannot express parent_task
 
 ### `KN-217` A string literal written 'as const' skips the lingui rule entirely, in any file
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-095, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-095 roast and confirmed in eslint-plugin-lingui 0.14.0: the rule returns early for any literal whose direct parent is an 'as const' assertion, BEFORE the type check and before every other exemption. So <Box title={'Delete this application' as const} /> passes npm run lint in any file in src, product or story, and so does a story meta title written that way, which also bypasses the StoryMeta type KN-095 introduced, because the meta can then use plain Meta. A bare string literal almost never needs 'as const': a const binding or a contextual type already gives it a literal type.
