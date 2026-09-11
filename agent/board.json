@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 386,
+  "nextId": 387,
   "tasks": [
     {
       "id": "KN-001",
@@ -9176,7 +9176,23 @@
       "parent": [],
       "status": "done",
       "exit": "The form resets on opening and on a change of the record's identity, an id, not on a new object with the same contents, and a story rerenders the parent mid-typing and keeps the text.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-347-round-1.2026-09-11T19-44-53-009Z.md",
+          "filed": [
+            "KN-386"
+          ],
+          "cardDigest": "7679a14223aeb8dbe9e9b1d6656708a2370d3ebeb788199f69fda690d23c1be1",
+          "head": "e4b890a7ab8050ce4cf94df7e3324353a321fb08",
+          "reviewerScore": 3,
+          "reviewerCriticals": 2,
+          "dismissed": "Nothing dismissed. Kinder because no page wires the modal yet and the owner's rule of 2026-09-11 files a finding on a built component at high or lower; its two criticals, the optional id in Edit and the split id and data handoff, share one fix and are filed as one high card, KN-386.",
+          "at": "2026-09-11T19:47:09.059Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T15:27:26.755Z",
       "updatedAt": "2026-09-11T19:44:38.080Z",
@@ -9237,11 +9253,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T15:49:47.336Z"
+      "createdAt": "2026-09-11T15:49:47.336Z",
+      "updatedAt": "2026-09-11T19:45:08.034Z"
     },
     {
       "id": "KN-352",
@@ -9763,6 +9780,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T19:43:11.430Z"
+    },
+    {
+      "id": "KN-386",
+      "title": "The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one",
+      "desc": "CHILD OF KN-031, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-347 roast, two findings with one fix. KN-347 starts the form again only on opening or a change of recordId. (1) recordId is optional, so an Edit caller that omits it and swaps initial from contact A to contact B while open keeps A's values, where the old object-identity reset did not; the Edit story itself omits it. (2) When recordId turns to B in a render whose initial is still A, the form resets to A and marks B seen, and the render that brings B's data changes nothing; an Edit opened before its record loads starts empty and ignores the record when it arrives. Nothing wires the modal to a page yet; the network and job screens will.",
+      "why": "Saving one contact's form into another's record is data loss the user cannot see, and the page that opens this modal will load its record asynchronously.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T19:47:08.930Z"
     }
   ]
 }

@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 148 of 385 tasks done · 327 of 826 points.
+Project **KarNama** · 148 of 386 tasks done · 327 of 828 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-351` The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn** (high, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-351` | The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn | high | 1 | web | none | The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must. |
 
 ## Blocked (4)
 
@@ -24,7 +30,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-351` | The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn | high | 1 | web | none | The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must. |
 | `KN-353` | A column whose cards are all false or null shows a blank region instead of its empty message | high | 1 | web | none | The column shows the empty message whenever no child renders, null, false and empty arrays included (Children.toArray), and a story passes such a list. |
 | `KN-355` | Below 900 the shell has no language switch: the sidebar took it and the shell draws no Page Header | high | 1 | web | none | At the phone's width the shell shows the Page Header with its language switch, choosing a language there changes it and persists, and a story at 390 finds and uses the switch. |
 | `KN-361` | The add modal's Controls do not drive it while it is open: step, source and draft are read only on opening | high | 1 | web | none | Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step. |
@@ -59,6 +64,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-356` | Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected | high | 2 | web | none | Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot. |
 | `KN-363` | The Job Modal keeps one job's edits when the page hands it another while it is open | high | 2 | web | none | The record carries its id, the modal starts over from a record with a different id while open, keeps edits across new objects of the same record, and a story swaps the job while open and saves the new one's fields. |
 | `KN-367` | lingui-ignore.test.ts reads the config's text, so an ignore entry it cannot parse whitelists copy unseen | high | 2 | web | none | The test takes the ignore array from the configuration ESLint actually loads, not from the file's text, and a story or test shows an entry written in another quote style is seen. |
+| `KN-386` | The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one | high | 2 | web | none | Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | high | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
@@ -4508,6 +4514,8 @@ CHILD OF KN-031, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The form resets on opening and on a change of the record's identity, an id, not on a new object with the same contents, and a story rerenders the parent mid-typing and keeps the text.
 
+**Roasts.** round 1 scored 5 with 0 critical(s)
+
 ### `KN-348` An Edit Contact Modal can be written without the record or the delete
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -4543,7 +4551,7 @@ CHILD OF KN-015, recorded in prose because board.json cannot express parent_task
 
 ### `KN-351` The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-026 and KN-028, recorded in prose because board.json cannot express parent_task yet, KN-188: found while building KN-015. A button takes the browser's own font, and MUI's ButtonBase does not give the page's back; CssBaseline does not either. The job card's title showed it in a production build, narrower and bolder than the file's Vazirmatn SemiBold, until it set fontFamily inherit. ContactCard.tsx's Name and StatusPicker.tsx's add button are ButtonBase with text and no font family; the Filter Chip is the only one that sets it.
@@ -4925,4 +4933,15 @@ CHILD OF KN-026, recorded in prose because board.json cannot express parent_task
 **Why.** A contact saved with a stray space is still a name-only contact, and the owner allowed those, KN-071; a doc that contradicts the type misleads whoever builds the network screen on it.
 
 **Exit condition.** The card trims each part before joining, and the Contact Modal trims role and company when it saves, so a role of ' ' draws no line and no divider, which a story shows; and both languages' docs for the contact prop say role and company may be missing.
+
+### `KN-386` The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-031, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-347 roast, two findings with one fix. KN-347 starts the form again only on opening or a change of recordId. (1) recordId is optional, so an Edit caller that omits it and swaps initial from contact A to contact B while open keeps A's values, where the old object-identity reset did not; the Edit story itself omits it. (2) When recordId turns to B in a render whose initial is still A, the form resets to A and marks B seen, and the render that brings B's data changes nothing; an Edit opened before its record loads starts empty and ignores the record when it arrives. Nothing wires the modal to a page yet; the network and job screens will.
+
+**Why.** Saving one contact's form into another's record is data loss the user cannot see, and the page that opens this modal will load its record asynchronously.
+
+**Exit condition.** Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it.
 
