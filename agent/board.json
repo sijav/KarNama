@@ -1888,15 +1888,17 @@
       "parent": [
         "KN-042"
       ],
-      "status": "backlog",
+      "status": "done",
       "exit": "An e2e test signs in with a number and the code from the mock provider and reaches the board, a wrong or expired code shows an honest message with a way to resend, first login collects the name, and signing out clears the token and the Apollo cache rather than only the UI.",
       "roasts": [],
       "notes": [
         "2026-09-12, owner: the pages are needed now, within six hours; a missing or broken component may be a placeholder with a card behind it. The screens are the critical path until they are real, and they no longer wait on the API cards: the board is held in the browser until KN-037 to KN-039 land."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T22:57:41.085Z",
-      "okr": "OKR-1"
+      "updatedAt": "2026-09-11T23:41:33.529Z",
+      "okr": "OKR-1",
+      "evidence": "Login, Code and Signup as three steps of one card, the provider mocked per DESIGN.md: the code is logged and the page says nothing was sent. e2e on desktop and phone: a number and its code reach the board and the first login collects a name that survives a reload; a wrong code says so and a resend really sends another that works; signing out clears the session and asks again. 28 unit tests over the numbers, codes and sessions; four stories with docs in both languages",
+      "closedAt": "2026-09-11T23:41:33.529Z"
     },
     {
       "id": "KN-047",
