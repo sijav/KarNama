@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 169 of 411 tasks done · 359 of 864 points.
+Project **KarNama** · 169 of 412 tasks done · 359 of 865 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-305` The story fixtures have no seeded board and no job opportunity in three of the nine statuses** (high, 2 pt, web)
+**Next up: `KN-412` The token guard takes a name from any table in DESIGN.md's Tokens section, so a component note's table row would authorise a key** (high, 1 pt, web)
 
 ## Blocked (5)
 
@@ -20,11 +20,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (235)
+## Backlog (236)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-412` | The token guard takes a name from any table in DESIGN.md's Tokens section, so a component note's table row would authorise a key | high | 1 | web | none | The names come from the five token subsections alone, each named in the guard and sliced from its heading to the next; a table row planted in a component note is not a name, and the same row planted in a token table is, both asserted; an empty document yields no names; every key in tokens.ts still passes and the positive control still names bg/page, custom-4, heading/l and 3xl. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-305` | The story fixtures have no seeded board and no job opportunity in three of the nine statuses | high | 2 | web | none | Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages. |
 | `KN-310` | The Icon Button cannot be a Tooltip's trigger: it forwards no ref and drops the props a Tooltip injects | high | 2 | web | none | A Tooltip wrapped round an Icon Button shows on hover and on focus and describes the button, the ref and the injected props reaching the button; a story composes them and asserts aria-describedby names the tooltip. |
@@ -5256,6 +5257,8 @@ CHILD OF KN-227, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** documentedNames is built from the token tables' name column and the spacing block alone, so a code span in the component notes is not a key; every key in tokens.ts still passes; a planted key documented only in the prose of section 1 fails the guard, and the positive control still names bg/page, custom-4, heading/l and 3xl.
 
+**Roasts.** round 1 scored 5 with 1 critical(s)
+
 ### `KN-410` The focus model's insetArea goes negative on a box narrower than its contour, and reads one circular corner for all four
 
 - **status** backlog · **severity** low · **points** 1 · **area** web
@@ -5277,4 +5280,15 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** A verifier that reads a shape the code no longer has is a false alarm waiting for whoever runs it, and it makes the KN-244 and KN-274 evidence unreproducible.
 
 **Exit condition.** Each of the two verifiers runs against the current stories: the KN-244 check finds the area assertion in whatever form the story writes it, and KN-274 names the field it shoots rather than taking the first; or both are deleted with a line in their cards saying the stories now carry the check.
+
+### `KN-412` The token guard takes a name from any table in DESIGN.md's Tokens section, so a component note's table row would authorise a key
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-227, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-409 roast, judged real. KN-409 narrowed the allowed names from every code span in the section to the first cell of every table row in it, and the section holds the design notes for every component, which are full of tables. A row that begins with one code span anywhere before '## 2.' is an allowed key, so the same failure remains through tables rather than prose. The five subsections that carry token tables are named in DESIGN.md and can be named in the guard: Colour semantic with its Not on the Foundations board table, Colour status, Spacing radius and icon size, Elevation, and Type.
+
+**Why.** The guard is the one thing that says what a token name is, and a name it takes from a component's note is not one.
+
+**Exit condition.** The names come from the five token subsections alone, each named in the guard and sliced from its heading to the next; a table row planted in a component note is not a name, and the same row planted in a token table is, both asserted; an empty document yields no names; every key in tokens.ts still passes and the positive control still names bg/page, custom-4, heading/l and 3xl.
 

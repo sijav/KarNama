@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 412,
+  "nextId": 413,
   "tasks": [
     {
       "id": "KN-001",
@@ -10522,7 +10522,22 @@
       "parent": [],
       "status": "done",
       "exit": "documentedNames is built from the token tables' name column and the spacing block alone, so a code span in the component notes is not a key; every key in tokens.ts still passes; a planted key documented only in the prose of section 1 fails the guard, and the positive control still names bg/page, custom-4, heading/l and 3xl.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 1,
+          "file": "agent/roasts/KN-409-round-1.2026-09-11T22-34-04-498Z.md",
+          "filed": [
+            "KN-412"
+          ],
+          "cardDigest": "e945a3646e07265780fa66359d4161959d010bd9505735de66dd428e574757f0",
+          "head": "9e98658a9fd99c7e2543aa38da57c96d0c2d02f9",
+          "reviewerScore": 5,
+          "reviewerCriticals": 1,
+          "at": "2026-09-11T22:42:15.215Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T22:30:59.682Z",
       "updatedAt": "2026-09-11T22:32:50.912Z",
@@ -10558,6 +10573,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T22:33:43.797Z"
+    },
+    {
+      "id": "KN-412",
+      "title": "The token guard takes a name from any table in DESIGN.md's Tokens section, so a component note's table row would authorise a key",
+      "desc": "CHILD OF KN-227, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-409 roast, judged real. KN-409 narrowed the allowed names from every code span in the section to the first cell of every table row in it, and the section holds the design notes for every component, which are full of tables. A row that begins with one code span anywhere before '## 2.' is an allowed key, so the same failure remains through tables rather than prose. The five subsections that carry token tables are named in DESIGN.md and can be named in the guard: Colour semantic with its Not on the Foundations board table, Colour status, Spacing radius and icon size, Elevation, and Type.",
+      "why": "The guard is the one thing that says what a token name is, and a name it takes from a component's note is not one.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The names come from the five token subsections alone, each named in the guard and sliced from its heading to the next; a table row planted in a component note is not a name, and the same row planted in a token table is, both asserted; an empty document yields no names; every key in tokens.ts still passes and the positive control still names bg/page, custom-4, heading/l and 3xl.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T22:42:09.288Z"
     }
   ]
 }
