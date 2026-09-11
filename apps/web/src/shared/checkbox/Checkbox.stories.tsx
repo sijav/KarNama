@@ -1,5 +1,7 @@
+import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
+import { contrast } from '../../theme/darkMode'
 import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Checkbox } from './Checkbox'
@@ -51,6 +53,59 @@ const edgeIsTheFiles = async (canvasElement: HTMLElement) => {
   await expect(edge.offsets).toEqual([0, 0, 0])
   await expect(Number.parseFloat(getComputedStyle(frame).borderTopWidth)).toBe(0)
 }
+
+// MUI's root: the Checkbox's own box, the frame and the room round it, KN-293.
+const rootOf = (canvasElement: HTMLElement) => {
+  const root = canvasElement.querySelector<HTMLElement>('.MuiCheckbox-root')
+  if (!root) throw new Error('the checkbox root was not found')
+  return root
+}
+
+const px = (value: string) => Number.parseFloat(value) || 0
+
+// A computed rgb() colour as the hex the WCAG contrast formula takes.
+const hexOf = (rgb: string) => {
+  const channels = rgb.match(/\d+/g)?.slice(0, 3) ?? []
+  if (channels.length !== 3) throw new Error(`not an rgb colour: ${rgb}`)
+  return `#${channels.map((channel) => Number(channel).toString(16).padStart(2, '0')).join('')}`
+}
+
+// A box in the viewport, by its four edges.
+interface Extent {
+  left: number
+  top: number
+  right: number
+  bottom: number
+}
+
+const edges = (box: Extent) => [box.left, box.top, box.right, box.bottom].map((edge) => Math.round(edge * 100) / 100)
+
+// Every ancestor that clips what overflows it, on either axis.
+const clippingAncestors = (element: HTMLElement) => {
+  const found: HTMLElement[] = []
+  for (let node = element.parentElement; node; node = node.parentElement) {
+    const style = getComputedStyle(node)
+    if (style.overflowX !== 'visible' || style.overflowY !== 'visible') found.push(node)
+  }
+  return found
+}
+
+// Where an ancestor clips: its padding box, inside its borders. A scrollbar
+// and a rounded clip are not modelled; the host here is square and hidden,
+// and the verifier's screenshots are the rendered proof.
+const clipEdge = (node: HTMLElement): Extent => {
+  const box = node.getBoundingClientRect()
+  const style = getComputedStyle(node)
+  return { left: box.left + px(style.borderLeftWidth), top: box.top + px(style.borderTopWidth), right: box.right - px(style.borderRightWidth), bottom: box.bottom - px(style.borderBottomWidth) }
+}
+
+// How far an extent passes each side of a box: only the sides it passes, so
+// an extent inside the box gives none, and a failure names the side.
+const overshoot = (inner: Extent, outer: Extent) =>
+  Object.entries({ left: outer.left - inner.left, top: outer.top - inner.top, right: inner.right - outer.right, bottom: inner.bottom - outer.bottom }).filter(([, by]) => by > 0)
+
+// The area of a w by h box whose four corners are rounded to r.
+const rounded = (w: number, h: number, r: number) => w * h - (4 - Math.PI) * r * r
 
 const meta = {
   title: 'Shared/Checkbox',
@@ -204,5 +259,66 @@ export const KeyboardOnly: Story = {
     await expect(box).not.toBeChecked()
     await expect(args.onChange).toHaveBeenLastCalledWith(expect.objectContaining({ target: box }), false)
     await expect(args.onChange).toHaveBeenCalledTimes(2)
+  },
+}
+
+export const FocusedInAClippingHost: Story = {
+  // The ring has to hold whatever the mark, so the marks are the controls; a
+  // disabled Checkbox takes no focus, so it is not offered, KN-255.
+  parameters: { controls: { include: ['checked', 'indeterminate'] } },
+  render: (args) => (
+    // A host that clips what overflows it, with no padding and no border,
+    // sized to the Checkbox, on a card's surface: a list row, a table cell, or
+    // the Title Group the file clips, KN-293.
+    <Box data-testid="clipping-host" sx={(theme) => ({ display: 'inline-flex', overflow: 'hidden', backgroundColor: theme.karnama.semantic['bg/surface'] })}>
+      <Checkbox {...args} />
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const host = within(canvasElement).getByTestId('clipping-host')
+    const box = within(host).getByRole('checkbox')
+    const root = rootOf(host)
+    const frame = frameOf(host)
+    // Flush: the host clips on both axes, has no padding and no border, and
+    // its box is the root's, so it clips at the Checkbox's own edge.
+    const surface = getComputedStyle(host)
+    await expect([surface.overflowX, surface.overflowY]).toEqual(['hidden', 'hidden'])
+    const inset = [surface.paddingTop, surface.paddingRight, surface.paddingBottom, surface.paddingLeft, surface.borderTopWidth, surface.borderRightWidth, surface.borderBottomWidth, surface.borderLeftWidth]
+    await expect(inset.map(px)).toEqual([0, 0, 0, 0, 0, 0, 0, 0])
+    await expect(edges(host.getBoundingClientRect())).toEqual(edges(root.getBoundingClientRect()))
+
+    await userEvent.tab()
+    await expect(box).toHaveFocus()
+    // The ring is drawn on `Mui-focusVisible`, which MUI sets when the focus
+    // matches :focus-visible, and that depends on how focus arrived: this Tab
+    // is dispatched, not the browser's, so the class is put on as Checked puts
+    // it, KN-205. The verifier presses a real Tab in a production build.
+    root.classList.add('Mui-focusVisible')
+    const ring = getComputedStyle(frame)
+    const [width, offset] = [px(ring.outlineWidth), px(ring.outlineOffset)]
+    await expect(ring.outlineStyle).toBe('solid')
+    await expect(width).toBeGreaterThanOrEqual(2)
+    // At 3:1 or more against the surface it is drawn over, the host's.
+    await expect(contrast(hexOf(ring.outlineColor), hexOf(surface.backgroundColor))).toBeGreaterThanOrEqual(3)
+
+    // Every pixel of the ring lies inside every ancestor that clips, the host
+    // among them: the frame's box grown by the ring's reach, its offset and
+    // its width. A ring with no room kept for it passes the host by four on
+    // every side, KN-293.
+    const square = frame.getBoundingClientRect()
+    const reach = offset + width
+    const extent = { left: square.left - reach, top: square.top - reach, right: square.right + reach, bottom: square.bottom + reach }
+    const clips = clippingAncestors(frame)
+    await expect(clips).toContain(host)
+    for (const clip of clips) await expect(overshoot(extent, clipEdge(clip))).toEqual([])
+
+    // And it is at least the frame's two-pixel perimeter, 4W + 4H, WCAG
+    // 2.4.13's measure taken on the square as it is seen, since the room
+    // round it draws nothing: the band between the frame grown by the offset
+    // and by the reach, each corner concentric with the frame's own.
+    const corner = px(ring.borderTopLeftRadius)
+    const band =
+      rounded(square.width + 2 * reach, square.height + 2 * reach, corner + reach) - rounded(square.width + 2 * offset, square.height + 2 * offset, corner + offset)
+    await expect(band - 4 * (square.width + square.height)).toBeGreaterThanOrEqual(0)
   },
 }

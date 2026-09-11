@@ -141,8 +141,11 @@ const compare = ({ a, b, clip, box }) =>
   })()
 
 // One control on one page: its box, and what keyboard focus changed inside it
-// and around it, the caret hidden since it blinks inside a focused field.
-const focusChange = async (browser, port, { story, globals, args, control }) => {
+// and around it, the caret hidden since it blinks inside a focused field. The
+// perimeter is taken on what is seen, `visible` where the control's box holds
+// more than it draws: the Checkbox's root is 28 by 28 of room round its 20 by
+// 20 frame, KN-293.
+const focusChange = async (browser, port, { story, globals, args, control, visible }) => {
   const page = await browser.newPage({ viewport: { width: 600, height: 300 }, deviceScaleFactor: 1 })
   try {
     await page.goto(`http://127.0.0.1:${port}/iframe.html?id=${story}&viewMode=story&globals=${globals}${args ? `&args=${args}` : ''}`)
@@ -157,6 +160,7 @@ const focusChange = async (browser, port, { story, globals, args, control }) => 
     })
     await page.mouse.click(1, 1)
     const box = await page.locator(control).first().boundingBox()
+    const seen = visible ? await page.locator(visible).first().boundingBox() : box
     const viewport = page.viewportSize()
     const x = Math.max(0, Math.floor(box.x - MARGIN))
     const y = Math.max(0, Math.floor(box.y - MARGIN))
@@ -173,7 +177,7 @@ const focusChange = async (browser, port, { story, globals, args, control }) => 
     await page.waitForTimeout(150)
     const after = await page.screenshot({ clip })
     const { inside, outside } = await page.evaluate(compare, { a: before.toString('base64'), b: after.toString('base64'), clip, box })
-    return { focused, box, inside, outside, perimeter: 4 * box.width + 4 * box.height }
+    return { focused, box, inside, outside, perimeter: 4 * seen.width + 4 * seen.height }
   } finally {
     await page.close()
   }
@@ -250,7 +254,7 @@ const main = async () => {
       try {
         const problems = []
         for (const [name, where, card, named] of [
-          ['Checkbox', { story: 'shared-checkbox--unchecked', globals: 'locale:fa-IR', control: '#storybook-root .MuiCheckbox-root' }, 'KN-293', /Checkbox/],
+          ['Checkbox', { story: 'shared-checkbox--unchecked', globals: 'locale:fa-IR', control: '#storybook-root .MuiCheckbox-root', visible: '#storybook-root .KarnamaCheckbox-frame' }, 'KN-293', /Checkbox/],
           ['Filter Chip', { story: 'shared-filterchip--default', globals: 'locale:fa-IR', control: '#storybook-root button' }, 'KN-294', /Filter Chip/],
         ]) {
           const read = await focusChange(browser, server.address().port, where)
@@ -293,7 +297,7 @@ const main = async () => {
       ['the ring inside the field', /inside the field's own box, KN-274/],
       ['why not the room', /Keeping four pixels of room instead would inset the field from its own label/],
       ['the area', /6W \+ 172 square pixels .* 4W \+ 4H, which is 4W \+ 176/],
-      ['the Checkbox and the Filter Chip', /KN-293 and KN-294/],
+      ['the Checkbox and the Filter Chip', /keeps the room for its ring instead, KN-293, below; the Filter Chip's ring is still an outline round it, which a flush host clips too: KN-294/],
     ].filter(([, pattern]) => !pattern.test(section))
     return missing.length ? `the section does not state ${missing.map(([what]) => what).join(', ')}` : null
   })

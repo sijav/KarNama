@@ -233,9 +233,43 @@ The gap keeps red and blue, 1.37 to one against each other, from meeting and
 reading as one band. It shows on any focus, as the field's own focus border
 does, and nothing moves. Under forced colours a pseudo-element's border is
 kept, so the ring still shows there, as a second line inside the edge. The
-Checkbox's and the Filter Chip's rings are still outlines round them, which a
-flush host clips too: KN-293 and KN-294. Revisit if the file ever draws the
-state.
+Checkbox keeps the room for its ring instead, KN-293, below; the Filter Chip's
+ring is still an outline round it, which a flush host clips too: KN-294.
+Revisit if the file ever draws the state.
+
+### The Checkbox keeps the room for its focus ring
+
+The file draws no Focus state for the Checkbox, `204:11`, and every instance of
+it, ten on the Components canvas and eight on the Screens, sits at the inline
+start of a card's or a contact card's Title Group, flush with its edge, 2.5
+from its top and bottom and 8 from the title, in a frame Figma clips, read with
+use_figma on 2026-09-11. The drawn geometry leaves no room round the frame.
+
+The product's ring, two pixels of `border/focus` at an offset of two, KN-244,
+cannot move inside the frame as the Input's did: a checked frame is the ring's
+own blue, and a band inside 20 by 20 falls short of the frame's two pixel
+perimeter at two pixels, about 134 square pixels against 146, while at three it
+leaves the tick two and a half pixels and needs a second focus colour on a
+checked frame. **So the room is the Checkbox's own**: its root carries
+`spacing/2xs` on every side, 28 by 28 round the drawn 20 by 20 frame, and the
+ring lies inside it, so a host that clips flush at the Checkbox keeps the whole
+ring, KN-293. The frame is the component WCAG 2.4.13 measures, its visual
+presentation, since the room round it draws nothing: the ring's band, its
+corners concentric with the frame's, is about 184 square pixels, clearing the
+rectangle's 4W + 4H, 160, and the rounded frame's own two pixel perimeter,
+4W + 4H - (16 - 4π)r, about 146. In the derived dark palette the ring clears 3
+to one by only 0.04, so the pixels anti-aliasing blends at its corners fall
+under it; WCAG lets a measure ignore those, and counted by what each pixel
+covers the band is the same in both schemes. The 28 is also the Checkbox's
+target, which KN-206 asks to be 24 or more.
+
+**What a host owes it.** The four pixels of room are the Checkbox's to keep
+unclipped. A screen that puts the frame where the file draws it, flush at the
+Title Group's edge, gives the four back with a negative margin of the same
+token on a wrapper, since the Checkbox takes no `sx`, and the room then lies
+outside the group: that group, and anything within four pixels of the frame,
+must not clip, the title truncating on its own element. KN-015 and KN-026
+prove it on the groups they build.
 
 ### An Input's error needs a message
 

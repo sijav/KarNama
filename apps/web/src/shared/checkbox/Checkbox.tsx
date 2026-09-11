@@ -1,6 +1,6 @@
 import { Checkbox as MuiCheckbox, Box } from '@mui/material'
 import { useEffect, useState, type ChangeEvent } from 'react'
-import { iconSize } from '../../theme/tokens'
+import { iconSize, spacing } from '../../theme/tokens'
 
 // Declared rather than extended from MUI's CheckboxProps, which would hand a
 // caller `component`, `slots` and `slotProps`: the power to replace how it
@@ -152,11 +152,15 @@ export const Checkbox = ({ indeterminate = false, disabled = false, ...rest }: C
     icon={<Frame mark="none" disabled={disabled} />}
     checkedIcon={<Frame mark="tick" disabled={disabled} />}
     indeterminateIcon={<Frame mark="dash" disabled={disabled} />}
-    // No ripple and no padding: the frame is the control, and a ripple draws a
-    // circle the design does not have.
+    // No ripple: the frame is the control, and a ripple draws a circle the
+    // design does not have.
     disableRipple
     sx={(theme) => ({
-      padding: 0,
+      // The room for the focus ring below, which reaches four past the frame:
+      // kept inside the Checkbox's own box, so a host that clips flush at the
+      // Checkbox keeps the whole ring. The frame stays the file's 20 by 20 and
+      // the root, 28 by 28, is the target as well, KN-293.
+      padding: `${spacing['2xs']}px`,
       // On the ROOT, not the frame: MUI's invisible input is the frame's
       // sibling and sits on top of it, so `.frame:hover` never matches.
       [`&:hover:not(.Mui-checked):not(.Mui-disabled):not(.MuiCheckbox-indeterminate) .${FRAME}`]: {

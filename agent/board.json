@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 300,
+  "nextId": 301,
   "tasks": [
     {
       "id": "KN-001",
@@ -685,15 +685,16 @@
         "KN-062"
       ],
       "status": "backlog",
-      "exit": "All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable.",
+      "exit": "All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the title, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293.",
       "roasts": [],
       "notes": [
         "Card hover is Smart Animate 300ms in the prototype: the checkbox and the delete icon appear and the title moves forward. Per frame 416:14 these are component-level variant reactions rather than separate screens.",
         "From frame 376:43: the card keeps its height on hover by toggling visibility rather than removing the node. In CSS that means visibility hidden or opacity 0 for the checkbox and delete icon, never display none, or the card reflows and jumps under the cursor as it is hovered.",
-        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact.",
+        "2026-09-11, KN-293: the Checkbox's root is 28 by 28, four of room round its 20 by 20 frame for the focus ring. The file's Title Group clips, so the room given back with a negative margin lies outside it: DESIGN.md's 'What a host owes it' says the group must not clip, and this exit condition now asks the story to prove it on the real group."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:18.099Z"
+      "updatedAt": "2026-09-11T10:33:28.038Z"
     },
     {
       "id": "KN-016",
@@ -947,13 +948,14 @@
         "KN-062"
       ],
       "status": "backlog",
-      "exit": "Both layouts and all three states match Figma, every field the design draws is present, long values truncate rather than reflow the card, and email and phone are actionable links.",
+      "exit": "Both layouts and all three states match Figma, every field the design draws is present, long values truncate rather than reflow the card, and email and phone are actionable links. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the name, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293.",
       "roasts": [],
       "notes": [
-        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact.",
+        "2026-09-11, KN-293: the Checkbox's root is 28 by 28, four of room round its 20 by 20 frame for the focus ring. The file's Title Group clips, so the room given back with a negative margin lies outside it: DESIGN.md's 'What a host owes it' says the group must not clip, and this exit condition now asks the story to prove it on the real group."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:19.062Z"
+      "updatedAt": "2026-09-11T10:33:28.129Z"
     },
     {
       "id": "KN-027",
@@ -5130,10 +5132,11 @@
       "exit": "The component takes an id, and rendering one with no accessible name is impossible without it being visible: either the type requires one of aria-label, aria-labelledby or a wrapping label, or a check fails on a story that omits all three. Every story names its control. The interactive target is at least 24 by 24 while the DRAWN frame stays 20 by 20 from Figma, or the spacing exception is demonstrated for the specific placement and written down. A test asserts the hit area, not the frame.",
       "roasts": [],
       "notes": [
-        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact.",
+        "2026-09-11, KN-293: the root now carries spacing/2xs of padding on every side for the focus ring, and MUI's hidden input fills the root's padding box, so the target is 28 by 28 round the 20 by 20 frame. This card still owns the test that asserts the hit area and the accessible-name clause."
       ],
       "createdAt": "2026-09-10T04:52:10.607Z",
-      "updatedAt": "2026-09-10T06:38:19.812Z"
+      "updatedAt": "2026-09-11T10:33:28.214Z"
     },
     {
       "id": "KN-207",
@@ -7667,6 +7670,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T08:36:18.945Z"
+    },
+    {
+      "id": "KN-300",
+      "title": "The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids",
+      "desc": "Found while planning KN-293: AGENTS.md says every .md and .mdx takes commas, not em dashes, Persian the Persian comma. A Unicode-aware search on 2026-09-11 finds them in en/App-Shell.md, fa/App-Shell.md, en/Shared-Checkbox.md and en/Shared-FilterChip.md under src/shared/story-docs, and in the KN-007 and KN-201 plans beside it. KN-083 covers DESIGN.md and KN-187 a rule file; neither covers these.",
+      "why": "The Docs pages print the story docs to whoever uses the components, in both languages, and the rule exists so the prose reads the same everywhere; a rule the pages themselves break is one nobody can point to.",
+      "severity": "medium",
+      "points": 1,
+      "area": "docs",
+      "parent": [],
+      "status": "backlog",
+      "exit": "No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T10:23:08.807Z"
     }
   ]
 }

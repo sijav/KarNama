@@ -1,5 +1,11 @@
 A 20 by 20 checkbox with three marks: empty, a tick, and a dash.
 
+The square is the design's 20 by 20, and the Checkbox round it is 28 by 28:
+four pixels on every side kept for the focus ring, so whatever holds the
+Checkbox cannot cut the ring off, and a larger target for the pointer. To put
+the square exactly where a design draws it, give the four back with a negative
+margin on a wrapper, and do not clip within four pixels of the square.
+
 The dash is the reason this component exists. Bulk selection on the board needs
 a column header that reflects a **partial** selection, and a header with only two
 states has to lie: a tick claims everything below it is selected and an empty box
@@ -86,3 +92,12 @@ disabled control that still responds is worse than one that was never disabled.
 Tab to reach it and Space to toggle it, with no pointer used anywhere. Bulk
 selection is what this is for, and a selection control that needs a mouse
 excludes exactly the people most likely to be selecting in bulk.
+
+### FocusedInAClippingHost
+
+Focused inside a host that cuts off whatever overflows it, with no padding, at
+the Checkbox's own edge, as a list row, a table cell or a card's title row can.
+The ring round the square stays whole, because it is drawn in the room the
+Checkbox keeps. The story checks that every pixel of the ring lies inside the
+host and that the ring is at least the square's two pixel perimeter. The tick
+and the dash are its controls; a disabled Checkbox takes no focus.
