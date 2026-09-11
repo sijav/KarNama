@@ -113,7 +113,7 @@ and KN-287. The job level list and KN-077 still wait.
 - A synthetic hover sets no `:hover`: use `vitest/browser`'s pointer under the story-test flag, and aim at an element nothing covers (a Radio's root, not its icon under the invisible input).
 - A menu under a trigger at the viewport's edge is clamped 16 from it: give story triggers room.
 - A focus trap takes focus back while it is open: refocus after it closes, in the transition's onExited.
-- Storybook loads no Vazirmatn (KN-322): text widths in stories are the system font's.
+- Storybook loads Vazirmatn since KN-322, and waits for both scripts' faces before a story renders.
 
 ## The next step
 

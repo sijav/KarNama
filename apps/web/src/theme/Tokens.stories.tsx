@@ -119,7 +119,18 @@ export const Radius: Story = { args: { family: 'radius' } }
 export const Type: Story = {
   args: { family: 'type' },
   play: async ({ canvasElement }) => {
+    // The design's face is loaded before anything is measured, KN-322: the
+    // preview imports Vazirmatn as the app does and waits for it, so its
+    // Persian and Latin faces are in the page's font set, loaded. A face that
+    // is missing would leave neither, and the text in the system's font.
+    const ranges = [...window.document.fonts].filter((face) => face.family.includes('Vazirmatn') && face.status === 'loaded').map((face) => face.unicodeRange)
+    // Chromium writes a range without its leading zeros, U+600-6FF.
+    await expect(ranges.some((range) => /^U\+0*600-0*6FF/iu.test(range))).toBe(true)
+    await expect(ranges.some((range) => /^U\+0*-0*FF/iu.test(range))).toBe(true)
     // Five roles and only five. Body/Small at 13 was deleted from the design.
-    await expect(within(canvasElement).getByTestId('swatches').children).toHaveLength(5)
+    const lines = [...within(canvasElement).getByTestId('swatches').children]
+    await expect(lines).toHaveLength(5)
+    // Measured once the face is in: each role's line is its own line height.
+    await expect(lines.map((line) => line.getBoundingClientRect().height)).toEqual(Object.values(typeScale).map((role) => role.lineHeight))
   },
 }

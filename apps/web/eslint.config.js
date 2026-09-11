@@ -195,6 +195,9 @@ const linguiOptions = {
     '*.removeAttribute',
     '*.addEventListener',
     '*.removeEventListener',
+    // The page's font set: a CSS font shorthand and a sample of the script whose
+    // face is wanted, never copy, KN-322.
+    '*.fonts.load',
     '*.classList.contains',
     // Where a link goes, and the target it opens in: a URL and a browser
     // keyword.

@@ -436,8 +436,8 @@ flagged 622 strings. `apps/web/eslint.config.js` answers most of them by NAME,
 the values of props and keys such as `colorScheme`, `control`, `layout`, `size`,
 `placement`, `target`, `rel`, `fill`, `status`, `userName` and `include`, and by
 CALL, the arguments of testing-library's queries and matchers, the DOM's lookups
-and attributes, `userEvent.type`, `window.open` and a few more, each group with
-its reason beside it. A handful of lines carry an
+and attributes, `userEvent.type`, `window.open`, the font set's `load`, KN-322,
+and a few more, each group with its reason beside it. A handful of lines carry an
 `eslint-disable-next-line lingui/no-unlocalized-strings` with a reason: the
 language names, KN-115, the health reason, KN-130, element ids, file globs, a
 file name and the story-docs page's missing-file message.
