@@ -22,16 +22,21 @@ const FORM_HEIGHT = 420
 const TITLE: Missing = 'title'
 const COMPANY: Missing = 'company'
 
-// The form of Review and Manual, one form, DESIGN.md section 4: the only
-// difference is whether it arrives filled. Two columns of 248 with 16 between,
-// from the inline start: the title and the company, both required; employment
-// type and location; experience and level; the posting and the salary; the
-// source and the expiry; then the posting's link across the row, and the
-// status. On a phone's width, one column. It scrolls in its 420, its bar in the
-// modal's padding at the inline end so the fields keep their width.
-export const JobForm = ({ draft, statuses, missing, onChange, onAddStatus }: JobFormProps) => {
+// The fields of the job opportunity, 150:94 and 210:101: two columns with 16
+// between, from the inline start the title and the company, both required;
+// employment type and location; experience and level; the posting and the
+// salary; the source and the expiry. On a phone's width, one column. The add
+// modal's form and the Job Modal's Info tab draw them, so the record is edited
+// the same way in both.
+export interface JobFieldsProps {
+  draft: JobDraft
+  missing: readonly Missing[]
+  onChange: (draft: JobDraft) => void
+}
+
+export const JobFields = ({ draft, missing, onChange }: JobFieldsProps) => {
   const { i18n } = useLingui()
-  const text = (key: 'location' | 'experience' | 'postedAt' | 'salary' | 'source' | 'expiresAt' | 'postingUrl', label: string) => (
+  const text = (key: 'location' | 'experience' | 'postedAt' | 'salary' | 'source' | 'expiresAt', label: string) => (
     <Input
       label={label}
       value={draft[key]}
@@ -40,6 +45,54 @@ export const JobForm = ({ draft, statuses, missing, onChange, onAddStatus }: Job
       }}
     />
   )
+  return (
+    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, alignItems: 'start', gap: `${spacing.md}px` }}>
+      <Input
+        label={i18n._('Job title')}
+        required
+        value={draft.title}
+        onChange={(title) => {
+          onChange({ ...draft, title })
+        }}
+        {...(missing.includes(TITLE) ? { error: i18n._('Write the job title') } : {})}
+      />
+      <Input
+        label={i18n._('Company name')}
+        required
+        value={draft.company}
+        onChange={(company) => {
+          onChange({ ...draft, company })
+        }}
+        {...(missing.includes(COMPANY) ? { error: i18n._('Write the company name') } : {})}
+      />
+      <EmploymentTypeSelect
+        value={draft.employmentTypes}
+        onChange={(employmentTypes) => {
+          onChange({ ...draft, employmentTypes })
+        }}
+      />
+      {text('location', i18n._('Location'))}
+      {text('experience', i18n._('Required experience'))}
+      <JobLevelSelect
+        value={draft.jobLevel}
+        onChange={(jobLevel) => {
+          onChange({ ...draft, jobLevel })
+        }}
+      />
+      {text('postedAt', i18n._('Posted on'))}
+      {text('salary', i18n._('Salary'))}
+      {text('source', i18n._('Source'))}
+      {text('expiresAt', i18n._('Expires on'))}
+    </Box>
+  )
+}
+
+// The form of Review and Manual, one form, DESIGN.md section 4: the only
+// difference is whether it arrives filled. The fields, then the posting's link
+// across the row, and the status. It scrolls in its 420, its bar in the modal's
+// padding at the inline end so the fields keep their width.
+export const JobForm = ({ draft, statuses, missing, onChange, onAddStatus }: JobFormProps) => {
+  const { i18n } = useLingui()
   return (
     <Box
       sx={{
@@ -52,45 +105,14 @@ export const JobForm = ({ draft, statuses, missing, onChange, onAddStatus }: Job
         paddingInlineEnd: `${spacing.lg}px`,
       }}
     >
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, alignItems: 'start', gap: `${spacing.md}px` }}>
-        <Input
-          label={i18n._('Job title')}
-          required
-          value={draft.title}
-          onChange={(title) => {
-            onChange({ ...draft, title })
-          }}
-          {...(missing.includes(TITLE) ? { error: i18n._('Write the job title') } : {})}
-        />
-        <Input
-          label={i18n._('Company name')}
-          required
-          value={draft.company}
-          onChange={(company) => {
-            onChange({ ...draft, company })
-          }}
-          {...(missing.includes(COMPANY) ? { error: i18n._('Write the company name') } : {})}
-        />
-        <EmploymentTypeSelect
-          value={draft.employmentTypes}
-          onChange={(employmentTypes) => {
-            onChange({ ...draft, employmentTypes })
-          }}
-        />
-        {text('location', i18n._('Location'))}
-        {text('experience', i18n._('Required experience'))}
-        <JobLevelSelect
-          value={draft.jobLevel}
-          onChange={(jobLevel) => {
-            onChange({ ...draft, jobLevel })
-          }}
-        />
-        {text('postedAt', i18n._('Posted on'))}
-        {text('salary', i18n._('Salary'))}
-        {text('source', i18n._('Source'))}
-        {text('expiresAt', i18n._('Expires on'))}
-      </Box>
-      {text('postingUrl', i18n._('Posting link'))}
+      <JobFields draft={draft} missing={missing} onChange={onChange} />
+      <Input
+        label={i18n._('Posting link')}
+        value={draft.postingUrl}
+        onChange={(postingUrl) => {
+          onChange({ ...draft, postingUrl })
+        }}
+      />
       <StatusPicker
         statuses={statuses}
         value={draft.status}

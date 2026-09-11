@@ -42,6 +42,7 @@ export type StoryTitle =
   | 'Shared/Input'
   | 'Shared/JobCard'
   | 'Shared/JobLevelSelect'
+  | 'Shared/JobModal'
   | 'Shared/KanbanColumn'
   | 'Shared/LanguageSwitch'
   | 'Shared/LoadingState'

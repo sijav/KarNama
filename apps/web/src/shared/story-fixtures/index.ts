@@ -53,6 +53,29 @@ export interface ExtractionFixture {
   postingUrl: string
 }
 
+// The rest of a job opportunity's record the Job Modal, 210:276, shows: its
+// description and skills, when its note was last edited, its files, and its
+// status history, oldest first, as it is recorded.
+export interface JobFileFixture {
+  id: string
+  name: string
+  size: number
+  addedAt: string
+}
+export interface StatusChangeFixture {
+  id: string
+  status: StatusToken
+  at: string
+  automatic: boolean
+}
+export interface JobDetailFixture {
+  description: string
+  skills: readonly string[]
+  noteEditedAt: string
+  files: readonly JobFileFixture[]
+  history: readonly StatusChangeFixture[]
+}
+
 export interface NoteFixture {
   id: string
   jobId: string
@@ -69,6 +92,7 @@ export interface Fixtures {
   contacts: readonly ContactFixture[]
   notes: readonly NoteFixture[]
   extraction: ExtractionFixture
+  jobDetail: JobDetailFixture
 }
 
 // The shape of one locale's JSON, with its status tokens still plain strings.
@@ -80,6 +104,7 @@ export interface RawFixtures {
   contacts: readonly ContactFixture[]
   notes: readonly NoteFixture[]
   extraction: ExtractionFixture
+  jobDetail: Omit<JobDetailFixture, 'history'> & { history: readonly (Omit<StatusChangeFixture, 'status'> & { status: string })[] }
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -120,6 +145,12 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     contacts: Object.freeze(raw.contacts.map((contact) => Object.freeze({ ...contact }))),
     notes: Object.freeze(raw.notes.map((note) => Object.freeze({ ...note }))),
     extraction: Object.freeze({ ...raw.extraction }),
+    jobDetail: Object.freeze({
+      ...raw.jobDetail,
+      skills: Object.freeze([...raw.jobDetail.skills]),
+      files: Object.freeze(raw.jobDetail.files.map((file) => Object.freeze({ ...file }))),
+      history: Object.freeze(raw.jobDetail.history.map((change) => Object.freeze({ ...change, status: tokenOf(change.status) }))),
+    }),
   })
 }
 

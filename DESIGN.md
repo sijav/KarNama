@@ -720,6 +720,36 @@ the file draws no discard of its own. The set's name says Edit, but the file
 draws no Edit step: a job opportunity is edited in place in the Job Modal,
 section 3. KN-029.
 
+### The Job Modal
+
+Node `210:276`, 720 by 617, editable where it stands: the set's description
+says there is no separate view and edit. The header, 24 above and at the sides
+and 16 below, holds the title in Heading/M and the company in Body
+`text/secondary` 4 under it, and at its other end the Status Control, which
+changes the status at once rather than with Save, and the 20 x. The tabs follow
+edge to edge, the Tab Item row of KN-023, in the owner's order, KN-072:
+«اطلاعات فرصت شغلی», «سابقه», «یادداشت», «افراد مرتبط», «فایل‌ها»; the chosen one's
+panel scrolls in the body's 24 while the row keeps its 44. **Info**, `210:101`,
+is the add modal's fields at 328 a column, the posting's link with a 44 square
+in `bg/surface-secondary` that opens it, drawn only when there is a link, a
+rule, the description under a 16 note icon and «شرح شغل و مسئولیت‌ها» at 14 and
+SemiBold, a field of two lines that grows, and the skills under a tag icon, chips
+at 12 and Medium in `text/secondary` on `bg/surface-secondary`, radius full.
+**History**, the file's block at the foot of Info moved to its own tab second,
+lists each change of status newest first: the status's name at 14 and Medium,
+and at the other end the day on the reader's calendar and «دستی» or «خودکار» at
+12 in `text/secondary`. **Note**, `210:145`, is a field 200 tall with «آخرین
+ویرایش:» and its day under it; what is typed there or in Info is held by the
+modal, so a switch of tabs keeps it. **Related people**, `210:208`, are compact
+Contact Cards and the dashed «+ افزودن مخاطب», 46 tall, dashed 6 and 4 in the file
+and CSS's own dash here. **Files**, `210:275`, are rows of a 40 tile, the name at
+14 and Medium over its kind, size and day at 12, and a 32 download in
+`bg/surface-secondary`; then the drop zone on `bg/surface-secondary`, «فایل را
+اینجا رها کن» over Button S Secondary «انتخاب فایل». The footer, 16 and 24 under a
+rule, puts Cancel and Save at the inline start and Destructive «حذف فرصت شغلی» at
+the end, where the file says «حذف آگهی», KN-329's rule. Saving without a title or
+a company goes back to Info and says which. KN-030.
+
 ### A stroke is drawn inside, and takes no space
 
 Every stroke on a component in the file is aligned INSIDE and left out of
