@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 148 of 386 tasks done · 327 of 828 points.
+Project **KarNama** · 149 of 386 tasks done · 328 of 828 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-351` The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-351` | The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn | high | 1 | web | none | The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must. |
+**Next up: `KN-353` A column whose cards are all false or null shows a blank region instead of its empty message** (high, 1 pt, web)
 
 ## Blocked (4)
 
@@ -261,7 +255,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (148)
+## Done (149)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -399,6 +393,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-341` | The full Contact Card's checkbox is reached only by Shift+Tab, after the name | high | 1 | web | none | Tab from before the card reaches the checkbox, then the name, then the delete, in that order, with the row still keeping its 30 and the name still moving by 28, and a story tabs through them. |
 | `KN-342` | A contact with no role draws an empty role line and its divider | high | 1 | web | none | Role is optional in the card's type, the role line and its divider are left out when there is neither role nor company, and a story shows a name-only contact. |
 | `KN-347` | The Contact Modal wipes what is typed when its parent passes a fresh copy of the record | high | 1 | web | none | The form resets on opening and on a change of the record's identity, an id, not on a new object with the same contents, and a story rerenders the parent mid-typing and keeps the text. |
+| `KN-351` | The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn | high | 1 | web | none | The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -4551,7 +4546,7 @@ CHILD OF KN-015, recorded in prose because board.json cannot express parent_task
 
 ### `KN-351` The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-026 and KN-028, recorded in prose because board.json cannot express parent_task yet, KN-188: found while building KN-015. A button takes the browser's own font, and MUI's ButtonBase does not give the page's back; CssBaseline does not either. The job card's title showed it in a production build, narrower and bolder than the file's Vazirmatn SemiBold, until it set fontFamily inherit. ContactCard.tsx's Name and StatusPicker.tsx's add button are ButtonBase with text and no font family; the Filter Chip is the only one that sets it.

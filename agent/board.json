@@ -9253,12 +9253,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T15:49:47.336Z",
-      "updatedAt": "2026-09-11T19:45:08.034Z"
+      "updatedAt": "2026-09-11T19:48:48.616Z",
+      "evidence": "The theme gives MuiButtonBase the product's fontFamily; the Contact Card's Full and the Status Picker's Default compare the button's computed family with the host's and read Arial before the override; whole storybook project 260 of 261, the failure KN-365's NavItem flake; looked at in Persian light and English dark.",
+      "closedAt": "2026-09-11T19:48:48.616Z"
     },
     {
       "id": "KN-352",
