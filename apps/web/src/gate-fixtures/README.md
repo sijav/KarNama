@@ -52,6 +52,11 @@ RegExp(entry)` and no flags, so the no-letter entry `^[^\p{L}]*$` meant "no
   U+00BF whole, and three of those are letters, KN-366. The entry is gone: the
   plugin's own `/^[^\p{L}]+$/u` already skips what has no letter.
 
+- `unlinted-copy.mdx` — a bare English label in MDX. No lint block reads an
+  `.mdx`, so it passes `npm run lint`; Storybook indexes no MDX, so it reaches
+  no page either, and `stories-glob.test.ts` checks that no stories pattern
+  would pick it up, KN-097.
+
 - `as-const-copy.tsx` and `as-const-story-title.stories.tsx` — copy and a
   meta title written `'…' as const`. lingui's rule returns early for a literal
   inside an `as const` assertion, before any other check, so both passed in any

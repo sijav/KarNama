@@ -1,0 +1,6 @@
+{/* Supposed to go unread. No lint block reads an .mdx, so this bare English
+    label would pass npm run lint; Storybook indexes no MDX, so it never reaches
+    a page either, KN-097. src/shared/story-docs/stories-glob.test.ts checks
+    that no stories pattern would pick it up. */}
+
+<button aria-label="Delete this application" />

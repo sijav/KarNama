@@ -125,6 +125,10 @@ No JSDoc above `const meta`, no docblock above a story export, no `description:`
 inside `argTypes`. A guard test fails until both languages describe every prop
 and story.
 
+No MDX either: Storybook indexes `*.stories.ts(x)` alone. No lint block reads an
+`.mdx`, so a story or a docs page written in one would carry copy the lingui
+rule never sees, KN-097; the docs pages are built from the story-docs markdown.
+
 The line: **if it explains the code to whoever edits it, it is a comment. If it
 explains the component to whoever uses it, it is markdown.**
 

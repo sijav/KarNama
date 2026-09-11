@@ -4,13 +4,15 @@ const config: StorybookConfig = {
   // `src/gate-fixtures` is excluded. It holds a story that is SUPPOSED to fail
   // the lint, KN-095, and it borrows a real title to prove a registered title
   // still passes, so indexing it would put a second `App/Shell` in the sidebar
-  // and run a probe as if it were a component.
-  stories: ['../src/**/*.mdx', '../src/!(gate-fixtures)/**/*.stories.@(ts|tsx)'],
+  // and run a probe as if it were a component. No MDX: no lint block reads an
+  // .mdx, so a story written in one would carry copy nothing checks, and the
+  // docs pages are built from story-docs markdown instead, KN-097.
+  stories: ['../src/!(gate-fixtures)/**/*.stories.@(ts|tsx)'],
   addons: ['@storybook/addon-docs', '@storybook/addon-a11y', '@storybook/addon-vitest'],
   framework: { name: '@storybook/react-vite', options: {} },
   // Documentation prose lives in markdown under story-docs, never as JSDoc in a
-  // .tsx, so autodocs pulls its page from an .mdx sitting beside the component
-  // rather than from comments the type checker also reads.
+  // .tsx: the preview's own Docs page reads it, KN-207, rather than comments
+  // the type checker also reads or an .mdx no lint block covers.
   docs: { defaultName: 'Docs' },
   typescript: {
     reactDocgen: 'react-docgen-typescript',

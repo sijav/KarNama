@@ -3156,11 +3156,12 @@
       "parent": [
         "KN-087"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-07T23:35:32.790Z"
+      "createdAt": "2026-09-07T23:35:32.790Z",
+      "updatedAt": "2026-09-11T20:28:45.934Z"
     },
     {
       "id": "KN-098",
