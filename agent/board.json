@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 400,
+  "nextId": 401,
   "tasks": [
     {
       "id": "KN-001",
@@ -3486,7 +3486,23 @@
       ],
       "status": "done",
       "exit": "A Trans with a braced or template-literal id fails npm run lint, a committed fixture holds each form, and the catalog test still finds every id the codebase uses.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-111-round-1.2026-09-11T20-48-42-123Z.md",
+          "filed": [
+            "KN-400"
+          ],
+          "cardDigest": "7ff9a252eed0eee99f508ebd0c364c80d251653d5529956145c05f694faa322b",
+          "head": "d61ed6988e9f852c1d9ef5e859255331e39e8e34",
+          "reviewerScore": 1.5,
+          "reviewerCriticals": 4,
+          "dismissed": "Its fourth critical, a numeric or regex id passing the Literal check, is dismissed: tsc rejects both, since i18n._ takes a string or a descriptor, and tsc is part of the gate. The other three criticals and both majors are real and share one fix, an AST scan with Trans and the macros forbidden, filed as one medium card, KN-400: no such form exists in src today, and the owner's rule of 2026-09-11 files a finding on built work at high or lower.",
+          "at": "2026-09-11T20:59:18.807Z"
+        }
+      ],
       "notes": [
         "RAISED A SECOND TIME in round 2 of KN-006, with two more forms than the card names: <Trans otherProp={x} id=\"...\"> also misses the scan because the regex requires id to follow Trans immediately, and a template literal argument to i18n._ misses it too. The fix is unchanged and it is the right one, forbid the forms the scan cannot see so the scan is sufficient by construction, but the card understated how many forms there are."
       ],
@@ -10222,6 +10238,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T20:49:16.477Z"
+    },
+    {
+      "id": "KN-400",
+      "title": "The catalog scan and KN-111's selectors read spellings: a comment in the call, a Trans spread or alias, and the t and msg macros still slip past",
+      "desc": "CHILD OF KN-006, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-111 roast, which ran each probe against the real config, five findings with one fix. KN-111 forbade the id forms the regex scan cannot read by exact spelling, and it still misses: i18n._(/* note */ 'Delete this application'), which lints and the scan's pattern skips; <Trans {...props} id=\"...\"/>, whose first attribute is a spread, not a JSXAttribute; Trans imported under another name, <T id={'...'}/>; and lingui's t and msg macros, which AGENTS.md still recommends and neither the lint nor the scan sees. The committed unscannable-ids.tsx is run by no automated check, since KN-003's verifier discovers only unlocalized-*.tsx files. No such form exists in src today: no Trans at all, and every i18n._ call takes a quoted string.",
+      "why": "The Persian catalog's 100 percent claim rests on the scan seeing every id; a scan that sees spellings is one habit away from a Persian screen showing English.",
+      "severity": "medium",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The catalog test finds used ids by parsing each file with the TypeScript compiler, every i18n._ call whatever sits between its bracket and its argument, and fails on any first argument that is not a string literal; the lint forbids importing Trans and the t and msg macros, which the codebase does not use, and AGENTS.md says ids are written i18n._('...'); the unit test reads unscannable-ids.tsx and finds each form refused.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T20:59:18.671Z"
     }
   ]
 }

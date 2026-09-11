@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 161 of 399 tasks done · 344 of 845 points.
+Project **KarNama** · 161 of 400 tasks done · 344 of 848 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -20,7 +20,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (231)
+## Backlog (232)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -163,6 +163,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-317` | The components built on 2026-09-11 draw copy their Controls do not show | medium | 3 | web | none | The Button, Icon Button, Tabs, Page Header and Color Picker stories keep their copy in args that follow the Language toolbar, the Input's way, or disable the panel with the reason stated, and no story draws copy its Controls do not show. |
 | `KN-350` | The built components' hovers and presses ignore the file's own reactions, 200 ms ease in and out or 120 ms ease out | medium | 3 | web | none | Each built component with a hover or press reaction in the file changes state over that reaction's duration and easing, from named constants, a reader who asks for less motion gets the change at once, and DESIGN.md's motion paragraph lists which components take which. |
 | `KN-399` | In dark the brand fill is 2.81 to one on the surface, so a checked Checkbox and a selected tab fall under 3:1, and the focus ring matches a brand button | medium | 3 | web | none | Every fill or line that shows a state clears 3 to one against the dark surfaces it sits on, the focus ring clears 3 to one against the fills it surrounds or is drawn apart from them, a test reads those pairs from the components, and the brand fill still carries white at 4.5. |
+| `KN-400` | The catalog scan and KN-111's selectors read spellings: a comment in the call, a Trans spread or alias, and the t and msg macros still slip past | medium | 3 | web | none | The catalog test finds used ids by parsing each file with the TypeScript compiler, every i18n._ call whatever sits between its bracket and its argument, and fails on any first argument that is not a string literal; the lint forbids importing Trans and the t and msg macros, which the codebase does not use, and AGENTS.md says ids are written i18n._('...'); the unit test reads unscannable-ids.tsx and finds each form refused. |
 | `KN-040` | Third-party feedback, stored for later evaluation | medium | 5 | api | KN-034 | A submission is stored with its target and a pending state, it never mutates the target, a submission whose target was deleted between submit and review is handled rather than orphaned, and rate limiting stops a flood from one source. |
 | `KN-041` | Admin API: the moderation queue | medium | 5 | api | KN-040, KN-036 | A non-admin is refused every operation at the resolver, approving and rejecting both record who did it and when, and the queue paginates rather than loading everything. |
 | `KN-064` | Third-party feedback submission surface | medium | 5 | web | KN-042, KN-040 | An anonymous visitor can submit a comment and a suggested change against a record, both arrive in the moderation queue in a pending state, the target record is not altered, the submitter is told it is pending review, and a flood from one source is rate limited. |
@@ -1749,6 +1750,8 @@ src/i18n/catalog.test.ts finds used ids with two regexes, <Trans id="..."> and i
 **Why.** A roast rated this critical. The catalog test is what stands behind the claim that the Persian catalog is 100 percent translated, and a gate that only sees one spelling of a thing is a gate that measures spelling. The failure is silent and reaches the user, which is the worst combination: no error, no test failure, just English text on a Persian screen.
 
 **Exit condition.** A Trans with a braced or template-literal id fails npm run lint, a committed fixture holds each form, and the catalog test still finds every id the codebase uses.
+
+**Roasts.** round 1 scored 4 with 0 critical(s)
 
 ### `KN-112` Two preference setters called in one batch lose the first update
 
@@ -5117,4 +5120,15 @@ CHILD OF KN-005, recorded in prose because board.json cannot express parent_task
 **Why.** Whether a box is ticked and which tab is chosen are exactly the states a dark reader must see, and a ring the colour of what it rings shows no focus.
 
 **Exit condition.** Every fill or line that shows a state clears 3 to one against the dark surfaces it sits on, the focus ring clears 3 to one against the fills it surrounds or is drawn apart from them, a test reads those pairs from the components, and the brand fill still carries white at 4.5.
+
+### `KN-400` The catalog scan and KN-111's selectors read spellings: a comment in the call, a Trans spread or alias, and the t and msg macros still slip past
+
+- **status** backlog · **severity** medium · **points** 3 · **area** web
+- **blocked by** none
+
+CHILD OF KN-006, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-111 roast, which ran each probe against the real config, five findings with one fix. KN-111 forbade the id forms the regex scan cannot read by exact spelling, and it still misses: i18n._(/* note */ 'Delete this application'), which lints and the scan's pattern skips; <Trans {...props} id="..."/>, whose first attribute is a spread, not a JSXAttribute; Trans imported under another name, <T id={'...'}/>; and lingui's t and msg macros, which AGENTS.md still recommends and neither the lint nor the scan sees. The committed unscannable-ids.tsx is run by no automated check, since KN-003's verifier discovers only unlocalized-*.tsx files. No such form exists in src today: no Trans at all, and every i18n._ call takes a quoted string.
+
+**Why.** The Persian catalog's 100 percent claim rests on the scan seeing every id; a scan that sees spellings is one habit away from a Persian screen showing English.
+
+**Exit condition.** The catalog test finds used ids by parsing each file with the TypeScript compiler, every i18n._ call whatever sits between its bracket and its argument, and fails on any first argument that is not a string literal; the lint forbids importing Trans and the t and msg macros, which the codebase does not use, and AGENTS.md says ids are written i18n._('...'); the unit test reads unscannable-ids.tsx and finds each form refused.
 
