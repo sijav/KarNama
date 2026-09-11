@@ -625,6 +625,35 @@ card's button, stretched over the card, so a press anywhere else opens the job
 opportunity; a button takes the browser's font rather than the page's, so the
 title's is given back. KN-015.
 
+### The kanban column
+
+Node `241:125`, a frame on the board screen rather than a component: 300 wide
+and the board's height, `bg/surface-secondary`, radius lg, 12 of padding and 8
+between its parts. The header, `241:126`, is 40 tall: 4 of padding above and at
+the sides and 8 below, the Size=M Status Chip, its one use, with the count 8
+after it at 12 and Medium in `text/secondary`, in the reader's digits where the
+file writes «3», and at its other end the 16 more icon that opens the column's
+Menu, `259:2`. The code puts the 32 Icon Button there, giving back two above and
+below and eight at either side, so it lays out as the file's icon and stays 8
+from the count however long the name. The cards follow 8 below and scroll
+between the header and the Add Card row, `241:142`, pinned at the bottom: 36
+tall, `bg/surface` with one pixel of `border/default` inside, radius md, a 20
+plus in `text/brand`. An empty column, `241:46`, says «هنوز فرصت شغلی‌ای تو این
+مرحله نیست» at 12 and 400 in `text/secondary`, centred in a box 80 tall of radius
+md dashed in `border/default`, 4 and 4 in the file and CSS's own dash here. The
+phone's column, `241:176`, is its cards alone, 16 of padding and 12 between
+them, the status being chosen by the filter chips above it. The Add Column tile,
+`241:34`, is 220 by 120, dashed 6 and 6 in `border/default`, radius lg, a 20 plus
+8 above «افزودن وضعیت» at 12 and Medium, both in `text/secondary`. The file draws
+no hover for Add Card or Add Column, and none is added.
+
+**Collapsed, the author's reading, not drawn in the file.** The owner's rejected
+column, `رد شده ▸ 14`, is the column's frame holding its header alone, 300 by 64:
+one button with the chip, the count and a chevron where the menu's icon was,
+which says it is closed and opens the column. It keeps the column's width so the
+board's rhythm and the drop target stay. The board decides which column starts
+that way. KN-060.
+
 ### A stroke is drawn inside, and takes no space
 
 Every stroke on a component in the file is aligned INSIDE and left out of

@@ -120,4 +120,7 @@ export const messages: Record<string, string> = {
   'Choose a job opportunity…': 'Choose a job opportunity…',
   'Save': 'Save',
   'Write the full name': 'Write the full name',
+  'Add a job opportunity to': 'Add a job opportunity to',
+  'No job opportunities at this stage yet': 'No job opportunities at this stage yet',
+  'Add status': 'Add status',
 }

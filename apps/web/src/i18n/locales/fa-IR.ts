@@ -123,4 +123,7 @@ export const messages: Record<string, string> = {
   'Choose a job opportunity…': 'یک فرصت شغلی انتخاب کن…',
   'Save': 'ذخیره',
   'Write the full name': 'اسم و فامیل را بنویس',
+  'Add a job opportunity to': 'افزودن فرصت شغلی به',
+  'No job opportunities at this stage yet': 'هنوز فرصت شغلی‌ای تو این مرحله نیست',
+  'Add status': 'افزودن وضعیت',
 }
