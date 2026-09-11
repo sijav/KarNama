@@ -5672,12 +5672,14 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T02:59:37.807Z",
-      "updatedAt": "2026-09-11T21:59:20.287Z"
+      "updatedAt": "2026-09-11T22:13:51.556Z",
+      "evidence": "localeInContext now uses the published storyById and getStoryContext and reads userGlobals, the toolbar's own, rather than probing four internal shapes or taking globals, which on the Language Switch page carried the first story's pinned fa-IR while the toolbar said English; when nothing can be read the page shows a note in both languages, seen by planting a failed read; docs-locale.ts is 100 percent covered, 389 unit tests pass, and the running Storybook follows the toolbar both ways",
+      "closedAt": "2026-09-11T22:13:51.556Z"
     },
     {
       "id": "KN-204",

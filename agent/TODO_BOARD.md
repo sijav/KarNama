@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 164 of 405 tasks done · 350 of 857 points.
+Project **KarNama** · 165 of 405 tasks done · 352 of 857 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-203` The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian** (high, 2 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-203` | The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian | high | 2 | web | none | The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository. |
+**Next up: `KN-234` The token guard still accepts copy as a key or inside the font stack, and its retirement check trusts any lint failure** (high, 2 pt, web)
 
 ## Blocked (5)
 
@@ -264,7 +258,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (164)
+## Done (165)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -427,6 +421,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-167` | The API schema-entry test is flaky under load and fails the gate at random | high | 2 | api | none | The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure. |
 | `KN-178` | The preferences story's localStorage restore races with other stories | high | 2 | web | none | The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler. |
 | `KN-202` | The story-docs markdown contract is documented as rigid but silently accepts malformed files | high | 2 | web | none | parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing. |
+| `KN-203` | The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian | high | 2 | web | none | The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository. |
 | `KN-205` | The Checkbox hover and focus selectors reach the glyph, so the tick gets its own outline | high | 2 | web | none | The hover and focus rules are scoped to a marker the component owns rather than to a MUI class. Focusing a Checked and an Indeterminate checkbox outlines the FRAME ONLY, asserted by reading computed outline on every descendant and requiring exactly one to carry it. A mutation restoring the old descendant selector makes that assertion fail. The five Figma states still match tokens. |
 | `KN-051` | Deploy the web app to GitHub Pages | high | 3 | deploy | KN-003 | The app loads at its Pages URL, a deep link to a route works on a hard refresh, Storybook is reachable at /storybook/, and the deploy runs from a push to main with no manual step. |
 | `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
@@ -2810,7 +2805,7 @@ CHILD OF KN-007, recorded in prose because board.json cannot express parent_task
 
 ### `KN-203` The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian
 
-- **status** in_progress · **severity** high · **points** 2 · **area** web
+- **status** done · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-007 roast, and I had named it as the risk when sending that roast. localeInContext probes DocsContext at four guessed shapes because Storybook publishes no accessor for the current globals. If a Storybook upgrade moves all four, the page falls back to the product default and shows Persian regardless of what the toolbar or the URL actually says, and the channel listener does not repair it until somebody changes the toolbar by hand. Nothing fails: the page just quietly shows the wrong language, which is the exact failure the Language toolbar exists to make visible. The related half is that DocsPage.tsx and useDocsLocale.ts are excluded from coverage, so no automated test protects the subscription either; the exclusion is argued in vitest.config.ts and the argument may be right, but the consequence is that this whole path is checked by hand or not at all.
