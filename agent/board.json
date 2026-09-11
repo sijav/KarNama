@@ -1798,15 +1798,17 @@
         "KN-006",
         "KN-035"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "All three routes render inside the shell, the nav switches between right sidebar and bottom tab bar at the breakpoint, a deep link to any of them works on a hard refresh, the language switch persists across a reload, and an API error renders the error state rather than a blank page.",
       "roasts": [],
       "notes": [
         "2026-09-12, owner: the pages are needed now, within six hours; a missing or broken component may be a placeholder with a card behind it. The screens are the critical path until they are real, and they no longer wait on the API cards: the board is held in the browser until KN-037 to KN-039 land."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T22:58:57.154Z",
-      "okr": "OKR-1"
+      "updatedAt": "2026-09-11T23:22:30.527Z",
+      "okr": "OKR-1",
+      "evidence": "The three destinations are the address's, #/jobs, #/add and #/network, a hash so a deep link survives a hard refresh on Pages; the navigation switches sidebar to tab bar at the breakpoint and the language switch persists through the preferences; the board and network screens render inside the shell with the records held in the browser. Not done and carded: the Apollo client, the auth state and the error boundary, KN-416, and the screens' remaining handler coverage, KN-415",
+      "closedAt": "2026-09-11T23:22:30.527Z"
     },
     {
       "id": "KN-043",
