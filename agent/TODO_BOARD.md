@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 160 of 397 tasks done · 342 of 840 points.
+Project **KarNama** · 160 of 399 tasks done · 342 of 845 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -20,7 +20,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (230)
+## Backlog (232)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -48,6 +48,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
 | `KN-367` | lingui-ignore.test.ts reads the config's text, so an ignore entry it cannot parse whitelists copy unseen | high | 2 | web | none | The test takes the ignore array from the configuration ESLint actually loads, not from the file's text, and a story or test shows an entry written in another quote style is seen. |
 | `KN-386` | The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one | high | 2 | web | none | Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it. |
+| `KN-398` | In dark the Tooltip draws white on text/primary, 1.34 to one, since its fill is a text role that turns light | high | 2 | web | none | In dark the tooltip's text clears 4.5 to one on its fill, by a role the tooltip's fill takes that stays dark in dark, or a text that follows it, and the theme's pair test reads the Tooltip's pair from the component rather than from a list; the Tooltip's dark story measures it. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -162,6 +163,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-236` | The tooltip's attach check guesses a trigger's lateness with a timer and its props from one attribute | medium | 3 | web | none | A trigger that renders nothing for a second and then attaches correctly is never reported; one that renders DOM without taking the ref is reported however late it appears; a wrapper forwarding only the ref and aria-describedby is reported in a production build; each proved by a story, and the existing report stories still pass. |
 | `KN-317` | The components built on 2026-09-11 draw copy their Controls do not show | medium | 3 | web | none | The Button, Icon Button, Tabs, Page Header and Color Picker stories keep their copy in args that follow the Language toolbar, the Input's way, or disable the panel with the reason stated, and no story draws copy its Controls do not show. |
 | `KN-350` | The built components' hovers and presses ignore the file's own reactions, 200 ms ease in and out or 120 ms ease out | medium | 3 | web | none | Each built component with a hover or press reaction in the file changes state over that reaction's duration and easing, from named constants, a reader who asks for less motion gets the change at once, and DESIGN.md's motion paragraph lists which components take which. |
+| `KN-399` | In dark the brand fill is 2.81 to one on the surface, so a checked Checkbox and a selected tab fall under 3:1, and the focus ring matches a brand button | medium | 3 | web | none | Every fill or line that shows a state clears 3 to one against the dark surfaces it sits on, the focus ring clears 3 to one against the fills it surrounds or is drawn apart from them, a test reads those pairs from the components, and the brand fill still carries white at 4.5. |
 | `KN-040` | Third-party feedback, stored for later evaluation | medium | 5 | api | KN-034 | A submission is stored with its target and a pending state, it never mutates the target, a submission whose target was deleted between submit and review is handled rather than orphaned, and rate limiting stops a flood from one source. |
 | `KN-041` | Admin API: the moderation queue | medium | 5 | api | KN-040, KN-036 | A non-admin is refused every operation at the resolver, approving and rejecting both record who did it and when, and the queue paginates rather than loading everything. |
 | `KN-064` | Third-party feedback submission surface | medium | 5 | web | KN-042, KN-040 | An anonymous visitor can submit a comment and a suggested change against a record, both arrive in the moderation queue in a pending state, the target record is not altered, the submitter is told it is pending review, and a flood from one source is rate limited. |
@@ -1712,6 +1714,8 @@ theme.ts gives the single derived text/on-accent to both primary.contrastText an
 **Why.** A roast rated this critical after recomputing every ratio, and it is the exact shape of the bug the contrast suite was written to catch, one level up: a token checked against one of its backgrounds and used against two. Destructive buttons are the ones where a misread is expensive, and the design has bg/danger/default and hover precisely so a delete looks like a delete.
 
 **Exit condition.** Every derived contrastText clears 4.5 to one against every fill the theme pairs it with, a test enumerates those pairs from the theme rather than from a hand-written list, and it fails when a fill changes without its text following.
+
+**Roasts.** round 1 scored 5.5 with 0 critical(s)
 
 ### `KN-109` Move apps/web/src to the folder structure AGENTS.md prescribes
 
@@ -5091,4 +5095,26 @@ CHILD OF KN-087, recorded in prose because board.json cannot express parent_task
 **Why.** A fixture that proves the policy only if nobody writes an unusual glob proves the text of today's config, not the policy.
 
 **Exit condition.** The test matches the fixture's path, and a few story paths that must be indexed, against each configured pattern with glob semantics, extglobs included, and finds the MDX fixture matched by none; AGENTS.md says a docs-only page is a CSF entry with its story-docs markdown.
+
+### `KN-398` In dark the Tooltip draws white on text/primary, 1.34 to one, since its fill is a text role that turns light
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-005, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-108 roast. Tooltip.tsx paints its body with text/primary and its text with text/on-accent, the inverse surface of the light design, #111827 under white. In the derived dark palette text/primary is a light grey near #d8dfee, and text/on-accent stays white, so every tooltip reads at about 1.34 to one. KN-108's pair test enumerates the palette's contrastText and the Button's LOOKS, not the Tooltip's pair, so it could not see it.
+
+**Why.** A tooltip is the one place a control explains itself, and in dark it says nothing.
+
+**Exit condition.** In dark the tooltip's text clears 4.5 to one on its fill, by a role the tooltip's fill takes that stays dark in dark, or a text that follows it, and the theme's pair test reads the Tooltip's pair from the component rather than from a list; the Tooltip's dark story measures it.
+
+### `KN-399` In dark the brand fill is 2.81 to one on the surface, so a checked Checkbox and a selected tab fall under 3:1, and the focus ring matches a brand button
+
+- **status** backlog · **severity** medium · **points** 3 · **area** web
+- **blocked by** none
+
+CHILD OF KN-005, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-108 roast. The derived bg/brand/default, #2d69ec, clears white text at 4.51 but sits at 2.81 to one on the dark surface #2e2e2e: a checked Checkbox's fill and a selected tab's indicator, the parts that show a state, need 3:1 by WCAG 1.4.11. border/focus derives to the same blue, so the focus ring around a Primary button is its fill's own colour, and around a Destructive one about 1.30 to one against #eb1515. The contrast suite tests text on fills, not a state part on its surface.
+
+**Why.** Whether a box is ticked and which tab is chosen are exactly the states a dark reader must see, and a ring the colour of what it rings shows no focus.
+
+**Exit condition.** Every fill or line that shows a state clears 3 to one against the dark surfaces it sits on, the focus ring clears 3 to one against the fills it surrounds or is drawn apart from them, a test reads those pairs from the components, and the brand fill still carries white at 4.5.
 

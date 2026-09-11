@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 398,
+  "nextId": 400,
   "tasks": [
     {
       "id": "KN-001",
@@ -3411,7 +3411,24 @@
       ],
       "status": "done",
       "exit": "Every derived contrastText clears 4.5 to one against every fill the theme pairs it with, a test enumerates those pairs from the theme rather than from a hand-written list, and it fails when a fill changes without its text following.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-108-round-1.2026-09-11T20-43-48-261Z.md",
+          "filed": [
+            "KN-398",
+            "KN-399"
+          ],
+          "cardDigest": "34a22bc6f5f1a9118a41d8cf8faa647c0bf7d8aafc801eaa1372cb5fc080c1f5",
+          "head": "4d017f16ec8b7264ebf02b4d3b97521b57f037e1",
+          "reviewerScore": 3.5,
+          "reviewerCriticals": 1,
+          "dismissed": "Nothing dismissed. Kinder because both findings predate KN-108 and lie outside the pairs it was about, the palette's contrastText and the Button: the Tooltip's white on text/primary, KN-398 at high, and the brand fill's 2.81 on the dark surface, KN-399 at medium, filed under the owner's rule that a finding on a built component is high or lower.",
+          "at": "2026-09-11T20:49:25.408Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-08T00:17:47.337Z",
       "updatedAt": "2026-09-11T20:43:29.270Z",
@@ -10171,6 +10188,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T20:44:10.139Z"
+    },
+    {
+      "id": "KN-398",
+      "title": "In dark the Tooltip draws white on text/primary, 1.34 to one, since its fill is a text role that turns light",
+      "desc": "CHILD OF KN-005, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-108 roast. Tooltip.tsx paints its body with text/primary and its text with text/on-accent, the inverse surface of the light design, #111827 under white. In the derived dark palette text/primary is a light grey near #d8dfee, and text/on-accent stays white, so every tooltip reads at about 1.34 to one. KN-108's pair test enumerates the palette's contrastText and the Button's LOOKS, not the Tooltip's pair, so it could not see it.",
+      "why": "A tooltip is the one place a control explains itself, and in dark it says nothing.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "In dark the tooltip's text clears 4.5 to one on its fill, by a role the tooltip's fill takes that stays dark in dark, or a text that follows it, and the theme's pair test reads the Tooltip's pair from the component rather than from a list; the Tooltip's dark story measures it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T20:49:16.338Z"
+    },
+    {
+      "id": "KN-399",
+      "title": "In dark the brand fill is 2.81 to one on the surface, so a checked Checkbox and a selected tab fall under 3:1, and the focus ring matches a brand button",
+      "desc": "CHILD OF KN-005, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-108 roast. The derived bg/brand/default, #2d69ec, clears white text at 4.51 but sits at 2.81 to one on the dark surface #2e2e2e: a checked Checkbox's fill and a selected tab's indicator, the parts that show a state, need 3:1 by WCAG 1.4.11. border/focus derives to the same blue, so the focus ring around a Primary button is its fill's own colour, and around a Destructive one about 1.30 to one against #eb1515. The contrast suite tests text on fills, not a state part on its surface.",
+      "why": "Whether a box is ticked and which tab is chosen are exactly the states a dark reader must see, and a ring the colour of what it rings shows no focus.",
+      "severity": "medium",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Every fill or line that shows a state clears 3 to one against the dark surfaces it sits on, the focus ring clears 3 to one against the fills it surrounds or is drawn apart from them, a test reads those pairs from the components, and the brand fill still carries white at 4.5.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T20:49:16.477Z"
     }
   ]
 }
