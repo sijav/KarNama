@@ -32,4 +32,10 @@ export const messages: Record<string, string> = {
   'Purple': 'Purple',
   'Pink': 'Pink',
   'Cyan': 'Cyan',
+  'Job opportunity sections': 'Job opportunity sections',
+  'Job opportunity info': 'Job opportunity info',
+  'History': 'History',
+  'Note': 'Note',
+  'Related people': 'Related people',
+  'Files': 'Files',
 }

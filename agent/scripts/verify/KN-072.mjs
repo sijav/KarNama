@@ -31,7 +31,9 @@ const byId = new Map((Array.isArray(board.tasks) ? board.tasks : Object.values(b
 // tab inside the job modal became «افراد مرتبط» — and this array used to
 // require the superseded word, so the verifier told a builder the wrong label
 // was right.
-const TABS = ['اطلاعات آگهی', 'سابقه', 'یادداشت', 'افراد مرتبط', 'فایل‌ها']
+// The first reads «اطلاعات فرصت شغلی» as the file draws it since the renames, read
+// with use_figma on 2026-09-11, KN-023; «اطلاعات آگهی» was the older reading.
+const TABS = ['اطلاعات فرصت شغلی', 'سابقه', 'یادداشت', 'افراد مرتبط', 'فایل‌ها']
 
 // The superseded label, and the two places it is still TRUE.
 //

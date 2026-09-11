@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 301,
+  "nextId": 302,
   "tasks": [
     {
       "id": "KN-001",
@@ -783,7 +783,23 @@
       ],
       "status": "done",
       "exit": "The picker offers exactly the nine status colour pairs node 257:17 draws, in its order, matches Figma, marks the current one, is keyboard navigable, and cannot produce a colour outside the nine.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6.4,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-019-round-1.2026-09-11T11-51-01-127Z.md",
+          "filed": [
+            "KN-301"
+          ],
+          "cardDigest": "82129fe52ea5dabafe4723dc3c8bb2105b3b8d6f11f6dd4a5846000dc922da9f",
+          "head": "696eb652ee8fd40faea3350befe584e5d1c5750d",
+          "reviewerScore": 6.4,
+          "reviewerCriticals": 0,
+          "dismissed": "The second major, that 232, 14, 2 and the one pixel edge are literals against the token rule: the rule is colour, spacing and radius, which all come from the tokens here; those four are lengths node 257:17 binds no variable to, and DESIGN.md already records such lengths as component constants, the Tooltip's 260 and every stroke weight, with the comment the roast quotes.",
+          "at": "2026-09-11T11:56:18.011Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact.",
         "2026-09-11: the card said the four reserved pairs, from DESIGN.md's reading. Node 257:17 and the Column Colour screen 259:184 both draw nine swatches, every status pair, and the Documentation frame 376:30 says a status's colour is chosen automatically and the user can change it. Figma wins, so the title and exit condition follow the file, and DESIGN.md is corrected in the same change."
@@ -878,14 +894,14 @@
         "KN-006",
         "KN-007"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Three states match Figma, the tablist follows the roving tabindex pattern with arrow key navigation, the active tab is announced as selected, and panels are associated with their tabs.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:18.771Z"
+      "updatedAt": "2026-09-11T11:51:09.879Z"
     },
     {
       "id": "KN-024",
@@ -7749,6 +7765,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T10:23:08.807Z"
+    },
+    {
+      "id": "KN-301",
+      "title": "In Persian the Color Picker's left and right arrows move against the swatches' visual order",
+      "desc": "CHILD OF KN-019, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-019 roast. The nine swatches are a native radio group laid out right to left in Persian, in DOM order; Chromium's radio arrow keys follow the DOM, left meaning previous even in RTL, so ArrowLeft moves focus and the choice to the swatch on the right. The stories press only Up and Down, so nothing catches it.",
+      "why": "Someone choosing a colour with the keyboard in Persian expects the arrow that points left to move left; a picker that goes the other way reads as broken, in exactly the language the product defaults to.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "In Persian and in English the left and right arrows move to the swatch that sits in that direction and choose it, established by where the focused swatch lands on screen after a real key press, and up and down still move through the order; a story presses both arrows in both languages.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T11:56:11.153Z"
     }
   ]
 }

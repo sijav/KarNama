@@ -29,6 +29,7 @@ export type StoryTitle =
   | 'Shared/Input'
   | 'Shared/LanguageSwitch'
   | 'Shared/StatusChip'
+  | 'Shared/Tabs'
   | 'Shared/Tooltip'
 
 /** Storybook's `Meta`, with the title narrowed to a registered story path. */

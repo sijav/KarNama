@@ -35,4 +35,10 @@ export const messages: Record<string, string> = {
   'Purple': 'بنفش',
   'Pink': 'صورتی',
   'Cyan': 'فیروزه‌ای',
+  'Job opportunity sections': 'بخش‌های فرصت شغلی',
+  'Job opportunity info': 'اطلاعات فرصت شغلی',
+  'History': 'سابقه',
+  'Note': 'یادداشت',
+  'Related people': 'افراد مرتبط',
+  'Files': 'فایل‌ها',
 }

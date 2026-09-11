@@ -545,13 +545,14 @@ outright, twice, for the contacts grid and as a general principle. Figma reverse
 its arrays because horizontal Auto Layout always lays out left to right; code
 must not copy that. Reversing an array in code to "fix" RTL is a defect.
 
-**The Job Modal replaces a detail page.** The file draws four tabs at `210:276`, and the third one it draws is
-labelled «مخاطبین», which the rename below supersedes:
-اطلاعات آگهی, یادداشت, «مخاطبین» در فریم, فایل‌ها. It also puts status history at the
+**The Job Modal replaces a detail page.** The file draws four tabs at `210:276`. The third one
+was once labelled «مخاطبین», which the rename below supersedes, and the file has
+since applied the renames, read with use_figma on 2026-09-11, KN-023:
+اطلاعات فرصت شغلی, یادداشت, افراد مرتبط, فایل‌ها. It also puts status history at the
 bottom of the Info tab and flags that as open item 18, and **the owner settled
 that on 2026-09-08, KN-072: history is now its own tab**. Its POSITION, second,
 is an **author proposal, not yet put to the owner**, see section 6. So the modal
-has FIVE: اطلاعات آگهی, سابقه, یادداشت, افراد مرتبط, فایل‌ها. See section 6. This is
+has FIVE: اطلاعات فرصت شغلی, سابقه, یادداشت, افراد مرتبط, فایل‌ها. See section 6. This is
 the second place the build deliberately departs from the frame, the first being
 where رد شده sits on the board, and both are the owner's call rather than a
 reading of the file.
@@ -782,7 +783,7 @@ timestamps and per-transition notes instead of burying it under a scroll.
 `Tab=Info` `210:101`, `Tab=Note` `210:145`, `Tab=Contacts` `210:208`,
 `Tab=Files` `210:275`, each 720x617 — and this decision inserts a fifth:
 
-> اطلاعات آگهی · **سابقه** · یادداشت · افراد مرتبط · فایل‌ها
+> اطلاعات فرصت شغلی · **سابقه** · یادداشت · افراد مرتبط · فایل‌ها
 
 **Author proposal, not yet put to the owner: history goes SECOND**, directly
 after the information it is the history OF. The owner settled that history gets
