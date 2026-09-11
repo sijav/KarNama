@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 350,
+  "nextId": 352,
   "tasks": [
     {
       "id": "KN-001",
@@ -8264,8 +8264,11 @@
       "status": "backlog",
       "exit": "The Icon Button's hover changes over 300 ms from a named motion token, the story reads the transition's duration, and DESIGN.md says which components' state changes take it.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-11T12:43:24.839Z"
+      "notes": [
+        "2026-09-11, KN-015: the 300 is the prototype map's summary, not a reaction. The file's own hover reactions are 200 ms ease in and out or 120 ms ease out; KN-350 carries them for every built component, this one included."
+      ],
+      "createdAt": "2026-09-11T12:43:24.839Z",
+      "updatedAt": "2026-09-11T15:49:28.745Z"
     },
     {
       "id": "KN-313",
@@ -8836,6 +8839,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T15:27:27.070Z"
+    },
+    {
+      "id": "KN-350",
+      "title": "The built components' hovers and presses ignore the file's own reactions, 200 ms ease in and out or 120 ms ease out",
+      "desc": "CHILD OF KN-015, recorded in prose because board.json cannot express parent_task yet, KN-188: found while building KN-015. Read with use_figma on 2026-09-11, the file's 207 hover reactions are 124 Smart Animate ease in and out over 200 ms (the Buttons, the Card, the Filter Chip, the Menu Item, the Status Control), 80 ease out over 120 ms (the Input, the Option Row, the Sort Control, the Status Choice, the Tab Item, the side Nav Item) and 3 at 150; presses and clicks are mostly ease out over 120 ms. DESIGN.md's motion paragraph said 300, the prototype map's summary, which matches none of them. The job card follows its reaction; the built components change state at once or at MUI's 150.",
+      "why": "State changes that move at different speeds across the product read as unfinished, and the file names a speed for each component.",
+      "severity": "medium",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Each built component with a hover or press reaction in the file changes state over that reaction's duration and easing, from named constants, a reader who asks for less motion gets the change at once, and DESIGN.md's motion paragraph lists which components take which.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T15:49:08.514Z"
+    },
+    {
+      "id": "KN-351",
+      "title": "The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn",
+      "desc": "CHILD OF KN-026 and KN-028, recorded in prose because board.json cannot express parent_task yet, KN-188: found while building KN-015. A button takes the browser's own font, and MUI's ButtonBase does not give the page's back; CssBaseline does not either. The job card's title showed it in a production build, narrower and bolder than the file's Vazirmatn SemiBold, until it set fontFamily inherit. ContactCard.tsx's Name and StatusPicker.tsx's add button are ButtonBase with text and no font family; the Filter Chip is the only one that sets it.",
+      "why": "The name is the Contact Card's heading, and a second typeface on the card reads as a mistake in a product whose one font is Vazirmatn.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T15:49:47.336Z"
     }
   ]
 }

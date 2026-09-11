@@ -38,6 +38,7 @@ export type StoryTitle =
   | 'Shared/Icon'
   | 'Shared/IconButton'
   | 'Shared/Input'
+  | 'Shared/JobCard'
   | 'Shared/JobLevelSelect'
   | 'Shared/LanguageSwitch'
   | 'Shared/LoadingState'

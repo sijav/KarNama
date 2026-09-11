@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 128 of 349 tasks done · 271 of 782 points.
+Project **KarNama** · 128 of 351 tasks done · 271 of 786 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -23,7 +23,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (216)
+## Backlog (218)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -48,6 +48,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-341` | The full Contact Card's checkbox is reached only by Shift+Tab, after the name | high | 1 | web | none | Tab from before the card reaches the checkbox, then the name, then the delete, in that order, with the row still keeping its 30 and the name still moving by 28, and a story tabs through them. |
 | `KN-342` | A contact with no role draws an empty role line and its divider | high | 1 | web | none | Role is optional in the card's type, the role line and its divider are left out when there is neither role nor company, and a story shows a name-only contact. |
 | `KN-347` | The Contact Modal wipes what is typed when its parent passes a fresh copy of the record | high | 1 | web | none | The form resets on opening and on a change of the record's identity, an id, not on a new object with the same contents, and a story rerenders the parent mid-typing and keeps the text. |
+| `KN-351` | The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn | high | 1 | web | none | The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -178,6 +179,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-165` | Prove the roast recording path end to end with a stubbed reviewer | medium | 3 | agent | none | A verifier drives roast.mjs against a stubbed reviewer in an isolated repository, gets a genuine archive and manifest, records the round against a DONE task with todo.mjs roast, and asserts the round appears on the card; the stub is confined to the sandbox and no production path accepts it; and mutations to the manifest digest check are caught. |
 | `KN-236` | The tooltip's attach check guesses a trigger's lateness with a timer and its props from one attribute | medium | 3 | web | none | A trigger that renders nothing for a second and then attaches correctly is never reported; one that renders DOM without taking the ref is reported however late it appears; a wrapper forwarding only the ref and aria-describedby is reported in a production build; each proved by a story, and the existing report stories still pass. |
 | `KN-317` | The components built on 2026-09-11 draw copy their Controls do not show | medium | 3 | web | none | The Button, Icon Button, Tabs, Page Header and Color Picker stories keep their copy in args that follow the Language toolbar, the Input's way, or disable the panel with the reason stated, and no story draws copy its Controls do not show. |
+| `KN-350` | The built components' hovers and presses ignore the file's own reactions, 200 ms ease in and out or 120 ms ease out | medium | 3 | web | none | Each built component with a hover or press reaction in the file changes state over that reaction's duration and easing, from named constants, a reader who asks for less motion gets the change at once, and DESIGN.md's motion paragraph lists which components take which. |
 | `KN-040` | Third-party feedback, stored for later evaluation | medium | 5 | api | KN-034 | A submission is stored with its target and a pending state, it never mutates the target, a submission whose target was deleted between submit and review is handled rather than orphaned, and rate limiting stops a flood from one source. |
 | `KN-041` | Admin API: the moderation queue | medium | 5 | api | KN-040, KN-036 | A non-admin is refused every operation at the resolver, approving and rejecting both record who did it and when, and the queue paginates rather than loading everything. |
 | `KN-064` | Third-party feedback submission surface | medium | 5 | web | KN-042, KN-040 | An anonymous visitor can submit a comment and a suggested change against a record, both arrive in the moderation queue in a pending state, the target record is not altered, the submitter is told it is pending review, and a flood from one source is rate limited. |
@@ -4460,4 +4462,26 @@ CHILD OF KN-031, recorded in prose because board.json cannot express parent_task
 **Why.** Half the design is the mobile screens, and a form whose Save is under the keyboard cannot be finished.
 
 **Exit condition.** The panel keeps its footer in view above the software keyboard, capped against the visual viewport, and a story at 390 by 544 shows Save visible with the last field focused.
+
+### `KN-350` The built components' hovers and presses ignore the file's own reactions, 200 ms ease in and out or 120 ms ease out
+
+- **status** backlog · **severity** medium · **points** 3 · **area** web
+- **blocked by** none
+
+CHILD OF KN-015, recorded in prose because board.json cannot express parent_task yet, KN-188: found while building KN-015. Read with use_figma on 2026-09-11, the file's 207 hover reactions are 124 Smart Animate ease in and out over 200 ms (the Buttons, the Card, the Filter Chip, the Menu Item, the Status Control), 80 ease out over 120 ms (the Input, the Option Row, the Sort Control, the Status Choice, the Tab Item, the side Nav Item) and 3 at 150; presses and clicks are mostly ease out over 120 ms. DESIGN.md's motion paragraph said 300, the prototype map's summary, which matches none of them. The job card follows its reaction; the built components change state at once or at MUI's 150.
+
+**Why.** State changes that move at different speeds across the product read as unfinished, and the file names a speed for each component.
+
+**Exit condition.** Each built component with a hover or press reaction in the file changes state over that reaction's duration and easing, from named constants, a reader who asks for less motion gets the change at once, and DESIGN.md's motion paragraph lists which components take which.
+
+### `KN-351` The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-026 and KN-028, recorded in prose because board.json cannot express parent_task yet, KN-188: found while building KN-015. A button takes the browser's own font, and MUI's ButtonBase does not give the page's back; CssBaseline does not either. The job card's title showed it in a production build, narrower and bolder than the file's Vazirmatn SemiBold, until it set fontFamily inherit. ContactCard.tsx's Name and StatusPicker.tsx's add button are ButtonBase with text and no font family; the Filter Chip is the only one that sets it.
+
+**Why.** The name is the Contact Card's heading, and a second typeface on the card reads as a mistake in a product whose one font is Vazirmatn.
+
+**Exit condition.** The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must.
 

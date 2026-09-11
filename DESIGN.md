@@ -145,6 +145,7 @@ shadows, and each value below was read from the named node with
 | no style, bulk bar | `401:436` | `#00000029` `0 8` blur 24 spread -4 | none                           |
 | no style, options menu | `408:487` | `#0000001F` `0 8` blur 24 spread -4 | none                       |
 | no style, contact hover | `463:698` | `#0000000F` `0 2` blur 8 spread 0 | none                        |
+| no style, card focus | `137:44` | `#2563EB2E` `0 0` blur 0 spread 3 | none                            |
 
 The third row is **not an effect style**. The tooltip at `410:469` draws its own
 shadow, 24 percent black, read from the frame's `get_design_context` because
@@ -157,7 +158,8 @@ layer at a heavier alpha, bound to no style, read with use_figma on 2026-09-11.
 It is `elevation.bulkBar`. KN-025. The fifth is the Options Menu at `408:487`, the list a Select opens: the
 Modal style's first layer alone, at its own 12 percent, bound to no style,
 `elevation.optionsMenu`. KN-012. The sixth is the compact Contact Card's hover,
-`463:698`, 6 percent black, `elevation.contactCardHover`. KN-026. The thirteen-frame sweep below did not include `410:469`,
+`463:698`, 6 percent black, `elevation.contactCardHover`. KN-026. The seventh is the job card's Focus at `137:44`, a
+halo of `border/focus` at 18 percent spread 3, `elevation.cardFocus`. KN-015. The thirteen-frame sweep below did not include `410:469`,
 which is how it was missed until KN-218 read the frame itself.
 
 An earlier version of this document said Card was the only elevation in the
@@ -593,6 +595,35 @@ can be read. Change colour replaces the menu with the Color Picker in its place,
 «باز کردن لینک آگهی», and delete, which the file labels «حذف آگهی»; the code says
 «حذف فرصت شغلی» under the terminology rule, as KN-329 records for the bar's
 count. A posting without a link has no link item.
+
+### The job card
+
+Node `137:44`, desktop, in six states, and `491:751`, the phone's, Default and
+Selected. The desktop card is 400 by 148: 24 of padding, 4 between rows, radius
+lg, one pixel of `border/default`; a title row of 30 with the title, 16 at
+SemiBold composed as the Empty State's is, and the 16 link icon when the posting
+has a link; the company in Body `text/secondary`; and 16 below it a meta row of
+28 with the date at 12 and 400, which the page hands over already said, in
+numbers as the file writes «۲ روز پیش», where Persian's own wording would say
+«پریروز». **Hover** draws one and a half of `border/focus` with `Elevation/Card`
+and brings the Checkbox before the title, which moves over by 28, and a 24
+square delete at the other end, over the reaction's 200 ms. The file hides both
+at rest, and a hidden layer gives up its room, so the code folds them to none
+and fades them rather than removing them: they stay in the keyboard's path, and
+Tab meets the Checkbox, the title, the link and the delete in the order they are
+drawn. **Pressed** takes `bg/surface-secondary` at the resting edge, at once.
+**Selected** takes `bg/brand/container`, the lifted edge and the card's shadow,
+with the Checkbox checked and the delete in view. **Static** is the card at rest
+with nothing to press but the link. **Focus** is two pixels of `border/focus`
+and a halo of its own, `elevation.cardFocus`. The phone's card is 358 by 141: no
+hover, a title row of 32 whose three dots, a 32 Icon Button, stay in view and
+open the Card menu, the Checkbox only while selected, and a meta row of 19, the
+date's own line in the file, which the web font's normal line height would make
+16. The stripe, `358:430`, is 4 wide at the card's inline start in the status's
+base colour; a status the board no longer has takes `new`'s. The title is the
+card's button, stretched over the card, so a press anywhere else opens the job
+opportunity; a button takes the browser's font rather than the page's, so the
+title's is given back. KN-015.
 
 ### A stroke is drawn inside, and takes no space
 
@@ -1196,12 +1227,26 @@ a design question is genuinely ambiguous.
   is meaningful, «می‌شود» is not «میشود». A test that trims it is asserting the
   wrong string.
 - **Keep a card's height stable on hover** by toggling visibility rather than
-  removing the node. In CSS that is `visibility: hidden` or `opacity: 0`, never
-  `display: none`, or the card reflows and jumps under the cursor.
+  removing the node. In the file that is a hidden layer, which in auto layout
+  gives up its room: the Card's Default hides its Checkbox and delete, and its
+  Hover shows them and moves the title over by 28. The height holds because the
+  title row is fixed at 30. So the CSS is not `visibility: hidden` or
+  `opacity: 0` keeping the room, which would draw Default with a gap before the
+  title, and not `display: none` either, which takes a control out of the
+  keyboard's path, KN-341: the controls fold to no room and fade. KN-015.
 
-**Motion, from the prototype map `384:12`.** Smart Animate **300ms** for a state
-change within a screen, such as the card hover. Dissolve **150ms** for opening
-and closing a modal. **Instant** for menus and popovers. The prototype advances
+**Motion, from the prototype map `384:12` and the reactions themselves.** The
+map's summary says Smart Animate **300ms** for a state change within a screen,
+such as the card hover, Dissolve **150ms** for opening and closing a modal, and
+**Instant** for menus and popovers. The components' own reactions, read with
+use_figma on 2026-09-11, are finer, and where they differ they win: of the
+file's 207 hover reactions, 124 are Smart Animate ease in and out over
+**200ms**, among them the Buttons, the Card, the Filter Chip, the Menu Item and
+the Status Control, 80 are ease out over **120ms**, among them the Input, the
+Option Row, the Sort Control, the Status Choice, the Tab Item and the side Nav
+Item, and 3 are 150. Presses and clicks are mostly ease out over 120ms, and the
+map's 300 appears only on drags and a few clicks. The job card follows its
+reaction, KN-015; KN-350 carries the built components. The prototype advances
 Loading to Review after 1.4 seconds, which is a prototype timing rather than a
 specification, but it is the intended feel.
 

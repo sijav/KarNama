@@ -71,7 +71,7 @@ describe('the token set agrees with DESIGN.md', () => {
   })
 
   it('carries both effect styles, the three shadows that are not one, and nothing else', () => {
-    expect(Object.keys(elevation)).toEqual(['card', 'modal', 'tooltip', 'bulkBar', 'optionsMenu', 'contactCardHover'])
+    expect(Object.keys(elevation)).toEqual(['card', 'modal', 'tooltip', 'bulkBar', 'optionsMenu', 'contactCardHover', 'cardFocus'])
     // The shadow numbers, in the order the design stacks them.
     expect(elevation.card).toBe('0 1px 3px 0 #0000000F, 0 1px 2px 0 #0000000A')
     expect(elevation.modal).toBe('0 8px 24px -4px #0000001F, 0 2px 6px -2px #00000014')
@@ -83,6 +83,8 @@ describe('the token set agrees with DESIGN.md', () => {
     expect(elevation.optionsMenu).toBe('0 8px 24px -4px #0000001F')
     // Read from node 463:698's effects with use_figma: 6 percent black is 0x0F.
     expect(elevation.contactCardHover).toBe('0 2px 8px 0 #0000000F')
+    // Read from node 137:44's Focus with use_figma: border/focus at 18 percent, 0x2E, spread 3.
+    expect(elevation.cardFocus).toBe('0 0 0 3px #2563EB2E')
     // Still exactly two STYLES: the tooltip's, the bar's and the menu's shadows
     // are bound to none, and the document has to say so where the table is.
     expect(design).toContain('exactly two effect styles')
@@ -90,6 +92,7 @@ describe('the token set agrees with DESIGN.md', () => {
     expect(design).toMatch(/`401:436`[^\n]*#00000029[^\n]*0 8[^\n]*blur 24[^\n]*spread -4/)
     expect(design).toMatch(/`408:487`[^\n]*#0000001F[^\n]*0 8[^\n]*blur 24[^\n]*spread -4/)
     expect(design).toMatch(/`463:698`[^\n]*#0000000F[^\n]*0 2[^\n]*blur 8[^\n]*spread 0/)
+    expect(design).toMatch(/`137:44`[^\n]*#2563EB2E[^\n]*0 0[^\n]*blur 0[^\n]*spread 3/)
   })
 
   it('has five type roles, and Body/Small is not one of them', () => {
