@@ -2687,7 +2687,7 @@
       "title": "Check documentation-frame coverage against the capture text, not an author-chosen fact list",
       "desc": "agent/scripts/verify/KN-002.mjs proves each of the 14 frame ids appears somewhere in DESIGN.md, which the frame-index table alone satisfies, and then checks three or four author-chosen facts as substrings under the claimed heading. The facts are picked by the same person who wrote the section, so a frame can be substantially untranscribed while every check passes. Derive what must be covered from the committed capture instead: the frame title and its section headings are in the capture, so require each captured section heading of a frame to be answered somewhere in the claimed DESIGN.md section, and report coverage rather than a boolean.",
       "why": "A roast rated this major and it is the honest limit of the current verifier: the capture upgraded the ID inventory from a claim to evidence, but the CONTENT check is still self-attestation. That gap is what let frame 505:3 be summarised as sixteen applied changes when two of them were explicitly pending in the frame text.",
-      "severity": "high",
+      "severity": "low",
       "points": 3,
       "area": "agent",
       "parent": [
@@ -2696,8 +2696,11 @@
       "status": "backlog",
       "exit": "Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T22:18:31.097Z"
+      "notes": [
+        "2026-09-11, the owner's rule of that day: a finding about the loop rather than the product is low unless it is actively breaking the work, and no more proof machinery is written. This card is the loop's own tooling and breaks nothing now: the storybook project reported failing plays in today's runs, and the todo script is called directly with node."
+      ],
+      "createdAt": "2026-09-07T22:18:31.097Z",
+      "updatedAt": "2026-09-11T20:32:50.902Z"
     },
     {
       "id": "KN-079",
@@ -3170,7 +3173,7 @@
       "title": "Prove the STORYBOOK test project reports a failure too",
       "desc": "KN-088 proves the real unit project detects a broken test. The storybook project, which runs every story in headless Chromium and is where component behaviour is actually checked, has no such proof: its story set comes from the stories glob in .storybook/main.ts, so a fixture story needs that glob to admit it. Add a gate story with a play function that asserts something untrue, admitted only in gate mode, and require the run to report it.",
       "why": "The storybook project is the half of the suite that renders anything. If it silently ran zero stories, or swallowed a failing play function, every component task after this would report green having checked nothing, and the unit project passing would hide it. This is the same question KN-088 asks, aimed at the project that matters more.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [
@@ -3179,15 +3182,18 @@
       "status": "backlog",
       "exit": "A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T23:37:18.473Z"
+      "notes": [
+        "2026-09-11, the owner's rule of that day: a finding about the loop rather than the product is low unless it is actively breaking the work, and no more proof machinery is written. This card is the loop's own tooling and breaks nothing now: the storybook project reported failing plays in today's runs, and the todo script is called directly with node."
+      ],
+      "createdAt": "2026-09-07T23:37:18.473Z",
+      "updatedAt": "2026-09-11T20:32:51.033Z"
     },
     {
       "id": "KN-099",
       "title": "Scope the gate run and its passing count to the unit project",
       "desc": "agent/scripts/verify/KN-003.mjs runs KARNAMA_GATE_FIXTURES=1 npm test and reads the suite-wide summary line, Tests 1 failed | N passed, which aggregates the unit and storybook projects. Only the fixture filename is project-attributed. Once the storybook project has twenty passing stories, a unit project with no ordinary tests at all satisfies every assertion. Run the gate command with --project unit, or read project-scoped structured output, so the passing count proves the unit include is populated.",
       "why": "A roast rated this critical and the arithmetic is right: the twenty-passing-tests assertion is the one meant to prove the ordinary include still works, and it is the one not scoped to the project it is about. It is invisible today because there are only seven stories, and it becomes wrong silently the moment the component queue starts, which is the next thing this project does.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [
@@ -3196,8 +3202,11 @@
       "status": "backlog",
       "exit": "The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T23:46:31.457Z"
+      "notes": [
+        "2026-09-11, the owner's rule of that day: a finding about the loop rather than the product is low unless it is actively breaking the work, and no more proof machinery is written. This card is the loop's own tooling and breaks nothing now: the storybook project reported failing plays in today's runs, and the todo script is called directly with node."
+      ],
+      "createdAt": "2026-09-07T23:46:31.457Z",
+      "updatedAt": "2026-09-11T20:32:51.172Z"
     },
     {
       "id": "KN-100",
@@ -5342,15 +5351,18 @@
       "title": "npm run silently truncates every argument at its first newline on Windows",
       "desc": "Found on 2026-09-10 while roasting KN-190. npm run <script> -- <args> routes through cmd.exe on Windows, and cmd.exe ends the command line at the first newline, so a multi-line argument loses everything after line one AND every flag that followed it, with no error. Proved with a free non-mutating case: node agent/scripts/todo.mjs show \"KN-190<newline>JUNK\" correctly reports that the whole two-line string does not exist, while npm run todo -- show \"KN-190<newline>JUNK\" prints KN-190's card, because the second line never arrived. This is not repeated-flag mangling, which was my first guess and is wrong. It bit for real: RALPH.md line 297 documents the task roast as npm run roast -- <id> --summary \"...\" --ask \"...\", and a genuine summary is multi-line, so every --ask was dropped and the harness refused with 'roast needs at least one --ask'. Calling node agent/scripts/roast.mjs directly works. The dangerous direction is quiet rather than loud: npm run todo -- move <id> done --evidence \"<multi-line>\" would record a truncated evidence string and close the card, and the same applies to --desc, --why, --exit and --note. I checked every field this session wrote through npm, six of them across KN-190, KN-193 and KN-194, and none was truncated, because I happened to build every value on one line.",
       "why": "The board's evidence field is the record of how an exit condition was checked, and a close that silently stores half of it is worse than one that fails: the card looks complete. It also means the loop's own documented roast command does not work on the platform this repository is developed on, so the review step degrades to whatever fits on one line.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "agent",
       "parent": [],
       "status": "backlog",
       "exit": "Either the scripts refuse an argument containing a newline with a message naming this cause, or the loop stops going through npm for anything carrying prose and RALPH.md and .claude/ralph-loop.local.md are updated to the invocation that works. A check demonstrates the truncation and its absence after the fix, using a free non-mutating command rather than a real roast. The existing board is audited for fields whose text ends mid-sentence, and the audit result is recorded whether or not it finds anything.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T02:04:40.845Z"
+      "notes": [
+        "2026-09-11, the owner's rule of that day: a finding about the loop rather than the product is low unless it is actively breaking the work, and no more proof machinery is written. This card is the loop's own tooling and breaks nothing now: the storybook project reported failing plays in today's runs, and the todo script is called directly with node."
+      ],
+      "createdAt": "2026-09-10T02:04:40.845Z",
+      "updatedAt": "2026-09-11T20:32:51.316Z"
     },
     {
       "id": "KN-196",
