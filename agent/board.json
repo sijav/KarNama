@@ -9716,12 +9716,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The Status Picker's radio group takes arrowsAcross, and a story presses real left and right arrows in both languages through vitest/browser, landing on the choice beside the chosen one on screen and choosing it, while an arrow pressed on the New status button moves nothing.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T18:32:00.114Z",
-      "updatedAt": "2026-09-11T20:19:51.969Z"
+      "updatedAt": "2026-09-11T20:24:00.569Z",
+      "evidence": "The picker's group takes arrowsAcross; ArrowsInPersian and ArrowsInEnglish press real keys from the second status and land left and right on screen, taken by the row, and an arrow on New status moves nothing; both failed without the handler; picker and Change Status stories 13 of 13; looked at in Persian with real keys.",
+      "closedAt": "2026-09-11T20:24:00.569Z"
     },
     {
       "id": "KN-374",

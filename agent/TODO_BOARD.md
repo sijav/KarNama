@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 155 of 394 tasks done · 334 of 837 points.
+Project **KarNama** · 156 of 394 tasks done · 335 of 837 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-373` In Persian the Status Picker's left and right arrows move against its choices in Safari, as the Color Picker's did** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-373` | In Persian the Status Picker's left and right arrows move against its choices in Safari, as the Color Picker's did | high | 1 | web | none | The Status Picker's radio group takes arrowsAcross, and a story presses real left and right arrows in both languages through vitest/browser, landing on the choice beside the chosen one on screen and choosing it, while an arrow pressed on the New status button moves nothing. |
+**Next up: `KN-391` A step, source or draft change during the add modal's reading lets the old answer overwrite the restarted flow** (high, 1 pt, web)
 
 ## Blocked (4)
 
@@ -262,7 +256,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (155)
+## Done (156)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -407,6 +401,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-364` | Saving right after changing the status in the Job Modal's header can send the old status | high | 1 | web | none | Save sends the status last chosen in the header, or none at all, and a story changes the status and saves before the job prop changes, and sees the new status or no status in onSave. |
 | `KN-366` | The lingui gate's no-letter class still exempts three letters: ª, µ and º | high | 1 | web | none | The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary. |
 | `KN-369` | KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal | high | 1 | web | none | The suite's pointer park moves the pointer off the page, not to its corner, and says why it exists; whether Storybook's own resetMousePosition runs in this repository is established from the resolved Vitest config, and TECH-DEBT says what retires the park; a whole storybook run passes but for KN-365's flakes. |
+| `KN-373` | In Persian the Status Picker's left and right arrows move against its choices in Safari, as the Color Picker's did | high | 1 | web | none | The Status Picker's radio group takes arrowsAcross, and a story presses real left and right arrows in both languages through vitest/browser, landing on the choice beside the chosen one on screen and choosing it, while an arrow pressed on the New status button moves nothing. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -4813,7 +4808,7 @@ CHILD OF KN-010, recorded in prose because board.json cannot express parent_task
 
 ### `KN-373` In Persian the Status Picker's left and right arrows move against its choices in Safari, as the Color Picker's did
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-020, recorded in prose because board.json cannot express parent_task yet, KN-188: found while doing KN-301. The Status Picker's choices are a native radio group in a row that wraps, laid out from the inline start, the Color Picker's way. Blink's radio group reads the text direction, so in Chromium the left arrow already moves left in Persian, but WebKit's RadioInputType::handleKeydownEvent keeps left as the previous radio 'even for RTL', so in Safari it moves to the choice on the right. KN-301 gives the Color Picker the picker's own left and right, arrowsAcross in theme/sides.ts; the Status Picker does not take it yet. Its «+ وضعیت تازه» button sits inside the same group, and an arrow pressed on it must stay the browser's.
