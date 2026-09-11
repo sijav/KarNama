@@ -7099,12 +7099,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Every story starts with the test runner's pointer somewhere that hovers nothing, set once for the whole suite rather than per story; BlankErrorIsNoError drops its pointer-events workaround and TECH-DEBT 15 is deleted; and a check runs a story that leaves the pointer on a field followed by one asserting a resting border in the same spot, which fails without the reset.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T12:35:20.710Z",
-      "updatedAt": "2026-09-11T17:51:37.479Z"
+      "updatedAt": "2026-09-11T18:10:28.722Z",
+      "evidence": "parkPointer command before every story; BlankErrorIsNoError workaround and TECH-DEBT 15 gone; LeavesThePointerOnTheField then StartsAtRest pass; whole storybook project 245 of 245",
+      "closedAt": "2026-09-11T18:10:28.722Z"
     },
     {
       "id": "KN-261",
