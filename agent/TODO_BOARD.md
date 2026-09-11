@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 132 of 357 tasks done · 300 of 794 points.
+Project **KarNama** · 132 of 362 tasks done · 300 of 799 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-030` Job modal, five tabs** (critical, 8 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-030` | Job modal, five tabs | critical | 8 | web | KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020 | All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text. |
 
 ## Blocked (2)
 
@@ -17,11 +23,10 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (221)
+## Backlog (225)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-030` | Job modal, five tabs | critical | 8 | web | KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020 | All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-217` | A string literal written 'as const' skips the lingui rule entirely, in any file | high | 1 | web | none | <Box title={'Delete this application' as const} /> and aria-label={'Delete' as const} fail npm run lint in a committed fixture, a story meta title written with 'as const' fails too, and 'as const' on an object or array literal, which is the idiom that is actually used, still passes. |
 | `KN-260` | Stories inherit the real pointer where the last hover story left it | high | 1 | web | none | Every story starts with the test runner's pointer somewhere that hovers nothing, set once for the whole suite rather than per story; BlankErrorIsNoError drops its pointer-events workaround and TECH-DEBT 15 is deleted; and a check runs a story that leaves the pointer on a field followed by one asserting a resting border in the same spot, which fails without the reset. |
@@ -42,6 +47,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-351` | The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn | high | 1 | web | none | The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must. |
 | `KN-353` | A column whose cards are all false or null shows a blank region instead of its empty message | high | 1 | web | none | The column shows the empty message whenever no child renders, null, false and empty arrays included (Children.toArray), and a story passes such a list. |
 | `KN-355` | Below 900 the shell has no language switch: the sidebar took it and the shell draws no Page Header | high | 1 | web | none | At the phone's width the shell shows the Page Header with its language switch, choosing a language there changes it and persists, and a story at 390 finds and uses the switch. |
+| `KN-361` | The add modal's Controls do not drive it while it is open: step, source and draft are read only on opening | high | 1 | web | none | Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -145,6 +151,9 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-345` | A modal given a blank title has no accessible name | medium | 1 | web | none | A blank title is refused, by the type or with a thrown error in development, and a story or test shows it. |
 | `KN-348` | An Edit Contact Modal can be written without the record or the delete | medium | 1 | web | none | Edit cannot be written without initial and onDelete, by its type or two components, and the docs guard still reads every prop. |
 | `KN-349` | On a phone the panel modal's footer can sit under the software keyboard | medium | 1 | web | none | The panel keeps its footer in view above the software keyboard, capped against the visual viewport, and a story at 390 by 544 shows Save visible with the last field focused. |
+| `KN-358` | The phone's add form reads title before company, where 243:726 draws the company first | medium | 1 | design | none | The owner has chosen one order for the phone's form, DESIGN.md records it, and the form follows it at 390. |
+| `KN-359` | The add modal's Paste step is 398 tall where the file draws 401: its label keeps the Input's 16 | medium | 1 | web | none | Paste, PasteFilled and Error measure the file's 401, 401 and 423 with the label on its 19, and the Input's own label stays 16 everywhere else. |
+| `KN-362` | Reading a posting moves focus to an unnamed box rather than to the status that says what is happening | medium | 1 | web | none | Focus goes to an element named by the loading message, or to the status region itself, and a story reads the focused element's accessible name. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -215,6 +224,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-346` | The Change Status modal can confirm a status that is no longer offered | low | 1 | web | none | A pending choice that leaves the statuses goes back to the job's status, and a story removes it while open. |
 | `KN-354` | A column shorter than 116 clips its own Add Card row | low | 1 | web | none | The column never gets shorter than its header, gaps, padding and Add Card row, and a story in a short container sees the row whole. |
 | `KN-357` | The Select logs a React warning on every render: MUI's notched reaches the DOM through its bare InputBase | low | 1 | web | none | No story drawing a Select logs the notched warning, and the Select's look and behaviour are unchanged. |
+| `KN-360` | The add modal saves whatever status id it is given, an empty one included | low | 1 | web | none | Saving with a status that is not one of the offered statuses falls back to the first, or refuses, and a story shows it. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -762,9 +772,11 @@ The Add/Edit modal at Figma node 166:82 with Step=Paste, PasteFilled, Loading, R
 
 **Exit condition.** All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding.
 
+**Roasts.** round 1 scored 6 with 0 critical(s)
+
 ### `KN-030` Job modal, five tabs
 
-- **status** backlog · **severity** critical · **points** 8 · **area** web
+- **status** in_progress · **severity** critical · **points** 8 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020
 
 The job detail modal at Figma node 210:276. The file draws four tab variants: Tab=Info 210:101, Tab=Note 210:145, Tab=Contacts 210:208, Tab=Files 210:275, each 720 by 617. The owner settled open item 18 on 2026-09-08 and status history is now its OWN tab rather than a block at the bottom of Info, so the modal has FIVE: اطلاعات آگهی, سابقه, یادداشت, افراد مرتبط, فایل‌ها, with سابقه second, directly after the information it is the history of. That is a deliberate departure from the frame, recorded in DESIGN.md section 3 and section 6 under KN-072. Everything else comes from the frame unchanged.
@@ -4557,4 +4569,59 @@ CHILD OF KN-012, recorded in prose because board.json cannot express parent_task
 **Why.** A warning printed on every render buries the next real one in the console.
 
 **Exit condition.** No story drawing a Select logs the notched warning, and the Select's look and behaviour are unchanged.
+
+### `KN-358` The phone's add form reads title before company, where 243:726 draws the company first
+
+- **status** backlog · **severity** medium · **points** 1 · **area** design
+- **blocked by** none
+
+CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-029 roast. The desktop Review, 150:94, reads title then company from the inline start; the phone's Review, 243:726, stacks the company above the title, the order of Figma's left-to-right array. JobForm keeps one DOM order, title first, at both widths. The file contradicts itself, so the order is the owner's to choose.
+
+**Why.** The same form in two orders on two widths is a question the design has not settled, and guessing either way departs from one frame.
+
+**Exit condition.** The owner has chosen one order for the phone's form, DESIGN.md records it, and the form follows it at 390.
+
+### `KN-359` The add modal's Paste step is 398 tall where the file draws 401: its label keeps the Input's 16
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-029 roast. The paste field, 166:67, is not an Input instance: its label «لینک آگهی یا متن کامل آگهی» is a text node at the automatic line height, 19, where the Input set's label, 95:38, is 16. The code reuses the Input for the field, so Paste, PasteFilled and Error come out 3 shorter than 166:62, 371:422 and 304:2.
+
+**Why.** Match the design exactly is the standing rule, and the difference is measurable.
+
+**Exit condition.** Paste, PasteFilled and Error measure the file's 401, 401 and 423 with the label on its 19, and the Input's own label stays 16 everywhere else.
+
+### `KN-360` The add modal saves whatever status id it is given, an empty one included
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-029 roast. AddJobModal's status prop is a plain string and missingFields checks only the title and the company, so a caller that passes an empty or unknown status id gets onSave with it.
+
+**Why.** Status is never absent on a record, DESIGN.md section 4; the modal should not be the place an empty one gets in.
+
+**Exit condition.** Saving with a status that is not one of the offered statuses falls back to the first, or refuses, and a story shows it.
+
+### `KN-361` The add modal's Controls do not drive it while it is open: step, source and draft are read only on opening
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-029 roast. AddJobModal starts its flow from step, source and draft when open turns true and never again, so changing the step or the source in Storybook's Controls with the modal open leaves the canvas where it was, against the rule that stories render from their args.
+
+**Why.** A story whose Controls do nothing looks like a component that ignores its props.
+
+**Exit condition.** Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step.
+
+### `KN-362` Reading a posting moves focus to an unnamed box rather than to the status that says what is happening
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-029 roast. While the posting is read, AddJobModal focuses a tabIndex -1 Box around the Loading State, which has no role or name; the status inside is the live region with the text, so a screen reader lands on a generic element first.
+
+**Why.** Focus is how a screen reader user learns where they are after the button they pressed disappears.
+
+**Exit condition.** Focus goes to an element named by the loading message, or to the status region itself, and a story reads the focused element's accessible name.
 

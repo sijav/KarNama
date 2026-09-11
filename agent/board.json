@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 358,
+  "nextId": 363,
   "tasks": [
     {
       "id": "KN-001",
@@ -1353,7 +1353,27 @@
       ],
       "status": "done",
       "exit": "All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-029-round-1.2026-09-11T16-58-51-846Z.md",
+          "filed": [
+            "KN-358",
+            "KN-359",
+            "KN-360",
+            "KN-361",
+            "KN-362"
+          ],
+          "cardDigest": "fbbca708c7683b7f579420dab0d63fe4c449928761e216c501d02ab0bd967ce0",
+          "head": "5cd95a37f46629f9b2e784e8751afd4a07348fa6",
+          "reviewerScore": 4,
+          "reviewerCriticals": 3,
+          "dismissed": "None of the three criticals stays critical under the owner's rule that findings on built components are high or lower. The phone order is the file contradicting itself, desktop title first and phone company first, so it goes to the owner (KN-358). The 401 is real, the paste label's own 19 against the Input's 16 (KN-359, medium). The empty status needs a caller to pass one (KN-360, low). The two majors are real: KN-361 high, KN-362 medium.",
+          "at": "2026-09-11T17:03:11.290Z"
+        }
+      ],
       "notes": [
         "Motion values from frame 384:12: Dissolve 150ms for opening and closing a modal, Smart Animate 300ms for a state change within a screen such as the card hover, and Instant for menus and popovers. The prototype advances Loading to Review after 1.4 seconds, which is a prototype timing rather than a spec, but it is the intended feel. The extract button is disabled until the field is both touched and filled.",
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
@@ -1380,14 +1400,14 @@
         "KN-026",
         "KN-020"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:19.514Z"
+      "updatedAt": "2026-09-11T16:59:02.303Z"
     },
     {
       "id": "KN-031",
@@ -9017,6 +9037,81 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T16:55:02.687Z"
+    },
+    {
+      "id": "KN-358",
+      "title": "The phone's add form reads title before company, where 243:726 draws the company first",
+      "desc": "CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-029 roast. The desktop Review, 150:94, reads title then company from the inline start; the phone's Review, 243:726, stacks the company above the title, the order of Figma's left-to-right array. JobForm keeps one DOM order, title first, at both widths. The file contradicts itself, so the order is the owner's to choose.",
+      "why": "The same form in two orders on two widths is a question the design has not settled, and guessing either way departs from one frame.",
+      "severity": "medium",
+      "points": 1,
+      "area": "design",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The owner has chosen one order for the phone's form, DESIGN.md records it, and the form follows it at 390.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T17:03:01.047Z"
+    },
+    {
+      "id": "KN-359",
+      "title": "The add modal's Paste step is 398 tall where the file draws 401: its label keeps the Input's 16",
+      "desc": "CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-029 roast. The paste field, 166:67, is not an Input instance: its label «لینک آگهی یا متن کامل آگهی» is a text node at the automatic line height, 19, where the Input set's label, 95:38, is 16. The code reuses the Input for the field, so Paste, PasteFilled and Error come out 3 shorter than 166:62, 371:422 and 304:2.",
+      "why": "Match the design exactly is the standing rule, and the difference is measurable.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Paste, PasteFilled and Error measure the file's 401, 401 and 423 with the label on its 19, and the Input's own label stays 16 everywhere else.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T17:03:01.228Z"
+    },
+    {
+      "id": "KN-360",
+      "title": "The add modal saves whatever status id it is given, an empty one included",
+      "desc": "CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-029 roast. AddJobModal's status prop is a plain string and missingFields checks only the title and the company, so a caller that passes an empty or unknown status id gets onSave with it.",
+      "why": "Status is never absent on a record, DESIGN.md section 4; the modal should not be the place an empty one gets in.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Saving with a status that is not one of the offered statuses falls back to the first, or refuses, and a story shows it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T17:03:01.399Z"
+    },
+    {
+      "id": "KN-361",
+      "title": "The add modal's Controls do not drive it while it is open: step, source and draft are read only on opening",
+      "desc": "CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-029 roast. AddJobModal starts its flow from step, source and draft when open turns true and never again, so changing the step or the source in Storybook's Controls with the modal open leaves the canvas where it was, against the rule that stories render from their args.",
+      "why": "A story whose Controls do nothing looks like a component that ignores its props.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T17:03:01.577Z"
+    },
+    {
+      "id": "KN-362",
+      "title": "Reading a posting moves focus to an unnamed box rather than to the status that says what is happening",
+      "desc": "CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-029 roast. While the posting is read, AddJobModal focuses a tabIndex -1 Box around the Loading State, which has no role or name; the status inside is the live region with the text, so a screen reader lands on a generic element first.",
+      "why": "Focus is how a screen reader user learns where they are after the button they pressed disappears.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Focus goes to an element named by the loading message, or to the status region itself, and a story reads the focused element's accessible name.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T17:03:01.767Z"
     }
   ]
 }
