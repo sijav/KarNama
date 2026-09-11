@@ -92,4 +92,10 @@ export const messages: Record<string, string> = {
   'Job opportunity actions': 'کارهای فرصت شغلی',
   'Open the posting link': 'باز کردن لینک آگهی',
   'Delete job opportunity': 'حذف فرصت شغلی',
+  'Sort:': 'مرتب‌سازی:',
+  'Newest': 'تازه‌ترین',
+  'Oldest': 'قدیمی‌ترین',
+  'Nearest deadline': 'نزدیک‌ترین مهلت',
+  'Company name, A to Z': 'نام شرکت (الفبا)',
+  'Sorted by': 'مرتب‌شده بر اساس',
 }

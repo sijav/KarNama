@@ -4,6 +4,7 @@ import { useId } from 'react'
 import { usePreferences } from '../../core/preferences'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { Icon } from '../icon'
+import { OptionLabel, optionRow, optionsMenuList, optionsMenuPaper } from './options'
 
 export interface SelectOption {
   value: string
@@ -22,17 +23,15 @@ export interface SelectProps {
   onChange: (value: string[]) => void
 }
 
-// Node 183:26's field is the Input's, 44 tall; the Option Row of 408:465 is
-// 40. Neither binds a variable. The edges are the file's stroke weights: one
+// Node 183:26's field is the Input's, 44 tall, and binds no variable; the
+// rows are the Option Rows of options.tsx. The edges are the file's stroke weights: one
 // at rest, two focused, and one and a half while open, which Chromium floors
 // as a border, so it is an inset shadow over the one pixel border, the Filter
 // Chip's way, KN-282.
 const FIELD_HEIGHT = 44
-const OPTION_HEIGHT = 40
 const EDGE = 1
 const FOCUS_EDGE = 2
 const OPEN_EDGE = 1.5
-const FOCUS_RING = 3
 const CHEVRON = 20
 
 const { label: labelText, body } = typeScale
@@ -101,21 +100,8 @@ export const Select = ({ label, options, value, multiple = false, placeholder, d
           // Menus open instantly, the prototype map's motion, DESIGN.md.
           transitionDuration: 0,
           slotProps: {
-            paper: {
-              sx: (theme) => ({
-                marginTop: `${spacing['2xs']}px`,
-                borderRadius: `${theme.karnama.radius.md}px`,
-                backgroundColor: theme.karnama.semantic['bg/surface'],
-                backgroundImage: 'none',
-                boxShadow: theme.karnama.elevation.optionsMenu,
-                // The menu's edge, drawn inside and out of its layout: an inset
-                // outline, which forced colours keep and a scrolling list does
-                // not carry with it.
-                outline: `${EDGE}px solid ${theme.karnama.semantic['border/default']}`,
-                outlineOffset: `-${EDGE}px`,
-              }),
-            },
-            list: { sx: { paddingBlock: `${spacing['2xs']}px` } },
+            paper: { sx: (theme) => ({ ...optionsMenuPaper.sx(theme), marginTop: `${spacing['2xs']}px` }) },
+            list: optionsMenuList,
           },
         }}
         sx={(theme) => {
@@ -171,52 +157,8 @@ export const Select = ({ label, options, value, multiple = false, placeholder, d
         }}
       >
         {options.map((option) => (
-          <MenuItem
-            key={option.value}
-            value={option.value}
-            disabled={option.disabled === true}
-            disableRipple
-            sx={(theme) => {
-              const colour = theme.karnama.semantic
-              return {
-                position: 'relative',
-                boxSizing: 'border-box',
-                minHeight: OPTION_HEIGHT,
-                height: OPTION_HEIGHT,
-                paddingBlock: 0,
-                paddingInline: `${spacing.sm}px`,
-                gap: `${spacing.xs}px`,
-                // Body's size and line height at Label's weight, no tracking.
-                fontSize: `${body.size}px`,
-                lineHeight: `${body.lineHeight}px`,
-                fontWeight: labelText.weight,
-                letterSpacing: body.letterSpacing,
-                color: colour['text/primary'],
-                '&:hover, &.Mui-focusVisible': { backgroundColor: colour['bg/surface-secondary'] },
-                '&.Mui-selected, &.Mui-selected:hover, &.Mui-selected.Mui-focusVisible': {
-                  backgroundColor: colour['bg/brand/container'],
-                  color: colour['text/brand'],
-                },
-                '&.Mui-disabled': { opacity: 1, color: colour['text/disabled'] },
-                // The keyboard's option, a ring drawn inside the row, as the
-                // Filter Chip's and the Icon Button's are.
-                '&.Mui-focusVisible::after': {
-                  content: '""',
-                  position: 'absolute',
-                  inset: EDGE,
-                  borderStyle: 'solid',
-                  borderWidth: FOCUS_RING,
-                  borderColor: colour['border/focus'],
-                  pointerEvents: 'none',
-                },
-              }
-            }}
-          >
-            <Box component="span" sx={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {option.label}
-            </Box>
-            {/* The check of 408:459, 16 in the row's colour, at the inline end. */}
-            {value.includes(option.value) ? <Icon name="check" size="sm" color="inherit" /> : null}
+          <MenuItem key={option.value} value={option.value} disabled={option.disabled === true} disableRipple sx={optionRow.sx}>
+            <OptionLabel label={option.label} chosen={value.includes(option.value)} />
           </MenuItem>
         ))}
       </MuiSelect>

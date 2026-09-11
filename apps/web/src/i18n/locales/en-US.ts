@@ -89,4 +89,10 @@ export const messages: Record<string, string> = {
   'Job opportunity actions': 'Job opportunity actions',
   'Open the posting link': 'Open the posting link',
   'Delete job opportunity': 'Delete job opportunity',
+  'Sort:': 'Sort:',
+  'Newest': 'Newest',
+  'Oldest': 'Oldest',
+  'Nearest deadline': 'Nearest deadline',
+  'Company name, A to Z': 'Company name, A to Z',
+  'Sorted by': 'Sorted by',
 }

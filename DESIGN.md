@@ -471,6 +471,19 @@ when they do not fit. The two selects the file names, «نوع همکاری» an
 ids and their names from the catalog. On the screens the only Select drawn is
 the contact modal's «آگهی مربوطه», whose own prompt is why the prompt is a prop.
 
+### The Sort Control
+
+Node `408:512`: a control 36 tall of radius md with one pixel of
+`border/default` inside and no fill, 12 of padding and 8 between its parts,
+from the inline start the 16 sort icon, «مرتب‌سازی:» in Body `text/secondary`,
+the order at Label's weight in `text/primary`, and the 16 chevron. Hover takes
+`bg/surface-secondary`; Open takes it too with one and a half of `border/focus`.
+Its menu, `447:601`, is the Options Menu at 240, **6** below the control where
+the Select's is 4, hanging from the control's inline end, with the four orders
+of section 3 as Option Rows. The set draws no Focus, so the keyboard's is the
+Select family's two pixels. A change is read out from a status region, «مرتب‌شده
+بر اساس» and the order. KN-024.
+
 ### The Menu and its items
 
 Node `512:8350`: fixed at 220, `bg/surface`, one pixel of `border/default`
