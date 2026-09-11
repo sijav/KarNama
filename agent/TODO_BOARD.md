@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 119 of 319 tasks done · 232 of 749 points.
+Project **KarNama** · 119 of 321 tasks done · 232 of 751 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-022` Empty state and loading state** (critical, 3 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-022` | Empty state and loading state | critical | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
 
 ## Blocked (2)
 
@@ -17,11 +23,10 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (196)
+## Backlog (197)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-022` | Empty state and loading state | critical | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
 | `KN-024` | Sort control | critical | 3 | web | KN-005, KN-006, KN-007, KN-018 | Three states match Figma, the four permitted options are the only ones offered, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced. |
 | `KN-025` | Bulk action bar | critical | 3 | web | KN-005, KN-006, KN-007, KN-013, KN-009 | Both types match Figma, the bar appears only when at least one row is selected, it reports the selection count, and it is reachable by keyboard when it appears rather than trapping focus behind the list. |
 | `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
@@ -46,6 +51,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-303` | Tab and panel ids are built from tab values, so a value with a space breaks the tab's link to its panel | high | 1 | web | none | Tab and panel ids are well-formed whatever the tab values, derived from the component's own id and each tab's position or an escaped value; a story with a value holding a space shows each tab's aria-controls naming its panel and the panel labelled by its tab. |
 | `KN-311` | An Icon Button's required name is proved on a helper, not on the rendered button, and a blank one throws during render | high | 1 | web | none | Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case. |
 | `KN-314` | A controlled Search Bar still runs a pending search for a value its parent has since replaced | high | 1 | web | none | In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call. |
+| `KN-320` | The Page Header's back control is a 20 by 20 target, under the 24 the product asks of a control | high | 1 | web | none | The back control's target is 24 or more each way while the arrow stays 20 and stays 12 from the title, and the WithBack story measures both. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -130,6 +136,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-313` | An Icon Button's hover fill stays after a tap on a touch screen | medium | 1 | web | none | Under hover: none the Icon Button shows no hover fill after a tap, established with an emulated touch device in a story or a production check, and hovering still fills it on a device with a pointer. |
 | `KN-318` | A Button's hover fill stays after a tap on a touch screen | medium | 1 | web | none | Under hover: none the Button shows its resting fill after a tap, established with an emulated touch device, and hovering still fills it where there is a pointer. |
 | `KN-319` | In the derived dark palette a pressed Destructive button is brighter than its default | medium | 1 | web | none | In dark the Destructive default, hover and pressed fills keep the light design's order of lightness, each still carrying text/on-accent at 4.5:1, and a unit test holds the order and the contrast. |
+| `KN-321` | The Page Header's language switch is tested at 390 and 1440, not either side of the 900 it turns on | medium | 1 | web | none | The story shows the switch at 899 wide and hides it at 900. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -612,9 +619,11 @@ Title, optional back button and optional primary action, from Figma node 155:56 
 
 **Exit condition.** Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree.
 
+**Roasts.** round 1 scored 5 with 0 critical(s)
+
 ### `KN-022` Empty state and loading state
 
-- **status** backlog · **severity** critical · **points** 3 · **area** web
+- **status** in_progress · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-009
 
 Empty State at Figma node 159:80 for a job list with nothing in it, and Loading State at 159:92 for the extraction step in the add flow.
@@ -4075,4 +4084,26 @@ CHILD OF KN-009, recorded in prose because board.json cannot express parent_task
 **Why.** A press that brightens reads as a release; the one button that deletes things should not answer the press backwards.
 
 **Exit condition.** In dark the Destructive default, hover and pressed fills keep the light design's order of lightness, each still carrying text/on-accent at 4.5:1, and a unit test holds the order and the contrast.
+
+### `KN-320` The Page Header's back control is a 20 by 20 target, under the 24 the product asks of a control
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-021, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-021 roast. The back control is a ButtonBase round the 20 pixel arrow with no size or padding of its own, so its whole hit area is 20 by 20. DESIGN.md asks a control for a target of 24 or more, KN-206 and KN-267, and the back arrow is the way out of a job's page on a phone.
+
+**Why.** A back arrow missed on a phone sends the tap to nothing, and the product's own rule for a control's target is 24.
+
+**Exit condition.** The back control's target is 24 or more each way while the arrow stays 20 and stays 12 from the title, and the WithBack story measures both.
+
+### `KN-321` The Page Header's language switch is tested at 390 and 1440, not either side of the 900 it turns on
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-021, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-021 roast. LanguageOnNarrowScreens sets the viewport to 390 and then 1440, so a breakpoint moved to 600, 768 or 1200 would still pass. DESIGN.md's section 5 puts it at MUI's md, 900.
+
+**Why.** Between 600 and 900 a tablet shows the header's switch, and only the two widths either side of 900 prove where it turns.
+
+**Exit condition.** The story shows the switch at 899 wide and hides it at 900.
 

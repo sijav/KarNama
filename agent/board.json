@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 320,
+  "nextId": 322,
   "tasks": [
     {
       "id": "KN-001",
@@ -931,7 +931,24 @@
       ],
       "status": "done",
       "exit": "Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "agent/roasts/KN-021-round-1.2026-09-11T12-58-04-192Z.md",
+          "filed": [
+            "KN-320",
+            "KN-321"
+          ],
+          "cardDigest": "eeb239720ba64ab6ae6240aedc162396ed65b6f23473e6670dbd0489241cff7c",
+          "head": "786b4d802b77758aced6804a66ef942b40500a3c",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "dismissed": "The critical is KN-317, filed from the KN-009 roast and naming the Page Header's title; it stays at medium under the owner's rule of 2026-09-11 and gains a note. The import finding is KN-092 and KN-309. The score rises from 4.0 because the roast itself confirms the breakpoint is the one DESIGN.md chose, the mirrored arrow survives the RTL plugin, and the h1 is right for the page.",
+          "at": "2026-09-11T13:05:26.561Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -954,14 +971,14 @@
         "KN-007",
         "KN-009"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:18.673Z"
+      "updatedAt": "2026-09-11T12:58:10.051Z"
     },
     {
       "id": "KN-023",
@@ -8138,8 +8155,11 @@
       "status": "backlog",
       "exit": "The Button, Icon Button, Tabs, Page Header and Color Picker stories keep their copy in args that follow the Language toolbar, the Input's way, or disable the panel with the reason stated, and no story draws copy its Controls do not show.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-11T12:57:43.977Z"
+      "notes": [
+        "2026-09-11: the KN-021 roast raised this again, as a critical, for the Page Header, whose back arrow and action are also switched by the story's wrapper rather than by args. It stays here at medium under the owner's rule of 2026-09-11."
+      ],
+      "createdAt": "2026-09-11T12:57:43.977Z",
+      "updatedAt": "2026-09-11T13:05:26.419Z"
     },
     {
       "id": "KN-318",
@@ -8170,6 +8190,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:57:44.335Z"
+    },
+    {
+      "id": "KN-320",
+      "title": "The Page Header's back control is a 20 by 20 target, under the 24 the product asks of a control",
+      "desc": "CHILD OF KN-021, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-021 roast. The back control is a ButtonBase round the 20 pixel arrow with no size or padding of its own, so its whole hit area is 20 by 20. DESIGN.md asks a control for a target of 24 or more, KN-206 and KN-267, and the back arrow is the way out of a job's page on a phone.",
+      "why": "A back arrow missed on a phone sends the tap to nothing, and the product's own rule for a control's target is 24.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The back control's target is 24 or more each way while the arrow stays 20 and stays 12 from the title, and the WithBack story measures both.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T13:05:16.428Z"
+    },
+    {
+      "id": "KN-321",
+      "title": "The Page Header's language switch is tested at 390 and 1440, not either side of the 900 it turns on",
+      "desc": "CHILD OF KN-021, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-021 roast. LanguageOnNarrowScreens sets the viewport to 390 and then 1440, so a breakpoint moved to 600, 768 or 1200 would still pass. DESIGN.md's section 5 puts it at MUI's md, 900.",
+      "why": "Between 600 and 900 a tablet shows the header's switch, and only the two widths either side of 900 prove where it turns.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The story shows the switch at 899 wide and hides it at 900.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T13:05:16.563Z"
     }
   ]
 }
