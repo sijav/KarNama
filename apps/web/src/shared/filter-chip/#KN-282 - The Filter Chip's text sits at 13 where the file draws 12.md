@@ -62,17 +62,17 @@ out.
 ## What changes
 
 - `FilterChip.tsx`: the edge on `::before`, the pressed shadow, the padding.
-- `FilterChip.stories.tsx`: the measurements, and the Pressed story.
-- `story-docs/{en,fa}/Shared-FilterChip.md`: the Pressed story's entry.
+- `FilterChip.stories.tsx`: the measurements. The Pressed story planned here was
+  dropped after the check, below, so the docs did not change.
 - `DESIGN.md`: the stroke section's sentence on the chip.
 - `agent/scripts/verify/KN-282.mjs`: new.
 
 ## The verifier, clause by clause
 
-1. The Filter Chip stories pass, Default, Selected and Pressed by name.
+1. The Filter Chip stories pass, Default, Selected and In English by name.
 2. **THE CASE**: the border put back on the chip itself, laid out, fails Default
    by name on the text's distance, 13.
-3. A pressed edge of 1 fails Pressed by name.
+3. A pressed edge of 1 fails the production reading of a pressed chip.
 4. No padding in `FilterChip.tsx` is computed from a border width, and none
    runs above or below the text.
 5. **In a production build**, in both languages, light and dark: the text 12
