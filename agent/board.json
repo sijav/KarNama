@@ -5066,12 +5066,14 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T00:28:35.373Z",
-      "updatedAt": "2026-09-11T21:35:33.567Z"
+      "updatedAt": "2026-09-11T21:46:06.249Z",
+      "evidence": "The preview gives every story an in-memory localStorage from before its first render (.storybook/own-storage.ts); the four stories that wrote the shared store, two with a racing save and restore and two with none, no longer can. The provider's stories assert their own store holds both choices and no real Storage.setItem ran, which fails 2 of 2 with the stand-in removed; storybook project 265 of 267, the two KN-365 flakes",
+      "closedAt": "2026-09-11T21:46:06.249Z"
     },
     {
       "id": "KN-179",
