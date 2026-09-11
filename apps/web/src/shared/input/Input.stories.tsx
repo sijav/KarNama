@@ -817,3 +817,57 @@ export const BlankErrorIsNoError: Story = {
     }
   },
 }
+
+// A field that checks itself as it is typed in, the way a form's validation
+// does: empty is an error the moment it happens, and a letter clears it. The
+// specimen with its helper, or the bare field with none.
+const ValidatesAsYouType = ({ described }: { described: boolean }) => {
+  const { i18n } = useLingui()
+  const [value, setValue] = useState(TYPED)
+  const error = value === '' ? { error: i18n._('This field cannot be empty') } : {}
+  return described ? <JobTitle value={value} onChange={setValue} {...error} /> : <Bare value={value} onChange={setValue} {...error} />
+}
+
+export const ErrorAnnouncedWhileTyping: Story = {
+  // An error that appears while the field has focus: a changed description is
+  // not read while focus stays, so the error goes into a live region that was
+  // in the page before it arrived, WCAG 4.1.3, KN-286. Cleared, the helper is
+  // the description again, and a field with no helper is described by nothing.
+  // A fixed render, so no control applies.
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <Stack spacing={3}>
+      <Box data-testid="described">
+        <ValidatesAsYouType described />
+      </Box>
+      <Box data-testid="bare">
+        <ValidatesAsYouType described={false} />
+      </Box>
+    </Stack>
+  ),
+  play: async ({ canvasElement }) => {
+    const message = i18n._('This field cannot be empty')
+    for (const { id, helper } of [
+      { id: 'described', helper: specimenCopy().helperText },
+      { id: 'bare', helper: undefined },
+    ]) {
+      const field = within(canvasElement).getByTestId(id)
+      const box = within(field).getByRole('textbox')
+      // The region is in the page before anything goes wrong, and empty.
+      const region = within(field).getByRole('alert')
+      await expect(region).toBeEmptyDOMElement()
+      await userEvent.click(box)
+      await userEvent.clear(box)
+      // Still in the field, and told: the same region carries the error.
+      await expect(box).toHaveFocus()
+      await expect(region).toHaveTextContent(message)
+      await expect(box).toHaveAttribute('aria-invalid', 'true')
+      await expect(box).toHaveAccessibleDescription(message)
+      await userEvent.type(box, 'x')
+      await expect(region).toBeEmptyDOMElement()
+      await expect(box).not.toHaveAttribute('aria-invalid')
+      if (helper === undefined) await expect(box).not.toHaveAttribute('aria-describedby')
+      else await expect(box).toHaveAccessibleDescription(helper)
+    }
+  },
+}

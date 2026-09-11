@@ -185,7 +185,16 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
                 : theme.karnama.semantic['text/secondary'],
         })}
       >
-        {message}
+        {/* The error is announced as it appears, to someone still typing in
+            the field: a changed description is not read while focus stays, so
+            the error goes into a live region, in the page from the first
+            render and empty until then, WCAG 4.1.3, KN-286. role alert is
+            already assertive and atomic, so it takes no aria-live. KN-287,
+            collapsing a line with nothing to say, must keep this span mounted
+            and exposed, never hidden, or the next error lands in a region that
+            was not there. */}
+        <span role="alert">{error}</span>
+        {error === undefined ? helperText : null}
       </Box>
     </Box>
   )

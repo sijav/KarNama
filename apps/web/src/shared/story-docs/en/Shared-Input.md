@@ -181,3 +181,11 @@ below either of them moves.
 An empty error beside one of only spaces, one of only a zero-width non-joiner and
 one of only a right-to-left mark: none is an error, so all four keep the default
 border, are not marked invalid, and show the helper.
+
+### ErrorAnnouncedWhileTyping
+
+A field that checks itself as it is typed in. Emptied while it has focus, it
+shows its error, and a screen reader reads the error out at once, from a live
+region that was in the page before it. A letter clears the error, and the
+helper describes the field again; a field with no helper is then described by
+nothing.

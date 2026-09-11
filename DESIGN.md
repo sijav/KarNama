@@ -251,6 +251,14 @@ contains any of those characters is still an error. A form that clears an
 error to the empty string rather than to nothing would otherwise leave a valid
 field red, and a screen reader would announce it invalid with nothing to say why.
 
+**And an error is announced as it appears**, to someone still typing in the
+field: a changed description is not read while focus stays, so the error goes
+into a live region, `role="alert"` inside the message line, in the page from
+the first render and empty until there is an error, WCAG 4.1.3, KN-286. The
+helper sits beside it while there is no error, so the line, and the field's
+description, reads one text or the other. A line drawn only when there is
+something to say, KN-287, keeps the empty region mounted and exposed.
+
 ### The Input's icon slots, and its label
 
 Node `95:38` carries four booleans: Label, Helper Text, Leading Icon and
