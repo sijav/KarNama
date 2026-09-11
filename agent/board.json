@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 295,
+  "nextId": 296,
   "tasks": [
     {
       "id": "KN-001",
@@ -6972,7 +6972,23 @@
       "parent": [],
       "status": "done",
       "exit": "An invalid Input focused inside a host that clips its overflow flush at the field's edges still changes at least a two-pixel perimeter at 3:1, KN-244's measure, either because the change is drawn inside the field's own box or because the Input keeps the room itself; a story renders the field in an overflow hidden host with no padding and asserts, from the rendered geometry, that every pixel of the focus change lies inside every clipping ancestor, and a mutation back to a ring the host clips fails it by name; DESIGN.md's section says which; and the Checkbox's and the Filter Chip's rings are checked for the same, each matching or carrying a card.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-274-round-1.2026-09-11T04-39-25-555Z.md",
+          "filed": [
+            "KN-295"
+          ],
+          "cardDigest": "a28a97fae9391adc683ea3cd59c61783f8a41ef4c8074498dfe13a319c3fa6bc",
+          "head": "b385116421ff93d4f86440b767cf81a024c8e7be",
+          "reviewerScore": 5.5,
+          "reviewerCriticals": 0,
+          "dismissed": "Both majors stand as proof-strength findings and are KN-295: the story's area is a rectangle model, about 44 square pixels kinder than the rendered corners, which a 2W - 4 margin covers above about 24 wide; and focusExtent does not read transforms, filters, clip-paths or masks. The minor misreads agent/RALPH.md step 2b: a plan stays beside the work; its before-state heading now says so.",
+          "at": "2026-09-11T04:43:43.821Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T14:40:24.833Z",
       "updatedAt": "2026-09-10T19:54:35.633Z",
@@ -7402,6 +7418,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T19:28:42.827Z"
+    },
+    {
+      "id": "KN-295",
+      "title": "KN-274's story measures the focus change from a model: rounded bands counted as rectangles, and transforms and filters not read",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-274 roast, KN-274 being a child of KN-011. FocusedWhileInvalid computes the area the focus change covers with band(), which counts the widened error edge and the ::after ring as rectangles though both have rounded corners, and the verifier reads rendered pixels only on a 568 wide field. The corners and their anti-aliasing cost about 44 square pixels there, 3536 measured against 3580 computed, a loss that does not shrink with the field, so the story's margin is a model rather than a reading, and no narrow field is measured. And focusExtent reads only outlines, outer shadows and the pseudo-elements' insets: a transform, a filter, a clip-path or a mask on the field, its pseudo-elements or the input can move paint past the field's edge while the helper still reports it inside.",
+      "why": "The story is the proof that focus shows on an invalid field whatever holds it, and a proof that counts a shape the field does not draw, or cannot see a paint effect, can pass while the ring is clipped or short. Critical on the owner's order of 2026-09-10, as a finding on a built component.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "FocusedWhileInvalid's area accounts for the rounded corners, from the exact quarter-ring areas of the edge's radius and the ring's or from a rendered reading, and still clears 4W + 4H; focusExtent requires what it does not model, transform, filter, clip-path and mask, to be none on the field, both pseudo-elements and the input, and counts the input's own outline; a transform and a filter on the ::after each fail FocusedWhileInvalid by name; the verifier also reads the rendered change on a field 80 wide or less, in light and dark, clearing 4W + 4H with nothing changed outside; and DESIGN.md's arithmetic states the corners' loss and the width above which the change clears the perimeter.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T04:43:33.877Z"
     }
   ]
 }

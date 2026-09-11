@@ -1,0 +1,18 @@
+1. No, the story’s WCAG arithmetic is not a sound proof. It counts rectangular bands, while both bands have rounded corners. There is no minimum field width and no test at narrow widths or browser zoom. The production pixel check only exercises a 568px field, so it does not close that gap. The 3.04:1 dark token is acceptable for solid pixels, but antialiased corner pixels do not meet it and the calculation does not exclude their lost area.
+
+2. No, `focusExtent` is not sound as “every pixel” geometry. It ignores transforms, filters, masks/clip paths, descendants such as the native input, and several paint effects. The outline positive control is real for the outline mutation, but it proves only that one mutation and the screenshot pipeline work, not that the helper accounts for all possible overflow paint.
+
+Findings:
+
+- major — The WCAG area assertion overclaims compliance. `band()` treats both the widened rounded error edge and the rounded `::after` ring as rectangular areas, then compares that inflated result against `4W + 4H`. At the only rendered size, this may have ample margin, but the component has no width floor and the verifier tests no smaller width or zoom. A sufficiently narrow constrained Input can lose the claimed margin to its curved/antialiased corners without any assertion failing. Use rendered qualifying-pixel area across representative constrained widths, or calculate the rounded geometry correctly and enforce a minimum supported width. [Input.stories.tsx](D:\Kar\Gandom\KarNama\apps\web\src\shared\input\Input.stories.tsx:390) [Input.stories.tsx](D:\Kar\Gandom\KarNama\apps\web\src\shared\input\Input.stories.tsx:433)
+
+- major — The required “every pixel of the focus change lies inside” assertion is not what the story performs. `focusExtent()` derives a rectangle from offsets, outline, and box shadow only; it deliberately ignores transforms and filters. For example, adding `transform: translateX(8px)` or a filter to `::after` leaves the helper’s computed extent inside the field even when paint crosses its edge. In the flush horizontal host, that paint can then be clipped, recreating the defect while the geometry assertion passes. Add mutations for transformed/filter overflow, or replace this inference with a rendered-pixel extent check in the story. [Input.stories.tsx](D:\Kar\Gandom\KarNama\apps\web\src\shared\input\Input.stories.tsx:344) [Input.stories.tsx](D:\Kar\Gandom\KarNama\apps\web\src\shared\input\Input.stories.tsx:353)
+
+- minor — The new KN-274 markdown beside `Input.tsx` is an outdated implementation plan: it says the current component uses the external outline and that the story has padded backdrops. It also places substantial documentation prose outside the required `shared/story-docs/{en,fa}` locations. Remove it from the change or move any durable user-facing documentation into the designated story-doc files. [#KN-274 … .md](<D:\Kar\Gandom\KarNama\apps\web\src\shared\input/#KN-274 - The Input's focus ring for an invalid field sits outside a field that fills its container.md:21>)
+
+`node agent/scripts/todo.mjs validate` reports the board is valid. I did not run `KN-274.mjs` because it deliberately rewrites `Input.tsx` and this review workspace is read-only.
+
+VERDICT
+score: 5.5
+criticals: 0
+one-line: Replace the rectangular WCAG proof and incomplete extent inference with rendered-pixel coverage across constrained widths and overflow-paint mutations

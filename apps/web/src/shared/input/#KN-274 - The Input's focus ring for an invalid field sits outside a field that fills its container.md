@@ -18,7 +18,7 @@ every clipping ancestor, and a mutation back to a ring the host clips fails it
 by name; DESIGN.md's section says which; and the Checkbox's and the Filter
 Chip's rings are checked for the same, each matching or carrying a card.
 
-## What is there now
+## What was there before KN-274
 
 - A focused invalid field keeps its edge in `border/error` at the focus width,
   two pixels, KN-241, and shows focus by an outline: two pixels of
