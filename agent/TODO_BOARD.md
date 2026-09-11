@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 125 of 339 tasks done · 256 of 770 points.
+Project **KarNama** · 125 of 340 tasks done · 256 of 772 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -23,7 +23,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (209)
+## Backlog (210)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -69,6 +69,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-315` | The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one | high | 2 | web | none | The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them. |
 | `KN-316` | The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input | high | 2 | web | none | A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4. |
 | `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
+| `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | high | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
@@ -4334,4 +4335,15 @@ CHILD OF KN-020, recorded in prose because board.json cannot express parent_task
 **Why.** Every exported component gets a story, AGENTS.md.
 
 **Exit condition.** StatusChoice is either internal to the picker or has a story showing Default, Hover and Selected from its own args.
+
+### `KN-340` Coverage fell to 99.33 percent with the components built on 2026-09-11
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+Found by running npm test on 2026-09-11 after KN-020: all 904 tests pass, but lines are 99.32, functions 98.57, statements 99.33 and branches 96.82 against the 100 the product requires. Uncovered: BulkActionBar line 39 (a contacts singular), Checkbox 45, ColorPicker 163 (a value outside the nine), Icon's functions, EmploymentTypeSelect 26 (its onChange), JobLevelSelect 21 to 25, StatusMenu 94 and 95 (delete), SearchBar 40, Select 57 to 61 (autofill's comma string), SortControl 70 (an unknown order), StatusControl 126 and 127 (add from the popover), Tabs 48. Each close ran only the stories and unit tests it touched, never npm test, so nothing saw the total fall.
+
+**Why.** 100 percent coverage is a product rule, and a total that falls a little with each component stops meaning anything.
+
+**Exit condition.** npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion.
 

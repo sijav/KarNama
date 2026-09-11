@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 340,
+  "nextId": 341,
   "tasks": [
     {
       "id": "KN-001",
@@ -8618,6 +8618,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T14:47:00.768Z"
+    },
+    {
+      "id": "KN-340",
+      "title": "Coverage fell to 99.33 percent with the components built on 2026-09-11",
+      "desc": "Found by running npm test on 2026-09-11 after KN-020: all 904 tests pass, but lines are 99.32, functions 98.57, statements 99.33 and branches 96.82 against the 100 the product requires. Uncovered: BulkActionBar line 39 (a contacts singular), Checkbox 45, ColorPicker 163 (a value outside the nine), Icon's functions, EmploymentTypeSelect 26 (its onChange), JobLevelSelect 21 to 25, StatusMenu 94 and 95 (delete), SearchBar 40, Select 57 to 61 (autofill's comma string), SortControl 70 (an unknown order), StatusControl 126 and 127 (add from the popover), Tabs 48. Each close ran only the stories and unit tests it touched, never npm test, so nothing saw the total fall.",
+      "why": "100 percent coverage is a product rule, and a total that falls a little with each component stops meaning anything.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T14:54:20.307Z"
     }
   ]
 }
