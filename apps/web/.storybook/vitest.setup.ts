@@ -1,5 +1,6 @@
 import { setProjectAnnotations } from '@storybook/react-vite'
-import { beforeAll } from 'vitest'
+import { beforeAll, beforeEach } from 'vitest'
+import { commands } from 'vitest/browser'
 import preview from './preview'
 
 // Storybook 10.5.10 prints an Info notice saying this call is applied
@@ -22,3 +23,18 @@ beforeAll(project.beforeAll)
 // the Vitest internal the Checkbox Hover story used to rely on, which an upgrade
 // could rename and so turn every run into a silent pass.
 Object.assign(globalThis, { __KARNAMA_STORY_TEST__: true })
+
+// Every story starts with the runner's real pointer where it hovers nothing,
+// KN-260. The Hover stories move that pointer, as they must, and nothing moved
+// it back, so the next story to draw a control under the spot started hovered
+// and a resting-state assertion failed or passed by where the mouse had been.
+// Once for the whole suite, by the parkPointer command vitest.config.ts gives
+// the browser: the pointer goes to the page's top-left corner.
+declare module 'vitest/browser' {
+  interface BrowserCommands {
+    parkPointer: () => Promise<void>
+  }
+}
+beforeEach(async () => {
+  await commands.parkPointer()
+})

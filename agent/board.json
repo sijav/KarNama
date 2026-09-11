@@ -9213,8 +9213,11 @@
       "status": "backlog",
       "exit": "The full storybook project passes three runs in a row, either with pointer-driven story files run alone or with each such story moving the pointer to its own target before it asserts, and the reason is written where the choice is made.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-11T17:43:31.970Z"
+      "notes": [
+        "2026-09-11, KN-260: the pointer park before every story made the whole storybook project pass, 245 of 245, where the run before it failed JobCard Pressed and NavItem Hover; those were the lingering pointer. Two more clean full runs would close this."
+      ],
+      "createdAt": "2026-09-11T17:43:31.970Z",
+      "updatedAt": "2026-09-11T18:10:28.265Z"
     },
     {
       "id": "KN-366",

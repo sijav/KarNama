@@ -404,25 +404,6 @@ exact pattern for `'::placeholder'`. This entry goes when
 `grep -n "'getComputedStyle'" apps/web/eslint.config.js` finds nothing and
 `npm run lint` still passes.
 
-## 15. BlankErrorIsNoError takes its fields out of the pointer's way
-
-**What.** The Input story `BlankErrorIsNoError` renders its four fields in a row
-with `pointerEvents: 'none'`, added by KN-259.
-
-**Why it is like that.** The Hover stories move the test runner's real pointer,
-and nothing moves it back. In the full suite one of the four fields rendered
-under that spot, took its hover border, and failed the assertion that a blank
-error leaves the resting border.
-
-**What it costs.** That story cannot notice a hover problem, which the Hover
-story covers. Worse, every other story that asserts a resting border is exposed
-to the same lingering pointer: the Input's Default story passes only because
-nothing it renders sits under the spot.
-
-**The check that retires this.** KN-260 puts the pointer somewhere neutral
-before every story, once for the whole suite. Then the `pointerEvents` line
-comes out of the story, the full suite still passes, and this entry is deleted.
-
 ## 16. The Input stories check their args follow the language only in Storybook's preview
 
 **What.** `ControlsMatchTheCanvas` and its English twin assert everywhere that the

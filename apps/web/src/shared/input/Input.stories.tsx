@@ -852,9 +852,7 @@ export const BlankErrorIsNoError: Story = {
   parameters: { controls: { disable: true } },
   globals: { colorScheme: 'light' },
   render: () => (
-    // Out of the pointer's way: the test runner's real pointer stays where the
-    // Hover story left it, and a hovered field takes its hover border.
-    <Stack direction="row" spacing={3} data-testid="blank" sx={{ pointerEvents: 'none' }}>
+    <Stack direction="row" spacing={3} data-testid="blank">
       <JobTitle error="" />
       <JobTitle error="   " />
       <JobTitle error={'\u200c'} />
@@ -979,5 +977,31 @@ export const Required: Story = {
     const box = within(canvasElement).getByRole('textbox')
     await expect(box).toBeRequired()
     await expect(box).toHaveAccessibleName(args.label)
+  },
+}
+
+export const LeavesThePointerOnTheField: Story = {
+  // The first half of KN-260's check: the runner's real pointer is left on the
+  // field, which takes the hover border. StartsAtRest follows it in the same
+  // spot and must find the resting border, which the suite's reset gives it.
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'name']),
+  globals: { colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const browser = await import('vitest/browser')
+    const field = fieldOf(canvasElement)
+    await browser.userEvent.hover(within(canvasElement).getByRole('textbox'))
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['text/secondary']))
+  },
+}
+
+export const StartsAtRest: Story = {
+  // The second half: drawn where the story before left the pointer, the field
+  // is at rest, because every story starts with the pointer on nothing.
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'name']),
+  globals: { colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    const field = fieldOf(canvasElement)
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
   },
 }

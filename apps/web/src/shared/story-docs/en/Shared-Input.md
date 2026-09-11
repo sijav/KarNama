@@ -215,3 +215,12 @@ The field of several lines, 140 tall, its text from the top.
 ### Required
 
 A required field, its mark after the label.
+
+### LeavesThePointerOnTheField
+
+The field hovered by the runner's pointer, which the story leaves there.
+
+### StartsAtRest
+
+The field drawn where the pointer was left, at rest: every story starts with
+the pointer on nothing.

@@ -1,10 +1,18 @@
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
 import react from '@vitejs/plugin-react-swc'
-import { playwright } from '@vitest/browser-playwright'
+import { defineBrowserCommand, playwright } from '@vitest/browser-playwright'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 
 const dirname = fileURLToPath(new URL('.', import.meta.url))
+
+// Moves the runner's real pointer to the page's top-left corner, where it
+// hovers none of a story's controls, KN-260. A command rather than a hover of
+// some element, because Playwright's hover waits for its target to be visible
+// and stable, which an element added before a story renders never is.
+const parkPointer = defineBrowserCommand(async (context) => {
+  await context.page.mouse.move(0, 0)
+})
 
 /**
  * Gate mode: `KARNAMA_GATE_FIXTURES=1 npm test` adds the fixture that is
@@ -89,6 +97,7 @@ export default defineConfig({
             headless: true,
             provider: playwright(),
             instances: [{ browser: 'chromium' }],
+            commands: { parkPointer },
           },
           setupFiles: ['.storybook/vitest.setup.ts'],
         },
