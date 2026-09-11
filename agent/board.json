@@ -9286,12 +9286,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The column shows the empty message whenever no child renders, null, false and empty arrays included (Children.toArray), and a story passes such a list.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T16:15:57.688Z",
-      "updatedAt": "2026-09-11T19:49:11.632Z"
+      "updatedAt": "2026-09-11T19:50:51.958Z",
+      "evidence": "EveryCardFiltered hands the column [false, null, []] and finds the 241:46 empty message; it failed on Children.count; kanban column stories 11 of 11; looked at in Persian light.",
+      "closedAt": "2026-09-11T19:50:51.958Z"
     },
     {
       "id": "KN-354",
