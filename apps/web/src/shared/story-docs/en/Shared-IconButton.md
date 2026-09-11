@@ -7,7 +7,8 @@ neutral one takes a light grey fill and darker icon, and the danger one a pale
 red fill and a red icon, so a destructive action shows itself before it is
 pressed. Disabled, it fades and leaves the tab order. It always needs a name,
 because an icon alone says nothing to a screen reader, and a blank name is
-refused. The focus ring is drawn inside the button.
+refused: the button is left out and the mistake reported in the console, while
+the rest of the screen renders. The focus ring is drawn inside the button.
 
 ## Props
 
@@ -60,3 +61,8 @@ Both tones disabled, faded and out of the tab order.
 
 Tab reaches the button, and Enter and Space both press it, with no pointer
 anywhere.
+
+### BlankName
+
+A button given a blank name beside one given a real name: the blank one is left
+out and reported in the console, and the named one renders.

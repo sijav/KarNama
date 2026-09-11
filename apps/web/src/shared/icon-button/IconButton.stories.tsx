@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { semantic, spacing, status } from '../../theme/tokens'
 import { ICON_NAMES } from '../icon'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -153,5 +153,31 @@ export const KeyboardOnly: Story = {
     await expect(button).toHaveClass('Mui-focusVisible')
     const ring = getComputedStyle(button, '::after')
     await expect([ring.borderTopStyle, px(ring.borderTopWidth), px(ring.top)]).toEqual(['solid', 3, 1])
+  },
+}
+
+export const BlankName: Story = {
+  // A blank name is refused rather than rendered nameless, KN-311: that button
+  // is left out and reported in the console, and the named one beside it
+  // renders, so the mistake stays at the button instead of taking the screen
+  // down. The console is watched from before the render, since the report comes
+  // as the button mounts. A fixed pair, so no control applies.
+  parameters: { controls: { disable: true } },
+  beforeEach: () => {
+    const report = spyOn(console, 'error')
+    return () => {
+      report.mockRestore()
+    }
+  },
+  render: (args) => (
+    <Box data-testid="row" sx={{ display: 'flex', gap: `${spacing.xs}px` }}>
+      <IconButton {...args} aria-label="   " />
+      <Named {...args} />
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const row = within(canvasElement).getByTestId('row')
+    await expect(within(row).getAllByRole('button')).toHaveLength(1)
+    await expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/aria-label is blank/u))
   },
 }
