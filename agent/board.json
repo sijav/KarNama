@@ -1200,7 +1200,7 @@
         "KN-014",
         "KN-062"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Both layouts and all three states match Figma, every field the design draws is present, long values truncate rather than reflow the card, and email and phone are actionable links. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the name, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293.",
       "roasts": [],
       "notes": [
@@ -1208,7 +1208,9 @@
         "2026-09-11, KN-293: the Checkbox's root is 28 by 28, four of room round its 20 by 20 frame for the focus ring. The file's Title Group clips, so the room given back with a negative margin lies outside it: DESIGN.md's 'What a host owes it' says the group must not clip, and this exit condition now asks the story to prove it on the real group."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T14:43:53.882Z"
+      "updatedAt": "2026-09-11T15:00:24.632Z",
+      "evidence": "Contact Card (248:116) Full and Compact in Default, Hover and Selected, full card 360x261 as drawn, every field with mailto and tel links, truncation, checkbox ring whole in the Title Group; 9 stories and the phone unit tests pass",
+      "closedAt": "2026-09-11T15:00:24.632Z"
     },
     {
       "id": "KN-027",
