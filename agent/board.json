@@ -7102,13 +7102,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Bound tells its own writes from anything else by a revision carried with each write, not by value, so an arg whose value is not the one sent at its revision is taken, whatever the queue holds; a check in a production build reproduces the sequence, an edit in flight, a Controls value equal to it arriving after a newer edit, and ends with the field and the arg equal; the exception is gone from the comment; the revision never reaches the Input or shows as a control; and KN-253's and KN-249's verifiers still pass.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T16:23:23.839Z",
-      "updatedAt": "2026-09-11T05:28:16.166Z",
-      "verify": "node agent/scripts/verify/KN-280.mjs"
+      "updatedAt": "2026-09-11T05:31:04.055Z",
+      "verify": "node agent/scripts/verify/KN-280.mjs",
+      "evidence": "Bound in Input.stories.tsx carries a revision with each write: a React ref counts on from the larger of itself and the store's revision, onChange writes updateArgs({ value, revision: at }), and the sends are kept as revision and value pairs. An arg is an echo only when its revision is one the field sent and its value the one sent there; the change watched is the pair of value and revision; anything else is taken and the sends cleared. The revision is a declared numeric arg from 0 with its table disabled, typed on the meta as BoundArgs, and Bound takes it out of its args before spreading them onto the Input; the exception is gone from the comment and from KN-253's verifier's header, and KN-249's anchor moved to the write with its revision. node agent/scripts/verify/KN-280.mjs passed, in production builds in Playwright's Chromium: sequence A, a render put in flight, two edits x7a and x7ab, then Controls x7a through the manager's channel, all in one tick, so one render brings only (x7a, 2), ends with field and arg at x7a; sequence B, the same without the pending render, two renders (x7a, 1) and (x7a, 2), ends at x7a too; a build with the echo tested by value alone ends A apart, x7ab against x7a, and a build watching the value alone ends B apart, x7ab against x7a, the pre-KN-280 failure reproduced in each; an address-bar revision is dropped on Default, which lists its controls, and read as the number 5 on ControlsMatchTheCanvas, which does not, the next write one past the store's; after a reset, a new Controls value typed into ends with field and arg equal; no element in the story carries a revision attribute though the store does, and a build spreading the whole args onto the Input puts one there; the manager's Controls panel and the Docs table list no revision row, the unlisted story declares it numeric and table-disabled, and a build with the table row left on declares it shown; KN-253's verifier passes and runs KN-249's. Unit project, eslint on the Input and tsc clean. Not established: two Bound instances sharing one story's args, which the comment rules out; and the address bar shows the revision after an edit, which is not a control.",
+      "closedAt": "2026-09-11T05:31:04.055Z"
     },
     {
       "id": "KN-281",
