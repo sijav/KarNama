@@ -25,6 +25,18 @@ const contactIn = (locale: Locale, index: number): ContactCardContact => {
   }
 }
 
+// A contact with only a name, which the owner allowed, KN-071: the first
+// fixture's name, and no role, company or field.
+const nameOnlyIn = (locale: Locale): ContactCardContact => ({
+  ...contactIn(locale, 0),
+  role: null,
+  company: null,
+  email: null,
+  phone: null,
+  job: null,
+  linkedin: null,
+})
+
 const CONTROLLED: (keyof ContactCardProps)[] = ['contact', 'layout', 'selected']
 const LAYOUTS: NonNullable<ContactCardProps['layout']>[] = ['full', 'compact']
 
@@ -270,5 +282,27 @@ export const InEnglish: Story = {
   globals: { locale: 'en-US' },
   play: async ({ args, canvasElement }) => {
     await expect(openerOf(canvasElement, args.contact.name)).toBeVisible()
+  },
+}
+
+export const NameOnly: Story = {
+  args: { contact: nameOnlyIn('fa-IR') },
+  play: async ({ args, canvasElement }) => {
+    // A contact with only a name, KN-342: the title row alone inside the
+    // card's 24 of padding, with no empty role line and no divider under it.
+    const card = cardOf(canvasElement)
+    await expect(openerOf(canvasElement, args.contact.name)).toBeInTheDocument()
+    await expect(card.querySelector('p, hr')).toBeNull()
+    await expect(card.getBoundingClientRect().height).toBe(24 + 30 + 24)
+  },
+}
+
+export const NameOnlyCompact: Story = {
+  args: { contact: nameOnlyIn('fa-IR'), layout: 'compact' },
+  play: async ({ args, canvasElement }) => {
+    // The compact card with only a name: the name stands alone beside the
+    // avatar, with no empty role line under it.
+    const name = openerOf(canvasElement, args.contact.name)
+    await expect(name.parentElement?.children).toHaveLength(1)
   },
 }

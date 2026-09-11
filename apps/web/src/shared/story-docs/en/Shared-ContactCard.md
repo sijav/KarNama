@@ -84,3 +84,13 @@ A contact with only a name and a role.
 ### InEnglish
 
 The full card in English.
+
+### NameOnly
+
+A contact with only a name: the card holds the name alone, with no empty role
+line and no divider.
+
+### NameOnlyCompact
+
+The compact card for a contact with only a name: the name alone beside the
+avatar.

@@ -10,7 +10,7 @@ import { dialable, formatPhone } from './phone'
 
 export interface ContactCardContact {
   name: string
-  role: string
+  role: string | null
   company: string | null
   email: string | null
   phone: string | null
@@ -221,19 +221,22 @@ export const ContactCard = ({ contact, layout = 'full', selected = false, onOpen
             </Name>
             {/* 12 at 400 on the file's automatic line height, the font's own,
                 which is CSS's normal, as the Color Picker's helper is: the label
-                role's size with the body's weight. */}
-            <Box
-              component="span"
-              sx={(theme) => ({
-                ...oneLine.sx,
-                fontSize: `${typeScale.label.size}px`,
-                lineHeight: 'normal',
-                fontWeight: typeScale.body.weight,
-                color: theme.karnama.semantic['text/secondary'],
-              })}
-            >
-              {role}
-            </Box>
+                role's size with the body's weight. Left out with neither role
+                nor company, as a name-only contact has, KN-342. */}
+            {role === '' ? null : (
+              <Box
+                component="span"
+                sx={(theme) => ({
+                  ...oneLine.sx,
+                  fontSize: `${typeScale.label.size}px`,
+                  lineHeight: 'normal',
+                  fontWeight: typeScale.body.weight,
+                  color: theme.karnama.semantic['text/secondary'],
+                })}
+              >
+                {role}
+              </Box>
+            )}
           </Box>
         </Box>
         <Box sx={{ position: 'relative', zIndex: 1, display: 'flex', gap: `${spacing['2xs']}px`, flexShrink: 0 }}>
@@ -335,19 +338,25 @@ export const ContactCard = ({ contact, layout = 'full', selected = false, onOpen
           <Icon name="trash" size="sm" color="inherit" />
         </ButtonBase>
       </Box>
-      <Box component="p" sx={(theme) => ({ margin: 0, ...oneLine.sx, color: theme.karnama.semantic['text/secondary'] })}>
-        {role}
-      </Box>
-      <Box
-        component="hr"
-        sx={(theme) => ({
-          margin: 0,
-          border: 0,
-          height: `${EDGE}px`,
-          flexShrink: 0,
-          backgroundColor: theme.karnama.semantic['border/default'],
-        })}
-      />
+      {/* The role line and the divider under it, left out with neither role
+          nor company, as a name-only contact has, KN-342. */}
+      {role === '' ? null : (
+        <>
+          <Box component="p" sx={(theme) => ({ margin: 0, ...oneLine.sx, color: theme.karnama.semantic['text/secondary'] })}>
+            {role}
+          </Box>
+          <Box
+            component="hr"
+            sx={(theme) => ({
+              margin: 0,
+              border: 0,
+              height: `${EDGE}px`,
+              flexShrink: 0,
+              backgroundColor: theme.karnama.semantic['border/default'],
+            })}
+          />
+        </>
+      )}
       {contact.email === null ? null : (
         <Field icon="mail">
           <Link href={`mailto:${contact.email}`}>{contact.email}</Link>
