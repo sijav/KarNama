@@ -5858,12 +5858,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "<Box title={'Delete this application' as const} /> and aria-label={'Delete' as const} fail npm run lint in a committed fixture, a story meta title written with 'as const' fails too, and 'as const' on an object or array literal, which is the idiom that is actually used, still passes.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T06:53:19.840Z",
-      "updatedAt": "2026-09-11T17:48:00.073Z"
+      "updatedAt": "2026-09-11T17:50:55.155Z",
+      "evidence": "no-restricted-syntax rejects 'as const' on bare string and template literals in src; as-const-copy.tsx fails on title and aria-label and passes its object as const; as-const-story-title.stories.tsx fails; npm run lint exits 0",
+      "closedAt": "2026-09-11T17:50:55.155Z"
     },
     {
       "id": "KN-218",
