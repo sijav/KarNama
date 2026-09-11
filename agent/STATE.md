@@ -21,7 +21,7 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**138 done, 229 open, 4 blocked, 2 dropped** of 373 (2026-09-11). Coverage
+**156 done, 232 open, 4 blocked, 2 dropped** of 394 (2026-09-11). Coverage
 99.33 percent on the full `npm test`; KN-340 carries the gap. **Deployed** on every push by
 `.github/workflows/pages.yml`: https://sijav.github.io/KarNama/ and Storybook
 at https://sijav.github.io/KarNama/storybook/. **Pushed after every close since
@@ -81,7 +81,10 @@ and KN-287. The job level list and KN-077 still wait.
 - A bare literal `'x' as const` skips the lingui rule entirely (KN-217); type the binding against a union instead.
 - Stories that drive the real pointer collide when story files run in parallel (KN-365): rerun a lone failure alone before reading it as a regression.
 - A radio group's arrows: Blink flips left and right by direction, WebKit never does; the pickers take the two keys themselves (KN-301).
-- The Browser pane's key action wants `ArrowLeft`, not `Left`, and a click first: a script's focus does not give the frame the keyboard.
+- The Browser pane's key action wants `ArrowLeft`, not `Left`, and a click first: a script's focus does not give the frame the keyboard; its phone emulation's tap did not open a menu, so drive such a look from the page.
+- Storybook's resetMousePosition never runs here: addon-vitest adds its setup file only when the ROOT config enables the browser; parkPointer is the one reset, TECH-DEBT 19.
+- A board write while a roast starts can throw, printed only as "Node.js v24" under `tail`: rerun the command without `tail` before trusting it.
+- A story's expected colour borrowed on the element under test reads the start of that element's own transition: compute tokens on an element without one, KN-365.
 - The component's own prototype reaction beats the prototype map's summary: hovers are 200 ms ease in and out or 120 ms ease out, never the map's 300 (KN-350).
 - `prettier --write` on a file committed unformatted rewrites all of it: the catalogs and DESIGN.md are kept by hand, so restore and re-apply only the change.
 - The lingui rule skips a literal typed against a union and one compared with `===`; `i18n._()` is recognised only on an instance named `i18n`.
@@ -117,17 +120,21 @@ and KN-287. The job level list and KN-077 still wait.
 
 ## The next step
 
-Since the last head: KN-264's roast recorded (5.0; KN-370 medium, the contract
-should name the first strong character and the visual end; KN-371 and KN-372
-low, story gaps), KN-369 noted as KN-011's child. KN-301 closed and pushed:
-Blink already points a radio group's arrows by direction, WebKit does not, so
-the Color Picker takes left and right itself, `arrowsAcross` in
-`theme/sides.ts`, TECH-DEBT 18; KN-373 gives it to the Status Picker. KN-301's
-roast is running (log in the scratchpad), judge and record it. A Docs page with
-a story pinned to English ends in English under the Persian toolbar: noted on
-KN-090, which already names the mechanism. KN-269, KN-270 and KN-358 wait on the
-owner. Then the law: KN-302 next. The board screen will want KN-305, KN-310,
-KN-341, KN-352, KN-355, KN-356, KN-363 and KN-364.
+Since the last head, closed, pushed and roasted, their findings filed at high
+or lower: KN-302 (a tab panel is a stop only when nothing in it is), KN-303
+(tab ids by position), KN-311 (a blank Icon Button name leaves the button out),
+KN-314 (no stale searches; KN-380 carries the rest), KN-320 (the back arrow's 24
+target), KN-322 (Storybook loads and waits for Vazirmatn), KN-337 (the Status
+Control opens the Change Status modal), KN-341 (the Contact Card's controls fold,
+not display none), KN-342 (name-only contacts), KN-347 (the Contact Modal keeps
+typing; KN-386, high, carries the handoff), KN-351 (every ButtonBase in the
+product's face), KN-353, KN-355 (the shell draws the Page Header, so a phone can
+change language), KN-361 (KN-391, high: its restart must drop a reading in
+flight), KN-364 (Save carries no status), KN-366 (the plugin's own no-letter
+pattern), KN-369 (the park stays, off the page: Storybook's reset never runs
+here) and KN-373. KN-373's roast is running; judge it. KN-365 is high now: both
+full-run flakes read a colour through its own transition. KN-269, KN-270 and
+KN-358 wait on the owner. Then the law.
 
 ## What to read first
 
