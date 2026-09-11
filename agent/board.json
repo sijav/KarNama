@@ -7348,7 +7348,8 @@
         "2026-09-11, from the plan check: a helper made only of blank characters is treated as no helper, by KN-254's blank-error rule, so it draws no line and describes nothing; stated here and asserted by WithoutAHelper, since the exit does not name it. Under the reserved line a blank helper cost nothing; with the line drawn on demand it would draw an empty line under a gap."
       ],
       "createdAt": "2026-09-10T17:57:44.885Z",
-      "updatedAt": "2026-09-11T08:36:32.433Z"
+      "updatedAt": "2026-09-11T08:45:32.104Z",
+      "verify": "node agent/scripts/verify/KN-287.mjs"
     },
     {
       "id": "KN-288",
