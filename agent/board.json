@@ -1269,14 +1269,16 @@
         "KN-009",
         "KN-014"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Both modals match Figma, focus is trapped and returns to the trigger on close, Escape closes, the backdrop click behaviour matches the design, and the dialog has an accessible name and is announced as a dialog.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T15:00:52.426Z"
+      "updatedAt": "2026-09-11T15:12:10.088Z",
+      "evidence": "Modal shell on MUI Dialog (named dialog, overlay/scrim token, focus trap and return, Escape, close and scrim cancel, 150 ms dissolve), ConfirmModal (150:92, Cancel focused) and ChangeStatusModal (150:93, choice held until Confirm); 9 stories and the unit suite pass",
+      "closedAt": "2026-09-11T15:12:10.088Z"
     },
     {
       "id": "KN-029",
