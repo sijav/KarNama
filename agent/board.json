@@ -7426,13 +7426,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Under forced colours the tick and the dash are drawn in system colours, ButtonText when enabled and GrayText when disabled, the keyword kept so a check can read it whatever the palette, and each stays visible against the frame; a check in a production build reads checked and indeterminate, enabled and disabled, under forced colours, comparing the rendered mark with a same-page probe of its system colour, and a mutation back to the author colour fails it; and DESIGN.md's stroke section says what the mark takes there.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T18:27:30.977Z",
-      "updatedAt": "2026-09-11T10:09:24.838Z",
-      "verify": "node agent/scripts/verify/KN-290.mjs"
+      "updatedAt": "2026-09-11T10:10:01.927Z",
+      "verify": "node agent/scripts/verify/KN-290.mjs",
+      "evidence": "KN-290.mjs passed at 65c2189: in a production Storybook under emulated forced colours at a device pixel ratio of two, checked and indeterminate, enabled and disabled, each chose its keyword on --karnama-forced-mark (ButtonText enabled, GrayText disabled) and drew it on the pixels, 66 and 52 fully covered pixels matching a same-page probe of ButtonText (0,0,0) and GrayText (96,0,0), on a ButtonFace frame of 255,255,255; the palette tells the two apart. The marks back in their author colour failed all four states, the disabled ones on their keyword and their pixels. DESIGN.md's stroke section says the tick and the dash take ButtonText, or GrayText when disabled, on a ButtonFace frame. KN-288's chain (KN-284, KN-281) passed with KN-284's mutation anchor widened for the fill line; the Checkbox stories, eslint on the Checkbox and tsc are clean.",
+      "closedAt": "2026-09-11T10:10:01.927Z"
     },
     {
       "id": "KN-291",
