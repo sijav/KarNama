@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 128 of 346 tasks done · 271 of 779 points.
+Project **KarNama** · 128 of 349 tasks done · 271 of 782 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-015` Card, desktop and mobile, with the status stripe** (critical, 8 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-015` | Card, desktop and mobile, with the status stripe | critical | 8 | web | KN-005, KN-006, KN-007, KN-010, KN-008, KN-062 | All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the title, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293. |
 
 ## Blocked (2)
 
@@ -17,12 +23,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (214)
+## Backlog (216)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-060` | Kanban column component | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-015, KN-018 | The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is. |
-| `KN-015` | Card, desktop and mobile, with the status stripe | critical | 8 | web | KN-005, KN-006, KN-007, KN-010, KN-008, KN-062 | All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the title, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293. |
 | `KN-027` | Navigation: nav item, desktop sidebar, mobile tab bar, and the language switch | critical | 8 | web | KN-005, KN-006, KN-007, KN-008, KN-009 | The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added. |
 | `KN-029` | Add and edit job modal, all six steps | critical | 8 | web | KN-005, KN-006, KN-007, KN-011, KN-012, KN-028 | All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding. |
 | `KN-030` | Job modal, five tabs | critical | 8 | web | KN-005, KN-006, KN-007, KN-023, KN-028, KN-026, KN-020 | All FIVE tabs match Figma, the fifth being سابقه which the frame does not draw and which sits second, the modal opens from a card on the board, status history renders in its OWN tab in reverse chronological order rather than in the Info tab, and switching tabs does not lose unsaved note text. |
@@ -42,6 +47,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-337` | The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel | high | 1 | web | none | The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter. |
 | `KN-341` | The full Contact Card's checkbox is reached only by Shift+Tab, after the name | high | 1 | web | none | Tab from before the card reaches the checkbox, then the name, then the delete, in that order, with the row still keeping its 30 and the name still moving by 28, and a story tabs through them. |
 | `KN-342` | A contact with no role draws an empty role line and its divider | high | 1 | web | none | Role is optional in the card's type, the role line and its divider are left out when there is neither role nor company, and a story shows a name-only contact. |
+| `KN-347` | The Contact Modal wipes what is typed when its parent passes a fresh copy of the record | high | 1 | web | none | The form resets on opening and on a change of the record's identity, an id, not on a new object with the same contents, and a story rerenders the parent mid-typing and keeps the text. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -141,6 +147,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-338` | The Status Picker's add chip is a child of its radio group | medium | 1 | web | none | The add chip is a sibling of the radio group in one wrapping row that still lays it out after the last choice, and a story finds it outside the group. |
 | `KN-343` | The compact Contact Card's mail is a button that assigns a location, not a mailto link | medium | 1 | web | none | The compact mail is an anchor with a mailto href styled as the Icon Button, and a story reads its href. |
 | `KN-345` | A modal given a blank title has no accessible name | medium | 1 | web | none | A blank title is refused, by the type or with a thrown error in development, and a story or test shows it. |
+| `KN-348` | An Edit Contact Modal can be written without the record or the delete | medium | 1 | web | none | Edit cannot be written without initial and onDelete, by its type or two components, and the docs guard still reads every prop. |
+| `KN-349` | On a phone the panel modal's footer can sit under the software keyboard | medium | 1 | web | none | The panel keeps its footer in view above the software keyboard, capped against the visual viewport, and a story at 390 by 544 shows Save visible with the last field focused. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -562,7 +570,7 @@ Neutral and Danger tones, each with Default, Hover and Disabled, from Figma node
 
 ### `KN-015` Card, desktop and mobile, with the status stripe
 
-- **status** backlog · **severity** critical · **points** 8 · **area** web
+- **status** in_progress · **severity** critical · **points** 8 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-010, KN-008, KN-062
 
 The job card at Figma node 137:44 with Default, Hover, Pressed, Selected, Static and Focus, the mobile variant at 491:751 with Default and Selected, and the 4px status stripe at 358:430 in all nine status colours.
@@ -768,6 +776,8 @@ Mode=Add and Mode=Edit from Figma node 270:152.
 **Why.** Contacts are added from inside the job modal, so this is how a person gets attached to an application. Edit exists because a phone number learned later is the common case.
 
 **Exit condition.** Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route.
+
+**Roasts.** round 1 scored 5 with 0 critical(s)
 
 ### `KN-032` Tooltip
 
@@ -4417,4 +4427,37 @@ CHILD OF KN-028, recorded in prose because board.json cannot express parent_task
 **Why.** Confirming an id that no longer exists is a write the server must reject or, worse, accept.
 
 **Exit condition.** A pending choice that leaves the statuses goes back to the job's status, and a story removes it while open.
+
+### `KN-347` The Contact Modal wipes what is typed when its parent passes a fresh copy of the record
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-031, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-031 roast. The form resets when open changes or when initial is a different object, so a parent that renders initial={{ ...contact }} and rerenders for any reason, a query or a timer, puts the record back over what the user is typing.
+
+**Why.** Editing a contact in the job modal, which rerenders often, would lose keystrokes.
+
+**Exit condition.** The form resets on opening and on a change of the record's identity, an id, not on a new object with the same contents, and a story rerenders the parent mid-typing and keeps the text.
+
+### `KN-348` An Edit Contact Modal can be written without the record or the delete
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-031, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-031 roast. initial and onDelete are optional in every mode, so mode edit with neither renders a blank Edit form with the Add footer, which the file never draws. react-docgen reads only the props common to a union, which is why the type is not discriminated, as KN-331 found for the bar.
+
+**Why.** Edit is defined by the record it edits and the delete it offers; a type that allows neither lets the screen get it wrong silently.
+
+**Exit condition.** Edit cannot be written without initial and onDelete, by its type or two components, and the docs guard still reads every prop.
+
+### `KN-349` On a phone the panel modal's footer can sit under the software keyboard
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-031, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-031 roast. The panel is as tall as its content and only its body scrolls, with no cap against the visual viewport, so on a 390 by 844 phone a keyboard of about 300 covers the footer's Save and Cancel while a lower field has focus.
+
+**Why.** Half the design is the mobile screens, and a form whose Save is under the keyboard cannot be finished.
+
+**Exit condition.** The panel keeps its footer in view above the software keyboard, capped against the visual viewport, and a story at 390 by 544 shows Save visible with the last field focused.
 

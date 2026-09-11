@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 347,
+  "nextId": 350,
   "tasks": [
     {
       "id": "KN-001",
@@ -765,7 +765,7 @@
         "KN-008",
         "KN-062"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the title, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293.",
       "roasts": [],
       "notes": [
@@ -775,7 +775,7 @@
         "2026-09-11, KN-293: the Checkbox's root is 28 by 28, four of room round its 20 by 20 frame for the focus ring. The file's Title Group clips, so the room given back with a negative margin lies outside it: DESIGN.md's 'What a host owes it' says the group must not clip, and this exit condition now asks the story to prove it on the real group."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T10:33:28.038Z"
+      "updatedAt": "2026-09-11T15:22:42.414Z"
     },
     {
       "id": "KN-016",
@@ -1368,7 +1368,25 @@
       ],
       "status": "done",
       "exit": "Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "agent/roasts/KN-031-round-1.2026-09-11T15-22-33-945Z.md",
+          "filed": [
+            "KN-347",
+            "KN-348",
+            "KN-349"
+          ],
+          "cardDigest": "27b2f195c6bf5c436ac11b032e95384a94c1547d67d7161b37aca533dd1301a0",
+          "head": "09c2af5d5cc0660e83ee23f7dab309b3e7bc9251",
+          "reviewerScore": 4,
+          "reviewerCriticals": 2,
+          "dismissed": "The two criticals and the keyboard major are filed at high, medium and medium under the owner's rule of 2026-09-11. The social link placeholder is dismissed: it is the file's own example address, drawn in Latin in the Persian design, not copy. The score rises from 4.0 because the roast confirms the error's timing and announcement and the footer's order in both directions.",
+          "at": "2026-09-11T15:27:27.233Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -8773,6 +8791,51 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T15:16:04.119Z"
+    },
+    {
+      "id": "KN-347",
+      "title": "The Contact Modal wipes what is typed when its parent passes a fresh copy of the record",
+      "desc": "CHILD OF KN-031, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-031 roast. The form resets when open changes or when initial is a different object, so a parent that renders initial={{ ...contact }} and rerenders for any reason, a query or a timer, puts the record back over what the user is typing.",
+      "why": "Editing a contact in the job modal, which rerenders often, would lose keystrokes.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The form resets on opening and on a change of the record's identity, an id, not on a new object with the same contents, and a story rerenders the parent mid-typing and keeps the text.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T15:27:26.755Z"
+    },
+    {
+      "id": "KN-348",
+      "title": "An Edit Contact Modal can be written without the record or the delete",
+      "desc": "CHILD OF KN-031, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-031 roast. initial and onDelete are optional in every mode, so mode edit with neither renders a blank Edit form with the Add footer, which the file never draws. react-docgen reads only the props common to a union, which is why the type is not discriminated, as KN-331 found for the bar.",
+      "why": "Edit is defined by the record it edits and the delete it offers; a type that allows neither lets the screen get it wrong silently.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Edit cannot be written without initial and onDelete, by its type or two components, and the docs guard still reads every prop.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T15:27:26.918Z"
+    },
+    {
+      "id": "KN-349",
+      "title": "On a phone the panel modal's footer can sit under the software keyboard",
+      "desc": "CHILD OF KN-031, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-031 roast. The panel is as tall as its content and only its body scrolls, with no cap against the visual viewport, so on a 390 by 844 phone a keyboard of about 300 covers the footer's Save and Cancel while a lower field has focus.",
+      "why": "Half the design is the mobile screens, and a form whose Save is under the keyboard cannot be finished.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The panel keeps its footer in view above the software keyboard, capped against the visual viewport, and a story at 390 by 544 shows Save visible with the last field focused.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T15:27:27.070Z"
     }
   ]
 }
