@@ -3156,12 +3156,14 @@
       "parent": [
         "KN-087"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-07T23:35:32.790Z",
-      "updatedAt": "2026-09-11T20:28:45.934Z"
+      "updatedAt": "2026-09-11T20:31:40.113Z",
+      "evidence": "The stories glob takes *.stories.ts(x) alone; AGENTS.md records why; stories-glob.test.ts loads main.ts, finds the committed unlinted-copy.mdx fixture and no MDX pattern, and failed on the old config; the storybook project still finds 43 files, 267 of 267 passing.",
+      "closedAt": "2026-09-11T20:31:40.113Z"
     },
     {
       "id": "KN-098",
