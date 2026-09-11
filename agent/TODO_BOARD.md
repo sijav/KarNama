@@ -400,7 +400,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-361` | The add modal's Controls do not drive it while it is open: step, source and draft are read only on opening | high | 1 | web | none | Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step. |
 | `KN-364` | Saving right after changing the status in the Job Modal's header can send the old status | high | 1 | web | none | Save sends the status last chosen in the header, or none at all, and a story changes the status and saves before the job prop changes, and sees the new status or no status in onSave. |
 | `KN-366` | The lingui gate's no-letter class still exempts three letters: ª, µ and º | high | 1 | web | none | The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary. |
-| `KN-369` | KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal | high | 1 | web | none | The suite's pointer park moves the pointer off the page, not to its corner, and says why it exists; whether Storybook's own resetMousePosition runs in this repository is established from the resolved Vitest config, and TECH-DEBT says what retires the park; a whole storybook run passes but for KN-365's flakes. |
+| `KN-369` | KN-260's pointer park sat at (0,0), on an open modal's backdrop, and was believed to repeat a Storybook reset that never runs here | high | 1 | web | none | The suite's pointer park moves the pointer off the page, not to its corner, and says why it exists; whether Storybook's own resetMousePosition runs in this repository is established from the resolved Vitest config, and TECH-DEBT says what retires the park; a whole storybook run passes but for KN-365's flakes. |
 | `KN-373` | In Persian the Status Picker's left and right arrows move against its choices in Safari, as the Color Picker's did | high | 1 | web | none | The Status Picker's radio group takes arrowsAcross, and a story presses real left and right arrows in both languages through vitest/browser, landing on the choice beside the chosen one on screen and choosing it, while an arrow pressed on the New status button moves nothing. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
@@ -4762,16 +4762,18 @@ CHILD OF KN-214, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The verifier requires the four word fixtures and the two as-const fixtures by name.
 
-### `KN-369` KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal
+### `KN-369` KN-260's pointer park sat at (0,0), on an open modal's backdrop, and was believed to repeat a Storybook reset that never runs here
 
 - **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
-CHILD OF KN-260, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-260 roast and confirmed in node_modules/@storybook/addon-vitest/dist/vitest-plugin/index.js: the Storybook plugin registers a resetMousePosition command, Playwright's mouse.move(-1000, -1000), and its setup-file.browser.4 calls it before every test. The parkPointer command KN-260 added runs as well and moves the pointer to (0,0), which in a story that opens a modal at once, AddJobModal's or JobModal's, lies on the modal's backdrop. LeavesThePointerOnTheField and StartsAtRest pass with either reset and prove neither.
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-260 roast, which read addon-vitest's resetMousePosition and its setup-file.browser.4 and concluded the plugin already moved the pointer off the page before every test, so KN-260's parkPointer was a second reset, and a worse one, at (0,0), on the backdrop of a story that opens a modal at once. Doing the card showed the premise false for this repository: the plugin adds that setup file in configureVitest only when the root Vitest config enables the browser, and here only the storybook project does, so the plugin's reset never runs and parkPointer is the only one. What held was the (0,0): the park now moves the pointer off the page.
 
-**Why.** A second reset that is worse than the first, and a check that cannot tell them apart, is debt that looks like a fix.
+**Why.** A reset nobody can see the need for gets deleted; the record has to say that ours is the only one, and park where nothing is.
 
 **Exit condition.** The suite's pointer park moves the pointer off the page, not to its corner, and says why it exists; whether Storybook's own resetMousePosition runs in this repository is established from the resolved Vitest config, and TECH-DEBT says what retires the park; a whole storybook run passes but for KN-365's flakes.
+
+**Roasts.** round 1 scored 7.5 with 0 critical(s)
 
 ### `KN-370` The Status Chip's direction contract says 'first letter' where dir=auto reads the first strong character, and 'cuts the end' where the ellipsis cuts the line's visual end
 

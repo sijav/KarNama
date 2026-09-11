@@ -9643,22 +9643,36 @@
     },
     {
       "id": "KN-369",
-      "title": "KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal",
-      "desc": "CHILD OF KN-260, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-260 roast and confirmed in node_modules/@storybook/addon-vitest/dist/vitest-plugin/index.js: the Storybook plugin registers a resetMousePosition command, Playwright's mouse.move(-1000, -1000), and its setup-file.browser.4 calls it before every test. The parkPointer command KN-260 added runs as well and moves the pointer to (0,0), which in a story that opens a modal at once, AddJobModal's or JobModal's, lies on the modal's backdrop. LeavesThePointerOnTheField and StartsAtRest pass with either reset and prove neither.",
-      "why": "A second reset that is worse than the first, and a check that cannot tell them apart, is debt that looks like a fix.",
+      "title": "KN-260's pointer park sat at (0,0), on an open modal's backdrop, and was believed to repeat a Storybook reset that never runs here",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-260 roast, which read addon-vitest's resetMousePosition and its setup-file.browser.4 and concluded the plugin already moved the pointer off the page before every test, so KN-260's parkPointer was a second reset, and a worse one, at (0,0), on the backdrop of a story that opens a modal at once. Doing the card showed the premise false for this repository: the plugin adds that setup file in configureVitest only when the root Vitest config enables the browser, and here only the storybook project does, so the plugin's reset never runs and parkPointer is the only one. What held was the (0,0): the park now moves the pointer off the page.",
+      "why": "A reset nobody can see the need for gets deleted; the record has to say that ours is the only one, and park where nothing is.",
       "severity": "high",
       "points": 1,
       "area": "web",
       "parent": [],
       "status": "done",
       "exit": "The suite's pointer park moves the pointer off the page, not to its corner, and says why it exists; whether Storybook's own resetMousePosition runs in this repository is established from the resolved Vitest config, and TECH-DEBT says what retires the park; a whole storybook run passes but for KN-365's flakes.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-369-round-1.2026-09-11T20-19-24-181Z.md",
+          "filed": [],
+          "cardDigest": "c2d5fdb5268edcc56efec9b29667a3a891719f6319a4a0a10c4681ad9dc41bae",
+          "head": "e3ee5571c5c920791a21378c6ad870f6398eb758",
+          "reviewerScore": 7.5,
+          "reviewerCriticals": 0,
+          "dismissed": "Its major, the card's title, description and why still stating the false premise, is fixed on the record itself, not filed as a card to fix a card. Its minor, the config comments as documentation prose, is dismissed: they tell whoever edits the code why it exists, which AGENTS.md calls a comment.",
+          "at": "2026-09-11T20:24:40.497Z"
+        }
+      ],
       "notes": [
         "CHILD OF KN-011, not KN-260: KN-260 is itself KN-011's child, and a finding is filed one level only, RALPH step 6.",
         "2026-09-11, while doing it: the card's premise was false. Storybook's resetMousePosition never runs here: addon-vitest's configureVitest adds its setup-file.browser.4 only when the ROOT config enables the browser, and createVitest resolves the storybook project with .storybook/vitest.setup.ts as its only setup file. Removing parkPointer made a whole run fail the Contact Card's Full Hover and Full Tab Order, the card hovered when they began. So the park stays, moved off the page, and the exit condition is corrected to the truth rather than the belief it was written on."
       ],
       "createdAt": "2026-09-11T18:15:28.417Z",
-      "updatedAt": "2026-09-11T20:19:08.802Z",
+      "updatedAt": "2026-09-11T20:24:40.332Z",
       "evidence": "createVitest resolves the storybook project with our setup file alone, so addon-vitest's reset never runs; removing the park failed the Contact Card's Full Hover and Full Tab Order in a whole run; the park now moves to (-1000,-1000); whole storybook run 263 of 264, the failure KN-365's JobCard Pressed; exit corrected to the truth and TECH-DEBT 19 written.",
       "closedAt": "2026-09-11T20:19:08.802Z"
     },
