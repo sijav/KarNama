@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 168 of 409 tasks done · 357 of 862 points.
+Project **KarNama** · 168 of 411 tasks done · 357 of 864 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -20,7 +20,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (234)
+## Backlog (236)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -225,6 +225,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-402` | The shared i18n singleton trails the provider by a commit, and nothing stops product code from reading it | low | 1 | web | none | npm run lint fails when product code outside src/i18n and AppProviders imports i18n from @lingui/core or from src/i18n, with a committed fixture that holds each import, and the comment in AppProviders says who may read the singleton and from when it is current. |
 | `KN-406` | KN-227's retirement check reads only the lint's exit code, so any unrelated error keeps TECH-DEBT 13 alive | low | 1 | agent | none | The check takes a baseline lint first and fails when that baseline is not clean; with the three exemptions removed it requires lingui errors whose files are tokens.ts, the storage key and the tooltip surface, and reports an unrelated error as an inconclusive run rather than as the exemptions being needed. |
 | `KN-408` | Two ways the unread-language note cannot appear: a docs page with no attached CSF, and an event that stops yielding a locale | low | 1 | web | none | A docs page with no attached CSF file shows the note rather than throwing, and an event that yields no locale puts the page back to not known, each with a test; the existing pages are unchanged. |
+| `KN-410` | The focus model's insetArea goes negative on a box narrower than its contour, and reads one circular corner for all four | low | 1 | web | none | insetArea clamps each side at zero as well as the radius, and takes the corner radii it is given rather than assuming the top left one; a contour wider than its box contributes nothing instead of a negative area, with a test for each; the Input stories still pass. |
+| `KN-411` | The Input's per-card verifiers still read the story's old shape, so they would fail if anyone ran them | low | 1 | agent | none | Each of the two verifiers runs against the current stories: the KN-244 check finds the area assertion in whatever form the story writes it, and KN-274 names the field it shoots rather than taking the first; or both are deleted with a line in their cards saying the stories now carry the check. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -3954,6 +3956,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** FocusedWhileInvalid's area accounts for the rounded corners, from the exact quarter-ring areas of the edge's radius and the ring's or from a rendered reading, and still clears 4W + 4H; focusExtent requires what it does not model, transform, filter, clip-path and mask, to be none on the field, both pseudo-elements and the input, and counts the input's own outline; a transform and a filter on the ::after each fail FocusedWhileInvalid by name; the verifier also reads the rendered change on a field 80 wide or less, in light and dark, clearing 4W + 4H with nothing changed outside; and DESIGN.md's arithmetic states the corners' loss and the width above which the change clears the perimeter.
 
+**Roasts.** round 1 scored 3.5 with 0 critical(s)
+
 ### `KN-296` An Input icon given as an array, a fragment or a component that renders only blank text still draws an empty slot
 
 - **status** backlog · **severity** high · **points** 2 · **area** web
@@ -5251,4 +5255,26 @@ CHILD OF KN-227, recorded in prose because board.json cannot express parent_task
 **Why.** The card was about replacing a shape with the contract, and a set this wide is a shape again with more steps: nothing in the guard now says what a token name IS.
 
 **Exit condition.** documentedNames is built from the token tables' name column and the spacing block alone, so a code span in the component notes is not a key; every key in tokens.ts still passes; a planted key documented only in the prose of section 1 fails the guard, and the positive control still names bg/page, custom-4, heading/l and 3xl.
+
+### `KN-410` The focus model's insetArea goes negative on a box narrower than its contour, and reads one circular corner for all four
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-295 roast, its minor, judged real. insetArea clamps the radius but not the box: a contour whose inset passes half the width, the ring at inset 6 on a field 11 wide, gives a negative width and so a negative area, which the sum then subtracts rather than ignores. And it reads borderTopLeftRadius alone through parseFloat, so an elliptical radius loses its vertical half and four different corners are counted as four of the first. The Input draws one circular radius on every corner and the story measures fields 80 and wider, so neither shows today.
+
+**Why.** A model that can return a negative area can report a change larger than it is on the next narrow field someone measures, which is the failure this measure exists to catch.
+
+**Exit condition.** insetArea clamps each side at zero as well as the radius, and takes the corner radii it is given rather than assuming the top left one; a contour wider than its box contributes nothing instead of a negative area, with a test for each; the Input stories still pass.
+
+### `KN-411` The Input's per-card verifiers still read the story's old shape, so they would fail if anyone ran them
+
+- **status** backlog · **severity** low · **points** 1 · **area** agent
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-295 roast, its major, judged real and put at low as a finding about the loop rather than the product, the owner's rule of 2026-09-11. agent/scripts/verify/KN-244.mjs greps the story for "changed - 4 * (width + height)", which KN-295 split into gained and drawn, so its static check would report the area assertion missing before it ran a thing; agent/scripts/verify/KN-274.mjs picks the first .MuiInputBase-root for its screenshots, which is now the wide field of two. Nothing runs either: verifiers left the close on 2026-09-11 and neither CI nor npm run contract calls them.
+
+**Why.** A verifier that reads a shape the code no longer has is a false alarm waiting for whoever runs it, and it makes the KN-244 and KN-274 evidence unreproducible.
+
+**Exit condition.** Each of the two verifiers runs against the current stories: the KN-244 check finds the area assertion in whatever form the story writes it, and KN-274 names the field it shoots rather than taking the first; or both are deleted with a line in their cards saying the stories now carry the check.
 
