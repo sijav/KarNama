@@ -131,12 +131,33 @@ const tokenName = /^[a-z0-9-]+(\/[a-z0-9-]+)*$/
  * the component notes, so `currentcolor`, `log-out` and the deleted
  * `body/small` were all keys a prose edit had authorised, KN-409.
  */
-const documentedNames = (() => {
-  const section = design.slice(design.indexOf('## 1. Tokens'), design.indexOf('## 2.'))
-  const named = [...section.matchAll(/^\|([^|]*)\|/gm)].flatMap((match) => /^`([^`]+)`$/.exec(match[1]?.trim() ?? '')?.[1] ?? [])
-  const fenced = [...section.matchAll(/```[^\n]*\n([\s\S]*?)```/g)].flatMap((match) => match[1]?.split(/\s+/) ?? [])
-  return new Set([...named, ...fenced].map((name) => name.trim().toLowerCase()).filter((name) => tokenName.test(name)))
-})()
+// The five subsections that carry the token tables, by their headings. Named,
+// not taken from every table in the section: the section runs to the end of the
+// component notes, and those are full of tables, so a row of one would
+// authorise a key exactly as a code span in the prose did, KN-412.
+const TOKEN_TABLES = ['### Colour, semantic', '### Colour, status', '### Spacing, radius, icon size', '### Elevation', '### Type']
+
+/** Every token name a DESIGN.md writes in those subsections, lower case. */
+const namesIn = (markdown: string) => {
+  const found: string[] = []
+  for (const heading of TOKEN_TABLES) {
+    const at = markdown.indexOf(heading)
+    if (at === -1) continue
+    const rest = markdown.slice(at + heading.length)
+    const until = rest.search(/^### /m)
+    const subsection = until === -1 ? rest : rest.slice(0, until)
+    // The name column: the first cell of a row, when that cell is one code
+    // span. And the words of the spacing, radius and icon block, which writes
+    // its names in a fence rather than a table.
+    found.push(
+      ...[...subsection.matchAll(/^\|([^|]*)\|/gm)].flatMap((match) => /^`([^`]+)`$/.exec(match[1]?.trim() ?? '')?.[1] ?? []),
+      ...[...subsection.matchAll(/```[^\n]*\n([\s\S]*?)```/g)].flatMap((match) => match[1]?.split(/\s+/) ?? []),
+    )
+  }
+  return new Set(found.map((name) => name.trim().toLowerCase()).filter((name) => tokenName.test(name)))
+}
+
+const documentedNames = namesIn(design)
 
 /**
  * The one font stack, read from DESIGN.md and matched whole.
@@ -177,6 +198,19 @@ describe('the token module holds design values and nothing a person reads', () =
     expect(documentedNames.has('heading/l')).toBe(true)
     expect(documentedNames.has('3xl')).toBe(true)
     expect(documentedStack).toBe("'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif")
+  })
+
+  it('takes a name from the token tables and not from a table in a component note, KN-412', () => {
+    const note = '### The Input focused while invalid'
+    const row = '| `delete/application` | a note about it |\n'
+    // In a component's notes it is not a name; in a token table it is, which is
+    // what makes the first half a check rather than a coincidence.
+    expect(namesIn(design.replace(note, `${row}\n${note}`)).has('delete/application')).toBe(false)
+    expect(namesIn(design.replace('### Colour, status\n', `### Colour, status\n\n${row}`)).has('delete/application')).toBe(true)
+  })
+
+  it('takes no name from a document with none of those subsections', () => {
+    expect(namesIn('').size).toBe(0)
   })
 
   it('holds the names the tables give and not every code span in the section, KN-409', () => {

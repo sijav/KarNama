@@ -49,3 +49,15 @@ spacing, radius and icon block: 47 names, every one a token. A test holds four
 that the prose writes in code and the tables do not, `currentcolor`,
 `graytext`, `log-out` and the deleted `body/small`, and a planted `body/small`
 key fails the guard. 53 tests in the file pass.
+
+## KN-412, the same day
+
+The KN-409 roast was right in turn: the first cell of every table row in the
+section is not the token tables' name column, and the section's component notes
+are full of tables. The names now come from five subsections named in the guard,
+Colour semantic with its "Not on the Foundations board" table, Colour status,
+Spacing radius and icon size, Elevation and Type, each sliced from its heading
+to the next. A row planted in the Input's notes is not a name; the same row
+planted in the status table is, so the first half is a check rather than a
+coincidence; and a document with none of those subsections yields nothing. 55
+tests in the file pass.
