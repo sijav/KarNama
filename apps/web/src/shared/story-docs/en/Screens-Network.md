@@ -1,9 +1,14 @@
 The network: the people met on the way to a job.
 
-It draws the contacts the job opportunities already hold, searches them by
-name, and opens the Contact Modal over one. It is the page's first version: it
-does not yet keep a contact of its own, select several, or delete one, which is
-carried separately.
+The contacts are the reader's own records, not a field of a job opportunity: a
+person outlives the posting they were met over, and one may name the job
+opportunity it came from. The grid repeats over the inline axis with the array
+in its natural order, so it reads right to left and row by row in Persian and
+mirrors in English with no reversal in the code.
+
+Selecting people brings up the bar at the foot, which deletes them after a
+confirmation. A search narrows the page by name, role, company, email or
+number.
 
 ## Stories
 
@@ -17,4 +22,5 @@ The same page with the language switched.
 
 ### NobodyYet
 
-Nobody kept yet: the empty state offers the one thing there is to do.
+Nobody kept yet: the empty state offers the one thing there is to do, in the
+header and in the state itself.

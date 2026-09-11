@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react'
 import { Box, Stack } from '@mui/material'
 import { useState } from 'react'
 import { usePreferences } from '../core/preferences'
-import { columnOrder, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
+import { columnOrder, contactsOf, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
 import { AddJobModal, type JobDraft } from '../shared/add-job'
 import { BulkActionBar } from '../shared/bulk-action-bar'
 import { Button } from '../shared/button'
@@ -239,7 +239,9 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
       {job ? (
         <JobModal
           open
-          job={job}
+          // The people kept against this job opportunity are the network's,
+          // named here rather than held inside the job, KN-056.
+          job={{ ...job, contacts: contactsOf(records.contacts, job.id) }}
           statuses={records.statuses}
           onStatusChange={(status) => {
             records.moveJob(job.id, status)

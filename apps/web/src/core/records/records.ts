@@ -1,4 +1,5 @@
 import { emptyDraft, type JobDraft } from '../../shared/add-job'
+import type { ContactCardContact } from '../../shared/contact-card'
 import type { JobContact, JobFile, JobRecord, JobSaved, StatusChange } from '../../shared/job-modal'
 import type { SortOrder } from '../../shared/sort-control'
 import type { StatusOption } from '../../shared/status-picker'
@@ -19,9 +20,24 @@ export interface JobEntry extends JobRecord {
   id: string
 }
 
+/**
+ * A person the reader keeps, KN-056.
+ *
+ * Their own record rather than a field of a job opportunity: the network is a
+ * destination of its own, and a contact outlives the posting they were met
+ * over. `jobId` links one to a job opportunity when there is one, which is what
+ * the job modal's related people tab reads.
+ */
+export interface ContactEntry {
+  id: string
+  jobId: string | null
+  contact: ContactCardContact
+}
+
 export interface Records {
   statuses: readonly StatusOption[]
   jobs: readonly JobEntry[]
+  contacts: readonly ContactEntry[]
 }
 
 /** The five the design draws, in the board's order: rejected last, KN-070. */
@@ -137,7 +153,21 @@ export const jobsIn = (jobs: readonly JobEntry[], statusId: string, search: stri
 export const emptyRecords = (name: (token: StatusToken) => string): Records => ({
   statuses: defaultStatuses(name),
   jobs: [],
+  contacts: [],
 })
+
+/** The people kept against one job opportunity, for its related people tab. */
+export const contactsOf = (contacts: readonly ContactEntry[], jobId: string): JobContact[] =>
+  contacts.filter((held) => held.jobId === jobId).map((held) => ({ id: held.id, contact: held.contact }))
+
+/** Everything a search matches in a person: what a reader would look for by eye. */
+export const contactMatches = (held: ContactEntry, search: string): boolean => {
+  const wanted = search.trim().toLocaleLowerCase()
+  if (wanted === '') return true
+  return [held.contact.name, held.contact.role, held.contact.company, held.contact.email, held.contact.phone].some((field) =>
+    (field ?? '').toLocaleLowerCase().includes(wanted),
+  )
+}
 
 /** A draft for the add flow, opened on a column. */
 export const draftForColumn = (statusId: string): JobDraft => emptyDraft(statusId)
@@ -149,6 +179,10 @@ export const isRecords = (value: unknown): value is Records => {
   return Array.isArray(held.statuses) && Array.isArray(held.jobs)
 }
 
+/** Whether a stored value is a person the network can draw. */
+const isContact = (value: unknown): value is ContactEntry =>
+  typeof value === 'object' && value !== null && 'id' in value && typeof value.id === 'string' && 'contact' in value && 'jobId' in value
+
 /** A stored set, with anything it no longer understands dropped rather than thrown away whole. */
 export const readRecords = (raw: unknown, fallback: Records): Records => {
   if (!isRecords(raw)) return fallback
@@ -156,7 +190,10 @@ export const readRecords = (raw: unknown, fallback: Records): Records => {
   if (statuses.length === 0) return fallback
   const ids = new Set(statuses.map((entry) => entry.id))
   const jobs = raw.jobs.filter((job) => typeof job.id === 'string' && ids.has(job.draft.status))
-  return { statuses, jobs }
+  // A board stored before the network had contacts of its own simply has none,
+  // rather than failing to open, KN-056.
+  const held: unknown[] = Array.isArray(raw.contacts) ? raw.contacts : []
+  return { statuses, jobs, contacts: held.filter(isContact) }
 }
 
 export type { JobContact, JobFile, StatusChange }

@@ -26,7 +26,7 @@ const seeded = (): Records => {
       new Date(Date.UTC(2026, 8, at + 1, 9)).toISOString(),
     ),
   )
-  return { statuses, jobs }
+  return { statuses, jobs, contacts: [] }
 }
 
 const meta = {
@@ -39,7 +39,7 @@ const meta = {
       // Each story gets its own records, so one cannot change what another
       // draws; the provider is seeded rather than read from the browser.
       // `seeded` is false for a story about a board with nothing on it.
-      <RecordsProvider initial={context.parameters.seeded === false ? { statuses: seeded().statuses, jobs: [] } : seeded()}>
+      <RecordsProvider initial={context.parameters.seeded === false ? { statuses: seeded().statuses, jobs: [], contacts: [] } : seeded()}>
         <Story />
       </RecordsProvider>
     ),

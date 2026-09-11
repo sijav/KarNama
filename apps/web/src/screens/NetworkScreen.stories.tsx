@@ -27,7 +27,7 @@ const seeded = (withContacts: boolean): Records => {
       job: null,
     },
   }))
-  return { statuses, jobs: [{ ...job, contacts: withContacts ? contacts : [] }] }
+  return { statuses, jobs: [job], contacts: withContacts ? contacts.map((held) => ({ ...held, jobId: job.id })) : [] }
 }
 
 // No `component`: the page takes no props, so react-docgen reports nothing for
@@ -65,7 +65,9 @@ export const NobodyYet: Story = {
   parameters: { contacts: false },
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
-    // With nobody kept, the page offers the one thing there is to do.
-    await expect(within(canvasElement).getByRole('button', { name: 'افزودن مخاطب' })).toBeInTheDocument()
+    // With nobody kept, the page offers the one thing there is to do, in the
+    // header and in the empty state itself.
+    await expect(within(canvasElement).getAllByRole('button', { name: 'افزودن مخاطب' })).toHaveLength(2)
+    await expect(within(canvasElement).getByText('هنوز کسی رو به شبکه‌ت اضافه نکردی')).toBeInTheDocument()
   },
 }

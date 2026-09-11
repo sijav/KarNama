@@ -179,4 +179,5 @@ export const messages: Record<string, string> = {
   'What should we call you?': 'تو را چه صدا کنیم؟',
   'Continue': 'ادامه',
   'Signing in means you accept how KarNama keeps your records.': 'با ورود، می‌پذیری که کارنما سوابقت را چطور نگه می‌دارد.',
+  'This contact is deleted for good and cannot be brought back.': 'این مخاطب برای همیشه حذف می‌شود و برگشتی ندارد.',
 }

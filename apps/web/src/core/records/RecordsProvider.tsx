@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { JobDraft } from '../../shared/add-job'
+import type { ContactCardContact } from '../../shared/contact-card'
 import type { JobSaved } from '../../shared/job-modal'
 import type { StatusOption } from '../../shared/status-picker'
 import type { StatusToken } from '../../theme/tokens'
@@ -15,6 +16,9 @@ export interface RecordsValue extends Records {
   moveJob: (id: string, status: string) => void
   moveJobs: (ids: readonly string[], status: string) => void
   deleteJobs: (ids: readonly string[]) => void
+  addContact: (contact: ContactCardContact, jobId: string | null) => void
+  saveContact: (id: string, contact: ContactCardContact, jobId: string | null) => void
+  deleteContacts: (ids: readonly string[]) => void
   addStatus: (name: string) => string
   renameStatus: (id: string, name: string) => void
   recolourStatus: (id: string, token: StatusToken) => void
@@ -31,11 +35,15 @@ export interface RecordsValue extends Records {
 const NO_RECORDS: RecordsValue = {
   statuses: [],
   jobs: [],
+  contacts: [],
   addJob: () => undefined,
   saveJob: () => undefined,
   moveJob: () => undefined,
   moveJobs: () => undefined,
   deleteJobs: () => undefined,
+  addContact: () => undefined,
+  saveContact: () => undefined,
+  deleteContacts: () => undefined,
   addStatus: () => '',
   renameStatus: () => undefined,
   recolourStatus: () => undefined,
@@ -133,6 +141,19 @@ export const RecordsProvider = ({ initial, children }: RecordsProviderProps) => 
       deleteJobs: (ids) => {
         const wanted = new Set(ids)
         change((from) => ({ ...from, jobs: from.jobs.filter((job) => !wanted.has(job.id)) }))
+      },
+      addContact: (contact, jobId) => {
+        change((from) => ({ ...from, contacts: [{ id: newId('contact'), jobId, contact }, ...from.contacts] }))
+      },
+      saveContact: (id, contact, jobId) => {
+        change((from) => ({
+          ...from,
+          contacts: from.contacts.map((held) => (held.id === id ? { ...held, jobId, contact } : held)),
+        }))
+      },
+      deleteContacts: (ids) => {
+        const wanted = new Set(ids)
+        change((from) => ({ ...from, contacts: from.contacts.filter((held) => !wanted.has(held.id)) }))
       },
       addStatus: (name) => {
         const added: StatusOption = { id: newId('status'), token: nextCustomToken(records.statuses), name }

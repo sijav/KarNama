@@ -122,7 +122,7 @@ describe('searching and sorting', () => {
 })
 
 describe('what is kept between visits', () => {
-  const set: Records = { statuses, jobs: [jobWith({ id: 'a' })] }
+  const set: Records = { statuses, jobs: [jobWith({ id: 'a' })], contacts: [] }
   const fallback = emptyRecords(named)
 
   it('reads back a set it wrote', () => {

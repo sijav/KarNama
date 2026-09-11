@@ -1,5 +1,7 @@
 export {
   columnOrder,
+  contactMatches,
+  contactsOf,
   defaultStatuses,
   draftForColumn,
   emptyRecords,
@@ -13,6 +15,7 @@ export {
   tokenOf,
   withSaved,
   withStatus,
+  type ContactEntry,
   type JobEntry,
   type Records,
 } from './records'

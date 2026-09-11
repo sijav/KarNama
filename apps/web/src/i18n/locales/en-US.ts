@@ -176,4 +176,5 @@ export const messages: Record<string, string> = {
   'What should we call you?': 'What should we call you?',
   'Continue': 'Continue',
   'Signing in means you accept how KarNama keeps your records.': 'Signing in means you accept how KarNama keeps your records.',
+  'This contact is deleted for good and cannot be brought back.': 'This contact is deleted for good and cannot be brought back.',
 }

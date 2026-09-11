@@ -16,7 +16,7 @@ import { defaultStatuses, type Records } from './records'
  * the actions, and each of them is called against the real state so what they
  * write is what is checked, not a description of it.
  */
-const seeded = (): Records => ({ statuses: defaultStatuses((token) => token), jobs: [] })
+const seeded = (): Records => ({ statuses: defaultStatuses((token) => token), jobs: [], contacts: [] })
 
 /** Renders the provider once and hands back the value a consumer sees. */
 const capture = (initial?: Records) => {
