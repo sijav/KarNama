@@ -25,6 +25,11 @@ Called with the id of the status chosen.
 
 Called when «+ وضعیت تازه» is pressed; the page makes the new status.
 
+### autoFocus
+
+Puts focus on the chosen status as the picker appears, as a dialog opening on
+it does. Off unless set.
+
 ## Stories
 
 ### Default

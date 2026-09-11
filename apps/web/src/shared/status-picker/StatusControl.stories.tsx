@@ -1,6 +1,8 @@
+import { setupI18n } from '@lingui/core'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import type { Locale } from '../../i18n'
+import { messages as fa } from '../../i18n/locales/fa-IR'
 import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
@@ -11,6 +13,9 @@ import type { StatusToken } from '../../theme/tokens'
 
 // The status the story opens on.
 const INTERVIEW: StatusToken = 'interview'
+
+// The Persian catalog, for the names the pinned Persian stories find.
+const i18n = setupI18n({ locale: 'fa-IR', messages: { 'fa-IR': fa } })
 
 // The board's five statuses, their names in the language a story pins.
 const statusesIn = (locale: Locale): StatusOption[] =>
@@ -60,41 +65,64 @@ export const Default: Story = {
   },
 }
 
+// The dialog the control opens: the Change Status modal, named by its title,
+// 150:93, KN-337.
+const changeStatus = (canvasElement: HTMLElement) =>
+  within(canvasElement.ownerDocument.body).findByRole('dialog', { name: i18n._('Change status') })
+
 export const ChoosingAStatus: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
-    // The control opens the picker, pressed, 199:20, while it is open: the
-    // hover fill and one and a half of border/focus. Choosing a status closes
-    // it, hands the choice over, and focus is back on the control.
-    const body = within(canvasElement.ownerDocument.body)
+    // The control opens the Change Status modal and shows Pressed, 199:20,
+    // while it is open: the hover fill and one and a half of border/focus. A
+    // status chosen there waits until Confirm, which hands it over and closes
+    // the modal, and focus is back on the control.
     const control = within(canvasElement).getByRole('button')
     await userEvent.click(control)
-    const group = await body.findByRole('radiogroup')
+    const dialog = await changeStatus(canvasElement)
     await expect(control).toHaveAttribute('aria-expanded', 'true')
     await expect(getComputedStyle(control).backgroundColor).toBe(computedColour(control, semantic['bg/surface-secondary']))
     await expect(getComputedStyle(control).boxShadow.endsWith('inset')).toBe(true)
-    const other = within(group)
+    const other = within(dialog)
       .getAllByRole('radio')
       .find((radio) => radio.getAttribute('value') !== args.value)
     if (!other) throw new Error('no other status')
     await userEvent.click(other)
+    await expect(args.onChange).not.toHaveBeenCalled()
+    await userEvent.click(within(dialog).getByRole('button', { name: i18n._('Confirm') }))
     await expect(args.onChange).toHaveBeenCalledWith(other.getAttribute('value'))
-    await waitFor(() => expect(body.queryByRole('radiogroup')).toBeNull())
+    await waitFor(() => expect(within(canvasElement.ownerDocument.body).queryByRole('dialog')).toBeNull())
     await expect(control).toHaveFocus()
+  },
+}
+
+export const OpensOnTheChosenStatus: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ args, canvasElement }) => {
+    // The control says it opens a dialog and does: Enter on it opens the
+    // Change Status modal, a named dialog, with focus on the status the job
+    // has, so the arrows move from there, KN-337.
+    const control = within(canvasElement).getByRole('button')
+    await expect(control).toHaveAttribute('aria-haspopup', 'dialog')
+    await userEvent.tab()
+    await userEvent.keyboard('{Enter}')
+    const dialog = await changeStatus(canvasElement)
+    const chosen = within(dialog).getByRole('radio', { checked: true })
+    await expect(chosen).toHaveAttribute('value', args.value)
+    await waitFor(() => expect(chosen).toHaveFocus())
   },
 }
 
 export const EscapeCancels: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ args, canvasElement }) => {
-    // Escape closes the picker with nothing changed, focus back on the control.
-    const body = within(canvasElement.ownerDocument.body)
+    // Escape closes the modal with nothing changed, focus back on the control.
     const control = within(canvasElement).getByRole('button')
     await userEvent.tab()
     await userEvent.keyboard('{Enter}')
-    await body.findByRole('radiogroup')
+    await changeStatus(canvasElement)
     await userEvent.keyboard('{Escape}')
-    await waitFor(() => expect(body.queryByRole('radiogroup')).toBeNull())
+    await waitFor(() => expect(within(canvasElement.ownerDocument.body).queryByRole('dialog')).toBeNull())
     await expect(args.onChange).not.toHaveBeenCalled()
     await expect(control).toHaveFocus()
   },

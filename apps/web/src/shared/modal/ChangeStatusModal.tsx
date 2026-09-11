@@ -20,7 +20,8 @@ const CHANGE_STATUS_WIDTH = 420
 // The Change Status modal of node 150:93, 420 wide: the Status Picker, and
 // Cancel then Confirm at the inline end. A choice waits in the modal until
 // Confirm hands it over; Cancel, Escape, the close and the scrim leave the
-// status as it was. Each opening starts from the status the job has.
+// status as it was. Each opening starts from the status the job has, with
+// focus on it, so the arrows move from there, KN-337.
 export const ChangeStatusModal = ({ open, statuses, value, onConfirm, onCancel, onAdd }: ChangeStatusModalProps) => {
   const { i18n } = useLingui()
   const [pending, setPending] = useState(value)
@@ -52,7 +53,7 @@ export const ChangeStatusModal = ({ open, statuses, value, onConfirm, onCancel, 
         </>
       }
     >
-      <StatusPicker statuses={statuses} value={pending} onChange={setPending} onAdd={onAdd} />
+      <StatusPicker statuses={statuses} value={pending} onChange={setPending} onAdd={onAdd} autoFocus />
     </Modal>
   )
 }

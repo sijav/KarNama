@@ -17,6 +17,7 @@ export interface StatusPickerProps {
   value: string
   onChange: (id: string) => void
   onAdd: () => void
+  autoFocus?: boolean
 }
 
 // Node 427:567's ring is two pixels drawn inside the choice, 4 round its chip,
@@ -64,8 +65,9 @@ export const StatusChoice = ({ option, selected }: { option: StatusOption; selec
 // Choices and the dashed «+ وضعیت تازه» that makes a new status in place. Status
 // is chosen with chips, never a dropdown, DESIGN.md. A native radio group
 // through MUI gives one Tab stop and arrows that move and choose, the Color
-// Picker's way; the add chip is the next stop.
-export const StatusPicker = ({ statuses, value, onChange, onAdd }: StatusPickerProps) => {
+// Picker's way; the add chip is the next stop. Told to, it puts focus on the
+// chosen status as it mounts, as a dialog opening on it does, KN-337.
+export const StatusPicker = ({ statuses, value, onChange, onAdd, autoFocus = false }: StatusPickerProps) => {
   const { i18n } = useLingui()
   const labelId = useId()
   return (
@@ -98,6 +100,7 @@ export const StatusPicker = ({ statuses, value, onChange, onAdd }: StatusPickerP
           <Radio
             key={option.id}
             value={option.id}
+            autoFocus={autoFocus && option.id === value}
             disableRipple
             icon={<StatusChoice option={option} selected={false} />}
             checkedIcon={<StatusChoice option={option} selected />}

@@ -239,10 +239,15 @@ export const Files: Story = {
 export const ChangeStatus: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
-    // The Status Control in the header changes the status at once.
+    // The Status Control in the header opens the Change Status modal over the
+    // job opportunity, as 377:6244 draws it, and Confirm there changes the
+    // status at once, without Save, KN-337.
     const dialog = await dialogNamed(args.job.draft.title)
     await userEvent.click(within(dialog).getByRole('button', { name: /وضعیت: مصاحبه/u }))
-    await userEvent.click(await within(document.body).findByRole('radio', { name: 'پیشنهاد کار' }))
+    const change = await dialogNamed('تغییر وضعیت')
+    await userEvent.click(within(change).getByRole('radio', { name: 'پیشنهاد کار' }))
+    await expect(args.onStatusChange).not.toHaveBeenCalled()
+    await userEvent.click(within(change).getByRole('button', { name: 'تأیید' }))
     await expect(args.onStatusChange).toHaveBeenCalledWith('offer')
   },
 }

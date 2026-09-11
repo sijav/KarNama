@@ -1,12 +1,11 @@
 import { useLingui } from '@lingui/react'
-import { Box, ButtonBase, Popover, useTheme } from '@mui/material'
+import { Box, ButtonBase } from '@mui/material'
 import { useState } from 'react'
-import { inlineEndOf } from '../../theme/sides'
 import { spacing } from '../../theme/tokens'
 import { Icon } from '../icon'
-import { optionsMenuPaper } from '../select'
+import { ChangeStatusModal } from '../modal'
 import { StatusChip } from '../status-chip'
-import { StatusPicker, type StatusOption } from './StatusPicker'
+import type { StatusOption } from './StatusPicker'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface StatusControlProps {
@@ -18,37 +17,35 @@ export interface StatusControlProps {
 
 // Node 199:21 draws the caret at 14, which is none of the icon sizes and binds
 // no variable, and the pressed edge at one and a half, an inset shadow over the
-// one pixel border since Chromium floors a border of 1.5, KN-282. The picker
-// opens in a panel as wide as the file gives it in the Change Status modal,
-// 464:703, 4 below the control.
+// one pixel border since Chromium floors a border of 1.5, KN-282.
 const CARET = 14
 const EDGE = 1
 const PRESSED_EDGE = 1.5
 const FOCUS_RING = 3
-const PANEL_WIDTH = 372
 
 // The Status Control of node 199:21, Default, Hover and Pressed: the small
 // Status Chip and a caret in a pill, the clickable wrapper the card and the job
-// modal put round a chip that stays display only. It opens the Status Picker;
-// choosing a status closes it and hands the choice over, and Escape closes it
-// with nothing changed. Either way focus is back on the control.
+// modal put round a chip that stays display only. It opens the Change Status
+// modal, 150:93, as the file draws it over the job modal at 377:6244, KN-337:
+// a named dialog opening on the chosen status. Confirm there hands the choice
+// over; Cancel and Escape change nothing. Either way focus is back on the
+// control.
 export const StatusControl = ({ statuses, value, onChange, onAdd }: StatusControlProps) => {
   const { i18n } = useLingui()
-  const end = inlineEndOf(useTheme().direction)
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null)
+  const [open, setOpen] = useState(false)
   const current = statuses.find((option) => option.id === value)
   const close = () => {
-    setAnchor(null)
+    setOpen(false)
   }
   return (
     <>
       <ButtonBase
         disableRipple
         aria-haspopup="dialog"
-        aria-expanded={anchor !== null}
+        aria-expanded={open}
         aria-label={current === undefined ? i18n._('Status') : `${i18n._('Status')}: ${current.name}`}
-        onClick={(event) => {
-          setAnchor(event.currentTarget)
+        onClick={() => {
+          setOpen(true)
         }}
         sx={(theme) => {
           const colour = theme.karnama.semantic
@@ -95,40 +92,20 @@ export const StatusControl = ({ statuses, value, onChange, onAdd }: StatusContro
           <Icon name="chevron-down" size="sm" />
         </Box>
       </ButtonBase>
-      <Popover
-        open={anchor !== null}
-        anchorEl={anchor}
-        onClose={close}
-        // Menus and popovers open instantly, DESIGN.md.
-        transitionDuration={0}
-        anchorOrigin={{ vertical: 'bottom', horizontal: end }}
-        transformOrigin={{ vertical: 0, horizontal: end }}
-        slotProps={{
-          paper: {
-            sx: (theme) => ({
-              ...optionsMenuPaper.sx(theme),
-              boxSizing: 'border-box',
-              width: PANEL_WIDTH,
-              maxWidth: `calc(100% - ${2 * spacing.md}px)`,
-              marginTop: `${spacing['2xs']}px`,
-              padding: `${spacing.sm}px`,
-            }),
-          },
+      <ChangeStatusModal
+        open={open}
+        statuses={statuses}
+        value={value}
+        onConfirm={(id) => {
+          close()
+          onChange(id)
         }}
-      >
-        <StatusPicker
-          statuses={statuses}
-          value={value}
-          onChange={(id) => {
-            close()
-            onChange(id)
-          }}
-          onAdd={() => {
-            close()
-            onAdd()
-          }}
-        />
-      </Popover>
+        onCancel={close}
+        onAdd={() => {
+          close()
+          onAdd()
+        }}
+      />
     </>
   )
 }

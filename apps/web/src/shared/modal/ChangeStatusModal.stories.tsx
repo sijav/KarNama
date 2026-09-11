@@ -70,11 +70,13 @@ const panelOf = (dialog: HTMLElement) => {
 export const Default: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ args, canvasElement }) => {
-    // Node 150:93: 420 wide, the Status Picker on the job's status; a choice
-    // waits until Confirm hands it over.
+    // Node 150:93: 420 wide, the Status Picker on the job's status, which
+    // takes focus as it opens, KN-337; a choice waits until Confirm hands it
+    // over.
     await userEvent.click(within(canvasElement).getByRole('button'))
     const dialog = await body(canvasElement).findByRole('dialog')
     await expect(panelOf(dialog).getBoundingClientRect().width).toBe(420)
+    await waitFor(() => expect(within(dialog).getByRole('radio', { checked: true })).toHaveFocus())
     const radios = within(dialog).getAllByRole('radio')
     const other = radios.find((radio) => radio.getAttribute('value') !== args.value)
     if (!other) throw new Error('no other status')

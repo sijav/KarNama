@@ -3,7 +3,7 @@ beside Confirm.
 
 The choice waits in the modal until Confirm hands it over; Cancel, Escape, the
 close and the scrim leave the status as it was, and the next opening starts
-again from the job opportunity's status.
+again from the job opportunity's status, with focus on it.
 
 ## Props
 

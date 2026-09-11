@@ -563,11 +563,12 @@ modal put round a chip that stays display only: a pill 32 tall, `bg/surface`
 with one pixel of `border/default`, 4 round the small chip and 8 beyond a 14
 chevron, which is none of the icon sizes and is drawn at 14. Hover takes
 `bg/surface-secondary`; Pressed, which it shows while the picker is open, takes
-it too with one and a half of `border/focus`. It opens the picker in a panel of
-372, the width the Change Status modal gives it, 4 below; choosing closes it
-and hands the choice over, Escape closes it with nothing changed. The file
-draws the Change Status modal, `150:93`, for this; the panel stands in until
-the Modal, KN-028, is built. KN-020.
+it too with one and a half of `border/focus`. It opens the Change Status modal,
+`150:93`, as the file draws it over the job modal at `377:6244`: a named dialog
+that opens with focus on the chosen status, where a choice waits until Confirm
+and Cancel or Escape change nothing, focus back on the control either way. A
+panel of 372 stood in for the modal until KN-028 built it; KN-337 replaced it.
+KN-020.
 
 ### The Sort Control
 
