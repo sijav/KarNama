@@ -32,7 +32,7 @@ describe('the theme is generated from the tokens', () => {
     const theme = buildTheme('rtl')
     expect(Object.keys(theme.karnama.status)).toHaveLength(9)
     // The two effect styles and the tooltip's unnamed shadow, KN-218.
-    expect(Object.keys(theme.karnama.elevation)).toEqual(['card', 'modal', 'tooltip'])
+    expect(Object.keys(theme.karnama.elevation)).toEqual(['card', 'modal', 'tooltip', 'bulkBar'])
   })
 })
 

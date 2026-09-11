@@ -24,6 +24,11 @@ does.
 
 `neutral`, the default, or `danger` for an action that removes something.
 
+### iconSize
+
+`sm`, the default, a 16 icon, or `md`, a 20 icon, which the Bulk Action
+Bar's close uses. The button stays 32 square either way.
+
 ### disabled
 
 Fades the button and takes it out of the tab order.

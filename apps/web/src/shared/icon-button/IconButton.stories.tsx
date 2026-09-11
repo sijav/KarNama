@@ -18,13 +18,14 @@ const Named = (args: IconButtonProps) => {
 const meta = {
   title: 'Shared/IconButton',
   component: IconButton,
-  args: { icon: 'trash', 'aria-label': '', tone: 'neutral', disabled: false, onClick: fn() },
+  args: { icon: 'trash', 'aria-label': '', tone: 'neutral', iconSize: 'sm', disabled: false, onClick: fn() },
   argTypes: {
     icon: { control: 'select', options: ICON_NAMES },
     tone: { control: 'radio', options: ['neutral', 'danger'] },
+    iconSize: { control: 'radio', options: ['sm', 'md'] },
     disabled: { control: 'boolean' },
   },
-  parameters: { controls: { include: ['icon', 'tone', 'disabled'] } },
+  parameters: { controls: { include: ['icon', 'tone', 'iconSize', 'disabled'] } },
   render: (args) => <Named {...args} />,
 } satisfies StoryMeta<typeof IconButton>
 
@@ -44,8 +45,8 @@ const computedColour = (host: HTMLElement, colour: string) => {
 }
 
 // What node 460:672 draws at rest: a 32 square of radius md, no fill, and the
-// 16 icon in text/secondary.
-const atRest = async (button: HTMLElement) => {
+// 16 icon in text/secondary, or the Bulk Action Bar's 20, 401:436.
+const atRest = async (button: HTMLElement, iconSize: IconButtonProps['iconSize'] = 'sm') => {
   const style = getComputedStyle(button)
   const box = button.getBoundingClientRect()
   await expect([box.width, box.height]).toEqual([32, 32])
@@ -53,26 +54,27 @@ const atRest = async (button: HTMLElement) => {
   await expect(style.backgroundColor).toBe('rgba(0, 0, 0, 0)')
   await expect(style.color).toBe(computedColour(button, semantic['text/secondary']))
   const icon = button.querySelector('svg')?.getBoundingClientRect()
-  await expect([icon?.width, icon?.height]).toEqual([16, 16])
+  const side = iconSize === 'md' ? 20 : 16
+  await expect([icon?.width, icon?.height]).toEqual([side, side])
 }
 
 export const Default: Story = {
   globals: { colorScheme: 'light' },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     // Named, since an icon alone says nothing to a screen reader.
     const button = within(canvasElement).getByRole('button')
     await expect(button.getAttribute('aria-label')?.length).toBeGreaterThan(0)
-    await atRest(button)
+    await atRest(button, args.iconSize)
   },
 }
 
 export const Danger: Story = {
   args: { tone: 'danger' },
   globals: { colorScheme: 'light' },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     // At rest the danger tone looks as the neutral one does; it shows only on
     // hover, node 460:667.
-    await atRest(within(canvasElement).getByRole('button'))
+    await atRest(within(canvasElement).getByRole('button'), args.iconSize)
   },
 }
 
@@ -100,7 +102,10 @@ export const Hover: Story = {
     // The colours wanted, worked out BEFORE waiting: computedColour borrows the
     // element's inline style, and waitFor reruns on every change to the DOM,
     // so called inside it, each check set off the next, for ever.
-    const [neutralFill, dangerFill] = [computedColour(neutral, semantic['bg/surface-secondary']), computedColour(danger, status.rejected.container)]
+    const [neutralFill, dangerFill] = [
+      computedColour(neutral, semantic['bg/surface-secondary']),
+      computedColour(danger, status.rejected.container),
+    ]
     // Neutral, 460:663: the secondary surface and the primary text. MUI eases
     // the fill in over 150 ms, so the end of it is waited for.
     await browser.userEvent.hover(neutral)

@@ -140,13 +140,17 @@ shadows, and each value below was read from the named node with
 | `Elevation/Card`  | `137:44`  | `#0000000F` `0 1` blur 3 spread 0  | `#0000000A` `0 1` blur 2 spread 0  |
 | `Elevation/Modal` | `210:276` | `#0000001F` `0 8` blur 24 spread -4 | `#00000014` `0 2` blur 6 spread -2 |
 | no style, tooltip | `410:469` | `#0000003D` `0 6` blur 18 spread -2 | none                            |
+| no style, bulk bar | `401:436` | `#00000029` `0 8` blur 24 spread -4 | none                           |
 
 The third row is **not an effect style**. The tooltip at `410:469` draws its own
 shadow, 24 percent black, read from the frame's `get_design_context` because
 `get_variable_defs` binds no style to it, so the two-style rule above still
 holds. It is in the token set as `elevation.tooltip`,
 named for the one surface that uses it, because a component may not state a
-shadow of its own. The thirteen-frame sweep below did not include `410:469`,
+shadow of its own. The fourth row is not one either: the Bulk Action Bar
+at `401:436` draws one shadow of 16 percent black, the Modal style's first
+layer at a heavier alpha, bound to no style, read with use_figma on 2026-09-11.
+It is `elevation.bulkBar`. KN-025. The thirteen-frame sweep below did not include `410:469`,
 which is how it was missed until KN-218 read the frame itself.
 
 An earlier version of this document said Card was the only elevation in the
@@ -158,8 +162,9 @@ token every time, which is why the sweep for this task sampled thirteen
 component frames instead: `7:2`, `7:105`, `33:58`, `84:22`, `95:38`, `137:44`,
 `159:80`, `185:11`, `210:276`, `248:116`, `401:436`, `416:21` and `512:8350`.
 The Menu at `512:8350` uses `Elevation/Card` rather than a third style, and the
-Contact Card, Empty State and Bulk Action Bar introduce no token outside the set
-recorded here.
+Contact Card and Empty State introduce no token outside the set recorded here.
+An earlier version said the same of the Bulk Action Bar, whose shadow is the
+fourth row above; the sweep read its colours and missed its effect.
 
 ### Type
 
@@ -398,6 +403,37 @@ names the likely cause without claiming it. The state is a status region, so a
 screen reader reads the change out. The file draws no second line; the copy is
 KN-022's, in the file's register. KN-022.
 
+### The Bulk Action Bar
+
+Node `401:436`, Type=Jobs `205:18` and Type=Contacts `401:428`: `bg/surface`
+with a one pixel `border/default` edge inside, radius lg, 12 and 16 of padding,
+12 between its parts, and its own shadow, `elevation.bulkBar`. From the inline
+start, the file's description says so for RTL: the count, then on the Jobs type
+Ghost «انتخاب همه» and Secondary «تغییر وضعیت», Destructive «حذف», all Button
+S, a divider 1 by 24 in `border/default`, and a close, a 32 square of radius md
+round the 20 x icon in `text/secondary`, which the code draws with the Icon
+Button's states. The count is Body's size and line height with Label's weight
+at no tracking, `text/primary`. On the screens it sits 24 above the bottom,
+centred, `243:595` and `252:386`. The set's Secondary Action boolean is bound to
+no layer, so it does nothing and the code has no such prop. KN-025.
+
+**The count says «فرصت شغلی».** The file draws «۲ آگهی انتخاب شده», and the
+selected items are job opportunities, which section 3's terminology rule, the
+file's own and without exception, never calls «آگهی». The code follows the rule
+and KN-329 asks the file to. The number is the reader's digits, and the English
+noun takes its plural from the number; Persian keeps it singular.
+
+**On a phone it wraps.** The file's mobile bar, `243:408`, is fixed at 358 and
+holds 448 of content centred, so its close and its count hang 45 outside it.
+The code keeps 16 from each side and wraps what does not fit onto a second row,
+until KN-328 settles the narrow layout.
+
+**What a host owes it.** The bar floats, but the page puts it before the list in
+its order, so Tab reaches it without crossing the list, and while it shows the
+page keeps room at its foot, 60 and 24, or the last rows can be focused under
+it. The count's status region is in the page from the start, empty while
+nothing is selected, so the first selection is announced.
+
 ### A stroke is drawn inside, and takes no space
 
 Every stroke on a component in the file is aligned INSIDE and left out of
@@ -581,8 +617,11 @@ On hover a checkbox appears, the title shifts, and a delete icon appears in the
 corner. The link icon follows the title and is toggled per instance, because not
 every posting has a link.
 
-**Bulk selection has no bar above the columns.** A dark bar floats at the
-**bottom** of the page carrying the count, «انتقال به...», «حذف» and a close.
+**Bulk selection has no bar above the columns.** A light bar floats at the
+**bottom** centre of the page carrying the count, «انتخاب همه», «تغییر وضعیت»,
+«حذف» and a close; the network's carries «حذف» alone. An earlier reading here
+said the bar was dark and offered «انتقال به...»; the file's `401:436` draws
+neither, read with use_figma on 2026-09-11. KN-025.
 
 **Sorting** offers exactly four options: تازه‌ترین, قدیمی‌ترین,
 نزدیک‌ترین مهلت, and نام شرکت alphabetically.

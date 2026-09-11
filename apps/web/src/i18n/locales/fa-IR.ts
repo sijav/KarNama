@@ -56,4 +56,13 @@ export const messages: Record<string, string> = {
   'Nothing matches this search. Try other words or remove the filters.': 'چیزی با این عبارت پیدا نشد. عبارت دیگری امتحان کن یا فیلترها را بردار.',
   'Reading the job posting…': 'داره آگهی رو می‌خونه…',
   'Still reading. If the server was asleep, waking it takes up to a minute.': 'هنوز داره می‌خونه. اگه سرور خواب بوده، بیدار شدنش تا یه دقیقه طول می‌کشه.',
+  'job opportunity selected': 'فرصت شغلی انتخاب شده',
+  'job opportunities selected': 'فرصت شغلی انتخاب شده',
+  'contact selected': 'مخاطب انتخاب شده',
+  'contacts selected': 'مخاطب انتخاب شده',
+  'Bulk actions': 'کارهای گروهی',
+  'Select all': 'انتخاب همه',
+  'Change status': 'تغییر وضعیت',
+  'Delete': 'حذف',
+  'Clear selection': 'لغو انتخاب',
 }

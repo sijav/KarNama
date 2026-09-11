@@ -53,4 +53,13 @@ export const messages: Record<string, string> = {
   'Nothing matches this search. Try other words or remove the filters.': 'Nothing matches this search. Try other words or remove the filters.',
   'Reading the job posting…': 'Reading the job posting…',
   'Still reading. If the server was asleep, waking it takes up to a minute.': 'Still reading. If the server was asleep, waking it takes up to a minute.',
+  'job opportunity selected': 'job opportunity selected',
+  'job opportunities selected': 'job opportunities selected',
+  'contact selected': 'contact selected',
+  'contacts selected': 'contacts selected',
+  'Bulk actions': 'Bulk actions',
+  'Select all': 'Select all',
+  'Change status': 'Change status',
+  'Delete': 'Delete',
+  'Clear selection': 'Clear selection',
 }

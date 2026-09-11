@@ -7,6 +7,7 @@ export interface IconButtonProps {
   icon: IconName
   'aria-label': string
   tone?: 'neutral' | 'danger'
+  iconSize?: 'sm' | 'md'
   disabled?: boolean
   onClick?: () => void
 }
@@ -28,8 +29,17 @@ export const nameOf = (label: string) => {
 }
 
 // The Icon Button of node 460:672: a 32 square of radius md around a 16 icon,
-// Neutral and Danger, each at rest, hovered and disabled.
-export const IconButton = ({ icon, 'aria-label': label, tone = 'neutral', disabled = false, onClick }: IconButtonProps) => (
+// Neutral and Danger, each at rest, hovered and disabled. The Bulk Action Bar's
+// close, 401:436, is the same square round a 20 icon, so the icon's size is a
+// prop, 16 unless told otherwise.
+export const IconButton = ({
+  icon,
+  'aria-label': label,
+  tone = 'neutral',
+  iconSize = 'sm',
+  disabled = false,
+  onClick,
+}: IconButtonProps) => (
   <MuiIconButton
     aria-label={nameOf(label)}
     disabled={disabled}
@@ -37,7 +47,10 @@ export const IconButton = ({ icon, 'aria-label': label, tone = 'neutral', disabl
     onClick={onClick}
     sx={(theme) => {
       const colour = theme.karnama.semantic
-      const hover = tone === 'danger' ? { fill: theme.karnama.status.rejected.container, icon: colour['text/error'] } : { fill: colour['bg/surface-secondary'], icon: colour['text/primary'] }
+      const hover =
+        tone === 'danger'
+          ? { fill: theme.karnama.status.rejected.container, icon: colour['text/error'] }
+          : { fill: colour['bg/surface-secondary'], icon: colour['text/primary'] }
       return {
         position: 'relative',
         width: spacing.xl,
@@ -60,6 +73,6 @@ export const IconButton = ({ icon, 'aria-label': label, tone = 'neutral', disabl
       }
     }}
   >
-    <Icon name={icon} size="sm" color="inherit" />
+    <Icon name={icon} size={iconSize} color="inherit" />
   </MuiIconButton>
 )

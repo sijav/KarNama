@@ -23,6 +23,7 @@ export type StoryTitle =
   | 'App/Shell'
   | 'Core/PreferencesProvider'
   | 'Foundations/Tokens'
+  | 'Shared/BulkActionBar'
   | 'Shared/Button'
   | 'Shared/Checkbox'
   | 'Shared/ColorPicker'

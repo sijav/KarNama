@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 120 of 327 tasks done · 235 of 757 points.
+Project **KarNama** · 120 of 329 tasks done · 235 of 759 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -23,7 +23,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (202)
+## Backlog (204)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -140,6 +140,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-324` | The Loading State's dots start on a frame with all three dim, and no story reads their opacity | medium | 1 | web | none | The first painted frame is the file's, the middle dot at 1 and the others at 0.4, and a story reads the three opacities at the start and one turn later. |
 | `KN-325` | A Loading State whose startedAt moves past fifteen seconds shows the reading line for a render first | medium | 1 | web | none | A startedAt already past fifteen seconds shows the slow line on its first render, whether mounted with it or changed to it, and a story changes it while mounted. |
 | `KN-326` | The Loading State's first line is not reliably announced, since its status region mounts already holding it | medium | 1 | web | none | The status region is in the page before its first line is written, so the first line is a change, and a story shows the region empty when it mounts and filled after. |
+| `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -202,6 +203,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-308` | The Icon's default size and colour are never exercised by a story | low | 1 | web | none | A story renders an Icon with only its name and asserts 24 by 24 and text/secondary. |
 | `KN-323` | The Empty State's round mark is about 1.02 to one on the bg/page every screen puts it on | low | 1 | design | none | The owner chooses whether the mark stays, turns bg/surface or becomes an illustration, and the file, DESIGN.md and the component follow. |
 | `KN-327` | A long unbroken Empty State title overflows a narrow screen | low | 1 | web | none | The title wraps anywhere when a word is wider than the state, and a story at 320 wide with a long unbroken title shows no overflow. |
+| `KN-329` | The Bulk Action Bar's count says «آگهی» for selected job opportunities, against the file's terminology rule | low | 1 | design | none | The file's count reads «فرصت شغلی», or the owner exempts it and the code follows. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4180,4 +4182,26 @@ CHILD OF KN-022, recorded in prose because board.json cannot express parent_task
 **Why.** The contacts and search titles carry user text in time, and a phone is where a title is narrowest.
 
 **Exit condition.** The title wraps anywhere when a word is wider than the state, and a story at 320 wide with a long unbroken title shows no overflow.
+
+### `KN-328` The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it
+
+- **status** backlog · **severity** medium · **points** 1 · **area** design
+- **blocked by** none
+
+Found while building KN-025. Instance 243:408 on My Jobs / Mobile — Selection is fixed at 358 wide with its content centred, and the Jobs type's content is 448, so the close sits at x -45 and the count ends at 403, outside the bar on both sides. The code keeps 16 from each side and wraps onto a second row meanwhile.
+
+**Why.** Half the design is the mobile screens, and the file's own phone bar does not fit.
+
+**Exit condition.** The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it.
+
+### `KN-329` The Bulk Action Bar's count says «آگهی» for selected job opportunities, against the file's terminology rule
+
+- **status** backlog · **severity** low · **points** 1 · **area** design
+- **blocked by** none
+
+Found while building KN-025. Node 205:18's count reads «۲ آگهی انتخاب شده», and the items selected are job opportunities, which the terminology rule of frame 505:3, DESIGN.md section 3, never calls «آگهی». The code writes «فرصت شغلی».
+
+**Why.** The rule is the file's own and says without exception, and the next reader of the component will see the file and the code disagree.
+
+**Exit condition.** The file's count reads «فرصت شغلی», or the owner exempts it and the code follows.
 
