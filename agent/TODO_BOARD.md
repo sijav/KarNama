@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 138 of 375 tasks done · 317 of 815 points.
+Project **KarNama** · 139 of 375 tasks done · 318 of 815 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-302` Every tab panel is a tab stop, so a panel holding a field puts an extra stop before it** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-302` | Every tab panel is a tab stop, so a panel holding a field puts an extra stop before it | high | 1 | web | none | A panel with focusable content is not itself a tab stop and one with none is, decided from what it renders; a story with a field in a panel shows Tab going from the tab to the field, and one with only text shows the panel reached. |
+**Next up: `KN-303` Tab and panel ids are built from tab values, so a value with a space breaks the tab's link to its panel** (high, 1 pt, web)
 
 ## Blocked (4)
 
@@ -260,7 +254,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (138)
+## Done (139)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -388,6 +382,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-260` | Stories inherit the real pointer where the last hover story left it | high | 1 | web | none | Every story starts with the test runner's pointer somewhere that hovers nothing, set once for the whole suite rather than per story; BlankErrorIsNoError drops its pointer-events workaround and TECH-DEBT 15 is deleted; and a check runs a story that leaves the pointer on a field followed by one asserting a resting border in the same spot, which fails without the reset. |
 | `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | high | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
 | `KN-301` | In Persian the Color Picker's left and right arrows move against the swatches' visual order | high | 1 | web | none | In Persian and in English the left and right arrows move to the swatch that sits in that direction and choose it, established by where the focused swatch lands on screen after a real key press, and up and down still move through the order; a story presses both arrows in both languages. |
+| `KN-302` | Every tab panel is a tab stop, so a panel holding a field puts an extra stop before it | high | 1 | web | none | A panel with focusable content is not itself a tab stop and one with none is, decided from what it renders; a story with a field in a panel shows Tab going from the tab to the field, and one with only text shows the panel reached. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -3981,7 +3976,7 @@ CHILD OF KN-019, recorded in prose because board.json cannot express parent_task
 
 ### `KN-302` Every tab panel is a tab stop, so a panel holding a field puts an extra stop before it
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-023, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-023 roast. Tabs.tsx gives every tabpanel tabIndex 0, so Tab from the tab list lands on the panel itself and only then on the note field inside it. The WAI-ARIA tabs pattern gives a panel a tab stop only when it has no focusable content.

@@ -8311,12 +8311,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A panel with focusable content is not itself a tab stop and one with none is, decided from what it renders; a story with a field in a panel shows Tab going from the tab to the field, and one with only text shows the panel reached.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:04:17.135Z",
-      "updatedAt": "2026-09-11T18:44:13.559Z"
+      "updatedAt": "2026-09-11T18:53:45.517Z",
+      "evidence": "Real click and Tab through vitest/browser: from the Note tab Tab lands on its field and the shown panel carries no tabindex; from the chosen tab Tab lands on a panel of text, tabindex 0; the field story failed before the change; Tabs and Job Modal stories 17 of 17; looked at in Persian light and English dark.",
+      "closedAt": "2026-09-11T18:53:45.517Z"
     },
     {
       "id": "KN-303",
