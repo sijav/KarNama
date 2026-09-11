@@ -5,8 +5,9 @@ A status's colour comes from a closed set, the nine pairs the board already
 uses, five for the default statuses and four more, never a free colour: a
 status still has to read as a status. The current colour carries an edge in its
 own darker shade and a check. The swatches are one radio group, so Tab reaches
-the chosen colour and the arrow keys move and choose, and each swatch is named
-for its colour.
+the chosen colour and the arrow keys move and choose, the left and right arrows
+to the swatch that sits that way on screen in either language, and each swatch
+is named for its colour.
 
 ## Props
 
@@ -36,3 +37,13 @@ A click picks a colour and reports its token.
 ### InEnglish
 
 The colour names in English, and the swatches running left to right.
+
+### ArrowsInPersian
+
+In Persian the swatches run right to left, and the left arrow moves to the
+swatch on the left, the right arrow to the one on the right, pressed on a real
+keyboard; up and down still move through the order.
+
+### ArrowsInEnglish
+
+The same keys in English, where the swatches run left to right.

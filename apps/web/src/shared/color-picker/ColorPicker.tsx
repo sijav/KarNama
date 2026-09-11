@@ -2,6 +2,7 @@ import type { I18n } from '@lingui/core'
 import { useLingui } from '@lingui/react'
 import { Box, Radio, RadioGroup } from '@mui/material'
 import { useId } from 'react'
+import { arrowsAcross } from '../../theme/sides'
 import { spacing, type as typeScale, type StatusToken } from '../../theme/tokens'
 import { GLYPHS } from '../icon'
 
@@ -106,7 +107,9 @@ const Swatch = ({ token, selected }: { token: StatusToken; selected: boolean }) 
 
 // The panel, node 257:17: a title, the nine swatches as one radio group, and
 // the helper under them. A native radio group, through MUI, gives one Tab stop,
-// arrow keys that move and select, and the checked colour announced.
+// arrow keys that move and select, and the checked colour announced; its left
+// and right arrows are the row's own, so they move the way they point in
+// every browser, KN-301.
 export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
   const { i18n } = useLingui()
   const titleId = useId()
@@ -162,6 +165,7 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
           const token = COLOURS.find((colour) => colour === chosen)
           if (token) onChange(token)
         }}
+        onKeyDown={arrowsAcross}
         // Row, wrapping, 8 both ways, as 257:4 lays it out: five to the first
         // row in the panel's 208, four to the second.
         sx={{ flexWrap: 'wrap', gap: `${spacing.xs}px` }}

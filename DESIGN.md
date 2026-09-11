@@ -120,7 +120,9 @@ a default's colour. An earlier reading here said a custom status picks one of
 the four reserved slots; the file draws nine, read with use_figma on
 2026-09-11, KN-019. The swatches run from the inline start as the file places
 them: offer and the four custom slots, then new, applied, interview and
-rejected.
+rejected. They are one radio group, and in either direction the left and right
+arrows move to the swatch that sits that way on screen, which WebKit's own radio
+group does not do right to left, KN-301.
 
 ### Spacing, radius, icon size
 

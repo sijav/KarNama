@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 373,
+  "nextId": 374,
   "tasks": [
     {
       "id": "KN-001",
@@ -2986,8 +2986,11 @@
       "status": "backlog",
       "exit": "A story that mounts a Persian and an English AppProviders side by side renders each in its own language and direction, the switch still shows no flash of the previous catalog, and a test covers both.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T23:11:17.210Z"
+      "notes": [
+        "Seen on 2026-09-11 while doing KN-301: with the Language toolbar on Persian, the Color Picker's and the Status Chip's Docs pages end with the preview document at dir=ltr lang=en-US, and the Color Picker's canvases draw 'Status colour' in English, left to right, because their stories pinned to en-US (InEnglish, ArrowsInEnglish, LongNameInEnglish) render last. The Button's page, with no English story, stays Persian. The page AGENTS.md section 5 item 7 calls the failure mode: Persian at the top and English once you scroll."
+      ],
+      "createdAt": "2026-09-07T23:11:17.210Z",
+      "updatedAt": "2026-09-11T18:39:48.635Z"
     },
     {
       "id": "KN-091",
@@ -8274,11 +8277,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "In Persian and in English the left and right arrows move to the swatch that sits in that direction and choose it, established by where the focused swatch lands on screen after a real key press, and up and down still move through the order; a story presses both arrows in both languages.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T11:56:11.153Z"
+      "createdAt": "2026-09-11T11:56:11.153Z",
+      "updatedAt": "2026-09-11T18:23:27.332Z"
     },
     {
       "id": "KN-302",
@@ -9369,6 +9373,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T18:23:01.015Z"
+    },
+    {
+      "id": "KN-373",
+      "title": "In Persian the Status Picker's left and right arrows move against its choices in Safari, as the Color Picker's did",
+      "desc": "CHILD OF KN-020, recorded in prose because board.json cannot express parent_task yet, KN-188: found while doing KN-301. The Status Picker's choices are a native radio group in a row that wraps, laid out from the inline start, the Color Picker's way. Blink's radio group reads the text direction, so in Chromium the left arrow already moves left in Persian, but WebKit's RadioInputType::handleKeydownEvent keeps left as the previous radio 'even for RTL', so in Safari it moves to the choice on the right. KN-301 gives the Color Picker the picker's own left and right, arrowsAcross in theme/sides.ts; the Status Picker does not take it yet. Its «+ وضعیت تازه» button sits inside the same group, and an arrow pressed on it must stay the browser's.",
+      "why": "The Status Picker is how a status is chosen in the add form and the Change Status modal, in the language the product defaults to; an arrow that moves against the screen in one browser reads as broken there.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The Status Picker's radio group takes arrowsAcross, and a story presses real left and right arrows in both languages through vitest/browser, landing on the choice beside the chosen one on screen and choosing it, while an arrow pressed on the New status button moves nothing.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T18:32:00.114Z"
     }
   ]
 }

@@ -195,3 +195,73 @@ export const InEnglish: Story = {
     await expect(first.left).toBeLessThan(second.left)
   },
 }
+
+// Real arrow keys, KN-301: Playwright's keyboard through `vitest/browser`, so
+// the browser's own radio group is there to be overridden, as in use;
+// storybook/test's userEvent walks a radio group by its own rule, left always
+// the previous, and never asks the browser. From the amber, in the
+// middle of its row both ways, the left arrow lands on the swatch beside it on
+// the left, 8 away in the same row, and the right arrow on the one on the
+// right; up and down still move through the order. In the published Storybook
+// there is no runner to press keys, so press them yourself. The runner is
+// known by the flag .storybook/vitest.setup.ts sets, KN-225.
+type Arrow = '{ArrowLeft}' | '{ArrowRight}' | '{ArrowUp}' | '{ArrowDown}'
+const arrowsFollowTheScreen =
+  (direction: 'rtl' | 'ltr'): NonNullable<Story['play']> =>
+  async ({ args, canvasElement }) => {
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
+      if ('__STORYBOOK_PREVIEW__' in globalThis) return
+      throw new Error('The arrow keys are running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
+    }
+    const browser = await import('vitest/browser')
+    await expect(document.documentElement).toHaveAttribute('dir', direction)
+    const group = within(canvasElement).getByRole('radiogroup')
+    const chosen = () => {
+      const radio = within(group).getByRole('radio', { checked: true })
+      const box = swatchOf(radio).getBoundingClientRect()
+      return {
+        radio,
+        value: radio.getAttribute('value'),
+        top: Math.round(box.top),
+        left: Math.round(box.left),
+        right: Math.round(box.right),
+      }
+    }
+    const start = chosen()
+    // The row takes left and right itself, whatever the engine would do, and
+    // leaves up and down to the browser, so the last keydown says which moved
+    // the choice.
+    let last: KeyboardEvent | undefined
+    group.addEventListener('keydown', (event) => {
+      last = event
+    })
+    const TAKEN: Arrow[] = ['{ArrowLeft}', '{ArrowRight}']
+    const press = async (key: Arrow) => {
+      await browser.userEvent.keyboard(key)
+      const now = chosen()
+      await expect(now.radio).toHaveFocus()
+      await expect(args.onChange).toHaveBeenLastCalledWith(now.value)
+      await expect(last?.defaultPrevented).toBe(TAKEN.includes(key))
+      return now
+    }
+    start.radio.focus()
+    const left = await press('{ArrowLeft}')
+    await expect([left.top, left.right]).toEqual([start.top, start.left - 8])
+    await expect(await press('{ArrowRight}')).toMatchObject({ value: start.value, left: start.left })
+    const right = await press('{ArrowRight}')
+    await expect([right.top, right.left]).toEqual([start.top, start.right + 8])
+    await expect(await press('{ArrowLeft}')).toMatchObject({ value: start.value })
+    const next = COLOURS[COLOURS.findIndex((colour) => colour === start.value) + 1]
+    await expect(await press('{ArrowDown}')).toMatchObject({ value: next })
+    await expect(await press('{ArrowUp}')).toMatchObject({ value: start.value })
+  }
+
+export const ArrowsInPersian: Story = {
+  globals: { locale: 'fa-IR' },
+  play: arrowsFollowTheScreen('rtl'),
+}
+
+export const ArrowsInEnglish: Story = {
+  globals: { locale: 'en-US' },
+  play: arrowsFollowTheScreen('ltr'),
+}

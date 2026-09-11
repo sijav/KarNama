@@ -455,3 +455,28 @@ roast found no copy passing through them today.
 nothing in `src` needs it: remove it, run `npm run lint`, and if it passes the
 exemption was a hole for nothing. The disables go with KN-115 and KN-130, or
 when the rule learns identifiers.
+
+## 18. The Color Picker takes its left and right arrows from the browser
+
+**What.** `arrowsAcross` in `apps/web/src/theme/sides.ts` handles the left and
+right arrows of the Color Picker's radio group itself, KN-301: it prevents the
+browser's default, focuses the radio that sits that way on screen and clicks it.
+Up, down and modified arrows stay native.
+
+**Why it is like that.** The swatches are a native radio group, which is right
+for Tab, the checked state and the screen reader. Blink moves its arrows by the
+text direction, but WebKit's `RadioInputType::handleKeydownEvent` keeps left as
+the previous radio "even for RTL", so in Safari the Persian picker's left arrow
+moved to the swatch on the right. Chromium, the only engine the stories run,
+already got it right, which is why the ArrowsInPersian story passed before the
+handler existed.
+
+**What it costs.** A dozen lines of the picker's own where Blink's would do,
+and one more place to change if the keyboard contract of a radio group moves.
+KN-373 gives the same handler to the Status Picker.
+
+**The check that retires this.** When WebKit's `handleKeydownEvent` reads the
+text direction, as Blink's `radio_input_type.cc` does, remove `arrowsAcross`,
+its `onKeyDown` and the stories' check that the row took the key, and where the
+ArrowsInPersian and ArrowsInEnglish stories land still passes.
+
