@@ -506,3 +506,25 @@ as KN-369 did through `createVitest`, after a Storybook or Vitest upgrade: when
 the plugin's `setup-file.browser.4` is among them, delete `parkPointer` and
 this entry, and the Contact Card's stories still pass in a full run.
 
+
+## 20. The schema entry's test turns its hook's time budget off
+
+**What.** `apps/api/src/graphql/schema-entry.test.ts` starts its four runs of
+the built command in a `beforeAll` whose budget is `0`, none, and gives each
+run a hang guard instead: `spawn` stops it after `HUNG_AFTER_MS`, 60 seconds,
+and the hook rejects, naming the command, KN-167.
+
+**Why it is like that.** A run is a fresh process that loads NestJS and
+GraphQL, a second at idle and five on the loaded machine of 2026-09-10, where a
+case's 5 second budget failed the gate at random. The runs now start together
+and cost about one and a half starts, but a speed budget on them measures the
+machine, not the command: under 64 busy loops the batch took 4.1 of the hook's
+default 10 seconds, and the next heavier load would have been the same failure.
+
+**What it costs.** A hung command holds the gate for a minute before it fails,
+and a machine that needs a minute for a one-second start fails it too.
+
+**The check that retires this.** When the entry stops loading NestJS to print
+or check a schema, or a start of it stays under a second on the busiest gate
+run, give the hook its default budget back, delete `HUNG_AFTER_MS` and this
+entry, and the file still passes in a full `npm test` in apps/api.
