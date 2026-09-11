@@ -89,5 +89,12 @@ export const buildTheme = (direction: 'rtl' | 'ltr', scheme: ColorScheme = 'ligh
       caption: role('label'),
     },
     karnama: { status: statuses, elevation, radius, semantic: colour },
+    components: {
+      // A button draws in the browser's own font, Arial in Chromium, and MUI's
+      // ButtonBase does not give the page's back, so every one takes the
+      // product's face here, KN-351: the Contact Card's name and the Status
+      // Picker's New status drew narrower and bolder than Vazirmatn until this.
+      MuiButtonBase: { styleOverrides: { root: { fontFamily } } },
+    },
   })
 }

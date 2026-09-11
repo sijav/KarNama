@@ -74,6 +74,8 @@ export const Default: Story = {
     }
     const add = within(group).getByRole('button', { name: i18n._('New status') })
     await expect(add.getBoundingClientRect().height).toBe(28)
+    // The page's face, not the browser's button font, KN-351.
+    await expect(getComputedStyle(add).fontFamily).toBe(getComputedStyle(group).fontFamily)
     await expect([getComputedStyle(add, '::before').borderTopStyle, getComputedStyle(add).color]).toEqual([
       'dashed',
       computedColour(add, semantic['text/brand']),

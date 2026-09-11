@@ -74,7 +74,7 @@ and KN-287. The job level list and KN-077 still wait.
 
 ## What keeps going wrong, one line each
 
-- A ButtonBase with text draws in the browser's button font: give it `fontFamily: 'inherit'` (KN-351 for the two built ones).
+- A button draws in the browser's font, Arial in Chromium: since KN-351 the theme gives every ButtonBase the product's face; a native `<button>` outside ButtonBase still needs it.
 - A flex item with `overflow: hidden` may shrink below its content: a list of cards in a scrolling flex column needs `flex-shrink: 0` on them.
 - MUI's Chip is `max-width: 100%` of its group: beside a count, hold it in a `min-width: 0` item or the count is pushed out.
 - Figma's hidden layer gives up its room: fold a control to no room and fade it, never `display: none`, which drops it from the Tab order.

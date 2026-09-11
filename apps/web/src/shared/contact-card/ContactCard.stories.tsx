@@ -109,6 +109,9 @@ export const Full: Story = {
     await expect(style.backgroundColor).toBe(computedColour(card, semantic['bg/surface']))
     const name = openerOf(canvasElement, args.contact.name)
     await expect([px(getComputedStyle(name).fontSize), Number(getComputedStyle(name).fontWeight)]).toEqual([16, 600])
+    // The name, a button, in the page's face, not the browser's button font,
+    // KN-351.
+    await expect(getComputedStyle(name).fontFamily).toBe(getComputedStyle(card).fontFamily)
     await expect(seen(within(card).getByRole('checkbox'))).toBe(false)
     await expect(deleteOf(card).getBoundingClientRect().width).toBe(0)
     // Email and phone are links that act: mailto and tel.

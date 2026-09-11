@@ -9463,20 +9463,21 @@
       "title": "Stories that drive the real pointer fail when the storybook run executes files in parallel",
       "desc": "Found while closing KN-214. The full storybook project failed the JobCard Pressed and NavItem Hover stories while both pass run alone. Stories under __KARNAMA_STORY_TEST__ move the one real Playwright pointer and hold keys, KN-225, and vitest's browser mode runs story files side by side in one page, so one file's hover or press can land while another's assertion waits.",
       "why": "A suite that fails on its own interleaving teaches everyone to rerun instead of read, and hides the real failure when it comes.",
-      "severity": "medium",
+      "severity": "high",
       "points": 2,
       "area": "web",
       "parent": [],
       "status": "backlog",
-      "exit": "The full storybook project passes three runs in a row, either with pointer-driven story files run alone or with each such story moving the pointer to its own target before it asserts, and the reason is written where the choice is made.",
+      "exit": "The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row.",
       "roasts": [],
       "notes": [
         "2026-09-11, KN-260: the pointer park before every story made the whole storybook project pass, 245 of 245, where the run before it failed JobCard Pressed and NavItem Hover; those were the lingering pointer. Two more clean full runs would close this.",
         "2026-09-11, correction: Storybook's own resetMousePosition already moved the pointer off the page before every test when the JobCard Pressed and NavItem Hover stories failed, so the lingering pointer was not their cause; the one clean full run after KN-260 is not evidence, and the cause is still open.",
-        "2026-09-11, while doing KN-311: the full run failed JobCard Pressed again, 1224 of 1225 passing, with 'expected rgb(243, 244, 246) to be rgb(255, 255, 255)': the card WAS pressed, and the EXPECTED colour was white. The story's computed() borrows the card's own backgroundColor, which the card transitions over 200 ms; once the card's style has resolved, setting the inline colour starts a transition and getComputedStyle returns its current value, the starting white. Run alone the first read comes before any resolved style, so no transition and the right grey. The likely fix is to compute token colours on an element without a transition, not the pointer; NavItem Hover's 120 ms hover transition is worth the same look."
+        "2026-09-11, while doing KN-311: the full run failed JobCard Pressed again, 1224 of 1225 passing, with 'expected rgb(243, 244, 246) to be rgb(255, 255, 255)': the card WAS pressed, and the EXPECTED colour was white. The story's computed() borrows the card's own backgroundColor, which the card transitions over 200 ms; once the card's style has resolved, setting the inline colour starts a transition and getComputedStyle returns its current value, the starting white. Run alone the first read comes before any resolved style, so no transition and the right grey. The likely fix is to compute token colours on an element without a transition, not the pointer; NavItem Hover's 120 ms hover transition is worth the same look.",
+        "2026-09-11, while doing KN-351: the full run failed NavItem Hover with 'expected rgb(243, 244, 246) to be rgba(0, 0, 0, 0)', the same mechanism as JobCard Pressed: Hover computes its expected colour through the item's own 120 ms background transition and gets the starting transparent; alone it passes, 14 of 14. Both named flakes are this, not the pointer, so the exit condition is corrected to the cause, and the card is raised to high: two full runs today failed on it, so the full suite before a batch push cannot pass."
       ],
       "createdAt": "2026-09-11T17:43:31.970Z",
-      "updatedAt": "2026-09-11T19:00:50.527Z"
+      "updatedAt": "2026-09-11T19:47:52.305Z"
     },
     {
       "id": "KN-366",
