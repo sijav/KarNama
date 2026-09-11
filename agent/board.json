@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 407,
+  "nextId": 409,
   "tasks": [
     {
       "id": "KN-001",
@@ -5674,7 +5674,24 @@
       "parent": [],
       "status": "done",
       "exit": "The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4.2,
+          "criticals": 0,
+          "file": "agent/roasts/KN-203-round-1.2026-09-11T22-14-14-172Z.md",
+          "filed": [
+            "KN-407",
+            "KN-408"
+          ],
+          "cardDigest": "f20ab83d7e74c4033af3ba2b00365a8bc13a230bdafb8c0a8e1aca0cb3f70341",
+          "head": "1c1fe73d07a4cbcc8a5816189b31ae54614225ab",
+          "reviewerScore": 4.2,
+          "reviewerCriticals": 0,
+          "dismissed": "The fourth major, that the JSDoc in docs-locale.ts and DocsPage.tsx is documentation prose belonging in story-docs markdown: AGENTS.md draws the line at who reads it, and these explain Storybook's behaviour to whoever edits the file, which is a comment by that rule.",
+          "at": "2026-09-11T22:19:19.748Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T02:59:37.807Z",
       "updatedAt": "2026-09-11T22:13:51.556Z",
@@ -10426,6 +10443,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T22:17:07.717Z"
+    },
+    {
+      "id": "KN-407",
+      "title": "The Docs page hook and its channel are still checked by hand: a fake DocsContext would cover them, as AppProviders and PreferencesProvider are covered",
+      "desc": "CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-203 roast, which rated it major. vitest.config.ts excludes DocsPage.tsx and useDocsLocale.ts from coverage on the grounds that this repository covers React by rendering stories in a browser and a Docs page cannot be a story. That reason is thinner than it looks: src/app/AppProviders.test.tsx and src/core/preferences/PreferencesProvider.test.tsx render React in the unit project already. A test that renders the hook inside a DocsContext.Provider of its own, with a channel of its own, would cover what docs-locale.ts cannot: that the hook reads the context it is given, that it subscribes and unsubscribes, that an event moves the page, and that the note renders when nothing can be read.",
+      "why": "The path that decides the language of every Docs page is the one path no automated test touches, and the argument for that in the config is not true of this repository.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "useDocsLocale is rendered in a test against a DocsContext and a channel the test makes: it reads the toolbar from the context, follows a globalsUpdated event, stops listening when it unmounts, and reports not known when the context yields nothing; the file leaves the coverage exclusion list, or the exclusion names what is left in it and why.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T22:19:19.488Z"
+    },
+    {
+      "id": "KN-408",
+      "title": "Two ways the unread-language note cannot appear: a docs page with no attached CSF, and an event that stops yielding a locale",
+      "desc": "CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-203 roast, two of its majors, one mechanism each and one fix. FIRST: DocsPage calls useOf(\"meta\", [\"meta\"]) unguarded, which throws on a page with no attached CSF file, so the note KN-203 added cannot render there; Storybook shows its own error instead, which is loud but is not what the card promised. Every page here is autodocs over a CSF file and there is no MDX, KN-097, so nothing reaches it today. SECOND: once a locale has been read, known never goes back to false: an event carrying a language we have no catalog for, or a future payload without userGlobals, leaves the page in the last language with nothing said. The toolbar offers two languages, so only a hand-edited URL or a Storybook change produces it.",
+      "why": "The note is the whole of the card's loud failure, and these are the two states where the page still goes quiet.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A docs page with no attached CSF file shows the note rather than throwing, and an event that yields no locale puts the page back to not known, each with a test; the existing pages are unchanged.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T22:19:19.595Z"
     }
   ]
 }

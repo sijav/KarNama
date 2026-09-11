@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 166 of 406 tasks done · 354 of 858 points.
+Project **KarNama** · 166 of 408 tasks done · 354 of 861 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -20,7 +20,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (233)
+## Backlog (235)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -146,6 +146,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-306` | The fixtures' never-bundled test reads source imports, not the production bundle | medium | 2 | web | none | A check builds the web app for production and asserts that no fixture value, a sentinel only the fixtures hold, appears in the emitted files; a planted import of the fixtures from app code makes it fail. |
 | `KN-380` | The Search Bar decides whether to search by comparing typed text with shown text, which a normalising, restoring or clear-ignoring parent defeats | medium | 2 | web | none | Stories, each failing on KN-314's code: a parent ignoring the clear gets no search and no late one; a parent lowercasing input gets one search for the lowercased text; a parent restoring a reset value gets none; and the Search Bar's existing stories still pass. |
 | `KN-389` | A column whose cards a search filtered away says it has none at this stage, while its count says it has one | medium | 2 | web | none | Read the file for a search or filtered state of the board and its columns and settle, in DESIGN.md, what a column shows when a search hides its cards and what its count counts, asking the owner if the file is silent; the column does that, and a story renders a filtered column with a live count of one. |
+| `KN-407` | The Docs page hook and its channel are still checked by hand: a fake DocsContext would cover them, as AppProviders and PreferencesProvider are covered | medium | 2 | web | none | useDocsLocale is rendered in a test against a DocsContext and a channel the test makes: it reads the toolbar from the context, follows a globalsUpdated event, stops listening when it unmounts, and reports not known when the context yields nothing; the file leaves the coverage exclusion list, or the exclusion names what is left in it and why. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -224,6 +225,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-397` | The stories-glob test searches the patterns' text for mdx, not whether any pattern would index the MDX fixture | low | 1 | web | none | The test matches the fixture's path, and a few story paths that must be indexed, against each configured pattern with glob semantics, extglobs included, and finds the MDX fixture matched by none; AGENTS.md says a docs-only page is a CSF entry with its story-docs markdown. |
 | `KN-402` | The shared i18n singleton trails the provider by a commit, and nothing stops product code from reading it | low | 1 | web | none | npm run lint fails when product code outside src/i18n and AppProviders imports i18n from @lingui/core or from src/i18n, with a committed fixture that holds each import, and the comment in AppProviders says who may read the singleton and from when it is current. |
 | `KN-406` | KN-227's retirement check reads only the lint's exit code, so any unrelated error keeps TECH-DEBT 13 alive | low | 1 | agent | none | The check takes a baseline lint first and fails when that baseline is not clean; with the three exemptions removed it requires lingui errors whose files are tokens.ts, the storage key and the tooltip surface, and reports an unrelated error as an inconclusive run rather than as the exemptions being needed. |
+| `KN-408` | Two ways the unread-language note cannot appear: a docs page with no attached CSF, and an event that stops yielding a locale | low | 1 | web | none | A docs page with no attached CSF file shows the note rather than throwing, and an event that yields no locale puts the page back to not known, each with a test; the existing pages are unchanged. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -2815,6 +2817,8 @@ CHILD OF KN-007, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository.
 
+**Roasts.** round 1 scored 4.2 with 0 critical(s)
+
 ### `KN-204` KN-201 closed on a verifier that never tested one of its own exit-condition clauses
 
 - **status** done · **severity** high · **points** 1 · **area** agent
@@ -5211,4 +5215,26 @@ CHILD OF KN-227, recorded in prose because board.json cannot express parent_task
 **Why.** The one command that says when TECH-DEBT 13 can go cannot tell a reason from a coincidence, so the exemptions outlive their need and no one can tell.
 
 **Exit condition.** The check takes a baseline lint first and fails when that baseline is not clean; with the three exemptions removed it requires lingui errors whose files are tokens.ts, the storage key and the tooltip surface, and reports an unrelated error as an inconclusive run rather than as the exemptions being needed.
+
+### `KN-407` The Docs page hook and its channel are still checked by hand: a fake DocsContext would cover them, as AppProviders and PreferencesProvider are covered
+
+- **status** backlog · **severity** medium · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-203 roast, which rated it major. vitest.config.ts excludes DocsPage.tsx and useDocsLocale.ts from coverage on the grounds that this repository covers React by rendering stories in a browser and a Docs page cannot be a story. That reason is thinner than it looks: src/app/AppProviders.test.tsx and src/core/preferences/PreferencesProvider.test.tsx render React in the unit project already. A test that renders the hook inside a DocsContext.Provider of its own, with a channel of its own, would cover what docs-locale.ts cannot: that the hook reads the context it is given, that it subscribes and unsubscribes, that an event moves the page, and that the note renders when nothing can be read.
+
+**Why.** The path that decides the language of every Docs page is the one path no automated test touches, and the argument for that in the config is not true of this repository.
+
+**Exit condition.** useDocsLocale is rendered in a test against a DocsContext and a channel the test makes: it reads the toolbar from the context, follows a globalsUpdated event, stops listening when it unmounts, and reports not known when the context yields nothing; the file leaves the coverage exclusion list, or the exclusion names what is left in it and why.
+
+### `KN-408` Two ways the unread-language note cannot appear: a docs page with no attached CSF, and an event that stops yielding a locale
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-203 roast, two of its majors, one mechanism each and one fix. FIRST: DocsPage calls useOf("meta", ["meta"]) unguarded, which throws on a page with no attached CSF file, so the note KN-203 added cannot render there; Storybook shows its own error instead, which is loud but is not what the card promised. Every page here is autodocs over a CSF file and there is no MDX, KN-097, so nothing reaches it today. SECOND: once a locale has been read, known never goes back to false: an event carrying a language we have no catalog for, or a future payload without userGlobals, leaves the page in the last language with nothing said. The toolbar offers two languages, so only a hand-edited URL or a Storybook change produces it.
+
+**Why.** The note is the whole of the card's loud failure, and these are the two states where the page still goes quiet.
+
+**Exit condition.** A docs page with no attached CSF file shows the note rather than throwing, and an event that yields no locale puts the page back to not known, each with a test; the existing pages are unchanged.
 
