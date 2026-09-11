@@ -734,7 +734,9 @@ and 16 below, holds the title in Heading/M and the company in Body
 changes the status at once rather than with Save, and the 20 x. The tabs follow
 edge to edge, the Tab Item row of KN-023, in the owner's order, KN-072:
 «اطلاعات فرصت شغلی», «سابقه», «یادداشت», «افراد مرتبط», «فایل‌ها»; the chosen one's
-panel scrolls in the body's 24 while the row keeps its 44. **Info**, `210:101`,
+panel scrolls in the body's 24 while the row keeps its 44. A panel is a tab stop
+only when nothing in it is, as the WAI-ARIA tabs pattern asks, so Tab goes from
+the tab to a panel's first field, KN-302. **Info**, `210:101`,
 is the add modal's fields at 328 a column, the posting's link with a 44 square
 in `bg/surface-secondary` that opens it, drawn only when there is a link, a
 rule, the description under a 16 note icon and «شرح شغل و مسئولیت‌ها» at 14 and

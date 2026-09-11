@@ -8,6 +8,7 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
 import { semantic, spacing } from '../../theme/tokens'
+import { Input } from '../input'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Tabs, type TabsProps } from './Tabs'
 
@@ -35,11 +36,20 @@ interface Shown {
 }
 
 // The tabs as the modal would hold them, with the five labels in the reader's
-// language and a panel each. A choice shows at once and goes to the args, so
-// Controls show what is on screen; an arg that comes back at a revision this
-// sent, with the value sent there, is an echo, however late, and anything else
-// was set in Controls and is taken, KN-019.
-const Held = ({ args: given, updateArgs }: { args: HeldArgs; updateArgs: (update: Partial<HeldArgs>) => void }) => {
+// language and a panel each, of text, or for the tab named `field` a field, as
+// the Note tab holds. A choice shows at once and goes to the args, so Controls
+// show what is on screen; an arg that comes back at a revision this sent, with
+// the value sent there, is an echo, however late, and anything else was set in
+// Controls and is taken, KN-019.
+const Held = ({
+  args: given,
+  updateArgs,
+  field,
+}: {
+  args: HeldArgs
+  updateArgs: (update: Partial<HeldArgs>) => void
+  field?: TabValue
+}) => {
   const { i18n } = useLingui()
   const { revision, ...args } = given
   const [shown, setShown] = useState<Shown>({ value: args.value, sent: [], seen: { value: args.value, revision } })
@@ -52,7 +62,11 @@ const Held = ({ args: given, updateArgs }: { args: HeldArgs; updateArgs: (update
   const labels = [i18n._('Job opportunity info'), i18n._('History'), i18n._('Note'), i18n._('Related people'), i18n._('Files')]
   const tabs = VALUES.map((value, index) => {
     const label = labels[index] ?? value
-    return { value, label, panel: <Box sx={{ padding: `${spacing.md}px` }}>{label}</Box> }
+    return {
+      value,
+      label,
+      panel: <Box sx={{ padding: `${spacing.md}px` }}>{value === field ? <Input label={label} multiline /> : label}</Box>,
+    }
   })
   return (
     <Tabs
@@ -204,5 +218,53 @@ export const InEnglish: Story = {
     if (!first || !second) throw new Error('fewer than two tabs')
     // Left to right in English.
     await expect(first.left).toBeLessThan(second.left)
+  },
+}
+
+// A real Tab key, KN-302, through `vitest/browser`: the browser's own order of
+// tab stops, which a dispatched key does not ask. In the published Storybook
+// there is no runner to press keys, so press Tab yourself. The runner is known
+// by the flag .storybook/vitest.setup.ts sets, KN-225.
+const realKeys = async () => {
+  if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
+    if ('__STORYBOOK_PREVIEW__' in globalThis) return null
+    throw new Error('Tab is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
+  }
+  return import('vitest/browser')
+}
+
+export const TabReachesTheField: Story = {
+  // The Note tab's panel holds a field. Chosen by a real click on its tab, the
+  // panel shows and is no tab stop of its own: Tab goes from the tab straight
+  // to the field, as the WAI-ARIA tabs pattern asks.
+  render: function Render(args) {
+    const [, updateArgs] = useArgs<HeldArgs>()
+    return <Held args={args} updateArgs={updateArgs} field="note" />
+  },
+  play: async ({ canvasElement }) => {
+    const browser = await realKeys()
+    if (!browser) return
+    const [, , note] = within(canvasElement).getAllByRole('tab')
+    if (!note) throw new Error('fewer than three tabs')
+    await browser.userEvent.click(note)
+    await expect(note).toHaveAttribute('aria-selected', 'true')
+    const panel = within(canvasElement).getByRole('tabpanel')
+    await expect(panel).not.toHaveAttribute('tabindex')
+    await browser.userEvent.keyboard('{Tab}')
+    await expect(within(panel).getByRole('textbox')).toHaveFocus()
+  },
+}
+
+export const TabReachesTheText: Story = {
+  // A panel of text alone stays a tab stop, so a keyboard reaches what it
+  // says: Tab goes from the chosen tab to the panel itself.
+  play: async ({ canvasElement }) => {
+    const browser = await realKeys()
+    if (!browser) return
+    const panel = within(canvasElement).getByRole('tabpanel')
+    await expect(panel).toHaveAttribute('tabindex', '0')
+    within(canvasElement).getByRole('tab', { selected: true }).focus()
+    await browser.userEvent.keyboard('{Tab}')
+    await expect(panel).toHaveFocus()
   },
 }

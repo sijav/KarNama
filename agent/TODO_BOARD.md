@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 138 of 374 tasks done · 317 of 814 points.
+Project **KarNama** · 138 of 375 tasks done · 317 of 815 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -25,7 +25,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (229)
+## Backlog (230)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -231,6 +231,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-371` | LatinLedInPersian proves the Status Chip overflows, not which part of the name stays in view | low | 1 | web | none | LatinLedInPersian asserts the label's text-overflow is ellipsis and, by the rectangles of a Range over the name's first and last characters, that the leading Latin word lies inside the label's box and the overflow falls past its right edge. |
 | `KN-372` | NoLettersFollowsThePage shows the page fallback in the English interface only, and DESIGN.md's emoji claim has no fixture | low | 1 | web | none | The digit-only name renders rtl in the Persian interface and ltr in the English one, each with the document's direction asserted, and an emoji-only fixture is rendered in both, or the emoji clause leaves DESIGN.md. |
 | `KN-374` | The Color Picker's contract and stories never say where an arrow goes at a row's end | low | 1 | web | none | DESIGN.md's Color Picker sentence and the picker's story docs say that at a row's end the arrows go on to the next row in reading order and wrap from the last swatch to the first, as the radio group pattern does, and a story presses the left arrow in Persian from custom-4 and from rejected and lands on new and on offer. |
+| `KN-375` | A focused tab panel draws the browser's own outline, not the product's focus ring | low | 1 | web | none | A focused panel draws the product's focus ring in border/focus where the scrolling body cannot clip it, read from the file's focus treatment or DESIGN.md's rule for rings, and TabReachesTheText asserts the ring's style and colour after a real Tab in light and dark. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4780,4 +4781,15 @@ CHILD OF KN-019, recorded in prose because board.json cannot express parent_task
 **Why.** A keyboard user reaching the end of the first row sees focus jump to the far side of the next; the contract should say that is intended, and a story should hold it, so the next person does not 'fix' it into a dead end or a grid nobody drew.
 
 **Exit condition.** DESIGN.md's Color Picker sentence and the picker's story docs say that at a row's end the arrows go on to the next row in reading order and wrap from the last swatch to the first, as the radio group pattern does, and a story presses the left arrow in Persian from custom-4 and from rejected and lands on new and on offer.
+
+### `KN-375` A focused tab panel draws the browser's own outline, not the product's focus ring
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-023, recorded in prose because board.json cannot express parent_task yet, KN-188: found while doing KN-302. A panel with nothing focusable in it is a tab stop, as the WAI-ARIA tabs pattern asks, and Tab from the chosen tab lands on it; Tabs.tsx gives the panel no focus style, so what shows is Chromium's default focus outline, seen on 2026-09-11 in the English dark TabReachesTheText story as a pale ring round the whole panel, where every other control in the product draws border/focus. The tab's own ring is drawn inside it, since the row clips; the panel sits in the modal's scrolling body, which may clip an outside ring the same way.
+
+**Why.** A keyboard user reaching the History panel, text alone, should see the same focus ring the rest of the product draws; the browser's outline differs by browser and scheme and does not follow the tokens.
+
+**Exit condition.** A focused panel draws the product's focus ring in border/focus where the scrolling body cannot clip it, read from the file's focus treatment or DESIGN.md's rule for rings, and TabReachesTheText asserts the ring's style and colour after a real Tab in light and dark.
 

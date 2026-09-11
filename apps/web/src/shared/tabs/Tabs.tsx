@@ -26,6 +26,32 @@ const INDICATOR = 2
 const FOCUS_RING = 3
 const EDGE = 1
 
+// A panel is a tab stop only when nothing in it is, KN-302, as the WAI-ARIA
+// tabs pattern asks: Tab from the tab list goes straight to a panel's first
+// field, and to a panel of text alone on the panel itself. Read from what the
+// panel renders and shows, and read again whenever that changes, since its
+// content can arrive after it mounts and a hidden panel's shows when chosen.
+// The DOM keeps the attribute rather than React, so the answer is there before
+// the next key, and it is written only when it changes, since a write is a
+// mutation too and would wake the observer again.
+const watchStops = (panel: HTMLDivElement) => {
+  const read = () => {
+    const tabbable = [...panel.querySelectorAll<HTMLElement>('a[href], button, input, select, textarea, [tabindex]')].some(
+      (element) => element.tabIndex >= 0 && !element.matches(':disabled') && element.checkVisibility(),
+    )
+    if (tabbable === panel.hasAttribute('tabindex')) {
+      if (tabbable) panel.removeAttribute('tabindex')
+      else panel.tabIndex = 0
+    }
+  }
+  read()
+  const observer = new window.MutationObserver(read)
+  observer.observe(panel, { subtree: true, childList: true, attributes: true })
+  return () => {
+    observer.disconnect()
+  }
+}
+
 // The tablist and its panels: the Tab Item of node 204:20 in the row the Job
 // Modal draws at 210:101. MUI's Tabs gives the roles, aria-selected, the
 // roving tabindex, arrow keys that turn round in RTL, Home and End, and Enter
@@ -128,7 +154,14 @@ export const Tabs = ({ 'aria-label': label, value, onChange, tabs }: TabsProps) 
         ))}
       </MuiTabs>
       {tabs.map((item) => (
-        <Box key={item.value} role="tabpanel" id={panelId(item)} aria-labelledby={tabId(item)} hidden={item.value !== value} tabIndex={0}>
+        <Box
+          key={item.value}
+          ref={watchStops}
+          role="tabpanel"
+          id={panelId(item)}
+          aria-labelledby={tabId(item)}
+          hidden={item.value !== value}
+        >
           {item.panel}
         </Box>
       ))}

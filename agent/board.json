@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 375,
+  "nextId": 376,
   "tasks": [
     {
       "id": "KN-001",
@@ -9422,6 +9422,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T18:46:43.633Z"
+    },
+    {
+      "id": "KN-375",
+      "title": "A focused tab panel draws the browser's own outline, not the product's focus ring",
+      "desc": "CHILD OF KN-023, recorded in prose because board.json cannot express parent_task yet, KN-188: found while doing KN-302. A panel with nothing focusable in it is a tab stop, as the WAI-ARIA tabs pattern asks, and Tab from the chosen tab lands on it; Tabs.tsx gives the panel no focus style, so what shows is Chromium's default focus outline, seen on 2026-09-11 in the English dark TabReachesTheText story as a pale ring round the whole panel, where every other control in the product draws border/focus. The tab's own ring is drawn inside it, since the row clips; the panel sits in the modal's scrolling body, which may clip an outside ring the same way.",
+      "why": "A keyboard user reaching the History panel, text alone, should see the same focus ring the rest of the product draws; the browser's outline differs by browser and scheme and does not follow the tokens.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A focused panel draws the product's focus ring in border/focus where the scrolling body cannot clip it, read from the file's focus treatment or DESIGN.md's rule for rings, and TabReachesTheText asserts the ring's style and colour after a real Tab in light and dark.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T18:53:24.418Z"
     }
   ]
 }

@@ -6,7 +6,9 @@ It is the job opportunity window's row of sections. Tab reaches the chosen tab,
 the arrow keys move along the row, turning round in Persian so the arrow that
 points the way the row runs goes on, Home and End go to either end, and Enter
 or Space chooses. Every panel stays mounted and is hidden unless chosen, so
-nothing typed in one is lost by moving to another. The focus ring is drawn
+nothing typed in one is lost by moving to another. A panel is a stop for Tab
+only when nothing in it is: Tab goes from the tab straight to a panel's first
+field, and to a panel of text alone on the panel itself. The focus ring is drawn
 inside the tab, since the row cuts off whatever overflows it.
 
 ## Props
@@ -48,3 +50,14 @@ yourself.
 ### InEnglish
 
 The labels in English, the row running left to right.
+
+### TabReachesTheField
+
+The Note tab's panel holds a field. Chosen with a click, Tab goes from the tab
+straight to the field. The story presses a real key when it runs as a test; in
+Storybook itself, press Tab yourself.
+
+### TabReachesTheText
+
+A panel of text alone stays a stop for Tab, so Tab goes from the chosen tab to
+the panel and a keyboard reaches what it says.
