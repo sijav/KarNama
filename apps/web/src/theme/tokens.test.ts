@@ -122,16 +122,20 @@ const tokenName = /^[a-z0-9-]+(\/[a-z0-9-]+)*$/
 /**
  * Every token name the Tokens section of DESIGN.md documents, lower case.
  *
- * The key check was this shape alone, which accepted `delete/application` as a
+ * The key check was the shape alone, which accepted `delete/application` as a
  * key, and the Foundations page renders keys as visible labels, KN-234. A key
- * now has to be a name the design writes down: each inline code span in the
- * section, and each word of its spacing, radius and icon block.
+ * has to be a name the design writes down, and where it writes them down is
+ * the NAME COLUMN of its token tables, the first cell of a row when that cell
+ * is one code span, plus the words of its spacing, radius and icon block. The
+ * first answer took every code span in the section, which runs to the end of
+ * the component notes, so `currentcolor`, `log-out` and the deleted
+ * `body/small` were all keys a prose edit had authorised, KN-409.
  */
 const documentedNames = (() => {
   const section = design.slice(design.indexOf('## 1. Tokens'), design.indexOf('## 2.'))
-  const spans = [...section.matchAll(/`([^`\n]+)`/g)].flatMap((match) => match[1] ?? [])
+  const named = [...section.matchAll(/^\|([^|]*)\|/gm)].flatMap((match) => /^`([^`]+)`$/.exec(match[1]?.trim() ?? '')?.[1] ?? [])
   const fenced = [...section.matchAll(/```[^\n]*\n([\s\S]*?)```/g)].flatMap((match) => match[1]?.split(/\s+/) ?? [])
-  return new Set([...spans, ...fenced].map((name) => name.trim().toLowerCase()).filter((name) => tokenName.test(name)))
+  return new Set([...named, ...fenced].map((name) => name.trim().toLowerCase()).filter((name) => tokenName.test(name)))
 })()
 
 /**
@@ -175,6 +179,13 @@ describe('the token module holds design values and nothing a person reads', () =
     expect(documentedStack).toBe("'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif")
   })
 
+  it('holds the names the tables give and not every code span in the section, KN-409', () => {
+    // Each of these is written in the section's prose, in code, and none is a
+    // token: two CSS keywords, a Storybook control and the role the design
+    // deleted. Under the first answer each was a key nobody had documented.
+    for (const name of ['currentcolor', 'graytext', 'log-out', 'body/small']) expect(documentedNames.has(name)).toBe(false)
+  })
+
   it('has no string literal anywhere that is not a token name, a colour, a shadow or the font stack', () => {
     const source = readFileSync(fileURLToPath(new URL('./tokens.ts', import.meta.url)), 'utf8')
     expect(copyIn(source)).toEqual([])
@@ -191,6 +202,7 @@ describe('the token module holds design values and nothing a person reads', () =
     ['copy shaped like a token name, as a key', "export const semantic = { 'delete/application': '#2563eb' }"],
     ['copy as a family after Vazirmatn', `export const fontFamily = "'Vazirmatn', 'Delete this application'"`],
     ['copy inside the first quoted family', `export const fontFamily = "'Vazirmatn Delete this application', system-ui"`],
+    ['a key the design writes only in its prose', `export const type = { 'body/small': { size: 13 } }`],
   ])('refuses %s', (_case, planted) => {
     expect(copyIn(planted)).not.toEqual([])
   })

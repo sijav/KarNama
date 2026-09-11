@@ -37,3 +37,15 @@ exit code, is KN-406, at low. It is loop machinery rather than product, which
 the owner's rule of 2026-09-11 puts at low unless it is actively breaking the
 work, and nothing runs that file: verifiers are not run at the close, and
 neither CI nor `npm run contract` calls it.
+
+## KN-409, the same day
+
+The KN-234 roast was right that the first answer was a shape with more steps:
+the slice it read runs from `## 1. Tokens` to `## 2. Component families`, eight
+hundred lines including every component's notes, so each code span in them was
+an allowed key. The names now come from the NAME COLUMN of the token tables,
+the first cell of a row when that cell is one code span, plus the words of the
+spacing, radius and icon block: 47 names, every one a token. A test holds four
+that the prose writes in code and the tables do not, `currentcolor`,
+`graytext`, `log-out` and the deleted `body/small`, and a planted `body/small`
+key fails the guard. 53 tests in the file pass.
