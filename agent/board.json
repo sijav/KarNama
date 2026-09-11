@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 395,
+  "nextId": 396,
   "tasks": [
     {
       "id": "KN-001",
@@ -10025,7 +10025,22 @@
       "parent": [],
       "status": "done",
       "exit": "A restart from changed props drops any reading in flight, by the flow the answer belongs to rather than a ref written during render, so a late answer applies only to the flow that started it; a story changes the step while the loading panel waits and resolves the reading after, and the new step stays.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8.8,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-391-round-1.2026-09-11T20-28-13-517Z.md",
+          "filed": [
+            "KN-395"
+          ],
+          "cardDigest": "dd9e52261e75cd21e4f117df92cccd3bb6e5a6258cc62d97b0fb11789575c890",
+          "head": "0025f1451cde999c1c1cbfd069353c52e112056c",
+          "reviewerScore": 8.8,
+          "reviewerCriticals": 0,
+          "at": "2026-09-11T20:32:13.329Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T20:07:41.405Z",
       "updatedAt": "2026-09-11T20:27:57.417Z",
@@ -10076,6 +10091,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T20:19:40.560Z"
+    },
+    {
+      "id": "KN-395",
+      "title": "RestartWhileReading settles its held reading with an optional call, so it passes if the reading was never made",
+      "desc": "CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-391 roast. The story's onExtract sets a module-level settleReading when the modal asks to read; the play calls settleReading?.(found). If Extract stopped calling onExtract, or the promise stopped being held, the call would do nothing and the empty Manual form would still pass, so the story would stop testing the late answer it exists for.",
+      "why": "A story that can pass without its own subject running proves nothing when it passes.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "RestartWhileReading fails when no reading was made: it asserts onExtract was called with the source and throws if settleReading is unset before settling it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T20:32:13.185Z"
     }
   ]
 }

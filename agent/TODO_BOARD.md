@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 158 of 394 tasks done · 338 of 837 points.
+Project **KarNama** · 158 of 395 tasks done · 338 of 838 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -19,7 +19,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (230)
+## Backlog (231)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -226,6 +226,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-392` | The add modal compares its draft prop as JSON, so key order restarts it and an undefined field does not | low | 1 | web | none | The draft is compared field by field over JobDraft's keys, arrays by their items, so key order and an undefined field compare as the draft they make, and a unit test holds both cases. |
 | `KN-393` | The Job Modal's stories prove Save omits the old status, not that it carries no status at all | low | 1 | web | none | ChangeStatus and Note read onSave's last argument through mocked() and find no status key in it. |
 | `KN-394` | The lingui ignore test reads the plugin's no-letter pattern from its source, not from what the rule does | low | 1 | web | none | A test lints real code with the project's ESLint config, programmatically or through a fixture that must pass, and finds letterless titles, labels and text accepted and the three Latin-1 letters rejected. |
+| `KN-395` | RestartWhileReading settles its held reading with an optional call, so it passes if the reading was never made | low | 1 | web | none | RestartWhileReading fails when no reading was made: it asserts onExtract was called with the source and throws if settleReading is unset before settling it. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -5019,6 +5020,8 @@ CHILD OF KN-029, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** A restart from changed props drops any reading in flight, by the flow the answer belongs to rather than a ref written during render, so a late answer applies only to the flow that started it; a story changes the step while the loading panel waits and resolves the reading after, and the new step stays.
 
+**Roasts.** round 1 scored 8.8 with 0 critical(s)
+
 ### `KN-392` The add modal compares its draft prop as JSON, so key order restarts it and an undefined field does not
 
 - **status** backlog · **severity** low · **points** 1 · **area** web
@@ -5051,4 +5054,15 @@ CHILD OF KN-214, recorded in prose because board.json cannot express parent_task
 **Why.** The config now depends on the plugin's behaviour, and only a lint of real code shows that behaviour.
 
 **Exit condition.** A test lints real code with the project's ESLint config, programmatically or through a fixture that must pass, and finds letterless titles, labels and text accepted and the three Latin-1 letters rejected.
+
+### `KN-395` RestartWhileReading settles its held reading with an optional call, so it passes if the reading was never made
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-391 roast. The story's onExtract sets a module-level settleReading when the modal asks to read; the play calls settleReading?.(found). If Extract stopped calling onExtract, or the promise stopped being held, the call would do nothing and the empty Manual form would still pass, so the story would stop testing the late answer it exists for.
+
+**Why.** A story that can pass without its own subject running proves nothing when it passes.
+
+**Exit condition.** RestartWhileReading fails when no reading was made: it asserts onExtract was called with the source and throws if settleReading is unset before settling it.
 
