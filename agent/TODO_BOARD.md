@@ -2934,6 +2934,8 @@ CHILD OF KN-095, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** <Box title={'Delete this application' as const} /> and aria-label={'Delete' as const} fail npm run lint in a committed fixture, a story meta title written with 'as const' fails too, and 'as const' on an object or array literal, which is the idiom that is actually used, still passes.
 
+**Roasts.** round 1 scored 7 with 0 critical(s)
+
 ### `KN-218` The tooltip pads 12 where Figma pads 8 vertically, and draws no shadow where Figma draws one
 
 - **status** done · **severity** critical · **points** 1 · **area** web

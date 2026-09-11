@@ -5878,7 +5878,21 @@
       "parent": [],
       "status": "done",
       "exit": "<Box title={'Delete this application' as const} /> and aria-label={'Delete' as const} fail npm run lint in a committed fixture, a story meta title written with 'as const' fails too, and 'as const' on an object or array literal, which is the idiom that is actually used, still passes.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-217-round-1.2026-09-11T17-51-13-347Z.md",
+          "filed": [],
+          "cardDigest": "a67287b78eaf2b39818e462330ef069963bcecdb6b1120f038c3d76a431dc288",
+          "head": "6edc02a248b08e547c6e83b78964275e633b0177",
+          "reviewerScore": 5,
+          "reviewerCriticals": 1,
+          "dismissed": "The critical, the fixtures not required by an automated verifier, is KN-368's, whose exit already names the two as-const fixtures; the owner's rule of 2026-09-11 dropped verifier scripts at the close, and a finding about the loop is low. The minor, numbers and booleans banned too, touches nothing in src and keeps the selector simple.",
+          "at": "2026-09-11T17:54:49.851Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T06:53:19.840Z",
       "updatedAt": "2026-09-11T17:50:55.155Z",
