@@ -21,18 +21,25 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**117 done, 192 open, 2 blocked, 2 dropped** of 313 (2026-09-11). Coverage 100
-percent on all four metrics. **Deployed**: https://sijav.github.io/KarNama/ and
-Storybook at https://sijav.github.io/KarNama/storybook/, both from
-`.github/workflows/pages.yml` on every push. The API needs
+**125 done, 207 open, 2 blocked, 2 dropped** of 336 (2026-09-11). Coverage 100
+percent on all four metrics. **Deployed** on every push by
+`.github/workflows/pages.yml`: https://sijav.github.io/KarNama/ and Storybook
+at https://sijav.github.io/KarNama/storybook/. **Pushed after every close since
+the owner asked, 2026-09-11**; before that 83 commits had sat unpushed and the
+owner could see none of the day's work. The API needs
 `NPM_CONFIG_PRODUCTION=false` in Render's dashboard before it runs there.
 
-**Eleven components exist**: Checkbox, Filter chip, Tooltip, language switch,
-Status Chip (KN-010), Input (KN-011), and since the owner's 2026-09-11 order
-the Color Picker (KN-019, nine swatches as the file draws, not four), Tabs
-(KN-023), the Icon set (KN-008, 30 glyphs in glyphs.json), the Icon Button
-(KN-014) and the Search Bar (KN-016); shared story fixtures (KN-062) in
-per-locale JSON. The live site is a placeholder shell until screens start.
+**Components built**: Checkbox, Filter chip, Tooltip, language switch, Status
+Chip (KN-010), Input (KN-011), and on 2026-09-11 the Color Picker (KN-019),
+Tabs (KN-023), Icon (KN-008), Icon Button (KN-014), Search Bar (KN-016), Button
+(KN-009), Page Header (KN-021), Empty State and Loading State (KN-022), Bulk
+Action Bar (KN-025), Select with the option rows and the employment type and
+job level selects (KN-012), Menu with the Status and Card menus (KN-018), Sort
+Control (KN-024), and Status Choice, Picker and Control (KN-020). Story
+fixtures (KN-062). **Left, critical**: KN-026 Contact card, KN-015 Card, KN-027
+Navigation, KN-028 Modal, KN-060 Kanban column, KN-029 Add and edit modal,
+KN-030 Job modal, KN-031 Contact modal. The live site is a placeholder shell
+until screens start.
 
 **Open children**, high unless marked, since 2026-09-11. KN-011: KN-251
 (low), KN-255, KN-256 (low), KN-257 (medium), KN-260, KN-268 (low), KN-275,
@@ -71,6 +78,8 @@ and KN-287. The job level list and KN-077 still wait.
 
 ## The owner's rules, most recent first
 
+- **Push after every close, 2026-09-11.** The owner asked "You don't push?"
+  and then "Wanna commit and push?": commit, close, push, then roast.
 - **New components first, 2026-09-11**, replacing 2026-09-10's rule: only new
   component cards and their blockers are `critical`; a finding on a built
   component is `high` or lower ("a missing feature of another"). Eleven cards
@@ -120,15 +129,22 @@ and KN-287. The job level list and KN-077 still wait.
 - A story that writes args back must carry a revision (the KN-280 Held pattern) or a late render brings an older value back; the production build shows it, the runner does not.
 - Importing a verifier module runs it: never `import()` one to read a constant.
 - In RTL the story root puts inline content at the right: clip screenshots to the element, not to the root's left.
+- MUI's sx reads a bare width or height from 0 to 1 as a fraction: a width of 1 is 100 percent. Write one pixel as `1px`.
+- MUI's Popper mirrors only the -start and -end placements in RTL, never left and right (KN-335); Popover places by left and right and does not mirror at all.
+- The lingui rule ignores every string under an `sx` key: shared style objects live under `{ sx: ... }` (select/options.tsx).
+- A synthetic hover sets no `:hover`: use `vitest/browser`'s pointer under the story-test flag, and aim at an element nothing covers (a Radio's root, not its icon under the invisible input).
+- A menu under a trigger at the viewport's edge is clamped 16 from it: give story triggers room.
+- A focus trap takes focus back while it is open: refocus after it closes, in the transition's onExited.
+- Storybook loads no Vazirmatn (KN-322): text widths in stories are the system font's.
 
 ## The next step
 
-KN-016's roast is running. Then the components, by the law: KN-009 Button,
-KN-012 Select, KN-018 Menu, KN-021 Page header, KN-022 Empty and loading,
-KN-024 Sort, KN-025 Bulk bar, and on. Findings filed today wait at high or
-lower: KN-301 to KN-313, among them KN-310 (the Icon Button cannot be a
-Tooltip trigger) and KN-305 (fixtures need a board and all nine statuses),
-which the Card and Board will want.
+KN-020's roast is running; judge it, file at high or lower, record, push. Then
+the components, by the law: KN-026 Contact card, KN-015 Card, KN-027 Navigation,
+KN-028 Modal, KN-060 Kanban column, KN-029, KN-030, KN-031. When the last one
+closes, restore KN-214 to critical. Findings filed today wait at high or lower,
+KN-300 to KN-336; the Card and Board will want KN-305 (fixtures need a board
+and all nine statuses) and KN-310 (the Icon Button cannot be a Tooltip trigger).
 
 ## What to read first
 
