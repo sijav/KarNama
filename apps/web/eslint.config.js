@@ -312,6 +312,23 @@ export default defineConfig(
           selector: "TSAsExpression[typeAnnotation.typeName.name='const'][expression.type=/^(Literal|TemplateLiteral)$/]",
           message: "A bare literal 'as const' hides it from lingui's no-unlocalized-strings, KN-217: type the binding against a union, or translate the copy.",
         },
+        // The catalog test finds the ids the code uses with two plain patterns,
+        // i18n._('...') and <Trans id="...">, so every id is written the one way
+        // they read, KN-111: an id they cannot see never reaches the catalog, and
+        // a Persian reader silently gets the English.
+        {
+          selector: "CallExpression[callee.object.name='i18n'][callee.property.name='_'][arguments.0.type!='Literal']",
+          message:
+            'i18n._ takes its id as a quoted string, which the catalog test reads; a template, a name or a descriptor hides it, KN-111.',
+        },
+        {
+          selector: "JSXOpeningElement[name.name='Trans'] > JSXAttribute[name.name='id'][value.type!='Literal']",
+          message: 'A Trans takes its id as a quoted string, which the catalog test reads; braces hide it, KN-111.',
+        },
+        {
+          selector: "JSXOpeningElement[name.name='Trans'] > JSXAttribute:first-child:not([name.name='id'])",
+          message: 'A Trans puts its id first, where the catalog test looks for it, KN-111.',
+        },
       ],
       'lingui/t-call-in-function': 'error',
       'lingui/no-single-variables-to-translate': 'error',

@@ -38,15 +38,16 @@ const files = sourceFiles(SRC)
  */
 const stripFormat = (value: string) => value.replace(/\p{Cf}/gu, '')
 
-/** Ids used in code: `<Trans id="..." />` and `i18n._('...')`. */
+/**
+ * Ids used in code: `<Trans id="..." />` and `i18n._('...')`, the call allowed
+ * to break after its bracket as Prettier breaks a long one. The lint rejects
+ * every other way of writing an id, KN-111, so these two are all there is.
+ */
+const ID_PATTERN = /<Trans\s+id="([^"]+)"|i18n\._\(\s*(?:'([^']+)'|"([^"]+)")/g
+const idsIn = (source: string) => [...source.matchAll(ID_PATTERN)].flatMap((match) => match[1] ?? match[2] ?? match[3] ?? [])
 const usedIds = new Map<string, string[]>()
 for (const file of files) {
-  const source = readFileSync(file, 'utf8')
-  for (const match of source.matchAll(/<Trans\s+id="([^"]+)"|i18n\._\((?:'([^']+)'|"([^"]+)")/g)) {
-    const id = match[1] ?? match[2] ?? match[3]
-    if (!id) continue
-    usedIds.set(id, [...(usedIds.get(id) ?? []), relative(SRC, file)])
-  }
+  for (const id of idsIn(readFileSync(file, 'utf8'))) usedIds.set(id, [...(usedIds.get(id) ?? []), relative(SRC, file)])
 }
 
 describe('the catalogs and the code agree', () => {
@@ -116,7 +117,10 @@ describe('the catalogs and the code agree', () => {
     const pretendEn = { 'Add a job opportunity': 'Add a job opportunity' }
     const pretendFa: Record<string, string> = {}
     expect(Object.keys(pretendEn).filter((id) => !(id in pretendFa))).toEqual(['Add a job opportunity'])
-    expect(/<Trans\s+id="([^"]+)"/.exec('<Trans id="KarNama" />')?.[1]).toBe('KarNama')
-    expect(/i18n\._\('([^']+)'/.exec("i18n._('Language')")?.[1]).toBe('Language')
+    // The scan's own pattern, on each form it reads, a wrapped call included.
+    expect(idsIn('<Trans id="KarNama" />')).toEqual(['KarNama'])
+    expect(idsIn("i18n._('Language')")).toEqual(['Language'])
+    expect(idsIn('i18n._("Language")')).toEqual(['Language'])
+    expect(idsIn("i18n._(\n  'Language',\n)")).toEqual(['Language'])
   })
 })

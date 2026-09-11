@@ -3466,14 +3466,14 @@
       "parent": [
         "KN-006"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A Trans with a braced or template-literal id fails npm run lint, a committed fixture holds each form, and the catalog test still finds every id the codebase uses.",
       "roasts": [],
       "notes": [
         "RAISED A SECOND TIME in round 2 of KN-006, with two more forms than the card names: <Trans otherProp={x} id=\"...\"> also misses the scan because the regex requires id to follow Trans immediately, and a template literal argument to i18n._ misses it too. The fix is unchanged and it is the right one, forbid the forms the scan cannot see so the scan is sufficient by construction, but the card understated how many forms there are."
       ],
       "createdAt": "2026-09-08T00:41:13.196Z",
-      "updatedAt": "2026-09-08T00:45:45.371Z"
+      "updatedAt": "2026-09-11T20:44:40.896Z"
     },
     {
       "id": "KN-112",

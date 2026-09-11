@@ -57,6 +57,14 @@ RegExp(entry)` and no flags, so the no-letter entry `^[^\p{L}]*$` meant "no
   no page either, and `stories-glob.test.ts` checks that no stories pattern
   would pick it up, KN-097.
 
+- `unscannable-ids.tsx` — a message id written each way the catalog test cannot
+  read it: a braced, a template and a named `Trans` id, a `Trans` whose id is
+  not its first attribute, and `i18n._` with a template or a name. The test finds
+  ids with two plain patterns, so an id written any other way never reached the
+  catalog and a Persian reader got the English. `no-restricted-syntax` rejects
+  each form, KN-111; like the `as-const` fixtures it is not named
+  `unlocalized-*`, since the rule that fails it is not lingui's.
+
 - `as-const-copy.tsx` and `as-const-story-title.stories.tsx` — copy and a
   meta title written `'…' as const`. lingui's rule returns early for a literal
   inside an `as const` assertion, before any other check, so both passed in any
