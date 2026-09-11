@@ -21,7 +21,7 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**130 done, 218 open, 2 blocked, 2 dropped** of 352 (2026-09-11). Coverage
+**134 done, 227 open, 2 blocked, 2 dropped** of 365 (2026-09-11). Coverage
 99.33 percent on the full `npm test`; KN-340 carries the gap. **Deployed** on every push by
 `.github/workflows/pages.yml`: https://sijav.github.io/KarNama/ and Storybook
 at https://sijav.github.io/KarNama/storybook/. **Pushed after every close since
@@ -37,10 +37,13 @@ Action Bar (KN-025), Select with the option rows and the employment type and
 job level selects (KN-012), Menu with the Status and Card menus (KN-018), Sort
 Control (KN-024), Status Choice, Picker and Control (KN-020), Contact Card
 (KN-026), the Modal with Confirm, Change Status and the panel modal (KN-028),
-the Contact Modal (KN-031), the job card (KN-015) and the kanban column with
-the Add Column tile (KN-060). Story fixtures (KN-062). **Left, critical**:
-KN-027 Navigation, KN-029 Add and edit modal, KN-030 Job modal. The live site
-is a placeholder shell until screens start.
+the Contact Modal (KN-031), the job card (KN-015), the kanban column with the
+Add Column tile (KN-060), the navigation with the sidebar, tab bar and nav item
+(KN-027), the add job modal (KN-029) and the Job Modal (KN-030). Story fixtures
+(KN-062). **Every component card is closed, 2026-09-11**, and KN-214 closed
+after them: the lingui gate now checks every letter. No critical card is open;
+the law serves high cards next, smallest first. The live site is the shell with
+the navigation until the screens start.
 
 **Open children**, high unless marked, since 2026-09-11. KN-011: KN-251
 (low), KN-255, KN-256 (low), KN-257 (medium), KN-260, KN-268 (low), KN-275,
@@ -69,9 +72,11 @@ itself, since its Chips row is 32 and clips. Then the owner changed the
 priorities and the close, above: 111 done, 22 component cards critical, every
 other open card high or lower.
 
-**KN-214 is deliberately held at high**: lingui compiles `ignore` with no flags,
-so `^[^\p{L}]*$` means "contains no p, {, L or }". Restore it to critical when
-the last component closes. Until then, strings go through lingui by hand.
+**KN-214 closed, 2026-09-11**: the no-letter entry is a class written with
+`\s` and `\uXXXX`, which means the same with no flags; 622 flagged strings were
+answered by named exemptions in `eslint.config.js`, typed constants and the
+catalog. A string the rule flags now is copy, or needs a named exemption with
+its reason, never a typed-constant dodge for copy.
 
 **Owner decisions of 2026-09-10** are in DESIGN.md under "Settled by the owner
 on 2026-09-10": KN-196, KN-265, KN-273 and KN-275, KN-276 and KN-279, KN-285
@@ -107,6 +112,8 @@ and KN-287. The job level list and KN-077 still wait.
 - A flex item with `overflow: hidden` may shrink below its content: a list of cards in a scrolling flex column needs `flex-shrink: 0` on them.
 - MUI's Chip is `max-width: 100%` of its group: beside a count, hold it in a `min-width: 0` item or the count is pushed out.
 - Figma's hidden layer gives up its room: fold a control to no room and fade it, never `display: none`, which drops it from the Tab order.
+- A bare literal `'x' as const` skips the lingui rule entirely (KN-217); type the binding against a union instead.
+- Stories that drive the real pointer collide when story files run in parallel (KN-365): rerun a lone failure alone before reading it as a regression.
 - The component's own prototype reaction beats the prototype map's summary: hovers are 200 ms ease in and out or 120 ms ease out, never the map's 300 (KN-350).
 - `prettier --write` on a file committed unformatted rewrites all of it: the catalogs and DESIGN.md are kept by hand, so restore and re-apply only the change.
 
@@ -147,13 +154,13 @@ and KN-287. The job level list and KN-077 still wait.
 
 ## The next step
 
-KN-060's roast is running; judge it, file at high or lower, record, push. Then
-the components, by the law: KN-027 Navigation, KN-029 Add and edit modal,
-KN-030 Job modal. When the last one closes, restore KN-214 to critical.
-Findings filed today wait at high or lower, KN-300 to KN-352; the board screen
-will want KN-305 (fixtures need a board and all nine statuses), KN-310 (the
-Icon Button cannot be a Tooltip trigger), KN-341 and KN-352 (the checkbox's
-keyboard path on the Contact Card and the phone card).
+KN-214's roast is running; judge it, file at high or lower, record, push. Then
+the law's next card, high and smallest first: KN-217 ('as const' skips the
+lingui rule; the setAttribute gate fixture uses it for the attribute's name,
+so fix both). The board screen will want KN-305 (fixtures need a board and all
+nine statuses), KN-310, KN-341, KN-352, KN-356 (the tab bar gives way to the
+Bulk Action Bar), KN-363 and KN-364 (the Job Modal's record identity and
+status on Save), and KN-355 (the phone shell lost the language switch).
 
 ## What to read first
 
