@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 316,
+  "nextId": 320,
   "tasks": [
     {
       "id": "KN-001",
@@ -508,7 +508,26 @@
       ],
       "status": "done",
       "exit": "All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-009-round-1.2026-09-11T12-51-28-173Z.md",
+          "filed": [
+            "KN-316",
+            "KN-317",
+            "KN-318",
+            "KN-319"
+          ],
+          "cardDigest": "7ddf7eccc8cab8210f191da21288a56882ab7abdb7069a3a6d8c92fe1760ddbf",
+          "head": "956da0ff9335840b1671191bf4a6b26364ab5de9",
+          "reviewerScore": 3.5,
+          "reviewerCriticals": 2,
+          "dismissed": "The two criticals are real and filed at high and medium under the owner's rule of 2026-09-11 that a finding on a built component sits below the new components: the 75 shown from args, and the copy the Controls do not show, which is every component built that day and filed as one card. The score rises from 3.5 because the 75 combinations are drawn as the file draws them and read against it by the Matrix play.",
+          "at": "2026-09-11T12:57:44.524Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -8091,6 +8110,66 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:47:18.537Z"
+    },
+    {
+      "id": "KN-316",
+      "title": "The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input",
+      "desc": "CHILD OF KN-009, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-009 roast. KN-009's exit asks all 75 combinations to render from a single story driven by args; Playground drives style, size and disabled, but hover, pressed and focus exist only while the Matrix play hovers and presses, so a reader of Storybook cannot inspect them and no control reaches them.",
+      "why": "The Button's states are what a reviewer compares with the file, and the one place to look at them is Storybook; states that exist only during a test cannot be reviewed.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:57:43.823Z"
+    },
+    {
+      "id": "KN-317",
+      "title": "The components built on 2026-09-11 draw copy their Controls do not show",
+      "desc": "Found by the KN-009 roast; the pattern is in every component built that day: the Button's label, the Icon Button's name, the Tabs' labels, the Page Header's title and the Color Picker's text are drawn from lingui inside the render while their args are hidden placeholders, so a value on the canvas has no control and editing the arg changes nothing. AGENTS.md says a story never draws a value its Controls do not show; the Input's stories carry the machinery, KN-245.",
+      "why": "Controls are how the Docs pages let someone try a component; copy that ignores them makes the page lie about what drives the canvas.",
+      "severity": "medium",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The Button, Icon Button, Tabs, Page Header and Color Picker stories keep their copy in args that follow the Language toolbar, the Input's way, or disable the panel with the reason stated, and no story draws copy its Controls do not show.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:57:43.977Z"
+    },
+    {
+      "id": "KN-318",
+      "title": "A Button's hover fill stays after a tap on a touch screen",
+      "desc": "CHILD OF KN-009, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-009 roast. Button.tsx's own &:hover rule replaces MUI's, which resets the hover fill under hover: none, so a tap on a touch device leaves the hover fill, a Primary button staying brand/hover after it is pressed. The Icon Button has the same gap, KN-313.",
+      "why": "Half the design is the mobile screens, and a button that keeps its hover after a tap looks stuck.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Under hover: none the Button shows its resting fill after a tap, established with an emulated touch device, and hovering still fills it where there is a pointer.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:57:44.161Z"
+    },
+    {
+      "id": "KN-319",
+      "title": "In the derived dark palette a pressed Destructive button is brighter than its default",
+      "desc": "CHILD OF KN-009, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-009 roast. darkMode.ts derives bg/danger/default, bg/danger/hover and red/700 each through deriveDarkSurface, which lands roughly at #ed2c2c, #d84141 and #e34646, so pressing reads as lighter where the light design steps darker to red/700; no test holds the order of the three.",
+      "why": "A press that brightens reads as a release; the one button that deletes things should not answer the press backwards.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "In dark the Destructive default, hover and pressed fills keep the light design's order of lightness, each still carrying text/on-accent at 4.5:1, and a unit test holds the order and the contrast.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:57:44.335Z"
     }
   ]
 }

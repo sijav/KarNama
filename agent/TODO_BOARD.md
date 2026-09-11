@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 119 of 315 tasks done · 232 of 742 points.
+Project **KarNama** · 119 of 319 tasks done · 232 of 749 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -17,7 +17,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (192)
+## Backlog (196)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -65,6 +65,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-305` | The story fixtures have no seeded board and no job opportunity in three of the nine statuses | high | 2 | web | none | Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages. |
 | `KN-310` | The Icon Button cannot be a Tooltip's trigger: it forwards no ref and drops the props a Tooltip injects | high | 2 | web | none | A Tooltip wrapped round an Icon Button shows on hover and on focus and describes the button, the ref and the injected props reaching the button; a story composes them and asserts aria-describedby names the tooltip. |
 | `KN-315` | The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one | high | 2 | web | none | The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them. |
+| `KN-316` | The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input | high | 2 | web | none | A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | high | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
@@ -127,6 +128,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-304` | On a hovered or chosen tab the indicator paints over the focus ring's bottom edge | medium | 1 | web | none | A focused tab's ring is unbroken in every state, the indicator drawn beneath it or clear of it, shown in a story that focuses a hovered tab and reads the ring's bottom band as border/focus. |
 | `KN-312` | The Icon Button's hover eases in over MUI's 150 ms where the design's state changes take 300 | medium | 1 | web | none | The Icon Button's hover changes over 300 ms from a named motion token, the story reads the transition's duration, and DESIGN.md says which components' state changes take it. |
 | `KN-313` | An Icon Button's hover fill stays after a tap on a touch screen | medium | 1 | web | none | Under hover: none the Icon Button shows no hover fill after a tap, established with an emulated touch device in a story or a production check, and hovering still fills it on a device with a pointer. |
+| `KN-318` | A Button's hover fill stays after a tap on a touch screen | medium | 1 | web | none | Under hover: none the Button shows its resting fill after a tap, established with an emulated touch device, and hovering still fills it where there is a pointer. |
+| `KN-319` | In the derived dark palette a pressed Destructive button is brighter than its default | medium | 1 | web | none | In dark the Destructive default, hover and pressed fills keep the light design's order of lightness, each still carrying text/on-accent at 4.5:1, and a unit test holds the order and the contrast. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -155,6 +158,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-143` | The mutation harnesses match test names in output, not test outcomes | medium | 3 | agent | none | A planted regression whose designated test still PASSES while some other test fails is reported as a MISS, proved by planting exactly that, and every verifier that plants regressions reads a machine-readable result rather than console text. |
 | `KN-165` | Prove the roast recording path end to end with a stubbed reviewer | medium | 3 | agent | none | A verifier drives roast.mjs against a stubbed reviewer in an isolated repository, gets a genuine archive and manifest, records the round against a DONE task with todo.mjs roast, and asserts the round appears on the card; the stub is confined to the sandbox and no production path accepts it; and mutations to the manifest digest check are caught. |
 | `KN-236` | The tooltip's attach check guesses a trigger's lateness with a timer and its props from one attribute | medium | 3 | web | none | A trigger that renders nothing for a second and then attaches correctly is never reported; one that renders DOM without taking the ref is reported however late it appears; a wrapper forwarding only the ref and aria-describedby is reported in a production build; each proved by a story, and the existing report stories still pass. |
+| `KN-317` | The components built on 2026-09-11 draw copy their Controls do not show | medium | 3 | web | none | The Button, Icon Button, Tabs, Page Header and Color Picker stories keep their copy in args that follow the Language toolbar, the Input's way, or disable the panel with the reason stated, and no story draws copy its Controls do not show. |
 | `KN-040` | Third-party feedback, stored for later evaluation | medium | 5 | api | KN-034 | A submission is stored with its target and a pending state, it never mutates the target, a submission whose target was deleted between submit and review is handled rather than orphaned, and rate limiting stops a flood from one source. |
 | `KN-041` | Admin API: the moderation queue | medium | 5 | api | KN-040, KN-036 | A non-admin is refused every operation at the resolver, approving and rejecting both record who did it and when, and the queue paginates rather than loading everything. |
 | `KN-064` | Third-party feedback submission surface | medium | 5 | web | KN-042, KN-040 | An anonymous visitor can submit a comment and a suggested change against a record, both arrive in the moderation queue in a pending state, the target record is not altered, the submitter is told it is pending review, and a flood from one source is rate limited. |
@@ -461,6 +465,8 @@ Sizes S, M and L, styles Primary, Secondary, Text, Destructive and Ghost, and st
 **Why.** It is the most repeated control in the product and the one where a wrong radius or hover tone is most visible. Every screen and every modal uses it, so getting it exactly right once removes the question everywhere else.
 
 **Exit condition.** All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard.
+
+**Roasts.** round 1 scored 5.5 with 0 critical(s)
 
 ### `KN-010` Status chip, 9 statuses by 2 sizes, display only
 
@@ -4025,4 +4031,48 @@ CHILD OF KN-016, recorded in prose because board.json cannot express parent_task
 **Why.** The board's toolbar is where the bar lives; built at one size, it lands 8 taller and full width on desktop, against the screen it is meant to match.
 
 **Exit condition.** The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them.
+
+### `KN-316` The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-009, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-009 roast. KN-009's exit asks all 75 combinations to render from a single story driven by args; Playground drives style, size and disabled, but hover, pressed and focus exist only while the Matrix play hovers and presses, so a reader of Storybook cannot inspect them and no control reaches them.
+
+**Why.** The Button's states are what a reviewer compares with the file, and the one place to look at them is Storybook; states that exist only during a test cannot be reviewed.
+
+**Exit condition.** A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4.
+
+### `KN-317` The components built on 2026-09-11 draw copy their Controls do not show
+
+- **status** backlog · **severity** medium · **points** 3 · **area** web
+- **blocked by** none
+
+Found by the KN-009 roast; the pattern is in every component built that day: the Button's label, the Icon Button's name, the Tabs' labels, the Page Header's title and the Color Picker's text are drawn from lingui inside the render while their args are hidden placeholders, so a value on the canvas has no control and editing the arg changes nothing. AGENTS.md says a story never draws a value its Controls do not show; the Input's stories carry the machinery, KN-245.
+
+**Why.** Controls are how the Docs pages let someone try a component; copy that ignores them makes the page lie about what drives the canvas.
+
+**Exit condition.** The Button, Icon Button, Tabs, Page Header and Color Picker stories keep their copy in args that follow the Language toolbar, the Input's way, or disable the panel with the reason stated, and no story draws copy its Controls do not show.
+
+### `KN-318` A Button's hover fill stays after a tap on a touch screen
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-009, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-009 roast. Button.tsx's own &:hover rule replaces MUI's, which resets the hover fill under hover: none, so a tap on a touch device leaves the hover fill, a Primary button staying brand/hover after it is pressed. The Icon Button has the same gap, KN-313.
+
+**Why.** Half the design is the mobile screens, and a button that keeps its hover after a tap looks stuck.
+
+**Exit condition.** Under hover: none the Button shows its resting fill after a tap, established with an emulated touch device, and hovering still fills it where there is a pointer.
+
+### `KN-319` In the derived dark palette a pressed Destructive button is brighter than its default
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-009, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-009 roast. darkMode.ts derives bg/danger/default, bg/danger/hover and red/700 each through deriveDarkSurface, which lands roughly at #ed2c2c, #d84141 and #e34646, so pressing reads as lighter where the light design steps darker to red/700; no test holds the order of the three.
+
+**Why.** A press that brightens reads as a release; the one button that deletes things should not answer the press backwards.
+
+**Exit condition.** In dark the Destructive default, hover and pressed fills keep the light design's order of lightness, each still carrying text/on-accent at 4.5:1, and a unit test holds the order and the contrast.
 
