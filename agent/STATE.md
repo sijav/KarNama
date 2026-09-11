@@ -21,7 +21,7 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**156 done, 232 open, 4 blocked, 2 dropped** of 394 (2026-09-11). Coverage
+**162 done, 233 open, 5 blocked, 2 dropped** of 402 (2026-09-11). Coverage
 99.33 percent on the full `npm test`; KN-340 carries the gap. **Deployed** on every push by
 `.github/workflows/pages.yml`: https://sijav.github.io/KarNama/ and Storybook
 at https://sijav.github.io/KarNama/storybook/. **Pushed after every close since
@@ -117,24 +117,22 @@ and KN-287. The job level list and KN-077 still wait.
 - A menu under a trigger at the viewport's edge is clamped 16 from it: give story triggers room.
 - A focus trap takes focus back while it is open: refocus after it closes, in the transition's onExited.
 - Storybook loads Vazirmatn since KN-322, and waits for both scripts' faces before a story renders.
+- A test that starts a process has no speed budget: vitest fails a case whose blocked worker overran its budget; start the runs together with an async spawn and a hang guard (KN-167).
+- React warns in plain strings and through console.warn too; a guard keyed on `%s` hears only the printf ones (KN-401).
 
 ## The next step
 
 Since the last head, closed, pushed and roasted, their findings filed at high
-or lower: KN-302 (a tab panel is a stop only when nothing in it is), KN-303
-(tab ids by position), KN-311 (a blank Icon Button name leaves the button out),
-KN-314 (no stale searches; KN-380 carries the rest), KN-320 (the back arrow's 24
-target), KN-322 (Storybook loads and waits for Vazirmatn), KN-337 (the Status
-Control opens the Change Status modal), KN-341 (the Contact Card's controls fold,
-not display none), KN-342 (name-only contacts), KN-347 (the Contact Modal keeps
-typing; KN-386, high, carries the handoff), KN-351 (every ButtonBase in the
-product's face), KN-353, KN-355 (the shell draws the Page Header, so a phone can
-change language), KN-361 (KN-391, high: its restart must drop a reading in
-flight), KN-364 (Save carries no status), KN-366 (the plugin's own no-letter
-pattern), KN-369 (the park stays, off the page: Storybook's reset never runs
-here) and KN-373. KN-373's roast is running; judge it. KN-365 is high now: both
-full-run flakes read a colour through its own transition. KN-269, KN-270 and
-KN-358 wait on the owner. Then the law.
+or lower: KN-373 (the Status Picker's arrows follow the screen), KN-391 (a late
+extraction lands nowhere), KN-097 (no MDX), KN-108 (readable accent fills in
+dark; KN-398, high, the dark Tooltip, and KN-399), KN-111 (Trans and i18n._ ids
+the scan can read; KN-400, medium, for an AST scan), KN-134 (a catalog instance
+per locale and a React-warning guard; KN-401, high: the guard hears only
+printf-style console.error, and KN-402, low) and KN-167 (the schema-entry runs
+start together with a hang guard for a budget, TECH-DEBT 20). KN-167's roast is
+running; judge it. KN-365 is high: both full-run flakes read a colour through
+its own transition. KN-269, KN-270, KN-358 and KN-396 wait on the owner. Then
+the law, which serves KN-178 next.
 
 ## What to read first
 
