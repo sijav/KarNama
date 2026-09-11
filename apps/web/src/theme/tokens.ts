@@ -30,6 +30,7 @@ export const semantic = {
   'accent/200': '#bfdbfe',
   'accent/700': '#1e40af',
   'gray/200': '#e5e7eb',
+  'red/700': '#b91c1c',
 } as const
 
 /**

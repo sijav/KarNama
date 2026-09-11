@@ -41,4 +41,5 @@ export const messages: Record<string, string> = {
   'Search in title, company or note': 'Search in title, company or note',
   'Search job opportunities': 'Search job opportunities',
   'Clear search': 'Clear search',
+  'Button': 'Button',
 }

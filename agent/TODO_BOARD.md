@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 117 of 313 tasks done · 224 of 739 points.
+Project **KarNama** · 117 of 315 tasks done · 224 of 742 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-009` Button, 3 sizes by 5 styles by 5 states** (critical, 5 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-009` | Button, 3 sizes by 5 styles by 5 states | critical | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
 
 ## Blocked (2)
 
@@ -17,7 +23,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (192)
+## Backlog (193)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -25,7 +31,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-022` | Empty state and loading state | critical | 3 | web | KN-005, KN-006, KN-007, KN-009 | Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case. |
 | `KN-024` | Sort control | critical | 3 | web | KN-005, KN-006, KN-007, KN-018 | Three states match Figma, the four permitted options are the only ones offered, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced. |
 | `KN-025` | Bulk action bar | critical | 3 | web | KN-005, KN-006, KN-007, KN-013, KN-009 | Both types match Figma, the bar appears only when at least one row is selected, it reports the selection count, and it is reachable by keyboard when it appears rather than trapping focus behind the list. |
-| `KN-009` | Button, 3 sizes by 5 styles by 5 states | critical | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
 | `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
 | `KN-018` | Menu and menu item | critical | 5 | web | KN-005, KN-006, KN-007, KN-008 | All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone. |
 | `KN-020` | Status choice, status picker and status control | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-018, KN-019 | All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own. |
@@ -47,6 +52,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-302` | Every tab panel is a tab stop, so a panel holding a field puts an extra stop before it | high | 1 | web | none | A panel with focusable content is not itself a tab stop and one with none is, decided from what it renders; a story with a field in a panel shows Tab going from the tab to the field, and one with only text shows the panel reached. |
 | `KN-303` | Tab and panel ids are built from tab values, so a value with a space breaks the tab's link to its panel | high | 1 | web | none | Tab and panel ids are well-formed whatever the tab values, derived from the component's own id and each tab's position or an escaped value; a story with a value holding a space shows each tab's aria-controls naming its panel and the panel labelled by its tab. |
 | `KN-311` | An Icon Button's required name is proved on a helper, not on the rendered button, and a blank one throws during render | high | 1 | web | none | Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case. |
+| `KN-314` | A controlled Search Bar still runs a pending search for a value its parent has since replaced | high | 1 | web | none | In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -65,6 +71,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-296` | An Input icon given as an array, a fragment or a component that renders only blank text still draws an empty slot | high | 2 | web | none | An Input whose icon renders only blank text, through an array, a fragment or a component, draws no slot that takes room and its text box sits 16 from that edge, decided from what the slot rendered rather than from the prop; IconsTurnedOff covers an array of a space, a fragment holding a zero-width space and a component returning a space, each asserting a slot that takes no room; a mutation removing the rendered check fails it by name; and the comment on drawn() says nothing to read, with the lone-mark case named as deliberate. |
 | `KN-305` | The story fixtures have no seeded board and no job opportunity in three of the nine statuses | high | 2 | web | none | Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages. |
 | `KN-310` | The Icon Button cannot be a Tooltip's trigger: it forwards no ref and drops the props a Tooltip injects | high | 2 | web | none | A Tooltip wrapped round an Icon Button shows on hover and on focus and describes the button, the ref and the injected props reaching the button; a story composes them and asserts aria-describedby names the tooltip. |
+| `KN-315` | The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one | high | 2 | web | none | The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | high | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
@@ -451,7 +458,7 @@ An Icon component rendering the 30 icons drawn at Figma node 239:44, each 24 by 
 
 ### `KN-009` Button, 3 sizes by 5 styles by 5 states
 
-- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **status** in_progress · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007
 
 Sizes S, M and L, styles Primary, Secondary, Text, Destructive and Ghost, and states Default, Hover, Pressed, Disabled and Focus, built on MUI Button and restyled to Figma nodes 37:10, 33:58 and 37:71. 75 combinations in total.
@@ -544,6 +551,8 @@ Default, Focus and Filled from Figma node 155:92, with the search icon and a cle
 **Why.** Finding one specific job opportunity in a growing archive is the second flow the design names. An archive you cannot search stops being useful at about the point it starts being valuable.
 
 **Exit condition.** Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke.
+
+**Roasts.** round 1 scored 5 with 0 critical(s)
 
 ### `KN-017` Filter chip, doubling as the status counter
 
@@ -3999,4 +4008,26 @@ CHILD OF KN-014, recorded in prose because board.json cannot express parent_task
 **Why.** The mobile screens are half the design; a button that stays grey or pale red after a tap looks pressed or dangerous when it is neither.
 
 **Exit condition.** Under hover: none the Icon Button shows no hover fill after a tap, established with an emulated touch device in a story or a production check, and hovering still fills it on a device with a pointer.
+
+### `KN-314` A controlled Search Bar still runs a pending search for a value its parent has since replaced
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-016, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-016 roast. change() captures the typed value in a timeout, and nothing cancels it when the parent changes value; type foo, have the parent reset value to empty before 300 ms, and the field shows empty while onSearch('foo') still fires. A parent that ignores onChange also gets searches for text the field never showed.
+
+**Why.** Results for a term the user can no longer see, after a reset or a navigation, read as the search being broken, and they are exactly what a controlled bar is used to prevent.
+
+**Exit condition.** In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call.
+
+### `KN-315` The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-016, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-016 roast. The component set 155:92 draws 320 by 44, and the Search Bar is built 44 tall and as wide as its container; the board toolbar instances on the desktop screens are 320 by 36 and the mobile ones 358 by 44, per the screens capture.
+
+**Why.** The board's toolbar is where the bar lives; built at one size, it lands 8 taller and full width on desktop, against the screen it is meant to match.
+
+**Exit condition.** The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them.
 

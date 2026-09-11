@@ -44,4 +44,5 @@ export const messages: Record<string, string> = {
   'Search in title, company or note': 'جستجو در عنوان، شرکت یا یادداشت',
   'Search job opportunities': 'جستجوی فرصت‌های شغلی',
   'Clear search': 'پاک کردن جستجو',
+  'Button': 'دکمه',
 }

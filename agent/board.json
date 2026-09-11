@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 314,
+  "nextId": 316,
   "tasks": [
     {
       "id": "KN-001",
@@ -506,14 +506,14 @@
         "KN-006",
         "KN-007"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:17.657Z"
+      "updatedAt": "2026-09-11T12:44:32.346Z"
     },
     {
       "id": "KN-010",
@@ -752,7 +752,24 @@
       ],
       "status": "done",
       "exit": "Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-016-round-1.2026-09-11T12-44-05-407Z.md",
+          "filed": [
+            "KN-314",
+            "KN-315"
+          ],
+          "cardDigest": "342b33463f8a78ba006a7a4584f8a6c4f1a971b72687fce40b1dd2137e47aae5",
+          "head": "97b842e768b53d8ac00731a6e8697c626e9ecef0",
+          "reviewerScore": 4.5,
+          "reviewerCriticals": 2,
+          "dismissed": "The two criticals are real and filed at high, KN-314 and KN-315, under the owner's rule of 2026-09-11 that a finding on a built component sits below the new components. The minor, that SearchBar.tsx carries documentation prose: its comments give the reason for a constant and the order of calls, which is the code explaining itself, what AGENTS.md keeps in the code; the component's behaviour for users is in story-docs.",
+          "at": "2026-09-11T12:47:18.703Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -8040,6 +8057,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:43:24.997Z"
+    },
+    {
+      "id": "KN-314",
+      "title": "A controlled Search Bar still runs a pending search for a value its parent has since replaced",
+      "desc": "CHILD OF KN-016, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-016 roast. change() captures the typed value in a timeout, and nothing cancels it when the parent changes value; type foo, have the parent reset value to empty before 300 ms, and the field shows empty while onSearch('foo') still fires. A parent that ignores onChange also gets searches for text the field never showed.",
+      "why": "Results for a term the user can no longer see, after a reset or a navigation, read as the search being broken, and they are exactly what a controlled bar is used to prevent.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:47:18.390Z"
+    },
+    {
+      "id": "KN-315",
+      "title": "The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one",
+      "desc": "CHILD OF KN-016, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-016 roast. The component set 155:92 draws 320 by 44, and the Search Bar is built 44 tall and as wide as its container; the board toolbar instances on the desktop screens are 320 by 36 and the mobile ones 358 by 44, per the screens capture.",
+      "why": "The board's toolbar is where the bar lives; built at one size, it lands 8 taller and full width on desktop, against the screen it is meant to match.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:47:18.537Z"
     }
   ]
 }

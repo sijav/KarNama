@@ -268,6 +268,8 @@ export const darkSemantic = {
   'accent/200': deriveDark(semantic['accent/200']),
   'accent/700': deriveDark(semantic['accent/700']),
   'gray/200': deriveDark(semantic['gray/200']),
+  // A fill, the Destructive button's pressed state, derived as the danger fills are.
+  'red/700': deriveDarkSurface(semantic['red/700']),
 } satisfies Record<keyof typeof semantic, string>
 
 
