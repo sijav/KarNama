@@ -471,6 +471,31 @@ when they do not fit. The two selects the file names, «نوع همکاری» an
 ids and their names from the catalog. On the screens the only Select drawn is
 the contact modal's «آگهی مربوطه», whose own prompt is why the prompt is a prop.
 
+### The Status Picker, its choices and the Status Control
+
+The **Status Choice**, `427:567`, is the medium Status Chip in a shell of 4,
+radius full, ringed two pixels inside: none at rest, its `bg/surface` stroke
+being invisible on the surface it sits on, `border/default` on Hover and
+`border/focus` when Selected. The **Status Picker**, `427:592`, puts «وضعیت», the
+Label role in `text/secondary`, 8 above a row of choices that wraps, 8 both
+ways, each item at the top of its line, and ends it with the dashed «+ وضعیت
+تازه», 28 tall, `text/brand`, a 16 plus, one pixel of `border/default` dashed
+4 and 3, which CSS draws with its own dash. The choices are one radio group:
+Tab reaches the chosen one and the arrows move and choose, the Color Picker's
+way; the keyboard's choice takes the three pixel ring, told from Selected's two
+by its width. The file uses it in the add form and the Change Status modal.
+
+The **Status Control**, `199:21`, is the clickable wrapper the card and the job
+modal put round a chip that stays display only: a pill 32 tall, `bg/surface`
+with one pixel of `border/default`, 4 round the small chip and 8 beyond a 14
+chevron, which is none of the icon sizes and is drawn at 14. Hover takes
+`bg/surface-secondary`; Pressed, which it shows while the picker is open, takes
+it too with one and a half of `border/focus`. It opens the picker in a panel of
+372, the width the Change Status modal gives it, 4 below; choosing closes it
+and hands the choice over, Escape closes it with nothing changed. The file
+draws the Change Status modal, `150:93`, for this; the panel stands in until
+the Modal, KN-028, is built. KN-020.
+
 ### The Sort Control
 
 Node `408:512`: a control 36 tall of radius md with one pixel of

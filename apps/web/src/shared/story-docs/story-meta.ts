@@ -43,7 +43,9 @@ export type StoryTitle =
   | 'Shared/Select'
   | 'Shared/SortControl'
   | 'Shared/StatusChip'
+  | 'Shared/StatusControl'
   | 'Shared/StatusMenu'
+  | 'Shared/StatusPicker'
   | 'Shared/Tabs'
   | 'Shared/Tooltip'
 

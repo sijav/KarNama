@@ -98,4 +98,6 @@ export const messages: Record<string, string> = {
   'Nearest deadline': 'نزدیک‌ترین مهلت',
   'Company name, A to Z': 'نام شرکت (الفبا)',
   'Sorted by': 'مرتب‌شده بر اساس',
+  'Status': 'وضعیت',
+  'New status': 'وضعیت تازه',
 }

@@ -95,4 +95,6 @@ export const messages: Record<string, string> = {
   'Nearest deadline': 'Nearest deadline',
   'Company name, A to Z': 'Company name, A to Z',
   'Sorted by': 'Sorted by',
+  'Status': 'Status',
+  'New status': 'New status',
 }
