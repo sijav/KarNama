@@ -59,12 +59,46 @@ the server on load.
 
 ## 3. Rules that are not negotiable
 
+### Every task serves an objective, and the board keeps the objectives
+
+The owner's, 2026-09-12. A board of four hundred cards says how much is left and
+nothing about what is left before the product does its job, so the board carries
+**objectives of its own**: records with an id, a name, a description and a
+position in the order they are met, in `agent/board.json` beside the tasks. A
+task's `okr` is a **reference** to one of them, checked by `todo validate`: a
+name the board does not hold is a typo pointing at nothing, not a new objective.
+
+```bash
+node agent/scripts/todo.mjs okr                       # the objectives and what is left in each
+node agent/scripts/todo.mjs okr add --name "..." --description "..."
+node agent/scripts/todo.mjs okr done OKR-1            # met; the next open one becomes current
+node agent/scripts/todo.mjs set KN-123 --okr OKR-2    # which objective a task serves
+```
+
+The **current** objective is the first one still open, and `next` works through
+it before it offers anything from a later one, whatever the severities say: what
+the product needs first comes first. A task with no objective counts as current
+work, because an unsorted card is something to do now.
+
+**A roast's finding joins the objective in hand when it is small enough to fit,
+under four story points; anything bigger goes to the next one.** The owner's
+rule of the same day: a small fix belongs with the work it came out of, and a
+large one is a project of its own that would stall what is shipping.
+
+Which objectives exist, and which cards are in them, is the owner's to say and
+changes with what they ask for. The rule above is how the board carries them.
+
 ### Components before screens
 
 Every component is built and storybooked on its own before any screen composes
 it. The owner said it directly. A screen assembled out of components that were
 never reviewed in isolation is a screen nobody can review, and the states that
 never got drawn are the ones that break in production.
+
+**The owner's instruction of 2026-09-12 puts the screens first from here**: the
+components exist, the pages are needed now, and a component that is missing or
+broken for a page may be a **placeholder with a card behind it** rather than a
+reason to stop. The rule above still holds for a component built from scratch.
 
 ### Match the design exactly
 

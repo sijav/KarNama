@@ -68,6 +68,21 @@ current one if unfinished), and what to read first. Keep it under about 120
 lines. A context reset that loses work is a failure of this step, not of the
 harness.
 
+## The owner's rules of 2026-09-12, which override anything older below
+
+- **The pages, now.** "How fast can you start doing the pages? I need them by 6
+  hours." The screens are the critical path until they exist, and **a component
+  that is missing or broken for a page may be a placeholder with a card behind
+  it**: file the card, build the page, carry on.
+- **Every task serves an objective.** The board holds objectives of its own,
+  records with an id, a name, a description and a position, and a task's `okr`
+  is a reference to one, checked by `validate`. `next` works through the current
+  objective, the first one still open, before it offers anything from a later
+  one, whatever the severities say. `okr` prints them and what is left in each.
+- **A roast's finding joins the objective in hand when it is under four story
+  points**, and goes to the next one when it is bigger. A small fix belongs with
+  the work it came out of; a large one would stall what is shipping.
+
 ## The owner's rules of 2026-09-11, which override anything older below
 
 Asked why six components had taken 111 tasks, the owner answered:

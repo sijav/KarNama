@@ -8,7 +8,7 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-305` The story fixtures have no seeded board and no job opportunity in three of the nine statuses** (high, 2 pt, web)
+**Next up: `KN-042` App shell: routing, responsive navigation, and the language switch in place** (critical, 5 pt, web)
 
 ## Blocked (5)
 
@@ -24,6 +24,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-042` | App shell: routing, responsive navigation, and the language switch in place | critical | 5 | web | KN-027, KN-006, KN-035 | All three routes render inside the shell, the nav switches between right sidebar and bottom tab bar at the breakpoint, a deep link to any of them works on a hard refresh, the language switch persists across a reload, and an API error renders the error state rather than a blank page. |
+| `KN-044` | Add job flow | critical | 5 | web | KN-042, KN-029 | An e2e test pastes a link, corrects a field in Review, saves, and finds the record on My Jobs with status New, and a second test takes the Error path into Manual and saves from there. |
+| `KN-045` | Job detail modal, wired | critical | 5 | web | KN-043, KN-030 | An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries. |
+| `KN-046` | Auth screens: login, code, signup | critical | 5 | web | KN-042 | An e2e test signs in with a number and the code from the mock provider and reaches the board, a wrong or expired code shows an honest message with a way to resend, first login collects the name, and signing out clears the token and the Apollo cache rather than only the UI. |
+| `KN-056` | The standalone network screen | critical | 8 | web | KN-042, KN-026, KN-032 | An e2e test opens the network route, adds a contact, edits it, selects two and deletes them through the bottom bar, and sees the empty state on a fresh account. The grid reads right to left and row by row in Persian and mirrors in English, with no array reversal in the code. |
+| `KN-043` | The kanban board screen | critical | 13 | web | none | An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and the board renders it collapsed to a count by default. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-305` | The story fixtures have no seeded board and no job opportunity in three of the nine statuses | high | 2 | web | none | Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages. |
@@ -64,10 +70,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-275` | Add a resting edge role for controls at 3:1, and draw the Input and the Checkbox with it | high | 3 | web | none | tokens.ts carries a named role for a control's resting edge, a neutral in text/secondary's hue at 3.3:1 or more on bg/surface, bg/page and bg/surface-secondary, and darkMode.ts derives it and checks it at 3:1 or more on the three dark backgrounds, each ratio asserted by a unit test with a mutation back to border/default failing it; the Input's resting border and the Checkbox's unchecked frame use it, and the Input's Default story and the Checkbox's Unchecked story assert it; every other state of both still renders as drawn; DESIGN.md's token tables list the role as the owner's addition under KN-273; the token verifier and the contract pass; and the Input and the Checkbox are seen at rest in all four combinations. |
 | `KN-279` | Give the selected Filter Chip a blue edge at 3:1, apart from its pressed edge | high | 3 | web | KN-272 | A selected Filter Chip's edge is drawn in a named role at 3:1 or more against bg/surface, bg/page, bg/surface-secondary and its own fill, in light and in the derived dark, each ratio asserted by a unit test with a mutation back to the fill-coloured edge failing it; the Selected story asserts the edge; a pressed unselected chip is still told apart from a selected one, by at least 3:1 between their two indicators or by a difference that is not colour, such as the edge's width, and a focused chip beside a selected one keeps its ring visibly apart from the selected edge, both asserted on rendered chips side by side, including a chip held pressed from the keyboard; DESIGN.md records the edge under the owner's decision of KN-276; and the chip is seen unselected, selected and pressed in all four combinations. |
 | `KN-038` | Custom statuses: rename, recolour, delete | high | 5 | api | KN-037 | A renamed status shows its new name everywhere including old records, deletion is refused while postings remain in that status and the message says how many, the four custom slots cannot be exceeded, a record pointing at a deleted status still renders with the fallback colour, and tests cover each. |
-| `KN-042` | App shell: routing, responsive navigation, and the language switch in place | high | 5 | web | KN-027, KN-006, KN-035 | All three routes render inside the shell, the nav switches between right sidebar and bottom tab bar at the breakpoint, a deep link to any of them works on a hard refresh, the language switch persists across a reload, and an API error renders the error state rather than a blank page. |
-| `KN-044` | Add job flow | high | 5 | web | KN-042, KN-029, KN-037 | An e2e test pastes a link, corrects a field in Review, saves, and finds the record on My Jobs with status New, and a second test takes the Error path into Manual and saves from there. |
-| `KN-045` | Job detail modal, wired | high | 5 | web | KN-043, KN-030, KN-038, KN-039 | An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries. |
-| `KN-046` | Auth screens: login, code, signup | high | 5 | web | KN-042, KN-036 | An e2e test signs in with a number and the code from the mock provider and reaches the board, a wrong or expired code shows an honest message with a way to resend, first login collects the name, and signing out clears the token and the Apollo cache rather than only the UI. |
 | `KN-052` | Deploy the API to Render free, with Neon free Postgres | high | 5 | deploy | KN-033, KN-034, KN-050 | The API answers at its Render URL, the web app reaches it across origins with the CORS policy WEB_ORIGIN sets, migrations have run against the Neon database, and a deploy follows a push to main with no manual step. The database choice is recorded with its reason so it is not silently reverted to a provider that expires or pauses. A check proves the deployed API responds and that render.yaml still pins the free plan and carries no DATABASE_URL value. |
 | `KN-061` | Drag a card between columns, with a keyboard path | high | 5 | web | KN-060, KN-020, KN-269, KN-270 | A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology. Onto the rejected column collapsed to a count, as the owner decided on 2026-09-10, KN-196: during a drag it expands after a short hover of 500 ms; it accepts a drop while still collapsed; once the card lands it recollapses with a brief highlight, and only if the drag opened it, the count ticking up, the header flashing the rejected status colour for about a second and the move announced, Moved to Rejected with the count; a column the user opened stays open; a failed save returns the card with no highlight; and the keyboard path offers it as one target, announced with its count. |
 | `KN-063` | Accessibility gate | high | 5 | web | KN-003, KN-007 | An a11y violation planted in a story fails the test run, every action reachable by hover is reachable by keyboard, every icon-only control has an accessible name and a test asserts it, and each of the nine status base-on-container pairs is measured against the contrast bar with the result recorded. |
@@ -77,9 +79,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-039` | Contacts, notes and file references | high | 8 | api | KN-037 | A contact, a note and a file can each be attached to a record and read back, deleting a record removes its attachments, and an upload larger than the configured limit is refused with a usable error rather than a 500. A contact with a full name and no email and no phone is accepted and read back unchanged: the data layer carries no NOT NULL and no check constraint requiring either, per the owner's decision on KN-071. |
 | `KN-048` | End to end tests for both surviving scenarios | high | 8 | web | KN-043, KN-044, KN-045 | Both scenarios pass end to end on a clean database, each asserts the stored record and its status history rather than only what is on screen, and both run in CI. |
 | `KN-049` | Coverage to 100 percent, enforced | high | 8 | web | KN-048 | Coverage reports 100 percent against the stated exclusions, the build fails when a line is uncovered, and every exclusion has a written reason. |
-| `KN-056` | The standalone network screen | high | 8 | web | KN-042, KN-026, KN-032, KN-039 | An e2e test opens the network route, adds a contact, edits it, selects two and deletes them through the bottom bar, and sees the empty state on a fresh account. The grid reads right to left and row by row in Persian and mirrors in English, with no array reversal in the code. |
 | `KN-057` | Posting extraction: turn a pasted link or text into a Review payload | high | 8 | api | KN-034 | Extraction from raw text returns the documented field set with a named test fixture, a URL pointing at a private or link-local address is refused, a slow or oversized response is aborted within the configured bound, every failure path returns the error shape the UI maps to the Error state, and the mock provider makes all of it runnable with no network. |
-| `KN-043` | The kanban board screen | high | 13 | web | KN-042, KN-015, KN-016, KN-017, KN-024, KN-025, KN-022, KN-037, KN-060, KN-061 | An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and the board renders it collapsed to a count by default. |
 | `KN-075` | Decide which fields the Review step of the add flow shows | medium | 1 | design | KN-002 | DESIGN.md names the Review field list with the reason for it, section 6 no longer lists the Review step as open, and agent/design-manifest.json records the disposition instead of the open item. |
 | `KN-081` | Replace the truncation-cap frequency guess with a stated cap | medium | 1 | agent | KN-002 | The truncation figure in DESIGN.md is derived from a cap the manifest records with its provenance, or from per-name evidence of cutting, and a fixture capture with eleven repeated 36-character labels and no truncation does not report any name as truncated. |
 | `KN-116` | Move the language switch out of the placeholder shell into the drawn chrome | medium | 1 | web | KN-006 | The switch renders at the bottom of the sidebar on desktop and as a Page Header trailing action on mobile, App.tsx contains no language control, and an e2e test finds it in both places at the two drawn viewports. |
@@ -967,7 +967,7 @@ Admin-only operations to list, read, approve and reject submissions, and to see 
 
 ### `KN-042` App shell: routing, responsive navigation, and the language switch in place
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
+- **status** backlog · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-027, KN-006, KN-035
 
 The three routes the design draws, the board, add, and the network page, inside the responsive nav frame, with the Apollo client, auth state and error boundary wired, and the language switch working from the sidebar on desktop and the page header on mobile.
@@ -978,8 +978,8 @@ The three routes the design draws, the board, add, and the network page, inside 
 
 ### `KN-043` The kanban board screen
 
-- **status** backlog · **severity** high · **points** 13 · **area** web
-- **blocked by** KN-042, KN-015, KN-016, KN-017, KN-024, KN-025, KN-022, KN-037, KN-060, KN-061
+- **status** backlog · **severity** critical · **points** 13 · **area** web
+- **blocked by** none
 
 The board, not a list. Columns ARE statuses, laid out RTL so the rightmost column is the first stage, scrolling horizontally on desktop and collapsing to one column plus a scrolling status chip bar on mobile. Cards drag between columns. Includes the toolbar (sort and search), the column header with its count and menu, the per-column Add Card row, the Add Column tile labelled افزودن وضعیت, bulk selection via the bottom floating bar, and the empty and search-empty states.
 
@@ -989,8 +989,8 @@ The board, not a list. Columns ARE statuses, laid out RTL so the rightmost colum
 
 ### `KN-044` Add job flow
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
-- **blocked by** KN-042, KN-029, KN-037
+- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **blocked by** KN-042, KN-029
 
 The add route driving the modal through Paste, Loading, Review and save, with Manual and Error as the alternate paths, writing a real record.
 
@@ -1000,8 +1000,8 @@ The add route driving the modal through Paste, Loading, Review and save, with Ma
 
 ### `KN-045` Job detail modal, wired
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
-- **blocked by** KN-043, KN-030, KN-038, KN-039
+- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **blocked by** KN-043, KN-030
 
 The FIVE-tab modal reading and writing real data. KN-072 settled that status history leaves the Info tab and gets its own tab, second, so the tabs are اطلاعات آگهی, سابقه, یادداشت, افراد مرتبط, فایل‌ها. Anyone building this card from its own text used to rebuild exactly the arrangement KN-072 rejected, because it said four tabs and its exit condition only asked that history GROW, never where it renders. The tab is افراد مرتبط, not مخاطبین: DESIGN.md renames it without exception, and the nav item مخاطبین became a different thing. KN-155 repaired this.
 
@@ -1011,8 +1011,8 @@ The FIVE-tab modal reading and writing real data. KN-072 settled that status his
 
 ### `KN-046` Auth screens: login, code, signup
 
-- **status** backlog · **severity** high · **points** 5 · **area** web
-- **blocked by** KN-042, KN-036
+- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **blocked by** KN-042
 
 The three screens at page-map row 6, both desktop (407:6951, 407:6972, 407:7000) and mobile (407:7022, 407:7043, 407:7071): enter a mobile number, enter the five digit code, and the first-login signup that collects the name. Includes the expired code, wrong code and resend paths.
 
@@ -1121,8 +1121,8 @@ When a task moves to in_progress, record the current HEAD on it as startHead. Ma
 
 ### `KN-056` The standalone network screen
 
-- **status** backlog · **severity** high · **points** 8 · **area** web
-- **blocked by** KN-042, KN-026, KN-032, KN-039
+- **status** backlog · **severity** critical · **points** 8 · **area** web
+- **blocked by** KN-042, KN-026, KN-032
 
 شبکه من, the third nav destination, drawn at page-map row 5: the contacts list on desktop (252:2) and mobile (252:411), selection states, add and edit modals, the bottom bulk bar, delete confirmation, and the empty state. The grid is two columns ordered right to left and row by row, achieved with direction rtl and the natural array order rather than by reversing the array.
 

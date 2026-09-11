@@ -86,6 +86,44 @@ const POINTS = [1, 2, 3, 5, 8, 13]
 
 const REQUIRED = ['id', 'title', 'desc', 'why', 'severity', 'points', 'area', 'parent', 'status', 'exit']
 
+/**
+ * OKRs, the owner's of 2026-09-12: the objectives the tasks serve.
+ *
+ * A board of four hundred cards says how much is left and nothing about what is
+ * left BEFORE the product does its job. So the board carries objectives of its
+ * own, each with a name, what it is for, and an order, and every task names the
+ * one it serves. The CURRENT objective is the first one still open; `next`
+ * works through it before it offers anything from a later one, whatever the
+ * severities say, because what ships first comes first.
+ *
+ * A task with no objective counts as current work: an unsorted card is
+ * something to do now, and the opposite reading would hide it behind every
+ * later objective. A board with no objectives behaves exactly as it did.
+ *
+ * `okr` on a task is a REFERENCE, not a label: it has to name an objective the
+ * board holds, and `validate` says so when it does not. A label lets a typo
+ * invent an objective nobody can see, which is the failure the owner called out.
+ */
+const OKR_STATUSES = ['open', 'done']
+const okrsOf = (board) => board.okrs ?? []
+const okrById = (board, id) => okrsOf(board).find((okr) => okr.id === id)
+const openOkrs = (board) => [...okrsOf(board)].sort((one, other) => one.position - other.position).filter((okr) => okr.status === 'open')
+const currentOkr = (board) => openOkrs(board)[0]
+
+/**
+ * Where a task sits in the order of objectives: the current one and no
+ * objective at all are both now, an objective already met is behind us, so a
+ * task left in one is now as well, and anything later sorts by its position.
+ */
+const okrRank = (board, task) => {
+  const okrs = okrsOf(board)
+  if (okrs.length === 0) return 0
+  const mine = task.okr === undefined || task.okr === null ? undefined : okrById(board, task.okr)
+  if (!mine || mine.status === 'done') return 0
+  const current = currentOkr(board)
+  return current && mine.id === current.id ? 0 : mine.position
+}
+
 /** A task is pickable in these states. `blocked` is excluded: it names a reason outside the board. */
 const OPEN_STATUSES = ['in_progress', 'review', 'backlog']
 /**
@@ -159,6 +197,16 @@ const asList = (value) => {
     .flatMap((entry) => String(entry).split(','))
     .map((entry) => entry.trim())
     .filter(Boolean)
+}
+
+/** An objective id the board holds, or a refusal naming what it does hold. */
+const okrReference = (board, id) => {
+  if (okrById(board, id)) return id
+  const held = okrsOf(board)
+    .map((okr) => okr.id)
+    .join(', ')
+  fail(`okr: "${id}" is not an objective this board holds${held ? `. It holds ${held}.` : '. It holds none yet: todo okr add --name ... --description ...'}`)
+  return null
 }
 
 const fail = (message) => {
@@ -324,6 +372,22 @@ const checkBoard = (board) => {
   const problems = []
   const seen = new Set()
 
+  const okrIds = new Set()
+  const positions = new Set()
+  for (const okr of okrsOf(board)) {
+    const label = okr.id ?? '(no id)'
+    for (const field of ['id', 'name', 'description']) {
+      const value = okr[field]
+      if (typeof value !== 'string' || value.trim() === '') problems.push(`${label}: an objective needs a ${field}`)
+    }
+    if (okrIds.has(okr.id)) problems.push(`${label}: duplicate objective id`)
+    okrIds.add(okr.id)
+    if (!Number.isInteger(okr.position)) problems.push(`${label}: position must be a whole number, it is the order they are met in`)
+    else if (positions.has(okr.position)) problems.push(`${label}: two objectives share position ${okr.position}`)
+    else positions.add(okr.position)
+    if (!OKR_STATUSES.includes(okr.status)) problems.push(`${label}: status "${okr.status}" is not one of ${OKR_STATUSES.join(', ')}`)
+  }
+
   for (const task of board.tasks) {
     const label = task.id ?? '(no id)'
 
@@ -347,6 +411,11 @@ const checkBoard = (board) => {
     }
     if (task.points !== undefined && !POINTS.includes(task.points)) {
       problems.push(`${label}: points ${task.points} is not one of ${POINTS.join(', ')}`)
+    }
+    // The reference. A task may name no objective, which reads as now, but a
+    // name the board does not hold is a typo pointing at nothing.
+    if (task.okr !== undefined && task.okr !== null && !okrById(board, task.okr)) {
+      problems.push(`${label}: okr "${task.okr}" is not an objective this board holds`)
     }
     if (!Array.isArray(task.parent)) {
       problems.push(`${label}: parent must be an array, use [] when nothing blocks it`)
@@ -458,8 +527,11 @@ const isUnblocked = (board, task) =>
  * backlog handed it straight back and stalled the loop. It is not a candidate
  * at all now; `next` reports it separately so it is not forgotten.
  */
-const rank = (task) => [
+const rank = (board, task) => [
   task.status === 'in_progress' ? 0 : 1,
+  // The objective, ahead of the severity: a critical card in a later objective
+  // is not what the product needs next, KN-416.
+  okrRank(board, task),
   SEVERITIES.indexOf(task.severity),
   task.points,
   task.id,
@@ -470,8 +542,8 @@ const pickNext = (board) => {
     (task) => ['in_progress', 'backlog'].includes(task.status) && isUnblocked(board, task),
   )
   return candidates.sort((left, right) => {
-    const a = rank(left)
-    const b = rank(right)
+    const a = rank(board, left)
+    const b = rank(board, right)
     for (let index = 0; index < a.length; index += 1) {
       if (a[index] < b[index]) return -1
       if (a[index] > b[index]) return 1
@@ -509,6 +581,7 @@ const formatCard = (board, task) => {
     `  severity  ${task.severity}`,
     `  points    ${task.points}`,
     `  area      ${task.area}`,
+    ...(okrsOf(board).length ? [`  okr       ${task.okr ? `${task.okr} ${okrById(board, task.okr)?.name ?? ''}` : 'none, so it counts as now'}`] : []),
     `  parent    ${blockers.length ? blockers.join(', ') : 'none'}`,
     '',
     '  what',
@@ -633,7 +706,88 @@ const mutate = (board) => {
   saveBoard(board)
 }
 
+/** What each objective has left, which is the only number an objective is read for. */
+const okrReport = (board) => {
+  const okrs = [...okrsOf(board)].sort((one, other) => one.position - other.position)
+  if (okrs.length === 0) return ['No objectives yet. Add one: okr add --name MVP --description "..."']
+  const current = currentOkr(board)
+  const lines = []
+  for (const okr of okrs) {
+    const mine = board.tasks.filter((task) => task.okr === okr.id)
+    const open = mine.filter((task) => OPEN_STATUSES.includes(task.status)).length
+    const done = mine.filter((task) => task.status === 'done').length
+    const mark = okr.status === 'done' ? 'met' : current && okr.id === current.id ? 'now' : 'later'
+    lines.push(`${okr.position}. ${okr.id} ${okr.name} (${mark}): ${open} open, ${done} done, ${mine.length} in all`)
+    lines.push(wrap(okr.description, 92, '   '))
+  }
+  const loose = board.tasks.filter((task) => !task.okr && OPEN_STATUSES.includes(task.status)).length
+  if (loose) lines.push(`${loose} open task(s) serve no objective, which counts as now.`)
+  return lines
+}
+
 const commands = {
+  /**
+   * The objectives themselves: their own records, not a label on a task.
+   *
+   * `okr` prints them with what is left in each, `okr add` opens one at the end
+   * of the order or at a position of its own, `okr done` marks one met and the
+   * next open one becomes current, and `okr edit` changes a name, a description
+   * or a position.
+   */
+  okr(board, { positional, flags }) {
+    const [action, id] = positional
+    if (action === undefined) {
+      process.stdout.write(`${okrReport(board).join('\n')}\n`)
+      return
+    }
+    if (action === 'add') {
+      const name = flags.name === undefined ? undefined : String(requireValue(flags.name, 'name'))
+      const description = flags.description === undefined ? undefined : String(requireValue(flags.description, 'description'))
+      if (!name || !description) fail('okr add needs --name and --description: an objective nobody can read is a label.')
+      const okrs = okrsOf(board)
+      if (okrs.some((okr) => okr.name === name)) fail(`okr add: there is already an objective called ${name}`)
+      const position = flags.position === undefined ? Math.max(0, ...okrs.map((okr) => okr.position)) + 1 : Number(requireValue(flags.position, 'position'))
+      if (!Number.isInteger(position) || position < 1) fail('okr add: --position is a whole number from 1, the order they are met in')
+      if (okrs.some((okr) => okr.position === position)) fail(`okr add: position ${position} is taken by ${okrs.find((okr) => okr.position === position)?.id}`)
+      const made = {
+        id: flags.id === undefined ? `OKR-${okrs.length + 1}` : String(requireValue(flags.id, 'id')),
+        name,
+        description,
+        position,
+        status: 'open',
+        createdAt: new Date().toISOString(),
+      }
+      if (okrById(board, made.id)) fail(`okr add: ${made.id} already exists`)
+      board.okrs = [...okrs, made]
+      mutate(board)
+      process.stdout.write(`added ${made.id} ${made.name} at position ${made.position}\n`)
+      return
+    }
+    if (action === 'done' || action === 'open') {
+      const okr = okrById(board, id ?? '')
+      if (!okr) fail(`okr ${action}: ${id ?? '(no id)'} is not an objective this board holds`)
+      okr.status = action === 'done' ? 'done' : 'open'
+      okr.closedAt = action === 'done' ? new Date().toISOString() : undefined
+      mutate(board)
+      process.stdout.write(`${okr.id} is ${okr.status}\n${okrReport(board).join('\n')}\n`)
+      return
+    }
+    if (action === 'edit') {
+      const okr = okrById(board, id ?? '')
+      if (!okr) fail(`okr edit: ${id ?? '(no id)'} is not an objective this board holds`)
+      for (const [key, value] of Object.entries(flags)) {
+        if (key === 'name' || key === 'description') okr[key] = String(requireValue(value, key))
+        else if (key === 'position') okr.position = Number(requireValue(value, 'position'))
+        else if (key === 'status') fail('okr edit: an objective is met with "okr done", so the order it happened in is kept')
+        else fail(`okr edit: "${key}" is not a field of an objective`)
+      }
+      mutate(board)
+      process.stdout.write(`updated ${okr.id}\n`)
+      return
+    }
+    fail(`okr: unknown command "${action}". Try: okr, okr add --name ... --description ..., okr done <id>, okr edit <id> --name ...`)
+  },
+
   add(board, { flags }) {
     for (const field of ['title', 'desc', 'why', 'severity', 'points', 'area', 'exit']) {
       if (!flags[field] || flags[field] === true) {
@@ -660,6 +814,10 @@ const commands = {
       // roast at all because there was no prior state to check.
       status: flags.status === undefined ? 'backlog' : openingStatus(requireValue(flags.status, 'status')),
       exit: String(flags.exit),
+      // The objective this serves. Unset means the current one, so a card
+      // added without thinking about it is work for now rather than work
+      // hidden behind every later objective.
+      okr: flags.okr === undefined ? (currentOkr(board)?.id ?? null) : okrReference(board, requireValue(flags.okr, 'okr')),
       roasts: [],
       notes: [],
       createdAt: new Date().toISOString(),
@@ -828,6 +986,9 @@ const commands = {
         else task.verify = verifyCommand(raw)
       }
       else if (key === 'evidence') task.evidence = requireValue(value, 'evidence')
+      // `--okr none` takes a task out of every objective, which reads as now,
+      // the same spelling `--parent none` uses.
+      else if (key === 'okr') task.okr = requireValue(value, 'okr') === 'none' ? null : okrReference(board, String(value))
       else if (key === 'status') fail('set: status is changed with "move", which is where the roast gate lives')
       else if (key === 'id') fail('set: id is immutable, other tasks point at it')
       else if (REQUIRED.includes(key)) task[key] = requireValue(value, key)
@@ -1097,6 +1258,12 @@ const commands = {
         'npm run todo -- <command>',
         '',
         '  next                       print the task the law selects',
+        '  okr                        the objectives, and what is left in each',
+        '  okr add --name --description [--position n] [--id OKR-n]',
+        '                             opens an objective at the end of the order, or at a position',
+        '  okr done <id> | okr open <id>      an objective is met, or opened again',
+        '  okr edit <id> --name --description --position',
+        '  set <id> --okr OKR-1 | --okr none  which objective a task serves; none reads as now',
         '  show <id>                  print one card',
         '  list [--status s] [--area a] [--severity s]',
         '  add --title --desc --why --severity --points --area --exit [--parent ids] [--status s]',
