@@ -8,7 +8,13 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-183` KN-114's verifier can silently overwrite a concurrent catalog edit** (high, 2 pt, web)
+**Next up: `KN-202` The story-docs markdown contract is documented as rigid but silently accepts malformed files** (high, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-202` | The story-docs markdown contract is documented as rigid but silently accepts malformed files | high | 2 | web | none | parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing. |
 
 ## Blocked (5)
 
@@ -20,13 +26,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (234)
+## Backlog (233)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-183` | KN-114's verifier can silently overwrite a concurrent catalog edit | high | 2 | web | none | The blank and untranslated rules live in a pure function that takes the catalogs as an argument; catalog.test.ts calls it on the real imported ones; a test drives it with in-memory catalogs containing each evasion, empty, whitespace, format characters only, the id exactly and the id with punctuation and casing changed, and requires each to be reported naming the id; KN-114's verifier no longer writes to any tracked file; and its header no longer needs to warn that an interrupted run leaves the catalog planted. |
-| `KN-202` | The story-docs markdown contract is documented as rigid but silently accepts malformed files | high | 2 | web | none | parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing. |
 | `KN-203` | The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian | high | 2 | web | none | The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-234` | The token guard still accepts copy as a key or inside the font stack, and its retirement check trusts any lint failure | high | 2 | web | none | Every string-literal key in tokens.ts must be a token name DESIGN.md documents, not a shape; the font stack must equal the documented value exactly; planted cases for a copy key, copy after Vazirmatn and a copy family each fail the guard; and the retirement check requires a clean baseline lint and lingui errors attributable to tokens.ts, STORAGE_KEY and TOOLTIP_SURFACE once they are removed, reporting an unrelated error as unjudgeable rather than as the debt standing. |
@@ -244,6 +248,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-173` | rm destroys the card and its reason, so the terminal refusal promises something false | low | 2 | agent | none | A mis-closed card can be voided into a terminal tombstone that RETAINS the card, its reason and a link to its replacement; rm either keeps a record too or stops being named as the recovery route; the terminal refusal message describes what actually happens; and driving the real CLI proves the record survives. |
 | `KN-174` | Extract the verifier sandbox builder, which has already diverged between two copies | low | 2 | agent | none | One sandbox builder in agent/scripts/verify/lib/, used by KN-159 and KN-162, with the fixtures either shared or requested explicitly by the caller; both verifiers still pass; and a check proves neither file builds a repository of its own any more. |
 | `KN-177` | The global todo skill lets a closed task reopen, so SkipBureau's rule is honour-based | low | 2 | agent | none | The global todo skill refuses every transition out of done, naming the new-card route; re-closing is a no-op rather than an error; the refusal is proved by driving the real CLI against a throwaway database rather than by reading the source; a mutation removing the guard fails that check with its own message; and SkipBureau's board is unaffected apart from gaining the guard. |
+| `KN-183` | KN-114's verifier can silently overwrite a concurrent catalog edit | low | 2 | web | none | The blank and untranslated rules live in a pure function that takes the catalogs as an argument; catalog.test.ts calls it on the real imported ones; a test drives it with in-memory catalogs containing each evasion, empty, whitespace, format characters only, the id exactly and the id with punctuation and casing changed, and requires each to be reported naming the id; KN-114's verifier no longer writes to any tracked file; and its header no longer needs to warn that an interrupted run leaves the catalog planted. |
 | `KN-185` | Nothing establishes which prompt file the sibling Stop hook actually feeds | low | 2 | agent | none | The Stop-hook registration is traced to the exact prompt pathname it feeds, for both projects, and recorded where the next reader will find it; where a project's hook feeds a file nobody has been maintaining, that is filed; and the claim is supported by the resolved configuration rather than by the prompt's own text. |
 | `KN-191` | The roast skill writes its transient result into the project, not a scratch directory | low | 2 | agent | none | The transient result file is written to a scratch location rather than into the project; roast-sessions.json stays project-local with its reason recorded; both halves agree on where and the parity test still passes; the gitignore entries for anything that no longer lands in the project are removed rather than left as fossils; and running a roast in a clean checkout leaves that checkout unchanged. |
 | `KN-192` | A stale or inline marker masks the real block, so the marker is not yet a declaration | low | 2 | agent | none | The marker must be the only thing on its line, and there must be exactly ONE in a document; a second marker, an inline marker, and a stale marker above an old block with the real block unmarked are each reported by name; and each of the three is a case that fails before the change and passes after. |
@@ -2522,6 +2527,8 @@ Found by the KN-112 roast and the mechanism is concrete. PreferencesProvider.sto
 
 **Exit condition.** The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler.
 
+**Roasts.** round 1 scored 4.5 with 0 critical(s)
+
 ### `KN-179` no-restricted-globals does not cover stories, so a bare localStorage passed lint
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -2570,7 +2577,7 @@ Found by the KN-166 roast. agent/scripts/verify/KN-166.mjs derives ../SkipBureau
 
 ### `KN-183` KN-114's verifier can silently overwrite a concurrent catalog edit
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** backlog · **severity** low · **points** 2 · **area** web
 - **blocked by** none
 
 Found by the KN-114 roast. agent/scripts/verify/KN-114.mjs snapshots apps/web/src/i18n/locales/fa-IR.ts, rewrites it seven times to plant evasions, and then restores that SNAPSHOT unconditionally in a finally. Anything that changes the catalog while it runs, a developer, a generator, a concurrent agent, is silently reverted to the snapshot with no warning and no diff to notice. Killing the run leaves a planted catalog behind, which the file's own header admits. The roast's alternative is better and hermetic: extract the two predicates, blank and untranslated, into a pure function taking an object of the two catalogs; have catalog.test.ts call it on the real imported catalogs so npm test runs the real validator; and unit-test that same function against invalid in-memory catalogs. Nothing is written, nothing is restored, and the thing proved is the exact validator the suite uses rather than a copy of it.
@@ -2789,7 +2796,7 @@ CHILD OF KN-007, recorded in prose because board.json cannot express parent_task
 
 ### `KN-202` The story-docs markdown contract is documented as rigid but silently accepts malformed files
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** in_progress · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-007 roast. parse.ts calls its format rigid and says the guard CHECKS it rather than reads it, but two malformed shapes pass silently. An unknown level-two section, say ## Accessibility written after the stories, is not a section the parser knows, so every line under it is folded into the PREVIOUS story's prose instead of being reported. And a duplicate ### name overwrites the earlier entry with no complaint, so documenting a prop twice quietly discards the first attempt. Neither is caught anywhere: parse.ts returns a best effort and the guard only compares the names it got back.

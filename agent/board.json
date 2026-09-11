@@ -5068,7 +5068,23 @@
       "parent": [],
       "status": "done",
       "exit": "The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4.5,
+          "criticals": 0,
+          "file": "agent/roasts/KN-178-round-1.2026-09-11T21-46-28-229Z.md",
+          "filed": [
+            "KN-179"
+          ],
+          "cardDigest": "c89f46c5da14c34d22d98881c168ac9301cc8bad2a6b7f8550dc3d32bfaa4686",
+          "head": "b163d7ef4eeb1b8dc80c4bf7b9ff35f71c9d8fc3",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "dismissed": "The critical, the concurrent writer and reader run not written: the owner's rule of 2026-09-11 dropped proofs at the close, after the card's exit was written; the story's own check that no real Storage.setItem runs stands in, and fails when the stand-in is removed. The minor is real and joins KN-179 as a note.",
+          "at": "2026-09-11T21:51:58.483Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T00:28:35.373Z",
       "updatedAt": "2026-09-11T21:46:06.249Z",
@@ -5088,10 +5104,11 @@
       "exit": "no-restricted-globals covers every file that runs in a browser including stories and .storybook, the existing bare uses are corrected, and a planted bare localStorage in a story FAILS npm run lint, proved by planting one rather than by reading the config.",
       "roasts": [],
       "notes": [
-        "2026-09-10, from the KN-218 roast: the Tooltip and Checkbox stories call getComputedStyle bare rather than through window, which AGENTS.md's browser-globals rule asks for. Another instance of this card's gap: no-restricted-globals does not reach stories, and does not list getComputedStyle."
+        "2026-09-10, from the KN-218 roast: the Tooltip and Checkbox stories call getComputedStyle bare rather than through window, which AGENTS.md's browser-globals rule asks for. Another instance of this card's gap: no-restricted-globals does not reach stories, and does not list getComputedStyle.",
+        "2026-09-11, from the KN-178 roast: .storybook/own-storage.ts spies globalThis.localStorage rather than window.localStorage. And the gap is wider than stories: no-restricted-globals is set in no ESLint config in the repository, apps/web/eslint.config.js included, found by search on 2026-09-11, so AGENTS.md's 'enforced by no-restricted-globals' is enforced nowhere."
       ],
       "createdAt": "2026-09-10T00:28:35.466Z",
-      "updatedAt": "2026-09-10T07:27:50.491Z"
+      "updatedAt": "2026-09-11T21:51:58.345Z"
     },
     {
       "id": "KN-180",
@@ -5170,15 +5187,18 @@
       "title": "KN-114's verifier can silently overwrite a concurrent catalog edit",
       "desc": "Found by the KN-114 roast. agent/scripts/verify/KN-114.mjs snapshots apps/web/src/i18n/locales/fa-IR.ts, rewrites it seven times to plant evasions, and then restores that SNAPSHOT unconditionally in a finally. Anything that changes the catalog while it runs, a developer, a generator, a concurrent agent, is silently reverted to the snapshot with no warning and no diff to notice. Killing the run leaves a planted catalog behind, which the file's own header admits. The roast's alternative is better and hermetic: extract the two predicates, blank and untranslated, into a pure function taking an object of the two catalogs; have catalog.test.ts call it on the real imported catalogs so npm test runs the real validator; and unit-test that same function against invalid in-memory catalogs. Nothing is written, nothing is restored, and the thing proved is the exact validator the suite uses rather than a copy of it.",
       "why": "This is the same class of defect that destroyed a plan file earlier today: a destructive operation whose safety rests on an assumption nobody checks, here that the file has not changed underneath. It is also unnecessary, because the proof can be made without writing to the repository at all.",
-      "severity": "high",
+      "severity": "low",
       "points": 2,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "The blank and untranslated rules live in a pure function that takes the catalogs as an argument; catalog.test.ts calls it on the real imported ones; a test drives it with in-memory catalogs containing each evasion, empty, whitespace, format characters only, the id exactly and the id with punctuation and casing changed, and requires each to be reported naming the id; KN-114's verifier no longer writes to any tracked file; and its header no longer needs to warn that an interrupted run leaves the catalog planted.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-10T00:50:02.857Z"
+      "notes": [
+        "2026-09-11: low under the owner's rule of that day, a finding about the loop rather than the product is low unless it is actively breaking the work. agent/scripts/verify/KN-114.mjs is run by nothing now: not CI, not npm run contract, and not the close, which runs no verify command since the same day. The product's protection it was proving, the blank and untranslated rules, runs in catalog.test.ts on the real catalogs every npm test."
+      ],
+      "createdAt": "2026-09-10T00:50:02.857Z",
+      "updatedAt": "2026-09-11T21:47:20.689Z"
     },
     {
       "id": "KN-184",
@@ -5619,11 +5639,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T02:59:37.515Z"
+      "createdAt": "2026-09-10T02:59:37.515Z",
+      "updatedAt": "2026-09-11T21:47:26.793Z"
     },
     {
       "id": "KN-203",
