@@ -7342,7 +7342,21 @@
       "parent": [],
       "status": "done",
       "exit": "An Input with neither a helper nor an error draws no message line and is 64 tall, as the 91 screen instances draw it; with a helper or an error it is 90, the file's variants; an error appearing on a field without a helper adds the line with its message; an error on a field that has a helper replaces the helper with the error's message and the field's aria-describedby then names the error, and clearing the error brings the helper back; a blank error still draws no line; stories assert the 64 and the 90, the line appearing with the error, and the error replacing a helper, with a mutation that keeps the helper over the error failing by name, replacing ErrorDoesNotMoveTheField and WithoutAHelper's reserved line; every other place that asserts the reserved line is changed with it, KN-011's verifier and both languages' story docs included; DESIGN.md records the owner's reversal of KN-011's decision; and the Input's comment about the line always keeping its height is corrected.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-287-round-1.2026-09-11T09-48-28-124Z.md",
+          "filed": [],
+          "cardDigest": "c78a9e7dbea450c00cf180d20b2c841d1a7b436e0728c48d2dc7c7b8ebfd0602",
+          "head": "ed29db15210a57970d04b5a58e96d051ebcc2697",
+          "reviewerScore": 2.5,
+          "reviewerCriticals": 1,
+          "dismissed": "The critical is contradicted by measurement: CSS 2.1 section 10.8 treats a line box with no text and no inline margins, padding or borders as not existing, and the reviewer did not run anything; WithoutAHelper asserts the bare Input 64 and its line 0 and passes in Chromium, and the production reading in fa-IR and en-US was bare [[64,0],[64,0]], a helper or an error 90 with a 22 line. The major is a build decision of the same kind as KN-254's blank error, on the same line, recorded on the card and in DESIGN.md: a line with nothing to read is what the owner's decision removes. The minor misreads agent/RALPH.md step 2b.",
+          "at": "2026-09-11T09:52:53.533Z"
+        }
+      ],
       "notes": [
         "2026-09-10: exit tightened after the KN-285 roast, which showed the first wording let the helper stay over an error, and let KN-011's verifier and the story docs keep asserting the reserved line after the change.",
         "2026-09-11, from the plan check: a helper made only of blank characters is treated as no helper, by KN-254's blank-error rule, so it draws no line and describes nothing; stated here and asserted by WithoutAHelper, since the exit does not name it. Under the reserved line a blank helper cost nothing; with the line drawn on demand it would draw an empty line under a gap."
@@ -7412,11 +7426,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Under forced colours the tick and the dash are drawn in system colours, ButtonText when enabled and GrayText when disabled, the keyword kept so a check can read it whatever the palette, and each stays visible against the frame; a check in a production build reads checked and indeterminate, enabled and disabled, under forced colours, comparing the rendered mark with a same-page probe of its system colour, and a mutation back to the author colour fails it; and DESIGN.md's stroke section says what the mark takes there.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T18:27:30.977Z"
+      "createdAt": "2026-09-10T18:27:30.977Z",
+      "updatedAt": "2026-09-11T09:48:29.387Z"
     },
     {
       "id": "KN-291",
