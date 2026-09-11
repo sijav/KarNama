@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 336,
+  "nextId": 337,
   "tasks": [
     {
       "id": "KN-001",
@@ -943,14 +943,14 @@
         "KN-018",
         "KN-019"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:18.480Z"
+      "updatedAt": "2026-09-11T14:34:31.527Z"
     },
     {
       "id": "KN-021",
@@ -1096,7 +1096,23 @@
       ],
       "status": "done",
       "exit": "Three states match Figma, the four permitted options are the only ones offered, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6.4,
+          "criticals": 0,
+          "file": "agent/roasts/KN-024-round-1.2026-09-11T14-34-17-746Z.md",
+          "filed": [
+            "KN-336"
+          ],
+          "cardDigest": "bd88215c58606a83e3baa04f6c0ce0e02c0d786331462981b700eaacd39618c3",
+          "head": "6045682eff5d9302ea36ff9d9536061cf8cad2b9",
+          "reviewerScore": 6.4,
+          "reviewerCriticals": 0,
+          "dismissed": "Nothing dismissed: the major and the minor are one card, KN-336, at medium under the owner's rule of 2026-09-11. The roast confirms the name and value split, the shared options refactor and the anchoring.",
+          "at": "2026-09-11T14:37:54.824Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -8522,6 +8538,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T14:29:54.285Z"
+    },
+    {
+      "id": "KN-336",
+      "title": "A sort change is read out twice, and the keyboard story never shows the new order on the control",
+      "desc": "CHILD OF KN-024, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-024 roast. Choosing an order returns focus to the combobox, whose new value a screen reader reads, and the status region then says «مرتب‌شده بر اساس» and the order again. The status also keeps its text, so the same order chosen twice is not read the second time. ChangedByKeyboard passes a fixed value and fn(), so the closed control still shows Newest after Enter; it checks the callback and the status, not the control.",
+      "why": "An announcement said twice is noise, and a story that never shows the change it claims proves half of it.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A change is read out once, by the focused control or by the status but not both, and a story holding the value in state shows the new order on the closed control.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T14:37:54.682Z"
     }
   ]
 }

@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 124 of 335 tasks done · 251 of 766 points.
+Project **KarNama** · 124 of 336 tasks done · 251 of 767 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-020` Status choice, status picker and status control** (critical, 5 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-020` | Status choice, status picker and status control | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-018, KN-019 | All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own. |
 
 ## Blocked (2)
 
@@ -21,7 +27,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-020` | Status choice, status picker and status control | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-018, KN-019 | All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own. |
 | `KN-026` | Contact card, full and compact | critical | 5 | web | KN-005, KN-006, KN-007, KN-008, KN-014, KN-062 | Both layouts and all three states match Figma, every field the design draws is present, long values truncate rather than reflow the card, and email and phone are actionable links. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the name, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293. |
 | `KN-028` | Modal shell, confirm, and change status | critical | 5 | web | KN-005, KN-006, KN-007, KN-009, KN-014 | Both modals match Figma, focus is trapped and returns to the trigger on close, Escape closes, the backdrop click behaviour matches the design, and the dialog has an accessible name and is announced as a dialog. |
 | `KN-031` | Contact modal, add and edit | critical | 5 | web | KN-005, KN-006, KN-007, KN-028, KN-011, KN-026 | Both modes match Figma, Edit is prefilled from the record, validation errors render in the Input error state, and cancelling discards without saving. A contact SAVES with a full name and nothing else: neither email nor phone is marked required and neither blocks submission, which is the owner's decision on KN-071 and is deliberately more permissive than the file's own note about a contact with no contact route. |
@@ -136,6 +141,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-331` | A Jobs Bulk Action Bar given no onSelectAll or onChangeStatus silently drops the file's buttons | medium | 1 | web | none | A Jobs bar cannot be written without both callbacks, by its type or by two components, and the docs guard still reads every prop. |
 | `KN-332` | A single Select given two values checks both rows and shows one | medium | 1 | web | none | A single Select reads only the first value everywhere, its field and its checks, and a story gives it two and sees one checked. |
 | `KN-335` | The blocked delete's reason is placed to the physical left in Persian, not at the inline start | medium | 1 | web | none | The start placement asks MUI for right in a right to left page and left in a left to right one, and a story with room on both sides checks the tip is at the inline start. |
+| `KN-336` | A sort change is read out twice, and the keyboard story never shows the new order on the control | medium | 1 | web | none | A change is read out once, by the focused control or by the status but not both, and a story holding the value in state shows the new order on the closed control. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -612,7 +618,7 @@ The picker at Figma node 257:17, offering the four reserved custom status colour
 
 ### `KN-020` Status choice, status picker and status control
 
-- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **status** in_progress · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-010, KN-018, KN-019
 
 Status Choice with Default, Hover and Selected from node 427:567, the Status Picker popover at 427:592, and Status Control with Default, Hover and Pressed at 199:21, which is the clickable wrapper the card uses around a display-only chip.
@@ -670,6 +676,8 @@ Default, Hover and Open from Figma node 408:512.
 **Why.** An archive that only grows needs an order the user chooses. The design permits exactly four: newest, oldest, nearest deadline, and company name alphabetically. Sorting by status is NOT one of them, because status is already the axis the board columns express.
 
 **Exit condition.** Three states match Figma, the four permitted options are the only ones offered, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced.
+
+**Roasts.** round 1 scored 6.4 with 0 critical(s)
 
 ### `KN-025` Bulk action bar
 
@@ -4277,4 +4285,15 @@ CHILD OF KN-018, recorded in prose because board.json cannot express parent_task
 **Why.** 259:295 draws the reason beside the menu at its inline start, and on the board, where there is room on both sides, it would sit on the wrong one.
 
 **Exit condition.** The start placement asks MUI for right in a right to left page and left in a left to right one, and a story with room on both sides checks the tip is at the inline start.
+
+### `KN-336` A sort change is read out twice, and the keyboard story never shows the new order on the control
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-024, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-024 roast. Choosing an order returns focus to the combobox, whose new value a screen reader reads, and the status region then says «مرتب‌شده بر اساس» and the order again. The status also keeps its text, so the same order chosen twice is not read the second time. ChangedByKeyboard passes a fixed value and fn(), so the closed control still shows Newest after Enter; it checks the callback and the status, not the control.
+
+**Why.** An announcement said twice is noise, and a story that never shows the change it claims proves half of it.
+
+**Exit condition.** A change is read out once, by the focused control or by the status but not both, and a story holding the value in state shows the new order on the closed control.
 
