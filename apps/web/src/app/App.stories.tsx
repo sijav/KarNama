@@ -1,5 +1,6 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, within } from 'storybook/test'
+import { CURRENT } from '../shared/navigation'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { App } from './App'
 
@@ -32,7 +33,8 @@ export const Persian: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('کارنما')
-    await expect(canvas.getByText('فرصت‌های شغلی من')).toBeVisible()
+    // The navigation is in the shell, the board the current page.
+    await expect(canvas.getByRole('button', { name: 'فرصت‌های شغلی من' }).getAttribute('aria-current')).toBe(CURRENT)
     await expect(document.documentElement).toHaveAttribute('dir', 'rtl')
   },
 }
@@ -64,7 +66,7 @@ export const English: Story = {
     // That is what makes a missing Persian translation render English rather
     // than a key or an empty node.
     await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('KarNama')
-    await expect(canvas.getByText('My job opportunities')).toBeVisible()
+    await expect(canvas.getByRole('button', { name: 'My job opportunities' }).getAttribute('aria-current')).toBe(CURRENT)
     await expect(document.documentElement).toHaveAttribute('dir', 'ltr')
   },
 }

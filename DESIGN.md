@@ -657,6 +657,36 @@ which says it is closed and opens the column. It keeps the column's width so the
 board's rhythm and the drop target stay. The board decides which column starts
 that way. KN-060.
 
+### The navigation
+
+The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
+20 icon at the inline start and 8 after it the label at 14 and Medium. Default
+is `text/secondary` on nothing; Hover takes `bg/surface-secondary` over the
+reaction's 120 ms, ease out; Active takes `bg/brand/container` with
+`text/brand` and is announced as the current page. The file draws no focus; the
+keyboard's is three pixels of `border/focus` inside the row.
+
+The sidebar, `185:11`, is 240 wide and the screen's height, at the page's inline
+end side, the right in Persian, `bg/surface` with one pixel of `border/default`
+on the edge that faces the page: 24 above and below, 16 at the sides, 8 between
+its parts. From the top: the Brand Row, a 32 mark of radius md in
+`bg/brand/default` holding the name's first letter at 16 and SemiBold in
+`text/on-accent`, then «کارنما» at 20 and SemiBold; the User Row, a 32 avatar in
+`bg/brand/container`, the name at 14 and Medium over the phone at 12 in the
+reader's digits; a divider; a 16 spacer; «فضای کار» at 12 and Medium in
+`text/disabled`; the three destinations; the room the file leaves; the language
+switch, drawn as a Nav Item at rest with no icon, since the set has no language
+glyph, its name where the items' names start; and «خروج» with `log-out`. Before
+anyone signs in, the user and «خروج» are left out.
+
+The tab bar, `185:19`, is the screen's width and 72 tall, `bg/surface` with one
+pixel of `border/default` along the top: the same three destinations in equal
+thirds, the board at the inline start, each a 24 icon 4 above its label at 12
+and Medium, `text/secondary`, or `text/brand` for the current page. Nothing else
+joins it. Below MUI's md, 900, it replaces the sidebar, pinned to the foot of
+the screen, and the page keeps its 72 clear; the file says it gives way to the
+Bulk Action Bar while selecting, which is the board's to do. KN-027.
+
 ### A stroke is drawn inside, and takes no space
 
 Every stroke on a component in the file is aligned INSIDE and left out of

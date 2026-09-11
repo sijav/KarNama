@@ -123,4 +123,7 @@ export const messages: Record<string, string> = {
   'Add a job opportunity to': 'Add a job opportunity to',
   'No job opportunities at this stage yet': 'No job opportunities at this stage yet',
   'Add status': 'Add status',
+  'My network': 'My network',
+  'Sign out': 'Sign out',
+  'Workspace': 'Workspace',
 }

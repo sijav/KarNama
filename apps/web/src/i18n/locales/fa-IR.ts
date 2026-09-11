@@ -126,4 +126,7 @@ export const messages: Record<string, string> = {
   'Add a job opportunity to': 'افزودن فرصت شغلی به',
   'No job opportunities at this stage yet': 'هنوز فرصت شغلی‌ای تو این مرحله نیست',
   'Add status': 'افزودن وضعیت',
+  'My network': 'شبکه من',
+  'Sign out': 'خروج',
+  'Workspace': 'فضای کار',
 }

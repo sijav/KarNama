@@ -1,12 +1,59 @@
 import { useLingui } from '@lingui/react'
-import { Button, Menu, MenuItem } from '@mui/material'
+import { Button, Menu, MenuItem, type Theme } from '@mui/material'
 import { useId, useState, type MouseEvent } from 'react'
 import { usePreferences } from '../../core/preferences'
 import { localeOrder, locales, type Locale } from '../../i18n'
+import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 
 export interface LanguageSwitchProps {
   /** `sidebar` fills its row, `header` sits as a trailing action. Both are drawn chrome. */
   placement?: 'sidebar' | 'header'
+}
+
+// In the sidebar the switch is drawn as one more Nav Item at rest, 184:9: 44
+// tall, radius md, 14 at Medium in text/secondary, bg/surface-secondary when
+// hovered, its name where the items' names start, since the icon set has no
+// language glyph and the rule is to add no chrome, DESIGN.md section 5. The
+// keyboard's ring is three pixels inside it, as the Nav Item's. Under an sx
+// key, which the lint rule reads as CSS.
+const ROW = 44
+const EDGE = 1
+const FOCUS_RING = 3
+const sidebarRow = {
+  sx: (theme: Theme) => {
+    const colour = theme.karnama.semantic
+    return {
+      position: 'relative',
+      flexShrink: 0,
+      justifyContent: 'flex-start',
+      boxSizing: 'border-box',
+      width: '100%',
+      minWidth: 0,
+      height: ROW,
+      paddingBlock: 0,
+      paddingInlineStart: `${spacing.sm + iconSize.md + spacing.xs}px`,
+      paddingInlineEnd: `${spacing.sm}px`,
+      borderRadius: `${theme.karnama.radius.md}px`,
+      fontFamily: 'inherit',
+      fontSize: `${typeScale.body.size}px`,
+      fontWeight: typeScale.label.weight,
+      lineHeight: 'normal',
+      letterSpacing: 0,
+      textTransform: 'none',
+      color: colour['text/secondary'],
+      '&:hover': { backgroundColor: colour['bg/surface-secondary'] },
+      '&.Mui-focusVisible::after': {
+        content: '""',
+        position: 'absolute',
+        inset: EDGE,
+        borderRadius: `${theme.karnama.radius.md - EDGE}px`,
+        borderStyle: 'solid',
+        borderWidth: FOCUS_RING,
+        borderColor: colour['border/focus'],
+        pointerEvents: 'none',
+      },
+    } as const
+  },
 }
 
 /**
@@ -17,8 +64,8 @@ export interface LanguageSwitchProps {
  * there is already empty space; on mobile the Page Header `155:56` as an
  * optional trailing action, because the tab bar carries the three drawn
  * destinations and a fourth entry would change the design. This component is
- * the control itself. Putting it in those two places belongs to the cards that
- * build them, and neither exists yet.
+ * the control itself; the Sidebar, KN-027, and the Page Header, KN-021, put it
+ * in those two places.
  *
  * Each language names itself in its own language, «فارسی» and English, which is
  * the one case where a label must NOT be translated: a reader who cannot read
@@ -50,7 +97,8 @@ export const LanguageSwitch = ({ placement = 'sidebar' }: LanguageSwitchProps) =
         aria-haspopup="menu"
         aria-controls={anchor ? menuId : undefined}
         aria-expanded={anchor ? true : undefined}
-        sx={{ justifyContent: placement === 'sidebar' ? 'flex-start' : 'center', width: placement === 'sidebar' ? '100%' : 'auto' }}
+        disableRipple={placement === 'sidebar'}
+        sx={placement === 'sidebar' ? sidebarRow.sx : { justifyContent: 'center', width: 'auto' }}
       >
         {locales[locale]}
       </Button>
