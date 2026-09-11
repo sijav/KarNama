@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react'
 import { Box, Radio, RadioGroup } from '@mui/material'
 import { useId } from 'react'
 import { spacing, type as typeScale, type StatusToken } from '../../theme/tokens'
+import { GLYPHS } from '../icon'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface ColorPickerProps {
@@ -92,10 +93,12 @@ const Swatch = ({ token, selected }: { token: StatusToken; selected: boolean }) 
     })}
   >
     {selected ? (
-      // The Icon set's check, node 239:18, until KN-008 ships the set: its
-      // path in the set's 24 grid, drawn at 14 with a two pixel stroke.
+      // The Icon set's check, drawn at the 14 the file gives it here, off the
+      // size scale the Icon takes, so its own path from the set, KN-008.
       <Box component="svg" viewBox="0 0 24 24" sx={{ width: CHECK, height: CHECK, fill: 'none', stroke: 'currentColor' }} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="20 6 9 17 4 12" vectorEffect="non-scaling-stroke" />
+        {GLYPHS.check.stroke.map((d) => (
+          <path key={d} d={d} vectorEffect="non-scaling-stroke" />
+        ))}
       </Box>
     ) : null}
   </Box>

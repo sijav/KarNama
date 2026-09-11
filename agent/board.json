@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 305,
+  "nextId": 307,
   "tasks": [
     {
       "id": "KN-001",
@@ -465,14 +465,14 @@
         "KN-006",
         "KN-007"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:17.569Z"
+      "updatedAt": "2026-09-11T12:08:57.808Z"
     },
     {
       "id": "KN-009",
@@ -1852,7 +1852,24 @@
       ],
       "status": "done",
       "exit": "Every component story that needs data uses the shared fixtures, a Docs page rendering many stories at once seeds without error, the fixtures never appear in the production bundle and a test asserts that, and each fixture set has a long value that exercises truncation in both languages.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-062-round-1.2026-09-11T12-08-48-785Z.md",
+          "filed": [
+            "KN-305",
+            "KN-306"
+          ],
+          "cardDigest": "4848846d437ee26fc5e06bab80452baa8c1464831f67f45ee8af384434d00919",
+          "head": "bccd94a1b646da00b4eba3940339166296758258",
+          "reviewerScore": 2.5,
+          "reviewerCriticals": 3,
+          "dismissed": "Not the findings, which are real and filed, but their severity: the owner's rule of 2026-09-11 files a finding on something built at high or lower, never above a new component, and none of the three is a defect a user meets today. The missing board and the three empty statuses are one card, KN-305, high, since the Card and Board need them next; the bundle proof is KN-306, medium. The score rises from 2.5 because the exit condition's other clauses, the long values, the frozen reads and the story migration, stand.",
+          "at": "2026-09-11T12:11:44.645Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact.",
         "2026-09-10, from KN-010: the Status Chip stories hold record data as literals, the custom-slot names from the legend and a renamed status's name, following the FilterChip precedent. Those belong in shared story fixtures when this card builds them, and KN-214's fix will flag them as literals until then."
@@ -7846,6 +7863,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:04:17.356Z"
+    },
+    {
+      "id": "KN-305",
+      "title": "The story fixtures have no seeded board and no job opportunity in three of the nine statuses",
+      "desc": "CHILD OF KN-062, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-062 roast. KN-062's card promised job opportunities across every status and a seeded board; the fixtures hold jobs in six statuses, none in custom-2, custom-3 or custom-4, and no board, no columns in the board's order holding their jobs. The fixture test only compares the two languages with each other, so it passed the gap.",
+      "why": "The Card has to show its stripe in all nine status colours and the Board a column per status with its cards; without shared data for them each story builds its own board, and the stories drift from each other and from the product's order.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:11:36.223Z"
+    },
+    {
+      "id": "KN-306",
+      "title": "The fixtures' never-bundled test reads source imports, not the production bundle",
+      "desc": "CHILD OF KN-062, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-062 roast. story-fixtures.test.ts scans shipped source for an import specifier naming story-fixtures; an eager import.meta.glob over JSON, a re-export through another module or a path alias in app code would pull the fixtures into the bundle without such a specifier, and the test would still pass.",
+      "why": "KN-062's exit condition says the fixtures never appear in the production bundle and a test asserts it; sample names and contacts shipping to users is the thing it guards, and a source convention is not the bundle.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A check builds the web app for production and asserts that no fixture value, a sentinel only the fixtures hold, appears in the emitted files; a planted import of the fixtures from app code makes it fail.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:11:36.342Z"
     }
   ]
 }

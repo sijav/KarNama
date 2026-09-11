@@ -461,7 +461,9 @@ The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,
 building, calendar, map-pin, briefcase, banknote, clock, log-out, filter, sort,
 alert-circle, user-plus, tag, layers, note. Default colour `text/secondary`,
-overridable per instance.
+overridable per instance. Every icon keeps its two pixel stroke at every size: the file's
+instances resize the drawing and not the stroke, as the Color Picker's 14
+pixel check shows, so the Icon draws a non-scaling stroke, KN-008.
 
 ---
 
