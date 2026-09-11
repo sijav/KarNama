@@ -7588,13 +7588,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A story replaces one error with another on a focused Input, focus kept, and asserts the same alert holds the second error and the field is described by it; KN-286's verifier reads Chromium's accessibility tree after the replacement, the alert holding the second error, in both languages; and KN-286's plan says what is tested and that no check here hears a screen reader.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T06:57:49.127Z",
-      "updatedAt": "2026-09-11T08:31:42.883Z",
-      "verify": "node agent/scripts/verify/KN-298.mjs"
+      "updatedAt": "2026-09-11T08:32:17.629Z",
+      "verify": "node agent/scripts/verify/KN-298.mjs",
+      "evidence": "ErrorAnnouncedWhileTyping's validator has two rules, empty is 'This field cannot be empty' and one character is 'Enter at least two characters', a new catalog message with its Persian, دست‌کم دو نویسه وارد کنید. The play finds the alert empty, clears the focused field and asserts the first error in it, then types one character and asserts, focus kept, that the alert it found is still in the page and still the one the field's alert query returns, holding the second error, the field described by it; a second character clears it, and the helper describes the field again, or nothing for the bare one. node agent/scripts/verify/KN-298.mjs passed: the stories pass with those assertions; the alert keyed on its error, so React mounts a new node for each, fails ErrorAnnouncedWhileTyping by name; KN-286's verifier passes, its Chromium accessibility tree read over the DevTools protocol in a production build showing, in fa-IR and en-US, one alert node throughout by its DOM node id, empty, then the first error, then the second, assertive and atomic, the textbox described by each; and KN-286's plan says what the story and the verifier show and that no check here hears a screen reader. Unit project 424, eslint on the Input and the catalogs, and tsc clean. Not established: what NVDA, JAWS or VoiceOver speak when the error is replaced, which only a person listening can confirm.",
+      "closedAt": "2026-09-11T08:32:17.629Z"
     }
   ]
 }
