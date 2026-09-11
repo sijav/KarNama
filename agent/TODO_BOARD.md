@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 143 of 380 tasks done · 322 of 821 points.
+Project **KarNama** · 144 of 380 tasks done · 323 of 821 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-322` Storybook never loads Vazirmatn, so every story draws its type in the system font** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-322` | Storybook never loads Vazirmatn, so every story draws its type in the system font | high | 1 | web | none | preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text. |
+**Next up: `KN-337` The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel** (high, 1 pt, web)
 
 ## Blocked (4)
 
@@ -260,7 +254,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (143)
+## Done (144)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -393,6 +387,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-311` | An Icon Button's required name is proved on a helper, not on the rendered button, and a blank one throws during render | high | 1 | web | none | Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case. |
 | `KN-314` | A controlled Search Bar still runs a pending search for a value its parent has since replaced | high | 1 | web | none | In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call. |
 | `KN-320` | The Page Header's back control is a 20 by 20 target, under the 24 the product asks of a control | high | 1 | web | none | The back control's target is 24 or more each way while the arrow stays 20 and stays 12 from the title, and the WithBack story measures both. |
+| `KN-322` | Storybook never loads Vazirmatn, so every story draws its type in the system font | high | 1 | web | none | preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -4216,7 +4211,7 @@ CHILD OF KN-021, recorded in prose because board.json cannot express parent_task
 
 ### `KN-322` Storybook never loads Vazirmatn, so every story draws its type in the system font
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 Found while building KN-022. '@fontsource-variable/vazirmatn' is imported only by apps/web/src/main.tsx; .storybook/preview.tsx imports no font, so the published library and the story tests draw Persian and English in whatever system-ui resolves to, Segoe UI on Windows. A text's width, a line break or a hugging component's size in a story is therefore not the design's.

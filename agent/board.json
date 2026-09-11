@@ -8712,12 +8712,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T13:16:02.486Z",
-      "updatedAt": "2026-09-11T19:16:49.145Z"
+      "updatedAt": "2026-09-11T19:22:50.313Z",
+      "evidence": "The preview imports @fontsource-variable/vazirmatn and awaits document.fonts.load for Persian and Latin before each story; Type finds both Vazirmatn faces loaded, then measures the five roles' lines, and fails with the import removed; whole storybook project 255 of 256, the one failure KN-365's Pressed flake; looked at in Persian and English.",
+      "closedAt": "2026-09-11T19:22:50.313Z"
     },
     {
       "id": "KN-323",
