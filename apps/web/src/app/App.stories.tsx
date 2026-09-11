@@ -1,5 +1,6 @@
 import type { StoryObj } from '@storybook/react-vite'
-import { expect, within } from 'storybook/test'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { STORAGE_KEY } from '../core/preferences'
 import { CURRENT } from '../shared/navigation'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { App } from './App'
@@ -32,7 +33,9 @@ export const Persian: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('کارنما')
+    // The page's heading is the Page Header's, the current destination's name,
+    // KN-355.
+    await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('فرصت‌های شغلی من')
     // The navigation is in the shell, the board the current page.
     await expect(canvas.getByRole('button', { name: 'فرصت‌های شغلی من' }).getAttribute('aria-current')).toBe(CURRENT)
     await expect(document.documentElement).toHaveAttribute('dir', 'rtl')
@@ -65,8 +68,40 @@ export const English: Story = {
     // The English catalog is an identity map, so the id IS the rendered text.
     // That is what makes a missing Persian translation render English rather
     // than a key or an empty node.
-    await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('KarNama')
+    await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('My job opportunities')
     await expect(canvas.getByRole('button', { name: 'My job opportunities' }).getAttribute('aria-current')).toBe(CURRENT)
     await expect(document.documentElement).toHaveAttribute('dir', 'ltr')
+  },
+}
+
+// A phone's screen, the file's 390 by 844.
+const PHONE = { width: 390, height: 844 }
+
+export const LanguageOnAPhone: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // At a phone's width the sidebar gives way to the tab bar, and the
+    // language switch is the Page Header's, DESIGN.md section 5, KN-355:
+    // choosing English there turns the page and keeps the choice. The screen
+    // is resized by the runner's own browser, which only the runner has,
+    // KN-225; the story puts the screen and the stored choice back after.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
+    const canvas = within(canvasElement)
+    const before = { width: window.innerWidth, height: window.innerHeight }
+    const stored = window.localStorage.getItem(STORAGE_KEY)
+    try {
+      await page.viewport(PHONE.width, PHONE.height)
+      await waitFor(() => expect(canvasElement.querySelector('aside')).toBeNull())
+      await userEvent.click(canvas.getByRole('button', { name: 'فارسی' }))
+      await userEvent.click(await within(canvasElement.ownerDocument.body).findByRole('menuitem', { name: 'English' }))
+      await waitFor(() => expect(window.document.documentElement).toHaveAttribute('dir', 'ltr'))
+      await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('My job opportunities')
+      await expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '{}')).toMatchObject({ locale: 'en-US' })
+    } finally {
+      await page.viewport(before.width, before.height)
+      if (stored === null) window.localStorage.removeItem(STORAGE_KEY)
+      else window.localStorage.setItem(STORAGE_KEY, stored)
+    }
   },
 }

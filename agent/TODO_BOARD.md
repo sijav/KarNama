@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 150 of 386 tasks done · 329 of 828 points.
+Project **KarNama** · 150 of 387 tasks done · 329 of 829 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-355` Below 900 the shell has no language switch: the sidebar took it and the shell draws no Page Header** (high, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-355` | Below 900 the shell has no language switch: the sidebar took it and the shell draws no Page Header | high | 1 | web | none | At the phone's width the shell shows the Page Header with its language switch, choosing a language there changes it and persists, and a story at 390 finds and uses the switch. |
 
 ## Blocked (4)
 
@@ -24,7 +30,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-355` | Below 900 the shell has no language switch: the sidebar took it and the shell draws no Page Header | high | 1 | web | none | At the phone's width the shell shows the Page Header with its language switch, choosing a language there changes it and persists, and a story at 390 finds and uses the switch. |
 | `KN-361` | The add modal's Controls do not drive it while it is open: step, source and draft are read only on opening | high | 1 | web | none | Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step. |
 | `KN-364` | Saving right after changing the status in the Job Modal's header can send the old status | high | 1 | web | none | Save sends the status last chosen in the header, or none at all, and a story changes the status and saves before the job prop changes, and sees the new status or no status in onSave. |
 | `KN-366` | The lingui gate's no-letter class still exempts three letters: ª, µ and º | high | 1 | web | none | The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary. |
@@ -141,6 +146,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-362` | Reading a posting moves focus to an unnamed box rather than to the status that says what is happening | medium | 1 | web | none | Focus goes to an element named by the loading message, or to the status region itself, and a story reads the focused element's accessible name. |
 | `KN-370` | The Status Chip's direction contract says 'first letter' where dir=auto reads the first strong character, and 'cuts the end' where the ellipsis cuts the line's visual end | medium | 1 | docs | none | DESIGN.md's KN-264 paragraph and the comment in StatusChip.tsx say the first strong directional character decides, a letter or a direction mark, and that the ellipsis cuts the line's visual end, naming what that hides in a mixed-script name; no 'always' is left in either; and a story renders an LRM-led digit name in the Persian interface and finds the chip ltr. |
 | `KN-385` | A role or company of only spaces still draws the Contact Card's blank role line and divider, and the contact prop's docs say role cannot be missing | medium | 1 | web | none | The card trims each part before joining, and the Contact Modal trims role and company when it saves, so a role of ' ' draws no line and no divider, which a story shows; and both languages' docs for the contact prop say role and company may be missing. |
+| `KN-387` | The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text | medium | 1 | web | none | In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -4590,7 +4596,7 @@ CHILD OF KN-060, recorded in prose because board.json cannot express parent_task
 
 ### `KN-355` Below 900 the shell has no language switch: the sidebar took it and the shell draws no Page Header
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-027, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-027 roast. KN-027 moved the placeholder switch out of App.tsx into the sidebar's foot; on a phone the tab bar renders instead, and DESIGN.md section 5 puts the switch in the Page Header, which the shell does not render, so at 390 the language cannot be changed on the live site.
@@ -4939,4 +4945,15 @@ CHILD OF KN-031, recorded in prose because board.json cannot express parent_task
 **Why.** Saving one contact's form into another's record is data loss the user cannot see, and the page that opens this modal will load its record asynchronously.
 
 **Exit condition.** Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it.
+
+### `KN-387` The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-021, recorded in prose because board.json cannot express parent_task yet, KN-188: found while doing KN-355, which put the Page Header, and so this switch, on every phone. LanguageSwitch.tsx gives the sidebar placement its own row styles, no text transform, the body size at the label weight, text/secondary, but the header placement only centres it and lets its width hug, so MUI's Button draws it with theme.typography.button: ENGLISH in capitals, MUI's size and letter spacing. DESIGN.md section 5 places it as the Page Header's optional trailing action and draws no style of its own for it.
+
+**Why.** It is the one control a phone reader in the wrong language looks for, and a word in capitals in MUI's type reads as a stray from another product.
+
+**Exit condition.** In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages.
 

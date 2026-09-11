@@ -1,4 +1,4 @@
-export { CURRENT, DESTINATIONS, type Destination } from './destinations'
+export { CURRENT, DESTINATIONS, useDestinationName, type Destination } from './destinations'
 export { Navigation, type NavigationProps } from './Navigation'
 export { NavItem, type NavItemProps } from './NavItem'
 export { Sidebar, type SidebarProps } from './Sidebar'

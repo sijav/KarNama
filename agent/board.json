@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 387,
+  "nextId": 388,
   "tasks": [
     {
       "id": "KN-001",
@@ -3567,8 +3567,11 @@
       "status": "backlog",
       "exit": "The switch renders at the bottom of the sidebar on desktop and as a Page Header trailing action on mobile, App.tsx contains no language control, and an e2e test finds it in both places at the two drawn viewports.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-08T00:45:32.559Z"
+      "notes": [
+        "2026-09-11: the switch is now in the drawn chrome both ways: KN-027 put it at the sidebar's foot and KN-355 made the shell draw the Page Header, whose switch shows below 900. Check this card's exit against that and close it if it holds."
+      ],
+      "createdAt": "2026-09-08T00:45:32.559Z",
+      "updatedAt": "2026-09-11T19:56:10.682Z"
     },
     {
       "id": "KN-117",
@@ -9319,11 +9322,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "At the phone's width the shell shows the Page Header with its language switch, choosing a language there changes it and persists, and a story at 390 finds and uses the switch.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T16:35:53.189Z"
+      "createdAt": "2026-09-11T16:35:53.189Z",
+      "updatedAt": "2026-09-11T19:51:30.682Z"
     },
     {
       "id": "KN-356",
@@ -9801,6 +9805,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T19:47:08.930Z"
+    },
+    {
+      "id": "KN-387",
+      "title": "The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text",
+      "desc": "CHILD OF KN-021, recorded in prose because board.json cannot express parent_task yet, KN-188: found while doing KN-355, which put the Page Header, and so this switch, on every phone. LanguageSwitch.tsx gives the sidebar placement its own row styles, no text transform, the body size at the label weight, text/secondary, but the header placement only centres it and lets its width hug, so MUI's Button draws it with theme.typography.button: ENGLISH in capitals, MUI's size and letter spacing. DESIGN.md section 5 places it as the Page Header's optional trailing action and draws no style of its own for it.",
+      "why": "It is the one control a phone reader in the wrong language looks for, and a word in capitals in MUI's type reads as a stray from another product.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T19:56:24.666Z"
     }
   ]
 }

@@ -24,3 +24,10 @@ setting most users will actually be on.
 
 English, left-to-right. Strings are longer here and the direction flips, so this
 is where a layout bug shows.
+
+### LanguageOnAPhone
+
+At a phone's width the sidebar gives way to the tab bar, and the language switch
+is in the page's header: choosing English there turns the page and keeps the
+choice. The story resizes the screen when it runs as a test; in Storybook
+itself, narrow the window and use the switch yourself.
