@@ -7537,7 +7537,20 @@
       "parent": [],
       "status": "done",
       "exit": "A focused Checkbox inside a host that clips its overflow flush at the Checkbox's own box still changes at least a two-pixel perimeter at 3:1, drawn inside that box or with the room kept by the Checkbox itself; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 9.1,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-293-round-1.2026-09-11T10-56-36-388Z.md",
+          "filed": [],
+          "cardDigest": "d5508839e065f764a33db3ce320478f979e4d26f3fe548439ca11487792fdef0",
+          "head": "f757675c911762e1f1f760e355dc1d5b4549468a",
+          "reviewerScore": 9.1,
+          "reviewerCriticals": 0,
+          "at": "2026-09-11T11:00:25.064Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T19:28:42.674Z",
       "updatedAt": "2026-09-11T10:56:07.110Z",
@@ -7554,11 +7567,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A focused Filter Chip inside a host that clips its overflow flush at the chip's box still changes at least a two-pixel perimeter at 3:1, drawn inside the chip or with the room kept by the chip itself, selected and not; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T19:28:42.827Z"
+      "createdAt": "2026-09-10T19:28:42.827Z",
+      "updatedAt": "2026-09-11T10:56:49.031Z"
     },
     {
       "id": "KN-295",

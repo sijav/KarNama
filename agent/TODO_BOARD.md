@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-294` The Filter Chip's focus ring sits four pixels outside the chip, so a scrolling row of chips clips it at its edges** (critical, 2 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-294` | The Filter Chip's focus ring sits four pixels outside the chip, so a scrolling row of chips clips it at its edges | critical | 2 | web | none | A focused Filter Chip inside a host that clips its overflow flush at the chip's box still changes at least a two-pixel perimeter at 3:1, drawn inside the chip or with the room kept by the chip itself, selected and not; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which. |
+
 ## Blocked (2)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -17,7 +23,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (186)
+## Backlog (185)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -26,7 +32,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | critical | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
-| `KN-294` | The Filter Chip's focus ring sits four pixels outside the chip, so a scrolling row of chips clips it at its edges | critical | 2 | web | none | A focused Filter Chip inside a host that clips its overflow flush at the chip's box still changes at least a two-pixel perimeter at 3:1, drawn inside the chip or with the room kept by the chip itself, selected and not; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which. |
 | `KN-295` | KN-274's story measures the focus change from a model: rounded bands counted as rectangles, and transforms and filters not read | critical | 2 | web | none | FocusedWhileInvalid's area accounts for the rounded corners, from the exact quarter-ring areas of the edge's radius and the ring's or from a rendered reading, and still clears 4W + 4H; focusExtent requires what it does not model, transform, filter, clip-path and mask, to be none on the field, both pseudo-elements and the input, and counts the input's own outline; a transform and a filter on the ::after each fail FocusedWhileInvalid by name; the verifier also reads the rendered change on a field 80 wide or less, in light and dark, clearing 4W + 4H with nothing changed outside; and DESIGN.md's arithmetic states the corners' loss and the width above which the change clears the perimeter. |
 | `KN-296` | An Input icon given as an array, a fragment or a component that renders only blank text still draws an empty slot | critical | 2 | web | none | An Input whose icon renders only blank text, through an array, a fragment or a component, draws no slot that takes room and its text box sits 16 from that edge, decided from what the slot rendered rather than from the prop; IconsTurnedOff covers an array of a space, a fragment holding a zero-width space and a component returning a space, each asserting a slot that takes no room; a mutation removing the rendered check fails it by name; and the comment on drawn() says nothing to read, with the lone-mark case named as deliberate. |
 | `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
@@ -3749,9 +3754,11 @@ CHILD OF KN-013, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** A focused Checkbox inside a host that clips its overflow flush at the Checkbox's own box still changes at least a two-pixel perimeter at 3:1, drawn inside that box or with the room kept by the Checkbox itself; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which.
 
+**Roasts.** round 1 scored 9.1 with 0 critical(s)
+
 ### `KN-294` The Filter Chip's focus ring sits four pixels outside the chip, so a scrolling row of chips clips it at its edges
 
-- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-017, recorded in prose because board.json cannot express parent_task yet, KN-188: found while doing KN-274, which moves the Input's ring inside the field for the same reason. The Filter Chip draws focus as an outline, two pixels of border/focus at an offset of two, on the button itself, so every pixel of the ring lies two to four pixels outside the chip. A row of chips that scrolls sideways, overflow auto, clips in both directions, and with no padding it removes the ring from the first and last chips at the row's ends and from every chip's top and bottom.
