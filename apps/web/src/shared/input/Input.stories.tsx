@@ -1,8 +1,8 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
-import { useEffect, useState, type ChangeEvent } from 'react'
-import { useArgs, useRef } from 'storybook/preview-api'
+import { useEffect, useRef, useState, type ChangeEvent } from 'react'
+import { useArgs, useRef as useStoryRef } from 'storybook/preview-api'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18n } from '../../i18n'
 import { contrast } from '../../theme/darkMode'
@@ -85,36 +85,58 @@ const FollowTheLanguage = ({ pending, write }: { pending: boolean; write: () => 
   return null
 }
 
-// What the bound field holds: the value it shows, the values it has sent to
-// the args and not yet seen come back, and the arg it last saw.
+// The args the meta's render takes: the Input's props, and the revision the
+// bound field writes with each of its values, KN-280. Story plumbing rather
+// than a prop: it never reaches the Input, and no control shows it.
+type BoundArgs = InputProps & { revision?: number }
+
+// A value the bound field sent to the args, and the revision it sent it at.
+interface Sent {
+  revision: number
+  value: string
+}
+
+// What the bound field holds: the value it shows, what it has sent to the
+// args and not yet seen come back, and the value and revision it last saw.
 interface Held {
   value: string | undefined
-  sent: string[]
-  seen: string | undefined
+  sent: Sent[]
+  seen: { value: string | undefined; revision: number | undefined }
 }
 
 // The field the meta's render draws. While a value is bound in the args it
 // holds its own copy: an edit shows the moment it is made and then goes to
 // the args, which come back through Storybook's channel; waiting for them
-// lost keys typed faster than that, KN-253. It remembers what it sent, so an
-// arg that comes back is an echo and changes nothing, however late, and one
-// it never sent was set in Controls and is taken. The channel may skip
-// echoes and deliver only the newest, which the same rule handles. The one
-// value it cannot tell apart is one set in Controls while its own edits are
-// still in flight and equal to one of them: that is taken as their echo.
-const Bound = ({ args, updateArgs }: { args: InputProps; updateArgs: (update: Partial<InputProps>) => void }) => {
-  const [held, setHeld] = useState<Held>({ value: args.value, sent: [], seen: args.value })
+// lost keys typed faster than that, KN-253. Each write carries a revision, so
+// an arg that comes back at a revision this field sent, with the value it sent
+// there, is an echo and changes nothing, however late; anything else was set
+// elsewhere, in Controls or by a reset, and is taken. Storybook renders with
+// whatever the store holds by then, so a render can skip echoes, or bring a
+// Controls value equal to an edit still in flight: that arrives at the
+// revision of the field's last write, with a value that is not the one sent
+// there, and is taken, KN-280. One Bound per story, so one stream of revisions.
+const Bound = ({ args: given, updateArgs }: { args: BoundArgs; updateArgs: (update: Partial<BoundArgs>) => void }) => {
+  // The revision is taken out here, so the Input never sees it.
+  const { revision, ...args } = given
+  const [held, setHeld] = useState<Held>({ value: args.value, sent: [], seen: { value: args.value, revision } })
+  // The last revision this field wrote, counting on from the store's, so a
+  // remount, a reset or a revision in the address bar never makes a write
+  // reuse one. Read and written only in the handler.
+  const counter = useRef(revision ?? 0)
   // React's pattern for state that follows a prop: adjusted during render
-  // when the arg changes, not in an effect.
-  if (args.value !== held.seen) {
-    const at = args.value === undefined ? -1 : held.sent.indexOf(args.value)
-    setHeld(at === -1 ? { value: args.value, sent: [], seen: args.value } : { value: held.value, sent: held.sent.slice(at + 1), seen: args.value })
+  // when the arg changes, its value or its revision, not in an effect.
+  if (args.value !== held.seen.value || revision !== held.seen.revision) {
+    const seen = { value: args.value, revision }
+    const echo = revision !== undefined && held.sent.some((sent) => sent.revision === revision && sent.value === args.value)
+    setHeld(echo ? { value: held.value, sent: held.sent.filter((sent) => sent.revision > revision), seen } : { value: args.value, sent: [], seen })
   }
   const bound = args.value !== undefined
   const onChange = (value: string, event: ChangeEvent<HTMLInputElement>) => {
     if (bound) {
-      setHeld((current) => ({ ...current, value, sent: [...current.sent, value] }))
-      updateArgs({ value })
+      const at = Math.max(counter.current, revision ?? 0) + 1
+      counter.current = at
+      setHeld((current) => ({ ...current, value, sent: [...current.sent, { revision: at, value }] }))
+      updateArgs({ value, revision: at })
     }
     args.onChange?.(value, event)
   }
@@ -157,8 +179,11 @@ const meta = {
   title: 'Shared/Input',
   component: Input,
   // The specimen's copy is IN the args, so the Controls show it, and the
-  // render keeps it in the language on screen, KN-245.
-  args: { ...AT_LOAD, onChange: fn() },
+  // render keeps it in the language on screen, KN-245. And the revision the
+  // bound field writes with each value, a number from 0, in no table and no
+  // control, KN-280.
+  args: { ...AT_LOAD, onChange: fn(), revision: 0 },
+  argTypes: { revision: { type: { name: 'number' }, table: { disable: true } } },
   // Keyed on defaultValue: the field is uncontrolled, and React reads a
   // default only when the field mounts, so a new one needs a new field or the
   // Controls panel changes nothing, KN-246. And on whether value is set: one
@@ -177,11 +202,11 @@ const meta = {
   // it is, an emptied one included. A typed value equal to what the story
   // put there cannot be told apart from it, and follows the language too.
   render: function Render(args) {
-    const [, updateArgs] = useArgs<InputProps>()
+    const [, updateArgs] = useArgs<BoundArgs>()
     // What this story last wrote into each copy field. Storybook's ref, kept
     // with the story's hooks rather than React's, so it outlives the remount a
     // language switch causes.
-    const written = useRef<Record<CopyField, string>>({ ...AT_LOAD })
+    const written = useStoryRef<Record<CopyField, string>>({ ...AT_LOAD })
     // In the language on screen: the providers activate it before this runs,
     // and a switch remounts the tree, so this reads it fresh.
     const copy = specimenCopy()
@@ -206,7 +231,7 @@ const meta = {
       </>
     )
   },
-} satisfies StoryMeta<typeof Input>
+} satisfies StoryMeta<BoundArgs>
 
 export default meta
 type Story = StoryObj<typeof meta>

@@ -15,9 +15,9 @@
 // the field must see the native composition events for it, compositionstart,
 // an update per step with composing input events, and compositionend, so the
 // check is of a composition and not only of its final text. The field is
-// bound by Storybook's URL args. A value set in Controls is taken unless it
-// equals one of the field's own edits still in flight, the one exception the
-// story names; the Controls check sets one the field never sent.
+// bound by Storybook's URL args. A value set in Controls is taken; this
+// check sets one the field never sent, and KN-280's sets one equal to an edit
+// still in flight, which a revision carried with each write now tells apart.
 //
 // NOT read-only: it edits Input.stories.tsx for its mutation and restores it
 // in a finally. The builds go to the system temp directory and are removed.

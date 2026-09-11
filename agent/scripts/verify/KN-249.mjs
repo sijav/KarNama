@@ -29,7 +29,8 @@ const WEB = join(ROOT, 'apps', 'web')
 const STORIES = join(WEB, 'src', 'shared', 'input', 'Input.stories.tsx')
 const { chromium } = createRequire(join(WEB, 'package.json'))('playwright')
 
-const BINDING = '      updateArgs({ value })\n'
+// The write carries a revision since KN-280.
+const BINDING = '      updateArgs({ value, revision: at })\n'
 const SET = 'x7'
 const TYPED = '42'
 
