@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 137 of 369 tasks done · 316 of 809 points.
+Project **KarNama** · 137 of 372 tasks done · 316 of 812 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -19,7 +19,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (226)
+## Backlog (229)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -149,6 +149,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-358` | The phone's add form reads title before company, where 243:726 draws the company first | medium | 1 | design | none | The owner has chosen one order for the phone's form, DESIGN.md records it, and the form follows it at 390. |
 | `KN-359` | The add modal's Paste step is 398 tall where the file draws 401: its label keeps the Input's 16 | medium | 1 | web | none | Paste, PasteFilled and Error measure the file's 401, 401 and 423 with the label on its 19, and the Input's own label stays 16 everywhere else. |
 | `KN-362` | Reading a posting moves focus to an unnamed box rather than to the status that says what is happening | medium | 1 | web | none | Focus goes to an element named by the loading message, or to the status region itself, and a story reads the focused element's accessible name. |
+| `KN-370` | The Status Chip's direction contract says 'first letter' where dir=auto reads the first strong character, and 'cuts the end' where the ellipsis cuts the line's visual end | medium | 1 | docs | none | DESIGN.md's KN-264 paragraph and the comment in StatusChip.tsx say the first strong directional character decides, a letter or a direction mark, and that the ellipsis cuts the line's visual end, naming what that hides in a mixed-script name; no 'always' is left in either; and a story renders an LRM-led digit name in the Persian interface and finds the chip ltr. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -222,6 +223,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-357` | The Select logs a React warning on every render: MUI's notched reaches the DOM through its bare InputBase | low | 1 | web | none | No story drawing a Select logs the notched warning, and the Select's look and behaviour are unchanged. |
 | `KN-360` | The add modal saves whatever status id it is given, an empty one included | low | 1 | web | none | Saving with a status that is not one of the offered statuses falls back to the first, or refuses, and a story shows it. |
 | `KN-368` | The KN-003 verifier finds the four word fixtures but does not require them by name | low | 1 | agent | none | The verifier requires the four word fixtures and the two as-const fixtures by name. |
+| `KN-371` | LatinLedInPersian proves the Status Chip overflows, not which part of the name stays in view | low | 1 | web | none | LatinLedInPersian asserts the label's text-overflow is ellipsis and, by the rectangles of a Range over the name's first and last characters, that the leading Latin word lies inside the label's box and the overflow falls past its right edge. |
+| `KN-372` | NoLettersFollowsThePage shows the page fallback in the English interface only, and DESIGN.md's emoji claim has no fixture | low | 1 | web | none | The digit-only name renders rtl in the Persian interface and ltr in the English one, each with the document's direction asserted, and an emoji-only fixture is rendered in both, or the emoji clause leaves DESIGN.md. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -3511,6 +3514,8 @@ CHILD OF KN-010, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'.
 
+**Roasts.** round 1 scored 5 with 0 critical(s)
+
 ### `KN-265` Employment type becomes eight values, and a job can hold more than one
 
 - **status** backlog · **severity** high · **points** 3 · **area** api
@@ -4711,4 +4716,37 @@ CHILD OF KN-260, recorded in prose because board.json cannot express parent_task
 **Why.** A second reset that is worse than the first, and a check that cannot tell them apart, is debt that looks like a fix.
 
 **Exit condition.** parkPointer and its command are gone, the suite relies on Storybook's resetMousePosition, DESIGN or TECH-DEBT says so where the next person would look, and the Input's pair of stories is kept only if it asserts something the reset decides.
+
+### `KN-370` The Status Chip's direction contract says 'first letter' where dir=auto reads the first strong character, and 'cuts the end' where the ellipsis cuts the line's visual end
+
+- **status** backlog · **severity** medium · **points** 1 · **area** docs
+- **blocked by** none
+
+CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-264 roast and confirmed against the HTML standard's dir attribute, which resolves auto from the first character of bidi class L, AL or R and otherwise falls back to the parent. A direction mark is such a character and no letter: an LRM before digits resolves ltr in the Persian interface, an RLM before digits rtl in the English one, so DESIGN.md's 'the first letter decides' and 'a name with no letter follows the page' are both inexact. And text-overflow cuts the line's visual end: in an ltr chip holding 'Google Recruiting' and a Persian run, the run is drawn right to left, so what the ellipsis hides is the run's start, not the name's logical end. StatusChip.tsx still says the ellipsis 'always' cuts the END, the word KN-264 removed from DESIGN.md.
+
+**Why.** KN-264 existed to make the design contract exactly as strong as the code, and the sentence it wrote is still stronger than the code in two places; the next person to build on it, the kanban header or the card's chip, reads the contract, not the standard.
+
+**Exit condition.** DESIGN.md's KN-264 paragraph and the comment in StatusChip.tsx say the first strong directional character decides, a letter or a direction mark, and that the ellipsis cuts the line's visual end, naming what that hides in a mixed-script name; no 'always' is left in either; and a story renders an LRM-led digit name in the Persian interface and finds the chip ltr.
+
+### `KN-371` LatinLedInPersian proves the Status Chip overflows, not which part of the name stays in view
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-264 roast. The story asserts the chip is ltr and that the name's scrollWidth exceeds its clientWidth; it never asserts the ellipsis, which only LongName checks on the same label, nor where the cut falls. With a Latin word leading a Persian run, the visible part is the Latin start and the run's logical end, and nothing in the story looks at either.
+
+**Why.** The case dir=auto is there for is the one a Persian user actually types, and a story that cannot tell a cut at the start from a cut at the end proves the direction, not the reading.
+
+**Exit condition.** LatinLedInPersian asserts the label's text-overflow is ellipsis and, by the rectangles of a Range over the name's first and last characters, that the leading Latin word lies inside the label's box and the overflow falls past its right edge.
+
+### `KN-372` NoLettersFollowsThePage shows the page fallback in the English interface only, and DESIGN.md's emoji claim has no fixture
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-264 roast. The story renders the digit-only name in the English page and asserts ltr, the direction the chip would inherit with or without dir=auto; no story shows the same name taking rtl in the Persian page. DESIGN.md says 'digits or emoji alone' follow the page, and the fixtures hold no emoji-only name.
+
+**Why.** A fallback shown in one direction is the fallback's easy half, and a claim in the contract with no fixture behind it is the kind KN-264 was filed to remove.
+
+**Exit condition.** The digit-only name renders rtl in the Persian interface and ltr in the English one, each with the document's direction asserted, and an emoji-only fixture is rendered in both, or the emoji clause leaves DESIGN.md.
 

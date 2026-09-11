@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 370,
+  "nextId": 373,
   "tasks": [
     {
       "id": "KN-001",
@@ -7236,7 +7236,25 @@
       ],
       "status": "done",
       "exit": "With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-264-round-1.2026-09-11T18-14-07-680Z.md",
+          "filed": [
+            "KN-370",
+            "KN-371",
+            "KN-372"
+          ],
+          "cardDigest": "af7c87317c3e5418699c577a8a8db99fc51dda3b458135ca001a7f02c84b9c3f",
+          "head": "12ef6d57620a5b40ec2f531524703ad450f9b16f",
+          "reviewerScore": 2.5,
+          "reviewerCriticals": 2,
+          "dismissed": "The plan beside the work is RALPH step 2b's rule, not misplaced documentation. Finding 1's clip regression fails LongName, which asserts the ellipsis on the same label, so what survives is where the cut falls, KN-371, low. Its two criticals are a sentence and a test gap on a built component, which the owner's rule of 2026-09-11 files at high or lower: KN-370 medium, KN-371 low.",
+          "at": "2026-09-11T18:23:08.218Z"
+        }
+      ],
       "notes": [
         "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
       ],
@@ -9301,8 +9319,56 @@
       "status": "backlog",
       "exit": "parkPointer and its command are gone, the suite relies on Storybook's resetMousePosition, DESIGN or TECH-DEBT says so where the next person would look, and the Input's pair of stories is kept only if it asserts something the reset decides.",
       "roasts": [],
+      "notes": [
+        "CHILD OF KN-011, not KN-260: KN-260 is itself KN-011's child, and a finding is filed one level only, RALPH step 6."
+      ],
+      "createdAt": "2026-09-11T18:15:28.417Z",
+      "updatedAt": "2026-09-11T18:23:08.364Z"
+    },
+    {
+      "id": "KN-370",
+      "title": "The Status Chip's direction contract says 'first letter' where dir=auto reads the first strong character, and 'cuts the end' where the ellipsis cuts the line's visual end",
+      "desc": "CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-264 roast and confirmed against the HTML standard's dir attribute, which resolves auto from the first character of bidi class L, AL or R and otherwise falls back to the parent. A direction mark is such a character and no letter: an LRM before digits resolves ltr in the Persian interface, an RLM before digits rtl in the English one, so DESIGN.md's 'the first letter decides' and 'a name with no letter follows the page' are both inexact. And text-overflow cuts the line's visual end: in an ltr chip holding 'Google Recruiting' and a Persian run, the run is drawn right to left, so what the ellipsis hides is the run's start, not the name's logical end. StatusChip.tsx still says the ellipsis 'always' cuts the END, the word KN-264 removed from DESIGN.md.",
+      "why": "KN-264 existed to make the design contract exactly as strong as the code, and the sentence it wrote is still stronger than the code in two places; the next person to build on it, the kanban header or the card's chip, reads the contract, not the standard.",
+      "severity": "medium",
+      "points": 1,
+      "area": "docs",
+      "parent": [],
+      "status": "backlog",
+      "exit": "DESIGN.md's KN-264 paragraph and the comment in StatusChip.tsx say the first strong directional character decides, a letter or a direction mark, and that the ellipsis cuts the line's visual end, naming what that hides in a mixed-script name; no 'always' is left in either; and a story renders an LRM-led digit name in the Persian interface and finds the chip ltr.",
+      "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T18:15:28.417Z"
+      "createdAt": "2026-09-11T18:22:46.251Z"
+    },
+    {
+      "id": "KN-371",
+      "title": "LatinLedInPersian proves the Status Chip overflows, not which part of the name stays in view",
+      "desc": "CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-264 roast. The story asserts the chip is ltr and that the name's scrollWidth exceeds its clientWidth; it never asserts the ellipsis, which only LongName checks on the same label, nor where the cut falls. With a Latin word leading a Persian run, the visible part is the Latin start and the run's logical end, and nothing in the story looks at either.",
+      "why": "The case dir=auto is there for is the one a Persian user actually types, and a story that cannot tell a cut at the start from a cut at the end proves the direction, not the reading.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "LatinLedInPersian asserts the label's text-overflow is ellipsis and, by the rectangles of a Range over the name's first and last characters, that the leading Latin word lies inside the label's box and the overflow falls past its right edge.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T18:23:00.867Z"
+    },
+    {
+      "id": "KN-372",
+      "title": "NoLettersFollowsThePage shows the page fallback in the English interface only, and DESIGN.md's emoji claim has no fixture",
+      "desc": "CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-264 roast. The story renders the digit-only name in the English page and asserts ltr, the direction the chip would inherit with or without dir=auto; no story shows the same name taking rtl in the Persian page. DESIGN.md says 'digits or emoji alone' follow the page, and the fixtures hold no emoji-only name.",
+      "why": "A fallback shown in one direction is the fallback's easy half, and a claim in the contract with no fixture behind it is the kind KN-264 was filed to remove.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The digit-only name renders rtl in the Persian interface and ltr in the English one, each with the document's direction asserted, and an emoji-only fixture is rendered in both, or the emoji clause leaves DESIGN.md.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T18:23:01.015Z"
     }
   ]
 }
