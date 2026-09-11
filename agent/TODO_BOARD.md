@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 143 of 379 tasks done · 322 of 819 points.
+Project **KarNama** · 143 of 380 tasks done · 322 of 821 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -19,7 +19,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (230)
+## Backlog (231)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -163,6 +163,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-175` | Verifiers that need a scratch directory cannot run in the read-only review sandbox | medium | 2 | agent | none | The repository states, in AGENTS.md or RALPH.md, whether a verifier may require a writable scratch directory; verifiers that do are either made runnable in the review environment or carry a machine-readable marker saying they cannot be, and the roast prompt tells the reviewer which; and no future roast can raise this as a novel finding. |
 | `KN-306` | The fixtures' never-bundled test reads source imports, not the production bundle | medium | 2 | web | none | A check builds the web app for production and asserts that no fixture value, a sentinel only the fixtures hold, appears in the emitted files; a planted import of the fixtures from app code makes it fail. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | medium | 2 | web | none | The full storybook project passes three runs in a row, either with pointer-driven story files run alone or with each such story moving the pointer to its own target before it asserts, and the reason is written where the choice is made. |
+| `KN-380` | The Search Bar decides whether to search by comparing typed text with shown text, which a normalising, restoring or clear-ignoring parent defeats | medium | 2 | web | none | Stories, each failing on KN-314's code: a parent ignoring the clear gets no search and no late one; a parent lowercasing input gets one search for the lowercased text; a parent restoring a reset value gets none; and the Search Bar's existing stories still pass. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -4127,6 +4128,8 @@ CHILD OF KN-016, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call.
 
+**Roasts.** round 1 scored 5 with 0 critical(s)
+
 ### `KN-315` The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one
 
 - **status** backlog · **severity** high · **points** 2 · **area** web
@@ -4841,4 +4844,15 @@ CHILD OF KN-014, recorded in prose because board.json cannot express parent_task
 **Why.** A story that passes under the runner and can fail in the Storybook a reviewer opens teaches them to distrust the panel.
 
 **Exit condition.** BlankName waits for the report with waitFor before asserting it, and passes in the published Storybook's interaction panel as well as under Vitest.
+
+### `KN-380` The Search Bar decides whether to search by comparing typed text with shown text, which a normalising, restoring or clear-ignoring parent defeats
+
+- **status** backlog · **severity** medium · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-016, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-314 roast, four findings of one cause, filed as one card because one change answers all four. KN-314 starts the search only when the shown text equals the last typed text. (1) A parent that takes typing but ignores onChange(''): Clear calls onSearch('') at once though the field still shows 'foo', and the pending 'foo' search, no longer cleared by clear(), fires later. (2) A parent that normalises, 'F' shown as 'f', never gets a search, which the old code did give. (3) A parent that resets to '' and later restores 'foo' with no keystroke starts a search the user did not make. (4) The latest-onSearch ref is written in a passive effect, so a timer due between a commit and that effect can call the previous callback. The fix: judge each user change, typed or cleared, by its own commit, recording the text shown before it and a count that always re-renders, and search what the field then shows if it changed, at once for a clear, after the pause for typing; any other change to the text only cancels. Write the ref in a layout effect.
+
+**Why.** KN-314's invariant, a search only for text the field showed and never for a change the user did not make, holds for a parent that stores the value as typed and fails for the other parents a controlled bar exists to serve.
+
+**Exit condition.** Stories, each failing on KN-314's code: a parent ignoring the clear gets no search and no late one; a parent lowercasing input gets one search for the lowercased text; a parent restoring a reset value gets none; and the Search Bar's existing stories still pass.
 

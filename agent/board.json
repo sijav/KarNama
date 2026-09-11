@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 380,
+  "nextId": 381,
   "tasks": [
     {
       "id": "KN-001",
@@ -8555,7 +8555,23 @@
       "parent": [],
       "status": "done",
       "exit": "In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-314-round-1.2026-09-11T19-11-23-487Z.md",
+          "filed": [
+            "KN-380"
+          ],
+          "cardDigest": "2e1c103e06a0722fa5026aaac0309aba031ebe368beeff6885292734ff525fa2",
+          "head": "a865d2bfbd8757c3a5d0bfeeccb9ff84d149e86f",
+          "reviewerScore": 3,
+          "reviewerCriticals": 2,
+          "dismissed": "No finding is dismissed; the numbers are kinder because the owner's rule of 2026-09-11 files a finding on a built component at high or lower, and no parent in the product normalises, restores or ignores a clear today. Its four findings share one cause, the typed-versus-shown comparison, and one fix, so they are filed as one medium card, KN-380, with a clause and a story each.",
+          "at": "2026-09-11T19:16:38.886Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T12:47:18.390Z",
       "updatedAt": "2026-09-11T19:11:07.779Z",
@@ -9562,6 +9578,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T19:09:37.531Z"
+    },
+    {
+      "id": "KN-380",
+      "title": "The Search Bar decides whether to search by comparing typed text with shown text, which a normalising, restoring or clear-ignoring parent defeats",
+      "desc": "CHILD OF KN-016, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-314 roast, four findings of one cause, filed as one card because one change answers all four. KN-314 starts the search only when the shown text equals the last typed text. (1) A parent that takes typing but ignores onChange(''): Clear calls onSearch('') at once though the field still shows 'foo', and the pending 'foo' search, no longer cleared by clear(), fires later. (2) A parent that normalises, 'F' shown as 'f', never gets a search, which the old code did give. (3) A parent that resets to '' and later restores 'foo' with no keystroke starts a search the user did not make. (4) The latest-onSearch ref is written in a passive effect, so a timer due between a commit and that effect can call the previous callback. The fix: judge each user change, typed or cleared, by its own commit, recording the text shown before it and a count that always re-renders, and search what the field then shows if it changed, at once for a clear, after the pause for typing; any other change to the text only cancels. Write the ref in a layout effect.",
+      "why": "KN-314's invariant, a search only for text the field showed and never for a change the user did not make, holds for a parent that stores the value as typed and fails for the other parents a controlled bar exists to serve.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Stories, each failing on KN-314's code: a parent ignoring the clear gets no search and no late one; a parent lowercasing input gets one search for the lowercased text; a parent restoring a reset value gets none; and the Search Bar's existing stories still pass.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T19:16:29.621Z"
     }
   ]
 }
