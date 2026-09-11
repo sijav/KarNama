@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 341,
+  "nextId": 344,
   "tasks": [
     {
       "id": "KN-001",
@@ -1202,7 +1202,25 @@
       ],
       "status": "done",
       "exit": "Both layouts and all three states match Figma, every field the design draws is present, long values truncate rather than reflow the card, and email and phone are actionable links. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the name, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "agent/roasts/KN-026-round-1.2026-09-11T15-00-43-858Z.md",
+          "filed": [
+            "KN-341",
+            "KN-342",
+            "KN-343"
+          ],
+          "cardDigest": "992aa0d678405a55cbf2d2c193c5d4ce54cf6735420b3073866099525611313a",
+          "head": "694e640b26a548630847a23d1b67f64f08a2a0b8",
+          "reviewerScore": 3,
+          "reviewerCriticals": 4,
+          "dismissed": "Three criticals are filed at high, high and medium under the owner's rule of 2026-09-11. The fourth, the missing mutation proof, is dismissed: the owner's rule of 2026-09-11 removed per-task mutation and verifier proofs from the close, after the exit was written. The minor about i18n._ is dismissed: hand-written catalogs read through i18n._ are the codebase's practice. The score rises from 3.0 because the roast confirms the overlay, the dir and the phone order, and the exact 28 and 30.",
+          "at": "2026-09-11T15:05:28.895Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact.",
         "2026-09-11, KN-293: the Checkbox's root is 28 by 28, four of room round its 20 by 20 frame for the focus ring. The file's Title Group clips, so the room given back with a negative margin lies outside it: DESIGN.md's 'What a host owes it' says the group must not clip, and this exit condition now asks the story to prove it on the real group."
@@ -1251,14 +1269,14 @@
         "KN-009",
         "KN-014"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Both modals match Figma, focus is trapped and returns to the trigger on close, Escape closes, the backdrop click behaviour matches the design, and the dialog has an accessible name and is announced as a dialog.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:19.278Z"
+      "updatedAt": "2026-09-11T15:00:52.426Z"
     },
     {
       "id": "KN-029",
@@ -8638,6 +8656,51 @@
       ],
       "createdAt": "2026-09-11T14:54:20.307Z",
       "updatedAt": "2026-09-11T14:58:16.875Z"
+    },
+    {
+      "id": "KN-341",
+      "title": "The full Contact Card's checkbox is reached only by Shift+Tab, after the name",
+      "desc": "CHILD OF KN-026, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-026 roast. The checkbox and delete are display none until the card is hovered, holds focus, or is selected, so Tab from before the card lands on the name first; that reveals the checkbox, which sits before the name, so only Shift+Tab reaches it, and Tab goes on to the delete.",
+      "why": "A keyboard user should meet the card's controls in the order they are drawn, the checkbox first, without going backwards.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Tab from before the card reaches the checkbox, then the name, then the delete, in that order, with the row still keeping its 30 and the name still moving by 28, and a story tabs through them.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T15:05:28.397Z"
+    },
+    {
+      "id": "KN-342",
+      "title": "A contact with no role draws an empty role line and its divider",
+      "desc": "CHILD OF KN-026, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-026 roast. The card types role as a string and joins it with the company, so a contact the database allows with neither, name only, renders an empty 22 line and the divider under it instead of leaving them out.",
+      "why": "The owner allowed a contact with only a name, KN-071, and an empty line reads as a missing value.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Role is optional in the card's type, the role line and its divider are left out when there is neither role nor company, and a story shows a name-only contact.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T15:05:28.554Z"
+    },
+    {
+      "id": "KN-343",
+      "title": "The compact Contact Card's mail is a button that assigns a location, not a mailto link",
+      "desc": "CHILD OF KN-026, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-026 roast. The compact layout's mail Icon Button calls window.location.assign with a mailto address, since the Icon Button takes no href, so it is announced as a button, cannot be opened in a new window or copied as a link, and its handler runs in no story.",
+      "why": "The exit asks that email be an actionable link, and a link is what a screen reader and a browser treat as one.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The compact mail is an anchor with a mailto href styled as the Icon Button, and a story reads its href.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T15:05:28.708Z"
     }
   ]
 }
