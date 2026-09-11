@@ -1,20 +1,10 @@
-import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useLingui } from '@lingui/react'
+import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { JobDraft } from '../../shared/add-job'
 import type { JobSaved } from '../../shared/job-modal'
 import type { StatusOption } from '../../shared/status-picker'
 import type { StatusToken } from '../../theme/tokens'
-import {
-  emptyRecords,
-  jobFrom,
-  newId,
-  nextCustomToken,
-  readRecords,
-  withSaved,
-  withStatus,
-  type JobEntry,
-  type Records,
-} from './records'
+import { emptyRecords, jobFrom, newId, nextCustomToken, readRecords, withSaved, withStatus, type JobEntry, type Records } from './records'
 
 /** Where the board is kept between visits, beside the preferences. */
 export const STORAGE_KEY = 'karnama.records'

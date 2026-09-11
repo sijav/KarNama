@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 415,
+  "nextId": 417,
   "tasks": [
     {
       "id": "KN-001",
@@ -1798,14 +1798,14 @@
         "KN-006",
         "KN-035"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "All three routes render inside the shell, the nav switches between right sidebar and bottom tab bar at the breakpoint, a deep link to any of them works on a hard refresh, the language switch persists across a reload, and an API error renders the error state rather than a blank page.",
       "roasts": [],
       "notes": [
         "2026-09-12, owner: the pages are needed now, within six hours; a missing or broken component may be a placeholder with a card behind it. The screens are the critical path until they are real, and they no longer wait on the API cards: the board is held in the browser until KN-037 to KN-039 land."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T22:57:40.598Z",
+      "updatedAt": "2026-09-11T22:58:57.154Z",
       "okr": "OKR-1"
     },
     {
@@ -11045,6 +11045,40 @@
       "notes": [],
       "createdAt": "2026-09-11T22:44:16.518Z",
       "okr": "OKR-1"
+    },
+    {
+      "id": "KN-415",
+      "title": "The screens' own coverage: the board's and the network's handlers are half untested",
+      "desc": "The screens went in under the owner's instruction of 2026-09-12 to build the pages now. Their pure logic is covered, core/records at 99 percent and routes at 100, but JobsScreen is at 56 percent of its lines and NetworkScreen at 68: the delete flows and their confirm modal, the column's rename, recolour, delete and add, the collapse and expand of rejected, the job modal's save, status change and contact and file callbacks, and the network page's card and modal paths are driven by no story. The suite's global 100 percent threshold therefore fails until they are.",
+      "why": "Coverage is the owner's product rule, and a screen is where the components meet: an untested handler on a page is a defect nobody sees until a reader hits it.",
+      "severity": "high",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Stories drive every handler of both screens, deleting a card and confirming it, renaming, recolouring, deleting and adding a column, collapsing and expanding rejected, saving from the job modal and changing its status, and the network page's open, search and cancel; npm test in apps/web reports 100 percent again with no threshold error.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T23:20:48.478Z"
+    },
+    {
+      "id": "KN-416",
+      "title": "The shell has no Apollo client, no auth state and no error boundary",
+      "desc": "KN-042 put the three routes, the responsive navigation and the language switch in place and left the rest of its exit condition: the Apollo client is not created, there is no auth state, and a screen that throws takes the page down instead of rendering an error state. None of the three could be finished honestly while the API cards are open and the records are held in the browser, and the owner's instruction of 2026-09-12 was to build the pages now and leave a card behind.",
+      "why": "A page that throws shows a blank screen to a job seeker, and the front and the back meet at the shell: until this lands, nothing that talks to the server can.",
+      "severity": "high",
+      "points": 3,
+      "area": "web",
+      "parent": [
+        "KN-036"
+      ],
+      "status": "backlog",
+      "exit": "AppProviders creates the Apollo client against the API's URL with the honest slow-start handling the design asks for, the shell holds who is signed in, and a screen that throws renders the error state rather than a blank page, each with a story or a test; a deep link to a screen that throws still shows the shell.",
+      "okr": "OKR-2",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T23:20:48.621Z"
     }
   ],
   "okrs": [

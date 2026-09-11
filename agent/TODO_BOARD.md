@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 170 of 414 tasks done · 360 of 867 points.
+Project **KarNama** · 170 of 416 tasks done · 360 of 873 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-042` App shell: routing, responsive navigation, and the language switch in place** (critical, 5 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-042` | App shell: routing, responsive navigation, and the language switch in place | critical | 5 | web | KN-027, KN-006, KN-035 | All three routes render inside the shell, the nav switches between right sidebar and bottom tab bar at the breakpoint, a deep link to any of them works on a hard refresh, the language switch persists across a reload, and an API error renders the error state rather than a blank page. |
 
 ## Blocked (5)
 
@@ -20,11 +26,10 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (237)
+## Backlog (238)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-042` | App shell: routing, responsive navigation, and the language switch in place | critical | 5 | web | KN-027, KN-006, KN-035 | All three routes render inside the shell, the nav switches between right sidebar and bottom tab bar at the breakpoint, a deep link to any of them works on a hard refresh, the language switch persists across a reload, and an API error renders the error state rather than a blank page. |
 | `KN-044` | Add job flow | critical | 5 | web | KN-042, KN-029 | An e2e test pastes a link, corrects a field in Review, saves, and finds the record on My Jobs with status New, and a second test takes the Error path into Manual and saves from there. |
 | `KN-045` | Job detail modal, wired | critical | 5 | web | KN-043, KN-030 | An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries. |
 | `KN-046` | Auth screens: login, code, signup | critical | 5 | web | KN-042 | An e2e test signs in with a number and the code from the mock provider and reaches the board, a wrong or expired code shows an honest message with a way to resend, first login collects the name, and signing out clears the token and the Apollo cache rather than only the UI. |
@@ -69,6 +74,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-265` | Employment type becomes eight values, and a job can hold more than one | high | 3 | api | none | DESIGN.md's employment type list gives the eight values as the owner's decision of 2026-09-10, with the overlap noted, and says the field holds more than one; the Prisma schema has the eight and a record holds a list of them, through a migration that carries existing values over and is tested; the GraphQL schema and the generated types expose a list; the catalogs carry English ids and Persian for the two new values; and KN-073 is left holding only the job level list. |
 | `KN-275` | Add a resting edge role for controls at 3:1, and draw the Input and the Checkbox with it | high | 3 | web | none | tokens.ts carries a named role for a control's resting edge, a neutral in text/secondary's hue at 3.3:1 or more on bg/surface, bg/page and bg/surface-secondary, and darkMode.ts derives it and checks it at 3:1 or more on the three dark backgrounds, each ratio asserted by a unit test with a mutation back to border/default failing it; the Input's resting border and the Checkbox's unchecked frame use it, and the Input's Default story and the Checkbox's Unchecked story assert it; every other state of both still renders as drawn; DESIGN.md's token tables list the role as the owner's addition under KN-273; the token verifier and the contract pass; and the Input and the Checkbox are seen at rest in all four combinations. |
 | `KN-279` | Give the selected Filter Chip a blue edge at 3:1, apart from its pressed edge | high | 3 | web | KN-272 | A selected Filter Chip's edge is drawn in a named role at 3:1 or more against bg/surface, bg/page, bg/surface-secondary and its own fill, in light and in the derived dark, each ratio asserted by a unit test with a mutation back to the fill-coloured edge failing it; the Selected story asserts the edge; a pressed unselected chip is still told apart from a selected one, by at least 3:1 between their two indicators or by a difference that is not colour, such as the edge's width, and a focused chip beside a selected one keeps its ring visibly apart from the selected edge, both asserted on rendered chips side by side, including a chip held pressed from the keyboard; DESIGN.md records the edge under the owner's decision of KN-276; and the chip is seen unselected, selected and pressed in all four combinations. |
+| `KN-415` | The screens' own coverage: the board's and the network's handlers are half untested | high | 3 | web | none | Stories drive every handler of both screens, deleting a card and confirming it, renaming, recolouring, deleting and adding a column, collapsing and expanding rejected, saving from the job modal and changing its status, and the network page's open, search and cancel; npm test in apps/web reports 100 percent again with no threshold error. |
+| `KN-416` | The shell has no Apollo client, no auth state and no error boundary | high | 3 | web | KN-036 | AppProviders creates the Apollo client against the API's URL with the honest slow-start handling the design asks for, the shell holds who is signed in, and a screen that throws renders the error state rather than a blank page, each with a story or a test; a deep link to a screen that throws still shows the shell. |
 | `KN-038` | Custom statuses: rename, recolour, delete | high | 5 | api | KN-037 | A renamed status shows its new name everywhere including old records, deletion is refused while postings remain in that status and the message says how many, the four custom slots cannot be exceeded, a record pointing at a deleted status still renders with the fallback colour, and tests cover each. |
 | `KN-052` | Deploy the API to Render free, with Neon free Postgres | high | 5 | deploy | KN-033, KN-034, KN-050 | The API answers at its Render URL, the web app reaches it across origins with the CORS policy WEB_ORIGIN sets, migrations have run against the Neon database, and a deploy follows a push to main with no manual step. The database choice is recorded with its reason so it is not silently reverted to a provider that expires or pauses. A check proves the deployed API responds and that render.yaml still pins the free plan and carries no DATABASE_URL value. |
 | `KN-061` | Drag a card between columns, with a keyboard path | high | 5 | web | KN-060, KN-020, KN-269, KN-270 | A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology. Onto the rejected column collapsed to a count, as the owner decided on 2026-09-10, KN-196: during a drag it expands after a short hover of 500 ms; it accepts a drop while still collapsed; once the card lands it recollapses with a brief highlight, and only if the drag opened it, the count ticking up, the header flashing the rejected status colour for about a second and the move announced, Moved to Rejected with the count; a column the user opened stays open; a failed save returns the card with no highlight; and the keyboard path offers it as one target, announced with its count. |
@@ -967,7 +974,7 @@ Admin-only operations to list, read, approve and reject submissions, and to see 
 
 ### `KN-042` App shell: routing, responsive navigation, and the language switch in place
 
-- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **status** in_progress · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-027, KN-006, KN-035
 
 The three routes the design draws, the board, add, and the network page, inside the responsive nav frame, with the Apollo client, auth state and error boundary wired, and the language switch working from the sidebar on desktop and the page header on mobile.
@@ -5317,4 +5324,26 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 **Why.** The observer is what makes the rule hold for an icon that arrives late, which is the ordinary case for an icon loaded or chosen after the first render, and nothing would notice if it stopped working.
 
 **Exit condition.** A story drives an icon through blank, readable and blank again while the field stays mounted, asserting at each step that the slot is hidden or 20 wide as the content says, and that the text sits 16 or 40 from that edge to match; the Input stories pass.
+
+### `KN-415` The screens' own coverage: the board's and the network's handlers are half untested
+
+- **status** backlog · **severity** high · **points** 3 · **area** web
+- **blocked by** none
+
+The screens went in under the owner's instruction of 2026-09-12 to build the pages now. Their pure logic is covered, core/records at 99 percent and routes at 100, but JobsScreen is at 56 percent of its lines and NetworkScreen at 68: the delete flows and their confirm modal, the column's rename, recolour, delete and add, the collapse and expand of rejected, the job modal's save, status change and contact and file callbacks, and the network page's card and modal paths are driven by no story. The suite's global 100 percent threshold therefore fails until they are.
+
+**Why.** Coverage is the owner's product rule, and a screen is where the components meet: an untested handler on a page is a defect nobody sees until a reader hits it.
+
+**Exit condition.** Stories drive every handler of both screens, deleting a card and confirming it, renaming, recolouring, deleting and adding a column, collapsing and expanding rejected, saving from the job modal and changing its status, and the network page's open, search and cancel; npm test in apps/web reports 100 percent again with no threshold error.
+
+### `KN-416` The shell has no Apollo client, no auth state and no error boundary
+
+- **status** backlog · **severity** high · **points** 3 · **area** web
+- **blocked by** KN-036
+
+KN-042 put the three routes, the responsive navigation and the language switch in place and left the rest of its exit condition: the Apollo client is not created, there is no auth state, and a screen that throws takes the page down instead of rendering an error state. None of the three could be finished honestly while the API cards are open and the records are held in the browser, and the owner's instruction of 2026-09-12 was to build the pages now and leave a card behind.
+
+**Why.** A page that throws shows a blank screen to a job seeker, and the front and the back meet at the shell: until this lands, nothing that talks to the server can.
+
+**Exit condition.** AppProviders creates the Apollo client against the API's URL with the honest slow-start handling the design asks for, the shell holds who is signed in, and a screen that throws renders the error state rather than a blank page, each with a story or a test; a deep link to a screen that throws still shows the shell.
 

@@ -1,6 +1,6 @@
 import { emptyDraft, type JobDraft } from '../../shared/add-job'
-import type { SortOrder } from '../../shared/sort-control'
 import type { JobContact, JobFile, JobRecord, JobSaved, StatusChange } from '../../shared/job-modal'
+import type { SortOrder } from '../../shared/sort-control'
 import type { StatusOption } from '../../shared/status-picker'
 import { status as statusTokens, type StatusToken } from '../../theme/tokens'
 

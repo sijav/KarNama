@@ -21,6 +21,8 @@ import type { Meta } from '@storybook/react-vite'
  */
 export type StoryTitle =
   | 'App/Shell'
+  | 'Screens/Jobs'
+  | 'Screens/Network'
   | 'Core/PreferencesProvider'
   | 'Foundations/Tokens'
   | 'Shared/AddColumn'

@@ -1,6 +1,8 @@
-import { Box, Stack } from '@mui/material'
 import { useLingui } from '@lingui/react'
+import { Box, Stack } from '@mui/material'
 import { useState } from 'react'
+import { usePreferences } from '../core/preferences'
+import { columnOrder, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
 import { AddJobModal, type JobDraft } from '../shared/add-job'
 import { BulkActionBar } from '../shared/bulk-action-bar'
 import { Button } from '../shared/button'
@@ -12,8 +14,6 @@ import { ChangeStatusModal, ConfirmModal } from '../shared/modal'
 import { PageHeader } from '../shared/page-header'
 import { SearchBar } from '../shared/search-bar'
 import { SortControl, type SortOrder } from '../shared/sort-control'
-import { usePreferences } from '../core/preferences'
-import { columnOrder, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
 import { spacing } from '../theme/tokens'
 
 /**
@@ -31,6 +31,10 @@ const COLUMN_GAP = spacing.lg
 // The order the board opens in, typed so the lint rule reads it as a value and
 // not as copy: a literal handed to a generic loses the union that exempts it.
 const NEWEST: SortOrder = 'newest'
+
+// The search bar's own width before it gives way, node 155:92's 320, and the
+// room the tab bar needs under the page on a phone. Neither binds a variable.
+const SEARCH_WIDTH = 320
 
 export interface JobsScreenProps {
   /** Opens the add flow, which is what the add destination is, KN-042. */
@@ -133,7 +137,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
       />
 
       <Stack direction="row" sx={{ gap: `${spacing.sm}px`, alignItems: 'center', flexWrap: 'wrap' }}>
-        <Box sx={{ flex: '1 1 320px', minWidth: 0 }}>
+        <Box sx={{ flex: `1 1 ${SEARCH_WIDTH}px`, minWidth: 0 }}>
           <SearchBar value={search} onChange={setSearch} />
         </Box>
         <SortControl value={order} onChange={setOrder} />

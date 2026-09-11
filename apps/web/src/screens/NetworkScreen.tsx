@@ -1,12 +1,12 @@
-import { Box, Stack } from '@mui/material'
 import { useLingui } from '@lingui/react'
+import { Box, Stack } from '@mui/material'
 import { useState } from 'react'
+import { useRecords } from '../core/records'
 import { ContactCard } from '../shared/contact-card'
 import { EmptyState } from '../shared/empty-state'
 import { ContactModal, type ContactModalValues } from '../shared/modal'
 import { PageHeader } from '../shared/page-header'
 import { SearchBar } from '../shared/search-bar'
-import { useRecords } from '../core/records'
 import { spacing } from '../theme/tokens'
 
 /**
@@ -18,6 +18,11 @@ import { spacing } from '../theme/tokens'
  * does not do yet is keep a contact of its own, select several, or delete one,
  * which KN-415 carries.
  */
+// The narrowest a contact card is drawn at before the grid drops a column, and
+// how wide the search is here. Node 248:116's card is 280 across.
+const CARD_WIDTH = 280
+const SEARCH_WIDTH = 480
+
 export const NetworkScreen = () => {
   const { i18n } = useLingui()
   const records = useRecords()
@@ -33,7 +38,7 @@ export const NetworkScreen = () => {
     <Stack sx={{ gap: `${spacing.lg}px`, flex: '1 1 auto', minHeight: 0 }}>
       <PageHeader title={i18n._('My network')} />
 
-      <Box sx={{ maxWidth: 480 }}>
+      <Box sx={{ maxWidth: SEARCH_WIDTH }}>
         <SearchBar value={search} onChange={setSearch} />
       </Box>
 
@@ -47,7 +52,7 @@ export const NetworkScreen = () => {
           }}
         />
       ) : (
-        <Box sx={{ display: 'grid', gap: `${spacing.md}px`, gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+        <Box sx={{ display: 'grid', gap: `${spacing.md}px`, gridTemplateColumns: `repeat(auto-fill, minmax(${CARD_WIDTH}px, 1fr))` }}>
           {shown.map((held) => (
             <ContactCard
               key={held.id}
