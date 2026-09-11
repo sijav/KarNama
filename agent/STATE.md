@@ -159,8 +159,8 @@ pointer park before every story, which the roast showed repeats Storybook's own
 resetMousePosition and is worse, KN-369 filed to remove it) and KN-264 (the
 Status Chip's direction both ways) closed and pushed; KN-264's roast is running,
 judge and record it. KN-269 and KN-270 are blocked on the owner's decisions
-about the collapsed column, put to him in the session summary; KN-358, the
-phone form's field order, is his too. Then the law: KN-301 next, then KN-369. The board screen will want KN-305 (fixtures need a board and all
+about the collapsed column, put to the owner in the session summary; KN-358,
+the phone form's field order, waits on them too. Then the law: KN-301 next, then KN-369. The board screen will want KN-305 (fixtures need a board and all
 nine statuses), KN-310, KN-341, KN-352, KN-356 (the tab bar gives way to the
 Bulk Action Bar), KN-363 and KN-364 (the Job Modal's record identity and
 status on Save), and KN-355 (the phone shell lost the language switch).
