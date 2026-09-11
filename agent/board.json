@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 405,
+  "nextId": 406,
   "tasks": [
     {
       "id": "KN-001",
@@ -5641,7 +5641,22 @@
       "parent": [],
       "status": "done",
       "exit": "parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3,
+          "criticals": 3,
+          "file": "agent/roasts/KN-202-round-1.2026-09-11T21-59-06-299Z.md",
+          "filed": [
+            "KN-405"
+          ],
+          "cardDigest": "3417efce232558df8af87c775faf58bb490e0a850ae4b17207809456a1c3a8a7",
+          "head": "d62d49dbc07fcf6df794e5dae8a2ffed8ca94ba6",
+          "reviewerScore": 3,
+          "reviewerCriticals": 3,
+          "at": "2026-09-11T22:02:15.273Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T02:59:37.515Z",
       "updatedAt": "2026-09-11T21:58:48.790Z",
@@ -5657,11 +5672,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T02:59:37.807Z"
+      "createdAt": "2026-09-10T02:59:37.807Z",
+      "updatedAt": "2026-09-11T21:59:20.287Z"
     },
     {
       "id": "KN-204",
@@ -10375,6 +10391,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T21:39:35.684Z"
+    },
+    {
+      "id": "KN-405",
+      "title": "The story-docs parser still absorbs a # or #### heading, an unclosed fence and an empty entry without a problem",
+      "desc": "CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-202 roast, its three criticals, one function and one change. KN-202 made parseStoryDoc report an unknown ## section, a second ### of one name, text before a section's first ### and a ### outside both, and AGENTS.md now says anything else fails the guard. Three shapes still pass with no problem: a # heading joins the description and a #### heading joins the entry above it, neither matching SECTION or ENTRY; a fence opened and never closed makes every later line, ## Stories and its entries included, prose of the entry it opened in, so they vanish; and ### Default with no prose under it is an empty entry that passes the name checks and renders a blank heading on the Docs page. No docs file in the repository has any of the three today, checked on 2026-09-12.",
+      "why": "The format is documented as rigid and the guard as checking it; each of these is an author's mistake that renders wrongly on a Docs page and is caught by nobody.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "parseStoryDoc reports, with its line, a heading of level one or of level four and deeper outside a fence, a fence still open at the end of the file, at the line it opened, and an entry with no prose; each has a unit test asserting its message; the guard still passes on every docs file; AGENTS.md's sentence on the format lists what fails it and claims no more.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T22:02:15.129Z"
     }
   ]
 }

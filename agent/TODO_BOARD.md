@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 164 of 404 tasks done · 350 of 855 points.
+Project **KarNama** · 164 of 405 tasks done · 350 of 857 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-203` The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian** (high, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-203` | The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian | high | 2 | web | none | The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository. |
 
 ## Blocked (5)
 
@@ -25,7 +31,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-203` | The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian | high | 2 | web | none | The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-234` | The token guard still accepts copy as a key or inside the font stack, and its retirement check trusts any lint failure | high | 2 | web | none | Every string-literal key in tokens.ts must be a token name DESIGN.md documents, not a shape; the font stack must equal the documented value exactly; planted cases for a copy key, copy after Vazirmatn and a copy family each fail the guard; and the retirement check requires a clean baseline lint and lingui errors attributable to tokens.ts, STORAGE_KEY and TOOLTIP_SURFACE once they are removed, reporting an unrelated error as unjudgeable rather than as the debt standing. |
 | `KN-295` | KN-274's story measures the focus change from a model: rounded bands counted as rectangles, and transforms and filters not read | high | 2 | web | none | FocusedWhileInvalid's area accounts for the rounded corners, from the exact quarter-ring areas of the edge's radius and the ring's or from a rendered reading, and still clears 4W + 4H; focusExtent requires what it does not model, transform, filter, clip-path and mask, to be none on the field, both pseudo-elements and the input, and counts the input's own outline; a transform and a filter on the ::after each fail FocusedWhileInvalid by name; the verifier also reads the rendered change on a field 80 wide or less, in light and dark, clearing 4W + 4H with nothing changed outside; and DESIGN.md's arithmetic states the corners' loss and the width above which the change clears the perimeter. |
@@ -46,6 +51,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-398` | In dark the Tooltip draws white on text/primary, 1.34 to one, since its fill is a text role that turns light | high | 2 | web | none | In dark the tooltip's text clears 4.5 to one on its fill, by a role the tooltip's fill takes that stays dark in dark, or a text that follows it, and the theme's pair test reads the Tooltip's pair from the component rather than from a list; the Tooltip's dark story measures it. |
 | `KN-401` | The React-warning guard hears only a console.error with %s in it: React's plain-string errors and every console.warn pass, and nothing tests the guard | high | 2 | web | none | Every console.error and console.warn during a test of either project fails it unless it is one of the product's own diagnostics, recognised by an explicit mark rather than by the absence of %s, and a story that provokes one says so; a committed test drives the guard with a printf warning, a plain-string console.error, a console.warn and a product diagnostic and fails if any is classified differently; both projects pass apart from KN-365's flakes. |
 | `KN-403` | KN-167 traded the schema-entry test's 5 second budget for a 60 second one: test runSchemaCommand in process and start only light processes | high | 2 | api | none | No test in apps/api starts a process that loads NestJS or GraphQL; runSchemaCommand lives outside the entry file and its generate, current check, stale check and unknown command are tested in process against the source, covered; the schema entry's process test runs only commands that answer without loading the schema, in the default budget; HUNG_AFTER_MS, the hook budget of 0 and TECH-DEBT 20 are gone; the apps/api suite passes. |
+| `KN-405` | The story-docs parser still absorbs a # or #### heading, an unclosed fence and an empty entry without a problem | high | 2 | web | none | parseStoryDoc reports, with its line, a heading of level one or of level four and deeper outside a fence, a fence still open at the end of the file, at the line it opened, and an entry with no prose; each has a unit test asserting its message; the guard still passes on every docs file; AGENTS.md's sentence on the format lists what fails it and claims no more. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -2800,9 +2806,11 @@ CHILD OF KN-007, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing.
 
+**Roasts.** round 1 scored 3 with 3 critical(s)
+
 ### `KN-203` The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** in_progress · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-007 roast, and I had named it as the risk when sending that roast. localeInContext probes DocsContext at four guessed shapes because Storybook publishes no accessor for the current globals. If a Storybook upgrade moves all four, the page falls back to the product default and shows Persian regardless of what the toolbar or the URL actually says, and the channel listener does not repair it until somebody changes the toolbar by hand. Nothing fails: the page just quietly shows the wrong language, which is the exact failure the Language toolbar exists to make visible. The related half is that DocsPage.tsx and useDocsLocale.ts are excluded from coverage, so no automated test protects the subscription either; the exclusion is argued in vitest.config.ts and the argument may be right, but the consequence is that this whole path is checked by hand or not at all.
@@ -5185,4 +5193,15 @@ CHILD OF KN-167, recorded in prose because board.json cannot express parent_task
 **Why.** A test that passes against yesterday's build says the change works when it has not been run; low, because the gate builds first and the logic is tested from source.
 
 **Exit condition.** Each process test fails, rather than passing or skipping, when dist was built from source other than what is checked out, shown by editing an entry without rebuilding, or it runs against a build it makes itself; the apps/api suite passes after a build.
+
+### `KN-405` The story-docs parser still absorbs a # or #### heading, an unclosed fence and an empty entry without a problem
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-007, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-202 roast, its three criticals, one function and one change. KN-202 made parseStoryDoc report an unknown ## section, a second ### of one name, text before a section's first ### and a ### outside both, and AGENTS.md now says anything else fails the guard. Three shapes still pass with no problem: a # heading joins the description and a #### heading joins the entry above it, neither matching SECTION or ENTRY; a fence opened and never closed makes every later line, ## Stories and its entries included, prose of the entry it opened in, so they vanish; and ### Default with no prose under it is an empty entry that passes the name checks and renders a blank heading on the Docs page. No docs file in the repository has any of the three today, checked on 2026-09-12.
+
+**Why.** The format is documented as rigid and the guard as checking it; each of these is an author's mistake that renders wrongly on a Docs page and is caught by nobody.
+
+**Exit condition.** parseStoryDoc reports, with its line, a heading of level one or of level four and deeper outside a fence, a fence still open at the end of the file, at the line it opened, and an entry with no prose; each has a unit test asserting its message; the guard still passes on every docs file; AGENTS.md's sentence on the format lists what fails it and claims no more.
 
