@@ -7107,7 +7107,8 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T16:23:23.839Z",
-      "updatedAt": "2026-09-11T05:01:28.371Z"
+      "updatedAt": "2026-09-11T05:28:16.166Z",
+      "verify": "node agent/scripts/verify/KN-280.mjs"
     },
     {
       "id": "KN-281",
