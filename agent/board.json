@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 355,
+  "nextId": 357,
   "tasks": [
     {
       "id": "KN-001",
@@ -1265,7 +1265,24 @@
       ],
       "status": "done",
       "exit": "The sidebar renders on the right in Persian and mirrors correctly in English, the tab bar replaces it at the mobile breakpoint, exactly three destinations exist and are named with the current terminology, the language switch changes locale and direction and persists, and no fourth tab bar entry was added.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-027-round-1.2026-09-11T16-32-16-461Z.md",
+          "filed": [
+            "KN-355",
+            "KN-356"
+          ],
+          "cardDigest": "fff532b3c0f62119108e37a889069ab47fb53142d6d9d98b2286cc7fd448bd02",
+          "head": "0b379b323f8342bf2787a751f772c7087a27d423",
+          "reviewerScore": 4.5,
+          "reviewerCriticals": 2,
+          "dismissed": "Both criticals are real and filed high under the owner's rule that findings on built components are high or lower: the phone shell lost the switch (KN-355) and the tab bar cannot give way to the Bulk Action Bar (KN-356). The major is the placeholder shell's nature until screens and routes exist. The minor misreads the rules: as const is the codebase's constant assertion, not a cast, and the comments cite design nodes, not prop docs.",
+          "at": "2026-09-11T16:36:02.284Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -1334,7 +1351,7 @@
         "KN-012",
         "KN-028"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "All six steps match Figma, every step is reachable in a story, Error offers Manual as the way out, Review is fully editable before saving, and leaving the modal mid-flow asks before discarding.",
       "roasts": [],
       "notes": [
@@ -1342,7 +1359,7 @@
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:19.391Z"
+      "updatedAt": "2026-09-11T16:32:25.761Z"
     },
     {
       "id": "KN-030",
@@ -8953,6 +8970,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T16:15:57.876Z"
+    },
+    {
+      "id": "KN-355",
+      "title": "Below 900 the shell has no language switch: the sidebar took it and the shell draws no Page Header",
+      "desc": "CHILD OF KN-027, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-027 roast. KN-027 moved the placeholder switch out of App.tsx into the sidebar's foot; on a phone the tab bar renders instead, and DESIGN.md section 5 puts the switch in the Page Header, which the shell does not render, so at 390 the language cannot be changed on the live site.",
+      "why": "A reader who lands on the phone in the wrong language has no way out, which is exactly what the switch exists for.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "At the phone's width the shell shows the Page Header with its language switch, choosing a language there changes it and persists, and a story at 390 finds and uses the switch.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T16:35:53.189Z"
+    },
+    {
+      "id": "KN-356",
+      "title": "Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected",
+      "desc": "CHILD OF KN-027, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-027 roast. Node 185:19's description says the tab bar gives its place to the Bulk Action Bar during bulk selection. Navigation always renders the fixed tab bar below md and has no prop to be told the page is selecting, and the Bulk Action Bar is fixed at the same z-index 24 from the bottom, so on a phone the two overlap.",
+      "why": "On the phone, selection is how several job opportunities move or go at once; two bars fighting for the foot of the screen hide one of them.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T16:35:53.339Z"
     }
   ]
 }
