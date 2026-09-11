@@ -289,16 +289,19 @@ inside a pill is shorter than the pill's own two pixel perimeter, which WCAG
 2.4.13 gives for a rounded rectangle as 4W + 4H - (16 - 4π)r, 4W + 73 for the
 32 tall chip: a two pixel band covers 4W + 48 at best, just inside the edge,
 and three covers 6W + 62, clearing it for any chip at all, its padding alone
-being 24. A second band would have done it for two, the edge turning blue on
+being 24. WCAG's understanding of 2.4.13 says as much of any indicator inset
+from the edge: it needs to be thicker than two pixels, and in its own example
+a two pixel inset indicator fails where three passes. A second band would have done it for two, the edge turning blue on
 focus, until KN-279 gives a selected chip an edge of the same blue, and then
 the ring alone would fall short there. The ring's colour clears 3 to one on
 every fill the chip has: 5.17 on `bg/surface` in light and 3.04 in the derived
 dark, 4.70 and 3.57 on the hover fill, and 4.24 and 3.33 on the selected one.
 Its inner edge is 1 from the line's box, and the label's ink, Persian dots and
 marks included, stays between 8.25 and 24.75 of the chip's 32, measured, so
-the ring never touches it. Pressed, the chip's inset 1.5 already covers the
-ring's outer half pixel, so pressing a focused chip changes 2.5 wide, about
-5W + 48, still clearing the perimeter for any chip 25 or more wide; and KN-279's
+the ring never touches it. Pressed, the chip's inset 1.5 is already blue under
+the ring's outer half pixel, which paints over it, so on a pressed chip focus
+changes 2.5 wide, about 5W + 48, still clearing the perimeter for any chip 25
+or more wide; and KN-279's
 one pixel selected edge sits outside the ring, so focus is told from pressed
 and from selected by its width.
 

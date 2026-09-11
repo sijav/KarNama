@@ -781,14 +781,14 @@
         "KN-006",
         "KN-007"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:18.390Z"
+      "updatedAt": "2026-09-11T11:32:33.022Z"
     },
     {
       "id": "KN-020",
@@ -7588,7 +7588,21 @@
       "parent": [],
       "status": "done",
       "exit": "A focused Filter Chip inside a host that clips its overflow flush at the chip's box still changes at least a two-pixel perimeter at 3:1, drawn inside the chip or with the room kept by the chip itself, selected and not; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8.1,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-294-round-1.2026-09-11T11-32-31-994Z.md",
+          "filed": [],
+          "cardDigest": "3f313fdf3a083ff3ec6ff7e63461a61ac4512b48628bc0870aab9a7d92fec06b",
+          "head": "2434c62b2e0ffb1e47c7e85aa48d7cd9092d15b3",
+          "reviewerScore": 8.1,
+          "reviewerCriticals": 0,
+          "dismissed": "The major, that 4W + 4H - (16 - 4pi)r overstates WCAG's area and a two pixel inside ring would pass: WCAG's own understanding of 2.4.13 defines the minimum as the band from one pixel outside the edge to one pixel inside it, which is that formula, and says an inset indicator must be thicker than two pixels, a two pixel inset one failing where three passes in its example; the three pixel ring is its guidance. The minor, that the pressed state reads as a 2.5 wide change: the change on focus while pressed is 2.5 wide, since 1 to 1.5 is already blue, but 'covers' misstated the paint order; the wording was fixed inline in DESIGN.md, and WCAG's statement added there.",
+          "at": "2026-09-11T11:37:08.275Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T19:28:42.827Z",
       "updatedAt": "2026-09-11T11:19:24.835Z",
