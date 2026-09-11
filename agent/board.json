@@ -910,14 +910,16 @@
         "KN-009",
         "KN-008"
       ],
-      "status": "backlog",
+      "status": "done",
       "exit": "Both drawn instances match Figma, the optional back and action slots each render and are each omittable, the language switch appears only at the mobile breakpoint, and the title is the page heading in the accessibility tree.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:18.580Z"
+      "updatedAt": "2026-09-11T12:57:04.324Z",
+      "evidence": "Built from nodes 155:56 and 155:72: h1 title, optional back arrow and action slot each rendering and omittable, the language switch visible at 390 and hidden at 1440 via MUI's md; five stories pass; lint, tsc, docs guard and catalog tests clean.",
+      "closedAt": "2026-09-11T12:57:04.324Z"
     },
     {
       "id": "KN-022",
