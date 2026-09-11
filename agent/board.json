@@ -1850,7 +1850,7 @@
         "KN-003",
         "KN-007"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Every component story that needs data uses the shared fixtures, a Docs page rendering many stories at once seeds without error, the fixtures never appear in the production bundle and a test asserts that, and each fixture set has a long value that exercises truncation in both languages.",
       "roasts": [],
       "notes": [
@@ -1858,7 +1858,9 @@
         "2026-09-10, from KN-010: the Status Chip stories hold record data as literals, the custom-slot names from the legend and a renamed status's name, following the FilterChip precedent. Those belong in shared story fixtures when this card builds them, and KN-214's fix will flag them as literals until then."
       ],
       "createdAt": "2026-09-07T21:10:45.923Z",
-      "updatedAt": "2026-09-11T12:01:45.630Z"
+      "updatedAt": "2026-09-11T12:08:30.716Z",
+      "evidence": "Fixtures in fa-IR.json and en-US.json, parsed and frozen by index.ts; story-fixtures.test.ts (8 tests) asserts no shipped file imports them (with a planted control), parallel records, a long value per set in both languages, frozen same-object reads, and refusal of bad or missing statuses; module 100 percent covered. Status Chip, Filter Chip and Input stories migrated and passing (39 tests); KN-239's verifier passes; lint and tsc clean.",
+      "closedAt": "2026-09-11T12:08:30.716Z"
     },
     {
       "id": "KN-063",
