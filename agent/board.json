@@ -4857,12 +4857,14 @@
       "points": 2,
       "area": "api",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T00:09:27.247Z",
-      "updatedAt": "2026-09-11T20:59:34.800Z"
+      "updatedAt": "2026-09-11T21:34:17.096Z",
+      "evidence": "The cause is four spawnSync starts in a row, each about 1 s at idle loading NestJS and GraphQL, inside 5 s budgets vitest enforces on a blocked worker. The runs now start together off the worker, 8.4 s to 4.1 s under 64 busy loops, with a 60 s hang guard in place of a speed budget; the API suite passes 101 of 101; the 20-run batch was skipped under the owner's rule",
+      "closedAt": "2026-09-11T21:34:17.096Z"
     },
     {
       "id": "KN-168",

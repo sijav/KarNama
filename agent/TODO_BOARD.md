@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 161 of 402 tasks done · 344 of 851 points.
+Project **KarNama** · 162 of 402 tasks done · 346 of 851 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-167` The API schema-entry test is flaky under load and fails the gate at random** (high, 2 pt, api)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-167` | The API schema-entry test is flaky under load and fails the gate at random | high | 2 | api | none | The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure. |
+**Next up: `KN-178` The preferences story's localStorage restore races with other stories** (high, 2 pt, web)
 
 ## Blocked (5)
 
@@ -264,7 +258,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (161)
+## Done (162)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -424,6 +418,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-159` | Close the task BEFORE the roast, and never let a finding reopen it | high | 2 | agent | none | move <id> done succeeds from in_progress with NO roast round recorded, provided the verify command passes, evidence is given and the worktree is clean; it still refuses from backlog; it still refuses when the verify command fails; roast accepts a done task; and RALPH.md documents finish, prove, close, roast in that order with findings always becoming cards. Proved by driving the real CLI in an isolated repository, not by reading the source. |
 | `KN-160` | Plan files live beside the work, named #<id> - <title>.md | high | 2 | agent | none | agent/RALPH.md step 2b and ~/.claude/skills/loop/SKILL.md both instruct the #<id> - <title>.md name in the folder the work will be written to, no instruction anywhere still names .claude/plan-<id>.md, the existing plan for KN-112 has been moved to its work folder under the new name, and a check proves the loop files agree. |
 | `KN-166` | Check the loop rules are written correctly in the SkipBureau project | high | 2 | agent | none | ../SkipBureau's loop and rule files state the finish, prove, close, roast order, the findings-become-cards rule with its blocking exception, and the plan-beside-the-work rule; anything that contradicts them is corrected or, where the difference is deliberate, recorded as deliberate with its reason; and the owner is told what was found and what was changed. |
+| `KN-167` | The API schema-entry test is flaky under load and fails the gate at random | high | 2 | api | none | The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure. |
 | `KN-205` | The Checkbox hover and focus selectors reach the glyph, so the tick gets its own outline | high | 2 | web | none | The hover and focus rules are scoped to a marker the component owns rather than to a MUI class. Focusing a Checked and an Indeterminate checkbox outlines the FRAME ONLY, asserted by reading computed outline on every descendant and requiring exactly one to carry it. A mutation restoring the old descendant selector makes that assertion fail. The five Figma states still match tokens. |
 | `KN-051` | Deploy the web app to GitHub Pages | high | 3 | deploy | KN-003 | The app loads at its Pages URL, a deep link to a route works on a hard refresh, Storybook is reachable at /storybook/, and the deploy runs from a push to main with no manual step. |
 | `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
@@ -2393,7 +2388,7 @@ The owner's instruction of 2026-09-10: go to the sibling project at ../SkipBurea
 
 ### `KN-167` The API schema-entry test is flaky under load and fails the gate at random
 
-- **status** in_progress · **severity** high · **points** 2 · **area** api
+- **status** done · **severity** high · **points** 2 · **area** api
 - **blocked by** none
 
 apps/api/src/graphql/schema-entry.test.ts failed one of its four cases during a full npm test run in apps/api, taking 19632ms for a file that takes 3.6 seconds when run alone, and the whole suite passed on an immediate re-run with no change in between. So the failure is timing, not logic: the case is slow enough that it crosses a timeout when the machine is loaded by the other eight test files. Observed on 2026-09-10 while running the API gate for an unrelated change.
