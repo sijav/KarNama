@@ -78,6 +78,10 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
   const addJob = (draft: JobDraft) => {
     records.addJob(draft)
     setAdding(null)
+    // The flow is done, so the address leaves it too: saving from the add
+    // DESTINATION would otherwise reopen the modal over the board the moment it
+    // closed, since the address still asked for it, KN-044.
+    onAddClose?.()
   }
 
   const save = (saved: JobSaved) => {
