@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 381,
+  "nextId": 383,
   "tasks": [
     {
       "id": "KN-001",
@@ -8714,7 +8714,24 @@
       "parent": [],
       "status": "done",
       "exit": "preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-322-round-1.2026-09-11T19-23-05-673Z.md",
+          "filed": [
+            "KN-381",
+            "KN-382"
+          ],
+          "cardDigest": "ac2d1e3ed8112085b8c2f5815ade9e248c84a0016f1775aa28ea5bb060b77c1d",
+          "head": "24cec47544c49f6be4a8a0128fb5e482d32c10a1",
+          "reviewerScore": 5,
+          "reviewerCriticals": 0,
+          "dismissed": "Nothing dismissed. Kinder because the story does what the exit condition asked, show through document.fonts that the face is loaded before measuring, and the first major's counterexample, ButtonBase text in the browser's font, is KN-351, already filed at high; the weak proof is KN-381 and the extended Latin face KN-382, both low.",
+          "at": "2026-09-11T19:27:42.010Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T13:16:02.486Z",
       "updatedAt": "2026-09-11T19:22:50.313Z",
@@ -8945,14 +8962,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter.",
       "roasts": [],
       "notes": [
         "2026-09-11: the Change Status modal now exists, KN-028; the file's job modal opens it from the Status Control, 377:6244, which would make the control's popup a real named dialog."
       ],
       "createdAt": "2026-09-11T14:47:00.426Z",
-      "updatedAt": "2026-09-11T15:11:46.780Z"
+      "updatedAt": "2026-09-11T19:23:10.996Z"
     },
     {
       "id": "KN-338",
@@ -9609,6 +9626,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T19:16:29.621Z"
+    },
+    {
+      "id": "KN-381",
+      "title": "The Type story proves Vazirmatn's faces are loaded, not that any text is drawn in them",
+      "desc": "CHILD OF KN-322, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-322 roast. Foundations/Tokens' Type story checks that document.fonts holds the Persian and Latin Vazirmatn faces loaded and that each role's line box is its line height, which a fixed CSS line height makes true in any font. It stays green when a component draws its text in another family, and two do: the Contact Card's name and the Status Picker's New status are ButtonBases that take the browser's button font, KN-351.",
+      "why": "The point of loading the face is that a story's text is measured in it; a proof that the face is loaded says nothing about the text a reviewer compares with Figma.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A story shows text drawn in Vazirmatn by a measurement that differs from the same text in the fallback family, in Persian and in Latin, and fails with the face removed.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T19:27:33.537Z"
+    },
+    {
+      "id": "KN-382",
+      "title": "Storybook waits for Vazirmatn's Persian and Latin faces but not its extended Latin one",
+      "desc": "CHILD OF KN-322, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-322 roast. The preview's beforeEach loads the faces for 'ا' and 'a'; @fontsource-variable/vazirmatn has a third face, latin-ext, U+100-2BA and more, which loads only when text asks for it, so a story or a Controls value holding 'Łódź' or 'Škoda' measures its first render in the fallback font.",
+      "why": "Names in the product are the user's, and a company or a person's name in Polish, Czech or Turkish is extended Latin.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The preview waits for the extended Latin face too, and the Type story finds all three Vazirmatn faces loaded.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T19:27:33.662Z"
     }
   ]
 }

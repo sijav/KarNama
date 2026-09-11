@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 144 of 380 tasks done · 323 of 821 points.
+Project **KarNama** · 144 of 382 tasks done · 323 of 823 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-337` The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel** (high, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-337` | The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel | high | 1 | web | none | The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter. |
 
 ## Blocked (4)
 
@@ -19,12 +25,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (230)
+## Backlog (231)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-337` | The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel | high | 1 | web | none | The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter. |
 | `KN-341` | The full Contact Card's checkbox is reached only by Shift+Tab, after the name | high | 1 | web | none | Tab from before the card reaches the checkbox, then the name, then the delete, in that order, with the row still keeping its 30 and the name still moving by 28, and a story tabs through them. |
 | `KN-342` | A contact with no role draws an empty role line and its divider | high | 1 | web | none | Role is optional in the card's type, the role line and its divider are left out when there is neither role nor company, and a story shows a name-only contact. |
 | `KN-347` | The Contact Modal wipes what is typed when its parent passes a fresh copy of the record | high | 1 | web | none | The form resets on opening and on a change of the record's identity, an id, not on a new object with the same contents, and a story rerenders the parent mid-typing and keeps the text. |
@@ -226,6 +231,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-377` | The tab panel's tabbable test counts a control inside an inert subtree, so a panel of text can lose its only stop | low | 1 | web | none | A panel whose only control sits inside an inert subtree keeps tabindex 0, and a real Tab from its tab lands on the panel, in a story. |
 | `KN-378` | The Icon Button's stories draw a name no control shows, so its aria-label is not driven by its args | low | 1 | web | none | The Icon Button's aria-label is an arg shown in Controls, holding the catalog's copy in the reader's language by the Input's KN-245 pattern, and a value typed there, blank included, reaches the rendered button, which a story checks. |
 | `KN-379` | BlankName reads the console before the Icon Button's report effect is sure to have run outside the test runner | low | 1 | web | none | BlankName waits for the report with waitFor before asserting it, and passes in the published Storybook's interaction panel as well as under Vitest. |
+| `KN-381` | The Type story proves Vazirmatn's faces are loaded, not that any text is drawn in them | low | 1 | web | none | A story shows text drawn in Vazirmatn by a measurement that differs from the same text in the fallback family, in Persian and in Latin, and fails with the face removed. |
+| `KN-382` | Storybook waits for Vazirmatn's Persian and Latin faces but not its extended Latin one | low | 1 | web | none | The preview waits for the extended Latin face too, and the Type story finds all three Vazirmatn faces loaded. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4220,6 +4227,8 @@ Found while building KN-022. '@fontsource-variable/vazirmatn' is imported only b
 
 **Exit condition.** preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text.
 
+**Roasts.** round 1 scored 6.5 with 0 critical(s)
+
 ### `KN-323` The Empty State's round mark is about 1.02 to one on the bg/page every screen puts it on
 
 - **status** backlog · **severity** low · **points** 1 · **area** design
@@ -4376,7 +4385,7 @@ CHILD OF KN-024, recorded in prose because board.json cannot express parent_task
 
 ### `KN-337` The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-020, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-020 roast. The control carries aria-haspopup dialog, but the Popover it opens has no dialog role and no name, and MUI focuses the panel itself, so a keyboard or screen reader user lands on an unnamed container and must Tab before reaching the chosen status.
@@ -4857,4 +4866,26 @@ CHILD OF KN-016, recorded in prose because board.json cannot express parent_task
 **Why.** KN-314's invariant, a search only for text the field showed and never for a change the user did not make, holds for a parent that stores the value as typed and fails for the other parents a controlled bar exists to serve.
 
 **Exit condition.** Stories, each failing on KN-314's code: a parent ignoring the clear gets no search and no late one; a parent lowercasing input gets one search for the lowercased text; a parent restoring a reset value gets none; and the Search Bar's existing stories still pass.
+
+### `KN-381` The Type story proves Vazirmatn's faces are loaded, not that any text is drawn in them
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-322, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-322 roast. Foundations/Tokens' Type story checks that document.fonts holds the Persian and Latin Vazirmatn faces loaded and that each role's line box is its line height, which a fixed CSS line height makes true in any font. It stays green when a component draws its text in another family, and two do: the Contact Card's name and the Status Picker's New status are ButtonBases that take the browser's button font, KN-351.
+
+**Why.** The point of loading the face is that a story's text is measured in it; a proof that the face is loaded says nothing about the text a reviewer compares with Figma.
+
+**Exit condition.** A story shows text drawn in Vazirmatn by a measurement that differs from the same text in the fallback family, in Persian and in Latin, and fails with the face removed.
+
+### `KN-382` Storybook waits for Vazirmatn's Persian and Latin faces but not its extended Latin one
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-322, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-322 roast. The preview's beforeEach loads the faces for 'ا' and 'a'; @fontsource-variable/vazirmatn has a third face, latin-ext, U+100-2BA and more, which loads only when text asks for it, so a story or a Controls value holding 'Łódź' or 'Škoda' measures its first render in the fallback font.
+
+**Why.** Names in the product are the user's, and a company or a person's name in Polish, Czech or Turkish is extended Latin.
+
+**Exit condition.** The preview waits for the extended Latin face too, and the Type story finds all three Vazirmatn faces loaded.
 
