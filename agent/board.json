@@ -7383,13 +7383,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "An Input given a string icon that isBlank holds for, spaces, a line break, a zero-width space or a joiner, draws no slot and its text box sits 16 from that edge; IconsTurnedOff covers a space and a zero-width space among its cases and asserts no slot, and a mutation dropping the blank check fails it by name; and the story docs say the direct values draw no slot, while an element that renders nothing leaves a slot that collapses and takes no room.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T19:17:47.448Z",
-      "updatedAt": "2026-09-11T04:58:29.391Z",
-      "verify": "node agent/scripts/verify/KN-292.mjs"
+      "updatedAt": "2026-09-11T04:59:56.528Z",
+      "verify": "node agent/scripts/verify/KN-292.mjs",
+      "evidence": "drawn() in Input.tsx takes the Input's own blank rule for strings, !(typeof node === 'string' && isBlank(node)), so a string icon of spaces, a line break, a zero-width space or a joiner draws no slot, as the empty string did; null, booleans and undefined still draw none, and a number draws, as React draws it. IconsTurnedOff renders four no-slot fields, (false, null), (true, ''), (a space, a zero-width space) and (a line break, a zero-width joiner), the invisible strings spelled by code point, and the collapsed-slot field, (an empty fragment, a component returning null). node agent/scripts/verify/KN-292.mjs passed: the stories pass with IconsTurnedOff asserting no element beside the input and the text box 16 from both edges for the four; dropping the blank check, every non-empty string drawn as KN-291 left it with the null and boolean guard kept, fails IconsTurnedOff by name; the docs in both languages say blank strings draw no slot and an element that renders nothing leaves a slot that collapses and takes no room; and KN-291's verifier passes, reading all five fields in a production build in fa-IR and en-US, the four at no element and 16/16, the fifth at zero-width slots and 16/16. Unit project, eslint on the Input and tsc clean. Not established: where the text itself starts, the box proxy KN-283 replaces.",
+      "closedAt": "2026-09-11T04:59:56.528Z"
     },
     {
       "id": "KN-293",
