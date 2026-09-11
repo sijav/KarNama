@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 155 of 393 tasks done · 334 of 836 points.
+Project **KarNama** · 155 of 394 tasks done · 334 of 837 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -19,7 +19,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (232)
+## Backlog (233)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -228,6 +228,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-390` | LanguageOnAPhone puts storage and the screen back, but leaves the live language English | low | 1 | web | none | LanguageOnAPhone chooses Persian again in its finally, or remounts the provider, so the document is rtl, fa-IR and the stored value what it was, even when an assertion before it throws, which the story checks at its end. |
 | `KN-392` | The add modal compares its draft prop as JSON, so key order restarts it and an undefined field does not | low | 1 | web | none | The draft is compared field by field over JobDraft's keys, arrays by their items, so key order and an undefined field compare as the draft they make, and a unit test holds both cases. |
 | `KN-393` | The Job Modal's stories prove Save omits the old status, not that it carries no status at all | low | 1 | web | none | ChangeStatus and Note read onSave's last argument through mocked() and find no status key in it. |
+| `KN-394` | The lingui ignore test reads the plugin's no-letter pattern from its source, not from what the rule does | low | 1 | web | none | A test lints real code with the project's ESLint config, programmatically or through a fixture that must pass, and finds letterless titles, labels and text accepted and the three Latin-1 letters rejected. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4737,6 +4738,8 @@ CHILD OF KN-214, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary.
 
+**Roasts.** round 1 scored 8.5 with 0 critical(s)
+
 ### `KN-367` lingui-ignore.test.ts reads the config's text, so an ignore entry it cannot parse whitelists copy unseen
 
 - **status** backlog · **severity** high · **points** 2 · **area** web
@@ -5033,4 +5036,15 @@ CHILD OF KN-030, recorded in prose because board.json cannot express parent_task
 **Why.** KN-364 chose no status at all; a check that only rules out one value cannot tell that from a status sneaking back.
 
 **Exit condition.** ChangeStatus and Note read onSave's last argument through mocked() and find no status key in it.
+
+### `KN-394` The lingui ignore test reads the plugin's no-letter pattern from its source, not from what the rule does
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-214, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-366 roast. Since KN-366 the config leaves letterless strings to eslint-plugin-lingui's own /^[^\p{L}]+$/u, and lingui-ignore.test.ts extracts that literal from the rule's compiled file and applies it by hand. An upgrade that keeps the literal but stops using it, reorders the whitelist or changes the trimming would leave the test green. The gate fixture covers the three Latin-1 letters through the real rule; nothing covers the letterless side, a title of '#' or a combining mark, which the rule should pass.
+
+**Why.** The config now depends on the plugin's behaviour, and only a lint of real code shows that behaviour.
+
+**Exit condition.** A test lints real code with the project's ESLint config, programmatically or through a fixture that must pass, and finds letterless titles, labels and text accepted and the three Latin-1 letters rejected.
 
