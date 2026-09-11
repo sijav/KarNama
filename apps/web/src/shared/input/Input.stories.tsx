@@ -631,10 +631,17 @@ export const BothIcons: Story = {
 // An icon that renders nothing, the way a component can.
 const Nothing = () => null
 
+// Strings with nothing to see, spelled by code point so the source shows what
+// they are: a zero-width space, a line break and a zero-width joiner.
+const ZERO_WIDTH_SPACE = String.fromCodePoint(0x200b)
+const LINE_BREAK = String.fromCodePoint(0x0a)
+const ZERO_WIDTH_JOINER = String.fromCodePoint(0x200d)
+
 export const IconsTurnedOff: Story = {
   // Every way a caller turns an icon off: false and null, true and an empty
-  // string, an empty fragment and an icon that renders nothing. None draws a
-  // slot, and the text stays 16 from both edges, KN-291. A fixed render.
+  // string, a space and a zero-width space, a line break and a joiner, an empty
+  // fragment and an icon that renders nothing. None draws a slot, and the text
+  // stays 16 from both edges, KN-291, KN-292. A fixed render.
   parameters: { controls: { disable: true } },
   render: () => (
     <Stack>
@@ -644,6 +651,12 @@ export const IconsTurnedOff: Story = {
       <Box data-testid="no-slot">
         <JobTitle leadingIcon={true} trailingIcon={''} />
       </Box>
+      <Box data-testid="no-slot">
+        <JobTitle leadingIcon={' '} trailingIcon={ZERO_WIDTH_SPACE} />
+      </Box>
+      <Box data-testid="no-slot">
+        <JobTitle leadingIcon={LINE_BREAK} trailingIcon={ZERO_WIDTH_JOINER} />
+      </Box>
       <Box data-testid="empty-slot">
         <JobTitle leadingIcon={<></>} trailingIcon={<Nothing />} />
       </Box>
@@ -652,8 +665,9 @@ export const IconsTurnedOff: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const plain = canvas.getAllByTestId('no-slot')
-    await expect(plain).toHaveLength(2)
-    // The four values that draw nothing get no slot at all.
+    await expect(plain).toHaveLength(4)
+    // The values that draw nothing, and the strings with nothing to read, get
+    // no slot at all.
     for (const field of plain) {
       const box = within(field).getByRole('textbox')
       await expect([box.previousElementSibling, box.nextElementSibling]).toEqual([null, null])

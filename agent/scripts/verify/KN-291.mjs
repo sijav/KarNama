@@ -135,13 +135,14 @@ const main = async () => {
     await check('in both directions no field turned off has a slot that takes room, and the text box is 16 from both edges', async () => {
       const problems = []
       for (const locale of ['fa-IR', 'en-US']) {
-        const page = await browser.newPage({ viewport: { width: 700, height: 480 } })
+        const page = await browser.newPage({ viewport: { width: 700, height: 720 } })
         try {
           await page.goto(`http://127.0.0.1:${server.address().port}/iframe.html?id=shared-input--icons-turned-off&viewMode=story&globals=locale:${locale}`)
           await page.waitForFunction(() => window.__STORYBOOK_PREVIEW__?.currentRender?.phase === 'finished', null, { timeout: 30000 })
           const fields = await page.evaluate(measure)
           process.stdout.write(`       ${locale}: ${fields.map((field) => `${field.kind} sides ${field.sides.join('/')} text ${field.insets.join('/')}`).join('; ')}\n`)
-          if (fields.length !== 3) problems.push(`${locale}: ${fields.length} fields, not 3`)
+          // Five since KN-292 added a space and a zero-width space, a line break and a joiner.
+          if (fields.length !== 5) problems.push(`${locale}: ${fields.length} fields, not 5`)
           for (const [index, field] of fields.entries()) {
             const wrong = []
             if (field.rtl !== (locale === 'fa-IR')) wrong.push('the field runs the wrong way')

@@ -7383,11 +7383,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "An Input given a string icon that isBlank holds for, spaces, a line break, a zero-width space or a joiner, draws no slot and its text box sits 16 from that edge; IconsTurnedOff covers a space and a zero-width space among its cases and asserts no slot, and a mutation dropping the blank check fails it by name; and the story docs say the direct values draw no slot, while an element that renders nothing leaves a slot that collapses and takes no room.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T19:17:47.448Z"
+      "createdAt": "2026-09-10T19:17:47.448Z",
+      "updatedAt": "2026-09-11T04:43:55.580Z"
     },
     {
       "id": "KN-293",

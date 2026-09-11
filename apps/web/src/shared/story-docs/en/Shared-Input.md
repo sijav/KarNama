@@ -55,8 +55,9 @@ Form field name, for an input inside a form.
 An icon at the start of the field, 20 by 20, in the secondary text colour when
 the icon paints in `currentColor`. For decorative icons only: the icon hides
 itself from assistive technology, and the slot is not a button, which would
-need its own name and a larger target. Turned off with false, null or an empty
-string, as `hasIcon && <Icon />` does, it draws no slot.
+need its own name and a larger target. Turned off with false or null, as
+`hasIcon && <Icon />` does, or given a string with nothing to read, empty,
+spaces or a zero-width character, it draws no slot.
 
 ### trailingIcon
 
@@ -159,9 +160,11 @@ Both slots at once.
 
 ### IconsTurnedOff
 
-Every way of turning an icon off, false or null, true or an empty string, an
-empty fragment or an icon that renders nothing: no slot is drawn and the text
-stays where it is without one.
+Every way of turning an icon off. False or null, true, and a string with
+nothing to read, empty, a space, a zero-width space, a line break or a joiner,
+draw no slot at all. An empty fragment or an icon that renders nothing leaves a
+slot that collapses and takes no room. Either way the text stays where it is
+without an icon.
 
 ### WithoutAHelper
 

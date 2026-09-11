@@ -52,10 +52,12 @@ const Slot = ({ children }: { children: ReactNode }) => (
   </Box>
 )
 
-// Whether a node draws anything: React renders nothing for undefined, null, a
-// boolean or an empty string, so `hasIcon && <Icon />` turning an icon off
-// draws no slot rather than an empty 20 by 20 one, KN-291.
-const drawn = (node: ReactNode) => node !== undefined && node !== null && typeof node !== 'boolean' && node !== ''
+// Whether a node draws anything: React renders nothing for undefined, null or
+// a boolean, so `hasIcon && <Icon />` turning an icon off draws no slot rather
+// than an empty 20 by 20 one, KN-291. And a string gives nothing to see when
+// the Input's own blank rule holds for it, the empty string, spaces or a
+// zero-width character, KN-254, KN-292. A number draws, as React draws it.
+const drawn = (node: ReactNode) => node !== undefined && node !== null && typeof node !== 'boolean' && !(typeof node === 'string' && isBlank(node))
 
 // Node 95:38, six states. The label is bound to the field for screen readers,
 // the helper or error line describes it, and that line always keeps its height,
