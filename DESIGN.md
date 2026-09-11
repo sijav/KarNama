@@ -69,6 +69,7 @@ gets added to the palette with a name, it does not get inlined.
 | `accent/700`                | `#1e40af` |
 | `gray/200`                  | `#e5e7eb` |
 | `red/700`                   | `#b91c1c` |
+| `overlay/scrim`             | `#00000080` |
 
 #### Not on the Foundations board, and where each was actually read
 
@@ -86,6 +87,7 @@ frame it was read from with `get_variable_defs`. Do not delete them as strays.
 | `red/700`            | `31:4`    | `#b91c1c` | a primitive, the value `text/error` resolves to |
 | `text/error`         | `95:39`   | `#b91c1c` | the Input error state                         |
 | `black/base`         | `31:4`    | `#000000` | the base the two elevation shadows take alpha from |
+| `overlay/scrim`      | `377:6244` | `#00000080` | black at half behind a modal, the variable's own alpha |
 
 `black/base` is why the shadow colours are written `#0000000F` and `#00000014`
 rather than as greys: they are black at an alpha, and the alpha is the whole
@@ -472,6 +474,27 @@ when they do not fit. The two selects the file names, «نوع همکاری» an
 شغلی», are `EmploymentTypeSelect` and `JobLevelSelect`, their values English
 ids and their names from the catalog. On the screens the only Select drawn is
 the contact modal's «آگهی مربوطه», whose own prompt is why the prompt is a prop.
+
+### The modals: the shell, Confirm and Change Status
+
+Nodes `150:92` and `150:93` share a shell: `bg/surface`, radius lg,
+`Elevation/Modal`, 24 of padding and 16 between its parts; a header of the
+title in Heading/M and the 20 x at the other end, drawn as the Icon Button round
+it with its overhang given back; a divider; the body; a divider; and the actions
+at the inline end, 12 apart, the least drastic first. It sits centred over the
+file's scrim, `overlay/scrim`, black at half, a variable of its own that the
+Foundations board does not show, read with use_figma from `377:6244`; dark takes
+it unchanged. It dissolves in and out over 150 ms, section 7. On MUI's Dialog it
+traps focus, closes on Escape, the close or a press on the scrim, and gives
+focus back to its trigger; the prototype wires no overlay, so the scrim's press
+is a cancel, never the action. **Confirm** is 360 wide, its question as the
+title and what cannot be undone in Body `text/secondary`, then Cancel and the
+Destructive action; Cancel takes focus as it opens. Its body in the file says
+«این آگهی»; the code says «این فرصت شغلی», KN-329. **Change Status** is 420 wide
+round the Status Picker, then Cancel and Primary «تأیید»; the choice waits until
+Confirm, and each opening starts from the job's status. The set's description
+still speaks of a radio list with a name field; the component draws the chip
+picker. KN-028.
 
 ### The Contact Card
 

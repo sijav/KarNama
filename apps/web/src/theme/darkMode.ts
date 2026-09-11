@@ -270,6 +270,9 @@ export const darkSemantic = {
   'gray/200': deriveDark(semantic['gray/200']),
   // A fill, the Destructive button's pressed state, derived as the danger fills are.
   'red/700': deriveDarkSurface(semantic['red/700']),
+  // The scrim dims whatever is under a modal, and black at half dims a dark
+  // page as it does a light one, so it is the design's in both.
+  'overlay/scrim': semantic['overlay/scrim'],
 } satisfies Record<keyof typeof semantic, string>
 
 

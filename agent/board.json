@@ -8484,10 +8484,11 @@
       "exit": "The file's count reads «فرصت شغلی», or the owner exempts it and the code follows.",
       "roasts": [],
       "notes": [
-        "2026-09-11: KN-018 found the same in the Card menu, 491:758, whose delete reads «حذف آگهی» for a job opportunity; the code says «حذف فرصت شغلی»."
+        "2026-09-11: KN-018 found the same in the Card menu, 491:758, whose delete reads «حذف آگهی» for a job opportunity; the code says «حذف فرصت شغلی».",
+        "2026-09-11: KN-028 found the same in the Confirm modal's body, 150:92, «این آگهی برای همیشه حذف می‌شود»; the code says «این فرصت شغلی»."
       ],
       "createdAt": "2026-09-11T13:43:05.150Z",
-      "updatedAt": "2026-09-11T14:23:24.263Z"
+      "updatedAt": "2026-09-11T15:11:46.610Z"
     },
     {
       "id": "KN-330",
@@ -8606,8 +8607,11 @@
       "status": "backlog",
       "exit": "The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-11T14:47:00.426Z"
+      "notes": [
+        "2026-09-11: the Change Status modal now exists, KN-028; the file's job modal opens it from the Status Control, 377:6244, which would make the control's popup a real named dialog."
+      ],
+      "createdAt": "2026-09-11T14:47:00.426Z",
+      "updatedAt": "2026-09-11T15:11:46.780Z"
     },
     {
       "id": "KN-338",

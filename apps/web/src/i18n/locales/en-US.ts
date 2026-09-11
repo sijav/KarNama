@@ -100,4 +100,9 @@ export const messages: Record<string, string> = {
   'Select': 'Select',
   'Delete contact': 'Delete contact',
   'Send an email': 'Send an email',
+  'Cancel': 'Cancel',
+  'Confirm': 'Confirm',
+  'Close': 'Close',
+  'Delete this job opportunity?': 'Delete this job opportunity?',
+  'This job opportunity is deleted for good and cannot be brought back.': 'This job opportunity is deleted for good and cannot be brought back.',
 }

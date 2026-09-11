@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest'
 import { DARK_FILLS, MIN_CONTRAST, contrast, darkSemantic, darkStatus, deriveDark, deriveDarkFill, deriveDarkSurface, ensureContrast, hexToHsl, hslToHex, luminance } from './darkMode'
 import { semantic, status } from './tokens'
 
+// The tokens a dark page takes unchanged, each for a reason stated where it is
+// derived: the scrim alone, KN-028.
+const SAME_IN_BOTH: string[] = ['overlay/scrim']
+
 /**
  * The dark palette is derived, so what is testable is the DERIVATION, not a
  * table of expected hexes. A test that listed twenty dark values would be the
@@ -111,10 +115,12 @@ describe('the derivation does what it says', () => {
 
   it('is not the light palette wearing a different name', () => {
     // No dark value equals ANY light value, which is stronger than checking key
-    // by key and needs no cast to get the keys back.
+    // by key and needs no cast to get the keys back. The one exception is
+    // named: the modal's scrim, black at half, dims a dark page as it dims a
+    // light one, KN-028.
     const light = new Set<string>(Object.values(semantic))
     const survivors = Object.entries(darkSemantic).filter(([, hex]) => light.has(hex))
-    expect(survivors.map(([name]) => name)).toEqual([])
+    expect(survivors.map(([name]) => name)).toEqual(SAME_IN_BOTH)
   })
 })
 
@@ -281,9 +287,9 @@ describe('the fills are dark tints of their own hue, and what sits on them reads
 describe('the old assertions, kept', () => {
   it('still is not the light palette wearing a different name', () => {
     // No dark value equals ANY light value, which is stronger than checking key
-    // by key and needs no cast to get the keys back.
+    // by key and needs no cast to get the keys back, bar the named scrim.
     const light = new Set<string>(Object.values(semantic))
     const survivors = Object.entries(darkSemantic).filter(([, hex]) => light.has(hex))
-    expect(survivors.map(([name]) => name)).toEqual([])
+    expect(survivors.map(([name]) => name)).toEqual(SAME_IN_BOTH)
   })
 })

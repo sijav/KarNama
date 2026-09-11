@@ -31,6 +31,7 @@ export const semantic = {
   'accent/700': '#1e40af',
   'gray/200': '#e5e7eb',
   'red/700': '#b91c1c',
+  'overlay/scrim': '#00000080',
 } as const
 
 /**

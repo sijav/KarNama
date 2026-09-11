@@ -15,6 +15,7 @@ export interface ButtonProps {
   startIcon?: IconName
   endIcon?: IconName
   type?: 'button' | 'submit'
+  autoFocus?: boolean
   onClick?: () => void
 }
 
@@ -90,13 +91,14 @@ const FOCUS_EDGE = 2
 // The Button of node 31:4: five styles in three sizes, at rest, hovered,
 // pressed, disabled and focused, on MUI's Button restyled to the file. The
 // label arrives translated from the caller.
-export const Button = ({ children, variant = 'primary', size = 'M', disabled = false, startIcon, endIcon, type = 'button', onClick }: ButtonProps) => {
+export const Button = ({ children, variant = 'primary', size = 'M', disabled = false, startIcon, endIcon, type = 'button', autoFocus = false, onClick }: ButtonProps) => {
   const measure = SIZES[size]
   const look = LOOKS[variant]
   return (
     <MuiButton
       type={type}
       disabled={disabled}
+      autoFocus={autoFocus}
       disableRipple
       disableElevation
       onClick={onClick}

@@ -40,6 +40,11 @@ An icon from the set after the label.
 
 `button`, the default, or `submit` for the button that sends a form.
 
+### autoFocus
+
+When set, the button takes focus as it mounts: the Confirm modal's Cancel does,
+so the action a keyboard lands on first is the one that changes nothing.
+
 ### onClick
 
 Fired when the button is pressed, by pointer or by keyboard.

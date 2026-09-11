@@ -103,4 +103,9 @@ export const messages: Record<string, string> = {
   'Select': 'انتخاب',
   'Delete contact': 'حذف مخاطب',
   'Send an email': 'ارسال ایمیل',
+  'Cancel': 'انصراف',
+  'Confirm': 'تأیید',
+  'Close': 'بستن',
+  'Delete this job opportunity?': 'حذف این فرصت شغلی؟',
+  'This job opportunity is deleted for good and cannot be brought back.': 'این فرصت شغلی برای همیشه حذف می‌شود و برگشتی ندارد.',
 }
