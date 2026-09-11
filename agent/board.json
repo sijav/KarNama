@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 403,
+  "nextId": 405,
   "tasks": [
     {
       "id": "KN-001",
@@ -4859,7 +4859,24 @@
       "parent": [],
       "status": "done",
       "exit": "The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 2.5,
+          "criticals": 1,
+          "file": "agent/roasts/KN-167-round-1.2026-09-11T21-34-41-619Z.md",
+          "filed": [
+            "KN-403",
+            "KN-404"
+          ],
+          "cardDigest": "ee19c2bd4093c8fca45a05ed0745951b43525d4c7a7f25757adbeea57170be2d",
+          "head": "c2cf740c3556f2c3e7d3d6386b61b52d66702905",
+          "reviewerScore": 2,
+          "reviewerCriticals": 2,
+          "dismissed": "The second critical, the twenty loaded runs not done: the owner's rule of 2026-09-11 dropped regression batches at the close, and it postdates the card's exit of 2026-09-10; later instructions override earlier ones. Score 2.5 rather than 2.0 for that alone.",
+          "at": "2026-09-11T21:39:35.823Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-10T00:09:27.247Z",
       "updatedAt": "2026-09-11T21:34:17.096Z",
@@ -5049,11 +5066,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T00:28:35.373Z"
+      "createdAt": "2026-09-10T00:28:35.373Z",
+      "updatedAt": "2026-09-11T21:35:33.567Z"
     },
     {
       "id": "KN-179",
@@ -10302,6 +10320,36 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T21:04:39.606Z"
+    },
+    {
+      "id": "KN-403",
+      "title": "KN-167 traded the schema-entry test's 5 second budget for a 60 second one: test runSchemaCommand in process and start only light processes",
+      "desc": "CHILD OF KN-167, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-167 roast, its first critical, judged real. KN-167 made the four runs of the built schema command start together, which halved the file under load, but then turned the hook's budget off and gave each run spawn's 60 second timeout: the file's result still depends on load, only past 60 seconds instead of 5, which is the longer timeout the card forbade under another name. The guard is not even a bound: the promise settles on close, which Node documents as waiting for the stdio pipes, so a descendant holding them keeps the hook pending after the kill. The roast's major is the same design: the heavy runs test whatever dist holds, not the source. The database side already has the right shape: cli.ts holds runCli, tested in process, and cli-entry.ts is a six-line guard whose process test runs only commands that never load the heavy modules. runSchemaCommand lives in the entry, excluded from coverage, and is tested only through three heavy process starts. The in-process schema build takes about 100 ms, and the build's own npm run schema:check is a real heavy start on every build.",
+      "why": "A test whose result depends on how busy the machine is fails the gate at random, which is what KN-167 was filed to end; a bigger number only moves the day it happens.",
+      "severity": "high",
+      "points": 2,
+      "area": "api",
+      "parent": [],
+      "status": "backlog",
+      "exit": "No test in apps/api starts a process that loads NestJS or GraphQL; runSchemaCommand lives outside the entry file and its generate, current check, stale check and unknown command are tested in process against the source, covered; the schema entry's process test runs only commands that answer without loading the schema, in the default budget; HUNG_AFTER_MS, the hook budget of 0 and TECH-DEBT 20 are gone; the apps/api suite passes.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T21:39:35.580Z"
+    },
+    {
+      "id": "KN-404",
+      "title": "The API's process tests run whatever dist exists, so a stale build passes them",
+      "desc": "CHILD OF KN-167, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-167 roast, its major, judged real for the part KN-403 does not take. schema-entry.test.ts and cli-entry.test.ts spawn dist/graphql/schema-entry.js and dist/database/cli-entry.js, skip when the file is absent, and never check that dist was built from the source that is checked out: build once, break the entry in source without a type error, run npm test, and the old build keeps the file green. CI builds before it tests, so this bites a local run, and after KN-403 only the six-line entry guards are tested this way.",
+      "why": "A test that passes against yesterday's build says the change works when it has not been run; low, because the gate builds first and the logic is tested from source.",
+      "severity": "low",
+      "points": 2,
+      "area": "api",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Each process test fails, rather than passing or skipping, when dist was built from source other than what is checked out, shown by editing an entry without rebuilding, or it runs against a build it makes itself; the apps/api suite passes after a build.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T21:39:35.684Z"
     }
   ]
 }

@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 162 of 402 tasks done · 346 of 851 points.
+Project **KarNama** · 162 of 404 tasks done · 346 of 855 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-178` The preferences story's localStorage restore races with other stories** (high, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-178` | The preferences story's localStorage restore races with other stories | high | 2 | web | none | The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler. |
 
 ## Blocked (5)
 
@@ -20,12 +26,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (233)
+## Backlog (234)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-178` | The preferences story's localStorage restore races with other stories | high | 2 | web | none | The story cannot pollute the shared store: either the provider under test is given an injected storage rather than the real one, or the storybook project serializes these stories explicitly, or the story stubs window.localStorage for its own duration. Proved by running the story concurrently with a story that reads stored preferences and asserting the second is unaffected, not by reasoning about the scheduler. |
 | `KN-183` | KN-114's verifier can silently overwrite a concurrent catalog edit | high | 2 | web | none | The blank and untranslated rules live in a pure function that takes the catalogs as an argument; catalog.test.ts calls it on the real imported ones; a test drives it with in-memory catalogs containing each evasion, empty, whitespace, format characters only, the id exactly and the id with punctuation and casing changed, and requires each to be reported naming the id; KN-114's verifier no longer writes to any tracked file; and its header no longer needs to warn that an interrupted run leaves the catalog planted. |
 | `KN-202` | The story-docs markdown contract is documented as rigid but silently accepts malformed files | high | 2 | web | none | parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing. |
 | `KN-203` | The Docs page reads its initial language from undocumented Storybook internals and fails silently to Persian | high | 2 | web | none | The Docs page either resolves the initial locale from something Storybook supports, or FAILS LOUDLY when it cannot, rather than defaulting silently: a visible note on the page saying the language could not be determined is enough, since a Docs page has somewhere to put it. A test covers the resolution path, or the reason it cannot be tested is recorded with the same evidence any other untestable claim needs in this repository. |
@@ -48,6 +53,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-386` | The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one | high | 2 | web | none | Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it. |
 | `KN-398` | In dark the Tooltip draws white on text/primary, 1.34 to one, since its fill is a text role that turns light | high | 2 | web | none | In dark the tooltip's text clears 4.5 to one on its fill, by a role the tooltip's fill takes that stays dark in dark, or a text that follows it, and the theme's pair test reads the Tooltip's pair from the component rather than from a list; the Tooltip's dark story measures it. |
 | `KN-401` | The React-warning guard hears only a console.error with %s in it: React's plain-string errors and every console.warn pass, and nothing tests the guard | high | 2 | web | none | Every console.error and console.warn during a test of either project fails it unless it is one of the product's own diagnostics, recognised by an explicit mark rather than by the absence of %s, and a story that provokes one says so; a committed test drives the guard with a printf warning, a plain-string console.error, a console.warn and a product diagnostic and fails if any is classified differently; both projects pass apart from KN-365's flakes. |
+| `KN-403` | KN-167 traded the schema-entry test's 5 second budget for a 60 second one: test runSchemaCommand in process and start only light processes | high | 2 | api | none | No test in apps/api starts a process that loads NestJS or GraphQL; runSchemaCommand lives outside the entry file and its generate, current check, stale check and unknown command are tested in process against the source, covered; the schema entry's process test runs only commands that answer without loading the schema, in the default budget; HUNG_AFTER_MS, the hook budget of 0 and TECH-DEBT 20 are gone; the apps/api suite passes. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -253,6 +259,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-200` | The order check has never been run against a real loop prompt, and neither prompt carries the marker | low | 2 | agent | KN-171 | agent/RALPH.md and .claude/ralph-loop.local.md each carry exactly one marked block, and a verifier runs closesBeforeRoasting against BOTH real files by path rather than against a fixture, failing if either is unmarked, ambiguous or reversed. The check is proved by mutation on the real files: reversing the two lines in each prompt makes it fail, and removing a marker makes it fail with the unmarked reason. Any verifier that would pass when handed a file containing no marked block at all is a defect, and the check for that is named. KN-171's fix to the prompt's order lands with or before this, since a marked block that records the wrong order is worse than none. |
 | `KN-251` | Nothing checks the Input's value control in the Controls panel follows what is typed | low | 2 | web | none | A check loads the whole Storybook, manager and preview, from a production build, sets value through the Controls panel's own field, types into the canvas, and reads the Controls panel's value field showing the typed text; and it fails with the binding taken out. |
 | `KN-309` | Every component imports the theme through relative parent paths, which AGENTS.md forbids | low | 2 | web | none | Either the components import through absolute src/ paths and a lint rule refuses a relative parent import, or AGENTS.md is corrected to the convention the code keeps; whichever, lint and tsc pass. |
+| `KN-404` | The API's process tests run whatever dist exists, so a stale build passes them | low | 2 | api | none | Each process test fails, rather than passing or skipping, when dist was built from source other than what is checked out, shown by editing an entry without rebuilding, or it runs against a build it makes itself; the apps/api suite passes after a build. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | low | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-136` | Commit the mutation cases, so a verifier's claim can be re-run | low | 3 | agent | none | One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
@@ -2397,6 +2404,8 @@ apps/api/src/graphql/schema-entry.test.ts failed one of its four cases during a 
 
 **Exit condition.** The cause of the 19 second run is identified rather than papered over with a longer timeout, the test is made to run in a bounded time regardless of machine load, and the full apps/api suite passes twenty consecutive times under a parallel load that reproduces the original failure.
 
+**Roasts.** round 1 scored 2.5 with 1 critical(s)
+
 ### `KN-168` KN-160's verifier passes on two blind spots it claims to cover
 
 - **status** backlog · **severity** low · **points** 2 · **area** agent
@@ -2509,7 +2518,7 @@ Found while checking SkipBureau's loop rules for KN-166. Its CLAUDE.md correctly
 
 ### `KN-178` The preferences story's localStorage restore races with other stories
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** in_progress · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 Found by the KN-112 roast and the mechanism is concrete. PreferencesProvider.stories.tsx saves localStorage, clicks a button that makes the provider persist, and restores in a finally. That is not enough without serialization: story A captures the original value, story B starts while A's en-US and dark value is present and captures THAT as its own before, A restores the original, then B restores the polluted value, and the suite ends dirty. A story running between the write and the restore can also read the polluted value. The storybook project declares a browser instance and nothing about serial execution or storage isolation, so nothing rules the interleaving out. The symptom would be an unrelated story going flaky, which is the hardest kind of failure to trace back.
@@ -5157,4 +5166,26 @@ CHILD OF KN-134, recorded in prose because board.json cannot express parent_task
 **Why.** A reader added later gets the wrong language for one commit, in a way no test shows. Low, because no such reader exists yet.
 
 **Exit condition.** npm run lint fails when product code outside src/i18n and AppProviders imports i18n from @lingui/core or from src/i18n, with a committed fixture that holds each import, and the comment in AppProviders says who may read the singleton and from when it is current.
+
+### `KN-403` KN-167 traded the schema-entry test's 5 second budget for a 60 second one: test runSchemaCommand in process and start only light processes
+
+- **status** backlog · **severity** high · **points** 2 · **area** api
+- **blocked by** none
+
+CHILD OF KN-167, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-167 roast, its first critical, judged real. KN-167 made the four runs of the built schema command start together, which halved the file under load, but then turned the hook's budget off and gave each run spawn's 60 second timeout: the file's result still depends on load, only past 60 seconds instead of 5, which is the longer timeout the card forbade under another name. The guard is not even a bound: the promise settles on close, which Node documents as waiting for the stdio pipes, so a descendant holding them keeps the hook pending after the kill. The roast's major is the same design: the heavy runs test whatever dist holds, not the source. The database side already has the right shape: cli.ts holds runCli, tested in process, and cli-entry.ts is a six-line guard whose process test runs only commands that never load the heavy modules. runSchemaCommand lives in the entry, excluded from coverage, and is tested only through three heavy process starts. The in-process schema build takes about 100 ms, and the build's own npm run schema:check is a real heavy start on every build.
+
+**Why.** A test whose result depends on how busy the machine is fails the gate at random, which is what KN-167 was filed to end; a bigger number only moves the day it happens.
+
+**Exit condition.** No test in apps/api starts a process that loads NestJS or GraphQL; runSchemaCommand lives outside the entry file and its generate, current check, stale check and unknown command are tested in process against the source, covered; the schema entry's process test runs only commands that answer without loading the schema, in the default budget; HUNG_AFTER_MS, the hook budget of 0 and TECH-DEBT 20 are gone; the apps/api suite passes.
+
+### `KN-404` The API's process tests run whatever dist exists, so a stale build passes them
+
+- **status** backlog · **severity** low · **points** 2 · **area** api
+- **blocked by** none
+
+CHILD OF KN-167, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-167 roast, its major, judged real for the part KN-403 does not take. schema-entry.test.ts and cli-entry.test.ts spawn dist/graphql/schema-entry.js and dist/database/cli-entry.js, skip when the file is absent, and never check that dist was built from the source that is checked out: build once, break the entry in source without a type error, run npm test, and the old build keeps the file green. CI builds before it tests, so this bites a local run, and after KN-403 only the six-line entry guards are tested this way.
+
+**Why.** A test that passes against yesterday's build says the change works when it has not been run; low, because the gate builds first and the logic is tested from source.
+
+**Exit condition.** Each process test fails, rather than passing or skipping, when dist was built from source other than what is checked out, shown by editing an entry without rebuilding, or it runs against a build it makes itself; the apps/api suite passes after a build.
 
