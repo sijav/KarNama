@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 147 of 384 tasks done · 326 of 825 points.
+Project **KarNama** · 147 of 385 tasks done · 326 of 826 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-347` The Contact Modal wipes what is typed when its parent passes a fresh copy of the record** (high, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-347` | The Contact Modal wipes what is typed when its parent passes a fresh copy of the record | high | 1 | web | none | The form resets on opening and on a change of the record's identity, an id, not on a new object with the same contents, and a story rerenders the parent mid-typing and keeps the text. |
 
 ## Blocked (4)
 
@@ -24,7 +30,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-347` | The Contact Modal wipes what is typed when its parent passes a fresh copy of the record | high | 1 | web | none | The form resets on opening and on a change of the record's identity, an id, not on a new object with the same contents, and a story rerenders the parent mid-typing and keeps the text. |
 | `KN-351` | The Contact Card's name and the Status Picker's New status draw in the browser's button font, not Vazirmatn | high | 1 | web | none | The Contact Card's name and the Status Picker's New status render in the page's font, a story on each compares the button's computed font family with its host's, and either the theme gives every ButtonBase the page's font or DESIGN.md says each text button must. |
 | `KN-353` | A column whose cards are all false or null shows a blank region instead of its empty message | high | 1 | web | none | The column shows the empty message whenever no child renders, null, false and empty arrays included (Children.toArray), and a story passes such a list. |
 | `KN-355` | Below 900 the shell has no language switch: the sidebar took it and the shell draws no Page Header | high | 1 | web | none | At the phone's width the shell shows the Page Header with its language switch, choosing a language there changes it and persists, and a story at 390 finds and uses the switch. |
@@ -141,6 +146,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-359` | The add modal's Paste step is 398 tall where the file draws 401: its label keeps the Input's 16 | medium | 1 | web | none | Paste, PasteFilled and Error measure the file's 401, 401 and 423 with the label on its 19, and the Input's own label stays 16 everywhere else. |
 | `KN-362` | Reading a posting moves focus to an unnamed box rather than to the status that says what is happening | medium | 1 | web | none | Focus goes to an element named by the loading message, or to the status region itself, and a story reads the focused element's accessible name. |
 | `KN-370` | The Status Chip's direction contract says 'first letter' where dir=auto reads the first strong character, and 'cuts the end' where the ellipsis cuts the line's visual end | medium | 1 | docs | none | DESIGN.md's KN-264 paragraph and the comment in StatusChip.tsx say the first strong directional character decides, a letter or a direction mark, and that the ellipsis cuts the line's visual end, naming what that hides in a mixed-script name; no 'always' is left in either; and a story renders an LRM-led digit name in the Persian interface and finds the chip ltr. |
+| `KN-385` | A role or company of only spaces still draws the Contact Card's blank role line and divider, and the contact prop's docs say role cannot be missing | medium | 1 | web | none | The card trims each part before joining, and the Contact Modal trims role and company when it saves, so a role of ' ' draws no line and no divider, which a story shows; and both languages' docs for the contact prop say role and company may be missing. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -4450,6 +4456,8 @@ CHILD OF KN-026, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Role is optional in the card's type, the role line and its divider are left out when there is neither role nor company, and a story shows a name-only contact.
 
+**Roasts.** round 1 scored 6 with 0 critical(s)
+
 ### `KN-343` The compact Contact Card's mail is a button that assigns a location, not a mailto link
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -4496,7 +4504,7 @@ CHILD OF KN-028, recorded in prose because board.json cannot express parent_task
 
 ### `KN-347` The Contact Modal wipes what is typed when its parent passes a fresh copy of the record
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-031, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-031 roast. The form resets when open changes or when initial is a different object, so a parent that renders initial={{ ...contact }} and rerenders for any reason, a query or a timer, puts the record back over what the user is typing.
@@ -4911,4 +4919,15 @@ CHILD OF KN-026, recorded in prose because board.json cannot express parent_task
 **Why.** The two transitions are where a fold can jump under a keyboard user's focus, and nothing would say so if a change broke them.
 
 **Exit condition.** A story unticks a selected card's checkbox by keyboard and finds it still seen and focused, then tabs past the delete out of the card and finds the checkbox unseen and the delete at no width.
+
+### `KN-385` A role or company of only spaces still draws the Contact Card's blank role line and divider, and the contact prop's docs say role cannot be missing
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-026, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-342 roast, two findings answered by one change. The Contact Modal trims only the name when it saves, so a role or company typed as ' ' is stored as it is, and the card's line, built from the parts that are neither null nor '', keeps it: the full card draws an invisible 22 line and the rule under it, KN-342's defect by another road. And the English story doc for the contact prop still says the role is always there, which KN-342's string | null contradicts.
+
+**Why.** A contact saved with a stray space is still a name-only contact, and the owner allowed those, KN-071; a doc that contradicts the type misleads whoever builds the network screen on it.
+
+**Exit condition.** The card trims each part before joining, and the Contact Modal trims role and company when it saves, so a role of ' ' draws no line and no divider, which a story shows; and both languages' docs for the contact prop say role and company may be missing.
 
