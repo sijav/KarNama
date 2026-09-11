@@ -311,3 +311,36 @@ export const StepFromItsArgs: Story = {
     await expect(await within(dialog).findByRole('textbox', { name: 'عنوان شغلی' })).toHaveValue('')
   },
 }
+
+// The reading a story holds open and settles when its play says, KN-391.
+let settleReading: ((found: Partial<JobDraft>) => void) | undefined
+
+export const RestartWhileReading: Story = {
+  // The step changed while the loading panel waits: the flow starts again on
+  // that step, and when the reading it left comes back, it lands nowhere, KN-391.
+  // A fixed parent, so no control applies.
+  args: {
+    source: LINK,
+    onExtract: fn(
+      () =>
+        new Promise<Partial<JobDraft>>((resolve) => {
+          settleReading = resolve
+        }),
+    ),
+  },
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  render: (args) => <Restepped {...args} />,
+  play: async ({ canvasElement }) => {
+    const dialog = await dialogNamed('افزودن فرصت شغلی')
+    await userEvent.click(within(dialog).getByRole('textbox', { name: 'لینک آگهی یا متن کامل آگهی' }))
+    await userEvent.click(within(dialog).getByRole('button', { name: 'استخراج اطلاعات' }))
+    await within(dialog).findByRole('status')
+    await fireEvent.click(within(canvasElement).getByTestId('to-manual'))
+    const title = await within(document.body).findByRole('textbox', { name: 'عنوان شغلی' })
+    await expect(title).toHaveValue('')
+    settleReading?.(foundIn('fa-IR'))
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    await expect(within(document.body).getByRole('textbox', { name: 'عنوان شغلی' })).toHaveValue('')
+  },
+}

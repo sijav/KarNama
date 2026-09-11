@@ -107,3 +107,8 @@ The paste field in English.
 
 The step changed while the modal is open, as the Controls change it: the modal
 starts again on that step.
+
+### RestartWhileReading
+
+The step changed while the posting is being read: the modal starts again on that
+step, and the reading it left, when it comes back, changes nothing.

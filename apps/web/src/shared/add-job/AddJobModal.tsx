@@ -139,13 +139,22 @@ export const AddJobModal = ({
     reading.current += 1
     const mine = reading.current
     const source = flow.source.trim()
-    update({ step: 'loading', startedAt: Date.now() })
+    const startedAt = Date.now()
+    update({ step: 'loading', startedAt })
+    // An answer lands only on the flow that asked for it: still loading, and
+    // loading since this reading began. A restart from changed props, KN-361,
+    // replaces the flow and never with a loading one, so an answer it left
+    // behind lands nowhere, KN-391.
+    const settle = (change: Partial<Flow>) => {
+      if (reading.current !== mine) return
+      setFlow((current) => (current.step === 'loading' && current.startedAt === startedAt ? { ...current, ...change } : current))
+    }
     void onExtract(source).then(
       (found) => {
-        if (reading.current === mine) update({ step: 'review', draft: draftFrom(status, source, found), tried: false })
+        settle({ step: 'review', draft: draftFrom(status, source, found), tried: false })
       },
       () => {
-        if (reading.current === mine) update({ step: 'error' })
+        settle({ step: 'error' })
       },
     )
   }
