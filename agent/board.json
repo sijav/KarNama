@@ -9572,10 +9572,11 @@
         "2026-09-11, KN-260: the pointer park before every story made the whole storybook project pass, 245 of 245, where the run before it failed JobCard Pressed and NavItem Hover; those were the lingering pointer. Two more clean full runs would close this.",
         "2026-09-11, correction: Storybook's own resetMousePosition already moved the pointer off the page before every test when the JobCard Pressed and NavItem Hover stories failed, so the lingering pointer was not their cause; the one clean full run after KN-260 is not evidence, and the cause is still open.",
         "2026-09-11, while doing KN-311: the full run failed JobCard Pressed again, 1224 of 1225 passing, with 'expected rgb(243, 244, 246) to be rgb(255, 255, 255)': the card WAS pressed, and the EXPECTED colour was white. The story's computed() borrows the card's own backgroundColor, which the card transitions over 200 ms; once the card's style has resolved, setting the inline colour starts a transition and getComputedStyle returns its current value, the starting white. Run alone the first read comes before any resolved style, so no transition and the right grey. The likely fix is to compute token colours on an element without a transition, not the pointer; NavItem Hover's 120 ms hover transition is worth the same look.",
-        "2026-09-11, while doing KN-351: the full run failed NavItem Hover with 'expected rgb(243, 244, 246) to be rgba(0, 0, 0, 0)', the same mechanism as JobCard Pressed: Hover computes its expected colour through the item's own 120 ms background transition and gets the starting transparent; alone it passes, 14 of 14. Both named flakes are this, not the pointer, so the exit condition is corrected to the cause, and the card is raised to high: two full runs today failed on it, so the full suite before a batch push cannot pass."
+        "2026-09-11, while doing KN-351: the full run failed NavItem Hover with 'expected rgb(243, 244, 246) to be rgba(0, 0, 0, 0)', the same mechanism as JobCard Pressed: Hover computes its expected colour through the item's own 120 ms background transition and gets the starting transparent; alone it passes, 14 of 14. Both named flakes are this, not the pointer, so the exit condition is corrected to the cause, and the card is raised to high: two full runs today failed on it, so the full suite before a batch push cannot pass.",
+        "2026-09-11, correcting the correction above: Storybook's resetMousePosition never ran in this repository, KN-369 found, because the plugin adds its setup file only when the root config enables the browser. So before KN-260 there was no pointer reset at all, and the lingering pointer can have been a cause; the transition read is the other, seen directly in JobCard Pressed and NavItem Hover. With the park, both remaining flakes are the transition read."
       ],
       "createdAt": "2026-09-11T17:43:31.970Z",
-      "updatedAt": "2026-09-11T19:47:52.305Z"
+      "updatedAt": "2026-09-11T20:18:49.109Z"
     },
     {
       "id": "KN-366",
@@ -9634,14 +9635,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
-      "exit": "parkPointer and its command are gone, the suite relies on Storybook's resetMousePosition, DESIGN or TECH-DEBT says so where the next person would look, and the Input's pair of stories is kept only if it asserts something the reset decides.",
+      "status": "in_progress",
+      "exit": "The suite's pointer park moves the pointer off the page, not to its corner, and says why it exists; whether Storybook's own resetMousePosition runs in this repository is established from the resolved Vitest config, and TECH-DEBT says what retires the park; a whole storybook run passes but for KN-365's flakes.",
       "roasts": [],
       "notes": [
-        "CHILD OF KN-011, not KN-260: KN-260 is itself KN-011's child, and a finding is filed one level only, RALPH step 6."
+        "CHILD OF KN-011, not KN-260: KN-260 is itself KN-011's child, and a finding is filed one level only, RALPH step 6.",
+        "2026-09-11, while doing it: the card's premise was false. Storybook's resetMousePosition never runs here: addon-vitest's configureVitest adds its setup-file.browser.4 only when the ROOT config enables the browser, and createVitest resolves the storybook project with .storybook/vitest.setup.ts as its only setup file. Removing parkPointer made a whole run fail the Contact Card's Full Hover and Full Tab Order, the card hovered when they began. So the park stays, moved off the page, and the exit condition is corrected to the truth rather than the belief it was written on."
       ],
       "createdAt": "2026-09-11T18:15:28.417Z",
-      "updatedAt": "2026-09-11T18:23:08.364Z"
+      "updatedAt": "2026-09-11T20:18:48.980Z"
     },
     {
       "id": "KN-370",

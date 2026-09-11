@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-369` KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal** (high, 1 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-369` | KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal | high | 1 | web | none | The suite's pointer park moves the pointer off the page, not to its corner, and says why it exists; whether Storybook's own resetMousePosition runs in this repository is established from the resolved Vitest config, and TECH-DEBT says what retires the park; a whole storybook run passes but for KN-365's flakes. |
+
 ## Blocked (4)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -19,12 +25,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (233)
+## Backlog (232)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-369` | KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal | high | 1 | web | none | parkPointer and its command are gone, the suite relies on Storybook's resetMousePosition, DESIGN or TECH-DEBT says so where the next person would look, and the Input's pair of stories is kept only if it asserts something the reset decides. |
 | `KN-373` | In Persian the Status Picker's left and right arrows move against its choices in Safari, as the Color Picker's did | high | 1 | web | none | The Status Picker's radio group takes arrowsAcross, and a story presses real left and right arrows in both languages through vitest/browser, landing on the choice beside the chosen one on screen and choosing it, while an arrow pressed on the New status button moves nothing. |
 | `KN-391` | A step, source or draft change during the add modal's reading lets the old answer overwrite the restarted flow | high | 1 | web | none | A restart from changed props drops any reading in flight, by the flow the answer belongs to rather than a ref written during render, so a late answer applies only to the flow that started it; a story changes the step while the loading panel waits and resolves the reading after, and the new step stays. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
@@ -4761,14 +4766,14 @@ CHILD OF KN-214, recorded in prose because board.json cannot express parent_task
 
 ### `KN-369` KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-260, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-260 roast and confirmed in node_modules/@storybook/addon-vitest/dist/vitest-plugin/index.js: the Storybook plugin registers a resetMousePosition command, Playwright's mouse.move(-1000, -1000), and its setup-file.browser.4 calls it before every test. The parkPointer command KN-260 added runs as well and moves the pointer to (0,0), which in a story that opens a modal at once, AddJobModal's or JobModal's, lies on the modal's backdrop. LeavesThePointerOnTheField and StartsAtRest pass with either reset and prove neither.
 
 **Why.** A second reset that is worse than the first, and a check that cannot tell them apart, is debt that looks like a fix.
 
-**Exit condition.** parkPointer and its command are gone, the suite relies on Storybook's resetMousePosition, DESIGN or TECH-DEBT says so where the next person would look, and the Input's pair of stories is kept only if it asserts something the reset decides.
+**Exit condition.** The suite's pointer park moves the pointer off the page, not to its corner, and says why it exists; whether Storybook's own resetMousePosition runs in this repository is established from the resolved Vitest config, and TECH-DEBT says what retires the park; a whole storybook run passes but for KN-365's flakes.
 
 ### `KN-370` The Status Chip's direction contract says 'first letter' where dir=auto reads the first strong character, and 'cuts the end' where the ellipsis cuts the line's visual end
 

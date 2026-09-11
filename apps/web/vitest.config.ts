@@ -6,12 +6,18 @@ import { defineConfig } from 'vitest/config'
 
 const dirname = fileURLToPath(new URL('.', import.meta.url))
 
-// Moves the runner's real pointer to the page's top-left corner, where it
-// hovers none of a story's controls, KN-260. A command rather than a hover of
-// some element, because Playwright's hover waits for its target to be visible
-// and stable, which an element added before a story renders never is.
+// Moves the runner's real pointer off the page, where it hovers nothing,
+// KN-260 and KN-369. Storybook's vitest plugin has a reset of its own,
+// resetMousePosition to the same place, but it adds the setup file that calls
+// it only when the ROOT config enables the browser, and here only the
+// storybook project does, so it never runs: this is the suite's one reset,
+// TECH-DEBT 19. Off the page rather than at its corner, where a story that
+// opens a modal at once has the modal's backdrop. A command rather than a
+// hover of some element, because Playwright's hover waits for its target to
+// be visible and stable, which an element added before a story renders never
+// is.
 const parkPointer = defineBrowserCommand(async (context) => {
-  await context.page.mouse.move(0, 0)
+  await context.page.mouse.move(-1000, -1000)
 })
 
 /**

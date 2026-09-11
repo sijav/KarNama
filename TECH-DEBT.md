@@ -480,3 +480,29 @@ text direction, as Blink's `radio_input_type.cc` does, remove `arrowsAcross`,
 its `onKeyDown` and the stories' check that the row took the key, and where the
 ArrowsInPersian and ArrowsInEnglish stories land still passes.
 
+## 19. The suite parks the pointer itself, because Storybook's own reset never runs here
+
+**What.** `apps/web/vitest.config.ts` gives the browser a `parkPointer`
+command, Playwright's `mouse.move(-1000, -1000)`, and `.storybook/vitest.setup.ts`
+calls it before every story, KN-260 and KN-369. `@storybook/addon-vitest` has
+the same reset, `resetMousePosition`, but its `configureVitest` adds the setup
+file that calls it only when the ROOT Vitest config enables the browser; this
+repository enables it inside the storybook project alone, and the resolved
+project lists `.storybook/vitest.setup.ts` as its only setup file.
+
+**Why it is like that.** The Hover stories move the runner's real pointer, as
+they must, and nothing else moves it back; the next story that draws a control
+under the spot starts hovered. KN-369 removed the park on the belief that the
+plugin's reset covered it, and the whole storybook project then failed the
+Contact Card's Full Hover and Full Tab Order, which found the card already
+hovered when they began; the park came back, off the page rather than at the
+corner, where a story that opens a modal at once has its backdrop.
+
+**What it costs.** A command of our own for what the plugin means to do, and a
+dependency on the plugin's rule for when it adds its setup file.
+
+**The check that retires this.** Resolve the storybook project's setup files,
+as KN-369 did through `createVitest`, after a Storybook or Vitest upgrade: when
+the plugin's `setup-file.browser.4` is among them, delete `parkPointer` and
+this entry, and the Contact Card's stories still pass in a full run.
+

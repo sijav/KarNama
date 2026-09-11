@@ -29,7 +29,8 @@ Object.assign(globalThis, { __KARNAMA_STORY_TEST__: true })
 // it back, so the next story to draw a control under the spot started hovered
 // and a resting-state assertion failed or passed by where the mouse had been.
 // Once for the whole suite, by the parkPointer command vitest.config.ts gives
-// the browser: the pointer goes to the page's top-left corner.
+// the browser: the pointer goes off the page. Storybook's own reset never runs
+// in this repository, TECH-DEBT 19, so this one is not a second.
 declare module 'vitest/browser' {
   interface BrowserCommands {
     parkPointer: () => Promise<void>
