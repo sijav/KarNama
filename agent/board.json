@@ -8962,14 +8962,16 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter.",
       "roasts": [],
       "notes": [
         "2026-09-11: the Change Status modal now exists, KN-028; the file's job modal opens it from the Status Control, 377:6244, which would make the control's popup a real named dialog."
       ],
       "createdAt": "2026-09-11T14:47:00.426Z",
-      "updatedAt": "2026-09-11T19:23:10.996Z"
+      "updatedAt": "2026-09-11T19:30:02.324Z",
+      "evidence": "OpensOnTheChosenStatus: Tab and Enter open the dialog named تغییر وضعیت with focus on the checked status; ChoosingAStatus confirms a choice and EscapeCancels changes nothing, focus back on the control; the Change Status modal and Job Modal stories updated; all five failed before; 49 stories pass; looked at in Persian light and English dark.",
+      "closedAt": "2026-09-11T19:30:02.324Z"
     },
     {
       "id": "KN-338",

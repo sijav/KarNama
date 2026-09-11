@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 144 of 382 tasks done · 323 of 823 points.
+Project **KarNama** · 145 of 382 tasks done · 324 of 823 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-337` The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-337` | The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel | high | 1 | web | none | The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter. |
+**Next up: `KN-341` The full Contact Card's checkbox is reached only by Shift+Tab, after the name** (high, 1 pt, web)
 
 ## Blocked (4)
 
@@ -261,7 +255,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (144)
+## Done (145)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -395,6 +389,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-314` | A controlled Search Bar still runs a pending search for a value its parent has since replaced | high | 1 | web | none | In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call. |
 | `KN-320` | The Page Header's back control is a 20 by 20 target, under the 24 the product asks of a control | high | 1 | web | none | The back control's target is 24 or more each way while the arrow stays 20 and stays 12 from the title, and the WithBack story measures both. |
 | `KN-322` | Storybook never loads Vazirmatn, so every story draws its type in the system font | high | 1 | web | none | preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text. |
+| `KN-337` | The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel | high | 1 | web | none | The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -4385,7 +4380,7 @@ CHILD OF KN-024, recorded in prose because board.json cannot express parent_task
 
 ### `KN-337` The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-020, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-020 roast. The control carries aria-haspopup dialog, but the Popover it opens has no dialog role and no name, and MUI focuses the panel itself, so a keyboard or screen reader user lands on an unnamed container and must Tab before reaching the chosen status.
