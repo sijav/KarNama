@@ -5639,12 +5639,14 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "parseStoryDoc reports a malformed file rather than absorbing it: an unknown level-two heading and a duplicate level-three name are each errors with their own message naming the file and the heading. The guard surfaces them. Both are unit tests, and a mutation removing either rejection makes its test fail. The existing eight docs files still parse unchanged, proved by the guard still passing.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T02:59:37.515Z",
-      "updatedAt": "2026-09-11T21:47:26.793Z"
+      "updatedAt": "2026-09-11T21:58:48.790Z",
+      "evidence": "parseStoryDoc returns problems, an Error per line at fault naming the line and heading, for an unknown section (its lines kept out of every entry), a second ### of one name (the first kept), text before a section's first ### and a ### outside both; the guard fails on any, naming the file, and a planted ## Accessibility fails it; every docs file fits; 56 story-docs tests pass, parse.ts at 100 percent",
+      "closedAt": "2026-09-11T21:58:48.790Z"
     },
     {
       "id": "KN-203",
