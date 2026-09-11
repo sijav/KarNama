@@ -7344,10 +7344,11 @@
       "exit": "An Input with neither a helper nor an error draws no message line and is 64 tall, as the 91 screen instances draw it; with a helper or an error it is 90, the file's variants; an error appearing on a field without a helper adds the line with its message; an error on a field that has a helper replaces the helper with the error's message and the field's aria-describedby then names the error, and clearing the error brings the helper back; a blank error still draws no line; stories assert the 64 and the 90, the line appearing with the error, and the error replacing a helper, with a mutation that keeps the helper over the error failing by name, replacing ErrorDoesNotMoveTheField and WithoutAHelper's reserved line; every other place that asserts the reserved line is changed with it, KN-011's verifier and both languages' story docs included; DESIGN.md records the owner's reversal of KN-011's decision; and the Input's comment about the line always keeping its height is corrected.",
       "roasts": [],
       "notes": [
-        "2026-09-10: exit tightened after the KN-285 roast, which showed the first wording let the helper stay over an error, and let KN-011's verifier and the story docs keep asserting the reserved line after the change."
+        "2026-09-10: exit tightened after the KN-285 roast, which showed the first wording let the helper stay over an error, and let KN-011's verifier and the story docs keep asserting the reserved line after the change.",
+        "2026-09-11, from the plan check: a helper made only of blank characters is treated as no helper, by KN-254's blank-error rule, so it draws no line and describes nothing; stated here and asserted by WithoutAHelper, since the exit does not name it. Under the reserved line a blank helper cost nothing; with the line drawn on demand it would draw an empty line under a gap."
       ],
       "createdAt": "2026-09-10T17:57:44.885Z",
-      "updatedAt": "2026-09-11T08:32:37.184Z"
+      "updatedAt": "2026-09-11T08:36:32.433Z"
     },
     {
       "id": "KN-288",

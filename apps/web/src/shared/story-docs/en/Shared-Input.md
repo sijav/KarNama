@@ -168,13 +168,20 @@ without an icon.
 
 ### WithoutAHelper
 
-A label and nothing under it. With no message the field points at no
-description, and the empty line still holds its place.
+A label and nothing under it, as every field on the screens is drawn: 64 tall,
+no line under the field and no description. A helper of only blank characters
+is no helper, so the second field is the same.
 
-### ErrorDoesNotMoveTheField
+### ErrorAddsTheLine
 
-A field with no message beside one with an error: the same height, so nothing
-below either of them moves.
+A field with no helper beside the same field with an error. The first is 64
+tall; the error adds the line with its message, so the second is 90, and what
+is below it moves down by that line.
+
+### ErrorReplacesTheHelper
+
+A field with a helper and an error: its one line says the error alone, and the
+field is described by the error until it clears and the helper comes back.
 
 ### BlankErrorIsNoError
 

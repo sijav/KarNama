@@ -21,7 +21,7 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**105 done, 189 open, 2 blocked, 2 dropped** of 298 (2026-09-11). Coverage 100
+**107 done, 188 open, 2 blocked, 2 dropped** of 299 (2026-09-11). Coverage 100
 percent on all four metrics. **Deployed**: https://sijav.github.io/KarNama/ and
 Storybook at https://sijav.github.io/KarNama/storybook/, both from
 `.github/workflows/pages.yml` on every push. The API needs
@@ -33,8 +33,8 @@ until screens start, which is after components.
 
 **Open children**, all critical unless marked. KN-011: KN-206, KN-251 (low),
 KN-255, KN-256 (low), KN-257 (medium), KN-260 (high), KN-268 (low), KN-275,
-KN-277 (low), KN-278 (low), KN-279, KN-287, KN-289 (low), KN-290, KN-295,
-KN-296, KN-297 (in progress), KN-298. KN-013: KN-293. KN-017: KN-294.
+KN-277 (low), KN-278 (low), KN-279, KN-287 (in progress), KN-289 (low),
+KN-290, KN-295, KN-296, KN-299 (low). KN-013: KN-293. KN-017: KN-294.
 KN-010: KN-240 (low), KN-264 (waits on KN-062). A finding from a child's roast
 sits under the same parent, one level. When a parent's last child closes,
 roast the parent with all its children.
@@ -61,9 +61,14 @@ shadow; 7.5 after its critical was dismissed, a note left on KN-279 for the
 pressed-selected look), KN-283 (the Input stories measure where the text
 starts; 4.0, KN-297), KN-286 (an Input's error lands in a role alert span
 present from the first render; 7.2, KN-298). The Input verifier batch passed
-21 of 21 once KN-245's anchor, moved by KN-280, was fixed. KN-297 was narrowed
-before building: Chromium ignores direction and writing-mode on ::placeholder,
-measured; its guards are on the input.
+21 of 21 once KN-245's anchor, moved by KN-280, was fixed. KN-297 (narrowed
+before building, Chromium ignoring direction and writing-mode on
+::placeholder; its guards are on the input; 8.1, nothing) and KN-298 (an error
+replaced by another lands in the same alert node; 7.5, KN-299 low) closed and
+roasted. KN-287 is built: the Input's column has no gap, the line takes its 4
+only when it speaks, 64 bare and 90 with a message, a blank helper is none,
+KN-011's and KN-285's verifiers follow; its verifier runs, then the whole
+Input verifier batch as a regression pass before the close.
 
 **KN-214 is deliberately held at high**: lingui compiles `ignore` with no flags,
 so `^[^\p{L}]*$` means "contains no p, {, L or }", and every Persian literal and
@@ -143,12 +148,11 @@ screens draw it, KN-285 and KN-287. The job level list and KN-077 still wait.
 
 ## The next step
 
-Finish KN-297: its verifier runs in the background (scratchpad
-verify-KN-297.out, about 25 minutes); commit, close, roast. Then by the law:
-KN-298 (1), KN-287, KN-290, KN-293, KN-294, KN-295, KN-296, then KN-279 (3),
-KN-275 (3), KN-206, KN-226, KN-255, KN-221, and the components KN-019, KN-023,
-KN-062, KN-008, KN-009, KN-012. KN-287 must keep KN-286's alert span mounted
-and exposed when the message line collapses.
+Finish KN-287: its verifier (scratchpad verify-KN-287.out), then the Input
+verifier batch, then commit, close and roast. Then by the law: KN-290, KN-293,
+KN-294, KN-295, KN-296, then KN-279 (3), KN-275 (3), KN-206, KN-226, KN-255,
+KN-221, KN-299 (low), and the components KN-019, KN-023, KN-062, KN-008,
+KN-009, KN-012.
 
 ## What to read first
 

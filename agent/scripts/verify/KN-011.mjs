@@ -6,6 +6,10 @@
 // so the field does not jump when an error appears, and the label is bound to
 // the input for screen readers.
 //
+// The reserved line was the one clause the owner reversed, KN-285: since
+// KN-287 the line is drawn only when there is something to say, and the check
+// for that clause holds the new rule, a reserved line failing WithoutAHelper.
+//
 // Each guarantee has a story that measures it and a mutation here that breaks
 // exactly that and requires exactly that story to fail.
 //
@@ -43,7 +47,9 @@ check('the six state stories and the two behaviour stories pass', () => {
   const { code, output } = stories()
   if (code !== 0) return `they fail before anything is broken:\n${output.slice(-800)}`
   const source = readFileSync(STORIES, 'utf8')
-  const missing = ['Default', 'Filled', 'Focus', 'WithError', 'Disabled', 'Hover', 'LabelIsBound', 'ErrorDoesNotMoveTheField'].filter(
+  // ErrorAddsTheLine replaced ErrorDoesNotMoveTheField when the owner reversed
+  // the reserved line, KN-285, KN-287.
+  const missing = ['Default', 'Filled', 'Focus', 'WithError', 'Disabled', 'Hover', 'LabelIsBound', 'ErrorAddsTheLine'].filter(
     (name) => !new RegExp(`export const ${name}: Story`).test(source),
   )
   return missing.length ? `there is no ${missing.join(', ')} story` : null
@@ -51,7 +57,12 @@ check('the six state stories and the two behaviour stories pass', () => {
 
 for (const [label, from, to, story] of [
   ['THE CASE: the error state is measured, border/error on the field', "const edge = error === undefined ? colour['border/default'] : colour['border/error']", "const edge = colour['border/default']", 'With Error'],
-  ['the helper line reserves its space, so an error does not move the form', '          minHeight: `${body.lineHeight}px`,\n', '', 'Error Does Not Move The Field'],
+  [
+    'the line is drawn only when there is something to say, so a reserved line fails',
+    "          marginTop: message === undefined ? 0 : `${spacing['2xs']}px`,\n",
+    "          marginTop: message === undefined ? 0 : `${spacing['2xs']}px`,\n          minHeight: `${body.lineHeight}px`,\n",
+    'Without A Helper',
+  ],
   ['the label is bound to the input', '        htmlFor={id}\n', '', 'Label Is Bound'],
   ['focus is two pixels wide', '              borderWidth: 2,\n', '', 'Focus'],
   ['hover takes the text/secondary border', "            ...(error === undefined ? { '&:hover:not(.Mui-focused):not(.Mui-disabled)::before': { borderColor: colour['text/secondary'] } } : {}),\n", '', 'Hover'],

@@ -250,6 +250,8 @@ punctuation mark or symbol makes it a real message, and a real message that
 contains any of those characters is still an error. A form that clears an
 error to the empty string rather than to nothing would otherwise leave a valid
 field red, and a screen reader would announce it invalid with nothing to say why.
+A blank helper is no helper by the same rule: it draws no line and describes
+nothing, KN-287.
 
 **And an error is announced as it appears**, to someone still typing in the
 field: a changed description is not read while focus stays, so the error goes
@@ -803,8 +805,11 @@ line is drawn when there is a helper or an error, an error appearing adds it
 with its message and moves what is below by 26, and a field with neither is
 the screens' 64. Not keeping the line reserved, not reserving it only on
 fields that validate, and not asking the designer first. This reverses
-KN-011's decision; KN-287 builds it, and a new error is announced to a
-screen reader whichever way, KN-286.
+KN-011's decision, and KN-287 built it: the Input's column has no gap, the
+label keeps its 4 below it and the line takes its 4 above only when it has
+something to say, so a field with neither is 64 and one with either is 90; a
+helper made only of blank characters is no helper. A new error is announced
+to a screen reader whichever way, KN-286.
 
 ## 7. The Documentation canvas, frame by frame
 

@@ -55,7 +55,8 @@ const recordProblem = (design) => {
     ['the chosen option', /chose \*\*to follow the screens\*\*/],
     ['where an error shows', /an error appearing adds it with its message/],
     ['the options not taken', /Not keeping the line reserved/],
-    ['the reversal and its card', /This reverses KN-011's decision; KN-287 builds it/],
+    // Worded as built once KN-287 landed.
+    ['the reversal and its card', /This reverses KN-011's decision(; KN-287 builds it|, and KN-287 built it)/],
     ['the announcement, either way', /KN-286/],
   ].filter(([, pattern]) => !pattern.test(said))
   return missing.length ? `the decision does not state ${missing.map(([what]) => what).join(', ')}` : null

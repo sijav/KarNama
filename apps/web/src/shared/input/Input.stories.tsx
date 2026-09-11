@@ -754,37 +754,79 @@ export const Typing: Story = {
   },
 }
 
+// The whole Input around a textbox, label, field and message line, and its
+// message line, the element the field would be described by.
+const inputOf = (box: HTMLElement) => {
+  const whole = box.parentElement?.parentElement
+  const line = whole?.lastElementChild
+  if (!(whole instanceof HTMLElement) || !(line instanceof HTMLElement)) throw new Error('the textbox is not inside an Input')
+  return { whole, line }
+}
+
 export const WithoutAHelper: Story = {
-  // A fixed render with no helper at all, which the specimen always has.
+  // No helper, which the specimen always has, and a helper of only blank
+  // characters, which is none: the file's 64, label, 4 and field, no line
+  // drawn and nothing to describe the field by, KN-287. The alert that an
+  // error would land in is still in the page, at no size, KN-286. A fixed
+  // render, so no control applies.
   parameters: { controls: { disable: true } },
-  render: () => <Bare />,
+  render: () => (
+    <Stack direction="row" spacing={3} sx={{ alignItems: 'flex-start' }}>
+      <Bare />
+      <Bare helperText="   " />
+    </Stack>
+  ),
   play: async ({ canvasElement }) => {
-    // Nothing to describe it by, so it points at nothing, and the empty line
-    // still holds its place.
-    await expect(within(canvasElement).getByRole('textbox')).not.toHaveAttribute('aria-describedby')
+    const boxes = within(canvasElement).getAllByRole('textbox')
+    await expect(boxes).toHaveLength(2)
+    for (const box of boxes) {
+      const { whole, line } = inputOf(box)
+      await expect(box).not.toHaveAttribute('aria-describedby')
+      await expect(whole.getBoundingClientRect().height).toBe(64)
+      await expect(line.getBoundingClientRect().height).toBe(0)
+      await expect(within(line).getByRole('alert')).toBeEmptyDOMElement()
+    }
   },
 }
 
-export const ErrorDoesNotMoveTheField: Story = {
+export const ErrorAddsTheLine: Story = {
+  // A field with no helper beside the same field with an error, top aligned,
+  // NOT stretched, which would give both the taller one's height: the first is
+  // the file's 64 with no line, the second its 90, the error adding the line
+  // with its message, the owner's decision of KN-285, KN-287. A fixed render,
+  // so no control applies.
   parameters: { controls: { disable: true } },
-  // Side by side, with no message at all and with an error: the line under the
-  // field keeps its height either way, so validation never shifts what comes
-  // after it in a form. Aligned to the top, NOT stretched: a stretching row
-  // gave both the taller one's height, and the first version passed with the
-  // reserved line removed.
   render: () => (
-    <Stack direction="row" spacing={3} data-testid="pair" sx={{ alignItems: 'flex-start' }}>
-      <JobTitle helperText="" />
-      <JobTitle withError />
+    <Stack direction="row" spacing={3} sx={{ alignItems: 'flex-start' }}>
+      <Bare />
+      <Bare error={i18n._('This field cannot be empty')} />
     </Stack>
   ),
   play: async ({ canvasElement }) => {
     const [plain, failing] = within(canvasElement).getAllByRole('textbox')
     if (!plain || !failing) throw new Error('the two fields did not render')
-    const [first, second] = [...within(canvasElement).getByTestId('pair').children]
-    if (!(first instanceof HTMLElement) || !(second instanceof HTMLElement)) throw new Error('the pair is not two elements')
-    await expect(first.offsetHeight).toBe(second.offsetHeight)
-    await expect(plain.getBoundingClientRect().top).toBe(failing.getBoundingClientRect().top)
+    await expect(inputOf(plain).whole.getBoundingClientRect().height).toBe(64)
+    await expect(inputOf(failing).whole.getBoundingClientRect().height).toBe(90)
+    await expect(inputOf(failing).line.getBoundingClientRect().height).toBe(22)
+    await expect(inputOf(failing).line).toHaveTextContent(i18n._('This field cannot be empty'))
+    await expect(failing).toHaveAccessibleDescription(i18n._('This field cannot be empty'))
+  },
+}
+
+export const ErrorReplacesTheHelper: Story = {
+  // The specimen, which has a helper, with an error: the line is the file's one
+  // line, 90 tall, and it says the error alone, the helper gone from it and
+  // from the field's description until the error clears, KN-287. A fixed
+  // render, so no control applies.
+  parameters: { controls: { disable: true } },
+  render: () => <JobTitle withError />,
+  play: async ({ canvasElement }) => {
+    const box = within(canvasElement).getByRole('textbox')
+    const { whole, line } = inputOf(box)
+    const message = i18n._('This field cannot be empty')
+    await expect(whole.getBoundingClientRect().height).toBe(90)
+    await expect(line.textContent).toBe(message)
+    await expect(box).toHaveAccessibleDescription(message)
   },
 }
 
@@ -864,6 +906,12 @@ export const ErrorAnnouncedWhileTyping: Story = {
     ]) {
       const field = within(canvasElement).getByTestId(id)
       const box = within(field).getByRole('textbox')
+      // The line is drawn while there is something to say: the described
+      // field is 90 throughout, the bare one 64 until an error adds its line,
+      // KN-287.
+      const { whole } = inputOf(box)
+      const valid = helper === undefined ? 64 : 90
+      await expect(whole.getBoundingClientRect().height).toBe(valid)
       // The region is in the page before anything goes wrong, and empty.
       const region = within(field).getByRole('alert')
       await expect(region).toBeEmptyDOMElement()
@@ -874,6 +922,7 @@ export const ErrorAnnouncedWhileTyping: Story = {
       await expect(region).toHaveTextContent(message)
       await expect(box).toHaveAttribute('aria-invalid', 'true')
       await expect(box).toHaveAccessibleDescription(message)
+      await expect(whole.getBoundingClientRect().height).toBe(90)
       // One character: the error is replaced by another, focus kept, and it is
       // the same region, still in the page, that carries it, not a new one.
       await userEvent.type(box, 'x')
@@ -882,11 +931,13 @@ export const ErrorAnnouncedWhileTyping: Story = {
       await expect(within(field).getByRole('alert')).toBe(region)
       await expect(region).toHaveTextContent(short)
       await expect(box).toHaveAccessibleDescription(short)
+      await expect(whole.getBoundingClientRect().height).toBe(90)
       await userEvent.type(box, 'y')
       await expect(region).toBeEmptyDOMElement()
       await expect(box).not.toHaveAttribute('aria-invalid')
       if (helper === undefined) await expect(box).not.toHaveAttribute('aria-describedby')
       else await expect(box).toHaveAccessibleDescription(helper)
+      await expect(whole.getBoundingClientRect().height).toBe(valid)
     }
   },
 }

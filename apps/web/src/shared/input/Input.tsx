@@ -60,22 +60,31 @@ const Slot = ({ children }: { children: ReactNode }) => (
 const drawn = (node: ReactNode) => node !== undefined && node !== null && typeof node !== 'boolean' && !(typeof node === 'string' && isBlank(node))
 
 // Node 95:38, six states. The label is bound to the field for screen readers,
-// the helper or error line describes it, and that line always keeps its height,
-// so an error appearing never moves the field. It fills its container: the
-// 240 in the file is the specimen's width, not the field's.
+// and the helper or error line describes it. That line is drawn only when there
+// is something to say, as the screens draw it: the Input is 64 tall without
+// one and 90 with one, and an error appearing adds it, the owner's decision of
+// KN-285, KN-287. It fills its container: the 240 in the file is the
+// specimen's width, not the field's.
 export const Input = ({ label, helperText, error: given, disabled = false, onChange, leadingIcon, trailingIcon, ...field }: InputProps) => {
   const id = useId()
   const messageId = `${id}-message`
   // A blank error is no error: a form that clears one to '' rather than to
   // undefined leaves the field valid, with its helper under it, KN-254.
   const error = given === undefined || isBlank(given) ? undefined : given
-  const message = error ?? helperText
+  // And a blank helper is no helper: it draws no line and describes nothing,
+  // KN-287.
+  const helper = helperText === undefined || isBlank(helperText) ? undefined : helperText
+  const message = error ?? helper
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing['2xs']}px` }}>
+    // No gap on the column: a gap is laid before an empty line too, and the
+    // line must take no room when it has nothing to say. The label keeps its 4
+    // below, and the line takes its 4 above only when it speaks, KN-287.
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <Box
         component="label"
         htmlFor={id}
         sx={(theme) => ({
+          marginBottom: `${spacing['2xs']}px`,
           fontSize: `${labelText.size}px`,
           lineHeight: `${labelText.lineHeight}px`,
           fontWeight: labelText.weight,
@@ -173,7 +182,10 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
       <Box
         id={messageId}
         sx={(theme) => ({
-          minHeight: `${body.lineHeight}px`,
+          // One 22 line under 4 while there is something to say; with nothing,
+          // only the empty alert span, no room at all, and nothing here may
+          // give it any: no padding, border or minimum height, KN-287.
+          marginTop: message === undefined ? 0 : `${spacing['2xs']}px`,
           fontSize: `${body.size}px`,
           lineHeight: `${body.lineHeight}px`,
           fontWeight: body.weight,
@@ -189,12 +201,12 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
             the field: a changed description is not read while focus stays, so
             the error goes into a live region, in the page from the first
             render and empty until then, WCAG 4.1.3, KN-286. role alert is
-            already assertive and atomic, so it takes no aria-live. KN-287,
-            collapsing a line with nothing to say, must keep this span mounted
-            and exposed, never hidden, or the next error lands in a region that
-            was not there. */}
+            already assertive and atomic, so it takes no aria-live. When the
+            line has nothing to say it collapses to nothing around this span,
+            which stays mounted and exposed, never hidden, or the next error
+            would land in a region that was not there, KN-287. */}
         <span role="alert">{error}</span>
-        {error === undefined ? helperText : null}
+        {error === undefined ? helper : null}
       </Box>
     </Box>
   )

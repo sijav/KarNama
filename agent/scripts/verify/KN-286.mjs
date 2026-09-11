@@ -32,7 +32,8 @@ const COMPONENT = join(WEB, 'src', 'shared', 'input', 'Input.tsx')
 const STORY = 'Error Announced While Typing'
 const { chromium } = createRequire(join(WEB, 'package.json'))('playwright')
 
-const REGION = '        <span role="alert">{error}</span>\n        {error === undefined ? helperText : null}\n'
+// The helper is `helper` since KN-287, a blank one being none.
+const REGION = '        <span role="alert">{error}</span>\n        {error === undefined ? helper : null}\n'
 const PLAIN = '        {message}\n'
 const ERRORS = { 'fa-IR': 'این فیلد نمی‌تواند خالی باشد', 'en-US': 'This field cannot be empty' }
 // The story's second rule, one character, since KN-298.
