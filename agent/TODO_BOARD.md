@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-322` Storybook never loads Vazirmatn, so every story draws its type in the system font** (high, 1 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-322` | Storybook never loads Vazirmatn, so every story draws its type in the system font | high | 1 | web | none | preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text. |
+
 ## Blocked (4)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -19,12 +25,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (231)
+## Backlog (230)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-322` | Storybook never loads Vazirmatn, so every story draws its type in the system font | high | 1 | web | none | preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text. |
 | `KN-337` | The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel | high | 1 | web | none | The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter. |
 | `KN-341` | The full Contact Card's checkbox is reached only by Shift+Tab, after the name | high | 1 | web | none | Tab from before the card reaches the checkbox, then the name, then the delete, in that order, with the row still keeping its 30 and the name still moving by 28, and a story tabs through them. |
 | `KN-342` | A contact with no role draws an empty role line and its divider | high | 1 | web | none | Role is optional in the card's type, the role line and its divider are left out when there is neither role nor company, and a story shows a name-only contact. |
@@ -4196,6 +4201,8 @@ CHILD OF KN-021, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The back control's target is 24 or more each way while the arrow stays 20 and stays 12 from the title, and the WithBack story measures both.
 
+**Roasts.** round 1 scored 9.5 with 0 critical(s)
+
 ### `KN-321` The Page Header's language switch is tested at 390 and 1440, not either side of the 900 it turns on
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -4209,7 +4216,7 @@ CHILD OF KN-021, recorded in prose because board.json cannot express parent_task
 
 ### `KN-322` Storybook never loads Vazirmatn, so every story draws its type in the system font
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 Found while building KN-022. '@fontsource-variable/vazirmatn' is imported only by apps/web/src/main.tsx; .storybook/preview.tsx imports no font, so the published library and the story tests draw Persian and English in whatever system-ui resolves to, Segoe UI on Windows. A text's width, a line break or a hugging component's size in a story is therefore not the design's.

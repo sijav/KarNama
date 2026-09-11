@@ -8668,7 +8668,20 @@
       "parent": [],
       "status": "done",
       "exit": "The back control's target is 24 or more each way while the arrow stays 20 and stays 12 from the title, and the WithBack story measures both.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 9.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-320-round-1.2026-09-11T19-14-49-391Z.md",
+          "filed": [],
+          "cardDigest": "94333d50b5df72a969cea021c4f53a74445fce322e125e89540f278500729e48",
+          "head": "cfdb073898985a839bb096fa1079872940a37d81",
+          "reviewerScore": 9.5,
+          "reviewerCriticals": 0,
+          "at": "2026-09-11T19:17:00.435Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T13:05:16.428Z",
       "updatedAt": "2026-09-11T19:14:33.014Z",
@@ -8699,11 +8712,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "preview.tsx loads the font the app loads, and a story shows through document.fonts that Vazirmatn is loaded before it measures text.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T13:16:02.486Z"
+      "createdAt": "2026-09-11T13:16:02.486Z",
+      "updatedAt": "2026-09-11T19:16:49.145Z"
     },
     {
       "id": "KN-323",
