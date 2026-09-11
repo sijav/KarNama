@@ -9046,12 +9046,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Tab from before the card reaches the checkbox, then the name, then the delete, in that order, with the row still keeping its 30 and the name still moving by 28, and a story tabs through them.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T15:05:28.397Z",
-      "updatedAt": "2026-09-11T19:30:29.332Z"
+      "updatedAt": "2026-09-11T19:35:30.132Z",
+      "evidence": "FullTabOrder presses real Tabs from before the card and meets the checkbox, the name, then the delete, with the row at 30 and the name moved by 28; Full finds them folded at rest; both failed on the old card; Contact Card and Job Modal stories 21 of 21; looked at in Persian light and English dark.",
+      "closedAt": "2026-09-11T19:35:30.132Z"
     },
     {
       "id": "KN-342",
