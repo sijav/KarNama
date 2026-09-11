@@ -3393,12 +3393,14 @@
       "parent": [
         "KN-005"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Every derived contrastText clears 4.5 to one against every fill the theme pairs it with, a test enumerates those pairs from the theme rather than from a hand-written list, and it fails when a fill changes without its text following.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-08T00:17:47.337Z",
-      "updatedAt": "2026-09-11T20:33:00.532Z"
+      "updatedAt": "2026-09-11T20:43:29.270Z",
+      "evidence": "darkMode.test.ts reads the palette's contrastText pairs and every filled Button state from LOOKS and finds each at 4.5 or more in the derived palette, with on-accent light and the accent fills dark; it failed on 8 pairs before; theme tests 497 of 497; the dark Destructive button draws white on #eb1515.",
+      "closedAt": "2026-09-11T20:43:29.270Z"
     },
     {
       "id": "KN-109",
