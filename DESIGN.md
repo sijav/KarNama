@@ -729,6 +729,10 @@ in the icon set. On mobile the tab bar carries the three drawn destinations and
 a fourth entry would change the design, so the switch belongs in the Page Header
 (`155:56`) as an optional trailing action rather than in the tab bar.
 
+The file draws two widths, 390 and 1440, and no breakpoint between them; the
+build takes MUI's `md`, 900 pixels, as the line: below it the switch sits in
+the Page Header, after its action, KN-021.
+
 Nothing else moves. If honouring this ever requires resizing or reflowing a
 drawn frame, stop and ask the owner rather than editing the design by hand.
 

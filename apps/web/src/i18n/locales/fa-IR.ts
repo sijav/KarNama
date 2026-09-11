@@ -45,4 +45,6 @@ export const messages: Record<string, string> = {
   'Search job opportunities': 'جستجوی فرصت‌های شغلی',
   'Clear search': 'پاک کردن جستجو',
   'Button': 'دکمه',
+  'Back': 'بازگشت',
+  'Add job opportunity': 'افزودن فرصت شغلی',
 }

@@ -42,4 +42,6 @@ export const messages: Record<string, string> = {
   'Search job opportunities': 'Search job opportunities',
   'Clear search': 'Clear search',
   'Button': 'Button',
+  'Back': 'Back',
+  'Add job opportunity': 'Add job opportunity',
 }
