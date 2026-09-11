@@ -43,7 +43,9 @@ interface Look {
   edge: boolean
 }
 
-const LOOKS: Record<ButtonVariant, Look> = {
+// Exported for the theme's contrast test, which reads every text and fill the
+// Button pairs from here rather than from a list of its own, KN-108.
+export const LOOKS: Record<ButtonVariant, Look> = {
   primary: {
     rest: { fill: 'bg/brand/default', text: 'text/on-accent' },
     hover: { fill: 'bg/brand/hover', text: 'text/on-accent' },

@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { DARK_FILLS, MIN_CONTRAST, contrast, darkSemantic, darkStatus, deriveDark, deriveDarkFill, deriveDarkSurface, ensureContrast, hexToHsl, hslToHex, luminance } from './darkMode'
+import { LOOKS } from '../shared/button'
+import { ACCENT_FILLS, DARK_FILLS, MIN_CONTRAST, contrast, darkSemantic, darkStatus, deriveDark, deriveDarkFill, deriveDarkSurface, ensureContrast, hexToHsl, hslToHex, luminance } from './darkMode'
+import { buildTheme } from './theme'
 import { semantic, status } from './tokens'
 
 // The tokens a dark page takes unchanged, each for a reason stated where it is
-// derived: the scrim alone, KN-028.
-const SAME_IN_BOTH: string[] = ['overlay/scrim']
+// derived: the scrim, KN-028, and the white on an accent fill, KN-108.
+const SAME_IN_BOTH: string[] = ['text/on-accent', 'overlay/scrim']
 
 /**
  * The dark palette is derived, so what is testable is the DERIVATION, not a
@@ -99,8 +101,9 @@ describe('the derivation does what it says', () => {
 
   it('gives every chromatic colour a lightness floor, so it stays readable on dark', () => {
     // Foregrounds and accents, that is: a fill is meant to be dark, and has its
-    // own assertions below, KN-272.
-    const fills = new Set<string>(DARK_FILLS)
+    // own assertions below, KN-272, and so is a fill that carries white text,
+    // KN-108.
+    const fills = new Set<string>([...DARK_FILLS, ...ACCENT_FILLS])
     for (const [name, hex] of Object.entries(darkSemantic)) {
       const { s, l } = hexToHsl(hex)
       if (s <= 0.2 || fills.has(name)) continue
@@ -291,5 +294,32 @@ describe('the old assertions, kept', () => {
     const light = new Set<string>(Object.values(semantic))
     const survivors = Object.entries(darkSemantic).filter(([, hex]) => light.has(hex))
     expect(survivors.map(([name]) => name)).toEqual(SAME_IN_BOTH)
+  })
+})
+
+describe('every text the theme puts on a fill reads there, KN-108', () => {
+  // The pairs are read from where the product makes them, not listed here:
+  // each palette colour the theme sets, its contrastText on its main and on its
+  // dark, the fill a contained button hovers to; and every filled state of the
+  // Button's five styles, disabled text aside, which WCAG exempts. A fill that
+  // changes without its text following fails here.
+  const theme = buildTheme('rtl', 'dark')
+  const palette = [theme.palette.primary, theme.palette.error].flatMap((entry) => [
+    [entry.contrastText, entry.main],
+    [entry.contrastText, entry.dark],
+  ])
+  const button = Object.values(LOOKS)
+    .flatMap((look) => [look.rest, look.hover, look.pressed])
+    .flatMap((state) => (state.fill === null ? [] : [[darkSemantic[state.text], darkSemantic[state.fill]]]))
+
+  it.each([...palette, ...button])('%s reads on %s in the derived palette', (text, fill) => {
+    expect(contrast(text, fill)).toBeGreaterThanOrEqual(MIN_CONTRAST)
+  })
+
+  it('keeps the text on an accent fill light, as the design draws it, so the fills are what move', () => {
+    // A pair can clear 4.5 with black text on a lightened fill, which reads and
+    // is not the design: the first attempt at this card did exactly that.
+    expect(luminance(darkSemantic['text/on-accent'])).toBeGreaterThan(0.5)
+    for (const name of ACCENT_FILLS) expect(luminance(darkSemantic[name]), name).toBeLessThan(0.5)
   })
 })

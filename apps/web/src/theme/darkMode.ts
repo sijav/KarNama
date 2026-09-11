@@ -221,10 +221,33 @@ export const deriveDarkFill = (hex: string): string => {
  * under its own text, KN-272. One list, which the palette derives and the tests
  * read, so the two cannot disagree about which tokens are fills.
  */
-export const DARK_FILLS = ['bg/brand/container'] as const satisfies readonly (keyof typeof semantic)[]
+export const DARK_FILLS = ['bg/brand/container', 'accent/200'] as const satisfies readonly (keyof typeof semantic)[]
 
 /** The surface everything is read against, computed once so the text rows can cite it. */
 const darkSurface = deriveDarkSurface(semantic['bg/surface'])
+
+/**
+ * The text an accent fill carries, and the fills that carry it. The derivation
+ * left the danger fills at 3.9 and 4.1 to one under it and the two pressed
+ * fills at 4.1 and 3.8, short of 4.5 even under pure white, while the one check
+ * walked the text against the brand fill alone. Lighter text cannot help a fill
+ * that came out light, so each fill that carries it is walked darker until it
+ * reads; one that already clears it is left as it was, KN-108. The text is the
+ * design's white, kept: text on a saturated fill is light in both schemes, and
+ * deriveDark, which flips a light neutral to a dark one as a surface should,
+ * turned it black. The list is the palette's rows below and the tests read it:
+ * these fills are dark enough for white, so the foreground floor is not theirs.
+ */
+export const ACCENT_FILLS = [
+  'bg/brand/default',
+  'bg/brand/hover',
+  'accent/700',
+  'bg/danger/default',
+  'bg/danger/hover',
+  'red/700',
+] as const satisfies readonly (keyof typeof semantic)[]
+const onAccent = semantic['text/on-accent']
+const accentFill = (hex: string) => ensureContrast(deriveDarkSurface(hex), onAccent)
 
 /**
  * Every semantic token, derived. Not the design's values.
@@ -239,12 +262,13 @@ export const darkSemantic = {
   'bg/page': deriveDarkSurface(semantic['bg/page']),
   'bg/surface': deriveDarkSurface(semantic['bg/surface']),
   'bg/surface-secondary': deriveDarkSurface(semantic['bg/surface-secondary']),
-  'bg/brand/default': deriveDarkSurface(semantic['bg/brand/default']),
-  'bg/brand/hover': deriveDarkSurface(semantic['bg/brand/hover']),
+  // Fills that carry text/on-accent, walked until it reads on them.
+  'bg/brand/default': accentFill(semantic['bg/brand/default']),
+  'bg/brand/hover': accentFill(semantic['bg/brand/hover']),
   // A fill, one of DARK_FILLS: a selected Filter Chip reads text/brand on it.
   'bg/brand/container': deriveDarkFill(semantic['bg/brand/container']),
-  'bg/danger/default': deriveDarkSurface(semantic['bg/danger/default']),
-  'bg/danger/hover': deriveDarkSurface(semantic['bg/danger/hover']),
+  'bg/danger/default': accentFill(semantic['bg/danger/default']),
+  'bg/danger/hover': accentFill(semantic['bg/danger/hover']),
   // Text is derived AND THEN checked against the surface it sits on. The
   // derivation alone left secondary at 3.71 to one, brand at 2.62 and error at
   // 3.38, all below the 4.5 that makes normal text readable, while every HSL
@@ -253,7 +277,8 @@ export const darkSemantic = {
   'text/primary': ensureContrast(deriveDark(semantic['text/primary']), darkSurface),
   'text/secondary': ensureContrast(deriveDark(semantic['text/secondary']), darkSurface),
   'text/disabled': deriveDark(semantic['text/disabled']),
-  'text/on-accent': ensureContrast(deriveDark(semantic['text/on-accent']), deriveDarkSurface(semantic['bg/brand/default'])),
+  // Read on every accent fill, which are walked to it above rather than it to one of them.
+  'text/on-accent': onAccent,
   'text/brand': ensureContrast(deriveDark(semantic['text/brand']), darkSurface),
   'text/error': ensureContrast(deriveDark(semantic['text/error']), darkSurface),
   // The resting border shows no state, and the design itself draws it at 1.24
@@ -265,11 +290,15 @@ export const darkSemantic = {
   // focus at 2.81 to one on the surface, KN-271.
   'border/focus': ensureContrast(deriveDark(semantic['border/focus']), darkSurface, NON_TEXT_CONTRAST),
   'border/error': ensureContrast(deriveDark(semantic['border/error']), darkSurface, NON_TEXT_CONTRAST),
-  'accent/200': deriveDark(semantic['accent/200']),
-  'accent/700': deriveDark(semantic['accent/700']),
+  // A fill, one of DARK_FILLS: the Secondary and Text buttons' pressed state,
+  // under text/brand. Derived as a foreground it came out light, 1.30 to one
+  // under its own text, KN-108.
+  'accent/200': deriveDarkFill(semantic['accent/200']),
+  // A fill, the Primary button's pressed state, under text/on-accent.
+  'accent/700': accentFill(semantic['accent/700']),
   'gray/200': deriveDark(semantic['gray/200']),
   // A fill, the Destructive button's pressed state, derived as the danger fills are.
-  'red/700': deriveDarkSurface(semantic['red/700']),
+  'red/700': accentFill(semantic['red/700']),
   // The scrim dims whatever is under a modal, and black at half dims a dark
   // page as it does a light one, so it is the design's in both.
   'overlay/scrim': semantic['overlay/scrim'],

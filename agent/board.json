@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 396,
+  "nextId": 397,
   "tasks": [
     {
       "id": "KN-001",
@@ -3393,11 +3393,12 @@
       "parent": [
         "KN-005"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Every derived contrastText clears 4.5 to one against every fill the theme pairs it with, a test enumerates those pairs from the theme rather than from a hand-written list, and it fails when a fill changes without its text following.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-08T00:17:47.337Z"
+      "createdAt": "2026-09-08T00:17:47.337Z",
+      "updatedAt": "2026-09-11T20:33:00.532Z"
     },
     {
       "id": "KN-109",
@@ -10118,6 +10119,23 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T20:32:13.185Z"
+    },
+    {
+      "id": "KN-396",
+      "title": "The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs",
+      "desc": "Found while doing KN-108, which enumerated every text and fill the Button pairs: in the light palette, the design's own, text/on-accent #ffffff on bg/danger/default #ef4444 is 3.76 to one. The label is Body at 14 and 500, normal text, so WCAG AA asks 4.5; the hover, #dc2626 at 4.92, and the pressed red/700 pass. The tokens are the file's, and DESIGN.md says where code and Figma disagree Figma wins, so the fix is the owner's: darken bg/danger/default toward red 600, or accept the rest state at 3.76.",
+      "why": "A delete is the button where a misread is expensive, and the light palette is the one the design draws and most users see.",
+      "severity": "medium",
+      "points": 1,
+      "area": "design",
+      "parent": [],
+      "status": "blocked",
+      "exit": "The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T20:42:08.652Z",
+      "blockedReason": "The owner's decision: the design's own bg/danger/default under white text is 3.76 to one in the light palette; darken it in the file, or accept it, is a change to Figma's tokens.",
+      "updatedAt": "2026-09-11T20:42:14.488Z"
     }
   ]
 }
