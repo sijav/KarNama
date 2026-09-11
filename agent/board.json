@@ -9322,12 +9322,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "At the phone's width the shell shows the Page Header with its language switch, choosing a language there changes it and persists, and a story at 390 finds and uses the switch.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T16:35:53.189Z",
-      "updatedAt": "2026-09-11T19:51:30.682Z"
+      "updatedAt": "2026-09-11T19:56:44.421Z",
+      "evidence": "LanguageOnAPhone at 390 by 844 presses the header's switch, chooses English, and finds the page ltr, the heading English and en-US stored; Persian and English find the destination's name as the heading; all failed on the old shell; App, navigation and Page Header stories 24 of 24; looked at at phone width in both languages.",
+      "closedAt": "2026-09-11T19:56:44.421Z"
     },
     {
       "id": "KN-356",
