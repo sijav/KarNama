@@ -116,13 +116,35 @@ describe('the token set agrees with DESIGN.md', () => {
 const hex = /^#[0-9a-f]{6}([0-9a-f]{2})?$/i
 // One layer of a box-shadow: four lengths and an eight-digit colour.
 const shadowLayer = /^(-?\d+(px)? ){4}#[0-9a-f]{8}$/i
-// A token name as the design writes it: lower case, digits and hyphens, in
-// slash-separated steps, bg/brand/default.
+// The shape of a token name, used only to sift names out of the prose below.
 const tokenName = /^[a-z0-9-]+(\/[a-z0-9-]+)*$/
-// The one font stack: Vazirmatn first, then quoted families or CSS generics.
-const fontStack = /^'Vazirmatn[^']*'(, ('[^']+'|[a-z-]+))+$/
 
-const isDesignValue = (text: string) => hex.test(text) || fontStack.test(text) || text.split(', ').every((layer) => shadowLayer.test(layer))
+/**
+ * Every token name the Tokens section of DESIGN.md documents, lower case.
+ *
+ * The key check was this shape alone, which accepted `delete/application` as a
+ * key, and the Foundations page renders keys as visible labels, KN-234. A key
+ * now has to be a name the design writes down: each inline code span in the
+ * section, and each word of its spacing, radius and icon block.
+ */
+const documentedNames = (() => {
+  const section = design.slice(design.indexOf('## 1. Tokens'), design.indexOf('## 2.'))
+  const spans = [...section.matchAll(/`([^`\n]+)`/g)].flatMap((match) => match[1] ?? [])
+  const fenced = [...section.matchAll(/```[^\n]*\n([\s\S]*?)```/g)].flatMap((match) => match[1]?.split(/\s+/) ?? [])
+  return new Set([...spans, ...fenced].map((name) => name.trim().toLowerCase()).filter((name) => tokenName.test(name)))
+})()
+
+/**
+ * The one font stack, read from DESIGN.md and matched whole.
+ *
+ * The pattern that stood here allowed any text after Vazirmatn inside the first
+ * quoted family and any quoted family after it, so `'Vazirmatn', 'Delete this
+ * application'` was a design value, KN-234.
+ */
+const documentedStack = /`('Vazirmatn[^`\n]*)`/.exec(design)?.[1] ?? ''
+
+const isDesignValue = (text: string) =>
+  hex.test(text) || text === documentedStack || text.split(', ').every((layer) => shadowLayer.test(layer))
 
 /** Every string literal in `source` the checks refuse, with what it was used as. */
 const copyIn = (source: string): string[] => {
@@ -131,7 +153,7 @@ const copyIn = (source: string): string[] => {
   const visit = (node: ts.Node) => {
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
       const isKey = ts.isPropertyAssignment(node.parent) && node.parent.name === node
-      const allowed = isKey ? tokenName.test(node.text) : isDesignValue(node.text)
+      const allowed = isKey ? documentedNames.has(node.text.toLowerCase()) : isDesignValue(node.text)
       if (!allowed) found.push(`${isKey ? 'key' : 'value'} ${node.text}`)
     }
     // A template with substitutions can say anything, so it is never a token.
@@ -143,6 +165,16 @@ const copyIn = (source: string): string[] => {
 }
 
 describe('the token module holds design values and nothing a person reads', () => {
+  it('reads the design contract it checks against, so nothing below passes on an empty one', () => {
+    // The positive control. An empty name set or an empty stack would fail the
+    // module instead of passing it, but silently for the planted cases below.
+    expect(documentedNames.has('bg/page')).toBe(true)
+    expect(documentedNames.has('custom-4')).toBe(true)
+    expect(documentedNames.has('heading/l')).toBe(true)
+    expect(documentedNames.has('3xl')).toBe(true)
+    expect(documentedStack).toBe("'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif")
+  })
+
   it('has no string literal anywhere that is not a token name, a colour, a shadow or the font stack', () => {
     const source = readFileSync(fileURLToPath(new URL('./tokens.ts', import.meta.url)), 'utf8')
     expect(copyIn(source)).toEqual([])
@@ -155,7 +187,16 @@ describe('the token module holds design values and nothing a person reads', () =
     ['a string inside a Map', "export const labels = new Map([['delete', 'Delete this application']])"],
     ['copy assigned to the font stack', "export const fontFamily = 'Delete this application'"],
     ['a label keyed into a token object', "export const elevation = { label: 'Raised surface' }"],
+    // KN-234: each of these passed the shapes that stood here.
+    ['copy shaped like a token name, as a key', "export const semantic = { 'delete/application': '#2563eb' }"],
+    ['copy as a family after Vazirmatn', `export const fontFamily = "'Vazirmatn', 'Delete this application'"`],
+    ['copy inside the first quoted family', `export const fontFamily = "'Vazirmatn Delete this application', system-ui"`],
   ])('refuses %s', (_case, planted) => {
     expect(copyIn(planted)).not.toEqual([])
+  })
+
+  it('accepts a documented name as a key and the documented stack as a value', () => {
+    expect(copyIn(`export const semantic = { 'bg/page': '#f6f7f9' }`)).toEqual([])
+    expect(copyIn(`export const fontFamily = "${documentedStack}"`)).toEqual([])
   })
 })

@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 165 of 405 tasks done · 352 of 857 points.
+Project **KarNama** · 165 of 406 tasks done · 352 of 858 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-234` The token guard still accepts copy as a key or inside the font stack, and its retirement check trusts any lint failure** (high, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-234` | The token guard still accepts copy as a key or inside the font stack, and its retirement check trusts any lint failure | high | 2 | web | none | Every string-literal key in tokens.ts must be a token name DESIGN.md documents, not a shape; the font stack must equal the documented value exactly; planted cases for a copy key, copy after Vazirmatn and a copy family each fail the guard; and the retirement check requires a clean baseline lint and lingui errors attributable to tokens.ts, STORAGE_KEY and TOOLTIP_SURFACE once they are removed, reporting an unrelated error as unjudgeable rather than as the debt standing. |
 
 ## Blocked (5)
 
@@ -26,7 +32,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
-| `KN-234` | The token guard still accepts copy as a key or inside the font stack, and its retirement check trusts any lint failure | high | 2 | web | none | Every string-literal key in tokens.ts must be a token name DESIGN.md documents, not a shape; the font stack must equal the documented value exactly; planted cases for a copy key, copy after Vazirmatn and a copy family each fail the guard; and the retirement check requires a clean baseline lint and lingui errors attributable to tokens.ts, STORAGE_KEY and TOOLTIP_SURFACE once they are removed, reporting an unrelated error as unjudgeable rather than as the debt standing. |
 | `KN-295` | KN-274's story measures the focus change from a model: rounded bands counted as rectangles, and transforms and filters not read | high | 2 | web | none | FocusedWhileInvalid's area accounts for the rounded corners, from the exact quarter-ring areas of the edge's radius and the ring's or from a rendered reading, and still clears 4W + 4H; focusExtent requires what it does not model, transform, filter, clip-path and mask, to be none on the field, both pseudo-elements and the input, and counts the input's own outline; a transform and a filter on the ::after each fail FocusedWhileInvalid by name; the verifier also reads the rendered change on a field 80 wide or less, in light and dark, clearing 4W + 4H with nothing changed outside; and DESIGN.md's arithmetic states the corners' loss and the width above which the change clears the perimeter. |
 | `KN-296` | An Input icon given as an array, a fragment or a component that renders only blank text still draws an empty slot | high | 2 | web | none | An Input whose icon renders only blank text, through an array, a fragment or a component, draws no slot that takes room and its text box sits 16 from that edge, decided from what the slot rendered rather than from the prop; IconsTurnedOff covers an array of a space, a fragment holding a zero-width space and a component returning a space, each asserting a slot that takes no room; a mutation removing the rendered check fails it by name; and the comment on drawn() says nothing to read, with the lone-mark case named as deliberate. |
 | `KN-305` | The story fixtures have no seeded board and no job opportunity in three of the nine statuses | high | 2 | web | none | Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages. |
@@ -224,6 +229,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-395` | RestartWhileReading settles its held reading with an optional call, so it passes if the reading was never made | low | 1 | web | none | RestartWhileReading fails when no reading was made: it asserts onExtract was called with the source and throws if settleReading is unset before settling it. |
 | `KN-397` | The stories-glob test searches the patterns' text for mdx, not whether any pattern would index the MDX fixture | low | 1 | web | none | The test matches the fixture's path, and a few story paths that must be indexed, against each configured pattern with glob semantics, extglobs included, and finds the MDX fixture matched by none; AGENTS.md says a docs-only page is a CSF entry with its story-docs markdown. |
 | `KN-402` | The shared i18n singleton trails the provider by a commit, and nothing stops product code from reading it | low | 1 | web | none | npm run lint fails when product code outside src/i18n and AppProviders imports i18n from @lingui/core or from src/i18n, with a committed fixture that holds each import, and the comment in AppProviders says who may read the singleton and from when it is current. |
+| `KN-406` | KN-227's retirement check reads only the lint's exit code, so any unrelated error keeps TECH-DEBT 13 alive | low | 1 | agent | none | The check takes a baseline lint first and fails when that baseline is not clean; with the three exemptions removed it requires lingui errors whose files are tokens.ts, the storage key and the tooltip surface, and reports an unrelated error as an inconclusive run rather than as the exemptions being needed. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -3178,7 +3184,7 @@ CHILD OF KN-211, recorded in prose because board.json cannot express parent_task
 
 ### `KN-234` The token guard still accepts copy as a key or inside the font stack, and its retirement check trusts any lint failure
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** in_progress · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-227, recorded in prose because board.json cannot express parent_task yet, KN-188. Three findings from the KN-227 roast, all confirmed by reading the guard and the verifier, filed together as one guard and one check. FIRST: keys are validated by a SHAPE, lowercase slash-separated, so delete/application passes as a key, and the Foundations page renders token keys as visible labels; the contract tests constrain the existing exports' keys, but a new export's keys are checked by the shape alone. SECOND: the font-stack pattern allows any text after Vazirmatn inside the first quoted family and any quoted family after it, so "'Vazirmatn', 'Delete this application'" passes. THIRD: KN-227.mjs's retirement check reads only the lint exit code, so an unrelated lint error makes the three exemptions look necessary forever.
@@ -5199,4 +5205,15 @@ CHILD OF KN-007, recorded in prose because board.json cannot express parent_task
 **Why.** The format is documented as rigid and the guard as checking it; each of these is an author's mistake that renders wrongly on a Docs page and is caught by nobody.
 
 **Exit condition.** parseStoryDoc reports, with its line, a heading of level one or of level four and deeper outside a fence, a fence still open at the end of the file, at the line it opened, and an entry with no prose; each has a unit test asserting its message; the guard still passes on every docs file; AGENTS.md's sentence on the format lists what fails it and claims no more.
+
+### `KN-406` KN-227's retirement check reads only the lint's exit code, so any unrelated error keeps TECH-DEBT 13 alive
+
+- **status** backlog · **severity** low · **points** 1 · **area** agent
+- **blocked by** none
+
+CHILD OF KN-227, recorded in prose because board.json cannot express parent_task yet, KN-188: the third finding of the KN-227 roast, split out of KN-234 on 2026-09-12 because it is about the loop rather than the product, which the owner's rule of 2026-09-11 puts at low unless it is actively breaking the work. agent/scripts/verify/KN-227.mjs removes the three lingui exemptions of TECH-DEBT 13 and asks whether npm run lint still fails, reading nothing but the exit code: a typo anywhere in apps/web makes the exemptions look necessary forever, and nobody would know. Nothing runs this file now: verifiers are not run at the close since 2026-09-11, and neither CI nor npm run contract calls it. KN-234 fixed the two halves that are product, the guard's key and font-stack checks.
+
+**Why.** The one command that says when TECH-DEBT 13 can go cannot tell a reason from a coincidence, so the exemptions outlive their need and no one can tell.
+
+**Exit condition.** The check takes a baseline lint first and fails when that baseline is not clean; with the three exemptions removed it requires lingui errors whose files are tokens.ts, the storage key and the tooltip surface, and reports an unrelated error as an inconclusive run rather than as the exemptions being needed.
 

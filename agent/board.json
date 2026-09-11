@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 406,
+  "nextId": 407,
   "tasks": [
     {
       "id": "KN-001",
@@ -6506,11 +6506,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Every string-literal key in tokens.ts must be a token name DESIGN.md documents, not a shape; the font stack must equal the documented value exactly; planted cases for a copy key, copy after Vazirmatn and a copy family each fail the guard; and the retirement check requires a clean baseline lint and lingui errors attributable to tokens.ts, STORAGE_KEY and TOOLTIP_SURFACE once they are removed, reporting an unrelated error as unjudgeable rather than as the debt standing.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T08:33:14.745Z"
+      "createdAt": "2026-09-10T08:33:14.745Z",
+      "updatedAt": "2026-09-11T22:14:33.117Z"
     },
     {
       "id": "KN-235",
@@ -10408,6 +10409,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T22:02:15.129Z"
+    },
+    {
+      "id": "KN-406",
+      "title": "KN-227's retirement check reads only the lint's exit code, so any unrelated error keeps TECH-DEBT 13 alive",
+      "desc": "CHILD OF KN-227, recorded in prose because board.json cannot express parent_task yet, KN-188: the third finding of the KN-227 roast, split out of KN-234 on 2026-09-12 because it is about the loop rather than the product, which the owner's rule of 2026-09-11 puts at low unless it is actively breaking the work. agent/scripts/verify/KN-227.mjs removes the three lingui exemptions of TECH-DEBT 13 and asks whether npm run lint still fails, reading nothing but the exit code: a typo anywhere in apps/web makes the exemptions look necessary forever, and nobody would know. Nothing runs this file now: verifiers are not run at the close since 2026-09-11, and neither CI nor npm run contract calls it. KN-234 fixed the two halves that are product, the guard's key and font-stack checks.",
+      "why": "The one command that says when TECH-DEBT 13 can go cannot tell a reason from a coincidence, so the exemptions outlive their need and no one can tell.",
+      "severity": "low",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The check takes a baseline lint first and fails when that baseline is not clean; with the three exemptions removed it requires lingui errors whose files are tokens.ts, the storage key and the tooltip surface, and reports an unrelated error as an inconclusive run rather than as the exemptions being needed.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T22:17:07.717Z"
     }
   ]
 }

@@ -179,8 +179,12 @@ fourth row above; the sweep read its colours and missed its effect.
 
 ### Type
 
-Family **Vazirmatn**, flagged in the file as a placeholder. Five roles, and
-**only five**, read from the type-scale documentation frame `416:21`:
+Family **Vazirmatn**, flagged in the file as a placeholder. The stack in code is
+`'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif`, matched against this
+line whole by the token guard, KN-234: the variable webfont the app loads,
+KN-322, then a static Vazirmatn where the reader's system has one, then the
+system's own face. Five roles, and **only five**, read from the type-scale
+documentation frame `416:21`:
 
 | Role        | Size / line height | Weight   |
 | ----------- | ------------------ | -------- |
