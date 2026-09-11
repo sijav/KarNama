@@ -21,7 +21,7 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**100 done, 190 open, 2 blocked, 2 dropped** of 294 (2026-09-10). Coverage 100
+**102 done, 190 open, 2 blocked, 2 dropped** of 296 (2026-09-11). Coverage 100
 percent on all four metrics. **Deployed**: https://sijav.github.io/KarNama/ and
 Storybook at https://sijav.github.io/KarNama/storybook/, both from
 `.github/workflows/pages.yml` on every push. The API needs
@@ -33,8 +33,8 @@ until screens start, which is after components.
 
 **Open children**, all critical unless marked. KN-011: KN-206, KN-251 (low),
 KN-255, KN-256 (low), KN-257 (medium), KN-260 (high), KN-268 (low), KN-275,
-KN-277 (low), KN-278 (low), KN-279, KN-280, KN-282, KN-283,
-KN-286, KN-287, KN-289 (low), KN-290, KN-292. KN-013: KN-293. KN-017: KN-294.
+KN-277 (low), KN-278 (low), KN-279, KN-282 (in progress), KN-283, KN-286,
+KN-287, KN-289 (low), KN-290, KN-295, KN-296. KN-013: KN-293. KN-017: KN-294.
 KN-010: KN-240 (low), KN-264 (waits on KN-062). A finding from a child's roast
 sits under the same parent, one level. When a parent's last child closes,
 roast the parent with all its children.
@@ -52,17 +52,15 @@ outline outside was lost to any host that clips at the field's edge; KN-244's
 verifier is retargeted at it). Every Input on the screens keeps its label and
 turns the helper line off (91 of 91).
 
-**Owed after KN-274, not yet done**: its roast, base `50d05f7`, log in the
-scratchpad, with `--summary` and `--ask`; and the Input verifier batch (KN-011,
-KN-241 to KN-267, KN-291), not rerun since the focus rule changed, though the
-line they anchor on was kept.
-
-**The owner paused the loop on 2026-09-10** and then shut the machine down. An
-empty `.claude/ralph-loop.paused` did not pause it: the installed hook reads
-only whether `.claude/ralph-loop.local.md` exists. So at 21:56 the state was
-moved into `.claude/ralph-loop.paused`, iteration 82. Resume with
-`mv .claude/ralph-loop.paused .claude/ralph-loop.local.md`; RALPH.md's Control
-section now says so.
+**2026-09-11.** The owner resumed the loop. KN-274 seen in all four
+combinations and roasted, 5.5, findings filed as KN-295. Closed: KN-292 (a
+blank string icon draws no slot, roasted 5.5, KN-296 filed) and KN-280 (Bound
+tells its writes from Controls by a revision, roasted 9.5, nothing). KN-282 is
+built, the Filter Chip's edge on a ::before and its pressed 1.5 an inset
+shadow; its verifier waits on the Input verifier batch, running in the
+scratchpad's input-batch-2.out, which found KN-280 had moved the meta args line
+KN-245's verifier anchors on: KN-245's anchor is fixed, rerun it after the
+batch.
 
 **KN-214 is deliberately held at high**: lingui compiles `ignore` with no flags,
 so `^[^\p{L}]*$` means "contains no p, {, L or }", and every Persian literal and
@@ -132,14 +130,18 @@ screens draw it, KN-285 and KN-287. The job level list and KN-077 still wait.
 - The Bash tool's heredocs turn a doubled backslash into one, and some long bodies fail outright: write long files with Write.
 - A pixel count of a focused text field includes the selection Tab makes: collapse it first (KN-274).
 - `roast.mjs` needs `--summary` and takes `--ask`; without a summary it refuses and exits.
+- Changing a line in a stories file: grep every verifier for the old line first; KN-280 broke KN-245's anchor.
+- Storybook 10 renders: an args update writes the store at once, a rerender reads the store when it starts, one asked for while another is pending only sets a flag; and `inferControls` trims a story's arg types to its listed controls, so a URL arg outside the list is dropped (KN-280).
+- A story's own play may have focused its control: blur, click an empty corner, then Tab, or Tab moves focus away (KN-274).
+- Python's text-mode write on Windows emits CRLF: pass newline='\n' when editing a plan with it.
 
 ## The next step
 
-Roast KN-274 and run the Input verifier batch (both owed, above),
-then by the law: KN-280, KN-282, KN-283, KN-286, KN-287, KN-290, KN-292,
-KN-293, KN-294, then KN-279 (3), KN-275 (3), KN-206, KN-226, KN-255, KN-221,
-and the components KN-019, KN-023, KN-062, KN-008, KN-009, KN-012. The KN-282
-plan draft is in the session scratchpad.
+Finish KN-282: when the Input batch ends, rerun KN-245's verifier, then run
+KN-282's and close it, and roast it. Then by the law: KN-283, KN-286, KN-287,
+KN-290, KN-293, KN-294, KN-295, KN-296, then KN-279 (3), KN-275 (3), KN-206,
+KN-226, KN-255, KN-221, and the components KN-019, KN-023, KN-062, KN-008,
+KN-009, KN-012.
 
 ## What to read first
 

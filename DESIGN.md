@@ -277,7 +277,8 @@ a half in every state, KN-281; the Filter Chip, `159:71`, one, one and a half
 when pressed and none when selected, KN-282, with the owner's blue selected edge
 from KN-276. The Tooltip and the Status Chip draw none. So a stroke is painted
 over a component's padding and never moves what is inside it: the Input's text
-sits 16 from its edge in every state, KN-266.
+sits 16 from its edge in every state, KN-266, and the Filter Chip's 12, with
+none above or below it in the chip's 32, KN-282.
 
 In CSS that is a border on a pseudo-element laid over the component, not a
 border on the component itself, which is laid out, and not an inset box-shadow,
@@ -288,7 +289,9 @@ standard would keep 1.5 at 2, so a 1.5 border draws 1. The Checkbox's 1.5 is
 an inset box-shadow, which draws it, with a one pixel `ButtonBorder` border
 under forced colours, where the shadow is removed. KN-281. A disabled
 Checkbox takes `GrayText` there instead, so it does not read as enabled;
-every other state takes `ButtonBorder`. KN-288.
+every other state takes `ButtonBorder`. KN-288. The Filter Chip's pressed 1.5
+is an inset shadow too, over its one pixel border on the pseudo-element, which
+turns `border/focus` with it and which forced colours keep. KN-282.
 
 ### Dark mode
 

@@ -16,6 +16,24 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+// The file's geometry in every state, 159:63 to 159:69: the text 12 from both
+// sides of a chip 32 tall, and no border of the chip's own, its edge drawn
+// inside on its ::before, KN-282. The label is the chip's one element, a flex
+// item, so its box is where the text is laid out; the gaps are rounded to a
+// hundredth, since the text's width is not a whole pixel.
+const isTheFiles = async (canvasElement: HTMLElement) => {
+  const chip = within(canvasElement).getByRole('button')
+  const text = chip.firstElementChild
+  if (!text) throw new Error('the chip has no label box')
+  const outer = chip.getBoundingClientRect()
+  const inner = text.getBoundingClientRect()
+  await expect([inner.left - outer.left, outer.right - inner.right].map((gap) => Math.round(gap * 100) / 100)).toEqual([12, 12])
+  await expect(outer.height).toBe(32)
+  const own = getComputedStyle(chip)
+  await expect([own.borderTopWidth, own.borderRightWidth, own.borderBottomWidth, own.borderLeftWidth].map(Number.parseFloat)).toEqual([0, 0, 0, 0])
+  return getComputedStyle(chip, '::before')
+}
+
 export const Default: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
@@ -24,6 +42,9 @@ export const Default: Story = {
     // goes through i18n.number rather than into the string raw.
     await expect(chip).toHaveTextContent('مصاحبه (۳)')
     await expect(chip).toHaveAttribute('aria-pressed', 'false')
+    // Node 159:63: a one pixel edge, inside, and the text 12 from each side.
+    const edge = await isTheFiles(canvasElement)
+    await expect([edge.borderTopStyle, Number.parseFloat(edge.borderTopWidth)]).toEqual(['solid', 1])
   },
 }
 
@@ -34,6 +55,10 @@ export const Selected: Story = {
     // Announced, not only shown. A colour change alone tells a screen reader
     // nothing, and this chip IS the filter state.
     await expect(within(canvasElement).getByRole('button')).toHaveAttribute('aria-pressed', 'true')
+    // Node 159:69 draws no stroke, until KN-279's blue edge, and the text
+    // still sits 12 from each side.
+    const edge = await isTheFiles(canvasElement)
+    await expect(edge.borderTopStyle).toBe('none')
   },
 }
 
@@ -43,6 +68,8 @@ export const InEnglish: Story = {
     // Same component, Latin digits. The label is record data and arrives as
     // whatever the user named the status, so it does not translate.
     await expect(within(canvasElement).getByRole('button')).toHaveTextContent('مصاحبه (3)')
+    // And the same 12 either side, the direction turned.
+    await isTheFiles(canvasElement)
   },
 }
 

@@ -3,6 +3,10 @@ import { usePreferences } from '../../core/preferences'
 import { formatCount } from '../../i18n/formatCount'
 import { spacing, type as typeScale } from '../../theme/tokens'
 
+// Node 159:67, the pressed edge: one and a half pixels, which Chromium would
+// floor to one as a border, KN-281, so it is an inset shadow, KN-282.
+const PRESSED_EDGE = 1.5
+
 export interface FilterChipProps {
   /** The status name. */
   label: string
@@ -54,35 +58,47 @@ export const FilterChip = ({ label, count, selected = false, onToggle }: FilterC
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
+          position: 'relative',
+          boxSizing: 'border-box',
           height: spacing.xl,
+          // The file's padding in every state, 159:63 to 159:69: 12 at each
+          // side and none above or below, the 22 line centred in the 32. The
+          // edge is drawn inside and takes no space, so nothing here makes room
+          // for it, KN-282.
           paddingInline: `${spacing.sm}px`,
-          paddingBlock: `${spacing['2xs']}px`,
+          paddingBlock: 0,
           borderRadius: `${theme.karnama.radius.full}px`,
-          borderWidth: 1,
-          borderStyle: 'solid',
+          borderWidth: 0,
           cursor: 'pointer',
           whiteSpace: 'nowrap',
           fontFamily: 'inherit',
           fontSize: `${typeScale.body.size}px`,
           lineHeight: `${typeScale.body.lineHeight}px`,
           fontWeight: typeScale.body.weight,
+          backgroundColor: selected ? colour['bg/brand/container'] : colour['bg/surface'],
+          color: selected ? colour['text/brand'] : colour['text/secondary'],
 
-          ...(selected
-            ? {
-                // Selected reads as filled rather than outlined, so the border
-                // matches the fill instead of drawing a second edge.
-                backgroundColor: colour['bg/brand/container'],
-                borderColor: colour['bg/brand/container'],
-                color: colour['text/brand'],
-              }
-            : {
-                backgroundColor: colour['bg/surface'],
-                borderColor: colour['border/default'],
-                color: colour['text/secondary'],
-              }),
+          // The stroke, inside the chip and out of its layout as the file draws
+          // it: a border on a pseudo-element laid over the chip, the Input's way,
+          // KN-266. One pixel of border/default, and none when selected, which
+          // 159:69 draws with no stroke until KN-279 gives it the owner's blue.
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            inset: 0,
+            borderRadius: 'inherit',
+            borderStyle: selected ? 'none' : 'solid',
+            borderWidth: 1,
+            borderColor: colour['border/default'],
+            pointerEvents: 'none',
+          },
 
           '&:hover': { backgroundColor: selected ? colour['bg/brand/container'] : colour['bg/surface-secondary'] },
-          '&:active': { borderColor: colour['border/focus'] },
+          // Pressed, 159:67: the edge at one and a half in border/focus, as an
+          // inset shadow. The one pixel border stays under it in the same
+          // colour, so forced colours, which remove shadows, still draw an edge.
+          '&:active': { boxShadow: `inset 0 0 0 ${PRESSED_EDGE}px ${colour['border/focus']}` },
+          '&:active::before': { borderStyle: 'solid', borderColor: colour['border/focus'] },
           '&:focus-visible': {
             outlineWidth: 2,
             outlineStyle: 'solid',
@@ -92,7 +108,9 @@ export const FilterChip = ({ label, count, selected = false, onToggle }: FilterC
         }
       }}
     >
-      {`${label} (${formatCount(locale, count)})`}
+      {/* One flex item for the label and its count, so its box is where the
+          text sits and a story can measure it from the chip's edge, KN-282. */}
+      <span>{`${label} (${formatCount(locale, count)})`}</span>
     </Box>
   )
 }

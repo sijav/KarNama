@@ -129,7 +129,9 @@ const main = async () => {
           await page.goto(`http://127.0.0.1:${server.address().port}/iframe.html?id=shared-filterchip--${story}&viewMode=story&globals=locale:${locale};colorScheme:dark&args=selected:!true`)
           await page.waitForFunction(() => window.__STORYBOOK_PREVIEW__?.currentRender?.phase === 'finished', null, { timeout: 30000 })
           const chip = page.locator('#storybook-root button').first()
-          const read = () => chip.evaluate((element) => { const style = getComputedStyle(element); return { pressed: element.getAttribute('aria-pressed'), fill: style.backgroundColor, text: style.color, edge: style.borderTopColor } })
+          // The edge is on the chip's ::before since KN-282, under the pressed
+          // shadow in the same colour; the chip itself has no border.
+          const read = () => chip.evaluate((element) => { const style = getComputedStyle(element); return { pressed: element.getAttribute('aria-pressed'), fill: style.backgroundColor, text: style.color, edge: getComputedStyle(element, '::before').borderTopColor } })
           const resting = await read()
           const box = await chip.boundingBox()
           await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
