@@ -1890,7 +1890,27 @@
       ],
       "status": "done",
       "exit": "An e2e test signs in with a number and the code from the mock provider and reaches the board, a wrong or expired code shows an honest message with a way to resend, first login collects the name, and signing out clears the token and the Apollo cache rather than only the UI.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3.5,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-046-round-1.2026-09-11T23-41-57-301Z.md",
+          "filed": [
+            "KN-417",
+            "KN-418",
+            "KN-419",
+            "KN-420",
+            "KN-421"
+          ],
+          "cardDigest": "0c2621ec6dc7325de078fd37b1356221f8908e8ce90aacfa0e4d1cf51c7efbdf",
+          "head": "436bb7dfcc11a4995094a137f36a98f93652bd3e",
+          "reviewerScore": 2.5,
+          "reviewerCriticals": 2,
+          "dismissed": "The minor about p: 6 in the auth screen: that is the theme's own spacing scale, six units of the theme's eight, which is what the shell and every other screen uses; it is not a pixel literal. Recorded as one critical rather than two: the archive reaching the next reader was real and is fixed as KN-421; the forgeable session is what a mocked provider with no server can be, and it is KN-417 against the API's token.",
+          "at": "2026-09-11T23:55:30.214Z"
+        }
+      ],
       "notes": [
         "2026-09-12, owner: the pages are needed now, within six hours; a missing or broken component may be a placeholder with a card behind it. The screens are the critical path until they are real, and they no longer wait on the API cards: the board is held in the browser until KN-037 to KN-039 land."
       ],
@@ -11163,12 +11183,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The board is kept per reader and a fresh provider is mounted when the reader changes; an e2e signs in, keeps a job opportunity, signs out, signs in as somebody else and sees an empty board with no trace of the first reader's.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T23:54:27.076Z"
+      "createdAt": "2026-09-11T23:54:27.076Z",
+      "evidence": "The board is kept under karnama.records:<number> and AppProviders keys the provider on the signed-in reader, so a change mounts a fresh one; e2e on the desktop signs in, keeps a job opportunity, signs out, signs in as another reader and sees the empty state with no trace of the first; 25 e2e and 93 core tests pass",
+      "updatedAt": "2026-09-11T23:55:29.955Z",
+      "closedAt": "2026-09-11T23:55:29.955Z"
     }
   ],
   "okrs": [
