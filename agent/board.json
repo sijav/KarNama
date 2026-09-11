@@ -7169,13 +7169,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "In every state the Filter Chip's text sits spacing/sm, 12px, from the chip's outer edge as 159:63 to 159:69 draw it, with the edge painted inside and taking no layout space; the pressed edge is 1.5 as 159:67 draws it; nothing in FilterChip.tsx computes a padding from a border width; the stories measure the text's distance from the edge; and the selected edge is left to KN-279.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T16:24:51.439Z",
-      "updatedAt": "2026-09-11T06:04:41.902Z",
-      "verify": "node agent/scripts/verify/KN-282.mjs"
+      "updatedAt": "2026-09-11T06:05:37.184Z",
+      "verify": "node agent/scripts/verify/KN-282.mjs",
+      "evidence": "FilterChip.tsx draws the chip's edge as a one pixel border on a ::before laid over it, absolute and inset 0 with the chip's radius, so it takes no layout space, and the chip itself has borderWidth 0; the padding is the file's, paddingInline spacing.sm and paddingBlock 0, the 22 line centred in the 32; selected draws no stroke, borderStyle none on the ::before, leaving the owner's blue edge to KN-279; pressed is an inset box-shadow of PRESSED_EDGE 1.5 in border/focus over the ::before, which turns solid border/focus too, so forced colours, which remove the shadow, keep an edge. The label is one span, a flex item. The stories Default, Selected and In English measure that span's box 12 from each side of the chip, rounded to a hundredth, a chip 32 tall with no border of its own, and the ::before solid 1 at rest and none when selected. node agent/scripts/verify/KN-282.mjs passed: the stories pass; the border put back on the chip, laid out, fails Default by name on 13; no padding is computed from a border width and the block padding is 0; in a production build at a device pixel ratio of 1, in fa-IR and en-US, light and dark, at rest, hovered and pressed with a real pointer, selected, and selected and pressed, the text is 12 from each side, the chip 32 tall with no border or block padding of its own, the pressed shadow inset 1.5 with a 1px ::before edge in the same colour, and no shadow at rest; under forced colours a resting and a pressed chip show an edge in the rendered pixels, read at the column the chip's fractional left edge covers, while a planted shadow-only edge shows none; and a build with the pressed edge at 1 reads 1. KN-272's verifier, retargeted to read the pressed edge from the ::before, passes, 3.33 to one in dark; KN-017's passes. Seen in fa-IR and en-US, light and dark, at rest, selected and pressed. Unit project, eslint on the chip and tsc clean. Not established: the focus ring, still an outline outside the chip, which KN-294 takes.",
+      "closedAt": "2026-09-11T06:05:37.184Z"
     },
     {
       "id": "KN-283",
