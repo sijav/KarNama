@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 413,
+  "nextId": 415,
   "tasks": [
     {
       "id": "KN-001",
@@ -8378,7 +8378,23 @@
       "parent": [],
       "status": "done",
       "exit": "An Input whose icon renders only blank text, through an array, a fragment or a component, draws no slot that takes room and its text box sits 16 from that edge, decided from what the slot rendered rather than from the prop; IconsTurnedOff covers an array of a space, a fragment holding a zero-width space and a component returning a space, each asserting a slot that takes no room; a mutation removing the rendered check fails it by name; and the comment on drawn() says nothing to read, with the lone-mark case named as deliberate.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8,
+          "criticals": 0,
+          "file": "agent/roasts/KN-296-round-1.2026-09-11T22-41-04-613Z.md",
+          "filed": [
+            "KN-413",
+            "KN-414"
+          ],
+          "cardDigest": "c84e57f9c4d2e0d720f11a4300fb7c005b913bc2044ae2c618e886f923171346",
+          "head": "26c0a3b89f998c5df0ae8a92288960f442e591c8",
+          "reviewerScore": 8,
+          "reviewerCriticals": 0,
+          "at": "2026-09-11T22:44:16.685Z"
+        }
+      ],
       "notes": [
         "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
       ],
@@ -10591,6 +10607,36 @@
       "updatedAt": "2026-09-11T22:43:13.486Z",
       "evidence": "namesIn slices the five named token subsections and reads their name column and the spacing fence, so a table row planted in the Input's notes is not a name while the same row in the status table is, both asserted, and an empty document yields none; every key in tokens.ts still passes with the positive control; 55 tests in the file, lint and tsc clean",
       "closedAt": "2026-09-11T22:43:13.486Z"
+    },
+    {
+      "id": "KN-413",
+      "title": "The Input's docs still say the line under the field always keeps its height, which KN-287 ended",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-296 roast, judged real by reading the docs against the component. story-docs/en/Shared-Input.md and fa/Shared-Input.md open with \"The line under the field always keeps its height. With no message, with a helper, or with an error, it is the same size, so a validation error appearing never pushes the rest of a form down.\" Input.tsx gives that line no room at all without a message, KN-287, the owner's decision, and the same two files say so themselves further down: the bare field is 64 tall with no line under it. So the page a reader opens first contradicts both the component and its own story notes.",
+      "why": "The docs are the component's contract for whoever uses it, and this one promises the opposite of what the field does with the case that matters, an error appearing in a filled form.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Both language docs say what the field does: no line and no room without a message, a line of one height with a helper or an error, and what that means for a form when an error appears, which is that it does move; nothing in either file contradicts it; the Docs page reads right in both languages.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T22:44:16.397Z"
+    },
+    {
+      "id": "KN-414",
+      "title": "Nothing exercises the icon slot's observer: the story only reads the slot as it first rendered",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-296 roast, its minor, judged real. KN-296 hid a slot whose rendered content has nothing to read, from a ref callback that also keeps a MutationObserver on the slot for content that changes later. IconsTurnedOff renders each case once, so only the first read runs: the observer path, and the ref cleanup and reattachment React does when the slot is replaced, are never exercised. An icon that starts blank and becomes an svg, then blank again, would drive all three.",
+      "why": "The observer is what makes the rule hold for an icon that arrives late, which is the ordinary case for an icon loaded or chosen after the first render, and nothing would notice if it stopped working.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A story drives an icon through blank, readable and blank again while the field stays mounted, asserting at each step that the slot is hidden or 20 wide as the content says, and that the text sits 16 or 40 from that edge to match; the Input stories pass.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T22:44:16.518Z"
     }
   ]
 }

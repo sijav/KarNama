@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 170 of 412 tasks done · 360 of 865 points.
+Project **KarNama** · 170 of 414 tasks done · 360 of 867 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -20,7 +20,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (235)
+## Backlog (237)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -125,6 +125,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-370` | The Status Chip's direction contract says 'first letter' where dir=auto reads the first strong character, and 'cuts the end' where the ellipsis cuts the line's visual end | medium | 1 | docs | none | DESIGN.md's KN-264 paragraph and the comment in StatusChip.tsx say the first strong directional character decides, a letter or a direction mark, and that the ellipsis cuts the line's visual end, naming what that hides in a mixed-script name; no 'always' is left in either; and a story renders an LRM-led digit name in the Persian interface and finds the chip ltr. |
 | `KN-385` | A role or company of only spaces still draws the Contact Card's blank role line and divider, and the contact prop's docs say role cannot be missing | medium | 1 | web | none | The card trims each part before joining, and the Contact Modal trims role and company when it saves, so a role of ' ' draws no line and no divider, which a story shows; and both languages' docs for the contact prop say role and company may be missing. |
 | `KN-387` | The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text | medium | 1 | web | none | In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages. |
+| `KN-413` | The Input's docs still say the line under the field always keeps its height, which KN-287 ended | medium | 1 | web | none | Both language docs say what the field does: no line and no room without a message, a line of one height with a helper or an error, and what that means for a form when an error appears, which is that it does move; nothing in either file contradicts it; the Docs page reads right in both languages. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -226,6 +227,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-408` | Two ways the unread-language note cannot appear: a docs page with no attached CSF, and an event that stops yielding a locale | low | 1 | web | none | A docs page with no attached CSF file shows the note rather than throwing, and an event that yields no locale puts the page back to not known, each with a test; the existing pages are unchanged. |
 | `KN-410` | The focus model's insetArea goes negative on a box narrower than its contour, and reads one circular corner for all four | low | 1 | web | none | insetArea clamps each side at zero as well as the radius, and takes the corner radii it is given rather than assuming the top left one; a contour wider than its box contributes nothing instead of a negative area, with a test for each; the Input stories still pass. |
 | `KN-411` | The Input's per-card verifiers still read the story's old shape, so they would fail if anyone ran them | low | 1 | agent | none | Each of the two verifiers runs against the current stories: the KN-244 check finds the area assertion in whatever form the story writes it, and KN-274 names the field it shoots rather than taking the first; or both are deleted with a line in their cards saying the stories now carry the check. |
+| `KN-414` | Nothing exercises the icon slot's observer: the story only reads the slot as it first rendered | low | 1 | web | none | A story drives an icon through blank, readable and blank again while the field stays mounted, asserting at each step that the slot is hidden or 20 wide as the content says, and that the text sits 16 or 40 from that edge to match; the Input stories pass. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -3970,6 +3972,8 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** An Input whose icon renders only blank text, through an array, a fragment or a component, draws no slot that takes room and its text box sits 16 from that edge, decided from what the slot rendered rather than from the prop; IconsTurnedOff covers an array of a space, a fragment holding a zero-width space and a component returning a space, each asserting a slot that takes no room; a mutation removing the rendered check fails it by name; and the comment on drawn() says nothing to read, with the lone-mark case named as deliberate.
 
+**Roasts.** round 1 scored 8 with 0 critical(s)
+
 ### `KN-297` The Input's text measurement takes its direction from the input, so a placeholder with its own direction moves the text without failing a check
 
 - **status** done · **severity** critical · **points** 1 · **area** web
@@ -5291,4 +5295,26 @@ CHILD OF KN-227, recorded in prose because board.json cannot express parent_task
 **Why.** The guard is the one thing that says what a token name is, and a name it takes from a component's note is not one.
 
 **Exit condition.** The names come from the five token subsections alone, each named in the guard and sliced from its heading to the next; a table row planted in a component note is not a name, and the same row planted in a token table is, both asserted; an empty document yields no names; every key in tokens.ts still passes and the positive control still names bg/page, custom-4, heading/l and 3xl.
+
+### `KN-413` The Input's docs still say the line under the field always keeps its height, which KN-287 ended
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-296 roast, judged real by reading the docs against the component. story-docs/en/Shared-Input.md and fa/Shared-Input.md open with "The line under the field always keeps its height. With no message, with a helper, or with an error, it is the same size, so a validation error appearing never pushes the rest of a form down." Input.tsx gives that line no room at all without a message, KN-287, the owner's decision, and the same two files say so themselves further down: the bare field is 64 tall with no line under it. So the page a reader opens first contradicts both the component and its own story notes.
+
+**Why.** The docs are the component's contract for whoever uses it, and this one promises the opposite of what the field does with the case that matters, an error appearing in a filled form.
+
+**Exit condition.** Both language docs say what the field does: no line and no room without a message, a line of one height with a helper or an error, and what that means for a form when an error appears, which is that it does move; nothing in either file contradicts it; the Docs page reads right in both languages.
+
+### `KN-414` Nothing exercises the icon slot's observer: the story only reads the slot as it first rendered
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-296 roast, its minor, judged real. KN-296 hid a slot whose rendered content has nothing to read, from a ref callback that also keeps a MutationObserver on the slot for content that changes later. IconsTurnedOff renders each case once, so only the first read runs: the observer path, and the ref cleanup and reattachment React does when the slot is replaced, are never exercised. An icon that starts blank and becomes an svg, then blank again, would drive all three.
+
+**Why.** The observer is what makes the rule hold for an icon that arrives late, which is the ordinary case for an icon loaded or chosen after the first render, and nothing would notice if it stopped working.
+
+**Exit condition.** A story drives an icon through blank, readable and blank again while the field stays mounted, asserting at each step that the slot is hidden or 20 wide as the content says, and that the text sits 16 or 40 from that edge to match; the Input stories pass.
 
