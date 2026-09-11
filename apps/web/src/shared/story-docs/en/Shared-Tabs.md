@@ -61,3 +61,8 @@ Storybook itself, press Tab yourself.
 
 A panel of text alone stays a stop for Tab, so Tab goes from the chosen tab to
 the panel and a keyboard reaches what it says.
+
+### ValuesWithSpaces
+
+Two tabs whose values hold a space, as a caller is free to pick: each tab still
+names its panel, and each panel its tab.

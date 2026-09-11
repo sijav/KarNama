@@ -268,3 +268,47 @@ export const TabReachesTheText: Story = {
     await expect(panel).toHaveFocus()
   },
 }
+
+// Values a caller is free to pick, a space in each, KN-303. Story plumbing,
+// typed so they are values and not copy.
+type Spaced = 'job info' | 'status history'
+const SPACED: readonly Spaced[] = ['job info', 'status history']
+
+export const ValuesWithSpaces: Story = {
+  // Tab values holding a space still link each tab to its panel: the ids come
+  // from the row's own id and each tab's place, never from the value. A fixed
+  // render of two tabs, since the values are the question, so no control
+  // applies.
+  parameters: { controls: { disable: true } },
+  render: function Render() {
+    const { i18n } = useLingui()
+    const labels = [i18n._('Job opportunity info'), i18n._('History')]
+    const [value, setValue] = useState<string>(SPACED[0] ?? '')
+    return (
+      <Tabs
+        aria-label={i18n._('Job opportunity sections')}
+        value={value}
+        onChange={setValue}
+        tabs={SPACED.map((spaced, index) => {
+          const label = labels[index] ?? spaced
+          return { value: spaced, label, panel: <Box sx={{ padding: `${spacing.md}px` }}>{label}</Box> }
+        })}
+      />
+    )
+  },
+  play: async ({ canvasElement }) => {
+    const tabs = within(canvasElement).getAllByRole('tab')
+    await expect(tabs).toHaveLength(2)
+    for (const tab of tabs) {
+      // One id reference each way, with no space to split it, and each names
+      // the other.
+      const controls = tab.getAttribute('aria-controls') ?? ''
+      await expect(controls).not.toMatch(/\s/)
+      await expect(tab.id).not.toMatch(/\s/)
+      const panel = canvasElement.ownerDocument.getElementById(controls)
+      if (!panel) throw new Error('a tab controls no panel')
+      await expect(panel).toHaveAttribute('role', 'tabpanel')
+      await expect(panel).toHaveAttribute('aria-labelledby', tab.id)
+    }
+  },
+}

@@ -59,10 +59,13 @@ const watchStops = (panel: HTMLDivElement) => {
 // what is typed in one survives a switch.
 export const Tabs = ({ 'aria-label': label, value, onChange, tabs }: TabsProps) => {
   const base = useId()
-  // Element ids, never shown.
+  // Element ids, never shown, from the component's own id and each tab's
+  // place in the row, never its value: a value is the caller's, and one holding
+  // a space would put two references in aria-controls, neither of them the
+  // panel, KN-303.
   /* eslint-disable lingui/no-unlocalized-strings -- KN-214: element ids */
-  const tabId = (item: TabsItem) => `${base}-tab-${item.value}`
-  const panelId = (item: TabsItem) => `${base}-body-${item.value}`
+  const tabId = (index: number) => `${base}-tab-${index}`
+  const panelId = (index: number) => `${base}-body-${index}`
   /* eslint-enable lingui/no-unlocalized-strings */
 
   return (
@@ -97,13 +100,13 @@ export const Tabs = ({ 'aria-label': label, value, onChange, tabs }: TabsProps) 
           },
         })}
       >
-        {tabs.map((item) => (
+        {tabs.map((item, index) => (
           <Tab
             key={item.value}
             value={item.value}
             label={item.label}
-            id={tabId(item)}
-            aria-controls={panelId(item)}
+            id={tabId(index)}
+            aria-controls={panelId(index)}
             disableRipple
             sx={(theme) => {
               const colour = theme.karnama.semantic
@@ -153,13 +156,13 @@ export const Tabs = ({ 'aria-label': label, value, onChange, tabs }: TabsProps) 
           />
         ))}
       </MuiTabs>
-      {tabs.map((item) => (
+      {tabs.map((item, index) => (
         <Box
           key={item.value}
           ref={watchStops}
           role="tabpanel"
-          id={panelId(item)}
-          aria-labelledby={tabId(item)}
+          id={panelId(index)}
+          aria-labelledby={tabId(index)}
           hidden={item.value !== value}
         >
           {item.panel}
