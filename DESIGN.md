@@ -109,8 +109,15 @@ which is the text and the stripe, and a `container`, which is the chip fill.
 
 The Persian names come from the legend at `410:470`. They are the **default**
 labels for the five built-ins; a user can rename any status, so the label is
-data, not a constant. The nine colours are a closed set: a custom status picks
-one of the four reserved slots through the Color Picker at `257:17`.
+data, not a constant. The nine colours are a closed set, and the Color Picker
+at `257:17` offers all nine for any status, the current one marked, as the
+Column Colour screen `259:184` draws it: a status's colour is chosen
+automatically and the user can change it, `376:30`, so a custom status may take
+a default's colour. An earlier reading here said a custom status picks one of
+the four reserved slots; the file draws nine, read with use_figma on
+2026-09-11, KN-019. The swatches run from the inline start as the file places
+them: offer and the four custom slots, then new, applied, interview and
+rejected.
 
 ### Spacing, radius, icon size
 
@@ -448,7 +455,7 @@ of the contract.
 | Icon Button         | `460:672` | Neutral and Danger × Default, Hover, Disabled                                                   |
 | Contact Card        | `248:116` | Full and Compact × Default, Hover, Selected                                                     |
 | Contact Modal       | `270:152` | Add, Edit                                                                                       |
-| Color Picker        | `257:17`  | picks one of the four custom status slots                                                       |
+| Color Picker        | `257:17`  | offers the nine status colour pairs, the current one marked                                     |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,
@@ -507,9 +514,9 @@ what the card uses. Do not merge them.
 
 **Custom statuses are managed inline**, through the column Menu, which has
 exactly **three** options: rename, change colour, delete. **Reorder was removed
-from the design**, so a menu offering four options is wrong. The four custom
-colour slots are fixed, so "change colour" means choosing among them rather than
-a free colour. Delete is disabled while the column still holds postings, and the
+from the design**, so a menu offering four options is wrong. "Change colour"
+chooses among the nine pairs the Color Picker draws, never a free colour.
+Delete is disabled while the column still holds postings, and the
 hover explains why. The colour menu **replaces** the main menu; the two are
 never on screen together.
 

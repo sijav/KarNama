@@ -24,6 +24,7 @@ export type StoryTitle =
   | 'Core/PreferencesProvider'
   | 'Foundations/Tokens'
   | 'Shared/Checkbox'
+  | 'Shared/ColorPicker'
   | 'Shared/FilterChip'
   | 'Shared/Input'
   | 'Shared/LanguageSwitch'

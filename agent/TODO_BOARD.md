@@ -8,13 +8,13 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-019` Colour picker for the four custom status slots** (critical, 3 pt, web)
+**Next up: `KN-019` Colour picker for the status colours** (critical, 3 pt, web)
 
 ## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-019` | Colour picker for the four custom status slots | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set. |
+| `KN-019` | Colour picker for the status colours | critical | 3 | web | KN-005, KN-006, KN-007 | The picker offers exactly the nine status colour pairs node 257:17 draws, in its order, matches Figma, marks the current one, is keyboard navigable, and cannot produce a colour outside the nine. |
 
 ## Blocked (2)
 
@@ -555,7 +555,7 @@ Menu Item with Default, Hover, Disabled and Destructive from node 181:22, and th
 
 **Exit condition.** All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone.
 
-### `KN-019` Colour picker for the four custom status slots
+### `KN-019` Colour picker for the status colours
 
 - **status** in_progress · **severity** critical · **points** 3 · **area** web
 - **blocked by** KN-005, KN-006, KN-007
@@ -564,7 +564,7 @@ The picker at Figma node 257:17, offering the four reserved custom status colour
 
 **Why.** A user-defined status still has to read as a status, which is why the design reserves exactly four slots instead of a colour wheel. Building a free picker here would let a user choose a colour that collides with rejected or offer and quietly break the glance-readability of the list.
 
-**Exit condition.** The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set.
+**Exit condition.** The picker offers exactly the nine status colour pairs node 257:17 draws, in its order, matches Figma, marks the current one, is keyboard navigable, and cannot produce a colour outside the nine.
 
 ### `KN-020` Status choice, status picker and status control
 

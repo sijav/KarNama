@@ -770,7 +770,7 @@
     },
     {
       "id": "KN-019",
-      "title": "Colour picker for the four custom status slots",
+      "title": "Colour picker for the status colours",
       "desc": "The picker at Figma node 257:17, offering the four reserved custom status colour pairs rather than a free colour field.",
       "why": "A user-defined status still has to read as a status, which is why the design reserves exactly four slots instead of a colour wheel. Building a free picker here would let a user choose a colour that collides with rejected or offer and quietly break the glance-readability of the list.",
       "severity": "critical",
@@ -782,13 +782,14 @@
         "KN-007"
       ],
       "status": "in_progress",
-      "exit": "The picker offers exactly the four reserved pairs, matches Figma, marks the current selection, is keyboard navigable, and cannot produce a colour outside the reserved set.",
+      "exit": "The picker offers exactly the nine status colour pairs node 257:17 draws, in its order, matches Figma, marks the current one, is keyboard navigable, and cannot produce a colour outside the nine.",
       "roasts": [],
       "notes": [
-        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
+        "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact.",
+        "2026-09-11: the card said the four reserved pairs, from DESIGN.md's reading. Node 257:17 and the Column Colour screen 259:184 both draw nine swatches, every status pair, and the Documentation frame 376:30 says a status's colour is chosen automatically and the user can change it. Figma wins, so the title and exit condition follow the file, and DESIGN.md is corrected in the same change."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T11:32:33.022Z"
+      "updatedAt": "2026-09-11T11:47:10.315Z"
     },
     {
       "id": "KN-020",
@@ -1294,9 +1295,11 @@
       "status": "backlog",
       "exit": "A renamed status shows its new name everywhere including old records, deletion is refused while postings remain in that status and the message says how many, the four custom slots cannot be exceeded, a record pointing at a deleted status still renders with the fallback colour, and tests cover each.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-11, from KN-019's plan check: the Color Picker (node 257:17) offers all nine status colour pairs for any status, not only the four custom slots, so a recolour must accept any of the nine and nothing else. statuses.color in the Prisma schema is a free String whose comment says the colour 'is never asked for'; the recolour mutation must validate against the same nine tokens the picker renders, apps/web's COLOURS, and that comment be corrected."
+      ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-07T20:49:55.231Z"
+      "updatedAt": "2026-09-11T11:43:12.658Z"
     },
     {
       "id": "KN-039",
