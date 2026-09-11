@@ -8376,14 +8376,16 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "done",
       "exit": "An Input whose icon renders only blank text, through an array, a fragment or a component, draws no slot that takes room and its text box sits 16 from that edge, decided from what the slot rendered rather than from the prop; IconsTurnedOff covers an array of a space, a fragment holding a zero-width space and a component returning a space, each asserting a slot that takes no room; a mutation removing the rendered check fails it by name; and the comment on drawn() says nothing to read, with the lone-mark case named as deliberate.",
       "roasts": [],
       "notes": [
         "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
       ],
       "createdAt": "2026-09-11T05:03:54.532Z",
-      "updatedAt": "2026-09-11T11:29:35.193Z"
+      "updatedAt": "2026-09-11T22:40:45.435Z",
+      "evidence": "The slot decides from what it rendered: watchContent sets hidden when there is no element and only blank text, with a MutationObserver for later content, and the sx answers [hidden] so the slot's own display cannot beat it; IconsTurnedOff draws an array of a space, a fragment of a zero-width space and a component returning a space, and every rendered-blank slot is zero wide with the text 16 from both edges; planted twice by hand, each failing with expected 20 to be +0; docs in both languages; 27 Input stories and 112 unit tests pass",
+      "closedAt": "2026-09-11T22:40:45.435Z"
     },
     {
       "id": "KN-297",
