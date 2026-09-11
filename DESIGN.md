@@ -299,9 +299,12 @@ standard would keep 1.5 at 2, so a 1.5 border draws 1. The Checkbox's 1.5 is
 an inset box-shadow, which draws it, with a one pixel `ButtonBorder` border
 under forced colours, where the shadow is removed. KN-281. A disabled
 Checkbox takes `GrayText` there instead, so it does not read as enabled;
-every other state takes `ButtonBorder`. KN-288. The Filter Chip's pressed 1.5
-is an inset shadow too, over its one pixel border on the pseudo-element, which
-turns `border/focus` with it and which forced colours keep. KN-282.
+every other state takes `ButtonBorder`. KN-288. Its tick and the dash take `ButtonText`, or `GrayText` when disabled, on a `ButtonFace` frame, KN-290:
+an SVG keeps its author stroke under forced colours, so the white mark would
+vanish or read as enabled, and those are the pairs the system colours are made
+to be read in. The Filter Chip's pressed 1.5 is an inset shadow too, over its
+one pixel border on the pseudo-element, which turns `border/focus` with it and
+which forced colours keep. KN-282.
 
 ### Dark mode
 

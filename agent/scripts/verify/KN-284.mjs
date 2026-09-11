@@ -141,7 +141,9 @@ const main = async () => {
 
   await check('THE CASE: the laid-out border back in place of the pseudo-element fails the content box', async () => {
     const original = readFileSync(COMPONENT, 'utf8')
-    const block = /^ {8}'@media \(forced-colors: active\)': \{\n {10}'&::before': \{\n[\s\S]*?\n {10}\},\n {8}\},\n/m.exec(original)?.[0]
+    // The frame's forced-colours block, the ButtonFace fill KN-290 put before
+    // its pseudo-element included, with the comment above that fill.
+    const block = /^ {8}'@media \(forced-colors: active\)': \{\n(?: {10}\/\/[^\n]*\n)*(?: {10}backgroundColor: 'ButtonFace',\n)? {10}'&::before': \{\n[\s\S]*?\n {10}\},\n {8}\},\n/m.exec(original)?.[0]
     if (!block) return 'the forced-colours pseudo-element is not where this mutation expects it'
     try {
       writeFileSync(COMPONENT, original.replace(block, () => "        '@media (forced-colors: active)': { borderStyle: 'solid', borderWidth: 1, borderColor: 'ButtonBorder' },\n"))

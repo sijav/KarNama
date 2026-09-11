@@ -36,6 +36,15 @@ const EDGE = 1.5
 // The three marks the 20 by 20 square draws, before hover and disabled.
 type Mark = 'none' | 'tick' | 'dash'
 
+// Under forced colours a mark is a system colour, not its author white, which
+// an SVG would keep: ButtonText on the frame's ButtonFace, or GrayText when
+// disabled, so it neither vanishes nor reads as enabled. The keyword is kept in
+// a property so a check can read which was chosen whatever the palette
+// resolves it to, KN-290.
+const forcedMark = (disabled: boolean) => ({
+  '@media (forced-colors: active)': { '--karnama-forced-mark': disabled ? 'GrayText' : 'ButtonText', stroke: 'var(--karnama-forced-mark)' },
+})
+
 // The square, node 204:11, every value from the tokens. The tick and the dash
 // are inline SVG because Material's own glyph is a different shape and size.
 const Frame = ({ mark, disabled }: { mark: Mark; disabled: boolean }) => (
@@ -70,6 +79,10 @@ const Frame = ({ mark, disabled }: { mark: Mark; disabled: boolean }) => (
         // the keyword is kept in a property so a check can read which was chosen
         // whatever the palette resolves it to, KN-288.
         '@media (forced-colors: active)': {
+          // The fill there is ButtonFace, the background ButtonText and
+          // GrayText are made to be read on, so the mark stays visible on it,
+          // where a span's own forced background need not be, KN-290.
+          backgroundColor: 'ButtonFace',
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -90,7 +103,7 @@ const Frame = ({ mark, disabled }: { mark: Mark; disabled: boolean }) => (
       <Box
         component="svg"
         viewBox="0 0 12 12"
-        sx={(theme) => ({ width: 12, height: 12, fill: 'none', stroke: theme.karnama.semantic['text/on-accent'] })}
+        sx={(theme) => ({ width: 12, height: 12, fill: 'none', stroke: theme.karnama.semantic['text/on-accent'], ...forcedMark(disabled) })}
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -102,7 +115,7 @@ const Frame = ({ mark, disabled }: { mark: Mark; disabled: boolean }) => (
       <Box
         component="svg"
         viewBox="0 0 12 12"
-        sx={(theme) => ({ width: 12, height: 12, stroke: theme.karnama.semantic['text/on-accent'] })}
+        sx={(theme) => ({ width: 12, height: 12, stroke: theme.karnama.semantic['text/on-accent'], ...forcedMark(disabled) })}
         strokeWidth={2}
         strokeLinecap="round"
       >
