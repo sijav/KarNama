@@ -3288,8 +3288,11 @@
       "status": "backlog",
       "exit": "A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-07T23:58:03.747Z"
+      "notes": [
+        "2026-09-11, a new instance: apps/web/src/theme/sides.ts since KN-301. Its unit test covers acrossTo, and the Color Picker's stories run arrowsAcross (15 calls) and acrossTo (33), but the merged lcov lists the file's functions twice, once per project, and one copy of arrowsAcross carries 0 hits, so the file reports 4 of 7 functions. Moving acrossTo to a module only the unit test and arrowsAcross import, and keeping sides.ts out of every unit test, would keep each file on one project until this is fixed."
+      ],
+      "createdAt": "2026-09-07T23:58:03.747Z",
+      "updatedAt": "2026-09-11T19:02:03.066Z"
     },
     {
       "id": "KN-104",
@@ -8348,7 +8351,20 @@
       "parent": [],
       "status": "done",
       "exit": "Tab and panel ids are well-formed whatever the tab values, derived from the component's own id and each tab's position or an escaped value; a story with a value holding a space shows each tab's aria-controls naming its panel and the panel labelled by its tab.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 9.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-303-round-1.2026-09-11T18-58-50-984Z.md",
+          "filed": [],
+          "cardDigest": "090892068e8f5c7fec0fa6dec9a2f5d539ca4de023a3a2ddf32c49a8149ae464",
+          "head": "a8d6793b2b44ae6fbc41ed30e903edec82675ae2",
+          "reviewerScore": 9.5,
+          "reviewerCriticals": 0,
+          "at": "2026-09-11T19:02:09.964Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T12:04:17.253Z",
       "updatedAt": "2026-09-11T18:58:30.646Z",
@@ -8469,11 +8485,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T12:43:24.678Z"
+      "createdAt": "2026-09-11T12:43:24.678Z",
+      "updatedAt": "2026-09-11T18:59:04.124Z"
     },
     {
       "id": "KN-312",
@@ -9302,10 +9319,11 @@
       "roasts": [],
       "notes": [
         "2026-09-11, KN-260: the pointer park before every story made the whole storybook project pass, 245 of 245, where the run before it failed JobCard Pressed and NavItem Hover; those were the lingering pointer. Two more clean full runs would close this.",
-        "2026-09-11, correction: Storybook's own resetMousePosition already moved the pointer off the page before every test when the JobCard Pressed and NavItem Hover stories failed, so the lingering pointer was not their cause; the one clean full run after KN-260 is not evidence, and the cause is still open."
+        "2026-09-11, correction: Storybook's own resetMousePosition already moved the pointer off the page before every test when the JobCard Pressed and NavItem Hover stories failed, so the lingering pointer was not their cause; the one clean full run after KN-260 is not evidence, and the cause is still open.",
+        "2026-09-11, while doing KN-311: the full run failed JobCard Pressed again, 1224 of 1225 passing, with 'expected rgb(243, 244, 246) to be rgb(255, 255, 255)': the card WAS pressed, and the EXPECTED colour was white. The story's computed() borrows the card's own backgroundColor, which the card transitions over 200 ms; once the card's style has resolved, setting the inline colour starts a transition and getComputedStyle returns its current value, the starting white. Run alone the first read comes before any resolved style, so no transition and the right grey. The likely fix is to compute token colours on an element without a transition, not the pointer; NavItem Hover's 120 ms hover transition is worth the same look."
       ],
       "createdAt": "2026-09-11T17:43:31.970Z",
-      "updatedAt": "2026-09-11T18:15:28.560Z"
+      "updatedAt": "2026-09-11T19:00:50.527Z"
     },
     {
       "id": "KN-366",
