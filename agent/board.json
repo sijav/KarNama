@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 384,
+  "nextId": 385,
   "tasks": [
     {
       "id": "KN-001",
@@ -9048,7 +9048,23 @@
       "parent": [],
       "status": "done",
       "exit": "Tab from before the card reaches the checkbox, then the name, then the delete, in that order, with the row still keeping its 30 and the name still moving by 28, and a story tabs through them.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-341-round-1.2026-09-11T19-35-46-279Z.md",
+          "filed": [
+            "KN-384"
+          ],
+          "cardDigest": "f61169f02f47d164a729a32db54e8d70a62a352a7e6b39c5efbebc9272930e0a",
+          "head": "3cba5a471943aa019fe912a4056295739c2e0439",
+          "reviewerScore": 7,
+          "reviewerCriticals": 0,
+          "dismissed": "Its major, that browse mode reaches the folded checkbox and delete while unseen, is dismissed: visually hidden but reachable is the standard pattern for actions a pointer reveals, the job card's since KN-015, focus reveals them, and hiding them from assistive technology would take the actions from screen reader users who never hover; the delete only asks the page, which confirms. The minor is KN-384, low.",
+          "at": "2026-09-11T19:38:16.128Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T15:05:28.397Z",
       "updatedAt": "2026-09-11T19:35:30.132Z",
@@ -9064,11 +9080,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Role is optional in the card's type, the role line and its divider are left out when there is neither role nor company, and a story shows a name-only contact.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T15:05:28.554Z"
+      "createdAt": "2026-09-11T15:05:28.554Z",
+      "updatedAt": "2026-09-11T19:35:56.100Z"
     },
     {
       "id": "KN-343",
@@ -9695,6 +9712,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T19:34:01.238Z"
+    },
+    {
+      "id": "KN-384",
+      "title": "FullTabOrder proves the Contact Card's forward Tab order, not that its controls stay unfolded while focused and fold once focus leaves",
+      "desc": "CHILD OF KN-026, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-341 roast. The fold is held open by :focus-within and hover; FullTabOrder only tabs forward through the checkbox, the name and the delete. No story deselects a selected card from its own checkbox while it keeps focus, where the checkbox must stay unfolded under the focus, nor tabs on from the delete out of the card, where both must fold again.",
+      "why": "The two transitions are where a fold can jump under a keyboard user's focus, and nothing would say so if a change broke them.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A story unticks a selected card's checkbox by keyboard and finds it still seen and focused, then tabs past the delete out of the card and finds the checkbox unseen and the delete at no width.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T19:38:07.739Z"
     }
   ]
 }
