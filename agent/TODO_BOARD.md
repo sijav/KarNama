@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 124 of 336 tasks done · 251 of 767 points.
+Project **KarNama** · 125 of 336 tasks done · 256 of 767 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-020` Status choice, status picker and status control** (critical, 5 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-020` | Status choice, status picker and status control | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-018, KN-019 | All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own. |
+**Next up: `KN-026` Contact card, full and compact** (critical, 5 pt, web)
 
 ## Blocked (2)
 
@@ -235,7 +229,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (124)
+## Done (125)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -330,6 +324,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | critical | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
 | `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
 | `KN-018` | Menu and menu item | critical | 5 | web | KN-005, KN-006, KN-007, KN-008 | All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone. |
+| `KN-020` | Status choice, status picker and status control | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-018, KN-019 | All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own. |
 | `KN-034` | Prisma schema, Postgres on Supabase, and migrations | critical | 5 | api | KN-033 | Migrations apply to an empty database and to an existing one, the schema covers every field the Figma job record names, status history records every transition with its timestamp, and a seed script produces a realistic archive to develop against. |
 | `KN-035` | GraphQL codegen wired both ways | critical | 5 | graphql | KN-003, KN-033, KN-120 | Changing the API schema without regenerating fails the build, the web app imports only generated types for GraphQL data, and no hand-written interface duplicates a generated one. |
 | `KN-123` | The migration runner has no transaction, no lock, no failure state and no checksum | critical | 5 | api | KN-034 | A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite. |
@@ -618,7 +613,7 @@ The picker at Figma node 257:17, offering the four reserved custom status colour
 
 ### `KN-020` Status choice, status picker and status control
 
-- **status** in_progress · **severity** critical · **points** 5 · **area** web
+- **status** done · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-005, KN-006, KN-007, KN-010, KN-018, KN-019
 
 Status Choice with Default, Hover and Selected from node 427:567, the Status Picker popover at 427:592, and Status Control with Default, Hover and Pressed at 199:21, which is the clickable wrapper the card uses around a display-only chip.
