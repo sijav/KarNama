@@ -8485,12 +8485,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:43:24.678Z",
-      "updatedAt": "2026-09-11T18:59:04.124Z"
+      "updatedAt": "2026-09-11T19:05:51.516Z",
+      "evidence": "BlankName renders a blank-named Icon Button beside a named one: only the named one renders and console.error carries the report, watched from a story beforeEach; it failed on the throwing code; nameOf's unit test updated; the Icon Button and five callers' stories 62 of 62; looked at in Persian light and English dark.",
+      "closedAt": "2026-09-11T19:05:51.516Z"
     },
     {
       "id": "KN-312",
