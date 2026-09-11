@@ -8650,12 +8650,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The back control's target is 24 or more each way while the arrow stays 20 and stays 12 from the title, and the WithBack story measures both.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T13:05:16.428Z",
-      "updatedAt": "2026-09-11T19:11:29.548Z"
+      "updatedAt": "2026-09-11T19:14:33.014Z",
+      "evidence": "WithBack measures the back control at 24 by 24, its arrow at 20 by 20 and the arrow 12 from the title; failed on the old 20 target; Page Header stories 5 of 5; looked at in Persian light and English dark.",
+      "closedAt": "2026-09-11T19:14:33.014Z"
     },
     {
       "id": "KN-321",
