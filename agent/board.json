@@ -9080,12 +9080,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Role is optional in the card's type, the role line and its divider are left out when there is neither role nor company, and a story shows a name-only contact.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T15:05:28.554Z",
-      "updatedAt": "2026-09-11T19:35:56.100Z"
+      "updatedAt": "2026-09-11T19:40:16.199Z",
+      "evidence": "NameOnly finds the full card for a name-only contact with no paragraph or rule and 78 tall; NameOnlyCompact finds the name alone in its column; both failed on the old card; Contact Card and Job Modal stories 23 of 23; looked at in Persian light and English dark.",
+      "closedAt": "2026-09-11T19:40:16.199Z"
     },
     {
       "id": "KN-343",
