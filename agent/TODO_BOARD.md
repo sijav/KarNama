@@ -8,22 +8,22 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-270` The collapsed column's hover timer and flash have no rule for leaving, returning or a second drop** (high, 1 pt, design)
+**Next up: `KN-301` In Persian the Color Picker's left and right arrows move against the swatches' visual order** (high, 1 pt, web)
 
-## Blocked (3)
+## Blocked (4)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-269` | When a failed save arrives after the collapsed column has flashed is not decided | high | 1 | design | none | DESIGN.md states, as the owner's decision, when the collapsed column's success flash plays relative to the save and what happens to an optimistic move and its flash when the save fails; KN-061's exit condition names it; and a verifier checks the stated rule word for word in both places. |
+| `KN-270` | The collapsed column's hover timer and flash have no rule for leaving, returning or a second drop | high | 1 | design | none | DESIGN.md states, as the owner's decision, whether leaving the collapsed column during a drag resets the 500 ms, what a second drop does to a running flash, how the one-second flash relates to the 300 ms state change, and whether the keyboard target expands; KN-061's exit condition names each; and a verifier checks each detail exactly, the 500 ms, the count ticking up and the flash's length included. |
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (226)
+## Backlog (225)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-270` | The collapsed column's hover timer and flash have no rule for leaving, returning or a second drop | high | 1 | design | none | DESIGN.md states, as the owner's decision, whether leaving the collapsed column during a drag resets the 500 ms, what a second drop does to a running flash, how the one-second flash relates to the 300 ms state change, and whether the keyboard target expands; KN-061's exit condition names each; and a verifier checks each detail exactly, the 500 ms, the count ticking up and the flash's length included. |
 | `KN-301` | In Persian the Color Picker's left and right arrows move against the swatches' visual order | high | 1 | web | none | In Persian and in English the left and right arrows move to the swatch that sits in that direction and choose it, established by where the focused swatch lands on screen after a real key press, and up and down still move through the order; a story presses both arrows in both languages. |
 | `KN-302` | Every tab panel is a tab stop, so a panel holding a field puts an extra stop before it | high | 1 | web | none | A panel with focusable content is not itself a tab stop and one with none is, decided from what it renders; a story with a field in a panel shows Tab going from the tab to the field, and one with only text shows the panel reached. |
 | `KN-303` | Tab and panel ids are built from tab values, so a value with a space breaks the tab's link to its panel | high | 1 | web | none | Tab and panel ids are well-formed whatever the tab values, derived from the component's own id and each tab's position or an escaped value; a story with a value holding a space shows each tab's aria-controls naming its panel and the panel labelled by its tab. |
@@ -3569,7 +3569,7 @@ CHILD OF KN-196, recorded in prose because board.json cannot express parent_task
 
 ### `KN-270` The collapsed column's hover timer and flash have no rule for leaving, returning or a second drop
 
-- **status** backlog · **severity** high · **points** 1 · **area** design
+- **status** blocked · **severity** high · **points** 1 · **area** design
 - **blocked by** none
 
 CHILD OF KN-196, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-196 roast and confirmed against DESIGN.md: 500 ms of the card resting over the collapsed column opens it, but whether leaving and coming back restarts the 500 ms or resumes it is not said; a second card dropped within the one-second flash could restart, extend or be swallowed by it; the one-second flash sits beside the design's 300 ms state change without saying which is which; and choosing the collapsed column as the keyboard target does not say whether it expands. Each is ordinary use, not an edge.

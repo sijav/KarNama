@@ -7355,11 +7355,13 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "backlog",
+      "status": "blocked",
       "exit": "DESIGN.md states, as the owner's decision, whether leaving the collapsed column during a drag resets the 500 ms, what a second drop does to a running flash, how the one-second flash relates to the 300 ms state change, and whether the keyboard target expands; KN-061's exit condition names each; and a verifier checks each detail exactly, the 500 ms, the count ticking up and the flash's length included.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T13:45:15.263Z"
+      "createdAt": "2026-09-10T13:45:15.263Z",
+      "blockedReason": "Waits on the owner, 2026-09-11: during a drag, does leaving the collapsed rejected column reset its 500 ms; what does a second drop do to a running one-second flash; is the flash separate from the 200 ms state change; and does choosing the collapsed column as the keyboard target expand it? Put to the owner in the session summary.",
+      "updatedAt": "2026-09-11T18:14:38.771Z"
     },
     {
       "id": "KN-271",
