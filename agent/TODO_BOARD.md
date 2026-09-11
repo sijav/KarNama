@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 138 of 373 tasks done · 317 of 813 points.
+Project **KarNama** · 138 of 374 tasks done · 317 of 814 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-302` Every tab panel is a tab stop, so a panel holding a field puts an extra stop before it** (high, 1 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-302` | Every tab panel is a tab stop, so a panel holding a field puts an extra stop before it | high | 1 | web | none | A panel with focusable content is not itself a tab stop and one with none is, decided from what it renders; a story with a field in a panel shows Tab going from the tab to the field, and one with only text shows the panel reached. |
 
 ## Blocked (4)
 
@@ -24,7 +30,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-302` | Every tab panel is a tab stop, so a panel holding a field puts an extra stop before it | high | 1 | web | none | A panel with focusable content is not itself a tab stop and one with none is, decided from what it renders; a story with a field in a panel shows Tab going from the tab to the field, and one with only text shows the panel reached. |
 | `KN-303` | Tab and panel ids are built from tab values, so a value with a space breaks the tab's link to its panel | high | 1 | web | none | Tab and panel ids are well-formed whatever the tab values, derived from the component's own id and each tab's position or an escaped value; a story with a value holding a space shows each tab's aria-controls naming its panel and the panel labelled by its tab. |
 | `KN-311` | An Icon Button's required name is proved on a helper, not on the rendered button, and a blank one throws during render | high | 1 | web | none | Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case. |
 | `KN-314` | A controlled Search Bar still runs a pending search for a value its parent has since replaced | high | 1 | web | none | In controlled use a change of value from the parent cancels any pending search, and onSearch only ever receives a value the field displayed; a story resets value while a search is pending and asserts no stale call. |
@@ -225,6 +230,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-368` | The KN-003 verifier finds the four word fixtures but does not require them by name | low | 1 | agent | none | The verifier requires the four word fixtures and the two as-const fixtures by name. |
 | `KN-371` | LatinLedInPersian proves the Status Chip overflows, not which part of the name stays in view | low | 1 | web | none | LatinLedInPersian asserts the label's text-overflow is ellipsis and, by the rectangles of a Range over the name's first and last characters, that the leading Latin word lies inside the label's box and the overflow falls past its right edge. |
 | `KN-372` | NoLettersFollowsThePage shows the page fallback in the English interface only, and DESIGN.md's emoji claim has no fixture | low | 1 | web | none | The digit-only name renders rtl in the Persian interface and ltr in the English one, each with the document's direction asserted, and an emoji-only fixture is rendered in both, or the emoji clause leaves DESIGN.md. |
+| `KN-374` | The Color Picker's contract and stories never say where an arrow goes at a row's end | low | 1 | web | none | DESIGN.md's Color Picker sentence and the picker's story docs say that at a row's end the arrows go on to the next row in reading order and wrap from the last swatch to the first, as the radio group pattern does, and a story presses the left arrow in Persian from custom-4 and from rejected and lands on new and on offer. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -3970,9 +3976,11 @@ CHILD OF KN-019, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** In Persian and in English the left and right arrows move to the swatch that sits in that direction and choose it, established by where the focused swatch lands on screen after a real key press, and up and down still move through the order; a story presses both arrows in both languages.
 
+**Roasts.** round 1 scored 7 with 0 critical(s)
+
 ### `KN-302` Every tab panel is a tab stop, so a panel holding a field puts an extra stop before it
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-023, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-023 roast. Tabs.tsx gives every tabpanel tabIndex 0, so Tab from the tab list lands on the panel itself and only then on the note field inside it. The WAI-ARIA tabs pattern gives a panel a tab stop only when it has no focusable content.
@@ -4761,4 +4769,15 @@ CHILD OF KN-020, recorded in prose because board.json cannot express parent_task
 **Why.** The Status Picker is how a status is chosen in the add form and the Change Status modal, in the language the product defaults to; an arrow that moves against the screen in one browser reads as broken there.
 
 **Exit condition.** The Status Picker's radio group takes arrowsAcross, and a story presses real left and right arrows in both languages through vitest/browser, landing on the choice beside the chosen one on screen and choosing it, while an arrow pressed on the New status button moves nothing.
+
+### `KN-374` The Color Picker's contract and stories never say where an arrow goes at a row's end
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-019, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-301 roast. At a row's end the left and right arrows continue in reading order, as the WAI-ARIA radio group pattern and every browser's own radio group wrap: in Persian the left arrow from custom-4, the leftmost of the first row, goes to new, the rightmost of the second, and from rejected, the last, to offer, the first. The roast read that as the arrow moving against the screen; it is the platform's wrap, but DESIGN.md says only that the arrows move 'to the swatch that sits that way on screen', which is exact within a row and silent at its end, and ArrowsInPersian and ArrowsInEnglish start from the amber, in the middle of its row, so no story presses the wrap.
+
+**Why.** A keyboard user reaching the end of the first row sees focus jump to the far side of the next; the contract should say that is intended, and a story should hold it, so the next person does not 'fix' it into a dead end or a grid nobody drew.
+
+**Exit condition.** DESIGN.md's Color Picker sentence and the picker's story docs say that at a row's end the arrows go on to the next row in reading order and wrap from the last swatch to the first, as the radio group pattern does, and a story presses the left arrow in Persian from custom-4 and from rejected and lands on new and on offer.
 
