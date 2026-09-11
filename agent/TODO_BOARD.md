@@ -1115,6 +1115,8 @@ The column itself, 300 by 684 from node 241:125: the 276 by 40 header carrying i
 
 **Exit condition.** The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is.
 
+**Roasts.** round 1 scored 7 with 0 critical(s)
+
 ### `KN-061` Drag a card between columns, with a keyboard path
 
 - **status** backlog · **severity** high · **points** 5 · **area** web

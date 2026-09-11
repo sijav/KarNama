@@ -2107,7 +2107,24 @@
       ],
       "status": "done",
       "exit": "The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-060-round-1.2026-09-11T16-11-42-610Z.md",
+          "filed": [
+            "KN-353",
+            "KN-354"
+          ],
+          "cardDigest": "4eaa224aa1546ce4a7ed58035ca598b2b40a84bdb1eac5f34da8a9bc7e459a4c",
+          "head": "51a983fe7254e726713cdcd2be62e40ee0374e82",
+          "reviewerScore": 4,
+          "reviewerCriticals": 3,
+          "dismissed": "Size=M exclusivity: the file's Status Choice, 427:567, is built on the M chip in all three states, so DESIGN.md's 'only the column header' was wrong and is corrected; Figma wins. The short-board clipping is real below a 116 parent and filed low; the empty detection is real and filed high, under the owner's rule that findings on built components are high or lower.",
+          "at": "2026-09-11T16:16:08.392Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
