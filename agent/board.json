@@ -5807,7 +5807,7 @@
       "points": 5,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The no-letter entry is replaced by one that works WITHOUT flags, since the plugin passes none, and fails closed: only digits, whitespace, punctuation and symbols are exempt, so a letter in any script is checked. 'Delete', 'Save', 'مصاحبه' and 'حذف وضعیت' each fail npm run lint in a committed fixture, as aria-label, as title and as JSX text, and the existing fixtures fail only on the string under test rather than also on a child like x. Every one of the 82 strings is either localised or exempted by a named, scoped rule with a reason, never by a value shape. A check compiles each ignore entry exactly as the plugin does, new RegExp(entry) with no flags, and fails if any entry whitelists a known copy string, and that check is proved by a mutation restoring the \\p{L} entry.",
       "roasts": [],
       "notes": [
@@ -5815,7 +5815,9 @@
         "2026-09-11: restored to critical now that the last component card, KN-030, has closed, as STATE.md held it: the components came first under the owner's rule of that day, and every string since went through lingui by hand around this bug."
       ],
       "createdAt": "2026-09-10T06:20:44.279Z",
-      "updatedAt": "2026-09-11T17:25:01.110Z"
+      "updatedAt": "2026-09-11T17:46:25.907Z",
+      "evidence": "No-letter entry rewritten without \\p, fails closed; 622 flagged strings answered by named exemptions, typed constants and the catalog; four word fixtures fail as label, title and text; lingui-ignore.test.ts compiles the entries with no flags; lint clean, unit suite 966 green, touched stories pass",
+      "closedAt": "2026-09-11T17:46:25.907Z"
     },
     {
       "id": "KN-215",
