@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-264` The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it** (high, 1 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | high | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
+
 ## Blocked (2)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -17,12 +23,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (228)
+## Backlog (227)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-264` | The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it | high | 1 | web | KN-062 | With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'. |
 | `KN-269` | When a failed save arrives after the collapsed column has flashed is not decided | high | 1 | design | none | DESIGN.md states, as the owner's decision, when the collapsed column's success flash plays relative to the save and what happens to an optimistic move and its flash when the save fails; KN-061's exit condition names it; and a verifier checks the stated rule word for word in both places. |
 | `KN-270` | The collapsed column's hover timer and flash have no rule for leaving, returning or a second drop | high | 1 | design | none | DESIGN.md states, as the owner's decision, whether leaving the collapsed column during a drag resets the 500 ms, what a second drop does to a running flash, how the one-second flash relates to the 300 ms state change, and whether the keyboard target expands; KN-061's exit condition names each; and a verifier checks each detail exactly, the 500 ms, the count ticking up and the flash's length included. |
 | `KN-301` | In Persian the Color Picker's left and right arrows move against the swatches' visual order | high | 1 | web | none | In Persian and in English the left and right arrows move to the swatch that sits in that direction and choose it, established by where the focused swatch lands on screen after a real key press, and up and down still move through the order; a story presses both arrows in both languages. |
@@ -3499,7 +3504,7 @@ CHILD OF KN-010, recorded in prose because board.json cannot express parent_task
 
 ### `KN-264` The Status Chip's dir=auto is proved in one direction, and DESIGN.md overstates it
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** KN-062
 
 CHILD OF KN-010, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-238 roast and confirmed: LongNameInEnglish proves a Persian-led name resolves rtl in the English interface, not the case that motivated dir=auto, a Latin-led name in the Persian interface such as 'Google استخدام', nor a digit-led one such as '۱۲۳ استخدام'. And DESIGN.md says the ellipsis ALWAYS cuts the end of a name, which is false for a name with no letter at all: digits or emoji alone have no strong character, so the chip falls back to the page's direction. A long Latin name as record data is a literal the lingui rule flags, which is why KN-238 left it to KN-062's fixtures; this card waits on them.

@@ -7218,14 +7218,14 @@
       "parent": [
         "KN-062"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "With KN-062's fixtures, a story renders a long Latin-led name in the Persian interface and asserts the chip is ltr and cut at its end, a digit-led Persian name resolves rtl, and DESIGN.md says what happens to a name with no letter at all instead of 'always'.",
       "roasts": [],
       "notes": [
         "2026-09-11, owner: a new component is more critical than a missing feature of one already built, since the site cannot be built until the components exist. This card is not a new component, so it is high and every component card goes first; this replaces the 2026-09-10 order that made findings on built components critical."
       ],
       "createdAt": "2026-09-10T12:57:37.062Z",
-      "updatedAt": "2026-09-11T11:29:34.793Z"
+      "updatedAt": "2026-09-11T18:11:24.413Z"
     },
     {
       "id": "KN-265",

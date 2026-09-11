@@ -213,3 +213,51 @@ export const LongNameInEnglish: Story = {
     await expect(name.scrollWidth).toBeGreaterThan(name.clientWidth)
   },
 }
+
+// A name in a column as wide as the kanban header, 276, the Size=M chip.
+const NAMES = fixtures('fa-IR').mixedStatusNames
+const Named = ({ label }: { label: string }) => (
+  <Box data-testid="column" sx={{ width: 276 }}>
+    <StatusChip status="interview" label={label} size="M" />
+  </Box>
+)
+
+export const LatinLedInPersian: Story = {
+  // The case dir=auto is there for, KN-264: a name led by a Latin word in the
+  // Persian interface runs left to right, so the ellipsis cuts its end and its
+  // start stays in view.
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  render: () => <Named label={NAMES.latinLed} />,
+  play: async ({ canvasElement }) => {
+    const name = within(within(canvasElement).getByTestId('column')).getByText(NAMES.latinLed)
+    await expect(document.documentElement).toHaveAttribute('dir', 'rtl')
+    await expect(getComputedStyle(chipOf(name))).toHaveProperty('direction', 'ltr')
+    await expect(name.scrollWidth).toBeGreaterThan(name.clientWidth)
+  },
+}
+
+export const DigitLedResolvesRtl: Story = {
+  // A Persian name led by digits, in the English interface: digits have no
+  // direction of their own, so the first letter decides, and it is Persian.
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'en-US' },
+  render: () => <Named label={NAMES.digitLed} />,
+  play: async ({ canvasElement }) => {
+    const name = within(within(canvasElement).getByTestId('column')).getByText(NAMES.digitLed)
+    await expect(document.documentElement).toHaveAttribute('dir', 'ltr')
+    await expect(getComputedStyle(chipOf(name))).toHaveProperty('direction', 'rtl')
+  },
+}
+
+export const NoLettersFollowsThePage: Story = {
+  // A name with no letter at all has no direction of its own and follows the
+  // page's: left to right in the English interface.
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'en-US' },
+  render: () => <Named label={NAMES.noLetters} />,
+  play: async ({ canvasElement }) => {
+    const name = within(within(canvasElement).getByTestId('column')).getByText(NAMES.noLetters)
+    await expect(getComputedStyle(chipOf(name))).toHaveProperty('direction', 'ltr')
+  },
+}

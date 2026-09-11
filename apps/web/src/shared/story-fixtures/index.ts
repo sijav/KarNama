@@ -76,6 +76,15 @@ export interface JobDetailFixture {
   history: readonly StatusChangeFixture[]
 }
 
+// Status names whose script does not match the interface, for the Status
+// Chip's direction, KN-264: one led by a Latin word, one led by digits, and one
+// with no letter at all. Record data, the same in both languages.
+export interface MixedStatusNamesFixture {
+  latinLed: string
+  digitLed: string
+  noLetters: string
+}
+
 export interface NoteFixture {
   id: string
   jobId: string
@@ -93,6 +102,7 @@ export interface Fixtures {
   notes: readonly NoteFixture[]
   extraction: ExtractionFixture
   jobDetail: JobDetailFixture
+  mixedStatusNames: MixedStatusNamesFixture
 }
 
 // The shape of one locale's JSON, with its status tokens still plain strings.
@@ -105,6 +115,7 @@ export interface RawFixtures {
   notes: readonly NoteFixture[]
   extraction: ExtractionFixture
   jobDetail: Omit<JobDetailFixture, 'history'> & { history: readonly (Omit<StatusChangeFixture, 'status'> & { status: string })[] }
+  mixedStatusNames: MixedStatusNamesFixture
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -151,6 +162,7 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
       files: Object.freeze(raw.jobDetail.files.map((file) => Object.freeze({ ...file }))),
       history: Object.freeze(raw.jobDetail.history.map((change) => Object.freeze({ ...change, status: tokenOf(change.status) }))),
     }),
+    mixedStatusNames: Object.freeze({ ...raw.mixedStatusNames }),
   })
 }
 

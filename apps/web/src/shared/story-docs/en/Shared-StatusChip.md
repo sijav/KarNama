@@ -69,3 +69,17 @@ name is still its text.
 The same Persian name with the English interface. The chip takes its direction
 from the name, so the ellipsis still cuts the end of it and its start stays in
 view.
+
+### LatinLedInPersian
+
+A name led by a Latin word in the Persian interface: the chip runs left to
+right, so the ellipsis cuts the name's end.
+
+### DigitLedResolvesRtl
+
+A Persian name led by digits in the English interface: the first letter
+decides, and the chip runs right to left.
+
+### NoLettersFollowsThePage
+
+A name with no letter at all follows the page's direction.

@@ -37,6 +37,7 @@ describe('story fixtures', () => {
     expect(Object.keys(second.extraction)).toEqual(Object.keys(first.extraction))
     expect(second.jobDetail.files.map((file) => file.id)).toEqual(first.jobDetail.files.map((file) => file.id))
     expect(second.jobDetail.history).toEqual(first.jobDetail.history)
+    expect(second.mixedStatusNames).toEqual(first.mixedStatusNames)
   })
 
   it('hold a long value in every set, in both languages, for truncation', () => {
@@ -70,12 +71,12 @@ describe('story fixtures', () => {
 
   it('name a status by its token, and refuse a set that leaves one of the nine unnamed', () => {
     expect(statusName('en-US', 'interview')).toBe(fixtures('en-US').statuses.find((entry) => entry.token === 'interview')?.name)
-    const missing: RawFixtures = { statuses: [], renamedStatus: { token: 'new', name: 'x', count: 0 }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail }
+    const missing: RawFixtures = { statuses: [], renamedStatus: { token: 'new', name: 'x', count: 0 }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames }
     expect(() => parseFixtures(missing)).toThrow(/have no status new/)
   })
 
   it('refuse a status token that is not one of the nine', () => {
-    const bad: RawFixtures = { statuses: [{ token: 'purple-ish', name: 'x', count: 0 }], renamedStatus: { token: 'new', name: 'x', count: 0 }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail }
+    const bad: RawFixtures = { statuses: [{ token: 'purple-ish', name: 'x', count: 0 }], renamedStatus: { token: 'new', name: 'x', count: 0 }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames }
     expect(() => parseFixtures(bad)).toThrow(/does not exist: purple-ish/)
   })
 })

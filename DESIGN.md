@@ -219,9 +219,12 @@ this is a decision. **The chip never grows past where it sits**: a name longer
 than its container is cut with an ellipsis on one line, never wrapped onto a
 second, so a column header or a card keeps its height and its width. The whole
 name stays the chip's text, so a screen reader reads all of it. The chip takes
-its direction from the name, not the page, as the label in `84:4` does, so the
-ellipsis always cuts the end of a name and its start stays in view in either
-script.
+its direction from the name, not the page, as the label in `84:4` does: the
+first letter decides, so a name led by a Latin word runs left to right in the
+Persian interface, a Persian name led by digits runs right to left in the
+English one, and the ellipsis cuts the end of the name with its start in view.
+A name with no letter at all, digits or emoji alone, has no direction of its own
+and follows the page's. KN-264.
 
 ### The Input focused while invalid
 
