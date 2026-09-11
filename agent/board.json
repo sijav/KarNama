@@ -8505,10 +8505,11 @@
       "roasts": [],
       "notes": [
         "2026-09-11: KN-018 found the same in the Card menu, 491:758, whose delete reads «حذف آگهی» for a job opportunity; the code says «حذف فرصت شغلی».",
-        "2026-09-11: KN-028 found the same in the Confirm modal's body, 150:92, «این آگهی برای همیشه حذف می‌شود»; the code says «این فرصت شغلی»."
+        "2026-09-11: KN-028 found the same in the Confirm modal's body, 150:92, «این آگهی برای همیشه حذف می‌شود»; the code says «این فرصت شغلی».",
+        "2026-09-11: KN-031 found the same in the Contact Modal, 270:152, whose Select is «آگهی مربوطه» with «یک آگهی انتخاب کن…»; the code says «فرصت شغلی مربوطه» and «یک فرصت شغلی انتخاب کن…»."
       ],
       "createdAt": "2026-09-11T13:43:05.150Z",
-      "updatedAt": "2026-09-11T15:11:46.610Z"
+      "updatedAt": "2026-09-11T15:21:54.507Z"
     },
     {
       "id": "KN-330",

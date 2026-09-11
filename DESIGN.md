@@ -496,6 +496,22 @@ Confirm, and each opening starts from the job's status. The set's description
 still speaks of a radio list with a name field; the component draws the chip
 picker. KN-028.
 
+### The Contact Modal and the panel modal
+
+The Contact Modal, `270:152`, and the Job Modal, `210:276`, share a larger
+frame than the shell: 560 wide for the contact, the header 24 above and at the
+sides and 16 below, **dividers edge to edge**, the body in 24 with 16 between
+fields, and the footer in 16 and 24; the code calls it the panel modal. The
+Add/Edit job modal, `166:82`, uses the shell. The contact's fields, in the
+file's order from the inline start: «اسم و فامیل», then «سمت» beside «شرکت», then
+«ایمیل» beside «شماره تماس», each pair half the row, then «لینک شبکه اجتماعی», and
+the Select of the job opportunity the contact belongs to, which the file calls
+«آگهی مربوطه» and the code «فرصت شغلی مربوطه», KN-329. Add ends with Cancel and
+Save at the inline end; Edit fills from the record and moves them to the inline
+start, «حذف مخاطب» taking the end, as the file's Edit draws it. A contact saves
+with a full name alone, KN-071, so the name is the only field that can be in
+error. KN-031.
+
 ### The Contact Card
 
 Node `248:116`, Full and Compact, each Default, Hover and Selected. **Full** is
