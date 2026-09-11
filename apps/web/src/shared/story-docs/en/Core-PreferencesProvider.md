@@ -4,6 +4,9 @@ and the colour scheme.
 The story renders a probe from its **args** rather than from a decorator, so the
 seeded state is visible in the Controls table instead of buried in a wrapper.
 
+What a story saves stays in a storage of the story's own, which Storybook gives
+every story, and never reaches the browser's real store.
+
 ## Props
 
 ### initialLocale

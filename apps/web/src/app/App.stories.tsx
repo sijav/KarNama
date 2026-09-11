@@ -84,12 +84,12 @@ export const LanguageOnAPhone: Story = {
     // language switch is the Page Header's, DESIGN.md section 5, KN-355:
     // choosing English there turns the page and keeps the choice. The screen
     // is resized by the runner's own browser, which only the runner has,
-    // KN-225; the story puts the screen and the stored choice back after.
+    // KN-225; the story puts the screen back after. The choice is kept in the
+    // story's own localStorage, which the preview gives every story, KN-178.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
     const { page } = await import('vitest/browser')
     const canvas = within(canvasElement)
     const before = { width: window.innerWidth, height: window.innerHeight }
-    const stored = window.localStorage.getItem(STORAGE_KEY)
     try {
       await page.viewport(PHONE.width, PHONE.height)
       await waitFor(() => expect(canvasElement.querySelector('aside')).toBeNull())
@@ -100,8 +100,6 @@ export const LanguageOnAPhone: Story = {
       await expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '{}')).toMatchObject({ locale: 'en-US' })
     } finally {
       await page.viewport(before.width, before.height)
-      if (stored === null) window.localStorage.removeItem(STORAGE_KEY)
-      else window.localStorage.setItem(STORAGE_KEY, stored)
     }
   },
 }

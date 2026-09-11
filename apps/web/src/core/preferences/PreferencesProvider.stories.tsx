@@ -1,6 +1,6 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { useContext } from 'react'
-import { expect, userEvent, within } from 'storybook/test'
+import { expect, spyOn, userEvent, within } from 'storybook/test'
 import type { Locale } from '../../i18n'
 import type { StoryMeta } from '../../shared/story-docs/story-meta'
 import type { ColorSchemePreference } from '../../theme/useColorScheme'
@@ -62,33 +62,34 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /**
- * Restores whatever was in storage before the story ran.
+ * The provider persists on every setter call, and these stories call setters.
  *
- * The provider persists on every setter call, and these stories deliberately
- * call setters, so without this a story would leave `{en-US, dark}` in the real
- * localStorage of the browser the whole suite shares. Any later story that
- * mounts a provider WITHOUT a seed reads what is stored, so this one would
- * quietly change what that one renders. In a `finally`, because a failing
- * assertion still has to clean up after itself.
+ * What they persist lands in the story's own localStorage, which the preview
+ * stands in for the real one from before the first render, KN-178: the real
+ * store is shared by every story file the runner has open at once, and a save
+ * and restore around the write raced another story doing the same. So nothing
+ * is put back here, and the story checks both halves: its own store holds the
+ * two choices, and nothing was written to a real Storage in this frame.
  */
 const clickingBothSetters = async (canvasElement: HTMLElement) => {
-  const before = localStorage.getItem(STORAGE_KEY)
-  try {
-    const canvas = within(canvasElement)
-    // The seeded state, asserted first. Without this the story could pass by
-    // starting in the state it is supposed to end in.
-    await expect(canvas.getByTestId('locale')).toHaveTextContent('fa-IR')
-    await expect(canvas.getByTestId('colorScheme')).toHaveTextContent('light')
+  const canvas = within(canvasElement)
+  // The seeded state, asserted first. Without this the story could pass by
+  // starting in the state it is supposed to end in.
+  await expect(canvas.getByTestId('locale')).toHaveTextContent('fa-IR')
+  await expect(canvas.getByTestId('colorScheme')).toHaveTextContent('light')
 
+  const shared = spyOn(Storage.prototype, 'setItem')
+  try {
     await userEvent.click(canvas.getByTestId('set-both'))
 
     // BOTH survive. Under the defect the language change was gone: the second
     // setter recomputed from the render's snapshot and wrote `fa-IR` back.
     await expect(canvas.getByTestId('locale')).toHaveTextContent('en-US')
     await expect(canvas.getByTestId('colorScheme')).toHaveTextContent('dark')
+    await expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}')).toEqual({ locale: 'en-US', colorScheme: 'dark' })
+    await expect(shared).not.toHaveBeenCalled()
   } finally {
-    if (before === null) localStorage.removeItem(STORAGE_KEY)
-    else localStorage.setItem(STORAGE_KEY, before)
+    shared.mockRestore()
   }
 }
 

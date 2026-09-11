@@ -7,6 +7,7 @@ import { AppProviders } from '../src/app/AppProviders'
 import { isLocale, locales } from '../src/i18n'
 import { DocsPage } from '../src/shared/story-docs/DocsPage'
 import { fontFamily } from '../src/theme/tokens'
+import { withOwnStorage } from './own-storage'
 
 /**
  * The Language toolbar is not a convenience, it is part of the done gate.
@@ -38,7 +39,7 @@ const withFontsLoaded = async () => {
 
 const preview: Preview = {
   decorators: [withProviders],
-  beforeEach: withFontsLoaded,
+  beforeEach: [withFontsLoaded, withOwnStorage],
   // Autodocs is what creates a Docs page at all. Without this tag there is no
   // generated page for `parameters.docs.page` to replace, which is easy to miss
   // because the Docs tab simply does not appear rather than appearing empty.
