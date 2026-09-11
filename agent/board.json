@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 337,
+  "nextId": 340,
   "tasks": [
     {
       "id": "KN-001",
@@ -945,7 +945,25 @@
       ],
       "status": "done",
       "exit": "All three families match Figma, the control opens the picker, choosing a status closes it and reports the change, Escape cancels without changing anything, and the underlying chip still has no interactive attributes of its own.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6.4,
+          "criticals": 0,
+          "file": "agent/roasts/KN-020-round-1.2026-09-11T14-42-55-109Z.md",
+          "filed": [
+            "KN-337",
+            "KN-338",
+            "KN-339"
+          ],
+          "cardDigest": "3751fda5df9e109ce5b7c66422604a9df0e96f2dc77a3fe2b1e12709afdd76d6",
+          "head": "b30ce878b43227de1fbdbee9fbb9b74cedbf7295",
+          "reviewerScore": 6.4,
+          "reviewerCriticals": 0,
+          "dismissed": "Nothing dismissed: the three majors are filed at high, medium and low under the owner's rule of 2026-09-11. The roast confirms the ring cascade, the aria-label and the decorative caret.",
+          "at": "2026-09-11T14:47:00.940Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -1182,7 +1200,7 @@
         "KN-014",
         "KN-062"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Both layouts and all three states match Figma, every field the design draws is present, long values truncate rather than reflow the card, and email and phone are actionable links. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the name, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293.",
       "roasts": [],
       "notes": [
@@ -1190,7 +1208,7 @@
         "2026-09-11, KN-293: the Checkbox's root is 28 by 28, four of room round its 20 by 20 frame for the focus ring. The file's Title Group clips, so the room given back with a negative margin lies outside it: DESIGN.md's 'What a host owes it' says the group must not clip, and this exit condition now asks the story to prove it on the real group."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T10:33:28.129Z"
+      "updatedAt": "2026-09-11T14:43:53.882Z"
     },
     {
       "id": "KN-027",
@@ -8555,6 +8573,51 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T14:37:54.682Z"
+    },
+    {
+      "id": "KN-337",
+      "title": "The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel",
+      "desc": "CHILD OF KN-020, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-020 roast. The control carries aria-haspopup dialog, but the Popover it opens has no dialog role and no name, and MUI focuses the panel itself, so a keyboard or screen reader user lands on an unnamed container and must Tab before reaching the chosen status.",
+      "why": "Changing a status without opening anything is the core interaction of the organise scenario, and the keyboard path starts here.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The popup is a named dialog or is advertised as what it is, and opening it puts focus on the chosen status, which a story checks after Enter.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T14:47:00.426Z"
+    },
+    {
+      "id": "KN-338",
+      "title": "The Status Picker's add chip is a child of its radio group",
+      "desc": "CHILD OF KN-020, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-020 roast. The dashed «+ وضعیت تازه» ButtonBase is rendered inside the RadioGroup after the radios, so the group owns an interactive element that is not one of its choices and a screen reader counts it among them.",
+      "why": "A radio group should hold only its radios; the add action is a separate control.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The add chip is a sibling of the radio group in one wrapping row that still lays it out after the last choice, and a story finds it outside the group.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T14:47:00.581Z"
+    },
+    {
+      "id": "KN-339",
+      "title": "StatusChoice is exported with no story of its own",
+      "desc": "CHILD OF KN-020, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-020 roast. StatusChoice is in the barrel as a component, and its three states are only exercised through the Status Picker's stories.",
+      "why": "Every exported component gets a story, AGENTS.md.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "StatusChoice is either internal to the picker or has a story showing Default, Hover and Selected from its own args.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T14:47:00.768Z"
     }
   ]
 }
