@@ -428,3 +428,30 @@ and the portable-story code in `node_modules/storybook/dist` finds a listener fo
 `updateStoryArgs` that rerenders the composed story with the new args. Then the
 early return comes out, the English twin passes under Vitest, and this entry is
 deleted.
+
+## 17. The lingui rule exempts names and calls KN-214 listed, and a few lines by comment
+
+**What.** When KN-214 made the rule's no-letter entry mean what it says, the rule
+flagged 622 strings. `apps/web/eslint.config.js` answers most of them by NAME,
+the values of props and keys such as `colorScheme`, `control`, `layout`, `size`,
+`placement`, `target`, `rel`, `fill`, `status`, `userName` and `include`, and by
+CALL, the arguments of testing-library's queries and matchers, the DOM's lookups
+and attributes, `userEvent.type`, `window.open` and a few more, each group with
+its reason beside it. A handful of lines carry an
+`eslint-disable-next-line lingui/no-unlocalized-strings` with a reason: the
+language names, KN-115, the health reason, KN-130, element ids, file globs, a
+file name and the story-docs page's missing-file message.
+
+**Why it is like that.** The rule reads a string with a letter in it as copy. It
+cannot tell a Storybook control name, a CSS keyword, a status token or a person's
+name from a sentence, so the places those live are named.
+
+**What it costs.** A string given to one of those names or calls is unchecked
+wherever it appears. `status`, `size`, `fill`, `include` and `*.includes` are
+wide: a sentence passed as a `status` prop would not be flagged. The KN-214
+roast found no copy passing through them today.
+
+**The check that retires this.** Each name or call comes out of the lists when
+nothing in `src` needs it: remove it, run `npm run lint`, and if it passes the
+exemption was a hole for nothing. The disables go with KN-115 and KN-130, or
+when the rule learns identifiers.
