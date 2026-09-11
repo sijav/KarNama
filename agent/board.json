@@ -7338,11 +7338,13 @@
       "points": 1,
       "area": "design",
       "parent": [],
-      "status": "backlog",
+      "status": "blocked",
       "exit": "DESIGN.md states, as the owner's decision, when the collapsed column's success flash plays relative to the save and what happens to an optimistic move and its flash when the save fails; KN-061's exit condition names it; and a verifier checks the stated rule word for word in both places.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-10T13:45:15.025Z"
+      "createdAt": "2026-09-10T13:45:15.025Z",
+      "blockedReason": "Waits on the owner, 2026-09-11: when a card is dropped on the collapsed rejected column and saved optimistically, does the success flash wait for the server's answer, or play at once and be undone with the rollback if the save fails? Put to the owner in the session summary.",
+      "updatedAt": "2026-09-11T18:14:23.787Z"
     },
     {
       "id": "KN-270",
