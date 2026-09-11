@@ -765,7 +765,7 @@
         "KN-008",
         "KN-062"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "All six desktop states and both mobile states match Figma, the stripe renders the right colour for all nine statuses, a deleted or unknown status falls back to the new colour rather than rendering no stripe, and the card is keyboard focusable and activatable. The Checkbox in its Title Group sits where the file draws it, flush at the group's inline start and 8 from the title, its 28 by 28 root giving the four back with a negative margin; a story focusing it by keyboard in the composed Title Group asserts that every clipping ancestor holds the whole ring, and a mutation clipping the Title Group fails it, KN-293.",
       "roasts": [],
       "notes": [
@@ -775,7 +775,9 @@
         "2026-09-11, KN-293: the Checkbox's root is 28 by 28, four of room round its 20 by 20 frame for the focus ring. The file's Title Group clips, so the room given back with a negative margin lies outside it: DESIGN.md's 'What a host owes it' says the group must not clip, and this exit condition now asks the story to prove it on the real group."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T15:22:42.414Z"
+      "updatedAt": "2026-09-11T15:53:13.046Z",
+      "evidence": "JobCard built from 137:44 and 491:751, six desktop and two phone states, stripe in all nine colours with new for unknown, Tab order checkbox-title-link-delete; 14 stories pass, unit suite 824 green, seen in a production build",
+      "closedAt": "2026-09-11T15:53:13.046Z"
     },
     {
       "id": "KN-016",
