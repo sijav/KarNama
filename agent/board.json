@@ -2105,14 +2105,16 @@
         "KN-015",
         "KN-018"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T21:10:26.914Z",
-      "updatedAt": "2026-09-11T15:54:11.818Z"
+      "updatedAt": "2026-09-11T16:11:20.338Z",
+      "evidence": "KanbanColumn and AddColumn built from 241:125, 241:46, 241:176 and 241:34, with cards, empty, collapsed, phone and a scrolling list with the Add Card row pinned; 10 stories pass, unit suite 838 green, seen in a production build",
+      "closedAt": "2026-09-11T16:11:20.338Z"
     },
     {
       "id": "KN-061",
