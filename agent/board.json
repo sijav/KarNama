@@ -9174,12 +9174,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The form resets on opening and on a change of the record's identity, an id, not on a new object with the same contents, and a story rerenders the parent mid-typing and keeps the text.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T15:27:26.755Z",
-      "updatedAt": "2026-09-11T19:40:36.270Z"
+      "updatedAt": "2026-09-11T19:44:38.080Z",
+      "evidence": "KeepsTypingThroughARerender types a name over the record, has the parent render again with a fresh copy, and finds the typed name kept; it failed on the old modal; modal and Job Modal stories 29 of 29; looked at in Persian light.",
+      "closedAt": "2026-09-11T19:44:38.080Z"
     },
     {
       "id": "KN-348",
