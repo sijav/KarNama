@@ -129,7 +129,9 @@ try {
     // backfill succeeded.
     if (!match) return `validate did not report the count: ${result.stdout.trim()}`
 
-    const open = board.tasks.filter(isOpen)
+    // Counted on the scratch board the CLI validated, which the first check
+    // changed by closing a task on it.
+    const open = JSON.parse(readFileSync(scratchBoard, 'utf8')).tasks.filter(isOpen)
     const missing = open.filter((task) => !task.verify)
     if (Number(match[2]) !== open.length) return `reported ${match[2]} open tasks, the board has ${open.length}`
     return Number(match[1]) === missing.length ? null : `reported ${match[1]} missing, the board has ${missing.length}`
@@ -140,8 +142,9 @@ try {
     const result = todo('validate')
     const match = /(\d+) of (\d+) open task\(s\)/.exec(result.stdout)
     if (!match) return 'no count to check'
-    const dropped = board.tasks.filter((task) => task.status === 'dropped')
-    const openCount = board.tasks.filter(isOpen).length
+    const scratch = JSON.parse(readFileSync(scratchBoard, 'utf8'))
+    const dropped = scratch.tasks.filter((task) => task.status === 'dropped')
+    const openCount = scratch.tasks.filter(isOpen).length
     if (dropped.length === 0 && Number(match[2]) === openCount) return null
     return Number(match[2]) === openCount ? null : `dropped tasks are being counted as open`
   })
