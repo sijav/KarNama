@@ -184,8 +184,9 @@ border, are not marked invalid, and show the helper.
 
 ### ErrorAnnouncedWhileTyping
 
-A field that checks itself as it is typed in. Emptied while it has focus, it
-shows its error, and a screen reader reads the error out at once, from a live
-region that was in the page before it. A letter clears the error, and the
-helper describes the field again; a field with no helper is then described by
-nothing.
+A field that checks itself as it is typed in, by two rules. Emptied while it
+has focus, it shows its error in a live region that was in the page before it,
+so a screen reader can read it out while the user is still typing. One
+character gives a different error, which replaces the first in the same region;
+a second clears it, and the helper describes the field again; a field with no
+helper is then described by nothing.

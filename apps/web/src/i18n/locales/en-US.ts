@@ -20,4 +20,5 @@ export const messages: Record<string, string> = {
   'e.g. Frontend developer': 'e.g. Frontend developer',
   'A short explanation': 'A short explanation',
   'This field cannot be empty': 'This field cannot be empty',
+  'Enter at least two characters': 'Enter at least two characters',
 }

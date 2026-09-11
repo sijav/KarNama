@@ -30,8 +30,11 @@ live region fails it by name.
 
 1. **A live region inside the message line, from the first render**: a
    `span` with `role="alert"`, holding the error and empty otherwise. `alert`
-   is assertive and atomic, so the whole error is read the moment it lands,
-   and again if it changes to another error; emptied, it says nothing.
+   is assertive and atomic. What the story and the verifier show is the
+   region carrying the error the moment it lands, and carrying a second error
+   in the same node when it replaces the first, KN-298; whether a screen
+   reader speaks each is for a person listening, since no check here hears
+   one.
 2. **The helper sits beside it, shown only while there is no error**, so the
    line reads one text, error or helper, and the field's description, the
    line's text, is the error while there is one and the helper once it clears.

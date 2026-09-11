@@ -827,21 +827,23 @@ export const BlankErrorIsNoError: Story = {
 }
 
 // A field that checks itself as it is typed in, the way a form's validation
-// does: empty is an error the moment it happens, and a letter clears it. The
-// specimen with its helper, or the bare field with none.
+// does, by two rules: empty is an error the moment it happens, one character is
+// another, and a second clears it. The specimen with its helper, or the bare
+// field with none.
 const ValidatesAsYouType = ({ described }: { described: boolean }) => {
   const { i18n } = useLingui()
   const [value, setValue] = useState(TYPED)
-  const error = value === '' ? { error: i18n._('This field cannot be empty') } : {}
+  const error = value === '' ? { error: i18n._('This field cannot be empty') } : value.length < 2 ? { error: i18n._('Enter at least two characters') } : {}
   return described ? <JobTitle value={value} onChange={setValue} {...error} /> : <Bare value={value} onChange={setValue} {...error} />
 }
 
 export const ErrorAnnouncedWhileTyping: Story = {
   // An error that appears while the field has focus: a changed description is
   // not read while focus stays, so the error goes into a live region that was
-  // in the page before it arrived, WCAG 4.1.3, KN-286. Cleared, the helper is
-  // the description again, and a field with no helper is described by nothing.
-  // A fixed render, so no control applies.
+  // in the page before it arrived, WCAG 4.1.3, KN-286. An error replaced by
+  // another, focus kept, lands in the same region, KN-298. Cleared, the helper
+  // is the description again, and a field with no helper is described by
+  // nothing. A fixed render, so no control applies.
   parameters: { controls: { disable: true } },
   render: () => (
     <Stack spacing={3}>
@@ -855,6 +857,7 @@ export const ErrorAnnouncedWhileTyping: Story = {
   ),
   play: async ({ canvasElement }) => {
     const message = i18n._('This field cannot be empty')
+    const short = i18n._('Enter at least two characters')
     for (const { id, helper } of [
       { id: 'described', helper: specimenCopy().helperText },
       { id: 'bare', helper: undefined },
@@ -871,7 +874,15 @@ export const ErrorAnnouncedWhileTyping: Story = {
       await expect(region).toHaveTextContent(message)
       await expect(box).toHaveAttribute('aria-invalid', 'true')
       await expect(box).toHaveAccessibleDescription(message)
+      // One character: the error is replaced by another, focus kept, and it is
+      // the same region, still in the page, that carries it, not a new one.
       await userEvent.type(box, 'x')
+      await expect(box).toHaveFocus()
+      await expect(region).toBeInTheDocument()
+      await expect(within(field).getByRole('alert')).toBe(region)
+      await expect(region).toHaveTextContent(short)
+      await expect(box).toHaveAccessibleDescription(short)
+      await userEvent.type(box, 'y')
       await expect(region).toBeEmptyDOMElement()
       await expect(box).not.toHaveAttribute('aria-invalid')
       if (helper === undefined) await expect(box).not.toHaveAttribute('aria-describedby')

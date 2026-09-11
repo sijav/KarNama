@@ -35,6 +35,8 @@ const { chromium } = createRequire(join(WEB, 'package.json'))('playwright')
 const REGION = '        <span role="alert">{error}</span>\n        {error === undefined ? helperText : null}\n'
 const PLAIN = '        {message}\n'
 const ERRORS = { 'fa-IR': 'این فیلد نمی‌تواند خالی باشد', 'en-US': 'This field cannot be empty' }
+// The story's second rule, one character, since KN-298.
+const SHORT = { 'fa-IR': 'دست‌کم دو نویسه وارد کنید', 'en-US': 'Enter at least two characters' }
 
 const failures = []
 const check = async (label, run) => {
@@ -86,7 +88,7 @@ const readTree = async (client) => {
   const alert = nodes.find((node) => node.role?.value === 'alert' && !node.ignored)
   const box = nodes.find((node) => node.role?.value === 'textbox' && !node.ignored)
   return {
-    alert: alert ? { live: prop(alert, 'live'), atomic: prop(alert, 'atomic'), text: textUnder(alert) } : null,
+    alert: alert ? { live: prop(alert, 'live'), atomic: prop(alert, 'atomic'), text: textUnder(alert), node: alert.backendDOMNodeId } : null,
     invalid: prop(box, 'invalid'),
     description: box?.description?.value ?? '',
   }
@@ -116,7 +118,7 @@ const main = async () => {
   const server = await serve(out)
   const browser = await chromium.launch()
   try {
-    await check('in the accessibility tree, in both languages: an empty assertive alert before the error, then the error in it on a focused field that is invalid and described by it', async () => {
+    await check('in the accessibility tree, in both languages: an empty assertive alert before the error, then the error in it on a focused field that is invalid and described by it, then a second error replacing it in the same node', async () => {
       const problems = []
       for (const locale of ['fa-IR', 'en-US']) {
         const page = await browser.newPage()
@@ -133,7 +135,12 @@ const main = async () => {
           await page.waitForTimeout(300)
           const focused = await field.evaluate((element) => element === document.activeElement)
           const after = await readTree(client)
-          process.stdout.write(`       ${locale}: before ${JSON.stringify(before.alert)}; after ${JSON.stringify(after.alert)}, invalid ${after.invalid}, described by ${JSON.stringify(after.description)}\n`)
+          // One character: the second rule's error replaces the first, KN-298.
+          await page.keyboard.type('x')
+          await page.waitForTimeout(300)
+          const stillFocused = await field.evaluate((element) => element === document.activeElement)
+          const replaced = await readTree(client)
+          process.stdout.write(`       ${locale}: before ${JSON.stringify(before.alert)}; after ${JSON.stringify(after.alert)}, invalid ${after.invalid}, described by ${JSON.stringify(after.description)}; replaced ${JSON.stringify(replaced.alert)}, described by ${JSON.stringify(replaced.description)}\n`)
           const wrong = []
           if (!before.alert) wrong.push('no alert in the tree before the error')
           else {
@@ -145,6 +152,10 @@ const main = async () => {
           if (after.alert?.text !== ERRORS[locale]) wrong.push(`the alert holds ${JSON.stringify(after.alert?.text)}`)
           if (after.invalid !== 'true' && after.invalid !== true) wrong.push(`the field is invalid ${after.invalid}`)
           if (after.description !== ERRORS[locale]) wrong.push(`the field is described by ${JSON.stringify(after.description)}`)
+          if (!stillFocused) wrong.push('the field lost focus when its error was replaced')
+          if (replaced.alert?.text !== SHORT[locale]) wrong.push(`after the replacement the alert holds ${JSON.stringify(replaced.alert?.text)}`)
+          if (replaced.description !== SHORT[locale]) wrong.push(`after the replacement the field is described by ${JSON.stringify(replaced.description)}`)
+          if (before.alert && (after.alert?.node !== before.alert.node || replaced.alert?.node !== before.alert.node)) wrong.push(`the alert is not one node throughout: ${before.alert.node}, ${after.alert?.node}, ${replaced.alert?.node}`)
           if (wrong.length) problems.push(`${locale}: ${wrong.join('; ')}`)
         } finally {
           await page.close()

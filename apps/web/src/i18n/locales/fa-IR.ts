@@ -23,4 +23,5 @@ export const messages: Record<string, string> = {
   'e.g. Frontend developer': 'مثلاً: توسعه‌دهنده فرانت‌اند',
   'A short explanation': 'توضیح کوتاه کمکی',
   'This field cannot be empty': 'این فیلد نمی‌تواند خالی باشد',
+  'Enter at least two characters': 'دست‌کم دو نویسه وارد کنید',
 }
