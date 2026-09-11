@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-364` Saving right after changing the status in the Job Modal's header can send the old status** (high, 1 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-364` | Saving right after changing the status in the Job Modal's header can send the old status | high | 1 | web | none | Save sends the status last chosen in the header, or none at all, and a story changes the status and saves before the job prop changes, and sees the new status or no status in onSave. |
+
 ## Blocked (4)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -19,12 +25,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (232)
+## Backlog (231)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-364` | Saving right after changing the status in the Job Modal's header can send the old status | high | 1 | web | none | Save sends the status last chosen in the header, or none at all, and a story changes the status and saves before the job prop changes, and sees the new status or no status in onSave. |
 | `KN-366` | The lingui gate's no-letter class still exempts three letters: ª, µ and º | high | 1 | web | none | The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary. |
 | `KN-369` | KN-260's pointer park repeats Storybook's own reset, and parks at (0,0), inside an open modal | high | 1 | web | none | parkPointer and its command are gone, the suite relies on Storybook's resetMousePosition, DESIGN or TECH-DEBT says so where the next person would look, and the Input's pair of stories is kept only if it asserts something the reset decides. |
 | `KN-373` | In Persian the Status Picker's left and right arrows move against its choices in Safari, as the Color Picker's did | high | 1 | web | none | The Status Picker's radio group takes arrowsAcross, and a story presses real left and right arrows in both languages through vitest/browser, landing on the choice beside the chosen one on screen and choosing it, while an arrow pressed on the New status button moves nothing. |
@@ -4699,7 +4704,7 @@ CHILD OF KN-030, recorded in prose because board.json cannot express parent_task
 
 ### `KN-364` Saving right after changing the status in the Job Modal's header can send the old status
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-030, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-030 roast. The header's Status Control calls onStatusChange at once, and Save sends job.draft.status from the props. If Save is pressed before the page has handed back a job with the new status, onSave carries the old one, which a page that saves the whole record would write back over the change.

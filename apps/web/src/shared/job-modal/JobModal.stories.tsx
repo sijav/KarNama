@@ -174,7 +174,9 @@ export const Note: Story = {
     await userEvent.click(within(dialog).getByRole('tab', { name: 'یادداشت' }))
     await expect(within(panelOf(dialog)).getByRole('textbox', { name: 'یادداشت' })).toHaveValue('تماس دوم هفتهٔ بعد.')
     await userEvent.click(within(dialog).getByRole('button', { name: 'ذخیره' }))
-    await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ note: 'تماس دوم هفتهٔ بعد.', status: 'interview' }))
+    await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ note: 'تماس دوم هفتهٔ بعد.' }))
+    // Save carries no status: the header changes it, KN-364.
+    await expect(args.onSave).toHaveBeenLastCalledWith(expect.not.objectContaining({ status: args.job.draft.status }))
   },
 }
 
@@ -241,7 +243,9 @@ export const ChangeStatus: Story = {
   play: async ({ args }) => {
     // The Status Control in the header opens the Change Status modal over the
     // job opportunity, as 377:6244 draws it, and Confirm there changes the
-    // status at once, without Save, KN-337.
+    // status at once, without Save, KN-337. Save pressed straight after, before
+    // the page hands back a job with the new status, carries no status, so it
+    // cannot write the old one back over the change, KN-364.
     const dialog = await dialogNamed(args.job.draft.title)
     await userEvent.click(within(dialog).getByRole('button', { name: /وضعیت: مصاحبه/u }))
     const change = await dialogNamed('تغییر وضعیت')
@@ -249,6 +253,10 @@ export const ChangeStatus: Story = {
     await expect(args.onStatusChange).not.toHaveBeenCalled()
     await userEvent.click(within(change).getByRole('button', { name: 'تأیید' }))
     await expect(args.onStatusChange).toHaveBeenCalledWith('offer')
+    await waitFor(() => expect(within(document.body).queryByRole('dialog', { name: 'تغییر وضعیت' })).toBeNull())
+    await userEvent.click(within(dialog).getByRole('button', { name: 'ذخیره' }))
+    await expect(args.onSave).toHaveBeenCalledTimes(1)
+    await expect(args.onSave).toHaveBeenLastCalledWith(expect.not.objectContaining({ status: args.job.draft.status }))
   },
 }
 

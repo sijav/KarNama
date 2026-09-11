@@ -55,8 +55,12 @@ export interface JobRecord {
   history: readonly StatusChange[]
 }
 
-// What saving hands over: the fields, the description and the note.
-export interface JobSaved extends JobDraft {
+// What saving hands over: the fields, the description and the note, and never
+// the status, which the header's Status Control changes at once. A Save pressed
+// before the page hands back a job with the new status would otherwise carry
+// the old one, and a page saving the whole record would write it back over the
+// change, KN-364.
+export interface JobSaved extends Omit<JobDraft, 'status'> {
   description: string
   note: string
 }
@@ -247,7 +251,8 @@ export const JobModal = ({
       return
     }
     // The status is the record's: the header changes it at once, not Save.
-    onSave({ ...draft, title: draft.title.trim(), company: draft.company.trim(), status: job.draft.status, description, note })
+    const { status: _status, ...fields } = draft
+    onSave({ ...fields, title: draft.title.trim(), company: draft.company.trim(), description, note })
   }
 
   const history = [...job.history].sort((first, second) => second.at.localeCompare(first.at))

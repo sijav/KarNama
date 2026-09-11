@@ -41,7 +41,8 @@ Called when «+ وضعیت تازه» is pressed in the header's picker.
 
 ### onSave
 
-Called with the fields, the description and the note when saved.
+Called with the fields, the description and the note when saved, never the
+status, which the header changes at once through onStatusChange.
 
 ### onDelete
 
@@ -95,7 +96,9 @@ The files, one downloaded, one chosen and one dropped.
 
 ### ChangeStatus
 
-The status changed from the header.
+The status changed from the header through the Change Status modal, then
+Save pressed straight after, which carries no status and so cannot undo the
+change.
 
 ### SaveAndDelete
 
