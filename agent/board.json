@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 335,
+  "nextId": 336,
   "tasks": [
     {
       "id": "KN-001",
@@ -861,7 +861,23 @@
       ],
       "status": "done",
       "exit": "All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6.5,
+          "criticals": 0,
+          "file": "agent/roasts/KN-018-round-1.2026-09-11T14-24-29-517Z.md",
+          "filed": [
+            "KN-335"
+          ],
+          "cardDigest": "58979632a191ef2790045dff246d204cff87b449de8b9fcde5cdc48fe8d5d15c",
+          "head": "5a07c6252bb182d75c3514baff79be3d6cdece04",
+          "reviewerScore": 6.5,
+          "reviewerCriticals": 0,
+          "dismissed": "The major is KN-335, confirmed in BasePopper's flipPlacement. The minors are dismissed: 'transparent' is a CSS keyword, not a palette literal; the relative imports are KN-092 and KN-309; the comments are the codebase's practice, the markdown rule being for prop documentation, KN-207.",
+          "at": "2026-09-11T14:29:54.652Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -1078,14 +1094,14 @@
         "KN-007",
         "KN-018"
       ],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Three states match Figma, the four permitted options are the only ones offered, the current sort is visible on the closed control, the menu is keyboard navigable, and changing sort is announced.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-10T06:38:18.864Z"
+      "updatedAt": "2026-09-11T14:24:39.088Z"
     },
     {
       "id": "KN-025",
@@ -8489,6 +8505,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T14:07:20.867Z"
+    },
+    {
+      "id": "KN-335",
+      "title": "The blocked delete's reason is placed to the physical left in Persian, not at the inline start",
+      "desc": "CHILD OF KN-018, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-018 roast. The Tooltip maps its start placement to MUI's left and relies on MUI to mirror it, but MUI's Popper mirrors only the -start and -end placements, so in a right to left page the tip is asked for the left. The DeleteBlocked screenshot showed it on the right only because the story's menu sat 82 from the left edge and Popper flipped it for want of room; the story never checks its side.",
+      "why": "259:295 draws the reason beside the menu at its inline start, and on the board, where there is room on both sides, it would sit on the wrong one.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The start placement asks MUI for right in a right to left page and left in a left to right one, and a story with room on both sides checks the tip is at the inline start.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T14:29:54.285Z"
     }
   ]
 }
