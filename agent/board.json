@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 299,
+  "nextId": 300,
   "tasks": [
     {
       "id": "KN-001",
@@ -7340,14 +7340,14 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "An Input with neither a helper nor an error draws no message line and is 64 tall, as the 91 screen instances draw it; with a helper or an error it is 90, the file's variants; an error appearing on a field without a helper adds the line with its message; an error on a field that has a helper replaces the helper with the error's message and the field's aria-describedby then names the error, and clearing the error brings the helper back; a blank error still draws no line; stories assert the 64 and the 90, the line appearing with the error, and the error replacing a helper, with a mutation that keeps the helper over the error failing by name, replacing ErrorDoesNotMoveTheField and WithoutAHelper's reserved line; every other place that asserts the reserved line is changed with it, KN-011's verifier and both languages' story docs included; DESIGN.md records the owner's reversal of KN-011's decision; and the Input's comment about the line always keeping its height is corrected.",
       "roasts": [],
       "notes": [
         "2026-09-10: exit tightened after the KN-285 roast, which showed the first wording let the helper stay over an error, and let KN-011's verifier and the story docs keep asserting the reserved line after the change."
       ],
       "createdAt": "2026-09-10T17:57:44.885Z",
-      "updatedAt": "2026-09-11T06:52:20.246Z"
+      "updatedAt": "2026-09-11T08:32:37.184Z"
     },
     {
       "id": "KN-288",
@@ -7590,13 +7590,43 @@
       "parent": [],
       "status": "done",
       "exit": "A story replaces one error with another on a focused Input, focus kept, and asserts the same alert holds the second error and the field is described by it; KN-286's verifier reads Chromium's accessibility tree after the replacement, the alert holding the second error, in both languages; and KN-286's plan says what is tested and that no check here hears a screen reader.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7.5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-298-round-1.2026-09-11T08-32-35-027Z.md",
+          "filed": [
+            "KN-299"
+          ],
+          "cardDigest": "867f7244bc2703a38f70f7933567db2d91e2b4a5fc04a5d0c3f25419b6454a9b",
+          "head": "c7d1cd6a07d63adfaf72d5a2b11fa03509d4b6ef",
+          "reviewerScore": 7.5,
+          "reviewerCriticals": 0,
+          "at": "2026-09-11T08:36:19.109Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T06:57:49.127Z",
       "updatedAt": "2026-09-11T08:32:17.629Z",
       "verify": "node agent/scripts/verify/KN-298.mjs",
       "evidence": "ErrorAnnouncedWhileTyping's validator has two rules, empty is 'This field cannot be empty' and one character is 'Enter at least two characters', a new catalog message with its Persian, دست‌کم دو نویسه وارد کنید. The play finds the alert empty, clears the focused field and asserts the first error in it, then types one character and asserts, focus kept, that the alert it found is still in the page and still the one the field's alert query returns, holding the second error, the field described by it; a second character clears it, and the helper describes the field again, or nothing for the bare one. node agent/scripts/verify/KN-298.mjs passed: the stories pass with those assertions; the alert keyed on its error, so React mounts a new node for each, fails ErrorAnnouncedWhileTyping by name; KN-286's verifier passes, its Chromium accessibility tree read over the DevTools protocol in a production build showing, in fa-IR and en-US, one alert node throughout by its DOM node id, empty, then the first error, then the second, assertive and atomic, the textbox described by each; and KN-286's plan says what the story and the verifier show and that no check here hears a screen reader. Unit project 424, eslint on the Input and the catalogs, and tsc clean. Not established: what NVDA, JAWS or VoiceOver speak when the error is replaced, which only a person listening can confirm.",
       "closedAt": "2026-09-11T08:32:17.629Z"
+    },
+    {
+      "id": "KN-299",
+      "title": "KN-286's verifier reads the first alert and textbox in the tree, not the ones of the field it types into",
+      "desc": "CHILD OF KN-011, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-298 roast, KN-298 being a child of KN-011. readTree in agent/scripts/verify/KN-286.mjs takes the first non-ignored alert and the first textbox in Chromium's whole accessibility tree, each on its own, while ErrorAnnouncedWhileTyping renders two Inputs. It reads the described field's today only because that field comes first in the page; nothing binds the alert it reads to the input it types into, and the alert's node id is compared without being required to be there.",
+      "why": "A verifier that happens to read the right node proves less than it says, and a reordered story would make it read the other field's without failing. About the loop's own checks rather than the product, so low, on the owner's rule of 2026-09-10.",
+      "severity": "low",
+      "points": 1,
+      "area": "agent",
+      "parent": [],
+      "status": "backlog",
+      "exit": "KN-286's verifier resolves the described field's input and its own alert span through the DevTools protocol, reads the accessibility nodes whose backendDOMNodeId are theirs, and fails when either id is missing; a story order swapped, the bare field first, still reads the described field's nodes; and KN-286's and KN-298's verifiers pass.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T08:36:18.945Z"
     }
   ]
 }
