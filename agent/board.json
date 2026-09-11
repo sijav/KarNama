@@ -859,14 +859,16 @@
         "KN-007",
         "KN-008"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "All four item states match Figma, both menu types render, the menu closes on Escape and on outside click and returns focus to its trigger, and destructive items are distinguishable without relying on colour alone.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T14:03:17.233Z"
+      "updatedAt": "2026-09-11T14:24:10.981Z",
+      "evidence": "Menu (512:8350) with its items (181:22, four states), StatusMenu (rename, colour replacing the menu with the Color Picker, delete blocked with its reason beside it) and CardMenu; 9 stories pass incl. Escape and outside press giving focus back, and the colour view returning focus to the trigger",
+      "closedAt": "2026-09-11T14:24:10.981Z"
     },
     {
       "id": "KN-019",
