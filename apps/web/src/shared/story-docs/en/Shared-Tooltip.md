@@ -22,6 +22,12 @@ Drawn before the text at 16 by 16, and marked decorative: the text already says
 everything, so a screen reader reading the mark as well would just be noise.
 Optional, because most tips do not need one.
 
+### placement
+
+`bottom`, the default, under the trigger, or `start`, beside it at the inline
+start, the right in Persian, as the Status menu's blocked delete explains
+itself beside the menu.
+
 ### children
 
 The control the tip describes. MUI clones it to attach the hover and focus

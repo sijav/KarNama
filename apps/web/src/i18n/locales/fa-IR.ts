@@ -83,4 +83,13 @@ export const messages: Record<string, string> = {
   'Middle manager': 'مدیر میانی',
   'Deputy or senior manager': 'معاون / مدیر ارشد',
   'Chief executive': 'مدیر عامل',
+  'Status actions': 'کارهای وضعیت',
+  'Rename': 'تغییر نام',
+  'Change colour': 'تغییر رنگ',
+  'This status has': 'این وضعیت',
+  'job opportunity; to delete it, first move it to another column.': 'فرصت شغلی داره؛ برای حذفش اول باید فرصت شغلی رو ببری یه ستون دیگه.',
+  'job opportunities; to delete it, first move them to another column.': 'فرصت شغلی داره؛ برای حذفش اول باید فرصت‌های شغلی رو ببری یه ستون دیگه.',
+  'Job opportunity actions': 'کارهای فرصت شغلی',
+  'Open the posting link': 'باز کردن لینک آگهی',
+  'Delete job opportunity': 'حذف فرصت شغلی',
 }

@@ -19,12 +19,13 @@ export const TOOLTIP_SURFACE = 'KarnamaTooltip-surface'
 export interface TooltipProps {
   title: string
   icon?: ReactNode
+  placement?: 'bottom' | 'start'
   children: ReactElement<{ 'aria-describedby'?: string }>
 }
 
 // Node 410:469, on MUI's Tooltip, which already opens on keyboard focus as well
 // as hover, closes on Escape, and keeps the tip on screen.
-export const Tooltip = ({ title, icon, children }: TooltipProps) => {
+export const Tooltip = ({ title, icon, placement = 'bottom', children }: TooltipProps) => {
   // The description, present from the first render, KN-231. MUI links the
   // tip only while it is OPEN, and it opens about 100ms after focus, so a
   // screen reader announcing the focused trigger heard no description at
@@ -80,69 +81,80 @@ export const Tooltip = ({ title, icon, children }: TooltipProps) => {
   }, [expectNode])
 
   return (
-  <>
-  <MuiTooltip
-    ref={attach}
-    // The "does not trap the pointer" clause, and the sx below is not enough
-    // on its own: MUI's tooltip is INTERACTIVE by default and sets
-    // `pointer-events: auto` itself so you can hover into it. A story
-    // asserting the computed value caught that. This turns the behaviour off
-    // at the source; the sx keeps it off if MUI's default ever changes.
-    disableInteractive
-    // DESCRIBE the trigger, never name it, KN-209. MUI's default LABELS its
-    // child through aria-labelledby, which outranks the child's own aria-label,
-    // so an icon-only "Delete status" button was announced as the tip's
-    // paragraph. With this the tip is its description and the trigger keeps
-    // its name, which means the trigger must HAVE a name of its own.
-    describeChild
-    title={
-      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: `${spacing.xs}px` }}>
-        {icon === undefined ? null : (
-          <Box
-            aria-hidden
-            sx={{ flexShrink: 0, width: iconSize.sm, height: iconSize.sm, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
-            {icon}
+    <>
+      <MuiTooltip
+        ref={attach}
+        // The "does not trap the pointer" clause, and the sx below is not enough
+        // on its own: MUI's tooltip is INTERACTIVE by default and sets
+        // `pointer-events: auto` itself so you can hover into it. A story
+        // asserting the computed value caught that. This turns the behaviour off
+        // at the source; the sx keeps it off if MUI's default ever changes.
+        disableInteractive
+        // Below the trigger, or beside it at the inline start: MUI's Popper turns
+        // left into right in a right to left page, so left is the start in both.
+        // The Status menu's blocked delete explains itself beside the menu, 259:295.
+        placement={placement === 'start' ? 'left' : 'bottom'}
+        // DESCRIBE the trigger, never name it, KN-209. MUI's default LABELS its
+        // child through aria-labelledby, which outranks the child's own aria-label,
+        // so an icon-only "Delete status" button was announced as the tip's
+        // paragraph. With this the tip is its description and the trigger keeps
+        // its name, which means the trigger must HAVE a name of its own.
+        describeChild
+        title={
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: `${spacing.xs}px` }}>
+            {icon === undefined ? null : (
+              <Box
+                aria-hidden
+                sx={{
+                  flexShrink: 0,
+                  width: iconSize.sm,
+                  height: iconSize.sm,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {icon}
+              </Box>
+            )}
+            <Box component="span">{title}</Box>
           </Box>
-        )}
-        <Box component="span">{title}</Box>
+        }
+        slotProps={{
+          tooltip: {
+            className: TOOLTIP_SURFACE,
+            sx: (theme) => ({
+              // The frame's 260 INCLUDES its padding, which is border-box. Set here
+              // rather than inherited: the tip used to be 260 only because the app's
+              // CssBaseline makes everything border-box, and 284 without it. KN-222.
+              boxSizing: 'border-box',
+              backgroundColor: theme.karnama.semantic['text/primary'],
+              color: theme.karnama.semantic['text/on-accent'],
+              borderRadius: `${theme.karnama.radius.md}px`,
+              // Both, so the tip is exactly the frame's width and MUI's own cap
+              // cannot narrow it if its default ever drops below 260.
+              width: TIP_WIDTH,
+              maxWidth: TIP_WIDTH,
+              // 8 above and below, 12 at the sides: the frame is py spacing-xs and
+              // px spacing-sm. It was 12 all round, which is a real token and so
+              // passed a check that the right tokens were referenced. KN-218.
+              padding: `${spacing.xs}px ${spacing.sm}px`,
+              boxShadow: theme.karnama.elevation.tooltip,
+              fontSize: `${typeScale.body.size}px`,
+              lineHeight: `${typeScale.body.lineHeight}px`,
+              fontWeight: typeScale.body.weight,
+              // See the note above: the tip must never eat a click aimed at the
+              // control it is describing.
+              pointerEvents: 'none',
+            }),
+          },
+        }}
+      >
+        {described}
+      </MuiTooltip>
+      <Box component="span" id={descriptionId} hidden>
+        {title}
       </Box>
-    }
-    slotProps={{
-      tooltip: {
-        className: TOOLTIP_SURFACE,
-        sx: (theme) => ({
-          // The frame's 260 INCLUDES its padding, which is border-box. Set here
-          // rather than inherited: the tip used to be 260 only because the app's
-          // CssBaseline makes everything border-box, and 284 without it. KN-222.
-          boxSizing: 'border-box',
-          backgroundColor: theme.karnama.semantic['text/primary'],
-          color: theme.karnama.semantic['text/on-accent'],
-          borderRadius: `${theme.karnama.radius.md}px`,
-          // Both, so the tip is exactly the frame's width and MUI's own cap
-          // cannot narrow it if its default ever drops below 260.
-          width: TIP_WIDTH,
-          maxWidth: TIP_WIDTH,
-          // 8 above and below, 12 at the sides: the frame is py spacing-xs and
-          // px spacing-sm. It was 12 all round, which is a real token and so
-          // passed a check that the right tokens were referenced. KN-218.
-          padding: `${spacing.xs}px ${spacing.sm}px`,
-          boxShadow: theme.karnama.elevation.tooltip,
-          fontSize: `${typeScale.body.size}px`,
-          lineHeight: `${typeScale.body.lineHeight}px`,
-          fontWeight: typeScale.body.weight,
-          // See the note above: the tip must never eat a click aimed at the
-          // control it is describing.
-          pointerEvents: 'none',
-        }),
-      },
-    }}
-  >
-    {described}
-  </MuiTooltip>
-  <Box component="span" id={descriptionId} hidden>
-    {title}
-  </Box>
-  </>
+    </>
   )
 }

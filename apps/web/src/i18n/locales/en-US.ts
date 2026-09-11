@@ -80,4 +80,13 @@ export const messages: Record<string, string> = {
   'Middle manager': 'Middle manager',
   'Deputy or senior manager': 'Deputy or senior manager',
   'Chief executive': 'Chief executive',
+  'Status actions': 'Status actions',
+  'Rename': 'Rename',
+  'Change colour': 'Change colour',
+  'This status has': 'This status has',
+  'job opportunity; to delete it, first move it to another column.': 'job opportunity; to delete it, first move it to another column.',
+  'job opportunities; to delete it, first move them to another column.': 'job opportunities; to delete it, first move them to another column.',
+  'Job opportunity actions': 'Job opportunity actions',
+  'Open the posting link': 'Open the posting link',
+  'Delete job opportunity': 'Delete job opportunity',
 }

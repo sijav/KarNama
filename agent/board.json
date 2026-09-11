@@ -8407,8 +8407,11 @@
       "status": "backlog",
       "exit": "The file's count reads «فرصت شغلی», or the owner exempts it and the code follows.",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-11T13:43:05.150Z"
+      "notes": [
+        "2026-09-11: KN-018 found the same in the Card menu, 491:758, whose delete reads «حذف آگهی» for a job opportunity; the code says «حذف فرصت شغلی»."
+      ],
+      "createdAt": "2026-09-11T13:43:05.150Z",
+      "updatedAt": "2026-09-11T14:23:24.263Z"
     },
     {
       "id": "KN-330",

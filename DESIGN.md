@@ -471,6 +471,28 @@ when they do not fit. The two selects the file names, «نوع همکاری» an
 ids and their names from the catalog. On the screens the only Select drawn is
 the contact modal's «آگهی مربوطه», whose own prompt is why the prompt is a prop.
 
+### The Menu and its items
+
+Node `512:8350`: fixed at 220, `bg/surface`, one pixel of `border/default`
+inside, radius md, 4 above and below its items, `Elevation/Card`. Its items,
+`181:22`, are 40 tall with 12 of padding, Body at Regular, where the Option
+Row's names are Medium: Default `text/primary`, Hover `bg/surface-secondary`,
+Disabled `text/disabled`, Destructive `text/error`. Both menus end with their
+delete after a one pixel divider, so a destructive item is told apart by its
+place and its verb as well as its red. The menu opens instantly, hangs from its
+trigger's inline end, closes on Escape or a press outside, and gives focus back
+to the trigger. The file draws no focused item; the keyboard's takes the Hover
+fill and the three pixel ring drawn inside. KN-018.
+
+**Type=Status** is the column's menu: «تغییر نام», «تغییر رنگ», «حذف وضعیت». Delete
+blocked, `259:295`, is the Disabled item with the reason in a Tooltip beside the
+menu at its inline start; the item stays in the keyboard's path so the reason
+can be read. Change colour replaces the menu with the Color Picker in its place,
+`259:184`. **Type=Card** is a job opportunity's menu on a phone: «تغییر وضعیت»,
+«باز کردن لینک آگهی», and delete, which the file labels «حذف آگهی»; the code says
+«حذف فرصت شغلی» under the terminology rule, as KN-329 records for the bar's
+count. A posting without a link has no link item.
+
 ### A stroke is drawn inside, and takes no space
 
 Every stroke on a component in the file is aligned INSIDE and left out of
