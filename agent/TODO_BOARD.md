@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 156 of 394 tasks done · 335 of 837 points.
+Project **KarNama** · 157 of 394 tasks done · 336 of 837 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-391` A step, source or draft change during the add modal's reading lets the old answer overwrite the restarted flow** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-391` | A step, source or draft change during the add modal's reading lets the old answer overwrite the restarted flow | high | 1 | web | none | A restart from changed props drops any reading in flight, by the flow the answer belongs to rather than a ref written during render, so a late answer applies only to the flow that started it; a story changes the step while the loading panel waits and resolves the reading after, and the new step stays. |
+**Next up: `KN-097` MDX story files are linted by no lingui block at all** (high, 2 pt, web)
 
 ## Blocked (4)
 
@@ -261,7 +255,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (156)
+## Done (157)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -407,6 +401,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-366` | The lingui gate's no-letter class still exempts three letters: ª, µ and º | high | 1 | web | none | The class leaves out ª, µ and º, lingui-ignore.test.ts asserts each is checked, and a reason says whether the plugin's own no-letter pattern makes the entry unnecessary. |
 | `KN-369` | KN-260's pointer park sat at (0,0), on an open modal's backdrop, and was believed to repeat a Storybook reset that never runs here | high | 1 | web | none | The suite's pointer park moves the pointer off the page, not to its corner, and says why it exists; whether Storybook's own resetMousePosition runs in this repository is established from the resolved Vitest config, and TECH-DEBT says what retires the park; a whole storybook run passes but for KN-365's flakes. |
 | `KN-373` | In Persian the Status Picker's left and right arrows move against its choices in Safari, as the Color Picker's did | high | 1 | web | none | The Status Picker's radio group takes arrowsAcross, and a story presses real left and right arrows in both languages through vitest/browser, landing on the choice beside the chosen one on screen and choosing it, while an arrow pressed on the New status button moves nothing. |
+| `KN-391` | A step, source or draft change during the add modal's reading lets the old answer overwrite the restarted flow | high | 1 | web | none | A restart from changed props drops any reading in flight, by the flow the answer belongs to rather than a ref written during render, so a late answer applies only to the flow that started it; a story changes the step while the loading panel waits and resolves the reading after, and the new step stays. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -5013,7 +5008,7 @@ CHILD OF KN-027, recorded in prose because board.json cannot express parent_task
 
 ### `KN-391` A step, source or draft change during the add modal's reading lets the old answer overwrite the restarted flow
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 CHILD OF KN-029, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-361 roast, a regression of KN-361. KN-361 restarts the flow during render when the open modal's step, source or draft change, but the reading in flight is dropped only when reading.current moves, which the restart does not do; so extract source A, change the step to manual while the loading panel shows, and when A's answer lands it replaces the new flow with A's Review and takes focus to its form.

@@ -10003,12 +10003,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A restart from changed props drops any reading in flight, by the flow the answer belongs to rather than a ref written during render, so a late answer applies only to the flow that started it; a story changes the step while the loading panel waits and resolves the reading after, and the new step stays.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T20:07:41.405Z",
-      "updatedAt": "2026-09-11T20:25:21.671Z"
+      "updatedAt": "2026-09-11T20:27:57.417Z",
+      "evidence": "RestartWhileReading extracts, restarts to Manual while the reading waits, settles the reading, and the form stays empty; on the old modal the answer filled it; the answer now applies only to a flow still loading since its reading began; add modal stories 14 of 14.",
+      "closedAt": "2026-09-11T20:27:57.417Z"
     },
     {
       "id": "KN-392",
