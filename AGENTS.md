@@ -125,6 +125,11 @@ No JSDoc above `const meta`, no docblock above a story export, no `description:`
 inside `argTypes`. A guard test fails until both languages describe every prop
 and story.
 
+A file is its description, then `## Props` and `## Stories`, each `###` under
+them one prop or one story. Anything else fails the same guard, naming the file
+and the line, KN-202: another `##` section, a second `###` of one name, or an
+entry or text outside every entry.
+
 No MDX either: Storybook indexes `*.stories.ts(x)` alone. No lint block reads an
 `.mdx`, so a story or a docs page written in one would carry copy the lingui
 rule never sees, KN-097; the docs pages are built from the story-docs markdown.

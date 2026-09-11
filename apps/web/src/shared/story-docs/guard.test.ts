@@ -296,6 +296,27 @@ describe('story-docs guard', () => {
     }
   })
 
+  it('every markdown file fits the format, with nothing the parser had to leave out', () => {
+    // KN-202. The parser reports what does not fit rather than absorbing it: a
+    // section other than Props and Stories, a second entry of one name, an
+    // entry or text outside every entry. Here each is a failure naming the file.
+    let read = 0
+    for (const language of ['en', 'fa'] as const) {
+      for (const path of globSync('*.md', { cwd: join(DOCS, language) })) {
+        const { problems } = parseStoryDoc(readFileSync(join(DOCS, language, path), 'utf8'))
+        read += 1
+        expect
+          .soft(
+            problems.map(({ message }) => message),
+            `${language}/${basename(path)} does not fit the story-docs format`,
+          )
+          .toEqual([])
+      }
+    }
+    // The positive control: no files read passes the loop above identically.
+    expect(read).toBeGreaterThan(files.length)
+  })
+
   it('no markdown file is orphaned, documenting a story that no longer exists', () => {
     const expected = new Set(files.map((entry) => fileNameFor(entry.title)))
     for (const language of ['en', 'fa'] as const) {
