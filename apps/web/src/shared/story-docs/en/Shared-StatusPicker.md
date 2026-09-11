@@ -47,3 +47,13 @@ An unchosen chip under the pointer, ringed in grey.
 ### InEnglish
 
 The picker with the statuses' English names.
+
+### ArrowsInPersian
+
+In Persian the choices run right to left, and the left arrow moves to the
+choice on the left, the right arrow to the one on the right, pressed on a real
+keyboard; an arrow pressed on New status moves nothing.
+
+### ArrowsInEnglish
+
+The same keys in English, where the choices run left to right.

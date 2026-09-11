@@ -135,3 +135,79 @@ export const InEnglish: Story = {
     await expect(radios.map((radio) => radio.getAttribute('aria-label'))).toEqual(args.statuses.map((status) => status.name))
   },
 }
+
+// Real arrow keys, KN-373, the Color Picker's way, KN-301: Playwright's
+// keyboard through `vitest/browser`, so the browser's own radio group is there
+// to be overridden, as in use. From the second status, which has a neighbour
+// on each side in its row, the left arrow lands on the choice that sits to its
+// left on screen and the right arrow on the one to its right, and the row takes
+// both keys itself; an arrow pressed on «+ وضعیت تازه», inside the same group,
+// moves nothing. In the published Storybook there is no runner to press keys,
+// so press them yourself. The runner is known by the flag
+// .storybook/vitest.setup.ts sets, KN-225.
+type Arrow = '{ArrowLeft}' | '{ArrowRight}'
+const arrowsFollowTheScreen =
+  (direction: 'rtl' | 'ltr'): NonNullable<Story['play']> =>
+  async ({ args, canvasElement }) => {
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
+      if ('__STORYBOOK_PREVIEW__' in globalThis) return
+      throw new Error('The arrow keys are running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
+    }
+    const browser = await import('vitest/browser')
+    await expect(window.document.documentElement).toHaveAttribute('dir', direction)
+    const group = within(canvasElement).getByRole('radiogroup')
+    // The choice with focus: the story holds no value, so the checked one stays
+    // where its args put it while the arrows move focus and report a choice.
+    const focused = () => {
+      const radio = window.document.activeElement
+      if (!(radio instanceof HTMLInputElement) || !group.contains(radio)) throw new Error('focus is not on a choice')
+      const box = shellOf(radio).getBoundingClientRect()
+      return {
+        radio,
+        value: radio.getAttribute('value'),
+        top: Math.round(box.top),
+        left: Math.round(box.left),
+        right: Math.round(box.right),
+      }
+    }
+    within(group).getByRole('radio', { checked: true }).focus()
+    const start = focused()
+    let last: KeyboardEvent | undefined
+    group.addEventListener('keydown', (event) => {
+      last = event
+    })
+    // Each press reports the choice it lands on, but the one the args keep
+    // checked: a radio already checked has nothing to change.
+    const press = async (key: Arrow) => {
+      await browser.userEvent.keyboard(key)
+      const now = focused()
+      if (now.value !== start.value) await expect(args.onChange).toHaveBeenLastCalledWith(now.value)
+      await expect(last?.defaultPrevented).toBe(true)
+      return now
+    }
+    const left = await press('{ArrowLeft}')
+    await expect(left.top).toBe(start.top)
+    await expect(left.right).toBeLessThanOrEqual(start.left)
+    await expect(await press('{ArrowRight}')).toMatchObject({ value: start.value })
+    const right = await press('{ArrowRight}')
+    await expect(right.top).toBe(start.top)
+    await expect(right.left).toBeGreaterThanOrEqual(start.right)
+    // On the add chip, an arrow is the browser's and moves nothing.
+    const add = within(group).getByRole('button', { name: i18n._('New status') })
+    add.focus()
+    await browser.userEvent.keyboard('{ArrowLeft}')
+    await expect(add).toHaveFocus()
+    await expect(last?.defaultPrevented).toBe(false)
+    await expect(args.onChange).toHaveBeenLastCalledWith(right.value)
+  }
+
+export const ArrowsInPersian: Story = {
+  globals: { locale: 'fa-IR' },
+  play: arrowsFollowTheScreen('rtl'),
+}
+
+export const ArrowsInEnglish: Story = {
+  args: { statuses: statusesIn('en-US') },
+  globals: { locale: 'en-US' },
+  play: arrowsFollowTheScreen('ltr'),
+}

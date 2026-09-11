@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { Box, ButtonBase, Radio, RadioGroup } from '@mui/material'
 import { useId } from 'react'
+import { arrowsAcross } from '../../theme/sides'
 import { spacing, type StatusToken, type as typeScale } from '../../theme/tokens'
 import { Icon } from '../icon'
 import { StatusChip } from '../status-chip'
@@ -92,6 +93,10 @@ export const StatusPicker = ({ statuses, value, onChange, onAdd, autoFocus = fal
         onChange={(_, chosen) => {
           onChange(chosen)
         }}
+        // Left and right move the way they point in every browser, the Color
+        // Picker's arrowsAcross, KN-373; an arrow on the add chip, which sits in
+        // this group, is left to the browser.
+        onKeyDown={arrowsAcross}
         // The file's Choices, 427:571: a row that wraps, 8 both ways, its items
         // at the top of their line.
         sx={{ flexWrap: 'wrap', alignItems: 'flex-start', gap: `${spacing.xs}px` }}
