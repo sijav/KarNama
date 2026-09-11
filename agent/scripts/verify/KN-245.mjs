@@ -152,7 +152,8 @@ const main = async () => {
   })
 
   await check('THE CASE: the hidden fallback back, an empty label drawn as the copy, fails ControlsMatchTheCanvas', () =>
-    withEdit('  args: { ...AT_LOAD, onChange: fn() },\n', "  args: { ...AT_LOAD, label: '', onChange: fn() },\n", () =>
+    // The meta's args carry the bound field's revision since KN-280.
+    withEdit('  args: { ...AT_LOAD, onChange: fn(), revision: 0 },\n', "  args: { ...AT_LOAD, label: '', onChange: fn(), revision: 0 },\n", () =>
       withEdit(
         '  return <Input {...args} {...(bound && held.value !== undefined ? { value: held.value } : {})} onChange={onChange} />\n',
         "  return <Input {...args} label={args.label === '' ? specimenCopy().label : args.label} {...(bound && held.value !== undefined ? { value: held.value } : {})} onChange={onChange} />\n",
