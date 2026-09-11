@@ -971,14 +971,16 @@
         "KN-007",
         "KN-009"
       ],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Both match Figma, the empty state carries a call to action that starts the add flow, and the loading state stays honest past 15 seconds rather than looking hung, which is the cold start case.",
       "roasts": [],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T12:58:10.051Z"
+      "updatedAt": "2026-09-11T13:25:43.329Z",
+      "evidence": "Empty State (159:80, title/body/required action, h2) and Loading State (159:92, 300 ms dot turns, status region, cold-start line from 15 s) built; 7 stories and the 15 s countdown unit test pass, seen headless light and dark with the line turning at 15.3 s",
+      "closedAt": "2026-09-11T13:25:43.329Z"
     },
     {
       "id": "KN-023",
