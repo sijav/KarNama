@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 310,
+  "nextId": 314,
   "tasks": [
     {
       "id": "KN-001",
@@ -680,7 +680,26 @@
       ],
       "status": "done",
       "exit": "Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-014-round-1.2026-09-11T12-37-38-850Z.md",
+          "filed": [
+            "KN-310",
+            "KN-311",
+            "KN-312",
+            "KN-313"
+          ],
+          "cardDigest": "efbcb3b7321b2fa3167e5720504d10abfcee408004a1b5324cbf1cd856e300db",
+          "head": "2ebba7ed680dfde7b27a765ed030d4d6bcc66e64",
+          "reviewerScore": 3.8,
+          "reviewerCriticals": 2,
+          "dismissed": "The two criticals are real and filed, KN-311 for the name tested at the component and KN-312's sibling KN-310 for the motion; their severity follows the owner's rule of 2026-09-11, a finding on a built component at high or lower, never above a new component. The minor about relative parent imports is KN-309, filed from the KN-008 roast for the whole repository. The score rises from 3.8 because the six drawn combinations, the 32 target and the required prop stand.",
+          "at": "2026-09-11T12:43:34.443Z"
+        }
+      ],
       "notes": [
         "2026-09-10: raised to critical on the owner's order, 'finish the components first'. The selection law ranks by severity, then by the smaller story point, so three- to eight-point component cards kept losing to one- and two-point gate cards and the live site stayed a placeholder. Severity is the only lever the law has, so this is an ORDERING decision recorded in the severity field, not a claim about impact."
       ],
@@ -7961,6 +7980,66 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:29:44.732Z"
+    },
+    {
+      "id": "KN-310",
+      "title": "The Icon Button cannot be a Tooltip's trigger: it forwards no ref and drops the props a Tooltip injects",
+      "desc": "CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-014 roast. IconButton.tsx declares its own props and neither forwards a ref nor spreads the rest, so the Tooltip, which clones its child with a ref, aria-describedby and focus and pointer handlers, attaches to nothing.",
+      "why": "The design explains a disabled action on hover, the delete that is off while a column holds job opportunities, and the icon-only controls are where a tooltip is most needed; as built, the two components cannot be put together.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A Tooltip wrapped round an Icon Button shows on hover and on focus and describes the button, the ref and the injected props reaching the button; a story composes them and asserts aria-describedby names the tooltip.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:43:24.539Z"
+    },
+    {
+      "id": "KN-311",
+      "title": "An Icon Button's required name is proved on a helper, not on the rendered button, and a blank one throws during render",
+      "desc": "CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-014 roast. The only test of the name rule calls nameOf directly; no story or test renders the component with an empty or blank aria-label, and the throw from render would reach the nearest error boundary or take down the tree.",
+      "why": "An icon-only control with no name is invisible to a screen reader, which is the one thing this component must never ship; the guarantee has to hold where callers use it.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:43:24.678Z"
+    },
+    {
+      "id": "KN-312",
+      "title": "The Icon Button's hover eases in over MUI's 150 ms where the design's state changes take 300",
+      "desc": "CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-014 roast. DESIGN.md's motion, from the prototype map 384:12, is a 300 ms Smart Animate for a state change within a screen, such as a hover; the Icon Button keeps MUI's 150 ms background transition, and the other built components have none.",
+      "why": "Hover states that change at different speeds across the product read as unfinished, and the design names one value for them.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The Icon Button's hover changes over 300 ms from a named motion token, the story reads the transition's duration, and DESIGN.md says which components' state changes take it.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:43:24.839Z"
+    },
+    {
+      "id": "KN-313",
+      "title": "An Icon Button's hover fill stays after a tap on a touch screen",
+      "desc": "CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-014 roast. The component's own &:hover rule replaces MUI's, which resets the hover fill under a hover: none media query; with that reset gone, a tap on a touch device leaves the hovered fill showing.",
+      "why": "The mobile screens are half the design; a button that stays grey or pale red after a tap looks pressed or dangerous when it is neither.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Under hover: none the Icon Button shows no hover fill after a tap, established with an emulated touch device in a story or a production check, and hovering still fills it on a device with a pointer.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T12:43:24.997Z"
     }
   ]
 }

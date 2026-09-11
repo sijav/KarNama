@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 117 of 309 tasks done · 224 of 734 points.
+Project **KarNama** · 117 of 313 tasks done · 224 of 739 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -17,7 +17,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (188)
+## Backlog (192)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -46,6 +46,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-301` | In Persian the Color Picker's left and right arrows move against the swatches' visual order | high | 1 | web | none | In Persian and in English the left and right arrows move to the swatch that sits in that direction and choose it, established by where the focused swatch lands on screen after a real key press, and up and down still move through the order; a story presses both arrows in both languages. |
 | `KN-302` | Every tab panel is a tab stop, so a panel holding a field puts an extra stop before it | high | 1 | web | none | A panel with focusable content is not itself a tab stop and one with none is, decided from what it renders; a story with a field in a panel shows Tab going from the tab to the field, and one with only text shows the panel reached. |
 | `KN-303` | Tab and panel ids are built from tab values, so a value with a space breaks the tab's link to its panel | high | 1 | web | none | Tab and panel ids are well-formed whatever the tab values, derived from the component's own id and each tab's position or an escaped value; a story with a value holding a space shows each tab's aria-controls naming its panel and the panel labelled by its tab. |
+| `KN-311` | An Icon Button's required name is proved on a helper, not on the rendered button, and a blank one throws during render | high | 1 | web | none | Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case. |
 | `KN-097` | MDX story files are linted by no lingui block at all | high | 2 | web | KN-087 | An .mdx file under src containing a bare English aria-label fails npm run lint, or the stories glob no longer accepts .mdx and DESIGN.md or AGENTS.md records which was chosen and why; either way a committed fixture proves it. |
 | `KN-098` | Prove the STORYBOOK test project reports a failure too | high | 2 | agent | KN-088 | A committed story whose play function asserts something untrue is run by the real storybook project in gate mode and reported as a failure, it does not appear in an ordinary run, and emptying the stories glob makes agent/scripts/verify/KN-003.mjs fail. |
 | `KN-099` | Scope the gate run and its passing count to the unit project | high | 2 | agent | KN-088 | The gate run is scoped to the unit project, emptying the unit include makes agent/scripts/verify/KN-003.mjs fail because the run reports no passing unit tests rather than because a source string changed, and the storybook project having any number of passing stories does not affect it. |
@@ -63,6 +64,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-295` | KN-274's story measures the focus change from a model: rounded bands counted as rectangles, and transforms and filters not read | high | 2 | web | none | FocusedWhileInvalid's area accounts for the rounded corners, from the exact quarter-ring areas of the edge's radius and the ring's or from a rendered reading, and still clears 4W + 4H; focusExtent requires what it does not model, transform, filter, clip-path and mask, to be none on the field, both pseudo-elements and the input, and counts the input's own outline; a transform and a filter on the ::after each fail FocusedWhileInvalid by name; the verifier also reads the rendered change on a field 80 wide or less, in light and dark, clearing 4W + 4H with nothing changed outside; and DESIGN.md's arithmetic states the corners' loss and the width above which the change clears the perimeter. |
 | `KN-296` | An Input icon given as an array, a fragment or a component that renders only blank text still draws an empty slot | high | 2 | web | none | An Input whose icon renders only blank text, through an array, a fragment or a component, draws no slot that takes room and its text box sits 16 from that edge, decided from what the slot rendered rather than from the prop; IconsTurnedOff covers an array of a space, a fragment holding a zero-width space and a component returning a space, each asserting a slot that takes no room; a mutation removing the rendered check fails it by name; and the comment on drawn() says nothing to read, with the lone-mark case named as deliberate. |
 | `KN-305` | The story fixtures have no seeded board and no job opportunity in three of the nine statuses | high | 2 | web | none | Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages. |
+| `KN-310` | The Icon Button cannot be a Tooltip's trigger: it forwards no ref and drops the props a Tooltip injects | high | 2 | web | none | A Tooltip wrapped round an Icon Button shows on hover and on focus and describes the button, the ref and the injected props reaching the button; a story composes them and asserts aria-describedby names the tooltip. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | high | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
@@ -123,6 +125,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-257` | The getComputedStyle lingui exemption covers every string, not the one selector it is for | medium | 1 | web | none | getComputedStyle is no longer in ignoreFunctions; the one selector the stories pass is exempted by an exact pattern with its reason beside it; lint passes; and a check shows a getComputedStyle call with a literal of copy is flagged while getComputedStyle(element, '::placeholder') is not. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-304` | On a hovered or chosen tab the indicator paints over the focus ring's bottom edge | medium | 1 | web | none | A focused tab's ring is unbroken in every state, the indicator drawn beneath it or clear of it, shown in a story that focuses a hovered tab and reads the ring's bottom band as border/focus. |
+| `KN-312` | The Icon Button's hover eases in over MUI's 150 ms where the design's state changes take 300 | medium | 1 | web | none | The Icon Button's hover changes over 300 ms from a named motion token, the story reads the transition's duration, and DESIGN.md says which components' state changes take it. |
+| `KN-313` | An Icon Button's hover fill stays after a tap on a touch screen | medium | 1 | web | none | Under hover: none the Icon Button shows no hover fill after a tap, established with an emulated touch device in a story or a production check, and hovering still fills it on a device with a pointer. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -516,6 +520,8 @@ Neutral and Danger tones, each with Default, Hover and Disabled, from Figma node
 **Why.** Card actions, modal close and row menus all use it. It also has to carry an accessible name, because an icon-only control with no label is invisible to a screen reader.
 
 **Exit condition.** Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32.
+
+**Roasts.** round 1 scored 5 with 0 critical(s)
 
 ### `KN-015` Card, desktop and mobile, with the status stripe
 
@@ -3949,4 +3955,48 @@ Found by the KN-008 roast, which flagged the Icon's import of ../../theme/tokens
 **Why.** A written convention nobody follows or checks misleads whoever reads AGENTS.md, and moving a folder breaks every relative parent path in it.
 
 **Exit condition.** Either the components import through absolute src/ paths and a lint rule refuses a relative parent import, or AGENTS.md is corrected to the convention the code keeps; whichever, lint and tsc pass.
+
+### `KN-310` The Icon Button cannot be a Tooltip's trigger: it forwards no ref and drops the props a Tooltip injects
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-014 roast. IconButton.tsx declares its own props and neither forwards a ref nor spreads the rest, so the Tooltip, which clones its child with a ref, aria-describedby and focus and pointer handlers, attaches to nothing.
+
+**Why.** The design explains a disabled action on hover, the delete that is off while a column holds job opportunities, and the icon-only controls are where a tooltip is most needed; as built, the two components cannot be put together.
+
+**Exit condition.** A Tooltip wrapped round an Icon Button shows on hover and on focus and describes the button, the ref and the injected props reaching the button; a story composes them and asserts aria-describedby names the tooltip.
+
+### `KN-311` An Icon Button's required name is proved on a helper, not on the rendered button, and a blank one throws during render
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-014 roast. The only test of the name rule calls nameOf directly; no story or test renders the component with an empty or blank aria-label, and the throw from render would reach the nearest error boundary or take down the tree.
+
+**Why.** An icon-only control with no name is invisible to a screen reader, which is the one thing this component must never ship; the guarantee has to hold where callers use it.
+
+**Exit condition.** Rendering an Icon Button with an empty or blank aria-label fails in a way a test observes at the component, and the failure is contained to the button rather than the screen, or the type and a lint rule refuse it before it renders; a story or test renders the case.
+
+### `KN-312` The Icon Button's hover eases in over MUI's 150 ms where the design's state changes take 300
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-014 roast. DESIGN.md's motion, from the prototype map 384:12, is a 300 ms Smart Animate for a state change within a screen, such as a hover; the Icon Button keeps MUI's 150 ms background transition, and the other built components have none.
+
+**Why.** Hover states that change at different speeds across the product read as unfinished, and the design names one value for them.
+
+**Exit condition.** The Icon Button's hover changes over 300 ms from a named motion token, the story reads the transition's duration, and DESIGN.md says which components' state changes take it.
+
+### `KN-313` An Icon Button's hover fill stays after a tap on a touch screen
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-014 roast. The component's own &:hover rule replaces MUI's, which resets the hover fill under a hover: none media query; with that reset gone, a tap on a touch device leaves the hovered fill showing.
+
+**Why.** The mobile screens are half the design; a button that stays grey or pale red after a tap looks pressed or dangerous when it is neither.
+
+**Exit condition.** Under hover: none the Icon Button shows no hover fill after a tap, established with an emulated touch device in a story or a production check, and hovering still fills it on a device with a pointer.
 
