@@ -9446,12 +9446,14 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Changing step, source or draft while open restarts the flow from them, and a story changes the step through its args and sees the new step.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T17:03:01.577Z",
-      "updatedAt": "2026-09-11T19:58:20.460Z"
+      "updatedAt": "2026-09-11T20:02:23.952Z",
+      "evidence": "StepFromItsArgs changes the open modal's step prop from paste to manual and finds the empty form; it failed on the old modal; the add modal's 13 stories pass; in the Storybook UI an updateStoryArgs on the manager's channel moved the open Paste Filled story to Manual.",
+      "closedAt": "2026-09-11T20:02:23.952Z"
     },
     {
       "id": "KN-362",
