@@ -4819,6 +4819,8 @@ CHILD OF KN-020, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The Status Picker's radio group takes arrowsAcross, and a story presses real left and right arrows in both languages through vitest/browser, landing on the choice beside the chosen one on screen and choosing it, while an arrow pressed on the New status button moves nothing.
 
+**Roasts.** round 1 scored 6 with 0 critical(s)
+
 ### `KN-374` The Color Picker's contract and stories never say where an arrow goes at a row's end
 
 - **status** backlog · **severity** low · **points** 1 · **area** web
