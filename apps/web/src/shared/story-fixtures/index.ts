@@ -41,6 +41,18 @@ export interface ContactFixture {
   jobId: string | null
 }
 
+// What reading a posting finds beyond its title and company, the add modal's
+// Review step, node 150:94, in each language.
+export interface ExtractionFixture {
+  location: string
+  experience: string
+  salary: string
+  postedAt: string
+  expiresAt: string
+  source: string
+  postingUrl: string
+}
+
 export interface NoteFixture {
   id: string
   jobId: string
@@ -56,6 +68,7 @@ export interface Fixtures {
   jobs: readonly JobFixture[]
   contacts: readonly ContactFixture[]
   notes: readonly NoteFixture[]
+  extraction: ExtractionFixture
 }
 
 // The shape of one locale's JSON, with its status tokens still plain strings.
@@ -66,6 +79,7 @@ export interface RawFixtures {
   jobs: readonly (Omit<JobFixture, 'status'> & { status: string })[]
   contacts: readonly ContactFixture[]
   notes: readonly NoteFixture[]
+  extraction: ExtractionFixture
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -105,6 +119,7 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     jobs: Object.freeze(raw.jobs.map((job) => Object.freeze({ ...job, status: tokenOf(job.status) }))),
     contacts: Object.freeze(raw.contacts.map((contact) => Object.freeze({ ...contact }))),
     notes: Object.freeze(raw.notes.map((note) => Object.freeze({ ...note }))),
+    extraction: Object.freeze({ ...raw.extraction }),
   })
 }
 

@@ -136,7 +136,7 @@ const Bound = ({ args: given, updateArgs }: { args: BoundArgs; updateArgs: (upda
     setHeld(echo ? { value: held.value, sent: held.sent.filter((sent) => sent.revision > revision), seen } : { value: args.value, sent: [], seen })
   }
   const bound = args.value !== undefined
-  const onChange = (value: string, event: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (value: string, event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (bound) {
       const at = Math.max(counter.current, revision ?? 0) + 1
       counter.current = at
@@ -944,5 +944,34 @@ export const ErrorAnnouncedWhileTyping: Story = {
       else await expect(box).toHaveAccessibleDescription(helper)
       await expect(whole.getBoundingClientRect().height).toBe(valid)
     }
+  },
+}
+
+export const Multiline: Story = {
+  // Several lines, the add modal's paste field, node 166:69: 140 tall, the
+  // text 16 from every edge and starting at the top, KN-029.
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'error', 'disabled', 'name']),
+  args: { multiline: true },
+  globals: { colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    const field = fieldOf(canvasElement)
+    const box = within(canvasElement).getByRole('textbox')
+    await expect(box.tagName).toBe('TEXTAREA')
+    await expect(field.offsetHeight).toBe(140)
+    const style = getComputedStyle(field)
+    await expect([style.paddingTop, style.paddingLeft].map(Number.parseFloat)).toEqual([16, 16])
+    await expect(Math.round(box.getBoundingClientRect().top - field.getBoundingClientRect().top)).toBe(16)
+  },
+}
+
+export const Required: Story = {
+  // A required field, the owner's KN-075: a mark after the label, seen and not
+  // read, and the field says it is required.
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'error', 'disabled', 'name']),
+  args: { required: true },
+  play: async ({ args, canvasElement }) => {
+    const box = within(canvasElement).getByRole('textbox')
+    await expect(box).toBeRequired()
+    await expect(box).toHaveAccessibleName(args.label)
   },
 }

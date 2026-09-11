@@ -687,6 +687,39 @@ joins it. Below MUI's md, 900, it replaces the sidebar, pinned to the foot of
 the screen, and the page keeps its 72 clear; the file says it gives way to the
 Bulk Action Bar while selecting, which is the board's to do. KN-027.
 
+### The add modal
+
+Node `166:82`, the shell at 560 in four drawn steps and the loading panel of
+`243:964` between them. **Paste**, `166:62`, is the Input of several lines, 140
+tall with its text 16 from every edge, under «لینک آگهی یا متن کامل آگهی», its
+helper «هم لینک را می‌پذیرد، هم متن کامل آگهی را — لازم نیست چیزی را جدا کنی.», and
+the row «لینک یا متن آگهی نداری؟ خودت دستی وارد کن», the second half 14 at Medium
+in `text/brand`; then Cancel and Primary «استخراج اطلاعات», disabled until the
+field is filled and has been touched, taking focus counting as touching, the
+critical path's «click into the field» (**PasteFilled**, `371:422`). The file
+draws the label at its automatic 19; the code keeps the Input's 16, so Paste is
+398 tall where the file is 401. **Loading**, `243:964`, is the same dialog as a
+panel of 360, 32 above and below and 24 at the sides, holding the Loading State
+alone; it takes focus, and Escape there goes back to the paste field with what
+was pasted. **Review**, `150:94`, is the form in 420 of the modal's 606,
+scrolling beyond, its bar in the modal's padding at the inline end: two columns
+of 248 with 16 between, from the inline start the title and the company, then
+employment type and location, experience and level, the posting and the salary,
+the source and the expiry, the posting's link across the row, and the Status
+Picker; one column below MUI's sm. The phone draws the company before the title,
+`243:726`; the code keeps the desktop's reading order. The title and the
+company carry the required mark, the owner's KN-075, a star in `text/error`
+after the label, said by the field's `aria-required`; saving without them says
+«عنوان شغلی را بنویس» and «نام شرکت را بنویس». A pasted link fills the posting's
+link when reading found none. **Manual**, `254:2`, is the same form, empty.
+**Error**, `304:2`, titles itself «نشد آگهی را بخوانیم», keeps what was pasted,
+puts reading's failure in `text/error` where the helper was, and offers «دوباره
+امتحان کن» and the manual row; editing the field goes back to Paste. Leaving with
+anything entered asks first in the Confirm modal, «بدون ذخیره بسته شود؟», since
+the file draws no discard of its own. The set's name says Edit, but the file
+draws no Edit step: a job opportunity is edited in place in the Job Modal,
+section 3. KN-029.
+
 ### A stroke is drawn inside, and takes no space
 
 Every stroke on a component in the file is aligned INSIDE and left out of
@@ -901,8 +934,8 @@ card itself. There is a Contact Modal, but only for Add and Edit.
 
 **The add-job flow is Paste, then Loading, then Review**, with Manual as the
 fallback path and Error as the failure path. Which fields the Review step shows
-is **open, tracked by KN-075**, see section 6: the design draws the flow but not
-the field list, and it cannot be settled by reading the file.
+was settled by the owner, KN-075, see section 6: everything the parse filled,
+the required fields marked. KN-029 builds it, "The add modal" in section 1.
 
 **Auth is phone OTP**: a mobile number, then a five digit code. The Screens
 canvas draws Login, Code and Signup for both desktop and mobile at page-map row

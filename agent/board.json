@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 357,
+  "nextId": 358,
   "tasks": [
     {
       "id": "KN-001",
@@ -9000,6 +9000,21 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T16:35:53.339Z"
+    },
+    {
+      "id": "KN-357",
+      "title": "The Select logs a React warning on every render: MUI's notched reaches the DOM through its bare InputBase",
+      "desc": "CHILD OF KN-012, recorded in prose because board.json cannot express parent_task yet, KN-188: found while building KN-029. Select.tsx gives MUI's Select input={<InputBase />}; MUI passes the outlined input's notched prop to it, InputBase forwards it to the div, and React logs 'Received true for a non-boolean attribute notched' in every story that draws a Select, the add modal's form included.",
+      "why": "A warning printed on every render buries the next real one in the console.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "No story drawing a Select logs the notched warning, and the Select's look and behaviour are unchanged.",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-11T16:55:02.687Z"
     }
   ]
 }

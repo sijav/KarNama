@@ -24,6 +24,7 @@ export type StoryTitle =
   | 'Core/PreferencesProvider'
   | 'Foundations/Tokens'
   | 'Shared/AddColumn'
+  | 'Shared/AddJobModal'
   | 'Shared/BulkActionBar'
   | 'Shared/Button'
   | 'Shared/CardMenu'

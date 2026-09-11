@@ -34,6 +34,7 @@ describe('story fixtures', () => {
       expect(second[key].map((entry) => entry.id)).toEqual(first[key].map((entry) => entry.id))
     }
     expect(second.jobs.map((job) => job.status)).toEqual(first.jobs.map((job) => job.status))
+    expect(Object.keys(second.extraction)).toEqual(Object.keys(first.extraction))
   })
 
   it('hold a long value in every set, in both languages, for truncation', () => {
@@ -67,12 +68,12 @@ describe('story fixtures', () => {
 
   it('name a status by its token, and refuse a set that leaves one of the nine unnamed', () => {
     expect(statusName('en-US', 'interview')).toBe(fixtures('en-US').statuses.find((entry) => entry.token === 'interview')?.name)
-    const missing: RawFixtures = { statuses: [], renamedStatus: { token: 'new', name: 'x', count: 0 }, longStatusName: '', jobs: [], contacts: [], notes: [] }
+    const missing: RawFixtures = { statuses: [], renamedStatus: { token: 'new', name: 'x', count: 0 }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction }
     expect(() => parseFixtures(missing)).toThrow(/have no status new/)
   })
 
   it('refuse a status token that is not one of the nine', () => {
-    const bad: RawFixtures = { statuses: [{ token: 'purple-ish', name: 'x', count: 0 }], renamedStatus: { token: 'new', name: 'x', count: 0 }, longStatusName: '', jobs: [], contacts: [], notes: [] }
+    const bad: RawFixtures = { statuses: [{ token: 'purple-ish', name: 'x', count: 0 }], renamedStatus: { token: 'new', name: 'x', count: 0 }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction }
     expect(() => parseFixtures(bad)).toThrow(/does not exist: purple-ish/)
   })
 })

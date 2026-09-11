@@ -15,11 +15,16 @@ export interface InputProps {
   name?: string
   leadingIcon?: ReactNode
   trailingIcon?: ReactNode
-  onChange?: (value: string, event: ChangeEvent<HTMLInputElement>) => void
+  multiline?: boolean
+  required?: boolean
+  onChange?: (value: string, event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
 }
 
 // Node 95:38: the field is 44 tall, the same as Button M. No variable is bound.
 const FIELD_HEIGHT = 44
+// The add modal's paste field, node 166:69, the one field of several lines: 140
+// tall, its text 16 from every edge, KN-029.
+const MULTILINE_HEIGHT = 140
 
 // The focus ring on an invalid field, KN-244, drawn inside the field rather
 // than round it, so a host that clips its overflow at the field's edge cannot
@@ -65,7 +70,18 @@ const drawn = (node: ReactNode) => node !== undefined && node !== null && typeof
 // one and 90 with one, and an error appearing adds it, the owner's decision of
 // KN-285, KN-287. It fills its container: the 240 in the file is the
 // specimen's width, not the field's.
-export const Input = ({ label, helperText, error: given, disabled = false, onChange, leadingIcon, trailingIcon, ...field }: InputProps) => {
+export const Input = ({
+  label,
+  helperText,
+  error: given,
+  disabled = false,
+  multiline = false,
+  required = false,
+  onChange,
+  leadingIcon,
+  trailingIcon,
+  ...field
+}: InputProps) => {
   const id = useId()
   const messageId = `${id}-message`
   // A blank error is no error: a form that clears one to '' rather than to
@@ -93,14 +109,33 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
         })}
       >
         {label}
+        {/* A required field's mark, the owner's KN-075: seen after the label in
+            text/error, and said by the field's own aria-required, not read out
+            as a star. */}
+        {required ? (
+          <Box component="span" aria-hidden sx={(theme) => ({ marginInlineStart: `${spacing['2xs']}px`, color: theme.karnama.semantic['text/error'] })}>
+            *
+          </Box>
+        ) : null}
       </Box>
       <InputBase
         id={id}
         disabled={disabled}
         // value, defaultValue, placeholder and name pass straight through.
         {...field}
-        {...(onChange === undefined ? {} : { onChange: (event: ChangeEvent<HTMLInputElement>) => { onChange(event.target.value, event) } })}
-        inputProps={{ 'aria-describedby': message === undefined ? undefined : messageId, 'aria-invalid': error === undefined ? undefined : true }}
+        {...(multiline ? { multiline: true, rows: 1 } : {})}
+        {...(onChange === undefined
+          ? {}
+          : {
+              onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+                onChange(event.target.value, event)
+              },
+            })}
+        inputProps={{
+          'aria-describedby': message === undefined ? undefined : messageId,
+          'aria-invalid': error === undefined ? undefined : true,
+          'aria-required': required ? true : undefined,
+        }}
         // Direct flex children of the field, before and after the input: the
         // direction puts the leading one at the start, the right in Persian.
         startAdornment={drawn(leadingIcon) ? <Slot>{leadingIcon}</Slot> : undefined}
@@ -113,9 +148,18 @@ export const Input = ({ label, helperText, error: given, disabled = false, onCha
             // padding is the file's in every state and the text sits spacing/md
             // from the edge, as 95:5 and 95:19 draw it, KN-266.
             position: 'relative',
-            height: FIELD_HEIGHT,
+            height: multiline ? MULTILINE_HEIGHT : FIELD_HEIGHT,
             boxSizing: 'border-box',
             paddingInline: `${spacing.md}px`,
+            // Several lines start at the top, 16 down, and scroll in the field.
+            ...(multiline
+              ? {
+                  alignItems: 'flex-start',
+                  paddingBlock: `${spacing.md}px`,
+                  '& textarea': { padding: 0, height: '100%', overflowY: 'auto', resize: 'none' },
+                  '& textarea::placeholder': { color: colour['text/secondary'], opacity: 1 },
+                }
+              : {}),
             // The file's gap between an icon and the text, spacing/2xs; with no
             // icon the input is the only item and it does nothing, KN-267.
             columnGap: `${spacing['2xs']}px`,

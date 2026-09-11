@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 131 of 356 tasks done · 292 of 793 points.
+Project **KarNama** · 131 of 357 tasks done · 292 of 794 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -23,7 +23,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 
-## Backlog (220)
+## Backlog (221)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -220,6 +220,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-339` | StatusChoice is exported with no story of its own | low | 1 | web | none | StatusChoice is either internal to the picker or has a story showing Default, Hover and Selected from its own args. |
 | `KN-346` | The Change Status modal can confirm a status that is no longer offered | low | 1 | web | none | A pending choice that leaves the statuses goes back to the job's status, and a story removes it while open. |
 | `KN-354` | A column shorter than 116 clips its own Add Card row | low | 1 | web | none | The column never gets shorter than its header, gaps, padding and Add Card row, and a story in a short container sees the row whole. |
+| `KN-357` | The Select logs a React warning on every render: MUI's notched reaches the DOM through its bare InputBase | low | 1 | web | none | No story drawing a Select logs the notched warning, and the Select's look and behaviour are unchanged. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4550,4 +4551,15 @@ CHILD OF KN-027, recorded in prose because board.json cannot express parent_task
 **Why.** On the phone, selection is how several job opportunities move or go at once; two bars fighting for the foot of the screen hide one of them.
 
 **Exit condition.** Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot.
+
+### `KN-357` The Select logs a React warning on every render: MUI's notched reaches the DOM through its bare InputBase
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+CHILD OF KN-012, recorded in prose because board.json cannot express parent_task yet, KN-188: found while building KN-029. Select.tsx gives MUI's Select input={<InputBase />}; MUI passes the outlined input's notched prop to it, InputBase forwards it to the div, and React logs 'Received true for a non-boolean attribute notched' in every story that draws a Select, the add modal's form included.
+
+**Why.** A warning printed on every render buries the next real one in the console.
+
+**Exit condition.** No story drawing a Select logs the notched warning, and the Select's look and behaviour are unchanged.
 

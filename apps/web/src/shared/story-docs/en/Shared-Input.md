@@ -63,6 +63,16 @@ spaces or a zero-width character, it draws no slot.
 
 The same, at the end of the field.
 
+### multiline
+
+Several lines rather than one: the field is 140 tall and its text starts at the
+top, 16 from every edge, and scrolls inside it. The add modal's paste field.
+
+### required
+
+The field must be filled: a mark follows the label, and the field says so to a
+screen reader.
+
 ### onChange
 
 Called with the new text and the change event.
@@ -197,3 +207,11 @@ so a screen reader can read it out while the user is still typing. One
 character gives a different error, which replaces the first in the same region;
 a second clears it, and the helper describes the field again; a field with no
 helper is then described by nothing.
+
+### Multiline
+
+The field of several lines, 140 tall, its text from the top.
+
+### Required
+
+A required field, its mark after the label.

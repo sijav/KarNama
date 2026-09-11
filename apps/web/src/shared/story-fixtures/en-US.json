@@ -28,5 +28,6 @@
   "notes": [
     { "id": "note-1", "jobId": "job-2", "text": "They called; in-person interview next week." },
     { "id": "note-2", "jobId": "job-1", "text": "The first interview was about my experience with React and designing interface systems. They said the team has five people and mostly works on internal dashboards. They will send a small exercise by the end of the week, and after reviewing it they will set up a second meeting with the engineering lead. I have not raised salary yet." }
-  ]
+  ],
+  "extraction": {"location": "Tehran / hybrid", "experience": "3 years", "salary": "45 to 60 million tomans", "postedAt": "1 September 2026", "expiresAt": "4 September 2026", "source": "Jobinja", "postingUrl": "https://jobinja.ir/jobs/9f3c21"}
 }
