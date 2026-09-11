@@ -7555,7 +7555,21 @@
       "parent": [],
       "status": "done",
       "exit": "textInsets and KN-266's production check refuse by name unicode-bidi plaintext on the input, which lets the content set the direction, a writing mode other than horizontal-tb on the input, and an input whose direction is not the field's; unicode-bidi plaintext on the input, a vertical writing mode on it, and the input set to the other direction, each present in every state, fail Default and the production check by name; and KN-283's verifier still passes.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 8.1,
+          "criticals": 0,
+          "file": "./agent/roasts/KN-297-round-1.2026-09-11T08-25-48-563Z.md",
+          "filed": [],
+          "cardDigest": "d7a8a713f54a44723e62117d873edb5fbc6a0fb55966d379f9c4a5de6018a2e8",
+          "head": "4c13bfc990399a490b4ada88f484dee41af74530",
+          "reviewerScore": 8.1,
+          "reviewerCriticals": 0,
+          "dismissed": "The major misreads agent/RALPH.md step 2b: plans stay beside the work. Its one true point, that KN-297's plan quoted the exit before it was narrowed, is corrected in the plan.",
+          "at": "2026-09-11T08:28:15.781Z"
+        }
+      ],
       "notes": [
         "2026-09-11, measured in Chromium 151 before building: direction and writing-mode set on ::placeholder are ignored, the computed style stays the input's and the placeholder's pixels do not move, as CSS Pseudo-Elements 4 limits ::placeholder to the ::first-line properties; text-align on ::placeholder is honoured, and KN-283's helper already refuses it. So a placeholder cannot run the other way, and the exit is narrowed from a placeholder given the other direction to the input: unicode-bidi plaintext on the input moved a Persian value in the English field from x 0 to x 511 while its computed direction still read ltr, and a vertical writing mode turned the axis."
       ],
@@ -7574,11 +7588,12 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A story replaces one error with another on a focused Input, focus kept, and asserts the same alert holds the second error and the field is described by it; KN-286's verifier reads Chromium's accessibility tree after the replacement, the alert holding the second error, in both languages; and KN-286's plan says what is tested and that no check here hears a screen reader.",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-11T06:57:49.127Z"
+      "createdAt": "2026-09-11T06:57:49.127Z",
+      "updatedAt": "2026-09-11T08:25:52.361Z"
     }
   ]
 }

@@ -7,13 +7,15 @@ Beside `Input.stories.tsx`, where the measurement lives.
 it does not notice. Critical on the owner's order of 2026-09-10, as a finding
 on a built component.
 
-**Exit condition, from the board.** textInsets and KN-266's production check
-take the direction from the style of what the field shows, the placeholder's
-when it is empty, and refuse by name a writing mode other than horizontal-tb
-and a unicode-bidi that lets the content set the direction; a placeholder given
-the other direction and unicode-bidi plaintext on the input with a value in the
-other script, each present in every state, fail Default and the production
-check by name; and KN-283's verifier still passes.
+**Exit condition, from the board, as narrowed on 2026-09-11** after the
+measurement below; the card first named a placeholder given the other
+direction, which Chromium does not draw. textInsets and KN-266's production
+check refuse by name unicode-bidi plaintext on the input, which lets the
+content set the direction, a writing mode other than horizontal-tb on the
+input, and an input whose direction is not the field's; unicode-bidi
+plaintext on the input, a vertical writing mode on it, and the input set to
+the other direction, each present in every state, fail Default and the
+production check by name; and KN-283's verifier still passes.
 
 ## What is there now
 
