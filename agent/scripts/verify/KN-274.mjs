@@ -297,7 +297,7 @@ const main = async () => {
       ['the ring inside the field', /inside the field's own box, KN-274/],
       ['why not the room', /Keeping four pixels of room instead would inset the field from its own label/],
       ['the area', /6W \+ 172 square pixels .* 4W \+ 4H, which is 4W \+ 176/],
-      ['the Checkbox and the Filter Chip', /keeps the room for its ring instead, KN-293, below; the Filter Chip's ring is still an outline round it, which a flush host clips too: KN-294/],
+      ['the Checkbox and the Filter Chip', /keeps the room for its ring instead, KN-293, and the Filter Chip draws its ring inside itself, KN-294, both below/],
     ].filter(([, pattern]) => !pattern.test(section))
     return missing.length ? `the section does not state ${missing.map(([what]) => what).join(', ')}` : null
   })

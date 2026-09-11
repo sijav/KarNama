@@ -60,3 +60,14 @@ A click reports the state it is moving to.
 
 Selecting and deselecting, both by keyboard, with no pointer anywhere. A filter
 you can turn on but not off is a trap.
+
+### FocusedInAClippingHost
+
+Two chips, one not selected and one selected, each focused inside a host that
+cuts off whatever overflows it, with no padding, at the chip's own edge, as the
+design's row of chips does and as a row that scrolls sideways does. The focus
+ring is drawn inside the chip, three pixels just inside its edge, so nothing of
+it can be cut off. The story checks that every pixel the focus paints lies
+inside the host, that the ring stands out from the chip's fill, and that it is
+at least the chip's two pixel perimeter. The label and the count are its
+controls, since they change the width the ring has to cover.

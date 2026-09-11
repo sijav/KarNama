@@ -7,6 +7,13 @@ import { spacing, type as typeScale } from '../../theme/tokens'
 // floor to one as a border, KN-281, so it is an inset shadow, KN-282.
 const PRESSED_EDGE = 1.5
 
+// The edge every other state draws, one pixel, and the focus ring just inside
+// it, three: a two pixel band inside a pill is short of the chip's own two
+// pixel perimeter at any width, 4W + 73 for a 32 tall chip against 4W + 48 at
+// best, and three covers 6W + 62, KN-294.
+const EDGE = 1
+const FOCUS_RING = 3
+
 export interface FilterChipProps {
   /** The status name. */
   label: string
@@ -88,7 +95,7 @@ export const FilterChip = ({ label, count, selected = false, onToggle }: FilterC
             inset: 0,
             borderRadius: 'inherit',
             borderStyle: selected ? 'none' : 'solid',
-            borderWidth: 1,
+            borderWidth: EDGE,
             borderColor: colour['border/default'],
             pointerEvents: 'none',
           },
@@ -99,11 +106,20 @@ export const FilterChip = ({ label, count, selected = false, onToggle }: FilterC
           // colour, so forced colours, which remove shadows, still draw an edge.
           '&:active': { boxShadow: `inset 0 0 0 ${PRESSED_EDGE}px ${colour['border/focus']}` },
           '&:active::before': { borderStyle: 'solid', borderColor: colour['border/focus'] },
-          '&:focus-visible': {
-            outlineWidth: 2,
-            outlineStyle: 'solid',
-            outlineColor: colour['border/focus'],
-            outlineOffset: 2,
+          // Focus is drawn INSIDE the chip, on an ::after: the file's Chips row
+          // is 32 tall and clips, as a row that scrolls sideways does, so a
+          // ring round the chip was lost at its top and bottom, KN-294. The
+          // outline is turned off, or the browser's own would come back.
+          '&:focus-visible': { outline: 'none' },
+          '&:focus-visible::after': {
+            content: '""',
+            position: 'absolute',
+            inset: EDGE,
+            borderRadius: 'inherit',
+            borderStyle: 'solid',
+            borderWidth: FOCUS_RING,
+            borderColor: colour['border/focus'],
+            pointerEvents: 'none',
           },
         }
       }}

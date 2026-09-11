@@ -1,7 +1,88 @@
+import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
+import { contrast } from '../../theme/darkMode'
+import { spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { FilterChip } from './FilterChip'
+
+const px = (value: string) => Number.parseFloat(value) || 0
+
+// A computed rgb() colour as the hex the WCAG contrast formula takes.
+const hexOf = (rgb: string) => {
+  const channels = rgb.match(/\d+/g)?.slice(0, 3) ?? []
+  if (channels.length !== 3) throw new Error(`not an rgb colour: ${rgb}`)
+  return `#${channels.map((channel) => Number(channel).toString(16).padStart(2, '0')).join('')}`
+}
+
+// A box in the viewport, by its four edges.
+interface Extent {
+  left: number
+  top: number
+  right: number
+  bottom: number
+}
+
+const edges = (box: Extent) => [box.left, box.top, box.right, box.bottom].map((edge) => Math.round(edge * 100) / 100)
+
+// How far past its own box a style paints: its outline, and any shadow cast
+// outside it, the largest of its offset, blur and spread. An inset shadow
+// paints inside, so it does not count.
+const reach = (style: CSSStyleDeclaration) => {
+  const outline = style.outlineStyle === 'none' ? 0 : px(style.outlineWidth) + px(style.outlineOffset)
+  const shadows = style.boxShadow === 'none' ? [] : style.boxShadow.split(/,(?![^(]*\))/).filter((shadow) => !/\binset\b/.test(shadow))
+  const cast = shadows.map((shadow) => {
+    const [x = 0, y = 0, blur = 0, spread = 0] = (shadow.replace(/rgba?\([^)]*\)/, '').match(/-?[\d.]+(?=px)/g) ?? []).map(Number)
+    return Math.max(Math.abs(x), Math.abs(y)) + blur + spread
+  })
+  return Math.max(0, outline, ...cast)
+}
+
+// Everything the chip's focus can paint, as one box: the chip's own box,
+// grown by what it paints past itself, and the boxes of its two
+// pseudo-elements, the edge and the ring, grown the same way. Filters and
+// transforms, which nothing in the chip uses, are not read.
+const focusExtent = (chip: HTMLElement): Extent => {
+  const box = chip.getBoundingClientRect()
+  const grow = reach(getComputedStyle(chip))
+  const extent = { left: box.left - grow, top: box.top - grow, right: box.right + grow, bottom: box.bottom + grow }
+  for (const style of [getComputedStyle(chip, '::before'), getComputedStyle(chip, '::after')]) {
+    if (style.content === 'none') continue
+    const out = reach(style)
+    extent.left = Math.min(extent.left, box.left + px(style.left) - out)
+    extent.top = Math.min(extent.top, box.top + px(style.top) - out)
+    extent.right = Math.max(extent.right, box.right - px(style.right) + out)
+    extent.bottom = Math.max(extent.bottom, box.bottom - px(style.bottom) + out)
+  }
+  return extent
+}
+
+// Every ancestor that clips what overflows it, on either axis.
+const clippingAncestors = (element: HTMLElement) => {
+  const found: HTMLElement[] = []
+  for (let node = element.parentElement; node; node = node.parentElement) {
+    const style = getComputedStyle(node)
+    if (style.overflowX !== 'visible' || style.overflowY !== 'visible') found.push(node)
+  }
+  return found
+}
+
+// Where an ancestor clips: its padding box, inside its borders. A scrollbar
+// and a rounded clip are not modelled; the hosts here are square and hidden,
+// and the verifier's screenshots are the rendered proof.
+const clipEdge = (node: HTMLElement): Extent => {
+  const box = node.getBoundingClientRect()
+  const style = getComputedStyle(node)
+  return { left: box.left + px(style.borderLeftWidth), top: box.top + px(style.borderTopWidth), right: box.right - px(style.borderRightWidth), bottom: box.bottom - px(style.borderBottomWidth) }
+}
+
+// How far an extent passes each side of a box: only the sides it passes, so
+// an extent inside the box gives none, and a failure names the side.
+const overshoot = (inner: Extent, outer: Extent) =>
+  Object.entries({ left: outer.left - inner.left, top: outer.top - inner.top, right: inner.right - outer.right, bottom: inner.bottom - outer.bottom }).filter(([, by]) => by > 0)
+
+// The area of a w by h box whose four corners are rounded to r.
+const rounded = (w: number, h: number, r: number) => w * h - (4 - Math.PI) * r * r
 
 const meta = {
   title: 'Shared/FilterChip',
@@ -103,5 +184,69 @@ export const KeyboardOnly: Story = {
     await userEvent.keyboard(' ')
     await expect(args.onToggle).toHaveBeenLastCalledWith(true)
     await expect(args.onToggle).toHaveBeenCalledTimes(2)
+  },
+}
+
+export const FocusedInAClippingHost: Story = {
+  // Two chips, not selected and selected, each in its own host. Both take the
+  // story's label and count, which change the width the ring has to cover, so
+  // those are the controls; `selected` is set on each, KN-294.
+  parameters: { controls: { include: ['label', 'count'] } },
+  render: (args) => (
+    // Each host clips what overflows it, with no padding and no border, sized
+    // to its chip: the file's Chips row, which clips at the chips' top and
+    // bottom, or a row that scrolls sideways, KN-294.
+    <Box sx={{ display: 'flex', gap: `${spacing.md}px` }}>
+      <Box data-testid="unselected-host" sx={{ display: 'inline-flex', overflow: 'hidden' }}>
+        <FilterChip {...args} selected={false} />
+      </Box>
+      <Box data-testid="selected-host" sx={{ display: 'inline-flex', overflow: 'hidden' }}>
+        <FilterChip {...args} selected />
+      </Box>
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const hosts = [within(canvasElement).getByTestId('unselected-host'), within(canvasElement).getByTestId('selected-host')]
+    for (const host of hosts) {
+      const chip = within(host).getByRole('button')
+      // Flush: the host clips on both axes, has no padding and no border, and
+      // its box is the chip's, so it clips at the chip's own edge.
+      const surface = getComputedStyle(host)
+      await expect([surface.overflowX, surface.overflowY]).toEqual(['hidden', 'hidden'])
+      const inset = [surface.paddingTop, surface.paddingRight, surface.paddingBottom, surface.paddingLeft, surface.borderTopWidth, surface.borderRightWidth, surface.borderBottomWidth, surface.borderLeftWidth]
+      await expect(inset.map(px)).toEqual([0, 0, 0, 0, 0, 0, 0, 0])
+      await expect(edges(host.getBoundingClientRect())).toEqual(edges(chip.getBoundingClientRect()))
+
+      await userEvent.tab()
+      await expect(chip).toHaveFocus()
+      // The state measured is the focused one. Whether a dispatched Tab
+      // matches :focus-visible depends on the page's earlier input, so it is
+      // asserted rather than assumed; the verifier presses a real Tab.
+      await expect(chip.matches(':focus-visible')).toBe(true)
+
+      // Everything the focus can paint lies inside every ancestor that clips,
+      // the host among them. A ring round the chip passes the host by four on
+      // every side, KN-294.
+      const extent = focusExtent(chip)
+      const clips = clippingAncestors(chip)
+      await expect(clips).toContain(host)
+      for (const clip of clips) await expect(overshoot(extent, clipEdge(clip))).toEqual([])
+
+      // The ring: solid, at least two wide, at 3:1 or more on the chip's own
+      // fill, which is what it is drawn over.
+      const ring = getComputedStyle(chip, '::after')
+      const [from, width] = [px(ring.top), px(ring.borderTopWidth)]
+      await expect(ring.borderTopStyle).toBe('solid')
+      await expect(width).toBeGreaterThanOrEqual(2)
+      await expect(contrast(hexOf(ring.borderTopColor), hexOf(getComputedStyle(chip).backgroundColor))).toBeGreaterThanOrEqual(3)
+
+      // And its band covers WCAG 2.4.13's two-pixel perimeter of the chip as
+      // it is seen, for a rounded one 4W + 4H - (16 - 4π)r: the pill from the
+      // ring's inset to its inset plus its width, its ends concentric.
+      const { width: w, height: h } = chip.getBoundingClientRect()
+      const r = Math.min(px(getComputedStyle(chip).borderTopLeftRadius), h / 2)
+      const band = rounded(w - 2 * from, h - 2 * from, r - from) - rounded(w - 2 * (from + width), h - 2 * (from + width), r - from - width)
+      await expect(band - (4 * w + 4 * h - (16 - 4 * Math.PI) * r)).toBeGreaterThanOrEqual(0)
+    }
   },
 }

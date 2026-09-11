@@ -233,9 +233,9 @@ The gap keeps red and blue, 1.37 to one against each other, from meeting and
 reading as one band. It shows on any focus, as the field's own focus border
 does, and nothing moves. Under forced colours a pseudo-element's border is
 kept, so the ring still shows there, as a second line inside the edge. The
-Checkbox keeps the room for its ring instead, KN-293, below; the Filter Chip's
-ring is still an outline round it, which a flush host clips too: KN-294.
-Revisit if the file ever draws the state.
+Checkbox keeps the room for its ring instead, KN-293, and the Filter Chip draws
+its ring inside itself, KN-294, both below. Revisit if the file ever draws the
+state.
 
 ### The Checkbox keeps the room for its focus ring
 
@@ -270,6 +270,37 @@ token on a wrapper, since the Checkbox takes no `sx`, and the room then lies
 outside the group: that group, and anything within four pixels of the frame,
 must not clip, the title truncating on its own element. KN-015 and KN-026
 prove it on the groups they build.
+
+### The Filter Chip draws its focus ring inside
+
+The file draws no Focus state for the Filter Chip, `159:71`, and all 65 of its
+instances on the Screens canvas sit in a `Chips` row with a gap of 8 and no
+padding, flush with its top and bottom, in a frame Figma clips, read with
+use_figma on 2026-09-11: the mobile boards' status row, the row that scrolls.
+Room of its own above and below would make the chip, and that row, taller than
+the file's 32, and a negative margin would put the room back outside a row
+that, scrolling sideways, clips on both axes. **So the ring is drawn inside the
+chip**, KN-294: on its `::after` while it matches `:focus-visible`, three
+pixels of `border/focus` just inside its one pixel edge, from 1 to 4, its ends
+concentric with the chip's, and the outline off.
+
+**Three pixels, where the Input and the Checkbox draw two**, because a band
+inside a pill is shorter than the pill's own two pixel perimeter, which WCAG
+2.4.13 gives for a rounded rectangle as 4W + 4H - (16 - 4π)r, 4W + 73 for the
+32 tall chip: a two pixel band covers 4W + 48 at best, just inside the edge,
+and three covers 6W + 62, clearing it for any chip at all, its padding alone
+being 24. A second band would have done it for two, the edge turning blue on
+focus, until KN-279 gives a selected chip an edge of the same blue, and then
+the ring alone would fall short there. The ring's colour clears 3 to one on
+every fill the chip has: 5.17 on `bg/surface` in light and 3.04 in the derived
+dark, 4.70 and 3.57 on the hover fill, and 4.24 and 3.33 on the selected one.
+Its inner edge is 1 from the line's box, and the label's ink, Persian dots and
+marks included, stays between 8.25 and 24.75 of the chip's 32, measured, so
+the ring never touches it. Pressed, the chip's inset 1.5 already covers the
+ring's outer half pixel, so pressing a focused chip changes 2.5 wide, about
+5W + 48, still clearing the perimeter for any chip 25 or more wide; and KN-279's
+one pixel selected edge sits outside the ring, so focus is told from pressed
+and from selected by its width.
 
 ### An Input's error needs a message
 
