@@ -7567,13 +7567,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A focused Filter Chip inside a host that clips its overflow flush at the chip's box still changes at least a two-pixel perimeter at 3:1, drawn inside the chip or with the room kept by the chip itself, selected and not; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-10T19:28:42.827Z",
-      "updatedAt": "2026-09-11T11:16:47.378Z",
-      "verify": "node agent/scripts/verify/KN-294.mjs"
+      "updatedAt": "2026-09-11T11:19:24.835Z",
+      "verify": "node agent/scripts/verify/KN-294.mjs",
+      "evidence": "KN-294.mjs passed at 87cb6d3. The Filter Chip stories pass with FocusedInAClippingHost by name: a chip not selected and a selected one, each in an overflow-hidden host with no padding or border whose box equals the chip's; for each, a Tab, :focus-visible asserted, everything the focus can paint (the chip's box grown by outline and outer shadows, its ::before and ::after grown the same way) inside every clipping ancestor with the host among them, the ::after ring solid, at least 2 wide, 3:1 on the chip's fill, and its rounded band covering WCAG's rounded perimeter 4W + 4H - (16 - 4pi)r. With the outline back and the ring gone the story fails by name on the overshoot, [['left', 4], ...]. In a production Storybook, a real Tab to each chip, fa-IR and en-US, light and dark, device pixel ratios 1 and 2: the ring's own colour changes the fill at 5.17:1 and 3.04:1 on the unselected chip and 4.24:1 and 3.33:1 on the selected one, its area by coverage is 592 to 603 against the perimeter's 431 to 433 (the rectangle's 486 to 488), and nothing changes outside the host; with the outline back the focus covers 68 inside, the outline's arcs through the host's corners. Label ink measured between 8.25 and 24.75 of the chip's 32 for Persian and English labels, so the ring from 1 to 4 clears it by 4.25 and 3.25. DESIGN.md's new section states the Figma reading (65 chips flush in a clipped Chips row), why not the room, why three, the colours, pressed (2.5 wide, about 5W + 48) and KN-279's edge; KN-274's verifier passes with the chip's ring inside its box. Regression: KN-017, KN-272 and KN-282 pass; eslint on the chip, tsc and the story-docs guard are clean; seen in all four combinations, focused, both states, and the Docs page read in both languages. Not established: forced colours for the ring, and a chip narrower than 25 pressed while focused.",
+      "closedAt": "2026-09-11T11:19:24.835Z"
     },
     {
       "id": "KN-295",
