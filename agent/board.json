@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 465,
+  "nextId": 467,
   "tasks": [
     {
       "id": "KN-001",
@@ -12050,7 +12050,24 @@
       "status": "done",
       "exit": "A test reads mockCode from the provider that sent the code, and a story resends and signs in with the newly shown one.",
       "okr": "OKR-1",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3,
+          "criticals": 2,
+          "file": "agent/roasts/KN-462-round-1.2026-09-12T02-59-43-685Z.md",
+          "filed": [
+            "KN-465",
+            "KN-466"
+          ],
+          "cardDigest": "c692a13d7414588b33d26b05328527785b9dfba24bae97637539a1e85865c717",
+          "head": "3fdff7b141e1a2176b9f0d242bec43d782546b4e",
+          "reviewerScore": 3,
+          "reviewerCriticals": 2,
+          "dismissed": "none: both criticals stand and both are mine. The first says I closed the card with its own first exit condition unmet, which I did: a comment is not a test. The second says my resend check passes against a resend that does nothing, which it does.",
+          "at": "2026-09-12T03:26:18.228Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-12T02:56:42.578Z",
       "updatedAt": "2026-09-12T02:59:31.153Z",
@@ -12091,6 +12108,38 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T03:07:56.992Z"
+    },
+    {
+      "id": "KN-465",
+      "title": "Nothing reads mockCode off the provider that sent the code, which KN-462's exit asked for",
+      "desc": "From the KN-462 roast, and it is right: I removed the vacuous assertion and left a comment saying the node side cannot see this, which closed the card with its first exit condition unmet. The node project has no DOM, so renderToString cannot show state set after its one render, but the BROWSER project can: the repository already has the shape, a probe component inside a stories file that reads the context and writes what it sees into data-testid spans, as Core/PreferencesProvider does. Add one for auth: request a code, read mockCode off the provider, resend, read it again, and assert what the screen shows is what the provider holds.",
+      "why": "The code on the screen has to be the code the provider will accept, and today the only thing joining those two is that both read the same field in the same render. A probe says it directly.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A story reads mockCode from the provider after a send and after a resend, and asserts the screen shows exactly that.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T03:26:17.811Z"
+    },
+    {
+      "id": "KN-466",
+      "title": "The resend check passes against a resend that does nothing",
+      "desc": "From the KN-462 roast. SigningInOnAPhone asks for another code and then reads the notice again, but nothing makes the second code differ from the first, so a resend that did nothing at all returns the same digits, the waitFor is satisfied at once, and signing in succeeds. I took the 'the two differ' assertion out on purpose because two random five digit codes need not differ, but the answer to that is determinism, not dropping the check: let the provider take its code maker, give the story one that counts, and then assert the notice changed and that only the second code signs in.",
+      "why": "The whole point of the resend half is that a reader who asks for another code is shown the one that now works. As written it cannot tell a working resend from a dead button.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The story uses a deterministic code maker, asserts the notice shows a different code after a resend, and asserts the first code no longer signs in.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T03:26:17.968Z"
     }
   ],
   "okrs": [

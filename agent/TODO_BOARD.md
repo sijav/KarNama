@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 195 of 464 tasks done · 434 of 946 points.
+Project **KarNama** · 195 of 466 tasks done · 434 of 950 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -20,7 +20,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (262)
+## Backlog (264)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -52,6 +52,8 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-446` | The Icon Button's TooltipTrigger type enforces nothing, and the runtime forwards more than it says | high | 2 | web | none | What IconButton forwards and what its type says it forwards are the same thing, and a comment says why the clone marker is part of it. |
 | `KN-452` | The shell gives a phone 24 of gutter where the design draws 16 | high | 2 | web | none | A page's gutters are the file's at each width, 16 on a phone and 32 on the desktop, and a story at a phone's width reads a full-width control's box against the file's number. |
 | `KN-464` | The fields tell a phone's keyboard nothing: no input type, no inputMode, no enterKeyHint, no autocomplete | high | 2 | web | none | Each field declares the type, inputMode, enterKeyHint and autocomplete its content wants, and a story reads them off the rendered inputs in both languages. |
+| `KN-465` | Nothing reads mockCode off the provider that sent the code, which KN-462's exit asked for | high | 2 | web | none | A story reads mockCode from the provider after a send and after a resend, and asserts the screen shows exactly that. |
+| `KN-466` | The resend check passes against a resend that does nothing | high | 2 | web | none | The story uses a deterministic code maker, asserts the notice shows a different code after a resend, and asserts the first code no longer signs in. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -5914,6 +5916,8 @@ From the KN-459 roast. The line added to AuthProvider.test.tsx captures a FRESH 
 
 **Exit condition.** A test reads mockCode from the provider that sent the code, and a story resends and signs in with the newly shown one.
 
+**Roasts.** round 1 scored 3 with 2 critical(s)
+
 ### `KN-463` Every set of fields is a form, and its primary button submits it
 
 - **status** done · **severity** high · **points** 3 · **area** web
@@ -5935,4 +5939,26 @@ Found by the KN-463 plan roast. The Input takes a name and nothing else that a b
 **Why.** The owner opened the product on a phone twice today and both times what was wrong was the phone, not the desktop. A form is what KN-463 gives; this is what actually changes the keyboard that comes up and whether anything can be filled in for the reader.
 
 **Exit condition.** Each field declares the type, inputMode, enterKeyHint and autocomplete its content wants, and a story reads them off the rendered inputs in both languages.
+
+### `KN-465` Nothing reads mockCode off the provider that sent the code, which KN-462's exit asked for
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+From the KN-462 roast, and it is right: I removed the vacuous assertion and left a comment saying the node side cannot see this, which closed the card with its first exit condition unmet. The node project has no DOM, so renderToString cannot show state set after its one render, but the BROWSER project can: the repository already has the shape, a probe component inside a stories file that reads the context and writes what it sees into data-testid spans, as Core/PreferencesProvider does. Add one for auth: request a code, read mockCode off the provider, resend, read it again, and assert what the screen shows is what the provider holds.
+
+**Why.** The code on the screen has to be the code the provider will accept, and today the only thing joining those two is that both read the same field in the same render. A probe says it directly.
+
+**Exit condition.** A story reads mockCode from the provider after a send and after a resend, and asserts the screen shows exactly that.
+
+### `KN-466` The resend check passes against a resend that does nothing
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+From the KN-462 roast. SigningInOnAPhone asks for another code and then reads the notice again, but nothing makes the second code differ from the first, so a resend that did nothing at all returns the same digits, the waitFor is satisfied at once, and signing in succeeds. I took the 'the two differ' assertion out on purpose because two random five digit codes need not differ, but the answer to that is determinism, not dropping the check: let the provider take its code maker, give the story one that counts, and then assert the notice changed and that only the second code signs in.
+
+**Why.** The whole point of the resend half is that a reader who asks for another code is shown the one that now works. As written it cannot tell a working resend from a dead button.
+
+**Exit condition.** The story uses a deterministic code maker, asserts the notice shows a different code after a resend, and asserts the first code no longer signs in.
 
