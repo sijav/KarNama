@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-429` Four story assertions in the screens cannot fail** (high, 1 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-429` | Four story assertions in the screens cannot fail | high | 1 | web | none | Each of the four asserts something that is false before the action it follows. |
+
 ## Blocked (5)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -20,13 +26,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (253)
+## Backlog (252)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-429` | Four story assertions in the screens cannot fail | high | 1 | web | none | Each of the four asserts something that is false before the action it follows. |
 | `KN-430` | The contacts page's search box is announced as the board's | high | 1 | web | none | The contacts page's search box is named and described for contacts in both languages, and a story asserts each page's own name. |
 | `KN-433` | An Icon Button given both href and disabled renders an anchor that still navigates | high | 1 | web | none | href and disabled cannot be passed together, or a disabled one does not navigate; DESIGN.md records that the card's mail control is a link. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
@@ -5506,7 +5511,7 @@ KN-415 gave the board's cards the phone layout, which is right: the desktop card
 
 ### `KN-429` Four story assertions in the screens cannot fail
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 From the KN-415 roast, each verified against the tree: JobsScreen.stories.tsx 184 to 189, the expanded rejected column is proved by getAllByText finding the empty-column line, which two other columns already show; 133 to 136, 'the column it moved to now holds it' only checks the title is somewhere on the board, which it was before the move; 371 to 377, 'a column takes a colour' only checks the picker closed and never reads the colour back; AuthScreen.stories.tsx 100 to 106, the name step being gone is also satisfied by the screen falling back to the phone step, so a saveName that stores nothing passes. Assert the count on the column, the offer column's own contents, the chip's colour or the checked radio on reopening, and the session itself.

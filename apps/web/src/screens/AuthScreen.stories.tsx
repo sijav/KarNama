@@ -1,6 +1,6 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
-import { AuthProvider, sessionFor } from '../core/auth'
+import { AuthProvider, sessionFor, STORAGE_KEY as SESSION_KEY } from '../core/auth'
 import { fixtures } from '../shared/story-fixtures'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { AuthScreen } from './AuthScreen'
@@ -99,10 +99,15 @@ export const SigningIn: Story = {
       })
       await userEvent.type(canvas.getByLabelText('اسم و فامیل'), fixtures('fa-IR').contacts[0]?.fullName ?? '')
       await userEvent.click(canvas.getByRole('button', { name: 'ادامه' }))
-      // With a name, the screen has nothing left to ask: the shell takes over,
-      // which a story of the screen alone shows as the sign-in step gone.
+      // What signing in produces is a SESSION, kept under its own key, and that
+      // is what is read back: the name step going away is also what the screen
+      // does when it falls back to the phone step, so a saveName that stored
+      // nothing would pass that. The store is this story's own, KN-178.
       await waitFor(async () => {
-        await expect(canvas.queryByText('تو را چه صدا کنیم؟')).toBeNull()
+        await expect(JSON.parse(window.localStorage.getItem(SESSION_KEY) ?? '{}')).toMatchObject({
+          phone: PHONE,
+          name: fixtures('fa-IR').contacts[0]?.fullName ?? '',
+        })
       })
     } finally {
       said.mockRestore()

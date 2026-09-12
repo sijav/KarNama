@@ -130,9 +130,11 @@ export const Working: Story = {
     await userEvent.click(within(change).getByRole('radio', { name: set.names.offer }))
     await userEvent.click(within(change).getByRole('button', { name: 'تأیید' }))
 
-    // And the column it moved to now holds it.
+    // And the column it moved TO now holds it, read inside that column: the
+    // card was on the board before the move as well, so finding the title
+    // anywhere proves nothing about where it went.
     await waitFor(async () => {
-      await expect(canvas.getByText(first)).toBeInTheDocument()
+      await expect(within(canvas.getByRole('region', { name: set.names.offer })).getByText(first)).toBeInTheDocument()
     })
   },
 }
@@ -181,11 +183,16 @@ export const Managing: Story = {
       await expect(canvas.queryByText(first)).toBeNull()
     })
 
-    // The rejected column opens from its collapsed header.
+    // The rejected column opens from its collapsed header, and what proves it
+    // is ITS OWN job opportunity appearing, read inside that column: the board
+    // has other empty columns, so a count of empty lines anywhere proves
+    // nothing, and the title is only on the board at all once it is open.
     const rejected = columns.at(-1)?.name ?? ''
+    const held = set.jobs[4]?.title ?? ''
+    await expect(canvas.queryByText(held)).toBeNull()
     await userEvent.click(canvas.getByRole('button', { name: new RegExp(rejected) }))
     await waitFor(async () => {
-      await expect(canvas.getAllByText('هنوز فرصت شغلی‌ای تو این مرحله نیست').length).toBeGreaterThan(0)
+      await expect(within(canvas.getByRole('region', { name: rejected })).getByText(held)).toBeInTheDocument()
     })
   },
 }
@@ -368,10 +375,19 @@ export const BackingOut: Story = {
     await userEvent.click(within(closing).getByRole('button', { name: 'بستن' }))
     await gone()
 
-    // A column takes a colour from the same menu.
+    // A column takes a colour from the same menu, and the picker opened again
+    // shows that colour chosen: the picker closing says only that it closed.
     await userEvent.click(menuOf(savedName))
     await userEvent.click(await body.findByRole('menuitem', { name: 'تغییر رنگ' }))
+    await expect(await body.findByRole('radio', { name: 'بنفش' })).not.toBeChecked()
     await userEvent.click(await body.findByRole('radio', { name: 'بنفش' }))
+    await waitFor(async () => {
+      await expect(body.queryByRole('radio', { name: 'بنفش' })).toBeNull()
+    })
+    await userEvent.click(menuOf(savedName))
+    await userEvent.click(await body.findByRole('menuitem', { name: 'تغییر رنگ' }))
+    await expect(await body.findByRole('radio', { name: 'بنفش' })).toBeChecked()
+    await userEvent.keyboard('{Escape}')
     await waitFor(async () => {
       await expect(body.queryByRole('radio', { name: 'بنفش' })).toBeNull()
     })

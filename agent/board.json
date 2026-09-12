@@ -11352,12 +11352,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Each of the four asserts something that is false before the action it follows.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T01:43:07.122Z"
+      "createdAt": "2026-09-12T01:43:07.122Z",
+      "updatedAt": "2026-09-12T01:49:09.115Z"
     },
     {
       "id": "KN-430",
