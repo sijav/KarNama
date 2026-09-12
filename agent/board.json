@@ -11441,13 +11441,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "href and disabled cannot be passed together, or a disabled one does not navigate; DESIGN.md records that the card's mail control is a link.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T01:43:07.670Z",
-      "updatedAt": "2026-09-12T02:02:06.311Z"
+      "updatedAt": "2026-09-12T02:05:11.148Z",
+      "evidence": "IconButtonProps is a union of IconButtonSwitch, which takes disabled and no href, and IconButtonLink, which takes href and no disabled, so the pair is unrepresentable rather than documented; a probe passing both was refused by tsc and removed. 1473 of 1474 tests pass, the one failure the known KN-365 NavItem transition flake; lint clean.",
+      "closedAt": "2026-09-12T02:05:11.148Z"
     },
     {
       "id": "KN-434",
