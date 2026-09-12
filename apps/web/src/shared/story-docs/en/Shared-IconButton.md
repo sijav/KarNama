@@ -98,3 +98,10 @@ A button and a link side by side, each handed a ref, each giving back the
 element it actually renders: a BUTTON for the one that can be turned off, an A
 for the one that goes somewhere. The two refs are typed for those elements, so
 a caller never has to cast.
+
+### ALinkInATooltip
+
+The combination the product ships: a tip on a control that goes somewhere. The
+contact card's mail control is a link, and this asserts the anchor keeps its
+address and its own name, is described from the first render, and opens the tip
+on hover and on the keyboard alone.

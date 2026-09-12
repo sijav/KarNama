@@ -285,3 +285,70 @@ export const HandsBackItsElement: Story = {
     await expect(canvas.getByRole('link', { name: 'ارسال ایمیل' })).toHaveAttribute('href', `mailto:${WRITES_TO}`)
   },
 }
+
+// A link that explains itself: the contact card's mail control is an Icon
+// Button with an href, KN-433, and an icon-only control that goes somewhere is
+// exactly what a tooltip is for.
+const ExplainedLink = () => {
+  const { i18n } = useLingui()
+  return (
+    <Tooltip title={i18n._('Send an email')} placement="start">
+      <IconButton icon="mail" aria-label={i18n._('Send an email')} href={`mailto:${WRITES_TO}`} />
+    </Tooltip>
+  )
+}
+
+export const ALinkInATooltip: Story = {
+  // KN-453: InATooltip covers the button and HandsBackItsElement covers the
+  // link with no tip, so the combination the product actually ships, a tip on
+  // the card's mail control, was covered by neither. The console is watched
+  // from BEFORE the render and calls through, as BlankName does: the Tooltip
+  // reports a child that took no ref synchronously, in its ref callback, and
+  // MUI reports one that took no props in a mount effect, so a spy installed
+  // inside play sees neither.
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  beforeEach: () => {
+    const report = spyOn(console, 'error')
+    return () => {
+      report.mockRestore()
+    }
+  },
+  render: () => <ExplainedLink />,
+  play: async ({ canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body)
+    // A LINK, with the address on it: the tip must not have turned it back into
+    // a button or taken its href.
+    const link = within(canvasElement).getByRole('link', { name: 'ارسال ایمیل' })
+    await expect(link).toHaveAttribute('href', `mailto:${WRITES_TO}`)
+
+    // Described from the first render, KN-231, and still NAMED by its own
+    // label: describeChild means the tip describes the link rather than
+    // renaming it, and on an icon-only control the name is all a screen reader
+    // has.
+    await expect(link).toHaveAccessibleName('ارسال ایمیل')
+    const describes = link.getAttribute('aria-describedby') ?? ''
+    await expect(describes).not.toBe('')
+    const description = describes
+      .split(' ')
+      .map((id) => canvasElement.ownerDocument.getElementById(id)?.textContent ?? '')
+      .join(' ')
+    await expect(description).toContain('ارسال ایمیل')
+
+    // It opens on hover, and on the keyboard alone, which is the half a
+    // hover-only tip fails. Tab rather than focus(), because MUI opens the tip
+    // only for a focus the browser calls visible.
+    await userEvent.hover(link)
+    await expect(await body.findByRole('tooltip')).toHaveTextContent('ارسال ایمیل')
+    await userEvent.unhover(link)
+    await waitFor(async () => {
+      await expect(body.queryByRole('tooltip')).toBeNull()
+    })
+    await userEvent.tab()
+    await expect(link).toHaveFocus()
+    await expect(await body.findByRole('tooltip')).toHaveTextContent('ارسال ایمیل')
+
+    // And neither component complained while any of that happened.
+    await expect(console.error).not.toHaveBeenCalled()
+  },
+}

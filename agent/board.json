@@ -11829,12 +11829,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A story wraps a Tooltip round an Icon Button with an href and asserts the anchor carries the description and opens the tip on hover and on focus.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T02:27:50.875Z"
+      "createdAt": "2026-09-12T02:27:50.875Z",
+      "updatedAt": "2026-09-12T02:28:11.644Z"
     }
   ],
   "okrs": [
