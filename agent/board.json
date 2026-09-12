@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 476,
+  "nextId": 477,
   "tasks": [
     {
       "id": "KN-001",
@@ -10725,7 +10725,24 @@
       "parent": [],
       "status": "done",
       "exit": "Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 1,
+          "file": "agent/roasts/KN-386-round-1.2026-09-12T04-22-46-989Z.md",
+          "filed": [
+            "KN-476",
+            "KN-434"
+          ],
+          "cardDigest": "6daef50d1a335b19c1a070147459fc86f041612969e08d1d9a36bd9ea9a19a13",
+          "head": "7924896ccb595c9d6fa5b989aa4022abced5576d",
+          "reviewerScore": 5.5,
+          "reviewerCriticals": 1,
+          "dismissed": "The minor only. It says the plan file beside the component bypasses the bilingual docs guard; RALPH step 2b requires exactly that placement, and the component's story documentation is in story-docs in both languages as always. The critical and the major stand.",
+          "at": "2026-09-12T04:27:19.404Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T19:47:08.930Z",
       "okr": "OKR-1",
@@ -12383,6 +12400,22 @@
       "updatedAt": "2026-09-12T04:26:53.177Z",
       "evidence": "The two records differ in their description and note, and StartsOverForAnotherRecord types a note into the first, swaps, and asserts the title and the note are the second record's and that Save sends its title, note and description. Deleting setNote failed it, and deleting setDescription failed it, each on its own, which is the check the card named; both were reverted. 1497 of 1498 tests pass, the one failure the known KN-365 flake; lint clean.",
       "closedAt": "2026-09-12T04:26:53.177Z"
+    },
+    {
+      "id": "KN-476",
+      "title": "The handoff stories never render the new id beside the old record's values",
+      "desc": "From the KN-386 roast, and it is right. The Loading parent starts with no record at all, so TheRecordArrivesAfterItsId renders the second id with NOTHING rather than with the first record's values still in hand, which is the render the whole fix is about; and TheRecordArrivesAfterOpening changes the id too, so it never tests an already-open modal whose id stays the same while its record arrives late. A component that accepted stale values unconditionally would pass both. Start the parent holding the FIRST record, then change the id alone, and assert the form shows nothing of the first; and give the late-arrival story a record that lands without the id ever changing.",
+      "why": "The defect being fixed is precisely one render long: the id has changed and the values have not caught up. A story that skips that render tests the easy half.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "One story renders the second id while the first record's values are still the ones being passed, and asserts the form shows nothing of them; another delivers a record late with the id unchanged.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T04:27:19.204Z"
     }
   ],
   "okrs": [

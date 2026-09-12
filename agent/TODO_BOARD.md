@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 201 of 475 tasks done · 445 of 964 points.
+Project **KarNama** · 201 of 476 tasks done · 445 of 965 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-398` In dark the Tooltip draws white on text/primary, 1.34 to one, since its fill is a text role that turns light** (high, 2 pt, web)
+**Next up: `KN-476` The handoff stories never render the new id beside the old record's values** (high, 1 pt, web)
 
 ## Blocked (6)
 
@@ -21,12 +21,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-356` | Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected | high | 2 | web | KN-428 | Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (266)
+## Backlog (267)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-476` | The handoff stories never render the new id beside the old record's values | high | 1 | web | none | One story renders the second id while the first record's values are still the ones being passed, and asserts the form shows nothing of them; another delivers a record late with the id unchanged. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-352` | Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page | high | 2 | web | KN-428 | Unchecking the phone card's checkbox leaves focus on the card, either on a checkbox that stays and folds as the desktop's does or on the title, and a story unchecks it by keyboard and asserts where focus is. |
@@ -5081,6 +5082,8 @@ CHILD OF KN-031, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it.
 
+**Roasts.** round 1 scored 5 with 1 critical(s)
+
 ### `KN-387` The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -6077,4 +6080,15 @@ From the KN-363 roast. otherIn() builds the second record from the first and cha
 **Why.** The reset exists so one record's writing is not saved onto another, and the writing is mostly in the description and the note rather than in the title.
 
 **Exit condition.** The two records differ in their description and note, and the story asserts both after the swap; deleting either reset line fails it.
+
+### `KN-476` The handoff stories never render the new id beside the old record's values
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+From the KN-386 roast, and it is right. The Loading parent starts with no record at all, so TheRecordArrivesAfterItsId renders the second id with NOTHING rather than with the first record's values still in hand, which is the render the whole fix is about; and TheRecordArrivesAfterOpening changes the id too, so it never tests an already-open modal whose id stays the same while its record arrives late. A component that accepted stale values unconditionally would pass both. Start the parent holding the FIRST record, then change the id alone, and assert the form shows nothing of the first; and give the late-arrival story a record that lands without the id ever changing.
+
+**Why.** The defect being fixed is precisely one render long: the id has changed and the values have not caught up. A story that skips that render tests the easy half.
+
+**Exit condition.** One story renders the second id while the first record's values are still the ones being passed, and asserts the form shows nothing of them; another delivers a record late with the id unchanged.
 
