@@ -8,13 +8,16 @@ import { IconButton } from '../icon-button'
 import { CardMenu } from '../menu'
 
 // The props are documented in story-docs, not here, KN-207.
+/** The desktop board's card, or the phone's, which carries its own menu. */
+export type JobCardLayout = 'desktop' | 'mobile'
+
 export interface JobCardProps {
   title: string
   company: string
   date: string
   status: string
   link?: string | null
-  layout?: 'desktop' | 'mobile'
+  layout?: JobCardLayout
   selected?: boolean
   interactive?: boolean
   onOpen: () => void
@@ -63,7 +66,7 @@ type Features = 'noopener,noreferrer'
 const OUTSIDE_WINDOW: Features = 'noopener,noreferrer'
 
 // The desktop card unless told otherwise.
-const DESKTOP: NonNullable<JobCardProps['layout']> = 'desktop'
+const DESKTOP: JobCardLayout = 'desktop'
 
 // A status the board no longer has, deleted or unknown, takes the new colour
 // rather than no stripe.
@@ -80,7 +83,7 @@ const oneLine = { sx: { minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis
 
 // The card's frame in each state, under an sx key for the same reason.
 const frame = {
-  sx: (theme: Theme, layout: 'desktop' | 'mobile', selected: boolean, interactive: boolean) => {
+  sx: (theme: Theme, layout: JobCardLayout, selected: boolean, interactive: boolean) => {
     const colour = theme.karnama.semantic
     const lifted = {
       boxShadow: `inset 0 0 0 ${LIFTED_EDGE}px ${colour['border/focus']}`,

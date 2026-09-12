@@ -1,1 +1,1 @@
-export { JobCard, type JobCardProps } from './JobCard'
+export { JobCard, type JobCardLayout, type JobCardProps } from './JobCard'

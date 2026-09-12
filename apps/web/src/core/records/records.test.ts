@@ -3,6 +3,8 @@ import { emptyDraft } from '../../shared/add-job'
 import type { StatusOption } from '../../shared/status-picker'
 import {
   columnOrder,
+  contactMatches,
+  contactsOf,
   defaultStatuses,
   draftForColumn,
   emptyRecords,
@@ -142,5 +144,42 @@ describe('what is kept between visits', () => {
     const orphan = { ...jobWith({ id: 'b' }), draft: { ...jobWith({ id: 'b' }).draft, status: 'gone' } }
     const read = readRecords({ statuses, jobs: [...set.jobs, orphan] }, fallback)
     expect(read.jobs.map((job) => job.id)).toEqual(['a'])
+  })
+})
+
+describe('the people kept against a job opportunity', () => {
+  const person = (id: string, jobId: string | null, name: string) => ({
+    id,
+    jobId,
+    contact: { name, role: 'HR', company: 'Digikala', email: 'a@b.co', phone: '09120000000', linkedin: null, job: null },
+  })
+
+  it('are only the ones kept against that job opportunity', () => {
+    const kept = [person('1', 'job-1', 'One'), person('2', 'job-2', 'Two'), person('3', null, 'Three')]
+    expect(contactsOf(kept, 'job-1')).toEqual([{ id: '1', contact: kept[0]?.contact }])
+    expect(contactsOf(kept, 'job-9')).toEqual([])
+  })
+
+  it('are searched by everything a reader would look for by eye', () => {
+    const held = person('1', null, 'Sara')
+    expect(contactMatches(held, '')).toBe(true)
+    expect(contactMatches(held, '  ')).toBe(true)
+    expect(contactMatches(held, 'sara')).toBe(true)
+    expect(contactMatches(held, 'digikala')).toBe(true)
+    expect(contactMatches(held, '0912')).toBe(true)
+    expect(contactMatches(held, 'nobody')).toBe(false)
+    // A field nothing was written in is not a match for everything.
+    expect(contactMatches({ ...held, contact: { ...held.contact, company: null } }, 'digikala')).toBe(false)
+  })
+
+  it('are dropped from a stored set when they are not people at all', () => {
+    const statuses = defaultStatuses((token) => token)
+    const stored = {
+      statuses,
+      jobs: [],
+      contacts: [person('1', null, 'One'), { id: 2 }, null, 'nobody', { id: '3', contact: {} }],
+    }
+    const read = readRecords(stored, { statuses, jobs: [], contacts: [] })
+    expect(read.contacts.map((entry) => entry.id)).toEqual(['1'])
   })
 })

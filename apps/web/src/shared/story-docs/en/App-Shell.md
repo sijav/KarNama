@@ -31,3 +31,14 @@ At a phone's width the sidebar gives way to the tab bar, and the language switch
 is in the page's header: choosing English there turns the page and keeps the
 choice. The story resizes the screen when it runs as a test; in Storybook
 itself, narrow the window and use the switch yourself.
+
+### Navigating
+
+The address and the page following each other: the navigation writes the hash,
+and a hash written by anything else — the back button, a typed address, a
+shared link — is read back into the page.
+
+### NobodySignedIn
+
+What the app draws for somebody who has not signed in: the shell is not drawn
+at all, because everything in the archive belongs to someone.

@@ -10,6 +10,15 @@ export interface IconButtonProps {
   tone?: 'neutral' | 'danger'
   iconSize?: 'sm' | 'md'
   disabled?: boolean
+  /**
+   * Where it goes, for a control that goes somewhere.
+   *
+   * An icon-only control that opens an address is a LINK, not a button: it can
+   * be opened in a new tab, its address copied, and a screen reader says it is
+   * a link rather than announcing a button that turns out to leave the page.
+   * With this the button renders as an anchor and needs no click of its own.
+   */
+  href?: string
   onClick?: () => void
 }
 
@@ -36,6 +45,7 @@ export const IconButton = ({
   tone = 'neutral',
   iconSize = 'sm',
   disabled = false,
+  href,
   onClick,
 }: IconButtonProps) => {
   const name = nameOf(label)
@@ -53,6 +63,9 @@ export const IconButton = ({
       aria-label={name}
       disabled={disabled}
       disableRipple
+      // MUI renders an anchor for a button given an href, which is what a
+      // control that goes somewhere should be.
+      {...(href === undefined ? {} : { href })}
       onClick={onClick}
       sx={(theme) => {
         const colour = theme.karnama.semantic

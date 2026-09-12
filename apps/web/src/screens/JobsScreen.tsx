@@ -9,7 +9,7 @@ import { Button, type ButtonVariant } from '../shared/button'
 import { EmptyState } from '../shared/empty-state'
 import { FilterChip } from '../shared/filter-chip'
 import { Input } from '../shared/input'
-import { JobCard } from '../shared/job-card'
+import { JobCard, type JobCardLayout } from '../shared/job-card'
 import { formatDay, JobModal, type JobSaved } from '../shared/job-modal'
 import { AddColumn, EmptyColumn, KanbanColumn } from '../shared/kanban-column'
 import { ChangeStatusModal, ConfirmModal, ContactModal, Modal, type ContactModalValues } from '../shared/modal'
@@ -45,6 +45,10 @@ const RENAME_WIDTH = 360
 // The quiet action beside a primary one, typed so the lint rule reads it as a
 // value rather than as copy.
 const QUIET: ButtonVariant = 'text'
+
+// The two card layouts, typed for the same reason.
+const DESKTOP: JobCardLayout = 'desktop'
+const MOBILE: JobCardLayout = 'mobile'
 
 export interface JobsScreenProps {
   /** Opens the add flow, which is what the add destination is, KN-042. */
@@ -138,6 +142,11 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
   const card = (entry: JobEntry) => (
     <JobCard
       key={entry.id}
+      // A phone gets the card's phone layout, which carries its own menu. The
+      // desktop card folds delete and select behind a hover, KN-341, and a
+      // phone has no hover: without this the board on a phone offered no way
+      // to delete a job opportunity or move it, KN-424.
+      layout={wide ? DESKTOP : MOBILE}
       title={entry.draft.title}
       company={entry.draft.company}
       date={entry.draft.postedAt === '' ? '' : formatDay(locale, entry.draft.postedAt)}

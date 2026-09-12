@@ -1,6 +1,7 @@
 import type { StoryObj } from '@storybook/react-vite'
-import { expect, userEvent, within } from 'storybook/test'
+import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { AuthProvider, sessionFor } from '../core/auth'
+import { fixtures } from '../shared/story-fixtures'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { AuthScreen } from './AuthScreen'
 
@@ -65,4 +66,46 @@ export const Signup: Story = {
 
 export const InEnglish: Story = {
   globals: { locale: 'en-US' },
+}
+
+export const SigningIn: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // The code the mock says it sent, read where whoever is testing reads it.
+    const codes: string[] = []
+    const said = spyOn(console, 'info').mockImplementation((...args: unknown[]) => {
+      const sent = /mock SMS to \S+: (\d+)/.exec(String(args[0]))
+      if (sent?.[1]) codes.push(sent[1])
+    })
+    try {
+      await userEvent.type(canvas.getByLabelText('شماره موبایل'), PHONE)
+      await userEvent.click(canvas.getByRole('button', { name: 'ارسال کد' }))
+      await waitFor(async () => {
+        await expect(codes.length).toBeGreaterThan(0)
+      })
+
+      // Another code can be asked for, and the last one sent is the one that works.
+      await userEvent.click(canvas.getByRole('button', { name: 'ارسال کد دیگر' }))
+      await waitFor(async () => {
+        await expect(codes.length).toBeGreaterThan(1)
+      })
+      await userEvent.type(canvas.getByLabelText('کد پنج رقمی'), codes.at(-1) ?? '')
+      await userEvent.click(canvas.getByRole('button', { name: 'ورود' }))
+
+      // The first login asks who this is, and takes the name.
+      await waitFor(async () => {
+        await expect(canvas.getByText('تو را چه صدا کنیم؟')).toBeInTheDocument()
+      })
+      await userEvent.type(canvas.getByLabelText('اسم و فامیل'), fixtures('fa-IR').contacts[0]?.fullName ?? '')
+      await userEvent.click(canvas.getByRole('button', { name: 'ادامه' }))
+      // With a name, the screen has nothing left to ask: the shell takes over,
+      // which a story of the screen alone shows as the sign-in step gone.
+      await waitFor(async () => {
+        await expect(canvas.queryByText('تو را چه صدا کنیم؟')).toBeNull()
+      })
+    } finally {
+      said.mockRestore()
+    }
+  },
 }

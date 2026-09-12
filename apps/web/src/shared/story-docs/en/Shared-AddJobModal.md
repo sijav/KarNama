@@ -112,3 +112,9 @@ starts again on that step.
 
 The step changed while the posting is being read: the modal starts again on that
 step, and the reading it left, when it comes back, changes nothing.
+
+### AnswerAfterLeaving
+
+A reading that was left, answering afterwards: Escape goes back to the paste
+field, and when the reading it walked away from comes back, it lands nowhere
+rather than filling a form the reader is no longer looking at.

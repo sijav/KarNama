@@ -138,9 +138,6 @@ export const NetworkScreen = () => {
         onDelete={() => {
           setDeleting(selected)
         }}
-        onSelectAll={() => {
-          setSelected(shown.map((held) => held.id))
-        }}
       />
 
       <ContactModal

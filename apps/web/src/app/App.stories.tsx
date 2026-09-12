@@ -1,6 +1,7 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { AuthProvider, sessionFor } from '../core/auth'
+import { addressOf } from './routes'
 import { fixtures } from '../shared/story-fixtures'
 import { STORAGE_KEY } from '../core/preferences'
 import { CURRENT } from '../shared/navigation'
@@ -117,5 +118,65 @@ export const LanguageOnAPhone: Story = {
     } finally {
       await page.viewport(before.width, before.height)
     }
+  },
+}
+
+/**
+ * The address and the page follow each other.
+ *
+ * The navigation writes the hash, and a hash written by anything else — the
+ * back button, a typed address, a shared link — is read back into the page.
+ * Hash routing rather than paths because GitHub Pages cannot rewrite a deep
+ * link to the app's one file, KN-045.
+ */
+export const Navigating: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    // The runner's own page carries the hash, so it is put back after.
+    const before = window.location.hash
+    try {
+      // Going to another page writes the address.
+      await userEvent.click(canvas.getByRole('button', { name: 'شبکه من' }))
+      await waitFor(async () => {
+        await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('شبکه من')
+      })
+      await expect(window.location.hash).toBe(addressOf('network'))
+
+      // And an address written by anything else is read back into the page:
+      // the add destination opens the add flow over the board, and closing it
+      // puts the address back on the board rather than leaving it asking for a
+      // flow that is no longer open, KN-044.
+      window.location.hash = addressOf('add')
+      const adding = await body.findByRole('dialog')
+      await userEvent.click(within(adding).getByRole('button', { name: 'انصراف' }))
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog')).toBeNull()
+      })
+      await expect(window.location.hash).toBe(addressOf('jobs'))
+    } finally {
+      window.location.hash = before
+    }
+  },
+}
+
+export const NobodySignedIn: Story = {
+  globals: { locale: 'fa-IR' },
+  decorators: [
+    (Story) => (
+      // No session seeded and none in this story's own storage, KN-178: what
+      // the app draws for somebody who has not signed in, KN-046.
+      <AuthProvider>
+        <Story />
+      </AuthProvider>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    // The shell is not drawn at all: there is no archive to show until
+    // somebody has said who they are.
+    const canvas = within(canvasElement)
+    await expect(canvas.getByLabelText('شماره موبایل')).toBeInTheDocument()
+    await expect(canvas.queryByRole('button', { name: 'شبکه من' })).toBeNull()
   },
 }

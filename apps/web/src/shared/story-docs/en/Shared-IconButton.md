@@ -34,6 +34,14 @@ Bar's close uses. The button stays 32 square either way.
 
 Fades the button and takes it out of the tab order.
 
+### href
+
+Where it goes, for a control that goes somewhere. An icon-only control that
+opens an address is a link rather than a button: it can be opened in a new tab,
+its address copied, and a screen reader says link instead of announcing a
+button that turns out to leave the page. With this it renders as an anchor and
+needs no click of its own.
+
 ### onClick
 
 Fired when the button is pressed, by pointer or by keyboard.

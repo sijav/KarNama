@@ -1,5 +1,6 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { formatCount } from '../i18n/formatCount'
 import { defaultStatuses, jobFrom, RecordsProvider, type Records } from '../core/records'
 import { emptyDraft } from '../shared/add-job'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
@@ -127,6 +128,145 @@ export const Keeping: Story = {
     await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
     await waitFor(async () => {
       await expect(canvas.getByText('هنوز کسی رو به شبکه‌ت اضافه نکردی')).toBeInTheDocument()
+    })
+  },
+}
+
+/**
+ * A person written in full, changed, and let go of.
+ *
+ * The fields beyond the name are all optional and all kept the same way: what
+ * is typed is kept, what is left empty is kept as nothing rather than as an
+ * empty string, so a card does not draw a blank line where a role would be.
+ */
+export const Editing: Story = {
+  parameters: { contacts: false },
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const set = fixtures('fa-IR')
+    // A person's own details are record data, never translated: the fixtures'.
+    const person = set.contacts[0]
+    const NAME = person?.fullName ?? ''
+    const gone = async () => {
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog')).toBeNull()
+      })
+    }
+
+    // The page's own action, in the header, which is the first of the two a
+    // page with nobody on it offers.
+    await userEvent.click(canvas.getAllByRole('button', { name: 'افزودن مخاطب' })[0] ?? canvasElement)
+    const adding = await body.findByRole('dialog')
+    await userEvent.type(within(adding).getByLabelText('اسم و فامیل'), NAME)
+    await userEvent.type(within(adding).getByLabelText('سمت'), person?.role ?? '')
+    await userEvent.type(within(adding).getByLabelText('شرکت'), person?.company ?? '')
+    await userEvent.type(within(adding).getByLabelText('ایمیل'), person?.email ?? '')
+    await userEvent.type(within(adding).getByLabelText('شماره تماس'), person?.phone ?? '')
+    await userEvent.type(within(adding).getByLabelText('لینک شبکه اجتماعی'), person?.linkedin ?? '')
+
+    // And which job opportunity they belong to, which is how a person on this
+    // page turns up in that job opportunity's own related people, KN-056.
+    await userEvent.click(within(adding).getByRole('combobox', { name: 'فرصت شغلی مربوطه' }))
+    const jobs = await body.findByRole('listbox')
+    await userEvent.click(within(jobs).getByRole('option', { name: set.jobs[0]?.title ?? '' }))
+    await waitFor(async () => {
+      await expect(body.queryByRole('listbox')).toBeNull()
+    })
+
+    await userEvent.click(within(adding).getByRole('button', { name: 'ذخیره' }))
+    await gone()
+
+    // Opened again, what was typed is there, and changing it keeps the same
+    // person rather than adding a second one.
+    const CHANGED = set.contacts[1]?.role ?? ''
+    await userEvent.click(await canvas.findByRole('button', { name: NAME }))
+    const editing = await body.findByRole('dialog')
+    await expect(within(editing).getByLabelText('شرکت')).toHaveValue(person?.company ?? '')
+    await userEvent.clear(within(editing).getByLabelText('سمت'))
+    await userEvent.type(within(editing).getByLabelText('سمت'), CHANGED)
+    await userEvent.click(within(editing).getByRole('button', { name: 'ذخیره' }))
+    await gone()
+    await waitFor(async () => {
+      await expect(canvas.getAllByRole('button', { name: NAME })).toHaveLength(1)
+    })
+
+    // And they can be let go of from inside their own details, where what was
+    // changed is read back, and which asks first, as every deletion in the
+    // product does.
+    await userEvent.click(canvas.getByRole('button', { name: NAME }))
+    const open = await body.findByRole('dialog')
+    await expect(within(open).getByLabelText('سمت')).toHaveValue(CHANGED)
+    await userEvent.click(within(open).getByRole('button', { name: 'حذف مخاطب' }))
+    const confirm = await body.findByRole('dialog')
+    await userEvent.click(within(confirm).getByRole('button', { name: 'انصراف' }))
+    await gone()
+    await expect(await canvas.findByRole('button', { name: NAME })).toBeInTheDocument()
+
+    await userEvent.click(canvas.getByRole('button', { name: NAME }))
+    const last = await body.findByRole('dialog')
+    await userEvent.click(within(last).getByRole('button', { name: 'حذف مخاطب' }))
+    const sure = await body.findByRole('dialog')
+    await userEvent.click(within(sure).getByRole('button', { name: 'حذف' }))
+    await gone()
+    await waitFor(async () => {
+      await expect(canvas.queryByText(NAME)).toBeNull()
+    })
+  },
+}
+
+export const LettingGoOfASelection: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const set = fixtures('fa-IR')
+    // Folded away until the card is hovered or has focus inside it, KN-341;
+    // focus is the road a keyboard takes and the one a story can rely on. The
+    // checkbox should be named for whoever it selects and is not, KN-423.
+    const boxes = canvas.getAllByRole('checkbox')
+    const first = boxes[0]
+    const second = boxes[1]
+    if (!first || !second) throw new Error('the cards have no checkboxes')
+    first.focus()
+    await userEvent.click(first)
+    second.focus()
+    await userEvent.click(second)
+
+    // Two chosen, counted in the reader's own digits, then one taken back out
+    // again, which is the other half of choosing.
+    const bar = await canvas.findByRole('region', { name: 'کارهای گروهی' })
+    await waitFor(async () => {
+      await expect(bar).toHaveTextContent(formatCount('fa-IR', 2))
+    })
+    second.focus()
+    await userEvent.click(second)
+    await waitFor(async () => {
+      await expect(bar).toHaveTextContent(formatCount('fa-IR', 1))
+    })
+
+    // And then let go of altogether, which takes the bar with it and leaves
+    // everybody where they were.
+    await userEvent.click(within(bar).getByRole('button', { name: 'لغو انتخاب' }))
+    await waitFor(async () => {
+      await expect(canvas.queryByRole('region', { name: 'کارهای گروهی' })).toBeNull()
+    })
+    await expect(canvas.getByText(set.contacts[0]?.fullName ?? '')).toBeInTheDocument()
+
+    // A card lets go of its own person too, with the same confirmation the
+    // bulk bar asks for. The control is folded away until the card is hovered
+    // or has focus inside it, KN-341.
+    const body = within(canvasElement.ownerDocument.body)
+    const going = set.contacts[0]?.fullName ?? ''
+    const card = canvas.getByRole('button', { name: going }).closest('article')
+    if (!card) throw new Error('the person has no card around them')
+    const bin = within(card).getByRole('button', { name: 'حذف مخاطب' })
+    bin.focus()
+    await userEvent.click(bin)
+    const confirm = await body.findByRole('dialog')
+    await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
+    await waitFor(async () => {
+      await expect(canvas.queryByText(going)).toBeNull()
     })
   },
 }

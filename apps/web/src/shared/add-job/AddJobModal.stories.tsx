@@ -344,3 +344,37 @@ export const RestartWhileReading: Story = {
     await expect(within(document.body).getByRole('textbox', { name: 'عنوان شغلی' })).toHaveValue('')
   },
 }
+
+// The reading this story holds open, so its play decides when the answer lands.
+let settleLeft: ((found: Partial<JobDraft>) => void) | undefined
+
+export const AnswerAfterLeaving: Story = {
+  // Escape while reading goes back to the paste field, KN-361. The reading it
+  // left is still out there, and when it answers it must land nowhere: without
+  // the guard the form would fill itself under a reader who had walked away
+  // from it, KN-391.
+  args: {
+    source: LINK,
+    onExtract: fn(
+      () =>
+        new Promise<Partial<JobDraft>>((resolve) => {
+          settleLeft = resolve
+        }),
+    ),
+  },
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    const dialog = await dialogNamed('افزودن فرصت شغلی')
+    await userEvent.click(within(dialog).getByRole('textbox', { name: 'لینک آگهی یا متن کامل آگهی' }))
+    await userEvent.click(within(dialog).getByRole('button', { name: 'استخراج اطلاعات' }))
+    await within(dialog).findByRole('status')
+    await userEvent.keyboard('{Escape}')
+    const field = await within(dialog).findByRole('textbox', { name: 'لینک آگهی یا متن کامل آگهی' })
+
+    // The answer arrives for a reading nobody is waiting on any more.
+    settleLeft?.(foundIn('fa-IR'))
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    await expect(field).toHaveValue(LINK)
+    await expect(within(canvasElement.ownerDocument.body).queryByRole('textbox', { name: 'عنوان شغلی' })).toBeNull()
+  },
+}

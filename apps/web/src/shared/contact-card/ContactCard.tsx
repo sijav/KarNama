@@ -240,14 +240,11 @@ export const ContactCard = ({ contact, layout = 'full', selected = false, onOpen
           </Box>
         </Box>
         <Box sx={{ position: 'relative', zIndex: 1, display: 'flex', gap: `${spacing['2xs']}px`, flexShrink: 0 }}>
+          {/* A link, as the full card's own email row is: mail is an address,
+              and handing it to the browser as one lets the reader open it
+              where they read mail, copy it, or ignore it. */}
           {contact.email === null ? null : (
-            <IconButton
-              icon="mail"
-              aria-label={i18n._('Send an email')}
-              onClick={() => {
-                if (contact.email !== null) window.location.assign(`mailto:${contact.email}`)
-              }}
-            />
+            <IconButton icon="mail" aria-label={i18n._('Send an email')} href={`mailto:${contact.email}`} />
           )}
           <IconButton icon="trash" tone="danger" aria-label={i18n._('Delete contact')} onClick={onDelete} />
         </Box>

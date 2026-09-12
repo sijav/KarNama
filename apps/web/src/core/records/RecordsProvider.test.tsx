@@ -4,7 +4,7 @@ import { renderToString } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
 import { i18nFor } from '../../i18n'
 import { emptyDraft } from '../../shared/add-job'
-import { RecordsContext, RecordsProvider, STORAGE_KEY, type RecordsValue } from './RecordsProvider'
+import { RecordsContext, RecordsProvider, STORAGE_KEY, useRecords, type RecordsValue } from './RecordsProvider'
 import { defaultStatuses, type Records } from './records'
 
 /**
@@ -151,8 +151,77 @@ describe('the records provider', () => {
       held?.renameStatus('a', 'b')
       held?.recolourStatus('a', 'new')
       held?.deleteStatus('a')
+      held?.addContact({ name: 'a', role: null, company: null, email: null, phone: null, linkedin: null, job: null }, null)
+      held?.saveContact('a', { name: 'a', role: null, company: null, email: null, phone: null, linkedin: null, job: null }, null)
+      held?.deleteContacts(['a'])
+      held?.addFiles('a', [])
+      held?.downloadFile('a')
     }).not.toThrow()
     expect(held?.addStatus('a')).toBe('')
+  })
+
+  it('works for a reader whose browser refuses storage, and keeps each reader apart', () => {
+    // Access itself throws in a browser with site data blocked, not just use.
+    vi.stubGlobal('localStorage', {
+      get length(): number {
+        throw new Error('blocked')
+      },
+      getItem: () => {
+        throw new Error('blocked')
+      },
+      setItem: () => {
+        throw new Error('blocked')
+      },
+    })
+    const { held } = capture()
+    expect(held.statuses).toHaveLength(5)
+    expect(() => {
+      held.addJob(emptyDraft(held.statuses[0]?.id ?? ''))
+    }).not.toThrow()
+
+    // A reader's own archive is under their own key, KN-421; the nameless one
+    // is the key the product used before anybody signed in.
+    const asked: string[] = []
+    vi.stubGlobal('localStorage', { getItem: (key: string) => (asked.push(key), null), setItem: () => undefined })
+    renderToString(
+      <I18nProvider i18n={i18nFor('en-US')}>
+        <RecordsProvider owner="09120000000">
+          <span />
+        </RecordsProvider>
+      </I18nProvider>,
+    )
+    expect(asked.some((key) => key.endsWith(':09120000000'))).toBe(true)
+  })
+
+  it('is read through its own hook, which is what every screen uses', () => {
+    vi.stubGlobal('localStorage', { getItem: () => null, setItem: () => undefined })
+    let seen = 0
+    const Probe = () => {
+      seen = useRecords().statuses.length
+      return <span>{seen}</span>
+    }
+    renderToString(
+      <I18nProvider i18n={i18nFor('en-US')}>
+        <RecordsProvider>
+          <Probe />
+        </RecordsProvider>
+      </I18nProvider>,
+    )
+    expect(seen).toBe(5)
+  })
+
+  it('leaves the other people alone when one of them is changed', () => {
+    const written: string[] = []
+    vi.stubGlobal('localStorage', { getItem: () => null, setItem: (_key: string, value: string) => written.push(value) })
+    const { held } = capture()
+    const nobody = { name: 'One', role: null, company: null, email: null, phone: null, linkedin: null, job: null }
+    held.addContact(nobody, null)
+    held.addContact({ ...nobody, name: 'Two' }, null)
+    // The newest is kept at the front, so the one added second is first.
+    const kept = (JSON.parse(written.at(-1) ?? '{}') as Records).contacts
+    expect(kept.map((entry) => entry.contact.name)).toEqual(['Two', 'One'])
+    held.saveContact(kept[0]?.id ?? '', { ...nobody, name: 'Changed' }, null)
+    expect((JSON.parse(written.at(-1) ?? '{}') as Records).contacts.map((entry) => entry.contact.name)).toEqual(['Changed', 'One'])
   })
 
   it('keeps a person against a job opportunity, edits them, and lets them go', () => {

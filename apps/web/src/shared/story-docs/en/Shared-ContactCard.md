@@ -94,3 +94,8 @@ line and no divider.
 
 The compact card for a contact with only a name: the name alone beside the
 avatar.
+
+### WritingToThem
+
+The compact card's mail control, which is a link to the address rather than a
+button, as the full card's own email row is.

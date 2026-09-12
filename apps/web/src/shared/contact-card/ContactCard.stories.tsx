@@ -252,10 +252,13 @@ export const Compact: Story = {
     await expect([px(style.paddingTop), px(style.columnGap), px(style.borderTopLeftRadius)]).toEqual([12, 12, 8])
     const name = openerOf(canvasElement, args.contact.name)
     await expect([px(getComputedStyle(name).fontSize), Number(getComputedStyle(name).fontWeight)]).toEqual([14, 500])
+    // Mail is a LINK, since it goes to an address, and delete is the one
+    // button beside the name.
+    await expect(within(card).getAllByRole('link')).toHaveLength(1)
     const buttons = within(card)
       .getAllByRole('button')
       .filter((button) => button !== name)
-    await expect(buttons).toHaveLength(2)
+    await expect(buttons).toHaveLength(1)
     await userEvent.click(buttons.at(-1) ?? card)
     await expect(args.onDelete).toHaveBeenCalledTimes(1)
   },
@@ -307,5 +310,17 @@ export const NameOnlyCompact: Story = {
     // avatar, with no empty role line under it.
     const name = openerOf(canvasElement, args.contact.name)
     await expect(name.parentElement?.children).toHaveLength(1)
+  },
+}
+
+export const WritingToThem: Story = {
+  args: { layout: 'compact' },
+  globals: { locale: 'fa-IR' },
+  play: async ({ args, canvasElement }) => {
+    // The compact card's mail control is a LINK to the address, as the full
+    // card's own email row is: it can be opened where the reader reads mail,
+    // or copied, and a screen reader says link rather than button.
+    const mail = within(cardOf(canvasElement)).getByRole('link', { name: 'ارسال ایمیل' })
+    await expect(mail).toHaveAttribute('href', `mailto:${args.contact.email ?? ''}`)
   },
 }

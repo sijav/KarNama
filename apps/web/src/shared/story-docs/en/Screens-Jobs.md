@@ -55,3 +55,37 @@ another status.
 The board being managed: a column renamed from its menu, another added, a job
 opportunity deleted from its modal after a confirmation, and the rejected
 column opened from its collapsed header.
+### People
+
+The people and the files kept against one job opportunity: a person added from
+the job's own tab and opened again, and a file chosen and downloaded. Both are
+the network's records rather than the job's, so a person added here is on the
+network page too.
+
+### BackingOut
+
+Every way out of a change: a rename backed out of, a colour taken from the
+column menu, an empty column deleted where one holding a job opportunity says
+why it cannot be, a status change cancelled, and a deletion refused.
+
+### Adding
+
+Adding by each road the board offers: the header's action, which reads a link
+and leaves the rest to be typed, takes a column of its own before saving; and a
+column's own Add Card row, which opens the same flow for that column.
+
+### AddingFromEmpty
+
+A board with nothing on it: the empty state's own action opens the same flow.
+
+### Selecting
+
+Several at once: one selected, then every one of them, the selection let go
+of, and two deleted together after the confirmation.
+
+### OnAPhone
+
+The board at a phone's width, where the columns give way to a row of status
+chips and the chosen status's cards stand alone under them. A card there
+carries its own menu, which is where changing a status and deleting live when
+there is no hover to fold them behind.

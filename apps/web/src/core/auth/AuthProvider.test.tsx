@@ -110,6 +110,28 @@ describe('the mocked provider', () => {
     expect(capture().held.session).toBeNull()
   })
 
+  it('still works where reading localStorage at all throws', () => {
+    // Site data blocked: the property itself throws on ACCESS, not just on use,
+    // which is why the guard is around the read of it rather than around a call.
+    const own = Object.getOwnPropertyDescriptor(globalThis, 'localStorage')
+    Object.defineProperty(globalThis, 'localStorage', {
+      configurable: true,
+      get() {
+        throw new Error('blocked')
+      },
+    })
+    try {
+      const { held } = capture()
+      expect(held.session).toBeNull()
+      expect(() => {
+        held.signOut()
+      }).not.toThrow()
+    } finally {
+      if (own) Object.defineProperty(globalThis, 'localStorage', own)
+      else Reflect.deleteProperty(globalThis, 'localStorage')
+    }
+  })
+
   it('still works for a reader whose browser refuses storage', () => {
     vi.stubGlobal('localStorage', {
       getItem: () => {

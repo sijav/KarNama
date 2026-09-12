@@ -30,3 +30,14 @@ header and in the state itself.
 The page being used: somebody added from the empty state, a search that finds
 nobody and then does, their details opened and closed, and the two of them
 selected and deleted through the bar at the foot.
+
+### Editing
+
+A person written in full from the page's own action, changed and read back,
+and let go of from inside their own details — after a confirmation that can be
+backed out of.
+
+### LettingGoOfASelection
+
+Two chosen, counted in the reader's own digits, and the selection let go of,
+which takes the bulk bar with it and leaves everybody where they were.
