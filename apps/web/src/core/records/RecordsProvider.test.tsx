@@ -154,4 +154,57 @@ describe('the records provider', () => {
     }).not.toThrow()
     expect(held?.addStatus('a')).toBe('')
   })
+
+  it('keeps a person against a job opportunity, edits them, and lets them go', () => {
+    const written: string[] = []
+    vi.stubGlobal('localStorage', { getItem: () => null, setItem: (_key: string, value: string) => written.push(value) })
+    const { held } = capture(seeded())
+    const person = { name: 'Mina', role: null, company: null, email: null, phone: null, linkedin: null, job: null }
+
+    held.addContact(person, null)
+    const added = JSON.parse(written[0] ?? '{}') as Records
+    const id = added.contacts[0]?.id ?? ''
+    expect(added.contacts).toHaveLength(1)
+
+    held.saveContact(id, { ...person, name: 'Mina Rezaei' }, 'job-1')
+    const saved = JSON.parse(written[1] ?? '{}') as Records
+    expect(saved.contacts[0]).toMatchObject({ jobId: 'job-1', contact: { name: 'Mina Rezaei' } })
+
+    held.deleteContacts([id])
+    expect((JSON.parse(written[2] ?? '{}') as Records).contacts).toEqual([])
+  })
+
+  it('keeps what a file is, and hands back only what this visit added', () => {
+    const written: string[] = []
+    vi.stubGlobal('localStorage', { getItem: () => null, setItem: (_key: string, value: string) => written.push(value) })
+    const { held } = capture(seeded())
+    held.addJob({ ...emptyDraft('new'), title: 'With a file', company: 'Somewhere' })
+    const id = (JSON.parse(written[0] ?? '{}') as Records).jobs[0]?.id ?? ''
+
+    const file = new File(['some bytes'], 'offer.pdf', { type: 'application/pdf' })
+    held.addFiles(id, [file])
+    const withFile = JSON.parse(written[1] ?? '{}') as Records
+    expect(withFile.jobs[0]?.files[0]).toMatchObject({ name: 'offer.pdf', size: file.size })
+
+    // The download is the browser's: it is asked for, and a file from an
+    // earlier visit, whose bytes nothing holds, quietly does nothing.
+    const clicked: string[] = []
+    vi.stubGlobal('URL', { createObjectURL: () => 'blob:one', revokeObjectURL: () => undefined })
+    vi.stubGlobal('window', {
+      document: {
+        createElement: () => ({
+          set href(value: string) {
+            clicked.push(value)
+          },
+          download: '',
+          click: () => undefined,
+        }),
+      },
+    })
+    held.downloadFile(withFile.jobs[0]?.files[0]?.id ?? '')
+    expect(clicked).toEqual(['blob:one'])
+    expect(() => {
+      held.downloadFile('a file from another visit')
+    }).not.toThrow()
+  })
 })

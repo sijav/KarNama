@@ -1,5 +1,5 @@
-import { renderToString } from 'react-dom/server'
 import { useContext } from 'react'
+import { renderToString } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
 import { PreferencesContext, PreferencesProvider, type PreferencesValue } from './PreferencesProvider'
 import { defaults } from './storage'

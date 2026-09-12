@@ -93,6 +93,11 @@ export const AuthProvider = ({ initial, children }: AuthProviderProps) => {
   const [session, setSession] = useState<Session | null>(() => (initial === undefined ? stored() : initial))
   const [sent, setSent] = useState<SentCode | null>(null)
   const latest = useRef<Session | null>(session)
+  // What the last call produced, which is not what this render can see: an
+  // action reads the code from here rather than from the render it was made
+  // in, so asking for a code and giving it in one batch works, as the
+  // preferences' own ref does, KN-112.
+  const pending = useRef<SentCode | null>(sent)
 
   const hold = useCallback((next: Session | null) => {
     latest.current = next
@@ -102,6 +107,7 @@ export const AuthProvider = ({ initial, children }: AuthProviderProps) => {
 
   const send = useCallback((phone: string) => {
     const made = sendCode(phone, Date.now())
+    pending.current = made
     setSent(made)
     // Where the SMS would have gone. The mock says so out loud rather than
     // leaving whoever is testing to guess what to type.
@@ -124,12 +130,15 @@ export const AuthProvider = ({ initial, children }: AuthProviderProps) => {
         return true
       },
       resend: () => {
-        if (sent) send(sent.phone)
+        const held = pending.current
+        if (held) send(held.phone)
       },
       verify: (typed) => {
-        const problem = checkCode(sent, typed, Date.now())
+        const held = pending.current
+        const problem = checkCode(held, typed, Date.now())
         if (problem) return problem
-        hold(sessionFor(sent?.phone ?? '', new Date().toISOString()))
+        hold(sessionFor(held?.phone ?? '', new Date().toISOString()))
+        pending.current = null
         setSent(null)
         return null
       },
@@ -138,6 +147,7 @@ export const AuthProvider = ({ initial, children }: AuthProviderProps) => {
       },
       signOut: () => {
         hold(null)
+        pending.current = null
         setSent(null)
       },
     }),

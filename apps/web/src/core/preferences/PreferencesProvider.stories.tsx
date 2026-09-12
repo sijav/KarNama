@@ -33,7 +33,14 @@ const BatchProbe = () => {
         lingui applies to stories too. `data-testid` is a structural prop and is
         exempt, which is the honest way to say this control is not product copy.
       */}
-      <button data-testid="set-both" type="button" onClick={() => { setLocale('en-US'); setColorScheme('dark') }} />
+      <button
+        data-testid="set-both"
+        type="button"
+        onClick={() => {
+          setLocale('en-US')
+          setColorScheme('dark')
+        }}
+      />
     </div>
   )
 }

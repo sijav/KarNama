@@ -23,8 +23,7 @@ export const STORAGE_KEY = 'karnama.preferences'
 /** Persian and light, which is what the design draws. */
 export const defaults: Preferences = { locale: 'fa-IR', colorScheme: 'light' }
 
-const isColorScheme = (value: unknown): value is ColorSchemePreference =>
-  value === 'light' || value === 'dark' || value === 'system'
+const isColorScheme = (value: unknown): value is ColorSchemePreference => value === 'light' || value === 'dark' || value === 'system'
 
 /**
  * Reads what is stored, falling back a field at a time.

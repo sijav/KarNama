@@ -78,7 +78,8 @@ export const Keeping: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
-    const NAME = 'مینا رضایی'
+    // A person's name is record data, never translated: the fixtures' own.
+    const NAME = fixtures('fa-IR').contacts[1]?.fullName ?? ''
 
     // Somebody is added from the empty state, and the page shows them.
     await userEvent.click(canvas.getAllByRole('button', { name: 'افزودن مخاطب' })[1] ?? canvasElement)
