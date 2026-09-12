@@ -10955,13 +10955,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "In dark the tooltip's text clears 4.5 to one on its fill, by a role the tooltip's fill takes that stays dark in dark, or a text that follows it, and the theme's pair test reads the Tooltip's pair from the component rather than from a list; the Tooltip's dark story measures it.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T20:49:16.338Z",
       "okr": "OKR-1",
-      "updatedAt": "2026-09-12T04:30:12.009Z"
+      "updatedAt": "2026-09-12T04:36:02.839Z",
+      "evidence": "tooltipPair keeps the design's inverse fill and derives the text from it with ensureContrast; ReadableInDark hovers a tip in dark and asserts the title's computed colour clears 4.5 to one against the drawn surface's background, and putting the old pair back fails it. The theme's pair test reads tooltipPair from the component in both schemes rather than from a list. 1500 of 1501 tests pass, the one failure the known KN-365 flake; lint and tsc clean.",
+      "closedAt": "2026-09-12T04:36:02.839Z"
     },
     {
       "id": "KN-399",
