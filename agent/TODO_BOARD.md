@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 183 of 451 tasks done · 416 of 924 points.
+Project **KarNama** · 184 of 452 tasks done · 417 of 925 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-443` The contacts page's search bar is 320 on a phone, where the file draws 358** (critical, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-443` | The contacts page's search bar is 320 on a phone, where the file draws 358 | critical | 1 | web | none | The contacts page's search bar is 320 wide from md up and fills the page below it; a story at a phone's width asserts 358. |
+**Next up: `KN-430` The contacts page's search box is announced as the board's** (high, 1 pt, web)
 
 ## Blocked (5)
 
@@ -26,7 +20,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (260)
+## Backlog (261)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -144,6 +138,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-444` | The Search Bar's size stories claim the text is placed as drawn and never read its placement | medium | 1 | web | none | Both stories assert the text's top offset and the icon's vertical centring against the file's numbers. |
 | `KN-448` | The Icon Button spreads a Tooltip's props before its own, which is the unsafe side | medium | 1 | web | none | The injected props are spread last, and the comment says what that protects. |
 | `KN-449` | The InATooltip story's console spy is installed too late to see what it claims to watch | medium | 1 | web | none | The spy is in place before the render and calls through, and the story still passes. |
+| `KN-452` | The shell gives a phone 24 of gutter where the design draws 16 | medium | 1 | web | none | A page's gutters are the file's at each width, 16 on a phone and 32 on the desktop, and a story at a phone's width reads a full-width control's box against the file's number. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -291,7 +286,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (183)
+## Done (184)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -332,6 +327,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-292` | An Input icon given a blank string, a space or a zero-width character, still draws a slot with nothing in it | critical | 1 | web | none | An Input given a string icon that isBlank holds for, spaces, a line break, a zero-width space or a joiner, draws no slot and its text box sits 16 from that edge; IconsTurnedOff covers a space and a zero-width space among its cases and asserts no slot, and a mutation dropping the blank check fails it by name; and the story docs say the direct values draw no slot, while an element that renders nothing leaves a slot that collapses and takes no room. |
 | `KN-297` | The Input's text measurement takes its direction from the input, so a placeholder with its own direction moves the text without failing a check | critical | 1 | web | none | textInsets and KN-266's production check refuse by name unicode-bidi plaintext on the input, which lets the content set the direction, a writing mode other than horizontal-tb on the input, and an input whose direction is not the field's; unicode-bidi plaintext on the input, a vertical writing mode on it, and the input set to the other direction, each present in every state, fail Default and the production check by name; and KN-283's verifier still passes. |
 | `KN-298` | An Input's error replaced by another while the field has focus is not shown to reach its live region | critical | 1 | web | none | A story replaces one error with another on a focused Input, focus kept, and asserts the same alert holds the second error and the field is described by it; KN-286's verifier reads Chromium's accessibility tree after the replacement, the alert holding the second error, in both languages; and KN-286's plan says what is tested and that no check here hears a screen reader. |
+| `KN-443` | The contacts page's search bar is 320 on a phone, where the file draws 358 | critical | 1 | web | none | The contacts page's search bar is 320 wide from md up and fills the page below it; a story at a phone's width asserts 358. |
 | `KN-014` | Icon button, 2 tones by 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Six combinations match Figma, every instance requires an accessible label and a test fails when one is missing, and the hit target is at least 32 by 32. |
 | `KN-016` | Search bar, 3 states | critical | 2 | web | KN-005, KN-006, KN-007, KN-008 | Three states match Figma, clearing restores the default state and returns focus to the field, and the input is debounced without dropping the final keystroke. |
 | `KN-058` | Run verify commands without a shell | critical | 2 | agent | KN-001 | A verify command containing a shell operator is refused when set, an existing one is refused at close, the two current verifiers still run, and a deliberately failing verifier still blocks move done. |
@@ -5676,7 +5672,7 @@ RALPH.md step 2b asks for a plan file beside the work, as the folder's own #KN-0
 
 ### `KN-443` The contacts page's search bar is 320 on a phone, where the file draws 358
 
-- **status** in_progress · **severity** critical · **points** 1 · **area** web
+- **status** done · **severity** critical · **points** 1 · **area** web
 - **blocked by** none
 
 KN-315 cut the contacts page's search bar cap from 480 to 320 because the desktop instance 252:48 is 320 wide. The cap has no breakpoint, so it now holds on a phone too, where the file draws the bar 358 wide, node 252:421, full width inside the page's own 16 gutters. Before KN-315 the 480 cap was wide enough for a phone to fill its page, so this is a regression that task introduced and its own standalone 358 story masked, because the story sets the width itself. The board screen does not have it: its bar is flex 1 1 320, which grows to fill a phone's row. Cap it at 320 only from md up.
@@ -5772,4 +5768,15 @@ Both wrap their menu trigger in a Box only to have something to anchor a menu to
 **Why.** A wrapper kept for a limitation that no longer exists is the sort of thing that outlives everyone who knows why it is there.
 
 **Exit condition.** Neither component wraps its menu trigger to hold a ref, and both menus still open where they did.
+
+### `KN-452` The shell gives a phone 24 of gutter where the design draws 16
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+Found while fixing KN-443. App.tsx gives the main area p: 6, and the theme's spacing unit is 4, so every page sits inside 24 of padding at every width. The file draws a phone's page inside 16: the mobile board's header, node 241:147, puts the Page Header and the Search Bar at x=16 and 358 wide inside a 390 screen, and the mobile column's cards at x=16. So every phone page is 16 narrower than the design and every full-width control with it. The desktop's own 32, node 241:3's header at x=32, is not 24 either.
+
+**Why.** Gutters are the first thing that reads as wrong on a phone, and every screen inherits this one. It is also why a bar the file draws at 358 renders at 342.
+
+**Exit condition.** A page's gutters are the file's at each width, 16 on a phone and 32 on the desktop, and a story at a phone's width reads a full-width control's box against the file's number.
 

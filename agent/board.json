@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 452,
+  "nextId": 453,
   "tasks": [
     {
       "id": "KN-001",
@@ -11598,13 +11598,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The contacts page's search bar is 320 wide from md up and fills the page below it; a story at a phone's width asserts 358.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T01:52:21.355Z",
-      "updatedAt": "2026-09-12T01:53:10.440Z"
+      "updatedAt": "2026-09-12T01:56:05.175Z",
+      "evidence": "The contacts search bar is 320 from md up and the page's own width below it: NetworkScreen's OnAPhone story reads it at both widths and failed on the phone half before the fix, 390 where the page is 390 rather than the 320 cap. 1466 of 1468 tests pass, the two failures the known KN-365 transition flakes; lint and tsc clean.",
+      "closedAt": "2026-09-12T01:56:05.175Z"
     },
     {
       "id": "KN-444",
@@ -11733,6 +11735,22 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T01:53:05.530Z"
+    },
+    {
+      "id": "KN-452",
+      "title": "The shell gives a phone 24 of gutter where the design draws 16",
+      "desc": "Found while fixing KN-443. App.tsx gives the main area p: 6, and the theme's spacing unit is 4, so every page sits inside 24 of padding at every width. The file draws a phone's page inside 16: the mobile board's header, node 241:147, puts the Page Header and the Search Bar at x=16 and 358 wide inside a 390 screen, and the mobile column's cards at x=16. So every phone page is 16 narrower than the design and every full-width control with it. The desktop's own 32, node 241:3's header at x=32, is not 24 either.",
+      "why": "Gutters are the first thing that reads as wrong on a phone, and every screen inherits this one. It is also why a bar the file draws at 358 renders at 342.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A page's gutters are the file's at each width, 16 on a phone and 32 on the desktop, and a story at a phone's width reads a full-width control's box against the file's number.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:56:15.905Z"
     }
   ],
   "okrs": [
