@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 425,
+  "nextId": 426,
   "tasks": [
     {
       "id": "KN-001",
@@ -8972,13 +8972,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:11:36.223Z",
-      "updatedAt": "2026-09-12T01:27:58.291Z",
-      "okr": "OKR-1"
+      "updatedAt": "2026-09-12T01:33:13.522Z",
+      "okr": "OKR-1",
+      "evidence": "Both languages hold nine job opportunities, one in every status, and a board of nine columns in the order the board draws them with rejected last; story-fixtures.test.ts asserts both in both languages, the order against the design's own written out rather than against the columnOrder call that built it. 1463 of 1464 tests pass, the one failure the known KN-365 flake; lint and tsc clean.",
+      "closedAt": "2026-09-12T01:33:13.522Z"
     },
     {
       "id": "KN-306",
@@ -11269,6 +11271,22 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T01:26:53.115Z"
+    },
+    {
+      "id": "KN-425",
+      "title": "The Board's stories still build their own board instead of reading the fixtures'",
+      "desc": "KN-305 put a board in the story fixtures: nine columns in the order the board draws them, each holding its own job opportunities, in both languages. Nothing reads it yet. JobsScreen.stories.tsx still builds a board of its own from the first five fixture jobs and defaultStatuses, which is the drift KN-305 was opened to end. Point the screen's stories, and any other story that needs a board, at fixtures(locale).board, and let the assertions read column names and job titles from it rather than from indexes into set.jobs.",
+      "why": "A shared fixture nothing reads is the same as no shared fixture: the stories keep drifting from each other and from the product's order, which is what KN-062's roast found in the first place. It is also the only way the nine status colours ever get drawn by a board story.",
+      "severity": "low",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "No story under src/screens builds its own list of statuses or picks jobs by index; the board stories render fixtures(locale).board and name their expectations from it.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:33:22.989Z"
     }
   ],
   "okrs": [

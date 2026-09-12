@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 179 of 424 tasks done · 409 of 888 points.
+Project **KarNama** · 180 of 425 tasks done · 411 of 890 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-305` The story fixtures have no seeded board and no job opportunity in three of the nine statuses** (high, 2 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-305` | The story fixtures have no seeded board and no job opportunity in three of the nine statuses | high | 2 | web | none | Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages. |
+**Next up: `KN-310` The Icon Button cannot be a Tooltip's trigger: it forwards no ref and drops the props a Tooltip injects** (high, 2 pt, web)
 
 ## Blocked (5)
 
@@ -26,7 +20,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (237)
+## Backlog (238)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -263,12 +257,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-309` | Every component imports the theme through relative parent paths, which AGENTS.md forbids | low | 2 | web | none | Either the components import through absolute src/ paths and a lint rule refuses a relative parent import, or AGENTS.md is corrected to the convention the code keeps; whichever, lint and tsc pass. |
 | `KN-404` | The API's process tests run whatever dist exists, so a stale build passes them | low | 2 | api | none | Each process test fails, rather than passing or skipping, when dist was built from source other than what is checked out, shown by editing an entry without rebuilding, or it runs against a build it makes itself; the apps/api suite passes after a build. |
 | `KN-419` | Two tabs of KarNama do not agree about who is signed in | low | 2 | web | none | A storage event moves both providers: signing out in one tab signs the other out, and a board changed in one tab is what the other shows, each with a test. |
+| `KN-425` | The Board's stories still build their own board instead of reading the fixtures' | low | 2 | web | none | No story under src/screens builds its own list of statuses or picks jobs by index; the board stories render fixtures(locale).board and name their expectations from it. |
 | `KN-078` | Check documentation-frame coverage against the capture text, not an author-chosen fact list | low | 3 | agent | KN-002 | Deleting the substance of any one frame transcription from DESIGN.md while leaving its index row and its manifest facts intact makes agent/scripts/verify/KN-002.mjs fail, demonstrated by a planted mutation for at least three different frames. |
 | `KN-136` | Commit the mutation cases, so a verifier's claim can be re-run | low | 3 | agent | none | One command runs every committed mutation case and fails if any case does not apply or is not caught, proved by editing a verifier so a case stops applying and watching that command fail, and KN-128's eighteen cases are committed and pass. |
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (179)
+## Done (180)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -447,6 +442,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-234` | The token guard still accepts copy as a key or inside the font stack, and its retirement check trusts any lint failure | high | 2 | web | none | Every string-literal key in tokens.ts must be a token name DESIGN.md documents, not a shape; the font stack must equal the documented value exactly; planted cases for a copy key, copy after Vazirmatn and a copy family each fail the guard; and the retirement check requires a clean baseline lint and lingui errors attributable to tokens.ts, STORAGE_KEY and TOOLTIP_SURFACE once they are removed, reporting an unrelated error as unjudgeable rather than as the debt standing. |
 | `KN-295` | KN-274's story measures the focus change from a model: rounded bands counted as rectangles, and transforms and filters not read | high | 2 | web | none | FocusedWhileInvalid's area accounts for the rounded corners, from the exact quarter-ring areas of the edge's radius and the ring's or from a rendered reading, and still clears 4W + 4H; focusExtent requires what it does not model, transform, filter, clip-path and mask, to be none on the field, both pseudo-elements and the input, and counts the input's own outline; a transform and a filter on the ::after each fail FocusedWhileInvalid by name; the verifier also reads the rendered change on a field 80 wide or less, in light and dark, clearing 4W + 4H with nothing changed outside; and DESIGN.md's arithmetic states the corners' loss and the width above which the change clears the perimeter. |
 | `KN-296` | An Input icon given as an array, a fragment or a component that renders only blank text still draws an empty slot | high | 2 | web | none | An Input whose icon renders only blank text, through an array, a fragment or a component, draws no slot that takes room and its text box sits 16 from that edge, decided from what the slot rendered rather than from the prop; IconsTurnedOff covers an array of a space, a fragment holding a zero-width space and a component returning a space, each asserting a slot that takes no room; a mutation removing the rendered check fails it by name; and the comment on drawn() says nothing to read, with the lone-mark case named as deliberate. |
+| `KN-305` | The story fixtures have no seeded board and no job opportunity in three of the nine statuses | high | 2 | web | none | Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages. |
 | `KN-051` | Deploy the web app to GitHub Pages | high | 3 | deploy | KN-003 | The app loads at its Pages URL, a deep link to a route works on a hard refresh, Storybook is reachable at /storybook/, and the deploy runs from a push to main with no manual step. |
 | `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
@@ -4093,7 +4089,7 @@ CHILD OF KN-023, recorded in prose because board.json cannot express parent_task
 
 ### `KN-305` The story fixtures have no seeded board and no job opportunity in three of the nine statuses
 
-- **status** in_progress · **severity** high · **points** 2 · **area** web
+- **status** done · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-062, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-062 roast. KN-062's card promised job opportunities across every status and a seeded board; the fixtures hold jobs in six statuses, none in custom-2, custom-3 or custom-4, and no board, no columns in the board's order holding their jobs. The fixture test only compares the two languages with each other, so it passed the gap.
@@ -5446,4 +5442,15 @@ JobModal passes onSelectedChange={() => undefined} to every compact ContactCard 
 **Why.** A required prop that one of a component's own layouts can never call is a lie in the API: the next caller wires something real to it and waits for a call that never comes. It is also the last unreachable statement in the job modal.
 
 **Exit condition.** ContactCard's compact layout either calls onSelectedChange or does not ask for it, and no caller passes a handler that cannot run.
+
+### `KN-425` The Board's stories still build their own board instead of reading the fixtures'
+
+- **status** backlog · **severity** low · **points** 2 · **area** web
+- **blocked by** none
+
+KN-305 put a board in the story fixtures: nine columns in the order the board draws them, each holding its own job opportunities, in both languages. Nothing reads it yet. JobsScreen.stories.tsx still builds a board of its own from the first five fixture jobs and defaultStatuses, which is the drift KN-305 was opened to end. Point the screen's stories, and any other story that needs a board, at fixtures(locale).board, and let the assertions read column names and job titles from it rather than from indexes into set.jobs.
+
+**Why.** A shared fixture nothing reads is the same as no shared fixture: the stories keep drifting from each other and from the product's order, which is what KN-062's roast found in the first place. It is also the only way the nine status colours ever get drawn by a board story.
+
+**Exit condition.** No story under src/screens builds its own list of statuses or picks jobs by index; the board stories render fixtures(locale).board and name their expectations from it.
 
