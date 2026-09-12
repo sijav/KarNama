@@ -37,3 +37,9 @@ The first step with the language switched, where the direction flips.
 A reader signed in from end to end: a number given, a code asked for again, the
 last one sent typed in, and the name the first login asks for taken, after
 which the screen has nothing left to ask.
+
+### SigningInOnAPhone
+
+Signing in on a phone, where there is no console: the code is on the screen,
+said plainly to be a stand-in until a real message is sent, and the story reads
+it from there and finishes signing in.

@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-459` The sign-in code is only in the console, so nobody can sign in on a phone** (critical, 3 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-459` | The sign-in code is only in the console, so nobody can sign in on a phone | critical | 3 | web | none | On a phone, with no console, a reader can see the code and finish signing in; a story at a phone's width reads the code off the screen and uses it. |
+
 ## Blocked (5)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -20,12 +26,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (260)
+## Backlog (259)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
-| `KN-459` | The sign-in code is only in the console, so nobody can sign in on a phone | critical | 3 | web | none | On a phone, with no console, a reader can see the code and finish signing in; a story at a phone's width reads the code off the screen and uses it. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
@@ -5865,7 +5870,7 @@ The owner, on the live site on a phone, 2026-09-12: typing 09123 18 shows '318 0
 
 ### `KN-459` The sign-in code is only in the console, so nobody can sign in on a phone
 
-- **status** backlog · **severity** critical · **points** 3 · **area** web
+- **status** in_progress · **severity** critical · **points** 3 · **area** web
 - **blocked by** none
 
 The owner, on the live site on a phone, 2026-09-12: 'what do you mean check the console there's no way to check the console on a mobile phone'. The mocked SMS writes the code with console.info and the code step tells the reader to look there, KN-046. On a phone there is no console, so the live product cannot be signed into at all, which is every reader who opens it on the device this product is mostly for. Until a real SMS sender exists, the mock has to hand the code to the READER: show it in the code step itself, plainly marked as a stand-in, and keep the console line for whoever is at a desk.

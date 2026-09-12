@@ -114,3 +114,42 @@ export const SigningIn: Story = {
     }
   },
 }
+
+// A phone's screen, the file's 390 by 844.
+const SCREEN = { width: 390, height: 844 }
+
+export const SigningInOnAPhone: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-459, the owner on a phone: the code was only ever written to the
+    // console, and a phone has no console, so the live product could not be
+    // signed into at all. The code is on the SCREEN now, and this reads it from
+    // there, with the console left alone entirely. The screen is resized by the
+    // runner's own browser, which only the runner has, KN-225.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
+    const canvas = within(canvasElement)
+    const before = { width: window.innerWidth, height: window.innerHeight }
+    try {
+      await page.viewport(SCREEN.width, SCREEN.height)
+      await userEvent.type(canvas.getByLabelText('شماره موبایل'), PHONE)
+      await userEvent.click(canvas.getByRole('button', { name: 'ارسال کد' }))
+
+      // The code, where a reader can see it, said plainly to be a stand-in.
+      const shown = await canvas.findByRole('status')
+      await expect(shown).toHaveTextContent('هنوز پیامکی واقعاً ارسال نمی‌شود')
+      const digits = /(\d{5})/.exec(shown.textContent)?.[1] ?? ''
+      await expect(digits).toHaveLength(5)
+
+      // And it works: typed in, it signs the reader in, which the name step
+      // asks for next on a first login.
+      await userEvent.type(canvas.getByLabelText('کد پنج رقمی'), digits)
+      await userEvent.click(canvas.getByRole('button', { name: 'ورود' }))
+      await waitFor(async () => {
+        await expect(canvas.getByLabelText('اسم و فامیل')).toBeInTheDocument()
+      })
+    } finally {
+      await page.viewport(before.width, before.height)
+    }
+  },
+}

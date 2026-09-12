@@ -11974,12 +11974,13 @@
       "points": 3,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "On a phone, with no console, a reader can see the code and finish signing in; a story at a phone's width reads the code off the screen and uses it.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T02:43:48.776Z"
+      "createdAt": "2026-09-12T02:43:48.776Z",
+      "updatedAt": "2026-09-12T02:48:34.408Z"
     }
   ],
   "okrs": [

@@ -23,6 +23,15 @@ export interface AuthValue {
   signingUp: boolean
   /** The number the code was sent to, for the screen to show. */
   phone: string
+  /**
+   * The code the MOCK just made, for the screen to show the reader, KN-459.
+   *
+   * No message is really sent, and until one is, the console was the only place
+   * the code appeared. A phone has no console, so nobody could sign in on the
+   * device this product is mostly for. Null once there is nothing pending, and
+   * it goes the moment a real sender exists.
+   */
+  mockCode: string | null
   /** Sends a code to a number. False when the number is not one. */
   requestCode: (typed: string) => boolean
   /** Sends the same number another code. */
@@ -39,6 +48,7 @@ const NO_AUTH: AuthValue = {
   awaiting: false,
   signingUp: false,
   phone: '',
+  mockCode: null,
   requestCode: () => false,
   resend: () => undefined,
   verify: () => null,
@@ -121,6 +131,8 @@ export const AuthProvider = ({ initial, children }: AuthProviderProps) => {
       awaiting: sent !== null && session === null,
       signingUp: session !== null && needsName(session),
       phone: sent?.phone ?? session?.phone ?? '',
+      // Shown on the screen because a phone has no console, KN-459.
+      mockCode: sent?.code ?? null,
       requestCode: (typed) => {
         // Stored in one shape whatever the reader typed, Persian digits and a
         // +98 included, so the code goes to the number they meant.

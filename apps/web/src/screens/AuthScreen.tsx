@@ -76,12 +76,46 @@ export const AuthScreen = () => {
     <>
       <Box sx={{ fontSize: `${typeScale['heading/m'].size}px`, fontWeight: typeScale['heading/m'].weight }}>{i18n._('Enter the code')}</Box>
       <Box sx={{ color: 'text.secondary' }}>{`${i18n._('Sent to')} ${auth.phone}`}</Box>
+      {/* The code itself, on the screen, KN-459: no message is really sent, and
+          the console was the only place it appeared, which a phone does not
+          have. Marked plainly as a stand-in so nobody mistakes it for something
+          that arrived, and it goes with the mock. */}
+      {auth.mockCode === null ? null : (
+        <Box
+          role="status"
+          sx={(theme) => ({
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: `${spacing.sm}px`,
+            padding: `${spacing.sm}px ${spacing.md}px`,
+            borderRadius: `${theme.karnama.radius.md}px`,
+            backgroundColor: theme.karnama.semantic['bg/surface-secondary'],
+            color: theme.karnama.semantic['text/secondary'],
+          })}
+        >
+          <Box component="span">{i18n._('No message is really sent yet. Your code is:')}</Box>
+          <Box
+            component="span"
+            // The code is latin digits and must not be reordered by the page's
+            // direction, KN-458.
+            dir="ltr"
+            sx={(theme) => ({
+              fontSize: `${typeScale['heading/m'].size}px`,
+              fontWeight: typeScale['heading/m'].weight,
+              letterSpacing: `${spacing['2xs']}px`,
+              color: theme.karnama.semantic['text/primary'],
+            })}
+          >
+            {auth.mockCode}
+          </Box>
+        </Box>
+      )}
       <Input
         label={i18n._('Five digit code')}
         direction={LATIN}
         value={code}
         onChange={setCode}
-        helperText={i18n._('No message is really sent yet: the code is in the browser console.')}
         {...(problem === null ? {} : { error: problem })}
       />
       <Button onClick={check}>{i18n._('Sign in')}</Button>

@@ -67,6 +67,10 @@ describe('the mocked provider', () => {
     const { held } = capture()
 
     held.requestCode(PHONE)
+    // The code is handed to the screen as well as to the console, KN-459: a
+    // phone has no console, and until a real sender exists that was the only
+    // place it appeared.
+    expect(capture().held.mockCode).toBeNull()
     expect(held.verify('00000')).toBe('wrong')
 
     held.resend()
