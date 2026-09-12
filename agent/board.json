@@ -12374,13 +12374,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The two records differ in their description and note, and the story asserts both after the swap; deleting either reset line fails it.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T04:08:23.293Z",
-      "updatedAt": "2026-09-12T04:22:57.143Z"
+      "updatedAt": "2026-09-12T04:26:53.177Z",
+      "evidence": "The two records differ in their description and note, and StartsOverForAnotherRecord types a note into the first, swaps, and asserts the title and the note are the second record's and that Save sends its title, note and description. Deleting setNote failed it, and deleting setDescription failed it, each on its own, which is the check the card named; both were reverted. 1497 of 1498 tests pass, the one failure the known KN-365 flake; lint clean.",
+      "closedAt": "2026-09-12T04:26:53.177Z"
     }
   ],
   "okrs": [

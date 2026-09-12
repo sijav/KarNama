@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 200 of 475 tasks done · 444 of 964 points.
+Project **KarNama** · 201 of 475 tasks done · 445 of 964 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-475` The record-handoff story would pass with the description and note reset deleted** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-475` | The record-handoff story would pass with the description and note reset deleted | high | 1 | web | none | The two records differ in their description and note, and the story asserts both after the swap; deleting either reset line fails it. |
+**Next up: `KN-398` In dark the Tooltip draws white on text/primary, 1.34 to one, since its fill is a text role that turns light** (high, 2 pt, web)
 
 ## Blocked (6)
 
@@ -298,7 +292,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (200)
+## Done (201)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -467,6 +461,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-454` | The Button's forced states paint as rest for one frame before the attribute lands | high | 1 | web | none | The transient cells carry their attribute before the first paint, and the story proves it rather than reading after the effects have run. |
 | `KN-457` | The link-in-a-Tooltip story cannot tell a name from a description, because both say the same thing | high | 1 | web | none | The link's name and the tip's text are different strings, and removing describeChild from the Tooltip makes the story fail. |
 | `KN-462` | The mockCode assertion proves the opposite of what it claims, and no test covers a resend | high | 1 | web | none | A test reads mockCode from the provider that sent the code, and a story resends and signs in with the newly shown one. |
+| `KN-475` | The record-handoff story would pass with the description and note reset deleted | high | 1 | web | none | The two records differ in their description and note, and the story asserts both after the swap; deleting either reset line fails it. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -6074,7 +6069,7 @@ From the KN-344 roast. FocusAfterDeleting and FocusAfterDeletingFromTheModal ass
 
 ### `KN-475` The record-handoff story would pass with the description and note reset deleted
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 From the KN-363 roast. otherIn() builds the second record from the first and changes only the id, the title and the company, so both records carry the SAME description and note, and the story edits and asserts the title alone. Delete setDescription and setNote from the modal's reset and the story still passes, which means the two fields the card is about are not actually covered. Give the second record its own description and note, from the fixtures, and have the story read both after the swap.
