@@ -249,13 +249,15 @@ export const AddJobModal = ({
                     {...(flow.step === 'error'
                       ? {
                           error:
-                            flow.errorCode === 'EXTRACTION_NOT_CONFIGURED' || flow.errorCode === 'API_NOT_CONFIGURED'
+                            flow.errorCode === 'EXTRACTION_NOT_CONFIGURED' ||
+                            flow.errorCode === 'API_NOT_CONFIGURED' ||
+                            flow.errorCode === 'AUTH_NOT_CONFIGURED'
                               ? i18n._('Automatic extraction is unavailable. You can enter the details yourself.')
-                              : flow.errorCode === 'RATE_LIMITED' ||
-                                  flow.errorCode === 'UNAUTHENTICATED' ||
-                                  flow.errorCode === 'DEMO_EXTRACTION_UNAVAILABLE'
-                                ? apiErrorText(i18n, flow.errorCode)
-                                : unreadable,
+                              : flow.errorCode === undefined ||
+                                  flow.errorCode === 'POSTING_UNAVAILABLE' ||
+                                  flow.errorCode === 'INVALID_POSTING_URL'
+                                ? unreadable
+                                : apiErrorText(i18n, flow.errorCode),
                         }
                       : { helperText: i18n._('It takes a link or the whole posting text; you do not need to separate anything.') })}
                   />

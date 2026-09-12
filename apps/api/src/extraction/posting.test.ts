@@ -29,4 +29,11 @@ describe('user-submitted URL boundaries', () => {
       'React & TypeScript Full time',
     )
   })
+  it('reads HTML-escaped posting content without passing layout code to extraction', () => {
+    expect(
+      postingText(
+        '&lt;style&gt;.layout{display:grid}&lt;/style&gt;&lt;nav&gt;Sign in&lt;/nav&gt;&lt;h1&gt;Software Engineer&lt;/h1&gt;&lt;p&gt;Remote &amp; flexible&lt;/p&gt;',
+      ),
+    ).toBe('Software Engineer Remote & flexible')
+  })
 })

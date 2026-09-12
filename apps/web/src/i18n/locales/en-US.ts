@@ -52,6 +52,8 @@ export const messages: Record<string, string> = {
   'Too many attempts. Please try again in an hour.': 'Too many attempts. Please try again in an hour.',
   'Please wait a minute before requesting another code.': 'Please wait a minute before requesting another code.',
   'Your session has expired. Sign in again.': 'Your session has expired. Sign in again.',
+  'We could not extract the job details. Try again, or enter them yourself.':
+    'We could not extract the job details. Try again, or enter them yourself.',
   'Automatic extraction is not enabled for demo sign-in. You can enter the details yourself.':
     'Automatic extraction is not enabled for demo sign-in. You can enter the details yourself.',
   'Automatic extraction is unavailable. You can enter the details yourself.':

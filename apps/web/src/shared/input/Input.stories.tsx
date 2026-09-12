@@ -1058,6 +1058,12 @@ export const Multiline: Story = {
     const style = getComputedStyle(field)
     await expect([style.paddingTop, style.paddingLeft].map(Number.parseFloat)).toEqual([16, 16])
     await expect(Math.round(box.getBoundingClientRect().top - field.getBoundingClientRect().top)).toBe(16)
+    await expect(box.getBoundingClientRect().height).toBe(108)
+    await userEvent.type(box, Array.from({ length: 20 }, (_, index) => `${String(index)} ${fixtures('en-US').longStatusName}`).join('\n'))
+    await waitFor(() => expect(field.offsetHeight).toBeGreaterThan(140))
+    await expect(field.offsetHeight).toBeLessThanOrEqual(208)
+    await expect(box.scrollHeight).toBeGreaterThan(box.clientHeight)
+    await expect(field.getBoundingClientRect().height).toBe(box.getBoundingClientRect().height + 32)
   },
 }
 

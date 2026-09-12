@@ -102,8 +102,8 @@ The same, at the end of the field.
 
 ### multiline
 
-Several lines rather than one: the field is 140 tall and its text starts at the
-top, 16 from every edge, and scrolls inside it. The add modal's paste field.
+Several lines rather than one: the field starts at 140 pixels tall, with text
+16 pixels from every edge. It grows up to eight rows, then scrolls internally.
 
 ### required
 
@@ -248,7 +248,8 @@ helper is then described by nothing.
 
 ### Multiline
 
-The field of several lines, 140 tall, its text from the top.
+The field of several lines starts at 140 pixels tall. Its editable area fills
+the frame and grows with the text up to eight rows, then scrolls internally.
 
 ### Required
 

@@ -708,8 +708,10 @@ Bulk Action Bar while selecting, which is the board's to do. KN-027.
 ### The add modal
 
 Node `166:82`, the shell at 560 in four drawn steps and the loading panel of
-`243:964` between them. **Paste**, `166:62`, is the Input of several lines, 140
-tall with its text 16 from every edge, under «لینک آگهی یا متن کامل آگهی», its
+`243:964` between them. **Paste**, `166:62`, is the Input of several lines, initially
+140 tall with its text 16 from every edge. The owner's September 12 correction
+makes this a minimum height: the field grows with its text up to eight rows,
+then scrolls internally. It sits under «لینک آگهی یا متن کامل آگهی», its
 helper «هم لینک را می‌پذیرد، هم متن کامل آگهی را — لازم نیست چیزی را جدا کنی.», and
 the row «لینک یا متن آگهی نداری؟ خودت دستی وارد کن», the second half 14 at Medium
 in `text/brand`; then Cancel and Primary «استخراج اطلاعات», disabled until the

@@ -23,6 +23,8 @@ export const apiErrorText = (i18n: I18n, code: string): string => {
       return i18n._('Automatic extraction is not enabled for demo sign-in. You can enter the details yourself.')
     case 'EXTRACTION_NOT_CONFIGURED':
       return i18n._('Automatic extraction is unavailable. You can enter the details yourself.')
+    case 'EXTRACTION_FAILED':
+      return i18n._('We could not extract the job details. Try again, or enter them yourself.')
     default:
       return i18n._('Could not reach the service. Please try again.')
   }

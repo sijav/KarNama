@@ -41,8 +41,9 @@ export interface InputProps {
 // Node 95:38: the field is 44 tall, the same as Button M. No variable is bound.
 const FIELD_HEIGHT = 44
 // The add modal's paste field, node 166:69, the one field of several lines: 140
-// tall, its text 16 from every edge, KN-029.
+// minimum height, its text 16 from every edge, KN-029.
 const MULTILINE_HEIGHT = 140
+const MULTILINE_MAX_ROWS = 8
 
 // The focus ring on an invalid field, KN-244, drawn inside the field rather
 // than round it, so a host that clips its overflow at the field's edge cannot
@@ -192,7 +193,7 @@ export const Input = ({
         disabled={disabled}
         // value, defaultValue, placeholder and name pass straight through.
         {...field}
-        {...(multiline ? { multiline: true, rows: 1 } : {})}
+        {...(multiline ? { multiline: true, maxRows: MULTILINE_MAX_ROWS } : {})}
         {...(onChange === undefined
           ? {}
           : {
@@ -222,7 +223,9 @@ export const Input = ({
             // padding is the file's in every state and the text sits spacing/md
             // from the edge, as 95:5 and 95:19 draw it, KN-266.
             position: 'relative',
-            height: multiline ? MULTILINE_HEIGHT : FIELD_HEIGHT,
+            height: multiline ? 'auto' : FIELD_HEIGHT,
+            minHeight: multiline ? MULTILINE_HEIGHT : FIELD_HEIGHT,
+            flexShrink: 0,
             boxSizing: 'border-box',
             paddingInline: `${spacing.md}px`,
             // A field of latin data runs left to right whatever the page does,
@@ -248,7 +251,8 @@ export const Input = ({
               ? {
                   alignItems: 'flex-start',
                   paddingBlock: `${spacing.md}px`,
-                  '& textarea': { padding: 0, height: '100%', overflowY: 'auto', resize: 'none' },
+                  '& textarea': { padding: 0, overflowY: 'auto', resize: 'none' },
+                  '& textarea:not([aria-hidden])': { minHeight: MULTILINE_HEIGHT - 2 * spacing.md },
                   '& textarea::placeholder': { color: colour['text/secondary'], opacity: 1 },
                 }
               : {}),

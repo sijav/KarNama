@@ -104,6 +104,8 @@ export const readPosting = async (source: string, redirects = 0, signal = AbortS
 
 export const postingText = (html: string) =>
   html
+    .replace(/&lt;/giu, '<')
+    .replace(/&gt;/giu, '>')
     .replace(/<(script|style|nav|footer)\b[^>]*>[\s\S]*?<\/\1\s*>/giu, ' ')
     .replace(/<[^>]+>/gu, ' ')
     .replace(/&nbsp;/giu, ' ')

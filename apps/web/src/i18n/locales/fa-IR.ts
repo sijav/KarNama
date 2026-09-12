@@ -56,6 +56,8 @@ export const messages: Record<string, string> = {
   'Too many attempts. Please try again in an hour.': 'تعداد تلاش‌ها بیش از حد مجاز است. لطفاً یک ساعت دیگر تلاش کن.',
   'Please wait a minute before requesting another code.': 'لطفاً برای درخواست کد جدید یک دقیقه صبر کن.',
   'Your session has expired. Sign in again.': 'نشست تو منقضی شده است. دوباره وارد شو.',
+  'We could not extract the job details. Try again, or enter them yourself.':
+    'نتوانستیم اطلاعات شغل را استخراج کنیم. دوباره تلاش کن یا اطلاعات را دستی وارد کن.',
   'Automatic extraction is not enabled for demo sign-in. You can enter the details yourself.':
     'استخراج خودکار برای ورود آزمایشی فعال نیست. می‌توانی اطلاعات را دستی وارد کنی.',
   'Automatic extraction is unavailable. You can enter the details yourself.':
