@@ -11974,13 +11974,15 @@
       "points": 3,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "On a phone, with no console, a reader can see the code and finish signing in; a story at a phone's width reads the code off the screen and uses it.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T02:43:48.776Z",
-      "updatedAt": "2026-09-12T02:48:34.408Z"
+      "updatedAt": "2026-09-12T02:53:36.772Z",
+      "evidence": "At a phone's width, with nothing read from the console, SigningInOnAPhone types a number, reads the five digits out of the stand-in notice on the screen, types them in and reaches the name step. The notice says plainly that no message is really sent, and the digits carry dir=ltr so the page cannot reorder them. 1481 of 1482 tests pass, the one failure the known KN-365 JobCard flake; lint and tsc clean, and the catalog guard caught the now-unused console copy, which is gone from both languages.",
+      "closedAt": "2026-09-12T02:53:36.772Z"
     }
   ],
   "okrs": [

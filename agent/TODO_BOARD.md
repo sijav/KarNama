@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 192 of 459 tasks done · 427 of 936 points.
+Project **KarNama** · 193 of 459 tasks done · 430 of 936 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-459` The sign-in code is only in the console, so nobody can sign in on a phone** (critical, 3 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-459` | The sign-in code is only in the console, so nobody can sign in on a phone | critical | 3 | web | none | On a phone, with no console, a reader can see the code and finish signing in; a story at a phone's width reads the code off the screen and uses it. |
+**Next up: `KN-330` The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list** (high, 2 pt, web)
 
 ## Blocked (5)
 
@@ -290,7 +284,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (192)
+## Done (193)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -386,6 +380,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-128` | Generate typed GraphQL operations instead of asserting them by hand | critical | 3 | graphql | KN-035 | A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case. |
 | `KN-415` | The screens' own coverage: the board's and the network's handlers are half untested | critical | 3 | web | none | Stories drive every handler of both screens, deleting a card and confirming it, renaming, recolouring, deleting and adding a column, collapsing and expanding rejected, saving from the job modal and changing its status, and the network page's open, search and cancel; npm test in apps/web reports 100 percent again with no threshold error. |
 | `KN-422` | The board's column menu deletes a status whose jobs a search is hiding, Rename does nothing, and the columns do not scroll | critical | 3 | web | none | A column's count and its deletability are the column's own, not the search's, and the provider refuses to delete a status that still holds job opportunities; Rename opens a way to rename and the name changes; the board row bounds its columns so a long list scrolls inside one; a phone shows the column's empty state; the bulk bar counts only job opportunities that still exist. Each covered by a test or an e2e. |
+| `KN-459` | The sign-in code is only in the console, so nobody can sign in on a phone | critical | 3 | web | none | On a phone, with no console, a reader can see the code and finish signing in; a story at a phone's width reads the code off the screen and uses it. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | critical | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | critical | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
 | `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
@@ -5870,7 +5865,7 @@ The owner, on the live site on a phone, 2026-09-12: typing 09123 18 shows '318 0
 
 ### `KN-459` The sign-in code is only in the console, so nobody can sign in on a phone
 
-- **status** in_progress · **severity** critical · **points** 3 · **area** web
+- **status** done · **severity** critical · **points** 3 · **area** web
 - **blocked by** none
 
 The owner, on the live site on a phone, 2026-09-12: 'what do you mean check the console there's no way to check the console on a mobile phone'. The mocked SMS writes the code with console.info and the code step tells the reader to look there, KN-046. On a phone there is no console, so the live product cannot be signed into at all, which is every reader who opens it on the device this product is mostly for. Until a real SMS sender exists, the mock has to hand the code to the READER: show it in the code step itself, plainly marked as a stand-in, and keep the console line for whoever is at a desk.
