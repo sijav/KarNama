@@ -1,1 +1,1 @@
-export { DEBOUNCE_MS, SearchBar, type SearchBarProps } from './SearchBar'
+export { DEBOUNCE_MS, SearchBar, type SearchBarLayout, type SearchBarProps } from './SearchBar'

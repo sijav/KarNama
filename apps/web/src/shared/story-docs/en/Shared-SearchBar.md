@@ -19,6 +19,15 @@ The text in the field, when the page keeps it.
 
 The text the field starts with, when the field keeps it itself.
 
+### layout
+
+Which screen's bar this is. The desktop toolbar draws it 36 tall, the phone 44,
+and nothing else differs: the text sits 16 from the inline start in both, with
+the 20 search icon, centred in whatever height the bar has. The width is the
+container's, which is what makes both right — 320 is what the desktop toolbar
+gives it, 358 is a phone's page inside its own 16 gutters. The phone's is the
+default, because that is what the component set itself draws.
+
 ### onChange
 
 Fired with the text on every change, including a clear.
@@ -66,3 +75,12 @@ and no search runs for the text it no longer shows.
 
 A page that keeps the value and ignores what is typed: each key is reported, the
 field stays empty, and nothing is searched.
+
+### OnTheDesktop
+
+The toolbar's bar, 320 by 36, the size the board's and the contacts' toolbars
+both draw.
+
+### OnAPhone
+
+A phone's bar, 358 by 44, full width inside the page's own gutters.

@@ -98,12 +98,13 @@ const partsOf = (canvasElement: HTMLElement) => {
   return { field, bar, edge: getComputedStyle(bar, '::before') }
 }
 
-// What node 155:92 draws in every state: 44 tall, radius md, the text 16 from
-// the edge, the search icon at 20 in text/secondary at the inline start.
-const isTheFiles = async (canvasElement: HTMLElement) => {
+// What node 155:92 draws in every state: the phone's 44 unless told otherwise,
+// radius md, the text 16 from the edge, the search icon at 20 in text/secondary
+// at the inline start.
+const isTheFiles = async (canvasElement: HTMLElement, height = MOBILE_HEIGHT) => {
   const { field, bar } = partsOf(canvasElement)
   const box = bar.getBoundingClientRect()
-  await expect(box.height).toBe(44)
+  await expect(box.height).toBe(height)
   await expect(px(getComputedStyle(bar).borderTopLeftRadius)).toBe(8)
   const icon = bar.querySelector('svg')
   if (!icon) throw new Error('the bar has no search icon')
@@ -250,5 +251,50 @@ export const IgnoredKeystrokes: Story = {
     await expect(args.onChange).toHaveBeenCalled()
     await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_MS + 150))
     await expect(args.onSearch).not.toHaveBeenCalled()
+  },
+}
+
+// What the screens draw, read from the file again for KN-315: the board's
+// toolbar instance `241:29` and the contacts' `252:48` are both 320 by 36, and
+// the phone's `241:156` is 358 by 44. The width is the container's in both, so
+// the story gives each the width its screen gives it.
+const DESKTOP_WIDTH = 320
+const DESKTOP_HEIGHT = 36
+const MOBILE_WIDTH = 358
+const MOBILE_HEIGHT = 44
+
+export const OnTheDesktop: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  render: () => (
+    <Box sx={{ width: DESKTOP_WIDTH }}>
+      <SearchBar layout="desktop" />
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    // The toolbar's bar is SHORTER than the component set's 44, and nothing
+    // else about it changes: the text still sits 16 from the inline start and
+    // the 20 icon with it, centred in the height the toolbar gives.
+    const { bar } = partsOf(canvasElement)
+    const box = bar.getBoundingClientRect()
+    await expect([box.width, box.height]).toEqual([DESKTOP_WIDTH, DESKTOP_HEIGHT])
+    await isTheFiles(canvasElement, DESKTOP_HEIGHT)
+  },
+}
+
+export const OnAPhone: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  render: () => (
+    <Box sx={{ width: MOBILE_WIDTH }}>
+      <SearchBar layout="mobile" />
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    // A phone's page inside its own 16 gutters, at the component set's height.
+    const { bar } = partsOf(canvasElement)
+    const box = bar.getBoundingClientRect()
+    await expect([box.width, box.height]).toEqual([MOBILE_WIDTH, MOBILE_HEIGHT])
+    await isTheFiles(canvasElement, MOBILE_HEIGHT)
   },
 }

@@ -4,10 +4,14 @@ import { useEffect, useRef, useState } from 'react'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { Icon } from '../icon'
 
+/** The desktop toolbar's bar, or the phone's. */
+export type SearchBarLayout = 'desktop' | 'mobile'
+
 // The props are documented in story-docs, not here, KN-207.
 export interface SearchBarProps {
   value?: string
   defaultValue?: string
+  layout?: SearchBarLayout
   onChange?: (value: string) => void
   onSearch?: (value: string) => void
 }
@@ -23,10 +27,24 @@ export const DEBOUNCE_MS = 300
 const EDGE = 1
 const FOCUS_EDGE = 2
 
-// The bar's 44 and the clear control's 20 square are sizes node 155:92 fixes
-// without a variable, so they are component constants, as the Tooltip's width
-// is.
-const HEIGHT = 44
+/**
+ * The bar's two heights, and the clear control's 20 square: sizes the file
+ * fixes without a variable, so they are component constants, as the Tooltip's
+ * width is.
+ *
+ * The component set, node 155:92, draws 320 by 44, and the screens draw the bar
+ * SHORTER on the desktop: the board's toolbar instance `241:29` and the
+ * contacts' `252:48` are both 320 by 36, in a toolbar that is itself 36, beside
+ * a Sort Control of the same height; the phone's, `241:156`, is 358 by 44.
+ * Read again from the file for KN-315. Nothing else differs between them: both
+ * hold the text 16 from the inline start and the 20 icon 16 from the inline
+ * end, centred in whatever height the bar has.
+ *
+ * The width is the container's, which is what makes both instances right: 320
+ * is what the desktop toolbar gives it, 358 is a phone's page inside its own
+ * 16 gutters.
+ */
+const HEIGHT: Record<SearchBarLayout, number> = { desktop: 36, mobile: 44 }
 const CLEAR = 20
 
 // The Search Bar of node 155:92: the search icon at the inline start, the
@@ -34,7 +52,7 @@ const CLEAR = 20
 // reported at once through onChange, and to onSearch once it pauses, with the
 // value as it stands after the last keystroke; clearing searches at once and
 // puts focus back in the field.
-export const SearchBar = ({ value, defaultValue = '', onChange, onSearch }: SearchBarProps) => {
+export const SearchBar = ({ value, defaultValue = '', layout = 'mobile', onChange, onSearch }: SearchBarProps) => {
   const { i18n } = useLingui()
   const [own, setOwn] = useState(defaultValue)
   const text = value ?? own
@@ -84,7 +102,7 @@ export const SearchBar = ({ value, defaultValue = '', onChange, onSearch }: Sear
           gap: `${spacing.xs}px`,
           boxSizing: 'border-box',
           width: '100%',
-          height: HEIGHT,
+          height: HEIGHT[layout],
           paddingInline: `${spacing.md}px`,
           position: 'relative',
           borderRadius: `${theme.karnama.radius.md}px`,

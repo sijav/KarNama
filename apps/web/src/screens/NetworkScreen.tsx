@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react'
-import { Box, Stack } from '@mui/material'
+import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
 import { useState } from 'react'
 import { contactMatches, useRecords, type ContactEntry } from '../core/records'
 import { BulkActionBar } from '../shared/bulk-action-bar'
@@ -8,7 +8,7 @@ import { ContactCard } from '../shared/contact-card'
 import { EmptyState } from '../shared/empty-state'
 import { ConfirmModal, ContactModal, type ContactModalValues } from '../shared/modal'
 import { PageHeader } from '../shared/page-header'
-import { SearchBar } from '../shared/search-bar'
+import { SearchBar, type SearchBarLayout } from '../shared/search-bar'
 import { spacing } from '../theme/tokens'
 
 /**
@@ -21,9 +21,15 @@ import { spacing } from '../theme/tokens'
  * reversal anywhere in the code, DESIGN.md section 9.
  */
 
-// Node 248:116's card is 280 across, and the search bar 480 at most here.
+// Node 248:116's card is 280 across. The search bar is 320 on the desktop, the
+// contacts toolbar's own instance `252:48`, the same as the board's: it was 480
+// here, which is a width the file draws nowhere, KN-315.
 const CARD_WIDTH = 280
-const SEARCH_WIDTH = 480
+const SEARCH_WIDTH = 320
+
+// The bar follows the screen it is on, as the board's cards do, KN-315.
+const DESKTOP: SearchBarLayout = 'desktop'
+const MOBILE: SearchBarLayout = 'mobile'
 
 /** An empty person, for the add modal. */
 const NOBODY: ContactModalValues = { name: '', role: '', company: '', email: '', phone: '', linkedin: '', jobId: null }
@@ -42,6 +48,7 @@ export const NetworkScreen = () => {
   const { i18n } = useLingui()
   const records = useRecords()
   const [search, setSearch] = useState('')
+  const wide = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
   const [selected, setSelected] = useState<readonly string[]>([])
   // Who is being written: an id when one is being edited, null for a new one,
   // and undefined when the modal is closed.
@@ -92,7 +99,7 @@ export const NetworkScreen = () => {
       />
 
       <Box sx={{ maxWidth: SEARCH_WIDTH }}>
-        <SearchBar value={search} onChange={setSearch} />
+        <SearchBar value={search} onChange={setSearch} layout={wide ? DESKTOP : MOBILE} />
       </Box>
 
       {shown.length === 0 ? (

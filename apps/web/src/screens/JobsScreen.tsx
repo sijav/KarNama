@@ -14,7 +14,7 @@ import { formatDay, JobModal, type JobSaved } from '../shared/job-modal'
 import { AddColumn, EmptyColumn, KanbanColumn } from '../shared/kanban-column'
 import { ChangeStatusModal, ConfirmModal, ContactModal, Modal, type ContactModalValues } from '../shared/modal'
 import { PageHeader } from '../shared/page-header'
-import { SearchBar } from '../shared/search-bar'
+import { SearchBar, type SearchBarLayout } from '../shared/search-bar'
 import { SortControl, type SortOrder } from '../shared/sort-control'
 import { spacing } from '../theme/tokens'
 
@@ -46,9 +46,12 @@ const RENAME_WIDTH = 360
 // value rather than as copy.
 const QUIET: ButtonVariant = 'text'
 
-// The two card layouts, typed for the same reason.
+// The two card layouts, typed for the same reason, and the search bar's two,
+// which are the same words for the same pair of screens, KN-315.
 const DESKTOP: JobCardLayout = 'desktop'
 const MOBILE: JobCardLayout = 'mobile'
+const WIDE_BAR: SearchBarLayout = 'desktop'
+const NARROW_BAR: SearchBarLayout = 'mobile'
 
 export interface JobsScreenProps {
   /** Opens the add flow, which is what the add destination is, KN-042. */
@@ -194,7 +197,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
 
       <Stack direction="row" sx={{ gap: `${spacing.sm}px`, alignItems: 'center', flexWrap: 'wrap' }}>
         <Box sx={{ flex: `1 1 ${SEARCH_WIDTH}px`, minWidth: 0 }}>
-          <SearchBar value={search} onChange={setSearch} />
+          <SearchBar value={search} onChange={setSearch} layout={wide ? WIDE_BAR : NARROW_BAR} />
         </Box>
         <SortControl value={order} onChange={setOrder} />
       </Stack>
