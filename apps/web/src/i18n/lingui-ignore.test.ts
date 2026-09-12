@@ -6,12 +6,33 @@ import { describe, expect, it } from 'vitest'
 // new RegExp(entry) and no flags, so an entry that needs a flag to mean what it
 // says means something else in the rule. This reads the entries out of the
 // config as written and compiles them the same way, KN-214.
-const config = readFileSync(new URL('../../eslint.config.js', import.meta.url), 'utf8')
-const start = config.indexOf('ignore: [')
-const block = config.slice(start, config.indexOf('\n  ],', start))
-// Each entry is one single-quoted string on its own line; a JS escape is a
-// backslash and the character it keeps.
-const entries = [...block.matchAll(/^\s*'((?:\\.|[^'\\])*)',?\s*$/gm)].map((match) => (match[1] ?? '').replace(/\\(.)/g, '$1'))
+// Read out of the configuration ESLint is actually handed, not out of the
+// file's text, KN-367. The old reader matched single-quoted lines with a
+// regular expression, so an entry written any other way, double-quoted, a
+// template, or split over two lines, was invisible to it: an entry of `.*`
+// could have whitelisted every string in the codebase while this test stayed
+// green and went on asserting about the entries it could still see.
+const RULE = 'lingui/no-unlocalized-strings'
+
+interface RuleBlock {
+  rules?: Record<string, unknown>
+}
+
+/** The ignore entries a flat config gives that rule, refusing anything ambiguous. */
+export const ignoreEntriesIn = (config: readonly RuleBlock[]): string[] => {
+  const blocks = config.filter((entry) => entry.rules !== undefined && RULE in entry.rules)
+  // Exactly one: taking the first would read the wrong options the day a later
+  // block overrides the rule.
+  if (blocks.length !== 1) throw new Error(`expected exactly one block configuring ${RULE}, found ${String(blocks.length)}`)
+  const setting = blocks[0]?.rules?.[RULE]
+  const options: unknown = Array.isArray(setting) ? setting[1] : undefined
+  const ignore = (options as { ignore?: unknown } | undefined)?.ignore
+  if (!Array.isArray(ignore)) throw new Error(`${RULE} has no ignore array`)
+  return ignore.map(String)
+}
+
+const loaded = await import('../../eslint.config.js')
+const entries = ignoreEntriesIn(loaded.default)
 const compiled = entries.map((entry) => new RegExp(entry))
 
 // The plugin's own whitelist of strings with no letter in them, read from the
@@ -51,5 +72,28 @@ describe('the lingui rule’s ignore entries, compiled as the rule compiles them
     // the check above is one that can fail.
     const old = new RegExp('^[^\\p{L}]*$')
     expect(COPY.filter((text) => old.test(text))).toEqual(['Delete', 'Save', 'Cancel', 'Close', 'x', 'مصاحبه', 'حذف وضعیت', 'ذخیره'])
+  })
+})
+
+describe('reading the entries out of the configuration itself', () => {
+  it('sees an entry the old reader could not, one written with double quotes', async () => {
+    // The point is the SOURCE, not the value: once JavaScript has evaluated
+    // them, a double-quoted literal and a single-quoted one are the same
+    // string, so a config-shaped object built here would prove nothing. This
+    // imports a real module whose own text uses double quotes, which the reader
+    // that matched single-quoted lines out of the config could not see at all,
+    // KN-367.
+    const fixture = await import('../gate-fixtures/double-quoted-ignore.config.js')
+    expect(ignoreEntriesIn(fixture.default)).toEqual(['^(rtl|ltr|fa-IR|en-US)$', '^double-quoted$'])
+  })
+
+  it('refuses a configuration that settles the rule in more than one place', () => {
+    const twice = [
+      { rules: { 'lingui/no-unlocalized-strings': ['error', { ignore: ['a'] }] } },
+      { rules: { 'lingui/no-unlocalized-strings': ['error', { ignore: ['b'] }] } },
+    ]
+    // Taking the first would read the wrong options the day a later block
+    // overrides the rule, and read them without saying so.
+    expect(() => ignoreEntriesIn(twice)).toThrow(/exactly one/u)
   })
 })

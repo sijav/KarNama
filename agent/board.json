@@ -10360,12 +10360,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The test takes the ignore array from the configuration ESLint actually loads, not from the file's text, and a story or test shows an entry written in another quote style is seen.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T17:54:20.658Z",
-      "okr": "OKR-1"
+      "okr": "OKR-1",
+      "updatedAt": "2026-09-12T04:01:46.931Z"
     },
     {
       "id": "KN-368",

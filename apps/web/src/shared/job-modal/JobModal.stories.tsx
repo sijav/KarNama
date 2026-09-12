@@ -12,7 +12,7 @@ import type { JobLevel } from '../job-selects'
 import type { StatusOption } from '../status-picker'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
-import { JobModal, type JobModalProps, type JobModalTab, type JobRecord } from './JobModal'
+import { JobModal, type JobModalProps, type JobModalTab, type JobRecord, type JobSaved } from './JobModal'
 
 const LEVEL: JobLevel = 'senior-specialist'
 // The status the record is in, and the tab a page asks for first.
