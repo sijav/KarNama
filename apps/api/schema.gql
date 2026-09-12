@@ -31,8 +31,17 @@ type ExtractedJob {
 }
 
 type Health {
+  """Whether this process allows rate-limited demo extraction"""
+  demoExtractionEnabled: Boolean!
+
   """Which environment this process believes it is in"""
   environment: String!
+
+  """Configured extraction provider, without credentials"""
+  extractionProvider: String!
+
+  """Git revision running on Render, when available"""
+  revision: String
 
   """ok when the service is serving requests"""
   status: String!

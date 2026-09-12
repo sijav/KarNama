@@ -43,8 +43,14 @@ export type ExtractedJob = {
 };
 
 export type Health = {
+  /** Whether this process allows rate-limited demo extraction */
+  readonly demoExtractionEnabled: Scalars['Boolean']['output'];
   /** Which environment this process believes it is in */
   readonly environment: Scalars['String']['output'];
+  /** Configured extraction provider, without credentials */
+  readonly extractionProvider: Scalars['String']['output'];
+  /** Git revision running on Render, when available */
+  readonly revision?: Maybe<Scalars['String']['output']>;
   /** ok when the service is serving requests */
   readonly status: Scalars['String']['output'];
   /** Seconds since this process started, so a cold start is visible */

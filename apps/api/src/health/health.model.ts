@@ -18,4 +18,13 @@ export class Health {
 
   @Field(() => Number, { description: 'Seconds since this process started, so a cold start is visible' })
   uptimeSeconds!: number
+
+  @Field(() => String, { nullable: true, description: 'Git revision running on Render, when available' })
+  revision?: string | null
+
+  @Field(() => Boolean, { description: 'Whether this process allows rate-limited demo extraction' })
+  demoExtractionEnabled!: boolean
+
+  @Field(() => String, { description: 'Configured extraction provider, without credentials' })
+  extractionProvider!: string
 }
