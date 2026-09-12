@@ -20,8 +20,11 @@ agent/roasts/*.prompt.md
 # API build output
 apps/api/dist/
 
-# The board the global /todo skill keeps, one per checkout.
-.claude/todo.db
+# The global todo skill's database is version controlled.
+# SQLite's transient journal files are local runtime state.
+.claude/todo.db-journal
+.claude/todo.db-wal
+.claude/todo.db-shm
 
 # Roast output and session ids: this machine, not the project.
 # The roast RESULT and its temp file no longer land here at all: they are
