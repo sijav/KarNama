@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 467,
+  "nextId": 469,
   "tasks": [
     {
       "id": "KN-001",
@@ -12088,7 +12088,25 @@
       "status": "done",
       "exit": "Every screen and modal that takes fields wraps them in a form whose onSubmit does the work, its primary button is type=submit, and a story presses Enter in a field and sees the same thing the button does.",
       "okr": "OKR-1",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "agent/roasts/KN-463-round-1.2026-09-12T03-25-45-306Z.md",
+          "filed": [
+            "KN-467",
+            "KN-468",
+            "KN-434"
+          ],
+          "cardDigest": "5eba220d3d9ac61e5bad460864f1ea19e46ad6d0669bfbc26e9a888706ab2b8a",
+          "head": "6e2cbbc2f2c6520fc50816689f50e2581b11f35d",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "dismissed": "none: all three stand. The critical is mine, the job modal was in my own plan and I did not convert it.",
+          "at": "2026-09-12T03:32:12.186Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-12T03:03:41.200Z",
       "updatedAt": "2026-09-12T03:25:29.137Z",
@@ -12142,6 +12160,38 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T03:26:17.968Z"
+    },
+    {
+      "id": "KN-467",
+      "title": "The job modal was left out of the forms work, and it is the one with the most fields",
+      "desc": "From the KN-463 roast, and it is right: the card named the job modal and my own plan named it, and I converted the sign-in card, the contact modal, the change-status modal, the board's rename and both add-flow steps, and then did not convert it. Its editable fields, the posting link, the description and the note are in no form, and its Save is still a plain onClick, so Enter does nothing in a title field and autofill has nothing to fill. Wrap its body, make Save submit by id as the other footers do, and leave Enter a newline in the two textareas.",
+      "why": "It is the screen a reader spends the most time in, and the owner's instruction was that the inputs should ALWAYS be in a form.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The job modal's fields are a form whose Save submits it, and a story presses the runner's own Enter in a single-line field and sees what Save does.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T03:32:11.820Z"
+    },
+    {
+      "id": "KN-468",
+      "title": "A form with display: contents can fall out of the accessibility tree",
+      "desc": "From the KN-463 roast. The modal forms wrap their fields in a form styled display: contents so the layout does not move. Submission and form ownership are unaffected, but some browser and screen reader combinations drop such an element from the accessibility tree, so the grouping the form provides may not be exposed; the forms are also unnamed, so they would not be reliable landmarks even where they are kept. Either give the form the layout the wrapper had, so it draws its own box and stays a real node, or name it and check what is exposed.",
+      "why": "The form was added for readers, and a form a screen reader cannot see is only half the change.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Each modal's form is in the accessibility tree with a name, or the reason it does not need to be is written down.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T03:32:11.965Z"
     }
   ],
   "okrs": [

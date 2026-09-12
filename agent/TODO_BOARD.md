@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 196 of 466 tasks done · 436 of 950 points.
+Project **KarNama** · 196 of 468 tasks done · 436 of 954 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -20,7 +20,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (263)
+## Backlog (265)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -53,6 +53,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-464` | The fields tell a phone's keyboard nothing: no input type, no inputMode, no enterKeyHint, no autocomplete | high | 2 | web | none | Each field declares the type, inputMode, enterKeyHint and autocomplete its content wants, and a story reads them off the rendered inputs in both languages. |
 | `KN-465` | Nothing reads mockCode off the provider that sent the code, which KN-462's exit asked for | high | 2 | web | none | A story reads mockCode from the provider after a send and after a resend, and asserts the screen shows exactly that. |
 | `KN-466` | The resend check passes against a resend that does nothing | high | 2 | web | none | The story uses a deterministic code maker, asserts the notice shows a different code after a resend, and asserts the first code no longer signs in. |
+| `KN-467` | The job modal was left out of the forms work, and it is the one with the most fields | high | 2 | web | none | The job modal's fields are a form whose Save submits it, and a story presses the runner's own Enter in a single-line field and sees what Save does. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -161,6 +162,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-389` | A column whose cards a search filtered away says it has none at this stage, while its count says it has one | medium | 2 | web | none | Read the file for a search or filtered state of the board and its columns and settle, in DESIGN.md, what a column shows when a search hides its cards and what its count counts, asking the owner if the file is silent; the column does that, and a story renders a filtered column with a live count of one. |
 | `KN-407` | The Docs page hook and its channel are still checked by hand: a fake DocsContext would cover them, as AppProviders and PreferencesProvider are covered | medium | 2 | web | none | useDocsLocale is rendered in a test against a DocsContext and a channel the test makes: it reads the toolbar from the context, follows a globalsUpdated event, stops listening when it unmounts, and reports not known when the context yields nothing; the file leaves the coverage exclusion list, or the exclusion names what is left in it and why. |
 | `KN-426` | A disabled Icon Button cannot explain why it is off: it fires no pointer events | medium | 2 | web | none | A Tooltip wrapped round a disabled Icon Button opens on hover and on focus and says why the action is off, and whatever is decided about the tab order is written down in DESIGN.md; a story asserts it. |
+| `KN-468` | A form with display: contents can fall out of the accessibility tree | medium | 2 | web | none | Each modal's form is in the accessibility tree with a name, or the reason it does not need to be is written down. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -5929,6 +5931,8 @@ The owner, 2026-09-12: 'the inputs should always be in a form, onsubmit needs to
 
 **Exit condition.** Every screen and modal that takes fields wraps them in a form whose onSubmit does the work, its primary button is type=submit, and a story presses Enter in a field and sees the same thing the button does.
 
+**Roasts.** round 1 scored 4 with 1 critical(s)
+
 ### `KN-464` The fields tell a phone's keyboard nothing: no input type, no inputMode, no enterKeyHint, no autocomplete
 
 - **status** backlog · **severity** high · **points** 2 · **area** web
@@ -5961,4 +5965,26 @@ From the KN-462 roast. SigningInOnAPhone asks for another code and then reads th
 **Why.** The whole point of the resend half is that a reader who asks for another code is shown the one that now works. As written it cannot tell a working resend from a dead button.
 
 **Exit condition.** The story uses a deterministic code maker, asserts the notice shows a different code after a resend, and asserts the first code no longer signs in.
+
+### `KN-467` The job modal was left out of the forms work, and it is the one with the most fields
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+From the KN-463 roast, and it is right: the card named the job modal and my own plan named it, and I converted the sign-in card, the contact modal, the change-status modal, the board's rename and both add-flow steps, and then did not convert it. Its editable fields, the posting link, the description and the note are in no form, and its Save is still a plain onClick, so Enter does nothing in a title field and autofill has nothing to fill. Wrap its body, make Save submit by id as the other footers do, and leave Enter a newline in the two textareas.
+
+**Why.** It is the screen a reader spends the most time in, and the owner's instruction was that the inputs should ALWAYS be in a form.
+
+**Exit condition.** The job modal's fields are a form whose Save submits it, and a story presses the runner's own Enter in a single-line field and sees what Save does.
+
+### `KN-468` A form with display: contents can fall out of the accessibility tree
+
+- **status** backlog · **severity** medium · **points** 2 · **area** web
+- **blocked by** none
+
+From the KN-463 roast. The modal forms wrap their fields in a form styled display: contents so the layout does not move. Submission and form ownership are unaffected, but some browser and screen reader combinations drop such an element from the accessibility tree, so the grouping the form provides may not be exposed; the forms are also unnamed, so they would not be reliable landmarks even where they are kept. Either give the form the layout the wrapper had, so it draws its own box and stays a real node, or name it and check what is exposed.
+
+**Why.** The form was added for readers, and a form a screen reader cannot see is only half the change.
+
+**Exit condition.** Each modal's form is in the accessibility tree with a name, or the reason it does not need to be is written down.
 
