@@ -10228,13 +10228,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The record carries its id, the modal starts over from a record with a different id while open, keeps edits across new objects of the same record, and a story swaps the job while open and saves the new one's fields.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T17:28:38.468Z",
       "okr": "OKR-1",
-      "updatedAt": "2026-09-12T03:53:11.967Z"
+      "updatedAt": "2026-09-12T04:00:39.385Z",
+      "evidence": "JobRecord carries its id and the modal starts over when it changes while open: StartsOverForAnotherRecord types into one record, swaps it for another, and asserts the fields and what Save sends are the second record's; KeepsTypingForTheSameRecord hands over a new object of the same record and finds the typing still there. Restoring the old open-only condition failed the first story and left the second passing, which is how they were shown to be able to fail. 1491 of 1492 tests pass, the one failure the known KN-365 flake; lint and tsc clean.",
+      "closedAt": "2026-09-12T04:00:39.385Z"
     },
     {
       "id": "KN-364",
