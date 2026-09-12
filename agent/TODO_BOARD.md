@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 188 of 452 tasks done · 422 of 926 points.
+Project **KarNama** · 188 of 453 tasks done · 422 of 927 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-330` The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list** (high, 2 pt, web)
+**Next up: `KN-453` An Icon Button that is a link inside a Tooltip is untested, and that is the combination the work was for** (high, 1 pt, web)
 
 ## Blocked (5)
 
@@ -20,12 +20,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (257)
+## Backlog (258)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-453` | An Icon Button that is a link inside a Tooltip is untested, and that is the combination the work was for | high | 1 | web | none | A story wraps a Tooltip round an Icon Button with an href and asserts the anchor carries the description and opens the tip on hover and on focus. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
@@ -5729,6 +5730,8 @@ TooltipTrigger takes ref from MUI's IconButton props, which resolves to Ref of H
 
 **Exit condition.** A ref taken on an Icon Button with an href typechecks with no cast.
 
+**Roasts.** round 1 scored 6 with 0 critical(s)
+
 ### `KN-448` The Icon Button spreads a Tooltip's props before its own, which is the unsafe side
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -5783,4 +5786,15 @@ Found while fixing KN-443. App.tsx gives the main area p: 6, and the theme's spa
 **Why.** Gutters are the first thing that reads as wrong on a phone, and every screen inherits this one. It is also why a bar the file draws at 358 renders at 342.
 
 **Exit condition.** A page's gutters are the file's at each width, 16 on a phone and 32 on the desktop, and a story at a phone's width reads a full-width control's box against the file's number.
+
+### `KN-453` An Icon Button that is a link inside a Tooltip is untested, and that is the combination the work was for
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+From the KN-447 roast. InATooltip wraps the BUTTON branch and HandsBackItsElement renders the LINK branch with no Tooltip, so nothing covers the two together. If the link branch stopped spreading its trigger props, both stories would still pass while a tip on the contact card's mail control lost the ref, the description, the injected listeners and MUI's own clone marker. Wrap a link Icon Button in a Tooltip and assert what InATooltip asserts for the button: described from the first render, opens on hover and on focus, keeps its own name, and nothing at the console.
+
+**Why.** The mail control on the contact card is a link, and explaining an icon-only control is exactly what a tooltip is for, so the untested combination is the one the product actually ships.
+
+**Exit condition.** A story wraps a Tooltip round an Icon Button with an href and asserts the anchor carries the description and opens the tip on hover and on focus.
 

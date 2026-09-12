@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 453,
+  "nextId": 454,
   "tasks": [
     {
       "id": "KN-001",
@@ -11713,7 +11713,24 @@
       "status": "done",
       "exit": "A ref taken on an Icon Button with an href typechecks with no cast.",
       "okr": "OKR-1",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6,
+          "criticals": 0,
+          "file": "agent/roasts/KN-447-round-1.2026-09-12T02-15-44-758Z.md",
+          "filed": [
+            "KN-453",
+            "KN-434"
+          ],
+          "cardDigest": "93ef306549bf333e25f80baee4dc758c721b11c9bc97937ac489c068bdee46ed",
+          "head": "e4047c33a3d9683a12448fb56f01a2420371ee54",
+          "reviewerScore": 6.5,
+          "reviewerCriticals": 0,
+          "dismissed": "none: both findings stand. The minor, prose as JSDoc in the TSX, is KN-434, which already carries it and was noted again there.",
+          "at": "2026-09-12T02:27:51.018Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-12T01:53:04.882Z",
       "updatedAt": "2026-09-12T02:15:02.445Z",
@@ -11802,6 +11819,22 @@
       ],
       "createdAt": "2026-09-12T01:56:15.905Z",
       "updatedAt": "2026-09-12T02:01:42.180Z"
+    },
+    {
+      "id": "KN-453",
+      "title": "An Icon Button that is a link inside a Tooltip is untested, and that is the combination the work was for",
+      "desc": "From the KN-447 roast. InATooltip wraps the BUTTON branch and HandsBackItsElement renders the LINK branch with no Tooltip, so nothing covers the two together. If the link branch stopped spreading its trigger props, both stories would still pass while a tip on the contact card's mail control lost the ref, the description, the injected listeners and MUI's own clone marker. Wrap a link Icon Button in a Tooltip and assert what InATooltip asserts for the button: described from the first render, opens on hover and on focus, keeps its own name, and nothing at the console.",
+      "why": "The mail control on the contact card is a link, and explaining an icon-only control is exactly what a tooltip is for, so the untested combination is the one the product actually ships.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A story wraps a Tooltip round an Icon Button with an href and asserts the anchor carries the description and opens the tip on hover and on focus.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T02:27:50.875Z"
     }
   ],
   "okrs": [
