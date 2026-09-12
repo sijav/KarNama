@@ -15,7 +15,7 @@ if (!container) throw new Error('index.html has no #root element to mount into')
 // it was for.
 createRoot(container).render(
   <StrictMode>
-    <AppProviders remoteAuth={import.meta.env.VITE_AUTH_MODE !== 'demo'}>
+    <AppProviders remoteAuth={import.meta.env.VITE_AUTH_MODE === 'live'}>
       <App />
     </AppProviders>
   </StrictMode>,

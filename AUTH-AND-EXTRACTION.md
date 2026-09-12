@@ -1,8 +1,9 @@
 # Connected login and ad extraction
 
-The app uses server authentication by default. `VITE_AUTH_MODE=demo` explicitly
-selects the original browser-only demonstration for offline UI work and the
-existing board tests. A demo account cannot call authenticated API operations.
+The app temporarily uses mock login by default, including the Pages deployment.
+The verification code appears on screen and no SMS is sent. Set
+`VITE_AUTH_MODE=live` to restore server authentication. A demo account cannot call
+authenticated API operations, including AI extraction; manual ad entry remains available.
 Storybook continues to use its isolated demo provider.
 
 The implemented adapters are Kavenegar verification SMS and OpenAI Responses
@@ -33,7 +34,8 @@ start with `node --env-file=.env dist/main.js`. The migration creates challenges
 sessions and rate counters without changing existing job records.
 
 Set the web `VITE_API_URL` to the full `/graphql` URL and `VITE_AUTH_MODE=live`,
-then rebuild. The Pages workflow reads the repository variable `KARNAMA_API_URL`.
+then rebuild. For Pages, also change `VITE_AUTH_MODE` in `.github/workflows/pages.yml`
+to `live`; the workflow reads the repository variable `KARNAMA_API_URL`.
 Render's start command now applies migrations before starting. Existing Render
 services may need their start command updated or Blueprint synchronized.
 
