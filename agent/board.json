@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 443,
+  "nextId": 452,
   "tasks": [
     {
       "id": "KN-001",
@@ -9183,7 +9183,23 @@
       "parent": [],
       "status": "done",
       "exit": "The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "agent/roasts/KN-315-round-1.2026-09-12T01-49-04-495Z.md",
+          "filed": [
+            "KN-443"
+          ],
+          "cardDigest": "4526dfb5e43424e6027cb8b8f2b7d37d1315a7608aa85aafbcf2f86f51110262",
+          "head": "b1b4e175c8f151eeabf5981d86c9f4fcdee43f72",
+          "reviewerScore": 3.5,
+          "reviewerCriticals": 1,
+          "dismissed": "none: every finding stands. The critical is a regression I introduced and is being fixed next.",
+          "at": "2026-09-12T01:52:10.335Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T12:47:18.537Z",
       "okr": "OKR-1",
@@ -11308,8 +11324,11 @@
       "exit": "A Tooltip wrapped round a disabled Icon Button opens on hover and on focus and says why the action is off, and whatever is decided about the tab order is written down in DESIGN.md; a story asserts it.",
       "okr": "OKR-1",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-12T01:37:00.777Z"
+      "notes": [
+        "2026-09-12, from the KN-310 roast: the mechanism in this card is wrong. A disabled control is not refused pointer events by the browser; MUI sets pointer-events none on .Mui-disabled, and the href variant has no native disabled at all. The hover half already works with the span wrapper MUI documents, so 'never opens' is false. Only the focus half is a real question for the owner. The card also cites design node 512:742 for the tab order, which draws a visual state: the tab-order claim comes from a story's own assertion, and DESIGN.md already decides the analogous drawn case the other way for the Menu, keeping a blocked item in the keyboard's path so its reason can be read."
+      ],
+      "createdAt": "2026-09-12T01:37:00.777Z",
+      "updatedAt": "2026-09-12T01:53:05.404Z"
     },
     {
       "id": "KN-427",
@@ -11352,13 +11371,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Each of the four asserts something that is false before the action it follows.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T01:43:07.122Z",
-      "updatedAt": "2026-09-12T01:49:09.115Z"
+      "updatedAt": "2026-09-12T01:52:04.968Z",
+      "evidence": "Each of the four now asserts a state that is false before the action it follows: the rejected column's own job opportunity is absent while collapsed and present in that column's region after; the moved card is read inside the offer column; the colour is read back from the reopened picker after asserting it was unchosen; and signing in is read from the stored session. 17 of 17 stories in the two files pass, lint and tsc clean.",
+      "closedAt": "2026-09-12T01:52:04.968Z"
     },
     {
       "id": "KN-430",
@@ -11567,6 +11588,151 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T01:43:45.973Z"
+    },
+    {
+      "id": "KN-443",
+      "title": "The contacts page's search bar is 320 on a phone, where the file draws 358",
+      "desc": "KN-315 cut the contacts page's search bar cap from 480 to 320 because the desktop instance 252:48 is 320 wide. The cap has no breakpoint, so it now holds on a phone too, where the file draws the bar 358 wide, node 252:421, full width inside the page's own 16 gutters. Before KN-315 the 480 cap was wide enough for a phone to fill its page, so this is a regression that task introduced and its own standalone 358 story masked, because the story sets the width itself. The board screen does not have it: its bar is flex 1 1 320, which grows to fill a phone's row. Cap it at 320 only from md up.",
+      "why": "The contacts page is one of the MVP's pages, and on the size most readers will open it the search box is now 38 pixels narrower than the design, with the rest of the row empty.",
+      "severity": "critical",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "in_progress",
+      "exit": "The contacts page's search bar is 320 wide from md up and fills the page below it; a story at a phone's width asserts 358.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:52:21.355Z",
+      "updatedAt": "2026-09-12T01:53:10.440Z"
+    },
+    {
+      "id": "KN-444",
+      "title": "The Search Bar's size stories claim the text is placed as drawn and never read its placement",
+      "desc": "OnTheDesktop and OnAPhone assert the box and the inline offsets and nothing vertical, while the card and the docs say the text and icons are placed as drawn. The file gives the text's own top as 7 in the 36 bar and 11 in the 44, and the 20 icon centred in both. A change to alignItems, the input's line height, or vertical padding leaves both stories green. Read the text's top offset and the icon's centring in each.",
+      "why": "A story that claims more than it checks is the same defect as an assertion that cannot fail, and this pair was written FOR the placement.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Both stories assert the text's top offset and the icon's vertical centring against the file's numbers.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:53:04.485Z"
+    },
+    {
+      "id": "KN-445",
+      "title": "The Search Bar's size stories hardcode their props instead of rendering from args",
+      "desc": "OnTheDesktop and OnAPhone render a bar with the layout written in and turn the Controls off, where the repository's contract is that a story renders from its args so the Controls table shows what it is made of. The layout should be an arg with the width the container gives, as the other stories in the file do.",
+      "why": "The contract exists so the docs page is explorable: a story with its props written in is a picture, not a control panel.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Both stories render from args and their Controls are on.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:53:04.611Z"
+    },
+    {
+      "id": "KN-446",
+      "title": "The Icon Button's TooltipTrigger type enforces nothing, and the runtime forwards more than it says",
+      "desc": "Proved by the KN-310 roast with a tsc probe: a Pick of eight props does not constrain a JSX spread, and TypeScript never checks hyphenated attribute names, so the aria-describedby entry is dead weight and any aria- or data- prop is accepted. At runtime the rest spread carries everything regardless, including data-mui-internal-clone-element, which MUI's Tooltip reads as its own props-forwarding detector: the component passes MUI's check by forwarding a prop the type says it does not take. So the comment claims a boundary that is not there, and the obvious tidy-up, actually narrowing the spread to the eight, would silently break the tooltip. Either widen the type to match what is forwarded, or narrow the runtime and forward that attribute deliberately, and make the comment say which.",
+      "why": "A type that documents a boundary it does not enforce is worse than none: the next reader trusts it and the tooltip breaks in a way neither detector reports, because both only check aria-describedby.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "What IconButton forwards and what its type says it forwards are the same thing, and a comment says why the clone marker is part of it.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:53:04.750Z"
+    },
+    {
+      "id": "KN-447",
+      "title": "An Icon Button with an href cannot be given a ref: it is typed for a button and renders an anchor",
+      "desc": "TooltipTrigger takes ref from MUI's IconButton props, which resolves to Ref of HTMLButtonElement, and href makes the root an anchor, ButtonBase line 146. The contact card already ships a mailto Icon Button, so a caller holding a ref to it gets a type error whose only escape is the cast AGENTS.md forbids. Type it as a ref to a button OR an anchor, or split the props on href.",
+      "why": "The two features shipped in the same day and do not fit together; the first caller to put a tooltip on the card's mail control finds out with a red build and no way through it.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A ref taken on an Icon Button with an href typechecks with no cast.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:53:04.882Z"
+    },
+    {
+      "id": "KN-448",
+      "title": "The Icon Button spreads a Tooltip's props before its own, which is the unsafe side",
+      "desc": "The spread is first and its comment defends a hazard that cannot happen: aria-label and disabled are destructured out by name before the rest, so they are never in it. MUI's Tooltip already composes the child's own handlers into the ones it injects, so putting the injected ones first means the day IconButton declares an onFocus or onMouseOver of its own, it clobbers MUI's composite and the tip stops opening with neither detector noticing, since both only check aria-describedby. Put the spread last and say why.",
+      "why": "The ordering is the whole of the component's contract with a Tooltip, and it is currently right by accident and commented wrongly.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The injected props are spread last, and the comment says what that protects.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:53:05.006Z"
+    },
+    {
+      "id": "KN-449",
+      "title": "The InATooltip story's console spy is installed too late to see what it claims to watch",
+      "desc": "The spy goes up inside play, after the render, and the two reports that matter both fire before that: the Tooltip's own fires synchronously in its ref callback, MUI's warning in a mount effect. It also replaces console.error rather than calling through, so the repository's react-warnings setup is blind for the whole story. BlankName, eight lines above in the same file, does both correctly. Copy it.",
+      "why": "The story's strongest claim is that neither component complains, and as written it cannot see a complaint.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The spy is in place before the render and calls through, and the story still passes.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:53:05.130Z"
+    },
+    {
+      "id": "KN-450",
+      "title": "The InATooltip story's tip reads a sentence fragment",
+      "desc": "It uses the catalog id 'This status has', which the Status Menu composes with a count and a closing clause. So the docs page now shows a tooltip reading «این وضعیت», cut off, as the example of a control explaining itself. Compose the real reason, as the menu does.",
+      "why": "The docs page is read by whoever builds the next screen, and the example of a tooltip should be a sentence.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The story's tip reads a whole sentence in both languages.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:53:05.270Z"
+    },
+    {
+      "id": "KN-451",
+      "title": "The ref anchors the Kanban Column and the Job Card keep for their menus are no longer needed",
+      "desc": "Both wrap their menu trigger in a Box only to have something to anchor a menu to, because the Icon Button forwarded no ref. It forwards one now, KN-310, so the wrapper can go and the menu can anchor on the button itself.",
+      "why": "A wrapper kept for a limitation that no longer exists is the sort of thing that outlives everyone who knows why it is there.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Neither component wraps its menu trigger to hold a ref, and both menus still open where they did.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:53:05.530Z"
     }
   ],
   "okrs": [

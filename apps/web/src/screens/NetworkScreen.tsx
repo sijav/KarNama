@@ -21,9 +21,10 @@ import { spacing } from '../theme/tokens'
  * reversal anywhere in the code, DESIGN.md section 9.
  */
 
-// Node 248:116's card is 280 across. The search bar is 320 on the desktop, the
-// contacts toolbar's own instance `252:48`, the same as the board's: it was 480
-// here, which is a width the file draws nowhere, KN-315.
+// Node 248:116's card is 280 across. The search bar is 320 from md up, the
+// contacts toolbar's own instance `252:48`, the same as the board's, and the
+// page's own width below that, KN-315 and KN-443. It was capped at 480, which
+// the file draws nowhere.
 const CARD_WIDTH = 280
 const SEARCH_WIDTH = 320
 
@@ -98,7 +99,11 @@ export const NetworkScreen = () => {
         }
       />
 
-      <Box sx={{ maxWidth: SEARCH_WIDTH }}>
+      {/* 320 from md up, the contacts toolbar's own instance `252:48`, and the
+          whole page below it, where the file draws 358 inside the page's 16
+          gutters, `252:421`. A cap at every width made the phone's bar 320 and
+          left the rest of the row empty, KN-443. */}
+      <Box sx={{ maxWidth: { xs: 'none', md: SEARCH_WIDTH } }}>
         <SearchBar value={search} onChange={setSearch} layout={wide ? DESKTOP : MOBILE} />
       </Box>
 

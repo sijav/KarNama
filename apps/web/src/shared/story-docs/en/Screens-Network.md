@@ -41,3 +41,8 @@ backed out of.
 
 Two chosen, counted in the reader's own digits, and the selection let go of,
 which takes the bulk bar with it and leaves everybody where they were.
+
+### OnAPhone
+
+The page at a phone's width, where the search bar stops taking the desktop
+toolbar's 320 and becomes the page's own, at the taller of its two heights.

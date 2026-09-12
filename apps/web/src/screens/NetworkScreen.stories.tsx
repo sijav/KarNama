@@ -270,3 +270,46 @@ export const LettingGoOfASelection: Story = {
     })
   },
 }
+
+// A phone's screen, the file's 390 by 844.
+const PHONE = { width: 390, height: 844 }
+
+// What the contacts toolbar's own instance is on the desktop, `252:48`.
+const DESKTOP_BAR = 320
+
+export const OnAPhone: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // The search bar takes the desktop toolbar's 320 only from md up: below it
+    // the bar is the page's, node 252:421, and a cap at every width left a
+    // phone's row two thirds full, KN-443. What the page's own width is comes
+    // from the shell's gutters, so what is read here is that the screen stops
+    // capping. The screen is resized by the runner's own browser, which only
+    // the runner has, KN-225, and put back after.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
+    const canvas = within(canvasElement)
+    const barOf = () => {
+      const bar = canvas.getByRole('searchbox').closest('div')?.parentElement
+      if (!bar) throw new Error('the field has no bar round it')
+      return bar.getBoundingClientRect()
+    }
+    const before = { width: window.innerWidth, height: window.innerHeight }
+    try {
+      // Wide: capped at the toolbar's width however wide the page is.
+      await waitFor(async () => {
+        await expect(Math.round(barOf().width)).toBe(DESKTOP_BAR)
+      })
+
+      // A phone: the whole page, and the taller bar with it.
+      await page.viewport(PHONE.width, PHONE.height)
+      await waitFor(async () => {
+        const box = barOf()
+        await expect(Math.round(box.width)).toBe(Math.round(canvasElement.getBoundingClientRect().width))
+        await expect(box.height).toBe(44)
+      })
+    } finally {
+      await page.viewport(before.width, before.height)
+    }
+  },
+}

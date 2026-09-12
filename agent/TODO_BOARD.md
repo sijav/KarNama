@@ -2,19 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 182 of 442 tasks done · 415 of 914 points.
+Project **KarNama** · 183 of 451 tasks done · 416 of 924 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-429` Four story assertions in the screens cannot fail** (high, 1 pt, web)
+**Next up: `KN-443` The contacts page's search bar is 320 on a phone, where the file draws 358** (critical, 1 pt, web)
 
 ## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-429` | Four story assertions in the screens cannot fail | high | 1 | web | none | Each of the four asserts something that is false before the action it follows. |
+| `KN-443` | The contacts page's search bar is 320 on a phone, where the file draws 358 | critical | 1 | web | none | The contacts page's search bar is 320 wide from md up and fills the page below it; a story at a phone's width asserts 358. |
 
 ## Blocked (5)
 
@@ -26,7 +26,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (252)
+## Backlog (260)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -34,6 +34,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-430` | The contacts page's search box is announced as the board's | high | 1 | web | none | The contacts page's search box is named and described for contacts in both languages, and a story asserts each page's own name. |
 | `KN-433` | An Icon Button given both href and disabled renders an anchor that still navigates | high | 1 | web | none | href and disabled cannot be passed together, or a disabled one does not navigate; DESIGN.md records that the card's mail control is a link. |
+| `KN-447` | An Icon Button with an href cannot be given a ref: it is typed for a button and renders an anchor | high | 1 | web | none | A ref taken on an Icon Button with an href typechecks with no cast. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-316` | The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input | high | 2 | web | none | A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4. |
 | `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
@@ -58,6 +59,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-437` | The board fixture cannot be handed to anything: its columns carry no status id | high | 2 | web | none | A story seeds RecordsProvider from the fixtures with no mapping of its own, and the three hand-rolled status maps are gone. |
 | `KN-438` | The seeded board is nine columns of one card, which is no board to draw stories against | high | 2 | web | none | The fixture board holds an empty column, a column with several, and a rejected column worth collapsing; no test forbids an empty column. |
 | `KN-440` | Recolouring a status moves its column, because the board's order ranks by colour token | high | 2 | web | none | Recolouring a status leaves its column where it was, and a story recolours a custom status to the offer colour and asserts the order is unchanged. |
+| `KN-446` | The Icon Button's TooltipTrigger type enforces nothing, and the runtime forwards more than it says | high | 2 | web | none | What IconButton forwards and what its type says it forwards are the same thing, and a comment says why the clone marker is part of it. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -139,6 +141,9 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-434` | Prose is back in the TSX where story-docs owns it, and it prints in the Persian docs | medium | 1 | web | none | No prop or story in the screens or IconButton carries prose the markdown already holds, and the Persian docs page shows no English. |
 | `KN-435` | Saving a rename with a blank name silently discards it | medium | 1 | web | none | A blank rename is refused with the field's own error and the modal stays open; a story presses Save on an empty field. |
 | `KN-439` | The status fixtures' count disagrees with the board they now describe | medium | 1 | web | none | The count is either gone or equal to the number of job opportunities the fixtures put in that status, in both languages. |
+| `KN-444` | The Search Bar's size stories claim the text is placed as drawn and never read its placement | medium | 1 | web | none | Both stories assert the text's top offset and the icon's vertical centring against the file's numbers. |
+| `KN-448` | The Icon Button spreads a Tooltip's props before its own, which is the unsafe side | medium | 1 | web | none | The injected props are spread last, and the comment says what that protects. |
+| `KN-449` | The InATooltip story's console spy is installed too late to see what it claims to watch | medium | 1 | web | none | The spy is in place before the render and calls through, and the story still passes. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -247,6 +252,9 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-436` | The AddJobModal's abandoned-reading story waits on a fixed sleep | low | 1 | web | none | No story in add-job waits on a bare setTimeout to prove a negative. |
 | `KN-441` | The board fixture escapes the freeze test, and its order test cites the wrong part of DESIGN.md | low | 1 | web | none | The board is in the freeze test, the order comment cites what actually settles each part of it, and the duplicate assertion is in one place. |
 | `KN-442` | KN-305 was built with no plan file beside the work | low | 1 | agent | none | The step is either followed or struck from RALPH.md, with the owner told which. |
+| `KN-445` | The Search Bar's size stories hardcode their props instead of rendering from args | low | 1 | web | none | Both stories render from args and their Controls are on. |
+| `KN-450` | The InATooltip story's tip reads a sentence fragment | low | 1 | web | none | The story's tip reads a whole sentence in both languages. |
+| `KN-451` | The ref anchors the Kanban Column and the Job Card keep for their menus are no longer needed | low | 1 | web | none | Neither component wraps its menu trigger to hold a ref, and both menus still open where they did. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -283,7 +291,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (182)
+## Done (183)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -441,6 +449,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-391` | A step, source or draft change during the add modal's reading lets the old answer overwrite the restarted flow | high | 1 | web | none | A restart from changed props drops any reading in flight, by the flow the answer belongs to rather than a ref written during render, so a late answer applies only to the flow that started it; a story changes the step while the loading panel waits and resolves the reading after, and the new step stays. |
 | `KN-409` | The token guard's allowed names are every code span in DESIGN.md's Tokens section, not the token tables' own names | high | 1 | web | none | documentedNames is built from the token tables' name column and the spacing block alone, so a code span in the component notes is not a key; every key in tokens.ts still passes; a planted key documented only in the prose of section 1 fails the guard, and the positive control still names bg/page, custom-4, heading/l and 3xl. |
 | `KN-412` | The token guard takes a name from any table in DESIGN.md's Tokens section, so a component note's table row would authorise a key | high | 1 | web | none | The names come from the five token subsections alone, each named in the guard and sliced from its heading to the next; a table row planted in a component note is not a name, and the same row planted in a token table is, both asserted; an empty document yields no names; every key in tokens.ts still passes and the positive control still names bg/page, custom-4, heading/l and 3xl. |
+| `KN-429` | Four story assertions in the screens cannot fail | high | 1 | web | none | Each of the four asserts something that is false before the action it follows. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -4234,6 +4243,8 @@ CHILD OF KN-016, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them.
 
+**Roasts.** round 1 scored 4 with 1 critical(s)
+
 ### `KN-316` The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input
 
 - **status** backlog · **severity** high · **points** 2 · **area** web
@@ -5511,7 +5522,7 @@ KN-415 gave the board's cards the phone layout, which is right: the desktop card
 
 ### `KN-429` Four story assertions in the screens cannot fail
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 From the KN-415 roast, each verified against the tree: JobsScreen.stories.tsx 184 to 189, the expanded rejected column is proved by getAllByText finding the empty-column line, which two other columns already show; 133 to 136, 'the column it moved to now holds it' only checks the title is somewhere on the board, which it was before the move; 371 to 377, 'a column takes a colour' only checks the picker closed and never reads the colour back; AuthScreen.stories.tsx 100 to 106, the name step being gone is also satisfied by the screen falling back to the phone step, so a saveName that stores nothing passes. Assert the count on the column, the offer column's own contents, the chip's colour or the checked radio on reopening, and the session itself.
@@ -5662,4 +5673,103 @@ RALPH.md step 2b asks for a plan file beside the work, as the folder's own #KN-0
 **Why.** The loop's own step, skipped, and the roast names the defect it would have caught. Low because it is about the loop and not the product, per the owner's rule of 2026-09-11.
 
 **Exit condition.** The step is either followed or struck from RALPH.md, with the owner told which.
+
+### `KN-443` The contacts page's search bar is 320 on a phone, where the file draws 358
+
+- **status** in_progress · **severity** critical · **points** 1 · **area** web
+- **blocked by** none
+
+KN-315 cut the contacts page's search bar cap from 480 to 320 because the desktop instance 252:48 is 320 wide. The cap has no breakpoint, so it now holds on a phone too, where the file draws the bar 358 wide, node 252:421, full width inside the page's own 16 gutters. Before KN-315 the 480 cap was wide enough for a phone to fill its page, so this is a regression that task introduced and its own standalone 358 story masked, because the story sets the width itself. The board screen does not have it: its bar is flex 1 1 320, which grows to fill a phone's row. Cap it at 320 only from md up.
+
+**Why.** The contacts page is one of the MVP's pages, and on the size most readers will open it the search box is now 38 pixels narrower than the design, with the rest of the row empty.
+
+**Exit condition.** The contacts page's search bar is 320 wide from md up and fills the page below it; a story at a phone's width asserts 358.
+
+### `KN-444` The Search Bar's size stories claim the text is placed as drawn and never read its placement
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+OnTheDesktop and OnAPhone assert the box and the inline offsets and nothing vertical, while the card and the docs say the text and icons are placed as drawn. The file gives the text's own top as 7 in the 36 bar and 11 in the 44, and the 20 icon centred in both. A change to alignItems, the input's line height, or vertical padding leaves both stories green. Read the text's top offset and the icon's centring in each.
+
+**Why.** A story that claims more than it checks is the same defect as an assertion that cannot fail, and this pair was written FOR the placement.
+
+**Exit condition.** Both stories assert the text's top offset and the icon's vertical centring against the file's numbers.
+
+### `KN-445` The Search Bar's size stories hardcode their props instead of rendering from args
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+OnTheDesktop and OnAPhone render a bar with the layout written in and turn the Controls off, where the repository's contract is that a story renders from its args so the Controls table shows what it is made of. The layout should be an arg with the width the container gives, as the other stories in the file do.
+
+**Why.** The contract exists so the docs page is explorable: a story with its props written in is a picture, not a control panel.
+
+**Exit condition.** Both stories render from args and their Controls are on.
+
+### `KN-446` The Icon Button's TooltipTrigger type enforces nothing, and the runtime forwards more than it says
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+Proved by the KN-310 roast with a tsc probe: a Pick of eight props does not constrain a JSX spread, and TypeScript never checks hyphenated attribute names, so the aria-describedby entry is dead weight and any aria- or data- prop is accepted. At runtime the rest spread carries everything regardless, including data-mui-internal-clone-element, which MUI's Tooltip reads as its own props-forwarding detector: the component passes MUI's check by forwarding a prop the type says it does not take. So the comment claims a boundary that is not there, and the obvious tidy-up, actually narrowing the spread to the eight, would silently break the tooltip. Either widen the type to match what is forwarded, or narrow the runtime and forward that attribute deliberately, and make the comment say which.
+
+**Why.** A type that documents a boundary it does not enforce is worse than none: the next reader trusts it and the tooltip breaks in a way neither detector reports, because both only check aria-describedby.
+
+**Exit condition.** What IconButton forwards and what its type says it forwards are the same thing, and a comment says why the clone marker is part of it.
+
+### `KN-447` An Icon Button with an href cannot be given a ref: it is typed for a button and renders an anchor
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+TooltipTrigger takes ref from MUI's IconButton props, which resolves to Ref of HTMLButtonElement, and href makes the root an anchor, ButtonBase line 146. The contact card already ships a mailto Icon Button, so a caller holding a ref to it gets a type error whose only escape is the cast AGENTS.md forbids. Type it as a ref to a button OR an anchor, or split the props on href.
+
+**Why.** The two features shipped in the same day and do not fit together; the first caller to put a tooltip on the card's mail control finds out with a red build and no way through it.
+
+**Exit condition.** A ref taken on an Icon Button with an href typechecks with no cast.
+
+### `KN-448` The Icon Button spreads a Tooltip's props before its own, which is the unsafe side
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+The spread is first and its comment defends a hazard that cannot happen: aria-label and disabled are destructured out by name before the rest, so they are never in it. MUI's Tooltip already composes the child's own handlers into the ones it injects, so putting the injected ones first means the day IconButton declares an onFocus or onMouseOver of its own, it clobbers MUI's composite and the tip stops opening with neither detector noticing, since both only check aria-describedby. Put the spread last and say why.
+
+**Why.** The ordering is the whole of the component's contract with a Tooltip, and it is currently right by accident and commented wrongly.
+
+**Exit condition.** The injected props are spread last, and the comment says what that protects.
+
+### `KN-449` The InATooltip story's console spy is installed too late to see what it claims to watch
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+The spy goes up inside play, after the render, and the two reports that matter both fire before that: the Tooltip's own fires synchronously in its ref callback, MUI's warning in a mount effect. It also replaces console.error rather than calling through, so the repository's react-warnings setup is blind for the whole story. BlankName, eight lines above in the same file, does both correctly. Copy it.
+
+**Why.** The story's strongest claim is that neither component complains, and as written it cannot see a complaint.
+
+**Exit condition.** The spy is in place before the render and calls through, and the story still passes.
+
+### `KN-450` The InATooltip story's tip reads a sentence fragment
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+It uses the catalog id 'This status has', which the Status Menu composes with a count and a closing clause. So the docs page now shows a tooltip reading «این وضعیت», cut off, as the example of a control explaining itself. Compose the real reason, as the menu does.
+
+**Why.** The docs page is read by whoever builds the next screen, and the example of a tooltip should be a sentence.
+
+**Exit condition.** The story's tip reads a whole sentence in both languages.
+
+### `KN-451` The ref anchors the Kanban Column and the Job Card keep for their menus are no longer needed
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+Both wrap their menu trigger in a Box only to have something to anchor a menu to, because the Icon Button forwarded no ref. It forwards one now, KN-310, so the wrapper can go and the menu can anchor on the button itself.
+
+**Why.** A wrapper kept for a limitation that no longer exists is the sort of thing that outlives everyone who knows why it is there.
+
+**Exit condition.** Neither component wraps its menu trigger to hold a ref, and both menus still open where they did.
 
