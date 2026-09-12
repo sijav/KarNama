@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 457,
+  "nextId": 458,
   "tasks": [
     {
       "id": "KN-001",
@@ -11852,7 +11852,24 @@
       "status": "done",
       "exit": "A story wraps a Tooltip round an Icon Button with an href and asserts the anchor carries the description and opens the tip on hover and on focus.",
       "okr": "OKR-1",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "agent/roasts/KN-453-round-1.2026-09-12T02-32-36-739Z.md",
+          "filed": [
+            "KN-457",
+            "KN-434"
+          ],
+          "cardDigest": "b0e8094c769e9465787dd22a552bb3f98b9597cb810c7606844451ecad6bab1a",
+          "head": "f02ea7b4603232bfd084d85b473c56da1dcef693",
+          "reviewerScore": 7.2,
+          "reviewerCriticals": 0,
+          "dismissed": "none: both stand. The minor, prose in the TSX, is KN-434, which already carries that rule for this file.",
+          "at": "2026-09-12T02:39:33.784Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-12T02:27:50.875Z",
       "updatedAt": "2026-09-12T02:32:22.351Z",
@@ -11909,6 +11926,22 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T02:34:09.020Z"
+    },
+    {
+      "id": "KN-457",
+      "title": "The link-in-a-Tooltip story cannot tell a name from a description, because both say the same thing",
+      "desc": "From the KN-453 roast, and it is the doubt that story's own summary raised. ALinkInATooltip titles the tip with 'Send an email', which is also the link's accessible name, so the assertion that the anchor keeps its OWN name proves nothing: drop describeChild from the Tooltip and MUI may label the anchor with the tip's text, and the role query, the name assertion, the description assertion and the tip assertions all stay green. Give the tip its own copy, something that explains rather than names, and assert the two independently.",
+      "why": "That story exists to prove a tip describes a control rather than renaming it, which on an icon-only control is the difference between a screen reader saying what the button does and saying a sentence about it. As written it cannot see the difference.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The link's name and the tip's text are different strings, and removing describeChild from the Tooltip makes the story fail.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T02:39:33.573Z"
     }
   ],
   "okrs": [
