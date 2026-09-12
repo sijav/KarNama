@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 191 of 459 tasks done · 425 of 936 points.
+Project **KarNama** · 192 of 459 tasks done · 427 of 936 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-458` A phone number typed into the sign-in field comes out scrambled: the input has no direction of its own** (critical, 2 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-458` | A phone number typed into the sign-in field comes out scrambled: the input has no direction of its own | critical | 2 | web | none | Typing a phone number into the sign-in field shows it as it was typed, and a story types one and reads the value and the rendered order back, in Persian. |
+**Next up: `KN-459` The sign-in code is only in the console, so nobody can sign in on a phone** (critical, 3 pt, web)
 
 ## Blocked (5)
 
@@ -291,7 +285,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (191)
+## Done (192)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -368,6 +362,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-293` | The Checkbox's focus ring sits four pixels outside a root with no padding, so a host that clips flush at its edge removes it | critical | 2 | web | none | A focused Checkbox inside a host that clips its overflow flush at the Checkbox's own box still changes at least a two-pixel perimeter at 3:1, drawn inside that box or with the room kept by the Checkbox itself; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which. |
 | `KN-294` | The Filter Chip's focus ring sits four pixels outside the chip, so a scrolling row of chips clips it at its edges | critical | 2 | web | none | A focused Filter Chip inside a host that clips its overflow flush at the chip's box still changes at least a two-pixel perimeter at 3:1, drawn inside the chip or with the room kept by the chip itself, selected and not; a story renders it in an overflow hidden host with no padding and asserts from the rendered geometry that every pixel of the focus change lies inside the host, a mutation back to the outline outside fails it by name, and DESIGN.md says which. |
 | `KN-421` | One reader's archive reached the next reader on the same browser | critical | 2 | web | none | The board is kept per reader and a fresh provider is mounted when the reader changes; an e2e signs in, keeps a job opportunity, signs out, signs in as somebody else and sees an empty board with no trace of the first reader's. |
+| `KN-458` | A phone number typed into the sign-in field comes out scrambled: the input has no direction of its own | critical | 2 | web | none | Typing a phone number into the sign-in field shows it as it was typed, and a story types one and reads the value and the rendered order back, in Persian. |
 | `KN-001` | The loop, the board, and the tooling that runs them | critical | 3 | agent | none | "npm run todo -- validate" exits 0, "npm run todo -- next" names a task, agent/TODO_BOARD.md renders, "npm run roast" reaches Codex and archives a reply, and AGENTS.md plus DESIGN.md both exist with the Figma tokens transcribed. |
 | `KN-002` | Read the Figma Documentations canvas and fold it into the contract | critical | 3 | design | KN-001 | DESIGN.md has a section per documentation frame, every open item in the file is either reflected in the board as a task or recorded as a decision, and the Job Record field list is written down. |
 | `KN-004` | Read the remaining type scale and any missing tokens from Figma | critical | 3 | design | KN-001 | A named sweep of the Foundations canvas finds no token absent from DESIGN.md, every value in the DESIGN.md tables is traceable to a Figma node id, and the KN-001 verify script's type-scale check still passes. |
@@ -5859,7 +5854,7 @@ From the KN-453 roast, and it is the doubt that story's own summary raised. ALin
 
 ### `KN-458` A phone number typed into the sign-in field comes out scrambled: the input has no direction of its own
 
-- **status** in_progress · **severity** critical · **points** 2 · **area** web
+- **status** done · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 The owner, on the live site on a phone, 2026-09-12: typing 09123 18 shows '318 0912'. The page is RTL and the input inherits that, so the browser lays a run of Latin digits out by the bidi algorithm and the number reads back in pieces. A phone number, an email, a URL and a mailto are LTR content whatever the page's direction is: the field itself must be dir=ltr, with its text aligned to the inline start of the page so it still sits where a Persian reader expects. Every field that holds one has it: the sign-in phone, the code, the contact's email, phone and social link, and the job's posting link.

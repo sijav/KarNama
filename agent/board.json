@@ -11955,13 +11955,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Typing a phone number into the sign-in field shows it as it was typed, and a story types one and reads the value and the rendered order back, in Persian.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T02:43:48.649Z",
-      "updatedAt": "2026-09-12T02:43:57.882Z"
+      "updatedAt": "2026-09-12T02:48:27.176Z",
+      "evidence": "A phone number typed into the Persian sign-in field reads back as it was typed: LatinInAPersianPage types 09123456789, asserts the value is unchanged, and reads the computed direction as ltr with the text at the right, where a Persian page starts; LatinInAnEnglishPage does the same where nothing should move. The first attempt was flipped back to rtl by the RTL style plugin, which the story caught, and the declarations now carry @noflip. Every field holding latin data passes it. 1481 of 1481 tests pass, lint and tsc clean.",
+      "closedAt": "2026-09-12T02:48:27.176Z"
     },
     {
       "id": "KN-459",
