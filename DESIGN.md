@@ -1149,6 +1149,14 @@ asked **only on first sign-in**, and is required there.
 
 ## 5. Where the language switch goes
 
+The owner's testing request of 2026-09-12 adds a Settings control beside the
+existing mobile sign-out action and at the same position on desktop. It opens
+the existing modal shell at 420 pixels, with language and light, dark, or device
+appearance choices, plus an explicit sample-data loader. This is an owner-requested
+addition composed from existing controls, not a new Figma screen. Sample records
+are fictional, editable, and saved per reader; loading them preserves existing
+records and does not duplicate samples already present.
+
 The owner asked for a language button in the menu bar, placed so it does not
 destroy anything in the design. The design has no language control, because it
 was drawn Persian-only.

@@ -6,6 +6,7 @@ import { useAuth } from '../core/auth'
 import { AuthScreen, JobsScreen, NetworkScreen } from '../screens'
 import { Button } from '../shared/button'
 import { Navigation, type Destination } from '../shared/navigation'
+import { SettingsControl } from '../shared/settings'
 import { addressOf, destinationIn } from './routes'
 
 /**
@@ -71,10 +72,13 @@ export const App = () => {
       {/* Below md the tab bar is pinned over the page's foot, so the page
           keeps its 72 clear there. */}
       <Box component="main" sx={{ flex: '1 1 auto', minWidth: 0, display: 'flex', flexDirection: 'column', p: 6, pb: { xs: 15, md: 6 } }}>
-        <Box sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: 'flex-end' }}>
-          <Button variant="text" disabled={busy ?? false} onClick={signOut}>
-            {i18n._('Sign out')}
-          </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <SettingsControl />
+          <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+            <Button variant="text" disabled={busy ?? false} onClick={signOut}>
+              {i18n._('Sign out')}
+            </Button>
+          </Box>
         </Box>
         {error ? (
           <Box role="alert" sx={{ color: 'error.main' }}>

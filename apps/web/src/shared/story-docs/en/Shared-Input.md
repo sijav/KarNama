@@ -14,6 +14,34 @@ It fills its container; the 240 in the design file is only the specimen's width.
 
 ## Props
 
+### type
+
+Native input type, such as text, date, email, or URL.
+
+### inputMode
+
+Hints which keyboard a mobile device should show.
+
+### autoComplete
+
+Hints which saved information the browser may suggest.
+
+### min
+
+The earliest date or smallest numeric value allowed by the native field.
+
+### max
+
+The latest date or largest numeric value allowed by the native field.
+
+### step
+
+The permitted interval between numeric or date values.
+
+### maxLength
+
+Maximum number of characters accepted by the field.
+
 ### label
 
 The field's name, shown above it and read out as its accessible name. Copy, so

@@ -6,6 +6,8 @@ import type { JobSaved } from '../../shared/job-modal'
 import type { StatusOption } from '../../shared/status-picker'
 import type { StatusToken } from '../../theme/tokens'
 import { emptyRecords, jobFrom, newId, nextCustomToken, readRecords, withSaved, withStatus, type JobEntry, type Records } from './records'
+import { withSamples } from './samples'
+import { localizedStatuses } from './status-labels'
 
 /** Where the board is kept between visits, beside the preferences. */
 export const STORAGE_KEY = 'karnama.records'
@@ -21,6 +23,7 @@ export const STORAGE_KEY = 'karnama.records'
 const keyFor = (owner: string) => (owner === '' ? STORAGE_KEY : `${STORAGE_KEY}:${owner}`)
 
 export interface RecordsValue extends Records {
+  loadSamples: () => void
   addJob: (draft: JobDraft) => void
   saveJob: (id: string, saved: JobSaved) => void
   moveJob: (id: string, status: string) => void
@@ -47,6 +50,7 @@ export interface RecordsValue extends Records {
  * empty board instead of throwing, which is what a story about layout wants.
  */
 const NO_RECORDS: RecordsValue = {
+  loadSamples: () => undefined,
   statuses: [],
   jobs: [],
   contacts: [],
@@ -155,6 +159,10 @@ export const RecordsProvider = ({ initial, owner = '', children }: RecordsProvid
     }
     return {
       ...records,
+      statuses: localizedStatuses(records.statuses, i18n),
+      loadSamples: () => {
+        change((from) => withSamples(from, i18n))
+      },
       addJob: (draft) => {
         change((from) => ({ ...from, jobs: [jobFrom(draft, new Date().toISOString()), ...from.jobs] }))
       },
@@ -231,7 +239,7 @@ export const RecordsProvider = ({ initial, owner = '', children }: RecordsProvid
         )
       },
     }
-  }, [change, records])
+  }, [change, records, i18n])
 
   return <RecordsContext.Provider value={value}>{children}</RecordsContext.Provider>
 }
