@@ -1,24 +1,22 @@
 import { afterEach, beforeEach } from 'vitest'
+import { installConsoleGuard, setWatching, type ConsoleGuard } from '../src/shared/console-guard'
 
 // A test that makes React warn fails, rather than printing into a log nobody
-// reads, KN-134. React's development warnings are printf-style console.error
-// calls, their first argument a format string with %s in it; the product's own
-// reports, the Tooltip's and the Icon Button's, are plain sentences, and a story
-// that means to provoke one watches the console itself. Every call still
-// reaches the console as it would have.
-const heard: string[] = []
-const original = console.error
+// reads, KN-134. The rule is in `src/shared/console-guard.ts`, with its own
+// test: the product MARKS what it says at the console and anything unmarked
+// fails, whatever its shape and whichever method said it. This file is only the
+// wiring, because a test beside it would never run: the unit project takes
+// `src/**/*.test.ts` alone, KN-401.
+let guard: ConsoleGuard | null = null
 
 beforeEach(() => {
-  heard.length = 0
-  console.error = (...args: unknown[]) => {
-    const [first] = args
-    if (typeof first === 'string' && first.includes('%s')) heard.push(first)
-    original(...args)
-  }
+  guard = installConsoleGuard(console)
+  setWatching(guard)
 })
 
 afterEach(() => {
-  console.error = original
-  if (heard.length > 0) throw new Error(`React warned during this test:\n${heard.join('\n')}`)
+  const heard = guard?.heard ?? []
+  guard?.restore()
+  guard = null
+  if (heard.length > 0) throw new Error(`something warned during this test:\n${heard.join('\n')}`)
 })

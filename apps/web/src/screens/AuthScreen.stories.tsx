@@ -1,6 +1,7 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { AuthProvider, sessionFor, STORAGE_KEY as SESSION_KEY } from '../core/auth'
+import { allowConsole } from '../shared/console-guard'
 import { fixtures } from '../shared/story-fixtures'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { AuthScreen } from './AuthScreen'
@@ -181,7 +182,13 @@ export const EnterFinishesTheStep: Story = {
       if (sent?.[1]) codes.push(sent[1])
     })
     try {
-      await userEvent.type(canvas.getByLabelText('شماره موبایل'), `${PHONE}{Enter}`)
+      // React 19 runs a form's submit as a transition, and inside the runner's
+      // act scope that produces a warning a reader never sees: clicking the very
+      // same button does not. So this story says it provokes it, KN-401, rather
+      // than the guard letting every warning of that shape through.
+      allowConsole(/suspended inside an `act` scope/u)
+      await userEvent.type(canvas.getByLabelText('شماره موبایل'), PHONE)
+      await userEvent.keyboard('{Enter}')
       await waitFor(async () => {
         await expect(canvas.getByRole('status')).toBeInTheDocument()
       })
@@ -189,7 +196,8 @@ export const EnterFinishesTheStep: Story = {
 
       // And again on the next step: Enter signs the reader in.
       const digits = /(\d{5})/.exec(canvas.getByRole('status').textContent)?.[1] ?? ''
-      await userEvent.type(canvas.getByLabelText('کد پنج رقمی'), `${digits}{Enter}`)
+      await userEvent.type(canvas.getByLabelText('کد پنج رقمی'), digits)
+      await userEvent.keyboard('{Enter}')
       await waitFor(async () => {
         await expect(canvas.getByLabelText('اسم و فامیل')).toBeInTheDocument()
       })

@@ -1,6 +1,7 @@
 import { Box, Tooltip as MuiTooltip, type Theme } from '@mui/material'
 import { cloneElement, useCallback, useEffect, useId, useRef, type ReactElement, type ReactNode } from 'react'
 import { ensureContrast } from '../../theme/darkMode'
+import { report } from '../console-guard'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 
 // The tip's width, from node `410:469`, KN-210. The frame is FIXED at 260 with
@@ -62,7 +63,7 @@ export const Tooltip = ({ title, icon, placement = 'bottom', children }: Tooltip
     clearTimeout(grace.current)
     grace.current = setTimeout(() => {
       if (node.current) return
-      console.error(
+      report(
         'Tooltip: its child did not take a ref, so the tip can never open. Pass one element that spreads its props, ref included, onto a DOM element; a Fragment cannot.',
       )
     }, 100)
@@ -79,7 +80,7 @@ export const Tooltip = ({ title, icon, placement = 'bottom', children }: Tooltip
       // It does not when the child drops its props, which MUI itself reports
       // only in development, or sets an aria-describedby of its own.
       if (element.getAttribute('aria-describedby')?.split(' ').includes(descriptionId)) return
-      console.error(
+      report(
         'Tooltip: its child took the ref but not the props, so the tip can never open and is not its description. Spread every prop it is given onto the element.',
       )
     },

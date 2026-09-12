@@ -11006,12 +11006,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Every console.error and console.warn during a test of either project fails it unless it is one of the product's own diagnostics, recognised by an explicit mark rather than by the absence of %s, and a story that provokes one says so; a committed test drives the guard with a printf warning, a plain-string console.error, a console.warn and a product diagnostic and fails if any is classified differently; both projects pass apart from KN-365's flakes.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T21:04:39.486Z",
-      "okr": "OKR-1"
+      "okr": "OKR-1",
+      "updatedAt": "2026-09-12T04:36:27.579Z"
     },
     {
       "id": "KN-402",
@@ -12416,7 +12417,20 @@
       "status": "done",
       "exit": "One story renders the second id while the first record's values are still the ones being passed, and asserts the form shows nothing of them; another delivers a record late with the id unchanged.",
       "okr": "OKR-1",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 9,
+          "criticals": 0,
+          "file": "agent/roasts/KN-476-round-1.2026-09-12T04-30-00-649Z.md",
+          "filed": [],
+          "cardDigest": "ab55f094c2052e7b6f3b5a56b84e49308279e9ff367feb318d3b666f3cdfc1d9",
+          "head": "39b2c4cc1ecc8b93fcc1838e793ff8acddfbe09e",
+          "reviewerScore": 9.5,
+          "reviewerCriticals": 0,
+          "at": "2026-09-12T04:36:27.438Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-12T04:27:19.204Z",
       "updatedAt": "2026-09-12T04:29:47.815Z",

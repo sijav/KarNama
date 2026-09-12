@@ -1,6 +1,7 @@
 import { IconButton as MuiIconButton, type Theme } from '@mui/material'
 import { useEffect, type AriaAttributes, type DOMAttributes, type Ref } from 'react'
 import { spacing } from '../../theme/tokens'
+import { report } from '../console-guard'
 import { Icon, type IconName } from '../icon'
 
 /**
@@ -86,7 +87,7 @@ export const IconButton = (props: IconButtonProps) => {
   // it, KN-311.
   useEffect(() => {
     if (name === null)
-      console.error('IconButton: its aria-label is blank, so it would reach a screen reader nameless; it is left out until it has a name.')
+      report('IconButton: its aria-label is blank, so it would reach a screen reader nameless; it is left out until it has a name.')
   }, [name])
   if (name === null) return null
 
