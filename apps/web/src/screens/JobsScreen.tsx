@@ -5,13 +5,14 @@ import { usePreferences } from '../core/preferences'
 import { columnOrder, contactsOf, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
 import { AddJobModal, type JobDraft } from '../shared/add-job'
 import { BulkActionBar } from '../shared/bulk-action-bar'
-import { Button } from '../shared/button'
+import { Button, type ButtonVariant } from '../shared/button'
 import { EmptyState } from '../shared/empty-state'
 import { FilterChip } from '../shared/filter-chip'
+import { Input } from '../shared/input'
 import { JobCard } from '../shared/job-card'
 import { formatDay, JobModal, type JobSaved } from '../shared/job-modal'
-import { AddColumn, KanbanColumn } from '../shared/kanban-column'
-import { ChangeStatusModal, ConfirmModal, ContactModal, type ContactModalValues } from '../shared/modal'
+import { AddColumn, EmptyColumn, KanbanColumn } from '../shared/kanban-column'
+import { ChangeStatusModal, ConfirmModal, ContactModal, Modal, type ContactModalValues } from '../shared/modal'
 import { PageHeader } from '../shared/page-header'
 import { SearchBar } from '../shared/search-bar'
 import { SortControl, type SortOrder } from '../shared/sort-control'
@@ -36,6 +37,14 @@ const NEWEST: SortOrder = 'newest'
 // The search bar's own width before it gives way, node 155:92's 320, and the
 // room the tab bar needs under the page on a phone. Neither binds a variable.
 const SEARCH_WIDTH = 320
+
+// The rename modal takes the Confirm modal's width, node 150:92's 360: one
+// field and two actions, the same shape.
+const RENAME_WIDTH = 360
+
+// The quiet action beside a primary one, typed so the lint rule reads it as a
+// value rather than as copy.
+const QUIET: ButtonVariant = 'text'
 
 export interface JobsScreenProps {
   /** Opens the add flow, which is what the add destination is, KN-042. */
@@ -71,6 +80,8 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
   // A person being written from inside the job modal: their id when one is
   // being edited, null for a new one, undefined when that modal is closed.
   const [person, setPerson] = useState<{ id: string | null; values: ContactModalValues } | undefined>(undefined)
+  // A column being renamed: its id and the name as it is being typed.
+  const [renaming, setRenaming] = useState<{ id: string; name: string } | null>(null)
   const wide = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
 
   const addingTo = adding ?? (addOpen ? first : null)
@@ -79,9 +90,17 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
   const job = records.jobs.find((entry) => entry.id === reading)
   const isCollapsed = (id: string) => tokenOf(records.statuses, id) === 'rejected' && !open.includes(id)
   const cardsOf = (id: string) => jobsIn(records.jobs, id, search, order)
+  // The column's own size, which is what says whether it can be deleted: the
+  // searched count reads zero while a search hides its cards, and deleting it
+  // then would take the hidden job opportunities with it, KN-422.
+  const sizeOf = (id: string) => records.jobs.filter((entry) => entry.draft.status === id).length
   // How many the search found anywhere on the board, which is what says whether
   // it found nothing rather than each column being empty on its own.
   const found = columns.reduce((total, column) => total + cardsOf(column.id).length, 0)
+
+  // Only the job opportunities that are still there: one deleted from its own
+  // card, or by another tab, must not be counted or acted on, KN-422.
+  const held = selected.filter((id) => records.jobs.some((entry) => entry.id === id))
 
   const select = (id: string, wanted: boolean) => {
     setSelected((was) => (wanted ? [...was, id] : was.filter((held) => held !== id)))
@@ -189,7 +208,12 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
             display: 'flex',
             gap: `${COLUMN_GAP}px`,
             overflowX: 'auto',
-            alignItems: 'flex-start',
+            // The columns take the room the board has and scroll their cards
+            // inside it, between the header and the pinned Add Card row: with
+            // no height a column grows with its list instead, KN-422.
+            alignItems: 'stretch',
+            flex: '1 1 auto',
+            minHeight: 0,
             pb: 2,
             // A column keeps the width the design gives it, 300, and the row
             // scrolls: without this the columns share the room out between them
@@ -202,7 +226,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
               key={column.id}
               name={column.name}
               colour={column.token}
-              count={cardsOf(column.id).length}
+              count={sizeOf(column.id)}
               collapsed={isCollapsed(column.id)}
               onExpand={() => {
                 setOpen((was) => [...was, column.id])
@@ -211,7 +235,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
                 setAdding(column.id)
               }}
               onRename={() => {
-                setMoving(null)
+                setRenaming({ id: column.id, name: column.name })
               }}
               onColourChange={(colour) => {
                 records.recolourStatus(column.id, colour)
@@ -246,21 +270,29 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
               />
             ))}
           </Box>
-          <Stack sx={{ gap: `${spacing.sm}px` }}>{showing ? cardsOf(showing.id).map(card) : null}</Stack>
+          <Stack sx={{ gap: `${spacing.sm}px` }}>
+            {showing && cardsOf(showing.id).length > 0 ? (
+              cardsOf(showing.id).map(card)
+            ) : (
+              // What the column says when it holds nothing, node 241:46, which
+              // a phone needs as much as the desktop does, KN-422.
+              <EmptyColumn />
+            )}
+          </Stack>
         </Stack>
       )}
 
       <BulkActionBar
         type="jobs"
-        count={selected.length}
+        count={held.length}
         onClear={() => {
           setSelected([])
         }}
         onDelete={() => {
-          setDeleting(selected)
+          setDeleting(held)
         }}
         onChangeStatus={() => {
-          setMoving(selected)
+          setMoving(held)
         }}
         onSelectAll={() => {
           setSelected(records.jobs.map((entry) => entry.id))
@@ -359,6 +391,43 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
           setPerson(undefined)
         }}
       />
+
+      <Modal
+        open={renaming !== null}
+        title={i18n._('Rename')}
+        width={RENAME_WIDTH}
+        onClose={() => {
+          setRenaming(null)
+        }}
+        actions={
+          <>
+            <Button
+              variant={QUIET}
+              onClick={() => {
+                setRenaming(null)
+              }}
+            >
+              {i18n._('Cancel')}
+            </Button>
+            <Button
+              onClick={() => {
+                if (renaming && renaming.name.trim() !== '') records.renameStatus(renaming.id, renaming.name.trim())
+                setRenaming(null)
+              }}
+            >
+              {i18n._('Save')}
+            </Button>
+          </>
+        }
+      >
+        <Input
+          label={i18n._('Status')}
+          value={renaming?.name ?? ''}
+          onChange={(name) => {
+            setRenaming((was) => (was ? { ...was, name } : was))
+          }}
+        />
+      </Modal>
 
       <ChangeStatusModal
         open={moving !== null}

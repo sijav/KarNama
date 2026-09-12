@@ -222,13 +222,13 @@ export const RecordsProvider = ({ initial, owner = '', children }: RecordsProvid
         change((from) => ({ ...from, statuses: from.statuses.map((entry) => (entry.id === id ? { ...entry, token } : entry)) }))
       },
       deleteStatus: (id) => {
-        change((from) => ({
-          ...from,
-          statuses: from.statuses.filter((entry) => entry.id !== id),
-          // The jobs go with it: the board holds nothing without a column, and
-          // what happens to them is the owner's question, KN-149.
-          jobs: from.jobs.filter((job) => job.draft.status !== id),
-        }))
+        change((from) =>
+          // A status that still holds job opportunities is not deleted, the
+          // design's rule: the menu disables it, and this refuses it too, so a
+          // count computed from a filtered board can never lose a reader's
+          // records, KN-422.
+          from.jobs.some((job) => job.draft.status === id) ? from : { ...from, statuses: from.statuses.filter((entry) => entry.id !== id) },
+        )
       },
     }
   }, [change, records])

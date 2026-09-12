@@ -1,1 +1,1 @@
-export { AddColumn, KanbanColumn, type AddColumnProps, type KanbanColumnProps } from './KanbanColumn'
+export { AddColumn, EmptyColumn, KanbanColumn, type AddColumnProps, type KanbanColumnProps } from './KanbanColumn'

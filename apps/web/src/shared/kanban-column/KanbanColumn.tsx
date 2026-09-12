@@ -123,7 +123,7 @@ const frame = {
 
 // The message of an empty column, 241:46: 12 at 400 on CSS's normal line
 // height in text/secondary, centred in a dashed box of radius md.
-const EmptyColumn = () => {
+export const EmptyColumn = () => {
   const { i18n } = useLingui()
   return (
     <Box

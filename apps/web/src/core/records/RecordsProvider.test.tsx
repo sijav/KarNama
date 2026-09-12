@@ -115,8 +115,17 @@ describe('the records provider', () => {
     held.recolourStatus(id, 'custom-3')
     expect((JSON.parse(written[3] ?? '{}') as Records).statuses.at(-1)?.token).toBe('custom-3')
 
+    // A status holding a job opportunity is not deleted at all: the design's
+    // rule, and the board's count can be narrowed by a search, KN-422.
     held.deleteStatus(id)
-    const gone = JSON.parse(written[4] ?? '{}') as Records
+    const kept = JSON.parse(written[4] ?? '{}') as Records
+    expect(kept.statuses.map((entry) => entry.id)).toContain(id)
+    expect(kept.jobs).toHaveLength(1)
+
+    // Emptied first, it goes.
+    held.deleteJobs(kept.jobs.map((job) => job.id))
+    held.deleteStatus(id)
+    const gone = JSON.parse(written.at(-1) ?? '{}') as Records
     expect(gone.statuses.map((entry) => entry.id)).not.toContain(id)
     expect(gone.jobs).toEqual([])
   })

@@ -12,6 +12,8 @@ const FIRST = 'توسعه‌دهنده فرانت‌اند'
 const SECOND = 'مدیر محصول'
 const SAVED = 'ذخیره‌شده'
 const OFFER = 'پیشنهاد کار'
+// What the column's menu control is called, node 259:2.
+const ACTIONS = 'کارهای وضعیت'
 
 const add = async (page: Page, title: string) => {
   await page.getByRole('button', { name: 'افزودن فرصت شغلی' }).first().click()
@@ -127,4 +129,25 @@ test('the job modal keeps a note, a person and the history of its moves, KN-045'
   await expect(reopened.getByText('مینا رضایی')).toBeVisible()
   await reopened.getByRole('tab', { name: 'سابقه' }).click()
   await expect(reopened.getByText(OFFER).first()).toBeVisible()
+})
+
+test('a search cannot make a column deletable, and Rename really renames, KN-422', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'mobile', 'the column menu is the desktop board')
+
+  // A search that matches nothing in this column must not offer to delete it:
+  // the job opportunities it holds are hidden, not gone.
+  await page.getByRole('searchbox').fill(SECOND)
+  await page.getByRole('button', { name: new RegExp(`${ACTIONS}: ${SAVED}`) }).click()
+  await expect(page.getByRole('menuitem', { name: 'حذف وضعیت' })).toBeDisabled()
+
+  // Rename opens a field, and the name it is given is the column's afterwards.
+  await page.getByRole('menuitem', { name: 'تغییر نام' }).click()
+  const rename = page.getByRole('dialog')
+  await rename.getByRole('textbox').fill('در انتظار پاسخ')
+  await rename.getByRole('button', { name: 'ذخیره' }).click()
+  await expect(page.getByText('در انتظار پاسخ')).toBeVisible()
+
+  // And it is kept: a reload still shows the new name.
+  await page.reload()
+  await expect(page.getByText('در انتظار پاسخ')).toBeVisible()
 })
