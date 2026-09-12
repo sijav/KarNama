@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 188 of 453 tasks done · 422 of 927 points.
+Project **KarNama** · 189 of 453 tasks done · 423 of 927 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-453` An Icon Button that is a link inside a Tooltip is untested, and that is the combination the work was for** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-453` | An Icon Button that is a link inside a Tooltip is untested, and that is the combination the work was for | high | 1 | web | none | A story wraps a Tooltip round an Icon Button with an href and asserts the anchor carries the description and opens the tip on hover and on focus. |
+**Next up: `KN-330` The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list** (high, 2 pt, web)
 
 ## Blocked (5)
 
@@ -288,7 +282,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (188)
+## Done (189)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -451,6 +445,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-430` | The contacts page's search box is announced as the board's | high | 1 | web | none | The contacts page's search box is named and described for contacts in both languages, and a story asserts each page's own name. |
 | `KN-433` | An Icon Button given both href and disabled renders an anchor that still navigates | high | 1 | web | none | href and disabled cannot be passed together, or a disabled one does not navigate; DESIGN.md records that the card's mail control is a link. |
 | `KN-447` | An Icon Button with an href cannot be given a ref: it is typed for a button and renders an anchor | high | 1 | web | none | A ref taken on an Icon Button with an href typechecks with no cast. |
+| `KN-453` | An Icon Button that is a link inside a Tooltip is untested, and that is the combination the work was for | high | 1 | web | none | A story wraps a Tooltip round an Icon Button with an href and asserts the anchor carries the description and opens the tip on hover and on focus. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -5794,7 +5789,7 @@ Found while fixing KN-443. App.tsx gives the main area p: 6, and the theme's spa
 
 ### `KN-453` An Icon Button that is a link inside a Tooltip is untested, and that is the combination the work was for
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 From the KN-447 roast. InATooltip wraps the BUTTON branch and HandsBackItsElement renders the LINK branch with no Tooltip, so nothing covers the two together. If the link branch stopped spreading its trigger props, both stories would still pass while a tip on the contact card's mail control lost the ref, the description, the injected listeners and MUI's own clone marker. Wrap a link Icon Button in a Tooltip and assert what InATooltip asserts for the button: described from the first render, opens on hover and on focus, keeps its own name, and nothing at the console.

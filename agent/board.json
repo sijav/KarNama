@@ -11829,13 +11829,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A story wraps a Tooltip round an Icon Button with an href and asserts the anchor carries the description and opens the tip on hover and on focus.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T02:27:50.875Z",
-      "updatedAt": "2026-09-12T02:28:11.644Z"
+      "updatedAt": "2026-09-12T02:32:22.351Z",
+      "evidence": "ALinkInATooltip wraps a Tooltip round an Icon Button with an href and asserts the anchor carries its address and its own accessible name, is described from the first render, and opens the tip on hover and on Tab alone, with nothing at the console from either component. Mutating the link branch to forward only its ref failed this story alone and left InATooltip and HandsBackItsElement green; the mutation was reverted. 9 of 9 icon-button stories pass, lint and tsc clean.",
+      "closedAt": "2026-09-12T02:32:22.351Z"
     }
   ],
   "okrs": [
