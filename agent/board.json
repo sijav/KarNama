@@ -10723,13 +10723,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T19:47:08.930Z",
       "okr": "OKR-1",
-      "updatedAt": "2026-09-12T04:08:30.771Z"
+      "updatedAt": "2026-09-12T04:22:30.432Z",
+      "evidence": "ContactModalProps is a union on mode: an edit requires recordId and an initial record that carries its own id, so an Edit without its record cannot be written. The form follows the record until the reader edits it: TheRecordArrivesAfterItsId hands the id first and the record after, asserting the form shows nothing of the old record and then fills, and that Save sends the second record's values; TheRecordArrivesAfterOpening does the same for a modal opened before its record exists; KeepsTypingThroughARerender still holds. Making the form stop following the record failed all three. 1497 of 1498 tests pass, the one failure the known KN-365 flake; lint and tsc clean.",
+      "closedAt": "2026-09-12T04:22:30.432Z"
     },
     {
       "id": "KN-387",

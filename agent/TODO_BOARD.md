@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 199 of 475 tasks done · 442 of 964 points.
+Project **KarNama** · 200 of 475 tasks done · 444 of 964 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-386` The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one** (high, 2 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-386` | The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one | high | 2 | web | none | Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it. |
+**Next up: `KN-475` The record-handoff story would pass with the description and note reset deleted** (high, 1 pt, web)
 
 ## Blocked (6)
 
@@ -299,7 +293,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (199)
+## Done (200)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -497,6 +491,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-344` | Focus is lost when the Confirm modal's action removes the control that opened it | high | 2 | web | none | The shell takes a fallback for focus, used when the opener is gone, and a story deletes the opener and finds focus on the fallback. |
 | `KN-363` | The Job Modal keeps one job's edits when the page hands it another while it is open | high | 2 | web | none | The record carries its id, the modal starts over from a record with a different id while open, keeps edits across new objects of the same record, and a story swaps the job while open and saves the new one's fields. |
 | `KN-367` | lingui-ignore.test.ts reads the config's text, so an ignore entry it cannot parse whitelists copy unseen | high | 2 | web | none | The test takes the ignore array from the configuration ESLint actually loads, not from the file's text, and a story or test shows an entry written in another quote style is seen. |
+| `KN-386` | The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one | high | 2 | web | none | Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it. |
 | `KN-051` | Deploy the web app to GitHub Pages | high | 3 | deploy | KN-003 | The app loads at its Pages URL, a deep link to a route works on a hard refresh, Storybook is reachable at /storybook/, and the deploy runs from a push to main with no manual step. |
 | `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
 | `KN-463` | Every set of fields is a form, and its primary button submits it | high | 3 | web | none | Every screen and modal that takes fields wraps them in a form whose onSubmit does the work, its primary button is type=submit, and a story presses Enter in a field and sees the same thing the button does. |
@@ -5077,7 +5072,7 @@ CHILD OF KN-026, recorded in prose because board.json cannot express parent_task
 
 ### `KN-386` The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one
 
-- **status** in_progress · **severity** high · **points** 2 · **area** web
+- **status** done · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-031, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-347 roast, two findings with one fix. KN-347 starts the form again only on opening or a change of recordId. (1) recordId is optional, so an Edit caller that omits it and swaps initial from contact A to contact B while open keeps A's values, where the old object-identity reset did not; the Edit story itself omits it. (2) When recordId turns to B in a render whose initial is still A, the form resets to A and marks B seen, and the render that brings B's data changes nothing; an Edit opened before its record loads starts empty and ignores the record when it arrives. Nothing wires the modal to a page yet; the network and job screens will.
