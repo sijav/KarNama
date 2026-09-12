@@ -54,7 +54,7 @@ const structuralProps =
   '|size|iconSize|tone|placement|vertical|horizontal' +
   // Where a link opens and what it carries, '_blank' and 'noopener': browser
   // keywords, not words for a reader.
-  '|target|rel' +
+  '|target|rel|autoComplete|inputMode' +
   // ARIA attributes whose values are tokens from the ARIA vocabulary, 'menu',
   // 'dialog', 'page', never text a screen reader speaks as words. aria-label
   // and aria-describedby carry words, and stay checked.

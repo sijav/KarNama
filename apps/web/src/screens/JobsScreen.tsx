@@ -359,7 +359,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
         open={addingTo !== null}
         statuses={records.statuses}
         status={addingTo ?? first}
-        onExtract={(source) => Promise.resolve({ postingUrl: source })}
+        onExtract={() => Promise.resolve({})}
         onSave={addJob}
         onAddStatus={() => {
           records.addStatus(i18n._('New status'))

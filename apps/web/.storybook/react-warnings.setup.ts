@@ -15,8 +15,9 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  const heard = guard?.heard ?? []
+  const heard = guard?.unaccounted() ?? []
   guard?.restore()
+  setWatching(null)
   guard = null
   if (heard.length > 0) throw new Error(`something warned during this test:\n${heard.join('\n')}`)
 })

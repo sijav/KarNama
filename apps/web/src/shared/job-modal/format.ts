@@ -5,12 +5,19 @@ import type { Locale } from '../../i18n'
 // formatters are made once per language.
 const days = new Map<Locale, Intl.DateTimeFormat>()
 export const formatDay = (locale: Locale, iso: string): string => {
+  const date = new Date(iso)
+  if (/^\d{4}-\d{2}-\d{2}$/u.test(iso)) {
+    const [year = 0, month = 1, day = 1] = iso.split('-').map(Number)
+    date.setFullYear(year, month - 1, day)
+    date.setHours(0, 0, 0, 0)
+  }
+  if (!Number.isFinite(date.getTime())) return iso
   let formatter = days.get(locale)
   if (!formatter) {
     formatter = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric' })
     days.set(locale, formatter)
   }
-  return formatter.format(new Date(iso))
+  return formatter.format(date)
 }
 
 // A file's kind as the file row says it, its extension in capitals: «PDF».

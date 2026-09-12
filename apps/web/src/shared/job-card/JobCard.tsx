@@ -199,8 +199,8 @@ export const JobCard = ({
   const layout = given ?? DESKTOP
   const more = useRef<HTMLElement>(null)
   const [menu, setMenu] = useState<HTMLElement | null>(null)
-  // Folded at rest on the desktop unless selected; the phone draws it only
-  // while the card is selected.
+  // Desktop controls unfold on hover. Phones need a visible selection control
+  // before the first card is selected, because they have no hover state.
   const folded = layout === 'desktop' && !selected
   const checkbox = (
     <Box
@@ -249,7 +249,7 @@ export const JobCard = ({
             title, its 28 root giving the four back, and nothing here clips, so
             its ring is whole, KN-293. */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: `${spacing.xs}px`, minWidth: 0 }}>
-          {interactive && (layout === 'desktop' || selected) ? checkbox : null}
+          {interactive ? checkbox : null}
           {interactive ? (
             <Opener onOpen={onOpen}>{title}</Opener>
           ) : (

@@ -79,6 +79,7 @@ export const AuthScreen = () => {
       </Box>
       <Input
         label={i18n._('Full name')}
+        autoComplete="name"
         placeholder={i18n._('e.g. Sara Mohammadi')}
         value={name}
         onChange={setName}
@@ -127,6 +128,9 @@ export const AuthScreen = () => {
       )}
       <Input
         label={i18n._('Five digit code')}
+        inputMode="numeric"
+        autoComplete="one-time-code"
+        maxLength={5}
         direction={LATIN}
         value={code}
         onChange={setCode}
@@ -151,6 +155,9 @@ export const AuthScreen = () => {
       <Box sx={{ color: 'text.secondary' }}>{i18n._('Write your mobile number')}</Box>
       <Input
         label={i18n._('Mobile number')}
+        type="tel"
+        inputMode="tel"
+        autoComplete="tel"
         direction={LATIN}
         placeholder={i18n._('0912 000 0000')}
         value={phone}

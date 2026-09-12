@@ -2,8 +2,8 @@ import type { EmploymentType, JobLevel } from '../job-selects'
 
 // A job opportunity as the add modal holds it before it is saved, DESIGN.md
 // section 4: the three required fields, title, company and status, and the
-// optional ones the form draws, 150:94. The dates, the experience and the
-// salary are kept as the reader wrote them; reading them is the saving side's.
+// optional ones the form draws, 150:94. Dates are ISO calendar days; salary
+// and experience may be ranges or other descriptive text.
 export interface JobDraft {
   title: string
   company: string
@@ -17,6 +17,7 @@ export interface JobDraft {
   expiresAt: string
   postingUrl: string
   status: string
+  description?: string
 }
 
 // The form with nothing in it, in the status a new job opportunity starts in.
@@ -42,15 +43,47 @@ export const isLink = (source: string): boolean => /^https?:\/\/\S+$/iu.test(sou
 // The draft reading a posting gives, over the empty one: what was found, and
 // the pasted link as the posting's link when reading found none.
 export const draftFrom = (status: string, source: string, found: Partial<JobDraft>): JobDraft => {
-  const draft = { ...emptyDraft(status), ...found }
+  const draft = { ...emptyDraft(status), ...(isLink(source) ? {} : { description: source.trim() }), ...found }
   return draft.postingUrl === '' && isLink(source) ? { ...draft, postingUrl: source.trim() } : draft
 }
 
-// The required fields a draft still lacks. Status always has a value, so only
-// the title and the company can be missing.
-export type Missing = 'title' | 'company'
+// Missing required values and invalid optional values share inline feedback.
+export type Missing = 'title' | 'company' | 'postedAt' | 'expiresAt' | 'postingUrl'
 const REQUIRED: readonly Missing[] = ['title', 'company']
-export const missingFields = (draft: JobDraft): Missing[] => REQUIRED.filter((field) => draft[field].trim() === '')
+const POSTED: Missing = 'postedAt'
+const EXPIRES: Missing = 'expiresAt'
+const LINK: Missing = 'postingUrl'
+const validDay = (value: string): boolean => {
+  if (value === '') return true
+  if (!/^\d{4}-\d{2}-\d{2}$/u.test(value)) return false
+  const [year = 0, month = 1, day = 1] = value.split('-').map(Number)
+  const date = new Date(0)
+  date.setUTCFullYear(year, month - 1, day)
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value
+}
+
+export const validPostingUrl = (value: string): boolean => {
+  if (value.trim() === '') return true
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' || url.protocol === 'http:'
+  } catch {
+    return false
+  }
+}
+
+export const missingFields = (draft: JobDraft): Missing[] => {
+  const invalid = REQUIRED.filter((field) => draft[field].trim() === '')
+  if (!validDay(draft.postedAt)) invalid.push(POSTED)
+  if (
+    !validDay(draft.expiresAt) ||
+    (validDay(draft.postedAt) && draft.postedAt !== '' && draft.expiresAt !== '' && draft.expiresAt < draft.postedAt)
+  ) {
+    invalid.push(EXPIRES)
+  }
+  if (!validPostingUrl(draft.postingUrl)) invalid.push(LINK)
+  return invalid
+}
 
 // Whether the reader has put anything in the form, which is what makes
 // leaving it ask first.
@@ -67,4 +100,5 @@ export const hasContent = (draft: JobDraft): boolean =>
     draft.source,
     draft.expiresAt,
     draft.postingUrl,
+    draft.description ?? '',
   ].some((value) => value.trim() !== '')

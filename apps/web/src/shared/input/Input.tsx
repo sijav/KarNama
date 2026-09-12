@@ -1,5 +1,5 @@
 import { Box, InputBase } from '@mui/material'
-import { useId, type ChangeEvent, type ReactNode } from 'react'
+import { useId, type ChangeEvent, type InputHTMLAttributes, type ReactNode } from 'react'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 import { isBlank } from './blank'
 
@@ -24,6 +24,13 @@ export interface InputProps {
   error?: string
   disabled?: boolean
   name?: string
+  type?: InputHTMLAttributes<HTMLInputElement>['type']
+  inputMode?: InputHTMLAttributes<HTMLInputElement>['inputMode']
+  autoComplete?: InputHTMLAttributes<HTMLInputElement>['autoComplete']
+  min?: string | number
+  max?: string | number
+  step?: string | number
+  maxLength?: number
   leadingIcon?: ReactNode
   trailingIcon?: ReactNode
   multiline?: boolean
@@ -111,7 +118,8 @@ const Slot = ({ children }: { children: ReactNode }) => (
 // hidden here on purpose, as it is in a message. A number draws, as React draws
 // it. What this cannot see, an array, a fragment or a component holding blank
 // text, the slot itself catches after rendering, KN-296.
-const drawn = (node: ReactNode) => node !== undefined && node !== null && typeof node !== 'boolean' && !(typeof node === 'string' && isBlank(node))
+const drawn = (node: ReactNode) =>
+  node !== undefined && node !== null && typeof node !== 'boolean' && !(typeof node === 'string' && isBlank(node))
 
 // Node 95:38, six states. The label is bound to the field for screen readers,
 // and the helper or error line describes it. That line is drawn only when there
@@ -130,6 +138,11 @@ export const Input = ({
   onChange,
   leadingIcon,
   trailingIcon,
+  inputMode,
+  min,
+  max,
+  step,
+  maxLength,
   ...field
 }: InputProps) => {
   const id = useId()
@@ -165,7 +178,11 @@ export const Input = ({
             text/error, and said by the field's own aria-required, not read out
             as a star. */}
         {required ? (
-          <Box component="span" aria-hidden sx={(theme) => ({ marginInlineStart: `${spacing['2xs']}px`, color: theme.karnama.semantic['text/error'] })}>
+          <Box
+            component="span"
+            aria-hidden
+            sx={(theme) => ({ marginInlineStart: `${spacing['2xs']}px`, color: theme.karnama.semantic['text/error'] })}
+          >
             *
           </Box>
         ) : null}
@@ -184,6 +201,11 @@ export const Input = ({
               },
             })}
         inputProps={{
+          inputMode,
+          min,
+          max,
+          step,
+          maxLength,
           'aria-describedby': message === undefined ? undefined : messageId,
           'aria-invalid': error === undefined ? undefined : true,
           'aria-required': required ? true : undefined,
@@ -258,7 +280,9 @@ export const Input = ({
             },
             // The file's Hover border is text/secondary, a deliberate reuse. Not
             // while focused, disabled or in error: those borders say more.
-            ...(error === undefined ? { '&:hover:not(.Mui-focused):not(.Mui-disabled)::before': { borderColor: colour['text/secondary'] } } : {}),
+            ...(error === undefined
+              ? { '&:hover:not(.Mui-focused):not(.Mui-disabled)::before': { borderColor: colour['text/secondary'] } }
+              : {}),
             // Two wide on focus, drawn inside like the rest, so the text does not
             // move. In error the border stays the error colour, so the error is
             // in view while it is being fixed; red to red is no change, so a

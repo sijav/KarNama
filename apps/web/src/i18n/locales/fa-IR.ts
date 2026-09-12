@@ -10,6 +10,9 @@
  * reason the ids are English sentences.
  */
 export const messages: Record<string, string> = {
+  'Automatic extraction is not connected yet. Review and complete the details before saving.': 'استخراج خودکار هنوز متصل نیست. قبل از ذخیره، اطلاعات را بررسی و تکمیل کن.',
+  'Enter a valid date; expiry cannot be before publication': 'تاریخ معتبر وارد کن؛ تاریخ انقضا نمی‌تواند قبل از تاریخ انتشار باشد',
+  'Enter a valid http or https link': 'یک لینک معتبر با http یا https وارد کن',
   'KarNama': 'کارنما',
   'My job opportunities': 'فرصت‌های شغلی من',
   'Language': 'زبان',

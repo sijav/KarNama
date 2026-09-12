@@ -3,12 +3,12 @@ import { Box, ButtonBase, Dialog, InputBase } from '@mui/material'
 import { useId, useRef, useState, type ReactNode } from 'react'
 import { usePreferences } from '../../core/preferences'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
-import { JobFields, missingFields, type JobDraft } from '../add-job'
+import { JobFields, missingFields, validPostingUrl, type JobDraft } from '../add-job'
 import { Button } from '../button'
 import { ContactCard, type ContactCardContact } from '../contact-card'
 import { Icon, type IconName } from '../icon'
 import { IconButton } from '../icon-button'
-import { Input , type InputDirection } from '../input'
+import { Input, type InputDirection } from '../input'
 import { DISSOLVE_MS, modalScrim } from '../modal'
 import { StatusControl, type StatusOption } from '../status-picker'
 import { Tabs } from '../tabs'
@@ -231,6 +231,7 @@ export const JobModal = ({
   const { i18n } = useLingui()
   const { locale } = usePreferences()
   const titleId = useId()
+  const formId = useId()
   const picker = useRef<HTMLInputElement>(null)
   const [tab, setTab] = useState(asked)
   const [draft, setDraft] = useState(job.draft)
@@ -287,14 +288,16 @@ export const JobModal = ({
         <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
           <Input
             label={i18n._('Posting link')}
-        direction={LATIN}
+            type="url"
+            {...(tried && !validPostingUrl(draft.postingUrl) ? { error: i18n._('Enter a valid http or https link') } : {})}
+            direction={LATIN}
             value={draft.postingUrl}
             onChange={(postingUrl) => {
               setDraft({ ...draft, postingUrl })
             }}
           />
         </Box>
-        {draft.postingUrl.trim() === '' ? null : (
+        {draft.postingUrl.trim() === '' || !validPostingUrl(draft.postingUrl) ? null : (
           <Box
             component="a"
             href={draft.postingUrl.trim()}
@@ -369,7 +372,7 @@ export const JobModal = ({
               color: theme.karnama.semantic['text/primary'],
             })}
           >
-            {change.status}
+            {statuses.find((status) => status.id === change.status)?.name ?? change.status}
           </Box>
           <Box component="span" sx={(theme) => ({ ...small.sx, color: theme.karnama.semantic['text/secondary'] })}>
             {`${formatDay(locale, change.at)} · ${change.automatic ? i18n._('Automatic') : i18n._('Manual')}`}
@@ -663,6 +666,13 @@ export const JobModal = ({
       {/* The tabs, 210:14, edge to edge, and the chosen one's panel scrolling
           in the body's 24, 210:27. */}
       <Box
+        component="form"
+        id={formId}
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault()
+          save()
+        }}
         sx={{
           flex: '1 1 auto',
           minHeight: 0,
@@ -702,7 +712,9 @@ export const JobModal = ({
           <Button variant="ghost" onClick={onClose}>
             {i18n._('Cancel')}
           </Button>
-          <Button onClick={save}>{i18n._('Save')}</Button>
+          <Button type="submit" form={formId}>
+            {i18n._('Save')}
+          </Button>
         </Box>
         <Button variant="destructive" onClick={onDelete}>
           {i18n._('Delete job opportunity')}

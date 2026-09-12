@@ -7,6 +7,9 @@
  * components. Until then it is written by hand and its keys are the contract.
  */
 export const messages: Record<string, string> = {
+  'Automatic extraction is not connected yet. Review and complete the details before saving.': 'Automatic extraction is not connected yet. Review and complete the details before saving.',
+  'Enter a valid date; expiry cannot be before publication': 'Enter a valid date; expiry cannot be before publication',
+  'Enter a valid http or https link': 'Enter a valid http or https link',
   'KarNama': 'KarNama',
   'My job opportunities': 'My job opportunities',
   'Language': 'Language',

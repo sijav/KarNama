@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import { spacing } from '../../theme/tokens'
-import { Input , type InputDirection } from '../input'
+import { Input, type InputDirection } from '../input'
 import { EmploymentTypeSelect, JobLevelSelect } from '../job-selects'
 import { StatusPicker, type StatusOption } from '../status-picker'
 import type { JobDraft, Missing } from './draft'
@@ -41,10 +41,23 @@ export interface JobFieldsProps {
 
 export const JobFields = ({ draft, missing, onChange }: JobFieldsProps) => {
   const { i18n } = useLingui()
-  const text = (key: 'location' | 'experience' | 'postedAt' | 'salary' | 'source' | 'expiresAt', label: string) => (
+  const text = (key: 'location' | 'experience' | 'salary' | 'source', label: string) => (
     <Input
       label={label}
       value={draft[key]}
+      onChange={(value) => {
+        onChange({ ...draft, [key]: value })
+      }}
+    />
+  )
+  const date = (key: 'postedAt' | 'expiresAt', label: string) => (
+    <Input
+      label={label}
+      type="date"
+      direction={LATIN}
+      value={draft[key]}
+      {...(key === 'expiresAt' && draft.postedAt !== '' ? { min: draft.postedAt } : {})}
+      {...(missing.includes(key) ? { error: i18n._('Enter a valid date; expiry cannot be before publication') } : {})}
       onChange={(value) => {
         onChange({ ...draft, [key]: value })
       }}
@@ -84,10 +97,10 @@ export const JobFields = ({ draft, missing, onChange }: JobFieldsProps) => {
           onChange({ ...draft, jobLevel })
         }}
       />
-      {text('postedAt', i18n._('Posted on'))}
+      {date('postedAt', i18n._('Posted on'))}
       {text('salary', i18n._('Salary'))}
       {text('source', i18n._('Source'))}
-      {text('expiresAt', i18n._('Expires on'))}
+      {date('expiresAt', i18n._('Expires on'))}
     </Box>
   )
 }
@@ -112,7 +125,18 @@ export const JobForm = ({ draft, statuses, missing, onChange, onAddStatus }: Job
     >
       <JobFields draft={draft} missing={missing} onChange={onChange} />
       <Input
+        label={i18n._('Job description and responsibilities')}
+        helperText={i18n._('Automatic extraction is not connected yet. Review and complete the details before saving.')}
+        multiline
+        value={draft.description ?? ''}
+        onChange={(description) => {
+          onChange({ ...draft, description })
+        }}
+      />
+      <Input
         label={i18n._('Posting link')}
+        type="url"
+        {...(missing.includes('postingUrl') ? { error: i18n._('Enter a valid http or https link') } : {})}
         direction={LATIN}
         value={draft.postingUrl}
         onChange={(postingUrl) => {

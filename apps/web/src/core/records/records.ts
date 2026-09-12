@@ -89,7 +89,7 @@ export const columnOrder = (statuses: readonly StatusOption[]): StatusOption[] =
 export const jobFrom = (draft: JobDraft, at: string): JobEntry => ({
   id: newId('job'),
   draft,
-  description: '',
+  description: draft.description ?? '',
   skills: [],
   note: '',
   noteEditedAt: null,

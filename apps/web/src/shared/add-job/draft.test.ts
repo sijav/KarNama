@@ -2,6 +2,15 @@ import { describe, expect, it } from 'vitest'
 import { draftFrom, emptyDraft, hasContent, isLink, missingFields } from './draft'
 
 describe('the add modal draft', () => {
+  it('refuses malformed dates, impossible days, reversed dates and unsafe posting links', () => {
+    const draft = { ...emptyDraft('s'), title: 'Developer', company: 'Company' }
+    expect(missingFields({ ...draft, postedAt: 'not a date' })).toEqual(['postedAt'])
+    expect(missingFields({ ...draft, postedAt: '2026-02-30' })).toEqual(['postedAt'])
+    expect(missingFields({ ...draft, postedAt: '2024-02-29', expiresAt: '2024-03-01' })).toEqual([])
+    expect(missingFields({ ...draft, postedAt: '2026-09-12', expiresAt: '2026-09-01' })).toEqual(['expiresAt'])
+    expect(missingFields({ ...draft, postingUrl: 'javascript:alert(1)' })).toEqual(['postingUrl'])
+    expect(missingFields({ ...draft, postingUrl: 'https://example.com/jobs/1' })).toEqual([])
+  })
   it('starts empty in the status it is given', () => {
     const draft = emptyDraft('status-1')
     expect(draft.status).toBe('status-1')
@@ -18,6 +27,10 @@ describe('the add modal draft', () => {
   })
 
   it('keeps the pasted link as the posting link when reading found none', () => {
+    expect(draftFrom('s', 'Frontend developer\nBuild React applications', {})).toMatchObject({
+      postingUrl: '',
+      description: 'Frontend developer\nBuild React applications',
+    })
     expect(draftFrom('s', ' https://example.com/1 ', { title: 'A' }).postingUrl).toBe('https://example.com/1')
     expect(draftFrom('s', 'https://example.com/1', { postingUrl: 'https://example.com/2' }).postingUrl).toBe('https://example.com/2')
     expect(draftFrom('s', 'the text of a posting', { title: 'A' }).postingUrl).toBe('')

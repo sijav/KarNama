@@ -4,6 +4,10 @@ import { fileKind, fileSize, formatDay } from './format'
 const UNITS = { kilobytes: 'KB', megabytes: 'MB' }
 
 describe('the job modal formats', () => {
+  it('keeps malformed saved dates readable instead of crashing the board', () => {
+    expect(formatDay('fa-IR', 'not a date')).toBe('not a date')
+    expect(formatDay('en-US', '')).toBe('')
+  })
   it('writes a day on the reader’s calendar', () => {
     expect(formatDay('fa-IR', '2026-09-04T12:00:00Z')).toBe('۱۳ شهریور ۱۴۰۵')
     expect(formatDay('en-US', '2026-09-04T12:00:00Z')).toBe('September 4, 2026')
