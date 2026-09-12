@@ -6,12 +6,12 @@ import { semantic, spacing, status } from '../../theme/tokens'
 import { ICON_NAMES } from '../icon'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Tooltip } from '../tooltip'
-import { IconButton, type IconButtonProps } from './IconButton'
+import { IconButton, type IconButtonSwitch } from './IconButton'
 
 // The button's name is copy, drawn in the reader's language inside the render,
 // so its arg is a placeholder no control shows; the icon, the tone and the
 // disabled state are the controls.
-const Named = (args: IconButtonProps) => {
+const Named = (args: IconButtonSwitch) => {
   const { i18n } = useLingui()
   return <IconButton {...args} aria-label={i18n._('Delete status')} />
 }
@@ -28,7 +28,7 @@ const meta = {
   },
   parameters: { controls: { include: ['icon', 'tone', 'iconSize', 'disabled'] } },
   render: (args) => <Named {...args} />,
-} satisfies StoryMeta<typeof IconButton>
+} satisfies StoryMeta<IconButtonSwitch>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -47,7 +47,7 @@ const computedColour = (host: HTMLElement, colour: string) => {
 
 // What node 460:672 draws at rest: a 32 square of radius md, no fill, and the
 // 16 icon in text/secondary, or the Bulk Action Bar's 20, 401:436.
-const atRest = async (button: HTMLElement, iconSize: IconButtonProps['iconSize'] = 'sm') => {
+const atRest = async (button: HTMLElement, iconSize: IconButtonSwitch['iconSize'] = 'sm') => {
   const style = getComputedStyle(button)
   const box = button.getBoundingClientRect()
   await expect([box.width, box.height]).toEqual([32, 32])

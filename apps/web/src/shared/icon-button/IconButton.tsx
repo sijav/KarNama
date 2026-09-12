@@ -22,23 +22,34 @@ type TooltipTrigger = Pick<
 >
 
 // The props are documented in story-docs, not here, KN-207.
-export interface IconButtonProps extends TooltipTrigger {
+interface IconButtonBase extends TooltipTrigger {
   icon: IconName
   'aria-label': string
   tone?: 'neutral' | 'danger'
   iconSize?: 'sm' | 'md'
-  disabled?: boolean
-  /**
-   * Where it goes, for a control that goes somewhere.
-   *
-   * An icon-only control that opens an address is a LINK, not a button: it can
-   * be opened in a new tab, its address copied, and a screen reader says it is
-   * a link rather than announcing a button that turns out to leave the page.
-   * With this the button renders as an anchor and needs no click of its own.
-   */
-  href?: string
   onClick?: () => void
 }
+
+/**
+ * A control that goes somewhere, or one that can be turned off. Never both.
+ *
+ * MUI renders an anchor for a button given an href, and an anchor takes no
+ * `disabled` attribute: it would get `aria-disabled` and stay clickable and
+ * navigable, so the button would say it was off and still work, KN-433. The
+ * union makes that unrepresentable rather than documented, which is the only
+ * version of this that a caller cannot get wrong.
+ */
+export interface IconButtonSwitch extends IconButtonBase {
+  href?: never
+  disabled?: boolean
+}
+
+export interface IconButtonLink extends IconButtonBase {
+  href: string
+  disabled?: never
+}
+
+export type IconButtonProps = IconButtonSwitch | IconButtonLink
 
 // Node 460:672 draws the disabled button at 0.7 of its opacity, which binds no
 // variable, so it is a component constant; the focus ring is three pixels drawn

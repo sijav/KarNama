@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-433` An Icon Button given both href and disabled renders an anchor that still navigates** (high, 1 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-433` | An Icon Button given both href and disabled renders an anchor that still navigates | high | 1 | web | none | href and disabled cannot be passed together, or a disabled one does not navigate; DESIGN.md records that the card's mail control is a link. |
+
 ## Blocked (5)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -20,13 +26,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (260)
+## Backlog (259)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-433` | An Icon Button given both href and disabled renders an anchor that still navigates | high | 1 | web | none | href and disabled cannot be passed together, or a disabled one does not navigate; DESIGN.md records that the card's mail control is a link. |
 | `KN-447` | An Icon Button with an href cannot be given a ref: it is typed for a button and renders an anchor | high | 1 | web | none | A ref taken on an Icon Button with an href typechecks with no cast. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-316` | The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input | high | 2 | web | none | A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4. |
@@ -5562,7 +5567,7 @@ JobsScreen.tsx 457 and NetworkScreen.tsx 165 pass a singular title and body to t
 
 ### `KN-433` An Icon Button given both href and disabled renders an anchor that still navigates
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 KN-415 gave IconButton an href so the contact card's mail control could be a link. MUI renders an anchor for a button with an href, and an anchor takes no disabled attribute: it gets aria-disabled and remains clickable and navigable, which contradicts what en/Shared-IconButton.md says disabled does. Nothing passes both today, so it is latent. Settle it at the type level, so a caller cannot ask for both, or render a disabled link as plain text with no href. DESIGN.md was also not corrected: it still draws Icon Buttons in that row of the contact card.

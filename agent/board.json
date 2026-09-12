@@ -11441,12 +11441,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "href and disabled cannot be passed together, or a disabled one does not navigate; DESIGN.md records that the card's mail control is a link.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T01:43:07.670Z"
+      "createdAt": "2026-09-12T01:43:07.670Z",
+      "updatedAt": "2026-09-12T02:02:06.311Z"
     },
     {
       "id": "KN-434",

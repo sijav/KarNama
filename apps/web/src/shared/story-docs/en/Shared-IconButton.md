@@ -42,6 +42,10 @@ its address copied, and a screen reader says link instead of announcing a
 button that turns out to leave the page. With this it renders as an anchor and
 needs no click of its own.
 
+A control that goes somewhere cannot also be turned off, and the type refuses
+the pair, KN-433: an anchor takes no `disabled` attribute, so it would say it
+was off and still navigate.
+
 ### onClick
 
 Fired when the button is pressed, by pointer or by keyboard.
