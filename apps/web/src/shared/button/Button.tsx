@@ -142,8 +142,20 @@ export const Button = ({ children, variant = 'primary', size = 'M', disabled = f
                 },
               }
             : {}),
-          '&:hover': { backgroundColor: fill(look.hover.fill), color: colour[look.hover.text], boxShadow: 'none' },
-          '&:active': {
+          // Each transient state is drawn by the browser's own pseudo-class AND
+          // by a `data-state` attribute that says the same thing, KN-316.
+          // Nothing in the product sets that attribute and it is not a prop: it
+          // exists so the one place these states can be REVIEWED, Storybook,
+          // can show them without a pointer, which the published Storybook has
+          // none of. The real pseudo-classes are gated on its absence, so a
+          // pointer crossing a forced cell cannot add a second state on top and
+          // draw something the file never draws.
+          '&:hover:not([data-state]), &[data-state="hover"]': {
+            backgroundColor: fill(look.hover.fill),
+            color: colour[look.hover.text],
+            boxShadow: 'none',
+          },
+          '&:active:not([data-state]), &[data-state="pressed"]': {
             backgroundColor: fill(look.pressed.fill),
             color: colour[look.pressed.text],
             ...(variant === 'ghost' ? { opacity: GHOST_PRESSED_OPACITY } : {}),
@@ -151,7 +163,7 @@ export const Button = ({ children, variant = 'primary', size = 'M', disabled = f
           '&.Mui-disabled': { backgroundColor: fill(look.disabled.fill), color: colour[look.disabled.text] },
           // Focus as the file draws it: two pixels of border/focus, inside in
           // place of Secondary's edge, outside every other style.
-          '&.Mui-focusVisible': look.edge
+          '&.Mui-focusVisible:not([data-state]), &[data-state="focus"]': look.edge
             ? { '&::before': { borderWidth: FOCUS_EDGE, borderColor: colour['border/focus'] } }
             : { outlineWidth: FOCUS_EDGE, outlineStyle: 'solid', outlineColor: colour['border/focus'], outlineOffset: 0 },
         }

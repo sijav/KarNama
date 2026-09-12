@@ -68,3 +68,15 @@ The five styles reached by Tab in turn, each showing its focus ring.
 ### WithIcons
 
 A button with a leading and a trailing icon, sized and spaced to the button.
+
+### States
+
+All 75: five styles, three sizes, five states, rendered from args and visible
+without a test running. Hover, pressed and focus are transient — only a pointer
+or a keyboard puts a button in them — so the component draws each of them for a
+`data-state` attribute as well as for the browser's own pseudo-class, and this
+story sets that attribute. It is not a prop and nothing in the product sets it:
+it exists so these states can be looked at in the one place they are reviewed.
+
+The real pseudo-classes are gated on the attribute's absence, so a pointer
+crossing a forced cell cannot add a second state on top of it.

@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
+import { useEffect, useRef } from 'react'
 import { expect, fn, waitFor, within } from 'storybook/test'
 import { semantic, spacing } from '../../theme/tokens'
 import { ICON_NAMES } from '../icon'
@@ -16,6 +17,34 @@ const Labelled = (args: ButtonProps) => {
   const { i18n } = useLingui()
   return <Button {...args}>{i18n._('Button')}</Button>
 }
+
+// The five the file draws, node 31:4. `rest` and `disabled` a button reaches on
+// its own; the other three are transient and only a pointer or a keyboard puts
+// it in them, KN-316.
+/* eslint-disable lingui/no-unlocalized-strings -- state names and a DOM attribute, not copy: nothing here is ever rendered */
+const STATES = ['rest', 'hover', 'pressed', 'disabled', 'focus'] as const
+type ButtonState = (typeof STATES)[number]
+
+// The mechanism the component's users never see: the component draws each
+// transient state for `data-state` as well as for the browser's own
+// pseudo-class, and this puts the attribute on the rendered button. It cannot
+// be a prop, because Button declares its props and forwards nothing else, so
+// the cell holds a ref to its own box and reaches the button inside it.
+const Forced = ({ state, ...args }: ButtonProps & { state: ButtonState }) => {
+  const cell = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    const button = cell.current?.querySelector('button')
+    if (!button) return
+    if (state === 'rest' || state === 'disabled') button.removeAttribute('data-state')
+    else button.setAttribute('data-state', state)
+  }, [state])
+  return (
+    <Box ref={cell} sx={{ display: 'inline-flex' }}>
+      <Labelled {...args} disabled={state === 'disabled'} />
+    </Box>
+  )
+}
+/* eslint-enable lingui/no-unlocalized-strings */
 
 const meta = {
   title: 'Shared/Button',
@@ -65,6 +94,12 @@ const EXPECTED: Record<ButtonVariant, Record<'rest' | 'hover' | 'pressed' | 'dis
 }
 /* eslint-enable lingui/no-unlocalized-strings */
 
+// Ghost's pressed state is its hover at 0.9, node 33:58, and the focus ring
+// is two pixels of border/focus. Read from the file, held here rather than
+// taken from the component, so one wrong token cannot move both.
+const GHOST_PRESSED = 0.9
+const FOCUS_EDGE = 2
+
 const HEIGHTS: Record<ButtonSize, number> = { S: 36, M: 44, L: 52 }
 const PADDING: Record<ButtonSize, number> = { S: 12, M: 16, L: 24 }
 
@@ -98,6 +133,62 @@ export const Playground: Story = {
       return
     }
     await atRest(button, variant, size)
+  },
+}
+
+/**
+ * Every one of the 75: five styles, three sizes, five states, all rendered from
+ * args and all visible without a test running, KN-316.
+ */
+export const States: Story = {
+  globals: { colorScheme: 'light' },
+  parameters: { controls: { include: ['startIcon', 'endIcon'] } },
+  render: (args) => (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.lg}px` }}>
+      {STATES.map((state) => (
+        <Box key={state} sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, max-content)', gap: `${spacing.md}px`, alignItems: 'center' }}>
+          {VARIANTS.flatMap((variant) => SIZES.map((size) => <Forced key={`${variant}-${size}`} {...args} variant={variant} size={size} state={state} />))}
+        </Box>
+      ))}
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    // All 75 read where they stand, with no pointer and no keyboard: the fill
+    // and the text of every one, Ghost's pressed opacity, and the focus ring,
+    // which is an outline on four styles and Secondary's own inside edge.
+    const buttons = within(canvasElement).getAllByRole('button')
+    await expect(buttons).toHaveLength(STATES.length * VARIANTS.length * SIZES.length)
+    const cells = STATES.flatMap((state) => VARIANTS.flatMap((variant) => SIZES.map((size) => ({ state, variant, size }))))
+    for (const [index, cell] of cells.entries()) {
+      const button = buttons[index]
+      if (!button) throw new Error('a button is missing')
+      await expect(button.getBoundingClientRect().height).toBe(HEIGHTS[cell.size])
+      if (cell.state === 'disabled') await expect(button).toBeDisabled()
+      // eslint-disable-next-line lingui/no-unlocalized-strings -- state names, not copy
+      const shown = cell.state === 'focus' ? 'rest' : cell.state
+      const { fill, text } = wanted(button, cell.variant, shown)
+      const style = getComputedStyle(button)
+      await expect([style.backgroundColor, style.color]).toEqual([fill, text])
+      await expect(Number(style.opacity)).toBe(cell.state === 'pressed' && cell.variant === 'ghost' ? GHOST_PRESSED : 1)
+      // The focus ring, 31:4: two pixels of border/focus, drawn inside in place
+      // of Secondary's own edge and outside on every other style.
+      const ring = cell.variant === 'secondary' ? getComputedStyle(button, '::before').borderTopWidth : style.outlineWidth
+      await expect(px(ring)).toBe(cell.state === 'focus' ? FOCUS_EDGE : cell.variant === 'secondary' ? 1 : 0)
+    }
+
+    // A forced cell is in ONE state. Without the `:not([data-state])` gate a
+    // pointer crossing this matrix would add a real hover on top of a forced
+    // focus and draw something node 31:4 never draws. Only the runner has a
+    // pointer, KN-225.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const browser = await import('vitest/browser')
+    // eslint-disable-next-line lingui/no-unlocalized-strings -- a state name, not copy
+    const focused = buttons[STATES.indexOf('focus') * VARIANTS.length * SIZES.length]
+    if (!focused) throw new Error('the focus row is missing')
+    const rest = wanted(focused, 'primary', 'rest')
+    await browser.userEvent.hover(focused)
+    await expect(getComputedStyle(focused).backgroundColor).toBe(rest.fill)
+    await browser.userEvent.unhover(focused)
   },
 }
 

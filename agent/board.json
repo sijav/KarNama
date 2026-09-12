@@ -9216,12 +9216,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:57:43.823Z",
-      "okr": "OKR-1"
+      "okr": "OKR-1",
+      "updatedAt": "2026-09-12T02:17:11.666Z"
     },
     {
       "id": "KN-317",
