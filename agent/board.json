@@ -1869,15 +1869,17 @@
         "KN-043",
         "KN-030"
       ],
-      "status": "backlog",
+      "status": "done",
       "exit": "An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries.",
       "roasts": [],
       "notes": [
         "2026-09-11, from the KN-364 roast: the Job Modal's onSave carries no status since KN-364, and the status reaches the page only through onStatusChange. The page must save the fields as a patch, or merge the status from its own confirmed state; a whole record built from a job the page has not yet updated after a status change would write the old status back."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T22:57:50.777Z",
-      "okr": "OKR-1"
+      "updatedAt": "2026-09-12T00:07:36.438Z",
+      "okr": "OKR-1",
+      "evidence": "The five tabs read and write the record: the status changes from the header and the history grows, the note is kept, and the related people are the network's contacts against this job opportunity, added and deleted from the modal; files keep their name, size and arrival, with the bytes of this visit downloadable and the rest waiting on KN-039. e2e on desktop and phone opens a card, changes the status, writes a note, keeps a person, reloads and finds all of it",
+      "closedAt": "2026-09-12T00:07:36.438Z"
     },
     {
       "id": "KN-046",

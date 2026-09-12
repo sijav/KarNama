@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 176 of 421 tasks done · 398 of 882 points.
+Project **KarNama** · 177 of 421 tasks done · 403 of 882 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-045` Job detail modal, wired** (critical, 5 pt, web)
+**Next up: `KN-305` The story fixtures have no seeded board and no job opportunity in three of the nine statuses** (high, 2 pt, web)
 
 ## Blocked (5)
 
@@ -20,11 +20,10 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (238)
+## Backlog (237)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-045` | Job detail modal, wired | critical | 5 | web | KN-043, KN-030 | An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-305` | The story fixtures have no seeded board and no job opportunity in three of the nine statuses | high | 2 | web | none | Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages. |
@@ -263,7 +262,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (176)
+## Done (177)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -367,6 +366,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-035` | GraphQL codegen wired both ways | critical | 5 | graphql | KN-003, KN-033, KN-120 | Changing the API schema without regenerating fails the build, the web app imports only generated types for GraphQL data, and no hand-written interface duplicates a generated one. |
 | `KN-042` | App shell: routing, responsive navigation, and the language switch in place | critical | 5 | web | KN-027, KN-006, KN-035 | All three routes render inside the shell, the nav switches between right sidebar and bottom tab bar at the breakpoint, a deep link to any of them works on a hard refresh, the language switch persists across a reload, and an API error renders the error state rather than a blank page. |
 | `KN-044` | Add job flow | critical | 5 | web | KN-042, KN-029 | An e2e test pastes a link, corrects a field in Review, saves, and finds the record on My Jobs with status New, and a second test takes the Error path into Manual and saves from there. |
+| `KN-045` | Job detail modal, wired | critical | 5 | web | KN-043, KN-030 | An e2e test opens a card, changes its status, sees the history grow, adds a note and a contact, closes and reopens, and finds all of it still there. The modal renders FIVE tabs and status history renders in its OWN tab, second, NOT inside the info tab; the e2e test asserts where the history it watched grow actually appears, since a history that grows in the wrong place passes a test that only counts entries. |
 | `KN-046` | Auth screens: login, code, signup | critical | 5 | web | KN-042 | An e2e test signs in with a number and the code from the mock provider and reaches the board, a wrong or expired code shows an honest message with a way to resend, first login collects the name, and signing out clears the token and the Apollo cache rather than only the UI. |
 | `KN-060` | Kanban column component | critical | 5 | web | KN-005, KN-006, KN-007, KN-010, KN-015, KN-018 | The column renders with cards, with none, and at the mobile width, its header shows the live count, the Size=M chip is used only here, the Add Card row stays pinned at the bottom as the column scrolls, and every state matches its Figma node. A column can render COLLAPSED to a count instead of its cards, and expands on click; the board decides which column starts collapsed, this component does not know which one it is. |
 | `KN-123` | The migration runner has no transaction, no lock, no failure state and no checksum | critical | 5 | api | KN-034 | A migration that throws halfway leaves the database unchanged and the ledger recording a failure, a second concurrent run waits rather than racing, an applied migration whose SQL changed fails the next deploy by checksum, and each of those is proved by a planted case against PGlite. |
@@ -1007,7 +1007,7 @@ The add route driving the modal through Paste, Loading, Review and save, with Ma
 
 ### `KN-045` Job detail modal, wired
 
-- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **status** done · **severity** critical · **points** 5 · **area** web
 - **blocked by** KN-043, KN-030
 
 The FIVE-tab modal reading and writing real data. KN-072 settled that status history leaves the Info tab and gets its own tab, second, so the tabs are اطلاعات آگهی, سابقه, یادداشت, افراد مرتبط, فایل‌ها. Anyone building this card from its own text used to rebuild exactly the arrangement KN-072 rejected, because it said four tabs and its exit condition only asked that history GROW, never where it renders. The tab is افراد مرتبط, not مخاطبین: DESIGN.md renames it without exception, and the nav item مخاطبین became a different thing. KN-155 repaired this.
