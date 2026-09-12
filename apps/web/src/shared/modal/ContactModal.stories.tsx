@@ -264,8 +264,11 @@ export const EnterSaves: Story = {
 
 // A parent that hands over the id first and the record afterwards, which is
 // what a page does when it knows WHICH record it wants before it has loaded it.
-const Loading = ({ jobs, onSave, onCancel }: Pick<Extract<ContactModalProps, { mode: 'edit' }>, 'jobs' | 'onSave' | 'onCancel'>) => {
-  const [record, setRecord] = useState<ContactModalRecord | undefined>(undefined)
+const Loading = ({ jobs, onSave, onCancel, held }: Pick<Extract<ContactModalProps, { mode: 'edit' }>, 'jobs' | 'onSave' | 'onCancel'> & { held?: ContactModalRecord }) => {
+  // Starts holding whatever record the story gives it, so a story can render
+  // the SECOND id while the FIRST record's values are still the ones being
+  // passed. That one render is the whole defect, KN-476.
+  const [record, setRecord] = useState<ContactModalRecord | undefined>(held)
   const [id, setId] = useState(FIRST_CONTACT.id)
   return (
     <>
@@ -292,16 +295,26 @@ const Loading = ({ jobs, onSave, onCancel }: Pick<Extract<ContactModalProps, { m
 export const TheRecordArrivesAfterItsId: Story = {
   parameters: { controls: { disable: true } },
   globals: { locale: 'fa-IR' },
-  render: (args) => <Loading jobs={args.jobs} onSave={args.onSave} onCancel={args.onCancel} />,
+  render: (args) => (
+    <Loading jobs={args.jobs} onSave={args.onSave} onCancel={args.onCancel} held={{ id: FIRST_CONTACT.id, values: recordIn('fa-IR') }} />
+  ),
   play: async ({ args, canvasElement }) => {
-    // KN-386: a page knows which record it wants before it has it, so there is
-    // a render carrying the new id and the OLD values. The form shows nothing
-    // of the old record then, and fills itself when the record arrives, because
-    // it FOLLOWS the record until the reader edits it.
+    // KN-386 and KN-476: a page knows which record it wants before it has it,
+    // so there is a render carrying the NEW id and the OLD record's values.
+    // That render is the whole defect, so the parent starts holding the first
+    // record rather than nothing: the form shows its values, then the second id
+    // is asked for while those values are still what is being passed, and the
+    // form must show nothing of them.
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
     const name = () => body.getAllByRole('textbox')[0]
 
+    // The first record, shown because the form follows what it is given.
+    await waitFor(async () => {
+      await expect(name()).toHaveValue(recordIn('fa-IR').name)
+    })
+
+    // The second id alone: the values in hand are still the first record's.
     await userEvent.click(canvas.getByTestId('ask-for-second'))
     await waitFor(async () => {
       await expect(name()).toHaveValue('')
@@ -318,22 +331,42 @@ export const TheRecordArrivesAfterItsId: Story = {
   },
 }
 
+// A modal opened on a record that has not loaded, whose id never changes: the
+// record simply arrives afterwards, KN-476.
+const LateRecord = ({ jobs, onSave, onCancel }: Pick<Extract<ContactModalProps, { mode: 'edit' }>, 'jobs' | 'onSave' | 'onCancel'>) => {
+  const [record, setRecord] = useState<ContactModalRecord | undefined>(undefined)
+  return (
+    <>
+      <button
+        data-testid="record-arrives"
+        type="button"
+        onClick={() => {
+          setRecord({ id: FIRST_CONTACT.id, values: { ...recordIn('fa-IR'), name: FIRST_CONTACT.fullName } })
+        }}
+      />
+      <ContactModal open mode="edit" recordId={FIRST_CONTACT.id} initial={record} jobs={jobs} onSave={onSave} onCancel={onCancel} />
+    </>
+  )
+}
+
 export const TheRecordArrivesAfterOpening: Story = {
   parameters: { controls: { disable: true } },
   globals: { locale: 'fa-IR' },
-  render: (args) => <Loading jobs={args.jobs} onSave={args.onSave} onCancel={args.onCancel} />,
+  render: (args) => <LateRecord jobs={args.jobs} onSave={args.onSave} onCancel={args.onCancel} />,
   play: async ({ args, canvasElement }) => {
-    // The same rule seen the other way: opened before its record exists, the
-    // form is empty and fills itself when the record lands, rather than staying
-    // empty because the id never changed.
+    // The same rule seen the other way, and with the id NEVER changing, KN-476:
+    // opened before its record exists, the form is empty and fills itself when
+    // the record lands. A modal that started over only on a new id would stay
+    // empty here for good.
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
-    await userEvent.click(canvas.getByTestId('ask-for-second'))
+    await expect(body.getAllByRole('textbox')[0]).toHaveValue('')
+
     await userEvent.click(canvas.getByTestId('record-arrives'))
     await waitFor(async () => {
-      await expect(body.getAllByRole('textbox')[0]).toHaveValue(SECOND_CONTACT.fullName)
+      await expect(body.getAllByRole('textbox')[0]).toHaveValue(FIRST_CONTACT.fullName)
     })
     await userEvent.click(body.getByRole('button', { name: 'ذخیره' }))
-    await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ name: SECOND_CONTACT.fullName }))
+    await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ name: FIRST_CONTACT.fullName }))
   },
 }

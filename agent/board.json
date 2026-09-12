@@ -12410,12 +12410,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "One story renders the second id while the first record's values are still the ones being passed, and asserts the form shows nothing of them; another delivers a record late with the id unchanged.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T04:27:19.204Z"
+      "createdAt": "2026-09-12T04:27:19.204Z",
+      "updatedAt": "2026-09-12T04:27:31.431Z"
     }
   ],
   "okrs": [
