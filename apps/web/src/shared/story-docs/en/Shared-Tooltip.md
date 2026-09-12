@@ -130,3 +130,11 @@ The frame as Figma draws it, with the mark before the text.
 
 Escape closes it. A tip you cannot dismiss is a tip covering the thing you were
 trying to read.
+
+### ReadableInDark
+
+The tip in dark. The file draws it as an inverse surface, a near-black under
+white, and the dark palette turns text roles light, so the fill became a light
+grey with white on it and every tooltip read at about 1.34 to one. The fill is
+still what the design says and the text follows it, through the same helper the
+palette uses, so it clears the 4.5 the rest of the palette is held to.

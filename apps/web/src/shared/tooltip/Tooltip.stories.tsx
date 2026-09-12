@@ -6,6 +6,7 @@ import { useEffect, useId, useState, type ComponentPropsWithRef } from 'react'
 import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { formatCount } from '../../i18n/formatCount'
 import { messages as fa } from '../../i18n/locales/fa-IR'
+import { contrast, MIN_CONTRAST } from '../../theme/darkMode'
 import { elevation } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Tooltip, TOOLTIP_SURFACE } from './Tooltip'
@@ -386,4 +387,30 @@ export const Dismissed: Story = {
       await expect(within(document.body).queryByRole('tooltip')).not.toBeInTheDocument()
     })
   },
+}
+
+export const ReadableInDark: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    // KN-398: the file draws the tip as an inverse surface, a near-black under
+    // white, and the dark palette turns text roles light, so the fill became a
+    // light grey with white on it and every tooltip in dark read at about 1.34
+    // to one. The text follows its fill now, so it clears the same 4.5 the rest
+    // of the palette is held to.
+    await userEvent.hover(within(canvasElement).getByRole('button'))
+    await within(document.body).findByRole('tooltip')
+    const surface = drawnSurface()
+    const style = getComputedStyle(surface)
+    // The title's own colour, not the surface's inherited one: what a reader
+    // actually sees is the text in the tip.
+    const title = surface.firstElementChild ?? surface
+    const text = getComputedStyle(title).color
+    await expect(contrast(hexOf(text), hexOf(style.backgroundColor))).toBeGreaterThanOrEqual(MIN_CONTRAST)
+  },
+}
+
+// `rgb(r, g, b)` as the hex the contrast helper reads.
+const hexOf = (colour: string) => {
+  const [r = 0, g = 0, b = 0] = [...colour.matchAll(/\d+/g)].map((match) => Number(match[0]))
+  return `#${[r, g, b].map((part) => part.toString(16).padStart(2, '0')).join('')}`
 }

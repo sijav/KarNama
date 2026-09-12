@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { LOOKS } from '../shared/button'
+import { tooltipPair } from '../shared/tooltip'
 import { ACCENT_FILLS, DARK_FILLS, MIN_CONTRAST, contrast, darkSemantic, darkStatus, deriveDark, deriveDarkFill, deriveDarkSurface, ensureContrast, hexToHsl, hslToHex, luminance } from './darkMode'
 import { buildTheme } from './theme'
 import { semantic, status } from './tokens'
@@ -312,7 +313,17 @@ describe('every text the theme puts on a fill reads there, KN-108', () => {
     .flatMap((look) => [look.rest, look.hover, look.pressed])
     .flatMap((state) => (state.fill === null ? [] : [[darkSemantic[state.text], darkSemantic[state.fill]]]))
 
-  it.each([...palette, ...button])('%s reads on %s in the derived palette', (text, fill) => {
+  // The Tooltip's pair is written inside the component, because its fill is the
+  // INVERSE of the page rather than a palette colour, so a list of the palette's
+  // own pairs could never see it: in dark it read at 1.34 to one, KN-398. Read
+  // from the component, in both schemes, so the same is true of whatever it
+  // becomes.
+  const tooltips = (['dark', 'light'] as const).map((scheme) => {
+    const pair = tooltipPair(buildTheme('rtl', scheme))
+    return [pair.color, pair.backgroundColor]
+  })
+
+  it.each([...palette, ...button, ...tooltips])('%s reads on %s in the derived palette', (text, fill) => {
     expect(contrast(text, fill)).toBeGreaterThanOrEqual(MIN_CONTRAST)
   })
 

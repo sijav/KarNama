@@ -1,5 +1,6 @@
-import { Box, Tooltip as MuiTooltip } from '@mui/material'
+import { Box, Tooltip as MuiTooltip, type Theme } from '@mui/material'
 import { cloneElement, useCallback, useEffect, useId, useRef, type ReactElement, type ReactNode } from 'react'
+import { ensureContrast } from '../../theme/darkMode'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 
 // The tip's width, from node `410:469`, KN-210. The frame is FIXED at 260 with
@@ -14,6 +15,24 @@ const TIP_WIDTH = 260
 // where the role sits. A class rather than a test id because the tooltip slot
 // is typed without data attributes, the same marker the Checkbox's frame uses.
 export const TOOLTIP_SURFACE = 'KarnamaTooltip-surface'
+
+/**
+ * The tip's own fill and the text that reads on it.
+ *
+ * The file draws the tip as an INVERSE surface: a near-black under white. The
+ * dark palette turns text roles light, so the fill became a light grey while
+ * the text stayed white and every tooltip in dark read at about 1.34 to one,
+ * KN-398. The fill is still what the design says; the TEXT follows it, through
+ * the same helper the palette itself uses to keep a pair legible.
+ *
+ * Exported so one place decides it: the component draws from it, and the
+ * theme's pair test reads it here rather than from a list that could not see
+ * a pair written inside a component.
+ */
+export const tooltipPair = (theme: Theme) => {
+  const backgroundColor = theme.karnama.semantic['text/primary']
+  return { backgroundColor, color: ensureContrast(theme.karnama.semantic['text/on-accent'], backgroundColor) }
+}
 
 // The props are documented in story-docs, not here, KN-207.
 export interface TooltipProps {
@@ -128,8 +147,7 @@ export const Tooltip = ({ title, icon, placement = 'bottom', children }: Tooltip
               // rather than inherited: the tip used to be 260 only because the app's
               // CssBaseline makes everything border-box, and 284 without it. KN-222.
               boxSizing: 'border-box',
-              backgroundColor: theme.karnama.semantic['text/primary'],
-              color: theme.karnama.semantic['text/on-accent'],
+              ...tooltipPair(theme),
               borderRadius: `${theme.karnama.radius.md}px`,
               // Both, so the tip is exactly the frame's width and MUI's own cap
               // cannot narrow it if its default ever drops below 260.
