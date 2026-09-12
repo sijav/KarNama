@@ -9181,13 +9181,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:47:18.537Z",
       "okr": "OKR-1",
-      "updatedAt": "2026-09-12T01:39:12.218Z"
+      "updatedAt": "2026-09-12T01:48:26.782Z",
+      "evidence": "The bar renders 320 by 36 on the desktop and 358 by 44 on a phone, the sizes read again from the file with use_figma (nodes 241:29, 252:48 and 241:156, against the component set's 155:92); OnTheDesktop and OnAPhone assert each bar's box and that the text and the 20 icon still sit 16 from the inline start in both. Both screens pass the layout they are, and the contacts page's 480 cap is the 320 the file draws. 1467 of 1467 tests pass, lint and tsc clean.",
+      "closedAt": "2026-09-12T01:48:26.782Z"
     },
     {
       "id": "KN-316",
