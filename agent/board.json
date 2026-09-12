@@ -11444,7 +11444,23 @@
       "status": "done",
       "exit": "href and disabled cannot be passed together, or a disabled one does not navigate; DESIGN.md records that the card's mail control is a link.",
       "okr": "OKR-1",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 5,
+          "criticals": 1,
+          "file": "agent/roasts/KN-433-round-1.2026-09-12T02-05-25-387Z.md",
+          "filed": [
+            "KN-434"
+          ],
+          "cardDigest": "1edd9cb9c0c488231cf0d84d6ce52c4425a294a2cb6b231617c6ce3a7aeebacf",
+          "head": "e520174d51783469d4d20bce2edea095093f38bc",
+          "reviewerScore": 4.5,
+          "reviewerCriticals": 1,
+          "dismissed": "Nothing rejected; two of the three were already answered by the time the roast landed. The critical is about the KN-447 edit it caught in flight, and its prescription, separating the button and anchor trigger prop types, is exactly what KN-447 did: the handlers now come from React's DOMAttributes over each branch's own element and the checkout typechecks. The major, that no story rendered the link branch, is KN-447's HandsBackItsElement, which renders one of each and reads BUTTON and A back out of them. The minor, prose in the TSX, is KN-434, which already carries it.",
+          "at": "2026-09-12T02:15:30.674Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-12T01:43:07.670Z",
       "updatedAt": "2026-09-12T02:05:11.148Z",
@@ -11464,8 +11480,11 @@
       "exit": "No prop or story in the screens or IconButton carries prose the markdown already holds, and the Persian docs page shows no English.",
       "okr": "OKR-1",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-12T01:43:07.804Z"
+      "notes": [
+        "2026-09-12, from the KN-433 roast: the href JSDoc in IconButton.tsx is named again, lines 39 to 47. It is the same prose the markdown carries in both languages."
+      ],
+      "createdAt": "2026-09-12T01:43:07.804Z",
+      "updatedAt": "2026-09-12T02:15:30.805Z"
     },
     {
       "id": "KN-435",

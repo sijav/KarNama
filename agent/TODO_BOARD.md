@@ -5571,6 +5571,8 @@ KN-415 gave IconButton an href so the contact card's mail control could be a lin
 
 **Exit condition.** href and disabled cannot be passed together, or a disabled one does not navigate; DESIGN.md records that the card's mail control is a link.
 
+**Roasts.** round 1 scored 5 with 1 critical(s)
+
 ### `KN-434` Prose is back in the TSX where story-docs owns it, and it prints in the Persian docs
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web

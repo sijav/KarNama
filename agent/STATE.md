@@ -21,32 +21,28 @@ with their stories, then screens. Match the design exactly.** Phone OTP, mocked.
 
 ## Where things stand
 
-**162 done, 233 open, 5 blocked, 2 dropped** of 402 (2026-09-11). Coverage
-99.33 percent on the full `npm test`; KN-340 carries the gap. **Deployed** on every push by
-`.github/workflows/pages.yml`: https://sijav.github.io/KarNama/ and Storybook
-at https://sijav.github.io/KarNama/storybook/. **Pushed after every close since
-the owner asked, 2026-09-11**; before that 83 commits had sat unpushed and the
-owner could see none of the day's work. The API needs
-`NPM_CONFIG_PRODUCTION=false` in Render's dashboard before it runs there.
+**187 done, 258 open, 5 blocked, 2 dropped** of 452 (2026-09-12). The pages are
+built and live: the board, the add flow, the job modal, the network page and
+sign-in, all six page cards closed under the owner's instruction of 2026-09-12
+to build the pages now. **Deployed** on every push by `.github/workflows/pages.yml`:
+https://sijav.github.io/KarNama/ and Storybook at
+https://sijav.github.io/KarNama/storybook/. **Pushed after every close since the
+owner asked, 2026-09-11**. The API needs `NPM_CONFIG_PRODUCTION=false` in
+Render's dashboard before it runs there.
 
-**Every component card is closed, 2026-09-11**: the components are DESIGN.md's
-component table, each with its stories and docs under `apps/web/src/shared/`,
-and story fixtures (KN-062). KN-214 closed after them. No critical card is open,
-so the law serves high cards, smallest first; the screens come after. The live
-site is the shell with the navigation until then.
+**Coverage: 99.67 percent of statements on the full `npm test`, and the global
+100 percent gate cannot be reached at all while KN-103 stands.** Proved on
+2026-09-12: run the browser project alone and `shared/job-selects` reports 100
+percent of its statements and 100 of its functions; run both projects together
+and the same folder reports 94.73 and 80. The merge takes the unit project's
+zeros for files it merely imports. KN-103 is critical for that reason. The
+screens' own remaining branches are KN-427, which is a separate and smaller
+thing.
 
-**Open children** are found by `CHILD OF KN-xxx` in the board's descriptions,
-most of them the Input's (KN-011); when a parent's last child closes, roast the
-parent with all its children. History before this head, which cards closed and
-what their roasts scored, is on the board and in `agent/roasts/`.
-
-**The lingui gate since KN-214**: a string it flags is copy, or needs a named
-exemption in `eslint.config.js` with its reason (TECH-DEBT 17), never a
-typed-constant dodge for copy.
-
-**Owner decisions of 2026-09-10** are in DESIGN.md under "Settled by the owner
-on 2026-09-10": KN-196, KN-265, KN-273 and KN-275, KN-276 and KN-279, KN-285
-and KN-287. The job level list and KN-077 still wait.
+**The board carries objectives now**, the owner's instruction of 2026-09-12:
+OKR-1 is the MVP, the pages, and it is served first whatever the severities say;
+OKR-2 is everything after it. `node agent/scripts/todo.mjs okr` prints both. A
+roast finding under four points joins the objective in hand.
 
 ## The owner's rules, most recent first
 
@@ -122,17 +118,33 @@ and KN-287. The job level list and KN-077 still wait.
 
 ## The next step
 
-Since the last head, closed, pushed and roasted, their findings filed at high
-or lower: KN-373 (the Status Picker's arrows follow the screen), KN-391 (a late
-extraction lands nowhere), KN-097 (no MDX), KN-108 (readable accent fills in
-dark; KN-398, high, the dark Tooltip, and KN-399), KN-111 (Trans and i18n._ ids
-the scan can read; KN-400, medium, for an AST scan), KN-134 (a catalog instance
-per locale and a React-warning guard; KN-401, high: the guard hears only
-printf-style console.error, and KN-402, low) and KN-167 (the schema-entry runs
-start together with a hang guard for a budget, TECH-DEBT 20). KN-167's roast is
-running; judge it. KN-365 is high: both full-run flakes read a colour through
-its own transition. KN-269, KN-270, KN-358 and KN-396 wait on the owner. Then
-the law, which serves KN-178 next.
+Since the last head, closed, pushed and roasted, findings filed at high or
+lower: KN-415 (the screens' handlers are driven by stories; coverage 88 to 99.67
+percent, and two dead wires cut: the board never told its cards they were on a
+phone, so a phone could not delete or restage one, and the network page passed a
+select-all the bar never offers), KN-305 (the fixtures hold a job opportunity in
+every one of the nine statuses and the board itself), KN-310 (the Icon Button
+can be a Tooltip's trigger), KN-315 (the Search Bar has the two sizes the
+screens draw), KN-429 (four story assertions that could not fail), KN-443 (the
+contacts page caps its bar only from md up), KN-430 (each page's search box is
+named for what it searches), KN-433 (an Icon Button goes somewhere or can be
+turned off, never both) and KN-447 (each shape hands back the element it
+renders).
+
+Those roasts filed KN-427 to KN-452. The ones that matter most, in order: a
+phone cannot start a selection at all, so the bulk bar can never be raised there
+(KN-428); select all and bulk delete ignore the search, which is the KN-422 data
+loss in the other half of the same screen (KN-431); recolouring a status moves
+its column, because the board's order ranks by the colour token (KN-440); and
+the shell gives every page 24 of gutter where the file draws 16 (KN-452), which
+also carries the 358 assertion KN-443's own exit asked for and did not get.
+
+Roasts now go through `npm run roast -- <id> --summary … --ask …`, the repo's own
+harness, because only its archive can be recorded with `todo roast`. Three
+earlier roasts this iteration came from a subagent instead and so are on the
+board as cards but not as roast records. KN-365 is still the two full-run
+flakes, both reading a colour through its own transition. KN-269, KN-270,
+KN-358 and KN-396 wait on the owner. Then the law, which serves OKR-1 first.
 
 ## What to read first
 
