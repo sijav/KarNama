@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 184 of 452 tasks done · 417 of 925 points.
+Project **KarNama** · 185 of 452 tasks done · 418 of 925 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-430` The contacts page's search box is announced as the board's** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-430` | The contacts page's search box is announced as the board's | high | 1 | web | none | The contacts page's search box is named and described for contacts in both languages, and a story asserts each page's own name. |
+**Next up: `KN-433` An Icon Button given both href and disabled renders an anchor that still navigates** (high, 1 pt, web)
 
 ## Blocked (5)
 
@@ -291,7 +285,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (184)
+## Done (185)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -451,6 +445,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-409` | The token guard's allowed names are every code span in DESIGN.md's Tokens section, not the token tables' own names | high | 1 | web | none | documentedNames is built from the token tables' name column and the spacing block alone, so a code span in the component notes is not a key; every key in tokens.ts still passes; a planted key documented only in the prose of section 1 fails the guard, and the positive control still names bg/page, custom-4, heading/l and 3xl. |
 | `KN-412` | The token guard takes a name from any table in DESIGN.md's Tokens section, so a component note's table row would authorise a key | high | 1 | web | none | The names come from the five token subsections alone, each named in the guard and sliced from its heading to the next; a table row planted in a component note is not a name, and the same row planted in a token table is, both asserted; an empty document yields no names; every key in tokens.ts still passes and the positive control still names bg/page, custom-4, heading/l and 3xl. |
 | `KN-429` | Four story assertions in the screens cannot fail | high | 1 | web | none | Each of the four asserts something that is false before the action it follows. |
+| `KN-430` | The contacts page's search box is announced as the board's | high | 1 | web | none | The contacts page's search box is named and described for contacts in both languages, and a story asserts each page's own name. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -5534,7 +5529,7 @@ From the KN-415 roast, each verified against the tree: JobsScreen.stories.tsx 18
 
 ### `KN-430` The contacts page's search box is announced as the board's
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 SearchBar hard-codes its accessible name to 'Search job opportunities', SearchBar.tsx line 115, and the network page uses the same component, so a screen reader on the contacts page is told the box searches job opportunities. A KN-415 story wrote that into a comment as a fact and filed nothing. Give the bar a label prop, keep the board's as the default, and have the network page pass the contacts one; the placeholder needs the same treatment, it names title, company and note.
