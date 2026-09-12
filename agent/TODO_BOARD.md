@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 194 of 464 tasks done · 431 of 946 points.
+Project **KarNama** · 195 of 464 tasks done · 434 of 946 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-463` Every set of fields is a form, and its primary button submits it** (high, 3 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-463` | Every set of fields is a form, and its primary button submits it | high | 3 | web | none | Every screen and modal that takes fields wraps them in a form whose onSubmit does the work, its primary button is type=submit, and a story presses Enter in a field and sees the same thing the button does. |
+**Next up: `KN-330` The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list** (high, 2 pt, web)
 
 ## Blocked (5)
 
@@ -293,7 +287,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (194)
+## Done (195)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -489,6 +483,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-316` | The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input | high | 2 | web | none | A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4. |
 | `KN-051` | Deploy the web app to GitHub Pages | high | 3 | deploy | KN-003 | The app loads at its Pages URL, a deep link to a route works on a hard refresh, Storybook is reachable at /storybook/, and the deploy runs from a push to main with no manual step. |
 | `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
+| `KN-463` | Every set of fields is a form, and its primary button submits it | high | 3 | web | none | Every screen and modal that takes fields wraps them in a form whose onSubmit does the work, its primary button is type=submit, and a story presses Enter in a field and sees the same thing the button does. |
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
 | `KN-184` | The order check reads the whole document, not the fenced block it claims to | low | 2 | agent | none | The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed. |
 
@@ -5921,7 +5916,7 @@ From the KN-459 roast. The line added to AuthProvider.test.tsx captures a FRESH 
 
 ### `KN-463` Every set of fields is a form, and its primary button submits it
 
-- **status** in_progress · **severity** high · **points** 3 · **area** web
+- **status** done · **severity** high · **points** 3 · **area** web
 - **blocked by** none
 
 The owner, 2026-09-12: 'the inputs should always be in a form, onsubmit needs to be the one responsible for next button, next button needs to call onsubmit'. Today each screen wires its primary button's onClick by hand and no form element exists, so Enter does nothing in a field, a phone's keyboard offers no Go key, and a password manager or autofill has no form to fill. Wrap each set of fields in a form, move what the primary button does into the form's onSubmit, and make that button type=submit so it submits rather than carrying its own handler. Everywhere fields are taken: the three sign-in steps, the add flow's paste step and its manual form, the contact modal, the rename modal, and the job modal's own save.

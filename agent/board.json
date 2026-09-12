@@ -12066,13 +12066,15 @@
       "points": 3,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Every screen and modal that takes fields wraps them in a form whose onSubmit does the work, its primary button is type=submit, and a story presses Enter in a field and sees the same thing the button does.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T03:03:41.200Z",
-      "updatedAt": "2026-09-12T03:03:46.637Z"
+      "updatedAt": "2026-09-12T03:25:29.137Z",
+      "evidence": "Every place that takes fields is a form whose onSubmit does the work with preventDefault, and its primary button is type=submit: the three sign-in steps as one routing form, the contact modal, the change-status modal, the board's rename, and both add-flow steps, the footer actions associated by form id. EnterFinishesTheStep presses Enter through two sign-in steps, and EnterSaves presses the runner's own Enter in the contact modal, which is what proves an association a synthetic Enter cannot see. 1483 of 1484 tests pass, the one failure the known KN-365 flake; lint and tsc clean.",
+      "closedAt": "2026-09-12T03:25:29.137Z"
     },
     {
       "id": "KN-464",
