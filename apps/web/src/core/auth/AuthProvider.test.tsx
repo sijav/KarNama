@@ -67,10 +67,6 @@ describe('the mocked provider', () => {
     const { held } = capture()
 
     held.requestCode(PHONE)
-    // The code is handed to the screen as well as to the console, KN-459: a
-    // phone has no console, and until a real sender exists that was the only
-    // place it appeared.
-    expect(capture().held.mockCode).toBeNull()
     expect(held.verify('00000')).toBe('wrong')
 
     held.resend()
@@ -81,6 +77,13 @@ describe('the mocked provider', () => {
     expect(held.verify(codes.at(-1) ?? '')).toBeNull()
     expect(JSON.parse(kept.at(-1) ?? '{}')).toMatchObject({ phone: PHONE, name: '' })
   })
+
+  // What the screen is GIVEN cannot be read here: `capture` renders once with
+  // `renderToString`, so a code sent afterwards never reaches a second render,
+  // and an assertion on a fresh provider's `mockCode` says nothing about the
+  // one that sent it. That is why the line this replaced was vacuous, KN-462.
+  // It is covered where it is observable, in SigningInOnAPhone, which reads the
+  // code off the screen, resends, and signs in with the new one.
 
   it('is expired when no code was ever sent', () => {
     vi.stubGlobal('localStorage', { getItem: () => null, setItem: () => undefined, removeItem: () => undefined })

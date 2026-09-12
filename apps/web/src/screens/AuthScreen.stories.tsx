@@ -141,9 +141,22 @@ export const SigningInOnAPhone: Story = {
       const digits = /(\d{5})/.exec(shown.textContent)?.[1] ?? ''
       await expect(digits).toHaveLength(5)
 
-      // And it works: typed in, it signs the reader in, which the name step
-      // asks for next on a first login.
-      await userEvent.type(canvas.getByLabelText('کد پنج رقمی'), digits)
+      // Another code asked for, and the notice shows the NEW one: it could
+      // otherwise go on showing the first while only the second is accepted,
+      // and a reader would type what they can see and be refused, KN-462.
+      // Not "the two differ", which two random five-digit codes need not, but
+      // the thing that matters: what the notice says NOW is what signs the
+      // reader in. A notice left on the first code fails the name step below.
+      await userEvent.click(canvas.getByRole('button', { name: 'ارسال کد دیگر' }))
+      const latest = await waitFor(() => {
+        const shown = /(\d{5})/.exec(canvas.getByRole('status').textContent)?.[1] ?? ''
+        if (shown === '') throw new Error('the notice shows no code')
+        return shown
+      })
+
+      // And the code on the screen is the one that works: typed in, it signs
+      // the reader in, which the name step asks for next on a first login.
+      await userEvent.type(canvas.getByLabelText('کد پنج رقمی'), latest)
       await userEvent.click(canvas.getByRole('button', { name: 'ورود' }))
       await waitFor(async () => {
         await expect(canvas.getByLabelText('اسم و فامیل')).toBeInTheDocument()

@@ -12044,12 +12044,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A test reads mockCode from the provider that sent the code, and a story resends and signs in with the newly shown one.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T02:56:42.578Z"
+      "createdAt": "2026-09-12T02:56:42.578Z",
+      "updatedAt": "2026-09-12T02:57:05.052Z"
     }
   ],
   "okrs": [
