@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 186 of 452 tasks done · 419 of 926 points.
+Project **KarNama** · 187 of 452 tasks done · 420 of 926 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-447` An Icon Button with an href cannot be given a ref: it is typed for a button and renders an anchor** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-447` | An Icon Button with an href cannot be given a ref: it is typed for a button and renders an anchor | high | 1 | web | none | A ref taken on an Icon Button with an href typechecks with no cast. |
+**Next up: `KN-316` The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input** (high, 2 pt, web)
 
 ## Blocked (5)
 
@@ -289,7 +283,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (186)
+## Done (187)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -451,6 +445,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-429` | Four story assertions in the screens cannot fail | high | 1 | web | none | Each of the four asserts something that is false before the action it follows. |
 | `KN-430` | The contacts page's search box is announced as the board's | high | 1 | web | none | The contacts page's search box is named and described for contacts in both languages, and a story asserts each page's own name. |
 | `KN-433` | An Icon Button given both href and disabled renders an anchor that still navigates | high | 1 | web | none | href and disabled cannot be passed together, or a disabled one does not navigate; DESIGN.md records that the card's mail control is a link. |
+| `KN-447` | An Icon Button with an href cannot be given a ref: it is typed for a button and renders an anchor | high | 1 | web | none | A ref taken on an Icon Button with an href typechecks with no cast. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -5723,7 +5718,7 @@ Proved by the KN-310 roast with a tsc probe: a Pick of eight props does not cons
 
 ### `KN-447` An Icon Button with an href cannot be given a ref: it is typed for a button and renders an anchor
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 TooltipTrigger takes ref from MUI's IconButton props, which resolves to Ref of HTMLButtonElement, and href makes the root an anchor, ButtonBase line 146. The contact card already ships a mailto Icon Button, so a caller holding a ref to it gets a type error whose only escape is the cast AGENTS.md forbids. Type it as a ref to a button OR an anchor, or split the props on href.

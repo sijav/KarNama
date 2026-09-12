@@ -11688,13 +11688,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A ref taken on an Icon Button with an href typechecks with no cast.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T01:53:04.882Z",
-      "updatedAt": "2026-09-12T02:05:42.546Z"
+      "updatedAt": "2026-09-12T02:15:02.445Z",
+      "evidence": "A ref on an Icon Button with an href typechecks with no cast and gives back the anchor: HandsBackItsElement hands a ref to one of each shape and reads BUTTON and A out of them, and asserts the link's href. The handlers a Tooltip injects are React's DOMAttributes over the same element, so the tip still attaches, which InATooltip still proves. 1475 of 1475 tests pass, lint and tsc clean.",
+      "closedAt": "2026-09-12T02:15:02.445Z"
     },
     {
       "id": "KN-448",
