@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box, ButtonBase, type Theme } from '@mui/material'
-import { useRef, useState, type ReactNode } from 'react'
+import { useRef, useState, type HTMLAttributes, type ReactNode } from 'react'
 import { iconSize, spacing, status, type as typeScale, type StatusToken } from '../../theme/tokens'
 import { Checkbox } from '../checkbox'
 import { Icon } from '../icon'
@@ -12,6 +12,7 @@ import { CardMenu } from '../menu'
 export type JobCardLayout = 'desktop' | 'mobile'
 
 export interface JobCardProps {
+  dragEvents?: Pick<HTMLAttributes<HTMLElement>, 'draggable' | 'onDragStart' | 'onDragEnd' | 'onClickCapture'>
   title: string
   company: string
   date: string
@@ -194,6 +195,7 @@ export const JobCard = ({
   onSelectedChange,
   onDelete,
   onChangeStatus,
+  dragEvents,
 }: JobCardProps) => {
   const { i18n } = useLingui()
   const layout = given ?? DESKTOP
@@ -224,7 +226,7 @@ export const JobCard = ({
     </Box>
   )
   return (
-    <Box component="article" sx={(theme) => frame.sx(theme, layout, selected, interactive)}>
+    <Box component="article" {...dragEvents} sx={(theme) => frame.sx(theme, layout, selected, interactive)}>
       <Box
         aria-hidden
         sx={(theme) => ({

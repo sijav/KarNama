@@ -12,7 +12,7 @@ import { FilterChip } from '../shared/filter-chip'
 import { Input } from '../shared/input'
 import { JobCard, type JobCardLayout } from '../shared/job-card'
 import { formatDay, JobModal, type JobSaved } from '../shared/job-modal'
-import { AddColumn, EmptyColumn, KanbanColumn } from '../shared/kanban-column'
+import { AddColumn, EmptyColumn, KanbanColumn, type KanbanColumnProps } from '../shared/kanban-column'
 import { ChangeStatusModal, ConfirmModal, ContactModal, Modal, type ContactModalValues } from '../shared/modal'
 import { PageHeader } from '../shared/page-header'
 import { SearchBar, type SearchBarLayout } from '../shared/search-bar'
@@ -34,6 +34,8 @@ const COLUMN_GAP = spacing.lg
 // The order the board opens in, typed so the lint rule reads it as a value and
 // not as copy: a literal handed to a generic loses the union that exempts it.
 const NEWEST: SortOrder = 'newest'
+const DROP_SAVED: NonNullable<KanbanColumnProps['dropFeedback']> = 'saved'
+const DROP_HOVER: NonNullable<KanbanColumnProps['dropFeedback']> = 'hover'
 
 // The search bar's own width before it gives way, node 155:92's 320, and the
 // room the tab bar needs under the page on a phone. Neither binds a variable.
@@ -216,60 +218,58 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
   const personId = person?.id ?? null
 
   const card = (entry: JobEntry) => (
-    <Box
+    <JobCard
       key={entry.id}
-      draggable={wide}
-      onDragStart={(event) => {
-        if (event.target instanceof Element && event.target.closest('a, input')) {
-          event.preventDefault()
-          return
-        }
-        type CardTransfer = 'application/x-karnama-job'
-        const format: CardTransfer = 'application/x-karnama-job'
-        event.dataTransfer.setData(format, entry.id)
-        event.dataTransfer.effectAllowed = 'move'
-        setDragging(entry.id)
-        setAnnouncement('')
+      dragEvents={{
+        draggable: wide,
+        onDragStart: (event) => {
+          if (event.target instanceof Element && event.target.closest('a, input')) {
+            event.preventDefault()
+            return
+          }
+          type CardTransfer = 'application/x-karnama-job'
+          const format: CardTransfer = 'application/x-karnama-job'
+          event.dataTransfer.setData(format, entry.id)
+          event.dataTransfer.effectAllowed = 'move'
+          setDragging(entry.id)
+          setAnnouncement('')
+        },
+        onDragEnd: endDrag,
+        onClickCapture: (event) => {
+          if (dragging) event.stopPropagation()
+        },
       }}
-      onDragEnd={endDrag}
-      onClickCapture={(event) => {
-        if (dragging) event.stopPropagation()
+      // A phone gets the card's phone layout, which carries its own menu. The
+      // desktop card folds delete and select behind a hover, KN-341, and a
+      // phone has no hover: without this the board on a phone offered no way
+      // to delete a job opportunity or move it, found while KN-415 drove every
+      // handler of this screen from a story.
+      layout={wide ? DESKTOP : MOBILE}
+      title={entry.draft.title}
+      company={entry.draft.company}
+      date={entry.draft.postedAt === '' ? '' : formatDay(locale, entry.draft.postedAt)}
+      status={tokenOf(records.statuses, entry.draft.status)}
+      link={entry.draft.postingUrl === '' ? null : entry.draft.postingUrl}
+      selected={selected.includes(entry.id)}
+      onOpen={() => {
+        setReading(entry.id)
       }}
-      sx={{ opacity: dragging === entry.id ? 0.5 : 1, cursor: wide ? 'grab' : undefined }}
-    >
-      <JobCard
-        // A phone gets the card's phone layout, which carries its own menu. The
-        // desktop card folds delete and select behind a hover, KN-341, and a
-        // phone has no hover: without this the board on a phone offered no way
-        // to delete a job opportunity or move it, found while KN-415 drove every
-        // handler of this screen from a story.
-        layout={wide ? DESKTOP : MOBILE}
-        title={entry.draft.title}
-        company={entry.draft.company}
-        date={entry.draft.postedAt === '' ? '' : formatDay(locale, entry.draft.postedAt)}
-        status={tokenOf(records.statuses, entry.draft.status)}
-        link={entry.draft.postingUrl === '' ? null : entry.draft.postingUrl}
-        selected={selected.includes(entry.id)}
-        onOpen={() => {
-          setReading(entry.id)
-        }}
-        onSelectedChange={(wanted) => {
-          select(entry.id, wanted)
-        }}
-        onDelete={() => {
-          remember()
-          setDeleting([entry.id])
-        }}
-        onChangeStatus={() => {
-          setMoving([entry.id])
-        }}
-      />
-    </Box>
+      onSelectedChange={(wanted) => {
+        select(entry.id, wanted)
+      }}
+      onDelete={() => {
+        remember()
+        setDeleting([entry.id])
+      }}
+      onChangeStatus={() => {
+        setMoving([entry.id])
+      }}
+    />
   )
 
   return (
-    <Stack ref={board} tabIndex={LOOSE} sx={{ gap: `${spacing.lg}px`, minHeight: 0, flex: '1 1 auto' }}>
-      <Box role="status" sx={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clipPath: 'inset(50%)' }}>
+    <Stack ref={board} tabIndex={LOOSE} sx={{ position: 'relative', gap: `${spacing.lg}px`, minWidth: 0, minHeight: 0, flex: '1 1 auto' }}>
+      <Box role="status" sx={{ position: 'absolute', inset: 0, width: 1, height: 1, overflow: 'hidden', clipPath: 'inset(50%)' }}>
         {announcement}
       </Box>
       <PageHeader
@@ -333,74 +333,63 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
           }}
         >
           {columns.map((column) => (
-            <Box
+            <KanbanColumn
               key={column.id}
-              onDragOver={(event) => {
-                if (!dragging) return
-                event.preventDefault()
-                event.dataTransfer.dropEffect = 'move'
-                if (hoverColumn.current === column.id) return
-                clearHover()
-                hoverColumn.current = column.id
-                setOver(column.id)
-                if (isCollapsed(column.id)) {
-                  hoverTimer.current = window.setTimeout(() => {
-                    setDragExpanded(column.id)
-                  }, 500)
-                }
+              dragEvents={{
+                onDragOver: (event) => {
+                  if (!dragging) return
+                  event.preventDefault()
+                  event.dataTransfer.dropEffect = 'move'
+                  if (hoverColumn.current === column.id) return
+                  clearHover()
+                  hoverColumn.current = column.id
+                  setOver(column.id)
+                  if (isCollapsed(column.id)) {
+                    hoverTimer.current = window.setTimeout(() => {
+                      setDragExpanded(column.id)
+                    }, 500)
+                  }
+                },
+                onDragLeave: (event) => {
+                  if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) return
+                  clearHover()
+                },
+                onDrop: (event) => {
+                  if (!dragging) return
+                  event.preventDefault()
+                  const source = records.jobs.find((entry) => entry.id === dragging)
+                  if (source && source.draft.status !== column.id) {
+                    records.moveJob(source.id, column.id)
+                    setLanded(column.id)
+                    setAnnouncement(`${source.draft.title}: ${column.name}`)
+                  }
+                  endDrag()
+                },
               }}
-              onDragLeave={(event) => {
-                if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) return
-                clearHover()
+              stableDropTarget={dragging !== null && (isCollapsed(column.id) || dragExpanded === column.id)}
+              dropFeedback={landed === column.id ? DROP_SAVED : over === column.id ? DROP_HOVER : undefined}
+              name={column.name}
+              colour={column.token}
+              count={sizeOf(column.id)}
+              collapsed={isCollapsed(column.id)}
+              onExpand={() => {
+                setOpen((was) => [...was, column.id])
               }}
-              onDrop={(event) => {
-                if (!dragging) return
-                event.preventDefault()
-                const source = records.jobs.find((entry) => entry.id === dragging)
-                if (source && source.draft.status !== column.id) {
-                  records.moveJob(source.id, column.id)
-                  setLanded(column.id)
-                  setAnnouncement(`${source.draft.title}: ${column.name}`)
-                }
-                endDrag()
+              onAdd={() => {
+                setAdding(column.id)
               }}
-              sx={(theme) => ({
-                minHeight: 0,
-                height: '100%',
-                // Keep the native drop target stable while the collapsed header changes.
-                '& > section': { pointerEvents: dragging && (isCollapsed(column.id) || dragExpanded === column.id) ? 'none' : undefined },
-                borderRadius: `${theme.karnama.radius.lg}px`,
-                outline:
-                  over === column.id || landed === column.id
-                    ? `2px solid ${landed === column.id ? theme.karnama.status[column.token].base : theme.karnama.semantic['border/focus']}`
-                    : undefined,
-                outlineOffset: -2,
-              })}
+              onRename={() => {
+                setRenaming({ id: column.id, name: column.name })
+              }}
+              onColourChange={(colour) => {
+                records.recolourStatus(column.id, colour)
+              }}
+              onDelete={() => {
+                records.deleteStatus(column.id)
+              }}
             >
-              <KanbanColumn
-                name={column.name}
-                colour={column.token}
-                count={sizeOf(column.id)}
-                collapsed={isCollapsed(column.id)}
-                onExpand={() => {
-                  setOpen((was) => [...was, column.id])
-                }}
-                onAdd={() => {
-                  setAdding(column.id)
-                }}
-                onRename={() => {
-                  setRenaming({ id: column.id, name: column.name })
-                }}
-                onColourChange={(colour) => {
-                  records.recolourStatus(column.id, colour)
-                }}
-                onDelete={() => {
-                  records.deleteStatus(column.id)
-                }}
-              >
-                {cardsOf(column.id).map(card)}
-              </KanbanColumn>
-            </Box>
+              {cardsOf(column.id).map(card)}
+            </KanbanColumn>
           ))}
           <AddColumn
             onAdd={() => {
@@ -411,8 +400,8 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
       ) : (
         // The phone's board, node 241:176: the statuses as chips in a row that
         // scrolls sideways, and the chosen one's cards below, alone.
-        <Stack sx={{ gap: `${spacing.md}px`, minHeight: 0 }}>
-          <Box sx={{ display: 'flex', gap: `${spacing.xs}px`, overflowX: 'auto', '& > *': { flexShrink: 0 } }}>
+        <Stack sx={{ gap: `${spacing.md}px`, minHeight: 0, minWidth: 0, flex: '1 1 0' }}>
+          <Box sx={{ display: 'flex', flexShrink: 0, gap: `${spacing.xs}px`, overflowX: 'auto', '& > *': { flexShrink: 0 } }}>
             {columns.map((column) => (
               <FilterChip
                 key={column.id}
@@ -425,7 +414,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
               />
             ))}
           </Box>
-          <Stack sx={{ gap: `${spacing.sm}px` }}>
+          <Stack sx={{ gap: `${spacing.sm}px`, minHeight: 0, overflowY: 'auto', '& > *': { flexShrink: 0 } }}>
             {showing && cardsOf(showing.id).length > 0 ? (
               cardsOf(showing.id).map(card)
             ) : (

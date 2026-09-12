@@ -13,6 +13,18 @@ board's choice.
 
 ## Props
 
+### dragEvents
+
+Native drop handlers attached to the existing column frame.
+
+### dropFeedback
+
+An outline marks the current drop target or confirms a completed move.
+
+### stableDropTarget
+
+During a drag, the column receives pointer events directly so expanding its contents preserves the drop target.
+
 ### name
 
 The status's name, shown in the chip and naming the column.

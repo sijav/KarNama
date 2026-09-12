@@ -7,6 +7,7 @@ import { AuthScreen, JobsScreen, NetworkScreen } from '../screens'
 import { Button } from '../shared/button'
 import { Navigation, type Destination } from '../shared/navigation'
 import { SettingsControl } from '../shared/settings'
+import { spacing } from '../theme/tokens'
 import { addressOf, destinationIn } from './routes'
 
 /**
@@ -60,7 +61,7 @@ export const App = () => {
   if (!session || signingUp) return <AuthScreen />
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
+    <Box sx={{ display: 'flex', height: '100dvh', minWidth: 0, overflow: 'hidden', bgcolor: 'background.default' }}>
       <Navigation
         selecting={selecting}
         current={current}
@@ -71,8 +72,20 @@ export const App = () => {
       />
       {/* Below md the tab bar is pinned over the page's foot, so the page
           keeps its 72 clear there. */}
-      <Box component="main" sx={{ flex: '1 1 auto', minWidth: 0, display: 'flex', flexDirection: 'column', p: 6, pb: { xs: 15, md: 6 } }}>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+      <Box
+        component="main"
+        sx={{
+          flex: '1 1 auto',
+          minWidth: 0,
+          minHeight: 0,
+          overflowY: current === 'network' ? 'auto' : 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          p: 6,
+          pb: { xs: `calc(72px + env(safe-area-inset-bottom) + ${spacing.lg}px)`, md: 6 },
+        }}
+      >
+        <Box sx={{ display: 'flex', flexShrink: 0, justifyContent: 'flex-end', alignItems: 'center' }}>
           <SettingsControl />
           <Box sx={{ display: { xs: 'block', md: 'none' } }}>
             <Button variant="text" disabled={busy ?? false} onClick={signOut}>

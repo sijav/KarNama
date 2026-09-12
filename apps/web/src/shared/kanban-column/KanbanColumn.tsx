@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box, ButtonBase, type Theme } from '@mui/material'
-import { Children, useRef, useState, type ReactNode } from 'react'
+import { Children, useRef, useState, type HTMLAttributes, type ReactNode } from 'react'
 import { usePreferences } from '../../core/preferences'
 import { formatCount } from '../../i18n/formatCount'
 import { iconSize, spacing, status, type as typeScale, type StatusToken } from '../../theme/tokens'
@@ -11,6 +11,9 @@ import { StatusChip } from '../status-chip'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface KanbanColumnProps {
+  dragEvents?: Pick<HTMLAttributes<HTMLElement>, 'onDragOver' | 'onDragLeave' | 'onDrop'>
+  dropFeedback?: 'hover' | 'saved' | undefined
+  stableDropTarget?: boolean
   name: string
   colour: string
   count: number
@@ -168,11 +171,23 @@ export const KanbanColumn = ({
   onRename,
   onColourChange,
   onDelete,
+  dragEvents,
+  dropFeedback,
+  stableDropTarget = false,
 }: KanbanColumnProps) => {
   const { i18n } = useLingui()
   const token = tokenOf(colour)
   const trigger = useRef<HTMLElement>(null)
   const [menu, setMenu] = useState<HTMLElement | null>(null)
+  const dropStyle = {
+    sx: (theme: Theme) => ({
+      '& > *': { pointerEvents: stableDropTarget ? 'none' : undefined },
+      outline: dropFeedback
+        ? `2px solid ${dropFeedback === 'saved' ? theme.karnama.status[token].base : theme.karnama.semantic['border/focus']}`
+        : undefined,
+      outlineOffset: -2,
+    }),
+  }
   // Empty when nothing renders: Children.count counts false, null and an empty
   // list, which a board that filters its cards hands over, KN-353.
   const cards = Children.toArray(children).length === 0 ? <EmptyColumn /> : children
@@ -199,7 +214,7 @@ export const KanbanColumn = ({
 
   if (collapsed) {
     return (
-      <Box component="section" aria-label={name} sx={frame.sx}>
+      <Box component="section" aria-label={name} {...dragEvents} sx={(theme) => ({ ...frame.sx(theme), ...dropStyle.sx(theme) })}>
         <ButtonBase
           disableRipple
           aria-expanded={false}
@@ -223,7 +238,12 @@ export const KanbanColumn = ({
   }
 
   return (
-    <Box component="section" aria-label={name} sx={(theme) => ({ ...frame.sx(theme), height: '100%', overflow: 'hidden' })}>
+    <Box
+      component="section"
+      aria-label={name}
+      {...dragEvents}
+      sx={(theme) => ({ ...frame.sx(theme), height: '100%', overflow: 'hidden', ...dropStyle.sx(theme) })}
+    >
       <Box sx={{ ...headerRow.sx, flexShrink: 0 }}>
         <Title name={name} token={token} count={count} />
         <Box

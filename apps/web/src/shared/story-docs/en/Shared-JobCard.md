@@ -16,6 +16,10 @@ an ellipsis, so the card keeps its size.
 
 ## Props
 
+### dragEvents
+
+Native drag handlers attached to the card itself, without adding a layout wrapper.
+
 ### title
 
 The job opportunity's title.
