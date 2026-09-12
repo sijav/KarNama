@@ -26,6 +26,10 @@ import { addressOf, destinationIn } from './routes'
  * job detail and adding are never pages of their own.
  */
 export const App = () => {
+  // Whether the page under the shell is selecting, so the tab bar can give the
+  // foot of the screen to the Bulk Action Bar, KN-356. It lives here because
+  // the navigation is the shell's and the selection is the page's.
+  const [selecting, setSelecting] = useState(false)
   const [current, setCurrent] = useState<Destination>(() => destinationIn(window.location.hash))
   const { session, signingUp, signOut } = useAuth()
 
@@ -52,14 +56,15 @@ export const App = () => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
-      <Navigation current={current} onNavigate={navigate} userName={session.name} userPhone={session.phone} onSignOut={signOut} />
+      <Navigation selecting={selecting} current={current} onNavigate={navigate} userName={session.name} userPhone={session.phone} onSignOut={signOut} />
       {/* Below md the tab bar is pinned over the page's foot, so the page
           keeps its 72 clear there. */}
       <Box component="main" sx={{ flex: '1 1 auto', minWidth: 0, display: 'flex', flexDirection: 'column', p: 6, pb: { xs: 15, md: 6 } }}>
         {current === 'network' ? (
-          <NetworkScreen />
+          <NetworkScreen onSelecting={setSelecting} />
         ) : (
           <JobsScreen
+            onSelecting={setSelecting}
             addOpen={current === 'add'}
             onAddClose={() => {
               navigate('jobs')

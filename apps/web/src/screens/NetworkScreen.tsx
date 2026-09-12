@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
-import { useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { contactMatches, useRecords, type ContactEntry } from '../core/records'
 import { BulkActionBar } from '../shared/bulk-action-bar'
 import { Button } from '../shared/button'
@@ -48,7 +48,12 @@ const asValues = (held: ContactEntry): ContactModalValues => ({
   jobId: held.jobId,
 })
 
-export const NetworkScreen = () => {
+export interface NetworkScreenProps {
+  /** Said while anything is selected, so the shell can give the foot of the screen to the bulk bar, KN-356. */
+  onSelecting?: (selecting: boolean) => void
+}
+
+export const NetworkScreen = ({ onSelecting }: NetworkScreenProps) => {
   const { i18n } = useLingui()
   const records = useRecords()
   // The control that asked to delete, kept as it asks, KN-344. The route from
@@ -68,6 +73,17 @@ export const NetworkScreen = () => {
   // and undefined when the modal is closed.
   const [editing, setEditing] = useState<{ id: string | null; values: ContactModalValues } | undefined>(undefined)
   const [deleting, setDeleting] = useState<readonly string[] | null>(null)
+
+  // Before the paint, not after it: a normal effect would let the frame that
+  // shows the bulk bar also show the tab bar under it, KN-356. Cleared when the
+  // page goes, so leaving with a selection live does not leave the shell
+  // thinking the next page is selecting.
+  useLayoutEffect(() => {
+    onSelecting?.(selected.length > 0)
+    return () => {
+      onSelecting?.(false)
+    }
+  }, [selected.length, onSelecting])
 
   const shown = records.contacts.filter((held) => contactMatches(held, search))
   const jobs = records.jobs.map((job) => ({ value: job.id, label: job.draft.title }))

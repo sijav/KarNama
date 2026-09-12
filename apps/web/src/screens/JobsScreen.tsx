@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
-import { useId, useRef, useState, type SyntheticEvent } from 'react'
+import { useId, useLayoutEffect, useRef, useState, type SyntheticEvent } from 'react'
 import { usePreferences } from '../core/preferences'
 import { columnOrder, contactsOf, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
 import { AddJobModal, type JobDraft } from '../shared/add-job'
@@ -65,9 +65,11 @@ export interface JobsScreenProps {
   addOpen?: boolean
   /** Said when the add flow closes, so the address can go back to the board. */
   onAddClose?: () => void
+  /** Said while anything is selected, so the shell can give the foot of the screen to the bulk bar, KN-356. */
+  onSelecting?: (selecting: boolean) => void
 }
 
-export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => {
+export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScreenProps) => {
   const { i18n } = useLingui()
   const { locale } = usePreferences()
   const records = useRecords()
@@ -164,6 +166,17 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
     setSelected([])
     if (deleting?.includes(reading ?? '')) setReading(null)
   }
+
+  // Before the paint, not after it: a normal effect would let the frame that
+  // shows the bulk bar also show the tab bar under it, KN-356. Cleared when the
+  // page goes, so leaving with a selection live does not leave the shell
+  // thinking the next page is selecting.
+  useLayoutEffect(() => {
+    onSelecting?.(held.length > 0)
+    return () => {
+      onSelecting?.(false)
+    }
+  }, [held.length, onSelecting])
 
   const card = (entry: JobEntry) => (
     <JobCard

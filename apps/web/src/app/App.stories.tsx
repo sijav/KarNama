@@ -37,6 +37,7 @@ const meta = {
 // name is data and never translated.
 const SINCE = new Date(Date.UTC(2026, 8, 12)).toISOString()
 
+
 /** Relative luminance of an `rgb(r, g, b)` string, 0 for black and 1 for white. */
 const luminanceOf = (colour: string) => {
   const [r = 0, g = 0, b = 0] = [...colour.matchAll(/\d+/g)].map((match) => Number(match[0]) / 255)

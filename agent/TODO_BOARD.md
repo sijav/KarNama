@@ -8,7 +8,13 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-352` Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page** (high, 2 pt, web)
+**Next up: `KN-356` Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected** (high, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-356` | Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected | high | 2 | web | none | Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot. |
 
 ## Blocked (5)
 
@@ -20,7 +26,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (267)
+## Backlog (266)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -28,8 +34,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
-| `KN-352` | Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page | high | 2 | web | none | Unchecking the phone card's checkbox leaves focus on the card, either on a checkbox that stays and folds as the desktop's does or on the title, and a story unchecks it by keyboard and asserts where focus is. |
-| `KN-356` | Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected | high | 2 | web | none | Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot. |
+| `KN-352` | Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page | high | 2 | web | KN-428 | Unchecking the phone card's checkbox leaves focus on the card, either on a checkbox that stays and folds as the desktop's does or on the title, and a story unchecks it by keyboard and asserts where focus is. |
 | `KN-363` | The Job Modal keeps one job's edits when the page hands it another while it is open | high | 2 | web | none | The record carries its id, the modal starts over from a record with a different id while open, keeps edits across new objects of the same record, and a story swaps the job while open and saves the new one's fields. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
 | `KN-367` | lingui-ignore.test.ts reads the config's text, so an ignore entry it cannot parse whitelists copy unseen | high | 2 | web | none | The test takes the ignore array from the configuration ESLint actually loads, not from the file's text, and a story or test shows an entry written in another quote style is seen. |
@@ -4677,7 +4682,7 @@ CHILD OF KN-026 and KN-028, recorded in prose because board.json cannot express 
 ### `KN-352` Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page
 
 - **status** backlog · **severity** high · **points** 2 · **area** web
-- **blocked by** none
+- **blocked by** KN-428
 
 CHILD OF KN-015, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-015 roast. JobCard.tsx renders the phone card's checkbox only while the card is selected, so unchecking it by keyboard asks the parent to clear selected, the checkbox unmounts, and focus drops to body. The MobileSelected story checks only the initial checked state.
 
@@ -4724,7 +4729,7 @@ CHILD OF KN-027, recorded in prose because board.json cannot express parent_task
 
 ### `KN-356` Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** in_progress · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-027, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-027 roast. Node 185:19's description says the tab bar gives its place to the Bulk Action Bar during bulk selection. Navigation always renders the fixed tab bar below md and has no prop to be told the page is selecting, and the Bulk Action Bar is fixed at the same z-index 24 from the bottom, so on a phone the two overlap.

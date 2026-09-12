@@ -9983,13 +9983,18 @@
       "severity": "high",
       "points": 2,
       "area": "web",
-      "parent": [],
+      "parent": [
+        "KN-428"
+      ],
       "status": "backlog",
       "exit": "Unchecking the phone card's checkbox leaves focus on the card, either on a checkbox that stays and folds as the desktop's does or on the title, and a story unchecks it by keyboard and asserts where focus is.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-12: blocked by KN-428. The phone card draws its checkbox only once it is already selected, and nothing on a phone can select in the first place, so unchecking is a state the product cannot reach yet. Whatever KN-428 does about entering selection decides what this one is even about."
+      ],
       "createdAt": "2026-09-11T15:57:50.849Z",
-      "okr": "OKR-1"
+      "okr": "OKR-1",
+      "updatedAt": "2026-09-12T03:45:45.881Z"
     },
     {
       "id": "KN-353",
@@ -10087,12 +10092,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T16:35:53.339Z",
-      "okr": "OKR-1"
+      "okr": "OKR-1",
+      "updatedAt": "2026-09-12T03:45:58.351Z"
     },
     {
       "id": "KN-357",
