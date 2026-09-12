@@ -1,5 +1,7 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { AuthProvider, sessionFor } from '../core/auth'
+import { fixtures } from '../shared/story-fixtures'
 import { STORAGE_KEY } from '../core/preferences'
 import { CURRENT } from '../shared/navigation'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
@@ -18,7 +20,21 @@ const meta = {
   title: 'App/Shell',
   component: App,
   parameters: { layout: 'fullscreen' },
+  decorators: [
+    (Story) => (
+      // The shell is behind signing in, KN-046, and these stories are about the
+      // shell: a reader with a name is seeded so they are the page they draw.
+      <AuthProvider initial={sessionFor('09120000000', SINCE, fixtures('fa-IR').contacts[0]?.fullName ?? '')}>
+        <Story />
+      </AuthProvider>
+    ),
+  ],
 } satisfies StoryMeta<typeof App>
+
+// When the seeded reader signed in. Built rather than written: a date's own
+// letters are not copy, and the reader's name is a fixture's, since a person's
+// name is data and never translated.
+const SINCE = new Date(Date.UTC(2026, 8, 12)).toISOString()
 
 /** Relative luminance of an `rgb(r, g, b)` string, 0 for black and 1 for white. */
 const luminanceOf = (colour: string) => {
