@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 196 of 468 tasks done · 436 of 954 points.
+Project **KarNama** · 197 of 468 tasks done · 438 of 954 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-344` Focus is lost when the Confirm modal's action removes the control that opened it** (high, 2 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-344` | Focus is lost when the Confirm modal's action removes the control that opened it | high | 2 | web | none | The shell takes a fallback for focus, used when the opener is gone, and a story deletes the opener and finds focus on the fallback. |
+**Next up: `KN-352` Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page** (high, 2 pt, web)
 
 ## Blocked (5)
 
@@ -295,7 +289,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (196)
+## Done (197)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -490,6 +484,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-315` | The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one | high | 2 | web | none | The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them. |
 | `KN-316` | The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input | high | 2 | web | none | A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4. |
 | `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
+| `KN-344` | Focus is lost when the Confirm modal's action removes the control that opened it | high | 2 | web | none | The shell takes a fallback for focus, used when the opener is gone, and a story deletes the opener and finds focus on the fallback. |
 | `KN-051` | Deploy the web app to GitHub Pages | high | 3 | deploy | KN-003 | The app loads at its Pages URL, a deep link to a route works on a hard refresh, Storybook is reachable at /storybook/, and the deploy runs from a push to main with no manual step. |
 | `KN-161` | Give the roast, todo and loop skills BOTH a python and a node script | high | 3 | agent | none | roast, todo and loop each carry a python and a node entry point that produce the same behaviour on the same inputs, each SKILL.md documents both invocations, and a check runs both entry points of each skill and compares their observable result rather than asserting the files exist. |
 | `KN-463` | Every set of fields is a form, and its primary button submits it | high | 3 | web | none | Every screen and modal that takes fields wraps them in a form whose onSubmit does the work, its primary button is type=submit, and a story presses Enter in a field and sees the same thing the button does. |
@@ -4584,7 +4579,7 @@ CHILD OF KN-026, recorded in prose because board.json cannot express parent_task
 
 ### `KN-344` Focus is lost when the Confirm modal's action removes the control that opened it
 
-- **status** in_progress · **severity** high · **points** 2 · **area** web
+- **status** done · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-028, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-028 roast. The shell leaves focus restoration to MUI, which calls focus() on the element that had it when the modal opened. Deleting a job opportunity from its card's menu removes that card, so the saved element is detached and focus lands on the page body, with no fallback.

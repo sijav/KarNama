@@ -9798,13 +9798,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The shell takes a fallback for focus, used when the opener is gone, and a story deletes the opener and finds focus on the fallback.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T15:16:03.732Z",
       "okr": "OKR-1",
-      "updatedAt": "2026-09-12T03:32:29.881Z"
+      "updatedAt": "2026-09-12T03:44:30.034Z",
+      "evidence": "FocusAfterDeleting and FocusAfterDeletingFromTheModal delete the job opportunity and the contact from the controls that live on them, and assert focus lands inside the page rather than on the body; FocusWhenTheOpenerSurvives backs out and asserts focus is back on the very button that opened it. Making the fallback do nothing failed the first two and left the third passing, which is how they were shown to be able to fail; the mutation was reverted. 1489 of 1490 tests pass, the one failure the known KN-365 flake; lint and tsc clean.",
+      "closedAt": "2026-09-12T03:44:30.034Z"
     },
     {
       "id": "KN-345",
