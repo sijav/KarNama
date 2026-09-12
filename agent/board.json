@@ -11604,7 +11604,23 @@
       "status": "done",
       "exit": "The contacts page's search bar is 320 wide from md up and fills the page below it; a story at a phone's width asserts 358.",
       "okr": "OKR-1",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 1,
+          "file": "agent/roasts/KN-443-round-1.2026-09-12T01-56-30-919Z.md",
+          "filed": [
+            "KN-452"
+          ],
+          "cardDigest": "102608efd832fc06a932642c574f175217464377e3a5b183ee11ffceb232396d",
+          "head": "609565bb906d4ea91fb4a346e74f500ab4368d34",
+          "reviewerScore": 4,
+          "reviewerCriticals": 1,
+          "dismissed": "none. The critical stands: KN-443's own exit asked for a story asserting 358 at a phone's width, and what I closed it on asserts that the screen stops capping, which is a weaker thing. I did say so in the evidence, but the card's exit was not met and I should not have closed it against a different claim. The 358 cannot be reached from the screen at all while the shell gives 24 of gutter where the file draws 16, so the assertion belongs with KN-452, which now carries it.",
+          "at": "2026-09-12T02:01:42.050Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-12T01:52:21.355Z",
       "updatedAt": "2026-09-12T01:56:05.175Z",
@@ -11744,16 +11760,19 @@
       "title": "The shell gives a phone 24 of gutter where the design draws 16",
       "desc": "Found while fixing KN-443. App.tsx gives the main area p: 6, and the theme's spacing unit is 4, so every page sits inside 24 of padding at every width. The file draws a phone's page inside 16: the mobile board's header, node 241:147, puts the Page Header and the Search Bar at x=16 and 358 wide inside a 390 screen, and the mobile column's cards at x=16. So every phone page is 16 narrower than the design and every full-width control with it. The desktop's own 32, node 241:3's header at x=32, is not 24 either.",
       "why": "Gutters are the first thing that reads as wrong on a phone, and every screen inherits this one. It is also why a bar the file draws at 358 renders at 342.",
-      "severity": "medium",
-      "points": 1,
+      "severity": "high",
+      "points": 2,
       "area": "web",
       "parent": [],
       "status": "backlog",
       "exit": "A page's gutters are the file's at each width, 16 on a phone and 32 on the desktop, and a story at a phone's width reads a full-width control's box against the file's number.",
       "okr": "OKR-1",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-12T01:56:15.905Z"
+      "notes": [
+        "2026-09-12, from the KN-443 roast: this card now also carries the assertion KN-443's exit asked for and did not get. With the gutters at the file's 16, a phone's search bar on the contacts page is 358 and on the board 358, and that is the number to assert, from the SHELL rather than from a screen story: a screen rendered on its own fills whatever canvas it is given, so 390 passed a story that meant 358. Also from that roast, and cheap to do here: NetworkScreen declares the md breakpoint twice, once in useMediaQuery for the bar's layout and once in the sx cap. Use the wide flag it already has for both, so the cap and the height can never disagree."
+      ],
+      "createdAt": "2026-09-12T01:56:15.905Z",
+      "updatedAt": "2026-09-12T02:01:42.180Z"
     }
   ],
   "okrs": [

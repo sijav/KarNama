@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 185 of 452 tasks done · 418 of 925 points.
+Project **KarNama** · 185 of 452 tasks done · 418 of 926 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -53,6 +53,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-438` | The seeded board is nine columns of one card, which is no board to draw stories against | high | 2 | web | none | The fixture board holds an empty column, a column with several, and a rejected column worth collapsing; no test forbids an empty column. |
 | `KN-440` | Recolouring a status moves its column, because the board's order ranks by colour token | high | 2 | web | none | Recolouring a status leaves its column where it was, and a story recolours a custom status to the offer colour and asserts the order is unchanged. |
 | `KN-446` | The Icon Button's TooltipTrigger type enforces nothing, and the runtime forwards more than it says | high | 2 | web | none | What IconButton forwards and what its type says it forwards are the same thing, and a comment says why the clone marker is part of it. |
+| `KN-452` | The shell gives a phone 24 of gutter where the design draws 16 | high | 2 | web | none | A page's gutters are the file's at each width, 16 on a phone and 32 on the desktop, and a story at a phone's width reads a full-width control's box against the file's number. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -137,7 +138,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-444` | The Search Bar's size stories claim the text is placed as drawn and never read its placement | medium | 1 | web | none | Both stories assert the text's top offset and the icon's vertical centring against the file's numbers. |
 | `KN-448` | The Icon Button spreads a Tooltip's props before its own, which is the unsafe side | medium | 1 | web | none | The injected props are spread last, and the comment says what that protects. |
 | `KN-449` | The InATooltip story's console spy is installed too late to see what it claims to watch | medium | 1 | web | none | The spy is in place before the render and calls through, and the story still passes. |
-| `KN-452` | The shell gives a phone 24 of gutter where the design draws 16 | medium | 1 | web | none | A page's gutters are the file's at each width, 16 on a phone and 32 on the desktop, and a story at a phone's width reads a full-width control's box against the file's number. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -5681,6 +5681,8 @@ KN-315 cut the contacts page's search bar cap from 480 to 320 because the deskto
 
 **Exit condition.** The contacts page's search bar is 320 wide from md up and fills the page below it; a story at a phone's width asserts 358.
 
+**Roasts.** round 1 scored 4 with 1 critical(s)
+
 ### `KN-444` The Search Bar's size stories claim the text is placed as drawn and never read its placement
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -5771,7 +5773,7 @@ Both wrap their menu trigger in a Box only to have something to anchor a menu to
 
 ### `KN-452` The shell gives a phone 24 of gutter where the design draws 16
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **status** backlog · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 Found while fixing KN-443. App.tsx gives the main area p: 6, and the theme's spacing unit is 4, so every page sits inside 24 of padding at every width. The file draws a phone's page inside 16: the mobile board's header, node 241:147, puts the Page Header and the Search Bar at x=16 and 358 wide inside a 390 screen, and the mobile column's cards at x=16. So every phone page is 16 narrower than the design and every full-width control with it. The desktop's own 32, node 241:3's header at x=32, is not 24 either.
