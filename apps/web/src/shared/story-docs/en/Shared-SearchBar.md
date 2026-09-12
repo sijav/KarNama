@@ -28,6 +28,18 @@ container's, which is what makes both right — 320 is what the desktop toolbar
 gives it, 358 is a phone's page inside its own 16 gutters. The phone's is the
 default, because that is what the component set itself draws.
 
+### label
+
+The box's accessible name: what a screen reader says the box searches. The
+board's is the default, and a page that searches something else passes its own —
+the contacts page did not, and its readers were told it searched job
+opportunities, KN-430.
+
+### placeholder
+
+The grey text in the empty box, naming the fields the search looks in. Defaults
+to the board's, and follows `label` when a page searches something else.
+
 ### onChange
 
 Fired with the text on every change, including a clear.

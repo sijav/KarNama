@@ -104,7 +104,13 @@ export const NetworkScreen = () => {
           gutters, `252:421`. A cap at every width made the phone's bar 320 and
           left the rest of the row empty, KN-443. */}
       <Box sx={{ maxWidth: { xs: 'none', md: SEARCH_WIDTH } }}>
-        <SearchBar value={search} onChange={setSearch} layout={wide ? DESKTOP : MOBILE} />
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          layout={wide ? DESKTOP : MOBILE}
+          label={i18n._('Search contacts')}
+          placeholder={i18n._('Search in name, role or company')}
+        />
       </Box>
 
       {shown.length === 0 ? (

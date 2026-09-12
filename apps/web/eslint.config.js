@@ -145,8 +145,11 @@ const linguiOptions = {
     '*.queryByText',
     // `queryByRole` was missing while `findByRole` and `queryByText` were here,
     // which is the sort of gap a list of names grows: it is the same helper
-    // asking the same question, in the negative.
+    // asking the same question, in the negative. `queryByLabelText` was the
+    // same gap again, found by a story asserting that a page's search box is
+    // NOT named after the other page's, KN-430.
     '*.queryByRole',
+    '*.queryByLabelText',
     '*.toHaveTextContent',
     '*.toHaveAttribute',
     '*.toHaveAccessibleName',

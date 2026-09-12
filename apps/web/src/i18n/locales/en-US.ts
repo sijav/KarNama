@@ -40,6 +40,8 @@ export const messages: Record<string, string> = {
   'Files': 'Files',
   'Search in title, company or note': 'Search in title, company or note',
   'Search job opportunities': 'Search job opportunities',
+  'Search in name, role or company': 'Search in name, role or company',
+  'Search contacts': 'Search contacts',
   'Clear search': 'Clear search',
   'Button': 'Button',
   'Back': 'Back',

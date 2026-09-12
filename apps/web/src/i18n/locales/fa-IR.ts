@@ -43,6 +43,8 @@ export const messages: Record<string, string> = {
   'Files': 'فایل‌ها',
   'Search in title, company or note': 'جستجو در عنوان، شرکت یا یادداشت',
   'Search job opportunities': 'جستجوی فرصت‌های شغلی',
+  'Search in name, role or company': 'جستجو در اسم، سمت یا شرکت',
+  'Search contacts': 'جستجوی مخاطب‌ها',
   'Clear search': 'پاک کردن جستجو',
   'Button': 'دکمه',
   'Back': 'بازگشت',

@@ -11390,12 +11390,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The contacts page's search box is named and described for contacts in both languages, and a story asserts each page's own name.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T01:43:07.256Z"
+      "createdAt": "2026-09-12T01:43:07.256Z",
+      "updatedAt": "2026-09-12T01:56:40.782Z"
     },
     {
       "id": "KN-431",

@@ -46,3 +46,12 @@ which takes the bulk bar with it and leaves everybody where they were.
 
 The page at a phone's width, where the search bar stops taking the desktop
 toolbar's 320 and becomes the page's own, at the taller of its two heights.
+
+### ItsOwnSearch
+
+The search box named and described for the people this page holds, rather than
+for the job opportunities the same bar searches on the board.
+
+### ItsOwnSearchInEnglish
+
+The same, with the language switched.

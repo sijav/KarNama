@@ -93,8 +93,8 @@ export const Keeping: Story = {
     })
 
     // A search that matches nobody says so, and clearing it brings them back.
-    // The bar's own accessible name, which the component fixes.
-    const search = canvas.getByLabelText('جستجوی فرصت‌های شغلی')
+    // The box is named for what THIS page searches, KN-430.
+    const search = canvas.getByLabelText('جستجوی مخاطب‌ها')
     await userEvent.type(search, 'کسی که نیست')
     await waitFor(async () => {
       await expect(canvas.getByText('نتیجه‌ای پیدا نشد')).toBeInTheDocument()
@@ -276,6 +276,30 @@ const PHONE = { width: 390, height: 844 }
 
 // What the contacts toolbar's own instance is on the desktop, `252:48`.
 const DESKTOP_BAR = 320
+
+export const ItsOwnSearch: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // The bar is shared with the board, and a screen reader here used to be
+    // told the box searched job opportunities, KN-430. It is named and
+    // described for what THIS page holds, and the board's name is not on it.
+    const canvas = within(canvasElement)
+    const box = canvas.getByRole('searchbox')
+    await expect(box).toHaveAccessibleName('جستجوی مخاطب‌ها')
+    await expect(canvas.queryByLabelText('جستجوی فرصت‌های شغلی')).toBeNull()
+    await expect(box).toHaveAttribute('placeholder', 'جستجو در اسم، سمت یا شرکت')
+  },
+}
+
+export const ItsOwnSearchInEnglish: Story = {
+  globals: { locale: 'en-US' },
+  play: async ({ canvasElement }) => {
+    // The English catalog is an identity map, so the id IS the rendered text.
+    const box = within(canvasElement).getByRole('searchbox')
+    await expect(box).toHaveAccessibleName('Search contacts')
+    await expect(box).toHaveAttribute('placeholder', 'Search in name, role or company')
+  },
+}
 
 export const OnAPhone: Story = {
   globals: { locale: 'fa-IR' },

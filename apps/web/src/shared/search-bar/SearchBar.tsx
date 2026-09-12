@@ -12,6 +12,8 @@ export interface SearchBarProps {
   value?: string
   defaultValue?: string
   layout?: SearchBarLayout
+  label?: string
+  placeholder?: string
   onChange?: (value: string) => void
   onSearch?: (value: string) => void
 }
@@ -52,8 +54,11 @@ const CLEAR = 20
 // reported at once through onChange, and to onSearch once it pauses, with the
 // value as it stands after the last keystroke; clearing searches at once and
 // puts focus back in the field.
-export const SearchBar = ({ value, defaultValue = '', layout = 'mobile', onChange, onSearch }: SearchBarProps) => {
+export const SearchBar = ({ value, defaultValue = '', layout = 'mobile', label, placeholder, onChange, onSearch }: SearchBarProps) => {
   const { i18n } = useLingui()
+  // What it searches, the board's unless the page says otherwise: the contacts
+  // page uses the same bar, and a screen reader there was told it searched job
+  // opportunities, KN-430.
   const [own, setOwn] = useState(defaultValue)
   const text = value ?? own
   const field = useRef<HTMLInputElement | null>(null)
@@ -130,8 +135,8 @@ export const SearchBar = ({ value, defaultValue = '', layout = 'mobile', onChang
         onChange={(event) => {
           change(event.target.value)
         }}
-        placeholder={i18n._('Search in title, company or note')}
-        inputProps={{ 'aria-label': i18n._('Search job opportunities') }}
+        placeholder={placeholder ?? i18n._('Search in title, company or note')}
+        inputProps={{ 'aria-label': label ?? i18n._('Search job opportunities') }}
         sx={(theme) => ({
           flex: 1,
           minWidth: 0,
