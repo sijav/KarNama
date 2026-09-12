@@ -20,6 +20,10 @@ export const envSchema = z.object({
   KAVENEGAR_TEMPLATE: z.string().min(1).optional(),
   OPENAI_API_KEY: z.string().min(1).optional(),
   OPENAI_EXTRACTION_MODEL: z.string().min(1).optional(),
+  EXTRACTION_PROVIDER: z.enum(['openai', 'groq']).default('openai'),
+  GROQ_API_KEY: z.string().min(1).optional(),
+  GROQ_EXTRACTION_MODEL: z.string().min(1).default('openai/gpt-oss-120b'),
+  ALLOW_DEMO_EXTRACTION: z.enum(['true', 'false']).default('false'),
   TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(0),
 
   /** The port to listen on. A string in the environment, a number here. */

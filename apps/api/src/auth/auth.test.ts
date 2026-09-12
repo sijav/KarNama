@@ -10,6 +10,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { AppModule } from '../app.module.js'
 import { applyMigrations, readMigrations } from '../database/migrations.js'
+import { ExtractionService } from '../extraction/extraction.service.js'
 import { AuthService } from './auth.service.js'
 import { AuthDatabase, type SqlClient } from './database.service.js'
 import { SmsService } from './sms.service.js'
@@ -43,7 +44,11 @@ describe('server authentication through GraphQL and Postgres', () => {
 
   beforeAll(async () => {
     await applyMigrations(db, await readMigrations(join(import.meta.dirname, '../..')))
-    const config = new ConfigService({ AUTH_SECRET: 'integration-test-secret-only-32-characters', NODE_ENV: 'test' })
+    const config = new ConfigService({
+      AUTH_SECRET: 'integration-test-secret-only-32-characters',
+      NODE_ENV: 'test',
+      ALLOW_DEMO_EXTRACTION: 'false',
+    })
     const module = await Test.createTestingModule({ imports: [AppModule] })
       .overrideProvider(AuthDatabase)
       .useValue(database)
@@ -63,7 +68,9 @@ describe('server authentication through GraphQL and Postgres', () => {
   const post = async (query: string, variables: Record<string, string> = {}, token = '') => {
     const server: unknown = app.getHttpServer()
     if (!(server instanceof Server)) throw new Error('No HTTP server')
-    const response = await request(server).post('/graphql').set('Authorization', `Bearer ${token}`).send({ query, variables })
+    const operation = request(server).post('/graphql')
+    if (token) operation.set('Authorization', `Bearer ${token}`)
+    const response = await operation.send({ query, variables })
     return resultSchema.parse(response.body)
   }
   const latestCode = () => {
@@ -128,5 +135,42 @@ describe('server authentication through GraphQL and Postgres', () => {
     await expect(service.limit('isolated-rate-test', 2)).rejects.toThrow('RATE_LIMITED')
     await db.exec("UPDATE auth_limits SET started = NOW() - INTERVAL '2 hours'")
     await expect(service.limit('isolated-rate-test', 2)).resolves.toBeUndefined()
+  })
+
+  it('only enables anonymous extraction explicitly and enforces durable demo limits', async () => {
+    const config = app.get(ConfigService)
+    const extraction = vi.spyOn(app.get(ExtractionService), 'extract').mockResolvedValue({
+      title: 'Demo engineer',
+      company: 'Example',
+      employmentTypes: [],
+      location: '',
+      experience: '',
+      jobLevel: null,
+      postedAt: '',
+      expiresAt: '',
+      salary: '',
+      source: '',
+      postingUrl: '',
+      description: '',
+    })
+    const query = 'mutation{extractJob(source:"Frontend developer"){title}}'
+    try {
+      config.set('ALLOW_DEMO_EXTRACTION', 'true')
+      await db.exec('DELETE FROM auth_limits')
+      expect((await post(query, {}, 'fake-token')).errors?.[0]?.extensions.code).toBe('UNAUTHENTICATED')
+      expect((await post('{currentAccount{id}}')).errors?.[0]?.extensions.code).toBe('UNAUTHENTICATED')
+      for (let i = 0; i < 10; i++) expect((await post(query)).data?.extractJob).toEqual({ title: 'Demo engineer' })
+      expect((await post(query)).errors?.[0]?.extensions.code).toBe('RATE_LIMITED')
+      expect(extraction).toHaveBeenCalledTimes(10)
+      await db.exec('DELETE FROM auth_limits')
+      for (let i = 0; i < 20; i++) await app.get(AuthService).limit('extract-demo:global', 20)
+      expect((await post(query)).errors?.[0]?.extensions.code).toBe('RATE_LIMITED')
+      expect(extraction).toHaveBeenCalledTimes(10)
+      config.set('ALLOW_DEMO_EXTRACTION', 'false')
+      expect((await post(query)).errors?.[0]?.extensions.code).toBe('UNAUTHENTICATED')
+    } finally {
+      config.set('ALLOW_DEMO_EXTRACTION', 'false')
+      extraction.mockRestore()
+    }
   })
 })

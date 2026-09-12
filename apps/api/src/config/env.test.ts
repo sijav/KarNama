@@ -12,6 +12,8 @@ describe('parsing the environment', () => {
     expect(env.NODE_ENV).toBe('development')
     expect(env.PORT).toBe(4000)
     expect(env.WEB_ORIGIN).toBe(complete.WEB_ORIGIN)
+    expect(env.EXTRACTION_PROVIDER).toBe('openai')
+    expect(env.ALLOW_DEMO_EXTRACTION).toBe('false')
   })
 
   it('coerces PORT, because the environment only holds strings', () => {
@@ -23,6 +25,8 @@ describe('parsing the environment', () => {
     ['PORT', '70000'],
     ['PORT', 'not a number'],
     ['NODE_ENV', 'staging'],
+    ['EXTRACTION_PROVIDER', 'invalid'],
+    ['ALLOW_DEMO_EXTRACTION', 'yes'],
   ])('rejects %s=%s', (key, value) => {
     expect(() => parseEnv({ ...complete, [key]: value })).toThrow(/cannot start/)
   })

@@ -25,6 +25,68 @@ afterEach(() => {
 })
 
 describe('ad extraction', () => {
+  const groq = new ExtractionService(new ConfigService({ EXTRACTION_PROVIDER: 'groq', GROQ_API_KEY: 'groq-test-key' }))
+  const groqResponse = (content: unknown, finish = 'stop') =>
+    Response.json({
+      choices: [{ finish_reason: finish, message: { content: JSON.stringify(content) } }],
+    })
+
+  it('uses Groq strict structured output without sending the key to OpenAI', async () => {
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(groqResponse(details))
+    vi.stubGlobal('fetch', fetcher)
+    const source = 'Frontend developer at Example. Full time.'
+    expect(await groq.extract(source)).toEqual({ ...details, description: source })
+    expect(fetcher).toHaveBeenCalledWith(
+      'https://api.groq.com/openai/v1/chat/completions',
+      expect.objectContaining({
+        headers: { Authorization: 'Bearer groq-test-key', 'Content-Type': 'application/json' },
+        redirect: 'error',
+      }),
+    )
+    const body = fetcher.mock.calls[0]?.[1]?.body
+    if (typeof body !== 'string') throw new Error('Missing request body')
+    expect(JSON.parse(body)).toMatchObject({
+      model: 'openai/gpt-oss-120b',
+      messages: [{ role: 'system' }, { role: 'user', content: source }],
+      response_format: { type: 'json_schema', json_schema: { strict: true, schema: { additionalProperties: false } } },
+    })
+  })
+
+  it.each([
+    { ...details, postedAt: '2026-02-30' },
+    { ...details, postingUrl: 'javascript:alert(1)' },
+    { ...details, employmentTypes: ['invented'] },
+  ])('validates Groq fields independently of provider schema enforcement', async (value) => {
+    vi.stubGlobal('fetch', vi.fn<typeof fetch>().mockResolvedValue(groqResponse(value)))
+    await expect(groq.extract('Frontend developer at Example')).rejects.toThrow('EXTRACTION_FAILED')
+  })
+
+  it('rejects truncated output, refusals, malformed JSON and provider failures', async () => {
+    for (const result of [
+      groqResponse(details, 'length'),
+      Response.json({ choices: [{ finish_reason: 'stop', message: { content: '{}', refusal: 'refused' } }] }),
+      Response.json({ choices: [{ finish_reason: 'stop', message: { content: '{broken' } }] }),
+      new Response('', { status: 429 }),
+    ]) {
+      vi.stubGlobal('fetch', vi.fn<typeof fetch>().mockResolvedValue(result))
+      await expect(groq.extract('Frontend developer at Example')).rejects.toThrow('EXTRACTION_FAILED')
+    }
+    vi.stubGlobal('fetch', vi.fn<typeof fetch>().mockRejectedValue(new Error('network unavailable')))
+    await expect(groq.extract('Frontend developer at Example')).rejects.toThrow('EXTRACTION_FAILED')
+  })
+
+  it('requires the chosen provider credentials and clears contradictory dates', async () => {
+    await expect(
+      new ExtractionService(new ConfigService({ EXTRACTION_PROVIDER: 'groq', OPENAI_API_KEY: 'other-key' })).extract(
+        'Frontend developer at Example',
+      ),
+    ).rejects.toThrow('EXTRACTION_NOT_CONFIGURED')
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<typeof fetch>().mockResolvedValue(groqResponse({ ...details, postedAt: '2026-09-12', expiresAt: '2026-09-01' })),
+    )
+    expect(await groq.extract('Frontend developer at Example')).toMatchObject({ postedAt: '2026-09-12', expiresAt: '' })
+  })
   it('sends only the submitted ad and returns validated editable fields while preserving the original text', async () => {
     const fetcher = vi.fn<typeof fetch>().mockResolvedValue(response(details))
     vi.stubGlobal('fetch', fetcher)

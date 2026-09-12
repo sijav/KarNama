@@ -2,14 +2,17 @@
 
 The app temporarily uses mock login by default, including the Pages deployment.
 The verification code appears on screen and no SMS is sent. Set
-`VITE_AUTH_MODE=live` to restore server authentication. A demo account cannot call
-authenticated API operations, including AI extraction; manual ad entry remains available.
+`VITE_AUTH_MODE=live` to restore server authentication. For server testing with mock
+login, explicitly set `ALLOW_DEMO_EXTRACTION=true` on the API. This permits only
+anonymous extraction, with durable limits of ten requests per IP per hour and
+twenty total per hour. It defaults to false. Account operations still require a
+real session, and invalid bearer tokens never fall back to anonymous extraction.
+Manual ad entry remains available when extraction fails or reaches a limit.
 Storybook continues to use its isolated demo provider.
 
-The implemented adapters are Kavenegar verification SMS and OpenAI Responses
-structured extraction. Live delivery and model results need the owner's provider
-accounts and credentials; the local integration fixture replaces those two external
-providers. No provider credentials were present when this was implemented.
+The adapters are Kavenegar verification SMS, OpenAI Responses and Groq structured
+extraction. The local integration fixture replaces SMS and AI; it does not prove
+live provider availability.
 
 ## Configuration
 
@@ -17,8 +20,21 @@ Use `apps/api/.env.example` and `apps/web/.env.example` as templates. Do not put
 secrets in a `VITE_` variable, git, or a chat message.
 
 The API needs its existing database and CORS configuration, plus `AUTH_SECRET`
-(random, at least 32 characters), `KAVENEGAR_API_KEY`, `KAVENEGAR_TEMPLATE`,
-`OPENAI_API_KEY`, and `OPENAI_EXTRACTION_MODEL`. The template must be approved
+(random, at least 32 characters). For Groq testing, set `EXTRACTION_PROVIDER=groq`,
+`GROQ_API_KEY` and `GROQ_EXTRACTION_MODEL=openai/gpt-oss-120b`. The model uses
+[Groq strict structured outputs](https://console.groq.com/docs/structured-outputs).
+Free-tier quotas are account-specific and provider failures preserve manual entry.
+There is no automatic fallback to a paid provider. Keep `VITE_AUTH_MODE=demo`
+and enable `ALLOW_DEMO_EXTRACTION` on the API while testing mocked login.
+
+For Render, add these variables under the existing service's Environment settings,
+then save and redeploy. A local `.env` is ignored by git and is not uploaded when
+code is pushed. Set the web repository variable `KARNAMA_API_URL` to that service's
+full `/graphql` URL. Do not put the Groq key in repository variables or web builds.
+
+For real SMS login, also set `KAVENEGAR_API_KEY` and `KAVENEGAR_TEMPLATE`.
+To use OpenAI instead, set `EXTRACTION_PROVIDER=openai`, `OPENAI_API_KEY`, and
+`OPENAI_EXTRACTION_MODEL`. The SMS template must be approved
 for Kavenegar verification and contain its token placeholder. Select a model
 available to your account that supports Responses structured outputs. There is
 no silently chosen paid model. Missing provider configuration returns an explicit
@@ -63,7 +79,9 @@ in URLs and unusual ports are rejected. This does not crawl or aggregate boards.
 Sites requiring login, browser JavaScript, or access checks can require pasted
 text instead. Model output is validated again before it reaches the form.
 
-The request uses `store: false` with [OpenAI structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
+OpenAI requests use `store: false`. Groq requests use its Chat Completions endpoint
+with a strict JSON schema and a bounded output budget. Both responses are checked
+against the same local schema, including dates, URLs and enumerated values.
 SMS follows [Kavenegar's verification endpoint](https://kavenegar.com/rest.html).
 Extraction failure keeps the original source and offers manual entry.
 

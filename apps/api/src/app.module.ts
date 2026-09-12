@@ -9,6 +9,8 @@ import { GraphqlModule } from './graphql/graphql.module.js'
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      // Test fixtures must never pick up local provider keys or demo settings.
+      ignoreEnvFile: process.env.NODE_ENV === 'test',
       // The whole environment goes through one schema and the result REPLACES
       // process.env for anything reading through ConfigService. Throwing here
       // is what makes a missing variable a startup failure rather than a
