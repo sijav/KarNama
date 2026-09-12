@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 178 of 424 tasks done · 406 of 888 points.
+Project **KarNama** · 179 of 424 tasks done · 409 of 888 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-415` The screens' own coverage: the board's and the network's handlers are half untested** (critical, 3 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-415` | The screens' own coverage: the board's and the network's handlers are half untested | critical | 3 | web | none | Stories drive every handler of both screens, deleting a card and confirming it, renaming, recolouring, deleting and adding a column, collapsing and expanding rejected, saving from the job modal and changing its status, and the network page's open, search and cancel; npm test in apps/web reports 100 percent again with no threshold error. |
+**Next up: `KN-305` The story fixtures have no seeded board and no job opportunity in three of the nine statuses** (high, 2 pt, web)
 
 ## Blocked (5)
 
@@ -269,7 +263,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (178)
+## Done (179)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -361,6 +355,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-062` | Shared story fixtures | critical | 3 | web | KN-003, KN-007 | Every component story that needs data uses the shared fixtures, a Docs page rendering many stories at once seeds without error, the fixtures never appear in the production bundle and a test asserts that, and each fixture set has a long value that exercises truncation in both languages. |
 | `KN-120` | Make schema.gql a checked build artefact rather than a side effect of starting the server | critical | 3 | api | KN-033 | npm run build produces schema.gql without starting a server, the file is committed, and a check fails when the resolvers and the committed schema disagree. |
 | `KN-128` | Generate typed GraphQL operations instead of asserting them by hand | critical | 3 | graphql | KN-035 | A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case. |
+| `KN-415` | The screens' own coverage: the board's and the network's handlers are half untested | critical | 3 | web | none | Stories drive every handler of both screens, deleting a card and confirming it, renaming, recolouring, deleting and adding a column, collapsing and expanding rejected, saving from the job modal and changing its status, and the network page's open, search and cancel; npm test in apps/web reports 100 percent again with no threshold error. |
 | `KN-422` | The board's column menu deletes a status whose jobs a search is hiding, Rename does nothing, and the columns do not scroll | critical | 3 | web | none | A column's count and its deletability are the column's own, not the search's, and the provider refuses to delete a status that still holds job opportunities; Rename opens a way to rename and the name changes; the board row bounds its columns so a long list scrolls inside one; a phone shows the column's empty state; the bulk bar counts only job opportunities that still exist. Each covered by a test or an e2e. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | critical | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | critical | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
@@ -5339,7 +5334,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-415` The screens' own coverage: the board's and the network's handlers are half untested
 
-- **status** in_progress · **severity** critical · **points** 3 · **area** web
+- **status** done · **severity** critical · **points** 3 · **area** web
 - **blocked by** none
 
 The screens went in under the owner's instruction of 2026-09-12 to build the pages now. Their pure logic is covered, core/records at 99 percent and routes at 100, but JobsScreen is at 56 percent of its lines and NetworkScreen at 68: the delete flows and their confirm modal, the column's rename, recolour, delete and add, the collapse and expand of rejected, the job modal's save, status change and contact and file callbacks, and the network page's card and modal paths are driven by no story. The suite's global 100 percent threshold therefore fails until they are.

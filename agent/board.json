@@ -11104,7 +11104,7 @@
       "points": 3,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "Stories drive every handler of both screens, deleting a card and confirming it, renaming, recolouring, deleting and adding a column, collapsing and expanding rejected, saving from the job modal and changing its status, and the network page's open, search and cancel; npm test in apps/web reports 100 percent again with no threshold error.",
       "okr": "OKR-1",
       "roasts": [],
@@ -11112,7 +11112,9 @@
         "2026-09-12: raised to critical, the owner's rule that a finding about the loop or the gate is low unless it is actively breaking the work. This is breaking it: the suite's global 100 percent threshold fails on the screens, so npm test in apps/web is red for everything else too."
       ],
       "createdAt": "2026-09-11T23:20:48.478Z",
-      "updatedAt": "2026-09-12T00:16:48.651Z"
+      "updatedAt": "2026-09-12T01:27:14.043Z",
+      "evidence": "Stories drive every handler of both screens: JobsScreen at 100 percent of its statements and functions (129/129, 68/68), NetworkScreen, AuthScreen and App at 100; apps/web went from 88 to 99.67 percent of statements overall, 1461 of 1462 tests passing, the one failure the known KN-365 transition flake, which passes on its own. The global threshold still reports short, and not because of the screens: KN-103 makes the merged report lose the browser project's hits, shown by shared/job-selects reading 100/100 in the browser run and 94.73/80 merged. KN-103 raised to critical. Two dead wires cut on the way: the board now tells its cards they are on a phone, so a phone can delete and restage again, and the network page no longer passes a select-all the bar never offers.",
+      "closedAt": "2026-09-12T01:27:14.043Z"
     },
     {
       "id": "KN-416",
