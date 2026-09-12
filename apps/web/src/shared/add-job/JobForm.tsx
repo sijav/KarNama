@@ -126,7 +126,7 @@ export const JobForm = ({ draft, statuses, missing, onChange, onAddStatus }: Job
       <JobFields draft={draft} missing={missing} onChange={onChange} />
       <Input
         label={i18n._('Job description and responsibilities')}
-        helperText={i18n._('Automatic extraction is not connected yet. Review and complete the details before saving.')}
+        helperText={i18n._('Review and complete the details before saving.')}
         multiline
         value={draft.description ?? ''}
         onChange={(description) => {

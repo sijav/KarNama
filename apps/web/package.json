@@ -12,6 +12,7 @@
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "e2e": "playwright test",
+    "e2e:connected": "playwright test --config playwright.connected.config.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "i18n:extract": "lingui extract",

@@ -1,13 +1,14 @@
 import { useLingui } from '@lingui/react'
 import { Box, ButtonBase, Dialog, type Theme } from '@mui/material'
 import { useEffect, useId, useRef, useState, type SyntheticEvent } from 'react'
+import { apiErrorText, apiProblem } from '../../core/api'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { Button, type ButtonType } from '../button'
 import { Input } from '../input'
 import { LoadingState } from '../loading-state'
 import { ConfirmModal, DISSOLVE_MS, ModalActions, ModalDivider, ModalHeader, modalPaper, modalScrim } from '../modal'
 import type { StatusOption } from '../status-picker'
-import { draftFrom, emptyDraft, hasContent, missingFields, type JobDraft } from './draft'
+import { draftFrom, hasContent, missingFields, type JobDraft } from './draft'
 import { JobForm } from './JobForm'
 
 // Where the flow can be: the paste field, reading it, the filled form to
@@ -58,6 +59,7 @@ const loadingPaper = {
 
 // Everything the flow holds, set whole when the modal opens.
 interface Flow {
+  errorCode?: string
   step: AddJobStep
   source: string
   touched: boolean
@@ -158,13 +160,13 @@ export const AddJobModal = ({
       (found) => {
         settle({ step: 'review', draft: draftFrom(status, source, found), tried: false })
       },
-      () => {
-        settle({ step: 'error' })
+      (error: unknown) => {
+        settle({ step: 'error', errorCode: apiProblem(error) })
       },
     )
   }
   const manual = () => {
-    update({ step: 'manual', draft: emptyDraft(status), tried: false })
+    update({ step: 'manual', draft: draftFrom(status, flow.source, {}), tried: false })
   }
   const save = () => {
     if (missingFields(flow.draft).length > 0) {
@@ -245,7 +247,14 @@ export const AddJobModal = ({
                       update({ source: value, touched: true, ...(flow.step === 'error' ? { step: 'paste' } : {}) })
                     }}
                     {...(flow.step === 'error'
-                      ? { error: unreadable }
+                      ? {
+                          error:
+                            flow.errorCode === 'EXTRACTION_NOT_CONFIGURED' || flow.errorCode === 'API_NOT_CONFIGURED'
+                              ? i18n._('Automatic extraction is unavailable. You can enter the details yourself.')
+                              : flow.errorCode === 'RATE_LIMITED' || flow.errorCode === 'UNAUTHENTICATED'
+                                ? apiErrorText(i18n, flow.errorCode)
+                                : unreadable,
+                        }
                       : { helperText: i18n._('It takes a link or the whole posting text; you do not need to separate anything.') })}
                   />
                 </Box>
@@ -315,11 +324,7 @@ export const AddJobModal = ({
                 {i18n._('Cancel')}
               </Button>
               {pasting ? (
-                <Button
-                  type={SUBMIT}
-                  form={pasteFormId}
-                  disabled={flow.source.trim() === '' || (flow.step === 'paste' && !flow.touched)}
-                >
+                <Button type={SUBMIT} form={pasteFormId} disabled={flow.source.trim() === '' || (flow.step === 'paste' && !flow.touched)}>
                   {flow.step === 'error' ? i18n._('Try again') : i18n._('Extract details')}
                 </Button>
               ) : (

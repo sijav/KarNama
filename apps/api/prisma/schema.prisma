@@ -35,8 +35,35 @@ model User {
   jobRecords  JobRecord[]
   contacts    Contact[]
   moderations FeedbackSubmission[] @relation("ModeratedBy")
+  sessions    AuthSession[]
 
   @@map("users")
+}
+
+model AuthChallenge {
+  phone    String   @id
+  hash     String
+  sent     DateTime @db.Timestamptz(3)
+  expires  DateTime @db.Timestamptz(3)
+  attempts Int      @default(0)
+  @@map("auth_challenges")
+}
+
+model AuthSession {
+  hash    String   @id
+  userId  String
+  expires DateTime @db.Timestamptz(3)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+  @@index([expires])
+  @@map("auth_sessions")
+}
+
+model AuthLimit {
+  key     String   @id
+  started DateTime @db.Timestamptz(3)
+  count   Int
+  @@map("auth_limits")
 }
 
 /// A column on the kanban board.

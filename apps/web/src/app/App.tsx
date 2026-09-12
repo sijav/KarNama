@@ -1,7 +1,10 @@
+import { useLingui } from '@lingui/react'
 import Box from '@mui/material/Box'
 import { useEffect, useState } from 'react'
+import { apiErrorText } from '../core/api'
 import { useAuth } from '../core/auth'
 import { AuthScreen, JobsScreen, NetworkScreen } from '../screens'
+import { Button } from '../shared/button'
 import { Navigation, type Destination } from '../shared/navigation'
 import { addressOf, destinationIn } from './routes'
 
@@ -31,7 +34,8 @@ export const App = () => {
   // the navigation is the shell's and the selection is the page's.
   const [selecting, setSelecting] = useState(false)
   const [current, setCurrent] = useState<Destination>(() => destinationIn(window.location.hash))
-  const { session, signingUp, signOut } = useAuth()
+  const { session, signingUp, signOut, error, busy } = useAuth()
+  const { i18n } = useLingui()
 
   // The address and the state follow each other: the navigation sets the hash,
   // and the back button, a typed address or a shared link sets the state.
@@ -56,10 +60,27 @@ export const App = () => {
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
-      <Navigation selecting={selecting} current={current} onNavigate={navigate} userName={session.name} userPhone={session.phone} onSignOut={signOut} />
+      <Navigation
+        selecting={selecting}
+        current={current}
+        onNavigate={navigate}
+        userName={session.name}
+        userPhone={session.phone}
+        onSignOut={signOut}
+      />
       {/* Below md the tab bar is pinned over the page's foot, so the page
           keeps its 72 clear there. */}
       <Box component="main" sx={{ flex: '1 1 auto', minWidth: 0, display: 'flex', flexDirection: 'column', p: 6, pb: { xs: 15, md: 6 } }}>
+        <Box sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: 'flex-end' }}>
+          <Button variant="text" disabled={busy ?? false} onClick={signOut}>
+            {i18n._('Sign out')}
+          </Button>
+        </Box>
+        {error ? (
+          <Box role="alert" sx={{ color: 'error.main' }}>
+            {apiErrorText(i18n, error)}
+          </Box>
+        ) : null}
         {current === 'network' ? (
           <NetworkScreen onSelecting={setSelecting} />
         ) : (

@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack } from '@mui/material'
-import { useState, type SyntheticEvent } from 'react'
+import { useEffect, useState, type SyntheticEvent } from 'react'
+import { apiErrorText } from '../core/api'
 import { useAuth } from '../core/auth'
 import { Button, type ButtonType, type ButtonVariant } from '../shared/button'
 import { Input, type InputDirection } from '../shared/input'
@@ -39,9 +40,19 @@ export const AuthScreen = () => {
   const [code, setCode] = useState('')
   const [name, setName] = useState('')
   const [problem, setProblem] = useState<string | null>(null)
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    if (!auth.retryAt) return
+    const timer = window.setInterval(() => {
+      setNow(Date.now())
+    }, 1000)
+    return () => {
+      window.clearInterval(timer)
+    }
+  }, [auth.retryAt])
 
-  const askForCode = () => {
-    setProblem(auth.requestCode(phone) ? null : i18n._('Write your mobile number, 11 digits starting 09'))
+  const askForCode = async () => {
+    setProblem((await auth.requestCode(phone)) ? null : i18n._('Write your mobile number, 11 digits starting 09'))
   }
 
   // Finishing the form is whatever the step in front of the reader means by
@@ -50,20 +61,25 @@ export const AuthScreen = () => {
   // Enter in a field does what the step's own button does.
   const finish = (event: SyntheticEvent) => {
     event.preventDefault()
+    if (auth.busy || auth.restoring) return
+    setProblem(null)
+    void submit().catch(() => undefined)
+  }
+  const submit = async () => {
     if (auth.signingUp) {
       if (name.trim() === '') setProblem(i18n._('Write the full name'))
-      else auth.saveName(name)
+      else await auth.saveName(name)
       return
     }
     if (auth.awaiting) {
-      check()
+      await check()
       return
     }
-    askForCode()
+    await askForCode()
   }
 
-  const check = () => {
-    const refused = auth.verify(code)
+  const check = async () => {
+    const refused = await auth.verify(code)
     if (refused === null) {
       setProblem(null)
       setCode('')
@@ -85,7 +101,9 @@ export const AuthScreen = () => {
         onChange={setName}
         {...(problem === null ? {} : { error: problem })}
       />
-      <Button type={SUBMIT}>{i18n._('Continue')}</Button>
+      <Button type={SUBMIT} disabled={auth.busy ?? false}>
+        {i18n._('Continue')}
+      </Button>
     </>
   ) : auth.awaiting ? (
     <>
@@ -136,12 +154,15 @@ export const AuthScreen = () => {
         onChange={setCode}
         {...(problem === null ? {} : { error: problem })}
       />
-      <Button type={SUBMIT}>{i18n._('Sign in')}</Button>
+      <Button type={SUBMIT} disabled={auth.busy ?? false}>
+        {i18n._('Sign in')}
+      </Button>
       <Button
         variant={QUIET}
+        disabled={(auth.busy ?? false) || now < (auth.retryAt ?? 0)}
         onClick={() => {
           setProblem(null)
-          auth.resend()
+          void Promise.resolve(auth.resend()).catch(() => undefined)
         }}
       >
         {i18n._('Send another code')}
@@ -164,7 +185,9 @@ export const AuthScreen = () => {
         onChange={setPhone}
         {...(problem === null ? {} : { error: problem })}
       />
-      <Button type={SUBMIT}>{i18n._('Send the code')}</Button>
+      <Button type={SUBMIT} disabled={auth.busy ?? false}>
+        {i18n._('Send the code')}
+      </Button>
     </>
   )
 
@@ -184,7 +207,20 @@ export const AuthScreen = () => {
         }}
       >
         <Box sx={{ fontSize: `${typeScale['heading/l'].size}px`, fontWeight: typeScale['heading/l'].weight }}>{i18n._('KarNama')}</Box>
-        {step}
+        {auth.restoring ? (
+          <>
+            <Box role="status">{i18n._('Restoring your session…')}</Box>
+            {auth.error ? <Button onClick={() => auth.retrySession?.()}>{i18n._('Try again')}</Button> : null}
+          </>
+        ) : (
+          step
+        )}
+        {auth.busy ? <Box role="status">{i18n._('Connecting… The server may take a minute to wake up.')}</Box> : null}
+        {auth.error ? (
+          <Box role="alert" sx={{ color: 'error.main' }}>
+            {apiErrorText(i18n, auth.error)}
+          </Box>
+        ) : null}
         <Box sx={{ color: 'text.secondary', fontSize: `${typeScale.label.size}px` }}>
           {i18n._('Signing in means you accept how KarNama keeps your records.')}
         </Box>

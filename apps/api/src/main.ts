@@ -2,6 +2,7 @@ import 'reflect-metadata'
 
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
+import type { NestExpressApplication } from '@nestjs/platform-express'
 import { pathToFileURL } from 'node:url'
 import { parseEnv } from './config/env.js'
 
@@ -24,7 +25,8 @@ export const bootstrap = async (): Promise<{ port: number; url: string }> => {
   const env = parseEnv(process.env)
 
   const { AppModule } = await import('./app.module.js')
-  const app = await NestFactory.create(AppModule, { bufferLogs: false })
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { bufferLogs: false })
+  app.set('trust proxy', env.TRUST_PROXY_HOPS)
   const config = app.get(ConfigService)
 
   // Only the origin the web app is served from. `origin: true` reflects

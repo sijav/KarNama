@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
 import { useId, useLayoutEffect, useRef, useState, type SyntheticEvent } from 'react'
+import { extractJob } from '../core/api'
 import { usePreferences } from '../core/preferences'
 import { columnOrder, contactsOf, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
 import { AddJobModal, type JobDraft } from '../shared/add-job'
@@ -359,7 +360,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
         open={addingTo !== null}
         statuses={records.statuses}
         status={addingTo ?? first}
-        onExtract={() => Promise.resolve({})}
+        onExtract={extractJob}
         onSave={addJob}
         onAddStatus={() => {
           records.addStatus(i18n._('New status'))

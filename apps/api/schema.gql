@@ -2,6 +2,34 @@
 #
 # Regenerate:  npm run schema:generate --workspace @karnama/api
 # Check:       npm run schema:check    --workspace @karnama/api
+type Account {
+  id: String!
+  name: String!
+  phone: String!
+  since: String!
+}
+
+type CodeDelivery {
+  expiresInSeconds: Int!
+  phone: String!
+  retryAfterSeconds: Int!
+}
+
+type ExtractedJob {
+  company: String!
+  description: String!
+  employmentTypes: [String!]!
+  experience: String!
+  expiresAt: String!
+  jobLevel: String
+  location: String!
+  postedAt: String!
+  postingUrl: String!
+  salary: String!
+  source: String!
+  title: String!
+}
+
 type Health {
   """Which environment this process believes it is in"""
   environment: String!
@@ -13,7 +41,23 @@ type Health {
   uptimeSeconds: Float!
 }
 
+type LoginResult {
+  account: Account!
+  expiresAt: String!
+  token: String!
+}
+
+type Mutation {
+  extractJob(source: String!): ExtractedJob!
+  requestLoginCode(phone: String!): CodeDelivery!
+  saveAccountName(name: String!): Account!
+  signOut: Boolean!
+  verifyLoginCode(code: String!, phone: String!): LoginResult!
+}
+
 type Query {
+  currentAccount: Account!
+
   """
   Whether the API is up, and enough context to tell a cold start from an outage
   """

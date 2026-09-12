@@ -47,6 +47,8 @@ jobs:
         run: npm run build --workspace @karnama/web
         env:
           KARNAMA_BASE: /KarNama/
+          VITE_API_URL: ${{ vars.KARNAMA_API_URL }}
+          VITE_AUTH_MODE: live
 
       - name: Build Storybook
         run: npm run build-storybook --workspace @karnama/web

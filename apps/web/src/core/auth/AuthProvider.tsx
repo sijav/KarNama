@@ -33,13 +33,18 @@ export interface AuthValue {
    */
   mockCode: string | null
   /** Sends a code to a number. False when the number is not one. */
-  requestCode: (typed: string) => boolean
+  requestCode: (typed: string) => boolean | Promise<boolean>
   /** Sends the same number another code. */
-  resend: () => void
+  resend: () => void | Promise<void>
   /** Checks a code and signs in, or says why not. */
-  verify: (typed: string) => CodeProblem | null
+  verify: (typed: string) => CodeProblem | null | Promise<CodeProblem | null>
   /** The first login's name. */
-  saveName: (name: string) => void
+  saveName: (name: string) => void | Promise<void>
+  busy?: boolean
+  error?: string | null
+  retryAt?: number
+  restoring?: boolean
+  retrySession?: () => void
   signOut: () => void
 }
 

@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { resolvers } from './resolvers.js'
-import { SCHEMA_FILE, checkSchema, generateSchema, readCommittedSchema } from './schema.js'
+import { checkSchema, generateSchema, readCommittedSchema, SCHEMA_FILE } from './schema.js'
 
 /**
  * The schema, and the check that says whether the committed one is stale.
@@ -95,7 +95,7 @@ describe('the resolver list', () => {
     // committed schema, and one added to the list and not the module put a
     // field in the contract that nothing answered. Both were green.
     const module = await readFile(join(ROOT, 'src', 'graphql', 'graphql.module.ts'), 'utf8')
-    expect(module).toContain('providers: [...resolvers]')
+    expect(module).toMatch(/providers:\s*\[\s*\.\.\.resolvers[\s,\]]/u)
     // And nothing else registers a resolver behind its back.
     const strays: string[] = []
     const walk = async (dir: string): Promise<void> => {

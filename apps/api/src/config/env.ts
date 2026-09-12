@@ -15,6 +15,12 @@ import { z } from 'zod'
  */
 export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  AUTH_SECRET: z.string().min(32).optional(),
+  KAVENEGAR_API_KEY: z.string().min(1).optional(),
+  KAVENEGAR_TEMPLATE: z.string().min(1).optional(),
+  OPENAI_API_KEY: z.string().min(1).optional(),
+  OPENAI_EXTRACTION_MODEL: z.string().min(1).optional(),
+  TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(0),
 
   /** The port to listen on. A string in the environment, a number here. */
   PORT: z.coerce.number().int().min(1).max(65535).default(4000),

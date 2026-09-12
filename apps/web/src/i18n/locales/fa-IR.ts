@@ -10,7 +10,16 @@
  * reason the ids are English sentences.
  */
 export const messages: Record<string, string> = {
-  'Automatic extraction is not connected yet. Review and complete the details before saving.': 'استخراج خودکار هنوز متصل نیست. قبل از ذخیره، اطلاعات را بررسی و تکمیل کن.',
+  'Review and complete the details before saving.': 'قبل از ذخیره، اطلاعات را بررسی و تکمیل کن.',
+  'Sign-in is not configured yet. Please try later.': 'ورود هنوز راه‌اندازی نشده است. لطفاً بعداً تلاش کن.',
+  'The code could not be sent. Please try again.': 'ارسال کد انجام نشد. لطفاً دوباره تلاش کن.',
+  'Too many attempts. Please try again in an hour.': 'تعداد تلاش‌ها بیش از حد مجاز است. لطفاً یک ساعت دیگر تلاش کن.',
+  'Please wait a minute before requesting another code.': 'لطفاً برای درخواست کد جدید یک دقیقه صبر کن.',
+  'Your session has expired. Sign in again.': 'نشست تو منقضی شده است. دوباره وارد شو.',
+  'Automatic extraction is unavailable. You can enter the details yourself.': 'استخراج خودکار در دسترس نیست. می‌توانی اطلاعات را دستی وارد کنی.',
+  'Could not reach the service. Please try again.': 'اتصال به سرویس برقرار نشد. لطفاً دوباره تلاش کن.',
+  'Restoring your session…': 'در حال بازیابی نشست…',
+  'Connecting… The server may take a minute to wake up.': 'در حال اتصال… آماده شدن سرور ممکن است یک دقیقه طول بکشد.',
   'Enter a valid date; expiry cannot be before publication': 'تاریخ معتبر وارد کن؛ تاریخ انقضا نمی‌تواند قبل از تاریخ انتشار باشد',
   'Enter a valid http or https link': 'یک لینک معتبر با http یا https وارد کن',
   'KarNama': 'کارنما',

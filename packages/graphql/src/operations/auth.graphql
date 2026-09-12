@@ -1,0 +1,15 @@
+mutation RequestLoginCode($phone: String!) {
+  requestLoginCode(phone: $phone) { phone retryAfterSeconds expiresInSeconds }
+}
+mutation VerifyLoginCode($phone: String!, $code: String!) {
+  verifyLoginCode(phone: $phone, code: $code) {
+    token expiresAt account { id phone name since }
+  }
+}
+query CurrentAccount {
+  currentAccount { id phone name since }
+}
+mutation SaveAccountName($name: String!) {
+  saveAccountName(name: $name) { id phone name since }
+}
+mutation SignOut { signOut }

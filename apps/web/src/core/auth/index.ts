@@ -15,3 +15,4 @@ export {
   type Session,
 } from './auth'
 export { AuthContext, AuthProvider, STORAGE_KEY, useAuth, type AuthProviderProps, type AuthValue } from './AuthProvider'
+export { RemoteAuthProvider } from './RemoteAuthProvider'

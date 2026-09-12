@@ -10,6 +10,7 @@ import { defineConfig, devices } from '@playwright/test'
  */
 export default defineConfig({
   testDir: './e2e',
+  testIgnore: 'connected.spec.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -23,6 +24,7 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 } } },
   ],
   webServer: {
+    env: { VITE_AUTH_MODE: 'demo', VITE_API_URL: 'http://127.0.0.1:4400/graphql' },
     // `--host localhost` is load bearing on Windows. Vite's preview binds to
     // ::1 by default while Playwright polls 127.0.0.1, so the readiness probe
     // never connects and the run dies after three minutes with a timeout that

@@ -7,7 +7,16 @@
  * components. Until then it is written by hand and its keys are the contract.
  */
 export const messages: Record<string, string> = {
-  'Automatic extraction is not connected yet. Review and complete the details before saving.': 'Automatic extraction is not connected yet. Review and complete the details before saving.',
+  'Review and complete the details before saving.': 'Review and complete the details before saving.',
+  'Sign-in is not configured yet. Please try later.': 'Sign-in is not configured yet. Please try later.',
+  'The code could not be sent. Please try again.': 'The code could not be sent. Please try again.',
+  'Too many attempts. Please try again in an hour.': 'Too many attempts. Please try again in an hour.',
+  'Please wait a minute before requesting another code.': 'Please wait a minute before requesting another code.',
+  'Your session has expired. Sign in again.': 'Your session has expired. Sign in again.',
+  'Automatic extraction is unavailable. You can enter the details yourself.': 'Automatic extraction is unavailable. You can enter the details yourself.',
+  'Could not reach the service. Please try again.': 'Could not reach the service. Please try again.',
+  'Restoring your session…': 'Restoring your session…',
+  'Connecting… The server may take a minute to wake up.': 'Connecting… The server may take a minute to wake up.',
   'Enter a valid date; expiry cannot be before publication': 'Enter a valid date; expiry cannot be before publication',
   'Enter a valid http or https link': 'Enter a valid http or https link',
   'KarNama': 'KarNama',

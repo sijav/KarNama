@@ -1,4 +1,10 @@
 import { Module } from '@nestjs/common'
+import { APP_FILTER } from '@nestjs/core'
+import { AuthService } from '../auth/auth.service.js'
+import { AuthDatabase } from '../auth/database.service.js'
+import { SmsService } from '../auth/sms.service.js'
+import { ExtractionService } from '../extraction/extraction.service.js'
+import { GraphqlErrorFilter } from './error.filter.js'
 import { resolvers } from './resolvers.js'
 
 /**
@@ -16,5 +22,14 @@ import { resolvers } from './resolvers.js'
  * Now there is one array. A resolver reaches the server and the schema together
  * or reaches neither.
  */
-@Module({ providers: [...resolvers] })
+@Module({
+  providers: [
+    ...resolvers,
+    AuthDatabase,
+    AuthService,
+    SmsService,
+    ExtractionService,
+    { provide: APP_FILTER, useClass: GraphqlErrorFilter },
+  ],
+})
 export class GraphqlModule {}

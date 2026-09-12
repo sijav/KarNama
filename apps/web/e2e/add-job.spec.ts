@@ -14,6 +14,34 @@ const TITLE = 'توسعه‌دهنده فرانت‌اند'
 const COMPANY = 'دیجی‌کالا'
 
 test.beforeEach(async ({ page }) => {
+  await page.route('**/graphql', async (route) => {
+    const body: unknown = route.request().postDataJSON()
+    const variables = typeof body === 'object' && body !== null && 'variables' in body ? body.variables : null
+    const source =
+      typeof variables === 'object' && variables !== null && 'source' in variables && typeof variables.source === 'string'
+        ? variables.source
+        : ''
+    await route.fulfill({
+      json: {
+        data: {
+          extractJob: {
+            title: '',
+            company: '',
+            employmentTypes: [],
+            location: '',
+            experience: '',
+            jobLevel: null,
+            postedAt: '',
+            salary: '',
+            source: '',
+            expiresAt: '',
+            postingUrl: '',
+            description: source.startsWith('https://') ? '' : source,
+          },
+        },
+      },
+    })
+  })
   // The add flow is behind signing in, KN-046, and this spec is about the flow.
   await signedIn(page)
   await page.goto('/')

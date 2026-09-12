@@ -4,7 +4,7 @@ import { I18nProvider } from '@lingui/react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 import { useLayoutEffect, useMemo, type ReactNode } from 'react'
-import { AuthProvider, useAuth } from '../core/auth'
+import { AuthProvider, RemoteAuthProvider, useAuth } from '../core/auth'
 import { PreferencesProvider, usePreferences } from '../core/preferences'
 import { RecordsProvider } from '../core/records'
 import { directionFor, i18nFor, type Locale } from '../i18n'
@@ -13,6 +13,7 @@ import { buildTheme } from '../theme/theme'
 import { resolveScheme, useSystemScheme, type ColorSchemePreference } from '../theme/useColorScheme'
 
 export interface AppProvidersProps {
+  remoteAuth?: boolean
   /**
    * Forces the catalog and direction, overriding what the user has stored.
    * Storybook's toolbar drives the tree through this; the app leaves it unset
@@ -34,7 +35,7 @@ export interface AppProvidersProps {
  * drives the same component the app does, so the four combinations the done
  * gate asks for are the same code path rather than a lookalike.
  */
-export const AppProviders = ({ locale, colorScheme, children }: AppProvidersProps) => (
+export const AppProviders = ({ locale, colorScheme, remoteAuth = false, children }: AppProvidersProps) => (
   // Keyed on the seed so a Storybook toolbar change remounts the provider and
   // takes effect, while a user's own change inside a story still sticks. Both
   // are needed: deterministic stories, and a switch that actually switches.
@@ -42,7 +43,7 @@ export const AppProviders = ({ locale, colorScheme, children }: AppProvidersProp
     key={`${locale ?? ''}-${colorScheme ?? ''}`}
     initial={{ ...(locale ? { locale } : {}), ...(colorScheme ? { colorScheme } : {}) }}
   >
-    <ThemedTree>{children}</ThemedTree>
+    <ThemedTree remoteAuth={remoteAuth}>{children}</ThemedTree>
   </PreferencesProvider>
 )
 
@@ -51,7 +52,8 @@ export const AppProviders = ({ locale, colorScheme, children }: AppProvidersProp
  * provider to read them. One component cannot both provide a context and
  * consume it in the same render.
  */
-const ThemedTree = ({ children }: { children: ReactNode }) => {
+const ThemedTree = ({ children, remoteAuth }: { children: ReactNode; remoteAuth: boolean }) => {
+  const SessionProvider = remoteAuth ? RemoteAuthProvider : AuthProvider
   const { locale, colorScheme } = usePreferences()
   const direction = directionFor(locale)
   const scheme = resolveScheme(colorScheme, useSystemScheme())
@@ -94,9 +96,9 @@ const ThemedTree = ({ children }: { children: ReactNode }) => {
           <CssBaseline />
           {/* The board's records, inside the catalog so the five statuses the
               product starts with are named in the reader's language, KN-042. */}
-          <AuthProvider>
+          <SessionProvider>
             <OwnBoard>{children}</OwnBoard>
-          </AuthProvider>
+          </SessionProvider>
         </ThemeProvider>
       </CacheProvider>
     </I18nProvider>

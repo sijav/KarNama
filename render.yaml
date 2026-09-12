@@ -38,7 +38,7 @@ services:
     # The build needs the dev tools; the RUNTIME does not, and does not get
     # them, because `startCommand` runs compiled JavaScript.
     buildCommand: npm ci --include=dev && npm run build --workspace @karnama/api
-    startCommand: node apps/api/dist/main.js
+    startCommand: npm run db:migrate --workspace @karnama/api && npm run start --workspace @karnama/api
 
     # Rebuild on every push to the default branch, so there is no manual step.
     autoDeployTrigger: commit

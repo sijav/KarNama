@@ -1,0 +1,6 @@
+mutation ExtractJob($source: String!) {
+  extractJob(source: $source) {
+    title company employmentTypes location experience jobLevel postedAt salary
+    source expiresAt postingUrl description
+  }
+}

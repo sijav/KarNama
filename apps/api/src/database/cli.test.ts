@@ -1,6 +1,6 @@
 import { PGlite } from '@electric-sql/pglite'
-import { describe, expect, it } from 'vitest'
 import { pathToFileURL } from 'node:url'
+import { describe, expect, it } from 'vitest'
 import { connectWithPg, isEntrypoint, main, runCommand, type DatabaseClient } from './cli.js'
 
 /**
@@ -38,7 +38,7 @@ describe('the database CLI', () => {
     const db = await freshDb()
     const client = pgShapedClient(db)
 
-    expect(await runCommand('migrate', 'ignored', () => client)).toMatch(/^Applied 2: /)
+    expect(await runCommand('migrate', 'ignored', () => client)).toMatch(/^Applied 3: /)
     expect(await runCommand('migrate', 'ignored', () => client)).toBe('Nothing to migrate.')
     await db.close()
   })
@@ -96,7 +96,7 @@ describe('the command line itself', () => {
 
     expect(await main(['node', 'cli.js', 'migrate'], environment, write, () => client)).toBe(0)
     expect(written[0]?.stream).toBe('out')
-    expect(written[0]?.text).toMatch(/^Applied 2: /)
+    expect(written[0]?.text).toMatch(/^Applied 3: /)
     await db.close()
   })
 

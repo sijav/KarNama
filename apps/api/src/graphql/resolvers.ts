@@ -1,3 +1,5 @@
+import { AuthResolver } from '../auth/auth.resolver.js'
+import { ExtractionResolver } from '../extraction/extraction.resolver.js'
 import { HealthResolver } from '../health/health.resolver.js'
 
 /**
@@ -13,6 +15,6 @@ import { HealthResolver } from '../health/health.resolver.js'
  * represented here, so adding a resolver and forgetting this list is a test
  * failure rather than a missing field nobody notices until a query fails.
  */
-export const resolvers = [HealthResolver] as const
+export const resolvers = [HealthResolver, AuthResolver, ExtractionResolver] as const
 
 export type ResolverClass = (typeof resolvers)[number]

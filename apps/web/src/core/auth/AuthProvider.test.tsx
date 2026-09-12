@@ -56,7 +56,7 @@ describe('the mocked provider', () => {
     expect(codes).toHaveLength(1)
   })
 
-  it('refuses a wrong code, sends another on request, and signs in on the right one', () => {
+  it('refuses a wrong code, sends another on request, and signs in on the right one', async () => {
     const kept: string[] = []
     vi.stubGlobal('localStorage', {
       getItem: () => null,
@@ -66,10 +66,10 @@ describe('the mocked provider', () => {
     const codes = sentCodes()
     const { held } = capture()
 
-    held.requestCode(PHONE)
+    await held.requestCode(PHONE)
     expect(held.verify('00000')).toBe('wrong')
 
-    held.resend()
+    await held.resend()
     expect(codes).toHaveLength(2)
 
     // The code the mock last sent is the one that works, and signing in keeps
@@ -91,7 +91,7 @@ describe('the mocked provider', () => {
     expect(capture().held.verify('12345')).toBe('expired')
   })
 
-  it('takes the name the first login gives, and lets the reader out again', () => {
+  it('takes the name the first login gives, and lets the reader out again', async () => {
     const kept: string[] = []
     vi.stubGlobal('localStorage', {
       getItem: () => null,
@@ -101,7 +101,7 @@ describe('the mocked provider', () => {
     const { held } = capture(sessionFor(PHONE, '2026-09-12T00:00:00.000Z'))
     expect(held.signingUp).toBe(true)
 
-    held.saveName('  سارا محمدی  ')
+    await held.saveName('  سارا محمدی  ')
     expect(JSON.parse(kept.at(-1) ?? '{}')).toMatchObject({ name: 'سارا محمدی' })
 
     held.signOut()
@@ -139,7 +139,7 @@ describe('the mocked provider', () => {
     }
   })
 
-  it('still works for a reader whose browser refuses storage', () => {
+  it('still works for a reader whose browser refuses storage', async () => {
     vi.stubGlobal('localStorage', {
       getItem: () => {
         throw new Error('blocked')
@@ -153,8 +153,8 @@ describe('the mocked provider', () => {
     })
     sentCodes()
     const { held } = capture()
+    await expect(Promise.resolve(held.requestCode(PHONE))).resolves.toBe(true)
     expect(() => {
-      held.requestCode(PHONE)
       held.signOut()
     }).not.toThrow()
   })
@@ -163,7 +163,7 @@ describe('the mocked provider', () => {
     expect(STORAGE_KEY).toContain('session')
   })
 
-  it('does nothing, rather than throwing, for a component outside the provider', () => {
+  it('does nothing, rather than throwing, for a component outside the provider', async () => {
     let held: AuthValue | undefined
     const Probe = () => {
       held = useContext(AuthContext)
@@ -173,9 +173,9 @@ describe('the mocked provider', () => {
     expect(held?.session).toBeNull()
     expect(held?.requestCode(PHONE)).toBe(false)
     expect(held?.verify('12345')).toBeNull()
+    await expect(Promise.resolve(held?.resend())).resolves.toBeUndefined()
+    await expect(Promise.resolve(held?.saveName('a'))).resolves.toBeUndefined()
     expect(() => {
-      held?.resend()
-      held?.saveName('a')
       held?.signOut()
     }).not.toThrow()
   })
