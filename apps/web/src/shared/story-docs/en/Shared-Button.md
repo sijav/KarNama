@@ -80,3 +80,9 @@ it exists so these states can be looked at in the one place they are reviewed.
 
 The real pseudo-classes are gated on the attribute's absence, so a pointer
 crossing a forced cell cannot add a second state on top of it.
+
+The attribute is put on by a ref callback rather than by an effect, so the 45
+transient cells carry their state into the first frame the browser draws
+instead of showing their rest look and being corrected after it. The story
+counts them from a frame callback it schedules before it renders, which is the
+only place that difference is visible.

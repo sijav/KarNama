@@ -11868,12 +11868,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The transient cells carry their attribute before the first paint, and the story proves it rather than reading after the effects have run.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T02:34:08.639Z"
+      "createdAt": "2026-09-12T02:34:08.639Z",
+      "updatedAt": "2026-09-12T02:34:27.355Z"
     },
     {
       "id": "KN-455",

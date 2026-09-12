@@ -1,7 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
-import { useEffect, useRef } from 'react'
 import { expect, fn, waitFor, within } from 'storybook/test'
 import { semantic, spacing } from '../../theme/tokens'
 import { ICON_NAMES } from '../icon'
@@ -30,20 +29,31 @@ type ButtonState = (typeof STATES)[number]
 // pseudo-class, and this puts the attribute on the rendered button. It cannot
 // be a prop, because Button declares its props and forwards nothing else, so
 // the cell holds a ref to its own box and reaches the button inside it.
-const Forced = ({ state, ...args }: ButtonProps & { state: ButtonState }) => {
-  const cell = useRef<HTMLDivElement | null>(null)
-  useEffect(() => {
-    const button = cell.current?.querySelector('button')
-    if (!button) return
-    if (state === 'rest' || state === 'disabled') button.removeAttribute('data-state')
-    else button.setAttribute('data-state', state)
-  }, [state])
-  return (
-    <Box ref={cell} sx={{ display: 'inline-flex' }}>
-      <Labelled {...args} disabled={state === 'disabled'} />
-    </Box>
-  )
-}
+const Forced = ({ state, ...args }: ButtonProps & { state: ButtonState }) => (
+  // A ref callback, not an effect: React runs a passive effect AFTER the
+  // browser has painted, so every transient cell showed its REST look for a
+  // frame first, KN-454. A ref callback runs in the commit, before the paint,
+  // and an inline one runs again on every render, so a changed `state` lands
+  // before the frame that shows it. Refs attach from the bottom up, so the
+  // button inside this box is already in the tree when this runs.
+  <Box
+    ref={(cell: HTMLDivElement | null) => {
+      const button = cell?.querySelector('button')
+      if (!button) return
+      if (state === 'rest' || state === 'disabled') button.removeAttribute('data-state')
+      else button.setAttribute('data-state', state)
+    }}
+    sx={{ display: 'inline-flex' }}
+  >
+    <Labelled {...args} disabled={state === 'disabled'} />
+  </Box>
+)
+
+// What the browser had to draw at the first frame, filled by a frame callback
+// the story schedules BEFORE it renders: a frame callback runs after layout and
+// before the paint it belongs to, so what it counts is what the reader sees
+// first. With the attribute set from an effect this was zero, KN-454.
+let forcedAtFirstFrame: number | null = null
 /* eslint-enable lingui/no-unlocalized-strings */
 
 const meta = {
@@ -143,6 +153,15 @@ export const Playground: Story = {
 export const States: Story = {
   globals: { colorScheme: 'light' },
   parameters: { controls: { include: ['startIcon', 'endIcon'] } },
+  beforeEach: () => {
+    forcedAtFirstFrame = null
+    const frame = requestAnimationFrame(() => {
+      forcedAtFirstFrame = document.querySelectorAll('button[data-state]').length
+    })
+    return () => {
+      cancelAnimationFrame(frame)
+    }
+  },
   render: (args) => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.lg}px` }}>
       {STATES.map((state) => (
@@ -156,6 +175,17 @@ export const States: Story = {
     // All 75 read where they stand, with no pointer and no keyboard: the fill
     // and the text of every one, Ghost's pressed opacity, and the focus ring,
     // which is an outline on four styles and Secondary's own inside edge.
+    // The 45 transient cells carried their state into the FIRST frame the
+    // browser drew, rather than being painted at rest and corrected after,
+    // KN-454. Read from a frame callback the story scheduled before it
+    // rendered, because by the time a play runs every effect has long since
+    // caught up and the flash is invisible to it.
+    const transient = STATES.filter((state) => state !== 'rest' && state !== 'disabled').length
+    await waitFor(async () => {
+      await expect(forcedAtFirstFrame).not.toBeNull()
+    })
+    await expect(forcedAtFirstFrame).toBe(transient * VARIANTS.length * SIZES.length)
+
     const buttons = within(canvasElement).getAllByRole('button')
     await expect(buttons).toHaveLength(STATES.length * VARIANTS.length * SIZES.length)
     const cells = STATES.flatMap((state) => VARIANTS.flatMap((variant) => SIZES.map((size) => ({ state, variant, size }))))
