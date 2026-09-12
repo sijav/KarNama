@@ -5,6 +5,7 @@ import { Icon, type IconName } from '../icon'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'text' | 'destructive' | 'ghost'
 export type ButtonSize = 'S' | 'M' | 'L'
+export type ButtonType = 'button' | 'submit'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface ButtonProps {
@@ -14,7 +15,9 @@ export interface ButtonProps {
   disabled?: boolean
   startIcon?: IconName
   endIcon?: IconName
-  type?: 'button' | 'submit'
+  type?: ButtonType
+  /** The id of the form this submits, for an action that sits outside it. */
+  form?: string
   autoFocus?: boolean
   onClick?: () => void
 }
@@ -93,12 +96,24 @@ const FOCUS_EDGE = 2
 // The Button of node 31:4: five styles in three sizes, at rest, hovered,
 // pressed, disabled and focused, on MUI's Button restyled to the file. The
 // label arrives translated from the caller.
-export const Button = ({ children, variant = 'primary', size = 'M', disabled = false, startIcon, endIcon, type = 'button', autoFocus = false, onClick }: ButtonProps) => {
+export const Button = ({
+  children,
+  variant = 'primary',
+  size = 'M',
+  disabled = false,
+  startIcon,
+  endIcon,
+  type = 'button',
+  form,
+  autoFocus = false,
+  onClick,
+}: ButtonProps) => {
   const measure = SIZES[size]
   const look = LOOKS[variant]
   return (
     <MuiButton
       type={type}
+      {...(form === undefined ? {} : { form })}
       disabled={disabled}
       autoFocus={autoFocus}
       disableRipple

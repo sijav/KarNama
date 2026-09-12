@@ -166,3 +166,35 @@ export const SigningInOnAPhone: Story = {
     }
   },
 }
+
+export const EnterFinishesTheStep: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // The owner, 2026-09-12: the fields are a form and finishing it is what the
+    // step's own button does, KN-463. So Enter in a field asks for the code,
+    // and the page does not reload while doing it, which is what a submit does
+    // when nothing prevents it.
+    const canvas = within(canvasElement)
+    const codes: string[] = []
+    const said = spyOn(console, 'info').mockImplementation((...args: unknown[]) => {
+      const sent = /mock SMS to \S+: (\d+)/.exec(String(args[0]))
+      if (sent?.[1]) codes.push(sent[1])
+    })
+    try {
+      await userEvent.type(canvas.getByLabelText('شماره موبایل'), `${PHONE}{Enter}`)
+      await waitFor(async () => {
+        await expect(canvas.getByRole('status')).toBeInTheDocument()
+      })
+      await expect(codes).toHaveLength(1)
+
+      // And again on the next step: Enter signs the reader in.
+      const digits = /(\d{5})/.exec(canvas.getByRole('status').textContent)?.[1] ?? ''
+      await userEvent.type(canvas.getByLabelText('کد پنج رقمی'), `${digits}{Enter}`)
+      await waitFor(async () => {
+        await expect(canvas.getByLabelText('اسم و فامیل')).toBeInTheDocument()
+      })
+    } finally {
+      said.mockRestore()
+    }
+  },
+}

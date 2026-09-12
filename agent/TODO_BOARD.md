@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 194 of 462 tasks done · 431 of 941 points.
+Project **KarNama** · 194 of 464 tasks done · 431 of 946 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-330` The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list** (high, 2 pt, web)
+**Next up: `KN-463` Every set of fields is a form, and its primary button submits it** (high, 3 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-463` | Every set of fields is a form, and its primary button submits it | high | 3 | web | none | Every screen and modal that takes fields wraps them in a form whose onSubmit does the work, its primary button is type=submit, and a story presses Enter in a field and sees the same thing the button does. |
 
 ## Blocked (5)
 
@@ -20,7 +26,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (261)
+## Backlog (262)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -51,6 +57,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-440` | Recolouring a status moves its column, because the board's order ranks by colour token | high | 2 | web | none | Recolouring a status leaves its column where it was, and a story recolours a custom status to the offer colour and asserts the order is unchanged. |
 | `KN-446` | The Icon Button's TooltipTrigger type enforces nothing, and the runtime forwards more than it says | high | 2 | web | none | What IconButton forwards and what its type says it forwards are the same thing, and a comment says why the clone marker is part of it. |
 | `KN-452` | The shell gives a phone 24 of gutter where the design draws 16 | high | 2 | web | none | A page's gutters are the file's at each width, 16 on a phone and 32 on the desktop, and a story at a phone's width reads a full-width control's box against the file's number. |
+| `KN-464` | The fields tell a phone's keyboard nothing: no input type, no inputMode, no enterKeyHint, no autocomplete | high | 2 | web | none | Each field declares the type, inputMode, enterKeyHint and autocomplete its content wants, and a story reads them off the rendered inputs in both languages. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -5911,4 +5918,26 @@ From the KN-459 roast. The line added to AuthProvider.test.tsx captures a FRESH 
 **Why.** This is the third assertion in three days that cannot fail, and this one guards the thing the owner reported: the code on the screen must be the code that works.
 
 **Exit condition.** A test reads mockCode from the provider that sent the code, and a story resends and signs in with the newly shown one.
+
+### `KN-463` Every set of fields is a form, and its primary button submits it
+
+- **status** in_progress · **severity** high · **points** 3 · **area** web
+- **blocked by** none
+
+The owner, 2026-09-12: 'the inputs should always be in a form, onsubmit needs to be the one responsible for next button, next button needs to call onsubmit'. Today each screen wires its primary button's onClick by hand and no form element exists, so Enter does nothing in a field, a phone's keyboard offers no Go key, and a password manager or autofill has no form to fill. Wrap each set of fields in a form, move what the primary button does into the form's onSubmit, and make that button type=submit so it submits rather than carrying its own handler. Everywhere fields are taken: the three sign-in steps, the add flow's paste step and its manual form, the contact modal, the rename modal, and the job modal's own save.
+
+**Why.** Enter is how a form is finished, and on a phone it is the difference between a keyboard that offers Go and one that does not. It is also what autofill and a password manager look for, which is what makes the sign-in number rememberable.
+
+**Exit condition.** Every screen and modal that takes fields wraps them in a form whose onSubmit does the work, its primary button is type=submit, and a story presses Enter in a field and sees the same thing the button does.
+
+### `KN-464` The fields tell a phone's keyboard nothing: no input type, no inputMode, no enterKeyHint, no autocomplete
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+Found by the KN-463 plan roast. The Input takes a name and nothing else that a browser or a phone reads: no type, so a phone shows the full alphabet for a number and a password manager sees nothing to fill; no inputMode, so the number pad never comes up; no enterKeyHint, so the key says Enter rather than Go or Next; no autoComplete, so a remembered phone number is never offered and the one-time code is never picked up from an SMS. A phone number wants type=tel, inputMode=numeric, autoComplete=tel; the five digit code wants inputMode=numeric and autoComplete=one-time-code, which is what lets a phone offer the code from the message itself; the name wants autoComplete=name; the links want type=url.
+
+**Why.** The owner opened the product on a phone twice today and both times what was wrong was the phone, not the desktop. A form is what KN-463 gives; this is what actually changes the keyboard that comes up and whether anything can be filled in for the reader.
+
+**Exit condition.** Each field declares the type, inputMode, enterKeyHint and autocomplete its content wants, and a story reads them off the rendered inputs in both languages.
 

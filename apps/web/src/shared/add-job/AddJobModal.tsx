@@ -1,8 +1,8 @@
 import { useLingui } from '@lingui/react'
 import { Box, ButtonBase, Dialog, type Theme } from '@mui/material'
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type SyntheticEvent } from 'react'
 import { spacing, type as typeScale } from '../../theme/tokens'
-import { Button } from '../button'
+import { Button, type ButtonType } from '../button'
 import { Input } from '../input'
 import { LoadingState } from '../loading-state'
 import { ConfirmModal, DISSOLVE_MS, ModalActions, ModalDivider, ModalHeader, modalPaper, modalScrim } from '../modal'
@@ -30,6 +30,9 @@ export interface AddJobModalProps {
 
 // Where the modal opens unless told otherwise, typed so the lint rule reads it
 // as a value and not as copy.
+// The button that finishes a form, typed so the lint rule reads it as a value.
+const SUBMIT: ButtonType = 'submit'
+
 const PASTE: Exclude<AddJobStep, 'loading'> = 'paste'
 // The fields a step starts at, found by their tags, typed for the same reason.
 const TEXTAREA: keyof HTMLElementTagNameMap = 'textarea'
@@ -122,6 +125,8 @@ export const AddJobModal = ({
   // can reach the dialog and the status is heard, and every other step starts
   // at its first field.
   const loadingPanel = useRef<HTMLDivElement>(null)
+  const formId = useId()
+  const pasteFormId = useId()
   const stepBody = useRef<HTMLDivElement>(null)
   const shownStep = useRef(flow.step)
   useEffect(() => {
@@ -212,7 +217,17 @@ export const AddJobModal = ({
             <ModalHeader title={title} titleId={titleId} onClose={leave} />
             <ModalDivider />
             {pasting ? (
-              <Box ref={stepBody} sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing['2xs']}px` }}>
+              <Box
+                ref={stepBody}
+                component="form"
+                noValidate
+                id={pasteFormId}
+                onSubmit={(event: SyntheticEvent) => {
+                  event.preventDefault()
+                  extract()
+                }}
+                sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing['2xs']}px` }}
+              >
                 {/* The paste field, 166:67: the Input of several lines, its
                     helper under it, or reading's failure in its place; touched
                     as soon as it takes focus, the file's critical path. */}
@@ -270,7 +285,19 @@ export const AddJobModal = ({
                 </Box>
               </Box>
             ) : (
-              <Box ref={stepBody} sx={{ display: 'contents' }}>
+              <Box
+                ref={stepBody}
+                component="form"
+                noValidate
+                id={formId}
+                onSubmit={(event: SyntheticEvent) => {
+                  event.preventDefault()
+                  save()
+                }}
+                // Draws no box of its own, so the dialog's layout is unchanged,
+                // KN-463.
+                sx={{ display: 'contents' }}
+              >
                 <JobForm
                   draft={flow.draft}
                   statuses={statuses}
@@ -288,11 +315,17 @@ export const AddJobModal = ({
                 {i18n._('Cancel')}
               </Button>
               {pasting ? (
-                <Button disabled={flow.source.trim() === '' || (flow.step === 'paste' && !flow.touched)} onClick={extract}>
+                <Button
+                  type={SUBMIT}
+                  form={pasteFormId}
+                  disabled={flow.source.trim() === '' || (flow.step === 'paste' && !flow.touched)}
+                >
                   {flow.step === 'error' ? i18n._('Try again') : i18n._('Extract details')}
                 </Button>
               ) : (
-                <Button onClick={save}>{i18n._('Save')}</Button>
+                <Button type={SUBMIT} form={formId}>
+                  {i18n._('Save')}
+                </Button>
               )}
             </ModalActions>
           </>

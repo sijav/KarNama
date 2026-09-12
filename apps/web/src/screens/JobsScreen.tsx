@@ -1,11 +1,11 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
-import { useState } from 'react'
+import { useId, useState, type SyntheticEvent } from 'react'
 import { usePreferences } from '../core/preferences'
 import { columnOrder, contactsOf, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
 import { AddJobModal, type JobDraft } from '../shared/add-job'
 import { BulkActionBar } from '../shared/bulk-action-bar'
-import { Button, type ButtonVariant } from '../shared/button'
+import { Button, type ButtonType, type ButtonVariant } from '../shared/button'
 import { EmptyState } from '../shared/empty-state'
 import { FilterChip } from '../shared/filter-chip'
 import { Input } from '../shared/input'
@@ -45,6 +45,9 @@ const RENAME_WIDTH = 360
 // The quiet action beside a primary one, typed so the lint rule reads it as a
 // value rather than as copy.
 const QUIET: ButtonVariant = 'text'
+
+// The button that finishes a form, typed for the same reason.
+const SUBMIT: ButtonType = 'submit'
 
 // The two card layouts, typed for the same reason, and the search bar's two,
 // which are the same words for the same pair of screens, KN-315.
@@ -89,6 +92,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
   const [person, setPerson] = useState<{ id: string | null; values: ContactModalValues } | undefined>(undefined)
   // A column being renamed: its id and the name as it is being typed.
   const [renaming, setRenaming] = useState<{ id: string; name: string } | null>(null)
+  const renameFormId = useId()
   const wide = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
 
   const addingTo = adding ?? (addOpen ? first : null)
@@ -133,6 +137,11 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
     if (moving) records.moveJobs(moving, status)
     setMoving(null)
     setSelected([])
+  }
+
+  const rename = () => {
+    if (renaming && renaming.name.trim() !== '') records.renameStatus(renaming.id, renaming.name.trim())
+    setRenaming(null)
   }
 
   const remove = () => {
@@ -422,24 +431,31 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
             >
               {i18n._('Cancel')}
             </Button>
-            <Button
-              onClick={() => {
-                if (renaming && renaming.name.trim() !== '') records.renameStatus(renaming.id, renaming.name.trim())
-                setRenaming(null)
-              }}
-            >
+            <Button type={SUBMIT} form={renameFormId}>
               {i18n._('Save')}
             </Button>
           </>
         }
       >
-        <Input
-          label={i18n._('Status')}
-          value={renaming?.name ?? ''}
-          onChange={(name) => {
-            setRenaming((was) => (was ? { ...was, name } : was))
+        <Box
+          component="form"
+          noValidate
+          id={renameFormId}
+          onSubmit={(event: SyntheticEvent) => {
+            event.preventDefault()
+            rename()
           }}
-        />
+          // Draws no box of its own, so the modal's layout is unchanged, KN-463.
+          sx={{ display: 'contents' }}
+        >
+          <Input
+            label={i18n._('Status')}
+            value={renaming?.name ?? ''}
+            onChange={(name) => {
+              setRenaming((was) => (was ? { ...was, name } : was))
+            }}
+          />
+        </Box>
       </Modal>
 
       <ChangeStatusModal

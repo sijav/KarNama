@@ -230,3 +230,29 @@ export const InEnglish: Story = {
     await userEvent.keyboard('{Escape}')
   },
 }
+
+export const EnterSaves: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement, args }) => {
+    // The owner, 2026-09-12: the fields are a form and its Save submits it, so
+    // Enter in a field does what Save does, KN-463. The action sits in the
+    // modal's footer, outside the fields, and names the form by id, which is
+    // how a button submits a form it does not sit inside.
+    const dialog = await open(canvasElement)
+    const [name] = within(dialog).getAllByRole('textbox')
+    if (!name) throw new Error('no name field')
+    const person = fixtures('fa-IR').contacts[2]?.fullName ?? ''
+    await userEvent.type(name, person)
+
+    // The runner's own keyboard, KN-225: implicit submission is the BROWSER's,
+    // and a synthetic Enter cannot ask for it. testing-library stands in for it
+    // by clicking a submit button inside the form, and this one is in the
+    // modal's footer, associated by id, so only a real key press proves it.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const browser = await import('vitest/browser')
+    await browser.userEvent.keyboard('{Enter}')
+    await waitFor(async () => {
+      await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ name: person }))
+    })
+  },
+}

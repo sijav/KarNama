@@ -1,9 +1,9 @@
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
-import { useState, type ReactNode } from 'react'
+import { useId, useState, type ReactNode } from 'react'
 import { spacing } from '../../theme/tokens'
-import { Button } from '../button'
-import { Input , type InputDirection } from '../input'
+import { Button, type ButtonType } from '../button'
+import { Input, type InputDirection } from '../input'
 import { Select, type SelectOption } from '../select'
 import { PanelModal } from './PanelModal'
 
@@ -11,6 +11,9 @@ import { PanelModal } from './PanelModal'
 // whatever the page does, KN-458. Typed so the lint rule reads it as a value
 // rather than as copy.
 const LATIN: InputDirection = 'ltr'
+
+// The button that finishes the form, typed for the same reason.
+const SUBMIT: ButtonType = 'submit'
 
 export interface ContactModalValues {
   name: string
@@ -76,6 +79,7 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
   const set = (field: keyof Omit<ContactModalValues, 'jobId'>) => (value: string) => {
     setValues((current) => ({ ...current, [field]: value }))
   }
+  const formId = useId()
   const nameMissing = values.name.trim() === ''
   const save = () => {
     setTried(true)
@@ -92,7 +96,9 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
           <Button variant="ghost" onClick={onCancel}>
             {i18n._('Cancel')}
           </Button>
-          <Button onClick={save}>{i18n._('Save')}</Button>
+          <Button type={SUBMIT} form={formId}>
+            {i18n._('Save')}
+          </Button>
         </>
       }
       {...(mode === 'edit' && onDelete !== undefined
@@ -105,31 +111,44 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
           }
         : {})}
     >
-      <Input
-        label={i18n._('Full name')}
-        placeholder={i18n._('e.g. Sara Mohammadi')}
-        value={values.name}
-        onChange={set('name')}
-        {...(tried && nameMissing ? { error: i18n._('Write the full name') } : {})}
-      />
-      <Pair>
-        <Input label={i18n._('Role')} placeholder={i18n._('e.g. HR specialist')} value={values.role} onChange={set('role')} />
-        <Input label={i18n._('Company')} placeholder={i18n._('e.g. Digikala')} value={values.company} onChange={set('company')} />
-      </Pair>
-      <Pair>
-        <Input label={i18n._('Email')} direction={LATIN} placeholder={EMAIL_EXAMPLE} value={values.email} onChange={set('email')} />
-        <Input label={i18n._('Phone')} direction={LATIN} placeholder={i18n._('0912 000 0000')} value={values.phone} onChange={set('phone')} />
-      </Pair>
-      <Input label={i18n._('Social link')} direction={LATIN} placeholder={SOCIAL_EXAMPLE} value={values.linkedin} onChange={set('linkedin')} />
-      <Select
-        label={i18n._('Related job opportunity')}
-        placeholder={i18n._('Choose a job opportunity…')}
-        options={jobs}
-        value={values.jobId === null ? [] : [values.jobId]}
-        onChange={(next) => {
-          setValues((current) => ({ ...current, jobId: next[0] ?? null }))
+      <Box
+        component="form"
+        noValidate
+        id={formId}
+        onSubmit={(event) => {
+          event.preventDefault()
+          save()
         }}
-      />
+        // The form draws no box of its own, so the fields stay direct children
+        // of the modal's body and its gaps are unchanged, KN-463.
+        sx={{ display: 'contents' }}
+      >
+        <Input
+          label={i18n._('Full name')}
+          placeholder={i18n._('e.g. Sara Mohammadi')}
+          value={values.name}
+          onChange={set('name')}
+          {...(tried && nameMissing ? { error: i18n._('Write the full name') } : {})}
+        />
+        <Pair>
+          <Input label={i18n._('Role')} placeholder={i18n._('e.g. HR specialist')} value={values.role} onChange={set('role')} />
+          <Input label={i18n._('Company')} placeholder={i18n._('e.g. Digikala')} value={values.company} onChange={set('company')} />
+        </Pair>
+        <Pair>
+          <Input label={i18n._('Email')} direction={LATIN} placeholder={EMAIL_EXAMPLE} value={values.email} onChange={set('email')} />
+          <Input label={i18n._('Phone')} direction={LATIN} placeholder={i18n._('0912 000 0000')} value={values.phone} onChange={set('phone')} />
+        </Pair>
+        <Input label={i18n._('Social link')} direction={LATIN} placeholder={SOCIAL_EXAMPLE} value={values.linkedin} onChange={set('linkedin')} />
+        <Select
+          label={i18n._('Related job opportunity')}
+          placeholder={i18n._('Choose a job opportunity…')}
+          options={jobs}
+          value={values.jobId === null ? [] : [values.jobId]}
+          onChange={(next) => {
+            setValues((current) => ({ ...current, jobId: next[0] ?? null }))
+          }}
+        />
+      </Box>
     </PanelModal>
   )
 }

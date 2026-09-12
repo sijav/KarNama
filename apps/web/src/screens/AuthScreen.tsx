@@ -1,8 +1,8 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack } from '@mui/material'
-import { useState } from 'react'
+import { useState, type SyntheticEvent } from 'react'
 import { useAuth } from '../core/auth'
-import { Button, type ButtonVariant } from '../shared/button'
+import { Button, type ButtonType, type ButtonVariant } from '../shared/button'
 import { Input, type InputDirection } from '../shared/input'
 import { radius, spacing, type as typeScale } from '../theme/tokens'
 
@@ -29,6 +29,9 @@ const QUIET: ButtonVariant = 'text'
 // value rather than as copy.
 const LATIN: InputDirection = 'ltr'
 
+// The button that finishes the form, typed for the same reason.
+const SUBMIT: ButtonType = 'submit'
+
 export const AuthScreen = () => {
   const { i18n } = useLingui()
   const auth = useAuth()
@@ -39,6 +42,24 @@ export const AuthScreen = () => {
 
   const askForCode = () => {
     setProblem(auth.requestCode(phone) ? null : i18n._('Write your mobile number, 11 digits starting 09'))
+  }
+
+  // Finishing the form is whatever the step in front of the reader means by
+  // finished, KN-463. One form rather than one per step: React replaces this
+  // handler on every render, so a step change cannot carry a stale one, and
+  // Enter in a field does what the step's own button does.
+  const finish = (event: SyntheticEvent) => {
+    event.preventDefault()
+    if (auth.signingUp) {
+      if (name.trim() === '') setProblem(i18n._('Write the full name'))
+      else auth.saveName(name)
+      return
+    }
+    if (auth.awaiting) {
+      check()
+      return
+    }
+    askForCode()
   }
 
   const check = () => {
@@ -63,14 +84,7 @@ export const AuthScreen = () => {
         onChange={setName}
         {...(problem === null ? {} : { error: problem })}
       />
-      <Button
-        onClick={() => {
-          if (name.trim() === '') setProblem(i18n._('Write the full name'))
-          else auth.saveName(name)
-        }}
-      >
-        {i18n._('Continue')}
-      </Button>
+      <Button type={SUBMIT}>{i18n._('Continue')}</Button>
     </>
   ) : auth.awaiting ? (
     <>
@@ -118,7 +132,7 @@ export const AuthScreen = () => {
         onChange={setCode}
         {...(problem === null ? {} : { error: problem })}
       />
-      <Button onClick={check}>{i18n._('Sign in')}</Button>
+      <Button type={SUBMIT}>{i18n._('Sign in')}</Button>
       <Button
         variant={QUIET}
         onClick={() => {
@@ -143,13 +157,16 @@ export const AuthScreen = () => {
         onChange={setPhone}
         {...(problem === null ? {} : { error: problem })}
       />
-      <Button onClick={askForCode}>{i18n._('Send the code')}</Button>
+      <Button type={SUBMIT}>{i18n._('Send the code')}</Button>
     </>
   )
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', p: 6, bgcolor: 'background.default' }}>
       <Stack
+        component="form"
+        noValidate
+        onSubmit={finish}
         sx={{
           width: '100%',
           maxWidth: `${CARD_WIDTH}px`,

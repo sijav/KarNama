@@ -45,6 +45,13 @@ An icon from the set after the label.
 When set, the button takes focus as it mounts: the Confirm modal's Cancel does,
 so the action a keyboard lands on first is the one that changes nothing.
 
+### form
+
+The id of the form this button submits, for an action that sits outside it. A
+modal draws its actions in a footer, away from the fields, and HTML's own answer
+is this attribute: the button names the form and submits it from anywhere in the
+document, including through a portal, KN-463.
+
 ### onClick
 
 Fired when the button is pressed, by pointer or by keyboard.

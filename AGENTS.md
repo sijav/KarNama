@@ -177,6 +177,26 @@ Comments included. Persian belongs in the lingui catalog, in `story-docs/fa`, or
 in the Persian readme. Quoting a Persian UI string inside an English comment is
 fine and is often the clearest way to name what is being discussed.
 
+### A synthetic Enter cannot prove a form submits, when the button is outside it
+
+Implicit submission is the BROWSER's: pressing Enter in a field runs the
+form's default button, the first submit button whose form owner is that form,
+wherever it sits. testing-library stands that behaviour in by clicking a submit
+button it finds INSIDE the form, so a modal whose action lives in a footer and
+names the form by id, `form={id}`, looks broken to a synthetic Enter and works
+in every real browser, KN-463.
+
+Prove it with the runner's own keyboard, which is a real key event:
+
+```ts
+if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+const browser = await import('vitest/browser')
+await browser.userEvent.keyboard('{Enter}')
+```
+
+The Browser pane cannot stand in for this either: its `type` action inserts
+text without key events, so nothing reaches a keydown listener.
+
 ### A declaration the RTL plugin must not mirror says so with `@noflip`
 
 Emotion runs `@mui/stylis-plugin-rtl` in Persian, and it mirrors every

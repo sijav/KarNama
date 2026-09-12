@@ -43,3 +43,8 @@ which the screen has nothing left to ask.
 Signing in on a phone, where there is no console: the code is on the screen,
 said plainly to be a stand-in until a real message is sent, and the story reads
 it from there and finishes signing in.
+
+### EnterFinishesTheStep
+
+The card is a form, so Enter in a field does what the step's own button does:
+it asks for the code, and on the next step it signs the reader in.

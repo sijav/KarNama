@@ -73,3 +73,9 @@ the same record, and what was typed stays.
 ### InEnglish
 
 The form in English.
+
+### EnterSaves
+
+The fields are a form and Save submits it, so Enter in a field saves. The action
+sits in the modal's footer, outside the fields, and names the form by id, which
+is how a button submits a form it does not sit inside.

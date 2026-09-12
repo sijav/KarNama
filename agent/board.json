@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 463,
+  "nextId": 465,
   "tasks": [
     {
       "id": "KN-001",
@@ -9510,9 +9510,12 @@
       "status": "backlog",
       "exit": "A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "2026-09-12: parked unstarted for the owner's instruction about forms, KN-463. Nothing was built; the plan beside the component is written and its roast is recorded in it. When it comes back: the plan roast says the shortcut is the right class of answer but the key must be a platform-scoped modifier chord rather than a bare letter, that the listener belongs on each SCREEN root and not on document, and that both screens actually render the bar AFTER the list, so ReachedBeforeTheList does not establish the contract the card assumes."
+      ],
       "createdAt": "2026-09-11T13:48:19.285Z",
-      "okr": "OKR-1"
+      "okr": "OKR-1",
+      "updatedAt": "2026-09-12T03:03:41.050Z"
     },
     {
       "id": "KN-331",
@@ -12053,6 +12056,39 @@
       "updatedAt": "2026-09-12T02:59:31.153Z",
       "evidence": "SigningInOnAPhone reads the code off the screen, asks for another, re-reads the notice and signs in with what it says then, so a notice showing a stale code fails at the name step. The vacuous node-side assertion is removed and replaced by a note saying renderToString cannot observe a code sent after its one render, and where it is covered instead. 1481 of 1482 tests pass, the one failure the known KN-365 flake; lint and tsc clean.",
       "closedAt": "2026-09-12T02:59:31.153Z"
+    },
+    {
+      "id": "KN-463",
+      "title": "Every set of fields is a form, and its primary button submits it",
+      "desc": "The owner, 2026-09-12: 'the inputs should always be in a form, onsubmit needs to be the one responsible for next button, next button needs to call onsubmit'. Today each screen wires its primary button's onClick by hand and no form element exists, so Enter does nothing in a field, a phone's keyboard offers no Go key, and a password manager or autofill has no form to fill. Wrap each set of fields in a form, move what the primary button does into the form's onSubmit, and make that button type=submit so it submits rather than carrying its own handler. Everywhere fields are taken: the three sign-in steps, the add flow's paste step and its manual form, the contact modal, the rename modal, and the job modal's own save.",
+      "why": "Enter is how a form is finished, and on a phone it is the difference between a keyboard that offers Go and one that does not. It is also what autofill and a password manager look for, which is what makes the sign-in number rememberable.",
+      "severity": "high",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "in_progress",
+      "exit": "Every screen and modal that takes fields wraps them in a form whose onSubmit does the work, its primary button is type=submit, and a story presses Enter in a field and sees the same thing the button does.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T03:03:41.200Z",
+      "updatedAt": "2026-09-12T03:03:46.637Z"
+    },
+    {
+      "id": "KN-464",
+      "title": "The fields tell a phone's keyboard nothing: no input type, no inputMode, no enterKeyHint, no autocomplete",
+      "desc": "Found by the KN-463 plan roast. The Input takes a name and nothing else that a browser or a phone reads: no type, so a phone shows the full alphabet for a number and a password manager sees nothing to fill; no inputMode, so the number pad never comes up; no enterKeyHint, so the key says Enter rather than Go or Next; no autoComplete, so a remembered phone number is never offered and the one-time code is never picked up from an SMS. A phone number wants type=tel, inputMode=numeric, autoComplete=tel; the five digit code wants inputMode=numeric and autoComplete=one-time-code, which is what lets a phone offer the code from the message itself; the name wants autoComplete=name; the links want type=url.",
+      "why": "The owner opened the product on a phone twice today and both times what was wrong was the phone, not the desktop. A form is what KN-463 gives; this is what actually changes the keyboard that comes up and whether anything can be filled in for the reader.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Each field declares the type, inputMode, enterKeyHint and autocomplete its content wants, and a story reads them off the rendered inputs in both languages.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T03:07:56.992Z"
     }
   ],
   "okrs": [
