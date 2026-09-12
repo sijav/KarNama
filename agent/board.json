@@ -9055,13 +9055,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A Tooltip wrapped round an Icon Button shows on hover and on focus and describes the button, the ref and the injected props reaching the button; a story composes them and asserts aria-describedby names the tooltip.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:43:24.539Z",
       "okr": "OKR-1",
-      "updatedAt": "2026-09-12T01:33:59.054Z"
+      "updatedAt": "2026-09-12T01:38:35.068Z",
+      "evidence": "A Tooltip round an Icon Button opens on hover and on focus, describes the button from the first render without renaming it, and neither component reports anything: InATooltip in IconButton.stories.tsx asserts all of it, including an empty console. IconButton takes the tooltip's ref and injected props through a named TooltipTrigger type rather than the whole of MUI's surface. 1464 of 1465 tests pass, the one failure the known KN-365 flake; lint and tsc clean. The disabled case cannot work at all and is filed as KN-426.",
+      "closedAt": "2026-09-12T01:38:35.068Z"
     },
     {
       "id": "KN-311",
