@@ -102,6 +102,7 @@ export const messages: Record<string, string> = {
   'Select': 'Select',
   'Delete contact': 'Delete contact',
   'Send an email': 'Send an email',
+  'Opens in your mail app': 'Opens in your mail app',
   'Cancel': 'Cancel',
   'Confirm': 'Confirm',
   'Close': 'Close',

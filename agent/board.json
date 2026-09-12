@@ -11936,12 +11936,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The link's name and the tip's text are different strings, and removing describeChild from the Tooltip makes the story fail.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T02:39:33.573Z"
+      "createdAt": "2026-09-12T02:39:33.573Z",
+      "updatedAt": "2026-09-12T02:39:47.441Z"
     }
   ],
   "okrs": [

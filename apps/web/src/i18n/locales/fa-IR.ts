@@ -105,6 +105,7 @@ export const messages: Record<string, string> = {
   'Select': 'انتخاب',
   'Delete contact': 'حذف مخاطب',
   'Send an email': 'ارسال ایمیل',
+  'Opens in your mail app': 'در برنامهٔ ایمیلت باز می‌شود',
   'Cancel': 'انصراف',
   'Confirm': 'تأیید',
   'Close': 'بستن',

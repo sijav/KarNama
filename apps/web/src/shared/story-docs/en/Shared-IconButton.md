@@ -105,3 +105,8 @@ The combination the product ships: a tip on a control that goes somewhere. The
 contact card's mail control is a link, and this asserts the anchor keeps its
 address and its own name, is described from the first render, and opens the tip
 on hover and on the keyboard alone.
+
+The tip explains and the label names, and they say different things on purpose:
+with one string in both, a tip that RENAMED the link would read exactly like one
+that described it. The name is read again while the tip is open, which is the
+only moment the difference shows.

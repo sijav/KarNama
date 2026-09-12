@@ -292,7 +292,7 @@ export const HandsBackItsElement: Story = {
 const ExplainedLink = () => {
   const { i18n } = useLingui()
   return (
-    <Tooltip title={i18n._('Send an email')} placement="start">
+    <Tooltip title={i18n._('Opens in your mail app')} placement="start">
       <IconButton icon="mail" aria-label={i18n._('Send an email')} href={`mailto:${WRITES_TO}`} />
     </Tooltip>
   )
@@ -322,31 +322,31 @@ export const ALinkInATooltip: Story = {
     const link = within(canvasElement).getByRole('link', { name: 'ارسال ایمیل' })
     await expect(link).toHaveAttribute('href', `mailto:${WRITES_TO}`)
 
-    // Described from the first render, KN-231, and still NAMED by its own
-    // label: describeChild means the tip describes the link rather than
-    // renaming it, and on an icon-only control the name is all a screen reader
-    // has.
+    // The tip EXPLAINS and the label NAMES, and they say different things, so
+    // the two can be told apart at all, KN-457: with the same string in both, a
+    // tip that renamed the link would read exactly like one that described it.
     await expect(link).toHaveAccessibleName('ارسال ایمیل')
-    const describes = link.getAttribute('aria-describedby') ?? ''
-    await expect(describes).not.toBe('')
-    const description = describes
-      .split(' ')
-      .map((id) => canvasElement.ownerDocument.getElementById(id)?.textContent ?? '')
-      .join(' ')
-    await expect(description).toContain('ارسال ایمیل')
+    await expect(link).toHaveAccessibleDescription('در برنامهٔ ایمیلت باز می‌شود')
 
     // It opens on hover, and on the keyboard alone, which is the half a
     // hover-only tip fails. Tab rather than focus(), because MUI opens the tip
     // only for a focus the browser calls visible.
     await userEvent.hover(link)
-    await expect(await body.findByRole('tooltip')).toHaveTextContent('ارسال ایمیل')
+    await expect(await body.findByRole('tooltip')).toHaveTextContent('در برنامهٔ ایمیلت باز می‌شود')
     await userEvent.unhover(link)
     await waitFor(async () => {
       await expect(body.queryByRole('tooltip')).toBeNull()
     })
     await userEvent.tab()
     await expect(link).toHaveFocus()
-    await expect(await body.findByRole('tooltip')).toHaveTextContent('ارسال ایمیل')
+    await expect(await body.findByRole('tooltip')).toHaveTextContent('در برنامهٔ ایمیلت باز می‌شود')
+
+    // And WHILE it is open the link is still called by its own name. This is
+    // the assertion that matters: MUI labels its child through aria-labelledby
+    // when it is not told to describe it, and it does that only while the tip
+    // is open, so a check taken at rest would pass either way.
+    await expect(link).toHaveAccessibleName('ارسال ایمیل')
+    await expect(link).toHaveAccessibleDescription('در برنامهٔ ایمیلت باز می‌شود')
 
     // And neither component complained while any of that happened.
     await expect(console.error).not.toHaveBeenCalled()

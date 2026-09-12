@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-457` The link-in-a-Tooltip story cannot tell a name from a description, because both say the same thing** (high, 1 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-457` | The link-in-a-Tooltip story cannot tell a name from a description, because both say the same thing | high | 1 | web | none | The link's name and the tip's text are different strings, and removing describeChild from the Tooltip makes the story fail. |
+
 ## Blocked (5)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -20,13 +26,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (260)
+## Backlog (259)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-457` | The link-in-a-Tooltip story cannot tell a name from a description, because both say the same thing | high | 1 | web | none | The link's name and the tip's text are different strings, and removing describeChild from the Tooltip makes the story fail. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
@@ -5841,7 +5846,7 @@ AGENTS.md forbids em dashes in every .md and .mdx, commas instead, and the Persi
 
 ### `KN-457` The link-in-a-Tooltip story cannot tell a name from a description, because both say the same thing
 
-- **status** backlog · **severity** high · **points** 1 · **area** web
+- **status** in_progress · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 From the KN-453 roast, and it is the doubt that story's own summary raised. ALinkInATooltip titles the tip with 'Send an email', which is also the link's accessible name, so the assertion that the anchor keeps its OWN name proves nothing: drop describeChild from the Tooltip and MUI may label the anchor with the tip's text, and the role query, the name assertion, the description assertion and the tip assertions all stay green. Give the tip its own copy, something that explains rather than names, and assert the two independently.
