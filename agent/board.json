@@ -12410,13 +12410,15 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "One story renders the second id while the first record's values are still the ones being passed, and asserts the form shows nothing of them; another delivers a record late with the id unchanged.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T04:27:19.204Z",
-      "updatedAt": "2026-09-12T04:27:31.431Z"
+      "updatedAt": "2026-09-12T04:29:47.815Z",
+      "evidence": "TheRecordArrivesAfterItsId starts with the first record shown, asks for the second id while those same values are still being passed, and asserts the form shows nothing of them before the record lands; TheRecordArrivesAfterOpening uses a parent whose id never changes and receives its record late. Making the modal accept the values whatever record they came from failed the first and left the others green; the mutation was reverted. 1496 of 1498 tests pass, the two failures the known KN-365 transition flakes; lint and tsc clean.",
+      "closedAt": "2026-09-12T04:29:47.815Z"
     }
   ],
   "okrs": [

@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 201 of 476 tasks done · 445 of 965 points.
+Project **KarNama** · 202 of 476 tasks done · 446 of 965 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-476` The handoff stories never render the new id beside the old record's values** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-476` | The handoff stories never render the new id beside the old record's values | high | 1 | web | none | One story renders the second id while the first record's values are still the ones being passed, and asserts the form shows nothing of them; another delivers a record late with the id unchanged. |
+**Next up: `KN-398` In dark the Tooltip draws white on text/primary, 1.34 to one, since its fill is a text role that turns light** (high, 2 pt, web)
 
 ## Blocked (6)
 
@@ -298,7 +292,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (201)
+## Done (202)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -468,6 +462,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-457` | The link-in-a-Tooltip story cannot tell a name from a description, because both say the same thing | high | 1 | web | none | The link's name and the tip's text are different strings, and removing describeChild from the Tooltip makes the story fail. |
 | `KN-462` | The mockCode assertion proves the opposite of what it claims, and no test covers a resend | high | 1 | web | none | A test reads mockCode from the provider that sent the code, and a story resends and signs in with the newly shown one. |
 | `KN-475` | The record-handoff story would pass with the description and note reset deleted | high | 1 | web | none | The two records differ in their description and note, and the story asserts both after the swap; deleting either reset line fails it. |
+| `KN-476` | The handoff stories never render the new id beside the old record's values | high | 1 | web | none | One story renders the second id while the first record's values are still the ones being passed, and asserts the form shows nothing of them; another delivers a record late with the id unchanged. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -6088,7 +6083,7 @@ From the KN-363 roast. otherIn() builds the second record from the first and cha
 
 ### `KN-476` The handoff stories never render the new id beside the old record's values
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 From the KN-386 roast, and it is right. The Loading parent starts with no record at all, so TheRecordArrivesAfterItsId renders the second id with NOTHING rather than with the first record's values still in hand, which is the render the whole fix is about; and TheRecordArrivesAfterOpening changes the id too, so it never tests an already-open modal whose id stays the same while its record arrives late. A component that accepted stale values unconditionally would pass both. Start the parent holding the FIRST record, then change the id alone, and assert the form shows nothing of the first; and give the late-arrival story a record that lands without the id ever changing.
