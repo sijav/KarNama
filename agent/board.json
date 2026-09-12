@@ -1819,7 +1819,7 @@
       "points": 13,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "done",
       "exit": "An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and the board renders it collapsed to a count by default.",
       "roasts": [],
       "notes": [
@@ -1828,8 +1828,10 @@
         "2026-09-12: KN-061, dragging a card between columns, is no longer a blocker of the board screen. The board draws and works without drag, which the Change Status control already covers, and the owner needs the page now."
       ],
       "createdAt": "2026-09-07T19:58:07.065Z",
-      "updatedAt": "2026-09-11T22:57:50.640Z",
-      "okr": "OKR-1"
+      "updatedAt": "2026-09-12T00:01:21.411Z",
+      "okr": "OKR-1",
+      "evidence": "A column per status in the design's order with rejected last and collapsed, the toolbar searching and sorting every column, the No results state, the phone's chip row with one column below it, the bulk bar moving and deleting several, and a card opening the job modal; five e2e tests on desktop and phone cover all of it and the move surviving a reload. Dragging is KN-061 and not done here; the records are the browser's until KN-416 wires the API",
+      "closedAt": "2026-09-12T00:01:21.411Z"
     },
     {
       "id": "KN-044",
