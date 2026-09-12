@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 190 of 457 tasks done · 424 of 931 points.
+Project **KarNama** · 191 of 459 tasks done · 425 of 936 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-457` The link-in-a-Tooltip story cannot tell a name from a description, because both say the same thing** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-457` | The link-in-a-Tooltip story cannot tell a name from a description, because both say the same thing | high | 1 | web | none | The link's name and the tip's text are different strings, and removing describeChild from the Tooltip makes the story fail. |
+**Next up: `KN-458` A phone number typed into the sign-in field comes out scrambled: the input has no direction of its own** (critical, 2 pt, web)
 
 ## Blocked (5)
 
@@ -26,11 +20,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (259)
+## Backlog (261)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-458` | A phone number typed into the sign-in field comes out scrambled: the input has no direction of its own | critical | 2 | web | none | Typing a phone number into the sign-in field shows it as it was typed, and a story types one and reads the value and the rendered order back, in Persian. |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
+| `KN-459` | The sign-in code is only in the console, so nobody can sign in on a phone | critical | 3 | web | none | On a phone, with no console, a reader can see the code and finish signing in; a story at a phone's width reads the code off the screen and uses it. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
@@ -290,7 +286,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (190)
+## Done (191)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -455,6 +451,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-447` | An Icon Button with an href cannot be given a ref: it is typed for a button and renders an anchor | high | 1 | web | none | A ref taken on an Icon Button with an href typechecks with no cast. |
 | `KN-453` | An Icon Button that is a link inside a Tooltip is untested, and that is the combination the work was for | high | 1 | web | none | A story wraps a Tooltip round an Icon Button with an href and asserts the anchor carries the description and opens the tip on hover and on focus. |
 | `KN-454` | The Button's forced states paint as rest for one frame before the attribute lands | high | 1 | web | none | The transient cells carry their attribute before the first paint, and the story proves it rather than reading after the effects have run. |
+| `KN-457` | The link-in-a-Tooltip story cannot tell a name from a description, because both say the same thing | high | 1 | web | none | The link's name and the tip's text are different strings, and removing describeChild from the Tooltip makes the story fail. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -5846,7 +5843,7 @@ AGENTS.md forbids em dashes in every .md and .mdx, commas instead, and the Persi
 
 ### `KN-457` The link-in-a-Tooltip story cannot tell a name from a description, because both say the same thing
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 From the KN-453 roast, and it is the doubt that story's own summary raised. ALinkInATooltip titles the tip with 'Send an email', which is also the link's accessible name, so the assertion that the anchor keeps its OWN name proves nothing: drop describeChild from the Tooltip and MUI may label the anchor with the tip's text, and the role query, the name assertion, the description assertion and the tip assertions all stay green. Give the tip its own copy, something that explains rather than names, and assert the two independently.
@@ -5854,4 +5851,26 @@ From the KN-453 roast, and it is the doubt that story's own summary raised. ALin
 **Why.** That story exists to prove a tip describes a control rather than renaming it, which on an icon-only control is the difference between a screen reader saying what the button does and saying a sentence about it. As written it cannot see the difference.
 
 **Exit condition.** The link's name and the tip's text are different strings, and removing describeChild from the Tooltip makes the story fail.
+
+### `KN-458` A phone number typed into the sign-in field comes out scrambled: the input has no direction of its own
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** none
+
+The owner, on the live site on a phone, 2026-09-12: typing 09123 18 shows '318 0912'. The page is RTL and the input inherits that, so the browser lays a run of Latin digits out by the bidi algorithm and the number reads back in pieces. A phone number, an email, a URL and a mailto are LTR content whatever the page's direction is: the field itself must be dir=ltr, with its text aligned to the inline start of the page so it still sits where a Persian reader expects. Every field that holds one has it: the sign-in phone, the code, the contact's email, phone and social link, and the job's posting link.
+
+**Why.** It is the first field of the first screen, and it makes the product unusable: the number a reader types is not the number they see, so they cannot tell whether they typed it right, and the code goes to whatever number the scrambling produced.
+
+**Exit condition.** Typing a phone number into the sign-in field shows it as it was typed, and a story types one and reads the value and the rendered order back, in Persian.
+
+### `KN-459` The sign-in code is only in the console, so nobody can sign in on a phone
+
+- **status** backlog · **severity** critical · **points** 3 · **area** web
+- **blocked by** none
+
+The owner, on the live site on a phone, 2026-09-12: 'what do you mean check the console there's no way to check the console on a mobile phone'. The mocked SMS writes the code with console.info and the code step tells the reader to look there, KN-046. On a phone there is no console, so the live product cannot be signed into at all, which is every reader who opens it on the device this product is mostly for. Until a real SMS sender exists, the mock has to hand the code to the READER: show it in the code step itself, plainly marked as a stand-in, and keep the console line for whoever is at a desk.
+
+**Why.** The product is deployed and the owner opened it on a phone and could not get past the first screen. Everything behind sign-in is unreachable, so this is the whole product, not a screen of it.
+
+**Exit condition.** On a phone, with no console, a reader can see the code and finish signing in; a story at a phone's width reads the code off the screen and uses it.
 

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 458,
+  "nextId": 460,
   "tasks": [
     {
       "id": "KN-001",
@@ -11936,13 +11936,47 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "The link's name and the tip's text are different strings, and removing describeChild from the Tooltip makes the story fail.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T02:39:33.573Z",
-      "updatedAt": "2026-09-12T02:39:47.441Z"
+      "updatedAt": "2026-09-12T02:43:31.185Z",
+      "evidence": "The tip says 'Opens in your mail app' and the link is named 'Send an email', and the story reads the accessible name and the accessible description apart, at rest and again while the tip is open. Removing describeChild from Tooltip.tsx fails it on the name assertion, which is the check the card named; the mutation was reverted. 9 of 9 icon-button stories pass, lint clean.",
+      "closedAt": "2026-09-12T02:43:31.185Z"
+    },
+    {
+      "id": "KN-458",
+      "title": "A phone number typed into the sign-in field comes out scrambled: the input has no direction of its own",
+      "desc": "The owner, on the live site on a phone, 2026-09-12: typing 09123 18 shows '318 0912'. The page is RTL and the input inherits that, so the browser lays a run of Latin digits out by the bidi algorithm and the number reads back in pieces. A phone number, an email, a URL and a mailto are LTR content whatever the page's direction is: the field itself must be dir=ltr, with its text aligned to the inline start of the page so it still sits where a Persian reader expects. Every field that holds one has it: the sign-in phone, the code, the contact's email, phone and social link, and the job's posting link.",
+      "why": "It is the first field of the first screen, and it makes the product unusable: the number a reader types is not the number they see, so they cannot tell whether they typed it right, and the code goes to whatever number the scrambling produced.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Typing a phone number into the sign-in field shows it as it was typed, and a story types one and reads the value and the rendered order back, in Persian.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T02:43:48.649Z"
+    },
+    {
+      "id": "KN-459",
+      "title": "The sign-in code is only in the console, so nobody can sign in on a phone",
+      "desc": "The owner, on the live site on a phone, 2026-09-12: 'what do you mean check the console there's no way to check the console on a mobile phone'. The mocked SMS writes the code with console.info and the code step tells the reader to look there, KN-046. On a phone there is no console, so the live product cannot be signed into at all, which is every reader who opens it on the device this product is mostly for. Until a real SMS sender exists, the mock has to hand the code to the READER: show it in the code step itself, plainly marked as a stand-in, and keep the console line for whoever is at a desk.",
+      "why": "The product is deployed and the owner opened it on a phone and could not get past the first screen. Everything behind sign-in is unreachable, so this is the whole product, not a screen of it.",
+      "severity": "critical",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "On a phone, with no console, a reader can see the code and finish signing in; a story at a phone's width reads the code off the screen and uses it.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T02:43:48.776Z"
     }
   ],
   "okrs": [
