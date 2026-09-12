@@ -74,3 +74,10 @@ anywhere.
 
 A button given a blank name beside one given a real name: the blank one is left
 out and reported in the console, and the named one renders.
+
+### InATooltip
+
+The button as a Tooltip's trigger: it takes the tooltip's ref and the props it
+injects, so the tip opens on hover and on focus, describes the button rather
+than renaming it, and is its description from the first render. A disabled
+button cannot do this, KN-426: the browser fires no pointer events on one.

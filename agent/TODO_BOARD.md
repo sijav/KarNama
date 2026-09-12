@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 180 of 425 tasks done · 411 of 890 points.
+Project **KarNama** · 180 of 426 tasks done · 411 of 892 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-310` The Icon Button cannot be a Tooltip's trigger: it forwards no ref and drops the props a Tooltip injects** (high, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-310` | The Icon Button cannot be a Tooltip's trigger: it forwards no ref and drops the props a Tooltip injects | high | 2 | web | none | A Tooltip wrapped round an Icon Button shows on hover and on focus and describes the button, the ref and the injected props reaching the button; a story composes them and asserts aria-describedby names the tooltip. |
 
 ## Blocked (5)
 
@@ -27,7 +33,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
-| `KN-310` | The Icon Button cannot be a Tooltip's trigger: it forwards no ref and drops the props a Tooltip injects | high | 2 | web | none | A Tooltip wrapped round an Icon Button shows on hover and on focus and describes the button, the ref and the injected props reaching the button; a story composes them and asserts aria-describedby names the tooltip. |
 | `KN-315` | The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one | high | 2 | web | none | The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them. |
 | `KN-316` | The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input | high | 2 | web | none | A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4. |
 | `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
@@ -143,6 +148,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-380` | The Search Bar decides whether to search by comparing typed text with shown text, which a normalising, restoring or clear-ignoring parent defeats | medium | 2 | web | none | Stories, each failing on KN-314's code: a parent ignoring the clear gets no search and no late one; a parent lowercasing input gets one search for the lowercased text; a parent restoring a reset value gets none; and the Search Bar's existing stories still pass. |
 | `KN-389` | A column whose cards a search filtered away says it has none at this stage, while its count says it has one | medium | 2 | web | none | Read the file for a search or filtered state of the board and its columns and settle, in DESIGN.md, what a column shows when a search hides its cards and what its count counts, asking the owner if the file is silent; the column does that, and a story renders a filtered column with a live count of one. |
 | `KN-407` | The Docs page hook and its channel are still checked by hand: a fake DocsContext would cover them, as AppProviders and PreferencesProvider are covered | medium | 2 | web | none | useDocsLocale is rendered in a test against a DocsContext and a channel the test makes: it reads the toolbar from the context, follows a globalsUpdated event, stops listening when it unmounts, and reports not known when the context yields nothing; the file leaves the coverage exclusion list, or the exclusion names what is left in it and why. |
+| `KN-426` | A disabled Icon Button cannot explain why it is off: it fires no pointer events | medium | 2 | web | none | A Tooltip wrapped round a disabled Icon Button opens on hover and on focus and says why the action is off, and whatever is decided about the tab order is written down in DESIGN.md; a story asserts it. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -4144,7 +4150,7 @@ Found by the KN-008 roast, which flagged the Icon's import of ../../theme/tokens
 
 ### `KN-310` The Icon Button cannot be a Tooltip's trigger: it forwards no ref and drops the props a Tooltip injects
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** in_progress · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-014, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-014 roast. IconButton.tsx declares its own props and neither forwards a ref nor spreads the rest, so the Tooltip, which clones its child with a ref, aria-describedby and focus and pointer handlers, attaches to nothing.
@@ -5453,4 +5459,15 @@ KN-305 put a board in the story fixtures: nine columns in the order the board dr
 **Why.** A shared fixture nothing reads is the same as no shared fixture: the stories keep drifting from each other and from the product's order, which is what KN-062's roast found in the first place. It is also the only way the nine status colours ever get drawn by a board story.
 
 **Exit condition.** No story under src/screens builds its own list of statuses or picks jobs by index; the board stories render fixtures(locale).board and name their expectations from it.
+
+### `KN-426` A disabled Icon Button cannot explain why it is off: it fires no pointer events
+
+- **status** backlog · **severity** medium · **points** 2 · **area** web
+- **blocked by** none
+
+KN-310 made the Icon Button a Tooltip's trigger, and it works while the button is live. With disabled it cannot: the browser fires no pointer events on a disabled control, so a tip wrapped round one never opens, and a story that hovers it fails with 'pointer-events: none'. Measured on 2026-09-12 with a story that did exactly that; it was taken out again rather than left red. The Menu already solved the same problem for a blocked item, Menu.tsx line 77: it sets aria-disabled rather than disabled and guards its own onClick, so the item stays hoverable and focusable and its Tooltip opens. Doing the same here would change what the Icon Button's Disabled story pins from design node 512:742, that a disabled button is out of the tab order, so the owner should say which they want: a control that cannot be reached, or one that can be reached and explains why it is off.
+
+**Why.** An icon-only control that is off is the case a tooltip exists for: with no text and no explanation, a reader is left with a grey square and no way to find out why. The design draws that explanation for the blocked delete, 259:295, and the Menu gives it; an Icon Button cannot.
+
+**Exit condition.** A Tooltip wrapped round a disabled Icon Button opens on hover and on focus and says why the action is off, and whatever is decided about the tab order is written down in DESIGN.md; a story asserts it.
 

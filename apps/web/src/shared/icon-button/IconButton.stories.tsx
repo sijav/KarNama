@@ -5,6 +5,7 @@ import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { semantic, spacing, status } from '../../theme/tokens'
 import { ICON_NAMES } from '../icon'
 import type { StoryMeta } from '../story-docs/story-meta'
+import { Tooltip } from '../tooltip'
 import { IconButton, type IconButtonProps } from './IconButton'
 
 // The button's name is copy, drawn in the reader's language inside the render,
@@ -179,5 +180,65 @@ export const BlankName: Story = {
     const row = within(canvasElement).getByTestId('row')
     await expect(within(row).getAllByRole('button')).toHaveLength(1)
     await expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/aria-label is blank/u))
+  },
+}
+
+// A button that explains itself, which is what an icon-only control most needs:
+// the design explains the delete that is off while a column holds job
+// opportunities, node 259:295. The name and the tip are both copy, so both are
+// drawn in the reader's language inside the render.
+const Explained = () => {
+  const { i18n } = useLingui()
+  return (
+    <Tooltip title={i18n._('This status has')} placement="start">
+      <IconButton icon="trash" tone="danger" aria-label={i18n._('Delete status')} />
+    </Tooltip>
+  )
+}
+
+export const InATooltip: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  render: () => <Explained />,
+  play: async ({ canvasElement }) => {
+    // KN-310: the button used to declare only its own props, so the ref and the
+    // aria-describedby the Tooltip clones onto its child were dropped and the
+    // tip could never open. A console.error from either component is a failure
+    // of this story as much as a missing tip is.
+    const said: string[] = []
+    const watching = spyOn(console, 'error').mockImplementation((...args: unknown[]) => {
+      said.push(String(args[0]))
+    })
+    try {
+      const button = within(canvasElement).getByRole('button', { name: 'حذف وضعیت' })
+
+      // Described from the first render, before anything is opened, KN-231: a
+      // screen reader on the focused button hears the tip's text, and the
+      // button keeps its OWN name rather than being renamed by the tip.
+      const describes = button.getAttribute('aria-describedby') ?? ''
+      await expect(describes).not.toBe('')
+      const description = describes
+        .split(' ')
+        .map((id) => canvasElement.ownerDocument.getElementById(id)?.textContent ?? '')
+        .join(' ')
+      await expect(description).toContain('این وضعیت')
+
+      // It opens on hover, and on focus alone, which is the clause a
+      // hover-only tip fails.
+      await userEvent.hover(button)
+      const tip = await within(canvasElement.ownerDocument.body).findByRole('tooltip')
+      await expect(tip).toHaveTextContent('این وضعیت')
+      await userEvent.unhover(button)
+      await waitFor(async () => {
+        await expect(within(canvasElement.ownerDocument.body).queryByRole('tooltip')).toBeNull()
+      })
+      await userEvent.tab()
+      await expect(button).toHaveFocus()
+      await expect(await within(canvasElement.ownerDocument.body).findByRole('tooltip')).toHaveTextContent('این وضعیت')
+
+      await expect(said).toEqual([])
+    } finally {
+      watching.mockRestore()
+    }
   },
 }

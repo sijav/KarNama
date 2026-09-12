@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 426,
+  "nextId": 427,
   "tasks": [
     {
       "id": "KN-001",
@@ -9055,12 +9055,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A Tooltip wrapped round an Icon Button shows on hover and on focus and describes the button, the ref and the injected props reaching the button; a story composes them and asserts aria-describedby names the tooltip.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:43:24.539Z",
-      "okr": "OKR-1"
+      "okr": "OKR-1",
+      "updatedAt": "2026-09-12T01:33:59.054Z"
     },
     {
       "id": "KN-311",
@@ -11287,6 +11288,22 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T01:33:22.989Z"
+    },
+    {
+      "id": "KN-426",
+      "title": "A disabled Icon Button cannot explain why it is off: it fires no pointer events",
+      "desc": "KN-310 made the Icon Button a Tooltip's trigger, and it works while the button is live. With disabled it cannot: the browser fires no pointer events on a disabled control, so a tip wrapped round one never opens, and a story that hovers it fails with 'pointer-events: none'. Measured on 2026-09-12 with a story that did exactly that; it was taken out again rather than left red. The Menu already solved the same problem for a blocked item, Menu.tsx line 77: it sets aria-disabled rather than disabled and guards its own onClick, so the item stays hoverable and focusable and its Tooltip opens. Doing the same here would change what the Icon Button's Disabled story pins from design node 512:742, that a disabled button is out of the tab order, so the owner should say which they want: a control that cannot be reached, or one that can be reached and explains why it is off.",
+      "why": "An icon-only control that is off is the case a tooltip exists for: with no text and no explanation, a reader is left with a grey square and no way to find out why. The design draws that explanation for the blocked delete, 259:295, and the Menu gives it; an Icon Button cannot.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A Tooltip wrapped round a disabled Icon Button opens on hover and on focus and says why the action is off, and whatever is decided about the tab order is written down in DESIGN.md; a story asserts it.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:37:00.777Z"
     }
   ],
   "okrs": [

@@ -1,10 +1,28 @@
 import { IconButton as MuiIconButton } from '@mui/material'
-import { useEffect } from 'react'
+import { useEffect, type ComponentProps } from 'react'
 import { spacing } from '../../theme/tokens'
 import { Icon, type IconName } from '../icon'
 
+/**
+ * What a Tooltip puts on its trigger, KN-310.
+ *
+ * MUI's Tooltip clones its child with its own ref, an `aria-describedby` naming
+ * the tip, and the focus and pointer handlers that open it. A child that
+ * declares only its own props drops every one of them, and the tip then
+ * attaches to nothing and can never open: the Tooltip says so at the console,
+ * which is how this was found.
+ *
+ * Named and narrow rather than the whole of MUI's surface: these are the props
+ * a trigger must carry, and nothing here invites a caller to reach past the
+ * documented API into MUI's.
+ */
+type TooltipTrigger = Pick<
+  ComponentProps<typeof MuiIconButton>,
+  'ref' | 'aria-describedby' | 'onFocus' | 'onBlur' | 'onMouseOver' | 'onMouseLeave' | 'onTouchStart' | 'onTouchEnd'
+>
+
 // The props are documented in story-docs, not here, KN-207.
-export interface IconButtonProps {
+export interface IconButtonProps extends TooltipTrigger {
   icon: IconName
   'aria-label': string
   tone?: 'neutral' | 'danger'
@@ -47,6 +65,7 @@ export const IconButton = ({
   disabled = false,
   href,
   onClick,
+  ...trigger
 }: IconButtonProps) => {
   const name = nameOf(label)
   // A blank name is the caller's mistake: reported as it mounts, as the
@@ -60,6 +79,10 @@ export const IconButton = ({
   if (name === null) return null
   return (
     <MuiIconButton
+      // A Tooltip's ref and its handlers, passed through to the element the tip
+      // attaches to, KN-310. First, so what this component documents wins: a
+      // tip describes a button, it does not rename or disable one.
+      {...trigger}
       aria-label={name}
       disabled={disabled}
       disableRipple
