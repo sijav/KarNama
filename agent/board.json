@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 424,
+  "nextId": 425,
   "tasks": [
     {
       "id": "KN-001",
@@ -3453,7 +3453,7 @@
       "title": "Coverage from the storybook project is discarded for any file the unit project also touches",
       "desc": "The two vitest projects both produce v8 coverage. For a file only the browser project touches, like src/app/App.tsx, the browser numbers are reported. For a file BOTH touch, the unit project numbers win and the browser ones are lost: src/theme/useColorScheme.ts reported its hook as uncovered while every story exercises it through AppProviders. Reproduce it, then merge the two reports properly, with a per-project report to compare against so the merge can be checked rather than believed.",
       "why": "The 100 percent number is the standard this project is built around and it is currently overstated, silently, for exactly the files that have both a unit test and a story, which is what every component in the queue will be. A component whose branches are only reached from a story would read as uncovered and get a pointless unit test, or worse, someone would lower the threshold to fit.",
-      "severity": "high",
+      "severity": "critical",
       "points": 3,
       "area": "agent",
       "parent": [
@@ -3463,10 +3463,11 @@
       "exit": "A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run.",
       "roasts": [],
       "notes": [
-        "2026-09-11, a new instance: apps/web/src/theme/sides.ts since KN-301. Its unit test covers acrossTo, and the Color Picker's stories run arrowsAcross (15 calls) and acrossTo (33), but the merged lcov lists the file's functions twice, once per project, and one copy of arrowsAcross carries 0 hits, so the file reports 4 of 7 functions. Moving acrossTo to a module only the unit test and arrowsAcross import, and keeping sides.ts out of every unit test, would keep each file on one project until this is fixed."
+        "2026-09-11, a new instance: apps/web/src/theme/sides.ts since KN-301. Its unit test covers acrossTo, and the Color Picker's stories run arrowsAcross (15 calls) and acrossTo (33), but the merged lcov lists the file's functions twice, once per project, and one copy of arrowsAcross carries 0 hits, so the file reports 4 of 7 functions. Moving acrossTo to a module only the unit test and arrowsAcross import, and keeping sides.ts out of every unit test, would keep each file on one project until this is fixed.",
+        "2026-09-12: proved, and it is what stands between the suite and its 100 percent rule. Run the browser project alone and shared/job-selects reports 100 percent of its statements and 100 of its functions; run both projects together and the same folder reports 94.73 and 80, with labels.ts at 75 and 50. The merged number is WORSE than one of the two runs on its own, which is the defect itself: the unit project's zeros for a file it merely imports overwrite the browser project's real hits. Select.tsx says the same, 100 percent of its functions alone and 91.66 merged. No test can close that gap: every remaining hole in the report is a function a story demonstrably runs. Raised from high while KN-415 was closed against it."
       ],
       "createdAt": "2026-09-07T23:58:03.747Z",
-      "updatedAt": "2026-09-11T19:02:03.066Z",
+      "updatedAt": "2026-09-12T01:26:43.873Z",
       "okr": "OKR-2"
     },
     {
@@ -11250,6 +11251,22 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T00:20:28.743Z"
+    },
+    {
+      "id": "KN-424",
+      "title": "The job modal hands the contact card a select handler it can never call",
+      "desc": "JobModal passes onSelectedChange={() => undefined} to every compact ContactCard in its related people tab, because ContactCard requires the prop. The compact layout draws no checkbox at all, so the handler is unreachable: one statement that no story can run, found while KN-415 drove every handler of the screens. Either make onSelectedChange optional on ContactCard, which is what a card that cannot be selected wants, or have the compact layout carry a checkbox that does something. The first is the smaller truth: a card in a job opportunity is not part of any selection.",
+      "why": "A required prop that one of a component's own layouts can never call is a lie in the API: the next caller wires something real to it and waits for a call that never comes. It is also the last unreachable statement in the job modal.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "ContactCard's compact layout either calls onSelectedChange or does not ask for it, and no caller passes a handler that cannot run.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T01:26:53.115Z"
     }
   ],
   "okrs": [

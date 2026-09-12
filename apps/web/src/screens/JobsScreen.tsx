@@ -145,7 +145,8 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
       // A phone gets the card's phone layout, which carries its own menu. The
       // desktop card folds delete and select behind a hover, KN-341, and a
       // phone has no hover: without this the board on a phone offered no way
-      // to delete a job opportunity or move it, KN-424.
+      // to delete a job opportunity or move it, found while KN-415 drove every
+      // handler of this screen from a story.
       layout={wide ? DESKTOP : MOBILE}
       title={entry.draft.title}
       company={entry.draft.company}

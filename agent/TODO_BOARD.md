@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 178 of 423 tasks done · 406 of 887 points.
+Project **KarNama** · 178 of 424 tasks done · 406 of 888 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -26,10 +26,11 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (237)
+## Backlog (238)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-305` | The story fixtures have no seeded board and no job opportunity in three of the nine statuses | high | 2 | web | none | Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages. |
@@ -58,7 +59,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-090` | Stop AppProviders mutating the lingui singleton during render | high | 3 | web | KN-003 | A story that mounts a Persian and an English AppProviders side by side renders each in its own language and direction, the switch still shows no flash of the previous catalog, and a test covers both. |
 | `KN-091` | Move story prose out of the TSX and into story-docs, with the guard test | high | 3 | web | KN-003 | src/shared/story-docs/en and fa exist and carry the prose for every story, no .tsx under src holds a docblock above const meta or a story export, the Docs pages render the markdown in the toolbar language, and a guard test fails when a prop or a story is missing from either language. |
 | `KN-096` | A literal type alias carries an unlocalized string past the lingui rule | high | 3 | web | KN-087 | The literal-type-alias form fails npm run lint or fails a dedicated check, a committed fixture holds it, and the check is proved by a planted break. |
-| `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | high | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-104` | Give the product a colour scheme setting that persists | high | 3 | web | KN-005 | A user can choose light, dark or system in the running app, the choice survives a reload, an e2e test proves both, and the same mechanism carries the language choice. |
 | `KN-118` | Health says ok while the database is unreachable, and the URLs are only checked for emptiness | high | 3 | api | KN-033 | A malformed DATABASE_URL or WEB_ORIGIN fails at startup and names which, the health query reports the database separately from the process, and it does not say ok when the database cannot be reached, proved against a URL pointing at a closed port. |
 | `KN-119` | Nothing tests CORS, the port binding or the startup path | high | 3 | api | KN-033 | A preflight from an unexpected origin does not receive that origin back, a test covers the CORS options and the port resolution without binding a port, main.ts is no longer excluded from coverage wholesale, and changing origin to true fails the run. |
@@ -233,6 +233,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-411` | The Input's per-card verifiers still read the story's old shape, so they would fail if anyone ran them | low | 1 | agent | none | Each of the two verifiers runs against the current stories: the KN-244 check finds the area assertion in whatever form the story writes it, and KN-274 names the field it shoots rather than taking the first; or both are deleted with a line in their cards saying the stories now carry the check. |
 | `KN-414` | Nothing exercises the icon slot's observer: the story only reads the slot as it first rendered | low | 1 | web | none | A story drives an icon through blank, readable and blank again while the field stays mounted, asserting at each step that the slot is hidden or 20 wide as the content says, and that the text sits 16 or 40 from that edge to match; the Input stories pass. |
 | `KN-420` | The expired code is never driven through the screen, only through its checker | low | 1 | web | none | A story or a test drives the screen through an expired code with the clock under its control, asserting the message and that a resend then works. |
+| `KN-424` | The job modal hands the contact card a select handler it can never call | low | 1 | web | none | ContactCard's compact layout either calls onSelectedChange or does not ask for it, and no caller passes a handler that cannot run. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -1684,7 +1685,7 @@ apps/web/src/gate-fixtures/README.md names failing.test.ts, which is now failing
 
 ### `KN-103` Coverage from the storybook project is discarded for any file the unit project also touches
 
-- **status** backlog · **severity** high · **points** 3 · **area** agent
+- **status** backlog · **severity** critical · **points** 3 · **area** agent
 - **blocked by** KN-003
 
 The two vitest projects both produce v8 coverage. For a file only the browser project touches, like src/app/App.tsx, the browser numbers are reported. For a file BOTH touch, the unit project numbers win and the browser ones are lost: src/theme/useColorScheme.ts reported its hook as uncovered while every story exercises it through AppProviders. Reproduce it, then merge the two reports properly, with a per-project report to compare against so the merge can be checked rather than believed.
@@ -5434,4 +5435,15 @@ Found while covering the network screen, 2026-09-12. ContactCard gives its Check
 **Why.** Selecting a person is one of the two things the network page is for, and a control a screen reader cannot name is a control they cannot use.
 
 **Exit condition.** The contact card's checkbox is named for whoever it selects, asserted by a story that finds it by that name; the Checkbox component forwards the accessible name whatever else it is given, with its own test.
+
+### `KN-424` The job modal hands the contact card a select handler it can never call
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+JobModal passes onSelectedChange={() => undefined} to every compact ContactCard in its related people tab, because ContactCard requires the prop. The compact layout draws no checkbox at all, so the handler is unreachable: one statement that no story can run, found while KN-415 drove every handler of the screens. Either make onSelectedChange optional on ContactCard, which is what a card that cannot be selected wants, or have the compact layout carry a checkbox that does something. The first is the smaller truth: a card in a job opportunity is not part of any selection.
+
+**Why.** A required prop that one of a component's own layouts can never call is a lie in the API: the next caller wires something real to it and waits for a call that never comes. It is also the last unreachable statement in the job modal.
+
+**Exit condition.** ContactCard's compact layout either calls onSelectedChange or does not ask for it, and no caller passes a handler that cannot run.
 
