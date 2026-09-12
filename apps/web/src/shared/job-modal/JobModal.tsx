@@ -8,11 +8,16 @@ import { Button } from '../button'
 import { ContactCard, type ContactCardContact } from '../contact-card'
 import { Icon, type IconName } from '../icon'
 import { IconButton } from '../icon-button'
-import { Input } from '../input'
+import { Input , type InputDirection } from '../input'
 import { DISSOLVE_MS, modalScrim } from '../modal'
 import { StatusControl, type StatusOption } from '../status-picker'
 import { Tabs } from '../tabs'
 import { fileKind, fileSize, formatDay } from './format'
+
+// A field of latin data: a phone number, an email or a link runs left to right
+// whatever the page does, KN-458. Typed so the lint rule reads it as a value
+// rather than as copy.
+const LATIN: InputDirection = 'ltr'
 
 // The five tabs, in the order the owner settled: the information, then its
 // history, then the note, the related people and the files, KN-072.
@@ -270,6 +275,7 @@ export const JobModal = ({
         <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
           <Input
             label={i18n._('Posting link')}
+        direction={LATIN}
             value={draft.postingUrl}
             onChange={(postingUrl) => {
               setDraft({ ...draft, postingUrl })

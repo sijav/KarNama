@@ -1,2 +1,2 @@
 export { isBlank } from './blank'
-export { Input, type InputProps } from './Input'
+export { Input, type InputDirection, type InputProps } from './Input'

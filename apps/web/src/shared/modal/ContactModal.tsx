@@ -3,9 +3,14 @@ import { Box } from '@mui/material'
 import { useState, type ReactNode } from 'react'
 import { spacing } from '../../theme/tokens'
 import { Button } from '../button'
-import { Input } from '../input'
+import { Input , type InputDirection } from '../input'
 import { Select, type SelectOption } from '../select'
 import { PanelModal } from './PanelModal'
+
+// A field of latin data: a phone number, an email or a link runs left to right
+// whatever the page does, KN-458. Typed so the lint rule reads it as a value
+// rather than as copy.
+const LATIN: InputDirection = 'ltr'
 
 export interface ContactModalValues {
   name: string
@@ -112,10 +117,10 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
         <Input label={i18n._('Company')} placeholder={i18n._('e.g. Digikala')} value={values.company} onChange={set('company')} />
       </Pair>
       <Pair>
-        <Input label={i18n._('Email')} placeholder={EMAIL_EXAMPLE} value={values.email} onChange={set('email')} />
-        <Input label={i18n._('Phone')} placeholder={i18n._('0912 000 0000')} value={values.phone} onChange={set('phone')} />
+        <Input label={i18n._('Email')} direction={LATIN} placeholder={EMAIL_EXAMPLE} value={values.email} onChange={set('email')} />
+        <Input label={i18n._('Phone')} direction={LATIN} placeholder={i18n._('0912 000 0000')} value={values.phone} onChange={set('phone')} />
       </Pair>
-      <Input label={i18n._('Social link')} placeholder={SOCIAL_EXAMPLE} value={values.linkedin} onChange={set('linkedin')} />
+      <Input label={i18n._('Social link')} direction={LATIN} placeholder={SOCIAL_EXAMPLE} value={values.linkedin} onChange={set('linkedin')} />
       <Select
         label={i18n._('Related job opportunity')}
         placeholder={i18n._('Choose a job opportunity…')}

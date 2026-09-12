@@ -31,6 +31,15 @@ The starting text, when the field is uncontrolled.
 
 The example shown while the field is empty.
 
+### direction
+
+Which way the field's own content runs. `page` is the reader's language, which
+is what prose wants. `ltr` is for a field that holds latin data whatever the
+page is: a phone number, an email, a link. Without it the browser lays those out
+by the bidi algorithm inside a right-to-left field, and a number a reader typed
+reads back in pieces, KN-458. The field still sits at the page's own inline
+start, so a Persian reader finds it where they expect.
+
 ### helperText
 
 A short note under the field. Replaced by the error while there is one.
@@ -225,3 +234,12 @@ The field hovered by the runner's pointer, which the story leaves there.
 
 The field drawn where the pointer was left, at rest: every story starts with
 the pointer on nothing.
+
+### LatinInAPersianPage
+
+A phone number typed into a Persian page: it reads back as it was typed, the
+field runs left to right, and it still sits at the right, where the page starts.
+
+### LatinInAnEnglishPage
+
+The same field in a page that already runs that way, where nothing moves.

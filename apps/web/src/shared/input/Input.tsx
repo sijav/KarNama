@@ -4,8 +4,19 @@ import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 import { isBlank } from './blank'
 
 // The props are documented in story-docs, not here, KN-207.
+/**
+ * Which way the field's own content runs.
+ *
+ * `page` is the reader's language, which is what prose wants. `ltr` is for a
+ * field that holds latin data whatever the page is: a phone number, an email,
+ * a link. Without it the browser lays those out by the bidi algorithm inside an
+ * RTL field and a number reads back in pieces, KN-458.
+ */
+export type InputDirection = 'page' | 'ltr'
+
 export interface InputProps {
   label: string
+  direction?: InputDirection
   value?: string
   defaultValue?: string
   placeholder?: string
@@ -115,6 +126,7 @@ export const Input = ({
   disabled = false,
   multiline = false,
   required = false,
+  direction = 'page',
   onChange,
   leadingIcon,
   trailingIcon,
@@ -191,6 +203,24 @@ export const Input = ({
             height: multiline ? MULTILINE_HEIGHT : FIELD_HEIGHT,
             boxSizing: 'border-box',
             paddingInline: `${spacing.md}px`,
+            // A field of latin data runs left to right whatever the page does,
+            // KN-458: the digits of a phone number are one run and the bidi
+            // algorithm will otherwise reorder them around anything that is not
+            // a digit. It still sits at the page's own inline start, so a
+            // Persian reader finds it where they expect.
+            // `/* @noflip */` because the RTL plugin mirrors every declaration
+            // it can, so a plain `direction: ltr` was rewritten to `rtl` and a
+            // `text-align: right` to `left`, which is the whole of what this
+            // rule is for. The plugin reads that comment and leaves the
+            // declaration alone.
+            ...(direction === 'ltr'
+              ? {
+                  '& input, & textarea': {
+                    direction: 'ltr /* @noflip */',
+                    textAlign: theme.direction === 'rtl' ? 'right /* @noflip */' : 'left /* @noflip */',
+                  },
+                }
+              : {}),
             // Several lines start at the top, 16 down, and scroll in the field.
             ...(multiline
               ? {

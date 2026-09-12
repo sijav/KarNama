@@ -1,10 +1,15 @@
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import { spacing } from '../../theme/tokens'
-import { Input } from '../input'
+import { Input , type InputDirection } from '../input'
 import { EmploymentTypeSelect, JobLevelSelect } from '../job-selects'
 import { StatusPicker, type StatusOption } from '../status-picker'
 import type { JobDraft, Missing } from './draft'
+
+// A field of latin data: a phone number, an email or a link runs left to right
+// whatever the page does, KN-458. Typed so the lint rule reads it as a value
+// rather than as copy.
+const LATIN: InputDirection = 'ltr'
 
 export interface JobFormProps {
   draft: JobDraft
@@ -108,6 +113,7 @@ export const JobForm = ({ draft, statuses, missing, onChange, onAddStatus }: Job
       <JobFields draft={draft} missing={missing} onChange={onChange} />
       <Input
         label={i18n._('Posting link')}
+        direction={LATIN}
         value={draft.postingUrl}
         onChange={(postingUrl) => {
           onChange({ ...draft, postingUrl })

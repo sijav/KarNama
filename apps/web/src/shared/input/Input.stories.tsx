@@ -1098,3 +1098,48 @@ export const StartsAtRest: Story = {
     await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
   },
 }
+
+// A phone number as a reader types it, and the field that holds one.
+const TYPED_NUMBER = '09123456789'
+
+export const LatinInAPersianPage: Story = {
+  args: { label: '', direction: 'ltr' },
+  globals: { locale: 'fa-IR' },
+  render: function Render(args) {
+    const { i18n } = useLingui()
+    const [held, setHeld] = useState('')
+    return <Input {...args} label={i18n._('Mobile number')} value={held} onChange={setHeld} />
+  },
+  play: async ({ canvasElement }) => {
+    // KN-458, the owner on a phone: a number typed into an RTL field came back
+    // as '318 0912'. A run of latin digits in a right-to-left field is laid out
+    // by the bidi algorithm, which reorders it around anything that is not a
+    // digit, so what the reader sees is not what they typed.
+    const field = within(canvasElement).getByLabelText('شماره موبایل')
+    await userEvent.type(field, TYPED_NUMBER)
+    await expect(field).toHaveValue(TYPED_NUMBER)
+
+    // The field runs left to right, and still sits at the page's own inline
+    // start, which is the right in Persian.
+    const style = getComputedStyle(field)
+    await expect(style.direction).toBe('ltr')
+    await expect(style.textAlign).toBe('right')
+  },
+}
+
+export const LatinInAnEnglishPage: Story = {
+  args: { label: '', direction: 'ltr' },
+  globals: { locale: 'en-US' },
+  render: function Render(args) {
+    const { i18n } = useLingui()
+    const [held, setHeld] = useState('')
+    return <Input {...args} label={i18n._('Mobile number')} value={held} onChange={setHeld} />
+  },
+  play: async ({ canvasElement }) => {
+    // The same field in a page that already runs the same way: nothing moves.
+    const field = within(canvasElement).getByLabelText('Mobile number')
+    await userEvent.type(field, TYPED_NUMBER)
+    await expect(field).toHaveValue(TYPED_NUMBER)
+    await expect(getComputedStyle(field).textAlign).toBe('left')
+  },
+}

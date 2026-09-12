@@ -177,6 +177,25 @@ Comments included. Persian belongs in the lingui catalog, in `story-docs/fa`, or
 in the Persian readme. Quoting a Persian UI string inside an English comment is
 fine and is often the clearest way to name what is being discussed.
 
+### A declaration the RTL plugin must not mirror says so with `@noflip`
+
+Emotion runs `@mui/stylis-plugin-rtl` in Persian, and it mirrors every
+declaration it understands: `direction: ltr` becomes `rtl`, `text-align: right`
+becomes `left`. So a rule written to make a field of latin data run left to
+right was flipped into the very thing it was fixing, KN-458, and the story
+caught it as `expected 'rtl' to be 'ltr'`.
+
+A declaration that must survive the mirror carries the plugin's own comment in
+its value, which stylis reads and honours:
+
+```ts
+{ direction: 'ltr /* @noflip */', textAlign: 'right /* @noflip */' }
+```
+
+Only for content that is genuinely direction-bound: a phone number, an email, a
+URL. Layout still mirrors, and a physical side written by hand instead of a
+logical one is a separate mistake.
+
 ### No em dashes in documentation, use commas
 
 Every `.md` and `.mdx`. Persian text takes the Persian comma `،`. Check with a

@@ -11955,12 +11955,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Typing a phone number into the sign-in field shows it as it was typed, and a story types one and reads the value and the rendered order back, in Persian.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T02:43:48.649Z"
+      "createdAt": "2026-09-12T02:43:48.649Z",
+      "updatedAt": "2026-09-12T02:43:57.882Z"
     },
     {
       "id": "KN-459",

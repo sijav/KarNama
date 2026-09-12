@@ -3,7 +3,7 @@ import { Box, Stack } from '@mui/material'
 import { useState } from 'react'
 import { useAuth } from '../core/auth'
 import { Button, type ButtonVariant } from '../shared/button'
-import { Input } from '../shared/input'
+import { Input, type InputDirection } from '../shared/input'
 import { radius, spacing, type as typeScale } from '../theme/tokens'
 
 /**
@@ -23,6 +23,11 @@ const CARD_WIDTH = 440
 // The resend is a quiet action beside the primary one, typed so the lint rule
 // reads it as a value.
 const QUIET: ButtonVariant = 'text'
+
+// A field of latin data: a phone number, an email or a link runs left to
+// right whatever the page does, KN-458. Typed so the lint rule reads it as a
+// value rather than as copy.
+const LATIN: InputDirection = 'ltr'
 
 export const AuthScreen = () => {
   const { i18n } = useLingui()
@@ -73,6 +78,7 @@ export const AuthScreen = () => {
       <Box sx={{ color: 'text.secondary' }}>{`${i18n._('Sent to')} ${auth.phone}`}</Box>
       <Input
         label={i18n._('Five digit code')}
+        direction={LATIN}
         value={code}
         onChange={setCode}
         helperText={i18n._('No message is really sent yet: the code is in the browser console.')}
@@ -97,6 +103,7 @@ export const AuthScreen = () => {
       <Box sx={{ color: 'text.secondary' }}>{i18n._('Write your mobile number')}</Box>
       <Input
         label={i18n._('Mobile number')}
+        direction={LATIN}
         placeholder={i18n._('0912 000 0000')}
         value={phone}
         onChange={setPhone}

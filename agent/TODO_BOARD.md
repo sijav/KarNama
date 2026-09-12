@@ -10,6 +10,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-458` A phone number typed into the sign-in field comes out scrambled: the input has no direction of its own** (critical, 2 pt, web)
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-458` | A phone number typed into the sign-in field comes out scrambled: the input has no direction of its own | critical | 2 | web | none | Typing a phone number into the sign-in field shows it as it was typed, and a story types one and reads the value and the rendered order back, in Persian. |
+
 ## Blocked (5)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -20,11 +26,10 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (261)
+## Backlog (260)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-458` | A phone number typed into the sign-in field comes out scrambled: the input has no direction of its own | critical | 2 | web | none | Typing a phone number into the sign-in field shows it as it was typed, and a story types one and reads the value and the rendered order back, in Persian. |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-459` | The sign-in code is only in the console, so nobody can sign in on a phone | critical | 3 | web | none | On a phone, with no console, a reader can see the code and finish signing in; a story at a phone's width reads the code off the screen and uses it. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
@@ -5854,7 +5859,7 @@ From the KN-453 roast, and it is the doubt that story's own summary raised. ALin
 
 ### `KN-458` A phone number typed into the sign-in field comes out scrambled: the input has no direction of its own
 
-- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **status** in_progress · **severity** critical · **points** 2 · **area** web
 - **blocked by** none
 
 The owner, on the live site on a phone, 2026-09-12: typing 09123 18 shows '318 0912'. The page is RTL and the input inherits that, so the browser lays a run of Latin digits out by the bidi algorithm and the number reads back in pieces. A phone number, an email, a URL and a mailto are LTR content whatever the page's direction is: the field itself must be dir=ltr, with its text aligned to the inline start of the page so it still sits where a Persian reader expects. Every field that holds one has it: the sign-in phone, the code, the contact's email, phone and social link, and the job's posting link.
