@@ -9798,12 +9798,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The shell takes a fallback for focus, used when the opener is gone, and a story deletes the opener and finds focus on the fallback.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T15:16:03.732Z",
-      "okr": "OKR-1"
+      "okr": "OKR-1",
+      "updatedAt": "2026-09-12T03:32:29.881Z"
     },
     {
       "id": "KN-345",
@@ -12143,7 +12144,8 @@
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T03:26:17.811Z"
+      "createdAt": "2026-09-12T03:26:17.811Z",
+      "updatedAt": "2026-09-12T03:32:29.740Z"
     },
     {
       "id": "KN-466",

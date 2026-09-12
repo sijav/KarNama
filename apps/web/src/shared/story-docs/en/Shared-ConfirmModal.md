@@ -30,6 +30,20 @@ Called when the red action is pressed.
 
 Called when the modal is cancelled, by Cancel, Escape, the close or the scrim.
 
+### opener
+
+A function giving the control that asked for this, kept by the caller when it
+was asked for and read as the modal closes. Not read from the page when the
+modal opens: by then the control may already be gone, which is exactly the case
+this is for, KN-344.
+
+### fallback
+
+Where focus goes when the opener did not survive, read as the modal closes. The
+browser puts focus back on whatever had it, and calling focus on an element that
+has been removed does nothing, so a reader who deleted what they were standing
+on was left on the page body.
+
 ## Stories
 
 ### DeleteAJobOpportunity

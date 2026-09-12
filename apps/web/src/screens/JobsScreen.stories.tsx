@@ -673,3 +673,52 @@ export const OnAPhone: Story = {
     }
   },
 }
+
+export const FocusAfterDeleting: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-344: the control that asks to delete a job opportunity is ON that job
+    // opportunity, so confirming takes it away. MUI puts focus back where it
+    // found it, and where it found it is no longer in the page, so a keyboard
+    // reader was left on the body with the next Tab starting from the top.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const set = fixtures('fa-IR')
+    const first = set.jobs[0]?.title ?? ''
+
+    await userEvent.click(canvas.getByRole('button', { name: first }))
+    const job = await body.findByRole('dialog')
+    await userEvent.click(within(job).getByRole('button', { name: 'حذف فرصت شغلی' }))
+    const confirm = await body.findByRole('dialog', { name: 'حذف این فرصت شغلی؟' })
+    await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
+
+    // Somewhere a reader can carry on from, and NOT the page body.
+    await waitFor(async () => {
+      const landed = canvasElement.ownerDocument.activeElement
+      await expect(landed).not.toBe(canvasElement.ownerDocument.body)
+      await expect(canvasElement.contains(landed)).toBe(true)
+    })
+  },
+}
+
+export const FocusWhenTheOpenerSurvives: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // The other half, KN-344: a confirmation backed out of leaves the control
+    // that opened it exactly where it was, and the fallback must not take over.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const set = fixtures('fa-IR')
+    const first = set.jobs[0]?.title ?? ''
+
+    await userEvent.click(canvas.getByRole('button', { name: first }))
+    const job = await body.findByRole('dialog')
+    const opener = within(job).getByRole('button', { name: 'حذف فرصت شغلی' })
+    await userEvent.click(opener)
+    const confirm = await body.findByRole('dialog', { name: 'حذف این فرصت شغلی؟' })
+    await userEvent.click(within(confirm).getByRole('button', { name: 'انصراف' }))
+    await waitFor(async () => {
+      await expect(opener).toHaveFocus()
+    })
+  },
+}

@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
-import { useId, useState, type SyntheticEvent } from 'react'
+import { useId, useRef, useState, type SyntheticEvent } from 'react'
 import { usePreferences } from '../core/preferences'
 import { columnOrder, contactsOf, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
 import { AddJobModal, type JobDraft } from '../shared/add-job'
@@ -49,6 +49,10 @@ const QUIET: ButtonVariant = 'text'
 // The button that finishes a form, typed for the same reason.
 const SUBMIT: ButtonType = 'submit'
 
+// Focusable on purpose and not in the tab order: somewhere to put a reader
+// whose own control was just deleted, KN-344.
+const LOOSE = -1
+
 // The two card layouts, typed for the same reason, and the search bar's two,
 // which are the same words for the same pair of screens, KN-315.
 const DESKTOP: JobCardLayout = 'desktop'
@@ -92,6 +96,16 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
   const [person, setPerson] = useState<{ id: string | null; values: ContactModalValues } | undefined>(undefined)
   // A column being renamed: its id and the name as it is being typed.
   const [renaming, setRenaming] = useState<{ id: string; name: string } | null>(null)
+  // The control that asked to delete, kept as it asks, KN-344: by the time the
+  // confirmation closes it may not be in the page any more, and that is the
+  // case this is for. A ref, because nothing renders differently for it.
+  const asked = useRef<HTMLElement | null>(null)
+  const remember = () => {
+    const active = window.document.activeElement
+    asked.current = active instanceof HTMLElement ? active : null
+  }
+  const board = useRef<HTMLDivElement | null>(null)
+
   const renameFormId = useId()
   const wide = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
 
@@ -173,6 +187,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
         select(entry.id, wanted)
       }}
       onDelete={() => {
+        remember()
         setDeleting([entry.id])
       }}
       onChangeStatus={() => {
@@ -182,7 +197,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
   )
 
   return (
-    <Stack sx={{ gap: `${spacing.lg}px`, minHeight: 0, flex: '1 1 auto' }}>
+    <Stack ref={board} tabIndex={LOOSE} sx={{ gap: `${spacing.lg}px`, minHeight: 0, flex: '1 1 auto' }}>
       <PageHeader
         title={i18n._('My job opportunities')}
         // The action is the desktop's. On a phone the header already carries
@@ -311,6 +326,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
           setSelected([])
         }}
         onDelete={() => {
+          remember()
           setDeleting(held)
         }}
         onChangeStatus={() => {
@@ -351,6 +367,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
           }}
           onSave={save}
           onDelete={() => {
+            remember()
             setDeleting([job.id])
           }}
           onClose={() => {
@@ -473,6 +490,11 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
 
       <ConfirmModal
         open={deleting !== null}
+        opener={() => asked.current}
+        // Where a reader carries on from when what they deleted was also what
+        // they were standing on: the first job opportunity still on the board,
+        // else the board itself, which takes focus for this and nothing else.
+        fallback={() => board.current?.querySelector('article button') ?? board.current}
         title={i18n._('Delete this job opportunity?')}
         body={i18n._('This job opportunity is deleted for good and cannot be brought back.')}
         confirmLabel={i18n._('Delete')}

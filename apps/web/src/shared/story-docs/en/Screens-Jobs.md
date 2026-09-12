@@ -90,3 +90,15 @@ The board at a phone's width, where the columns give way to a row of status
 chips and the chosen status's cards stand alone under them. A card there
 carries its own menu, which is where changing a status and deleting live when
 there is no hover to fold them behind.
+
+### FocusAfterDeleting
+
+The control that asks to delete a job opportunity is on that job opportunity, so
+confirming takes it away and the browser has nowhere to put focus back. A
+keyboard reader lands somewhere they can carry on from instead of on the page
+body.
+
+### FocusWhenTheOpenerSurvives
+
+The other half: a confirmation backed out of leaves focus exactly where it was,
+so the fallback does not take over the ordinary case.

@@ -337,3 +337,29 @@ export const OnAPhone: Story = {
     }
   },
 }
+
+export const FocusAfterDeletingFromTheModal: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-344, and the route that makes the opener impossible to read later: the
+    // Delete inside the contact modal closes that modal in the same breath, so
+    // by the time the confirmation is up, the control that asked is already
+    // gone. It is captured when it asks, not when the confirmation opens.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const person = fixtures('fa-IR').contacts[0]?.fullName ?? ''
+
+    await userEvent.click(canvas.getByRole('button', { name: person }))
+    const editing = await body.findByRole('dialog')
+    await userEvent.click(within(editing).getByRole('button', { name: 'حذف مخاطب' }))
+    const confirm = await body.findByRole('dialog')
+    await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
+
+    await waitFor(async () => {
+      const landed = canvasElement.ownerDocument.activeElement
+      await expect(landed).not.toBe(canvasElement.ownerDocument.body)
+      await expect(canvasElement.contains(landed)).toBe(true)
+    })
+    await expect(canvas.queryByText(person)).toBeNull()
+  },
+}

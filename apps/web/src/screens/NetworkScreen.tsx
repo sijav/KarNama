@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { contactMatches, useRecords, type ContactEntry } from '../core/records'
 import { BulkActionBar } from '../shared/bulk-action-bar'
 import { Button } from '../shared/button'
@@ -32,6 +32,9 @@ const SEARCH_WIDTH = 320
 const DESKTOP: SearchBarLayout = 'desktop'
 const MOBILE: SearchBarLayout = 'mobile'
 
+// Focusable on purpose and not in the tab order, KN-344.
+const LOOSE = -1
+
 /** An empty person, for the add modal. */
 const NOBODY: ContactModalValues = { name: '', role: '', company: '', email: '', phone: '', linkedin: '', jobId: null }
 
@@ -48,6 +51,16 @@ const asValues = (held: ContactEntry): ContactModalValues => ({
 export const NetworkScreen = () => {
   const { i18n } = useLingui()
   const records = useRecords()
+  // The control that asked to delete, kept as it asks, KN-344. The route from
+  // inside the contact modal is why it cannot be read when the confirmation
+  // opens: that modal closes in the same breath, so its Delete is already gone.
+  const asked = useRef<HTMLElement | null>(null)
+  const remember = () => {
+    const active = window.document.activeElement
+    asked.current = active instanceof HTMLElement ? active : null
+  }
+  const page = useRef<HTMLDivElement | null>(null)
+
   const [search, setSearch] = useState('')
   const wide = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
   const [selected, setSelected] = useState<readonly string[]>([])
@@ -85,7 +98,7 @@ export const NetworkScreen = () => {
   const nobodyYet = records.contacts.length === 0
 
   return (
-    <Stack sx={{ gap: `${spacing.lg}px`, flex: '1 1 auto', minHeight: 0 }}>
+    <Stack ref={page} tabIndex={LOOSE} sx={{ gap: `${spacing.lg}px`, flex: '1 1 auto', minHeight: 0 }}>
       <PageHeader
         title={i18n._('My network')}
         action={
@@ -140,6 +153,7 @@ export const NetworkScreen = () => {
                 setSelected((was) => (wanted ? [...was, held.id] : was.filter((id) => id !== held.id)))
               }}
               onDelete={() => {
+                remember()
                 setDeleting([held.id])
               }}
             />
@@ -154,6 +168,7 @@ export const NetworkScreen = () => {
           setSelected([])
         }}
         onDelete={() => {
+          remember()
           setDeleting(selected)
         }}
       />
@@ -172,6 +187,7 @@ export const NetworkScreen = () => {
           ? {}
           : {
               onDelete: () => {
+                remember()
                 setDeleting([editingId])
                 setEditing(undefined)
               },
@@ -180,6 +196,11 @@ export const NetworkScreen = () => {
 
       <ConfirmModal
         open={deleting !== null}
+        opener={() => asked.current}
+        // Where a reader carries on from when the card they were standing on is
+        // the one they deleted: the first person still here, else the page,
+        // which takes focus for this and nothing else.
+        fallback={() => page.current?.querySelector('article button') ?? page.current}
         title={i18n._('Delete contact')}
         body={i18n._('This contact is deleted for good and cannot be brought back.')}
         confirmLabel={i18n._('Delete')}

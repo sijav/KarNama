@@ -20,6 +20,13 @@ The modal's title, already in the reader's language. It names the dialog.
 
 The modal's width: 360 for a confirmation, 420 for a change of status.
 
+### onClosed
+
+Said once it has finished closing, after the browser has put focus back where it
+found it. That is late enough for a caller to see where focus landed and send it
+somewhere else when the control that opened the modal is no longer there,
+KN-344.
+
 ### onClose
 
 Called when Escape, the close or the scrim closes the modal.

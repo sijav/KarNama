@@ -55,3 +55,10 @@ for the job opportunities the same bar searches on the board.
 ### ItsOwnSearchInEnglish
 
 The same, with the language switched.
+
+### FocusAfterDeletingFromTheModal
+
+The Delete inside the contact modal closes that modal in the same breath, so by
+the time the confirmation is up the control that asked is already gone. It is
+captured when it asks, not when the confirmation opens, and the reader lands
+somewhere they can carry on from.

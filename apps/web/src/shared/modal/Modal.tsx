@@ -12,6 +12,8 @@ export interface ModalProps {
   onClose: () => void
   children: ReactNode
   actions: ReactNode
+  /** Said once it has finished closing, after focus has been restored. */
+  onClosed?: () => void
 }
 
 // A modal opens and closes with a dissolve of 150 ms, the prototype map's
@@ -101,7 +103,7 @@ export const ModalActions = ({ children }: { children: ReactNode }) => (
 // padding and 16 between the parts, radius lg, Elevation/Modal, over the file's
 // overlay/scrim. The width is the caller's: 360 for a confirmation, 420 for a
 // change of status.
-export const Modal = ({ open, title, width, onClose, children, actions }: ModalProps) => {
+export const Modal = ({ open, title, width, onClose, children, actions, onClosed }: ModalProps) => {
   const titleId = useId()
   return (
     <Dialog
@@ -109,6 +111,9 @@ export const Modal = ({ open, title, width, onClose, children, actions }: ModalP
       onClose={onClose}
       aria-labelledby={titleId}
       transitionDuration={DISSOLVE_MS}
+      // After the dissolve, which is after MUI's focus trap has put focus back
+      // where it found it, so whoever listens can see where that landed.
+      {...(onClosed === undefined ? {} : { onTransitionExited: onClosed })}
       slotProps={{ backdrop: { sx: modalScrim.sx }, paper: { sx: (theme) => modalPaper.sx(theme, width) } }}
     >
       <ModalHeader title={title} titleId={titleId} onClose={onClose} />
