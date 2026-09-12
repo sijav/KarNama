@@ -19,8 +19,8 @@
     { "id": "job-4", "title": "کارشناس تضمین کیفیت", "company": "گروه نرم‌افزاری آسمان", "status": "rejected", "location": "شیراز", "postedAt": "2026-07-15", "link": "https://example.com/jobs/4" },
     { "id": "job-5", "title": "مدیر محصول", "company": "راهکار داده", "status": "offer", "location": "تهران", "postedAt": "2026-08-01", "link": "https://example.com/jobs/5" },
     { "id": "job-6", "title": "تحلیل‌گر داده", "company": "بینش هوشمند", "status": "custom-1", "location": "مشهد", "postedAt": "2026-08-25", "link": null },
-    { "id": "job-7", "title": "کارشناس پشتیبانی فنی", "company": "همراه اول داده", "status": "custom-2", "location": "تبریز", "postedAt": "2026-08-18", "link": "https://example.com/jobs/7" },
-    { "id": "job-8", "title": "مدیر فنی تیم موبایل", "company": "سپهر آینده", "status": "custom-3", "location": "تهران، دورکاری", "postedAt": "2026-07-29", "link": null },
+    { "id": "job-7", "title": "کارشناس پشتیبانی فنی", "company": "داده‌ورزان سپند", "status": "custom-2", "location": "تبریز", "postedAt": "2026-08-18", "link": "https://example.com/jobs/7" },
+    { "id": "job-8", "title": "سرتیم موبایل", "company": "سپهر آینده", "status": "custom-3", "location": "تهران، دورکاری", "postedAt": "2026-07-29", "link": null },
     { "id": "job-9", "title": "کارشناس امنیت شبکه", "company": "داده‌پرداز ایرانیان", "status": "custom-4", "location": "کرج", "postedAt": "2026-09-05", "link": "https://example.com/jobs/9" }
   ],
   "contacts": [

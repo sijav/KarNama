@@ -55,6 +55,7 @@ another status.
 The board being managed: a column renamed from its menu, another added, a job
 opportunity deleted from its modal after a confirmation, and the rejected
 column opened from its collapsed header.
+
 ### People
 
 The people and the files kept against one job opportunity: a person added from

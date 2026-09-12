@@ -2,13 +2,19 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 181 of 426 tasks done · 413 of 892 points.
+Project **KarNama** · 181 of 442 tasks done · 413 of 914 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
 **Next up: `KN-315` The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one** (high, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-315` | The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one | high | 2 | web | none | The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them. |
 
 ## Blocked (5)
 
@@ -20,14 +26,16 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (238)
+## Backlog (253)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-429` | Four story assertions in the screens cannot fail | high | 1 | web | none | Each of the four asserts something that is false before the action it follows. |
+| `KN-430` | The contacts page's search box is announced as the board's | high | 1 | web | none | The contacts page's search box is named and described for contacts in both languages, and a story asserts each page's own name. |
+| `KN-433` | An Icon Button given both href and disabled renders an anchor that still navigates | high | 1 | web | none | href and disabled cannot be passed together, or a disabled one does not navigate; DESIGN.md records that the card's mail control is a link. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
-| `KN-315` | The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one | high | 2 | web | none | The bar renders at the sizes the screens draw, 320 by 36 on desktop and 358 by 44 on mobile, read again from the file with use_figma, through a size prop or the breakpoint, with the text and icons placed as drawn in each; a story shows both sizes and asserts them. |
 | `KN-316` | The Button's hover, pressed and focus states cannot be shown from its args, only by a test's live input | high | 2 | web | none | A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4. |
 | `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
@@ -45,6 +53,12 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
 | `KN-418` | A phone reader cannot sign out: the tab bar takes no sign-out and the design draws none | high | 2 | web | none | A phone reader can sign out from a control the design agrees with, with the owner asked where it goes if the file draws none; the e2e covers signing out on the phone as well as the desktop, and its skip is gone. |
 | `KN-423` | The Contact Card's checkbox has no accessible name, though the card sets one | high | 2 | web | none | The contact card's checkbox is named for whoever it selects, asserted by a story that finds it by that name; the Checkbox component forwards the accessible name whatever else it is given, with its own test. |
+| `KN-427` | JobsScreen still has fifteen uncovered branches, seven of them a story could reach | high | 2 | web | none | Every branch of JobsScreen.tsx is either taken by a story or has a comment saying which state it belongs to and why no reader can reach it. |
+| `KN-428` | A phone cannot start a selection, so the bulk bar can never be raised there | high | 2 | web | none | A phone can select a job opportunity from the board, the bulk bar comes up, and a story at a phone's width selects two and deletes them. |
+| `KN-431` | Select all and bulk delete ignore the search, which is how KN-422 lost data | high | 2 | web | none | Select all takes what the search found, bulk delete acts on that, and a story with a search active selects all and deletes and shows the hidden job opportunities survive. |
+| `KN-437` | The board fixture cannot be handed to anything: its columns carry no status id | high | 2 | web | none | A story seeds RecordsProvider from the fixtures with no mapping of its own, and the three hand-rolled status maps are gone. |
+| `KN-438` | The seeded board is nine columns of one card, which is no board to draw stories against | high | 2 | web | none | The fixture board holds an empty column, a column with several, and a rejected column worth collapsing; no test forbids an empty column. |
+| `KN-440` | Recolouring a status moves its column, because the board's order ranks by colour token | high | 2 | web | none | Recolouring a status leaves its column where it was, and a story recolours a custom status to the offer colour and asserts the order is unchanged. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -122,6 +136,10 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-385` | A role or company of only spaces still draws the Contact Card's blank role line and divider, and the contact prop's docs say role cannot be missing | medium | 1 | web | none | The card trims each part before joining, and the Contact Modal trims role and company when it saves, so a role of ' ' draws no line and no divider, which a story shows; and both languages' docs for the contact prop say role and company may be missing. |
 | `KN-387` | The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text | medium | 1 | web | none | In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages. |
 | `KN-413` | The Input's docs still say the line under the field always keeps its height, which KN-287 ended | medium | 1 | web | none | Both language docs say what the field does: no line and no room without a message, a line of one height with a helper or an error, and what that means for a form when an error appears, which is that it does move; nothing in either file contradicts it; the Docs page reads right in both languages. |
+| `KN-432` | The delete confirmation says 'this job opportunity' while deleting several | medium | 1 | web | none | The confirmation names how many are going in both languages, and a story deleting two reads it. |
+| `KN-434` | Prose is back in the TSX where story-docs owns it, and it prints in the Persian docs | medium | 1 | web | none | No prop or story in the screens or IconButton carries prose the markdown already holds, and the Persian docs page shows no English. |
+| `KN-435` | Saving a rename with a blank name silently discards it | medium | 1 | web | none | A blank rename is refused with the field's own error and the modal stays open; a story presses Save on an empty field. |
+| `KN-439` | The status fixtures' count disagrees with the board they now describe | medium | 1 | web | none | The count is either gone or equal to the number of job opportunities the fixtures put in that status, in both languages. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -227,6 +245,9 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-414` | Nothing exercises the icon slot's observer: the story only reads the slot as it first rendered | low | 1 | web | none | A story drives an icon through blank, readable and blank again while the field stays mounted, asserting at each step that the slot is hidden or 20 wide as the content says, and that the text sits 16 or 40 from that edge to match; the Input stories pass. |
 | `KN-420` | The expired code is never driven through the screen, only through its checker | low | 1 | web | none | A story or a test drives the screen through an expired code with the clock under its control, asserting the message and that a resend then works. |
 | `KN-424` | The job modal hands the contact card a select handler it can never call | low | 1 | web | none | ContactCard's compact layout either calls onSelectedChange or does not ask for it, and no caller passes a handler that cannot run. |
+| `KN-436` | The AddJobModal's abandoned-reading story waits on a fixed sleep | low | 1 | web | none | No story in add-job waits on a bare setTimeout to prove a negative. |
+| `KN-441` | The board fixture escapes the freeze test, and its order test cites the wrong part of DESIGN.md | low | 1 | web | none | The board is in the freeze test, the order comment cites what actually settles each part of it, and the duplicate assertion is in one place. |
+| `KN-442` | KN-305 was built with no plan file beside the work | low | 1 | agent | none | The step is either followed or struck from RALPH.md, with the owner told which. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4204,7 +4225,7 @@ CHILD OF KN-016, recorded in prose because board.json cannot express parent_task
 
 ### `KN-315` The Search Bar has one size where the screens draw a 320 by 36 desktop bar and a 358 by 44 mobile one
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** in_progress · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-016, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-016 roast. The component set 155:92 draws 320 by 44, and the Search Bar is built 44 tall and as wide as its container; the board toolbar instances on the desktop screens are 320 by 36 and the mobile ones 358 by 44, per the screens capture.
@@ -5465,4 +5486,180 @@ KN-310 made the Icon Button a Tooltip's trigger, and it works while the button i
 **Why.** An icon-only control that is off is the case a tooltip exists for: with no text and no explanation, a reader is left with a grey square and no way to find out why. The design draws that explanation for the blocked delete, 259:295, and the Menu gives it; an Icon Button cannot.
 
 **Exit condition.** A Tooltip wrapped round a disabled Icon Button opens on hover and on focus and says why the action is off, and whatever is decided about the tab order is written down in DESIGN.md; a story asserts it.
+
+### `KN-427` JobsScreen still has fifteen uncovered branches, seven of them a story could reach
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+The KN-415 roast measured the board screen at 84.21 percent of its branches: 15 uncovered at lines 65, 93, 123, 130, 136, 203, 205, 353, 389 to 393, 423 and 436. Several are reachable and were simply never driven: the searched-empty body at 203 and 205, the contact fields at 389 to 393 that are only exercised on one of the two screens, the blank-rename guard at 423, and the moving-from-a-single-card value at 436. Drive them from the stories that already exist rather than new ones where possible.
+
+**Why.** KN-415 closed saying the screens were done and the gate was held open by KN-103 alone. That was too broad: the merge does throw away function counts, but these branches are the screen's own and nothing but a missing story is keeping them open. A closed card that overstates what it finished is worse than one that names what is left.
+
+**Exit condition.** Every branch of JobsScreen.tsx is either taken by a story or has a comment saying which state it belongs to and why no reader can reach it.
+
+### `KN-428` A phone cannot start a selection, so the bulk bar can never be raised there
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+KN-415 gave the board's cards the phone layout, which is right: the desktop card folds select and delete behind a hover no phone has. But the phone card draws its checkbox only when it is ALREADY selected, JobCard.tsx line 249, and its own menu offers change status and delete and no way to select. So on a phone nothing can enter selection: the bulk bar, bulk delete, bulk status change and select all are all unreachable, and KN-352 and KN-356 describe a state the product cannot get into. The desktop was no worse before this change, since the folded checkbox was equally unusable without a hover. Either the phone card's menu offers selecting, or the card draws its checkbox at rest on a phone, or the phone offers no bulk work at all and says so.
+
+**Why.** Deleting several at once is the reason the bulk bar exists, and a phone is where a reader clears out the rejected column. A bar that cannot be raised is a feature that only exists on one screen size, silently.
+
+**Exit condition.** A phone can select a job opportunity from the board, the bulk bar comes up, and a story at a phone's width selects two and deletes them.
+
+### `KN-429` Four story assertions in the screens cannot fail
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+From the KN-415 roast, each verified against the tree: JobsScreen.stories.tsx 184 to 189, the expanded rejected column is proved by getAllByText finding the empty-column line, which two other columns already show; 133 to 136, 'the column it moved to now holds it' only checks the title is somewhere on the board, which it was before the move; 371 to 377, 'a column takes a colour' only checks the picker closed and never reads the colour back; AuthScreen.stories.tsx 100 to 106, the name step being gone is also satisfied by the screen falling back to the phone step, so a saveName that stores nothing passes. Assert the count on the column, the offer column's own contents, the chip's colour or the checked radio on reopening, and the session itself.
+
+**Why.** A test that cannot fail is worse than no test: it is a claim that the behaviour is checked, and the next change that breaks it goes through green. These four are in the stories KN-415 added to prove the screens work.
+
+**Exit condition.** Each of the four asserts something that is false before the action it follows.
+
+### `KN-430` The contacts page's search box is announced as the board's
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+SearchBar hard-codes its accessible name to 'Search job opportunities', SearchBar.tsx line 115, and the network page uses the same component, so a screen reader on the contacts page is told the box searches job opportunities. A KN-415 story wrote that into a comment as a fact and filed nothing. Give the bar a label prop, keep the board's as the default, and have the network page pass the contacts one; the placeholder needs the same treatment, it names title, company and note.
+
+**Why.** The accessible name is what a screen reader reader hears instead of seeing the page. Naming the box after the wrong records is the same defect as a wrong label on a form field, and it is on a page the owner asked for in the MVP.
+
+**Exit condition.** The contacts page's search box is named and described for contacts in both languages, and a story asserts each page's own name.
+
+### `KN-431` Select all and bulk delete ignore the search, which is how KN-422 lost data
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+JobsScreen's onSelectAll takes records.jobs, line 307, not what the search found, and the bulk delete acts on the selection whatever the search shows. That is the same class as KN-422, where a search that hid cards let Delete act on them: a reader who searches, presses select all and deletes is told they deleted what they could see and loses the rest. The network page had a search-aware select-all handler and KN-415 deleted it as dead wiring, because the bulk bar only offers select all for jobs; if the bar should offer it there too, that is the same card.
+
+**Why.** Losing records that were never on screen is the worst thing this product can do, and it is the one defect already found once, fixed once, and left in the other half of the same screen.
+
+**Exit condition.** Select all takes what the search found, bulk delete acts on that, and a story with a search active selects all and deletes and shows the hidden job opportunities survive.
+
+### `KN-432` The delete confirmation says 'this job opportunity' while deleting several
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+JobsScreen.tsx 457 and NetworkScreen.tsx 165 pass a singular title and body to the confirm modal whatever the count, so deleting two through the bulk bar asks 'delete this job opportunity?'. The KN-415 Selecting story deletes two through it and reads no copy at all. Pluralise off the count as BulkActionBar.tsx line 32 already does, and say how many.
+
+**Why.** The confirmation is the last thing between a reader and losing records; if it describes one when it means five, it is not a confirmation. Persian and English pluralise differently, which is why the bar already has the branch.
+
+**Exit condition.** The confirmation names how many are going in both languages, and a story deleting two reads it.
+
+### `KN-433` An Icon Button given both href and disabled renders an anchor that still navigates
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+KN-415 gave IconButton an href so the contact card's mail control could be a link. MUI renders an anchor for a button with an href, and an anchor takes no disabled attribute: it gets aria-disabled and remains clickable and navigable, which contradicts what en/Shared-IconButton.md says disabled does. Nothing passes both today, so it is latent. Settle it at the type level, so a caller cannot ask for both, or render a disabled link as plain text with no href. DESIGN.md was also not corrected: it still draws Icon Buttons in that row of the contact card.
+
+**Why.** A control that says it is off and still works is the kind of thing that is found by a reader, not by us, and the type can make it impossible rather than documented.
+
+**Exit condition.** href and disabled cannot be passed together, or a disabled one does not navigate; DESIGN.md records that the card's mail control is a link.
+
+### `KN-434` Prose is back in the TSX where story-docs owns it, and it prints in the Persian docs
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+KN-207 keeps prop and story prose in story-docs, not in the component. KN-415 put a JSDoc on IconButton's new href prop and docblocks above five stories: IconButton.tsx 31 to 40, JobsScreen.stories.tsx 193, 437 and 530, NetworkScreen.stories.tsx 135, App.stories.tsx 124. DocsPage renders MUI's Controls table, which reads the JSDoc, so the English prose prints above the localised entry in the Persian docs. Delete all six; the markdown already carries them in both languages.
+
+**Why.** Two copies of the same prose drift, and the one in the TSX is the one nobody translates, so a Persian reader gets English in the middle of their documentation.
+
+**Exit condition.** No prop or story in the screens or IconButton carries prose the markdown already holds, and the Persian docs page shows no English.
+
+### `KN-435` Saving a rename with a blank name silently discards it
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+JobsScreen.tsx 423: the rename modal's Save calls renameStatus only when the trimmed name is not empty, and closes either way. So a reader who clears the field and presses Save is shown the modal closing and the old name still there, with nothing said. Either refuse with the Input's error, as the contact modal does for a missing name, or keep the modal open. The false side of that branch is also one of the fifteen KN-427 counts.
+
+**Why.** A control that accepts a press and does nothing reads as a bug in the product, and the pattern for refusing is already in the codebase twice.
+
+**Exit condition.** A blank rename is refused with the field's own error and the modal stays open; a story presses Save on an empty field.
+
+### `KN-436` The AddJobModal's abandoned-reading story waits on a fixed sleep
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+AddJobModal.stories.tsx, the AnswerAfterLeaving story KN-310 era work added under KN-415: it settles the held promise then waits 100 milliseconds with setTimeout before asserting that nothing filled the form. A negative assertion behind a fixed sleep gets weaker as the machine gets slower and slower as it gets faster. It also keeps its resolver in a module-level let, which the RestartWhileReading story above it does too, so the two share a shape that a third story would trip over. Wait on a positive condition instead: the paste field still holding its link after the tick the promise resolves on.
+
+**Why.** A test that passes because it did not wait long enough is a test that will pass through the defect it was written for.
+
+**Exit condition.** No story in add-job waits on a bare setTimeout to prove a negative.
+
+### `KN-437` The board fixture cannot be handed to anything: its columns carry no status id
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+KN-305 added fixtures(locale).board as columns of {token, name, jobs}. Every consumer keys on the status ID, not the token: jobsIn filters job.draft.status against a status id, records.ts 146, and JobsScreen reads columns by id throughout. A JobFixture is also not a JobEntry, so a story still has to build one. Three story files already hand-roll the shape that was actually wanted, ChangeStatusModal.stories.tsx 19, StatusControl.stories.tsx 22 and StatusPicker.stories.tsx 13, each mapping the statuses to {id, token, name}, and the board's own code wrote a fourth copy of that map and then threw the id away. Export statusOptions as StatusOption[] and give the board columns an id, so a story can seed a provider from the fixtures rather than from a map of its own.
+
+**Why.** A shared fixture that no consumer can accept is not shared data, it is a fifth copy of the same map. The three duplicated lines it would delete are the measure of whether it is the right shape.
+
+**Exit condition.** A story seeds RecordsProvider from the fixtures with no mapping of its own, and the three hand-rolled status maps are gone.
+
+### `KN-438` The seeded board is nine columns of one card, which is no board to draw stories against
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+KN-305 gave every status exactly one job opportunity, so the fixture board cannot draw the things the design turns on: rejected collapsed to a count of 14, DESIGN.md 1198 and KN-070; a column that scrolls; a sort order that reorders anything; or an empty column, node 241:46, which the fixture test now makes a FAILURE to have by asserting every column holds at least one. The distribution should be uneven and authored: one column empty, one holding several, rejected holding enough to be worth collapsing, and the test should assert the shape rather than a floor of one.
+
+**Why.** The point of a seeded board is that every board story draws the same realistic board. One card per column is the board no reader ever has, and the empty column the design draws is now forbidden by a test.
+
+**Exit condition.** The fixture board holds an empty column, a column with several, and a rejected column worth collapsing; no test forbids an empty column.
+
+### `KN-439` The status fixtures' count disagrees with the board they now describe
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+Each status fixture carries a count, and custom-2 carries 0 while the board KN-305 built puts job-7 in that column; eight of the nine disagree. A column renders its count and its cards separately, KanbanColumn.tsx 13, so a story can draw the name and 0 above a card. The count is read by no story at all, grepped; either delete it from both JSON files and both types, or derive it from the jobs in that column.
+
+**Why.** Two numbers for one thing, one of them wrong and unread, is the sort of data that is trusted the first time somebody writes a story against it.
+
+**Exit condition.** The count is either gone or equal to the number of job opportunities the fixtures put in that status, in both languages.
+
+### `KN-440` Recolouring a status moves its column, because the board's order ranks by colour token
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+Noticed by the KN-305 roast, in core rather than in that task's work: columnOrder ranks a status by its TOKEN, records.ts 79 to 83, and recolourStatus writes the chosen colour into that same token. So a reader who gives their own stage the colour the design uses for a job offer finds the column has moved to where job offers go, and giving it the rejected colour sends it to the end of the board. The rank should come from something that is not the colour: the status's own place in the board, kept as a field, with the five defaults seeded in the design's order.
+
+**Why.** A colour is a colour. A reader choosing one is not asking for their board to be rearranged, and the rearrangement is silent and permanent.
+
+**Exit condition.** Recolouring a status leaves its column where it was, and a story recolours a custom status to the offer colour and asserts the order is unchanged.
+
+### `KN-441` The board fixture escapes the freeze test, and its order test cites the wrong part of DESIGN.md
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+story-fixtures.test.ts freezes and re-reads statuses, jobs, contacts and notes and not board, so the newest field escapes the invariant the whole folder rests on; it IS frozen, so this is one line. The ORDER array's comment cites DESIGN.md section 6 and KN-070 for the whole order: those settle only that rejected is last, the five defaults come from section 3, and where a custom status ranks comes from records.ts alone and from nothing in DESIGN.md. The new board test also repeats what records.test.ts already asserts about columnOrder.
+
+**Why.** A comment that cites the wrong source is worse than none: the next reader goes to section 6, does not find it, and either writes it down wrong again or changes the order.
+
+**Exit condition.** The board is in the freeze test, the order comment cites what actually settles each part of it, and the duplicate assertion is in one place.
+
+### `KN-442` KN-305 was built with no plan file beside the work
+
+- **status** backlog · **severity** low · **points** 1 · **area** agent
+- **blocked by** none
+
+RALPH.md step 2b asks for a plan file beside the work, as the folder's own #KN-062 file is. KN-305 was committed without one, and the KN-305 roast makes the case that a plan review is exactly what would have caught the board fixture's missing status id before thirty lines were written against the wrong shape.
+
+**Why.** The loop's own step, skipped, and the roast names the defect it would have caught. Low because it is about the loop and not the product, per the owner's rule of 2026-09-11.
+
+**Exit condition.** The step is either followed or struck from RALPH.md, with the owner told which.
 
