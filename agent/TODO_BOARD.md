@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 199 of 474 tasks done · 442 of 963 points.
+Project **KarNama** · 199 of 475 tasks done · 442 of 964 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-386` The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one** (high, 2 pt, web)
+**Next up: `KN-475` The record-handoff story would pass with the description and note reset deleted** (high, 1 pt, web)
 
 ## Blocked (6)
 
@@ -21,12 +21,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-356` | Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected | high | 2 | web | KN-428 | Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (267)
+## Backlog (268)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-475` | The record-handoff story would pass with the description and note reset deleted | high | 1 | web | none | The two records differ in their description and note, and the story asserts both after the swap; deleting either reset line fails it. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-352` | Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page | high | 2 | web | KN-428 | Unchecking the phone card's checkbox leaves focus on the card, either on a checkbox that stays and folds as the desktop's does or on the title, and a story unchecks it by keyboard and asserts where focus is. |
@@ -4817,6 +4818,8 @@ CHILD OF KN-030, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The record carries its id, the modal starts over from a record with a different id while open, keeps edits across new objects of the same record, and a story swaps the job while open and saves the new one's fields.
 
+**Roasts.** round 1 scored 4 with 0 critical(s)
+
 ### `KN-364` Saving right after changing the status in the Job Modal's header can send the old status
 
 - **status** done · **severity** high · **points** 1 · **area** web
@@ -6063,4 +6066,15 @@ From the KN-344 roast. FocusAfterDeleting and FocusAfterDeletingFromTheModal ass
 **Why.** This is the fourth assertion this session that passes for a state weaker than the one it claims, and the one guarding where a reader lands after deleting.
 
 **Exit condition.** Both stories name the control they expect to have focus.
+
+### `KN-475` The record-handoff story would pass with the description and note reset deleted
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+From the KN-363 roast. otherIn() builds the second record from the first and changes only the id, the title and the company, so both records carry the SAME description and note, and the story edits and asserts the title alone. Delete setDescription and setNote from the modal's reset and the story still passes, which means the two fields the card is about are not actually covered. Give the second record its own description and note, from the fixtures, and have the story read both after the swap.
+
+**Why.** The reset exists so one record's writing is not saved onto another, and the writing is mostly in the description and the note rather than in the title.
+
+**Exit condition.** The two records differ in their description and note, and the story asserts both after the swap; deleting either reset line fails it.
 

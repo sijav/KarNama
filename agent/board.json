@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 475,
+  "nextId": 476,
   "tasks": [
     {
       "id": "KN-001",
@@ -10249,7 +10249,23 @@
       "parent": [],
       "status": "done",
       "exit": "The record carries its id, the modal starts over from a record with a different id while open, keeps edits across new objects of the same record, and a story swaps the job while open and saves the new one's fields.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 0,
+          "file": "agent/roasts/KN-363-round-1.2026-09-12T04-00-54-658Z.md",
+          "filed": [
+            "KN-475"
+          ],
+          "cardDigest": "7159f9b525652596955c1ee461341d51ca7cd442892b1994dd0204ae21abced3",
+          "head": "51bb4496232311914b7aae600af70eb5241b4f48",
+          "reviewerScore": 3,
+          "reviewerCriticals": 1,
+          "dismissed": "Two of three. The critical, a missing JobSaved import, was real when the roast read the tree and is already fixed: it was caught by the typecheck during KN-367 and the workspace type-checks clean now, so I record zero criticals rather than one. The minor says the plan file beside the component breaks the documentation rule; it does not. RALPH step 2b requires a plan file named for the task in the folder the change is written to, and AGENTS.md's rule is about prose IN code and about story documentation, which the bilingual story-docs still carry.",
+          "at": "2026-09-12T04:08:23.502Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T17:28:38.468Z",
       "okr": "OKR-1",
@@ -12345,6 +12361,22 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T04:01:31.637Z"
+    },
+    {
+      "id": "KN-475",
+      "title": "The record-handoff story would pass with the description and note reset deleted",
+      "desc": "From the KN-363 roast. otherIn() builds the second record from the first and changes only the id, the title and the company, so both records carry the SAME description and note, and the story edits and asserts the title alone. Delete setDescription and setNote from the modal's reset and the story still passes, which means the two fields the card is about are not actually covered. Give the second record its own description and note, from the fixtures, and have the story read both after the swap.",
+      "why": "The reset exists so one record's writing is not saved onto another, and the writing is mostly in the description and the note rather than in the title.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The two records differ in their description and note, and the story asserts both after the swap; deleting either reset line fails it.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T04:08:23.293Z"
     }
   ],
   "okrs": [
