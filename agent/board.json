@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 423,
+  "nextId": 424,
   "tasks": [
     {
       "id": "KN-001",
@@ -11099,16 +11099,19 @@
       "title": "The screens' own coverage: the board's and the network's handlers are half untested",
       "desc": "The screens went in under the owner's instruction of 2026-09-12 to build the pages now. Their pure logic is covered, core/records at 99 percent and routes at 100, but JobsScreen is at 56 percent of its lines and NetworkScreen at 68: the delete flows and their confirm modal, the column's rename, recolour, delete and add, the collapse and expand of rejected, the job modal's save, status change and contact and file callbacks, and the network page's card and modal paths are driven by no story. The suite's global 100 percent threshold therefore fails until they are.",
       "why": "Coverage is the owner's product rule, and a screen is where the components meet: an untested handler on a page is a defect nobody sees until a reader hits it.",
-      "severity": "high",
+      "severity": "critical",
       "points": 3,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Stories drive every handler of both screens, deleting a card and confirming it, renaming, recolouring, deleting and adding a column, collapsing and expanding rejected, saving from the job modal and changing its status, and the network page's open, search and cancel; npm test in apps/web reports 100 percent again with no threshold error.",
       "okr": "OKR-1",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-11T23:20:48.478Z"
+      "notes": [
+        "2026-09-12: raised to critical, the owner's rule that a finding about the loop or the gate is low unless it is actively breaking the work. This is breaking it: the suite's global 100 percent threshold fails on the screens, so npm test in apps/web is red for everything else too."
+      ],
+      "createdAt": "2026-09-11T23:20:48.478Z",
+      "updatedAt": "2026-09-12T00:16:48.651Z"
     },
     {
       "id": "KN-416",
@@ -11231,6 +11234,22 @@
       "evidence": "The column's count is its own, the provider refuses to delete a status holding job opportunities (unit test: it stays, and goes once emptied), Rename opens a modal whose name is kept through a reload, the board row bounds its columns with alignItems stretch and minHeight 0, the phone draws the column's empty state, and the bulk bar counts only what still exists; an e2e with a search on finds Delete disabled and Rename working, and 35 e2e pass on both viewports",
       "updatedAt": "2026-09-12T00:16:05.764Z",
       "closedAt": "2026-09-12T00:16:05.764Z"
+    },
+    {
+      "id": "KN-423",
+      "title": "The Contact Card's checkbox has no accessible name, though the card sets one",
+      "desc": "Found while covering the network screen, 2026-09-12. ContactCard gives its Checkbox aria-label={Select + the contact's name}, and the rendered checkbox's accessible name is empty: testing-library lists it as checkbox with Name \"\" while the Job Card's same pattern is named. So the name is being dropped between the card and the input the role belongs to, most likely by the Checkbox component not forwarding aria-label to its input. A screen reader user hears an unnamed checkbox on every contact, and a test can only find it by role.",
+      "why": "Selecting a person is one of the two things the network page is for, and a control a screen reader cannot name is a control they cannot use.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The contact card's checkbox is named for whoever it selects, asserted by a story that finds it by that name; the Checkbox component forwards the accessible name whatever else it is given, with its own test.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T00:20:28.743Z"
     }
   ],
   "okrs": [

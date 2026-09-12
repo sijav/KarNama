@@ -1,5 +1,5 @@
 import type { StoryObj } from '@storybook/react-vite'
-import { expect, within } from 'storybook/test'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { defaultStatuses, jobFrom, RecordsProvider, type Records } from '../core/records'
 import { emptyDraft } from '../shared/add-job'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
@@ -69,5 +69,63 @@ export const NobodyYet: Story = {
     // header and in the empty state itself.
     await expect(within(canvasElement).getAllByRole('button', { name: 'افزودن مخاطب' })).toHaveLength(2)
     await expect(within(canvasElement).getByText('هنوز کسی رو به شبکه‌ت اضافه نکردی')).toBeInTheDocument()
+  },
+}
+
+export const Keeping: Story = {
+  parameters: { contacts: false },
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const NAME = 'مینا رضایی'
+
+    // Somebody is added from the empty state, and the page shows them.
+    await userEvent.click(canvas.getAllByRole('button', { name: 'افزودن مخاطب' })[1] ?? canvasElement)
+    const adding = await body.findByRole('dialog')
+    await userEvent.type(within(adding).getByLabelText('اسم و فامیل'), NAME)
+    await userEvent.click(within(adding).getByRole('button', { name: 'ذخیره' }))
+    await waitFor(async () => {
+      await expect(body.queryByRole('dialog')).toBeNull()
+      await expect(canvas.getByText(NAME)).toBeInTheDocument()
+    })
+
+    // A search that matches nobody says so, and clearing it brings them back.
+    // The bar's own accessible name, which the component fixes.
+    const search = canvas.getByLabelText('جستجوی فرصت‌های شغلی')
+    await userEvent.type(search, 'کسی که نیست')
+    await waitFor(async () => {
+      await expect(canvas.getByText('نتیجه‌ای پیدا نشد')).toBeInTheDocument()
+    })
+    await userEvent.clear(search)
+    await waitFor(async () => {
+      await expect(canvas.getByText(NAME)).toBeInTheDocument()
+    })
+
+    // Opening them offers their details; cancelling changes nothing. The name
+    // itself is the control, a ButtonBase rather than a named button.
+    await userEvent.click(canvas.getByText(NAME))
+    const open = await body.findByRole('dialog')
+    await userEvent.click(within(open).getByRole('button', { name: 'انصراف' }))
+    // While a modal is open MUI hides the rest of the page from the
+    // accessibility tree, so nothing behind it can be found until it is gone.
+    await waitFor(async () => {
+      await expect(body.queryByRole('dialog')).toBeNull()
+    })
+
+    // Selecting them raises the bar, and deleting asks first.
+    // The card's one checkbox. It should be named for whoever it selects and is
+    // not, KN-423, so it is found by role until that is fixed. It is folded
+    // away until the card is hovered or selected, KN-341.
+    const check = canvas.getByRole('checkbox')
+    await userEvent.hover(check)
+    await userEvent.click(check)
+    const bar = await canvas.findByRole('region', { name: 'کارهای گروهی' })
+    await userEvent.click(within(bar).getByRole('button', { name: 'حذف' }))
+    const confirm = await body.findByRole('dialog')
+    await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
+    await waitFor(async () => {
+      await expect(canvas.getByText('هنوز کسی رو به شبکه‌ت اضافه نکردی')).toBeInTheDocument()
+    })
   },
 }

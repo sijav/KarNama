@@ -24,3 +24,9 @@ The same page with the language switched.
 
 Nobody kept yet: the empty state offers the one thing there is to do, in the
 header and in the state itself.
+
+### Keeping
+
+The page being used: somebody added from the empty state, a search that finds
+nobody and then does, their details opened and closed, and the two of them
+selected and deleted through the bar at the foot.

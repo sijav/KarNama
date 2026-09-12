@@ -15,9 +15,7 @@ const meta = {
     (Story, context) => (
       // Nobody is signed in unless the story asks for it: `session` seeds one
       // with no name, which is how the signup step is reached without a code.
-      <AuthProvider
-        initial={context.parameters.session === true ? sessionFor(PHONE, new Date(Date.UTC(2026, 8, 12)).toISOString()) : null}
-      >
+      <AuthProvider initial={context.parameters.session === true ? sessionFor(PHONE, new Date(Date.UTC(2026, 8, 12)).toISOString()) : null}>
         <Story />
       </AuthProvider>
     ),

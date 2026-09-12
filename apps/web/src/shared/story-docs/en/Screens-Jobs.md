@@ -49,3 +49,9 @@ The add destination, which opens the flow over the board; closing it says so.
 A board being used: searching narrows every column, a card opens the job
 opportunity, and selecting one brings up the bulk bar, which moves it to
 another status.
+
+### Managing
+
+The board being managed: a column renamed from its menu, another added, a job
+opportunity deleted from its modal after a confirmation, and the rejected
+column opened from its collapsed header.

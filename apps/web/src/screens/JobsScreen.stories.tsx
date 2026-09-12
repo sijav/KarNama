@@ -135,3 +135,56 @@ export const Working: Story = {
     })
   },
 }
+
+export const Managing: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const set = fixtures('fa-IR')
+    const first = set.jobs[0]?.title ?? ''
+    const gone = async () => {
+      // MUI hides the page from the accessibility tree while a modal is open.
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog')).toBeNull()
+      })
+    }
+
+    // A column's menu renames it, and the board shows the new name.
+    const columns = defaultStatuses((token) => set.names[token])
+    const savedName = columns[0]?.name ?? ''
+    await userEvent.click(canvas.getByRole('button', { name: `کارهای وضعیت: ${savedName}` }))
+    await userEvent.click(await body.findByRole('menuitem', { name: 'تغییر نام' }))
+    const rename = await body.findByRole('dialog')
+    await userEvent.clear(within(rename).getByRole('textbox'))
+    await userEvent.type(within(rename).getByRole('textbox'), 'در انتظار پاسخ')
+    await userEvent.click(within(rename).getByRole('button', { name: 'ذخیره' }))
+    await gone()
+    await expect(canvas.getByText('در انتظار پاسخ')).toBeInTheDocument()
+
+    // A column is added at the end of the board.
+    await userEvent.click(canvas.getByRole('button', { name: 'افزودن وضعیت' }))
+    await waitFor(async () => {
+      await expect(canvas.getAllByText('وضعیت تازه').length).toBeGreaterThan(0)
+    })
+
+    // A job opportunity is deleted from its own modal, where the control is not
+    // folded behind a hover the synthetic pointer cannot set, KN-365.
+    await userEvent.click(canvas.getByRole('button', { name: first }))
+    const open = await body.findByRole('dialog')
+    await userEvent.click(within(open).getByRole('button', { name: 'حذف فرصت شغلی' }))
+    const confirm = await body.findByRole('dialog')
+    await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
+    await gone()
+    await waitFor(async () => {
+      await expect(canvas.queryByText(first)).toBeNull()
+    })
+
+    // The rejected column opens from its collapsed header.
+    const rejected = columns.at(-1)?.name ?? ''
+    await userEvent.click(canvas.getByRole('button', { name: new RegExp(rejected) }))
+    await waitFor(async () => {
+      await expect(canvas.getAllByText('هنوز فرصت شغلی‌ای تو این مرحله نیست').length).toBeGreaterThan(0)
+    })
+  },
+}
