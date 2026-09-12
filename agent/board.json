@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 460,
+  "nextId": 463,
   "tasks": [
     {
       "id": "KN-001",
@@ -11977,12 +11977,79 @@
       "status": "done",
       "exit": "On a phone, with no console, a reader can see the code and finish signing in; a story at a phone's width reads the code off the screen and uses it.",
       "okr": "OKR-1",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 6,
+          "criticals": 0,
+          "file": "agent/roasts/KN-459-round-1.2026-09-12T02-53-57-530Z.md",
+          "filed": [
+            "KN-460",
+            "KN-461",
+            "KN-462",
+            "KN-434"
+          ],
+          "cardDigest": "c45e586208e2e0b8aedfc8f210002fff4913bd16c59b7c49f8d8b5d8a353df97",
+          "head": "cf1ec2278500c99442ae0c84b51cc014555835f7",
+          "reviewerScore": 6.5,
+          "reviewerCriticals": 0,
+          "dismissed": "none: all four stand. The prose-in-code minor is KN-434, which carries that rule across the files this iteration touched.",
+          "at": "2026-09-12T02:56:42.770Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-12T02:43:48.776Z",
       "updatedAt": "2026-09-12T02:53:36.772Z",
       "evidence": "At a phone's width, with nothing read from the console, SigningInOnAPhone types a number, reads the five digits out of the stand-in notice on the screen, types them in and reaches the name step. The notice says plainly that no message is really sent, and the digits carry dir=ltr so the page cannot reorder them. 1481 of 1482 tests pass, the one failure the known KN-365 JobCard flake; lint and tsc clean, and the catalog guard caught the now-unused console copy, which is gone from both languages.",
       "closedAt": "2026-09-12T02:53:36.772Z"
+    },
+    {
+      "id": "KN-460",
+      "title": "The mocked code rides in the production auth contract, where a real sender could leak a live one",
+      "desc": "From the KN-459 roast. mockCode is a field of AuthValue, which is the contract every auth implementation fills, and AuthScreen draws it whenever it is not null. When a real SMS sender replaces the mock, a provider that keeps filling that field, or fills it from a server response, puts a live one-time code on the screen for anyone looking at it, and nothing in the types stops that. Keep the mocked delivery inside the mock: a separate context or a provider prop that only the mock implementation carries, so the production contract cannot hold a readable code at all and removing the mock is one obvious edit rather than a hunt.",
+      "why": "A one-time code on the screen is the whole point of the mock and a serious defect the moment it is real. The migration that introduces it is exactly the moment nobody is looking at this file.",
+      "severity": "high",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "AuthValue cannot carry a code, the screen reads it from something only the mock provides, and a provider that does not mock it cannot show one.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T02:56:42.325Z"
+    },
+    {
+      "id": "KN-461",
+      "title": "The sign-in docs still send readers to the browser console for the code",
+      "desc": "From the KN-459 roast: the Screens-SignIn page's introduction, in both languages, still says the code is in the browser console. KN-459 put it on the screen because a phone has no console, and only the new story's own entry says so. Correct the introduction in en and fa, since that paragraph is what a reader of the docs meets first.",
+      "why": "Documentation that contradicts the product is worse than none: it is the stale mock guidance the next person carries forward when the real sender lands.",
+      "severity": "medium",
+      "points": 1,
+      "area": "docs",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Neither language's SignIn introduction mentions the console as where the code is.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T02:56:42.454Z"
+    },
+    {
+      "id": "KN-462",
+      "title": "The mockCode assertion proves the opposite of what it claims, and no test covers a resend",
+      "desc": "From the KN-459 roast. The line added to AuthProvider.test.tsx captures a FRESH provider and expects its mockCode to be null, which says nothing about the provider that just sent a code; it should read mockCode off the provider AFTER requestCode and match it against what the console reported. And nothing covers a resend: the notice could keep showing the first code while verify only accepts the second, and both the story and the test would pass. Add a resend to the phone story, read the newly shown code, and sign in with it.",
+      "why": "This is the third assertion in three days that cannot fail, and this one guards the thing the owner reported: the code on the screen must be the code that works.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A test reads mockCode from the provider that sent the code, and a story resends and signs in with the newly shown one.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T02:56:42.578Z"
     }
   ],
   "okrs": [

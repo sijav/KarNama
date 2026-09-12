@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 193 of 459 tasks done · 430 of 936 points.
+Project **KarNama** · 193 of 462 tasks done · 430 of 941 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-330` The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list** (high, 2 pt, web)
+**Next up: `KN-462` The mockCode assertion proves the opposite of what it claims, and no test covers a resend** (high, 1 pt, web)
 
 ## Blocked (5)
 
@@ -20,12 +20,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (259)
+## Backlog (262)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-462` | The mockCode assertion proves the opposite of what it claims, and no test covers a resend | high | 1 | web | none | A test reads mockCode from the provider that sent the code, and a story resends and signs in with the newly shown one. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
@@ -71,6 +72,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-275` | Add a resting edge role for controls at 3:1, and draw the Input and the Checkbox with it | high | 3 | web | none | tokens.ts carries a named role for a control's resting edge, a neutral in text/secondary's hue at 3.3:1 or more on bg/surface, bg/page and bg/surface-secondary, and darkMode.ts derives it and checks it at 3:1 or more on the three dark backgrounds, each ratio asserted by a unit test with a mutation back to border/default failing it; the Input's resting border and the Checkbox's unchecked frame use it, and the Input's Default story and the Checkbox's Unchecked story assert it; every other state of both still renders as drawn; DESIGN.md's token tables list the role as the owner's addition under KN-273; the token verifier and the contract pass; and the Input and the Checkbox are seen at rest in all four combinations. |
 | `KN-279` | Give the selected Filter Chip a blue edge at 3:1, apart from its pressed edge | high | 3 | web | KN-272 | A selected Filter Chip's edge is drawn in a named role at 3:1 or more against bg/surface, bg/page, bg/surface-secondary and its own fill, in light and in the derived dark, each ratio asserted by a unit test with a mutation back to the fill-coloured edge failing it; the Selected story asserts the edge; a pressed unselected chip is still told apart from a selected one, by at least 3:1 between their two indicators or by a difference that is not colour, such as the edge's width, and a focused chip beside a selected one keeps its ring visibly apart from the selected edge, both asserted on rendered chips side by side, including a chip held pressed from the keyboard; DESIGN.md records the edge under the owner's decision of KN-276; and the chip is seen unselected, selected and pressed in all four combinations. |
 | `KN-416` | The shell has no Apollo client, no auth state and no error boundary | high | 3 | web | KN-036 | AppProviders creates the Apollo client against the API's URL with the honest slow-start handling the design asks for, the shell holds who is signed in, and a screen that throws renders the error state rather than a blank page, each with a story or a test; a deep link to a screen that throws still shows the shell. |
+| `KN-460` | The mocked code rides in the production auth contract, where a real sender could leak a live one | high | 3 | web | none | AuthValue cannot carry a code, the screen reads it from something only the mock provides, and a provider that does not mock it cannot show one. |
 | `KN-038` | Custom statuses: rename, recolour, delete | high | 5 | api | KN-037 | A renamed status shows its new name everywhere including old records, deletion is refused while postings remain in that status and the message says how many, the four custom slots cannot be exceeded, a record pointing at a deleted status still renders with the fallback colour, and tests cover each. |
 | `KN-052` | Deploy the API to Render free, with Neon free Postgres | high | 5 | deploy | KN-033, KN-034, KN-050 | The API answers at its Render URL, the web app reaches it across origins with the CORS policy WEB_ORIGIN sets, migrations have run against the Neon database, and a deploy follows a push to main with no manual step. The database choice is recorded with its reason so it is not silently reverted to a provider that expires or pauses. A check proves the deployed API responds and that render.yaml still pins the free plan and carries no DATABASE_URL value. |
 | `KN-061` | Drag a card between columns, with a keyboard path | high | 5 | web | KN-060, KN-020, KN-269, KN-270 | A card drags between two columns and the status persists, a failed mutation rolls the card back to its original column, the same move is achievable by keyboard alone, and the change is announced to assistive technology. Onto the rejected column collapsed to a count, as the owner decided on 2026-09-10, KN-196: during a drag it expands after a short hover of 500 ms; it accepts a drop while still collapsed; once the card lands it recollapses with a brief highlight, and only if the drag opened it, the count ticking up, the header flashing the rejected status colour for about a second and the move announced, Moved to Rejected with the count; a column the user opened stays open; a failed save returns the card with no highlight; and the keyboard path offers it as one target, announced with its count. |
@@ -136,6 +138,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-448` | The Icon Button spreads a Tooltip's props before its own, which is the unsafe side | medium | 1 | web | none | The injected props are spread last, and the comment says what that protects. |
 | `KN-449` | The InATooltip story's console spy is installed too late to see what it claims to watch | medium | 1 | web | none | The spy is in place before the render and calls through, and the story still passes. |
 | `KN-455` | A disabled Button with a forced state draws something node 31:4 never draws | medium | 1 | web | none | A disabled button shows its disabled look whatever data-state says, and a story renders one to prove it. |
+| `KN-461` | The sign-in docs still send readers to the browser console for the code | medium | 1 | docs | none | Neither language's SignIn introduction mentions the console as where the code is. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -5873,4 +5876,39 @@ The owner, on the live site on a phone, 2026-09-12: 'what do you mean check the 
 **Why.** The product is deployed and the owner opened it on a phone and could not get past the first screen. Everything behind sign-in is unreachable, so this is the whole product, not a screen of it.
 
 **Exit condition.** On a phone, with no console, a reader can see the code and finish signing in; a story at a phone's width reads the code off the screen and uses it.
+
+**Roasts.** round 1 scored 6 with 0 critical(s)
+
+### `KN-460` The mocked code rides in the production auth contract, where a real sender could leak a live one
+
+- **status** backlog · **severity** high · **points** 3 · **area** web
+- **blocked by** none
+
+From the KN-459 roast. mockCode is a field of AuthValue, which is the contract every auth implementation fills, and AuthScreen draws it whenever it is not null. When a real SMS sender replaces the mock, a provider that keeps filling that field, or fills it from a server response, puts a live one-time code on the screen for anyone looking at it, and nothing in the types stops that. Keep the mocked delivery inside the mock: a separate context or a provider prop that only the mock implementation carries, so the production contract cannot hold a readable code at all and removing the mock is one obvious edit rather than a hunt.
+
+**Why.** A one-time code on the screen is the whole point of the mock and a serious defect the moment it is real. The migration that introduces it is exactly the moment nobody is looking at this file.
+
+**Exit condition.** AuthValue cannot carry a code, the screen reads it from something only the mock provides, and a provider that does not mock it cannot show one.
+
+### `KN-461` The sign-in docs still send readers to the browser console for the code
+
+- **status** backlog · **severity** medium · **points** 1 · **area** docs
+- **blocked by** none
+
+From the KN-459 roast: the Screens-SignIn page's introduction, in both languages, still says the code is in the browser console. KN-459 put it on the screen because a phone has no console, and only the new story's own entry says so. Correct the introduction in en and fa, since that paragraph is what a reader of the docs meets first.
+
+**Why.** Documentation that contradicts the product is worse than none: it is the stale mock guidance the next person carries forward when the real sender lands.
+
+**Exit condition.** Neither language's SignIn introduction mentions the console as where the code is.
+
+### `KN-462` The mockCode assertion proves the opposite of what it claims, and no test covers a resend
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+From the KN-459 roast. The line added to AuthProvider.test.tsx captures a FRESH provider and expects its mockCode to be null, which says nothing about the provider that just sent a code; it should read mockCode off the provider AFTER requestCode and match it against what the console reported. And nothing covers a resend: the notice could keep showing the first code while verify only accepts the second, and both the story and the test would pass. Add a resend to the phone story, read the newly shown code, and sign in with it.
+
+**Why.** This is the third assertion in three days that cannot fail, and this one guards the thing the owner reported: the code on the screen must be the code that works.
+
+**Exit condition.** A test reads mockCode from the provider that sent the code, and a story resends and signs in with the newly shown one.
 
