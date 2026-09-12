@@ -12374,12 +12374,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The two records differ in their description and note, and the story asserts both after the swap; deleting either reset line fails it.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T04:08:23.293Z"
+      "createdAt": "2026-09-12T04:08:23.293Z",
+      "updatedAt": "2026-09-12T04:22:57.143Z"
     }
   ],
   "okrs": [

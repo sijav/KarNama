@@ -397,10 +397,16 @@ export const InEnglish: Story = {
 const otherIn = (locale: Locale): JobRecord => {
   const set = fixtures(locale)
   const other = set.jobs[1]
+  const first = recordIn(locale)
   return {
-    ...recordIn(locale),
+    ...first,
     id: other?.id ?? '',
-    draft: { ...recordIn(locale).draft, title: other?.title ?? '', company: other?.company ?? '' },
+    draft: { ...first.draft, title: other?.title ?? '', company: other?.company ?? '' },
+    // Its OWN description and note, KN-475: with the first record's in both,
+    // the handoff story passed with the reset of those two fields deleted, and
+    // the writing a reader would lose is mostly there rather than in the title.
+    description: set.jobDetail.skills.join('، '),
+    note: set.notes[1]?.text ?? '',
   }
 }
 
@@ -457,14 +463,30 @@ export const StartsOverForAnotherRecord: Story = {
     await userEvent.clear(title)
     await userEvent.type(title, set.jobs[2]?.title ?? '')
 
+    // The description and the note as well, which is where a reader's writing
+    // actually is, KN-475.
+    await userEvent.click(body.getByRole('tab', { name: 'یادداشت' }))
+    const note = await body.findByRole('textbox', { name: 'یادداشت' })
+    await userEvent.clear(note)
+    await userEvent.type(note, set.notes[0]?.text.slice(0, 20) ?? '')
+
     await userEvent.click(canvas.getByTestId('swap'))
 
-    // The fields are the SECOND record's now, not what was typed into the first.
+    // A different record starts the modal over, tab included, so the reader is
+    // looking at the new record's own information rather than at a tab they
+    // chose for the one before it.
     await waitFor(async () => {
       await expect(body.getByRole('textbox', { name: 'عنوان شغلی' })).toHaveValue(set.jobs[1]?.title ?? '')
     })
+
+    // Every field is the SECOND record's, including the writing: the note and
+    // the description are where a reader's work actually is, KN-475.
+    await userEvent.click(body.getByRole('tab', { name: 'یادداشت' }))
+    await expect(await body.findByRole('textbox', { name: 'یادداشت' })).toHaveValue(otherIn('fa-IR').note)
     await userEvent.click(body.getByRole('button', { name: 'ذخیره' }))
-    await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ title: set.jobs[1]?.title }))
+    await expect(args.onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ title: set.jobs[1]?.title, note: otherIn('fa-IR').note, description: otherIn('fa-IR').description }),
+    )
   },
 }
 
