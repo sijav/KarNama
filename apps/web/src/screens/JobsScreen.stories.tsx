@@ -34,7 +34,7 @@ const meta = {
   title: 'Screens/Jobs',
   component: JobsScreen,
   parameters: { layout: 'fullscreen' },
-  args: { addOpen: false, onAddClose: fn() },
+  args: { addOpen: false, onAddClose: fn() , onSelecting: fn()},
   decorators: [
     (Story, context) => (
       // Each story gets its own records, so one cannot change what another

@@ -18,6 +18,12 @@ Opens the add flow with the screen. The add destination is this flow rather
 than a page of its own, so the address opens it and closing it puts the address
 back on the board.
 
+### onSelecting
+
+Said while anything is selected, so the shell can give the foot of the screen to
+the Bulk Action Bar: below md the tab bar and the bar are fixed to the same
+place, and node 185:19 says the tab bar gives its place, KN-356.
+
 ### onAddClose
 
 Said when the add flow closes, so whoever owns the address can go back to the

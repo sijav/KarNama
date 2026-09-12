@@ -37,6 +37,9 @@ const recordIn = (locale: Locale): JobRecord => {
   const [job] = set.jobs
   const detail = set.jobDetail
   return {
+    // The fixture's own id, so the modal can tell this record from another,
+    // KN-363.
+    id: job?.id ?? '',
     draft: {
       ...emptyDraft(INTERVIEW),
       title: job?.title ?? '',
@@ -387,5 +390,100 @@ export const InEnglish: Story = {
         .getAllByRole('tab')
         .map((tab) => tab.textContent),
     ).toEqual([i18n._('Job opportunity info'), i18n._('History'), i18n._('Note'), i18n._('Related people'), i18n._('Files')])
+  },
+}
+
+// Another record entirely: the second fixture job opportunity, with its own id.
+const otherIn = (locale: Locale): JobRecord => {
+  const set = fixtures(locale)
+  const other = set.jobs[1]
+  return {
+    ...recordIn(locale),
+    id: other?.id ?? '',
+    draft: { ...recordIn(locale).draft, title: other?.title ?? '', company: other?.company ?? '' },
+  }
+}
+
+// A modal the story can hand a different record to while it stays open.
+const Swappable = ({ onSave }: { onSave: (job: JobSaved) => void }) => {
+  const [record, setRecord] = useState(() => recordIn('fa-IR'))
+  return (
+    <>
+      <button
+        data-testid="swap"
+        type="button"
+        onClick={() => {
+          setRecord(otherIn('fa-IR'))
+        }}
+      />
+      <button
+        data-testid="same-again"
+        type="button"
+        onClick={() => {
+          setRecord((held) => ({ ...held }))
+        }}
+      />
+      <JobModal
+        open
+        job={record}
+        statuses={statusesIn('fa-IR')}
+        onStatusChange={fn()}
+        onAddStatus={fn()}
+        onSave={onSave}
+        onDelete={fn()}
+        onClose={fn()}
+        onAddContact={fn()}
+        onOpenContact={fn()}
+        onDeleteContact={fn()}
+        onAddFiles={fn()}
+        onDownloadFile={fn()}
+      />
+    </>
+  )
+}
+
+export const StartsOverForAnotherRecord: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  render: (args) => <Swappable onSave={args.onSave} />,
+  play: async ({ args, canvasElement }) => {
+    // KN-363: a page that swapped the record under an open modal drew the new
+    // record's header over the OLD record's editable fields, and Save wrote
+    // those fields onto the new record.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const set = fixtures('fa-IR')
+    const title = body.getByRole('textbox', { name: 'عنوان شغلی' })
+    await userEvent.clear(title)
+    await userEvent.type(title, set.jobs[2]?.title ?? '')
+
+    await userEvent.click(canvas.getByTestId('swap'))
+
+    // The fields are the SECOND record's now, not what was typed into the first.
+    await waitFor(async () => {
+      await expect(body.getByRole('textbox', { name: 'عنوان شغلی' })).toHaveValue(set.jobs[1]?.title ?? '')
+    })
+    await userEvent.click(body.getByRole('button', { name: 'ذخیره' }))
+    await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ title: set.jobs[1]?.title }))
+  },
+}
+
+export const KeepsTypingForTheSameRecord: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  render: (args) => <Swappable onSave={args.onSave} />,
+  play: async ({ canvasElement }) => {
+    // The other half: the provider builds a new object for the same record on
+    // every change, so anything comparing identity rather than the id would
+    // throw away what a reader is typing whenever anything else moved.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const typed = fixtures('fa-IR').jobs[2]?.title ?? ''
+    const title = body.getByRole('textbox', { name: 'عنوان شغلی' })
+    await userEvent.clear(title)
+    await userEvent.type(title, typed)
+
+    await userEvent.click(canvas.getByTestId('same-again'))
+    await expect(body.getByRole('textbox', { name: 'عنوان شغلی' })).toHaveValue(typed)
   },
 }

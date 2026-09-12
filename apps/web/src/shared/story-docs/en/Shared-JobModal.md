@@ -23,6 +23,13 @@ Whether the modal is open. Each opening starts from the record.
 The record: its fields, description, skills, note and when it was last edited,
 related people, files and status history.
 
+Which record this is. The modal copies the record into its own state to be
+edited, and the id is how it tells one record from another: a page that swaps
+the record while the modal stays open used to draw the new record's header over
+the OLD record's editable fields, and Save wrote those onto the new record,
+KN-363. The id rather than the object, because the provider builds a new object
+for the same record on every change.
+
 ### statuses
 
 The statuses the header's control offers.
@@ -119,3 +126,14 @@ On a phone's width, the tabs scrolling.
 ### InEnglish
 
 The tabs in English.
+
+### StartsOverForAnotherRecord
+
+The record swapped while the modal stays open: the fields become the new
+record's, and saving writes the new record's own values rather than what was
+typed into the one before it.
+
+### KeepsTypingForTheSameRecord
+
+The same record handed over as a new object, which is what the provider does on
+every change: what the reader is typing stays.

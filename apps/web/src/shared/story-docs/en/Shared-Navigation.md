@@ -4,6 +4,13 @@ pixels wide.
 
 ## Props
 
+### selecting
+
+Whether the page under the shell is selecting. Below md the tab bar gives its
+place to the Bulk Action Bar while it is, node 185:19: the two are fixed to the
+same place at the same layer, so they sat on top of each other, KN-356. The
+sidebar, which is beside the page rather than under it, is untouched.
+
 ### current
 
 The place the reader is on: `jobs`, `add` or `network`.

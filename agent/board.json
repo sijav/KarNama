@@ -10091,14 +10091,17 @@
       "severity": "high",
       "points": 2,
       "area": "web",
-      "parent": [],
-      "status": "in_progress",
+      "parent": [
+        "KN-428"
+      ],
+      "status": "blocked",
       "exit": "Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T16:35:53.339Z",
       "okr": "OKR-1",
-      "updatedAt": "2026-09-12T03:45:58.351Z"
+      "updatedAt": "2026-09-12T03:52:59.767Z",
+      "blockedReason": "Its exit asks for a story that selects and sees one bar at the foot, and a phone cannot start a selection at all: the phone card draws its checkbox only once it is already selected, KN-428. The navigation and shell half is built and committed; what is left is the story, which becomes writable the moment KN-428 lands."
     },
     {
       "id": "KN-357",
@@ -10225,12 +10228,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "The record carries its id, the modal starts over from a record with a different id while open, keeps edits across new objects of the same record, and a story swaps the job while open and saves the new one's fields.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T17:28:38.468Z",
-      "okr": "OKR-1"
+      "okr": "OKR-1",
+      "updatedAt": "2026-09-12T03:53:11.967Z"
     },
     {
       "id": "KN-364",

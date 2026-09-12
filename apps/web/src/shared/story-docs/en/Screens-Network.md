@@ -10,6 +10,13 @@ Selecting people brings up the bar at the foot, which deletes them after a
 confirmation. A search narrows the page by name, role, company, email or
 number.
 
+## Props
+
+### onSelecting
+
+Said while anything is selected, so the shell can give the foot of the screen to
+the Bulk Action Bar, KN-356.
+
 ## Stories
 
 ### People

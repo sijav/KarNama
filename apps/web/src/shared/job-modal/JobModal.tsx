@@ -50,6 +50,8 @@ export interface JobContact {
 
 // Everything the modal shows of a job opportunity.
 export interface JobRecord {
+  /** Which record this is, so the modal can tell one from another, KN-363. */
+  id: string
   draft: JobDraft
   description: string
   skills: readonly string[]
@@ -235,16 +237,26 @@ export const JobModal = ({
   const [description, setDescription] = useState(job.description)
   const [note, setNote] = useState(job.note)
   const [tried, setTried] = useState(false)
-  // Each opening starts from the record, and the tab follows the one asked
-  // for: React's pattern for state that follows a prop, adjusted during render.
-  const [seen, setSeen] = useState({ open, asked })
-  if (open !== seen.open || asked !== seen.asked) {
-    setSeen({ open, asked })
+  // Each opening starts from the record, and so does being handed a DIFFERENT
+  // record while open, KN-363: a page that swaps the job under an open modal
+  // used to draw the new record's header over the old one's editable fields,
+  // and Save wrote those fields onto the new record. The test is the id, not
+  // the object: the provider builds a new object on every change, so anything
+  // comparing identity would throw away what a reader is typing whenever
+  // anything else on the board moved. React's pattern for state that follows a
+  // prop, adjusted during render.
+  const [seen, setSeen] = useState({ open, asked, id: job.id })
+  if (open !== seen.open || asked !== seen.asked || job.id !== seen.id) {
+    setSeen({ open, asked, id: job.id })
     setTab(asked)
-    if (open && !seen.open) {
+    // Only while it is open: an id that changes as it closes is simply
+    // remembered, and the next opening starts from whatever record is current.
+    if (open && (!seen.open || job.id !== seen.id)) {
       setDraft(job.draft)
       setDescription(job.description)
       setNote(job.note)
+      // With the rest, or the first record's refusals would be shown against
+      // the second's fields.
       setTried(false)
     }
   }
