@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 469,
+  "nextId": 472,
   "tasks": [
     {
       "id": "KN-001",
@@ -9509,7 +9509,26 @@
       "parent": [],
       "status": "done",
       "exit": "A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3,
+          "criticals": 1,
+          "file": "agent/roasts/KN-330-round-1.2026-09-12T03-31-48-731Z.md",
+          "filed": [
+            "KN-469",
+            "KN-470",
+            "KN-471",
+            "KN-434"
+          ],
+          "cardDigest": "23bf4f9bda414f81148ec0617ac8ba6079a9b4644d2633b04436cf3fa181eb7c",
+          "head": "9952c84ebab5b6e1872df11882bf40cdde418689",
+          "reviewerScore": 2.5,
+          "reviewerCriticals": 1,
+          "dismissed": "none: all four stand. The critical is the one that matters, I picked F6 BECAUSE it is the region key and that is exactly why the browser takes it before the page sees it.",
+          "at": "2026-09-12T03:45:22.765Z"
+        }
+      ],
       "notes": [
         "2026-09-12: parked unstarted for the owner's instruction about forms, KN-463. Nothing was built; the plan beside the component is written and its roast is recorded in it. When it comes back: the plan roast says the shortcut is the right class of answer but the key must be a platform-scoped modifier chord rather than a bare letter, that the listener belongs on each SCREEN root and not on document, and that both screens actually render the bar AFTER the list, so ReachedBeforeTheList does not establish the contract the card assumes."
       ],
@@ -12196,6 +12215,54 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T03:32:11.965Z"
+    },
+    {
+      "id": "KN-469",
+      "title": "F6 never reaches the page: the browser takes it first, so the bulk bar's key does nothing",
+      "desc": "From the KN-330 roast, and it is right. Chrome and Firefox use F6 to cycle focus between their own panes, the address bar and the page, so a reader pressing it leaves the page rather than reaching the bar. The story passes because the runner injects the key straight into the page instead of going through the browser's shortcut dispatcher, which is exactly the gap between a test and a reader. Choose a key the browser does not reserve, F2 is free where F1, F3, F5, F6, F7, F11 and F12 are not, and it is still not a character key so WCAG 2.1.4 asks nothing extra. Then prove it the only honest way available: say in the story that the runner injects the event, and check the key by hand in a real browser once.",
+      "why": "The card exists so a keyboard reader can reach the bar from inside the list. As shipped they cannot, and the test says they can, which is worse than not having done it.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The key reaches the page in Chrome and Firefox, the bar takes focus, and the story says plainly what it can and cannot prove about the browser's own dispatcher.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T03:45:22.247Z"
+    },
+    {
+      "id": "KN-470",
+      "title": "The bulk bar's key listener fires while a modal owns the page",
+      "desc": "From the KN-330 roast. The listener is on the document and only checks the key and its modifiers, so with a selection live and the change-status or delete modal open, pressing the key tries to move focus to a bar that is behind the scrim, and at the least cancels whatever the key would have done. A modal owns focus while it is up. The listener should do nothing when the focused element is inside a dialog, which is what the shell already marks with role=dialog and aria-modal.",
+      "why": "Moving focus out of a modal is the one thing a modal is supposed to prevent, and a reader who lands behind the scrim cannot see where they are.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The key does nothing while a dialog has focus, and a story opens one with a selection live and presses it.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T03:45:22.392Z"
+    },
+    {
+      "id": "KN-471",
+      "title": "The bulk bar's story asserts a Persian string written into the TSX",
+      "desc": "From the KN-330 roast: ReachedFromInsideTheList asserts the announcement by writing the Persian sentence into the story file, where the repository's rule is that a user-facing string is an English id resolved through the catalog. Resolve it with i18n._ so the assertion follows the copy rather than repeating it.",
+      "why": "A copy change would leave the story asserting a sentence the product no longer says, and the lint rule exists to stop exactly that.",
+      "severity": "low",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "No story in bulk-action-bar writes a user-facing sentence; each resolves the id.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T03:45:22.551Z"
     }
   ],
   "okrs": [

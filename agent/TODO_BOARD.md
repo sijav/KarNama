@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 197 of 468 tasks done · 438 of 954 points.
+Project **KarNama** · 197 of 471 tasks done · 438 of 958 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -20,7 +20,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (264)
+## Backlog (267)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -53,6 +53,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-465` | Nothing reads mockCode off the provider that sent the code, which KN-462's exit asked for | high | 2 | web | none | A story reads mockCode from the provider after a send and after a resend, and asserts the screen shows exactly that. |
 | `KN-466` | The resend check passes against a resend that does nothing | high | 2 | web | none | The story uses a deterministic code maker, asserts the notice shows a different code after a resend, and asserts the first code no longer signs in. |
 | `KN-467` | The job modal was left out of the forms work, and it is the one with the most fields | high | 2 | web | none | The job modal's fields are a form whose Save submits it, and a story presses the runner's own Enter in a single-line field and sees what Save does. |
+| `KN-469` | F6 never reaches the page: the browser takes it first, so the bulk bar's key does nothing | high | 2 | web | none | The key reaches the page in Chrome and Firefox, the bar takes focus, and the story says plainly what it can and cannot prove about the browser's own dispatcher. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -140,6 +141,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-449` | The InATooltip story's console spy is installed too late to see what it claims to watch | medium | 1 | web | none | The spy is in place before the render and calls through, and the story still passes. |
 | `KN-455` | A disabled Button with a forced state draws something node 31:4 never draws | medium | 1 | web | none | A disabled button shows its disabled look whatever data-state says, and a story renders one to prove it. |
 | `KN-461` | The sign-in docs still send readers to the browser console for the code | medium | 1 | docs | none | Neither language's SignIn introduction mentions the console as where the code is. |
+| `KN-470` | The bulk bar's key listener fires while a modal owns the page | medium | 1 | web | none | The key does nothing while a dialog has focus, and a story opens one with a selection live and presses it. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -253,6 +255,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-450` | The InATooltip story's tip reads a sentence fragment | low | 1 | web | none | The story's tip reads a whole sentence in both languages. |
 | `KN-451` | The ref anchors the Kanban Column and the Job Card keep for their menus are no longer needed | low | 1 | web | none | Neither component wraps its menu trigger to hold a ref, and both menus still open where they did. |
 | `KN-456` | Two story-doc files still carry em dashes | low | 1 | docs | none | No .md or .mdx under story-docs holds an em dash, read with a Unicode-aware matcher. |
+| `KN-471` | The bulk bar's story asserts a Persian string written into the TSX | low | 1 | web | none | No story in bulk-action-bar writes a user-facing sentence; each resolves the id. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4428,6 +4431,8 @@ CHILD OF KN-025, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar.
 
+**Roasts.** round 1 scored 3 with 1 critical(s)
+
 ### `KN-331` A Jobs Bulk Action Bar given no onSelectAll or onChangeStatus silently drops the file's buttons
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -5987,4 +5992,37 @@ From the KN-463 roast. The modal forms wrap their fields in a form styled displa
 **Why.** The form was added for readers, and a form a screen reader cannot see is only half the change.
 
 **Exit condition.** Each modal's form is in the accessibility tree with a name, or the reason it does not need to be is written down.
+
+### `KN-469` F6 never reaches the page: the browser takes it first, so the bulk bar's key does nothing
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+From the KN-330 roast, and it is right. Chrome and Firefox use F6 to cycle focus between their own panes, the address bar and the page, so a reader pressing it leaves the page rather than reaching the bar. The story passes because the runner injects the key straight into the page instead of going through the browser's shortcut dispatcher, which is exactly the gap between a test and a reader. Choose a key the browser does not reserve, F2 is free where F1, F3, F5, F6, F7, F11 and F12 are not, and it is still not a character key so WCAG 2.1.4 asks nothing extra. Then prove it the only honest way available: say in the story that the runner injects the event, and check the key by hand in a real browser once.
+
+**Why.** The card exists so a keyboard reader can reach the bar from inside the list. As shipped they cannot, and the test says they can, which is worse than not having done it.
+
+**Exit condition.** The key reaches the page in Chrome and Firefox, the bar takes focus, and the story says plainly what it can and cannot prove about the browser's own dispatcher.
+
+### `KN-470` The bulk bar's key listener fires while a modal owns the page
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+From the KN-330 roast. The listener is on the document and only checks the key and its modifiers, so with a selection live and the change-status or delete modal open, pressing the key tries to move focus to a bar that is behind the scrim, and at the least cancels whatever the key would have done. A modal owns focus while it is up. The listener should do nothing when the focused element is inside a dialog, which is what the shell already marks with role=dialog and aria-modal.
+
+**Why.** Moving focus out of a modal is the one thing a modal is supposed to prevent, and a reader who lands behind the scrim cannot see where they are.
+
+**Exit condition.** The key does nothing while a dialog has focus, and a story opens one with a selection live and presses it.
+
+### `KN-471` The bulk bar's story asserts a Persian string written into the TSX
+
+- **status** backlog · **severity** low · **points** 1 · **area** web
+- **blocked by** none
+
+From the KN-330 roast: ReachedFromInsideTheList asserts the announcement by writing the Persian sentence into the story file, where the repository's rule is that a user-facing string is an English id resolved through the catalog. Resolve it with i18n._ so the assertion follows the copy rather than repeating it.
+
+**Why.** A copy change would leave the story asserting a sentence the product no longer says, and the lint rule exists to stop exactly that.
+
+**Exit condition.** No story in bulk-action-bar writes a user-facing sentence; each resolves the id.
 
