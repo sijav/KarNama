@@ -101,8 +101,9 @@ The fixture is outside the API build, requires `NODE_ENV=test`, and binds only
 The connected tests exercise wrong-code rejection, signup, session restoration,
 ad extraction, review edits, persistence, manual recovery and logout on desktop
 and mobile. API tests exercise the actual migrations, code consumption, attempt
-limits, expiration, authorization and provider failure. URL and extraction tests
-reject private addresses, invalid fields and unsafe links.
+limits, expiration, authorization and SMS provider failure. URL safety tests
+reject private addresses and unsafe links. AI provider tests were removed at the
+owner's request; deployment checks must not submit ads to the AI provider.
 
 The legacy demo board tests explicitly intercept extraction responses. They test
 the client review flow; they are not evidence of live model quality or SMS delivery.

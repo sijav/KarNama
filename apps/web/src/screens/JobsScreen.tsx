@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
-import { useId, useLayoutEffect, useRef, useState, type SyntheticEvent } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type SyntheticEvent } from 'react'
 import { extractJob } from '../core/api'
 import { usePreferences } from '../core/preferences'
 import { columnOrder, contactsOf, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
@@ -83,6 +83,38 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
   // Rejected opens collapsed, the owner's KN-070: it is the status that grows
   // fastest and the one a reader looks at least.
   const [open, setOpen] = useState<readonly string[]>([])
+  const [dragging, setDragging] = useState<string | null>(null)
+  const [over, setOver] = useState<string | null>(null)
+  const [dragExpanded, setDragExpanded] = useState<string | null>(null)
+  const [landed, setLanded] = useState<string | null>(null)
+  const [announcement, setAnnouncement] = useState('')
+  const hoverTimer = useRef<number | undefined>(undefined)
+  const hoverColumn = useRef<string | null>(null)
+  const clearHover = () => {
+    window.clearTimeout(hoverTimer.current)
+    hoverColumn.current = null
+    setOver(null)
+  }
+  const endDrag = () => {
+    clearHover()
+    setDragging(null)
+    setDragExpanded(null)
+  }
+  useEffect(
+    () => () => {
+      window.clearTimeout(hoverTimer.current)
+    },
+    [],
+  )
+  useEffect(() => {
+    if (!landed) return
+    const timer = window.setTimeout(() => {
+      setLanded(null)
+    }, 1000)
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [landed])
   // Which column the add flow is adding to, or null for closed. Adding is a
   // destination as well as a button, KN-042, so the address opens it too:
   // taken together rather than copied into state, which would need an effect to
@@ -114,9 +146,8 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
 
   const addingTo = adding ?? (addOpen ? first : null)
   const showing = columns.find((column) => column.id === chosen) ?? columns[0]
-  const nameOf = (id: string) => records.statuses.find((entry) => entry.id === id)?.name ?? ''
   const job = records.jobs.find((entry) => entry.id === reading)
-  const isCollapsed = (id: string) => tokenOf(records.statuses, id) === 'rejected' && !open.includes(id)
+  const isCollapsed = (id: string) => tokenOf(records.statuses, id) === 'rejected' && !open.includes(id) && dragExpanded !== id
   const cardsOf = (id: string) => jobsIn(records.jobs, id, search, order)
   // The column's own size, which is what says whether it can be deleted: the
   // searched count reads zero while a search hides its cards, and deleting it
@@ -185,38 +216,62 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
   const personId = person?.id ?? null
 
   const card = (entry: JobEntry) => (
-    <JobCard
+    <Box
       key={entry.id}
-      // A phone gets the card's phone layout, which carries its own menu. The
-      // desktop card folds delete and select behind a hover, KN-341, and a
-      // phone has no hover: without this the board on a phone offered no way
-      // to delete a job opportunity or move it, found while KN-415 drove every
-      // handler of this screen from a story.
-      layout={wide ? DESKTOP : MOBILE}
-      title={entry.draft.title}
-      company={entry.draft.company}
-      date={entry.draft.postedAt === '' ? '' : formatDay(locale, entry.draft.postedAt)}
-      status={nameOf(entry.draft.status)}
-      link={entry.draft.postingUrl === '' ? null : entry.draft.postingUrl}
-      selected={selected.includes(entry.id)}
-      onOpen={() => {
-        setReading(entry.id)
+      draggable={wide}
+      onDragStart={(event) => {
+        if (event.target instanceof Element && event.target.closest('a, input')) {
+          event.preventDefault()
+          return
+        }
+        type CardTransfer = 'application/x-karnama-job'
+        const format: CardTransfer = 'application/x-karnama-job'
+        event.dataTransfer.setData(format, entry.id)
+        event.dataTransfer.effectAllowed = 'move'
+        setDragging(entry.id)
+        setAnnouncement('')
       }}
-      onSelectedChange={(wanted) => {
-        select(entry.id, wanted)
+      onDragEnd={endDrag}
+      onClickCapture={(event) => {
+        if (dragging) event.stopPropagation()
       }}
-      onDelete={() => {
-        remember()
-        setDeleting([entry.id])
-      }}
-      onChangeStatus={() => {
-        setMoving([entry.id])
-      }}
-    />
+      sx={{ opacity: dragging === entry.id ? 0.5 : 1, cursor: wide ? 'grab' : undefined }}
+    >
+      <JobCard
+        // A phone gets the card's phone layout, which carries its own menu. The
+        // desktop card folds delete and select behind a hover, KN-341, and a
+        // phone has no hover: without this the board on a phone offered no way
+        // to delete a job opportunity or move it, found while KN-415 drove every
+        // handler of this screen from a story.
+        layout={wide ? DESKTOP : MOBILE}
+        title={entry.draft.title}
+        company={entry.draft.company}
+        date={entry.draft.postedAt === '' ? '' : formatDay(locale, entry.draft.postedAt)}
+        status={tokenOf(records.statuses, entry.draft.status)}
+        link={entry.draft.postingUrl === '' ? null : entry.draft.postingUrl}
+        selected={selected.includes(entry.id)}
+        onOpen={() => {
+          setReading(entry.id)
+        }}
+        onSelectedChange={(wanted) => {
+          select(entry.id, wanted)
+        }}
+        onDelete={() => {
+          remember()
+          setDeleting([entry.id])
+        }}
+        onChangeStatus={() => {
+          setMoving([entry.id])
+        }}
+      />
+    </Box>
   )
 
   return (
     <Stack ref={board} tabIndex={LOOSE} sx={{ gap: `${spacing.lg}px`, minHeight: 0, flex: '1 1 auto' }}>
+      <Box role="status" sx={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clipPath: 'inset(50%)' }}>
+        {announcement}
+      </Box>
       <PageHeader
         title={i18n._('My job opportunities')}
         // The action is the desktop's. On a phone the header already carries
@@ -278,30 +333,74 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
           }}
         >
           {columns.map((column) => (
-            <KanbanColumn
+            <Box
               key={column.id}
-              name={column.name}
-              colour={column.token}
-              count={sizeOf(column.id)}
-              collapsed={isCollapsed(column.id)}
-              onExpand={() => {
-                setOpen((was) => [...was, column.id])
+              onDragOver={(event) => {
+                if (!dragging) return
+                event.preventDefault()
+                event.dataTransfer.dropEffect = 'move'
+                if (hoverColumn.current === column.id) return
+                clearHover()
+                hoverColumn.current = column.id
+                setOver(column.id)
+                if (isCollapsed(column.id)) {
+                  hoverTimer.current = window.setTimeout(() => {
+                    setDragExpanded(column.id)
+                  }, 500)
+                }
               }}
-              onAdd={() => {
-                setAdding(column.id)
+              onDragLeave={(event) => {
+                if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) return
+                clearHover()
               }}
-              onRename={() => {
-                setRenaming({ id: column.id, name: column.name })
+              onDrop={(event) => {
+                if (!dragging) return
+                event.preventDefault()
+                const source = records.jobs.find((entry) => entry.id === dragging)
+                if (source && source.draft.status !== column.id) {
+                  records.moveJob(source.id, column.id)
+                  setLanded(column.id)
+                  setAnnouncement(`${source.draft.title}: ${column.name}`)
+                }
+                endDrag()
               }}
-              onColourChange={(colour) => {
-                records.recolourStatus(column.id, colour)
-              }}
-              onDelete={() => {
-                records.deleteStatus(column.id)
-              }}
+              sx={(theme) => ({
+                minHeight: 0,
+                height: '100%',
+                // Keep the native drop target stable while the collapsed header changes.
+                '& > section': { pointerEvents: dragging && (isCollapsed(column.id) || dragExpanded === column.id) ? 'none' : undefined },
+                borderRadius: `${theme.karnama.radius.lg}px`,
+                outline:
+                  over === column.id || landed === column.id
+                    ? `2px solid ${landed === column.id ? theme.karnama.status[column.token].base : theme.karnama.semantic['border/focus']}`
+                    : undefined,
+                outlineOffset: -2,
+              })}
             >
-              {cardsOf(column.id).map(card)}
-            </KanbanColumn>
+              <KanbanColumn
+                name={column.name}
+                colour={column.token}
+                count={sizeOf(column.id)}
+                collapsed={isCollapsed(column.id)}
+                onExpand={() => {
+                  setOpen((was) => [...was, column.id])
+                }}
+                onAdd={() => {
+                  setAdding(column.id)
+                }}
+                onRename={() => {
+                  setRenaming({ id: column.id, name: column.name })
+                }}
+                onColourChange={(colour) => {
+                  records.recolourStatus(column.id, colour)
+                }}
+                onDelete={() => {
+                  records.deleteStatus(column.id)
+                }}
+              >
+                {cardsOf(column.id).map(card)}
+              </KanbanColumn>
+            </Box>
           ))}
           <AddColumn
             onAdd={() => {

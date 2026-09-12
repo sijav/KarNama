@@ -31,6 +31,14 @@ board.
 
 ## Stories
 
+### DragAndDrop
+
+Drag a desktop card to another status, including an empty or collapsed column.
+Hover over Rejected for half a second to preview it; dropping saves the new status
+and history. A column opened by dragging closes again afterward. Escape cancels.
+On phones, use the card menu to change status. Keyboard users can select a card
+and use the bulk status action.
+
 ### Board
 
 A board seeded with the fixtures' job opportunities, one per status, in

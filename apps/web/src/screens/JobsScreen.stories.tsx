@@ -70,6 +70,10 @@ export const InEnglish: Story = {
   globals: { locale: 'en-US' },
 }
 
+export const DragAndDrop: Story = {
+  globals: { locale: 'fa-IR' },
+}
+
 export const Empty: Story = {
   parameters: { seeded: false },
   globals: { locale: 'fa-IR' },
