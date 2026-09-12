@@ -60,6 +60,7 @@ export const messages: Record<string, string> = {
   'contact selected': 'contact selected',
   'contacts selected': 'contacts selected',
   'Bulk actions': 'Bulk actions',
+  'Press F6 for the bulk actions.': 'Press F6 for the bulk actions.',
   'Select all': 'Select all',
   'Change status': 'Change status',
   'Delete': 'Delete',

@@ -1,5 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
+import { useEffect, useRef } from 'react'
 import { usePreferences } from '../../core/preferences'
 import { formatCount } from '../../i18n/formatCount'
 import { spacing, type as typeScale } from '../../theme/tokens'
@@ -21,6 +22,14 @@ export interface BulkActionBarProps {
 // Node 401:436's measures that bind no variable: the edge and the divider, one
 // pixel wide and 24 tall. Written as pixels: MUI reads a bare number up to 1
 // as a fraction, so a width of 1 would be the whole row.
+/** A key's own name, as the browser spells it in a KeyboardEvent. */
+type KeyName = 'F6'
+
+// The key that brings a keyboard reader to the bar, KN-330. Written once, read
+// by the listener, the announcement and `aria-keyshortcuts`, so the three
+// cannot disagree.
+const SHORTCUT: KeyName = 'F6'
+
 const EDGE = 1
 const DIVIDER_HEIGHT = 24
 
@@ -51,6 +60,35 @@ export const BulkActionBar = ({ type, count, onClear, onDelete, onChangeStatus, 
   const { i18n } = useLingui()
   const text = useCountText(type, count)
   const selected = count > 0
+  const bar = useRef<HTMLDivElement | null>(null)
+
+  // A reader who selects with the keyboard is standing ON a card, deep in the
+  // list, and the bar is somewhere else entirely: every forward Tab walks the
+  // rest of the cards before reaching it, KN-330. So the bar answers a key.
+  //
+  // F6 rather than a letter or a chord. A letter is typed into fields and WCAG
+  // 2.1.4 then asks for a way to turn it off; Alt+Shift is how Windows switches
+  // keyboard layout, which a Persian reader does constantly; Ctrl+Shift+B and
+  // Alt+D are the browser's. F6 is the long-standing key for moving between a
+  // window's regions, it is not a character key, and nothing types it.
+  useEffect(() => {
+    if (!selected) return
+    const jump = (event: KeyboardEvent) => {
+      if (event.key !== SHORTCUT || event.altKey || event.ctrlKey || event.metaKey) return
+      const first = bar.current?.querySelector('button')
+      if (!first) return
+      event.preventDefault()
+      first.focus()
+    }
+    // On the document because the bar floats over whatever page raised it and
+    // has no container of its own. Two can never be up at once: the board and
+    // the network are different pages.
+    window.document.addEventListener('keydown', jump)
+    return () => {
+      window.document.removeEventListener('keydown', jump)
+    }
+  }, [selected])
+
   return (
     <>
       {/* Out of sight but read by a screen reader, the usual clip. The count's
@@ -71,12 +109,16 @@ export const BulkActionBar = ({ type, count, onClear, onDelete, onChangeStatus, 
           whiteSpace: 'nowrap',
         }}
       >
-        {selected ? text : ''}
+        {selected ? `${text}. ${i18n._('Press F6 for the bulk actions.')}` : ''}
       </Box>
       {selected ? (
         <Box
+          ref={bar}
           role="region"
           aria-label={i18n._('Bulk actions')}
+          // What the region answers to, for anything that reads shortcuts off
+          // the page. It describes the listener above; it does not implement it.
+          aria-keyshortcuts={SHORTCUT}
           sx={(theme) => ({
             position: 'fixed',
             insetInline: 0,

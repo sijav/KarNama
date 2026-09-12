@@ -9507,7 +9507,7 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar.",
       "roasts": [],
       "notes": [
@@ -9515,7 +9515,7 @@
       ],
       "createdAt": "2026-09-11T13:48:19.285Z",
       "okr": "OKR-1",
-      "updatedAt": "2026-09-12T03:03:41.050Z"
+      "updatedAt": "2026-09-12T03:27:00.498Z"
     },
     {
       "id": "KN-331",

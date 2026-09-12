@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
-import { expect, fn, userEvent, within } from 'storybook/test'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18n } from '../../i18n'
 import { formatCount } from '../../i18n/formatCount'
 import { elevation, semantic } from '../../theme/tokens'
@@ -207,5 +207,54 @@ export const ReachedBeforeTheList: Story = {
     const bar = barOf(canvasElement)
     await userEvent.tab()
     await expect(bar.contains(canvasElement.ownerDocument.activeElement)).toBe(true)
+  },
+}
+
+export const ReachedFromInsideTheList: Story = {
+  globals: { locale: 'fa-IR' },
+  // The bar AFTER the list, which is what both screens actually render, and a
+  // reader standing on a row in the middle of it.
+  render: (args) => (
+    <Box>
+      <Box component="ul" sx={{ margin: 0, padding: 0, listStyle: 'none' }}>
+        {fixtures('fa-IR').jobs.map((job) => (
+          <li key={job.id}>
+            <button type="button">{job.title}</button>
+          </li>
+        ))}
+      </Box>
+      <BulkActionBar {...args} />
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    // KN-330: a keyboard reader selects while standing ON a row, deep in the
+    // list, so every forward Tab walks the rest of the cards before the bar.
+    // The bar answers F6, and says so where a screen reader hears it.
+    // The LIST's own rows: a query over the canvas would sweep in the bar's
+    // actions, which are buttons too, and then "focus is not on a row" would be
+    // true of the bar itself.
+    const list = within(canvasElement).getByRole('list')
+    const rows = within(list).getAllByRole('button')
+    const middle = rows[2]
+    if (!middle) throw new Error('the list has too few rows')
+    middle.focus()
+    await expect(middle).toHaveFocus()
+
+    // The announcement names the key, at the moment the bar is there to reach.
+    await expect(canvasElement.ownerDocument.body).toHaveTextContent('برای کارهای گروهی F6 را بزن')
+
+    // The runner's own keyboard, KN-225: a key the browser routes, not a
+    // synthetic event the page merely receives.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const browser = await import('vitest/browser')
+    await browser.userEvent.keyboard('{F6}')
+    const bar = barOf(canvasElement)
+    await waitFor(async () => {
+      await expect(bar.contains(canvasElement.ownerDocument.activeElement)).toBe(true)
+    })
+
+    // And it got there without walking the list: no row took focus on the way.
+    await expect(rows.some((row) => row === canvasElement.ownerDocument.activeElement)).toBe(false)
+    await expect(bar).toHaveAttribute('aria-keyshortcuts', 'F6')
   },
 }

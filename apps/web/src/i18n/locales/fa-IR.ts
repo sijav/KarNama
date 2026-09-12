@@ -63,6 +63,7 @@ export const messages: Record<string, string> = {
   'contact selected': 'مخاطب انتخاب شده',
   'contacts selected': 'مخاطب انتخاب شده',
   'Bulk actions': 'کارهای گروهی',
+  'Press F6 for the bulk actions.': 'برای کارهای گروهی F6 را بزن.',
   'Select all': 'انتخاب همه',
   'Change status': 'تغییر وضعیت',
   'Delete': 'حذف',

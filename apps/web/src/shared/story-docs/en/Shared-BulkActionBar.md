@@ -63,3 +63,16 @@ The job list's bar on a phone, wrapped to fit.
 
 The bar before a list, as a page places it: Tab from the top reaches the bar
 first.
+
+### ReachedFromInsideTheList
+
+The bar after the list, which is what both screens render, and a reader standing
+on a row in the middle of it. Selecting with the keyboard happens there, so
+every forward Tab would walk the rest of the cards first. The bar answers F6 and
+says so where a screen reader hears it.
+
+F6 rather than a letter or a chord: a letter is typed into fields, and WCAG
+2.1.4 then asks for a way to turn it off; Alt and Shift together is how Windows
+switches keyboard layout, which a Persian reader does constantly; and the
+obvious chords belong to the browser. F6 is the long-standing key for moving
+between a window's regions, and nothing types it.
