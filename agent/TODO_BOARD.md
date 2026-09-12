@@ -2,19 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 193 of 462 tasks done · 430 of 941 points.
+Project **KarNama** · 194 of 462 tasks done · 431 of 941 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-462` The mockCode assertion proves the opposite of what it claims, and no test covers a resend** (high, 1 pt, web)
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-462` | The mockCode assertion proves the opposite of what it claims, and no test covers a resend | high | 1 | web | none | A test reads mockCode from the provider that sent the code, and a story resends and signs in with the newly shown one. |
+**Next up: `KN-330` The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list** (high, 2 pt, web)
 
 ## Blocked (5)
 
@@ -292,7 +286,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (193)
+## Done (194)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -460,6 +454,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-453` | An Icon Button that is a link inside a Tooltip is untested, and that is the combination the work was for | high | 1 | web | none | A story wraps a Tooltip round an Icon Button with an href and asserts the anchor carries the description and opens the tip on hover and on focus. |
 | `KN-454` | The Button's forced states paint as rest for one frame before the attribute lands | high | 1 | web | none | The transient cells carry their attribute before the first paint, and the story proves it rather than reading after the effects have run. |
 | `KN-457` | The link-in-a-Tooltip story cannot tell a name from a description, because both say the same thing | high | 1 | web | none | The link's name and the tip's text are different strings, and removing describeChild from the Tooltip makes the story fail. |
+| `KN-462` | The mockCode assertion proves the opposite of what it claims, and no test covers a resend | high | 1 | web | none | A test reads mockCode from the provider that sent the code, and a story resends and signs in with the newly shown one. |
 | `KN-013` | Checkbox, 5 states | high | 2 | web | KN-005, KN-006, KN-007 | All five states match Figma, indeterminate is set through the DOM property rather than an attribute so it survives a re-render, and the control is reachable and toggleable by keyboard. |
 | `KN-017` | Filter chip, doubling as the status counter | high | 2 | web | KN-005, KN-006, KN-007, KN-205 | Four states match Figma, the count updates with the filtered data, selecting and deselecting are both reachable by keyboard, and the selected state is announced rather than only shown. |
 | `KN-032` | Tooltip | high | 2 | web | KN-005, KN-006, KN-007 | It matches Figma, appears on hover and on keyboard focus rather than hover alone, and does not trap the pointer. |
@@ -5908,7 +5903,7 @@ From the KN-459 roast: the Screens-SignIn page's introduction, in both languages
 
 ### `KN-462` The mockCode assertion proves the opposite of what it claims, and no test covers a resend
 
-- **status** in_progress · **severity** high · **points** 1 · **area** web
+- **status** done · **severity** high · **points** 1 · **area** web
 - **blocked by** none
 
 From the KN-459 roast. The line added to AuthProvider.test.tsx captures a FRESH provider and expects its mockCode to be null, which says nothing about the provider that just sent a code; it should read mockCode off the provider AFTER requestCode and match it against what the console reported. And nothing covers a resend: the notice could keep showing the first code while verify only accepts the second, and both the story and the test would pass. Add a resend to the phone story, read the newly shown code, and sign in with it.
