@@ -57,6 +57,7 @@ const meta = {
     ...columnOf('fa-IR', 'new', 3),
     collapsed: false,
     onExpand: fn(),
+    onCollapse: fn(),
     onAdd: fn(),
     onRename: fn(),
     onColourChange: fn(),
@@ -118,7 +119,7 @@ export const Default: Story = {
     await expect(header.getBoundingClientRect().height).toBe(40)
     await expect(within(header).getByText(args.name).parentElement?.getBoundingClientRect().height).toBe(28)
     await expect(within(header).getByText(formatCount('fa-IR', args.count))).toBeInTheDocument()
-    const trigger = within(header).getByRole('button', { name: new RegExp(args.name, 'u') })
+    const trigger = within(header).getByRole('button', { name: /^(کارهای وضعیت|Status actions):/u })
     const icon = trigger.querySelector('svg')
     if (!icon) throw new Error('the trigger has no icon')
     await expect(Math.round(icon.getBoundingClientRect().left - header.getBoundingClientRect().left)).toBe(4)
@@ -202,6 +203,19 @@ export const Collapsed: Story = {
   },
 }
 
+export const Expanded: Story = {
+  args: { ...columnOf('fa-IR', 'rejected', 3), onCollapse: fn() },
+  play: async ({ args, canvasElement }) => {
+    const column = columnIn(canvasElement)
+    const toggle = within(column).getByRole('button', { expanded: true })
+    await expect(column.getBoundingClientRect().height).toBe(HEIGHT)
+    await expect(partOf(column, 0).getBoundingClientRect().height).toBe(40)
+    await userEvent.click(toggle)
+    await expect(args.onCollapse).toHaveBeenCalledTimes(1)
+    await expect(args.onExpand).not.toHaveBeenCalled()
+  },
+}
+
 export const LongName: Story = {
   args: { ...columnOf('fa-IR', 'custom-2', 1), name: fixtures('fa-IR').longStatusName },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
@@ -211,7 +225,7 @@ export const LongName: Story = {
     const column = columnIn(canvasElement)
     const header = partOf(column, 0)
     await expect(header.getBoundingClientRect().height).toBe(40)
-    const trigger = within(header).getByRole('button', { name: new RegExp(args.name, 'u') })
+    const trigger = within(header).getByRole('button', { name: /^(کارهای وضعیت|Status actions):/u })
     const icon = trigger.querySelector('svg')
     if (!icon) throw new Error('the trigger has no icon')
     const count = within(header).getByText(formatCount('fa-IR', args.count))

@@ -84,7 +84,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
   const [selected, setSelected] = useState<readonly string[]>([])
   // Rejected opens collapsed, the owner's KN-070: it is the status that grows
   // fastest and the one a reader looks at least.
-  const [open, setOpen] = useState<readonly string[]>([])
+  const [folded, setFolded] = useState<Record<string, boolean>>({})
   const [dragging, setDragging] = useState<string | null>(null)
   const [over, setOver] = useState<string | null>(null)
   const [dragExpanded, setDragExpanded] = useState<string | null>(null)
@@ -149,7 +149,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
   const addingTo = adding ?? (addOpen ? first : null)
   const showing = columns.find((column) => column.id === chosen) ?? columns[0]
   const job = records.jobs.find((entry) => entry.id === reading)
-  const isCollapsed = (id: string) => tokenOf(records.statuses, id) === 'rejected' && !open.includes(id) && dragExpanded !== id
+  const isCollapsed = (id: string) => (folded[id] ?? tokenOf(records.statuses, id) === 'rejected') && dragExpanded !== id
   const cardsOf = (id: string) => jobsIn(records.jobs, id, search, order)
   // The column's own size, which is what says whether it can be deleted: the
   // searched count reads zero while a search hides its cards, and deleting it
@@ -373,7 +373,10 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
               count={sizeOf(column.id)}
               collapsed={isCollapsed(column.id)}
               onExpand={() => {
-                setOpen((was) => [...was, column.id])
+                setFolded((was) => ({ ...was, [column.id]: false }))
+              }}
+              onCollapse={() => {
+                setFolded((was) => ({ ...was, [column.id]: true }))
               }}
               onAdd={() => {
                 setAdding(column.id)

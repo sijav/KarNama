@@ -21,6 +21,7 @@ export interface KanbanColumnProps {
   collapsed?: boolean
   children?: ReactNode
   onExpand: () => void
+  onCollapse?: () => void
   onAdd: () => void
   onRename: () => void
   onColourChange: (colour: StatusToken) => void
@@ -167,6 +168,7 @@ export const KanbanColumn = ({
   collapsed = false,
   children,
   onExpand,
+  onCollapse,
   onAdd,
   onRename,
   onColourChange,
@@ -245,7 +247,25 @@ export const KanbanColumn = ({
       sx={(theme) => ({ ...frame.sx(theme), height: '100%', overflow: 'hidden', ...dropStyle.sx(theme) })}
     >
       <Box sx={{ ...headerRow.sx, flexShrink: 0 }}>
-        <Title name={name} token={token} count={count} />
+        {onCollapse ? (
+          <ButtonBase
+            disableRipple
+            aria-expanded={true}
+            onClick={onCollapse}
+            sx={(theme) => ({
+              position: 'relative',
+              minWidth: 0,
+              fontFamily: 'inherit',
+              borderRadius: `${theme.karnama.radius.md}px`,
+              color: theme.karnama.semantic['text/secondary'],
+              ...ring.sx(theme, theme.karnama.radius.md),
+            })}
+          >
+            <Title name={name} token={token} count={count} />
+          </ButtonBase>
+        ) : (
+          <Title name={name} token={token} count={count} />
+        )}
         <Box
           ref={trigger}
           sx={{

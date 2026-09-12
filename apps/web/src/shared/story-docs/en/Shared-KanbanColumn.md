@@ -11,6 +11,9 @@ column can be collapsed to its header, a single button showing the status and
 its count; pressing it opens the column. Which column starts that way is the
 board's choice.
 
+Pressing the status and count in an expanded header collapses the group when
+the board supplies a collapse action. Its menu stays separate.
+
 ## Props
 
 ### dragEvents
@@ -54,6 +57,10 @@ The column's cards. None, and the column says it is empty.
 
 Called when a collapsed column is pressed; the board opens it.
 
+### onCollapse
+
+Called when the expanded header's status and count are pressed. Omit it for a column that cannot be collapsed.
+
 ### onAdd
 
 Called when the plus at the bottom is pressed.
@@ -93,6 +100,10 @@ cards hands over: it says it is empty, as a column with no cards does.
 ### Collapsed
 
 A column collapsed to its header and count; pressing it asks to open it.
+
+### Expanded
+
+An expanded column whose header asks to collapse it, keeping the original header height.
 
 ### LongName
 
