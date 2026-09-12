@@ -189,26 +189,36 @@ export const NetworkScreen = ({ onSelecting }: NetworkScreenProps) => {
         }}
       />
 
-      <ContactModal
-        open={editing !== undefined}
-        mode={editingId === null ? 'add' : 'edit'}
-        {...(editing ? { initial: editing.values } : {})}
-        {...(editingId === null ? {} : { recordId: editingId })}
-        jobs={jobs}
-        onSave={save}
-        onCancel={() => {
-          setEditing(undefined)
-        }}
-        {...(editingId === null
-          ? {}
-          : {
-              onDelete: () => {
-                remember()
-                setDeleting([editingId])
-                setEditing(undefined)
-              },
-            })}
-      />
+      {/* Adding and editing are different shapes, KN-386: an Edit carries the
+          id it is on and the record that belongs to it. */}
+      {editingId === null ? (
+        <ContactModal
+          open={editing !== undefined}
+          mode="add"
+          jobs={jobs}
+          onSave={save}
+          onCancel={() => {
+            setEditing(undefined)
+          }}
+        />
+      ) : (
+        <ContactModal
+          open={editing !== undefined}
+          mode="edit"
+          recordId={editingId}
+          initial={editing === undefined ? undefined : { id: editingId, values: editing.values }}
+          jobs={jobs}
+          onSave={save}
+          onCancel={() => {
+            setEditing(undefined)
+          }}
+          onDelete={() => {
+            remember()
+            setDeleting([editingId])
+            setEditing(undefined)
+          }}
+        />
+      )}
 
       <ConfirmModal
         open={deleting !== null}

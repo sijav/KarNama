@@ -7,7 +7,7 @@ import { Button } from '../button'
 import type { SelectOption } from '../select'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
-import { ContactModal, type ContactModalProps, type ContactModalValues } from './ContactModal'
+import { ContactModal, type ContactModalProps, type ContactModalRecord, type ContactModalValues } from './ContactModal'
 
 // The job opportunities a contact can belong to, written «company — title» as
 // node 270:152's Select writes them, and a contact to edit, from the fixtures.
@@ -64,11 +64,11 @@ if (!FIRST_CONTACT || !SECOND_CONTACT) throw new Error('the story fixtures have 
 // new object with the same contents, as a query or a timer would, and renders
 // again when its hidden tick is pressed, which only a story's play does,
 // KN-347.
-const Rerendering = ({ initial, ...args }: ContactModalProps) => {
+const Rerendering = ({ initial, ...args }: Extract<ContactModalProps, { mode: 'edit' }>) => {
   const [, setTick] = useState(0)
   return (
     <>
-      <WithTrigger {...args} {...(initial ? { initial: { ...initial } } : {})} />
+      <WithTrigger {...args} initial={initial === undefined ? undefined : { ...initial, values: { ...initial.values } }} />
       <button
         hidden
         data-testid="rerender"
@@ -129,13 +129,15 @@ export const Add: Story = {
 }
 
 export const Edit: Story = {
-  args: { mode: 'edit', initial: recordIn('fa-IR') },
+  args: { mode: 'edit', recordId: FIRST_CONTACT.id, initial: { id: FIRST_CONTACT.id, values: recordIn('fa-IR') } },
   globals: { locale: 'fa-IR' },
   play: async ({ args, canvasElement }) => {
     // Mode=Edit: filled from the record, and the delete at the inline end.
     const dialog = await open(canvasElement)
     const [name] = within(dialog).getAllByRole('textbox')
-    await expect(name).toHaveValue(args.initial?.name ?? 'missing')
+    // This story is an edit, so its initial is a record: the union says so.
+    if (args.mode !== 'edit') throw new Error('this story is about editing a record')
+    await expect(name).toHaveValue(args.initial?.values.name ?? '')
     const buttons = within(dialog).getAllByRole('button')
     const remove = buttons.at(-1)
     if (!remove) throw new Error('no delete')
@@ -206,10 +208,13 @@ export const KeepsTypingThroughARerender: Story = {
   // copy of the same record: the form keeps what is typed, since it starts
   // again only on opening or on another record's id, KN-347. A fixed parent,
   // so no control applies.
-  args: { mode: 'edit', initial: recordIn('fa-IR'), recordId: FIRST_CONTACT.id },
+  args: { mode: 'edit', recordId: FIRST_CONTACT.id, initial: { id: FIRST_CONTACT.id, values: recordIn('fa-IR') } },
   parameters: { controls: { disable: true } },
   globals: { locale: 'fa-IR' },
-  render: (args) => <Rerendering {...args} />,
+  render: (args) => {
+    if (args.mode !== 'edit') throw new Error('this story is about editing a record')
+    return <Rerendering {...args} />
+  },
   play: async ({ canvasElement }) => {
     const dialog = await open(canvasElement)
     const [name] = within(dialog).getAllByRole('textbox')
@@ -254,5 +259,81 @@ export const EnterSaves: Story = {
     await waitFor(async () => {
       await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ name: person }))
     })
+  },
+}
+
+// A parent that hands over the id first and the record afterwards, which is
+// what a page does when it knows WHICH record it wants before it has loaded it.
+const Loading = ({ jobs, onSave, onCancel }: Pick<Extract<ContactModalProps, { mode: 'edit' }>, 'jobs' | 'onSave' | 'onCancel'>) => {
+  const [record, setRecord] = useState<ContactModalRecord | undefined>(undefined)
+  const [id, setId] = useState(FIRST_CONTACT.id)
+  return (
+    <>
+      <button
+        data-testid="ask-for-second"
+        type="button"
+        onClick={() => {
+          // The id alone: the record for it has not arrived.
+          setId(SECOND_CONTACT.id)
+        }}
+      />
+      <button
+        data-testid="record-arrives"
+        type="button"
+        onClick={() => {
+          setRecord({ id: SECOND_CONTACT.id, values: { ...recordIn('fa-IR'), name: SECOND_CONTACT.fullName } })
+        }}
+      />
+      <ContactModal open mode="edit" recordId={id} initial={record} jobs={jobs} onSave={onSave} onCancel={onCancel} />
+    </>
+  )
+}
+
+export const TheRecordArrivesAfterItsId: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  render: (args) => <Loading jobs={args.jobs} onSave={args.onSave} onCancel={args.onCancel} />,
+  play: async ({ args, canvasElement }) => {
+    // KN-386: a page knows which record it wants before it has it, so there is
+    // a render carrying the new id and the OLD values. The form shows nothing
+    // of the old record then, and fills itself when the record arrives, because
+    // it FOLLOWS the record until the reader edits it.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const name = () => body.getAllByRole('textbox')[0]
+
+    await userEvent.click(canvas.getByTestId('ask-for-second'))
+    await waitFor(async () => {
+      await expect(name()).toHaveValue('')
+    })
+
+    await userEvent.click(canvas.getByTestId('record-arrives'))
+    await waitFor(async () => {
+      await expect(name()).toHaveValue(SECOND_CONTACT.fullName)
+    })
+
+    // And saving now saves the SECOND record's values, never the first's.
+    await userEvent.click(body.getByRole('button', { name: 'ذخیره' }))
+    await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ name: SECOND_CONTACT.fullName }))
+  },
+}
+
+export const TheRecordArrivesAfterOpening: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  render: (args) => <Loading jobs={args.jobs} onSave={args.onSave} onCancel={args.onCancel} />,
+  play: async ({ args, canvasElement }) => {
+    // The same rule seen the other way: opened before its record exists, the
+    // form is empty and fills itself when the record lands, rather than staying
+    // empty because the id never changed.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    await userEvent.click(canvas.getByTestId('ask-for-second'))
+    await userEvent.click(canvas.getByTestId('record-arrives'))
+    await waitFor(async () => {
+      await expect(body.getAllByRole('textbox')[0]).toHaveValue(SECOND_CONTACT.fullName)
+    })
+    await userEvent.click(body.getByRole('button', { name: 'ذخیره' }))
+    await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ name: SECOND_CONTACT.fullName }))
   },
 }

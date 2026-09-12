@@ -178,6 +178,11 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
     }
   }, [held.length, onSelecting])
 
+  const people = records.jobs.map((entry) => ({ value: entry.id, label: entry.draft.title }))
+  // Which record the contact modal is on, or null while it is adding. A const,
+  // so it stays narrowed inside the handlers it is used in.
+  const personId = person?.id ?? null
+
   const card = (entry: JobEntry) => (
     <JobCard
       key={entry.id}
@@ -420,29 +425,59 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
         />
       ) : null}
 
-      <ContactModal
-        open={person !== undefined}
-        mode={person?.id === null || person?.id === undefined ? 'add' : 'edit'}
-        {...(person ? { initial: person.values } : {})}
-        jobs={records.jobs.map((entry) => ({ value: entry.id, label: entry.draft.title }))}
-        onSave={(values) => {
-          const contact = {
-            name: values.name.trim(),
-            role: values.role.trim() === '' ? null : values.role.trim(),
-            company: values.company.trim() === '' ? null : values.company.trim(),
-            email: values.email.trim() === '' ? null : values.email.trim(),
-            phone: values.phone.trim() === '' ? null : values.phone.trim(),
-            linkedin: values.linkedin.trim() === '' ? null : values.linkedin.trim(),
-            job: records.jobs.find((entry) => entry.id === values.jobId)?.draft.title ?? null,
-          }
-          if (person?.id === null || person?.id === undefined) records.addContact(contact, values.jobId)
-          else records.saveContact(person.id, contact, values.jobId)
-          setPerson(undefined)
-        }}
-        onCancel={() => {
-          setPerson(undefined)
-        }}
-      />
+      {/* Adding and editing are different shapes, KN-386: an Edit carries the
+          id it is on and the record that belongs to it, so a form cannot be
+          filled from one contact and saved onto another. */}
+      {personId === null ? (
+        <ContactModal
+          open={person !== undefined}
+          mode="add"
+          // Added from inside a job opportunity, the form starts with that job
+          // chosen, KN-056.
+          {...(person ? { initial: person.values } : {})}
+          jobs={people}
+          onSave={(values) => {
+            const contact = {
+              name: values.name.trim(),
+              role: values.role.trim() === '' ? null : values.role.trim(),
+              company: values.company.trim() === '' ? null : values.company.trim(),
+              email: values.email.trim() === '' ? null : values.email.trim(),
+              phone: values.phone.trim() === '' ? null : values.phone.trim(),
+              linkedin: values.linkedin.trim() === '' ? null : values.linkedin.trim(),
+              job: records.jobs.find((entry) => entry.id === values.jobId)?.draft.title ?? null,
+            }
+            records.addContact(contact, values.jobId)
+            setPerson(undefined)
+          }}
+          onCancel={() => {
+            setPerson(undefined)
+          }}
+        />
+      ) : (
+        <ContactModal
+          open
+          mode="edit"
+          recordId={personId}
+          initial={person === undefined ? undefined : { id: personId, values: person.values }}
+          jobs={people}
+          onSave={(values) => {
+            const contact = {
+              name: values.name.trim(),
+              role: values.role.trim() === '' ? null : values.role.trim(),
+              company: values.company.trim() === '' ? null : values.company.trim(),
+              email: values.email.trim() === '' ? null : values.email.trim(),
+              phone: values.phone.trim() === '' ? null : values.phone.trim(),
+              linkedin: values.linkedin.trim() === '' ? null : values.linkedin.trim(),
+              job: records.jobs.find((entry) => entry.id === values.jobId)?.draft.title ?? null,
+            }
+            records.saveContact(personId, contact, values.jobId)
+            setPerson(undefined)
+          }}
+          onCancel={() => {
+            setPerson(undefined)
+          }}
+        />
+      )}
 
       <Modal
         open={renaming !== null}

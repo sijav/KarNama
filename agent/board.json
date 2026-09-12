@@ -10723,12 +10723,13 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T19:47:08.930Z",
-      "okr": "OKR-1"
+      "okr": "OKR-1",
+      "updatedAt": "2026-09-12T04:08:30.771Z"
     },
     {
       "id": "KN-387",

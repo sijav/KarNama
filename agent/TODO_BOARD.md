@@ -8,7 +8,13 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-475` The record-handoff story would pass with the description and note reset deleted** (high, 1 pt, web)
+**Next up: `KN-386` The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one** (high, 2 pt, web)
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-386` | The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one | high | 2 | web | none | Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it. |
 
 ## Blocked (6)
 
@@ -21,7 +27,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-356` | Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected | high | 2 | web | KN-428 | Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (268)
+## Backlog (267)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -32,7 +38,6 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-352` | Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page | high | 2 | web | KN-428 | Unchecking the phone card's checkbox leaves focus on the card, either on a checkbox that stays and folds as the desktop's does or on the title, and a story unchecks it by keyboard and asserts where focus is. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
-| `KN-386` | The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one | high | 2 | web | none | Edit's props require recordId and initial by type, a discriminated union on mode; the form follows initial until the user edits it and never after, so a record that arrives after the id, or late after opening, fills the form; stories show the split handoff and the late record filling the form, and a fresh copy mid-typing still keeping it. |
 | `KN-398` | In dark the Tooltip draws white on text/primary, 1.34 to one, since its fill is a text role that turns light | high | 2 | web | none | In dark the tooltip's text clears 4.5 to one on its fill, by a role the tooltip's fill takes that stays dark in dark, or a text that follows it, and the theme's pair test reads the Tooltip's pair from the component rather than from a list; the Tooltip's dark story measures it. |
 | `KN-401` | The React-warning guard hears only a console.error with %s in it: React's plain-string errors and every console.warn pass, and nothing tests the guard | high | 2 | web | none | Every console.error and console.warn during a test of either project fails it unless it is one of the product's own diagnostics, recognised by an explicit mark rather than by the absence of %s, and a story that provokes one says so; a committed test drives the guard with a printf warning, a plain-string console.error, a console.warn and a product diagnostic and fails if any is classified differently; both projects pass apart from KN-365's flakes. |
 | `KN-403` | KN-167 traded the schema-entry test's 5 second budget for a 60 second one: test runSchemaCommand in process and start only light processes | high | 2 | api | none | No test in apps/api starts a process that loads NestJS or GraphQL; runSchemaCommand lives outside the entry file and its generate, current check, stale check and unknown command are tested in process against the source, covered; the schema entry's process test runs only commands that answer without loading the schema, in the default budget; HUNG_AFTER_MS, the hook budget of 0 and TECH-DEBT 20 are gone; the apps/api suite passes. |
@@ -5072,7 +5077,7 @@ CHILD OF KN-026, recorded in prose because board.json cannot express parent_task
 
 ### `KN-386` The Contact Modal's record handoff: Edit need not name its record, and an id and its data arriving apart leave the form on the wrong one
 
-- **status** backlog · **severity** high · **points** 2 · **area** web
+- **status** in_progress · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-031, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-347 roast, two findings with one fix. KN-347 starts the form again only on opening or a change of recordId. (1) recordId is optional, so an Edit caller that omits it and swaps initial from contact A to contact B while open keeps A's values, where the old object-identity reset did not; the Edit story itself omits it. (2) When recordId turns to B in a render whose initial is still A, the form resets to A and marks B seen, and the render that brings B's data changes nothing; an Edit opened before its record loads starts empty and ignores the record when it arrives. Nothing wires the modal to a page yet; the network and job screens will.

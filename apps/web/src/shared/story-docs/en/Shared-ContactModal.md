@@ -18,13 +18,27 @@ Whether the modal is showing.
 
 ### initial
 
-The record Edit opens with. Leave it out to start empty.
+What the form starts from. Adding may start from something, a job opportunity
+already chosen when the person is added from inside one; editing takes the
+RECORD, which carries the id of the record it belongs to and is undefined until
+it has loaded.
+
+The id travels with the values on purpose, KN-386: a page knows which record it
+wants before it has loaded it, so there is a render carrying the new id and the
+old record's values. Without the id on the payload the modal could not tell that
+apart from the values having arrived, and a reader typing in that render would
+write one contact's details into another's record.
+
+The form FOLLOWS the record until the reader edits it, and never after. That
+makes a record arriving late and a record arriving after its own id the same
+case: while nothing has been typed, what the form shows is whatever record is
+currently known.
 
 ### recordId
 
-The id of the record being edited. The form starts again when the modal opens
-or this id changes, never when the same record arrives as a new object, so a
-page that renders again while someone types does not undo their typing.
+Which record is being edited. Required for an edit and impossible for an add,
+because the props are a union on the mode: an Edit that does not say which
+record it is on cannot be written at all.
 
 ### jobs
 
@@ -79,3 +93,14 @@ The form in English.
 The fields are a form and Save submits it, so Enter in a field saves. The action
 sits in the modal's footer, outside the fields, and names the form by id, which
 is how a button submits a form it does not sit inside.
+
+### TheRecordArrivesAfterItsId
+
+The id first and the record afterwards, which is what a page does when it knows
+which record it wants before it has loaded it: the form shows nothing of the
+record it was on, and fills itself when the right one lands.
+
+### TheRecordArrivesAfterOpening
+
+The same rule seen the other way: opened before its record exists, the form
+fills itself when the record arrives rather than staying empty.
