@@ -34,7 +34,7 @@ selected and deleted through the bar at the foot.
 ### Editing
 
 A person written in full from the page's own action, changed and read back,
-and let go of from inside their own details — after a confirmation that can be
+and let go of from inside their own details, after a confirmation that can be
 backed out of.
 
 ### LettingGoOfASelection

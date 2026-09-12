@@ -2,13 +2,13 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 189 of 453 tasks done · 423 of 927 points.
+Project **KarNama** · 189 of 456 tasks done · 423 of 930 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-330` The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list** (high, 2 pt, web)
+**Next up: `KN-454` The Button's forced states paint as rest for one frame before the attribute lands** (high, 1 pt, web)
 
 ## Blocked (5)
 
@@ -20,12 +20,13 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (257)
+## Backlog (260)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
+| `KN-454` | The Button's forced states paint as rest for one frame before the attribute lands | high | 1 | web | none | The transient cells carry their attribute before the first paint, and the story proves it rather than reading after the effects have run. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-330` | The Bulk Action Bar is behind focus for a keyboard user who selects from inside the list | high | 2 | web | none | A keyboard user who selects a row from inside the list reaches the bar's actions without crossing the list, by a key the bar announces, and a story selects by keyboard from a row and reaches the bar. |
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
@@ -135,6 +136,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-444` | The Search Bar's size stories claim the text is placed as drawn and never read its placement | medium | 1 | web | none | Both stories assert the text's top offset and the icon's vertical centring against the file's numbers. |
 | `KN-448` | The Icon Button spreads a Tooltip's props before its own, which is the unsafe side | medium | 1 | web | none | The injected props are spread last, and the comment says what that protects. |
 | `KN-449` | The InATooltip story's console spy is installed too late to see what it claims to watch | medium | 1 | web | none | The spy is in place before the render and calls through, and the story still passes. |
+| `KN-455` | A disabled Button with a forced state draws something node 31:4 never draws | medium | 1 | web | none | A disabled button shows its disabled look whatever data-state says, and a story renders one to prove it. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -246,6 +248,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-445` | The Search Bar's size stories hardcode their props instead of rendering from args | low | 1 | web | none | Both stories render from args and their Controls are on. |
 | `KN-450` | The InATooltip story's tip reads a sentence fragment | low | 1 | web | none | The story's tip reads a whole sentence in both languages. |
 | `KN-451` | The ref anchors the Kanban Column and the Job Card keep for their menus are no longer needed | low | 1 | web | none | Neither component wraps its menu trigger to hold a ref, and both menus still open where they did. |
+| `KN-456` | Two story-doc files still carry em dashes | low | 1 | docs | none | No .md or .mdx under story-docs holds an em dash, read with a Unicode-aware matcher. |
 | `KN-054` | Turn the verify report into a failure once the debt is gone | low | 2 | agent | KN-001 | validate exits non-zero when any open task has no verify command, the message names them, and the board has none at the moment the change lands so the gate is green immediately rather than blocking every other task. |
 | `KN-055` | Record where a task started, so a roast can diff the whole task | low | 2 | agent | KN-001 | Moving a task to in_progress records startHead, npm run roast with no --base diffs from that commit, a task spanning three commits shows all three in the prompt, and a test proves the prompt contains a change from the first of them. |
 | `KN-066` | Apply contract exceptions per sentence, not per field | low | 2 | agent | KN-001 | Each of the three card wordings the reviewer supplied is rejected, a card that only records a prohibition is still accepted, the sidebar and fourth-tab decisions have staleness anchors, and a planted violation in one sentence of a multi-sentence field is caught. |
@@ -4253,6 +4256,8 @@ CHILD OF KN-009, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4.
 
+**Roasts.** round 1 scored 7 with 0 critical(s)
+
 ### `KN-317` The components built on 2026-09-11 draw copy their Controls do not show
 
 - **status** backlog · **severity** medium · **points** 3 · **area** web
@@ -5797,4 +5802,37 @@ From the KN-447 roast. InATooltip wraps the BUTTON branch and HandsBackItsElemen
 **Why.** The mail control on the contact card is a link, and explaining an icon-only control is exactly what a tooltip is for, so the untested combination is the one the product actually ships.
 
 **Exit condition.** A story wraps a Tooltip round an Icon Button with an href and asserts the anchor carries the description and opens the tip on hover and on focus.
+
+### `KN-454` The Button's forced states paint as rest for one frame before the attribute lands
+
+- **status** backlog · **severity** high · **points** 1 · **area** web
+- **blocked by** none
+
+From the KN-316 roast. The States story sets data-state from a useEffect, which React runs AFTER paint, so on first mount the 45 transient cells are painted at rest and only then take their state. The play starts after effects and so never sees it, which is why the story is green while the published Storybook flashes the wrong thing. A reviewer opening the page sees it. Set the attribute in a layout effect or straight from a ref callback, which both run before the browser paints, and have the play read the attribute before allowing a paint rather than after.
+
+**Why.** The card this came from exists so the states can be REVIEWED in Storybook. A frame of the wrong state is small, but it is the exact thing the story claims not to do, and a reviewer comparing a screenshot with the file can catch the flash rather than the state.
+
+**Exit condition.** The transient cells carry their attribute before the first paint, and the story proves it rather than reading after the effects have run.
+
+### `KN-455` A disabled Button with a forced state draws something node 31:4 never draws
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+From the KN-316 roast. The data-state twins are not gated on the button being enabled, and the disabled rule only overrides the fill and the text, so a disabled Ghost with data-state=pressed keeps the 0.9 opacity, and any disabled button with data-state=focus draws the focus ring, because that rule comes after the disabled one. Nothing renders that combination today, since the States story sets the attribute only for the three transient states and disables only the disabled row, so it is latent in the hook rather than visible. Either refuse the attribute while the button is disabled, with :not(.Mui-disabled) on each twin, or have the disabled rule reset the opacity and the ring.
+
+**Why.** The hook exists so a reviewer can trust that what Storybook shows is what the file draws. A combination that draws a state the file does not define is the one thing it must not make possible.
+
+**Exit condition.** A disabled button shows its disabled look whatever data-state says, and a story renders one to prove it.
+
+### `KN-456` Two story-doc files still carry em dashes
+
+- **status** backlog · **severity** low · **points** 1 · **area** docs
+- **blocked by** none
+
+AGENTS.md forbids em dashes in every .md and .mdx, commas instead, and the Persian comma in Persian text. Checked with a Unicode-aware matcher, not a byte-wise grep, as that rule itself warns: en/Shared-Checkbox.md has two and en/Shared-FilterChip.md has one. They predate the KN-316 work, whose own ten files were fixed in place when its roast named the rule.
+
+**Why.** A rule the repository states and does not hold is a rule the next writer copies the wrong way round, and these are the files a new component's docs get modelled on.
+
+**Exit condition.** No .md or .mdx under story-docs holds an em dash, read with a Unicode-aware matcher.
 

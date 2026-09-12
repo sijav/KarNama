@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 454,
+  "nextId": 457,
   "tasks": [
     {
       "id": "KN-001",
@@ -9218,7 +9218,26 @@
       "parent": [],
       "status": "done",
       "exit": "A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 7,
+          "criticals": 0,
+          "file": "agent/roasts/KN-316-round-1.2026-09-12T02-27-33-818Z.md",
+          "filed": [
+            "KN-454",
+            "KN-455",
+            "KN-434",
+            "KN-456"
+          ],
+          "cardDigest": "1fce12f235a933648e4fe9fb246f8992c3029dd07e46638cb29523ba2359b308",
+          "head": "b644817e8d762e27ef2952177e59d5ca8712635a",
+          "reviewerScore": 6.8,
+          "reviewerCriticals": 0,
+          "dismissed": "Nothing rejected; the em-dash nit was fixed in place rather than carried, since the ten files were this iteration's own text and AGENTS.md states the rule plainly. Two files that predate it are KN-456.",
+          "at": "2026-09-12T02:34:19.705Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T12:57:43.823Z",
       "okr": "OKR-1",
@@ -11484,10 +11503,11 @@
       "okr": "OKR-1",
       "roasts": [],
       "notes": [
-        "2026-09-12, from the KN-433 roast: the href JSDoc in IconButton.tsx is named again, lines 39 to 47. It is the same prose the markdown carries in both languages."
+        "2026-09-12, from the KN-433 roast: the href JSDoc in IconButton.tsx is named again, lines 39 to 47. It is the same prose the markdown carries in both languages.",
+        "2026-09-12, from the KN-316 roast: the States story in Button.stories.tsx carries a JSDoc block above its export too, line 139. Same rule, same fix: the markdown already holds it in both languages."
       ],
       "createdAt": "2026-09-12T01:43:07.804Z",
-      "updatedAt": "2026-09-12T02:15:30.805Z"
+      "updatedAt": "2026-09-12T02:34:08.894Z"
     },
     {
       "id": "KN-435",
@@ -11838,6 +11858,54 @@
       "updatedAt": "2026-09-12T02:32:22.351Z",
       "evidence": "ALinkInATooltip wraps a Tooltip round an Icon Button with an href and asserts the anchor carries its address and its own accessible name, is described from the first render, and opens the tip on hover and on Tab alone, with nothing at the console from either component. Mutating the link branch to forward only its ref failed this story alone and left InATooltip and HandsBackItsElement green; the mutation was reverted. 9 of 9 icon-button stories pass, lint and tsc clean.",
       "closedAt": "2026-09-12T02:32:22.351Z"
+    },
+    {
+      "id": "KN-454",
+      "title": "The Button's forced states paint as rest for one frame before the attribute lands",
+      "desc": "From the KN-316 roast. The States story sets data-state from a useEffect, which React runs AFTER paint, so on first mount the 45 transient cells are painted at rest and only then take their state. The play starts after effects and so never sees it, which is why the story is green while the published Storybook flashes the wrong thing. A reviewer opening the page sees it. Set the attribute in a layout effect or straight from a ref callback, which both run before the browser paints, and have the play read the attribute before allowing a paint rather than after.",
+      "why": "The card this came from exists so the states can be REVIEWED in Storybook. A frame of the wrong state is small, but it is the exact thing the story claims not to do, and a reviewer comparing a screenshot with the file can catch the flash rather than the state.",
+      "severity": "high",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "The transient cells carry their attribute before the first paint, and the story proves it rather than reading after the effects have run.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T02:34:08.639Z"
+    },
+    {
+      "id": "KN-455",
+      "title": "A disabled Button with a forced state draws something node 31:4 never draws",
+      "desc": "From the KN-316 roast. The data-state twins are not gated on the button being enabled, and the disabled rule only overrides the fill and the text, so a disabled Ghost with data-state=pressed keeps the 0.9 opacity, and any disabled button with data-state=focus draws the focus ring, because that rule comes after the disabled one. Nothing renders that combination today, since the States story sets the attribute only for the three transient states and disables only the disabled row, so it is latent in the hook rather than visible. Either refuse the attribute while the button is disabled, with :not(.Mui-disabled) on each twin, or have the disabled rule reset the opacity and the ring.",
+      "why": "The hook exists so a reviewer can trust that what Storybook shows is what the file draws. A combination that draws a state the file does not define is the one thing it must not make possible.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "A disabled button shows its disabled look whatever data-state says, and a story renders one to prove it.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T02:34:08.765Z"
+    },
+    {
+      "id": "KN-456",
+      "title": "Two story-doc files still carry em dashes",
+      "desc": "AGENTS.md forbids em dashes in every .md and .mdx, commas instead, and the Persian comma in Persian text. Checked with a Unicode-aware matcher, not a byte-wise grep, as that rule itself warns: en/Shared-Checkbox.md has two and en/Shared-FilterChip.md has one. They predate the KN-316 work, whose own ten files were fixed in place when its roast named the rule.",
+      "why": "A rule the repository states and does not hold is a rule the next writer copies the wrong way round, and these are the files a new component's docs get modelled on.",
+      "severity": "low",
+      "points": 1,
+      "area": "docs",
+      "parent": [],
+      "status": "backlog",
+      "exit": "No .md or .mdx under story-docs holds an em dash, read with a Unicode-aware matcher.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T02:34:09.020Z"
     }
   ],
   "okrs": [

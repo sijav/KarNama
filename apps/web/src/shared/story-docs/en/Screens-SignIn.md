@@ -35,5 +35,5 @@ The first step with the language switched, where the direction flips.
 ### SigningIn
 
 A reader signed in from end to end: a number given, a code asked for again, the
-last one sent typed in, and the name the first login asks for taken — after
+last one sent typed in, and the name the first login asks for taken, after
 which the screen has nothing left to ask.

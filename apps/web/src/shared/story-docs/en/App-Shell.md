@@ -1,8 +1,7 @@
 The application shell: the providers, the direction, and whatever the current
 route renders.
 
-It exists as a story so that the four combinations the done gate asks for —
-Persian light, Persian dark, English light, English dark — can be seen in one
+It exists as a story so that the four combinations the done gate asks for, Persian light, Persian dark, English light, English dark, can be seen in one
 place rather than assembled by hand each time.
 
 ## Stories
@@ -35,8 +34,8 @@ itself, narrow the window and use the switch yourself.
 ### Navigating
 
 The address and the page following each other: the navigation writes the hash,
-and a hash written by anything else — the back button, a typed address, a
-shared link — is read back into the page.
+and a hash written by anything else, the back button, a typed address, a
+shared link, is read back into the page.
 
 ### NobodySignedIn
 

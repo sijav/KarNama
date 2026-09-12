@@ -24,15 +24,14 @@ The text the field starts with, when the field keeps it itself.
 Which screen's bar this is. The desktop toolbar draws it 36 tall, the phone 44,
 and nothing else differs: the text sits 16 from the inline start in both, with
 the 20 search icon, centred in whatever height the bar has. The width is the
-container's, which is what makes both right — 320 is what the desktop toolbar
+container's, which is what makes both right, 320 is what the desktop toolbar
 gives it, 358 is a phone's page inside its own 16 gutters. The phone's is the
 default, because that is what the component set itself draws.
 
 ### label
 
 The box's accessible name: what a screen reader says the box searches. The
-board's is the default, and a page that searches something else passes its own —
-the contacts page did not, and its readers were told it searched job
+board's is the default, and a page that searches something else passes its own, the contacts page did not, and its readers were told it searched job
 opportunities, KN-430.
 
 ### placeholder
