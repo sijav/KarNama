@@ -1,0 +1,22 @@
+1. The RTL order is correct: `columnOrder` returns the natural pipeline order and the app’s runtime `dir` mirrors it, so Saved is rightmost in Persian and leftmost in English. Rejected is last and collapses on desktop. Counts intentionally narrow with search, but that creates a destructive bug below. Mobile correctly selects one status, but an empty selected status renders a blank area instead of the required empty-column state.
+
+2. State is not reconciled with records changes. Deleted selected jobs remain counted in the bulk bar; a deleted chosen mobile status falls back visually to the first status but leaves stale `chosen` state; search-empty leaves bulk actions targeting hidden cards; and a newly added job that does not match the active search leaves the user on “No results found” immediately after save.
+
+Findings:
+
+- critical — The task’s core drag-and-drop and real-API exit condition is absent. There is no board drag/drop implementation; status changes are only checkbox/bulk-modal actions, persisted through `RecordsProvider` localStorage rather than an API. The supposed e2e test likewise selects checkboxes and reloads local storage, never drags or uses the real API. [JobsScreen.tsx](D:\Kar\Gandom\KarNama\apps\web\src\screens\JobsScreen.tsx:106), [RecordsProvider.tsx](D:\Kar\Gandom\KarNama\apps\web\src\core\records\RecordsProvider.tsx:92), [board.spec.ts](D:\Kar\Gandom\KarNama\apps\web\e2e\board.spec.ts:65)
+
+- critical — Search can enable deletion of a non-empty status and permanently delete its hidden jobs. Search for a card in another column, leaving this column’s `cardsOf` result at zero. That filtered count is passed to `StatusMenu`, which enables Delete; `deleteStatus` then removes every job with that status, including those merely hidden by search. This directly violates the design rule that a status containing postings cannot be deleted. [JobsScreen.tsx](D:\Kar\Gandom\KarNama\apps\web\src\screens\JobsScreen.tsx:205), [StatusMenu.tsx](D:\Kar\Gandom\KarNama\apps\web\src\shared\menu\StatusMenu.tsx:97), [RecordsProvider.tsx](D:\Kar\Gandom\KarNama\apps\web\src\core\records\RecordsProvider.tsx:224)
+
+- major — “Rename” in the column menu does not rename anything. Its callback only clears an unrelated pending status-move modal. `renameStatus` exists in the provider but is never called by the screen. [JobsScreen.tsx](D:\Kar\Gandom\KarNama\apps\web\src\screens\JobsScreen.tsx:213), [RecordsProvider.tsx](D:\Kar\Gandom\KarNama\apps\web\src\core\records\RecordsProvider.tsx:218)
+
+- major — The actual desktop board does not constrain columns to the specified 684px height. The screen’s board row has no height, while `KanbanColumn` relies on `height: '100%'`; therefore long card lists grow the column instead of scrolling between header and pinned Add Card row. The isolated story supplies the missing height, masking the screen failure. [JobsScreen.tsx](D:\Kar\Gandom\KarNama\apps\web\src\screens\JobsScreen.tsx:186), [KanbanColumn.tsx](D:\Kar\Gandom\KarNama\apps\web\src\shared\kanban-column\KanbanColumn.tsx:226), [KanbanColumn.stories.tsx](D:\Kar\Gandom\KarNama\apps\web\src\shared\kanban-column\KanbanColumn.stories.tsx:69)
+
+- major — On mobile, selecting a status with zero matching cards produces no state at all, just chips and blank space. The board bypasses `KanbanColumn`’s mobile empty rendering and maps an empty array to `null`. [JobsScreen.tsx](D:\Kar\Gandom\KarNama\apps\web\src\screens\JobsScreen.tsx:249), [KanbanColumn.tsx](D:\Kar\Gandom\KarNama\apps\web\src\shared\kanban-column\KanbanColumn.tsx:176)
+
+- minor — Selection is stale after underlying records change. For example, select a job, delete it through another action/update, then the bulk bar still reports it selected and opens actions for an ID that no longer exists. The same persists through a no-results search, allowing actions against invisible records. [JobsScreen.tsx](D:\Kar\Gandom\KarNama\apps\web\src\screens\JobsScreen.tsx:56), [JobsScreen.tsx](D:\Kar\Gandom\KarNama\apps\web\src\screens\JobsScreen.tsx:173), [JobsScreen.tsx](D:\Kar\Gandom\KarNama\apps\web\src\screens\JobsScreen.tsx:253)
+
+VERDICT
+score: 2.0
+criticals: 2
+one-line: Implement actual drag-to-status persistence against the API, and never derive a status’s deletability from search-filtered cards.

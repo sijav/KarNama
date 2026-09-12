@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 177 of 421 tasks done · 403 of 882 points.
+Project **KarNama** · 178 of 422 tasks done · 406 of 885 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -262,7 +262,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-145` | The migration guard cannot tell BEGIN ATOMIC from a transaction | low | 3 | api | none | A migration whose only BEGIN is a SQL-standard function body is applied, and a migration containing a real BEGIN alongside such a body is still refused, each proved by a planted case against PGlite. |
 | `KN-188` | KarNama's board cannot record a finding as a child of the task it came from | low | 3 | agent | none | A KarNama card can be filed against the task it came out of, separately from its blockers; both are visible on the card and in the rendered board; move done reports what to roast and, when the last open child closes, names the parent and all its children; the one-level rule holds; and the whole thing is proved by driving the real CLI in an isolated repository rather than by reading the source. |
 
-## Done (177)
+## Done (178)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -354,6 +354,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-062` | Shared story fixtures | critical | 3 | web | KN-003, KN-007 | Every component story that needs data uses the shared fixtures, a Docs page rendering many stories at once seeds without error, the fixtures never appear in the production bundle and a test asserts that, and each fixture set has a long value that exercises truncation in both languages. |
 | `KN-120` | Make schema.gql a checked build artefact rather than a side effect of starting the server | critical | 3 | api | KN-033 | npm run build produces schema.gql without starting a server, the file is committed, and a check fails when the resolvers and the committed schema disagree. |
 | `KN-128` | Generate typed GraphQL operations instead of asserting them by hand | critical | 3 | graphql | KN-035 | A query selecting a field that does not exist fails the build, the response type reflects the SELECTION rather than the whole object type, adding a required field to Health does not change HealthQueryData, and each is proved by a planted case. |
+| `KN-422` | The board's column menu deletes a status whose jobs a search is hiding, Rename does nothing, and the columns do not scroll | critical | 3 | web | none | A column's count and its deletability are the column's own, not the search's, and the provider refuses to delete a status that still holds job opportunities; Rename opens a way to rename and the name changes; the board row bounds its columns so a long list scrolls inside one; a phone shows the column's empty state; the bulk bar counts only job opportunities that still exist. Each covered by a test or an e2e. |
 | `KN-008` | Icon set, 30 icons at 24 by 24 | critical | 5 | web | KN-005, KN-006, KN-007 | Every one of the 30 named icons renders, a story shows the full grid, each is 24 by 24 with 2px round strokes, colour follows the prop and falls back to text/secondary, and a test asserts the exported set matches the list in DESIGN.md. |
 | `KN-009` | Button, 3 sizes by 5 styles by 5 states | critical | 5 | web | KN-005, KN-006, KN-007 | All 75 combinations render from a single story driven by args, each matches the Figma node for that combination, Focus shows the border/focus ring on keyboard focus only, and Disabled is not reachable by keyboard. |
 | `KN-012` | Select, option row and options menu | critical | 5 | web | KN-005, KN-006, KN-007 | All five select states and all four option states match Figma, the listbox is keyboard navigable with arrows, Home, End and type-ahead, the open state traps focus correctly, and closing returns focus to the trigger. |
@@ -993,6 +994,8 @@ The board, not a list. Columns ARE statuses, laid out RTL so the rightmost colum
 **Why.** This is scenario 4, the archive, and it is the screen the product is judged on. The kanban form is the point rather than a decoration: seeing how many sit in each stage IS the view of where you stand, which is the thing nobody else keeps for you. An earlier version of this card described a plain list, which the Documentation canvas supersedes.
 
 **Exit condition.** An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and the board renders it collapsed to a count by default.
+
+**Roasts.** round 1 scored 3 with 1 critical(s)
 
 ### `KN-044` Add job flow
 
@@ -5403,4 +5406,15 @@ CHILD OF KN-046, recorded in prose because board.json cannot express parent_task
 **Why.** Every record in this product belongs to someone, and a shared browser handing one person's archive to the next is the ownership model gone.
 
 **Exit condition.** The board is kept per reader and a fresh provider is mounted when the reader changes; an e2e signs in, keeps a job opportunity, signs out, signs in as somebody else and sees an empty board with no trace of the first reader's.
+
+### `KN-422` The board's column menu deletes a status whose jobs a search is hiding, Rename does nothing, and the columns do not scroll
+
+- **status** done · **severity** critical · **points** 3 · **area** web
+- **blocked by** none
+
+CHILD OF KN-043, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-043 roast, four findings in one screen and one change. FIRST and worst: the column is given the SEARCHED count, so a search that matches nothing in a column makes its count zero, the Status Menu enables Delete on it, and deleteStatus takes every job opportunity with that status, the hidden ones included. The design's rule is that a status holding postings cannot be deleted at all. SECOND: the menu's Rename calls a stub that clears an unrelated modal, so renaming a column silently does nothing. THIRD: the board row has no height, so a column grows with its cards instead of scrolling between its header and its pinned Add Card row, which the component's own story hides by giving it one. FOURTH: on a phone a status with no matching cards draws chips and blank space, since the screen maps an empty array rather than letting the column draw its empty state. And the selection is stale: a job deleted elsewhere is still counted by the bulk bar.
+
+**Why.** One of these loses a reader's records for good, and the others are controls that lie: a Rename that renames nothing and a column that cannot be scrolled to its own Add Card row.
+
+**Exit condition.** A column's count and its deletability are the column's own, not the search's, and the provider refuses to delete a status that still holds job opportunities; Rename opens a way to rename and the name changes; the board row bounds its columns so a long list scrolls inside one; a phone shows the column's empty state; the bulk bar counts only job opportunities that still exist. Each covered by a test or an e2e.
 

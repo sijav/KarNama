@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 422,
+  "nextId": 423,
   "tasks": [
     {
       "id": "KN-001",
@@ -1821,7 +1821,23 @@
       "parent": [],
       "status": "done",
       "exit": "An e2e test seeds an archive, drags a card between two columns and sees the status change persist, filters and searches, selects several and acts through the bottom bar, and opens a card into the modal, all against the real API. The rightmost column is the first stage in Persian and the layout mirrors in English. رد شده is the last column, after پیشنهاد کار, and the board renders it collapsed to a count by default.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 3,
+          "criticals": 1,
+          "file": "./agent/roasts/KN-043-round-1.2026-09-12T00-08-02-182Z.md",
+          "filed": [
+            "KN-422"
+          ],
+          "cardDigest": "73e0589c6b1eda2a6e8ebee8a595d4d2ba7b6803ea88c2e6ff14928881aef4e1",
+          "head": "9b8fc40354917f463c412dd7445a807a514d38c8",
+          "reviewerScore": 2,
+          "reviewerCriticals": 2,
+          "dismissed": "The first critical, dragging and the real API: both were declared not done in the close, dragging is KN-061 and the API is KN-416, so neither is a finding about what was built. Recorded as one critical, the search-made-deletable column, which is real and is fixed as KN-422 with the other four findings.",
+          "at": "2026-09-12T00:16:06.007Z"
+        }
+      ],
       "notes": [
         "2026-09-11: from the KN-022 roast. The board's empty state is the Empty State with the job list's copy, and its action must open the add flow; a story or the end-to-end scenario proves the press lands in the add modal. KN-022 built the component with a required action, not the wiring.",
         "2026-09-11: from KN-025. The board puts the Bulk Action Bar before the columns in its order, so Tab reaches it without crossing them, keeps 60 and 24 of room at its foot while the bar shows, or focus lands under it, and wires onClear, onDelete, onChangeStatus and onSelectAll.",
@@ -11196,6 +11212,25 @@
       "evidence": "The board is kept under karnama.records:<number> and AppProviders keys the provider on the signed-in reader, so a change mounts a fresh one; e2e on the desktop signs in, keeps a job opportunity, signs out, signs in as another reader and sees the empty state with no trace of the first; 25 e2e and 93 core tests pass",
       "updatedAt": "2026-09-11T23:55:29.955Z",
       "closedAt": "2026-09-11T23:55:29.955Z"
+    },
+    {
+      "id": "KN-422",
+      "title": "The board's column menu deletes a status whose jobs a search is hiding, Rename does nothing, and the columns do not scroll",
+      "desc": "CHILD OF KN-043, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-043 roast, four findings in one screen and one change. FIRST and worst: the column is given the SEARCHED count, so a search that matches nothing in a column makes its count zero, the Status Menu enables Delete on it, and deleteStatus takes every job opportunity with that status, the hidden ones included. The design's rule is that a status holding postings cannot be deleted at all. SECOND: the menu's Rename calls a stub that clears an unrelated modal, so renaming a column silently does nothing. THIRD: the board row has no height, so a column grows with its cards instead of scrolling between its header and its pinned Add Card row, which the component's own story hides by giving it one. FOURTH: on a phone a status with no matching cards draws chips and blank space, since the screen maps an empty array rather than letting the column draw its empty state. And the selection is stale: a job deleted elsewhere is still counted by the bulk bar.",
+      "why": "One of these loses a reader's records for good, and the others are controls that lie: a Rename that renames nothing and a column that cannot be scrolled to its own Add Card row.",
+      "severity": "critical",
+      "points": 3,
+      "area": "web",
+      "parent": [],
+      "status": "done",
+      "exit": "A column's count and its deletability are the column's own, not the search's, and the provider refuses to delete a status that still holds job opportunities; Rename opens a way to rename and the name changes; the board row bounds its columns so a long list scrolls inside one; a phone shows the column's empty state; the bulk bar counts only job opportunities that still exist. Each covered by a test or an e2e.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T00:11:32.941Z",
+      "evidence": "The column's count is its own, the provider refuses to delete a status holding job opportunities (unit test: it stays, and goes once emptied), Rename opens a modal whose name is kept through a reload, the board row bounds its columns with alignItems stretch and minHeight 0, the phone draws the column's empty state, and the bulk bar counts only what still exists; an e2e with a search on finds Delete disabled and Rename working, and 35 e2e pass on both viewports",
+      "updatedAt": "2026-09-12T00:16:05.764Z",
+      "closedAt": "2026-09-12T00:16:05.764Z"
     }
   ],
   "okrs": [
