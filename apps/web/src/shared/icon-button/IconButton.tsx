@@ -1,5 +1,5 @@
-import { IconButton as MuiIconButton } from '@mui/material'
-import { useEffect, type ComponentProps } from 'react'
+import { IconButton as MuiIconButton, type Theme } from '@mui/material'
+import { useEffect, type AriaAttributes, type DOMAttributes, type Ref } from 'react'
 import { spacing } from '../../theme/tokens'
 import { Icon, type IconName } from '../icon'
 
@@ -15,14 +15,21 @@ import { Icon, type IconName } from '../icon'
  * Named and narrow rather than the whole of MUI's surface: these are the props
  * a trigger must carry, and nothing here invites a caller to reach past the
  * documented API into MUI's.
+ *
+ * The ref is NOT here, because what it points at depends on which of the two
+ * shapes below is being used: MUI renders an anchor for a button with an href,
+ * so a ref taken on a link is a ref to an anchor, KN-447. Each shape declares
+ * its own, which is the only way a caller gets the element they actually have
+ * without the cast AGENTS.md forbids.
  */
-type TooltipTrigger = Pick<
-  ComponentProps<typeof MuiIconButton>,
-  'ref' | 'aria-describedby' | 'onFocus' | 'onBlur' | 'onMouseOver' | 'onMouseLeave' | 'onTouchStart' | 'onTouchEnd'
->
+type TooltipTrigger<Element extends HTMLElement> = Pick<
+  DOMAttributes<Element>,
+  'onFocus' | 'onBlur' | 'onMouseOver' | 'onMouseLeave' | 'onTouchStart' | 'onTouchEnd'
+> &
+  Pick<AriaAttributes, 'aria-describedby'>
 
 // The props are documented in story-docs, not here, KN-207.
-interface IconButtonBase extends TooltipTrigger {
+interface IconButtonBase {
   icon: IconName
   'aria-label': string
   tone?: 'neutral' | 'danger'
@@ -39,12 +46,14 @@ interface IconButtonBase extends TooltipTrigger {
  * union makes that unrepresentable rather than documented, which is the only
  * version of this that a caller cannot get wrong.
  */
-export interface IconButtonSwitch extends IconButtonBase {
+export interface IconButtonSwitch extends IconButtonBase, TooltipTrigger<HTMLButtonElement> {
+  ref?: Ref<HTMLButtonElement>
   href?: never
   disabled?: boolean
 }
 
-export interface IconButtonLink extends IconButtonBase {
+export interface IconButtonLink extends IconButtonBase, TooltipTrigger<HTMLAnchorElement> {
+  ref?: Ref<HTMLAnchorElement>
   href: string
   disabled?: never
 }
@@ -68,16 +77,8 @@ export const nameOf = (label: string): string | null => (label.trim() === '' ? n
 // Neutral and Danger, each at rest, hovered and disabled. The Bulk Action Bar's
 // close, 401:436, is the same square round a 20 icon, so the icon's size is a
 // prop, 16 unless told otherwise.
-export const IconButton = ({
-  icon,
-  'aria-label': label,
-  tone = 'neutral',
-  iconSize = 'sm',
-  disabled = false,
-  href,
-  onClick,
-  ...trigger
-}: IconButtonProps) => {
+export const IconButton = (props: IconButtonProps) => {
+  const { icon, 'aria-label': label, tone = 'neutral', iconSize = 'sm', onClick } = props
   const name = nameOf(label)
   // A blank name is the caller's mistake: reported as it mounts, as the
   // Tooltip reports its own, and the button left out, so the failure stays at
@@ -88,20 +89,15 @@ export const IconButton = ({
       console.error('IconButton: its aria-label is blank, so it would reach a screen reader nameless; it is left out until it has a name.')
   }, [name])
   if (name === null) return null
-  return (
-    <MuiIconButton
-      // A Tooltip's ref and its handlers, passed through to the element the tip
-      // attaches to, KN-310. First, so what this component documents wins: a
-      // tip describes a button, it does not rename or disable one.
-      {...trigger}
-      aria-label={name}
-      disabled={disabled}
-      disableRipple
-      // MUI renders an anchor for a button given an href, which is what a
-      // control that goes somewhere should be.
-      {...(href === undefined ? {} : { href })}
-      onClick={onClick}
-      sx={(theme) => {
+
+  // What both shapes draw. The props a Tooltip injects are taken inside each
+  // branch instead, after the union is narrowed, so each carries the handlers
+  // and the ref for the element it actually renders, KN-447.
+  const shared = {
+    'aria-label': name,
+    disableRipple: true,
+    onClick,
+    sx: (theme: Theme) => {
         const colour = theme.karnama.semantic
         const hover =
           tone === 'danger'
@@ -127,9 +123,26 @@ export const IconButton = ({
             pointerEvents: 'none',
           },
         }
-      }}
-    >
-      <Icon name={icon} size={iconSize} color="inherit" />
+    },
+  }
+  const mark = <Icon name={icon} size={iconSize} color="inherit" />
+
+  // Two calls rather than one with an href spread in: MUI types the anchor form
+  // as its own overload, taking a REQUIRED href, so a shape whose href is
+  // merely optional matches neither, KN-447. Narrowing here is also what gives
+  // each form the ref and the handlers for the element it actually renders.
+  if (props.href === undefined) {
+    const { icon: _icon, 'aria-label': _label, tone: _tone, iconSize: _size, onClick: _click, href: _href, disabled = false, ...trigger } = props
+    return (
+      <MuiIconButton {...trigger} {...shared} disabled={disabled}>
+        {mark}
+      </MuiIconButton>
+    )
+  }
+  const { icon: _icon, 'aria-label': _label, tone: _tone, iconSize: _size, onClick: _click, href, ...trigger } = props
+  return (
+    <MuiIconButton {...trigger} {...shared} href={href}>
+      {mark}
     </MuiIconButton>
   )
 }

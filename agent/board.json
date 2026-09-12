@@ -11660,7 +11660,8 @@
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T01:53:04.611Z"
+      "createdAt": "2026-09-12T01:53:04.611Z",
+      "updatedAt": "2026-09-12T02:05:42.413Z"
     },
     {
       "id": "KN-446",
@@ -11687,12 +11688,13 @@
       "points": 1,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "A ref taken on an Icon Button with an href typechecks with no cast.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
-      "createdAt": "2026-09-12T01:53:04.882Z"
+      "createdAt": "2026-09-12T01:53:04.882Z",
+      "updatedAt": "2026-09-12T02:05:42.546Z"
     },
     {
       "id": "KN-448",

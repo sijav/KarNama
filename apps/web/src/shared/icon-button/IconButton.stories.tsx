@@ -1,9 +1,11 @@
 import { useLingui } from '@lingui/react'
+import { useEffect, useRef, useState } from 'react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { semantic, spacing, status } from '../../theme/tokens'
 import { ICON_NAMES } from '../icon'
+import { fixtures } from '../story-fixtures'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Tooltip } from '../tooltip'
 import { IconButton, type IconButtonSwitch } from './IconButton'
@@ -240,5 +242,46 @@ export const InATooltip: Story = {
     } finally {
       watching.mockRestore()
     }
+  },
+}
+
+// Whose address it is: record data, from the fixtures, never written here.
+const WRITES_TO = fixtures('fa-IR').contacts[0]?.email ?? ''
+
+// A button that hands its element back, and a link that hands back its own.
+// Both refs are typed for the element that shape renders, KN-447: a link IS an
+// anchor, and a ref to it typed as a button is a cast waiting to be written.
+// Ref OBJECTS rather than callbacks, which is what a caller holding an element
+// writes, and which do not change between renders.
+const Handed = () => {
+  const { i18n } = useLingui()
+  const button = useRef<HTMLButtonElement | null>(null)
+  const link = useRef<HTMLAnchorElement | null>(null)
+  const [tags, setTags] = useState('')
+  useEffect(() => {
+    setTags(`${button.current?.tagName ?? ''} ${link.current?.tagName ?? ''}`)
+  }, [])
+  return (
+    <Box sx={{ display: 'flex', gap: `${spacing.md}px` }}>
+      <IconButton icon="trash" aria-label={i18n._('Delete status')} ref={button} />
+      <IconButton icon="mail" aria-label={i18n._('Send an email')} href={`mailto:${WRITES_TO}`} ref={link} />
+      <span data-testid="tags">{tags}</span>
+    </Box>
+  )
+}
+
+export const HandsBackItsElement: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  render: () => <Handed />,
+  play: async ({ canvasElement }) => {
+    // Each shape gives back the element it actually renders, which is what the
+    // types now say: a BUTTON for the one that can be turned off, an A for the
+    // one that goes somewhere.
+    const canvas = within(canvasElement)
+    await waitFor(async () => {
+      await expect(canvas.getByTestId('tags')).toHaveTextContent('BUTTON A')
+    })
+    await expect(canvas.getByRole('link', { name: 'ارسال ایمیل' })).toHaveAttribute('href', `mailto:${WRITES_TO}`)
   },
 }

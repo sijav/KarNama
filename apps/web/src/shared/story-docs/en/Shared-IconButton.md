@@ -46,6 +46,12 @@ A control that goes somewhere cannot also be turned off, and the type refuses
 the pair, KN-433: an anchor takes no `disabled` attribute, so it would say it
 was off and still navigate.
 
+### ref
+
+The element itself, handed back to whoever asks. A button that can be turned
+off gives back a `button`; one with an `href` gives back an `a`, and each is
+typed for what it renders, KN-447, so a caller never casts.
+
 ### onClick
 
 Fired when the button is pressed, by pointer or by keyboard.
@@ -85,3 +91,10 @@ The button as a Tooltip's trigger: it takes the tooltip's ref and the props it
 injects, so the tip opens on hover and on focus, describes the button rather
 than renaming it, and is its description from the first render. A disabled
 button cannot do this, KN-426: the browser fires no pointer events on one.
+
+### HandsBackItsElement
+
+A button and a link side by side, each handed a ref, each giving back the
+element it actually renders: a BUTTON for the one that can be turned off, an A
+for the one that goes somewhere. The two refs are typed for those elements, so
+a caller never has to cast.
