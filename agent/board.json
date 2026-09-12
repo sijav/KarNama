@@ -8972,12 +8972,12 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "backlog",
+      "status": "in_progress",
       "exit": "Each locale's fixtures hold at least one job opportunity in every one of the nine statuses and a board, the statuses in the board's order with their jobs, rejected last as the owner decided in KN-070; the fixture test asserts both, in both languages.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:11:36.223Z",
-      "updatedAt": "2026-09-11T22:45:04.114Z",
+      "updatedAt": "2026-09-12T01:27:58.291Z",
       "okr": "OKR-1"
     },
     {

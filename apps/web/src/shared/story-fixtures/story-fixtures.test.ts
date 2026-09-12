@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import { locales, type Locale } from '../../i18n'
-import { status } from '../../theme/tokens'
+import { status, type StatusToken } from '../../theme/tokens'
 import { fixtures, parseFixtures, statusName, type RawFixtures } from './index'
 
 const LOCALES = Object.keys(locales).filter((locale): locale is Locale => locale in locales)
+
+// The board's columns from the inline start, DESIGN.md section 6 and KN-070:
+// the design's five in their order, the custom statuses where a reader's own
+// stages go, and rejected last whatever else is on the board.
+const ORDER: readonly StatusToken[] = ['new', 'applied', 'interview', 'offer', 'custom-1', 'custom-2', 'custom-3', 'custom-4', 'rejected']
 
 // Every source file under src, as text, so a test can read what imports what
 // without the file system.
@@ -38,6 +43,43 @@ describe('story fixtures', () => {
     expect(second.jobDetail.files.map((file) => file.id)).toEqual(first.jobDetail.files.map((file) => file.id))
     expect(second.jobDetail.history).toEqual(first.jobDetail.history)
     expect(second.mixedStatusNames).toEqual(first.mixedStatusNames)
+  })
+
+  it('hold a job opportunity in every one of the nine statuses, in both languages', () => {
+    // KN-305: the Card draws its stripe in nine colours and the Board a column
+    // per status, and three of the nine had no job opportunity at all, so every
+    // story that wanted one built its own board and they drifted apart.
+    for (const locale of LOCALES) {
+      const set = fixtures(locale)
+      const held = set.jobs.map((job) => job.status)
+      for (const token of Object.keys(status)) {
+        expect.soft(held, `${locale} has no job opportunity in ${token}`).toContain(token)
+      }
+    }
+  })
+
+  it('hold the board itself: a column per status, in the order the board draws them', () => {
+    for (const locale of LOCALES) {
+      const set = fixtures(locale)
+      // The design's order, written out rather than asked of the same function
+      // that built the board: the defaults as the design draws them, the custom
+      // statuses after them, and rejected last whatever else is there, KN-070.
+      expect(set.board.map((column) => column.token)).toEqual(ORDER)
+
+      // Each column is named as its own status is named, in this language.
+      for (const column of set.board) {
+        expect(column.name).toBe(statusName(locale, column.token))
+      }
+
+      // Every job opportunity stands in exactly one column, the one its own
+      // status names, and every column holds at least one.
+      const placed = set.board.flatMap((column) => column.jobs.map((job) => job.id))
+      expect([...placed].sort()).toEqual([...set.jobs.map((job) => job.id)].sort())
+      for (const column of set.board) {
+        expect(column.jobs.length).toBeGreaterThan(0)
+        expect(column.jobs.every((job) => job.status === column.token)).toBe(true)
+      }
+    }
   })
 
   it('hold a long value in every set, in both languages, for truncation', () => {

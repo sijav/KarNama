@@ -1,4 +1,6 @@
 import type { Locale } from '../../i18n'
+// The board's own order, taken from the product rather than restated here.
+import { columnOrder } from '../../core/records'
 import { status, type StatusToken } from '../../theme/tokens'
 import enUS from './en-US.json'
 import faIR from './fa-IR.json'
@@ -91,6 +93,21 @@ export interface NoteFixture {
   text: string
 }
 
+/**
+ * One column of the seeded board: a status, and the job opportunities in it.
+ *
+ * Built rather than written, KN-305: a board authored beside the jobs would
+ * drift from them the first time a job's status changed, and every Board story
+ * would go on drawing a board nobody had looked at. The columns come out of the
+ * statuses and the jobs through the product's OWN `columnOrder`, so what the
+ * fixtures hold is the order the board really draws, rejected last, KN-070.
+ */
+export interface BoardColumnFixture {
+  token: StatusToken
+  name: string
+  jobs: readonly JobFixture[]
+}
+
 export interface Fixtures {
   statuses: readonly StatusFixture[]
   // Each status's name by its token, every one of the nine present.
@@ -103,6 +120,8 @@ export interface Fixtures {
   extraction: ExtractionFixture
   jobDetail: JobDetailFixture
   mixedStatusNames: MixedStatusNamesFixture
+  /** The statuses in the board's order, each with its own job opportunities. */
+  board: readonly BoardColumnFixture[]
 }
 
 // The shape of one locale's JSON, with its status tokens still plain strings.
@@ -131,6 +150,7 @@ const tokenOf = (value: string): StatusToken => {
 export const parseFixtures = (raw: RawFixtures): Fixtures => {
   const statusOf = (entry: RawFixtures['renamedStatus']): StatusFixture => Object.freeze({ ...entry, token: tokenOf(entry.token) })
   const statuses = raw.statuses.map(statusOf)
+  const jobs = Object.freeze(raw.jobs.map((job) => Object.freeze({ ...job, status: tokenOf(job.status) })))
   const nameOf = (token: StatusToken) => {
     const found = statuses.find((entry) => entry.token === token)
     if (!found) throw new Error(`the story fixtures have no status ${token}`)
@@ -152,7 +172,7 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     names: Object.freeze(names),
     renamedStatus: statusOf(raw.renamedStatus),
     longStatusName: raw.longStatusName,
-    jobs: Object.freeze(raw.jobs.map((job) => Object.freeze({ ...job, status: tokenOf(job.status) }))),
+    jobs,
     contacts: Object.freeze(raw.contacts.map((contact) => Object.freeze({ ...contact }))),
     notes: Object.freeze(raw.notes.map((note) => Object.freeze({ ...note }))),
     extraction: Object.freeze({ ...raw.extraction }),
@@ -163,6 +183,15 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
       history: Object.freeze(raw.jobDetail.history.map((change) => Object.freeze({ ...change, status: tokenOf(change.status) }))),
     }),
     mixedStatusNames: Object.freeze({ ...raw.mixedStatusNames }),
+    board: Object.freeze(
+      columnOrder(statuses.map((entry) => ({ id: entry.token, token: entry.token, name: entry.name }))).map((column) =>
+        Object.freeze({
+          token: column.token,
+          name: column.name,
+          jobs: Object.freeze(jobs.filter((job) => job.status === column.token)),
+        }),
+      ),
+    ),
   })
 }
 

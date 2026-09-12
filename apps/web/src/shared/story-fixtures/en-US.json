@@ -18,7 +18,10 @@
     { "id": "job-3", "title": "Product designer", "company": "Diginow", "status": "new", "location": "Isfahan", "postedAt": "2026-09-02", "link": null },
     { "id": "job-4", "title": "Quality assurance specialist", "company": "Aseman Software Group", "status": "rejected", "location": "Shiraz", "postedAt": "2026-07-15", "link": "https://example.com/jobs/4" },
     { "id": "job-5", "title": "Product manager", "company": "Rahkar Data", "status": "offer", "location": "Tehran", "postedAt": "2026-08-01", "link": "https://example.com/jobs/5" },
-    { "id": "job-6", "title": "Data analyst", "company": "Binesh Hooshmand", "status": "custom-1", "location": "Mashhad", "postedAt": "2026-08-25", "link": null }
+    { "id": "job-6", "title": "Data analyst", "company": "Binesh Hooshmand", "status": "custom-1", "location": "Mashhad", "postedAt": "2026-08-25", "link": null },
+    { "id": "job-7", "title": "Technical support specialist", "company": "Hamrah Aval Data", "status": "custom-2", "location": "Tabriz", "postedAt": "2026-08-18", "link": "https://example.com/jobs/7" },
+    { "id": "job-8", "title": "Mobile team technical lead", "company": "Sepehr Ayandeh", "status": "custom-3", "location": "Tehran, remote", "postedAt": "2026-07-29", "link": null },
+    { "id": "job-9", "title": "Network security specialist", "company": "Dadeh Pardaz Iranian", "status": "custom-4", "location": "Karaj", "postedAt": "2026-09-05", "link": "https://example.com/jobs/9" }
   ],
   "contacts": [
     { "id": "contact-1", "fullName": "Sara Mohammadi", "role": "HR manager", "company": "Pars New Technologies", "email": "sara@example.com", "phone": "09121234567", "linkedin": "linkedin.com/in/saramohammadi", "jobId": "job-1" },
