@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react'
-import { Box, Stack } from '@mui/material'
+import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
 import { useState } from 'react'
 import { usePreferences } from '../core/preferences'
 import { columnOrder, contactsOf, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
@@ -7,6 +7,7 @@ import { AddJobModal, type JobDraft } from '../shared/add-job'
 import { BulkActionBar } from '../shared/bulk-action-bar'
 import { Button } from '../shared/button'
 import { EmptyState } from '../shared/empty-state'
+import { FilterChip } from '../shared/filter-chip'
 import { JobCard } from '../shared/job-card'
 import { formatDay, JobModal, type JobSaved } from '../shared/job-modal'
 import { AddColumn, KanbanColumn } from '../shared/kanban-column'
@@ -64,12 +65,20 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
   const [reading, setReading] = useState<string | null>(null)
   const [moving, setMoving] = useState<readonly string[] | null>(null)
   const [deleting, setDeleting] = useState<readonly string[] | null>(null)
+  // Which column a phone is showing. The board scrolls sideways on a desktop
+  // and a phone gets one column with the status chosen above it, node 241:176.
+  const [chosen, setChosen] = useState<string | null>(null)
+  const wide = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
 
   const addingTo = adding ?? (addOpen ? first : null)
+  const showing = columns.find((column) => column.id === chosen) ?? columns[0]
   const nameOf = (id: string) => records.statuses.find((entry) => entry.id === id)?.name ?? ''
   const job = records.jobs.find((entry) => entry.id === reading)
   const isCollapsed = (id: string) => tokenOf(records.statuses, id) === 'rejected' && !open.includes(id)
   const cardsOf = (id: string) => jobsIn(records.jobs, id, search, order)
+  // How many the search found anywhere on the board, which is what says whether
+  // it found nothing rather than each column being empty on its own.
+  const found = columns.reduce((total, column) => total + cardsOf(column.id).length, 0)
 
   const select = (id: string, wanted: boolean) => {
     setSelected((was) => (wanted ? [...was, id] : was.filter((held) => held !== id)))
@@ -129,15 +138,23 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
     <Stack sx={{ gap: `${spacing.lg}px`, minHeight: 0, flex: '1 1 auto' }}>
       <PageHeader
         title={i18n._('My job opportunities')}
-        action={
-          <Button
-            onClick={() => {
-              setAdding(first)
-            }}
-          >
-            {i18n._('Add job opportunity')}
-          </Button>
-        }
+        // The action is the desktop's. On a phone the header already carries
+        // the language switch, KN-355, and the tab bar carries adding as a
+        // destination of its own, so a third control here only takes the room
+        // the title needs and leaves it cut.
+        {...(wide
+          ? {
+              action: (
+                <Button
+                  onClick={() => {
+                    setAdding(first)
+                  }}
+                >
+                  {i18n._('Add job opportunity')}
+                </Button>
+              ),
+            }
+          : {})}
       />
 
       <Stack direction="row" sx={{ gap: `${spacing.sm}px`, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -147,16 +164,20 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
         <SortControl value={order} onChange={setOrder} />
       </Stack>
 
-      {records.jobs.length === 0 ? (
+      {records.jobs.length === 0 || found === 0 ? (
         <EmptyState
-          title={i18n._('You have not added a job posting yet')}
-          body={i18n._('Add your first posting by its link or its text, and follow it from here.')}
+          title={records.jobs.length === 0 ? i18n._('You have not added a job posting yet') : i18n._('No results found')}
+          body={
+            records.jobs.length === 0
+              ? i18n._('Add your first posting by its link or its text, and follow it from here.')
+              : i18n._('Nothing matches this search. Try other words or remove the filters.')
+          }
           actionLabel={i18n._('Add job opportunity')}
           onAction={() => {
             setAdding(first)
           }}
         />
-      ) : (
+      ) : wide ? (
         <Box
           sx={{
             display: 'flex',
@@ -202,6 +223,25 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
             }}
           />
         </Box>
+      ) : (
+        // The phone's board, node 241:176: the statuses as chips in a row that
+        // scrolls sideways, and the chosen one's cards below, alone.
+        <Stack sx={{ gap: `${spacing.md}px`, minHeight: 0 }}>
+          <Box sx={{ display: 'flex', gap: `${spacing.xs}px`, overflowX: 'auto', '& > *': { flexShrink: 0 } }}>
+            {columns.map((column) => (
+              <FilterChip
+                key={column.id}
+                label={column.name}
+                count={cardsOf(column.id).length}
+                selected={column.id === showing?.id}
+                onToggle={() => {
+                  setChosen(column.id)
+                }}
+              />
+            ))}
+          </Box>
+          <Stack sx={{ gap: `${spacing.sm}px` }}>{showing ? cardsOf(showing.id).map(card) : null}</Stack>
+        </Stack>
       )}
 
       <BulkActionBar
