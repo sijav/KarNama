@@ -29,6 +29,10 @@ export interface RecordsValue extends Records {
   addContact: (contact: ContactCardContact, jobId: string | null) => void
   saveContact: (id: string, contact: ContactCardContact, jobId: string | null) => void
   deleteContacts: (ids: readonly string[]) => void
+  /** Keeps what a file is, and its bytes for this visit, KN-045. */
+  addFiles: (jobId: string, files: readonly File[]) => void
+  /** Hands the reader back a file they added in this visit. */
+  downloadFile: (id: string) => void
   addStatus: (name: string) => string
   renameStatus: (id: string, name: string) => void
   recolourStatus: (id: string, token: StatusToken) => void
@@ -54,6 +58,8 @@ const NO_RECORDS: RecordsValue = {
   addContact: () => undefined,
   saveContact: () => undefined,
   deleteContacts: () => undefined,
+  addFiles: () => undefined,
+  downloadFile: () => undefined,
   addStatus: () => '',
   renameStatus: () => undefined,
   recolourStatus: () => undefined,
@@ -127,6 +133,10 @@ export const RecordsProvider = ({ initial, owner = '', children }: RecordsProvid
   // changes in one batch would otherwise both build on the same snapshot, the
   // defect KN-112 closed for the preferences.
   const latest = useRef(records)
+  // The bytes of the files added in this visit, by their id. They are not
+  // written down: localStorage holds text and a board of attachments would fill
+  // it, so what survives a reload is what a file IS, KN-039.
+  const bytes = useRef(new Map<string, File>())
 
   const change = useCallback(
     (next: (from: Records) => Records) => {
@@ -173,6 +183,32 @@ export const RecordsProvider = ({ initial, owner = '', children }: RecordsProvid
       deleteContacts: (ids) => {
         const wanted = new Set(ids)
         change((from) => ({ ...from, contacts: from.contacts.filter((held) => !wanted.has(held.id)) }))
+      },
+      addFiles: (jobId, files) => {
+        const added = files.map((file) => ({ id: newId('file'), name: file.name, size: file.size, addedAt: new Date().toISOString() }))
+        for (const [at, entry] of added.entries()) {
+          const file = files[at]
+          if (file) bytes.current.set(entry.id, file)
+        }
+        change((from) => ({
+          ...from,
+          jobs: from.jobs.map((job) => (job.id === jobId ? { ...job, files: [...job.files, ...added] } : job)),
+        }))
+      },
+      downloadFile: (id) => {
+        // Only what this visit added: the browser keeps what a file IS, its
+        // name, size and when it arrived, but not its bytes, so a file from a
+        // previous visit has nothing to hand back until the API holds them,
+        // KN-039. Nothing is promised that cannot be delivered: the tile is
+        // there either way and this quietly does nothing for the rest.
+        const file = bytes.current.get(id)
+        if (!file) return
+        const address = URL.createObjectURL(file)
+        const link = window.document.createElement('a')
+        link.href = address
+        link.download = file.name
+        link.click()
+        URL.revokeObjectURL(address)
       },
       addStatus: (name) => {
         const added: StatusOption = { id: newId('status'), token: nextCustomToken(records.statuses), name }

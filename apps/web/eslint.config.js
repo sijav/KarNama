@@ -121,6 +121,10 @@ const linguiOptions = {
     // job seeker.
     'Error',
     'console.*',
+    // A DOM tag name, not copy: `document.createElement('a')` names an element
+    // for the browser, and the only string it ever takes is one of those,
+    // KN-045.
+    '*.createElement',
     // `setAttribute` and `*.setAttribute` used to be here, so
     // `el.setAttribute('aria-label', 'Delete this application')` passed: the
     // same untranslated accessible name the prop-level rule rejects, reached

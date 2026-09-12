@@ -92,3 +92,39 @@ test('a phone shows one column with the statuses as chips above it', async ({ pa
   await page.getByRole('button', { name: new RegExp(OFFER) }).click()
   await expect(page.getByRole('article').filter({ hasText: FIRST })).toHaveCount(0)
 })
+
+test('the job modal keeps a note, a person and the history of its moves, KN-045', async ({ page }, testInfo) => {
+  await page.getByRole('button', { name: FIRST }).click()
+  const modal = page.getByRole('dialog')
+
+  // Its status changes from the modal's own header, and the history tab grows.
+  await modal.getByRole('button', { name: new RegExp(SAVED) }).click()
+  await page.getByRole('dialog').getByRole('radio', { name: OFFER }).check()
+  await page.getByRole('dialog').getByRole('button', { name: 'تأیید' }).click()
+  await modal.getByRole('tab', { name: 'سابقه' }).click()
+  await expect(modal.getByText(OFFER).first()).toBeVisible()
+
+  // A note is written and a person is kept against this job opportunity.
+  await modal.getByRole('tab', { name: 'یادداشت' }).click()
+  await modal.getByRole('textbox').fill('با مدیر فنی صحبت شد')
+  await modal.getByRole('tab', { name: 'افراد مرتبط' }).click()
+  await modal.getByRole('button', { name: 'افزودن مخاطب' }).click()
+  const person = page.getByRole('dialog').last()
+  await person.getByLabel('اسم و فامیل').fill('مینا رضایی')
+  await person.getByRole('button', { name: 'ذخیره' }).click()
+  await expect(modal.getByText('مینا رضایی')).toBeVisible()
+
+  // Saved, closed, and opened again: all of it is still there.
+  await modal.getByRole('button', { name: 'ذخیره' }).click()
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await page.reload()
+  // It was moved, and a phone opens on the first column, so it is asked for the
+  // column it now sits in.
+  if (testInfo.project.name === 'mobile') await page.getByRole('button', { name: new RegExp(OFFER) }).click()
+  await page.getByRole('button', { name: FIRST }).click()
+  const reopened = page.getByRole('dialog')
+  await reopened.getByRole('tab', { name: 'افراد مرتبط' }).click()
+  await expect(reopened.getByText('مینا رضایی')).toBeVisible()
+  await reopened.getByRole('tab', { name: 'سابقه' }).click()
+  await expect(reopened.getByText(OFFER).first()).toBeVisible()
+})

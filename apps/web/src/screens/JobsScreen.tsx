@@ -11,7 +11,7 @@ import { FilterChip } from '../shared/filter-chip'
 import { JobCard } from '../shared/job-card'
 import { formatDay, JobModal, type JobSaved } from '../shared/job-modal'
 import { AddColumn, KanbanColumn } from '../shared/kanban-column'
-import { ChangeStatusModal, ConfirmModal } from '../shared/modal'
+import { ChangeStatusModal, ConfirmModal, ContactModal, type ContactModalValues } from '../shared/modal'
 import { PageHeader } from '../shared/page-header'
 import { SearchBar } from '../shared/search-bar'
 import { SortControl, type SortOrder } from '../shared/sort-control'
@@ -68,6 +68,9 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
   // Which column a phone is showing. The board scrolls sideways on a desktop
   // and a phone gets one column with the status chosen above it, node 241:176.
   const [chosen, setChosen] = useState<string | null>(null)
+  // A person being written from inside the job modal: their id when one is
+  // being edited, null for a new one, undefined when that modal is closed.
+  const [person, setPerson] = useState<{ id: string | null; values: ContactModalValues } | undefined>(undefined)
   const wide = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
 
   const addingTo = adding ?? (addOpen ? first : null)
@@ -95,6 +98,9 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
 
   const save = (saved: JobSaved) => {
     if (job) records.saveJob(job.id, saved)
+    // Saving is the end of reading it: the modal closes, as every other modal
+    // in the product does when its work is done.
+    setReading(null)
   }
 
   const move = (status: string) => {
@@ -296,13 +302,63 @@ export const JobsScreen = ({ addOpen = false, onAddClose }: JobsScreenProps) => 
           onClose={() => {
             setReading(null)
           }}
-          onAddContact={() => undefined}
-          onOpenContact={() => undefined}
-          onDeleteContact={() => undefined}
-          onAddFiles={() => undefined}
-          onDownloadFile={() => undefined}
+          // The related people are the network's records, kept against this
+          // job opportunity, so what is added here is on the network page too.
+          onAddContact={() => {
+            setPerson({ id: null, values: { name: '', role: '', company: '', email: '', phone: '', linkedin: '', jobId: job.id } })
+          }}
+          onOpenContact={(id) => {
+            const held = records.contacts.find((entry) => entry.id === id)
+            if (held) {
+              setPerson({
+                id: held.id,
+                values: {
+                  name: held.contact.name,
+                  role: held.contact.role ?? '',
+                  company: held.contact.company ?? '',
+                  email: held.contact.email ?? '',
+                  phone: held.contact.phone ?? '',
+                  linkedin: held.contact.linkedin ?? '',
+                  jobId: held.jobId,
+                },
+              })
+            }
+          }}
+          onDeleteContact={(id) => {
+            records.deleteContacts([id])
+          }}
+          onAddFiles={(files) => {
+            records.addFiles(job.id, files)
+          }}
+          onDownloadFile={(id) => {
+            records.downloadFile(id)
+          }}
         />
       ) : null}
+
+      <ContactModal
+        open={person !== undefined}
+        mode={person?.id === null || person?.id === undefined ? 'add' : 'edit'}
+        {...(person ? { initial: person.values } : {})}
+        jobs={records.jobs.map((entry) => ({ value: entry.id, label: entry.draft.title }))}
+        onSave={(values) => {
+          const contact = {
+            name: values.name.trim(),
+            role: values.role.trim() === '' ? null : values.role.trim(),
+            company: values.company.trim() === '' ? null : values.company.trim(),
+            email: values.email.trim() === '' ? null : values.email.trim(),
+            phone: values.phone.trim() === '' ? null : values.phone.trim(),
+            linkedin: values.linkedin.trim() === '' ? null : values.linkedin.trim(),
+            job: records.jobs.find((entry) => entry.id === values.jobId)?.draft.title ?? null,
+          }
+          if (person?.id === null || person?.id === undefined) records.addContact(contact, values.jobId)
+          else records.saveContact(person.id, contact, values.jobId)
+          setPerson(undefined)
+        }}
+        onCancel={() => {
+          setPerson(undefined)
+        }}
+      />
 
       <ChangeStatusModal
         open={moving !== null}
