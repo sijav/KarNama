@@ -9216,13 +9216,15 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "done",
       "exit": "A story shows every one of the 75 combinations at once or through its controls, style, size and state, the transient states rendered from args by a mechanism the component's users never see, and its play reads them against node 31:4.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T12:57:43.823Z",
       "okr": "OKR-1",
-      "updatedAt": "2026-09-12T02:17:11.666Z"
+      "updatedAt": "2026-09-12T02:27:17.712Z",
+      "evidence": "The States story shows all 75 combinations, five styles by three sizes by five states, rendered from args with no pointer: its play reads every cell's fill, text, height, Ghost's pressed opacity and the focus ring against the stories' own reading of node 31:4, and the runner hovers a forced cell to prove the gating keeps it in one state. Looked at in the browser in both languages, 75 buttons in the story root, RTL and LTR; the story pins light as Matrix does because its assertions read light tokens. 1475 of 1476 tests pass, the one failure the known KN-365 NavItem flake; lint and tsc clean.",
+      "closedAt": "2026-09-12T02:27:17.712Z"
     },
     {
       "id": "KN-317",
