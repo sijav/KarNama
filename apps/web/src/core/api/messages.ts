@@ -19,6 +19,8 @@ export const apiErrorText = (i18n: I18n, code: string): string => {
       return i18n._('That code is not right. Try again.')
     case 'UNAUTHENTICATED':
       return i18n._('Your session has expired. Sign in again.')
+    case 'DEMO_EXTRACTION_UNAVAILABLE':
+      return i18n._('Automatic extraction is not enabled for demo sign-in. You can enter the details yourself.')
     case 'EXTRACTION_NOT_CONFIGURED':
       return i18n._('Automatic extraction is unavailable. You can enter the details yourself.')
     default:

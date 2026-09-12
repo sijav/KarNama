@@ -251,7 +251,9 @@ export const AddJobModal = ({
                           error:
                             flow.errorCode === 'EXTRACTION_NOT_CONFIGURED' || flow.errorCode === 'API_NOT_CONFIGURED'
                               ? i18n._('Automatic extraction is unavailable. You can enter the details yourself.')
-                              : flow.errorCode === 'RATE_LIMITED' || flow.errorCode === 'UNAUTHENTICATED'
+                              : flow.errorCode === 'RATE_LIMITED' ||
+                                  flow.errorCode === 'UNAUTHENTICATED' ||
+                                  flow.errorCode === 'DEMO_EXTRACTION_UNAVAILABLE'
                                 ? apiErrorText(i18n, flow.errorCode)
                                 : unreadable,
                         }

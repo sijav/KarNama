@@ -13,6 +13,7 @@ import { isEmploymentType, isJobLevel } from '../../shared/job-selects'
 
 const configured: unknown = import.meta.env.VITE_API_URL
 export const apiUrl = typeof configured === 'string' ? configured : ''
+const liveAuth = import.meta.env.VITE_AUTH_MODE === 'live'
 type SessionKey = 'karnama.access-token'
 type ApiPath = '/graphql'
 type HeaderName = 'Authorization'
@@ -23,7 +24,7 @@ const AUTHORIZATION: HeaderName = 'Authorization'
 const BEARER: AuthScheme = 'Bearer'
 type SessionEvent = 'karnama:session-expired'
 export const SESSION_EXPIRED: SessionEvent = 'karnama:session-expired'
-type ClientCode = 'NETWORK_ERROR' | 'API_NOT_CONFIGURED' | 'INVALID_RESPONSE'
+type ClientCode = 'NETWORK_ERROR' | 'API_NOT_CONFIGURED' | 'INVALID_RESPONSE' | 'DEMO_EXTRACTION_UNAVAILABLE'
 const NETWORK_ERROR: ClientCode = 'NETWORK_ERROR'
 let token = ''
 try {
@@ -65,7 +66,7 @@ const client = new ApolloClient({
       if (!apiUrl) return Promise.reject(new ApiProblem('API_NOT_CONFIGURED'))
       const headers = new Headers(init?.headers)
       const authorization = [BEARER, token].join(' ')
-      if (token) headers.set(AUTHORIZATION, authorization)
+      if (liveAuth && token) headers.set(AUTHORIZATION, authorization)
       return window.fetch(input, { ...init, headers, signal: AbortSignal.timeout(120_000) })
     },
   }),
@@ -81,6 +82,7 @@ const authenticated = async <T>(action: () => Promise<T>): Promise<T> => {
     return await action()
   } catch (error) {
     if (apiProblem(error) === 'UNAUTHENTICATED') {
+      if (!liveAuth) throw new ApiProblem('DEMO_EXTRACTION_UNAVAILABLE')
       keepToken('')
       window.dispatchEvent(new Event(SESSION_EXPIRED))
     }
