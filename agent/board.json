@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 472,
+  "nextId": 475,
   "tasks": [
     {
       "id": "KN-001",
@@ -9819,7 +9819,26 @@
       "parent": [],
       "status": "done",
       "exit": "The shell takes a fallback for focus, used when the opener is gone, and a story deletes the opener and finds focus on the fallback.",
-      "roasts": [],
+      "roasts": [
+        {
+          "round": 1,
+          "score": 4,
+          "criticals": 0,
+          "file": "agent/roasts/KN-344-round-1.2026-09-12T03-44-44-919Z.md",
+          "filed": [
+            "KN-472",
+            "KN-473",
+            "KN-474",
+            "KN-434"
+          ],
+          "cardDigest": "348f08edd45e08a7f935c6fc6aeb4061de8dadc82c6d2c4237682a4db2321d6c",
+          "head": "9ff57313c25e3099cd43da792943d76f35b9ec76",
+          "reviewerScore": 4.2,
+          "reviewerCriticals": 0,
+          "dismissed": "none: all stand. The Prettier finding was fixed in place, since it was formatting in a file this task edited.",
+          "at": "2026-09-12T04:01:31.890Z"
+        }
+      ],
       "notes": [],
       "createdAt": "2026-09-11T15:16:03.732Z",
       "okr": "OKR-1",
@@ -12275,6 +12294,54 @@
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-12T03:45:22.551Z"
+    },
+    {
+      "id": "KN-472",
+      "title": "The focus fallback lands on the first card of the whole board, not the one after what was deleted",
+      "desc": "From the KN-344 roast. Both screens hand the confirmation a fallback of querySelector('article button'), which is the FIRST card rendered anywhere on the board or the page, so deleting a card in the middle of a later column drops a reader onto an unrelated record in the first column. The card's own reasoning says the next card or the list. Work out the destination from where the deleted record was: the card after it in the same column, else the one before it, else that column's own Add Card row, else the board. The network page is a grid with the same problem.",
+      "why": "Being moved to an unrelated record in another column is more disorienting than being left nowhere, because it reads as though the product jumped somewhere on its own.",
+      "severity": "high",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Deleting a card in the middle of a column leaves focus on the card after it in that column, and a story deletes a middle card and asserts which card has focus by name.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T04:01:31.293Z"
+    },
+    {
+      "id": "KN-473",
+      "title": "The focus fallback is skipped when the modal unmounts instead of closing",
+      "desc": "From the KN-344 roast. onClosed is MUI's transition-exit callback, which cannot fire once React has removed the Dialog: the browser's Back, a route change or any parent that stops rendering the modal leaves focus on a detached opener and nothing catches it. The shell should also settle focus when it unmounts while open, in a cleanup, so the two paths agree.",
+      "why": "The route can change under an open confirmation, and a reader is then left with focus on nothing at all, which is the defect KN-344 was about.",
+      "severity": "medium",
+      "points": 2,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Focus is settled whether the modal closes or is unmounted while open, and a story unmounts one mid-flight.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T04:01:31.464Z"
+    },
+    {
+      "id": "KN-474",
+      "title": "The focus stories accept any descendant, so a regression to the page root would pass",
+      "desc": "From the KN-344 roast. FocusAfterDeleting and FocusAfterDeletingFromTheModal assert only that focus is inside the screen and not on the body, so a fallback that regressed from a card's button to the page's own root Stack would still pass. Assert WHICH control has focus, by its accessible name, which is also what KN-472 needs in order to mean anything.",
+      "why": "This is the fourth assertion this session that passes for a state weaker than the one it claims, and the one guarding where a reader lands after deleting.",
+      "severity": "medium",
+      "points": 1,
+      "area": "web",
+      "parent": [],
+      "status": "backlog",
+      "exit": "Both stories name the control they expect to have focus.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-12T04:01:31.637Z"
     }
   ],
   "okrs": [

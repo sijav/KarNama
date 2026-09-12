@@ -63,7 +63,7 @@ const WithTrigger = ({ onClose, ...args }: ModalProps) => {
 const meta = {
   title: 'Shared/Modal',
   component: Modal,
-  args: { open: false, title: titleIn('fa-IR'), width: 360, onClose: fn(), children: null, actions: null , onClosed: fn()},
+  args: { open: false, title: titleIn('fa-IR'), width: 360, onClose: fn(), children: null, actions: null, onClosed: fn() },
   parameters: { controls: { include: ['title', 'width'] } },
   render: (args) => <WithTrigger {...args} />,
 } satisfies StoryMeta<typeof Modal>

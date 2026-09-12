@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 198 of 471 tasks done · 440 of 958 points.
+Project **KarNama** · 198 of 474 tasks done · 440 of 963 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
@@ -21,7 +21,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-356` | Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected | high | 2 | web | KN-428 | Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (265)
+## Backlog (268)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -53,6 +53,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-466` | The resend check passes against a resend that does nothing | high | 2 | web | none | The story uses a deterministic code maker, asserts the notice shows a different code after a resend, and asserts the first code no longer signs in. |
 | `KN-467` | The job modal was left out of the forms work, and it is the one with the most fields | high | 2 | web | none | The job modal's fields are a form whose Save submits it, and a story presses the runner's own Enter in a single-line field and sees what Save does. |
 | `KN-469` | F6 never reaches the page: the browser takes it first, so the bulk bar's key does nothing | high | 2 | web | none | The key reaches the page in Chrome and Firefox, the bar takes focus, and the story says plainly what it can and cannot prove about the browser's own dispatcher. |
+| `KN-472` | The focus fallback lands on the first card of the whole board, not the one after what was deleted | high | 2 | web | none | Deleting a card in the middle of a column leaves focus on the card after it in that column, and a story deletes a middle card and asserts which card has focus by name. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -141,6 +142,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-455` | A disabled Button with a forced state draws something node 31:4 never draws | medium | 1 | web | none | A disabled button shows its disabled look whatever data-state says, and a story renders one to prove it. |
 | `KN-461` | The sign-in docs still send readers to the browser console for the code | medium | 1 | docs | none | Neither language's SignIn introduction mentions the console as where the code is. |
 | `KN-470` | The bulk bar's key listener fires while a modal owns the page | medium | 1 | web | none | The key does nothing while a dialog has focus, and a story opens one with a selection live and presses it. |
+| `KN-474` | The focus stories accept any descendant, so a regression to the page root would pass | medium | 1 | web | none | Both stories name the control they expect to have focus. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -163,6 +165,7 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-407` | The Docs page hook and its channel are still checked by hand: a fake DocsContext would cover them, as AppProviders and PreferencesProvider are covered | medium | 2 | web | none | useDocsLocale is rendered in a test against a DocsContext and a channel the test makes: it reads the toolbar from the context, follows a globalsUpdated event, stops listening when it unmounts, and reports not known when the context yields nothing; the file leaves the coverage exclusion list, or the exclusion names what is left in it and why. |
 | `KN-426` | A disabled Icon Button cannot explain why it is off: it fires no pointer events | medium | 2 | web | none | A Tooltip wrapped round a disabled Icon Button opens on hover and on focus and says why the action is off, and whatever is decided about the tab order is written down in DESIGN.md; a story asserts it. |
 | `KN-468` | A form with display: contents can fall out of the accessibility tree | medium | 2 | web | none | Each modal's form is in the accessibility tree with a name, or the reason it does not need to be is written down. |
+| `KN-473` | The focus fallback is skipped when the modal unmounts instead of closing | medium | 2 | web | none | Focus is settled whether the modal closes or is unmounted while open, and a story unmounts one mid-flight. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -4593,6 +4596,8 @@ CHILD OF KN-028, recorded in prose because board.json cannot express parent_task
 
 **Exit condition.** The shell takes a fallback for focus, used when the opener is gone, and a story deletes the opener and finds focus on the fallback.
 
+**Roasts.** round 1 scored 4 with 0 critical(s)
+
 ### `KN-345` A modal given a blank title has no accessible name
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web
@@ -6025,4 +6030,37 @@ From the KN-330 roast: ReachedFromInsideTheList asserts the announcement by writ
 **Why.** A copy change would leave the story asserting a sentence the product no longer says, and the lint rule exists to stop exactly that.
 
 **Exit condition.** No story in bulk-action-bar writes a user-facing sentence; each resolves the id.
+
+### `KN-472` The focus fallback lands on the first card of the whole board, not the one after what was deleted
+
+- **status** backlog · **severity** high · **points** 2 · **area** web
+- **blocked by** none
+
+From the KN-344 roast. Both screens hand the confirmation a fallback of querySelector('article button'), which is the FIRST card rendered anywhere on the board or the page, so deleting a card in the middle of a later column drops a reader onto an unrelated record in the first column. The card's own reasoning says the next card or the list. Work out the destination from where the deleted record was: the card after it in the same column, else the one before it, else that column's own Add Card row, else the board. The network page is a grid with the same problem.
+
+**Why.** Being moved to an unrelated record in another column is more disorienting than being left nowhere, because it reads as though the product jumped somewhere on its own.
+
+**Exit condition.** Deleting a card in the middle of a column leaves focus on the card after it in that column, and a story deletes a middle card and asserts which card has focus by name.
+
+### `KN-473` The focus fallback is skipped when the modal unmounts instead of closing
+
+- **status** backlog · **severity** medium · **points** 2 · **area** web
+- **blocked by** none
+
+From the KN-344 roast. onClosed is MUI's transition-exit callback, which cannot fire once React has removed the Dialog: the browser's Back, a route change or any parent that stops rendering the modal leaves focus on a detached opener and nothing catches it. The shell should also settle focus when it unmounts while open, in a cleanup, so the two paths agree.
+
+**Why.** The route can change under an open confirmation, and a reader is then left with focus on nothing at all, which is the defect KN-344 was about.
+
+**Exit condition.** Focus is settled whether the modal closes or is unmounted while open, and a story unmounts one mid-flight.
+
+### `KN-474` The focus stories accept any descendant, so a regression to the page root would pass
+
+- **status** backlog · **severity** medium · **points** 1 · **area** web
+- **blocked by** none
+
+From the KN-344 roast. FocusAfterDeleting and FocusAfterDeletingFromTheModal assert only that focus is inside the screen and not on the body, so a fallback that regressed from a card's button to the page's own root Stack would still pass. Assert WHICH control has focus, by its accessible name, which is also what KN-472 needs in order to mean anything.
+
+**Why.** This is the fourth assertion this session that passes for a state weaker than the one it claims, and the one guarding where a reader lands after deleting.
+
+**Exit condition.** Both stories name the control they expect to have focus.
 
