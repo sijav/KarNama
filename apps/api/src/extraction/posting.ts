@@ -102,12 +102,90 @@ export const readPosting = async (source: string, redirects = 0, signal = AbortS
   })
 }
 
+// A page reaches postingText at up to two million characters, and every pass
+// here reads it once, however it is built. The block and tag passes used to be
+// the patterns <(script|style|nav|footer)\b[^>]*>[\s\S]*?<\/\1\s*> and
+// <[^>]+>, which start again at every `<` and read on to the end of the page
+// whenever nothing closes what they found: two million characters of `&lt;`
+// took a minute of the API's one process, and `<script` repeated five, KN-483.
+// Cutting the page first would have been quicker to write and would have cut
+// markup rather than text, losing a posting that starts deep in its page. The
+// scans below keep the patterns' meaning exactly, which posting.test.ts checks
+// against the patterns themselves on generated pages.
+
+// The blocks the extraction never needs, in the order the opening lists them,
+// so the group a match filled names its block.
+const BLOCKS = ['script', 'style', 'nav', 'footer'] as const
+type Block = (typeof BLOCKS)[number]
+const OPENING = /<(?:(script)|(style)|(nav)|(footer))\b/giu
+const CLOSING: Record<Block, RegExp> = {
+  script: /<\/script\s*>/giu,
+  style: /<\/style\s*>/giu,
+  nav: /<\/nav\s*>/giu,
+  footer: /<\/footer\s*>/giu,
+}
+const blockOf = (open: RegExpExecArray) =>
+  BLOCKS.reduce<Block>((found, block, at) => (open[at + 1] === undefined ? found : block), 'script')
+
+// A block runs from its opening's `>` to the first closing tag of its own name
+// after it, and becomes one space. Each search goes on from where the last one
+// ended, and the one that can read to the end of the page, a closing tag that
+// never comes, happens once a name: no later opening of it can close either.
+const withoutBlocks = (html: string) => {
+  const kept: string[] = []
+  const unclosed = new Set<Block>()
+  let from = 0
+  OPENING.lastIndex = 0
+  for (let open = OPENING.exec(html); open !== null; open = OPENING.exec(html)) {
+    const block = blockOf(open)
+    if (unclosed.has(block)) {
+      OPENING.lastIndex = open.index + 1
+      continue
+    }
+    // No `>` left means no opening can end, this one or any after it.
+    const end = html.indexOf('>', OPENING.lastIndex)
+    if (end === -1) break
+    const closing = CLOSING[block]
+    closing.lastIndex = end + 1
+    const close = closing.exec(html)
+    if (close === null) {
+      // The opening stays, as the pattern left it, and the search goes on
+      // inside it, where the pattern would have looked next.
+      unclosed.add(block)
+      OPENING.lastIndex = open.index + 1
+      continue
+    }
+    kept.push(html.slice(from, open.index), ' ')
+    from = close.index + close[0].length
+    OPENING.lastIndex = from
+  }
+  kept.push(html.slice(from))
+  return kept.join('')
+}
+
+// A tag runs from a `<` to the first `>` after it and becomes one space; `<>`
+// is not one, because the pattern wanted a character between. With no `>`
+// after a `<`, there is none after any later `<` either, so the rest stays.
+const withoutTags = (html: string) => {
+  const kept: string[] = []
+  let from = 0
+  for (let at = html.indexOf('<'); at !== -1;) {
+    const end = html.indexOf('>', at + 1)
+    if (end === -1) break
+    if (end === at + 1) {
+      at = html.indexOf('<', end)
+      continue
+    }
+    kept.push(html.slice(from, at), ' ')
+    from = end + 1
+    at = html.indexOf('<', from)
+  }
+  kept.push(html.slice(from))
+  return kept.join('')
+}
+
 export const postingText = (html: string) =>
-  html
-    .replace(/&lt;/giu, '<')
-    .replace(/&gt;/giu, '>')
-    .replace(/<(script|style|nav|footer)\b[^>]*>[\s\S]*?<\/\1\s*>/giu, ' ')
-    .replace(/<[^>]+>/gu, ' ')
+  withoutTags(withoutBlocks(html.replace(/&lt;/giu, '<').replace(/&gt;/giu, '>')))
     .replace(/&nbsp;/giu, ' ')
     .replace(/&amp;/giu, '&')
     .replace(/&quot;/giu, '"')
