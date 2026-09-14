@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { jobsIn, withStatus } from '../../core/records'
 import { locales, type Locale } from '../../i18n'
 import { status, type StatusToken } from '../../theme/tokens'
 import { fixtures, parseFixtures, statusName, type RawFixtures } from './index'
@@ -9,6 +10,9 @@ const LOCALES = Object.keys(locales).filter((locale): locale is Locale => locale
 // the design's five in their order, the custom statuses where a reader's own
 // stages go, and rejected last whatever else is on the board.
 const ORDER: readonly StatusToken[] = ['new', 'applied', 'interview', 'offer', 'custom-1', 'custom-2', 'custom-3', 'custom-4', 'rejected']
+
+// A status a fixture job opportunity is moved to.
+const OFFER: StatusToken = 'offer'
 
 // Every source file under src, as text, so a test can read what imports what
 // without the file system.
@@ -79,6 +83,84 @@ describe('story fixtures', () => {
         expect(column.jobs.length).toBeGreaterThan(0)
         expect(column.jobs.every((job) => job.status === column.token)).toBe(true)
       }
+    }
+  })
+
+  it('give every status in the product’s own shape, the token as its id, KN-437', () => {
+    for (const locale of LOCALES) {
+      const set = fixtures(locale)
+      expect(set.statusOptions.map((option) => option.token)).toEqual(set.statuses.map((entry) => entry.token))
+      for (const option of set.statusOptions) {
+        expect(option).toEqual({ id: option.token, token: option.token, name: statusName(locale, option.token) })
+        expect(Object.isFrozen(option)).toBe(true)
+      }
+      expect(Object.isFrozen(set.statusOptions)).toBe(true)
+    }
+  })
+
+  it('give each board column its status’s id, which everything that reads a column keys on, KN-437', () => {
+    for (const locale of LOCALES) {
+      const set = fixtures(locale)
+      for (const column of set.board) {
+        expect(set.statusOptions.find((option) => option.id === column.id)).toEqual({
+          id: column.id,
+          token: column.token,
+          name: column.name,
+        })
+      }
+    }
+  })
+
+  it('hold the records the product keeps, built from the same fixtures, KN-437', () => {
+    for (const locale of LOCALES) {
+      const set = fixtures(locale)
+      const { records } = set
+      expect(records.statuses).toBe(set.statusOptions)
+      // Every job opportunity as the product keeps one, under the fixture's own
+      // id, in its own status, with what the fixture says of it.
+      expect(records.jobs.map((entry) => entry.id)).toEqual(set.jobs.map((job) => job.id))
+      for (const job of set.jobs) {
+        const entry = records.jobs.find((held) => held.id === job.id)
+        expect(entry?.draft).toMatchObject({
+          status: job.status,
+          title: job.title,
+          company: job.company,
+          location: job.location,
+          postedAt: job.postedAt,
+          postingUrl: job.link ?? '',
+        })
+        expect(entry?.history.map((change) => change.status)).toEqual([job.status])
+      }
+      // Every contact on the job opportunity the fixture puts them on.
+      expect(records.contacts.map((held) => [held.id, held.jobId, held.contact.name])).toEqual(
+        set.contacts.map((contact) => [contact.id, contact.jobId, contact.fullName]),
+      )
+    }
+  })
+
+  it('can be handed to the product: its own jobsIn finds each board column’s job opportunities in the records, KN-437', () => {
+    for (const locale of LOCALES) {
+      const set = fixtures(locale)
+      for (const column of set.board) {
+        expect(jobsIn(set.records.jobs, column.id, '', 'newest').map((entry) => entry.id)).toEqual(column.jobs.map((job) => job.id))
+      }
+    }
+  })
+
+  it('freeze the records all the way down, and a change the product makes to them builds new objects, KN-437', () => {
+    // Where anything below the records is not frozen, by its path.
+    const unfrozen = (value: unknown, path: string): string[] =>
+      typeof value !== 'object' || value === null
+        ? []
+        : [...(Object.isFrozen(value) ? [] : [path]), ...Object.entries(value).flatMap(([key, inner]) => unfrozen(inner, `${path}.${key}`))]
+    for (const locale of LOCALES) {
+      const { records } = fixtures(locale)
+      expect(unfrozen(records, locale)).toEqual([])
+      const [first] = records.jobs
+      if (!first) throw new Error('the records hold no job opportunity')
+      const moved = withStatus(first, OFFER, new Date(Date.UTC(2026, 8, 20)).toISOString())
+      expect(moved.draft.status).toBe(OFFER)
+      expect(first.draft.status).not.toBe(OFFER)
     }
   })
 

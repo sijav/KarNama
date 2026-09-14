@@ -1,7 +1,10 @@
 import type { Locale } from '../../i18n'
-// The board's own order, taken from the product rather than restated here.
-import { columnOrder } from '../../core/records'
+// The board's own order and the product's own records, taken from the product
+// rather than restated here.
+import { columnOrder, jobFrom, type Records } from '../../core/records'
 import { status, type StatusToken } from '../../theme/tokens'
+import { emptyDraft } from '../add-job/draft'
+import type { StatusOption } from '../status-picker'
 import enUS from './en-US.json'
 import faIR from './fa-IR.json'
 
@@ -94,7 +97,8 @@ export interface NoteFixture {
 }
 
 /**
- * One column of the seeded board: a status, and the job opportunities in it.
+ * One column of the seeded board: a status, in the product's own shape with its
+ * id, KN-437, and the job opportunities in it.
  *
  * Built rather than written, KN-305: a board authored beside the jobs would
  * drift from them the first time a job's status changed, and every Board story
@@ -102,14 +106,17 @@ export interface NoteFixture {
  * statuses and the jobs through the product's OWN `columnOrder`, so what the
  * fixtures hold is the order the board really draws, rejected last, KN-070.
  */
-export interface BoardColumnFixture {
-  token: StatusToken
-  name: string
+export interface BoardColumnFixture extends StatusOption {
   jobs: readonly JobFixture[]
 }
 
 export interface Fixtures {
   statuses: readonly StatusFixture[]
+  /**
+   * The same statuses in the product's own shape, the token as the id as the
+   * product's defaults have it, for anything that takes a `StatusOption`, KN-437.
+   */
+  statusOptions: readonly StatusOption[]
   // Each status's name by its token, every one of the nine present.
   names: Readonly<Record<StatusToken, string>>
   renamedStatus: StatusFixture
@@ -122,6 +129,13 @@ export interface Fixtures {
   mixedStatusNames: MixedStatusNamesFixture
   /** The statuses in the board's order, each with its own job opportunities. */
   board: readonly BoardColumnFixture[]
+  /**
+   * The fixtures as the product keeps them, for a story to seed a
+   * `RecordsProvider` with, KN-437: every status, every job opportunity made by
+   * the product's own `jobFrom` under the fixture's id, and every contact on the
+   * job opportunity the fixture names.
+   */
+  records: Records
 }
 
 // The shape of one locale's JSON, with its status tokens still plain strings.
@@ -144,13 +158,62 @@ const tokenOf = (value: string): StatusToken => {
   return value
 }
 
+// Frozen all the way down, so a story seeding a provider with the records cannot
+// change what another story reads.
+const freeze = (value: unknown): void => {
+  if (typeof value !== 'object' || value === null) return
+  for (const inner of Object.values(value)) freeze(inner)
+  Object.freeze(value)
+}
+
+// The fixtures as the product keeps them, KN-437. Each job opportunity is made by
+// the product's own jobFrom, in its own status and under the fixture's id, added
+// a day apart, built rather than written; each contact is on the job opportunity
+// the fixture names.
+const recordsOf = (statuses: readonly StatusOption[], jobs: readonly JobFixture[], contacts: readonly ContactFixture[]): Records => {
+  const records: Records = {
+    statuses,
+    jobs: jobs.map((job, at) => ({
+      ...jobFrom(
+        {
+          ...emptyDraft(job.status),
+          title: job.title,
+          company: job.company,
+          location: job.location,
+          postedAt: job.postedAt,
+          postingUrl: job.link ?? '',
+        },
+        new Date(Date.UTC(2026, 8, at + 1, 9)).toISOString(),
+      ),
+      id: job.id,
+    })),
+    contacts: contacts.map((contact) => ({
+      id: contact.id,
+      jobId: contact.jobId,
+      contact: {
+        name: contact.fullName,
+        role: contact.role,
+        company: contact.company,
+        email: contact.email,
+        phone: contact.phone,
+        linkedin: contact.linkedin,
+        job: null,
+      },
+    })),
+  }
+  freeze(records)
+  return records
+}
+
 // Parsed into the typed shape, every status token checked against the nine
 // and every one of the nine named, and frozen all the way down, so no story
 // can change what another reads.
 export const parseFixtures = (raw: RawFixtures): Fixtures => {
   const statusOf = (entry: RawFixtures['renamedStatus']): StatusFixture => Object.freeze({ ...entry, token: tokenOf(entry.token) })
   const statuses = raw.statuses.map(statusOf)
+  const statusOptions = Object.freeze(statuses.map((entry) => Object.freeze({ id: entry.token, token: entry.token, name: entry.name })))
   const jobs = Object.freeze(raw.jobs.map((job) => Object.freeze({ ...job, status: tokenOf(job.status) })))
+  const contacts = Object.freeze(raw.contacts.map((contact) => Object.freeze({ ...contact })))
   const nameOf = (token: StatusToken) => {
     const found = statuses.find((entry) => entry.token === token)
     if (!found) throw new Error(`the story fixtures have no status ${token}`)
@@ -169,11 +232,12 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
   }
   return Object.freeze({
     statuses: Object.freeze(statuses),
+    statusOptions,
     names: Object.freeze(names),
     renamedStatus: statusOf(raw.renamedStatus),
     longStatusName: raw.longStatusName,
     jobs,
-    contacts: Object.freeze(raw.contacts.map((contact) => Object.freeze({ ...contact }))),
+    contacts,
     notes: Object.freeze(raw.notes.map((note) => Object.freeze({ ...note }))),
     extraction: Object.freeze({ ...raw.extraction }),
     jobDetail: Object.freeze({
@@ -184,14 +248,11 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     }),
     mixedStatusNames: Object.freeze({ ...raw.mixedStatusNames }),
     board: Object.freeze(
-      columnOrder(statuses.map((entry) => ({ id: entry.token, token: entry.token, name: entry.name }))).map((column) =>
-        Object.freeze({
-          token: column.token,
-          name: column.name,
-          jobs: Object.freeze(jobs.filter((job) => job.status === column.token)),
-        }),
+      columnOrder(statusOptions).map((column) =>
+        Object.freeze({ ...column, jobs: Object.freeze(jobs.filter((job) => job.status === column.token)) }),
       ),
     ),
+    records: recordsOf(statusOptions, jobs, contacts),
   })
 }
 

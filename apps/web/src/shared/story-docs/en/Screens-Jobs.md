@@ -45,8 +45,9 @@ and use the bulk status action.
 
 ### Board
 
-A board seeded with the fixtures' job opportunities, one per status, in
-Persian.
+The fixtures' own board, in Persian: all nine statuses, the design's five and
+four of a reader's own, each holding its job opportunity, in the order the board
+draws them.
 
 ### InEnglish
 

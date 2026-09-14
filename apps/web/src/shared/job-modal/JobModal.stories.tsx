@@ -9,7 +9,6 @@ import type { StatusToken } from '../../theme/tokens'
 import { emptyDraft } from '../add-job'
 import { JobCard } from '../job-card'
 import type { JobLevel } from '../job-selects'
-import type { StatusOption } from '../status-picker'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
 import { JobModal, type JobModalProps, type JobModalTab, type JobRecord, type JobSaved } from './JobModal'
@@ -22,12 +21,6 @@ const FIRST_TAB: JobModalTab = 'info'
 const DROP: keyof HTMLElementEventMap = 'drop'
 const TABS: JobModalTab[] = ['info', 'history', 'note', 'contacts', 'files']
 const CONTROLLED: (keyof JobModalProps)[] = ['open', 'tab']
-
-// The board's five first statuses, from the story fixtures.
-const statusesIn = (locale: Locale): StatusOption[] =>
-  fixtures(locale)
-    .statuses.slice(0, 5)
-    .map((entry) => ({ id: entry.token, token: entry.token, name: entry.name }))
 
 // A job opportunity's whole record from the story fixtures: the first job with
 // what reading its posting found, its description, skills, note, the first
@@ -83,7 +76,8 @@ const meta = {
   args: {
     open: true,
     job: recordIn('fa-IR'),
-    statuses: statusesIn('fa-IR'),
+    // The five statuses the product starts with, the fixtures' first five.
+    statuses: fixtures('fa-IR').statusOptions.slice(0, 5),
     tab: 'info',
     onStatusChange: fn(),
     onAddStatus: fn(),
@@ -380,7 +374,7 @@ export const Phone: Story = {
 }
 
 export const InEnglish: Story = {
-  args: { job: recordIn('en-US'), statuses: statusesIn('en-US') },
+  args: { job: recordIn('en-US'), statuses: fixtures('en-US').statusOptions.slice(0, 5) },
   globals: { locale: 'en-US' },
   play: async ({ args }) => {
     const i18n = english
@@ -432,7 +426,7 @@ const Swappable = ({ onSave }: { onSave: (job: JobSaved) => void }) => {
       <JobModal
         open
         job={record}
-        statuses={statusesIn('fa-IR')}
+        statuses={fixtures('fa-IR').statusOptions.slice(0, 5)}
         onStatusChange={fn()}
         onAddStatus={fn()}
         onSave={onSave}

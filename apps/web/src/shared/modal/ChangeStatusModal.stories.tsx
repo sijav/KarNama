@@ -2,9 +2,7 @@ import { useLingui } from '@lingui/react'
 import type { StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
-import type { Locale } from '../../i18n'
 import { Button } from '../button'
-import type { StatusOption } from '../status-picker'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
 import { ChangeStatusModal, type ChangeStatusModalProps } from './ChangeStatusModal'
@@ -13,10 +11,6 @@ import type { StatusToken } from '../../theme/tokens'
 
 // The status the story opens on.
 const INTERVIEW: StatusToken = 'interview'
-
-// The board's statuses, their names in the language a story pins.
-const statusesIn = (locale: Locale): StatusOption[] =>
-  fixtures(locale).statuses.map((status) => ({ id: status.token, token: status.token, name: status.name }))
 
 // The modal opens from a trigger; either answer closes it and calls the args.
 const WithTrigger = ({ onConfirm, onCancel, ...args }: ChangeStatusModalProps) => {
@@ -50,7 +44,7 @@ const WithTrigger = ({ onConfirm, onCancel, ...args }: ChangeStatusModalProps) =
 const meta = {
   title: 'Shared/ChangeStatusModal',
   component: ChangeStatusModal,
-  args: { open: false, statuses: statusesIn('fa-IR'), value: INTERVIEW, onConfirm: fn(), onCancel: fn(), onAdd: fn() },
+  args: { open: false, statuses: fixtures('fa-IR').statusOptions, value: INTERVIEW, onConfirm: fn(), onCancel: fn(), onAdd: fn() },
   parameters: { controls: { include: ['value'] } },
   render: (args) => <WithTrigger {...args} />,
 } satisfies StoryMeta<typeof ChangeStatusModal>

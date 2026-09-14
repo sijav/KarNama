@@ -1,18 +1,12 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
-import type { Locale } from '../../i18n'
 import { i18n } from '../../i18n'
 import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
-import { StatusPicker, type StatusOption } from './StatusPicker'
+import { StatusPicker } from './StatusPicker'
 
-// The board's five statuses, their names in the language a story pins, as the
-// user named them: data, not copy.
-const statusesIn = (locale: Locale): StatusOption[] =>
-  fixtures(locale).statuses.map((status) => ({ id: status.token, token: status.token, name: status.name }))
-
-const FA = statusesIn('fa-IR')
+const FA = fixtures('fa-IR').statusOptions
 
 const meta = {
   title: 'Shared/StatusPicker',
@@ -128,7 +122,7 @@ export const Hover: Story = {
 }
 
 export const InEnglish: Story = {
-  args: { statuses: statusesIn('en-US') },
+  args: { statuses: fixtures('en-US').statusOptions },
   globals: { locale: 'en-US' },
   play: async ({ args, canvasElement }) => {
     const radios = within(canvasElement).getAllByRole('radio')
@@ -207,7 +201,7 @@ export const ArrowsInPersian: Story = {
 }
 
 export const ArrowsInEnglish: Story = {
-  args: { statuses: statusesIn('en-US') },
+  args: { statuses: fixtures('en-US').statusOptions },
   globals: { locale: 'en-US' },
   play: arrowsFollowTheScreen('ltr'),
 }

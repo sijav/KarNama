@@ -5,18 +5,10 @@ import { expect, fireEvent, fn, userEvent, waitFor, within } from 'storybook/tes
 import type { Locale } from '../../i18n'
 import { messages as en } from '../../i18n/locales/en-US'
 import type { JobLevel } from '../job-selects'
-import type { StatusOption } from '../status-picker'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
 import { AddJobModal, type AddJobModalProps, type AddJobStep } from './AddJobModal'
 import type { JobDraft } from './draft'
-
-// The board's five first statuses as the picker offers them, from the story
-// fixtures; a new job opportunity starts in the first, «ذخیره‌شده».
-const statusesIn = (locale: Locale): StatusOption[] =>
-  fixtures(locale)
-    .statuses.slice(0, 5)
-    .map((entry) => ({ id: entry.token, token: entry.token, name: entry.name }))
 
 // What reading the posting finds, the Review step of node 150:94: the title and
 // company of a fixture job, full-time, a senior specialist, and the rest of
@@ -46,7 +38,9 @@ const meta = {
   component: AddJobModal,
   args: {
     open: true,
-    statuses: statusesIn('fa-IR'),
+    // The five statuses the product starts with, the fixtures' first five; a new
+    // job opportunity starts in the first, «ذخیره‌شده».
+    statuses: fixtures('fa-IR').statusOptions.slice(0, 5),
     status: 'new',
     step: 'paste',
     source: '',
@@ -266,7 +260,7 @@ export const Phone: Story = {
 }
 
 export const InEnglish: Story = {
-  args: { statuses: statusesIn('en-US') },
+  args: { statuses: fixtures('en-US').statusOptions.slice(0, 5) },
   globals: { locale: 'en-US' },
   play: async () => {
     const i18n = english

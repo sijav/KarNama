@@ -1,5 +1,6 @@
-import type { StoryObj } from '@storybook/react-vite'
+import type { Decorator, StoryObj } from '@storybook/react-vite'
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
+import { isLocale } from '../i18n'
 import { formatCount } from '../i18n/formatCount'
 import { defaultStatuses, jobFrom, RecordsProvider, STORAGE_KEY, type JobEntry, type Records } from '../core/records'
 import { emptyDraft } from '../shared/add-job'
@@ -50,24 +51,46 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+// The fixtures' own board, KN-437: the nine statuses and the job opportunity in
+// each, as the product keeps them, in the story's language. Keyed on the
+// language, since a provider reads the records it starts from once.
+const fixtureBoard: Decorator = (Story, context) => {
+  const chosen: unknown = context.globals.locale
+  const locale = typeof chosen === 'string' && isLocale(chosen) ? chosen : 'fa-IR'
+  return (
+    <RecordsProvider key={locale} initial={fixtures(locale).records}>
+      <Story />
+    </RecordsProvider>
+  )
+}
+
 export const Board: Story = {
   globals: { locale: 'fa-IR' },
+  decorators: [fixtureBoard],
   play: async ({ canvasElement }) => {
+    // The board fixture, drawn, KN-437: a column for each of the nine statuses,
+    // named as the fixtures name it, in the board's order from the inline start,
+    // each holding its own job opportunities. The rejected column is collapsed
+    // until it is opened.
     const canvas = within(canvasElement)
-    // A column for each status the board holds, named as the reader named it,
-    // and the first fixture's job opportunity in one of them.
-    const set = fixtures('fa-IR')
-    // Each column's name as the reader has it, read from the same place the
-    // board reads it rather than written out here.
-    for (const status of defaultStatuses((token) => set.names[token])) {
-      await expect(canvas.getAllByText(status.name).length).toBeGreaterThan(0)
+    const { board } = fixtures('fa-IR')
+    const rejected = board.at(-1)
+    if (!rejected) throw new Error('the board fixture has no columns')
+    await userEvent.click(canvas.getByRole('button', { name: new RegExp(rejected.name) }))
+    let before: Element | null = null
+    for (const column of board) {
+      const region = await canvas.findByRole('region', { name: column.name })
+      if (before)
+        await expect(before.compareDocumentPosition(region) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+      for (const job of column.jobs) await expect(within(region).getByText(job.title)).toBeInTheDocument()
+      before = region
     }
-    await expect(canvas.getByText(set.jobs[0]?.title ?? '')).toBeInTheDocument()
   },
 }
 
 export const InEnglish: Story = {
   globals: { locale: 'en-US' },
+  decorators: [fixtureBoard],
 }
 
 export const DragAndDrop: Story = {

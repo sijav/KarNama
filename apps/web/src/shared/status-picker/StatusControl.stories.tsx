@@ -1,13 +1,11 @@
 import { setupI18n } from '@lingui/core'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
-import type { Locale } from '../../i18n'
 import { messages as fa } from '../../i18n/locales/fa-IR'
 import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
 import { StatusControl } from './StatusControl'
-import type { StatusOption } from './StatusPicker'
 
 import type { StatusToken } from '../../theme/tokens'
 
@@ -17,14 +15,10 @@ const INTERVIEW: StatusToken = 'interview'
 // The Persian catalog, for the names the pinned Persian stories find.
 const i18n = setupI18n({ locale: 'fa-IR', messages: { 'fa-IR': fa } })
 
-// The board's five statuses, their names in the language a story pins.
-const statusesIn = (locale: Locale): StatusOption[] =>
-  fixtures(locale).statuses.map((status) => ({ id: status.token, token: status.token, name: status.name }))
-
 const meta = {
   title: 'Shared/StatusControl',
   component: StatusControl,
-  args: { statuses: statusesIn('fa-IR'), value: INTERVIEW, onChange: fn(), onAdd: fn() },
+  args: { statuses: fixtures('fa-IR').statusOptions, value: INTERVIEW, onChange: fn(), onAdd: fn() },
   parameters: { controls: { include: ['value'] } },
 } satisfies StoryMeta<typeof StatusControl>
 
@@ -129,7 +123,7 @@ export const EscapeCancels: Story = {
 }
 
 export const InEnglish: Story = {
-  args: { statuses: statusesIn('en-US') },
+  args: { statuses: fixtures('en-US').statusOptions },
   globals: { locale: 'en-US' },
   play: async ({ args, canvasElement }) => {
     const control = within(canvasElement).getByRole('button')
