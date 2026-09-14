@@ -132,15 +132,30 @@ JobsScreen's `ChangedInAnotherTab`, which win the same race by 9 and 23 ms.
 
 ## The next step
 
-**KN-561 is in progress**: Button's `States` counts no forced cells in the first
-frame of the published Storybook. Measured on a production build with a frame
-counter and a `MutationObserver`: at frame 7 the 75 buttons arrived with 45 already
-carrying `data-state`, and every frame callback after saw 45, so KN-454's fix holds
-and nothing flashes; the story's single frame callback, scheduled in `beforeEach`,
-ran before any button existed. The plan, beside the story, counts in the first
-frame that has the buttons, proved by a plant that moves the ref callback back into
-an effect; Codex was reviewing it. `Button.stories.tsx` was not formatted at HEAD,
-64 lines of drift; the `States` docs entries do not mention the count.
+**KN-561** (bfeafa6) is closed: Button's `States` failed in production because its
+one frame callback ran before any button existed; the forced states land in the
+commit that draws the buttons, so nothing flashes. The matrix's root now records
+its buttons and forced cells in a `useLayoutEffect` and the play asserts 75 and
+45; a plant setting `data-state` from a `useEffect` records 0 forced under Vitest
+and in production. Its roast filed **KN-566**: the comments and plan call that
+record the first paint and say a passive effect always runs after the paint.
+
+**KN-562 is in progress**: the Input's `ControlsMatchTheCanvasInEnglish` fails in
+production because the args keep the Persian copy. Cause, confirmed on a
+production build with a log planted in the render: the meta render reads
+`specimenCopy()` from the shared `i18n` singleton during render, and since KN-134
+`AppProviders` activates that singleton in a `useLayoutEffect`, after the render;
+both renders of the English story logged the singleton on `fa-IR` under a document
+already `lang="en-US"`, computed Persian copy, wrote nothing back, and nothing
+rendered it again. The render's comment, "the providers activate it before this
+runs", is what KN-134 made false. `LatinInAnEnglishPage` passes because it reads
+its catalog through `useLingui()`. No plan yet: the render should take the
+language from the story's globals and that language's own catalog, `i18nFor`.
+The same stale read is in other story renders, filed as its own card: every fixed
+Input story renders through `JobTitle`, which drew «عنوان شغلی» with the toolbar
+on English, and CardMenu's and StatusMenu's story triggers take their
+`aria-label` from the singleton while rendering; the other files that import it
+call it only in plays.
 
 ## What to read first
 
