@@ -70,7 +70,8 @@ export const Board: Story = {
   play: async ({ canvasElement }) => {
     // The board fixture, drawn, KN-437: a column for each of the nine statuses,
     // named as the fixtures name it, in the board's order from the inline start,
-    // each holding its own job opportunities. The rejected column is collapsed
+    // holding its job opportunities as unevenly as the fixture does, KN-438: one
+    // column empty, one holding several, and rejected the fullest, collapsed
     // until it is opened.
     const canvas = within(canvasElement)
     const { board } = fixtures('fa-IR')

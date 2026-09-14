@@ -46,8 +46,9 @@ and use the bulk status action.
 ### Board
 
 The fixtures' own board, in Persian: all nine statuses, the design's five and
-four of a reader's own, each holding its job opportunity, in the order the board
-draws them.
+four of a reader's own, in the order the board draws them, holding their job
+opportunities unevenly as a reader's board does: one column empty, one holding
+several, and rejected the fullest, collapsed until it is opened.
 
 ### InEnglish
 

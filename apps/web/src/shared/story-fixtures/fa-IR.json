@@ -19,9 +19,16 @@
     { "id": "job-4", "title": "کارشناس تضمین کیفیت", "company": "گروه نرم‌افزاری آسمان", "status": "rejected", "location": "شیراز", "postedAt": "2026-07-15", "link": "https://example.com/jobs/4" },
     { "id": "job-5", "title": "مدیر محصول", "company": "راهکار داده", "status": "offer", "location": "تهران", "postedAt": "2026-08-01", "link": "https://example.com/jobs/5" },
     { "id": "job-6", "title": "تحلیل‌گر داده", "company": "بینش هوشمند", "status": "custom-1", "location": "مشهد", "postedAt": "2026-08-25", "link": null },
-    { "id": "job-7", "title": "کارشناس پشتیبانی فنی", "company": "داده‌ورزان سپند", "status": "custom-2", "location": "تبریز", "postedAt": "2026-08-18", "link": "https://example.com/jobs/7" },
+    { "id": "job-7", "title": "کارشناس پشتیبانی فنی", "company": "داده‌ورزان سپند", "status": "applied", "location": "تبریز", "postedAt": "2026-08-18", "link": "https://example.com/jobs/7" },
     { "id": "job-8", "title": "سرتیم موبایل", "company": "سپهر آینده", "status": "custom-3", "location": "تهران، دورکاری", "postedAt": "2026-07-29", "link": null },
-    { "id": "job-9", "title": "کارشناس امنیت شبکه", "company": "داده‌پرداز ایرانیان", "status": "custom-4", "location": "کرج", "postedAt": "2026-09-05", "link": "https://example.com/jobs/9" }
+    { "id": "job-9", "title": "کارشناس امنیت شبکه", "company": "داده‌پرداز ایرانیان", "status": "custom-4", "location": "کرج", "postedAt": "2026-09-05", "link": "https://example.com/jobs/9" },
+    { "id": "job-10", "title": "برنامه‌نویس پایتون", "company": "ابرپیمای سپهر", "status": "new", "location": "تهران", "postedAt": "2026-09-08", "link": "https://example.com/jobs/10" },
+    { "id": "job-11", "title": "طراح رابط کاربری", "company": "نگارینه رسانه", "status": "new", "location": "کرج", "postedAt": "2026-09-10", "link": null },
+    { "id": "job-12", "title": "مهندس داده", "company": "داده‌کاوان پارسه", "status": "rejected", "location": "تهران، دورکاری", "postedAt": "2026-06-20", "link": "https://example.com/jobs/12" },
+    { "id": "job-13", "title": "کارشناس سئو", "company": "بازارگستر نوین", "status": "rejected", "location": "اصفهان", "postedAt": "2026-06-28", "link": null },
+    { "id": "job-14", "title": "برنامه‌نویس اندروید", "company": "نوآوران رایا", "status": "rejected", "location": "شیراز", "postedAt": "2026-07-02", "link": "https://example.com/jobs/14" },
+    { "id": "job-15", "title": "مدیر پروژهٔ نرم‌افزار", "company": "رایان‌سازان البرز", "status": "rejected", "location": "تهران", "postedAt": "2026-07-08", "link": "https://example.com/jobs/15" },
+    { "id": "job-16", "title": "تحلیل‌گر کسب‌وکار", "company": "افق‌نگر داده", "status": "rejected", "location": "مشهد", "postedAt": "2026-07-21", "link": null }
   ],
   "contacts": [
     { "id": "contact-1", "fullName": "سارا محمدی", "role": "مدیر منابع انسانی", "company": "فناوران نوین پارس", "email": "sara@example.com", "phone": "09121234567", "linkedin": "linkedin.com/in/saramohammadi", "jobId": "job-1" },

@@ -14,6 +14,11 @@ const ORDER: readonly StatusToken[] = ['new', 'applied', 'interview', 'offer', '
 // A status a fixture job opportunity is moved to.
 const OFFER: StatusToken = 'offer'
 
+// The column the board fixture leaves empty, the fixtures' own count for custom-2
+// being zero, and the column the board collapses.
+const EMPTY: StatusToken = 'custom-2'
+const REJECTED: StatusToken = 'rejected'
+
 // Every source file under src, as text, so a test can read what imports what
 // without the file system.
 const sources = import.meta.glob<string>('/src/**/*.{ts,tsx}', { query: '?raw', import: 'default', eager: true })
@@ -49,16 +54,19 @@ describe('story fixtures', () => {
     expect(second.mixedStatusNames).toEqual(first.mixedStatusNames)
   })
 
-  it('hold a job opportunity in every one of the nine statuses, in both languages', () => {
-    // KN-305: the Card draws its stripe in nine colours and the Board a column
-    // per status, and three of the nine had no job opportunity at all, so every
-    // story that wanted one built its own board and they drifted apart.
+  it('hold a board worth drawing: custom-2 empty, a column holding several, and rejected the fullest, KN-438', () => {
+    // KN-305 put one job opportunity in every status so that no story built a
+    // board of its own, which left the board no reader has: nothing worth
+    // collapsing, nothing a sort reorders, and no empty column, which the design
+    // draws, 241:46.
     for (const locale of LOCALES) {
-      const set = fixtures(locale)
-      const held = set.jobs.map((job) => job.status)
-      for (const token of Object.keys(status)) {
-        expect.soft(held, `${locale} has no job opportunity in ${token}`).toContain(token)
-      }
+      const counts = new Map(fixtures(locale).board.map((column) => [column.token, column.jobs.length]))
+      const rejected = counts.get(REJECTED) ?? 0
+      const others = [...counts].filter(([token]) => token !== REJECTED).map(([, count]) => count)
+      expect(counts.get(EMPTY), `${locale}'s ${EMPTY} column is not empty`).toBe(0)
+      expect(Math.max(...others), `${locale} has no column holding several`).toBeGreaterThanOrEqual(3)
+      expect(rejected, `${locale}'s rejected column is not worth collapsing`).toBeGreaterThanOrEqual(5)
+      expect(rejected, `${locale}'s rejected column is not the fullest`).toBeGreaterThan(Math.max(...others))
     }
   })
 
@@ -76,11 +84,10 @@ describe('story fixtures', () => {
       }
 
       // Every job opportunity stands in exactly one column, the one its own
-      // status names, and every column holds at least one.
+      // status names.
       const placed = set.board.flatMap((column) => column.jobs.map((job) => job.id))
       expect([...placed].sort()).toEqual([...set.jobs.map((job) => job.id)].sort())
       for (const column of set.board) {
-        expect(column.jobs.length).toBeGreaterThan(0)
         expect(column.jobs.every((job) => job.status === column.token)).toBe(true)
       }
     }
@@ -142,7 +149,14 @@ describe('story fixtures', () => {
     for (const locale of LOCALES) {
       const set = fixtures(locale)
       for (const column of set.board) {
-        expect(jobsIn(set.records.jobs, column.id, '', 'newest').map((entry) => entry.id)).toEqual(column.jobs.map((job) => job.id))
+        // As sorted arrays: the product orders a column by posting date and then
+        // by when a job opportunity was added, and a column holds several; an
+        // array, unlike a set, still counts a job opportunity found twice.
+        expect(
+          jobsIn(set.records.jobs, column.id, '', 'newest')
+            .map((entry) => entry.id)
+            .sort(),
+        ).toEqual(column.jobs.map((job) => job.id).sort())
       }
     }
   })
