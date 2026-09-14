@@ -118,21 +118,29 @@ started. Its roast filed nothing: the replaced console after leaving the Docs pa
 did not reproduce. **KN-379** was dropped as its duplicate. **KN-090** carries a
 note that the Docs page keeps `lang="fa-IR"` under English prose.
 
+**KN-560** (481b66c), closed on 2026-09-15: App/Shell's `SignedInInAnotherTab`
+dispatched another tab's `karnama.session` at 330 ms with no storage listener on
+the window, the providers adding theirs in passive effects at 341 ms, timed by
+wrapping the window's listener and dispatch methods in an init script. The story's
+decorator now wraps its `AuthProvider` in `ListeningAround`, whose own effect hides
+a span, and the play waits for it: on a production build the dispatch came at 356
+ms after the listeners at 355 ms, and it passes bare and inside the manager.
+Codex's roast found no defect. **KN-564** carries `SignedOutInAnotherTab` and
+JobsScreen's `ChangedInAnotherTab`, which win the same race by 9 and 23 ms.
+**KN-565**, filed on the way: the empty board's title calls the reader's records
+«آگهی», against the terminology rule.
+
 ## The next step
 
-**KN-560 is in progress**: App/Shell's `SignedInInAnotherTab` fails in the
-published Storybook. Measured on a production build of bb953c8, with
-`addEventListener` and `dispatchEvent` timed: the play dispatched another tab's
-`karnama.session` at 330 ms with no storage listener on the window, and the four
-providers' listeners, added in passive effects, arrived at 341 ms; the same event
-sent again after the play took the screen to the name step. The plan, beside the
-story in `apps/web/src/app/#KN-560 - ....md`, has the play wait for a span whose
-own `useEffect` hides it, rendered beside the story, since a commit's passive
-effects run in one pass; Codex was reviewing it. The two stories that pass by 9
-and 23 milliseconds, `SignedOutInAnotherTab` and JobsScreen's
-`ChangedInAnotherTab`, are filed as KN-560's child. The diagnostic scripts are
-this session's scratch: `kn560-look3.mjs` wraps the window's listener and dispatch
-methods in an init script and logs their times against the channel's events.
+**KN-561 is in progress**: Button's `States` counts no forced cells in the first
+frame of the published Storybook. Measured on a production build with a frame
+counter and a `MutationObserver`: at frame 7 the 75 buttons arrived with 45 already
+carrying `data-state`, and every frame callback after saw 45, so KN-454's fix holds
+and nothing flashes; the story's single frame callback, scheduled in `beforeEach`,
+ran before any button existed. The plan, beside the story, counts in the first
+frame that has the buttons, proved by a plant that moves the ref callback back into
+an effect; Codex was reviewing it. `Button.stories.tsx` was not formatted at HEAD,
+64 lines of drift; the `States` docs entries do not mention the count.
 
 ## What to read first
 
