@@ -24,43 +24,38 @@ with their stories, then screens. Match the design exactly.**
 
 **Codex worked on main on 2026-09-12**, on the owner's instruction to do a fast,
 messy job for a presentation, without the loop, the board or roasts: twelve
-commits from `leftout-backup` (6d058b4, this loop's unfinished work) to
-`codex-backup` (1709bc0). It added server login, SMS and sessions, then mock
-login at the owner's word; extraction through Groq with ALLOW_DEMO_EXTRACTION and
-AUTH_SECRET, which the owner configured on Render and which works; Settings
-(language, theme, sample data); drag and drop; collapse; date validation; the
-growing paste field. Pages deploys demo login against the Render API.
+commits from `leftout-backup` (6d058b4) to `codex-backup` (1709bc0). Server
+login, then mock login at the owner's word; extraction through Groq with
+ALLOW_DEMO_EXTRACTION and AUTH_SECRET, configured on Render and working;
+Settings (language, theme, sample data); drag and drop; collapse; date
+validation; the growing paste field. Pages deploys demo login against Render.
 
-**KN-477 is in progress**: roast Codex's changes and keep them or restore
-leftout-backup. Four Claude reviewers read the diff by area, since Codex's work
-is never roasted by Codex. All four judged codex-backup the better base, with
-findings A-01 to A-06 (API), W-01 to W-12 (shell and state), C-01 to C-18
-(components and e2e), H-01 to H-08 (repo and deploy). Checks on main: six
-failing stories (four JobModal saves and AddJobModal Review, from ISO-only dates
-against the text dates in `story-fixtures/fa-IR.json:35`; JobsScreen Adding,
-which now waits on the live API); two literal-guard failures and four lint
-errors, fixed in 21b962f and 7a20697. On leftout-backup: unit 1193 passing, one
-tsc error and eight lint errors from KN-401 unfinished; its story run did not
-start from a second checkout. Confirmed in code so far: A-01, C-02, W-05, W-01,
-C-03, C-04, C-05, C-06, W-11. Also found on main and fixed: the add form focused
-the description instead of the title, and Newest buried hand-added jobs
-(e5647df). Found and parked in `git stash`: dark mode never set `color-scheme`,
-CssBaseline needs `enableColorScheme`.
+**KN-477 is done: Codex's work stays on main.** Four Claude reviewers read its
+diff by area, since Codex's work is never roasted by Codex. What survived is
+its children, KN-483 to KN-503: among them a regex DoS in the API (KN-483,
+high), API coverage at 80.37 percent (KN-486, high), six failing stories from
+ISO-only dates and JobsScreen waiting on the live API (KN-494, KN-495, high),
+and Gregorian date pickers (KN-497, OKR-2). The dark `color-scheme` fix waits in
+`git stash@{0}` as KN-496. KN-401 is unblocked and resumes on main.
 
-**The owner's asks of 2026-09-14** are cards behind KN-477: KN-478 (settings,
-sign out, language and add contact as Icon Buttons, placed in the chrome rather
-than in a row above the title), KN-479 (flags from a package: fa-IR the IR flag,
-en-US the US flag), KN-480 (Settings picks the language from a dropdown with
-flags), KN-481 (every page set beside its Figma frame). The owner wants the
-sample-data loader and the AI extraction kept.
+**KN-482 is done**: the board is the todo skill's database, and the skill gained
+objectives, blocks, notes, evidence, roast rounds, validate, render and rm, in
+both halves, with every other project's board unaffected. Its Codex roast found
+the close early, STATE.md stale and the board unrendered, repaired in bf9dd01.
 
-**KN-482 is done**: the board moved into the todo skill's database, and the
-skill gained objectives, blocks, notes, evidence, roast rounds, validate, render
-and rm, in both halves, with every other project's board unaffected. Its roast
-went to Codex in the background.
+**KN-479 is done** (e058e19): `LanguageFlag` draws a locale's region flag from
+`country-flag-icons` 1.6.20, fa-IR Iran's and en-US the United States'. The
+language switch's sidebar row is laid out as a Nav Item with the flag in the
+icon column, and the flag leads the name in the Page Header and the menu.
+DESIGN.md section 5 records it. Its roast is with Codex.
 
-KN-401 is blocked on KN-477: its guard files are the same on both bases, and
-Codex's two-line wiring fix is correct.
+**The owner's asks of 2026-09-14**: KN-480, in progress, Settings picks the
+language from a Select whose options carry flags; KN-478, settings, sign out,
+language and add contact as Icon Buttons with nothing in a row above a title
+(noted there: the language menu opens over its own button); KN-481, every page
+set beside its Figma frame; KN-505, addresses as clean paths rather than `#/`,
+from the owner's question about the hash. The sample-data loader and the AI
+extraction stay.
 
 ## The owner's rules, most recent first
 
@@ -92,6 +87,8 @@ Codex's two-line wiring fix is correct.
 ## What keeps going wrong, one line each
 
 - A button draws in the browser's font, Arial in Chromium: since KN-351 the theme gives every ButtonBase the product's face; a native `<button>` outside ButtonBase still needs it.
+- A button centres its text: a name that fills a flex row sits mid-row unless the row sets `textAlign: 'start'`; measure where a name starts with a Range over its text, not with its box (KN-479).
+- An open MUI Menu or Dialog hides the rest of the page from roles: take the trigger's box before opening it, or select the trigger by CSS.
 - A flex item with `overflow: hidden` may shrink below its content: a list of cards in a scrolling flex column needs `flex-shrink: 0` on them.
 - MUI's Chip is `max-width: 100%` of its group: beside a count, hold it in a `min-width: 0` item or the count is pushed out.
 - Figma's hidden layer gives up its room: fold a control to no room and fade it, never `display: none`, which drops it from the Tab order.
@@ -108,7 +105,9 @@ Codex's two-line wiring fix is correct.
 - A silently ignored prop looks exactly like a working one; assert the DOM.
 - `npm run` truncates arguments at a newline on Windows: call node or python directly.
 - `String.replace` with a string expands `$'` and `$&`: pass a function.
-- The hidden browser pane runs no animation frames; check a production build headless.
+- The hidden Browser pane runs no animation frames and its screenshots time out: look headless with Playwright from a scratchpad script, `createRequire` from `apps/web/package.json`, at `deviceScaleFactor` 2.
+- `roast.py` keeps its sessions under `.claude/` of the directory it runs in: run it from the repository root, or it leaves an `apps/web/.claude/` behind.
+- A background roast that names `HEAD~1` reads whatever HEAD is when it starts: name the commit, `e058e19~1 e058e19`.
 - The production Storybook is not the Vitest one: body box-sizing, and act().
 - A story's pinned globals beat URL globals; view dark through an unpinned story.
 - Portable stories apply no updateArgs; anything that needs the store is proved in a production build.
@@ -139,13 +138,13 @@ Codex's two-line wiring fix is correct.
 
 ## The next step
 
-KN-477: finish checking the four reviews against the code, file each survivor
-with `todo add --parent-task KN-477 --area ... --okr ...` at high or lower (under
-four points in OKR-1, bigger in OKR-2), dismiss what does not survive with the
-reason, record the decision (the reviews, the owner's keep-list and the missing
-features on leftout-backup all point at keeping Codex's work on main and fixing
-it), close KN-477, push, then take `todo next`. File the stashed dark
-color-scheme fix as a card. Relay KN-482's roast when it lands.
+KN-480 is in progress: write its plan beside the work in
+`apps/web/src/shared/settings/`, roast the plan with `roast.py plan` from the
+repository root, then build. Settings' language radios become the product's
+Select, each option and the chosen value led by its `LanguageFlag`; Theme and
+Load sample data stay as they are; the e2e specs that pick English by radio
+(settings, layout-overflow, drag-cards) pick it from the Select. Relay KN-479's
+roast when it lands and file what survives as its children. Then `todo next`.
 
 ## What to read first
 
