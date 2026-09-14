@@ -38,6 +38,10 @@ const structuralProps =
   // text anyone reads. Named, not pattern-matched, so one key does not exempt
   // every dotted string in the codebase.
   '|STORAGE_KEY' +
+  // The mark the product puts in front of its own console diagnostics, so the
+  // console guard can tell them apart, KN-401. An identifier, named for the
+  // same reason as the storage key.
+  '|MARK' +
   // The class the Tooltip puts on its drawn surface so a test can find it,
   // KN-222. An identifier, named for the same reason as the storage key. The
   // same for the class each component puts on the part its own rules select,
@@ -125,6 +129,11 @@ const linguiOptions = {
     // for the browser, and the only string it ever takes is one of those,
     // KN-045.
     '*.createElement',
+    // The product's own console diagnostic, KN-401. What it says is read by
+    // whoever broke a component, never by a job seeker, exactly like the
+    // console.* calls it replaced, and it goes through one helper so the
+    // console guard can tell it from anything React says.
+    'report',
     // `setAttribute` and `*.setAttribute` used to be here, so
     // `el.setAttribute('aria-label', 'Delete this application')` passed: the
     // same untranslated accessible name the prop-level rule rejects, reached
