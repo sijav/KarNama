@@ -37,39 +37,35 @@ tabs.
 
 **Closed today, earlier**: KN-483, KN-401, KN-403, KN-405, KN-423, KN-428,
 KN-352, KN-356, KN-431 and KN-532, their roasts filing KN-527 to KN-537; KN-419,
-filing KN-538 and KN-539; KN-437 and KN-438, filing KN-540 and KN-541; KN-440,
-filing KN-542 to KN-545; KN-446, filing KN-546; KN-464, filing KN-547 and
-KN-548; KN-465, filing KN-549; KN-466, filing KN-550; KN-467, nothing; KN-469, F6
-measured to reach the page (6e2a16d), filing KN-552 and KN-553; KN-472, focus
-after a deletion (f0b0702), nothing; KN-495, the board's reader as a prop so its
-`Adding` story needs no server (c6172c3), nothing.
+KN-538 and KN-539; KN-437 and KN-438, KN-540 and KN-541; KN-440, KN-542 to
+KN-545; KN-446, KN-546; KN-464, KN-547 and KN-548; KN-465, KN-549; KN-466,
+KN-550; KN-467, nothing; KN-469 (6e2a16d), KN-552 and KN-553; KN-472 (f0b0702),
+nothing; KN-495 (c6172c3), nothing; KN-522 (b0f6984), stories no longer take
+KN-401's guard off, nothing, with KN-554 and KN-555 filed on the way.
 
-**KN-522 (b0f6984)**: stories and a test that replaced `console.error` with a mock
-took KN-401's guard off; an unmarked error planted in Tooltip's capturing story
-and in the guard's unit test passed, measured. `passOnUnmarked(through)` in
-`console-guard.ts` holds back only the product's marked reports and hands the rest
-to the console as it was, the guard in a test; Tooltip's capture and the test use
-it, and `InATooltip` spies without replacing. The plants now fail through the
-guard. `ReportsATriggerThatDropsItsProps` declares, with `allowConsole`, MUI's
-warning about the child it renders on purpose. A production Storybook built into
-the scratchpad and opened headless ran the five Tooltip stories and `InATooltip`
-with a clean console but for lingui's warnings. Its roast passed. Filed on the
-way: **KN-554**, `BlankName` failing in the published Storybook, and **KN-555**, a
-warning that lands where the guard does not hear it in a whole-file run.
+**KN-206 (ff46de3)**: `CheckboxProps` requires `aria-label` or
+`aria-labelledby` and takes an `id`; a blank `aria-label`, or an
+`aria-labelledby` whose elements hold no text when the input attaches, is
+refused and reported, as IconButton's blank name is; every Checkbox story finds
+its control through `namedBox`, which asserts a name; `TargetIsLargerThanTheSquare`
+asserts the 28 by 28 input over the 20 by 20 square by its box, `elementFromPoint`
+at its corners and a real click. Codex's roast filed **KN-556** (a label that
+renders after the checkbox refuses it for good), **KN-557** (a name of only
+zero-width characters passes the Checkbox's and IconButton's `trim()`; `isBlank`
+in `shared/input/blank.ts` is the product's rule) and **KN-558** (no card story
+hit-tests the target where the cards place it). Dismissed on Chromium 151's own
+accessibility tree: a nonblank `aria-label` beside an `aria-labelledby` that
+comes to nothing is named by the `aria-label`.
 
 **KN-551**: `core/api/session.test.ts` fails both its cases when the unit project
-runs straight after storybook browser runs, seen twice today, and passes alone
-and in a quiet full run.
+runs straight after storybook browser runs, and passes alone and in a quiet
+full run; on 2026-09-14 evening it passed, 1383, after browser runs.
 
-**KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
-to no story; its note lists every arm by line, 5 points in the backlog.
-
-**What fails in a full run, and why**: the web unit project passes whole, 1383,
-when nothing else is running, KN-551 otherwise. The storybook project fails the
-five modal stories KN-494 carries, four of them in `JobModal.stories.tsx`, and the
-Job Card's `Pressed` in parallel only, KN-365's kind. The API's 156 tests pass
-and its coverage gate fails on auth and extraction files, KN-486. Of the e2e
-suite, only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
+**What fails in a full run, and why**: the storybook project fails the five modal
+stories KN-494 carries, four of them in `JobModal.stories.tsx`, and the Job
+Card's `Pressed` in parallel only, KN-365's kind. The API's 156 tests pass and
+its coverage gate fails on auth and extraction files, KN-486. Of the e2e suite,
+only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
 
 ## The owner's rules, most recent first
 
@@ -103,14 +99,20 @@ suite, only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
 
 ## The next step
 
-KN-206 is in progress: the Checkbox has no guaranteed accessible name and no test
-of its hit area. Read on 2026-09-14: KN-293 already made the root 28 by 28 round
-the drawn 20 by 20 frame with MUI's input filling it, and KN-423 routed
-`aria-label` and `aria-labelledby` to the input; there is no `id` prop, the names
-are optional, seven of the nine Checkbox stories render it unnamed, and nothing
-asserts the hit area. MUI's SwitchBase hands `id` to the input. IconButton is the
-precedent: `aria-label` required by its type, a blank one reported. The plan is
-not written yet.
+**KN-226 is in progress**: nothing committed opens the published Storybook's
+stories. Read on 2026-09-14: `.github/workflows/pages.yml` builds the app and
+Storybook in ONE job, `KARNAMA_STORYBOOK_BASE=/KarNama/storybook/`, and deploys
+both as one artifact, so a check that fails there stops the app's deploy too.
+KN-522's scratch script, `kn522-published.mjs` in the session scratchpad, served
+a production build and listened on Storybook's channel for `storyFinished` and
+`playFunctionThrewException`; it heard IconButton's `BlankName` fail, KN-554, as
+two console errors. A production build of today's tree, under that base, has 423
+entries, 372 stories and 51 docs pages; a probe opening every one headless was
+running when this was written. The plan is not written yet; it has to settle
+where the check lives, docs pages or not, and what happens to the deploy while
+KN-554 or anything else the probe finds fails. The card carries a note: the dev
+Storybook's console showed React's duplicate key warning for `job-10`, story not
+identified.
 
 ## What to read first
 
