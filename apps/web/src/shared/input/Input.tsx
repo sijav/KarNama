@@ -26,6 +26,7 @@ export interface InputProps {
   name?: string
   type?: InputHTMLAttributes<HTMLInputElement>['type']
   inputMode?: InputHTMLAttributes<HTMLInputElement>['inputMode']
+  enterKeyHint?: InputHTMLAttributes<HTMLInputElement>['enterKeyHint']
   autoComplete?: InputHTMLAttributes<HTMLInputElement>['autoComplete']
   min?: string | number
   max?: string | number
@@ -140,6 +141,7 @@ export const Input = ({
   leadingIcon,
   trailingIcon,
   inputMode,
+  enterKeyHint,
   min,
   max,
   step,
@@ -203,6 +205,7 @@ export const Input = ({
             })}
         inputProps={{
           inputMode,
+          enterKeyHint,
           min,
           max,
           step,

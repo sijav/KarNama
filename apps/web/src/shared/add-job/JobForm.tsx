@@ -44,6 +44,7 @@ export const JobFields = ({ draft, missing, onChange }: JobFieldsProps) => {
   const text = (key: 'location' | 'experience' | 'salary' | 'source', label: string) => (
     <Input
       label={label}
+      enterKeyHint="done"
       value={draft[key]}
       onChange={(value) => {
         onChange({ ...draft, [key]: value })
@@ -67,6 +68,7 @@ export const JobFields = ({ draft, missing, onChange }: JobFieldsProps) => {
     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, alignItems: 'start', gap: `${spacing.md}px` }}>
       <Input
         label={i18n._('Job title')}
+        enterKeyHint="done"
         required
         value={draft.title}
         onChange={(title) => {
@@ -76,6 +78,7 @@ export const JobFields = ({ draft, missing, onChange }: JobFieldsProps) => {
       />
       <Input
         label={i18n._('Company name')}
+        enterKeyHint="done"
         required
         value={draft.company}
         onChange={(company) => {
@@ -136,6 +139,7 @@ export const JobForm = ({ draft, statuses, missing, onChange, onAddStatus }: Job
       <Input
         label={i18n._('Posting link')}
         type="url"
+        enterKeyHint="done"
         {...(missing.includes('postingUrl') ? { error: i18n._('Enter a valid http or https link') } : {})}
         direction={LATIN}
         value={draft.postingUrl}

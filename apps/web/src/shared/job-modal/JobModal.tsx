@@ -289,6 +289,7 @@ export const JobModal = ({
           <Input
             label={i18n._('Posting link')}
             type="url"
+            enterKeyHint="done"
             {...(tried && !validPostingUrl(draft.postingUrl) ? { error: i18n._('Enter a valid http or https link') } : {})}
             direction={LATIN}
             value={draft.postingUrl}

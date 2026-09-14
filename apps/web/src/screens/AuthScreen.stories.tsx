@@ -1,9 +1,11 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
-import { AuthProvider, sessionFor, STORAGE_KEY as SESSION_KEY } from '../core/auth'
+import { AuthProvider, STORAGE_KEY as SESSION_KEY, sessionFor } from '../core/auth'
+import { i18nFor, type Locale } from '../i18n'
 import { allowConsole } from '../shared/console-guard'
-import { fixtures } from '../shared/story-fixtures'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
+import { fixtures } from '../shared/story-fixtures'
+import { keyboardOf, type Keyboard } from '../shared/story-fixtures/keyboard'
 import { AuthScreen } from './AuthScreen'
 
 // A number the mock accepts, in the shape the design asks for.
@@ -205,4 +207,47 @@ export const EnterFinishesTheStep: Story = {
       said.mockRestore()
     }
   },
+}
+
+// What each step's field declares, KN-464: the number a phone pad whose key sends
+// the code, the code digits whose key signs in, and the name a key that finishes;
+// the number and the code offered from what the phone already holds.
+const STEPS: Record<'phone' | 'code' | 'name', Keyboard> = {
+  phone: { type: 'tel', inputMode: 'tel', enterKeyHint: 'send', autoComplete: 'tel' },
+  code: { type: 'text', inputMode: 'numeric', enterKeyHint: 'go', autoComplete: 'one-time-code' },
+  name: { type: 'text', inputMode: null, enterKeyHint: 'done', autoComplete: 'name' },
+}
+
+const keyboardsIn =
+  (locale: Locale): NonNullable<Story['play']> =>
+  async ({ canvasElement }) => {
+    // Walked by the steps' own buttons, reading each field as it arrives; the
+    // code is the one the mock shows on the screen, KN-459.
+    const canvas = within(canvasElement)
+    const i18n = i18nFor(locale)
+    const said = spyOn(console, 'info').mockImplementation(() => undefined)
+    try {
+      const phone = canvas.getByLabelText(i18n._('Mobile number'))
+      await expect(keyboardOf(phone)).toEqual(STEPS.phone)
+      await userEvent.type(phone, PHONE)
+      await userEvent.click(canvas.getByRole('button', { name: i18n._('Send the code') }))
+      const code = await canvas.findByLabelText(i18n._('Five digit code'))
+      await expect(keyboardOf(code)).toEqual(STEPS.code)
+      const digits = /(\d{5})/.exec(canvas.getByRole('status').textContent)?.[1] ?? ''
+      await userEvent.type(code, digits)
+      await userEvent.click(canvas.getByRole('button', { name: i18n._('Sign in') }))
+      await expect(keyboardOf(await canvas.findByLabelText(i18n._('Full name')))).toEqual(STEPS.name)
+    } finally {
+      said.mockRestore()
+    }
+  }
+
+export const KeyboardsForEachStep: Story = {
+  globals: { locale: 'fa-IR' },
+  play: keyboardsIn('fa-IR'),
+}
+
+export const KeyboardsForEachStepInEnglish: Story = {
+  globals: { locale: 'en-US' },
+  play: keyboardsIn('en-US'),
 }

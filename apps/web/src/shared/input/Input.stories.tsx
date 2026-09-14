@@ -9,6 +9,7 @@ import { contrast } from '../../theme/darkMode'
 import { iconSize, radius, semantic, spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
+import { keyboardOf, type Keyboard } from '../story-fixtures/keyboard'
 import { isBlank } from './blank'
 import { Input, type InputProps } from './Input'
 
@@ -1147,5 +1148,18 @@ export const LatinInAnEnglishPage: Story = {
     await userEvent.type(field, TYPED_NUMBER)
     await expect(field).toHaveValue(TYPED_NUMBER)
     await expect(getComputedStyle(field).textAlign).toBe('left')
+  },
+}
+
+// What the hinted field declares, KN-464.
+const HINTED: Keyboard = { type: 'email', inputMode: 'email', enterKeyHint: 'done', autoComplete: 'off' }
+
+export const KeyboardHints: Story = {
+  // Letter-free values, since they are test data rather than copy.
+  args: { label: '42', type: 'email', inputMode: 'email', enterKeyHint: 'done', autoComplete: 'off' },
+  play: async ({ canvasElement }) => {
+    // KN-464: what a field tells a phone's keyboard reaches the input itself,
+    // the element a phone reads, and not the field's frame round it.
+    await expect(keyboardOf(within(canvasElement).getByRole('textbox'))).toEqual(HINTED)
   },
 }

@@ -118,3 +118,12 @@ step, and the reading it left, when it comes back, changes nothing.
 A reading that was left, answering afterwards: Escape goes back to the paste
 field, and when the reading it walked away from comes back, it lands nowhere
 rather than filling a form the reader is no longer looking at.
+
+### KeyboardsOnTheForm
+
+The form's single-line fields tell a phone's keyboard that their key saves, and
+the posting link asks for a link's keyboard.
+
+### KeyboardsOnTheFormInEnglish
+
+The same, in English.

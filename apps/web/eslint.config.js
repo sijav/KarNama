@@ -29,6 +29,10 @@ import tseslint from 'typescript-eslint'
  */
 const structuralProps =
   'id|key|data-testid|className|variant|color|component|role|dir|lang|type|name|sx|to|href|icon|provider|family|direction|locale' +
+  // The key a phone's keyboard draws to finish a field, `done`, `go`, `send`:
+  // a token from the fixed list HTML gives it, which the phone turns into its
+  // own label, not text anyone reads here, KN-464.
+  '|enterKeyHint' +
   // CSS values are not user-facing text and the rule cannot tell the
   // difference, so the properties that hold them are named. `card` and `modal`
   // used to be here for the elevation tokens; tokens.ts is exempt as a file now,

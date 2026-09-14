@@ -188,6 +188,8 @@ export const Managing: Story = {
     await userEvent.click(await body.findByRole('menuitem', { name: 'تغییر نام' }))
     const rename = await body.findByRole('dialog')
     await userEvent.clear(within(rename).getByRole('textbox'))
+    // The rename's key saves, KN-464.
+    await expect(within(rename).getByRole('textbox')).toHaveAttribute('enterkeyhint', 'done')
     await userEvent.type(within(rename).getByRole('textbox'), 'در انتظار پاسخ')
     await userEvent.click(within(rename).getByRole('button', { name: 'ذخیره' }))
     await gone()

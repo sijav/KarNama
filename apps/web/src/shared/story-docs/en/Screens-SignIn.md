@@ -48,3 +48,15 @@ it from there and finishes signing in.
 
 The card is a form, so Enter in a field does what the step's own button does:
 it asks for the code, and on the next step it signs the reader in.
+
+### KeyboardsForEachStep
+
+Each step's field tells a phone what it holds and what its key does: the number
+asks for a phone pad and its key sends the code, the code asks for digits and its
+key signs in, and the name's key finishes. The number and the code are offered
+from what the phone already holds, the number it knows and the message the code
+arrives in.
+
+### KeyboardsForEachStepInEnglish
+
+The same, in English.

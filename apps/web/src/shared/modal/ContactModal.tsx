@@ -170,20 +170,63 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
       >
         <Input
           label={i18n._('Full name')}
+          autoComplete="off"
+          enterKeyHint="done"
           placeholder={i18n._('e.g. Sara Mohammadi')}
           value={shown.name}
           onChange={set('name')}
           {...(tried && nameMissing ? { error: i18n._('Write the full name') } : {})}
         />
         <Pair>
-          <Input label={i18n._('Role')} placeholder={i18n._('e.g. HR specialist')} value={shown.role} onChange={set('role')} />
-          <Input label={i18n._('Company')} placeholder={i18n._('e.g. Digikala')} value={shown.company} onChange={set('company')} />
+          <Input
+            label={i18n._('Role')}
+            autoComplete="off"
+            enterKeyHint="done"
+            placeholder={i18n._('e.g. HR specialist')}
+            value={shown.role}
+            onChange={set('role')}
+          />
+          <Input
+            label={i18n._('Company')}
+            autoComplete="off"
+            enterKeyHint="done"
+            placeholder={i18n._('e.g. Digikala')}
+            value={shown.company}
+            onChange={set('company')}
+          />
         </Pair>
         <Pair>
-          <Input label={i18n._('Email')} direction={LATIN} placeholder={EMAIL_EXAMPLE} value={shown.email} onChange={set('email')} />
-          <Input label={i18n._('Phone')} direction={LATIN} placeholder={i18n._('0912 000 0000')} value={shown.phone} onChange={set('phone')} />
+          <Input
+            label={i18n._('Email')}
+            type="email"
+            autoComplete="off"
+            enterKeyHint="done"
+            direction={LATIN}
+            placeholder={EMAIL_EXAMPLE}
+            value={shown.email}
+            onChange={set('email')}
+          />
+          <Input
+            label={i18n._('Phone')}
+            type="tel"
+            autoComplete="off"
+            enterKeyHint="done"
+            direction={LATIN}
+            placeholder={i18n._('0912 000 0000')}
+            value={shown.phone}
+            onChange={set('phone')}
+          />
         </Pair>
-        <Input label={i18n._('Social link')} direction={LATIN} placeholder={SOCIAL_EXAMPLE} value={shown.linkedin} onChange={set('linkedin')} />
+        <Input
+          label={i18n._('Social link')}
+          type="url"
+          autoComplete="off"
+          enterKeyHint="done"
+          direction={LATIN}
+          placeholder={SOCIAL_EXAMPLE}
+          value={shown.linkedin}
+          onChange={set('linkedin')}
+        />
         <Select
           label={i18n._('Related job opportunity')}
           placeholder={i18n._('Choose a job opportunity…')}

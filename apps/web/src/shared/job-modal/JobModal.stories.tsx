@@ -133,6 +133,9 @@ export const Info: Story = {
     const panel = panelOf(dialog)
     await expect(within(panel).getByRole('textbox', { name: 'عنوان شغلی' })).toHaveValue(args.job.draft.title)
     await expect(within(panel).getByRole('link', { name: 'باز کردن لینک آگهی' })).toHaveAttribute('href', args.job.draft.postingUrl)
+    // A link's keyboard, and a key that saves, KN-464.
+    await expect(within(panel).getByRole('textbox', { name: 'لینک آگهی' })).toHaveAttribute('type', 'url')
+    await expect(within(panel).getByRole('textbox', { name: 'لینک آگهی' })).toHaveAttribute('enterkeyhint', 'done')
     await expect(within(panel).getByRole('textbox', { name: 'شرح شغل و مسئولیت‌ها' })).toHaveValue(args.job.description)
     await expect(within(panel).getAllByRole('listitem')).toHaveLength(args.job.skills.length)
     const save = within(dialog).getByRole('button', { name: 'ذخیره' })
@@ -384,6 +387,9 @@ export const InEnglish: Story = {
         .getAllByRole('tab')
         .map((tab) => tab.textContent),
     ).toEqual([i18n._('Job opportunity info'), i18n._('History'), i18n._('Note'), i18n._('Related people'), i18n._('Files')])
+    // A link's keyboard, and a key that saves, in English too, KN-464.
+    await expect(within(dialog).getByRole('textbox', { name: i18n._('Posting link') })).toHaveAttribute('type', 'url')
+    await expect(within(dialog).getByRole('textbox', { name: i18n._('Posting link') })).toHaveAttribute('enterkeyhint', 'done')
   },
 }
 

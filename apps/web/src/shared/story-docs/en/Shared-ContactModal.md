@@ -104,3 +104,13 @@ record it was on, and fills itself when the right one lands.
 
 The same rule seen the other way: opened before its record exists, the form
 fills itself when the record arrives rather than staying empty.
+
+### KeyboardsForEachField
+
+Every field tells a phone's keyboard what it holds: an email address, a phone
+number and a link each ask for their own keyboard, and every field's key saves.
+None offers the reader's own details, since the record is somebody else's.
+
+### KeyboardsForEachFieldInEnglish
+
+The same, in English.

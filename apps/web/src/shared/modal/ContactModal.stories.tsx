@@ -2,11 +2,12 @@ import { useLingui } from '@lingui/react'
 import type { StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { expect, fireEvent, fn, userEvent, waitFor, within } from 'storybook/test'
-import type { Locale } from '../../i18n'
+import { i18nFor, type Locale } from '../../i18n'
 import { Button } from '../button'
 import type { SelectOption } from '../select'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
+import { keyboardOf, type Keyboard } from '../story-fixtures/keyboard'
 import { ContactModal, type ContactModalProps, type ContactModalRecord, type ContactModalValues } from './ContactModal'
 
 // The job opportunities a contact can belong to, written «company — title» as
@@ -369,4 +370,42 @@ export const TheRecordArrivesAfterOpening: Story = {
     await userEvent.click(body.getByRole('button', { name: 'ذخیره' }))
     await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ name: FIRST_CONTACT.fullName }))
   },
+}
+
+// What every field of the modal declares, KN-464: an email, a phone and a link each
+// their own keyboard, every key saving, and nothing offered from the reader's own
+// details, since the record is somebody else's.
+const WORDS: Keyboard = { type: 'text', inputMode: null, enterKeyHint: 'done', autoComplete: 'off' }
+const EMAIL: Keyboard = { ...WORDS, type: 'email' }
+const PHONE_NUMBER: Keyboard = { ...WORDS, type: 'tel' }
+const LINK: Keyboard = { ...WORDS, type: 'url' }
+
+const fieldsIn =
+  (locale: Locale): NonNullable<Story['play']> =>
+  async ({ canvasElement }) => {
+    const dialog = await open(canvasElement)
+    const i18n = i18nFor(locale)
+    const expected: [string, Keyboard][] = [
+      [i18n._('Full name'), WORDS],
+      [i18n._('Role'), WORDS],
+      [i18n._('Company'), WORDS],
+      [i18n._('Email'), EMAIL],
+      [i18n._('Phone'), PHONE_NUMBER],
+      [i18n._('Social link'), LINK],
+    ]
+    for (const [label, keyboard] of expected) {
+      await expect(keyboardOf(within(dialog).getByRole('textbox', { name: label })), label).toEqual(keyboard)
+    }
+    await userEvent.keyboard('{Escape}')
+  }
+
+export const KeyboardsForEachField: Story = {
+  globals: { locale: 'fa-IR' },
+  play: fieldsIn('fa-IR'),
+}
+
+export const KeyboardsForEachFieldInEnglish: Story = {
+  args: { jobs: jobsIn('en-US') },
+  globals: { locale: 'en-US' },
+  play: fieldsIn('en-US'),
 }

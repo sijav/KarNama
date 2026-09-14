@@ -2,11 +2,12 @@ import { setupI18n } from '@lingui/core'
 import type { StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { expect, fireEvent, fn, userEvent, waitFor, within } from 'storybook/test'
-import type { Locale } from '../../i18n'
+import { i18nFor, type Locale } from '../../i18n'
 import { messages as en } from '../../i18n/locales/en-US'
 import type { JobLevel } from '../job-selects'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
+import { keyboardOf, type Keyboard } from '../story-fixtures/keyboard'
 import { AddJobModal, type AddJobModalProps, type AddJobStep } from './AddJobModal'
 import type { JobDraft } from './draft'
 
@@ -371,4 +372,40 @@ export const AnswerAfterLeaving: Story = {
     await expect(field).toHaveValue(LINK)
     await expect(within(canvasElement.ownerDocument.body).queryByRole('textbox', { name: 'عنوان شغلی' })).toBeNull()
   },
+}
+
+// What the form's single-line fields declare, KN-464: the key that finishes each
+// saves, and the posting link asks for a link's keyboard.
+const TYPED: Keyboard = { type: 'text', inputMode: null, enterKeyHint: 'done', autoComplete: null }
+const POSTING: Keyboard = { ...TYPED, type: 'url' }
+
+const formIn =
+  (locale: Locale): NonNullable<Story['play']> =>
+  async () => {
+    const i18n = i18nFor(locale)
+    const dialog = await dialogNamed(i18n._('Add job opportunity'))
+    const expected: [string, Keyboard][] = [
+      [i18n._('Job title'), TYPED],
+      [i18n._('Company name'), TYPED],
+      [i18n._('Location'), TYPED],
+      [i18n._('Required experience'), TYPED],
+      [i18n._('Salary'), TYPED],
+      [i18n._('Source'), TYPED],
+      [i18n._('Posting link'), POSTING],
+    ]
+    for (const [label, keyboard] of expected) {
+      await expect(keyboardOf(within(dialog).getByRole('textbox', { name: label })), label).toEqual(keyboard)
+    }
+  }
+
+export const KeyboardsOnTheForm: Story = {
+  args: { step: 'manual' },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: formIn('fa-IR'),
+}
+
+export const KeyboardsOnTheFormInEnglish: Story = {
+  args: { step: 'manual', statuses: fixtures('en-US').statusOptions.slice(0, 5) },
+  globals: { locale: 'en-US' },
+  play: formIn('en-US'),
 }

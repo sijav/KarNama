@@ -646,6 +646,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
         >
           <Input
             label={i18n._('Status')}
+            enterKeyHint="done"
             value={renaming?.name ?? ''}
             onChange={(name) => {
               setRenaming((was) => (was ? { ...was, name } : was))

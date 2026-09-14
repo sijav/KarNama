@@ -22,6 +22,14 @@ Native input type, such as text, date, email, or URL.
 
 Hints which keyboard a mobile device should show.
 
+### enterKeyHint
+
+What the key that finishes the field says on a phone's keyboard: `done`, `go`,
+`send`, `search`, `next` and the rest. It names what pressing it does, which in
+a form is what the form's own button does, so a field in a form that saves says
+`done` and the number that sends a code says `send`. It changes the key's label
+only, never what the key does.
+
 ### autoComplete
 
 Hints which saved information the browser may suggest.
@@ -272,3 +280,9 @@ field runs left to right, and it still sits at the right, where the page starts.
 ### LatinInAnEnglishPage
 
 The same field in a page that already runs that way, where nothing moves.
+
+### KeyboardHints
+
+What a field tells a phone's keyboard reaches the input itself: its type, the
+keyboard it asks for, what the key that finishes it says, and what may be filled
+in for it.

@@ -96,6 +96,7 @@ export const AuthScreen = () => {
       <Input
         label={i18n._('Full name')}
         autoComplete="name"
+        enterKeyHint="done"
         placeholder={i18n._('e.g. Sara Mohammadi')}
         value={name}
         onChange={setName}
@@ -148,6 +149,7 @@ export const AuthScreen = () => {
         label={i18n._('Five digit code')}
         inputMode="numeric"
         autoComplete="one-time-code"
+        enterKeyHint="go"
         maxLength={5}
         direction={LATIN}
         value={code}
@@ -179,6 +181,7 @@ export const AuthScreen = () => {
         type="tel"
         inputMode="tel"
         autoComplete="tel"
+        enterKeyHint="send"
         direction={LATIN}
         placeholder={i18n._('0912 000 0000')}
         value={phone}
