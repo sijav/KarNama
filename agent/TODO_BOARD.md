@@ -13,6 +13,12 @@ Project **KarNama** · 219 of 531 tasks done · 494 of 1083 points.
 | 1 | OKR-1 | MVP: the pages | now | 184 | 141 |
 | 2 | OKR-2 | Everything after the MVP | later | 126 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-431` | Select all and bulk delete ignore the search, which is how KN-422 lost data | high | 2 | web | none | Select all takes what the search found, bulk delete acts on that, and a story with a search active selects all and deletes and shows the hidden job opportunities survive. |
+
 ## Blocked (8)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -26,7 +32,7 @@ Project **KarNama** · 219 of 531 tasks done · 494 of 1083 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (302)
+## Backlog (301)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -36,7 +42,6 @@ Project **KarNama** · 219 of 531 tasks done · 494 of 1083 points.
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
 | `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
-| `KN-431` | Select all and bulk delete ignore the search, which is how KN-422 lost data | high | 2 | web | none | Select all takes what the search found, bulk delete acts on that, and a story with a search active selects all and deletes and shows the hidden job opportunities survive. |
 | `KN-437` | The board fixture cannot be handed to anything: its columns carry no status id | high | 2 | web | none | A story seeds RecordsProvider from the fixtures with no mapping of its own, and the three hand-rolled status maps are gone. |
 | `KN-438` | The seeded board is nine columns of one card, which is no board to draw stories against | high | 2 | web | none | The fixture board holds an empty column, a column with several, and a rejected column worth collapsing; no test forbids an empty column. |
 | `KN-440` | Recolouring a status moves its column, because the board's order ranks by colour token | high | 2 | web | none | Recolouring a status leaves its column where it was, and a story recolours a custom status to the offer colour and asserts the order is unchanged. |
@@ -7755,7 +7760,7 @@ SearchBar hard-codes its accessible name to 'Search job opportunities', SearchBa
 
 ### `KN-431` Select all and bulk delete ignore the search, which is how KN-422 lost data
 
-- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 JobsScreen's onSelectAll takes records.jobs, line 307, not what the search found, and the bulk delete acts on the selection whatever the search shows. That is the same class as KN-422, where a search that hid cards let Delete act on them: a reader who searches, presses select all and deletes is told they deleted what they could see and loses the rest. The network page had a search-aware select-all handler and KN-415 deleted it as dead wiring, because the bulk bar only offers select all for jobs; if the bar should offer it there too, that is the same card.

@@ -35,20 +35,19 @@ filed KN-519 and KN-520, its audit KN-512 to KN-514 and KN-518. **Blocked on the
 owner, asked 2026-09-14 in chat**: KN-515 a phone board header's add button,
 KN-516 a phone board's sort row, KN-517 history's place among the modal's tabs.
 
-**Closed today since**: KN-483 (bab5444); KN-401 (fd9338e); KN-403 (a264964);
-KN-405 (18343d2); KN-423 (5159f0f), the Checkbox names its input, its roast
-filed KN-525 and KN-526. **KN-428 (63f6870)**: a phone starts a selection with a
-press held on a card, as Card / Mobile 491:751 and the Checkbox 204:11 say in
-their descriptions: `useHold` in `shared/job-card/hold.ts`, a `selecting` prop
-the board passes, the phone checkbox folded at rest in the keyboard's path, the
-e2e board test holding a real touch; KN-527 carries the same gap on a tablet,
-and Safari on an iPhone was not checked. Its roast filed KN-528, a second
-finger clearing the hold's mark, KN-529, the card turning off Safari's long
-press menu on its link, and KN-530, comments that claim too much. **KN-352
-(26f86f1)**: no product change, KN-428's fold having fixed it; the board story
-`UncheckingOnAPhone` proves focus stays on a phone card's checkbox when the last
-card chosen is unchecked by keyboard, and fails on the bug as filed. Its roast
-is with Codex.
+**Closed today since**: KN-483, KN-401, KN-403, KN-405; KN-423 (5159f0f), the
+Checkbox names its input. **KN-428 (63f6870)**: a phone starts a selection with
+a press held on a card, as Card / Mobile 491:751 and the Checkbox 204:11 say in
+their descriptions, through `useHold` in `shared/job-card/hold.ts` and a
+`selecting` prop; KN-527 carries the same gap on a tablet; Safari on an iPhone
+was not checked; its roast filed KN-528, KN-529 and KN-530. **KN-352
+(26f86f1)**: no product change; `UncheckingOnAPhone` proves focus stays on a
+phone card's checkbox when the last card chosen is unchecked by keyboard; its
+roast filed KN-531. **KN-356 (6bf0c27)**: no product change, its groundwork
+924e515 having built it; App/Shell's `Selecting` counts what is fixed at a
+phone's foot, the tab bar at rest, only the Bulk Action Bar while a card is
+held, the tab bar again after, and fails when Navigation ignores `selecting` or
+App never passes it. Its roast is with Codex.
 
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
 to no story, 26 of them KN-477's drag handlers; its note lists every arm by line
@@ -92,15 +91,16 @@ owner's question; KN-507, the Settings dialog's Theme and sample-data parts.
 
 ## The next step
 
-Relay KN-352's roast when it lands, judge it and file what survives as its
-children. KN-356 is in progress: Navigation giving the tab bar's place to the
-Bulk Action Bar while a phone page is selecting. Its shell half was built before
-a phone could select, and in Chromium at 390 the bar already stands where the tab
-bar was; what the card still asks is a story that selects and sees one bar at
-the foot, with the sidebar untouched on a desktop. Find how App and Navigation
-hide the tab bar, measure it, write the plan beside the work, roast it, then the
-story. Do not edit JobsScreen's stories or the board screen's docs until KN-352's
-roast has landed: it is reading them.
+Relay KN-356's roast when it lands, judge it and file what survives as its
+children. KN-431 is in progress, a data loss: on the board, select all takes
+every job opportunity rather than what the search found, and the bulk delete and
+status change act on the whole selection whether the search shows it or not, so
+a reader who searches, selects all and deletes loses what was hidden. Read how
+JobsScreen and NetworkScreen select and delete around a search, write a story
+that searches, selects all and deletes and watch it fail on today's code, then
+the plan beside JobsScreen, its roast, the fix, and the story passing with the
+hidden job opportunities surviving. Do not edit App's stories or the shell's
+docs until KN-356's roast has landed: it is reading them.
 
 ## What to read first
 
