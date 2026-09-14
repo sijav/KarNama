@@ -20,7 +20,7 @@ on **Neon**. GitHub Pages for web, Render for the API with a 50 second cold
 start the UI must handle honestly. lingui, **English ids**. **Components first
 with their stories, then screens. Match the design exactly.**
 
-## Where things stand, 2026-09-14
+## Where things stand, 2026-09-15
 
 **Codex's work of 2026-09-12 stays on main**, KN-477: login mocked at the
 owner's word, Groq extraction on Render, Settings, drag and drop, collapse,
@@ -35,37 +35,49 @@ on the owner, asked 2026-09-14 in chat**: KN-515 a phone board header's add
 button, KN-516 a phone board's sort row, KN-517 history's place among the modal's
 tabs.
 
-**Closed today, earlier**: KN-483, KN-401, KN-403, KN-405, KN-423, KN-428,
-KN-352, KN-356, KN-431 and KN-532, their roasts filing KN-527 to KN-537; KN-419,
-KN-538 and KN-539; KN-437 and KN-438, KN-540 and KN-541; KN-440, KN-542 to
-KN-545; KN-446, KN-546; KN-464, KN-547 and KN-548; KN-465, KN-549; KN-466,
-KN-550; KN-467, nothing; KN-469 (6e2a16d), KN-552 and KN-553; KN-472 (f0b0702),
-nothing; KN-495 (c6172c3), nothing; KN-522 (b0f6984), stories no longer take
-KN-401's guard off, nothing, with KN-554 and KN-555 filed on the way.
+**Closed on 2026-09-14**, roasts recorded: KN-483, KN-401, KN-403, KN-405,
+KN-423, KN-428, KN-352, KN-356, KN-431, KN-532, KN-419, KN-437, KN-438, KN-440,
+KN-446, KN-464, KN-465, KN-466, KN-467, KN-469, KN-472, KN-495, KN-522, and
+**KN-206** (ff46de3): the Checkbox requires `aria-label` or `aria-labelledby`,
+refuses a name that comes to nothing, and its 28 by 28 target is tested; its
+roast filed KN-556 to KN-558.
 
-**KN-206 (ff46de3)**: `CheckboxProps` requires `aria-label` or
-`aria-labelledby` and takes an `id`; a blank `aria-label`, or an
-`aria-labelledby` whose elements hold no text when the input attaches, is
-refused and reported, as IconButton's blank name is; every Checkbox story finds
-its control through `namedBox`, which asserts a name; `TargetIsLargerThanTheSquare`
-asserts the 28 by 28 input over the 20 by 20 square by its box, `elementFromPoint`
-at its corners and a real click. Codex's roast filed **KN-556** (a label that
-renders after the checkbox refuses it for good), **KN-557** (a name of only
-zero-width characters passes the Checkbox's and IconButton's `trim()`; `isBlank`
-in `shared/input/blank.ts` is the product's rule) and **KN-558** (no card story
-hit-tests the target where the cards place it). Dismissed on Chromium 151's own
-accessibility tree: a nonblank `aria-label` beside an `aria-labelledby` that
-comes to nothing is named by the `aria-label`.
+**KN-226, taken on 2026-09-14 and put back on 2026-09-15**, blocked by KN-494,
+KN-554 and KN-560 to KN-563. Its plan, `apps/web/e2e/storybook/#KN-226 - ....md`,
+measured a production Storybook of d3f9fce under `/KarNama/storybook/`: 423
+entries, 372 stories and 51 docs pages, 115 seconds six at a time; eleven fail
+bare and inside the manager, KN-494's five, IconButton `BlankName` and its Docs
+page (KN-554), App/Shell `SignedInInAnotherTab` (KN-560), Button `States`
+(KN-561), Input `ControlsMatchTheCanvasInEnglish` (KN-562) and SettingsDialog
+`Preferences` (KN-563). Codex's review ruled out letting them through on a list:
+the exit condition fails on any console error, so wiring the check before Pages
+publishes would stop every deploy, the app's too, until they pass. The replan
+weighs `@storybook/test-runner` with `--failOnConsole` (a new dependency, the
+owner's yes to install), a `webServer`, no Docs pages, an explicit test timeout
+and the channel hooked by a property setter; the plan's review section has it.
+Also filed from the measurement: **KN-559**, AddJobModal `Review`'s 606 tall
+assertion, which the manager's canvas cannot hold; a note on **KN-063** listing
+34 entries whose accessibility checks fail in production, colour contrast on 31.
+`e2e/settings.spec.ts` passes against the app's production build.
+
+**How to measure the published Storybook**, since the scratch scripts are this
+session's: build with `KARNAMA_STORYBOOK_BASE` set in Node's own `env`, never on
+a Git Bash command line, which rewrote it to `/Program Files/Git/...` and cost 35
+minutes; serve the build under that base; fetch the scripts `iframe.html` names
+before opening anything; open `iframe.html?id=<id>&viewMode=story`; hear the end
+on `window.__STORYBOOK_ADDONS_CHANNEL__`, `storyFinished` after the play and
+`playFunctionThrewException` for a thrown one, whose `storyFinished` still says
+`success`. React's production bundle prints no dev warnings.
 
 **KN-551**: `core/api/session.test.ts` fails both its cases when the unit project
-runs straight after storybook browser runs, and passes alone and in a quiet
-full run; on 2026-09-14 evening it passed, 1383, after browser runs.
+runs straight after storybook browser runs, and passes alone; on 2026-09-14
+evening it passed, 1383, after browser runs.
 
 **What fails in a full run, and why**: the storybook project fails the five modal
-stories KN-494 carries, four of them in `JobModal.stories.tsx`, and the Job
-Card's `Pressed` in parallel only, KN-365's kind. The API's 156 tests pass and
-its coverage gate fails on auth and extraction files, KN-486. Of the e2e suite,
-only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
+stories KN-494 carries and the Job Card's `Pressed` in parallel only, KN-365's
+kind. The API's 156 tests pass and its coverage gate fails on auth and
+extraction files, KN-486. Of the e2e suite, `two-tabs.spec.ts` passed on
+2026-09-14 and `settings.spec.ts` on 2026-09-15, both on desktop.
 
 ## The owner's rules, most recent first
 
@@ -99,35 +111,14 @@ only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
 
 ## The next step
 
-**KN-226 is in progress**: nothing committed opens the published Storybook's
-stories. Its plan is written beside the work,
-`apps/web/e2e/storybook/#KN-226 - ....md`, uncommitted, and goes to Codex before
-anything is built. What it measured on 2026-09-15, on a production build of
-d3f9fce under `/KarNama/storybook/`:
-
-- 423 entries, 372 stories and 51 docs pages, took 115 seconds six at a time.
-  Eleven fail, bare and inside the manager alike: KN-494's five, KN-554's two
-  (IconButton `BlankName` and its Docs page), and four filed as KN-226's
-  children, **KN-560** App/Shell `SignedInInAnotherTab`, **KN-561** Button
-  `States` (0 forced cells in the first frame), **KN-562** Input
-  `ControlsMatchTheCanvasInEnglish`, **KN-563** SettingsDialog `Preferences`; and
-  **KN-559**, AddJobModal `Review`'s 606 tall assertion, which the manager's
-  canvas cannot hold. `Multiline` needs 24 seconds alone, 57 inside the manager.
-- 35 entries end with Storybook's status `error` and a clean console: the
-  accessibility addon's failed checks, a note on KN-063.
-- `e2e/settings.spec.ts` passes against the app's production build, so the
-  Settings language switch works in the app.
-- The plan's choice: one step in the Pages build job, before the artifact, that
-  fails on any console or page error, with a committed list of the eleven known
-  failures, each naming its card, that fails when an entry on it passes.
-
-The first probe measured nothing: Git Bash rewrote the base passed on its command
-line into `/Program Files/Git/...`, `AGENTS.md` section 7 now says so, uncommitted
-with the plan. The scripts are in the session scratchpad: `kn226-build.mjs`
-builds with the base set in Node, `kn226-probe.mjs` opens entries (`ONLY`,
-`MANAGER`, `TIMEOUT`, `STATIC_DIR`), and `kn226-plan-roast.mjs` sends the plan.
-React's duplicate key warning for `job-10`, noted on the card, is dev-only; a
-production build carries none of its text.
+**KN-554 is in progress**, the board's pick after KN-226 went back: IconButton's
+`BlankName` story fails in the published Storybook, its `beforeEach` spy never
+seeing the product's report, which the console carries; IconButton's Docs page
+prints the same report, and the exit now names both. It passes in the Vitest
+runner. `nameOf` in `IconButton.tsx` decides blank with `trim()`, which KN-557
+carries separately. No plan yet: find when the report is said relative to the
+story's `beforeEach` in the published canvas, write the plan beside the
+component, and send it to Codex before building.
 
 ## What to read first
 

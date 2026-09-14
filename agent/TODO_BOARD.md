@@ -4,20 +4,20 @@
 
 Project **KarNama** · 235 of 563 tasks done · 526 of 1131 points.
 
-**Next up: `KN-226` Nothing committed checks that the published Storybook renders its stories without errors** (high, 3 pt, infra)
+**Next up: `KN-554` IconButton's BlankName story fails in the published Storybook: its spy never sees the report** (high, 2 pt, web)
 
 ## Objectives
 
 | position | id | name | state | open | done |
 | -- | -- | ---- | ----- | ---- | ---- |
 | 1 | OKR-1 | MVP: the pages | now | 197 | 157 |
-| 2 | OKR-2 | Everything after the MVP | later | 129 | 78 |
+| 2 | OKR-2 | Everything after the MVP | later | 128 | 78 |
 
 ## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-226` | Nothing committed checks that the published Storybook renders its stories without errors | high | 3 | infra | none | A committed check builds Storybook for production, opens every story in headless Chromium, and fails on any page error or console error; it runs before the Pages workflow publishes; and a mutation removing the Hover story's test-runner guard makes it fail on the emitted import error. |
+| `KN-554` | IconButton's BlankName story fails in the published Storybook: its spy never sees the report | high | 2 | web | none | BlankName's play passes, and IconButton's Docs page prints no report, in a production Storybook opened in a browser, and BlankName still passes in the Vitest runner. |
 
 ## Blocked (8)
 
@@ -32,7 +32,7 @@ Project **KarNama** · 235 of 563 tasks done · 526 of 1131 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (317)
+## Backlog (316)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -42,6 +42,10 @@ Project **KarNama** · 235 of 563 tasks done · 526 of 1131 points.
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
 | `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
+| `KN-560` | App/Shell's SignedInInAnotherTab fails in the published Storybook: the name step never appears | high | 2 | web | none | SignedInInAnotherTab's play passes in a production Storybook opened in a browser, bare and inside the manager, and still passes in the Vitest runner, with the cause named at the close. |
+| `KN-561` | Button's States story counts no forced cells in the first frame of the published Storybook | high | 2 | web | none | Which of the two it is is named at the close; States reads the first frame in which its buttons exist and counts 45 there, in a production Storybook opened in a browser and in the Vitest runner. |
+| `KN-562` | The Input's ControlsMatchTheCanvasInEnglish fails in the published Storybook: the args keep the Persian copy | high | 2 | web | none | Inside the manager of a production Storybook opened in a browser, ControlsMatchTheCanvasInEnglish passes and the Controls panel shows the English specimen, and the story still passes in the Vitest runner. |
+| `KN-563` | SettingsDialog's Preferences story fails in the published Storybook: choosing the other language calls nothing | high | 2 | web | none | Preferences passes in a production Storybook opened in a browser, bare and inside the manager, and in the Vitest runner, with the cause of the second render named at the close. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -55,6 +59,7 @@ Project **KarNama** · 235 of 563 tasks done · 526 of 1131 points.
 | `KN-127` | The resolver-registration check reads text rather than the container | high | 3 | api | KN-120 | A resolver registered in a way the text scan cannot see, a default export in a file not named *.resolver.ts, is detected, and the check reads the resolvers from a booted Nest context rather than from source text. |
 | `KN-158` | The story-docs rule in AGENTS.md describes a system that does not exist | high | 3 | web | none | Either src/shared/story-docs/{en,fa} exists with a page for every story, the three existing stories are migrated off JSDoc on meta, and a guard test fails when either language is missing a prop or story; or AGENTS.md is corrected to describe what the repository actually does and the main.ts comment with it. Whichever is chosen, no story in the tree contradicts the written rule afterwards, proved by a check rather than by reading. |
 | `KN-221` | The catalogs are never compiled, so a message with a count or a placeholder renders raw ICU in production | high | 3 | web | none | A message with a plural and a placeholder renders correctly in BOTH locales in a production build, checked by rendering it from the built output or under NODE_ENV=production rather than in development, with Persian digits in fa-IR; a mutation that loads the catalogs uncompiled again makes that check fail; and the catalog tests still prove every English id has a non-empty Persian translation. |
+| `KN-226` | Nothing committed checks that the published Storybook renders its stories without errors | high | 3 | infra | KN-494, KN-554, KN-560, KN-561, KN-562, KN-563 | A committed check builds Storybook for production, opens every story in headless Chromium, and fails on any page error or console error; it runs before the Pages workflow publishes; and a mutation removing the Hover story's test-runner guard makes it fail on the emitted import error. |
 | `KN-255` | The other components' stories keep controls that make their play functions untrue | high | 3 | web | none | Every story with a play function, in every component, either reads its expectations from the active args or offers only the controls its assertions hold for, and no story offers a control whose values the component cannot take, such as the Tooltip's children; KN-247's check, run over every story and changing each control by its own type (booleans flipped, every option of a select, a number changed, text changed and emptied), fails on none; and a repository guard fails any story file with a story that has a play function and neither declares its controls nor disables them. |
 | `KN-265` | Employment type becomes eight values, and a job can hold more than one | high | 3 | api | none | DESIGN.md's employment type list gives the eight values as the owner's decision of 2026-09-10, with the overlap noted, and says the field holds more than one; the Prisma schema has the eight and a record holds a list of them, through a migration that carries existing values over and is tested; the GraphQL schema and the generated types expose a list; the catalogs carry English ids and Persian for the two new values; and KN-073 is left holding only the job level list. |
 | `KN-275` | Add a resting edge role for controls at 3:1, and draw the Input and the Checkbox with it | high | 3 | web | none | tokens.ts carries a named role for a control's resting edge, a neutral in text/secondary's hue at 3.3:1 or more on bg/surface, bg/page and bg/surface-secondary, and darkMode.ts derives it and checks it at 3:1 or more on the three dark backgrounds, each ratio asserted by a unit test with a mutation back to border/default failing it; the Input's resting border and the Checkbox's unchecked frame use it, and the Input's Default story and the Checkbox's Unchecked story assert it; every other state of both still renders as drawn; DESIGN.md's token tables list the role as the owner's addition under KN-273; the token verifier and the contract pass; and the Input and the Checkbox are seen at rest in all four combinations. |
@@ -182,13 +187,8 @@ Project **KarNama** · 235 of 563 tasks done · 526 of 1131 points.
 | `KN-538` | A storage event handled late brings an older board back over this tab's newer write | medium | 2 | web | none | A story stores a board, dispatches a storage event whose value is an older board, and the page shows the stored board; it fails with either listener reading event.newValue again, and both listeners read the store. |
 | `KN-551` | The API client's session test failed under load: each case imports the client fresh | medium | 2 | web | none | session.test.ts passes in three full runs of the web unit project, each started while a storybook project run is going on, or the file says why its import stays inside each case and the card records the message it failed with. |
 | `KN-553` | On a Mac, F6 without Fn never reaches the page, and the bar says only F6 | medium | 2 | web | none | On macOS the bar's announcement names a key that reaches the page, shown by a story that reports a Mac platform and reads the status line, and the docs say what was and was not checked on a Mac. |
-| `KN-554` | IconButton's BlankName story fails in the published Storybook: its spy never sees the report | medium | 2 | web | none | BlankName's play passes, and IconButton's Docs page prints no report, in a production Storybook opened in a browser, and BlankName still passes in the Vitest runner. |
 | `KN-557` | A name made only of invisible characters passes the Checkbox's and the Icon Button's blank checks | medium | 2 | web | none | An aria-label made only of characters isBlank counts as blank, a zero-width space and a zero-width non-joiner among them, is refused and reported by the Checkbox and by the Icon Button, and so is a Checkbox aria-labelledby whose elements hold only such characters, each shown by a story; and the Checkbox stories' namedBox fails a checkbox whose computed name isBlank holds for. |
 | `KN-558` | No story hit-tests the Checkbox's target where the Job Card and the Contact Card place it | medium | 2 | web | none | In a Job Card story and a Contact Card story, with the checkbox shown, elementFromPoint one pixel inside each corner of the checkbox's input returns the input, and a real click at a corner outside the 20 by 20 square toggles the selection without opening the card, in both languages. |
-| `KN-560` | App/Shell's SignedInInAnotherTab fails in the published Storybook: the name step never appears | medium | 2 | web | none | SignedInInAnotherTab's play passes in a production Storybook opened in a browser, bare and inside the manager, and still passes in the Vitest runner, with the cause named at the close; KN-226's check no longer names it as a known failure. |
-| `KN-561` | Button's States story counts no forced cells in the first frame of the published Storybook | medium | 2 | web | none | Which of the two it is is named at the close; States reads the first frame in which its buttons exist and counts 45 there, in a production Storybook opened in a browser and in the Vitest runner; KN-226's check no longer names it as a known failure. |
-| `KN-562` | The Input's ControlsMatchTheCanvasInEnglish fails in the published Storybook: the args keep the Persian copy | medium | 2 | web | none | Inside the manager of a production Storybook opened in a browser, ControlsMatchTheCanvasInEnglish passes and the Controls panel shows the English specimen, and the story still passes in the Vitest runner; KN-226's check no longer names it as a known failure. |
-| `KN-563` | SettingsDialog's Preferences story fails in the published Storybook: choosing the other language calls nothing | medium | 2 | web | none | Preferences passes in a production Storybook opened in a browser, bare and inside the manager, and in the Vitest runner, with the cause of the second render named at the close; KN-226's check no longer names it as a known failure. |
 | `KN-053` | README in both languages, tech debt and phase-next records | medium | 3 | docs | KN-051, KN-052 | Both readmes describe the product and the cuts and are accurate against the deployed app, TECH-DEBT.md has an entry per suppression with the check that retires it, and PHASE-NEXT.md records every deliberate cut. |
 | `KN-059` | Decompose the board tool after ten rounds of patching | medium | 3 | agent | KN-001 | move() reads as a sequence of named guards none of which exceeds about fifteen lines, the argument parser exists once and both scripts import it, and every existing gate test still passes unchanged. |
 | `KN-092` | Enforce the import conventions with a lint rule, and fix what already breaks them | medium | 3 | web | KN-003 | A file importing @mui/material/Button fails npm run lint, a file importing ../something fails it, no file under apps/web/src does either, and every folder with more than one file has an index.ts. |
@@ -259,7 +259,6 @@ Project **KarNama** · 235 of 563 tasks done · 526 of 1131 points.
 | `KN-376` | The tab panel's tabbable test misses a contenteditable and a summary, so a panel holding only one keeps an extra stop | low | 1 | web | none | A panel whose only tab stop is a summary, or a contenteditable, carries no tabindex, and a real Tab from its tab lands on that element, in a story. |
 | `KN-377` | The tab panel's tabbable test counts a control inside an inert subtree, so a panel of text can lose its only stop | low | 1 | web | none | A panel whose only control sits inside an inert subtree keeps tabindex 0, and a real Tab from its tab lands on the panel, in a story. |
 | `KN-378` | The Icon Button's stories draw a name no control shows, so its aria-label is not driven by its args | low | 1 | web | none | The Icon Button's aria-label is an arg shown in Controls, holding the catalog's copy in the reader's language by the Input's KN-245 pattern, and a value typed there, blank included, reaches the rendered button, which a story checks. |
-| `KN-379` | BlankName reads the console before the Icon Button's report effect is sure to have run outside the test runner | low | 1 | web | none | BlankName waits for the report with waitFor before asserting it, and passes in the published Storybook's interaction panel as well as under Vitest. |
 | `KN-381` | The Type story proves Vazirmatn's faces are loaded, not that any text is drawn in them | low | 1 | web | none | A story shows text drawn in Vazirmatn by a measurement that differs from the same text in the fallback family, in Persian and in Latin, and fails with the face removed. |
 | `KN-382` | Storybook waits for Vazirmatn's Persian and Latin faces but not its extended Latin one | low | 1 | web | none | The preview waits for the extended Latin face too, and the Type story finds all three Vazirmatn faces loaded. |
 | `KN-383` | The Change Status modal opened on a status its list does not hold focuses its bare panel and confirms that status unchanged | low | 1 | web | none | Opened on a status its list does not hold, the Change Status modal puts focus on the first status and Confirm stays disabled until one is chosen, and a story renders the case. |
@@ -594,12 +593,13 @@ Project **KarNama** · 235 of 563 tasks done · 526 of 1131 points.
 | `KN-007` | Storybook docs infrastructure, in both languages, with its guard | high | 5 | web | KN-003, KN-006 | Adding a story with no markdown entry fails the guard test, a Docs page reads fully in Persian and fully in English, and planting a deliberately missing prop entry is caught. |
 | `KN-184` | The order check reads the whole document, not the fenced block it claims to | low | 2 | agent | none | The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed. |
 
-## Dropped (2)
+## Dropped (3)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-084` | Make the AGENTS.md section 5 gate runnable before any workspace exists | low | 1 | infra | KN-001 | npm run lint, npm run lint:tsc, npm test and npm run build each exit zero and say what they did on a clean checkout with no workspace directories, and each still fails honestly once apps/web exists and contains a failing check. |
 | `KN-176` | KN-162 closed against an exit condition it deliberately did not meet | low | 1 | agent | none | KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail. |
+| `KN-379` | BlankName reads the console before the Icon Button's report effect is sure to have run outside the test runner | low | 1 | web | none | BlankName waits for the report with waitFor before asserting it, and passes in the published Storybook's interaction panel as well as under Vitest. |
 
 ## Cards
 
@@ -4482,8 +4482,8 @@ CHILD OF KN-220, recorded in prose because board.json cannot express parent_task
 
 ### `KN-226` Nothing committed checks that the published Storybook renders its stories without errors
 
-- **status** in_progress · **severity** high · **points** 3 · **area** infra · **objective** OKR-1
-- **blocked by** none
+- **status** backlog · **severity** high · **points** 3 · **area** infra · **objective** OKR-1
+- **blocked by** KN-494, KN-554, KN-560, KN-561, KN-562, KN-563
 - **came out of** KN-013
 
 CHILD OF KN-220, recorded in prose because board.json cannot express parent_task yet, KN-188. Found by the KN-220 roast and confirmed: the published path of the Hover story was proved by a scratch Playwright script against a production Storybook build, and that script is not in the repository. CI builds and publishes Storybook without opening a single story. The storybook Vitest project runs stories against the DEV build, so a failure that only exists in the production build, like a story importing a test-only module, ships to the public library unseen. The browser pane cannot stand in for it either: while hidden it runs no animation frames, so no play function starts there at all.
@@ -4498,6 +4498,7 @@ CHILD OF KN-220, recorded in prose because board.json cannot express parent_task
 - 2026-09-14, seen while KN-206 looked at the dev Storybook: the tab's console, open for hours across many stories, carried React's duplicate key warning for key job-10 (a story fixture's id) twice, from a story not identified. A check that opens every story and names the one whose console errors should say which.
 - 2026-09-14, correcting the note above: the check this card builds cannot name that story. React's warning about duplicate keys is development-only, and a production Storybook build of today's tree carries its text in none of its assets, searched; it is KN-401's guard in the Vitest runner that hears it, where every story passes, so the warning came from something the runner does not run, such as a hand-driven story in the dev Storybook.
 - 2026-09-14, correcting the note above in turn: not every story passes in the runner, KN-494's five modal stories fail and the Job Card's Pressed fails in parallel runs, and a story that fails for another reason can say that warning without it being read, so where the job-10 warning came from is not known.
+- 2026-09-15, taken on 2026-09-14 and put back: its plan, beside the work in apps/web/e2e/storybook, measured eleven stories failing in a production Storybook, bare and inside the manager, KN-494's five, KN-554's two and KN-560 to KN-563, and Codex's review of the plan found that a committed list letting them through contradicts the exit condition, which fails on any console error. Wired as the card asks, the check would stop every Pages deploy, the app's included, until those stories are fixed, and holding them back would soften the exit condition. So the six cards carrying them block this one, and it is replanned from its plan when they are done, weighing what the review said: @storybook/test-runner against the static build with --failOnConsole, a new dependency whose install needs the owner's yes; Playwright's webServer rather than a global setup; Docs pages left out, since docsRendered does not wait on the stories inside; an explicit per-test timeout above Multiline's 24 seconds; and the channel hooked by a property setter rather than retried. Nothing was built for it but the plan and a line in AGENTS.md section 7.
 
 ### `KN-227` The token-file guard can be passed by a function, a Map, or copy assigned to fontFamily, and its retirement is a wish
 
@@ -7092,7 +7093,7 @@ CHILD OF KN-014, recorded in prose because board.json cannot express parent_task
 
 ### `KN-379` BlankName reads the console before the Icon Button's report effect is sure to have run outside the test runner
 
-- **status** backlog · **severity** low · **points** 1 · **area** web · **objective** OKR-1
+- **status** dropped · **severity** low · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-014
 
@@ -7101,6 +7102,10 @@ CHILD OF KN-014, recorded in prose because board.json cannot express parent_task
 **Why.** A story that passes under the runner and can fail in the Storybook a reviewer opens teaches them to distrust the panel.
 
 **Exit condition.** BlankName waits for the report with waitFor before asserting it, and passes in the published Storybook's interaction panel as well as under Vitest.
+
+**Notes.**
+
+- 2026-09-15: dropped as a duplicate of KN-554, found only after KN-554 was filed and taken. KN-554 carries the same fix for BlankName, waiting for the report before asserting it outside the test runner, and a wider exit that also names the Docs page of the Icon Button, which prints the report in the published Storybook.
 
 ### `KN-380` The Search Bar decides whether to search by comparing typed text with shown text, which a normalising, restoring or clear-ignoring parent defeats
 
@@ -8763,6 +8768,8 @@ From KN-477's review, W-04, C-01 and C-02, confirmed: draft.ts accepts only yyyy
 
 - 2026-09-14, from KN-467: EnterSaves in JobModal.stories.tsx gives the fixture's record its dates as days, 2026-09-01 and 2026-09-04, since a record holding the written dates cannot be saved and so cannot show the save Enter makes. When the fixtures move to days, that override, savable, can go.
 - 2026-09-15, from KN-226's measurement: the five fail in a production Storybook of the tree at d3f9fce too, bare at iframe.html and inside the manager, on the same assertions, except that inside the manager Review fails first on its size, KN-559. KN-226's check names them as known failures until this closes.
+- 2026-09-15: blocks KN-226 as well, whose check fails on any console error in the published Storybook, where these five print theirs.
+- 2026-09-15, correcting the earlier note of that day: KN-226 keeps no list of known failures, since the review of its plan ruled one out as softening its exit condition; this card blocks KN-226 instead.
 
 ### `KN-495` The board screen calls the live API itself, so its Adding story fails without a server
 
@@ -9492,7 +9499,7 @@ KN-469's roast, from Apple's own guidance on function keys: on a Mac the top row
 
 ### `KN-554` IconButton's BlankName story fails in the published Storybook: its spy never sees the report
 
-- **status** backlog · **severity** medium · **points** 2 · **area** web · **objective** OKR-2
+- **status** in_progress · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 Seen 2026-09-14 while KN-522 read the published Storybook's console: a production build, served from the session's scratchpad and opened in headless Chromium, ran shared-iconbutton--blank-name, whose play threw 'expected "error" to be called with arguments: [ StringMatching ]' with no calls, while the page's console did carry the product's report 'KarNama: IconButton: its aria-label is blank, so it would reach a screen reader nameless; it is left out until it has a name.' So in the published build the report is said where the story's beforeEach spy does not see it, though the same story passes in the Vitest runner. KN-522 did not change that story. Find when the report is said relative to the story's beforeEach in the published canvas, and make the assertion hold there, or say in the story why it cannot.
@@ -9504,6 +9511,8 @@ Seen 2026-09-14 while KN-522 read the published Storybook's console: a productio
 **Notes.**
 
 - 2026-09-15, from KN-226's measurement: IconButton's Docs page, shared-iconbutton--docs, prints the same report to the console in the production Storybook, bare and inside the manager, where BlankName is drawn without the capture its play sets up; the exit now names the Docs page, and KN-226's check names both entries as known failures until this closes.
+- 2026-09-15: blocks KN-226, the check that the published Storybook renders its stories without errors, whose exit condition fails on any console error; in a production Storybook this story prints one, so the check cannot be wired before Pages publishes until it is fixed. Moved into OKR-1 and raised to high for it, as the card it blocks is.
+- 2026-09-15, correcting the earlier note of that day: KN-226 keeps no list of known failures, since the review of its plan ruled one out as softening its exit condition; this card blocks KN-226 instead.
 
 ### `KN-555` A warning can land where KN-401's guard does not hear it: MUI's printed while every Tooltip story passed
 
@@ -9566,7 +9575,7 @@ Found by KN-226's measurement, 2026-09-15: a production Storybook of the tree at
 
 ### `KN-560` App/Shell's SignedInInAnotherTab fails in the published Storybook: the name step never appears
 
-- **status** backlog · **severity** medium · **points** 2 · **area** web · **objective** OKR-1
+- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-013
 
@@ -9574,11 +9583,15 @@ Found by KN-226's measurement, 2026-09-15: a production Storybook of the tree at
 
 **Why.** A failed interaction on the shell's page in the published Storybook tells whoever reviews the sign-in flow there that a working flow is broken, and KN-226's check cannot guard the story until it holds.
 
-**Exit condition.** SignedInInAnotherTab's play passes in a production Storybook opened in a browser, bare and inside the manager, and still passes in the Vitest runner, with the cause named at the close; KN-226's check no longer names it as a known failure.
+**Exit condition.** SignedInInAnotherTab's play passes in a production Storybook opened in a browser, bare and inside the manager, and still passes in the Vitest runner, with the cause named at the close.
+
+**Notes.**
+
+- 2026-09-15: blocks KN-226, the check that the published Storybook renders its stories without errors, whose exit condition fails on any console error; in a production Storybook this story prints one, so the check cannot be wired before Pages publishes until it is fixed. Raised to high for it, as the card it blocks is.
 
 ### `KN-561` Button's States story counts no forced cells in the first frame of the published Storybook
 
-- **status** backlog · **severity** medium · **points** 2 · **area** web · **objective** OKR-1
+- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-013
 
@@ -9586,11 +9599,15 @@ Found by KN-226's measurement, 2026-09-15: a production Storybook of the tree at
 
 **Why.** Either the published Button page flashes the wrong state for a frame, which KN-454 exists to prevent, or its proof that it does not is empty where the page is reviewed.
 
-**Exit condition.** Which of the two it is is named at the close; States reads the first frame in which its buttons exist and counts 45 there, in a production Storybook opened in a browser and in the Vitest runner; KN-226's check no longer names it as a known failure.
+**Exit condition.** Which of the two it is is named at the close; States reads the first frame in which its buttons exist and counts 45 there, in a production Storybook opened in a browser and in the Vitest runner.
+
+**Notes.**
+
+- 2026-09-15: blocks KN-226, the check that the published Storybook renders its stories without errors, whose exit condition fails on any console error; in a production Storybook this story prints one, so the check cannot be wired before Pages publishes until it is fixed. Raised to high for it, as the card it blocks is.
 
 ### `KN-562` The Input's ControlsMatchTheCanvasInEnglish fails in the published Storybook: the args keep the Persian copy
 
-- **status** backlog · **severity** medium · **points** 2 · **area** web · **objective** OKR-1
+- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-013
 
@@ -9598,11 +9615,15 @@ Found by KN-226's measurement, 2026-09-15: a production Storybook of the tree at
 
 **Why.** Whoever opens the Input's English page in the published Storybook meets a failed interaction and, if the story is right, a Controls panel holding Persian copy under English, the defect KN-245 closed.
 
-**Exit condition.** Inside the manager of a production Storybook opened in a browser, ControlsMatchTheCanvasInEnglish passes and the Controls panel shows the English specimen, and the story still passes in the Vitest runner; KN-226's check no longer names it as a known failure.
+**Exit condition.** Inside the manager of a production Storybook opened in a browser, ControlsMatchTheCanvasInEnglish passes and the Controls panel shows the English specimen, and the story still passes in the Vitest runner.
+
+**Notes.**
+
+- 2026-09-15: blocks KN-226, the check that the published Storybook renders its stories without errors, whose exit condition fails on any console error; in a production Storybook this story prints one, so the check cannot be wired before Pages publishes until it is fixed. Raised to high for it, as the card it blocks is.
 
 ### `KN-563` SettingsDialog's Preferences story fails in the published Storybook: choosing the other language calls nothing
 
-- **status** backlog · **severity** medium · **points** 2 · **area** web · **objective** OKR-1
+- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-013
 
@@ -9610,5 +9631,9 @@ Found by KN-226's measurement, 2026-09-15: a production Storybook of the tree at
 
 **Why.** The published Storybook shows the settings dialog's language choice, the owner's KN-480, as broken when the app's is not, which sends a reviewer after a defect that does not exist.
 
-**Exit condition.** Preferences passes in a production Storybook opened in a browser, bare and inside the manager, and in the Vitest runner, with the cause of the second render named at the close; KN-226's check no longer names it as a known failure.
+**Exit condition.** Preferences passes in a production Storybook opened in a browser, bare and inside the manager, and in the Vitest runner, with the cause of the second render named at the close.
+
+**Notes.**
+
+- 2026-09-15: blocks KN-226, the check that the published Storybook renders its stories without errors, whose exit condition fails on any console error; in a production Storybook this story prints one, so the check cannot be wired before Pages publishes until it is fixed. Raised to high for it, as the card it blocks is.
 
