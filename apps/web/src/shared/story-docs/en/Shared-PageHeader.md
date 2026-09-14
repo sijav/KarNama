@@ -6,7 +6,9 @@ When the page has somewhere to go back to, an arrow before the title leads
 there; the design draws it pointing right, back in a right to left page, and an
 English page turns it round. The arrow is 20, and the control round it takes a
 press anywhere in 24 each way. The primary action, a button, sits at the other
-end. On a narrow screen the shell's own controls follow the action, the
+end. The row is 44 tall whatever it holds, the height the design draws it at,
+so a page with a small action or none keeps its header's height. On a narrow
+screen the shell's own controls follow the action, the
 language, the settings and signing out, since the tab bar at the bottom has
 room only for the three destinations; on a wide screen they live at the foot of
 the sidebar instead.

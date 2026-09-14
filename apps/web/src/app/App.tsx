@@ -63,14 +63,18 @@ export const App = () => {
     <Box sx={{ display: 'flex', height: '100dvh', minWidth: 0, overflow: 'hidden', bgcolor: 'background.default' }}>
       <Navigation
         selecting={selecting}
-        current={current}
+        // The add flow opens over the board, and its frames keep the board the
+        // current page while it is open, 243:814 and 243:682, KN-481.
+        current={current === 'add' ? 'jobs' : current}
         onNavigate={navigate}
         userName={session.name}
         userPhone={session.phone}
         onSignOut={signOut}
       />
-      {/* Below md the tab bar is pinned over the page's foot, so the page
-          keeps its 72 clear there. */}
+      {/* No padding of its own: each page brings its gutters with its Header
+          band, 32 on a desktop and 16 on a phone, KN-481 and KN-452. Below md
+          the tab bar is pinned over the page's foot, so the page keeps its 72
+          clear there. */}
       <Box
         component="main"
         sx={{
@@ -80,12 +84,11 @@ export const App = () => {
           overflowY: current === 'network' ? 'auto' : 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          p: 6,
-          pb: { xs: `calc(${TAB_BAR_HEIGHT}px + env(safe-area-inset-bottom) + ${spacing.lg}px)`, md: 6 },
+          pb: { xs: `calc(${TAB_BAR_HEIGHT}px + env(safe-area-inset-bottom))`, md: 0 },
         }}
       >
         {error ? (
-          <Box role="alert" sx={{ color: 'error.main' }}>
+          <Box role="alert" sx={{ color: 'error.main', px: { xs: `${spacing.md}px`, md: `${spacing.xl}px` }, pt: `${spacing.md}px` }}>
             {apiErrorText(i18n, error)}
           </Box>
         ) : null}

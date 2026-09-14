@@ -116,3 +116,15 @@ The card's notes hold ten entries, five pages at two widths, each with its frame
 id and each difference marked decided, already filed, fixed or filed now; the
 fixed pages are screenshotted again beside their frames; the stories of any
 changed component pass and lint and tsc are clean.
+
+## What was fixed here, and what was filed
+
+Every page's differences are in the card's notes. Fixed on main: the Header
+band on the board and the network at both widths, with the page's gutters of 32
+and 16 inside it and under it, which closes KN-452; the Page Header's 44; the
+desktop board's toolbar, the search bar's 320 at the inline start and the sort
+at the inline end; the columns 16 apart; the network's two columns 24 apart and
+a phone's list 12 apart; the board staying current while the add flow is open.
+The frames' numbers are asserted from the shell by `App/Shell`'s
+`LaidOutAsTheFrames`, in both languages. Filed as cards: KN-512 to KN-518, three
+of them waiting on the owner.

@@ -706,6 +706,9 @@ joins it. Below MUI's md, 900, it replaces the sidebar, pinned to the foot of
 the screen, and the page keeps its 72 clear; the file says it gives way to the
 Bulk Action Bar while selecting, which is the board's to do. KN-027.
 
+The add flow is a modal over the board, so while it is open the board stays the
+current page in both, as `243:814` and `243:682` draw it, KN-481.
+
 ### The add modal
 
 Node `166:82`, the shell at 560 in four drawn steps and the loading panel of
@@ -1467,6 +1470,21 @@ should walk:
 Canvas `5:7`, 53 frames, desktop 1440 by 900 and mobile 390 by 844, grouped into
 six flow rows. **`Hover`, `Drag` and `Drop Done` are prototype demonstrations,
 not screens to implement**: those states belong to the components, per `416:14`.
+
+**The page's frame**, read from `241:2`, `241:146`, `252:2` and `252:411` with
+use_figma on 2026-09-14, KN-481. The board and the network open on a Header
+band, `bg/surface` with one pixel of `border/default` along its foot, drawn
+inside: on a desktop 32 above and at the sides, 16 below and 16 between the Page
+Header and the toolbar, 144 tall; on a phone 16, 12 below and 12 between, and on
+the board it holds the status chips as well. The Page Header is 44 tall whatever
+its action. The desktop toolbar puts the Search Bar's 320 at the inline start
+and the Sort Control at the inline end. Under the band the page keeps the same
+gutter, 32 or 16: the board's columns sit 32 in and 16 apart, a phone's cards 16
+in and 12 apart, and the network's people fill two equal columns 24 apart from
+md up and one column 12 apart below it. The shell gives a page no padding of its
+own. Not matched yet, each its own card: the network's Sort Control, KN-512, and
+a phone board's add button and sort row, which wait on the owner, KN-515 and
+KN-516.
 
 **Row 1, y=0, the board.** Desktop Board `241:2`, Mobile Board `241:146`, Mobile
 Empty `243:2`, Desktop Hover `243:76`, Desktop Drag `243:224`, Mobile Selection

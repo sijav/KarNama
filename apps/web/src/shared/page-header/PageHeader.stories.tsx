@@ -116,10 +116,14 @@ export const TitleOnly: Story = {
   render: () => <Drawn withAction={false} />,
   play: async ({ canvasElement }) => {
     // Both slots are optional: with neither, the title stands alone, and only
-    // the narrow screen's shell controls are controls.
-    await titleOf(canvasElement)
+    // the narrow screen's shell controls are controls. The row keeps the 44
+    // node 155:56 draws rather than shrinking round the title, KN-481.
+    const heading = await titleOf(canvasElement)
     const controls = within(canvasElement).queryAllByRole('button').filter((button) => !isShellControl(button))
     await expect(controls).toHaveLength(0)
+    const row = heading.parentElement?.parentElement
+    if (!row) throw new Error('the title has no row round it')
+    await expect(row.getBoundingClientRect().height).toBe(44)
   },
 }
 

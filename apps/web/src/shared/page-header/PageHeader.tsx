@@ -23,6 +23,11 @@ const FOCUS_EDGE = 2
 const TARGET = 24
 const REACH = (TARGET - iconSize.md) / 2
 
+// Node 155:56 is 44 tall, its Button M's height, and every page's frame draws
+// the row at 44 whatever it holds, KN-481: a 32 Icon Button for its action, or
+// no action at all, leaves the row its height rather than taking it away.
+const HEIGHT = 44
+
 // The Page Header of node 155:56: the title at the inline start, with the
 // back arrow of 155:72 before it when there is somewhere to go back to, and
 // the primary action at the inline end. On a narrow screen the shell's own
@@ -31,7 +36,7 @@ const REACH = (TARGET - iconSize.md) / 2
 export const PageHeader = ({ title, onBack, action, onSignOut }: PageHeaderProps) => {
   const { i18n } = useLingui()
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: `${spacing.sm}px`, width: '100%' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: `${spacing.sm}px`, width: '100%', minHeight: HEIGHT }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: `${spacing.sm}px`, minWidth: 0 }}>
         {onBack === undefined ? null : (
           // The file's arrow points right, back in a right to left page; the

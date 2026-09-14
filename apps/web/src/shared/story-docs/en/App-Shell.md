@@ -43,7 +43,24 @@ screen when it runs as a test.
 
 The address and the page following each other: the navigation writes the hash,
 and a hash written by anything else, the back button, a typed address, a
-shared link, is read back into the page.
+shared link, is read back into the page. While the add flow is open over the
+board, the board stays the current page in the navigation.
+
+### LaidOutAsTheFrames
+
+The board and the network at the design's own screen sizes, 1440 by 900 and 390
+by 844, with the sample data loaded from Settings the way a reader loads it:
+the header band across the top of each page holding the title row, the search
+bar and the sort where the design puts them, the page's margins of 32 on a
+desktop and 16 on a phone, the board's columns 16 apart, and the network's
+people in two columns 24 apart, or one column 12 apart on a phone. The story
+resizes the screen when it runs as a test.
+
+### LaidOutAsTheFramesInEnglish
+
+The same measurements in English, where the direction flips: every distance is
+read from the edge a line of text starts at, so the same numbers hold on the
+other side.
 
 ### NobodySignedIn
 

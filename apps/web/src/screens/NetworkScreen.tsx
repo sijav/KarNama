@@ -11,6 +11,7 @@ import { PageHeader } from '../shared/page-header'
 import { SearchBar, type SearchBarLayout } from '../shared/search-bar'
 import { Tooltip } from '../shared/tooltip'
 import { spacing } from '../theme/tokens'
+import { band, gutterOf } from './band'
 
 /**
  * The network: the people met on the way to a job, KN-056.
@@ -22,11 +23,9 @@ import { spacing } from '../theme/tokens'
  * reversal anywhere in the code, DESIGN.md section 9.
  */
 
-// Node 248:116's card is 280 across. The search bar is 320 from md up, the
-// contacts toolbar's own instance `252:48`, the same as the board's, and the
-// page's own width below that, KN-315 and KN-443. It was capped at 480, which
-// the file draws nowhere.
-const CARD_WIDTH = 280
+// The search bar is 320 from md up, the contacts toolbar's own instance
+// `252:48`, the same as the board's, and the page's own width below that,
+// KN-315 and KN-443. It was capped at 480, which the file draws nowhere.
 const SEARCH_WIDTH = 320
 
 // The bar follows the screen it is on, as the board's cards do, KN-315.
@@ -117,74 +116,89 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
   const nobodyYet = records.contacts.length === 0
 
   return (
-    <Stack ref={page} tabIndex={LOOSE} sx={{ gap: `${spacing.lg}px`, flex: '1 1 auto', minHeight: 0 }}>
-      <PageHeader
-        title={i18n._('My network')}
-        {...(onSignOut === undefined ? {} : { onSignOut })}
-        // Add contact is an Icon Button, the owner's of 2026-09-14, KN-478,
-        // where the file draws Button M; its tip says what the name does not.
-        action={
-          <Tooltip title={i18n._('Adds a person to your network')}>
-            <IconButton
-              icon="user-plus"
-              aria-label={i18n._('Add contact')}
-              aria-haspopup="dialog"
-              onClick={() => {
-                setEditing({ id: null, values: NOBODY })
-              }}
-            />
-          </Tooltip>
-        }
-      />
-
-      {/* 320 from md up, the contacts toolbar's own instance `252:48`, and the
-          whole page below it, where the file draws 358 inside the page's 16
-          gutters, `252:421`. A cap at every width made the phone's bar 320 and
-          left the rest of the row empty, KN-443. */}
-      <Box sx={{ maxWidth: { xs: 'none', md: SEARCH_WIDTH } }}>
-        <SearchBar
-          value={search}
-          onChange={setSearch}
-          layout={wide ? DESKTOP : MOBILE}
-          label={i18n._('Search contacts')}
-          placeholder={i18n._('Search in name, role or company')}
+    <Stack ref={page} tabIndex={LOOSE} sx={{ flex: '1 1 auto', minHeight: 0 }}>
+      {/* The Header band, 252:36 and 252:412: the Page Header over the
+          toolbar, KN-481. */}
+      <Box component="header" sx={band.sx(wide)}>
+        <PageHeader
+          title={i18n._('My network')}
+          {...(onSignOut === undefined ? {} : { onSignOut })}
+          // Add contact is an Icon Button, the owner's of 2026-09-14, KN-478,
+          // where the file draws Button M; its tip says what the name does not.
+          action={
+            <Tooltip title={i18n._('Adds a person to your network')}>
+              <IconButton
+                icon="user-plus"
+                aria-label={i18n._('Add contact')}
+                aria-haspopup="dialog"
+                onClick={() => {
+                  setEditing({ id: null, values: NOBODY })
+                }}
+              />
+            </Tooltip>
+          }
         />
+
+        {/* 320 from md up, the contacts toolbar's own instance `252:48`, and
+            the whole row below it, where the file draws 358 inside the band's
+            16 gutters, `252:421`. A cap at every width made the phone's bar 320
+            and left the rest of the row empty, KN-443. The cap reads the same
+            flag as the bar's height, so the two cannot disagree, KN-452. */}
+        <Box sx={{ maxWidth: wide ? SEARCH_WIDTH : 'none' }}>
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            layout={wide ? DESKTOP : MOBILE}
+            label={i18n._('Search contacts')}
+            placeholder={i18n._('Search in name, role or company')}
+          />
+        </Box>
       </Box>
 
-      {shown.length === 0 ? (
-        <EmptyState
-          title={nobodyYet ? i18n._('You have not added anyone to your network yet') : i18n._('No results found')}
-          body={
-            nobodyYet
-              ? i18n._('Keep the people you meet on the way to a job here: recruiters, managers, future teammates.')
-              : i18n._('Nothing matches this search. Try other words or remove the filters.')
-          }
-          actionLabel={i18n._('Add contact')}
-          onAction={() => {
-            setEditing({ id: null, values: NOBODY })
-          }}
-        />
-      ) : (
-        <Box sx={{ display: 'grid', gap: `${spacing.md}px`, gridTemplateColumns: `repeat(auto-fill, minmax(${CARD_WIDTH}px, 1fr))` }}>
-          {shown.map((held) => (
-            <ContactCard
-              key={held.id}
-              contact={held.contact}
-              selected={selected.includes(held.id)}
-              onOpen={() => {
-                setEditing({ id: held.id, values: asValues(held) })
-              }}
-              onSelectedChange={(wanted) => {
-                setSelected((was) => (wanted ? [...was, held.id] : was.filter((id) => id !== held.id)))
-              }}
-              onDelete={() => {
-                remember()
-                setDeleting([held.id])
-              }}
-            />
-          ))}
-        </Box>
-      )}
+      <Box sx={{ padding: `${gutterOf(wide)}px` }}>
+        {shown.length === 0 ? (
+          <EmptyState
+            title={nobodyYet ? i18n._('You have not added anyone to your network yet') : i18n._('No results found')}
+            body={
+              nobodyYet
+                ? i18n._('Keep the people you meet on the way to a job here: recruiters, managers, future teammates.')
+                : i18n._('Nothing matches this search. Try other words or remove the filters.')
+            }
+            actionLabel={i18n._('Add contact')}
+            onAction={() => {
+              setEditing({ id: null, values: NOBODY })
+            }}
+          />
+        ) : (
+          // The Grid, 252:53, two columns as wide as each other and 24 apart
+          // from md up; the List, 252:425, one column 12 apart below it.
+          <Box
+            sx={{
+              display: 'grid',
+              gap: `${wide ? spacing.lg : spacing.sm}px`,
+              gridTemplateColumns: wide ? 'repeat(2, minmax(0, 1fr))' : 'minmax(0, 1fr)',
+            }}
+          >
+            {shown.map((held) => (
+              <ContactCard
+                key={held.id}
+                contact={held.contact}
+                selected={selected.includes(held.id)}
+                onOpen={() => {
+                  setEditing({ id: held.id, values: asValues(held) })
+                }}
+                onSelectedChange={(wanted) => {
+                  setSelected((was) => (wanted ? [...was, held.id] : was.filter((id) => id !== held.id)))
+                }}
+                onDelete={() => {
+                  remember()
+                  setDeleting([held.id])
+                }}
+              />
+            ))}
+          </Box>
+        )}
+      </Box>
 
       <BulkActionBar
         type="contacts"

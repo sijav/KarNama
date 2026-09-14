@@ -1,11 +1,14 @@
+import type { I18n } from '@lingui/core'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { AuthProvider, sessionFor } from '../core/auth'
 import { addressOf } from './routes'
 import { fixtures } from '../shared/story-fixtures'
 import { STORAGE_KEY } from '../core/preferences'
+import { i18nFor } from '../i18n'
 import { CURRENT } from '../shared/navigation'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
+import { semantic } from '../theme/tokens'
 import { App } from './App'
 
 /**
@@ -180,6 +183,11 @@ export const Navigating: Story = {
       // flow that is no longer open, KN-044.
       window.location.hash = addressOf('add')
       const adding = await body.findByRole('dialog')
+      // The board stays the current page under the flow, as its frames draw
+      // it, KN-481. The dialog takes the page out of the accessibility tree
+      // while it is open, so the navigation is read with what is hidden.
+      const current = canvas.getAllByRole('button', { hidden: true }).filter((button) => button.getAttribute('aria-current') === CURRENT)
+      await expect(current.map((button) => button.textContent)).toEqual(['فرصت‌های شغلی من'])
       await userEvent.click(within(adding).getByRole('button', { name: 'انصراف' }))
       await waitFor(async () => {
         await expect(body.queryByRole('dialog')).toBeNull()
@@ -188,6 +196,163 @@ export const Navigating: Story = {
     } finally {
       window.location.hash = before
     }
+  },
+}
+
+// The frames' desktop, 1440 by 900; the phone's is PHONE above.
+const DESKTOP = { width: 1440, height: 900 }
+
+// A token's colour as the browser computes it, borrowed on the host's own
+// inline style and put back in the same tick.
+const colourOf = (host: HTMLElement, colour: string) => {
+  const previous = host.style.color
+  host.style.color = colour
+  const value = getComputedStyle(host).color
+  host.style.color = previous
+  return value
+}
+
+// Where a box sits in the page's own area, measured from the edge a line of
+// text starts at, so one set of numbers holds in both directions.
+const placed = (area: DOMRect, box: DOMRect, rtl: boolean) => ({
+  start: Math.round(rtl ? area.right - box.right : box.left - area.left),
+  end: Math.round(rtl ? box.left - area.left : area.right - box.right),
+  top: Math.round(box.top - area.top),
+  width: Math.round(box.width),
+  height: Math.round(box.height),
+})
+
+/**
+ * The board and the network laid out as their frames, `241:2`, `241:146`,
+ * `252:2` and `252:411`, KN-481: the Header band, the page's gutters, the
+ * toolbar and what follows it, with the sample data loaded the way a reader
+ * loads it. Read from the shell rather than from a screen's own story, since a
+ * screen rendered alone fills whatever canvas it is given, KN-452. The screen
+ * is resized by the runner's own browser, KN-225, and put back after.
+ */
+const laidOutAsTheFrames = async (canvasElement: HTMLElement, i18n: I18n) => {
+  if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+  const { page } = await import('vitest/browser')
+  const canvas = within(canvasElement)
+  const body = within(canvasElement.ownerDocument.body)
+  const rtl = window.document.documentElement.dir === 'rtl'
+  // The page's area, whose clientWidth is the room a scrollbar leaves, and the
+  // Header band at its top.
+  const main = () => {
+    const area = canvasElement.querySelector('main')
+    if (!area) throw new Error('the shell has no main area')
+    return area
+  }
+  const bandOf = () => {
+    const found = main().querySelector('header')
+    if (!found) throw new Error('the page has no Header band')
+    return found
+  }
+  const at = (element: Element) => placed(main().getBoundingClientRect(), element.getBoundingClientRect(), rtl)
+  const titleRow = () => {
+    const row = canvas.getByRole('heading', { level: 1 }).parentElement?.parentElement
+    if (!row) throw new Error('the title has no row round it')
+    return row
+  }
+  const searchBar = () => {
+    const bar = canvas.getByRole('searchbox').closest('div')?.parentElement
+    if (!bar) throw new Error('the field has no bar round it')
+    return bar
+  }
+  const open = async (name: string) => {
+    await userEvent.click(canvas.getByRole('button', { name }))
+    await waitFor(async () => {
+      await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent(name)
+    })
+  }
+  const before = { width: window.innerWidth, height: window.innerHeight }
+  const address = window.location.hash
+  try {
+    await page.viewport(DESKTOP.width, DESKTOP.height)
+    await waitFor(() => expect(canvasElement.querySelector('aside')).not.toBeNull())
+    await userEvent.click(canvas.getByRole('button', { name: i18n._('Settings') }))
+    const settings = await body.findByRole('dialog')
+    await userEvent.click(within(settings).getByRole('button', { name: i18n._('Load sample data') }))
+    await userEvent.click(within(settings).getByRole('button', { name: i18n._('Done') }))
+    await waitFor(async () => {
+      await expect(body.queryByRole('dialog')).toBeNull()
+      await expect(canvas.getAllByRole('region').length).toBeGreaterThan(1)
+    })
+
+    // The board at 1440, 241:2: the band across the page and 144 tall, on
+    // bg/surface with its pixel of border/default drawn inside; the title row
+    // 32 in and 44 tall; the search bar's 320 at the inline start and the sort
+    // at the other end; the columns 32 below the band and in, 16 apart.
+    const board = bandOf()
+    await expect(at(board)).toMatchObject({ start: 0, end: 0, top: 0, height: 144 })
+    await expect(getComputedStyle(board).backgroundColor).toBe(colourOf(board, semantic['bg/surface']))
+    const edge = getComputedStyle(board, '::after')
+    await expect([edge.borderBottomWidth, edge.borderBottomColor]).toEqual(['1px', colourOf(board, semantic['border/default'])])
+    await expect(at(titleRow())).toMatchObject({ start: 32, end: 32, top: 32, height: 44 })
+    await expect(at(searchBar())).toMatchObject({ start: 32, top: 92, width: 320 })
+    const sort = canvas.getByText(i18n._('Sort:')).closest('.MuiInputBase-root')
+    if (!sort) throw new Error('the sort has no control round it')
+    await expect(at(sort)).toMatchObject({ end: 32, top: 92 })
+    const [first, second] = canvas.getAllByRole('region')
+    if (!first || !second) throw new Error('the board has fewer than two columns')
+    await expect(at(first)).toMatchObject({ start: 32, top: 176 })
+    await expect(at(second).start - at(first).start - at(first).width).toBe(16)
+
+    // The network at 1440, 252:2: the same band, and the people in two columns
+    // as wide as each other, 32 in and 24 apart.
+    await open(i18n._('My network'))
+    await expect(at(bandOf())).toMatchObject({ start: 0, top: 0, height: 144 })
+    await expect(at(titleRow())).toMatchObject({ start: 32, top: 32, height: 44 })
+    await expect(at(searchBar())).toMatchObject({ start: 32, top: 92, width: 320 })
+    const column = (main().clientWidth - 2 * 32 - 24) / 2
+    const [one, two] = canvas.getAllByRole('article')
+    if (!one || !two) throw new Error('the network has fewer than two people')
+    await expect(at(one)).toMatchObject({ start: 32, top: 176, width: Math.round(column) })
+    await expect(at(two)).toMatchObject({ start: Math.round(32 + column + 24), top: 176, width: Math.round(column) })
+
+    // The network on a phone, 252:411: the band 16 in, 12 below and between,
+    // 128 tall; the search bar the row's 358; the people 16 in, 12 apart.
+    await page.viewport(PHONE.width, PHONE.height)
+    await waitFor(() => expect(canvasElement.querySelector('aside')).toBeNull())
+    await expect(at(bandOf())).toMatchObject({ start: 0, top: 0, height: 128 })
+    await expect(at(titleRow())).toMatchObject({ start: 16, top: 16, height: 44, width: main().clientWidth - 32 })
+    await expect(at(searchBar())).toMatchObject({ start: 16, top: 72, width: main().clientWidth - 32 })
+    const [near, next] = canvas.getAllByRole('article')
+    if (!near || !next) throw new Error('the network has fewer than two people')
+    await expect(at(near)).toMatchObject({ start: 16, top: 144, width: main().clientWidth - 32 })
+    await expect(at(next).top - at(near).top - at(near).height).toBe(12)
+
+    // The board on a phone, 241:146: the band closes on the status chips, 12
+    // above its foot, and the chosen status's cards sit 16 below it and in.
+    await open(i18n._('My job opportunities'))
+    const narrow = bandOf()
+    await expect(at(narrow)).toMatchObject({ start: 0, top: 0 })
+    await expect(at(titleRow())).toMatchObject({ start: 16, top: 16, height: 44 })
+    await expect(at(searchBar())).toMatchObject({ start: 16, top: 72, width: main().clientWidth - 32 })
+    const chips = narrow.lastElementChild
+    if (!(chips instanceof HTMLElement)) throw new Error('the band holds nothing')
+    await expect(within(chips).getAllByRole('button').length).toBeGreaterThan(1)
+    await expect(at(narrow).height - at(chips).top - at(chips).height).toBe(12)
+    const [card] = canvas.getAllByRole('article')
+    if (!card) throw new Error('the board shows no card')
+    await expect(at(card)).toMatchObject({ start: 16, top: at(narrow).height + 16, width: main().clientWidth - 32 })
+  } finally {
+    await page.viewport(before.width, before.height)
+    window.location.hash = address
+  }
+}
+
+export const LaidOutAsTheFrames: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await laidOutAsTheFrames(canvasElement, i18nFor('fa-IR'))
+  },
+}
+
+export const LaidOutAsTheFramesInEnglish: Story = {
+  globals: { locale: 'en-US', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await laidOutAsTheFrames(canvasElement, i18nFor('en-US'))
   },
 }
 

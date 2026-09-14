@@ -311,11 +311,10 @@ export const OnAPhone: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
     // The search bar takes the desktop toolbar's 320 only from md up: below it
-    // the bar is the page's, node 252:421, and a cap at every width left a
-    // phone's row two thirds full, KN-443. What the page's own width is comes
-    // from the shell's gutters, so what is read here is that the screen stops
-    // capping. The screen is resized by the runner's own browser, which only
-    // the runner has, KN-225, and put back after.
+    // the bar is the row's, node 252:421, and a cap at every width left a
+    // phone's row two thirds full, KN-443. The row is what the Header band
+    // leaves between its gutters, KN-481. The screen is resized by the runner's
+    // own browser, which only the runner has, KN-225, and put back after.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
     const { page } = await import('vitest/browser')
     const canvas = within(canvasElement)
@@ -325,17 +324,20 @@ export const OnAPhone: Story = {
       return bar.getBoundingClientRect()
     }
     const before = { width: window.innerWidth, height: window.innerHeight }
+    // The Header band's gutter on a phone, node 252:412's 16.
+    const gutter = 16
     try {
       // Wide: capped at the toolbar's width however wide the page is.
       await waitFor(async () => {
         await expect(Math.round(barOf().width)).toBe(DESKTOP_BAR)
       })
 
-      // A phone: the whole page, and the taller bar with it.
+      // A phone: the whole row between the band's gutters, 358 of the file's
+      // 390, and the taller bar with it.
       await page.viewport(PHONE.width, PHONE.height)
       await waitFor(async () => {
         const box = barOf()
-        await expect(Math.round(box.width)).toBe(Math.round(canvasElement.getBoundingClientRect().width))
+        await expect(Math.round(box.width)).toBe(Math.round(canvasElement.getBoundingClientRect().width) - 2 * gutter)
         await expect(box.height).toBe(44)
       })
     } finally {

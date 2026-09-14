@@ -18,6 +18,7 @@ import { PageHeader } from '../shared/page-header'
 import { SearchBar, type SearchBarLayout } from '../shared/search-bar'
 import { SortControl, type SortOrder } from '../shared/sort-control'
 import { spacing } from '../theme/tokens'
+import { band, gutterOf } from './band'
 
 /**
  * The board: a column per status, its cards in it, KN-043.
@@ -28,8 +29,8 @@ import { spacing } from '../theme/tokens'
  * looked at, the owner's instruction of 2026-09-12.
  */
 
-// Node 241:2's board, the columns 24 apart in a row that scrolls sideways.
-const COLUMN_GAP = spacing.lg
+// Node 241:33, the columns 16 apart in a row that scrolls sideways, KN-481.
+const COLUMN_GAP = spacing.md
 
 // The order the board opens in, typed so the lint rule reads it as a value and
 // not as copy: a literal handed to a generic loses the union that exempts it.
@@ -269,53 +270,83 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
     />
   )
 
+  // Nothing to lay out: no job opportunity yet, or none this search finds.
+  const empty = records.jobs.length === 0 || found === 0
+
   return (
-    <Stack ref={board} tabIndex={LOOSE} sx={{ position: 'relative', gap: `${spacing.lg}px`, minWidth: 0, minHeight: 0, flex: '1 1 auto' }}>
+    <Stack ref={board} tabIndex={LOOSE} sx={{ position: 'relative', minWidth: 0, minHeight: 0, flex: '1 1 auto' }}>
       <Box role="status" sx={{ position: 'absolute', inset: 0, width: 1, height: 1, overflow: 'hidden', clipPath: 'inset(50%)' }}>
         {announcement}
       </Box>
-      <PageHeader
-        title={i18n._('My job opportunities')}
-        {...(onSignOut === undefined ? {} : { onSignOut })}
-        // The action is the desktop's. On a phone the header already carries
-        // the shell's own controls, KN-478, and the tab bar carries adding as a
-        // destination of its own, so one more control here only takes the room
-        // the title needs and leaves it cut.
-        {...(wide
-          ? {
-              action: (
-                <Button
-                  onClick={() => {
-                    setAdding(first)
-                  }}
-                >
-                  {i18n._('Add job opportunity')}
-                </Button>
-              ),
-            }
-          : {})}
-      />
-
-      <Stack direction="row" sx={{ gap: `${spacing.sm}px`, alignItems: 'center', flexWrap: 'wrap' }}>
-        <Box sx={{ flex: `1 1 ${SEARCH_WIDTH}px`, minWidth: 0 }}>
-          <SearchBar value={search} onChange={setSearch} layout={wide ? WIDE_BAR : NARROW_BAR} />
-        </Box>
-        <SortControl value={order} onChange={setOrder} />
-      </Stack>
-
-      {records.jobs.length === 0 || found === 0 ? (
-        <EmptyState
-          title={records.jobs.length === 0 ? i18n._('You have not added a job posting yet') : i18n._('No results found')}
-          body={
-            records.jobs.length === 0
-              ? i18n._('Add your first posting by its link or its text, and follow it from here.')
-              : i18n._('Nothing matches this search. Try other words or remove the filters.')
-          }
-          actionLabel={i18n._('Add job opportunity')}
-          onAction={() => {
-            setAdding(first)
-          }}
+      {/* The Header band, 241:17 and 241:147: the Page Header, the toolbar
+          and, on a phone, the status chips, KN-481. */}
+      <Box component="header" sx={band.sx(wide)}>
+        <PageHeader
+          title={i18n._('My job opportunities')}
+          {...(onSignOut === undefined ? {} : { onSignOut })}
+          // The action is the desktop's. On a phone the header already carries
+          // the shell's own controls, KN-478, and the tab bar carries adding as a
+          // destination of its own, so one more control here only takes the room
+          // the title needs and leaves it cut. The file draws it there, KN-515.
+          {...(wide
+            ? {
+                action: (
+                  <Button
+                    onClick={() => {
+                      setAdding(first)
+                    }}
+                  >
+                    {i18n._('Add job opportunity')}
+                  </Button>
+                ),
+              }
+            : {})}
         />
+
+        {/* The toolbar, 367:5362: the search bar's own 320 at the inline start
+            and the sort at the inline end. On a phone the bar takes the row and
+            the sort wraps under it, a row the file does not draw, KN-516. */}
+        <Stack direction="row" sx={{ gap: `${spacing.sm}px`, alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+          <Box sx={{ flex: wide ? `0 1 ${SEARCH_WIDTH}px` : `1 1 ${SEARCH_WIDTH}px`, minWidth: 0 }}>
+            <SearchBar value={search} onChange={setSearch} layout={wide ? WIDE_BAR : NARROW_BAR} />
+          </Box>
+          <SortControl value={order} onChange={setOrder} />
+        </Stack>
+
+        {wide || empty ? null : (
+          // The phone's status switcher, node 241:159: the statuses as chips in
+          // a row that scrolls sideways, closing the band.
+          <Box sx={{ display: 'flex', flexShrink: 0, gap: `${spacing.xs}px`, overflowX: 'auto', '& > *': { flexShrink: 0 } }}>
+            {columns.map((column) => (
+              <FilterChip
+                key={column.id}
+                label={column.name}
+                count={cardsOf(column.id).length}
+                selected={column.id === showing?.id}
+                onToggle={() => {
+                  setChosen(column.id)
+                }}
+              />
+            ))}
+          </Box>
+        )}
+      </Box>
+
+      {empty ? (
+        <Box sx={{ padding: `${gutterOf(wide)}px` }}>
+          <EmptyState
+            title={records.jobs.length === 0 ? i18n._('You have not added a job posting yet') : i18n._('No results found')}
+            body={
+              records.jobs.length === 0
+                ? i18n._('Add your first posting by its link or its text, and follow it from here.')
+                : i18n._('Nothing matches this search. Try other words or remove the filters.')
+            }
+            actionLabel={i18n._('Add job opportunity')}
+            onAction={() => {
+              setAdding(first)
+            }}
+          />
+        </Box>
       ) : wide ? (
         <Box
           sx={{
@@ -328,7 +359,8 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
             alignItems: 'stretch',
             flex: '1 1 auto',
             minHeight: 0,
-            pb: 2,
+            // Node 241:33's 32 on every side, inside the row that scrolls.
+            padding: `${gutterOf(wide)}px`,
             // A column keeps the width the design gives it, 300, and the row
             // scrolls: without this the columns share the room out between them
             // and a board of nine is nine slivers.
@@ -404,31 +436,26 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
           />
         </Box>
       ) : (
-        // The phone's board, node 241:176: the statuses as chips in a row that
-        // scrolls sideways, and the chosen one's cards below, alone.
-        <Stack sx={{ gap: `${spacing.md}px`, minHeight: 0, minWidth: 0, flex: '1 1 0' }}>
-          <Box sx={{ display: 'flex', flexShrink: 0, gap: `${spacing.xs}px`, overflowX: 'auto', '& > *': { flexShrink: 0 } }}>
-            {columns.map((column) => (
-              <FilterChip
-                key={column.id}
-                label={column.name}
-                count={cardsOf(column.id).length}
-                selected={column.id === showing?.id}
-                onToggle={() => {
-                  setChosen(column.id)
-                }}
-              />
-            ))}
-          </Box>
-          <Stack sx={{ gap: `${spacing.sm}px`, minHeight: 0, overflowY: 'auto', '& > *': { flexShrink: 0 } }}>
-            {showing && cardsOf(showing.id).length > 0 ? (
-              cardsOf(showing.id).map(card)
-            ) : (
-              // What the column says when it holds nothing, node 241:46, which
-              // a phone needs as much as the desktop does, KN-422.
-              <EmptyColumn />
-            )}
-          </Stack>
+        // The phone's column, node 241:176: the chosen status's cards alone,
+        // 12 apart and 16 in, under the band's chips.
+        <Stack
+          sx={{
+            gap: `${spacing.sm}px`,
+            padding: `${gutterOf(wide)}px`,
+            minHeight: 0,
+            minWidth: 0,
+            flex: '1 1 0',
+            overflowY: 'auto',
+            '& > *': { flexShrink: 0 },
+          }}
+        >
+          {showing && cardsOf(showing.id).length > 0 ? (
+            cardsOf(showing.id).map(card)
+          ) : (
+            // What the column says when it holds nothing, node 241:46, which
+            // a phone needs as much as the desktop does, KN-422.
+            <EmptyColumn />
+          )}
         </Stack>
       )}
 
