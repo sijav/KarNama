@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box, InputBase, MenuItem, Select as MuiSelect, type SelectChangeEvent } from '@mui/material'
-import { useId } from 'react'
+import { useId, type ReactNode } from 'react'
 import { usePreferences } from '../../core/preferences'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { Icon } from '../icon'
@@ -10,6 +10,7 @@ export interface SelectOption {
   value: string
   label: string
   disabled?: boolean
+  leading?: ReactNode
 }
 
 // The props are documented in story-docs, not here, KN-207.
@@ -99,7 +100,20 @@ export const Select = ({ label, options, value, multiple = false, placeholder, d
               </Box>
             )
           }
-          return new Intl.ListFormat(locale, { style: 'short', type: 'unit' }).format(list.map(labelOf))
+          const names = new Intl.ListFormat(locale, { style: 'short', type: 'unit' }).format(list.map(labelOf))
+          // A single choice keeps what leads its option, a language's flag, 8
+          // before its name, as its row draws it; several are names alone. The
+          // name takes the ellipsis, since the field's own cuts only text.
+          const leading = multiple ? undefined : options.find((option) => option.value === list[0])?.leading
+          if (leading === undefined) return names
+          return (
+            <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: `${spacing.xs}px`, minWidth: 0 }}>
+              {leading}
+              <Box component="span" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {names}
+              </Box>
+            </Box>
+          )
         }}
         MenuProps={{
           // Menus open instantly, the prototype map's motion, DESIGN.md.
@@ -163,7 +177,7 @@ export const Select = ({ label, options, value, multiple = false, placeholder, d
       >
         {options.map((option) => (
           <MenuItem key={option.value} value={option.value} disabled={option.disabled === true} disableRipple sx={optionRow.sx}>
-            <OptionLabel label={option.label} chosen={value.includes(option.value)} />
+            <OptionLabel label={option.label} chosen={value.includes(option.value)} leading={option.leading} />
           </MenuItem>
         ))}
       </MuiSelect>

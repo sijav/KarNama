@@ -9,7 +9,12 @@ for (const locale of ['fa-IR', 'en-US']) {
       await page.goto('/')
       await page.getByRole('button', { name: 'تنظیمات', exact: true }).click()
       const settings = page.getByRole('dialog')
-      if (english) await settings.getByRole('radio', { name: 'English', exact: true }).click()
+      if (english) {
+        // The language is a Select whose list is portalled outside the dialog, KN-480.
+        await settings.getByRole('combobox', { name: 'زبان' }).click()
+        await page.getByRole('option', { name: 'English', exact: true }).click()
+        await expect(page.getByRole('listbox')).toHaveCount(0)
+      }
       await settings
         .getByRole('radio', { name: english ? (mode === 'dark' ? 'Dark' : 'Light') : mode === 'dark' ? 'تیره' : 'روشن', exact: true })
         .click()

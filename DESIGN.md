@@ -1156,7 +1156,10 @@ The owner's testing request of 2026-09-12 adds a Settings control beside the
 existing mobile sign-out action and at the same position on desktop. It opens
 the existing modal shell at 420 pixels, with language and light, dark, or device
 appearance choices, plus an explicit sample-data loader. This is an owner-requested
-addition composed from existing controls, not a new Figma screen. Sample records
+addition composed from existing controls, not a new Figma screen. The language
+is the Select of `183:26`, each option and the chosen value led by the
+language's flag, the owner's of 2026-09-14: "it needs to be in the settings,
+with a drop down and a flag", KN-480. Sample records
 are fictional, editable, and saved per reader; loading them preserves existing
 records and does not duplicate samples already present.
 

@@ -1,10 +1,12 @@
 import { useLingui } from '@lingui/react'
 import { Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material'
 import { useId } from 'react'
-import { localeOrder, locales, type Locale } from '../../i18n'
+import { isLocale, localeOrder, locales, type Locale } from '../../i18n'
 import type { ColorSchemePreference } from '../../theme/useColorScheme'
 import { Button } from '../button'
+import { LanguageFlag } from '../language-flag'
 import { Modal } from '../modal'
+import { Select } from '../select'
 
 const schemes: readonly ColorSchemePreference[] = ['light', 'dark', 'system']
 
@@ -30,7 +32,6 @@ export const SettingsDialog = ({
   onLoadSamples,
 }: SettingsDialogProps) => {
   const { i18n } = useLingui()
-  const languageId = useId()
   const themeId = useId()
   return (
     <Modal
@@ -41,25 +42,21 @@ export const SettingsDialog = ({
       actions={<Button onClick={onClose}>{i18n._('Done')}</Button>}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto' }}>
-        <FormControl>
-          <FormLabel id={languageId}>{i18n._('Language')}</FormLabel>
-          <RadioGroup aria-labelledby={languageId} value={locale}>
-            {localeOrder.map((language) => (
-              <FormControlLabel
-                key={language}
-                value={language}
-                control={
-                  <Radio
-                    onChange={() => {
-                      onLocaleChange(language)
-                    }}
-                  />
-                }
-                label={locales[language]}
-              />
-            ))}
-          </RadioGroup>
-        </FormControl>
+        {/* The language from the Select, each named in its own language and led by its flag, the owner's of 2026-09-14, KN-480. */}
+        <Select
+          label={i18n._('Language')}
+          options={localeOrder.map((language) => ({
+            value: language,
+            label: locales[language],
+            leading: <LanguageFlag locale={language} />,
+          }))}
+          value={[locale]}
+          onChange={(next) => {
+            for (const chosen of next.filter(isLocale)) {
+              onLocaleChange(chosen)
+            }
+          }}
+        />
         <FormControl>
           <FormLabel id={themeId}>{i18n._('Theme')}</FormLabel>
           <RadioGroup aria-labelledby={themeId} value={colorScheme}>

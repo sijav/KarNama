@@ -2,11 +2,12 @@ import { setupI18n } from '@lingui/core'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
-import type { Locale } from '../../i18n'
+import { localeOrder, locales, type Locale } from '../../i18n'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
 import { elevation, semantic } from '../../theme/tokens'
 import { EMPLOYMENT_TYPES, employmentTypeLabels } from '../job-selects'
+import { LanguageFlag } from '../language-flag'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Select, type SelectProps } from './Select'
 
@@ -16,16 +17,29 @@ import type { EmploymentType } from '../job-selects'
 const FULL_TIME: EmploymentType = 'full-time'
 const REMOTE: EmploymentType = 'remote'
 
+// The catalog of one language, for copy a story pins.
+const catalogOf = (locale: Locale) => setupI18n({ locale, messages: { [locale]: locale === 'fa-IR' ? fa : en } })
+
 // The file's specimen, node 183:26: «نوع همکاری» and the employment types, its
 // copy read from the catalog in the language a story pins, so the args hold
 // what the canvas draws and the Controls show it.
 const specimen = (locale: Locale): Pick<SelectProps, 'label' | 'options'> => {
-  const i18n = setupI18n({ locale, messages: { [locale]: locale === 'fa-IR' ? fa : en } })
+  const i18n = catalogOf(locale)
   const labels = employmentTypeLabels(i18n)
   return { label: i18n._('Employment type'), options: EMPLOYMENT_TYPES.map((type) => ({ value: type, label: labels[type] })) }
 }
 const FA = specimen('fa-IR')
 const EN = specimen('en-US')
+
+// Settings' languages, KN-480: each named in its own language and led by its
+// flag, under the catalog's «زبان».
+const languages = (locale: Locale): Pick<SelectProps, 'label' | 'options'> => {
+  const i18n = catalogOf(locale)
+  return {
+    label: i18n._('Language'),
+    options: localeOrder.map((value) => ({ value, label: locales[value], leading: <LanguageFlag locale={value} /> })),
+  }
+}
 
 const CONTROLLED: (keyof SelectProps)[] = ['label', 'value', 'multiple', 'placeholder', 'disabled']
 
@@ -66,7 +80,7 @@ const computed = (host: HTMLElement, property: 'color' | 'boxShadow', value: str
 const partsOf = (canvasElement: HTMLElement) => {
   const combobox = within(canvasElement).getByRole('combobox')
   const field = combobox.parentElement
-  const chevron = field?.querySelector('svg')
+  const chevron = field?.querySelector(':scope > svg, :scope > span > svg')
   if (!field || !chevron) throw new Error('the select has no field or no chevron')
   return { combobox, field, chevron }
 }
@@ -78,6 +92,16 @@ const insetsOf = (field: HTMLElement, element: Element) => {
   return getComputedStyle(field).direction === 'rtl'
     ? [outer.right - inner.right, inner.left - outer.left]
     : [inner.left - outer.left, outer.right - inner.right]
+}
+
+// Where a written name is drawn: a range over its own text, so the measure is
+// the text and not a box that may be wider.
+const nameOf = (element: Element) => {
+  const text = document.createTreeWalker(element, NodeFilter.SHOW_TEXT).nextNode()
+  if (!text) throw new Error('no written name')
+  const range = document.createRange()
+  range.selectNodeContents(text)
+  return range.getBoundingClientRect()
 }
 
 // Node 183:7 at rest: the label 12 on 16 at 500 in text/primary, 4 above a
@@ -134,6 +158,8 @@ export const Filled: Story = {
     const { combobox } = await atRest(canvasElement, { colours: true })
     await expect(combobox).toHaveTextContent(args.options.find((option) => option.value === 'full-time')?.label ?? 'missing')
     await expect(getComputedStyle(combobox).color).toBe(computed(combobox, 'color', semantic['text/primary']))
+    // An option with nothing to lead it draws nothing before its name.
+    await expect(combobox.querySelector('svg')).toBeNull()
   },
 }
 
@@ -314,5 +340,36 @@ export const InEnglish: Story = {
     await expect(chevron.getBoundingClientRect().left).toBeGreaterThan(
       field.getBoundingClientRect().left + field.getBoundingClientRect().width / 2,
     )
+  },
+}
+
+export const Leading: Story = {
+  args: { ...languages('fa-IR'), value: ['fa-IR'] },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // Options led by a language's flag, as Settings offers them, KN-480. The
+    // field is as at rest, and its value leads with the chosen option's flag,
+    // 16 from the inline start, the name 8 after it.
+    const { combobox, field } = await atRest(canvasElement, { colours: true })
+    const flag = combobox.querySelector('svg')
+    if (!flag) throw new Error('the field does not lead its value with the flag')
+    await expect(Math.round(insetsOf(field, flag)[0] ?? 0)).toBe(16)
+    await expect(Math.round(flag.getBoundingClientRect().left - nameOf(combobox).right)).toBe(8)
+    // Each row leads with its flag 12 from the inline start and its name 8
+    // after it, and the chosen row keeps its check 12 from the inline end.
+    await userEvent.click(combobox)
+    const rows = rowsOf(await listboxOf(canvasElement))
+    await expect(rows).toHaveLength(localeOrder.length)
+    for (const row of rows) {
+      const rowFlag = row.querySelector('svg')
+      if (!rowFlag) throw new Error('a row has no flag')
+      await expect(Math.round(insetsOf(row, rowFlag)[0] ?? 0)).toBe(12)
+      await expect(Math.round(rowFlag.getBoundingClientRect().left - nameOf(row).right)).toBe(8)
+    }
+    const check = [...(rows[0]?.querySelectorAll('svg') ?? [])].at(-1)
+    if (!rows[0] || !check) throw new Error('the chosen row has no check')
+    await expect(check.getBoundingClientRect().width).toBe(16)
+    await expect(Math.round(insetsOf(rows[0], check)[1] ?? 0)).toBe(12)
+    await userEvent.keyboard('{Escape}')
   },
 }

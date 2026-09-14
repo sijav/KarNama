@@ -17,8 +17,10 @@ screen readers.
 
 ### options
 
-What can be chosen: each a value, a label in the reader's language, and
-optionally disabled.
+What can be chosen: each a value, a label in the reader's language, optionally
+disabled, and optionally something drawn before the label, such as a language's
+flag. When only one can be chosen, the field shows it before the chosen name
+too; a multiple select lists the names alone.
 
 ### value
 
@@ -77,3 +79,9 @@ Two choices at once, as the employment type allows.
 ### InEnglish
 
 The field in English, the chevron at the right.
+
+### Leading
+
+Options led by a language's flag, as Settings offers them: each row's flag
+twelve pixels from its edge with the name eight after it, and the chosen
+language's flag in the field before its name.

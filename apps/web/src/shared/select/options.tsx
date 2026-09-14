@@ -1,4 +1,5 @@
 import { Box, type CSSObject, type Theme } from '@mui/material'
+import type { ReactNode } from 'react'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { Icon } from '../icon'
 
@@ -69,10 +70,13 @@ export const optionRow = {
   },
 }
 
-// A row's content: the name, cut rather than wrapped, and when chosen the check
-// of 408:459, 16 in the row's colour, at the inline end.
-export const OptionLabel = ({ label, chosen }: { label: string; chosen: boolean }) => (
+// A row's content: what leads the option when it has something, a language's
+// flag, KN-480, then the name, cut rather than wrapped, and when chosen the
+// check of 408:459, 16 in the row's colour, at the inline end. The row's gap
+// sets all three 8 apart.
+export const OptionLabel = ({ label, chosen, leading }: { label: string; chosen: boolean; leading?: ReactNode }) => (
   <>
+    {leading}
     <Box component="span" sx={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
       {label}
     </Box>
