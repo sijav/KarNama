@@ -277,6 +277,68 @@ export const LettingGoOfASelection: Story = {
   },
 }
 
+export const SelectingWhileSearching: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-532: the bulk bar counts and deletes only the people the search shows.
+    // «رضایی» is in the third seeded person's name, «علی رضایی», and in nothing
+    // the first two hold, in any field the search reads.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const [first = '', second = '', third = ''] = fixtures('fa-IR')
+      .contacts.slice(0, 3)
+      .map((contact) => contact.fullName)
+    const bar = () => canvas.getByRole('region', { name: 'کارهای گروهی' })
+    // Folded away until focus is inside the card, KN-341; focus is the road a
+    // story can rely on.
+    const check = (name: string) => {
+      const card = canvas.getByRole('button', { name }).closest('article')
+      if (!card) throw new Error('the person has no card around them')
+      const box = within(card).getByRole('checkbox')
+      box.focus()
+      return box
+    }
+    const search = canvas.getByRole('searchbox')
+
+    // The first person chosen, then searched out of view: nobody chosen is
+    // shown, so nothing is counted and the bar goes. Today's code kept counting
+    // them.
+    await userEvent.click(check(first))
+    await waitFor(async () => {
+      await expect(bar()).toHaveTextContent(formatCount('fa-IR', 1))
+    })
+    await userEvent.type(search, 'رضایی')
+    await waitFor(async () => {
+      await expect(canvas.queryByText(first)).toBeNull()
+      await expect(canvas.getByText(third)).toBeInTheDocument()
+    })
+    await expect(canvas.queryByRole('region', { name: 'کارهای گروهی' })).toBeNull()
+
+    // The person the search shows chosen too, and the bar counts one.
+    await userEvent.click(check(third))
+    await waitFor(async () => {
+      await expect(bar()).toHaveTextContent(formatCount('fa-IR', 1))
+    })
+
+    // Deleted, after the confirmation every deletion asks for.
+    await userEvent.click(within(bar()).getByRole('button', { name: 'حذف' }))
+    const confirm = await body.findByRole('dialog')
+    await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
+    await waitFor(async () => {
+      await expect(body.queryByRole('dialog')).toBeNull()
+    })
+
+    // With the search cleared, the person it hid is still here, beside the one
+    // it never matched, and the one deleted is gone.
+    await userEvent.clear(search)
+    await waitFor(async () => {
+      await expect(canvas.getByText(first)).toBeInTheDocument()
+      await expect(canvas.getByText(second)).toBeInTheDocument()
+    })
+    await expect(canvas.queryByText(third)).toBeNull()
+  },
+}
+
 // A phone's screen, the file's 390 by 844.
 const PHONE = { width: 390, height: 844 }
 

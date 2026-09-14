@@ -54,6 +54,13 @@ backed out of.
 Two chosen, counted in the reader's own digits, and the selection let go of,
 which takes the bulk bar with it and leaves everybody where they were.
 
+### SelectingWhileSearching
+
+Selecting with a search active: a person chosen before the search and hidden by
+it is not counted, and deleting after the confirmation takes only the chosen
+person the search shows, so the hidden person is still there once the search is
+cleared.
+
 ### OnAPhone
 
 The page at a phone's width, where the search bar stops taking the desktop

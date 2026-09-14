@@ -76,18 +76,23 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
   const [editing, setEditing] = useState<{ id: string | null; values: ContactModalValues } | undefined>(undefined)
   const [deleting, setDeleting] = useState<readonly string[] | null>(null)
 
+  const shown = records.contacts.filter((held) => contactMatches(held, search))
+  // Only the people the search shows are counted or deleted by the bar: one the
+  // search hides stays chosen, and counts again once the search shows them,
+  // KN-532, as the board's held does since KN-431.
+  const shownIds = new Set(shown.map((held) => held.id))
+  const chosen = selected.filter((id) => shownIds.has(id))
+
   // Before the paint, not after it: a normal effect would let the frame that
   // shows the bulk bar also show the tab bar under it, KN-356. Cleared when the
   // page goes, so leaving with a selection live does not leave the shell
   // thinking the next page is selecting.
   useLayoutEffect(() => {
-    onSelecting?.(selected.length > 0)
+    onSelecting?.(chosen.length > 0)
     return () => {
       onSelecting?.(false)
     }
-  }, [selected.length, onSelecting])
-
-  const shown = records.contacts.filter((held) => contactMatches(held, search))
+  }, [chosen.length, onSelecting])
   const jobs = records.jobs.map((job) => ({ value: job.id, label: job.draft.title }))
   const titleOf = (jobId: string | null) => records.jobs.find((job) => job.id === jobId)?.draft.title ?? null
   const editingId = editing?.id ?? null
@@ -202,13 +207,13 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
 
       <BulkActionBar
         type="contacts"
-        count={selected.length}
+        count={chosen.length}
         onClear={() => {
           setSelected([])
         }}
         onDelete={() => {
           remember()
-          setDeleting(selected)
+          setDeleting(chosen)
         }}
       />
 
