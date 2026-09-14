@@ -109,16 +109,30 @@ extraction files, KN-486. Of the e2e suite, `two-tabs.spec.ts` passed on
   repository root, or it leaves a `.claude/` wherever it ran. Write any long
   script with the Write tool: this shell refuses long here-documents on quotes.
 
+**KN-554** (bb953c8), closed on 2026-09-15: IconButton's `BlankName` captures
+with `passOnUnmarked(through)` and waits for the report, as the Checkbox's refusal
+stories do; on a production Storybook it and IconButton's Docs page end with no
+error, and each half was shown to carry weight by a plant. A production canvas
+renders without React's `act`, so a passive effect can run after a play has
+started. Its roast filed nothing: the replaced console after leaving the Docs page
+did not reproduce. **KN-379** was dropped as its duplicate. **KN-090** carries a
+note that the Docs page keeps `lang="fa-IR"` under English prose.
+
 ## The next step
 
-**KN-554 is in progress**, the board's pick after KN-226 went back: IconButton's
-`BlankName` story fails in the published Storybook, its `beforeEach` spy never
-seeing the product's report, which the console carries; IconButton's Docs page
-prints the same report, and the exit now names both. It passes in the Vitest
-runner. `nameOf` in `IconButton.tsx` decides blank with `trim()`, which KN-557
-carries separately. No plan yet: find when the report is said relative to the
-story's `beforeEach` in the published canvas, write the plan beside the
-component, and send it to Codex before building.
+**KN-560 is in progress**: App/Shell's `SignedInInAnotherTab` fails in the
+published Storybook. Measured on a production build of bb953c8, with
+`addEventListener` and `dispatchEvent` timed: the play dispatched another tab's
+`karnama.session` at 330 ms with no storage listener on the window, and the four
+providers' listeners, added in passive effects, arrived at 341 ms; the same event
+sent again after the play took the screen to the name step. The plan, beside the
+story in `apps/web/src/app/#KN-560 - ....md`, has the play wait for a span whose
+own `useEffect` hides it, rendered beside the story, since a commit's passive
+effects run in one pass; Codex was reviewing it. The two stories that pass by 9
+and 23 milliseconds, `SignedOutInAnotherTab` and JobsScreen's
+`ChangedInAnotherTab`, are filed as KN-560's child. The diagnostic scripts are
+this session's scratch: `kn560-look3.mjs` wraps the window's listener and dispatch
+methods in an init script and logs their times against the channel's events.
 
 ## What to read first
 
