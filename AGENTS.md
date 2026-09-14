@@ -459,3 +459,5 @@ short and the lessons sit in a file every iteration reads.
 - A focus trap takes focus back while it is open: refocus after it closes, in the transition's onExited.
 - A test that starts a process has no speed budget: vitest fails a case whose blocked worker overran its budget; start the runs together with an async spawn and a hang guard (KN-167).
 - React warns in plain strings and through console.warn too; a guard keyed on `%s` hears only the printf ones (KN-401).
+- A long Bash line of board commands died on its quoting after filing half its work, and the notes never landed: write notes, evidence and commit messages to files and run the board through a script with `execFileSync` (KN-481).
+- A layout story that works out the expected size from the element it measures proves the implementation, not the frame: assert the frame's own numbers, and a width the frame never drew is a reading to record, not a fact (KN-481's roast).
