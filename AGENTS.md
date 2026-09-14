@@ -461,3 +461,4 @@ short and the lessons sit in a file every iteration reads.
 - React warns in plain strings and through console.warn too; a guard keyed on `%s` hears only the printf ones (KN-401).
 - A long Bash line of board commands died on its quoting after filing half its work, and the notes never landed: write notes, evidence and commit messages to files and run the board through a script with `execFileSync` (KN-481).
 - A layout story that works out the expected size from the element it measures proves the implementation, not the frame: assert the frame's own numbers, and a width the frame never drew is a reading to record, not a fact (KN-481's roast).
+- The unit project's guards read every story file, the literal guard among them: when a story changes, run the unit project too, and when a set grows, grep the stories for its old count. KN-481's `'1px'` and KN-478's thirty-first glyph each broke a suite nobody ran (found by KN-401).

@@ -63,3 +63,25 @@ four cases the card names, so narrowing or inverting it fails.
 The classifier's test covers the four cases; the whole suite runs and whatever
 it turns up is either fixed or filed; and the guard, pointed at a plain-string
 React warning, fails.
+
+## On main, 2026-09-14
+
+The approach above landed before the card could close: `src/shared/console-guard.ts`
+holds the mark, `report`, `isOurs`, `allowConsole` and the guard, which wraps
+both `error` and `warn`; `.storybook/react-warnings.setup.ts` wires it into the
+unit and the storybook projects alike; `src/shared/console-guard.test.ts` drives
+the four shapes the card names. The diagnostics module the plan called
+`diagnostics.ts` is that one file. The card waited on KN-477, which kept the work
+on main, so what was left was to check it rather than build it.
+
+- **The wiring, with temporary controls deleted after one run each.** In both
+  projects a plain-string `console.error`, a `console.warn` and a printf warning
+  each failed their test with "something warned during this test", and a
+  `report` diagnostic and a message given to `allowConsole` passed.
+- **The whole unit project** passed, 1348 tests, once the literal guard's one
+  failure, a `'1px'` in KN-481's new shell story, was fixed.
+- **The whole storybook project** failed eight stories and none on the guard:
+  the five modal stories KN-494 carries, the board's `Adding` that KN-495
+  carries, the Job Card's `Pressed`, which passed alone and is KN-365's kind,
+  and Icon's `All Icons`, still counting thirty after KN-478's settings gear,
+  fixed.
