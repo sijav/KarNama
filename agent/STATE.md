@@ -38,11 +38,17 @@ KN-516 a phone board's sort row, KN-517 history's place among the modal's tabs.
 **Closed today since**: KN-483 (bab5444), `postingText` linear on a hostile
 page, KN-521 filed; KN-401 (fd9338e), the console guard checked, two
 regressions of this session fixed in 723610d, its roast filed KN-522 and
-KN-523; KN-403 (a264964), `runSchemaCommand` tested in process and the entry's
-test starts only light runs, its roast filing nothing; KN-405 (18343d2),
-`parseStoryDoc` reports a `#` or `####` heading, a fence that never closes and an
-entry with no prose, each rule proved by taking it away, and AGENTS.md lists
-exactly what fails the format. KN-405's roast is with Codex.
+KN-523; KN-403 (a264964), `runSchemaCommand` tested in process, its roast filing
+nothing; KN-405 (18343d2), `parseStoryDoc` reports a stray heading, an open
+fence and an empty entry, its roast filed KN-524; KN-423 (5159f0f), the Checkbox
+gives aria-label and aria-labelledby to its input, where MUI 9 had put them on
+the span round it, so not one job card or contact card checkbox had a name; its
+roast filed KN-525, the network stories' stale comments, and KN-526, the
+Checkbox docs' claim that only the aria attributes name it.
+
+**KN-427 re-pointed, not worked**: taken, measured, and JobsScreen leaves 52 of
+its 149 branch arms to no story, 26 of them KN-477's drag handlers. Its note
+lists every arm by line; it is back in the backlog at 5 points.
 
 **What fails in a full run, and why**: the web unit project passes whole. The
 storybook project fails the five modal stories KN-494 carries, the board's
@@ -82,14 +88,14 @@ owner's question; KN-507, the Settings dialog's Theme and sample-data parts.
 
 ## The next step
 
-Relay KN-405's roast when it lands and file what survives; KN-405 is a child of
-KN-007, so its findings hang off KN-007. KN-423 is in progress: the Contact
-Card's checkbox has no accessible name though the card passes one, where the
-Job Card's same pattern is named. Find where the name is lost between
-`ContactCard` and the Checkbox's input, write the plan beside the component that
-drops it, roast the plan with Codex, then fix it so the Checkbox forwards the
-name whatever else it is given, with its own story, and a Contact Card story
-finds the checkbox by that name, looked at in both languages and schemes.
+KN-428 is in progress: a phone cannot start a selection, so the bulk bar never
+comes up there, and KN-352 and KN-356 wait on it. Codex's 2234d66 showed the
+checkbox at rest on phone cards, which node 491:751 does not draw. Read the file
+first, Mobile Selection 243:325, the Mobile Card Menu 492:7482 and the phone
+card 491:751 with its reactions, for how a phone starts a selection there; if
+the file does not settle it, it is the owner's call, through the question tool.
+Then the plan beside JobCard, its roast with Codex, the build, and a story at 390
+that selects two and deletes them, looked at in both languages and schemes.
 
 ## What to read first
 
