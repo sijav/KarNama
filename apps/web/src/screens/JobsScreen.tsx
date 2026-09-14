@@ -254,6 +254,9 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
       status={tokenOf(records.statuses, entry.draft.status)}
       link={entry.draft.postingUrl === '' ? null : entry.draft.postingUrl}
       selected={selected.includes(entry.id)}
+      // While anything is selected a phone's card offers its checkbox, as the
+      // Checkbox 204:11 says; a press held on one is what starts it, KN-428.
+      selecting={held.length > 0}
       onOpen={() => {
         setReading(entry.id)
       }}

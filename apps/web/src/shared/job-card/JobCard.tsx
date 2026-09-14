@@ -1,11 +1,12 @@
 import { useLingui } from '@lingui/react'
 import { Box, ButtonBase, type Theme } from '@mui/material'
-import { useRef, useState, type HTMLAttributes, type ReactNode } from 'react'
+import { useRef, useState, type HTMLAttributes, type MouseEvent, type ReactNode } from 'react'
 import { iconSize, spacing, status, type as typeScale, type StatusToken } from '../../theme/tokens'
 import { Checkbox } from '../checkbox'
 import { Icon } from '../icon'
 import { IconButton } from '../icon-button'
 import { CardMenu } from '../menu'
+import { useHold } from './hold'
 
 // The props are documented in story-docs, not here, KN-207.
 /** The desktop board's card, or the phone's, which carries its own menu. */
@@ -20,6 +21,7 @@ export interface JobCardProps {
   link?: string | null
   layout?: JobCardLayout
   selected?: boolean
+  selecting?: boolean
   interactive?: boolean
   onOpen: () => void
   onSelectedChange: (selected: boolean) => void
@@ -56,6 +58,10 @@ const FOLDED_CHECK = iconSize.md + spacing.xs + spacing['2xs']
 // The hover's motion, the reaction from 137:2 to 137:16: Smart Animate, ease in
 // and out, over 200 ms.
 const HOVER_MS = 200
+// The phone's, the press from the board's cards to Mobile Selection, 241:146 to
+// 243:325: Smart Animate, ease in and out, over 250 ms, KN-428.
+const PRESS_MS = 250
+const MOTION = { desktop: HOVER_MS, mobile: PRESS_MS } as const
 // The card's own button, the title, whose focus is the card's.
 const OPENER = 'KarnamaJobCard-title'
 
@@ -102,7 +108,7 @@ const frame = {
       padding: `${spacing.lg}px`,
       borderRadius: `${theme.karnama.radius.lg}px`,
       backgroundColor: selected ? colour['bg/brand/container'] : colour['bg/surface'],
-      transition: `box-shadow ${HOVER_MS}ms ease-in-out, background-color ${HOVER_MS}ms ease-in-out`,
+      transition: `box-shadow ${MOTION[layout]}ms ease-in-out, background-color ${MOTION[layout]}ms ease-in-out`,
       '&::before': {
         content: '""',
         position: 'absolute',
@@ -112,7 +118,7 @@ const frame = {
         borderWidth: EDGE,
         borderColor: colour['border/default'],
         pointerEvents: 'none',
-        transition: `border-color ${HOVER_MS}ms ease-in-out`,
+        transition: `border-color ${MOTION[layout]}ms ease-in-out`,
       },
       // Selected, 137:44 and 491:751: the brand's pale fill and the lifted edge,
       // with the card's shadow on the desktop.
@@ -135,6 +141,19 @@ const frame = {
             [`&:hover .${BIN}, &:focus-within .${BIN}`]: { width: DELETE, marginInlineStart: 0, opacity: 1, pointerEvents: 'auto' },
           }
         : {}),
+      ...(interactive && layout === 'mobile'
+        ? {
+            // A press held on the phone's card selects it, KN-428, so a hold
+            // starts no text selection and no callout.
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+            WebkitTouchCallout: 'none',
+            // The checkbox unfolds while the focus inside is the keyboard's, so
+            // Tab still reaches it at rest, KN-341. Not :focus-within, which the
+            // focus a tapped job modal gives back to the title would match.
+            [`&:has(:focus-visible) .${CHECK}`]: { marginInlineEnd: `-${spacing['2xs']}px`, opacity: 1, pointerEvents: 'auto' },
+          }
+        : {}),
       // Focus by the keyboard: two pixels of border/focus and the file's halo.
       [`&:has(.${OPENER}.Mui-focusVisible)`]: {
         boxShadow: theme.karnama.elevation.cardFocus,
@@ -151,7 +170,7 @@ const frame = {
 
 // The title as the card's button: its ::after covers the whole card, so a press
 // anywhere that is not another control opens the job opportunity.
-const Opener = ({ onOpen, children }: { onOpen: () => void; children: ReactNode }) => (
+const Opener = ({ onOpen, children }: { onOpen: (event: MouseEvent<HTMLButtonElement>) => void; children: ReactNode }) => (
   <ButtonBase
     className={OPENER}
     disableRipple
@@ -180,8 +199,9 @@ const Opener = ({ onOpen, children }: { onOpen: () => void; children: ReactNode 
 // of 358:430 at the inline start, 4 wide, in the status's colour. The title is
 // the card's button and opens the job opportunity; the link, when the posting
 // has one, follows it. The desktop card's checkbox and delete join its title
-// row on hover, with focus inside, or selected; the phone's card has no hover
-// and keeps its three dots, which open the Card menu, in view.
+// row on hover, with focus inside, or selected; the phone's card has no hover,
+// keeps its three dots, which open the Card menu, in view, and is selected by a
+// press held on it, KN-428.
 export const JobCard = ({
   title,
   company,
@@ -190,6 +210,7 @@ export const JobCard = ({
   link = null,
   layout: given,
   selected = false,
+  selecting = false,
   interactive = true,
   onOpen,
   onSelectedChange,
@@ -201,9 +222,21 @@ export const JobCard = ({
   const layout = given ?? DESKTOP
   const more = useRef<HTMLElement>(null)
   const [menu, setMenu] = useState<HTMLElement | null>(null)
-  // Desktop controls unfold on hover. Phones need a visible selection control
-  // before the first card is selected, because they have no hover state.
-  const folded = layout === 'desktop' && !selected
+  // A press held on the phone's card selects it, the file's «نگه‌داشتن»,
+  // 491:751, KN-428: only a press that starts where a tap would open the card,
+  // not on the three dots, the link or the checkbox. A card already selected
+  // stays as it is.
+  const hold = useHold(
+    (target) => target instanceof Element && target.closest(`.${OPENER}`) !== null,
+    () => {
+      if (!selected) onSelectedChange(true)
+    },
+  )
+  // Folded at rest and in view while selected. The desktop's unfolds on hover or
+  // with focus inside; the phone's, which has no hover, while the board is
+  // selecting, as the Checkbox 204:11 says, or with the keyboard's focus
+  // inside, KN-428.
+  const folded = !selected && (layout === 'desktop' || !selecting)
   const checkbox = (
     <Box
       className={CHECK}
@@ -212,7 +245,7 @@ export const JobCard = ({
         zIndex: 1,
         flexShrink: 0,
         margin: `-${spacing['2xs']}px`,
-        transition: `margin ${HOVER_MS}ms ease-in-out, opacity ${HOVER_MS}ms ease-in-out`,
+        transition: `margin ${MOTION[layout]}ms ease-in-out, opacity ${MOTION[layout]}ms ease-in-out`,
         ...(folded ? { marginInlineEnd: `-${FOLDED_CHECK}px`, opacity: 0, pointerEvents: 'none' } : {}),
       }}
     >
@@ -226,7 +259,12 @@ export const JobCard = ({
     </Box>
   )
   return (
-    <Box component="article" {...dragEvents} sx={(theme) => frame.sx(theme, layout, selected, interactive)}>
+    <Box
+      component="article"
+      {...dragEvents}
+      {...(interactive && layout === 'mobile' ? hold.events : {})}
+      sx={(theme) => frame.sx(theme, layout, selected, interactive)}
+    >
       <Box
         aria-hidden
         sx={(theme) => ({
@@ -253,7 +291,14 @@ export const JobCard = ({
         <Box sx={{ display: 'flex', alignItems: 'center', gap: `${spacing.xs}px`, minWidth: 0 }}>
           {interactive ? checkbox : null}
           {interactive ? (
-            <Opener onOpen={onOpen}>{title}</Opener>
+            <Opener
+              onOpen={(event) => {
+                // The click a hold's release sends opens nothing, KN-428.
+                if (!hold.heldClick(event)) onOpen()
+              }}
+            >
+              {title}
+            </Opener>
           ) : (
             <Box
               component="span"

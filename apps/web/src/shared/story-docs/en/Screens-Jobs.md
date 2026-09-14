@@ -109,6 +109,12 @@ chips and the chosen status's cards stand alone under them. A card there
 carries its own menu, which is where changing a status and deleting live when
 there is no hover to fold them behind.
 
+### SelectingOnAPhone
+
+The board at a phone's width starting a selection the way the design does, with a
+press held on a card: the bar comes up, every card offers its checkbox, and two
+chosen from two statuses are deleted together after the confirmation.
+
 ### FocusAfterDeleting
 
 The control that asks to delete a job opportunity is on that job opportunity, so

@@ -638,13 +638,33 @@ with the Checkbox checked and the delete in view. **Static** is the card at rest
 with nothing to press but the link. **Focus** is two pixels of `border/focus`
 and a halo of its own, `elevation.cardFocus`. The phone's card is 358 by 141: no
 hover, a title row of 32 whose three dots, a 32 Icon Button, stay in view and
-open the Card menu, the Checkbox only while selected, and a meta row of 19, the
-date's own line in the file, which the web font's normal line height would make
-16. The stripe, `358:430`, is 4 wide at the card's inline start in the status's
-base colour; a status the board no longer has takes `new`'s. The title is the
-card's button, stretched over the card, so a press anywhere else opens the job
-opportunity; a button takes the browser's font rather than the page's, so the
-title's is given back. KN-015.
+open the Card menu, the Checkbox while the board is selecting, below, and a meta
+row of 19, the date's own line in the file, which the web font's normal line
+height would make 16. The stripe, `358:430`, is 4 wide at the card's inline start
+in the status's base colour; a status the board no longer has takes `new`'s. The
+title is the card's button, stretched over the card, so a press anywhere else
+opens the job opportunity; a button takes the browser's font rather than the
+page's, so the title's is given back. KN-015.
+
+**A phone starts a selection with a held press**, KN-428. The file says so in its
+words and its prototype: Card / Mobile `491:751`, «انتخاب گروهی با نگه‌داشتن روی
+کارت فعال می‌شود»; the Checkbox `204:11`, a long press on a phone turning
+selection on and the Checkbox appearing on every card; the prototype map
+`384:17`; and every phone card on `241:146` pressing to Mobile Selection
+`243:325`, Smart Animate, ease in and out, 250 ms, and clicking to the job modal.
+So a press on the card's own button, held 500 ms within 10 pixels, selects it,
+and while any card is selected every phone card shows its Checkbox, unchecked on
+those not chosen, over the press's 250 ms. A tap still opens the job
+opportunity, the click a hold's release sends opens nothing, and the next press
+clears that mark, so a release that sends no click cannot swallow the tap after
+it. At rest the phone's Checkbox folds to no room and fades, in the keyboard's
+path, unfolding while the focus inside the card is the keyboard's; a hold starts
+no text selection and no callout. What is read and what is chosen: `243:325`
+draws its cards at rest under a bar counting two, so it shows the bar, not the
+cards; 500 ms and 10 pixels are chosen values, since the file gives the gesture
+no numbers and neither platform offers the web a default; the `contextmenu` a
+phone's browser may send for its own long press is taken as the hold. The
+desktop's rule is unchanged: `243:433` draws only the chosen cards Selected.
 
 ### The kanban column
 

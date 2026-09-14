@@ -5,6 +5,7 @@ import { i18nFor, type Locale } from '../../i18n'
 import { elevation, semantic, spacing, status } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
+import { HOLD_MS, SLOP } from './hold'
 import { JobCard, type JobCardProps } from './JobCard'
 
 type Job = Pick<JobCardProps, 'title' | 'company' | 'date' | 'status' | 'link'>
@@ -24,7 +25,7 @@ const jobIn = (locale: Locale, index: number): Job => {
   }
 }
 
-const CONTROLLED: (keyof JobCardProps)[] = ['title', 'company', 'date', 'status', 'link', 'layout', 'selected', 'interactive']
+const CONTROLLED: (keyof JobCardProps)[] = ['title', 'company', 'date', 'status', 'link', 'layout', 'selected', 'selecting', 'interactive']
 const LAYOUTS: NonNullable<JobCardProps['layout']>[] = ['desktop', 'mobile']
 const TOKENS = Object.keys(status)
 
@@ -39,6 +40,7 @@ const meta = {
     ...jobIn('fa-IR', 0),
     layout: 'desktop',
     selected: false,
+    selecting: false,
     interactive: true,
     onOpen: fn(),
     onSelectedChange: fn(),
@@ -87,6 +89,55 @@ const stripeOf = (card: HTMLElement) => {
   return stripe
 }
 
+// Where the title ends, from the card's inline start inside its padding: 0 when
+// nothing stands before it, 28 when the checkbox does. Right to left, as the
+// Persian stories are.
+const titleInset = (card: HTMLElement, title: HTMLElement) =>
+  Math.round(card.getBoundingClientRect().right - px(getComputedStyle(card).paddingRight) - title.getBoundingClientRect().right)
+
+// What a finger does to a phone's card, dispatched as the browser would, KN-428:
+// a press, a drift, a lift, the browser taking the touch for a scroll, a finger
+// leaving the card. These prove the card's own handlers, not a phone's gesture
+// recognition, which the board's e2e test holds with a real touch.
+type Pointing = 'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel' | 'pointerout'
+type Finger = 'touch'
+const FINGER: Finger = 'touch'
+type Mouse = 'mouse'
+const MOUSE: Mouse = 'mouse'
+const pointer = (target: Element, type: Pointing, init: PointerEventInit = {}) => {
+  const box = target.getBoundingClientRect()
+  return target.dispatchEvent(
+    new PointerEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      isPrimary: true,
+      pointerId: 1,
+      pointerType: FINGER,
+      button: 0,
+      clientX: box.left + box.width / 2,
+      clientY: box.top + box.height / 2,
+      ...init,
+    }),
+  )
+}
+// The click a release sends, with a detail of 1, or a key, with 0.
+type Clicking = 'click'
+const CLICK: Clicking = 'click'
+const clickOn = (target: Element, detail: number) =>
+  target.dispatchEvent(new MouseEvent(CLICK, { bubbles: true, cancelable: true, detail }))
+// A contextmenu, as a phone's browser may send for its own long press: true when
+// nothing prevented it.
+type Menuing = 'contextmenu'
+const CONTEXT: Menuing = 'contextmenu'
+const contextOn = (target: Element) => target.dispatchEvent(new MouseEvent(CONTEXT, { bubbles: true, cancelable: true }))
+// A wait of the hold's own length, begun after the card's timer: timers of one
+// delay run in the order they were set, so when it ends the card's hold would
+// already have run, and a check that nothing was selected is not a guess.
+const pastTheHold = () =>
+  new Promise<void>((resolve) => {
+    window.setTimeout(resolve, HOLD_MS)
+  })
+
 export const Default: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
@@ -115,7 +166,7 @@ export const Default: Story = {
         .getByRole('button', { name: /حذف|Delete/u })
         .getBoundingClientRect().width,
     ).toBe(0)
-    await expect(Math.round(card.getBoundingClientRect().right - px(style.paddingRight) - title.getBoundingClientRect().right)).toBe(0)
+    await expect(titleInset(card, title)).toBe(0)
     await expect(within(card).getByRole('link')).toHaveAttribute('href', args.link ?? 'missing')
     await userEvent.click(title)
     await expect(args.onOpen).toHaveBeenCalledTimes(1)
@@ -250,12 +301,17 @@ export const Mobile: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ args, canvasElement }) => {
     // Node 491:751 Default: 358 by 141, no hover, and the three dots always in
-    // view, opening the Card menu.
+    // view, opening the Card menu. No checkbox at rest: it is folded away,
+    // unseen and taking no room, so the title starts at the card's inline
+    // start, KN-428.
     const card = cardOf(canvasElement)
     await expect([card.getBoundingClientRect().width, card.getBoundingClientRect().height]).toEqual([358, 141])
+    const title = within(card).getByRole('button', { name: args.title })
+    await expect(seen(within(card).getByRole('checkbox'))).toBe(false)
+    await expect(titleInset(card, title)).toBe(0)
     const more = within(card)
       .getAllByRole('button')
-      .find((button) => button !== within(card).getByRole('button', { name: args.title }))
+      .find((button) => button !== title)
     if (!more) throw new Error('no three dots')
     await expect(more.getBoundingClientRect().width).toBe(32)
     await userEvent.click(more)
@@ -267,10 +323,166 @@ export const Mobile: Story = {
 export const MobileSelected: Story = {
   args: { layout: 'mobile', selected: true },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
+    // Node 491:749: the pale fill and the checkbox checked. Holding a card that
+    // is already selected changes nothing, KN-428.
     const card = cardOf(canvasElement)
     await expect(getComputedStyle(card).backgroundColor).toBe(computed(card, 'backgroundColor', semantic['bg/brand/container']))
     await expect(within(card).getByRole('checkbox')).toBeChecked()
+    const title = within(card).getByRole('button', { name: args.title })
+    pointer(title, 'pointerdown')
+    await pastTheHold()
+    pointer(title, 'pointerup')
+    await expect(args.onSelectedChange).not.toHaveBeenCalled()
+  },
+}
+
+export const MobileSelecting: Story = {
+  args: { layout: 'mobile', selecting: true },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args, canvasElement }) => {
+    // While the board is selecting, every phone card shows its checkbox, as the
+    // Checkbox 204:11 says: unchecked on a card not chosen, before the title,
+    // which moves over by 28 as the desktop's does, KN-428.
+    const card = cardOf(canvasElement)
+    const title = within(card).getByRole('button', { name: args.title })
+    const checkbox = within(card).getByRole('checkbox', { name: `${i18nFor('fa-IR')._('Select')} ${args.title}` })
+    await expect(seen(checkbox)).toBe(true)
+    await expect(checkbox).not.toBeChecked()
+    await expect(titleInset(card, title)).toBe(28)
+    await userEvent.click(checkbox)
+    await expect(args.onSelectedChange).toHaveBeenCalledWith(true)
+    await expect(args.onOpen).not.toHaveBeenCalled()
+  },
+}
+
+export const MobileHold: Story = {
+  args: { layout: 'mobile' },
+  globals: { locale: 'fa-IR' },
+  play: async ({ args, canvasElement }) => {
+    // A press held on the phone's card selects it, the file's «نگه‌داشتن»,
+    // 491:751, KN-428, and the click its release sends opens nothing.
+    const card = cardOf(canvasElement)
+    const title = within(card).getByRole('button', { name: args.title })
+    // Waited for with room past the hold's own half second, which a loaded
+    // runner can stretch; the wait ends as soon as the call arrives.
+    pointer(title, 'pointerdown')
+    await waitFor(() => expect(args.onSelectedChange).toHaveBeenCalledTimes(1), { timeout: HOLD_MS * 4 })
+    await expect(args.onSelectedChange).toHaveBeenLastCalledWith(true)
+    pointer(title, 'pointerup')
+    clickOn(title, 1)
+    await expect(args.onOpen).not.toHaveBeenCalled()
+
+    // A hold whose release sends no click, as a phone may after a long press,
+    // leaves the tap after it to open the card, KN-428's plan review.
+    pointer(title, 'pointerdown')
+    await waitFor(() => expect(args.onSelectedChange).toHaveBeenCalledTimes(2), { timeout: HOLD_MS * 4 })
+    pointer(title, 'pointerup')
+    pointer(title, 'pointerdown')
+    pointer(title, 'pointerup')
+    clickOn(title, 1)
+    await expect(args.onOpen).toHaveBeenCalledTimes(1)
+
+    // A contextmenu during a press, which a phone's browser may send for its own
+    // long press, is that hold arriving first: it selects at once and shows no
+    // menu, and one just after the hold shows none either.
+    pointer(title, 'pointerdown')
+    await expect(contextOn(title)).toBe(false)
+    await expect(args.onSelectedChange).toHaveBeenCalledTimes(3)
+    await expect(contextOn(title)).toBe(false)
+    pointer(title, 'pointerup')
+
+    // After a hold the keyboard's Enter still opens the card: the click it sends
+    // carries a detail of 0. The runner's own key, KN-225; elsewhere that click.
+    title.focus()
+    if ('__KARNAMA_STORY_TEST__' in globalThis) {
+      const browser = await import('vitest/browser')
+      await browser.userEvent.keyboard('{Enter}')
+    } else {
+      clickOn(title, 0)
+    }
+    await expect(args.onOpen).toHaveBeenCalledTimes(2)
+    title.blur()
+  },
+}
+
+export const MobileNotAHold: Story = {
+  args: { layout: 'mobile' },
+  globals: { locale: 'fa-IR' },
+  play: async ({ args, canvasElement }) => {
+    // What does not select a phone's card, KN-428. Each check waits the hold's
+    // own length, begun after the card's timer, so the card's hold would have
+    // run by the time it looks.
+    const card = cardOf(canvasElement)
+    const title = within(card).getByRole('button', { name: args.title })
+    const box = title.getBoundingClientRect()
+
+    // A tap, which opens the job opportunity.
+    pointer(title, 'pointerdown')
+    const tapped = pastTheHold()
+    pointer(title, 'pointerup')
+    clickOn(title, 1)
+    await tapped
+    await expect(args.onOpen).toHaveBeenCalledTimes(1)
+
+    // A press that drifts further than the slop, a scroll beginning, and the
+    // moves after it.
+    pointer(title, 'pointerdown')
+    const drifted = pastTheHold()
+    pointer(title, 'pointermove', { clientX: box.left + box.width / 2 + SLOP + 1 })
+    pointer(title, 'pointermove', { clientX: box.left + box.width / 2 + 2 * SLOP })
+    await drifted
+    pointer(title, 'pointerup')
+
+    // One the browser takes over for a scroll, and one that leaves the card.
+    pointer(title, 'pointerdown')
+    const cancelled = pastTheHold()
+    pointer(title, 'pointercancel')
+    await cancelled
+    pointer(title, 'pointerdown')
+    const left = pastTheHold()
+    pointer(title, 'pointerout', { relatedTarget: canvasElement.ownerDocument.body })
+    await left
+
+    // A second finger, a press on the three dots, and a right click, whose menu
+    // is the browser's to show.
+    pointer(title, 'pointerdown', { isPrimary: false, pointerId: 2 })
+    await pastTheHold()
+    const more = within(card)
+      .getAllByRole('button')
+      .find((button) => button !== title)
+    if (!more) throw new Error('no three dots')
+    pointer(more, 'pointerdown')
+    await pastTheHold()
+    pointer(title, 'pointerdown', { button: 2, pointerType: MOUSE })
+    const right = pastTheHold()
+    await expect(contextOn(title)).toBe(true)
+    await right
+
+    await expect(args.onSelectedChange).not.toHaveBeenCalled()
+    await expect(args.onOpen).toHaveBeenCalledTimes(1)
+  },
+}
+
+export const MobileTabOrder: Story = {
+  args: { layout: 'mobile' },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // The phone's folded checkbox is still in the keyboard's path, KN-341: Tab
+    // from before the card reaches it first, and it unfolds while it has the
+    // keyboard's focus, KN-428. The browser's own Tab, which only the runner
+    // has, KN-225.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const browser = await import('vitest/browser')
+    const card = cardOf(canvasElement)
+    const checkbox = within(card).getByRole('checkbox')
+    await expect(seen(checkbox)).toBe(false)
+    canvasElement.tabIndex = -1
+    canvasElement.focus()
+    await browser.userEvent.tab()
+    await expect(checkbox).toHaveFocus()
+    canvasElement.removeAttribute('tabindex')
+    await waitFor(() => expect(seen(checkbox)).toBe(true))
   },
 }
 

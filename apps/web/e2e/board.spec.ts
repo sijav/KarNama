@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 import { emptyBoard, signedIn } from './session'
 
 /**
@@ -23,6 +23,20 @@ const add = async (page: Page, title: string) => {
   await modal.getByLabel('نام شرکت*').fill('یک شرکت')
   await modal.getByRole('button', { name: 'ذخیره' }).click()
   await expect(page.getByRole('article').filter({ hasText: title })).toBeVisible()
+}
+
+// A finger held on a card until what it starts is in view, KN-428: a real
+// touch, sent through the browser's own protocol, since Playwright's
+// touchscreen only taps and its mouse is not a touch.
+const hold = async (page: Page, target: Locator, until: Locator) => {
+  const box = await target.boundingBox()
+  if (!box) throw new Error('nothing to hold')
+  const session = await page.context().newCDPSession(page)
+  const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 }
+  await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] })
+  await expect(until).toBeVisible()
+  await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await session.detach()
 }
 
 test.beforeEach(async ({ page }) => {
@@ -64,13 +78,21 @@ test('a card opens into the job modal and its status is changed from the board',
   await expect(modal).toBeVisible()
   await modal.getByRole('button', { name: 'بستن' }).click()
 
-  // Several are selected and moved through the bar at the foot.
+  // Several are selected and moved through the bar at the foot. A phone's card
+  // offers no checkbox until a press held on one starts the selection, KN-428,
+  // and after that every card offers its own.
+  const bar = page.getByRole('region', { name: 'کارهای گروهی' })
   for (const title of [FIRST, SECOND]) {
     const card = page.getByRole('article').filter({ hasText: title })
+    if (testInfo.project.name === 'mobile' && title === FIRST) {
+      await hold(page, card.getByRole('button', { name: title }), bar)
+      await expect(page.getByRole('dialog')).toHaveCount(0)
+      await expect(card.getByRole('checkbox')).toBeChecked()
+      continue
+    }
     await card.hover()
     await card.getByRole('checkbox').check()
   }
-  const bar = page.getByRole('region', { name: 'کارهای گروهی' })
   await bar.getByRole('button', { name: 'تغییر وضعیت' }).click()
   const change = page.getByRole('dialog')
   await change.getByRole('radio', { name: OFFER }).check()

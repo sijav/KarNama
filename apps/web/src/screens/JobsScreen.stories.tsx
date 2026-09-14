@@ -678,6 +678,109 @@ export const OnAPhone: Story = {
   },
 }
 
+// A finger on a card, dispatched as the browser would, KN-428: the card's own
+// handlers, not a phone's gesture recognition, which the board's e2e test holds
+// with a real touch.
+type Pointing = 'pointerdown' | 'pointerup'
+type Finger = 'touch'
+const FINGER: Finger = 'touch'
+const touch = (target: Element, type: Pointing) => {
+  const box = target.getBoundingClientRect()
+  target.dispatchEvent(
+    new PointerEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      isPrimary: true,
+      pointerId: 1,
+      pointerType: FINGER,
+      button: 0,
+      clientX: box.left + box.width / 2,
+      clientY: box.top + box.height / 2,
+    }),
+  )
+}
+// The click a finger's release sends.
+type Clicking = 'click'
+const CLICK: Clicking = 'click'
+
+// Whether a checkbox is seen: its root's, since the native input the role sits
+// on is always transparent under the drawn frame.
+const seen = (checkbox: HTMLElement) => checkbox.parentElement?.checkVisibility({ opacityProperty: true }) ?? false
+
+export const SelectingOnAPhone: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-428: a phone starts a selection the way the file does, with a press
+    // held on a card, 491:751; every card then offers its checkbox, 204:11, and
+    // two chosen from two statuses are deleted together. The screen is resized
+    // by the runner's own browser, which only the runner has, KN-225, and put
+    // back after.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const set = fixtures('fa-IR')
+    const columns = defaultStatuses((token) => set.names[token])
+    const first = set.jobs[0]?.title ?? ''
+    const second = set.jobs[1]?.title ?? ''
+    const cardNamed = (name: string) => {
+      const card = canvas.getByRole('button', { name }).closest('article')
+      if (!card) throw new Error('the card has no article around it')
+      return card
+    }
+    const before = { width: window.innerWidth, height: window.innerHeight }
+    try {
+      await page.viewport(PHONE.width, PHONE.height)
+      await waitFor(async () => {
+        await expect(canvas.getByRole('button', { name: new RegExp(columns[1]?.name ?? '') })).toBeInTheDocument()
+      })
+
+      // At rest a phone's card offers no checkbox, as 491:751 draws it.
+      const held = cardNamed(first)
+      await expect(seen(within(held).getByRole('checkbox'))).toBe(false)
+
+      // Held, the card is chosen and the bar comes up; the click its release
+      // sends opens nothing.
+      const title = within(held).getByRole('button', { name: first })
+      touch(title, 'pointerdown')
+      // Found with room past the card's half second hold, which a loaded runner
+      // can stretch; the search ends as soon as the bar is there.
+      const bar = await canvas.findByRole('region', { name: 'کارهای گروهی' }, { timeout: 2000 })
+      touch(title, 'pointerup')
+      title.dispatchEvent(new MouseEvent(CLICK, { bubbles: true, cancelable: true, detail: 1 }))
+      await expect(within(held).getByRole('checkbox')).toBeChecked()
+      await expect(body.queryByRole('dialog')).toBeNull()
+
+      // Another status's card offers its checkbox while the board is selecting,
+      // and is chosen too.
+      await userEvent.click(canvas.getByRole('button', { name: new RegExp(columns[1]?.name ?? '') }))
+      const other = await waitFor(() => cardNamed(second))
+      const check = within(other).getByRole('checkbox')
+      await waitFor(async () => {
+        await expect(seen(check)).toBe(true)
+      })
+      await userEvent.click(check)
+      await waitFor(async () => {
+        await expect(bar).toHaveTextContent(formatCount('fa-IR', 2))
+      })
+
+      // Both go together, after the confirmation every deletion asks for.
+      await userEvent.click(within(bar).getByRole('button', { name: 'حذف' }))
+      const confirm = await body.findByRole('dialog')
+      await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
+      await waitFor(async () => {
+        await expect(canvas.queryByText(second)).toBeNull()
+      })
+      await userEvent.click(await canvas.findByRole('button', { name: new RegExp(columns[0]?.name ?? '') }))
+      await waitFor(async () => {
+        await expect(canvas.queryByText(first)).toBeNull()
+      })
+    } finally {
+      await page.viewport(before.width, before.height)
+    }
+  },
+}
+
 export const FocusAfterDeleting: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
