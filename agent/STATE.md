@@ -39,28 +39,34 @@ tabs.
 KN-352, KN-356, KN-431 and KN-532, their roasts filing KN-527 to KN-537; KN-419,
 filing KN-538 and KN-539; KN-437 and KN-438, filing KN-540 and KN-541; KN-440,
 filing KN-542 to KN-545; KN-446, filing KN-546; KN-464, filing KN-547 and
-KN-548; KN-465, filing KN-549; KN-466, a fixed code source for the resend check
-(d84eeba), filing KN-550.
+KN-548; KN-465, filing KN-549; KN-466, filing KN-550; KN-467, the job modal's
+Enter proved with a real key (fa12b5b), its roast finding nothing.
 
-**KN-467 (fa12b5b)**: the job modal's form, and Save submitting it by id, were
-already Codex's 2234d66. `EnterSaves` proves them with the runner's own Enter:
-the cleared title refuses as Save does and keeps focus, a typed title saves, and
-the description takes Enter as a new line. Its record's dates are days, since the
-fixture's written dates make every save refuse, KN-494, noted there. Real keys
-edit a field only after the runner's own click, AGENTS.md section 7. Four plants
-fail it; its roast found nothing. Filed on the way, **KN-551**:
-`core/api/session.test.ts` failed once under load.
+**KN-469 (6e2a16d)**: KN-330's roast said browsers take F6 before the page. It
+was measured instead, on Windows 11 build 26200 with keys injected by
+`SendInput`, in Chrome 152.0.7977.83 and Playwright's Firefox 151 build, no other
+Firefox being installed: the page hears F6 first, `preventDefault` keeps focus in
+the page, and without it the browser takes focus. F6 stays. The plan review
+found the bar also took Shift+F6, the browsers' way back through their panes; the
+guard now leaves it alone, and the story reads each default. The measurement's
+table is in the plan beside the bar. Its roast filed **KN-552**, the comments and
+docs speaking for browsers in general, and **KN-553**, a Mac sending no F6
+without Fn.
+
+**KN-551**, filed on the way: `core/api/session.test.ts` fails both its cases
+when the unit project runs straight after storybook browser runs, seen twice
+today, and passes alone and in a quiet full run.
 
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
 to no story; its note lists every arm by line, 5 points in the backlog.
 
 **What fails in a full run, and why**: the web unit project passes whole, 1382,
-though once today both cases of `session.test.ts` failed under load, KN-551. The
-storybook project fails the five modal stories KN-494 carries, four of them in
-`JobModal.stories.tsx`, the board's `Adding`, which calls the live API, KN-495,
-and the Job Card's `Pressed` in parallel only, KN-365's kind. The API's 156 tests
-pass and its coverage gate fails on auth and extraction files, KN-486. Of the e2e
-suite, only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
+when nothing else is running, KN-551 otherwise. The storybook project fails the
+five modal stories KN-494 carries, four of them in `JobModal.stories.tsx`, the
+board's `Adding`, which calls the live API, KN-495, and the Job Card's `Pressed`
+in parallel only, KN-365's kind. The API's 156 tests pass and its coverage gate
+fails on auth and extraction files, KN-486. Of the e2e suite, only
+`two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
 
 ## The owner's rules, most recent first
 
@@ -94,18 +100,21 @@ suite, only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
 
 ## The next step
 
-KN-469 is in progress: F6 never reaches the page, KN-330's roast said, citing the
-browsers' shortcut lists, which do not say whether a page hears a key first. The
-plan, `apps/web/src/shared/bulk-action-bar/#KN-469 - F6 never reaches the page.md`,
-measures before choosing a key: Chrome 152 as installed, and Playwright's Firefox
-151 build, since no Firefox is installed, each started on a throwaway profile
-with a local page that writes the keys it hears into its own title, and real
-keys from PowerShell's `SendKeys`, sent only while that browser is in front. F6
-stays if both give it to the page and honour its `preventDefault`; otherwise F2,
-if both do for F2. Either way the story's comment and docs say what the runner
-can and cannot prove. The page and script are `kn469-keys.html` and
-`kn469-keys.ps1` in the session's scratchpad; the plan review was running when
-this was written.
+KN-472 is in progress: deleting a card lands focus on the first card of the whole
+board, since both screens hand the Confirm modal `querySelector('article
+button')`. The plan,
+`apps/web/src/screens/#KN-472 - The focus fallback lands on the first card of the whole board.md`,
+works out the landing when the reader asks to delete, while the cards are still
+in the page: in the first deleted card's column, the cards after it, nearest
+first, then those before it, then that column's Add Card row, found by position
+through refs on the desktop's row of columns and a phone's column; on the network,
+the people after and before it in the grid. The Confirm modal takes the first still
+in the page, else the board or the page. Red first: a new
+`FocusAfterDeletingInAColumn` on the fixture board's rejected column, middle then
+last; `FocusAfterDeleting` naming the emptied column's Add Card row; the network's
+`FocusAfterDeletingFromTheModal` deleting the second of three people. Its plan
+review with Codex was running when this was written; do not edit the screens,
+their stories or their docs until it lands.
 
 ## What to read first
 
