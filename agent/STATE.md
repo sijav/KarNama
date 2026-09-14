@@ -41,18 +41,21 @@ filing KN-538 and KN-539; KN-437 and KN-438, filing KN-540 and KN-541; KN-440,
 filing KN-542 to KN-545; KN-446, filing KN-546; KN-464, filing KN-547 and
 KN-548; KN-465, filing KN-549; KN-466, filing KN-550; KN-467, nothing; KN-469, F6
 measured to reach the page (6e2a16d), filing KN-552 and KN-553; KN-472, focus
-after a deletion landing on the card after it (f0b0702), nothing.
+after a deletion (f0b0702), nothing; KN-495, the board's reader as a prop so its
+`Adding` story needs no server (c6172c3), nothing.
 
-**KN-495 (c6172c3)**: `JobsScreen` takes a required `onExtract`, typed from the
-add modal's, and `App` fills it with `extractJob`; the Jobs stories hand it a
-stand-in that gives back the link, and `Adding` asserts the call. `Adding` failed
-at line 516 on the old screen as the checkout is, where `apps/web/.env.local`
-points at `localhost:4000`, and with `.env.local` taken away for the run, Vite's
-`loadEnv` seeing no `VITE_API_URL`; it passes in both now. A run with the
-variable set empty does not count as one without an address: on Windows an empty
-variable does not override `.env.local`, which the plan review found. A plant
-putting the import back fails at the call assertion, line 517. Its roast found
-nothing. The storybook project no longer fails on `Adding`.
+**KN-522 (b0f6984)**: stories and a test that replaced `console.error` with a mock
+took KN-401's guard off; an unmarked error planted in Tooltip's capturing story
+and in the guard's unit test passed, measured. `passOnUnmarked(through)` in
+`console-guard.ts` holds back only the product's marked reports and hands the rest
+to the console as it was, the guard in a test; Tooltip's capture and the test use
+it, and `InATooltip` spies without replacing. The plants now fail through the
+guard. `ReportsATriggerThatDropsItsProps` declares, with `allowConsole`, MUI's
+warning about the child it renders on purpose. A production Storybook built into
+the scratchpad and opened headless ran the five Tooltip stories and `InATooltip`
+with a clean console but for lingui's warnings. Its roast passed. Filed on the
+way: **KN-554**, `BlankName` failing in the published Storybook, and **KN-555**, a
+warning that lands where the guard does not hear it in a whole-file run.
 
 **KN-551**: `core/api/session.test.ts` fails both its cases when the unit project
 runs straight after storybook browser runs, seen twice today, and passes alone
@@ -61,7 +64,7 @@ and in a quiet full run.
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
 to no story; its note lists every arm by line, 5 points in the backlog.
 
-**What fails in a full run, and why**: the web unit project passes whole, 1382,
+**What fails in a full run, and why**: the web unit project passes whole, 1383,
 when nothing else is running, KN-551 otherwise. The storybook project fails the
 five modal stories KN-494 carries, four of them in `JobModal.stories.tsx`, and the
 Job Card's `Pressed` in parallel only, KN-365's kind. The API's 156 tests pass
@@ -100,19 +103,14 @@ suite, only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
 
 ## The next step
 
-KN-522 is in progress: stories and a test replace `console.error` with a mock,
-which takes KN-401's guard off while they run. Measured on 2026-09-14 with an
-unmarked `console.error` planted and each file restored by hash: Tooltip's
-`ReportsATriggerThatCannotAttach` passed with it, and so did the guard's own
-unit test in `console-guard.test.ts`; IconButton's `InATooltip` failed on it
-through its own check. The plan,
-`apps/web/src/shared/#KN-522 - Two stories replace console.error with a mock.md`,
-adds `passOnUnmarked(through)` to `console-guard.ts`, holding back only the
-product's marked reports and passing the rest to the console as it was; Tooltip's
-`captureConsoleErrors` and the unit test use it, and `InATooltip` spies without
-replacing. The same plants are the positive control. Its plan review with Codex
-was running when this was written; the build script is in the session's
-scratchpad.
+KN-206 is in progress: the Checkbox has no guaranteed accessible name and no test
+of its hit area. Read on 2026-09-14: KN-293 already made the root 28 by 28 round
+the drawn 20 by 20 frame with MUI's input filling it, and KN-423 routed
+`aria-label` and `aria-labelledby` to the input; there is no `id` prop, the names
+are optional, seven of the nine Checkbox stories render it unnamed, and nothing
+asserts the hit area. MUI's SwitchBase hands `id` to the input. IconButton is the
+precedent: `aria-label` required by its type, a blank one reported. The plan is
+not written yet.
 
 ## What to read first
 
