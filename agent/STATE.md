@@ -35,17 +35,20 @@ filed KN-519 and KN-520, its audit KN-512 to KN-514 and KN-518. **Blocked on the
 owner, asked 2026-09-14 in chat**: KN-515 a phone board header's add button,
 KN-516 a phone board's sort row, KN-517 history's place among the modal's tabs.
 
-**Closed today since**: KN-483 (bab5444), KN-521 filed; KN-401 (fd9338e), its
-roast filed KN-522 and KN-523; KN-403 (a264964), its roast filing nothing;
-KN-405 (18343d2), its roast filed KN-524; KN-423 (5159f0f), the Checkbox names
-its input, its roast filed KN-525 and KN-526; **KN-428 (63f6870)**, a phone
-starts a selection with a press held on a card, as Card / Mobile 491:751 and
-the Checkbox 204:11 say in their descriptions: `useHold` in
-`shared/job-card/hold.ts`, a `selecting` prop the board passes, the phone
-checkbox folded at rest in the keyboard's path, the e2e board test holding a
-real touch. Its plan and Codex's plan review sit beside JobCard; its task roast
-is with Codex. KN-527 carries the same gap on a tablet. Safari on an iPhone was
-not checked.
+**Closed today since**: KN-483 (bab5444); KN-401 (fd9338e); KN-403 (a264964);
+KN-405 (18343d2); KN-423 (5159f0f), the Checkbox names its input, its roast
+filed KN-525 and KN-526. **KN-428 (63f6870)**: a phone starts a selection with a
+press held on a card, as Card / Mobile 491:751 and the Checkbox 204:11 say in
+their descriptions: `useHold` in `shared/job-card/hold.ts`, a `selecting` prop
+the board passes, the phone checkbox folded at rest in the keyboard's path, the
+e2e board test holding a real touch; KN-527 carries the same gap on a tablet,
+and Safari on an iPhone was not checked. Its roast filed KN-528, a second
+finger clearing the hold's mark, KN-529, the card turning off Safari's long
+press menu on its link, and KN-530, comments that claim too much. **KN-352
+(26f86f1)**: no product change, KN-428's fold having fixed it; the board story
+`UncheckingOnAPhone` proves focus stays on a phone card's checkbox when the last
+card chosen is unchecked by keyboard, and fails on the bug as filed. Its roast
+is with Codex.
 
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
 to no story, 26 of them KN-477's drag handlers; its note lists every arm by line
@@ -89,14 +92,15 @@ owner's question; KN-507, the Settings dialog's Theme and sample-data parts.
 
 ## The next step
 
-Relay KN-428's roast when it lands, judge it and file what survives as its
-children. KN-352 is in progress: unchecking a phone card's checkbox used to
-unmount it and drop focus to the page. Since KN-428 the checkbox folds instead,
-and unfolds while the keyboard's focus is inside, so focus should now stay; what
-the card still asks is a story that unchecks it by the keyboard and asserts
-where focus is. Do not edit JobCard's files until KN-428's roast has landed: it
-is reading them. Then the plan beside JobCard, its roast, the story, a planted
-unmount that the story must catch, and a look in both languages.
+Relay KN-352's roast when it lands, judge it and file what survives as its
+children. KN-356 is in progress: Navigation giving the tab bar's place to the
+Bulk Action Bar while a phone page is selecting. Its shell half was built before
+a phone could select, and in Chromium at 390 the bar already stands where the tab
+bar was; what the card still asks is a story that selects and sees one bar at
+the foot, with the sidebar untouched on a desktop. Find how App and Navigation
+hide the tab bar, measure it, write the plan beside the work, roast it, then the
+story. Do not edit JobsScreen's stories or the board screen's docs until KN-352's
+roast has landed: it is reading them.
 
 ## What to read first
 
