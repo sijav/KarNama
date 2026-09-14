@@ -167,9 +167,11 @@ inside `argTypes`. A guard test fails until both languages describe every prop
 and story.
 
 A file is its description, then `## Props` and `## Stories`, each `###` under
-them one prop or one story. Anything else fails the same guard, naming the file
-and the line, KN-202: another `##` section, a second `###` of one name, or an
-entry or text outside every entry.
+them one prop or one story. These fail the same guard, naming the file and the
+line: another `##` section, a second `###` of one name, and an entry or text
+outside every entry, KN-202; and, outside a fence, a line starting with one `#`
+or with four to six and then a space, a tab or its end, a fence that never
+closes, and an entry with no prose, KN-405.
 
 No MDX either: Storybook indexes `*.stories.ts(x)` alone. No lint block reads an
 `.mdx`, so a story or a docs page written in one would carry copy the lingui

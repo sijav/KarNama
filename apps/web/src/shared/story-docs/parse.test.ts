@@ -95,3 +95,92 @@ describe('parseStoryDoc', () => {
     expect(problemsIn('Intro.\n\n### stray\ntext\n')).toEqual(['line 3: "### stray" is an entry outside ## Props and ## Stories'])
   })
 })
+
+/** The message for a heading the format has no place for, KN-405. */
+const stray = (line: number, heading: string, level: number) =>
+  `line ${line}: "${heading}" is a level ${level} heading: a docs file has only its description, ## sections and ### entries`
+
+/** The message for a fence that never closes, KN-405. */
+const openFence = (line: number, marker: string) =>
+  `line ${line}: the ${marker} fence opened here never closes, so every line after it is read as code`
+
+describe('parseStoryDoc, the shapes KN-405 reports', () => {
+  it.each([
+    ['# Title', 1],
+    ['#### Detail', 4],
+    ['##### More', 5],
+    ['###### Most', 6],
+    ['#', 1],
+    ['#\tTabbed', 1],
+  ])('reports %j as a heading the format has no place for, and keeps it out of the entry', (heading, level) => {
+    const markdown = ['## Props', '### placement', 'Where.', heading].join('\n')
+    expect(parseStoryDoc(markdown).props).toEqual({ placement: 'Where.' })
+    expect(problemsIn(markdown)).toEqual([stray(4, heading.trim(), level)])
+  })
+
+  it('reports a level-one title before the description, and keeps it out of the description', () => {
+    const markdown = '# Title\nThe switch.\n\n## Props\n### placement\nWhere.'
+    expect(parseStoryDoc(markdown).description).toBe('The switch.')
+    expect(problemsIn(markdown)).toEqual([stray(1, '# Title', 1)])
+  })
+
+  it('reads a heading at the end of a Windows line, and a bare # before one', () => {
+    const markdown = ['## Props', '### placement', 'Where.', '# Title', '#', ''].join('\r\n')
+    expect(problemsIn(markdown)).toEqual([stray(4, '# Title', 1), stray(5, '#', 1)])
+  })
+
+  it('leaves #hashtag and seven # as text, as CommonMark does', () => {
+    const markdown = ['## Props', '### placement', '#hashtag', '####### seven'].join('\n')
+    expect(parseStoryDoc(markdown).props).toEqual({ placement: '#hashtag\n####### seven' })
+    expect(problemsIn(markdown)).toEqual([])
+  })
+
+  it('does not read a stray heading inside a fence', () => {
+    expect(problemsIn(['## Props', '### placement', '```md', '# not a heading', '#### nor this', '```'].join('\n'))).toEqual([])
+  })
+
+  it.each(['```', '~~~'])('reports a %s fence that never closes at the line it opened, leaving what follows inside it', (marker) => {
+    const markdown = ['## Props', '### placement', 'Where.', `${marker}ts`, 'const x = 1', '## Stories', '### Default', 'D.'].join('\n')
+    expect(parseStoryDoc(markdown).stories).toEqual({})
+    expect(problemsIn(markdown)).toEqual([openFence(4, marker)])
+  })
+
+  it('reports an entry with no prose at its own heading, in the middle of a file and at its end, and keeps it', () => {
+    const middle = ['## Stories', '### Default', '', '### Other', 'O.'].join('\n')
+    expect(parseStoryDoc(middle).stories).toEqual({ Default: '', Other: 'O.' })
+    expect(problemsIn(middle)).toEqual(['line 2: "### Default" under "## Stories" has no prose'])
+    expect(problemsIn(['## Props', '### placement', '', ''].join('\n'))).toEqual(['line 2: "### placement" under "## Props" has no prose'])
+  })
+
+  it('reports an entry whose only line is a stray heading both ways, and keeps the entry empty', () => {
+    const markdown = ['## Stories', '### Default', '# Title', '### Other', 'O.'].join('\n')
+    expect(parseStoryDoc(markdown).stories).toEqual({ Default: '', Other: 'O.' })
+    expect(problemsIn(markdown)).toEqual(['line 2: "### Default" under "## Stories" has no prose', stray(3, '# Title', 1)])
+  })
+
+  it('reports a stray heading and an open fence under an unknown section as well as the section', () => {
+    expect(problemsIn(['## Notes', '# Title', '```', 'code'].join('\n'))).toEqual([
+      'line 1: "## Notes" is not a section: the only ones are ## Props and ## Stories',
+      stray(2, '# Title', 1),
+      openFence(3, '```'),
+    ])
+  })
+
+  it('reports an empty second entry once, as a second entry', () => {
+    expect(problemsIn(['## Props', '### placement', 'P.', '### placement', ''].join('\n'))).toEqual([
+      'line 4: "### placement" is a second entry named placement under "## Props"',
+    ])
+  })
+
+  it('lists the problems in line order, whenever each was found', () => {
+    // The #### at line 4 is found as it is read, the empty entry at line 3 only
+    // at the next ###, and the open fence at line 7 only at the end.
+    const markdown = ['# Title', '## Stories', '### Default', '#### Detail', '### Other', 'O.', '```'].join('\n')
+    expect(problemsIn(markdown)).toEqual([
+      stray(1, '# Title', 1),
+      'line 3: "### Default" under "## Stories" has no prose',
+      stray(4, '#### Detail', 4),
+      openFence(7, '```'),
+    ])
+  })
+})
