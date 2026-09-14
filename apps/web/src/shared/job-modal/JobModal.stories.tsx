@@ -281,6 +281,68 @@ export const SaveAndDelete: Story = {
   },
 }
 
+// The record the Enter story saves: the fixture's own, its dates as the days the
+// fixture means. The fixture writes them as a reader would, «۱۰ شهریور ۱۴۰۵»,
+// which the form cannot save, KN-494, and a record that cannot be saved cannot
+// show what saving does.
+const savable = (): JobRecord => {
+  const record = recordIn('fa-IR')
+  return { ...record, draft: { ...record.draft, postedAt: '2026-09-01', expiresAt: '2026-09-04' } }
+}
+
+// How many lines a field of several holds.
+const linesIn = (field: HTMLElement) => (field instanceof HTMLTextAreaElement ? field.value.split('\n').length : 0)
+
+export const EnterSaves: Story = {
+  args: { job: savable() },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args }) => {
+    // The owner, 2026-09-12: the fields are a form and Save submits it, KN-463,
+    // so Enter in a field of one line does what Save does, KN-467. Save sits in
+    // the footer, outside the form, and names it by id.
+    const dialog = await dialogNamed(args.job.draft.title)
+    const title = within(dialog).getByRole('textbox', { name: 'عنوان شغلی' })
+    await userEvent.clear(title)
+
+    // The runner's own keyboard, KN-225: implicit submission is the browser's,
+    // and testing-library stands in for it by clicking a submit button inside
+    // the form, which Save is not.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const browser = await import('vitest/browser')
+
+    // Without a title, Enter refuses as Save does: the title says what is
+    // missing, nothing is saved, and the title keeps the focus.
+    await browser.userEvent.keyboard('{Enter}')
+    await waitFor(async () => {
+      await expect(title).toHaveAccessibleDescription('عنوان شغلی را بنویس')
+    })
+    await expect(args.onSave).not.toHaveBeenCalled()
+    await expect(title).toHaveFocus()
+
+    // With one, Enter hands the edits over, as Save does.
+    await userEvent.type(title, 'مهندس نرم‌افزار')
+    await browser.userEvent.keyboard('{Enter}')
+    await waitFor(async () => {
+      await expect(args.onSave).toHaveBeenCalledWith(
+        expect.objectContaining({ title: 'مهندس نرم‌افزار', description: args.job.description }),
+      )
+    })
+
+    // Enter in the description, a field of several lines, starts a new line and
+    // saves nothing, the exception KN-463 wrote down.
+    const description = within(dialog).getByRole('textbox', { name: 'شرح شغل و مسئولیت‌ها' })
+    const before = linesIn(description)
+    // Clicked by the runner's own pointer: after testing-library's click the
+    // field has focus, yet a real key types nothing into it, measured.
+    await browser.userEvent.click(description)
+    await browser.userEvent.keyboard('{Enter}')
+    await waitFor(async () => {
+      await expect(linesIn(description)).toBe(before + 1)
+    })
+    await expect(args.onSave).toHaveBeenCalledTimes(1)
+  },
+}
+
 // A card on the board and its modal: pressing the card opens it, and leaving
 // it closes it again.
 const FromTheBoard = (args: JobModalProps) => {

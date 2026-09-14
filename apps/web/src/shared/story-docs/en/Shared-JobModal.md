@@ -111,6 +111,12 @@ change.
 
 Saving refused without a title, then saved, and the delete pressed.
 
+### EnterSaves
+
+The fields are a form and Save submits it, so Enter in a field of one line does
+what Save does: without a title it says the title is missing and saves nothing,
+and with one it saves. Enter in the description starts a new line instead.
+
 ### OpensFromCard
 
 A card on the board opening the modal, and the modal closed.
