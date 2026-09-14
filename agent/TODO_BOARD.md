@@ -13,6 +13,12 @@ Project **KarNama** · 215 of 523 tasks done · 486 of 1071 points.
 | 1 | OKR-1 | MVP: the pages | now | 180 | 137 |
 | 2 | OKR-2 | Everything after the MVP | later | 126 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-423` | The Contact Card's checkbox has no accessible name, though the card sets one | high | 2 | web | none | The contact card's checkbox is named for whoever it selects, asserted by a story that finds it by that name; the Checkbox component forwards the accessible name whatever else it is given, with its own test. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 215 of 523 tasks done · 486 of 1071 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (297)
+## Backlog (296)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -38,7 +44,6 @@ Project **KarNama** · 215 of 523 tasks done · 486 of 1071 points.
 | `KN-352` | Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page | high | 2 | web | KN-428 | Unchecking the phone card's checkbox leaves focus on the card, either on a checkbox that stays and folds as the desktop's does or on the title, and a story unchecks it by keyboard and asserts where focus is. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
 | `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
-| `KN-423` | The Contact Card's checkbox has no accessible name, though the card sets one | high | 2 | web | none | The contact card's checkbox is named for whoever it selects, asserted by a story that finds it by that name; the Checkbox component forwards the accessible name whatever else it is given, with its own test. |
 | `KN-427` | JobsScreen still has fifteen uncovered branches, seven of them a story could reach | high | 2 | web | none | Every branch of JobsScreen.tsx is either taken by a story or has a comment saying which state it belongs to and why no reader can reach it. |
 | `KN-428` | A phone cannot start a selection, so the bulk bar can never be raised there | high | 2 | web | none | A phone can select a job opportunity from the board, the bulk bar comes up, and a story at a phone's width selects two and deletes them. |
 | `KN-431` | Select all and bulk delete ignore the search, which is how KN-422 lost data | high | 2 | web | none | Select all takes what the search found, bulk delete acts on that, and a story with a search active selects all and deletes and shows the hidden job opportunities survive. |
@@ -7607,7 +7612,7 @@ CHILD OF KN-043, recorded in prose because board.json cannot express parent_task
 
 ### `KN-423` The Contact Card's checkbox has no accessible name, though the card sets one
 
-- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 Found while covering the network screen, 2026-09-12. ContactCard gives its Checkbox aria-label={Select + the contact's name}, and the rendered checkbox's accessible name is empty: testing-library lists it as checkbox with Name "" while the Job Card's same pattern is named. So the name is being dropped between the card and the input the role belongs to, most likely by the Checkbox component not forwarding aria-label to its input. A screen reader user hears an unnamed checkbox on every contact, and a test can only find it by role.

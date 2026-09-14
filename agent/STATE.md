@@ -26,41 +26,28 @@ with their stories, then screens. Match the design exactly.**
 owner's word, Groq extraction on Render, Settings, drag and drop, collapse,
 date validation, the growing paste field. What survived four Claude reviews of
 its diff is its children, KN-484 to KN-503 and KN-521 still open; the dark
-`color-scheme` fix waits in `git stash@{0}` as KN-496. KN-482 moved the board
-into the skill's database.
+`color-scheme` fix waits in `git stash@{0}` as KN-496.
 
-**The owner's asks of 2026-09-14, done**: KN-479 (e058e19) language flags;
-KN-480 (c0685be) the language Select in Settings; KN-478 (ce97840) settings,
-sign out, language and add contact as Icon Buttons in one `ShellControls` row.
-
-**KN-481, "it should look like the figma", done (198a36f).** The board and the
-network open on the Header band their frames draw, `apps/web/src/screens/band.ts`,
-the gutters are the file's 32 and 16, and `App/Shell`'s `LaidOutAsTheFrames`
-asserts it in both languages; DESIGN.md section 8 records the page's frame. Its
-roast filed KN-519 (network cards fixed at 556, wrapping) and KN-520 (a phone's
-last card). Its audit filed KN-512, KN-513, KN-514, KN-518. **Blocked on the
+**The owner's asks of 2026-09-14, done**: KN-479 language flags; KN-480 the
+language Select in Settings; KN-478 the shell's controls as Icon Buttons.
+**KN-481** matched the board and network to their frames (198a36f); its roast
+filed KN-519 and KN-520, its audit KN-512 to KN-514 and KN-518. **Blocked on the
 owner, asked 2026-09-14 in chat**: KN-515 a phone board header's add button,
 KN-516 a phone board's sort row, KN-517 history's place among the modal's tabs.
 
-**KN-483 done (bab5444, a186a87)**: `postingText` takes linear time on a hostile
-page, its output unchanged; KN-521 is the unclosed-script question.
+**Closed today since**: KN-483 (bab5444), `postingText` linear on a hostile
+page, KN-521 filed; KN-401 (fd9338e), the console guard checked, two
+regressions of this session fixed in 723610d, its roast filed KN-522 and
+KN-523; KN-403 (a264964), `runSchemaCommand` tested in process and the entry's
+test starts only light runs, its roast filing nothing; KN-405 (18343d2),
+`parseStoryDoc` reports a `#` or `####` heading, a fence that never closes and an
+entry with no prose, each rule proved by taking it away, and AGENTS.md lists
+exactly what fails the format. KN-405's roast is with Codex.
 
-**KN-401 done (fd9338e)**: the console guard was checked on main, and its full
-runs found two regressions of this session's own, fixed in 723610d. Its roast
-filed KN-522, two stories replace `console.error` with a mock that takes the
-guard off, and KN-523, nothing committed proves the wiring.
-
-**KN-403 done (a264964)**: `runSchemaCommand` lives in
-`apps/api/src/graphql/schema-command.ts`, covered in process by four cases; the
-built entry's test starts only an unknown and an absent command, about 160 ms
-each; `HUNG_AFTER_MS`, the budget of 0 and TECH-DEBT 20 are gone. The first
-in-process check timed out until the test imported `schema.ts` at its top, as
-`schema.test.ts` does. Its roast is with Codex.
-
-**What fails in a full run, and why**: the web unit project passes whole, 1348
-tests. The storybook project fails the five modal stories KN-494 carries, the
-board's `Adding`, which calls the live API, KN-495, and the Job Card's `Pressed`
-in parallel only, KN-365's kind. The API's 156 tests pass and its coverage gate
+**What fails in a full run, and why**: the web unit project passes whole. The
+storybook project fails the five modal stories KN-494 carries, the board's
+`Adding`, which calls the live API, KN-495, and the Job Card's `Pressed` in
+parallel only, KN-365's kind. The API's 156 tests pass and its coverage gate
 fails on auth and extraction files, KN-486.
 
 **Found on the way and filed**: KN-505, clean paths rather than `#/`, the
@@ -95,14 +82,14 @@ owner's question; KN-507, the Settings dialog's Theme and sample-data parts.
 
 ## The next step
 
-Relay KN-403's roast when it lands and file what survives; KN-403 is a child of
-KN-167, so its findings hang off KN-167. KN-405 is in progress: the story-docs
-parser, `parseStoryDoc`, still takes a `#` or `####` heading, a fence left open
-and an entry with no prose without a problem. Read the parser and its tests and
-KN-202's plan beside them, write KN-405's plan there, roast it with Codex, then
-make each shape a problem with its line, a unit test asserting each message, the
-guard still passing on every docs file, and AGENTS.md section 3's sentence on
-the format saying exactly what fails.
+Relay KN-405's roast when it lands and file what survives; KN-405 is a child of
+KN-007, so its findings hang off KN-007. KN-423 is in progress: the Contact
+Card's checkbox has no accessible name though the card passes one, where the
+Job Card's same pattern is named. Find where the name is lost between
+`ContactCard` and the Checkbox's input, write the plan beside the component that
+drops it, roast the plan with Codex, then fix it so the Checkbox forwards the
+name whatever else it is given, with its own story, and a Contact Card story
+finds the checkbox by that name, looked at in both languages and schemes.
 
 ## What to read first
 
