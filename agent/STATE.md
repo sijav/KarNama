@@ -100,19 +100,34 @@ only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
 ## The next step
 
 **KN-226 is in progress**: nothing committed opens the published Storybook's
-stories. Read on 2026-09-14: `.github/workflows/pages.yml` builds the app and
-Storybook in ONE job, `KARNAMA_STORYBOOK_BASE=/KarNama/storybook/`, and deploys
-both as one artifact, so a check that fails there stops the app's deploy too.
-KN-522's scratch script, `kn522-published.mjs` in the session scratchpad, served
-a production build and listened on Storybook's channel for `storyFinished` and
-`playFunctionThrewException`; it heard IconButton's `BlankName` fail, KN-554, as
-two console errors. A production build of today's tree, under that base, has 423
-entries, 372 stories and 51 docs pages; a probe opening every one headless was
-running when this was written. The plan is not written yet; it has to settle
-where the check lives, docs pages or not, and what happens to the deploy while
-KN-554 or anything else the probe finds fails. The card carries a note: the dev
-Storybook's console showed React's duplicate key warning for `job-10`, story not
-identified.
+stories. Its plan is written beside the work,
+`apps/web/e2e/storybook/#KN-226 - ....md`, uncommitted, and goes to Codex before
+anything is built. What it measured on 2026-09-15, on a production build of
+d3f9fce under `/KarNama/storybook/`:
+
+- 423 entries, 372 stories and 51 docs pages, took 115 seconds six at a time.
+  Eleven fail, bare and inside the manager alike: KN-494's five, KN-554's two
+  (IconButton `BlankName` and its Docs page), and four filed as KN-226's
+  children, **KN-560** App/Shell `SignedInInAnotherTab`, **KN-561** Button
+  `States` (0 forced cells in the first frame), **KN-562** Input
+  `ControlsMatchTheCanvasInEnglish`, **KN-563** SettingsDialog `Preferences`; and
+  **KN-559**, AddJobModal `Review`'s 606 tall assertion, which the manager's
+  canvas cannot hold. `Multiline` needs 24 seconds alone, 57 inside the manager.
+- 35 entries end with Storybook's status `error` and a clean console: the
+  accessibility addon's failed checks, a note on KN-063.
+- `e2e/settings.spec.ts` passes against the app's production build, so the
+  Settings language switch works in the app.
+- The plan's choice: one step in the Pages build job, before the artifact, that
+  fails on any console or page error, with a committed list of the eleven known
+  failures, each naming its card, that fails when an entry on it passes.
+
+The first probe measured nothing: Git Bash rewrote the base passed on its command
+line into `/Program Files/Git/...`, `AGENTS.md` section 7 now says so, uncommitted
+with the plan. The scripts are in the session scratchpad: `kn226-build.mjs`
+builds with the base set in Node, `kn226-probe.mjs` opens entries (`ONLY`,
+`MANAGER`, `TIMEOUT`, `STATIC_DIR`), and `kn226-plan-roast.mjs` sends the plan.
+React's duplicate key warning for `job-10`, noted on the card, is dev-only; a
+production build carries none of its text.
 
 ## What to read first
 
