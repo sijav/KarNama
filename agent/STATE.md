@@ -36,17 +36,16 @@ button, KN-516 a phone board's sort row, KN-517 history's place among the modal'
 tabs.
 
 **Closed today since**: KN-483, KN-401, KN-403, KN-405, KN-423. **KN-428
-(63f6870)**: a phone starts a selection with a press held on a card, as Card /
-Mobile 491:751 and the Checkbox 204:11 describe, through `useHold` in
-`shared/job-card/hold.ts`; its roast filed KN-528 to KN-530; KN-527 is the
-tablet's gap. **KN-352 (26f86f1)** and **KN-356 (6bf0c27)**: no product change,
-stories proving what KN-428 and 924e515 had already built; their roasts filed
-KN-531, KN-533 (a phone cannot select a person on the network page at all) and
-KN-534. **KN-431 (38ac449)**: on the board the bulk bar counts, selects and
-deletes only what the search shows; `SelectingWhileSearching` failed on the old
-code and passes now; in the app 30 sample job opportunities searched down to 10
-lost exactly those 10 to select all and delete, in both languages. Its roast is
-with Codex.
+(63f6870)**: a phone starts a selection with a press held on a card, through
+`useHold` in `shared/job-card/hold.ts`; its roast filed KN-528 to KN-530; KN-527
+is the tablet's gap. **KN-352 (26f86f1)** and **KN-356 (6bf0c27)**: stories
+proving what was already built; their roasts filed KN-531, KN-533, a phone
+cannot select a person on the network page at all, and KN-534. **KN-431
+(38ac449)** on the board and **KN-532 (c06b85f)** on the network page: the bulk
+bar counts, selects and deletes only what the search shows, each story failing
+on the old code first, each checked in the running app in both languages.
+KN-431's roast filed KN-535 and KN-536 and raised KN-419; KN-532's roast is with
+Codex.
 
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
 to no story, 26 of them KN-477's drag handlers; its note lists every arm by line
@@ -87,15 +86,15 @@ fails on auth and extraction files, KN-486.
 
 ## The next step
 
-Relay KN-431's roast when it lands, judge it and file what survives as its
-children. KN-532 is in progress, the network half of KN-431's data loss: the
-network page draws the people its search matches, but its Bulk Action Bar counts
-and deletes the whole selection and `onSelecting` reports it, so a person chosen
-and then searched out of view is deleted with the rest. Plan beside
-NetworkScreen, roast it, write the story and watch it fail on today's code, then
-the fix, the story passing, plants, and a look in the app in both languages. Do
-not edit the board screen's files until KN-431's roast has landed: it is reading
-them.
+Relay KN-532's roast when it lands, judge it and file what survives as its
+children. KN-419 is in progress, raised to high by KN-431's roast: two tabs of
+KarNama each read storage once and write their whole copy on every change, with
+no storage listener, so a tab opened before another tab's changes writes its
+stale records over them, and signing out in one tab leaves the other signed in.
+Read how RecordsProvider and the auth provider load and save, measure the loss
+with two real tabs in Chromium, write the plan beside the records provider,
+roast it, then the storage listeners with a test for each. Do not edit the
+network page's files until KN-532's roast has landed: it is reading them.
 
 ## What to read first
 

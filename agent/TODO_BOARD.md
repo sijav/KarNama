@@ -13,6 +13,12 @@ Project **KarNama** · 221 of 536 tasks done · 497 of 1090 points.
 | 1 | OKR-1 | MVP: the pages | now | 187 | 143 |
 | 2 | OKR-2 | Everything after the MVP | later | 126 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-419` | Two tabs of KarNama do not agree about who is signed in | high | 2 | web | none | A storage event moves both providers: signing out in one tab signs the other out, and a board changed in one tab is what the other shows, each with a test. |
+
 ## Blocked (8)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -26,7 +32,7 @@ Project **KarNama** · 221 of 536 tasks done · 497 of 1090 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (305)
+## Backlog (304)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -36,7 +42,6 @@ Project **KarNama** · 221 of 536 tasks done · 497 of 1090 points.
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
 | `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
-| `KN-419` | Two tabs of KarNama do not agree about who is signed in | high | 2 | web | none | A storage event moves both providers: signing out in one tab signs the other out, and a board changed in one tab is what the other shows, each with a test. |
 | `KN-437` | The board fixture cannot be handed to anything: its columns carry no status id | high | 2 | web | none | A story seeds RecordsProvider from the fixtures with no mapping of its own, and the three hand-rolled status maps are gone. |
 | `KN-438` | The seeded board is nine columns of one card, which is no board to draw stories against | high | 2 | web | none | The fixture board holds an empty column, a column with several, and a rejected column worth collapsing; no test forbids an empty column. |
 | `KN-440` | Recolouring a status moves its column, because the board's order ranks by colour token | high | 2 | web | none | Recolouring a status leaves its column where it was, and a story recolours a custom status to the offer colour and asserts the order is unchanged. |
@@ -7590,7 +7595,7 @@ CHILD OF KN-046, recorded in prose because board.json cannot express parent_task
 
 ### `KN-419` Two tabs of KarNama do not agree about who is signed in
 
-- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-046
 
