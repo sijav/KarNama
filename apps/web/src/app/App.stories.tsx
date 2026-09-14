@@ -356,6 +356,132 @@ export const LaidOutAsTheFramesInEnglish: Story = {
   },
 }
 
+// A press on a card as synthetic pointer events: they run the card's own hold,
+// KN-428, and prove nothing about a phone's gesture recognition, which the
+// board's e2e test holds with a real touch.
+type Pointing = 'pointerdown' | 'pointerup'
+type Finger = 'touch'
+const FINGER: Finger = 'touch'
+const touch = (target: Element, type: Pointing) => {
+  const box = target.getBoundingClientRect()
+  target.dispatchEvent(
+    new PointerEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      isPrimary: true,
+      pointerId: 1,
+      pointerType: FINGER,
+      button: 0,
+      clientX: box.left + box.width / 2,
+      clientY: box.top + box.height / 2,
+    }),
+  )
+}
+
+// What is fixed to the foot of the screen, KN-356: every element in the canvas
+// whose computed position is fixed, that is drawn, and whose box meets the
+// screen's lower 160 pixels, which hold the tab bar's 72 and the bulk bar's 108
+// with its 24. Counted by the style itself rather than by roles, since the card
+// is about two things painted over each other there, and a second bar drawn
+// without a landmark would pass a query for landmarks. The canvas only, so a
+// dialog or a menu portalled into the body is not counted.
+const FOOT = 160
+const fixedAtFoot = (canvasElement: HTMLElement) =>
+  [...canvasElement.querySelectorAll<HTMLElement>('*')].filter((element) => {
+    const style = getComputedStyle(element)
+    if (style.position !== 'fixed' || style.display === 'none' || style.visibility === 'hidden') return false
+    const box = element.getBoundingClientRect()
+    return box.height > 0 && box.top < window.innerHeight && box.bottom > window.innerHeight - FOOT
+  })
+
+export const Selecting: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // KN-356: while a page is selecting, the Bulk Action Bar has the foot of the
+    // screen to itself. On a desktop the sidebar stays beside the page while the
+    // bar floats; on a phone the tab bar gives the bar its place, node 185:19,
+    // and comes back when the selection is let go. The page tells the shell,
+    // which is why this is the shell's story. The runner's own viewport, which
+    // only the runner has, KN-225, put back after.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const before = { width: window.innerWidth, height: window.innerHeight }
+    const address = window.location.hash
+    const tabBar = () => canvas.queryByRole('navigation', { name: 'فضای کار' })
+    try {
+      // A desktop, with the sample data loaded from Settings as a reader loads it.
+      await page.viewport(DESKTOP.width, DESKTOP.height)
+      await waitFor(() => expect(canvasElement.querySelector('aside')).not.toBeNull())
+      await userEvent.click(canvas.getByRole('button', { name: 'تنظیمات' }))
+      const settings = await body.findByRole('dialog')
+      await userEvent.click(within(settings).getByRole('button', { name: 'بارگذاری داده‌های نمونه' }))
+      await userEvent.click(within(settings).getByRole('button', { name: 'تمام' }))
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog')).toBeNull()
+        await expect(canvas.getAllByRole('article').length).toBeGreaterThan(1)
+      })
+
+      // A card chosen by its checkbox, folded until focus is inside the card,
+      // KN-341: the bar floats and the sidebar stays beside the page.
+      const [desk] = canvas.getAllByRole('article')
+      if (!desk) throw new Error('the board shows no card')
+      const box = within(desk).getByRole('checkbox')
+      box.focus()
+      await userEvent.click(box)
+      const floating = await canvas.findByRole('region', { name: 'کارهای گروهی' })
+      await expect(canvasElement.querySelector('aside')).not.toBeNull()
+      await userEvent.click(within(floating).getByRole('button', { name: 'لغو انتخاب' }))
+      await waitFor(async () => {
+        await expect(canvas.queryByRole('region', { name: 'کارهای گروهی' })).toBeNull()
+      })
+
+      // A phone at rest: one thing fixed at its foot, flush with it, and it is
+      // the tab bar, the navigation landmark inside it.
+      await page.viewport(PHONE.width, PHONE.height)
+      await waitFor(() => expect(canvasElement.querySelector('aside')).toBeNull())
+      await waitFor(async () => {
+        const foot = fixedAtFoot(canvasElement)
+        await expect(foot).toHaveLength(1)
+        await expect(foot[0]?.contains(tabBar())).toBe(true)
+      })
+      const [resting] = fixedAtFoot(canvasElement)
+      if (!resting) throw new Error('nothing is fixed at the foot')
+      await expect(Math.round(window.innerHeight - resting.getBoundingClientRect().bottom)).toBe(0)
+
+      // A card held: the bar comes up, and it is the one thing fixed at the foot,
+      // 24 above it, where the tab bar was. Counted before the landmark is asked
+      // for, so a tab bar left behind fails the count, KN-356's plan review.
+      const title = canvas.getAllByRole('article')[0]?.querySelector('.KarnamaJobCard-title')
+      if (!(title instanceof HTMLElement)) throw new Error('the phone board shows no card')
+      touch(title, 'pointerdown')
+      const held = await canvas.findByRole('region', { name: 'کارهای گروهی' }, { timeout: 2000 })
+      touch(title, 'pointerup')
+      await waitFor(async () => {
+        const foot = fixedAtFoot(canvasElement)
+        await expect(foot).toHaveLength(1)
+        await expect(foot[0]).toBe(held)
+      })
+      await expect(Math.round(window.innerHeight - held.getBoundingClientRect().bottom)).toBe(24)
+      await expect(tabBar()).toBeNull()
+
+      // Let go with the bar's own close: the tab bar comes back, the one thing
+      // fixed at the foot again.
+      await userEvent.click(within(held).getByRole('button', { name: 'لغو انتخاب' }))
+      await waitFor(async () => {
+        const foot = fixedAtFoot(canvasElement)
+        await expect(foot).toHaveLength(1)
+        await expect(foot[0]?.contains(tabBar())).toBe(true)
+      })
+      await expect(canvas.queryByRole('region', { name: 'کارهای گروهی' })).toBeNull()
+    } finally {
+      await page.viewport(before.width, before.height)
+      window.location.hash = address
+    }
+  },
+}
+
 export const NobodySignedIn: Story = {
   globals: { locale: 'fa-IR' },
   decorators: [

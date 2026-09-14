@@ -62,6 +62,14 @@ The same measurements in English, where the direction flips: every distance is
 read from the edge a line of text starts at, so the same numbers hold on the
 other side.
 
+### Selecting
+
+While a page is selecting, the Bulk Action Bar has the foot of the screen to
+itself: on a desktop the sidebar stays beside the page while the bar floats, and
+on a phone the tab bar gives the bar its place and comes back when the selection
+is let go. The story loads the sample data and resizes the screen when it runs as
+a test.
+
 ### NobodySignedIn
 
 What the app draws for somebody who has not signed in: the shell is not drawn
