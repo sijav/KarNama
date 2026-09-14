@@ -103,8 +103,10 @@ export const readPosting = async (source: string, redirects = 0, signal = AbortS
 }
 
 // A page reaches postingText at up to two million characters, and every pass
-// here reads it once, however it is built. The block and tag passes used to be
-// the patterns <(script|style|nav|footer)\b[^>]*>[\s\S]*?<\/\1\s*> and
+// here takes time in step with its length, however it is built: the block pass
+// reads a stretch of the page at most once more for each of its four names.
+// The block and tag passes used to be the patterns
+// <(script|style|nav|footer)\b[^>]*>[\s\S]*?<\/\1\s*> and
 // <[^>]+>, which start again at every `<` and read on to the end of the page
 // whenever nothing closes what they found: two million characters of `&lt;`
 // took a minute of the API's one process, and `<script` repeated five, KN-483.
