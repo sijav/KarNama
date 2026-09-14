@@ -138,7 +138,10 @@ export const AddJobModal = ({
       loadingPanel.current?.focus()
       return
     }
-    const field = stepBody.current?.querySelector(TEXTAREA) ?? stepBody.current?.querySelector(INPUT)
+    // The first field in reading order. Asking for a textarea before an input
+    // found the job description once the form had one, far down it, so Manual
+    // and Review opened scrolled to their middle with the title out of sight.
+    const field = stepBody.current?.querySelector<HTMLElement>(`${INPUT}, ${TEXTAREA}`)
     field?.focus()
   }, [flow.step])
 

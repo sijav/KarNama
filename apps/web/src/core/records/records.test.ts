@@ -116,6 +116,17 @@ describe('searching and sorting', () => {
     expect(sortJobs(jobs, 'company').map((job) => job.id)).toEqual(['b', 'a'])
   })
 
+  it('puts a job with no posting date where it was added, so the job just added leads under newest', () => {
+    // Nothing entered by hand has a posting date; sorted by the posting alone,
+    // each such job went to the foot of its column and looked unsaved.
+    const added = { ...jobFrom({ ...emptyDraft('new'), title: 'Just added' }, '2026-09-14T10:00:00.000Z'), id: 'c' }
+    expect(sortJobs([...jobs, added], 'newest').map((job) => job.id)).toEqual(['c', 'b', 'a'])
+    expect(sortJobs([...jobs, added], 'oldest').map((job) => job.id)).toEqual(['a', 'b', 'c'])
+    // Two added on one day: the later is the newer.
+    const later = { ...jobFrom({ ...emptyDraft('new'), title: 'Added after' }, '2026-09-14T11:00:00.000Z'), id: 'd' }
+    expect(sortJobs([added, later], 'newest').map((job) => job.id)).toEqual(['d', 'c'])
+  })
+
   it('gives a column its own jobs, searched and sorted', () => {
     const moved = withStatus(second, 'applied', '2026-09-12T00:00:00.000Z')
     expect(jobsIn([first, moved], 'new', '', 'newest').map((job) => job.id)).toEqual(['a'])

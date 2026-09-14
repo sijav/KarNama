@@ -126,8 +126,18 @@ export const matches = (job: JobEntry, search: string): boolean => {
   return searchable(job).some((field) => field.toLocaleLowerCase().includes(wanted))
 }
 
-/** Sorting is the design's four orders, from the Sort Control, DESIGN.md section 3. */
-const dayOf = (job: JobEntry) => job.draft.postedAt
+/**
+ * Sorting is the design's four orders, from the Sort Control, DESIGN.md section 3.
+ *
+ * A job is as new as its posting or, when the reader gave no posting date, as
+ * the day they added it. Nothing entered by hand has a posting date, and
+ * ordering by the posting alone put every such job at the foot of its column
+ * under "Newest", so the job just added looked as if it had not been saved.
+ * Within one day, the one added later is the newer.
+ */
+const addedAt = (job: JobEntry) => job.history[0]?.at ?? ''
+const dayOf = (job: JobEntry) => (job.draft.postedAt === '' ? addedAt(job).slice(0, 10) : job.draft.postedAt)
+const byDay = (one: JobEntry, other: JobEntry) => dayOf(one).localeCompare(dayOf(other)) || addedAt(one).localeCompare(addedAt(other))
 
 // A job with no deadline sorts after every job that has one, rather than first:
 // an empty string would otherwise lead, and a posting without an expiry is the
@@ -136,8 +146,8 @@ const deadlineOf = (job: JobEntry) => (job.draft.expiresAt === '' ? '￿' : job.
 
 export const sortJobs = (jobs: readonly JobEntry[], order: SortOrder): JobEntry[] => {
   const sorted = [...jobs]
-  if (order === 'newest') return sorted.sort((one, other) => dayOf(other).localeCompare(dayOf(one)))
-  if (order === 'oldest') return sorted.sort((one, other) => dayOf(one).localeCompare(dayOf(other)))
+  if (order === 'newest') return sorted.sort((one, other) => byDay(other, one))
+  if (order === 'oldest') return sorted.sort(byDay)
   if (order === 'deadline') return sorted.sort((one, other) => deadlineOf(one).localeCompare(deadlineOf(other)))
   return sorted.sort((one, other) => one.draft.company.localeCompare(other.draft.company))
 }
