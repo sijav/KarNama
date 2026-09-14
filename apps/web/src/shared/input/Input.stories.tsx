@@ -1,10 +1,11 @@
+import type { I18n } from '@lingui/core'
 import { useLingui } from '@lingui/react'
 import { Box, Stack } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
-import { useArgs, useRef as useStoryRef } from 'storybook/preview-api'
+import { useArgs, useGlobals, useRef as useStoryRef } from 'storybook/preview-api'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
-import { i18n } from '../../i18n'
+import { defaultLocale, i18n, i18nFor, isLocale, type Locale } from '../../i18n'
 import { contrast } from '../../theme/darkMode'
 import { iconSize, radius, semantic, spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -68,18 +69,28 @@ const TYPED = FIRST_JOB.title
 const SHORT = TYPED.slice(0, 5)
 
 // The design's own specimen, node 95:38: the job title field of the add-job
-// form, its copy through the catalog in the language active when it is read.
+// form, its copy through the catalog it is given. Named i18n, the one name the
+// lingui rule and the catalog test read an id from.
 type CopyField = 'label' | 'placeholder' | 'helperText'
 const COPY_FIELDS: CopyField[] = ['label', 'placeholder', 'helperText']
-const specimenCopy = (): Record<CopyField, string> => ({
+const specimenCopy = (i18n: I18n): Record<CopyField, string> => ({
   label: i18n._('Job title'),
   placeholder: i18n._('e.g. Frontend developer'),
   helperText: i18n._('A short explanation'),
 })
 
+// The story's language, resolved from its globals as the preview resolves it.
+// Read from the story rather than the shared catalog, which the providers switch
+// only after the commit, KN-134, so a render reading it had the language the page
+// had before, KN-562.
+const localeOf = (globals: Record<string, unknown>): Locale => {
+  const chosen: unknown = globals.locale
+  return typeof chosen === 'string' && isLocale(chosen) ? chosen : defaultLocale
+}
+
 // The args start as the specimen's copy in the language this file loads in,
 // so the Controls show what the canvas draws from the first frame, KN-245.
-const AT_LOAD = specimenCopy()
+const AT_LOAD = specimenCopy(i18n)
 
 // Writes the specimen's copy for the language on screen back into the args,
 // after the commit, as React's passive effect. Storybook's own effects run
@@ -156,7 +167,7 @@ const Bound = ({ args: given, updateArgs }: { args: BoundArgs; updateArgs: (upda
 // The specimen for the fixed renders, which offer no controls: its copy is
 // stated here, in the language on screen, and any prop given replaces it.
 const JobTitle = ({ withError = false, ...rest }: Partial<InputProps> & { withError?: boolean }) => (
-  <Input {...specimenCopy()} {...(withError ? { error: i18n._('This field cannot be empty') } : {})} {...rest} />
+  <Input {...specimenCopy(i18n)} {...(withError ? { error: i18n._('This field cannot be empty') } : {})} {...rest} />
 )
 
 // The controls a story offers: only the args its play function holds for, so
@@ -244,9 +255,11 @@ const meta = {
     // with the story's hooks rather than React's, so it outlives the remount a
     // language switch causes.
     const written = useStoryRef<Record<CopyField, string>>({ ...AT_LOAD })
-    // In the language on screen: the providers activate it before this runs,
-    // and a switch remounts the tree, so this reads it fresh.
-    const copy = specimenCopy()
+    // In the story's own language, through that language's catalog: the shared
+    // one follows the tree only after the commit, so this render would read the
+    // language the page had before, KN-562.
+    const [globals] = useGlobals()
+    const copy = specimenCopy(i18nFor(localeOf(globals)))
     const update: Partial<Record<CopyField, string>> = {}
     for (const field of COPY_FIELDS) {
       const value = args[field]
@@ -645,7 +658,7 @@ export const ControlsMatchTheCanvas: Story = {
   // A fixed assertion about the untouched state, so no control is offered.
   parameters: { controls: { disable: true } },
   render: WithTheArgs,
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, globals }) => {
     const box = within(canvasElement).getByRole('textbox')
     const recorded = within(canvasElement).getByTestId('args').dataset
     const helper = canvasElement.ownerDocument.getElementById(box.getAttribute('aria-describedby') ?? '')
@@ -657,7 +670,7 @@ export const ControlsMatchTheCanvas: Story = {
     // stories apply no args update, so under the test runner the args stay in
     // the language this file loaded in and this half cannot run, TECH-DEBT 16.
     if ('__KARNAMA_STORY_TEST__' in globalThis) return
-    const copy = specimenCopy()
+    const copy = specimenCopy(i18nFor(localeOf(globals)))
     await waitFor(async () => {
       await expect(recorded.label).toBe(copy.label)
       await expect(recorded.placeholder).toBe(copy.placeholder)
@@ -1004,7 +1017,7 @@ export const ErrorAnnouncedWhileTyping: Story = {
     const message = i18n._('This field cannot be empty')
     const short = i18n._('Enter at least two characters')
     for (const { id, helper } of [
-      { id: 'described', helper: specimenCopy().helperText },
+      { id: 'described', helper: specimenCopy(i18n).helperText },
       { id: 'bare', helper: undefined },
     ]) {
       const field = within(canvasElement).getByTestId(id)
