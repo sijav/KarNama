@@ -158,13 +158,18 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   // searched count reads zero while a search hides its cards, and deleting it
   // then would take the hidden job opportunities with it, KN-422.
   const sizeOf = (id: string) => records.jobs.filter((entry) => entry.draft.status === id).length
-  // How many the search found anywhere on the board, which is what says whether
-  // it found nothing rather than each column being empty on its own.
-  const found = columns.reduce((total, column) => total + cardsOf(column.id).length, 0)
+  // What the search shows anywhere on the board: every column's cards, those in
+  // a collapsed column and, on a phone, those behind the other chips among them.
+  // Its size says whether the search found nothing rather than each column being
+  // empty on its own, and it is all the bulk bar acts on, KN-431.
+  const shown = new Set(columns.flatMap((column) => cardsOf(column.id).map((entry) => entry.id)))
+  const found = shown.size
 
-  // Only the job opportunities that are still there: one deleted from its own
-  // card, or by another tab, must not be counted or acted on, KN-422.
-  const held = selected.filter((id) => records.jobs.some((entry) => entry.id === id))
+  // Only the job opportunities the search shows are counted or acted on: one the
+  // search hides, or one deleted from its own card or by another tab, is not,
+  // KN-422 and KN-431. One the search hides stays chosen, and counts again once
+  // the search shows it.
+  const held = selected.filter((id) => shown.has(id))
 
   const select = (id: string, wanted: boolean) => {
     setSelected((was) => (wanted ? [...was, id] : was.filter((held) => held !== id)))
@@ -476,7 +481,8 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
           setMoving(held)
         }}
         onSelectAll={() => {
-          setSelected(records.jobs.map((entry) => entry.id))
+          // What the search found, in place of what was chosen, KN-431.
+          setSelected([...shown])
         }}
       />
 

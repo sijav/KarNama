@@ -102,6 +102,13 @@ A board with nothing on it: the empty state's own action opens the same flow.
 Several at once: one selected, then every one of them, the selection let go
 of, and two deleted together after the confirmation.
 
+### SelectingWhileSearching
+
+Selecting with a search active: a card chosen before the search and hidden by it
+is not counted, select all takes only what the search found, and deleting after
+the confirmation takes those alone, so every job opportunity the search hid is
+still on the board once the search is cleared.
+
 ### OnAPhone
 
 The board at a phone's width, where the columns give way to a row of status

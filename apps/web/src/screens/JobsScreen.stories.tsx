@@ -611,6 +611,93 @@ export const Selecting: Story = {
   },
 }
 
+export const SelectingWhileSearching: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-431: the bulk bar counts, selects and deletes only what the search
+    // shows. «آسمان» is in the companies of the second and the fourth fixture job
+    // opportunities and in nothing else the board is seeded with; the fifth sits
+    // in the rejected column, which opens collapsed.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const set = fixtures('fa-IR')
+    const columns = defaultStatuses((token) => set.names[token])
+    const [first = '', second = '', third = '', fourth = '', fifth = ''] = set.jobs.slice(0, 5).map((job) => job.title)
+    const bar = () => canvas.getByRole('region', { name: 'کارهای گروهی' })
+    const barCounts = async (count: number) => {
+      await waitFor(async () => {
+        await expect(bar()).toHaveTextContent(formatCount('fa-IR', count))
+      })
+    }
+    // Folded away until focus is inside the card, KN-341; focus is the road a
+    // story can rely on.
+    const check = (name: string) => {
+      const card = canvas.getByRole('button', { name }).closest('article')
+      if (!card) throw new Error('the card has no article around it')
+      const box = within(card).getByRole('checkbox')
+      box.focus()
+      return box
+    }
+    const search = canvas.getByRole('searchbox')
+
+    // The first card chosen, then searched out of view: nothing chosen is shown,
+    // so nothing is counted and the bar goes. Today's code kept counting it.
+    await userEvent.click(check(first))
+    await barCounts(1)
+    await userEvent.type(search, 'آسمان')
+    await waitFor(async () => {
+      await expect(canvas.queryByText(first)).toBeNull()
+      await expect(canvas.getByText(second)).toBeInTheDocument()
+    })
+    await expect(canvas.queryByRole('region', { name: 'کارهای گروهی' })).toBeNull()
+
+    // Another chosen, and select all takes what the search found: two.
+    await userEvent.click(check(second))
+    await barCounts(1)
+    await userEvent.click(within(bar()).getByRole('button', { name: 'انتخاب همه' }))
+    await barCounts(2)
+
+    // Select all put the search's two in place of the selection, letting go of
+    // the first card chosen before the search: with the search cleared the bar
+    // still counts two, where every job opportunity chosen would count five and
+    // the two added to the first would count three, KN-431's plan review.
+    await userEvent.clear(search)
+    await waitFor(async () => {
+      await expect(canvas.getByText(first)).toBeInTheDocument()
+    })
+    await barCounts(2)
+
+    // Searched again and deleted, after the confirmation every deletion asks for.
+    await userEvent.type(search, 'آسمان')
+    await waitFor(async () => {
+      await expect(canvas.queryByText(first)).toBeNull()
+    })
+    await barCounts(2)
+    await userEvent.click(within(bar()).getByRole('button', { name: 'حذف' }))
+    const confirm = await body.findByRole('dialog')
+    await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
+    await waitFor(async () => {
+      await expect(body.queryByRole('dialog')).toBeNull()
+    })
+
+    // With the search cleared, everything it hid is still on the board: the first
+    // and the third in their columns, the fifth in the rejected column once it
+    // is opened; the second and the fourth are gone.
+    await userEvent.clear(search)
+    await waitFor(async () => {
+      await expect(canvas.getByText(first)).toBeInTheDocument()
+      await expect(canvas.getByText(third)).toBeInTheDocument()
+    })
+    await expect(canvas.queryByText(second)).toBeNull()
+    await expect(canvas.queryByText(fourth)).toBeNull()
+    const rejected = columns.at(-1)?.name ?? ''
+    await userEvent.click(canvas.getByRole('button', { name: new RegExp(rejected) }))
+    await waitFor(async () => {
+      await expect(within(canvas.getByRole('region', { name: rejected })).getByText(fifth)).toBeInTheDocument()
+    })
+  },
+}
+
 // A phone's screen, the file's 390 by 844.
 const PHONE = { width: 390, height: 844 }
 
