@@ -24,9 +24,9 @@ with their stories, then screens. Match the design exactly.**
 
 **Codex's work of 2026-09-12 stays on main**, KN-477: login mocked at the
 owner's word, Groq extraction on Render, Settings, drag and drop, collapse,
-date validation, the growing paste field. What survived four Claude reviews of
-its diff is its children, KN-484 to KN-503 and KN-521 still open; the dark
-`color-scheme` fix waits in `git stash@{0}` as KN-496.
+date validation, the growing paste field, and the job modal's form. What
+survived four Claude reviews of its diff is its children, KN-484 to KN-503 and
+KN-521 still open; the dark `color-scheme` fix waits in `git stash@{0}` as KN-496.
 
 **The owner's asks of 2026-09-14, done**: KN-479 language flags; KN-480 the
 language Select in Settings; KN-478 the shell's controls as Icon Buttons.
@@ -37,32 +37,30 @@ tabs.
 
 **Closed today, earlier**: KN-483, KN-401, KN-403, KN-405, KN-423, KN-428,
 KN-352, KN-356, KN-431 and KN-532, their roasts filing KN-527 to KN-537; KN-419,
-two tabs agreeing, filing KN-538 and KN-539; KN-437 and KN-438, the story
-fixtures' records and an uneven seeded board, filing KN-540 and KN-541; KN-440, a
-status keeping its column when recoloured, filing KN-542 to KN-545; KN-446, the
-Icon Button forwarding only what its types name, filing KN-546 and a note on
-KN-449; KN-464, every field telling a phone's keyboard what it holds and what its
-key does, filing KN-547 and KN-548; KN-465, a story reading the sign-in code off
-the provider, filing KN-549.
+filing KN-538 and KN-539; KN-437 and KN-438, filing KN-540 and KN-541; KN-440,
+filing KN-542 to KN-545; KN-446, filing KN-546; KN-464, filing KN-547 and
+KN-548; KN-465, filing KN-549; KN-466, a fixed code source for the resend check
+(d84eeba), filing KN-550.
 
-**KN-466 (d84eeba)**: `AuthProvider` takes an optional `random` source, handed to
-`sendCode`; the product passes none, so its codes still come from `Math.random`.
-The sign-in stories' decorator, `SeededAuth`, feeds `parameters.codes` through it,
-and `SigningInOnAPhone` on `[0.5, 0.25]` sees `50000`, waits for the resend to
-show `25000`, finds `50000` refused and signs in with `25000`; the provider's node
-test does the same. A dead resend and a resend that keeps the first code aside
-each fail both. Its roast confirmed the exit and filed **KN-550**: `codesOf`
-takes any number where the comment says zero to below one.
+**KN-467 (fa12b5b)**: the job modal's form, and Save submitting it by id, were
+already Codex's 2234d66. `EnterSaves` proves them with the runner's own Enter:
+the cleared title refuses as Save does and keeps focus, a typed title saves, and
+the description takes Enter as a new line. Its record's dates are days, since the
+fixture's written dates make every save refuse, KN-494, noted there. Real keys
+edit a field only after the runner's own click, AGENTS.md section 7. Four plants
+fail it; its roast found nothing. Filed on the way, **KN-551**:
+`core/api/session.test.ts` failed once under load.
 
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
 to no story; its note lists every arm by line, 5 points in the backlog.
 
-**What fails in a full run, and why**: the web unit project passes whole, 1382.
-The storybook project fails the five modal stories KN-494 carries, the board's
-`Adding`, which calls the live API, KN-495, and the Job Card's `Pressed` in
-parallel only, KN-365's kind. The API's 156 tests pass and its coverage gate
-fails on auth and extraction files, KN-486. Of the e2e suite, only
-`two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
+**What fails in a full run, and why**: the web unit project passes whole, 1382,
+though once today both cases of `session.test.ts` failed under load, KN-551. The
+storybook project fails the five modal stories KN-494 carries, four of them in
+`JobModal.stories.tsx`, the board's `Adding`, which calls the live API, KN-495,
+and the Job Card's `Pressed` in parallel only, KN-365's kind. The API's 156 tests
+pass and its coverage gate fails on auth and extraction files, KN-486. Of the e2e
+suite, only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
 
 ## The owner's rules, most recent first
 
@@ -96,17 +94,18 @@ fails on auth and extraction files, KN-486. Of the e2e suite, only
 
 ## The next step
 
-KN-467 is in progress: the job modal was left out of the forms work. Reading it
-on 2026-09-14 found the form already built by Codex's 2234d66 of 2026-09-12: the
-tabs sit in a `form` with `noValidate` and an `onSubmit` that calls `save`, and
-Save is `type="submit" form={formId}`; the card's note says so. The plan,
-`apps/web/src/shared/job-modal/#KN-467 - The job modal was left out of the forms work.md`,
-adds the missing proof: `EnterSaves` in `JobModal.stories.tsx` presses the
-runner's own Enter in the cleared title (the refusal, no save), in the typed
-title (the save) and in the description (a new line, no save), with four plants
-on `JobModal.tsx`, and the story's docs in both languages. Its plan review with
-Codex was running when this was written; drafts are in the session's scratchpad.
-Do not edit the stories or their docs until the review lands.
+KN-469 is in progress: F6 never reaches the page, KN-330's roast said, citing the
+browsers' shortcut lists, which do not say whether a page hears a key first. The
+plan, `apps/web/src/shared/bulk-action-bar/#KN-469 - F6 never reaches the page.md`,
+measures before choosing a key: Chrome 152 as installed, and Playwright's Firefox
+151 build, since no Firefox is installed, each started on a throwaway profile
+with a local page that writes the keys it hears into its own title, and real
+keys from PowerShell's `SendKeys`, sent only while that browser is in front. F6
+stays if both give it to the page and honour its `preventDefault`; otherwise F2,
+if both do for F2. Either way the story's comment and docs say what the runner
+can and cannot prove. The page and script are `kn469-keys.html` and
+`kn469-keys.ps1` in the session's scratchpad; the plan review was running when
+this was written.
 
 ## What to read first
 
