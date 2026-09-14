@@ -1,5 +1,10 @@
 A 20 by 20 checkbox with three marks: empty, a tick, and a dash.
 
+It has no text of its own, so it is named by `aria-label` or by
+`aria-labelledby`, and one of the two is required. A label wrapped round it is
+valid HTML, but this Checkbox is a control with no text, as the cards use it, and
+asks for one of the two.
+
 The square is the design's 20 by 20, and the Checkbox round it is 28 by 28:
 four pixels on every side kept for the focus ring, so whatever holds the
 Checkbox cannot cut the ring off, and a larger target for the pointer. To put
@@ -50,14 +55,25 @@ Form field name, for a checkbox inside a form.
 
 Form field value, for a checkbox inside a form.
 
+### id
+
+The id of the input the checkbox role is on, so a label can point at the
+checkbox itself.
+
 ### aria-label
 
-Accessible name, for the case where no visible label is associated with it. A
-checkbox with neither this nor `aria-labelledby` is unusable by screen reader.
+Accessible name, for the case where no visible label is associated with it. One
+of this and `aria-labelledby` is required, since a checkbox with neither is
+unusable by screen reader, and a checkbox whose name comes to nothing is left out
+and reported rather than drawn nameless.
 
 ### aria-labelledby
 
 Id of the element that labels it, when there is a visible label to point at.
+Required when `aria-label` is not given. The elements it points at are read as
+the checkbox's input is attached: if none of them is in the page, or they hold
+only blank text, the checkbox is left out and reported. A label whose text
+changes after that is not read again.
 
 ## Stories
 
@@ -115,3 +131,26 @@ both languages.
 Named by a visible label it points at with `aria-labelledby`, on a checkbox of
 its own, since that name would outrank an `aria-label` given beside it. Its
 Controls are off for the same reason as Named's.
+
+### TakesAnId
+
+Given an id, which lands on the input the checkbox role is on, with a visible
+label pointing at it by that id, as a form's label points at its field.
+
+### BlankName
+
+A checkbox whose name is only blank beside a named one: the blank one is left out
+and reported, as a blank Icon Button is, and the named one renders.
+
+### UnresolvedLabelledBy
+
+Two checkboxes whose `aria-labelledby` comes to nothing, one pointing at an id no
+element has and one at an element holding only blank text, beside one a visible
+label names: the two are left out and reported, and the third renders.
+
+### TargetIsLargerThanTheSquare
+
+The pointer's target is larger than the square: the input round it is at least 24
+by 24 while the square stays the design's 20 by 20, the browser's own hit-testing
+one pixel inside each corner of the target lands on it, and in the test runner a
+real click there, outside the square, ticks it.

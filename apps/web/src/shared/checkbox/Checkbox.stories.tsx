@@ -2,14 +2,15 @@ import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { useId } from 'react'
-import { expect, fn, userEvent, within } from 'storybook/test'
+import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { usePreferences } from '../../core/preferences'
 import { i18nFor } from '../../i18n'
 import { contrast } from '../../theme/darkMode'
 import { semantic, spacing } from '../../theme/tokens'
+import { passOnUnmarked } from '../console-guard'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
-import { Checkbox, type CheckboxProps } from './Checkbox'
+import { Checkbox, type CheckboxNamed, type CheckboxProps } from './Checkbox'
 
 // A token's colour as the browser computes it, so it can be compared with a
 // computed style. The browser does the conversion rather than a hand-written
@@ -66,6 +67,15 @@ const rootOf = (canvasElement: HTMLElement) => {
   return root
 }
 
+// The checkbox a story draws, found by its role and required to be named:
+// every story names its control, KN-206, so one that drew a checkbox with no name
+// fails here rather than modelling the unusable case.
+const namedBox = async (host: HTMLElement) => {
+  const box = within(host).getByRole('checkbox')
+  await expect(box).toHaveAccessibleName(/\S/u)
+  return box
+}
+
 const px = (value: string) => Number.parseFloat(value) || 0
 
 // A computed rgb() colour as the hex the WCAG contrast formula takes.
@@ -115,20 +125,24 @@ const rounded = (w: number, h: number, r: number) => w * h - (4 - Math.PI) * r *
 const meta = {
   title: 'Shared/Checkbox',
   component: Checkbox,
-  args: { indeterminate: false, disabled: false, onChange: fn() },
+  // The name is copy, drawn in the reader's language inside the render, so its
+  // arg is a placeholder no control shows, as IconButton's is, KN-206.
+  args: { 'aria-label': '', indeterminate: false, disabled: false, onChange: fn() },
   argTypes: {
     indeterminate: { control: 'boolean' },
     disabled: { control: 'boolean' },
     checked: { control: 'boolean' },
   },
-} satisfies StoryMeta<typeof Checkbox>
+  parameters: { controls: { include: ['checked', 'indeterminate', 'disabled'] } },
+  render: (args) => <NamedCheckbox {...args} />,
+} satisfies StoryMeta<CheckboxNamed>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const Unchecked: Story = {
   play: async ({ canvasElement }) => {
-    const box = within(canvasElement).getByRole('checkbox')
+    const box = await namedBox(canvasElement)
     await expect(box).not.toBeChecked()
     // The property, not an attribute. `toHaveAttribute` would pass for a
     // checkbox that has no third state at all, which is the whole point of
@@ -141,7 +155,7 @@ export const Unchecked: Story = {
 export const Checked: Story = {
   args: { checked: true },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByRole('checkbox')).toBeChecked()
+    await expect(await namedBox(canvasElement)).toBeChecked()
     await edgeIsTheFiles(canvasElement)
 
     // KN-205, and this is the regression test for it. The focus ring belongs on
@@ -170,7 +184,7 @@ export const Checked: Story = {
 export const Indeterminate: Story = {
   args: { indeterminate: true },
   play: async ({ canvasElement }) => {
-    const box = within(canvasElement).getByRole('checkbox')
+    const box = await namedBox(canvasElement)
     // There is no `indeterminate` content attribute in HTML. If this were
     // rendered into the markup instead of assigned to the element, React would
     // drop it and this would read false.
@@ -186,7 +200,7 @@ export const Hover: Story = {
   // palette the toolbar happens to be on.
   globals: { colorScheme: 'light' },
   play: async ({ canvasElement }) => {
-    const box = within(canvasElement).getByRole('checkbox')
+    const box = await namedBox(canvasElement)
     const frame = frameOf(canvasElement)
     await expect(edgeOf(frame).colour).toBe(computedColour(canvasElement, semantic['border/default']))
 
@@ -223,7 +237,7 @@ export const Hover: Story = {
 export const Disabled: Story = {
   args: { disabled: true },
   play: async ({ canvasElement }) => {
-    const box = within(canvasElement).getByRole('checkbox')
+    const box = await namedBox(canvasElement)
     await expect(box).toBeDisabled()
     await edgeIsTheFiles(canvasElement)
     // The REFUSAL is the assertion, and getting here took two wrong turns worth
@@ -248,7 +262,7 @@ export const Disabled: Story = {
 
 export const KeyboardOnly: Story = {
   play: async ({ args, canvasElement }) => {
-    const box = within(canvasElement).getByRole('checkbox')
+    const box = await namedBox(canvasElement)
     // Reachable by Tab and toggleable by Space, with no pointer anywhere in
     // this story. Bulk selection is the feature this exists for, and a
     // selection control that needs a mouse excludes the people most likely to
@@ -276,12 +290,12 @@ export const FocusedInAClippingHost: Story = {
     // sized to the Checkbox, on a card's surface: a list row, a table cell, or
     // the Title Group the file clips, KN-293.
     <Box data-testid="clipping-host" sx={(theme) => ({ display: 'inline-flex', overflow: 'hidden', backgroundColor: theme.karnama.semantic['bg/surface'] })}>
-      <Checkbox {...args} />
+      <NamedCheckbox {...args} />
     </Box>
   ),
   play: async ({ canvasElement }) => {
     const host = within(canvasElement).getByTestId('clipping-host')
-    const box = within(host).getByRole('checkbox')
+    const box = await namedBox(host)
     const root = rootOf(host)
     const frame = frameOf(host)
     // Flush: the host clips on both axes, has no padding and no border, and
@@ -380,5 +394,128 @@ export const LabelledBy: Story = {
     const box = within(canvasElement).getByRole('checkbox', { name })
     await expect(box).toHaveAttribute('aria-labelledby', within(canvasElement).getByText(name).id)
     await expect(rootOf(canvasElement)).not.toHaveAttribute('aria-labelledby')
+  },
+}
+
+// A named checkbox given an id, and a visible label pointing at it by that id, as
+// a form's label points at its field.
+const WithAnId = (args: CheckboxProps) => {
+  const { i18n } = useLingui()
+  const id = useId()
+  return (
+    <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: `${spacing.xs}px` }}>
+      <NamedCheckbox {...args} id={id} />
+      <label htmlFor={id}>{i18n._('Select all')}</label>
+    </Box>
+  )
+}
+
+export const TakesAnId: Story = {
+  parameters: { controls: { disable: true } },
+  render: (args) => <WithAnId {...args} />,
+  play: async ({ canvasElement }) => {
+    // KN-206: the id reaches the input the checkbox role is on, where a label has
+    // to point, and not the span MUI draws round it.
+    const box = await namedBox(canvasElement)
+    await expect(box.id).not.toBe('')
+    await expect(canvasElement.querySelector('label')?.htmlFor).toBe(box.id)
+    await expect(rootOf(canvasElement)).not.toHaveAttribute('id')
+  },
+}
+
+// The refusal's report is the point, so it is held back rather than printed, and
+// anything unmarked still reaches KN-401's guard, KN-522. Watched from before the
+// render, since the report comes as the checkbox mounts.
+const captureReports = () => {
+  const through = console.error.bind(console)
+  const spy = spyOn(console, 'error').mockImplementation(passOnUnmarked(through))
+  return () => {
+    spy.mockRestore()
+  }
+}
+
+export const BlankName: Story = {
+  parameters: { controls: { disable: true } },
+  beforeEach: captureReports,
+  render: (args) => (
+    <Box data-testid="row" sx={{ display: 'flex', gap: `${spacing.xs}px` }}>
+      <Checkbox {...args} aria-label="   " />
+      <NamedCheckbox {...args} />
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    // KN-206: a name that is only blank is refused rather than drawn nameless, as a
+    // blank IconButton's is, KN-311. That checkbox is left out and reported, and
+    // the named one beside it renders.
+    const row = within(canvasElement).getByTestId('row')
+    await waitFor(async () => {
+      await expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/Checkbox: it has no accessible name/u))
+    })
+    await expect(within(row).getAllByRole('checkbox')).toHaveLength(1)
+    await namedBox(row)
+  },
+}
+
+// Two checkboxes whose aria-labelledby comes to nothing, one pointing at an id no
+// element has and one at an element holding only blank text, beside one a
+// visible label names.
+const PointingAtNothing = (args: CheckboxProps) => {
+  const missing = useId()
+  const blank = useId()
+  return (
+    <Box data-testid="row" sx={{ display: 'flex', alignItems: 'center', gap: `${spacing.xs}px` }}>
+      <Checkbox {...args} aria-labelledby={missing} />
+      <Checkbox {...args} aria-labelledby={blank} />
+      <span id={blank}> </span>
+      <LabelledCheckbox {...args} />
+    </Box>
+  )
+}
+
+export const UnresolvedLabelledBy: Story = {
+  parameters: { controls: { disable: true } },
+  beforeEach: captureReports,
+  render: (args) => <PointingAtNothing {...args} />,
+  play: async ({ canvasElement }) => {
+    // KN-206: an aria-labelledby whose elements hold no text is refused as a blank
+    // name is, whether its id has no element or the element is blank, and the
+    // checkbox a visible label names renders beside them.
+    const row = within(canvasElement).getByTestId('row')
+    await waitFor(async () => {
+      await expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/Checkbox: it has no accessible name/u))
+    })
+    await expect(within(row).getAllByRole('checkbox')).toHaveLength(1)
+    await namedBox(row)
+  },
+}
+
+export const TargetIsLargerThanTheSquare: Story = {
+  parameters: { controls: { disable: true } },
+  play: async ({ canvasElement }) => {
+    // KN-206: the pointer's target is the input MUI lays over the whole root, with
+    // the room KN-293 keeps, while the square the design draws stays 20 by 20.
+    // WCAG 2.5.8 asks for 24 by 24.
+    const box = await namedBox(canvasElement)
+    const frame = frameOf(canvasElement)
+    await expect([frame.offsetWidth, frame.offsetHeight]).toEqual([20, 20])
+    const target = box.getBoundingClientRect()
+    await expect(Math.min(target.width, target.height)).toBeGreaterThanOrEqual(24)
+
+    // The browser's own hit-testing, one pixel inside each corner of the target,
+    // outside the square: every one lands on the input.
+    const corners = [
+      [target.left + 1, target.top + 1],
+      [target.right - 1, target.top + 1],
+      [target.left + 1, target.bottom - 1],
+      [target.right - 1, target.bottom - 1],
+    ]
+    for (const [x = 0, y = 0] of corners) await expect(canvasElement.ownerDocument.elementFromPoint(x, y)).toBe(box)
+
+    // And a real click there ticks it, in the runner, which has a pointer to
+    // click with.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const browser = await import('vitest/browser')
+    await browser.userEvent.click(box, { position: { x: 1, y: 1 } })
+    await expect(box).toBeChecked()
   },
 }

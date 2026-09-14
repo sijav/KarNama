@@ -1,11 +1,12 @@
 import { Checkbox as MuiCheckbox, Box } from '@mui/material'
-import { useEffect, useState, type ChangeEvent } from 'react'
+import { useCallback, useEffect, useState, type ChangeEvent } from 'react'
 import { iconSize, spacing } from '../../theme/tokens'
+import { report } from '../console-guard'
 
 // Declared rather than extended from MUI's CheckboxProps, which would hand a
 // caller `component`, `slots` and `slotProps`: the power to replace how it
 // renders. The props are documented in story-docs, not here, KN-207.
-export interface CheckboxProps {
+interface CheckboxBase {
   checked?: boolean
   defaultChecked?: boolean
   indeterminate?: boolean
@@ -13,9 +14,23 @@ export interface CheckboxProps {
   onChange?: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void
   name?: string
   value?: string
-  'aria-label'?: string
+  id?: string
+}
+
+// A checkbox has no text of its own, so it is named by one of these or not at
+// all, and the type asks for one, KN-206: a name given directly, or the id of a
+// visible label it points at.
+export interface CheckboxNamed extends CheckboxBase {
+  'aria-label': string
   'aria-labelledby'?: string
 }
+
+export interface CheckboxLabelledBy extends CheckboxBase {
+  'aria-label'?: string
+  'aria-labelledby': string
+}
+
+export type CheckboxProps = CheckboxNamed | CheckboxLabelledBy
 
 // At module scope and taking the node as an argument, because assigning to a
 // node held in useState reads to the React lint rule as mutating state. This
@@ -136,6 +151,30 @@ export const Checkbox = ({ indeterminate = false, disabled = false, 'aria-label'
   // remounts the input. A ref would make the null check below unreachable.
   const [input, setInput] = useState<HTMLInputElement | null>(null)
 
+  // A name that comes to nothing reaches a screen reader as nothing, and the type
+  // can see neither a blank string nor an id with no text behind it, KN-206. The
+  // aria-label counts when it has text. The aria-labelledby counts when the
+  // elements it points at hold text, read as the input is attached, when the
+  // labels of the same commit are already in the page; a pointer that found none
+  // is kept, so the checkbox stays out until the pointer changes.
+  const named = (label ?? '').trim() !== ''
+  const pointer = (labelledBy ?? '').trim()
+  const [pointsAtNothing, setPointsAtNothing] = useState<string | null>(null)
+  const attach = useCallback(
+    (node: HTMLInputElement | null) => {
+      setInput(node)
+      if (node === null || named || pointer === '') return
+      const found = pointer
+        .split(/\s+/u)
+        .map((id) => node.ownerDocument.getElementById(id)?.textContent ?? '')
+        .join('')
+        .trim()
+      setPointsAtNothing(found === '' ? pointer : null)
+    },
+    [named, pointer],
+  )
+  const nameless = !named && (pointer === '' || pointsAtNothing === pointer)
+
   // MUI does NOT set the property: its `indeterminate` picks the icon and writes
   // `data-indeterminate`, so assistive technology would hear "unchecked" while
   // a dash is drawn. KN-013.
@@ -143,6 +182,17 @@ export const Checkbox = ({ indeterminate = false, disabled = false, 'aria-label'
     if (!input) return
     applyIndeterminate(input, indeterminate)
   }, [input, indeterminate])
+
+  // Reported as it mounts, as IconButton reports its own, and the checkbox left
+  // out, so the mistake shows at the checkbox rather than reaching a reader as a
+  // control with no name, KN-206.
+  useEffect(() => {
+    if (nameless)
+      report(
+        'Checkbox: it has no accessible name, since its aria-label is blank and its aria-labelledby points at no text; it is left out until it has one.',
+      )
+  }, [nameless])
+  if (nameless) return null
 
   return (
   <MuiCheckbox
@@ -152,7 +202,7 @@ export const Checkbox = ({ indeterminate = false, disabled = false, 'aria-label'
     // input too, the element the checkbox role sits on: SwitchBase spreads a prop
     // it does not know onto the span round it, so a card's aria-label named the
     // span and left the checkbox with no name at all, KN-423.
-    slotProps={{ input: { ref: setInput, 'aria-label': label, 'aria-labelledby': labelledBy } }}
+    slotProps={{ input: { ref: attach, 'aria-label': label, 'aria-labelledby': labelledBy } }}
     disabled={disabled}
     indeterminate={indeterminate}
     icon={<Frame mark="none" disabled={disabled} />}
