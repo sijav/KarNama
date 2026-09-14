@@ -62,11 +62,11 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
   // inside the contact modal is why it cannot be read when the confirmation
   // opens: that modal closes in the same breath, so its Delete is already gone.
   const asked = useRef<HTMLElement | null>(null)
-  const remember = () => {
-    const active = window.document.activeElement
-    asked.current = active instanceof HTMLElement ? active : null
-  }
+  // And where a reader carries on from if it did go, worked out at the same
+  // moment, while the people being deleted are still in the page, KN-472.
+  const landings = useRef<readonly HTMLElement[]>([])
   const page = useRef<HTMLDivElement | null>(null)
+  const grid = useRef<HTMLDivElement | null>(null)
 
   const [search, setSearch] = useState('')
   const wide = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
@@ -82,6 +82,23 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
   // KN-532, as the board's held does since KN-431.
   const shownIds = new Set(shown.map((held) => held.id))
   const chosen = selected.filter((id) => shownIds.has(id))
+
+  // Where a reader goes on from when the people they delete take the control
+  // they asked from with them, KN-472, worked out as they ask: the people the
+  // deletion keeps, after the first of them in the grid's reading order, nearest
+  // first, then those before it. They are chosen from the records and only then
+  // found in the page, by place, since the grid lays its cards out in `shown`
+  // order.
+  const remember = (ids: readonly string[]) => {
+    const active = window.document.activeElement
+    asked.current = active instanceof HTMLElement ? active : null
+    const index = shown.findIndex((held) => ids.includes(held.id))
+    const kept = (held: ContactEntry) => !ids.includes(held.id)
+    const order: ContactEntry[] =
+      index === -1 ? [] : [...shown.slice(index + 1).filter(kept), ...shown.slice(0, index).filter(kept).reverse()]
+    const names = [...(grid.current?.querySelectorAll('article') ?? [])].map((article) => article.querySelector('button'))
+    landings.current = order.map((held) => names[shown.indexOf(held)]).filter((element) => element instanceof HTMLElement)
+  }
 
   // Before the paint, not after it: a normal effect would let the frame that
   // shows the bulk bar also show the tab bar under it, KN-356. Cleared when the
@@ -178,6 +195,7 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
           // The Grid, 252:53, two columns as wide as each other and 24 apart
           // from md up; the List, 252:425, one column 12 apart below it.
           <Box
+            ref={grid}
             sx={{
               display: 'grid',
               gap: `${wide ? spacing.lg : spacing.sm}px`,
@@ -196,7 +214,7 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
                   setSelected((was) => (wanted ? [...was, held.id] : was.filter((id) => id !== held.id)))
                 }}
                 onDelete={() => {
-                  remember()
+                  remember([held.id])
                   setDeleting([held.id])
                 }}
               />
@@ -212,7 +230,7 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
           setSelected([])
         }}
         onDelete={() => {
-          remember()
+          remember(chosen)
           setDeleting(chosen)
         }}
       />
@@ -241,7 +259,7 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
             setEditing(undefined)
           }}
           onDelete={() => {
-            remember()
+            remember([editingId])
             setDeleting([editingId])
             setEditing(undefined)
           }}
@@ -252,9 +270,10 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
         open={deleting !== null}
         opener={() => asked.current}
         // Where a reader carries on from when the card they were standing on is
-        // the one they deleted: the first person still here, else the page,
-        // which takes focus for this and nothing else.
-        fallback={() => page.current?.querySelector('article button') ?? page.current}
+        // the one they deleted: the first place worked out as they asked that is
+        // still in the page, KN-472, else the page, which takes focus for this
+        // and nothing else.
+        fallback={() => landings.current.find((element) => element.isConnected) ?? page.current}
         title={i18n._('Delete contact')}
         body={i18n._('This contact is deleted for good and cannot be brought back.')}
         confirmLabel={i18n._('Delete')}

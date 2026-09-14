@@ -417,7 +417,10 @@ export const FocusAfterDeletingFromTheModal: Story = {
     // gone. It is captured when it asks, not when the confirmation opens.
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
-    const person = fixtures('fa-IR').contacts[0]?.fullName ?? ''
+    const people = fixtures('fa-IR').contacts
+    // The second of three, so the first person on the page is not the one after.
+    const person = people[1]?.fullName ?? ''
+    const after = people[2]?.fullName ?? ''
 
     await userEvent.click(canvas.getByRole('button', { name: person }))
     const editing = await body.findByRole('dialog')
@@ -425,10 +428,14 @@ export const FocusAfterDeletingFromTheModal: Story = {
     const confirm = await body.findByRole('dialog')
     await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
 
+    // Where a reader carries on from once the dialogs are gone, KN-472: the person
+    // after them in the grid, not the first person on the page, and not the page
+    // body, KN-344.
     await waitFor(async () => {
-      const landed = canvasElement.ownerDocument.activeElement
-      await expect(landed).not.toBe(canvasElement.ownerDocument.body)
-      await expect(canvasElement.contains(landed)).toBe(true)
+      await expect(body.queryByRole('dialog')).toBeNull()
+    })
+    await waitFor(async () => {
+      await expect(canvas.getByRole('button', { name: after })).toHaveFocus()
     })
     await expect(canvas.queryByText(person)).toBeNull()
   },

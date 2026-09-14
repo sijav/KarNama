@@ -1090,6 +1090,9 @@ export const FocusAfterDeleting: Story = {
     const body = within(canvasElement.ownerDocument.body)
     const set = fixtures('fa-IR')
     const first = set.jobs[0]?.title ?? ''
+    // The column it is in, named before it goes: the seeded board holds one job
+    // opportunity a column, so deleting it leaves that column empty.
+    const column = canvas.getByRole('button', { name: first }).closest('section')?.getAttribute('aria-label') ?? ''
 
     await userEvent.click(canvas.getByRole('button', { name: first }))
     const job = await body.findByRole('dialog')
@@ -1097,11 +1100,16 @@ export const FocusAfterDeleting: Story = {
     const confirm = await body.findByRole('dialog', { name: 'حذف این فرصت شغلی؟' })
     await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
 
-    // Somewhere a reader can carry on from, and NOT the page body.
+    // Where a reader carries on from once both dialogs are gone, KN-472: the card
+    // after it in its column, and with none left there, that column's own Add
+    // Card row. Not the page body, KN-344, and not the first card of some other
+    // column.
     await waitFor(async () => {
-      const landed = canvasElement.ownerDocument.activeElement
-      await expect(landed).not.toBe(canvasElement.ownerDocument.body)
-      await expect(canvasElement.contains(landed)).toBe(true)
+      await expect(body.queryByRole('dialog')).toBeNull()
+    })
+    const i18n = i18nFor('fa-IR')
+    await waitFor(async () => {
+      await expect(canvas.getByRole('button', { name: `${i18n._('Add a job opportunity to')} ${column}` })).toHaveFocus()
     })
   },
 }
@@ -1124,6 +1132,63 @@ export const FocusWhenTheOpenerSurvives: Story = {
     await userEvent.click(within(confirm).getByRole('button', { name: 'انصراف' }))
     await waitFor(async () => {
       await expect(opener).toHaveFocus()
+    })
+  },
+}
+
+// A card's title, which is its first button, KN-472.
+const titleOf = (card: HTMLElement | undefined) => (card === undefined ? '' : (within(card).getAllByRole('button')[0]?.textContent ?? ''))
+
+// A card deleted from its own delete, reached as a keyboard reader reaches it:
+// it folds away until the card is hovered or holds focus, KN-341. Done once the
+// confirmation is gone, so focus is read where it settled.
+const deleteCard = async (card: HTMLElement, canvasElement: HTMLElement) => {
+  const body = within(canvasElement.ownerDocument.body)
+  const remove = within(card).getByRole('button', { name: 'حذف فرصت شغلی' })
+  remove.focus()
+  await userEvent.click(remove)
+  const confirm = await body.findByRole('dialog', { name: 'حذف این فرصت شغلی؟' })
+  await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
+  await waitFor(async () => {
+    await expect(body.queryByRole('dialog')).toBeNull()
+  })
+}
+
+export const FocusAfterDeletingInAColumn: Story = {
+  globals: { locale: 'fa-IR' },
+  decorators: [fixtureBoard],
+  play: async ({ canvasElement }) => {
+    // KN-472: a card deleted from a column leaves the reader on the card after
+    // it, or on the one before it when it was the last, and never on the first
+    // card of the whole board, which reads as the product jumping somewhere on
+    // its own. Rejected is the last column and the fullest, so the board's first
+    // card is in another column entirely.
+    const canvas = within(canvasElement)
+    const rejected = fixtures('fa-IR').board.at(-1)
+    if (!rejected) throw new Error('the board fixture has no columns')
+    await userEvent.click(canvas.getByRole('button', { name: new RegExp(rejected.name) }))
+    const column = await canvas.findByRole('region', { name: rejected.name })
+    const cards = within(column).getAllByRole('article')
+    if (cards.length < 3) throw new Error('the rejected column holds too few cards')
+
+    // A card in the middle: focus lands on the one after it, by its name.
+    const middle = Math.floor(cards.length / 2)
+    const after = titleOf(cards[middle + 1])
+    const doomed = cards[middle]
+    if (!doomed) throw new Error('no middle card')
+    await deleteCard(doomed, canvasElement)
+    await waitFor(async () => {
+      await expect(within(column).getByRole('button', { name: after })).toHaveFocus()
+    })
+
+    // The last card: nothing comes after it, so focus lands on the one before.
+    const left = within(column).getAllByRole('article')
+    const last = left.at(-1)
+    const before = titleOf(left.at(-2))
+    if (!last) throw new Error('no last card')
+    await deleteCard(last, canvasElement)
+    await waitFor(async () => {
+      await expect(within(column).getByRole('button', { name: before })).toHaveFocus()
     })
   },
 }

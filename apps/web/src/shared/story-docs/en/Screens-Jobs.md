@@ -148,10 +148,17 @@ and rejected last.
 
 The control that asks to delete a job opportunity is on that job opportunity, so
 confirming takes it away and the browser has nowhere to put focus back. A
-keyboard reader lands somewhere they can carry on from instead of on the page
-body.
+keyboard reader lands on the card after it in its column instead of on the page
+body, and here, where deleting it leaves the column empty, on that column's Add
+Card row.
 
 ### FocusWhenTheOpenerSurvives
 
 The other half: a confirmation backed out of leaves focus exactly where it was,
 so the fallback does not take over the ordinary case.
+
+### FocusAfterDeletingInAColumn
+
+A card deleted from the middle of a column leaves the reader on the card after
+it, and the last card leaves them on the card before it, never on the first card
+of the whole board, which would read as the product jumping somewhere on its own.

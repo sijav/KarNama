@@ -79,5 +79,5 @@ The same, with the language switched.
 
 The Delete inside the contact modal closes that modal in the same breath, so by
 the time the confirmation is up the control that asked is already gone. It is
-captured when it asks, not when the confirmation opens, and the reader lands
-somewhere they can carry on from.
+captured when it asks, not when the confirmation opens, and the reader lands on
+the person after the one deleted.

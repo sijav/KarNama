@@ -140,11 +140,13 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   // confirmation closes it may not be in the page any more, and that is the
   // case this is for. A ref, because nothing renders differently for it.
   const asked = useRef<HTMLElement | null>(null)
-  const remember = () => {
-    const active = window.document.activeElement
-    asked.current = active instanceof HTMLElement ? active : null
-  }
+  // And where a reader carries on from if it did go, worked out at the same
+  // moment, while the cards being deleted are still in the page, KN-472.
+  const landings = useRef<readonly HTMLElement[]>([])
   const board = useRef<HTMLDivElement | null>(null)
+  // The desktop's row of columns and a phone's one column, where the cards are.
+  const lanes = useRef<HTMLDivElement | null>(null)
+  const pile = useRef<HTMLDivElement | null>(null)
 
   const renameFormId = useId()
   const wide = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
@@ -173,6 +175,37 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
 
   const select = (id: string, wanted: boolean) => {
     setSelected((was) => (wanted ? [...was, id] : was.filter((held) => held !== id)))
+  }
+
+  // Where a reader goes on from when the job opportunities they delete take the
+  // control they asked from with them, KN-472, worked out as they ask. In the
+  // column of the first of them as the board shows it, the cards the deletion
+  // keeps: those after it, nearest first, then those before it, nearest first,
+  // then that column's Add Card row. They are chosen from the records and only
+  // then found in the page, by place, since each column lays its cards out in
+  // the order `cardsOf` gives.
+  const landingsFor = (ids: readonly string[]) => {
+    const shownColumns = wide ? columns : showing === undefined ? [] : [showing]
+    for (const [at, column] of shownColumns.entries()) {
+      const cards = cardsOf(column.id)
+      const index = cards.findIndex((entry) => ids.includes(entry.id))
+      if (index === -1) continue
+      const holder = wide ? lanes.current?.children.item(at) : pile.current
+      if (!holder) return []
+      const kept = (entry: JobEntry) => !ids.includes(entry.id)
+      const order = [...cards.slice(index + 1).filter(kept), ...cards.slice(0, index).filter(kept).reverse()]
+      const titles = [...holder.querySelectorAll('article')].map((article) => article.querySelector('button'))
+      const addLabel = `${i18n._('Add a job opportunity to')} ${column.name}`
+      const addRow =
+        wide && !isCollapsed(column.id) ? [...holder.querySelectorAll('button')].find((button) => button.ariaLabel === addLabel) : undefined
+      return [...order.map((entry) => titles[cards.indexOf(entry)]), addRow].filter((element) => element instanceof HTMLElement)
+    }
+    return []
+  }
+  const remember = (ids: readonly string[]) => {
+    const active = window.document.activeElement
+    asked.current = active instanceof HTMLElement ? active : null
+    landings.current = landingsFor(ids)
   }
 
   const addJob = (draft: JobDraft) => {
@@ -269,7 +302,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
         select(entry.id, wanted)
       }}
       onDelete={() => {
-        remember()
+        remember([entry.id])
         setDeleting([entry.id])
       }}
       onChangeStatus={() => {
@@ -357,6 +390,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
         </Box>
       ) : wide ? (
         <Box
+          ref={lanes}
           sx={{
             display: 'flex',
             gap: `${COLUMN_GAP}px`,
@@ -447,6 +481,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
         // The phone's column, node 241:176: the chosen status's cards alone,
         // 12 apart and 16 in, under the band's chips.
         <Stack
+          ref={pile}
           sx={{
             gap: `${spacing.sm}px`,
             padding: `${gutterOf(wide)}px`,
@@ -474,7 +509,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
           setSelected([])
         }}
         onDelete={() => {
-          remember()
+          remember(held)
           setDeleting(held)
         }}
         onChangeStatus={() => {
@@ -516,7 +551,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
           }}
           onSave={save}
           onDelete={() => {
-            remember()
+            remember([job.id])
             setDeleting([job.id])
           }}
           onClose={() => {
@@ -672,9 +707,10 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
         open={deleting !== null}
         opener={() => asked.current}
         // Where a reader carries on from when what they deleted was also what
-        // they were standing on: the first job opportunity still on the board,
-        // else the board itself, which takes focus for this and nothing else.
-        fallback={() => board.current?.querySelector('article button') ?? board.current}
+        // they were standing on: the first place worked out as they asked that is
+        // still in the page, KN-472, else the board itself, which takes focus for
+        // this and nothing else.
+        fallback={() => landings.current.find((element) => element.isConnected) ?? board.current}
         title={i18n._('Delete this job opportunity?')}
         body={i18n._('This job opportunity is deleted for good and cannot be brought back.')}
         confirmLabel={i18n._('Delete')}
