@@ -25,8 +25,9 @@ with their stories, then screens. Match the design exactly.**
 **Codex's work of 2026-09-12 stays on main**, KN-477: login mocked at the
 owner's word, Groq extraction on Render, Settings, drag and drop, collapse,
 date validation, the growing paste field. What survived four Claude reviews of
-its diff is its children, KN-483 to KN-503; the dark `color-scheme` fix waits in
-`git stash@{0}` as KN-496. KN-482 moved the board into the skill's database.
+its diff is its children, KN-483 to KN-503 and KN-521; the dark `color-scheme`
+fix waits in `git stash@{0}` as KN-496. KN-482 moved the board into the skill's
+database.
 
 **The owner's asks of 2026-09-14, done**: KN-479 (e058e19), each language led by
 its region's flag from `country-flag-icons`; KN-480 (c0685be), Settings chooses
@@ -37,14 +38,13 @@ phone's Page Header, which closed KN-418.
 
 **KN-481, "it should look like the figma", done (198a36f).** Every page was set
 beside its frame at 1440 and 390; the card's notes hold each difference and what
-became of it. The board and the network now open on the Header band their
-frames draw, `apps/web/src/screens/band.ts`, and the shell gives a page no
-padding, so the gutters are the file's 32 and 16, which closed KN-452; the Page
-Header is 44 whatever its action; the desktop board's search is 320 with the
-sort at the inline end; the columns are 16 apart; the network is two columns 24
-apart, one column 12 apart on a phone; the board stays current while the add
-flow is open. `App/Shell`'s `LaidOutAsTheFrames` asserts the numbers from the
-shell in both languages. DESIGN.md section 8 records the page's frame.
+became of it. The board and the network open on the Header band their frames
+draw, `apps/web/src/screens/band.ts`, and the shell gives a page no padding, so
+the gutters are the file's 32 and 16, which closed KN-452. `App/Shell`'s
+`LaidOutAsTheFrames` asserts the numbers from the shell in both languages;
+DESIGN.md section 8 records the page's frame. Its roast filed KN-519, the
+network's cards should be the frame's fixed 556 wrapping rather than two
+stretched columns, and KN-520, the story never checks a phone's last card.
 
 **Filed from KN-481**: KN-512, the network's Sort Control; KN-513, relative
 dates on cards; KN-514, the English job modal footer at 390; KN-518, the sign-in
@@ -52,8 +52,16 @@ card. **Blocked on the owner, asked 2026-09-14**: KN-515, a phone board header's
 add button beside the shell's controls; KN-516, a phone board's sort row the
 frame does not draw; KN-517, history's place among the job modal's tabs.
 
-**Roasts**: KN-479's filed KN-506; KN-480's KN-508, KN-509 and KN-510; KN-478's
-KN-511. KN-481's is with Codex, and it covers KN-452, closed in the same commit.
+**KN-483 done (bab5444)**: `postingText` in `apps/api/src/extraction/posting.ts`
+reads a hostile page once. Its block and tag patterns were quadratic, a minute
+to five of the API's one process on two million characters; they are scans now
+with the patterns' exact output, checked against the old chain on 20,000
+generated pages. The card's own fix, cutting the page to 30,000 characters
+first, was refused by its plan review because it cuts markup and loses deep
+postings, and the exit condition was amended before the build. KN-521 is the
+separate question of an unclosed script's text reaching the model. KN-483's
+roast is with Codex. The API's `npm test` runs 154 passing tests and fails its
+coverage gate on code KN-483 did not touch, which KN-486 carries.
 
 **Found on the way and filed**: KN-505, addresses as clean paths rather than
 `#/`, the owner's question; KN-507, the Settings dialog's Theme and sample-data
@@ -90,13 +98,15 @@ board's `Adding`, which calls the live API, KN-495.
 
 ## The next step
 
-Relay KN-481's roast when it lands: file what survives as KN-481's children and
-record the roast for KN-452 as well. KN-483 is in progress, the posting page
-that can freeze the API: `postingText` in `apps/api/src/extraction/posting.ts`
-runs its entity and tag regexes over a body of up to 2 MB and cuts to 30,000
-characters only at the end. Write its plan beside that file, roast the plan with
-Codex, cut before the first regex, and prove it with a two megabyte body of
-`&lt;` in `posting.test.ts` returning within a second, then the API suite.
+Relay KN-483's roast when it lands and file what survives; KN-483 is a child of
+KN-477, so its findings hang off KN-477. KN-401 is in progress, the React-warning
+guard in `apps/web/.storybook/react-warnings.setup.ts` that hears only a
+`console.error` with `%s` in it. Read what exists first: ESLint's
+`structuralProps` already names a `MARK` for the product's own console
+diagnostics, KN-401, so part of it may be in place. Write the plan beside the
+guard, roast the plan with Codex, then build it with a committed test that
+classifies a printf warning, a plain-string error, a warn and a product
+diagnostic.
 
 ## What to read first
 
