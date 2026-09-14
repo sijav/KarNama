@@ -13,6 +13,12 @@ Project **KarNama** · 224 of 541 tasks done · 503 of 1096 points.
 | 1 | OKR-1 | MVP: the pages | now | 189 | 146 |
 | 2 | OKR-2 | Everything after the MVP | later | 126 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-440` | Recolouring a status moves its column, because the board's order ranks by colour token | high | 2 | web | none | Recolouring a status leaves its column where it was, and a story recolours a custom status to the offer colour and asserts the order is unchanged. |
+
 ## Blocked (8)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -26,7 +32,7 @@ Project **KarNama** · 224 of 541 tasks done · 503 of 1096 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (307)
+## Backlog (306)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -36,7 +42,6 @@ Project **KarNama** · 224 of 541 tasks done · 503 of 1096 points.
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
 | `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
-| `KN-440` | Recolouring a status moves its column, because the board's order ranks by colour token | high | 2 | web | none | Recolouring a status leaves its column where it was, and a story recolours a custom status to the offer colour and asserts the order is unchanged. |
 | `KN-446` | The Icon Button's TooltipTrigger type enforces nothing, and the runtime forwards more than it says | high | 2 | web | none | What IconButton forwards and what its type says it forwards are the same thing, and a comment says why the clone marker is part of it. |
 | `KN-464` | The fields tell a phone's keyboard nothing: no input type, no inputMode, no enterKeyHint, no autocomplete | high | 2 | web | none | Each field declares the type, inputMode, enterKeyHint and autocomplete its content wants, and a story reads them off the rendered inputs in both languages. |
 | `KN-465` | Nothing reads mockCode off the provider that sent the code, which KN-462's exit asked for | high | 2 | web | none | A story reads mockCode from the provider after a send and after a resend, and asserts the screen shows exactly that. |
@@ -7894,6 +7899,10 @@ KN-305 gave every status exactly one job opportunity, so the fixture board canno
 
 **Evidence.** The shape test failed on the one-per-status board and passes on the uneven one (custom-2 empty, new 3, rejected 6); three plants each fail where aimed; web unit project 1372 passes; the eleven fixture-reading story files fail only KN-494s five and KN-495; Board and InEnglish looked at in both schemes.
 
+**Roasts.**
+
+- round 1: C:UserssinajAppDataLocalTempclaude-roastb1874631dd160914T175656-task-kn-438-the-seeded-board-is-nine-columns-of-one-c-08b3a5.md, filed none, dismissed: The shape test not proving a column overflows or that a sort reorders: the reviewer names it a verification gap and not a defect, the exit condition asks for neither, and today new and rejected hold distinct posting dates. The commit calling job-1 to job-9 kept in their places: loose wording in a pushed message whose first bullet says job-7 moves to applied. Confirmed: no story, doc, e2e spec or unit test relies on job-7 in custom-2, on nine job opportunities, or on the status counts.
+
 ### `KN-439` The status fixtures' count disagrees with the board they now describe
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
@@ -7907,7 +7916,7 @@ Each status fixture carries a count, and custom-2 carries 0 while the board KN-3
 
 ### `KN-440` Recolouring a status moves its column, because the board's order ranks by colour token
 
-- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 Noticed by the KN-305 roast, in core rather than in that task's work: columnOrder ranks a status by its TOKEN, records.ts 79 to 83, and recolourStatus writes the chosen colour into that same token. So a reader who gives their own stage the colour the design uses for a job offer finds the column has moved to where job offers go, and giving it the rejected colour sends it to the end of the board. The rank should come from something that is not the colour: the status's own place in the board, kept as a field, with the five defaults seeded in the design's order.
