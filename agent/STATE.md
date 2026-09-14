@@ -28,27 +28,38 @@ date validation, the growing paste field. What survived four Claude reviews of
 its diff is its children, KN-483 to KN-503; the dark `color-scheme` fix waits in
 `git stash@{0}` as KN-496. KN-482 moved the board into the skill's database.
 
-**The owner's asks of 2026-09-14, done today**: KN-479 (e058e19), each language
-led by its region's flag from `country-flag-icons`; KN-480 (c0685be), Settings
-chooses the language from the Select, its options led by flags, the Select
-gaining an optional `leading`; KN-478 (ce97840), settings, sign out, language and
-add contact as Icon Buttons with tips that say what their names do not. The
-shell's own controls are one `ShellControls` row, at the sidebar's foot on
-desktop and after the page's action in a phone's Page Header, so a phone can
-sign out, which closed KN-418; Codex's row above every title is gone; the
-language menu opens above its button from the sidebar and below it from a
-header; the gear is Lucide 1.41.0's `settings`, copied into the glyph set with
-its licence in `apps/web/src/shared/icon/LICENSE-lucide.txt`.
+**The owner's asks of 2026-09-14, done**: KN-479 (e058e19), each language led by
+its region's flag from `country-flag-icons`; KN-480 (c0685be), Settings chooses
+the language from the Select, its options led by flags; KN-478 (ce97840),
+settings, sign out, language and add contact as Icon Buttons, the shell's own
+controls one `ShellControls` row at the sidebar's foot on a desktop and in a
+phone's Page Header, which closed KN-418.
 
-**Roasts**: KN-479's found one plan sentence reading backwards, KN-506.
-KN-480's found its proof thin: KN-508, KN-509, KN-510. KN-478's is with Codex.
+**KN-481, "it should look like the figma", done (198a36f).** Every page was set
+beside its frame at 1440 and 390; the card's notes hold each difference and what
+became of it. The board and the network now open on the Header band their
+frames draw, `apps/web/src/screens/band.ts`, and the shell gives a page no
+padding, so the gutters are the file's 32 and 16, which closed KN-452; the Page
+Header is 44 whatever its action; the desktop board's search is 320 with the
+sort at the inline end; the columns are 16 apart; the network is two columns 24
+apart, one column 12 apart on a phone; the board stays current while the add
+flow is open. `App/Shell`'s `LaidOutAsTheFrames` asserts the numbers from the
+shell in both languages. DESIGN.md section 8 records the page's frame.
+
+**Filed from KN-481**: KN-512, the network's Sort Control; KN-513, relative
+dates on cards; KN-514, the English job modal footer at 390; KN-518, the sign-in
+card. **Blocked on the owner, asked 2026-09-14**: KN-515, a phone board header's
+add button beside the shell's controls; KN-516, a phone board's sort row the
+frame does not draw; KN-517, history's place among the job modal's tabs.
+
+**Roasts**: KN-479's filed KN-506; KN-480's KN-508, KN-509 and KN-510; KN-478's
+KN-511. KN-481's is with Codex, and it covers KN-452, closed in the same commit.
 
 **Found on the way and filed**: KN-505, addresses as clean paths rather than
 `#/`, the owner's question; KN-507, the Settings dialog's Theme and sample-data
-parts are MUI defaults beside the Select. Repaired on the way: DESIGN.md's
-navigation paragraph (5c12ea5) and the contract failing on KN-492's wording
-(19f0687). Two stories fail in a full run and are not new: the Icon Button's and
-Nav Item's `Hover` in parallel, KN-365, and the board's `Adding`, KN-495.
+parts are MUI defaults beside the Select. Two stories fail in a full run and are
+not new: the Icon Button's and Nav Item's `Hover` in parallel, KN-365, and the
+board's `Adding`, which calls the live API, KN-495.
 
 ## The owner's rules, most recent first
 
@@ -79,15 +90,13 @@ Nav Item's `Hover` in parallel, KN-365, and the board's `Adding`, KN-495.
 
 ## The next step
 
-Relay KN-478's roast when it lands and file what survives as its children.
-Take KN-481, the owner's "it should look like the figma": move it in progress,
-write its plan beside the screens in `apps/web/src/screens/`, roast the plan,
-then set each page, the board, the add flow, the job modal, the network and
-sign-in, at 1440 and 390 in fa-IR light beside its frame on canvas `5:7`
-(DESIGN.md section 8 names them), write every difference into the card's
-notes, fix those under four points and file the rest. Figma screenshots come
-inline from `use_figma`'s `node.screenshot()`; the app's come headless with
-Playwright against the dev server.
+Relay KN-481's roast when it lands: file what survives as KN-481's children and
+record the roast for KN-452 as well. KN-483 is in progress, the posting page
+that can freeze the API: `postingText` in `apps/api/src/extraction/posting.ts`
+runs its entity and tag regexes over a body of up to 2 MB and cuts to 30,000
+characters only at the end. Write its plan beside that file, roast the plan with
+Codex, cut before the first regex, and prove it with a two megabyte body of
+`&lt;` in `posting.test.ts` returning within a second, then the API suite.
 
 ## What to read first
 
