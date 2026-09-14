@@ -40,33 +40,30 @@ phone's held press selects), KN-352, KN-356, KN-431 and KN-532 (the bulk bar
 follows the search). Their roasts filed KN-527 to KN-537.
 
 **KN-419 (30f6b8e)**: another tab's sign-out, sign-in and board reach every open
-tab, through a `storage` listener in `RecordsProvider` and the demo
-`AuthProvider`; proved by three stories and `e2e/two-tabs.spec.ts`, which proves
-what no story can, since every story's providers sit under the preview's own
-board (`AGENTS.md` section 7). Its roast filed **KN-538**, a late event bringing
-an older board back, and **KN-539**, two sign-ins at the same moment.
+tab, proved by three stories and `e2e/two-tabs.spec.ts`, which proves what no
+story can, since every story's providers sit under the preview's own board
+(`AGENTS.md` section 7). Its roast filed **KN-538** and **KN-539**.
 
-**KN-437 (85947b4)**: the story fixtures hand the board to the product:
-`fixtures(locale).statusOptions`, `records` built through `jobFrom`, board
-columns with their status id; five stories lost their own status maps; `Board`
-and `InEnglish` are seeded from the records. Its roast filed **KN-540** and
-**KN-541**, `Board` checking containment and document order only.
+**KN-437 (85947b4)** and **KN-438 (dd579f0)**: the story fixtures hand the board
+to the product as `statusOptions` and `records`, five stories lost their own
+status maps, and the seeded board is uneven, custom-2 empty, new three, rejected
+six. KN-437's roast filed **KN-540** and **KN-541**; KN-438's filed nothing.
 
-**KN-438 (dd579f0)**: the seeded board is uneven in both languages, custom-2
-empty, new three, rejected six; a shape test replaced KN-305's one-in-every-status
-test. Its roast filed nothing.
+**KN-440 (28b0437)**: a status keeps its column when its colour changes, the
+order ranking the design's five by id. Its plan review filed **KN-542** and
+**KN-543**; its roast filed **KN-544**, the board still collapsing a column by
+its colour, and **KN-545**, its story not proving the recolour.
 
-**KN-440 (28b0437)**: a status keeps its column when its colour changes:
-`columnOrder` ranks the design's five by their id, which is their token and never
-changes, and every other status before rejected in the order added. Its plan
-review filed **KN-542**, the sample loader still matching a status by colour, and
-**KN-543**, the API seed putting rejected before offer; its roast filed
-**KN-544**, the board still collapsing a column by its colour, and **KN-545**,
-its story not proving the recolour happened.
+**KN-446 (a1fab80)**: the Icon Button forwards exactly the props its types name,
+by name through `forwarded`, MUI's clone marker declared with why; its story
+`ForwardsWhatItDeclares` failed on the old rest spread. Measured on the way:
+`InATooltip`'s console spy starts too late to hear MUI's forwarding error, noted
+on **KN-449**, and the project's console guard hears React's warnings only,
+KN-401. Its roast filed **KN-546**, the story trying three undeclared props on
+the button shape and none on the link.
 
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
-to no story, 26 of them KN-477's drag handlers; its note lists every arm by line
-and it waits in the backlog at 5 points.
+to no story; its note lists every arm by line, 5 points in the backlog.
 
 **What fails in a full run, and why**: the web unit project passes whole, 1373.
 The storybook project fails the five modal stories KN-494 carries, the board's
@@ -106,18 +103,16 @@ fails on auth and extraction files, KN-486. Of the e2e suite, only
 
 ## The next step
 
-KN-446 is in progress: the Icon Button's `TooltipTrigger` type names seven props
-while each branch spreads the rest onto MUI's button, so the type bounds nothing,
-and the rest is also what carries `data-mui-internal-clone-element`, the marker
-MUI's Tooltip reads back to check its child forwards props. The plan,
-`apps/web/src/shared/icon-button/#KN-446 - The Icon Button's TooltipTrigger type enforces nothing.md`,
-narrows the runtime to the type: forward the declared trigger and opener props
-by name, declare and forward the clone marker with a comment on why, and drop
-the rest. Its roast with Codex was running when this was written; do not edit
-`IconButton.tsx` or its stories until it lands. Then write the story that hands
-the button undeclared props and finds none reach it, failing first, then the
-change, then the plants: the marker left out fails `InATooltip` on MUI's console
-error, and the rest spread put back fails the new story.
+KN-464 is in progress: the fields tell a phone's keyboard nothing. Much of the
+card already holds, so the plan,
+`apps/web/src/shared/input/#KN-464 - The fields tell a phone's keyboard nothing.md`,
+adds what is missing: `enterKeyHint` on the Input and on each field, saying what
+Enter does in its form since KN-463; the contact modal's email, phone and link
+keyboards; `autoComplete="off"` where a field holds another person's details; and
+stories that read the attributes off the rendered inputs in both languages. Its
+roast with Codex was running when this was written; do not edit the Input, the
+sign-in, the contact modal, the add form, the job modal, the board or the Search
+Bar until it lands. Then build it red first, as the plan's tests say.
 
 ## What to read first
 
