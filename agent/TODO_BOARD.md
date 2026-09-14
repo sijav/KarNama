@@ -2,24 +2,25 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 203 of 481 tasks done · 448 of 987 points.
+Project **KarNama** · 203 of 482 tasks done · 448 of 992 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-477` Roast Codex's changes on main and keep them or restore leftout-backup, whichever holds fewer problems** (critical, 5 pt, infra)
+**Next up: `KN-482` Move the loop's board into the todo skill's database, and make its git diffs readable** (critical, 5 pt, agent)
 
 ## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-477` | Roast Codex's changes on main and keep them or restore leftout-backup, whichever holds fewer problems | critical | 5 | infra | none | Each surviving finding from the four area roasts and the two check runs is judged in this card's notes, kept or dismissed with a reason; main holds the chosen base, committed and pushed; on main in a browser, Settings' Load sample data adds the fictional jobs once and a pasted posting is extracted through the API; leftout-backup and codex-backup are unchanged. |
+| `KN-482` | Move the loop's board into the todo skill's database, and make its git diffs readable | critical | 5 | agent | none | The todo skill lists every card board.json holds, each with the same status or, if it was blocked, in phase Owner or behind its blocker; next picks the card in progress; a new add gets a KN id; git diff on .claude/todo.db prints CSV rows; RALPH.md, AGENTS.md and STATE.md name the skill; agent/scripts/todo.mjs refuses a write and names the database. |
 
-## Blocked (7)
+## Blocked (8)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-477` | Roast Codex's changes on main and keep them or restore leftout-backup, whichever holds fewer problems | critical | 5 | infra | none | Each surviving finding from the four area roasts and the two check runs is judged in this card's notes, kept or dismissed with a reason; main holds the chosen base, committed and pushed; on main in a browser, Settings' Load sample data adds the fictional jobs once and a pasted posting is extracted through the API; leftout-backup and codex-backup are unchanged. |
 | `KN-269` | When a failed save arrives after the collapsed column has flashed is not decided | high | 1 | design | none | DESIGN.md states, as the owner's decision, when the collapsed column's success flash plays relative to the save and what happens to an optimistic move and its flash when the save fails; KN-061's exit condition names it; and a verifier checks the stated rule word for word in both places. |
 | `KN-270` | The collapsed column's hover timer and flash have no rule for leaving, returning or a second drop | high | 1 | design | none | DESIGN.md states, as the owner's decision, whether leaving the collapsed column during a drag resets the 500 ms, what a second drop does to a running flash, how the one-second flash relates to the 300 ms state change, and whether the keyboard target expands; KN-061's exit condition names each; and a verifier checks each detail exactly, the 500 ms, the count ticking up and the flash's length included. |
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
@@ -6106,7 +6107,7 @@ From the KN-386 roast, and it is right. The Loading parent starts with no record
 
 ### `KN-477` Roast Codex's changes on main and keep them or restore leftout-backup, whichever holds fewer problems
 
-- **status** in_progress · **severity** critical · **points** 5 · **area** infra
+- **status** blocked · **severity** critical · **points** 5 · **area** infra
 - **blocked by** none
 
 The owner, 2026-09-14: 'you can get the diff and roast it and see the problems with it ... if there were no problems I actually fine with it but if there were a lot, that means just start your own implementation is a much smarter choice eh?'. Codex's twelve commits sit between leftout-backup (6d058b4) and codex-backup (1709bc0): 102 files, +3506 -241. Codex had no loop and was told by the owner to skip the to-do and roasting ('forget about the rules here or even roasting'), so it is judged on its code only: regressions, changes the owner did not ask for, and Figma fidelity. Four reviewers read the diff by area, API, app shell and state, components and e2e, repo and deploy; unit, story, lint and type checks run on both commits. Whichever base is kept carries what the owner named on 2026-09-14: 'the load sample data is nice keep it' and 'AI checking content is nice please preserve it'.
@@ -6158,4 +6159,15 @@ The owner, 2026-09-14: 'nothing looks like the figma anyways, it should look lik
 **Why.** The design is the contract, AGENTS.md: match the design exactly. The owner tests the deployed app and sees pages that do not look like the file.
 
 **Exit condition.** This card's notes hold, for each page at both widths, its frame id and every difference found; each difference is fixed on main or filed as a card; the fixed pages are screenshotted again beside their frames.
+
+### `KN-482` Move the loop's board into the todo skill's database, and make its git diffs readable
+
+- **status** in_progress · **severity** critical · **points** 5 · **area** agent
+- **blocked by** none
+
+The owner, 2026-09-14, on which board: 'YO DEFINETLY DB!', and on the 145 rows the database already holds: 'do what you say you like more'. KarNama's loop ran on agent/board.json from 2026-09-07 while the global todo skill's database, .claude/todo.db, held a copy of the first 145 cards, imported by 2026-09-08 and never updated. Every card moves into the database with its id, status, severity, points, area, why and exit. The 145 existing rows are updated to the newer JSON values and none is deleted. The objectives become phases MVP and Next; a card waiting on the owner goes to a last phase, Owner, and one waiting on a task gets that task as its blocker; CHILD OF prose becomes parent_task; notes, evidence, roasts and reasons stay in the description. The skill's nextId stops hardcoding SB-, so this board gets KN ids. The owner, same day: 'for db git you could just turn db into csv text and get diff': a textconv script renders the database as CSV so git diff can be read. RALPH.md, AGENTS.md and STATE.md name the skill's commands, and the JSON tool refuses to write, so the two boards cannot split again.
+
+**Why.** The skill says its database is the only record of what is to be done. Two boards let KarNama's drift from it for a week without the owner knowing, and a loop picking from a stale board hands back finished work.
+
+**Exit condition.** The todo skill lists every card board.json holds, each with the same status or, if it was blocked, in phase Owner or behind its blocker; next picks the card in progress; a new add gets a KN id; git diff on .claude/todo.db prints CSV rows; RALPH.md, AGENTS.md and STATE.md name the skill; agent/scripts/todo.mjs refuses a write and names the database.
 

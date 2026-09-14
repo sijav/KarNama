@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 482,
+  "nextId": 483,
   "tasks": [
     {
       "id": "KN-001",
@@ -12456,13 +12456,14 @@
       "points": 5,
       "area": "infra",
       "parent": [],
-      "status": "in_progress",
+      "status": "blocked",
       "exit": "Each surviving finding from the four area roasts and the two check runs is judged in this card's notes, kept or dismissed with a reason; main holds the chosen base, committed and pushed; on main in a browser, Settings' Load sample data adds the fictional jobs once and a pasted posting is extracted through the API; leftout-backup and codex-backup are unchanged.",
       "okr": "OKR-1",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-14T09:54:17.119Z",
-      "updatedAt": "2026-09-14T09:55:27.093Z"
+      "updatedAt": "2026-09-14T10:15:17.004Z",
+      "blockedReason": "Its findings are filed in the database as children of this card, so it waits on KN-482, the move of the board into the todo skill's database. The four area reviews are in; adjudication resumes after the move."
     },
     {
       "id": "KN-478",
@@ -12542,6 +12543,23 @@
       "notes": [],
       "createdAt": "2026-09-14T09:54:17.607Z",
       "updatedAt": "2026-09-14T09:54:18.196Z"
+    },
+    {
+      "id": "KN-482",
+      "title": "Move the loop's board into the todo skill's database, and make its git diffs readable",
+      "desc": "The owner, 2026-09-14, on which board: 'YO DEFINETLY DB!', and on the 145 rows the database already holds: 'do what you say you like more'. KarNama's loop ran on agent/board.json from 2026-09-07 while the global todo skill's database, .claude/todo.db, held a copy of the first 145 cards, imported by 2026-09-08 and never updated. Every card moves into the database with its id, status, severity, points, area, why and exit. The 145 existing rows are updated to the newer JSON values and none is deleted. The objectives become phases MVP and Next; a card waiting on the owner goes to a last phase, Owner, and one waiting on a task gets that task as its blocker; CHILD OF prose becomes parent_task; notes, evidence, roasts and reasons stay in the description. The skill's nextId stops hardcoding SB-, so this board gets KN ids. The owner, same day: 'for db git you could just turn db into csv text and get diff': a textconv script renders the database as CSV so git diff can be read. RALPH.md, AGENTS.md and STATE.md name the skill's commands, and the JSON tool refuses to write, so the two boards cannot split again.",
+      "why": "The skill says its database is the only record of what is to be done. Two boards let KarNama's drift from it for a week without the owner knowing, and a loop picking from a stale board hands back finished work.",
+      "severity": "critical",
+      "points": 5,
+      "area": "agent",
+      "parent": [],
+      "status": "in_progress",
+      "exit": "The todo skill lists every card board.json holds, each with the same status or, if it was blocked, in phase Owner or behind its blocker; next picks the card in progress; a new add gets a KN id; git diff on .claude/todo.db prints CSV rows; RALPH.md, AGENTS.md and STATE.md name the skill; agent/scripts/todo.mjs refuses a write and names the database.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-14T10:15:16.764Z",
+      "updatedAt": "2026-09-14T10:15:17.119Z"
     }
   ],
   "okrs": [
