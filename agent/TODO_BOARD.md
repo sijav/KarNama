@@ -8,13 +8,13 @@ Columns are statuses. Within a column the order is the order `npm run todo -- ne
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-482` Move the loop's board into the todo skill's database, and make its git diffs readable** (critical, 5 pt, agent)
+**Next up: `KN-482` Move the loop's board into the todo skill's database, with every feature the JSON tool had** (critical, 5 pt, agent)
 
 ## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-482` | Move the loop's board into the todo skill's database, and make its git diffs readable | critical | 5 | agent | none | The todo skill lists every card board.json holds, each with the same status or, if it was blocked, in phase Owner or behind its blocker; next picks the card in progress; a new add gets a KN id; git diff on .claude/todo.db prints CSV rows; RALPH.md, AGENTS.md and STATE.md name the skill; agent/scripts/todo.mjs refuses a write and names the database. |
+| `KN-482` | Move the loop's board into the todo skill's database, with every feature the JSON tool had | critical | 5 | agent | none | The todo skill lists every card board.json holds with the same status, blocked ones with their reasons; next picks the card in progress; a new add gets a KN id; okr lists OKR-1 and OKR-2 with what is left in each; agent/TODO_BOARD.md is rendered from the database; the skill's parity test passes and a copy of SkipBureau's board prints what it printed before; RALPH.md, AGENTS.md and STATE.md name the skill; agent/scripts/todo.mjs refuses a write and names the database. |
 
 ## Blocked (8)
 
@@ -6160,14 +6160,14 @@ The owner, 2026-09-14: 'nothing looks like the figma anyways, it should look lik
 
 **Exit condition.** This card's notes hold, for each page at both widths, its frame id and every difference found; each difference is fixed on main or filed as a card; the fixed pages are screenshotted again beside their frames.
 
-### `KN-482` Move the loop's board into the todo skill's database, and make its git diffs readable
+### `KN-482` Move the loop's board into the todo skill's database, with every feature the JSON tool had
 
 - **status** in_progress · **severity** critical · **points** 5 · **area** agent
 - **blocked by** none
 
-The owner, 2026-09-14, on which board: 'YO DEFINETLY DB!', and on the 145 rows the database already holds: 'do what you say you like more'. KarNama's loop ran on agent/board.json from 2026-09-07 while the global todo skill's database, .claude/todo.db, held a copy of the first 145 cards, imported by 2026-09-08 and never updated. Every card moves into the database with its id, status, severity, points, area, why and exit. The 145 existing rows are updated to the newer JSON values and none is deleted. The objectives become phases MVP and Next; a card waiting on the owner goes to a last phase, Owner, and one waiting on a task gets that task as its blocker; CHILD OF prose becomes parent_task; notes, evidence, roasts and reasons stay in the description. The skill's nextId stops hardcoding SB-, so this board gets KN ids. The owner, same day: 'for db git you could just turn db into csv text and get diff': a textconv script renders the database as CSV so git diff can be read. RALPH.md, AGENTS.md and STATE.md name the skill's commands, and the JSON tool refuses to write, so the two boards cannot split again.
+The owner, 2026-09-14, on which board: 'YO DEFINETLY DB!'; on the 145 rows the database already holds: 'do what you say you like more'; and 'since the damn db never got updated but the skill did especially with the okr make sure the db is updated to match to have all the skills'. KarNama's loop ran on agent/board.json from 2026-09-07 while the global todo skill's database, .claude/todo.db, held a copy of the first 145 cards, imported by 2026-09-08 and never updated. The skill gains what the JSON tool had and it lacked: objectives (okr), blocked with a reason, notes, evidence and reasons on close, done staying done, roast rounds, validate, render to Markdown, rm, list filters, and ids that keep the board's prefix instead of a hardcoded SB-. Every card then moves in with its id, status and fields; the 145 existing rows are updated to the newer JSON values and none is deleted. RALPH.md, AGENTS.md and STATE.md name the skill's commands, agent/TODO_BOARD.md is rendered from the database so a board change reads as a diff, and the JSON tool refuses to write, so the two boards cannot split again. The owner said the CSV diff was a suggestion, not a request, and the rendered Markdown covers what it was for.
 
 **Why.** The skill says its database is the only record of what is to be done. Two boards let KarNama's drift from it for a week without the owner knowing, and a loop picking from a stale board hands back finished work.
 
-**Exit condition.** The todo skill lists every card board.json holds, each with the same status or, if it was blocked, in phase Owner or behind its blocker; next picks the card in progress; a new add gets a KN id; git diff on .claude/todo.db prints CSV rows; RALPH.md, AGENTS.md and STATE.md name the skill; agent/scripts/todo.mjs refuses a write and names the database.
+**Exit condition.** The todo skill lists every card board.json holds with the same status, blocked ones with their reasons; next picks the card in progress; a new add gets a KN id; okr lists OKR-1 and OKR-2 with what is left in each; agent/TODO_BOARD.md is rendered from the database; the skill's parity test passes and a copy of SkipBureau's board prints what it printed before; RALPH.md, AGENTS.md and STATE.md name the skill; agent/scripts/todo.mjs refuses a write and names the database.
 
