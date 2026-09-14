@@ -22,140 +22,96 @@ with their stories, then screens. Match the design exactly.**
 
 ## Where things stand, 2026-09-15
 
-**Codex's work of 2026-09-12 stays on main**, KN-477: login mocked at the
-owner's word, Groq extraction on Render, Settings, drag and drop, collapse,
-date validation, the growing paste field, and the job modal's form. What
-survived four Claude reviews of its diff is its children, KN-484 to KN-503 and
-KN-521 still open; the dark `color-scheme` fix waits in `git stash@{0}` as KN-496.
+**Codex's work of 2026-09-12 stays on main**, KN-477: login mocked at the owner's
+word, Groq extraction on Render, Settings, drag and drop, collapse, date
+validation, the growing paste field, the job modal's form. Its surviving review
+findings are KN-484 to KN-503 and KN-521; the dark `color-scheme` fix waits in
+`git stash@{0}` as KN-496.
 
-**The owner's asks of 2026-09-14, done**: KN-479 language flags; KN-480 the
-language Select in Settings; KN-478 the shell's controls as Icon Buttons.
-**KN-481** matched the board and network to their frames (198a36f). **Blocked
-on the owner, asked 2026-09-14 in chat**: KN-515 a phone board header's add
-button, KN-516 a phone board's sort row, KN-517 history's place among the modal's
-tabs.
+**The owner's asks of 2026-09-14 are done**: KN-479 flags, KN-480 the language
+Select in Settings, KN-478 the shell's controls as Icon Buttons, KN-481 the board
+and network matched to their frames. **Blocked on the owner, asked 2026-09-14**:
+KN-515, KN-516, KN-517.
 
-**Closed on 2026-09-14**, roasts recorded: KN-483, KN-401, KN-403, KN-405,
-KN-423, KN-428, KN-352, KN-356, KN-431, KN-532, KN-419, KN-437, KN-438, KN-440,
-KN-446, KN-464, KN-465, KN-466, KN-467, KN-469, KN-472, KN-495, KN-522, and
-**KN-206** (ff46de3): the Checkbox requires `aria-label` or `aria-labelledby`,
-refuses a name that comes to nothing, and its 28 by 28 target is tested; its
-roast filed KN-556 to KN-558.
+**KN-226**, the check that the published Storybook renders without errors, waits
+in the backlog on KN-494 and KN-563, the last two of its blockers. Its plan,
+`apps/web/e2e/storybook/#KN-226 - ....md`, measured eleven failing entries in a
+production Storybook, and Codex ruled out letting them through on a list: the
+exit condition fails on any console error, so the check would stop every deploy.
+The replan weighs `@storybook/test-runner` with `--failOnConsole` (a new
+dependency, the owner's yes to install), a `webServer`, no Docs pages, an explicit
+timeout and the channel hooked by a property setter. The same measurement filed
+KN-559 and a note on KN-063: 34 entries fail accessibility in production.
 
-**KN-226, taken on 2026-09-14 and put back on 2026-09-15**, blocked by KN-494,
-KN-554 and KN-560 to KN-563. Its plan, `apps/web/e2e/storybook/#KN-226 - ....md`,
-measured a production Storybook of d3f9fce under `/KarNama/storybook/`: 423
-entries, 372 stories and 51 docs pages, 115 seconds six at a time; eleven fail
-bare and inside the manager, KN-494's five, IconButton `BlankName` and its Docs
-page (KN-554), App/Shell `SignedInInAnotherTab` (KN-560), Button `States`
-(KN-561), Input `ControlsMatchTheCanvasInEnglish` (KN-562) and SettingsDialog
-`Preferences` (KN-563). Codex's review ruled out letting them through on a list:
-the exit condition fails on any console error, so wiring the check before Pages
-publishes would stop every deploy, the app's too, until they pass. The replan
-weighs `@storybook/test-runner` with `--failOnConsole` (a new dependency, the
-owner's yes to install), a `webServer`, no Docs pages, an explicit test timeout
-and the channel hooked by a property setter; the plan's review section has it.
-Also filed from the measurement: **KN-559**, AddJobModal `Review`'s 606 tall
-assertion, which the manager's canvas cannot hold; a note on **KN-063** listing
-34 entries whose accessibility checks fail in production, colour contrast on 31.
-`e2e/settings.spec.ts` passes against the app's production build.
+**Closed on 2026-09-15**, each a story failing only in a production Storybook,
+pushed and roasted by Codex:
+- **KN-554** (bb953c8): IconButton `BlankName` waits for its report. Nothing filed.
+- **KN-560** (481b66c): App/Shell `SignedInInAnotherTab` waits for the providers'
+  storage listeners. Nothing filed; KN-564 and KN-565 filed on the way.
+- **KN-561** (bfeafa6): Button `States` records its matrix in a layout effect.
+  Its roast filed KN-566, words that claim a paint.
+- **KN-562** (abd9c82): the Input's render reads its specimen through `i18nFor` of
+  the story's globals, not the shared singleton `AppProviders` switches after the
+  render. Its roast filed **KN-568**, the docs saying the English twin follows the
+  toolbar it pins; filed under KN-013, since KN-562 is KN-013's child. KN-567
+  carries the other story renders that read the singleton.
 
-**How to measure the published Storybook**, since the scratch scripts are this
-session's: build with `KARNAMA_STORYBOOK_BASE` set in Node's own `env`, never on
-a Git Bash command line, which rewrote it to `/Program Files/Git/...` and cost 35
-minutes; serve the build under that base; fetch the scripts `iframe.html` names
-before opening anything; open `iframe.html?id=<id>&viewMode=story`; hear the end
-on `window.__STORYBOOK_ADDONS_CHANNEL__`, `storyFinished` after the play and
-`playFunctionThrewException` for a thrown one, whose `storyFinished` still says
-`success`. React's production bundle prints no dev warnings.
+**How to measure the published Storybook**: build with `KARNAMA_STORYBOOK_BASE` in
+Node's own `env`, never on a Git Bash command line; serve under that base; fetch
+what `iframe.html` names first; open `iframe.html?id=<id>&viewMode=story`, or
+`index.html?path=/story/<id>` for the manager; hear the end on
+`window.__STORYBOOK_ADDONS_CHANNEL__`, hooked by a property setter:
+`playFunctionThrewException` for a thrown play, whose `storyFinished` still says
+`success`. React's production bundle prints no dev warnings. The scratch scripts
+are this session's.
 
-**KN-551**: `core/api/session.test.ts` fails both its cases when the unit project
-runs straight after storybook browser runs, and passes alone; on 2026-09-14
-evening it passed, 1383, after browser runs.
-
-**What fails in a full run, and why**: the storybook project fails the five modal
-stories KN-494 carries and the Job Card's `Pressed` in parallel only, KN-365's
-kind. The API's 156 tests pass and its coverage gate fails on auth and
-extraction files, KN-486. Of the e2e suite, `two-tabs.spec.ts` passed on
-2026-09-14 and `settings.spec.ts` on 2026-09-15, both on desktop.
+**What fails in a full run**: the storybook project fails KN-494's five modal
+stories, and the Job Card's `Pressed` in parallel only, KN-365's kind. The API's
+coverage gate fails on auth and extraction files, KN-486. KN-551:
+`core/api/session.test.ts` can fail straight after storybook browser runs, and
+passes alone.
 
 ## The owner's rules, most recent first
 
 - **2026-09-14.** The board is the todo skill's database, and `agent/board.json`
   is its archive. The shared skills serve ALL projects: a change only adds, and
   is checked against a copy of every board on the machine. A model's work is
-  never roasted by that model. A suggestion is not a directive (the CSV diff).
-  Flags come from a package, not a political choice. Settings and a phone's sign
-  out do not exist in Figma, so they are invented, as icons. "It should look like
-  the figma." The owner reads on a phone: literal truth, no excuses.
-- **2026-09-12, to Codex, still standing for the product.** Mock the login for
-  now. Keep the sample data and the AI extraction. Do not change a layout nobody
-  asked to change; a drag wrapper belongs in the correct spot. Commit and push
-  after work. Never ask the owner to redeploy when nothing changed.
-- **Push after every close, 2026-09-11.** Commit, close, push, then roast.
-- **New components first, 2026-09-11**: only new component cards and their
-  blockers are `critical`; a finding on a built component is `high` or lower.
-- **No proof at the close, 2026-09-11**: test what changed, stories, unit tests,
-  lint, tsc, look at it, close with one line of evidence. Roasts stay.
-- **A finding about the loop rather than the product is `low`** unless it is
-  actively breaking the work.
-- **100 percent coverage is a product rule**: `apps/*`, `packages/*`, not
-  `agent/scripts/**`, and markdown has no tests.
-- **Do not invent gates.** Rule zero of `agent/RALPH.md`.
-- **A finding is a CHILD of its task**, one level: `todo add --parent-task`,
-  always with `--area`.
-- **Plans live beside the work**, `#<id> - <title>.md`, checked by
-  `roast.py plan` before building, and they stay. Run `roast.py` from the
-  repository root, or it leaves a `.claude/` wherever it ran. Write any long
-  script with the Write tool: this shell refuses long here-documents on quotes.
-
-**KN-554** (bb953c8), closed on 2026-09-15: IconButton's `BlankName` captures
-with `passOnUnmarked(through)` and waits for the report, as the Checkbox's refusal
-stories do; on a production Storybook it and IconButton's Docs page end with no
-error, and each half was shown to carry weight by a plant. A production canvas
-renders without React's `act`, so a passive effect can run after a play has
-started. Its roast filed nothing: the replaced console after leaving the Docs page
-did not reproduce. **KN-379** was dropped as its duplicate. **KN-090** carries a
-note that the Docs page keeps `lang="fa-IR"` under English prose.
-
-**KN-560** (481b66c), closed on 2026-09-15: App/Shell's `SignedInInAnotherTab`
-dispatched another tab's `karnama.session` at 330 ms with no storage listener on
-the window, the providers adding theirs in passive effects at 341 ms, timed by
-wrapping the window's listener and dispatch methods in an init script. The story's
-decorator now wraps its `AuthProvider` in `ListeningAround`, whose own effect hides
-a span, and the play waits for it: on a production build the dispatch came at 356
-ms after the listeners at 355 ms, and it passes bare and inside the manager.
-Codex's roast found no defect. **KN-564** carries `SignedOutInAnotherTab` and
-JobsScreen's `ChangedInAnotherTab`, which win the same race by 9 and 23 ms.
-**KN-565**, filed on the way: the empty board's title calls the reader's records
-«آگهی», against the terminology rule.
+  never roasted by that model. A suggestion is not a directive. Flags come from a
+  package. Settings and a phone's sign out do not exist in Figma, so they are
+  invented, as icons. "It should look like the figma." The owner reads on a
+  phone: literal truth, no excuses.
+- **2026-09-12, to Codex, still standing.** Mock the login for now. Keep the
+  sample data and the AI extraction. Do not change a layout nobody asked to
+  change. Commit and push after work. Never ask the owner to redeploy when
+  nothing changed.
+- **2026-09-11.** Push after every close: commit, close, push, then roast. Only
+  new component cards and their blockers are `critical`; a finding on a built
+  component is `high` or lower. No proof at the close: test what changed,
+  stories, unit tests, lint, tsc, look at it, close with one line. Roasts stay. A
+  finding about the loop is `low` unless it breaks the work. 100 percent coverage
+  is a product rule. **Do not invent gates**, rule zero of `agent/RALPH.md`.
+- **A finding is a CHILD of its task**, one level, `todo add --parent-task`, with
+  `--area` and `--okr`. **Plans live beside the work**, `#<id> - <title>.md`,
+  checked by `roast.py plan` from the repository root before building, and they
+  stay. Write long scripts with the Write tool.
 
 ## The next step
 
-**KN-561** (bfeafa6) is closed: Button's `States` failed in production because its
-one frame callback ran before any button existed; the forced states land in the
-commit that draws the buttons, so nothing flashes. The matrix's root now records
-its buttons and forced cells in a `useLayoutEffect` and the play asserts 75 and
-45; a plant setting `data-state` from a `useEffect` records 0 forced under Vitest
-and in production. Its roast filed **KN-566**: the comments and plan call that
-record the first paint and say a passive effect always runs after the paint.
+**KN-563 is in progress**: SettingsDialog's `Preferences` fails in a production
+Storybook, `expected "onLocaleChange" to be called with [ 'fa-IR' ]`, no calls.
+The cause, confirmed on 2026-09-15: the story's handler calls the args' spy, then
+`updateArgs`; an args update during a play renders the story again at once
+(`onUpdateArgs` and `rerender` in Storybook 10.5.10's `preview/runtime.js`), and
+that render's loaders include `resetAllMocksLoader`, whose `restoreAllMocks()`
+clears the call before the play reads it. The Vitest runner applies no args
+update, so it never shows. A build with only `parameters.test.restoreMocks:
+false` added to Preferences passed bare and inside the manager, every step. The
+plan beside the story weighs keeping the mocks across the story's renders
+against a record the story keeps itself; Codex reviews it before the build.
 
-**KN-562 is in progress**: the Input's `ControlsMatchTheCanvasInEnglish` fails in
-production because the args keep the Persian copy. Cause, confirmed on a
-production build with a log planted in the render: the meta render reads
-`specimenCopy()` from the shared `i18n` singleton during render, and since KN-134
-`AppProviders` activates that singleton in a `useLayoutEffect`, after the render;
-both renders of the English story logged the singleton on `fa-IR` under a document
-already `lang="en-US"`, computed Persian copy, wrote nothing back, and nothing
-rendered it again. The render's comment, "the providers activate it before this
-runs", is what KN-134 made false. `LatinInAnEnglishPage` passes because it reads
-its catalog through `useLingui()`. No plan yet: the render should take the
-language from the story's globals and that language's own catalog, `i18nFor`.
-The same stale read is in other story renders, filed as its own card: every fixed
-Input story renders through `JobTitle`, which drew «عنوان شغلی» with the toolbar
-on English, and CardMenu's and StatusMenu's story triggers take their
-`aria-label` from the singleton while rendering; the other files that import it
-call it only in plays.
+That second render also runs `beforeEach` again, so `withOwnStorage` stands a
+fresh memory storage in mid-play, and `afterEach` and `storyFinished` fire for
+it; the play is not run again.
 
 ## What to read first
 
