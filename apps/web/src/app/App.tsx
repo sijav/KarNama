@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react'
 import Box from '@mui/material/Box'
 import { useEffect, useState } from 'react'
-import { apiErrorText } from '../core/api'
+import { apiErrorText, extractJob } from '../core/api'
 import { useAuth } from '../core/auth'
 import { AuthScreen, JobsScreen, NetworkScreen } from '../screens'
 import { Navigation, TAB_BAR_HEIGHT, type Destination } from '../shared/navigation'
@@ -98,6 +98,9 @@ export const App = () => {
           <JobsScreen
             onSelecting={setSelecting}
             onSignOut={signOut}
+            // Reading a posting is the server's work, and the shell is where the
+            // product meets the server, KN-495.
+            onExtract={extractJob}
             addOpen={current === 'add'}
             onAddClose={() => {
               navigate('jobs')

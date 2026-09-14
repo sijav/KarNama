@@ -1,10 +1,9 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
 import { useEffect, useId, useLayoutEffect, useRef, useState, type SyntheticEvent } from 'react'
-import { extractJob } from '../core/api'
 import { usePreferences } from '../core/preferences'
 import { columnOrder, contactsOf, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
-import { AddJobModal, type JobDraft } from '../shared/add-job'
+import { AddJobModal, type AddJobModalProps, type JobDraft } from '../shared/add-job'
 import { BulkActionBar } from '../shared/bulk-action-bar'
 import { Button, type ButtonType, type ButtonVariant } from '../shared/button'
 import { EmptyState } from '../shared/empty-state'
@@ -73,9 +72,11 @@ export interface JobsScreenProps {
   onSelecting?: (selecting: boolean) => void
   /** Signs the reader out, from the Page Header's controls on a phone, KN-478. */
   onSignOut?: () => void
+  /** Reads a pasted link or text into the add flow's Review step: the server's reader, which the shell fills in, KN-495. */
+  onExtract: AddJobModalProps['onExtract']
 }
 
-export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut }: JobsScreenProps) => {
+export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut, onExtract }: JobsScreenProps) => {
   const { i18n } = useLingui()
   const { locale } = usePreferences()
   const records = useRecords()
@@ -525,7 +526,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
         open={addingTo !== null}
         statuses={records.statuses}
         status={addingTo ?? first}
-        onExtract={extractJob}
+        onExtract={onExtract}
         onSave={addJob}
         onAddStatus={() => {
           records.addStatus(i18n._('New status'))

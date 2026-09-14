@@ -33,6 +33,12 @@ board.
 
 Signs the reader out, from the controls a phone's page header carries.
 
+### onExtract
+
+Reads the pasted link or text of a posting into what the add flow's Review step
+shows. The product's shell hands it the server's reader, and a story hands it one
+of its own, so the board can be shown and tested without a server.
+
 ## Stories
 
 ### DragAndDrop
@@ -92,8 +98,9 @@ why it cannot be, a status change cancelled, and a deletion refused.
 ### Adding
 
 Adding by each road the board offers: the header's action, which reads a link
-and leaves the rest to be typed, takes a column of its own before saving; and a
-column's own Add Card row, which opens the same flow for that column.
+through the story's own reader, which gives the link back, and leaves the rest
+to be typed, takes a column of its own before saving; and a column's own Add
+Card row, which opens the same flow for that column.
 
 ### AddingFromEmpty
 

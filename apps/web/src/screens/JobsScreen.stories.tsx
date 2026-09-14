@@ -3,7 +3,7 @@ import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, isLocale } from '../i18n'
 import { formatCount } from '../i18n/formatCount'
 import { defaultStatuses, jobFrom, RecordsProvider, STORAGE_KEY, type JobEntry, type Records } from '../core/records'
-import { emptyDraft } from '../shared/add-job'
+import { emptyDraft, type JobDraft } from '../shared/add-job'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { fixtures } from '../shared/story-fixtures'
 import { JobsScreen } from './JobsScreen'
@@ -31,11 +31,16 @@ const seeded = (): Records => {
   return { statuses, jobs, contacts: [] }
 }
 
+// The board's reader in a story: it gives back the link it was given, as the
+// board's own extractor did before the server, KN-042, so a story that reads a
+// posting needs no server, KN-495.
+const readsTheLink = (source: string): Promise<Partial<JobDraft>> => Promise.resolve({ postingUrl: source })
+
 const meta = {
   title: 'Screens/Jobs',
   component: JobsScreen,
   parameters: { layout: 'fullscreen' },
-  args: { addOpen: false, onAddClose: fn() , onSelecting: fn(), onSignOut: fn()},
+  args: { addOpen: false, onAddClose: fn() , onSelecting: fn(), onSignOut: fn(), onExtract: fn(readsTheLink)},
   decorators: [
     (Story, context) => (
       // Each story gets its own records, so one cannot change what another
@@ -489,7 +494,7 @@ export const BackingOut: Story = {
  */
 export const Adding: Story = {
   globals: { locale: 'fa-IR' },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
     const set = fixtures('fa-IR')
@@ -502,13 +507,14 @@ export const Adding: Story = {
     }
 
     // The header's action opens the flow on the first column. The link is read
-    // by the screen's own extractor, which for now gives back the link itself
-    // and leaves the rest to be typed, KN-042.
+    // by the reader the story hands the screen, which gives back the link itself
+    // and leaves the rest to be typed, KN-042, with no server, KN-495.
     await userEvent.click(canvas.getByRole('button', { name: 'افزودن فرصت شغلی' }))
     const adding = await body.findByRole('dialog')
     const posting = set.jobs[0]?.link ?? ''
     await userEvent.type(within(adding).getByLabelText(/لینک آگهی یا متن کامل آگهی/), posting)
     await userEvent.click(within(adding).getByRole('button', { name: 'استخراج اطلاعات' }))
+    await expect(args.onExtract).toHaveBeenCalledWith(posting)
 
     // The form that comes back can take a column of its own before saving.
     // The sixth fixture job opportunity, which the board is not seeded with.
