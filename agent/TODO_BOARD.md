@@ -8450,7 +8450,7 @@ From KN-477's review, W-07, W-09 and W-11, confirmed in RemoteAuthProvider.tsx a
 - **blocked by** none
 - **came out of** KN-477
 
-From KN-477's review, W-02, confirmed in App.tsx: b9f7875 set the shell to 100dvh with overflow hidden and the board's main to overflowY hidden, to stop the body scrolling the owner reported. On a phone held sideways, or any short viewport, the header, search, sort and chips leave the card list a sliver, seen at 474 by 542 on 2026-09-14, and an empty board's action can be cut off. Keep the body from scrolling sideways, as the owner asked, and let everything be reached vertically.
+From KN-477's review, W-02, confirmed in App.tsx: b9f7875 set the shell to 100dvh with overflow hidden and the board's main to overflowY hidden, to stop the body scrolling the owner reported. On a phone held sideways, or any short viewport, the header, search, sort and chips leave the column of cards a sliver, seen at 474 by 542 on 2026-09-14, and an empty board's action can be cut off. Keep the body from scrolling sideways, as the owner asked, and let everything be reached vertically.
 
 **Why.** A reader on a short screen can see cards they cannot scroll to, and an empty board whose button is cut off cannot be started at all.
 
