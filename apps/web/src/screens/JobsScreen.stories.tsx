@@ -1,6 +1,6 @@
 import type { Decorator, StoryObj } from '@storybook/react-vite'
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
-import { isLocale } from '../i18n'
+import { i18nFor, isLocale } from '../i18n'
 import { formatCount } from '../i18n/formatCount'
 import { defaultStatuses, jobFrom, RecordsProvider, STORAGE_KEY, type JobEntry, type Records } from '../core/records'
 import { emptyDraft } from '../shared/add-job'
@@ -1016,6 +1016,64 @@ export const ChangedInAnotherTab: Story = {
       await expect(canvas.queryByText(elsewhere)).toBeNull()
       await expect(canvas.queryByText(set.jobs[0]?.title ?? '')).toBeNull()
     })
+  },
+}
+
+export const RecolouringKeepsItsPlace: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-440: a colour is not a place. Two statuses of the reader's own are
+    // added, the first renamed so the two can be told apart, and the second
+    // given offer's colour, green, from its column's menu: every column stays
+    // where it was. Read from the colour, the second used to jump ahead of the
+    // first.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const set = fixtures('fa-IR')
+    const defaults = defaultStatuses((token) => set.names[token])
+    const rejected = defaults.at(-1)?.name ?? ''
+    const renamed = set.renamedStatus.name
+    // The name a status added from the board is given, read from the catalog.
+    const i18n = i18nFor('fa-IR')
+    const fresh = i18n._('New status')
+    const gone = async () => {
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog')).toBeNull()
+      })
+    }
+    const added = async () => {
+      await userEvent.click(canvas.getByRole('button', { name: 'افزودن وضعیت' }))
+      await canvas.findByRole('region', { name: fresh })
+    }
+
+    await added()
+    await userEvent.click(canvas.getByRole('button', { name: `کارهای وضعیت: ${fresh}` }))
+    await userEvent.click(await body.findByRole('menuitem', { name: 'تغییر نام' }))
+    const rename = await body.findByRole('dialog')
+    await userEvent.clear(within(rename).getByRole('textbox'))
+    await userEvent.type(within(rename).getByRole('textbox'), renamed)
+    await userEvent.click(within(rename).getByRole('button', { name: 'ذخیره' }))
+    await gone()
+    await added()
+
+    await userEvent.click(canvas.getByRole('button', { name: `کارهای وضعیت: ${fresh}` }))
+    await userEvent.click(await body.findByRole('menuitem', { name: 'تغییر رنگ' }))
+    await userEvent.click(await body.findByRole('radio', { name: 'سبز' }))
+    await waitFor(async () => {
+      await expect(body.queryByRole('radio', { name: 'سبز' })).toBeNull()
+    })
+
+    // The rejected column opens from its collapsed header, and every column is
+    // then a region to read the order from.
+    await userEvent.click(canvas.getByRole('button', { name: new RegExp(rejected) }))
+    const order = [...defaults.slice(0, -1).map((status) => status.name), renamed, fresh, rejected]
+    let before: Element | null = null
+    for (const name of order) {
+      const region = await canvas.findByRole('region', { name })
+      if (before)
+        await expect(before.compareDocumentPosition(region) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+      before = region
+    }
   },
 }
 

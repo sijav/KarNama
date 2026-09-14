@@ -77,9 +77,12 @@ export const nextCustomToken = (statuses: readonly StatusOption[]): StatusToken 
  */
 export const columnOrder = (statuses: readonly StatusOption[]): StatusOption[] => {
   const rank = (entry: StatusOption) => {
-    const at = DEFAULT_TOKENS.indexOf(entry.token)
-    // A custom status has no place in the design's order, so it goes before
-    // rejected, which is the last column whatever else is on the board.
+    // Which status a column is, never its colour, KN-440: a reader may give any
+    // status any colour, and a default keeps its token as its id for good.
+    const at = DEFAULT_TOKENS.findIndex((token) => token === entry.id)
+    // A status of the reader's own has no place in the design's order, so it
+    // goes before rejected, which is the last column whatever else is on the
+    // board, in the order it was added.
     return at === -1 ? DEFAULT_TOKENS.length - 1.5 : at
   }
   return [...statuses].sort((one, other) => rank(one) - rank(other))

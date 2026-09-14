@@ -45,6 +45,23 @@ describe('the statuses the product starts with', () => {
     expect(columnOrder([...shuffled, mine]).map((entry) => entry.id)).toEqual(['new', 'applied', 'interview', 'offer', 'own', 'rejected'])
   })
 
+  it('keeps a column where it was when its colour changes, KN-440', () => {
+    // A colour is not a place: the order comes from which status a column is,
+    // and a reader's own statuses keep the order they were added in.
+    const first: StatusOption = { id: 'first', token: 'custom-1', name: 'first' }
+    const second: StatusOption = { id: 'second', token: 'custom-2', name: 'second' }
+    const board = [...statuses, first, second]
+    const before = columnOrder(board).map((entry) => entry.id)
+    const recoloured = (id: string, token: StatusOption['token']) =>
+      columnOrder(board.map((entry) => (entry.id === id ? { ...entry, token } : entry))).map((entry) => entry.id)
+    expect(before).toEqual(['new', 'applied', 'interview', 'offer', 'first', 'second', 'rejected'])
+    // Saved given a colour of the reader's own, the second of the reader's own
+    // given offer's, and the first given rejected's.
+    expect(recoloured('new', 'custom-1')).toEqual(before)
+    expect(recoloured('second', 'offer')).toEqual(before)
+    expect(recoloured('first', 'rejected')).toEqual(before)
+  })
+
   it('gives a new status the first reserved colour that is free', () => {
     expect(nextCustomToken(statuses)).toBe('custom-1')
     expect(nextCustomToken([...statuses, { id: 'a', token: 'custom-1', name: 'a' }])).toBe('custom-2')

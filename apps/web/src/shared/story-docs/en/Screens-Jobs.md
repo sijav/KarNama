@@ -137,6 +137,13 @@ this tab's next change keeps it rather than writing its own older copy over it,
 and the other tab clearing the whole store leaves this one the fresh board. The
 other tab is stood in for by the storage event its write delivers.
 
+### RecolouringKeepsItsPlace
+
+A colour is not a place: two statuses of the reader's own are added, the first
+renamed, and the second given the job offer's colour from its column's menu, and
+every column stays where it was, the reader's own in the order they were added
+and rejected last.
+
 ### FocusAfterDeleting
 
 The control that asks to delete a job opportunity is on that job opportunity, so
