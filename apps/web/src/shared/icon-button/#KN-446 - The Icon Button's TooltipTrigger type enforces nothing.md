@@ -38,9 +38,12 @@ part of it.
   pass `aria-label`, `aria-haspopup`, `icon`, `iconSize`, `onClick`, `href`,
   `tone` and `ref`, and the stories spread their args. None passes a prop the
   type does not declare.
-- **The detectors**: `InATooltip` and `ALinkInATooltip` watch the console, so
-  MUI's forwarding error fails them, and our Tooltip reports a trigger whose node
-  does not carry its description.
+- **The detectors**: `ALinkInATooltip` watches the console from before the
+  render, so MUI's forwarding error fails it, and our Tooltip reports a trigger
+  whose node does not carry its description. `InATooltip` watches from its play,
+  after MUI has already logged, so it does not hear that error, KN-449: this line
+  said it did until the plant below showed otherwise, and was corrected after
+  KN-446's roast.
 
 ## The approach
 
@@ -71,9 +74,10 @@ part of it.
   code, where the rest spread carries all three.
 - **`InATooltip` and `ALinkInATooltip`** still pass: the tip opens on hover and
   on focus, describes the button, and nothing reaches the console.
-- **Plants**: the marker left out of what is forwarded fails `InATooltip` on MUI's
-  console error; the rest spread put back fails the new story on its data
-  attribute.
+- **Plants**: the marker left out of what is forwarded fails `ALinkInATooltip` on
+  MUI's console error and the new story on its marker check, and not
+  `InATooltip`, as the result below records; the rest spread put back fails the
+  new story on its data attribute.
 - lint, tsc, the Icon Button's stories, the Tooltip's, and the stories of the
   screens and components that use an Icon Button in a Tooltip or with a menu,
   the Settings Control, the Language Switch and the network page.
