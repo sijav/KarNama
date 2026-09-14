@@ -2,21 +2,21 @@
 
 <!-- GENERATED FILE. Edit agent/board.json through agent/scripts/todo.mjs, never this file. -->
 
-Project **KarNama** · 203 of 476 tasks done · 448 of 965 points.
+Project **KarNama** · 203 of 481 tasks done · 448 of 987 points.
 
 Columns are statuses. Within a column the order is the order `npm run todo -- next`
 would pick: severity first, then the smaller story point, then the older id. A task
 whose blockers are unsettled is never picked, whatever its severity.
 
-**Next up: `KN-401` The React-warning guard hears only a console.error with %s in it: React's plain-string errors and every console.warn pass, and nothing tests the guard** (high, 2 pt, web)
+**Next up: `KN-477` Roast Codex's changes on main and keep them or restore leftout-backup, whichever holds fewer problems** (critical, 5 pt, infra)
 
 ## In progress (1)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-401` | The React-warning guard hears only a console.error with %s in it: React's plain-string errors and every console.warn pass, and nothing tests the guard | high | 2 | web | none | Every console.error and console.warn during a test of either project fails it unless it is one of the product's own diagnostics, recognised by an explicit mark rather than by the absence of %s, and a story that provokes one says so; a committed test drives the guard with a printf warning, a plain-string console.error, a console.warn and a product diagnostic and fails if any is classified differently; both projects pass apart from KN-365's flakes. |
+| `KN-477` | Roast Codex's changes on main and keep them or restore leftout-backup, whichever holds fewer problems | critical | 5 | infra | none | Each surviving finding from the four area roasts and the two check runs is judged in this card's notes, kept or dismissed with a reason; main holds the chosen base, committed and pushed; on main in a browser, Settings' Load sample data adds the fictional jobs once and a pasted posting is extracted through the API; leftout-backup and codex-backup are unchanged. |
 
-## Blocked (6)
+## Blocked (7)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -25,13 +25,18 @@ whose blockers are unsettled is never picked, whatever its severity.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-356` | Navigation cannot give the tab bar's place to the Bulk Action Bar while cards are selected | high | 2 | web | KN-428 | Navigation takes whether the page is selecting, below md the tab bar is gone while it is and the Bulk Action Bar sits in its place, the sidebar is untouched, and a story selects and sees one bar at the foot. |
+| `KN-401` | The React-warning guard hears only a console.error with %s in it: React's plain-string errors and every console.warn pass, and nothing tests the guard | high | 2 | web | none | Every console.error and console.warn during a test of either project fails it unless it is one of the product's own diagnostics, recognised by an explicit mark rather than by the absence of %s, and a story that provokes one says so; a committed test drives the guard with a printf warning, a plain-string console.error, a console.warn and a product diagnostic and fails if any is classified differently; both projects pass apart from KN-365's flakes. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 
-## Backlog (264)
+## Backlog (268)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-479` | The language control shows the flag of its language | critical | 2 | web | KN-477 | The language control in the sidebar and in a phone's Page Header shows the owner's chosen flag for the current language, named for a screen reader, in both languages and schemes; its story shows both flags. |
+| `KN-480` | Settings chooses the language from a dropdown whose options carry their flags | critical | 2 | web | KN-477, KN-479 | Settings shows the language as a Select whose options each carry a flag and a name; choosing one switches language and direction at once and survives a reload; Theme and Load sample data still work; the Settings stories show it in all four combinations. |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
+| `KN-478` | Settings, sign out, language and add contact are Icon Buttons | critical | 5 | web | KN-477 | At 390 and 1440, in fa-IR and en-US, light and dark: settings, sign out, language and add contact are Icon Buttons each with a Tooltip and a name; nothing sits in a row above a page's title; a phone reader can open settings and sign out; each control's story shows it. |
+| `KN-481` | Every page looks like its Figma frame: set each beside canvas 5:7 and fix or file every difference | critical | 8 | design | KN-477 | This card's notes hold, for each page at both widths, its frame id and every difference found; each difference is fixed on main or filed as a card; the fixed pages are screenshotted again beside their frames. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
@@ -5247,7 +5252,7 @@ CHILD OF KN-006, recorded in prose because board.json cannot express parent_task
 
 ### `KN-401` The React-warning guard hears only a console.error with %s in it: React's plain-string errors and every console.warn pass, and nothing tests the guard
 
-- **status** in_progress · **severity** high · **points** 2 · **area** web
+- **status** blocked · **severity** high · **points** 2 · **area** web
 - **blocked by** none
 
 CHILD OF KN-134, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-134 roast, its critical and its minor, one file and one fix. apps/web/.storybook/react-warnings.setup.ts records a console.error only when its first argument contains %s. React itself sends plain strings: the installed react-dom-client.development.js has console.error("Cannot call startTransition while rendering.") and console.error("useInsertionEffect must not schedule updates."), both checked on 2026-09-11, and it has console.warn calls the guard never hears. So KN-134's exit, no React warnings at all asserted by a check, holds only for the printf-style ones. The guard's own rule is untested too: the only gate fixture, failing.gate.ts, is an unrelated arithmetic failure, so narrowing or inverting the %s test would stay green.
@@ -6098,4 +6103,59 @@ From the KN-386 roast, and it is right. The Loading parent starts with no record
 **Exit condition.** One story renders the second id while the first record's values are still the ones being passed, and asserts the form shows nothing of them; another delivers a record late with the id unchanged.
 
 **Roasts.** round 1 scored 9 with 0 critical(s)
+
+### `KN-477` Roast Codex's changes on main and keep them or restore leftout-backup, whichever holds fewer problems
+
+- **status** in_progress · **severity** critical · **points** 5 · **area** infra
+- **blocked by** none
+
+The owner, 2026-09-14: 'you can get the diff and roast it and see the problems with it ... if there were no problems I actually fine with it but if there were a lot, that means just start your own implementation is a much smarter choice eh?'. Codex's twelve commits sit between leftout-backup (6d058b4) and codex-backup (1709bc0): 102 files, +3506 -241. Codex had no loop and was told by the owner to skip the to-do and roasting ('forget about the rules here or even roasting'), so it is judged on its code only: regressions, changes the owner did not ask for, and Figma fidelity. Four reviewers read the diff by area, API, app shell and state, components and e2e, repo and deploy; unit, story, lint and type checks run on both commits. Whichever base is kept carries what the owner named on 2026-09-14: 'the load sample data is nice keep it' and 'AI checking content is nice please preserve it'.
+
+**Why.** Every card after this one is built on main. A base nobody has checked passes its defects into everything built on it, and restoring blindly would throw away the extraction and the sample data the owner uses.
+
+**Exit condition.** Each surviving finding from the four area roasts and the two check runs is judged in this card's notes, kept or dismissed with a reason; main holds the chosen base, committed and pushed; on main in a browser, Settings' Load sample data adds the fictional jobs once and a pasted posting is extracted through the API; leftout-backup and codex-backup are unchanged.
+
+### `KN-478` Settings, sign out, language and add contact are Icon Buttons
+
+- **status** backlog · **severity** critical · **points** 5 · **area** web
+- **blocked by** KN-477
+
+The owner, 2026-09-14: 'settings, signout, language, add contact, all needs to be a icon button!' and 'setting doesn't exists in figma neither sign out so codex had to invent, you should do that too but as an ICON!'. Each becomes the Icon Button of 460:672 with a Tooltip and an aria-label naming it: settings, sign out (the sidebar's «خروج» row, and a phone, where KN-418 finds none at all), the language control, whose glyph is its flag (KN-479), and the network page's add contact, which the file draws as a text button. Settings and a phone's sign out are drawn nowhere in the file, so this card places them, in chrome the design already has: the sidebar's foot on desktop and the Page Header's trailing actions on a phone, where DESIGN.md section 5 puts the language switch. The row Codex added above every page's title goes. DESIGN.md section 5 records the owner's instruction, since it replaces what the file draws.
+
+**Why.** The owner asked for it; the text buttons Codex put in a row above each page push every title below where its frame draws it ('button at top right title at below is very wrong').
+
+**Exit condition.** At 390 and 1440, in fa-IR and en-US, light and dark: settings, sign out, language and add contact are Icon Buttons each with a Tooltip and a name; nothing sits in a row above a page's title; a phone reader can open settings and sign out; each control's story shows it.
+
+### `KN-479` The language control shows the flag of its language
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** KN-477
+
+The owner, 2026-09-14: 'the language button should have flag next to it' and, in the same message, language 'needs to be a icon button'. Read together: in the chrome the flag is the Icon Button's glyph (KN-478), and in Settings it sits beside the language's name (KN-480). The icon set has no flags, DESIGN.md section 5, so they are added as assets. Which flag stands for Persian and for English was put to the owner on 2026-09-14 and is recorded in this card's notes once answered.
+
+**Why.** A reader stuck in a language they cannot read looks for a flag, not for a word written in that language.
+
+**Exit condition.** The language control in the sidebar and in a phone's Page Header shows the owner's chosen flag for the current language, named for a screen reader, in both languages and schemes; its story shows both flags.
+
+### `KN-480` Settings chooses the language from a dropdown whose options carry their flags
+
+- **status** backlog · **severity** critical · **points** 2 · **area** web
+- **blocked by** KN-477, KN-479
+
+The owner, 2026-09-14: 'it needs to be in the settings, with a drop down and a flag' and 'language should be a drop down in settings too'. Codex's Settings dialog lists the languages as radios; they become the product's Select (DESIGN.md, The Select, its options and its menu), each option the flag from KN-479 and the language's own name. Theme stays as it is, and so does Load sample data: 'the load sample data is nice keep it'.
+
+**Why.** The owner asked for it, and a dropdown keeps the dialog short as languages are added.
+
+**Exit condition.** Settings shows the language as a Select whose options each carry a flag and a name; choosing one switches language and direction at once and survives a reload; Theme and Load sample data still work; the Settings stories show it in all four combinations.
+
+### `KN-481` Every page looks like its Figma frame: set each beside canvas 5:7 and fix or file every difference
+
+- **status** backlog · **severity** critical · **points** 8 · **area** design
+- **blocked by** KN-477
+
+The owner, 2026-09-14: 'nothing looks like the figma anyways, it should look like the figma!'. Screenshot the board, the add flow, the job modal, the network page and sign-in at 1440 and 390 in fa-IR light, set each beside its frame on the Screens canvas 5:7 (DESIGN.md section 8), and list every difference in size, spacing, type, colour, order and presence. A difference under four points is fixed here; a bigger one becomes its own card.
+
+**Why.** The design is the contract, AGENTS.md: match the design exactly. The owner tests the deployed app and sees pages that do not look like the file.
+
+**Exit condition.** This card's notes hold, for each page at both widths, its frame id and every difference found; each difference is fixed on main or filed as a card; the fixed pages are screenshotted again beside their frames.
 

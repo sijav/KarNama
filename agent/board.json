@@ -1,7 +1,7 @@
 {
   "version": 1,
   "project": "KarNama",
-  "nextId": 477,
+  "nextId": 482,
   "tasks": [
     {
       "id": "KN-001",
@@ -2168,9 +2168,12 @@
       "status": "backlog",
       "exit": "Extraction from raw text returns the documented field set with a named test fixture, a URL pointing at a private or link-local address is refused, a slow or oversized response is aborted within the configured bound, every failure path returns the error shape the UI maps to the Error state, and the mock provider makes all of it runnable with no network.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "The owner, 2026-09-14: 'AI checking content is nice please preserve it'. Codex built this in 090f5a4 and 1709bc0 (Groq, bounded demo access); KN-477 decides whether it stays as built or is carried onto the restored base."
+      ],
       "createdAt": "2026-09-07T20:49:41.782Z",
-      "okr": "OKR-2"
+      "okr": "OKR-2",
+      "updatedAt": "2026-09-14T09:54:18.321Z"
     },
     {
       "id": "KN-058",
@@ -10762,9 +10765,12 @@
       "status": "backlog",
       "exit": "In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages.",
       "roasts": [],
-      "notes": [],
+      "notes": [
+        "The owner, 2026-09-14: the language control becomes an Icon Button showing its flag, KN-478 and KN-479, which replaces the text this card styles."
+      ],
       "createdAt": "2026-09-11T19:56:24.666Z",
-      "okr": "OKR-1"
+      "okr": "OKR-1",
+      "updatedAt": "2026-09-14T09:54:18.565Z"
     },
     {
       "id": "KN-388",
@@ -11006,13 +11012,14 @@
       "points": 2,
       "area": "web",
       "parent": [],
-      "status": "in_progress",
+      "status": "blocked",
       "exit": "Every console.error and console.warn during a test of either project fails it unless it is one of the product's own diagnostics, recognised by an explicit mark rather than by the absence of %s, and a story that provokes one says so; a committed test drives the guard with a printf warning, a plain-string console.error, a console.warn and a product diagnostic and fails if any is classified differently; both projects pass apart from KN-365's flakes.",
       "roasts": [],
       "notes": [],
       "createdAt": "2026-09-11T21:04:39.486Z",
       "okr": "OKR-1",
-      "updatedAt": "2026-09-12T04:36:27.579Z"
+      "updatedAt": "2026-09-14T09:54:18.688Z",
+      "blockedReason": "The owner, 2026-09-14: decide the base first, KN-477 (roast Codex's commits, keep them or restore leftout-backup). The guard's files are the same on both but for Codex's correct two-line wiring fix; KN-401 resumes on whichever base main holds."
     },
     {
       "id": "KN-402",
@@ -11313,8 +11320,11 @@
       "exit": "A phone reader can sign out from a control the design agrees with, with the owner asked where it goes if the file draws none; the e2e covers signing out on the phone as well as the desktop, and its skip is gone.",
       "okr": "OKR-1",
       "roasts": [],
-      "notes": [],
-      "createdAt": "2026-09-11T23:54:11.863Z"
+      "notes": [
+        "The owner, 2026-09-14, settles where: sign out is an Icon Button, invented like settings because the file draws neither on a phone, KN-478."
+      ],
+      "createdAt": "2026-09-11T23:54:11.863Z",
+      "updatedAt": "2026-09-14T09:54:18.446Z"
     },
     {
       "id": "KN-419",
@@ -12436,6 +12446,102 @@
       "updatedAt": "2026-09-12T04:29:47.815Z",
       "evidence": "TheRecordArrivesAfterItsId starts with the first record shown, asks for the second id while those same values are still being passed, and asserts the form shows nothing of them before the record lands; TheRecordArrivesAfterOpening uses a parent whose id never changes and receives its record late. Making the modal accept the values whatever record they came from failed the first and left the others green; the mutation was reverted. 1496 of 1498 tests pass, the two failures the known KN-365 transition flakes; lint and tsc clean.",
       "closedAt": "2026-09-12T04:29:47.815Z"
+    },
+    {
+      "id": "KN-477",
+      "title": "Roast Codex's changes on main and keep them or restore leftout-backup, whichever holds fewer problems",
+      "desc": "The owner, 2026-09-14: 'you can get the diff and roast it and see the problems with it ... if there were no problems I actually fine with it but if there were a lot, that means just start your own implementation is a much smarter choice eh?'. Codex's twelve commits sit between leftout-backup (6d058b4) and codex-backup (1709bc0): 102 files, +3506 -241. Codex had no loop and was told by the owner to skip the to-do and roasting ('forget about the rules here or even roasting'), so it is judged on its code only: regressions, changes the owner did not ask for, and Figma fidelity. Four reviewers read the diff by area, API, app shell and state, components and e2e, repo and deploy; unit, story, lint and type checks run on both commits. Whichever base is kept carries what the owner named on 2026-09-14: 'the load sample data is nice keep it' and 'AI checking content is nice please preserve it'.",
+      "why": "Every card after this one is built on main. A base nobody has checked passes its defects into everything built on it, and restoring blindly would throw away the extraction and the sample data the owner uses.",
+      "severity": "critical",
+      "points": 5,
+      "area": "infra",
+      "parent": [],
+      "status": "in_progress",
+      "exit": "Each surviving finding from the four area roasts and the two check runs is judged in this card's notes, kept or dismissed with a reason; main holds the chosen base, committed and pushed; on main in a browser, Settings' Load sample data adds the fictional jobs once and a pasted posting is extracted through the API; leftout-backup and codex-backup are unchanged.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-14T09:54:17.119Z",
+      "updatedAt": "2026-09-14T09:55:27.093Z"
+    },
+    {
+      "id": "KN-478",
+      "title": "Settings, sign out, language and add contact are Icon Buttons",
+      "desc": "The owner, 2026-09-14: 'settings, signout, language, add contact, all needs to be a icon button!' and 'setting doesn't exists in figma neither sign out so codex had to invent, you should do that too but as an ICON!'. Each becomes the Icon Button of 460:672 with a Tooltip and an aria-label naming it: settings, sign out (the sidebar's «خروج» row, and a phone, where KN-418 finds none at all), the language control, whose glyph is its flag (KN-479), and the network page's add contact, which the file draws as a text button. Settings and a phone's sign out are drawn nowhere in the file, so this card places them, in chrome the design already has: the sidebar's foot on desktop and the Page Header's trailing actions on a phone, where DESIGN.md section 5 puts the language switch. The row Codex added above every page's title goes. DESIGN.md section 5 records the owner's instruction, since it replaces what the file draws.",
+      "why": "The owner asked for it; the text buttons Codex put in a row above each page push every title below where its frame draws it ('button at top right title at below is very wrong').",
+      "severity": "critical",
+      "points": 5,
+      "area": "web",
+      "parent": [
+        "KN-477"
+      ],
+      "status": "backlog",
+      "exit": "At 390 and 1440, in fa-IR and en-US, light and dark: settings, sign out, language and add contact are Icon Buttons each with a Tooltip and a name; nothing sits in a row above a page's title; a phone reader can open settings and sign out; each control's story shows it.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-14T09:54:17.248Z",
+      "updatedAt": "2026-09-14T09:54:17.842Z"
+    },
+    {
+      "id": "KN-479",
+      "title": "The language control shows the flag of its language",
+      "desc": "The owner, 2026-09-14: 'the language button should have flag next to it' and, in the same message, language 'needs to be a icon button'. Read together: in the chrome the flag is the Icon Button's glyph (KN-478), and in Settings it sits beside the language's name (KN-480). The icon set has no flags, DESIGN.md section 5, so they are added as assets. Which flag stands for Persian and for English was put to the owner on 2026-09-14 and is recorded in this card's notes once answered.",
+      "why": "A reader stuck in a language they cannot read looks for a flag, not for a word written in that language.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-477"
+      ],
+      "status": "backlog",
+      "exit": "The language control in the sidebar and in a phone's Page Header shows the owner's chosen flag for the current language, named for a screen reader, in both languages and schemes; its story shows both flags.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [
+        "The owner, 2026-09-14, on which flags: 'just install a package and use the package, you're a software dev not a politicians, nobody cares as long as you're not biased and just use a package for that'; English takes the United States flag. So the flags come from a flag package, by the locale's region: fa-IR takes the package's IR flag, en-US its US flag."
+      ],
+      "createdAt": "2026-09-14T09:54:17.371Z",
+      "updatedAt": "2026-09-14T09:55:27.228Z"
+    },
+    {
+      "id": "KN-480",
+      "title": "Settings chooses the language from a dropdown whose options carry their flags",
+      "desc": "The owner, 2026-09-14: 'it needs to be in the settings, with a drop down and a flag' and 'language should be a drop down in settings too'. Codex's Settings dialog lists the languages as radios; they become the product's Select (DESIGN.md, The Select, its options and its menu), each option the flag from KN-479 and the language's own name. Theme stays as it is, and so does Load sample data: 'the load sample data is nice keep it'.",
+      "why": "The owner asked for it, and a dropdown keeps the dialog short as languages are added.",
+      "severity": "critical",
+      "points": 2,
+      "area": "web",
+      "parent": [
+        "KN-477",
+        "KN-479"
+      ],
+      "status": "backlog",
+      "exit": "Settings shows the language as a Select whose options each carry a flag and a name; choosing one switches language and direction at once and survives a reload; Theme and Load sample data still work; the Settings stories show it in all four combinations.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-14T09:54:17.489Z",
+      "updatedAt": "2026-09-14T09:54:18.076Z"
+    },
+    {
+      "id": "KN-481",
+      "title": "Every page looks like its Figma frame: set each beside canvas 5:7 and fix or file every difference",
+      "desc": "The owner, 2026-09-14: 'nothing looks like the figma anyways, it should look like the figma!'. Screenshot the board, the add flow, the job modal, the network page and sign-in at 1440 and 390 in fa-IR light, set each beside its frame on the Screens canvas 5:7 (DESIGN.md section 8), and list every difference in size, spacing, type, colour, order and presence. A difference under four points is fixed here; a bigger one becomes its own card.",
+      "why": "The design is the contract, AGENTS.md: match the design exactly. The owner tests the deployed app and sees pages that do not look like the file.",
+      "severity": "critical",
+      "points": 8,
+      "area": "design",
+      "parent": [
+        "KN-477"
+      ],
+      "status": "backlog",
+      "exit": "This card's notes hold, for each page at both widths, its frame id and every difference found; each difference is fixed on main or filed as a card; the fixed pages are screenshotted again beside their frames.",
+      "okr": "OKR-1",
+      "roasts": [],
+      "notes": [],
+      "createdAt": "2026-09-14T09:54:17.607Z",
+      "updatedAt": "2026-09-14T09:54:18.196Z"
     }
   ],
   "okrs": [
