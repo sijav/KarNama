@@ -83,7 +83,9 @@ describe('the mocked provider', () => {
   // and an assertion on a fresh provider's `mockCode` says nothing about the
   // one that sent it. That is why the line this replaced was vacuous, KN-462.
   // It is covered where it is observable, in SigningInOnAPhone, which reads the
-  // code off the screen, resends, and signs in with the new one.
+  // code off the screen, resends, and signs in with the new one. Core/AuthProvider's
+  // stories read it off the provider itself, after a send and after a resend, find
+  // the screen showing exactly that, and sign in with it, KN-465.
 
   it('is expired when no code was ever sent', () => {
     vi.stubGlobal('localStorage', { getItem: () => null, setItem: () => undefined, removeItem: () => undefined })
