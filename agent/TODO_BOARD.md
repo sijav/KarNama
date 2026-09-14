@@ -13,6 +13,12 @@ Project **KarNama** · 232 of 553 tasks done · 519 of 1110 points.
 | 1 | OKR-1 | MVP: the pages | now | 192 | 154 |
 | 2 | OKR-2 | Everything after the MVP | later | 127 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-495` | The board screen calls the live API itself, so its Adding story fails without a server | high | 2 | web | none | JobsScreen takes onExtract as a prop that App fills with extractJob; the Adding story passes a stub and passes with no VITE_API_URL. |
+
 ## Blocked (8)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -26,7 +32,7 @@ Project **KarNama** · 232 of 553 tasks done · 519 of 1110 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (311)
+## Backlog (310)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -36,7 +42,6 @@ Project **KarNama** · 232 of 553 tasks done · 519 of 1110 points.
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
 | `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
-| `KN-495` | The board screen calls the live API itself, so its Adding story fails without a server | high | 2 | web | none | JobsScreen takes onExtract as a prop that App fills with extractJob; the Adding story passes a stub and passes with no VITE_API_URL. |
 | `KN-522` | Two stories replace console.error with a mock, which takes KN-401's guard off for as long as they run | high | 2 | web | none | No story or test replaces console.error or console.warn with an implementation that bypasses the guard; the Tooltip and IconButton stories still assert their marked diagnostics and keep the published Storybook's console clean, or say why both cannot hold; an unmarked plain-string error said inside one of those stories fails it, shown once by a planted control. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
@@ -8390,6 +8395,10 @@ From the KN-344 roast. Both screens hand the confirmation a fallback of querySel
 
 **Evidence.** f0b0702: FocusAfterDeletingInAColumn deletes the rejected column's middle card and finds focus on the card after it by name, then its last card and the card before it by name; FocusAfterDeleting names the emptied column's Add Card row; the network's story deletes the second of three people and names the third; all failed on the old first-card fallback, and four plants, one per branch, each fail their step
 
+**Roasts.**
+
+- round 1: C:\Users\sinaj\AppData\Local\Temp\claude-roast\2b1874631dd1\20260914T202156-task-kn-472-the-focus-fallback-lands-on-the-first-car-77e745.md, filed none, dismissed: Nothing to dismiss: the round found no defect. It confirmed that the landing is computed from the same cardsOf and shown order the screens render and keeps the card's own element, so a later search, column switch, drag or storage change leaves it the same card or disconnects it to the board; that bulk deletions and cards hidden or collapsed fall back sensibly; that the required middle card case and the before, Add Card and grid branches are asserted; and that no comment or doc overclaims.
+
 ### `KN-473` The focus fallback is skipped when the modal unmounts instead of closing
 
 - **status** backlog · **severity** medium · **points** 2 · **area** web · **objective** OKR-1
@@ -8733,7 +8742,7 @@ From KN-477's review, W-04, C-01 and C-02, confirmed: draft.ts accepts only yyyy
 
 ### `KN-495` The board screen calls the live API itself, so its Adding story fails without a server
 
-- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-477
 

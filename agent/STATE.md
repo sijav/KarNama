@@ -39,23 +39,23 @@ tabs.
 KN-352, KN-356, KN-431 and KN-532, their roasts filing KN-527 to KN-537; KN-419,
 filing KN-538 and KN-539; KN-437 and KN-438, filing KN-540 and KN-541; KN-440,
 filing KN-542 to KN-545; KN-446, filing KN-546; KN-464, filing KN-547 and
-KN-548; KN-465, filing KN-549; KN-466, filing KN-550; KN-467, the job modal's
-Enter proved with a real key (fa12b5b), its roast finding nothing.
+KN-548; KN-465, filing KN-549; KN-466, filing KN-550; KN-467, its roast finding
+nothing; KN-469, F6 measured to reach the page in Chrome 152 and Playwright's
+Firefox 151 on Windows and the bar leaving Shift+F6 alone (6e2a16d), filing
+KN-552 and KN-553.
 
-**KN-469 (6e2a16d)**: KN-330's roast said browsers take F6 before the page. It
-was measured instead, on Windows 11 build 26200 with keys injected by
-`SendInput`, in Chrome 152.0.7977.83 and Playwright's Firefox 151 build, no other
-Firefox being installed: the page hears F6 first, `preventDefault` keeps focus in
-the page, and without it the browser takes focus. F6 stays. The plan review
-found the bar also took Shift+F6, the browsers' way back through their panes; the
-guard now leaves it alone, and the story reads each default. The measurement's
-table is in the plan beside the bar. Its roast filed **KN-552**, the comments and
-docs speaking for browsers in general, and **KN-553**, a Mac sending no F6
-without Fn.
+**KN-472 (f0b0702)**: deleting a card lands focus on the card after it in its
+column, else the one before, else the column's Add Card row, else the board, and
+on the network on the person after, else before, else the page. The landing is
+chosen from `cardsOf` and `shown` when the reader asks to delete and found in the
+page by place. `FocusAfterDeletingInAColumn` deletes the rejected column's middle
+card, then its last; `FocusAfterDeleting` names the emptied column's Add Card row;
+the network's story names the person after. Four plants, one per branch, fail.
+Its roast found nothing.
 
-**KN-551**, filed on the way: `core/api/session.test.ts` fails both its cases
-when the unit project runs straight after storybook browser runs, seen twice
-today, and passes alone and in a quiet full run.
+**KN-551**: `core/api/session.test.ts` fails both its cases when the unit project
+runs straight after storybook browser runs, seen twice today, and passes alone
+and in a quiet full run.
 
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
 to no story; its note lists every arm by line, 5 points in the backlog.
@@ -63,10 +63,10 @@ to no story; its note lists every arm by line, 5 points in the backlog.
 **What fails in a full run, and why**: the web unit project passes whole, 1382,
 when nothing else is running, KN-551 otherwise. The storybook project fails the
 five modal stories KN-494 carries, four of them in `JobModal.stories.tsx`, the
-board's `Adding`, which calls the live API, KN-495, and the Job Card's `Pressed`
-in parallel only, KN-365's kind. The API's 156 tests pass and its coverage gate
-fails on auth and extraction files, KN-486. Of the e2e suite, only
-`two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
+board's `Adding`, which calls the live API, KN-495, in progress, and the Job
+Card's `Pressed` in parallel only, KN-365's kind. The API's 156 tests pass and
+its coverage gate fails on auth and extraction files, KN-486. Of the e2e suite,
+only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
 
 ## The owner's rules, most recent first
 
@@ -100,21 +100,16 @@ fails on auth and extraction files, KN-486. Of the e2e suite, only
 
 ## The next step
 
-KN-472 is in progress: deleting a card lands focus on the first card of the whole
-board, since both screens hand the Confirm modal `querySelector('article
-button')`. The plan,
-`apps/web/src/screens/#KN-472 - The focus fallback lands on the first card of the whole board.md`,
-works out the landing when the reader asks to delete, while the cards are still
-in the page: in the first deleted card's column, the cards after it, nearest
-first, then those before it, then that column's Add Card row, found by position
-through refs on the desktop's row of columns and a phone's column; on the network,
-the people after and before it in the grid. The Confirm modal takes the first still
-in the page, else the board or the page. Red first: a new
-`FocusAfterDeletingInAColumn` on the fixture board's rejected column, middle then
-last; `FocusAfterDeleting` naming the emptied column's Add Card row; the network's
-`FocusAfterDeletingFromTheModal` deleting the second of three people. Its plan
-review with Codex was running when this was written; do not edit the screens,
-their stories or their docs until it lands.
+KN-495 is in progress: the board screen imports `extractJob` from `core/api`
+itself, so its `Adding` story fails with no server. Red first ran twice on
+2026-09-14, with `.env.local`'s `localhost:4000` address and with `VITE_API_URL`
+empty, and both failed at line 516, the Review form never coming. The plan,
+`apps/web/src/screens/#KN-495 - The board screen calls the live API itself.md`,
+gives `JobsScreen` a required `onExtract`, which `App` fills with `extractJob`; the
+Jobs stories' meta hands it an `fn` stand-in that gives back the link, and
+`Adding` asserts the call; `### onExtract` goes in both docs. The plant puts the
+import back. Its plan review with Codex was running when this was written; the
+drafts are in the session's scratchpad.
 
 ## What to read first
 
