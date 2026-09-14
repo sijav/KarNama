@@ -35,23 +35,24 @@ filed KN-519 and KN-520, its audit KN-512 to KN-514 and KN-518. **Blocked on the
 owner, asked 2026-09-14 in chat**: KN-515 a phone board header's add button,
 KN-516 a phone board's sort row, KN-517 history's place among the modal's tabs.
 
-**Closed today since**: KN-483 (bab5444), `postingText` linear on a hostile
-page, KN-521 filed; KN-401 (fd9338e), the console guard checked, two
-regressions of this session fixed in 723610d, its roast filed KN-522 and
-KN-523; KN-403 (a264964), `runSchemaCommand` tested in process, its roast filing
-nothing; KN-405 (18343d2), `parseStoryDoc` reports a stray heading, an open
-fence and an empty entry, its roast filed KN-524; KN-423 (5159f0f), the Checkbox
-gives aria-label and aria-labelledby to its input, where MUI 9 had put them on
-the span round it, so not one job card or contact card checkbox had a name; its
-roast filed KN-525, the network stories' stale comments, and KN-526, the
-Checkbox docs' claim that only the aria attributes name it.
+**Closed today since**: KN-483 (bab5444), KN-521 filed; KN-401 (fd9338e), its
+roast filed KN-522 and KN-523; KN-403 (a264964), its roast filing nothing;
+KN-405 (18343d2), its roast filed KN-524; KN-423 (5159f0f), the Checkbox names
+its input, its roast filed KN-525 and KN-526; **KN-428 (63f6870)**, a phone
+starts a selection with a press held on a card, as Card / Mobile 491:751 and
+the Checkbox 204:11 say in their descriptions: `useHold` in
+`shared/job-card/hold.ts`, a `selecting` prop the board passes, the phone
+checkbox folded at rest in the keyboard's path, the e2e board test holding a
+real touch. Its plan and Codex's plan review sit beside JobCard; its task roast
+is with Codex. KN-527 carries the same gap on a tablet. Safari on an iPhone was
+not checked.
 
-**KN-427 re-pointed, not worked**: taken, measured, and JobsScreen leaves 52 of
-its 149 branch arms to no story, 26 of them KN-477's drag handlers. Its note
-lists every arm by line; it is back in the backlog at 5 points.
+**KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
+to no story, 26 of them KN-477's drag handlers; its note lists every arm by line
+and it waits in the backlog at 5 points.
 
-**What fails in a full run, and why**: the web unit project passes whole. The
-storybook project fails the five modal stories KN-494 carries, the board's
+**What fails in a full run, and why**: the web unit project passes whole, 1367.
+The storybook project fails the five modal stories KN-494 carries, the board's
 `Adding`, which calls the live API, KN-495, and the Job Card's `Pressed` in
 parallel only, KN-365's kind. The API's 156 tests pass and its coverage gate
 fails on auth and extraction files, KN-486.
@@ -88,14 +89,14 @@ owner's question; KN-507, the Settings dialog's Theme and sample-data parts.
 
 ## The next step
 
-KN-428 is in progress: a phone cannot start a selection, so the bulk bar never
-comes up there, and KN-352 and KN-356 wait on it. Codex's 2234d66 showed the
-checkbox at rest on phone cards, which node 491:751 does not draw. Read the file
-first, Mobile Selection 243:325, the Mobile Card Menu 492:7482 and the phone
-card 491:751 with its reactions, for how a phone starts a selection there; if
-the file does not settle it, it is the owner's call, through the question tool.
-Then the plan beside JobCard, its roast with Codex, the build, and a story at 390
-that selects two and deletes them, looked at in both languages and schemes.
+Relay KN-428's roast when it lands, judge it and file what survives as its
+children. KN-352 is in progress: unchecking a phone card's checkbox used to
+unmount it and drop focus to the page. Since KN-428 the checkbox folds instead,
+and unfolds while the keyboard's focus is inside, so focus should now stay; what
+the card still asks is a story that unchecks it by the keyboard and asserts
+where focus is. Do not edit JobCard's files until KN-428's roast has landed: it
+is reading them. Then the plan beside JobCard, its roast, the story, a planted
+unmount that the story must catch, and a look in both languages.
 
 ## What to read first
 
