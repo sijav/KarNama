@@ -42,10 +42,22 @@ is the tablet's gap. **KN-352 (26f86f1)** and **KN-356 (6bf0c27)**: stories
 proving what was already built; their roasts filed KN-531, KN-533, a phone
 cannot select a person on the network page at all, and KN-534. **KN-431
 (38ac449)** on the board and **KN-532 (c06b85f)** on the network page: the bulk
-bar counts, selects and deletes only what the search shows, each story failing
-on the old code first, each checked in the running app in both languages.
-KN-431's roast filed KN-535 and KN-536 and raised KN-419; KN-532's roast is with
-Codex.
+bar counts, selects and deletes only what the search shows. KN-431's roast filed
+KN-535 and KN-536 and raised KN-419; KN-532's filed KN-537.
+
+**KN-419 (30f6b8e)**: another tab's sign-out, sign-in and board now reach every
+open tab, through a `storage` listener in `RecordsProvider` and in the demo
+`AuthProvider`. Measured before: a tab opened before the samples were loaded
+wrote its empty board over all thirty with its next change, and a sign-out left
+the other tab on the board. Proved by `ChangedInAnotherTab`,
+`SignedOutInAnotherTab`, `SignedInInAnotherTab`, and `e2e/two-tabs.spec.ts`,
+which proves what no story can: every story's providers sit under the preview's
+own board, so a story's board keeps the bare key and its providers remount when
+a reader arrives (`AGENTS.md` section 7). Its roast filed **KN-538**, a storage
+event handled late bringing an older board back over a newer write, and
+**KN-539**, two tabs signing in at the same moment each adopting the other's
+session: both are the listeners trusting the event's value rather than what is
+stored.
 
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
 to no story, 26 of them KN-477's drag handlers; its note lists every arm by line
@@ -55,7 +67,8 @@ and it waits in the backlog at 5 points.
 The storybook project fails the five modal stories KN-494 carries, the board's
 `Adding`, which calls the live API, KN-495, and the Job Card's `Pressed` in
 parallel only, KN-365's kind. The API's 156 tests pass and its coverage gate
-fails on auth and extraction files, KN-486.
+fails on auth and extraction files, KN-486. Of the e2e suite, only
+`two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
 
 ## The owner's rules, most recent first
 
@@ -86,15 +99,16 @@ fails on auth and extraction files, KN-486.
 
 ## The next step
 
-Relay KN-532's roast when it lands, judge it and file what survives as its
-children. KN-419 is in progress, raised to high by KN-431's roast: two tabs of
-KarNama each read storage once and write their whole copy on every change, with
-no storage listener, so a tab opened before another tab's changes writes its
-stale records over them, and signing out in one tab leaves the other signed in.
-Read how RecordsProvider and the auth provider load and save, measure the loss
-with two real tabs in Chromium, write the plan beside the records provider,
-roast it, then the storage listeners with a test for each. Do not edit the
-network page's files until KN-532's roast has landed: it is reading them.
+KN-437 is in progress: the story fixtures gain `statusOptions`, the nine statuses
+in the product's own shape, and `records`, the product's own `Records` built
+from them; the board fixture's columns carry their status's id; the three status
+stories read `statusOptions` and lose their maps; and the board's `Board` and
+`InEnglish` stories are seeded from `fixtures(locale).records`, with `Board`
+checking the page against `fixtures(locale).board`. The plan is
+`apps/web/src/shared/story-fixtures/#KN-437 - The board fixture cannot be handed to anything.md`,
+and its roast with Codex was running when this was written. Take what survives
+into the plan, then build it, every new check failing first. After it, `todo
+next`: KN-538 is the medium child of KN-419, and KN-539 waits on it.
 
 ## What to read first
 
