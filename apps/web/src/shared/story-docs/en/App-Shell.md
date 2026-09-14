@@ -84,7 +84,9 @@ Signing in in another open tab reaches this one: a first login's session, with n
 name yet, brings this tab to the name step, and the name saved here is kept on
 that session. That a tab part way through signing in keeps the arriving session
 to save the name on, and drops the code it was waiting on, is checked end to end,
-where the providers are wired as the app wires them.
+where the providers are wired as the app wires them. The story sends the other
+tab's sign-in only once its own provider is listening, since an event that
+arrives before the listener is lost.
 
 ### NobodySignedIn
 

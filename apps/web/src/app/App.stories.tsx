@@ -1,5 +1,6 @@
 import type { I18n } from '@lingui/core'
 import type { StoryObj } from '@storybook/react-vite'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { AuthProvider, sessionFor, STORAGE_KEY as SESSION_KEY } from '../core/auth'
 import { addressOf } from './routes'
@@ -526,15 +527,35 @@ export const SignedOutInAnotherTab: Story = {
   },
 }
 
+// Hides its mark once its children's effects have run, KN-560. A provider adds its
+// storage listener in an effect, which a production canvas runs after the play
+// has started, and an event nobody listens for is lost; React runs a parent's
+// passive effects after its children's, so once this one has run, the provider
+// inside it is listening.
+const ListeningAround = ({ children }: { children: ReactNode }) => {
+  const mark = useRef<HTMLSpanElement>(null)
+  useEffect(() => {
+    if (mark.current) mark.current.hidden = true
+  }, [])
+  return (
+    <>
+      <span data-testid="listening" ref={mark} />
+      {children}
+    </>
+  )
+}
+
 export const SignedInInAnotherTab: Story = {
   globals: { locale: 'fa-IR' },
   decorators: [
     (Story) => (
       // Signed out here, as NobodySignedIn is, so the sign-in arrives from the
       // other tab.
-      <AuthProvider>
-        <Story />
-      </AuthProvider>
+      <ListeningAround>
+        <AuthProvider>
+          <Story />
+        </AuthProvider>
+      </ListeningAround>
     ),
   ],
   play: async ({ canvasElement }) => {
@@ -550,6 +571,11 @@ export const SignedInInAnotherTab: Story = {
     const i18n = i18nFor('fa-IR')
     const name = fixtures('fa-IR').contacts[0]?.fullName ?? ''
     await expect(canvas.getByLabelText(i18n._('Mobile number'))).toBeInTheDocument()
+    // Another tab's write is sent only once this tab's provider listens for it,
+    // KN-560.
+    await waitFor(async () => {
+      await expect(canvas.getByTestId('listening').hidden).toBe(true)
+    })
     const theirs = JSON.stringify(sessionFor(READER, SINCE))
     window.localStorage.setItem(SESSION_KEY, theirs)
     window.dispatchEvent(new StorageEvent(STORED, { key: SESSION_KEY, newValue: theirs }))
