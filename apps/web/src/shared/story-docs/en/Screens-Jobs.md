@@ -115,6 +115,12 @@ The board at a phone's width starting a selection the way the design does, with 
 press held on a card: the bar comes up, every card offers its checkbox, and two
 chosen from two statuses are deleted together after the confirmation.
 
+### UncheckingOnAPhone
+
+The last card chosen on a phone, unchecked by the keyboard: the selection ends and
+the bar goes, focus stays on that checkbox, which stays in view while it has the
+keyboard's focus, and it folds away once focus has left the card.
+
 ### FocusAfterDeleting
 
 The control that asks to delete a job opportunity is on that job opportunity, so

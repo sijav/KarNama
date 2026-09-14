@@ -781,6 +781,81 @@ export const SelectingOnAPhone: Story = {
   },
 }
 
+export const UncheckingOnAPhone: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-352: the last card chosen on a phone, unchecked by the keyboard, ends
+    // the selection and leaves focus on its checkbox, which stays in view while
+    // it has that focus and folds once focus has left the card. The checkbox was
+    // once drawn only while its card was selected, so unchecking took it out of
+    // the page and focus fell to the body. The runner's own viewport and keys,
+    // which only the runner has, KN-225, the viewport put back after.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const browser = await import('vitest/browser')
+    const canvas = within(canvasElement)
+    const doc = canvasElement.ownerDocument
+    const set = fixtures('fa-IR')
+    const columns = defaultStatuses((token) => set.names[token])
+    const first = set.jobs[0]?.title ?? ''
+    const before = { width: window.innerWidth, height: window.innerHeight }
+    try {
+      await browser.page.viewport(PHONE.width, PHONE.height)
+      await waitFor(async () => {
+        await expect(canvas.getByRole('button', { name: new RegExp(columns[1]?.name ?? '') })).toBeInTheDocument()
+      })
+      const title = canvas.getByRole('button', { name: first })
+      const card = title.closest('article')
+      if (!card) throw new Error('the card has no article around it')
+
+      // The one card chosen, by a press held on it, KN-428. Its checkbox is found
+      // once the card is chosen, so a card that draws it only while chosen, the
+      // bug as filed, still reaches the keys below and fails where focus is
+      // asserted. It unfolds over 250 ms, and the keys wait for that unfold to
+      // finish, on its own transitions' promises: any transition on it after
+      // Space is then one Space began. The first run asserted too soon and caught
+      // the unfold.
+      touch(title, 'pointerdown')
+      await expect(await canvas.findByRole('region', { name: 'کارهای گروهی' }, { timeout: 2000 })).toBeInTheDocument()
+      touch(title, 'pointerup')
+      const check = within(card).getByRole('checkbox')
+      const fold = check.closest('.KarnamaJobCard-check')
+      if (!(fold instanceof HTMLElement)) throw new Error('the checkbox has no fold around it')
+      await Promise.all(fold.getAnimations().map((animation) => animation.finished))
+
+      // The keyboard reaches its checkbox from the title and unchecks it with
+      // Space. It was the last one chosen, so the board stops selecting: waited
+      // for on the bar going rather than on the checkbox, which a card that took
+      // its checkbox out of the page would never show unchecked.
+      title.focus()
+      await browser.userEvent.tab({ shift: true })
+      await expect(check).toHaveFocus()
+      await browser.userEvent.keyboard('{Space}')
+      await waitFor(async () => {
+        await expect(canvas.queryByRole('region', { name: 'کارهای گروهی' })).toBeNull()
+      })
+
+      // Focus is still on that checkbox, unchecked and in view. A fold takes
+      // 250 ms and a checkbox part way through one still reads as seen, so what
+      // is asserted is that no fold is under way on it, KN-352's plan review.
+      await expect(check).toHaveFocus()
+      await expect(check).not.toBeChecked()
+      await expect(fold.getAnimations()).toHaveLength(0)
+      await expect(seen(check)).toBe(true)
+
+      // Once focus has left the card, back to the chips before it, the checkbox
+      // folds away as the desktop's does.
+      await browser.userEvent.tab({ shift: true })
+      await expect(card.contains(doc.activeElement)).toBe(false)
+      await expect(doc.activeElement).not.toBe(doc.body)
+      await waitFor(async () => {
+        await expect(seen(check)).toBe(false)
+      })
+    } finally {
+      await browser.page.viewport(before.width, before.height)
+    }
+  },
+}
+
 export const FocusAfterDeleting: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
