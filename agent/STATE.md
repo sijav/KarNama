@@ -35,37 +35,33 @@ on the owner, asked 2026-09-14 in chat**: KN-515 a phone board header's add
 button, KN-516 a phone board's sort row, KN-517 history's place among the modal's
 tabs.
 
-**Closed today, earlier**: KN-483, KN-401, KN-403, KN-405, KN-423, KN-428 (a
-phone's held press selects), KN-352, KN-356, KN-431 and KN-532 (the bulk bar
-follows the search). Their roasts filed KN-527 to KN-537.
-
-**KN-419 (30f6b8e)**: another tab's sign-out, sign-in and board reach every open
-tab, proved by three stories and `e2e/two-tabs.spec.ts`, which proves what no
-story can, since every story's providers sit under the preview's own board
-(`AGENTS.md` section 7). Its roast filed **KN-538** and **KN-539**.
-
-**KN-437 (85947b4)** and **KN-438 (dd579f0)**: the story fixtures hand the board
-to the product as `statusOptions` and `records`, five stories lost their own
-status maps, and the seeded board is uneven, custom-2 empty, new three, rejected
-six. KN-437's roast filed **KN-540** and **KN-541**; KN-438's filed nothing.
-
-**KN-440 (28b0437)**: a status keeps its column when its colour changes, the
-order ranking the design's five by id. Its plan review filed **KN-542** and
-**KN-543**; its roast filed **KN-544**, the board still collapsing a column by
-its colour, and **KN-545**, its story not proving the recolour.
+**Closed today, earlier**: KN-483, KN-401, KN-403, KN-405, KN-423, KN-428,
+KN-352, KN-356, KN-431 and KN-532, their roasts filing KN-527 to KN-537; KN-419,
+two tabs agreeing, roast filed KN-538 and KN-539; KN-437 and KN-438, the story
+fixtures' records and an uneven seeded board, roast filed KN-540 and KN-541;
+KN-440, a status keeping its column when recoloured, plan review filed KN-542 and
+KN-543, roast filed KN-544 and KN-545.
 
 **KN-446 (a1fab80)**: the Icon Button forwards exactly the props its types name,
-by name through `forwarded`, MUI's clone marker declared with why; its story
-`ForwardsWhatItDeclares` failed on the old rest spread. Measured on the way:
-`InATooltip`'s console spy starts too late to hear MUI's forwarding error, noted
-on **KN-449**, and the project's console guard hears React's warnings only,
-KN-401. Its roast filed **KN-546**, the story trying three undeclared props on
-the button shape and none on the link.
+MUI's clone marker declared with why. Measured on the way: `InATooltip`'s console
+spy starts too late to hear MUI's forwarding error, noted on **KN-449**, and the
+project's console guard hears React's own warnings only, KN-401. Its roast filed
+**KN-546**.
+
+**KN-464 (c483ccd)**: every field tells a phone's keyboard what it holds and what
+its key does. The Input takes `enterKeyHint`; the sign-in's keys say `send`, `go`
+and `done`; every single-line field of the contact modal, the add form, the job
+modal's link and the rename says `done`; the contact modal's email, phone and link
+take their types, and all six of its fields `autoComplete="off"`, since they hold
+another person's details. The Search Bar keeps `type="search"` and no hint, and
+what its key should do is **KN-547**. A reader, `shared/story-fixtures/keyboard.ts`,
+serves the keyboard stories; `enterKeyHint` joined the lint rule's structural
+props. Its roast filed **KN-548**, the fields the stories leave unread.
 
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
 to no story; its note lists every arm by line, 5 points in the backlog.
 
-**What fails in a full run, and why**: the web unit project passes whole, 1373.
+**What fails in a full run, and why**: the web unit project passes whole, 1379.
 The storybook project fails the five modal stories KN-494 carries, the board's
 `Adding`, which calls the live API, KN-495, and the Job Card's `Pressed` in
 parallel only, KN-365's kind. The API's 156 tests pass and its coverage gate
@@ -99,20 +95,22 @@ fails on auth and extraction files, KN-486. Of the e2e suite, only
   always with `--area`.
 - **Plans live beside the work**, `#<id> - <title>.md`, checked by
   `roast.py plan` before building, and they stay. Run `roast.py` from the
-  repository root, or it leaves a `.claude/` wherever it ran.
+  repository root, or it leaves a `.claude/` wherever it ran. Write any long
+  script with the Write tool: this shell refuses long here-documents on quotes.
 
 ## The next step
 
-KN-464 is in progress: the fields tell a phone's keyboard nothing. Much of the
-card already holds, so the plan,
-`apps/web/src/shared/input/#KN-464 - The fields tell a phone's keyboard nothing.md`,
-adds what is missing: `enterKeyHint` on the Input and on each field, saying what
-Enter does in its form since KN-463; the contact modal's email, phone and link
-keyboards; `autoComplete="off"` where a field holds another person's details; and
-stories that read the attributes off the rendered inputs in both languages. Its
-roast with Codex was running when this was written; do not edit the Input, the
-sign-in, the contact modal, the add form, the job modal, the board or the Search
-Bar until it lands. Then build it red first, as the plan's tests say.
+KN-465 is in progress: no test reads `mockCode` off the provider that sent the
+code, which KN-462's exit asked for. The plan,
+`apps/web/src/core/auth/#KN-465 - Nothing reads mockCode off the provider that sent the code.md`,
+adds `core/auth/AuthProvider.stories.tsx`, titled `Core/AuthProvider`: a provider
+of the story's own around the real `AuthScreen` and a probe reading `useAuth()`,
+comparing the code the provider holds with the code the screen draws, after a
+send and after a resend, in Persian and in English, as `Core/PreferencesProvider`'s
+probe does. **KN-466** owns deterministic codes and the first code no longer
+signing in; this card does not touch it. Its plan review with Codex was running
+when this was written; drafts are in the session's scratchpad. Build it when the
+review is judged, with the two plants the plan names.
 
 ## What to read first
 
