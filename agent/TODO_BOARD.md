@@ -13,6 +13,12 @@ Project **KarNama** · 214 of 523 tasks done · 484 of 1071 points.
 | 1 | OKR-1 | MVP: the pages | now | 181 | 136 |
 | 2 | OKR-2 | Everything after the MVP | later | 126 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-405` | The story-docs parser still absorbs a # or #### heading, an unclosed fence and an empty entry without a problem | high | 2 | web | none | parseStoryDoc reports, with its line, a heading of level one or of level four and deeper outside a fence, a fence still open at the end of the file, at the line it opened, and an entry with no prose; each has a unit test asserting its message; the guard still passes on every docs file; AGENTS.md's sentence on the format lists what fails it and claims no more. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 214 of 523 tasks done · 484 of 1071 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (298)
+## Backlog (297)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -37,7 +43,6 @@ Project **KarNama** · 214 of 523 tasks done · 484 of 1071 points.
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-352` | Unchecking the phone card's checkbox removes the control that holds focus, and focus falls to the page | high | 2 | web | KN-428 | Unchecking the phone card's checkbox leaves focus on the card, either on a checkbox that stays and folds as the desktop's does or on the title, and a story unchecks it by keyboard and asserts where focus is. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
-| `KN-405` | The story-docs parser still absorbs a # or #### heading, an unclosed fence and an empty entry without a problem | high | 2 | web | none | parseStoryDoc reports, with its line, a heading of level one or of level four and deeper outside a fence, a fence still open at the end of the file, at the line it opened, and an entry with no prose; each has a unit test asserting its message; the guard still passes on every docs file; AGENTS.md's sentence on the format lists what fails it and claims no more. |
 | `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
 | `KN-423` | The Contact Card's checkbox has no accessible name, though the card sets one | high | 2 | web | none | The contact card's checkbox is named for whoever it selects, asserted by a story that finds it by that name; the Checkbox component forwards the accessible name whatever else it is given, with its own test. |
 | `KN-427` | JobsScreen still has fifteen uncovered branches, seven of them a story could reach | high | 2 | web | none | Every branch of JobsScreen.tsx is either taken by a story or has a comment saying which state it belongs to and why no reader can reach it. |
@@ -7363,7 +7368,7 @@ CHILD OF KN-167, recorded in prose because board.json cannot express parent_task
 
 ### `KN-405` The story-docs parser still absorbs a # or #### heading, an unclosed fence and an empty entry without a problem
 
-- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-007
 
