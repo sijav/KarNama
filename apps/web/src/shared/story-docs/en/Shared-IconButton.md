@@ -92,7 +92,8 @@ anywhere.
 ### BlankName
 
 A button given a blank name beside one given a real name: the blank one is left
-out and reported in the console, and the named one renders.
+out and reported, and the named one renders. The story holds the report back
+rather than printing it, on its own canvas and on this page.
 
 ### InATooltip
 

@@ -4,6 +4,7 @@ import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { semantic, spacing, status } from '../../theme/tokens'
+import { passOnUnmarked } from '../console-guard'
 import { ICON_NAMES } from '../icon'
 import { LanguageFlag } from '../language-flag'
 import { fixtures } from '../story-fixtures'
@@ -162,13 +163,18 @@ export const KeyboardOnly: Story = {
 
 export const BlankName: Story = {
   // A blank name is refused rather than rendered nameless, KN-311: that button
-  // is left out and reported in the console, and the named one beside it
-  // renders, so the mistake stays at the button instead of taking the screen
-  // down. The console is watched from before the render, since the report comes
-  // as the button mounts. A fixed pair, so no control applies.
+  // is left out and reported, and the named one beside it renders, so the
+  // mistake stays at the button instead of taking the screen down. A fixed pair,
+  // so no control applies.
   parameters: { controls: { disable: true } },
+  // The report is the point, so it is held back rather than printed, on this
+  // canvas and on the Docs page, which runs this beforeEach too; anything
+  // unmarked still reaches the console as it was, and KN-401's guard in the
+  // runner, KN-522. Watched from before the render, since the report comes as
+  // the button mounts, KN-554.
   beforeEach: () => {
-    const report = spyOn(console, 'error')
+    const through = console.error.bind(console)
+    const report = spyOn(console, 'error').mockImplementation(passOnUnmarked(through))
     return () => {
       report.mockRestore()
     }
@@ -181,8 +187,13 @@ export const BlankName: Story = {
   ),
   play: async ({ canvasElement }) => {
     const row = within(canvasElement).getByTestId('row')
+    // The report comes from an effect, which a production canvas, rendering
+    // without act, can run after the play has started: waited for rather than
+    // read at once, KN-554.
+    await waitFor(async () => {
+      await expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/aria-label is blank/u))
+    })
     await expect(within(row).getAllByRole('button')).toHaveLength(1)
-    await expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/aria-label is blank/u))
   },
 }
 
