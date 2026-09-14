@@ -101,3 +101,17 @@ The ring round the square stays whole, because it is drawn in the room the
 Checkbox keeps. The story checks that every pixel of the ring lies inside the
 host and that the ring is at least the square's two pixel perimeter. The tick
 and the dash are its controls; a disabled Checkbox takes no focus.
+
+### Named
+
+Named with `aria-label`, the word Select and a person's name in the reader's
+language, as a Contact Card names its own, and found by that name: the name
+reaches the input the checkbox role belongs to, not the span round it. Its
+Controls are off, since a name typed there would be one the page never draws in
+both languages.
+
+### LabelledBy
+
+Named by a visible label it points at with `aria-labelledby`, on a checkbox of
+its own, since that name would outrank an `aria-label` given beside it. Its
+Controls are off for the same reason as Named's.

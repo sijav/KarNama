@@ -1,10 +1,15 @@
+import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
+import { useId } from 'react'
 import { expect, fn, userEvent, within } from 'storybook/test'
+import { usePreferences } from '../../core/preferences'
+import { i18nFor } from '../../i18n'
 import { contrast } from '../../theme/darkMode'
-import { semantic } from '../../theme/tokens'
+import { semantic, spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
-import { Checkbox } from './Checkbox'
+import { fixtures } from '../story-fixtures'
+import { Checkbox, type CheckboxProps } from './Checkbox'
 
 // A token's colour as the browser computes it, so it can be compared with a
 // computed style. The browser does the conversion rather than a hand-written
@@ -320,5 +325,60 @@ export const FocusedInAClippingHost: Story = {
     const band =
       rounded(square.width + 2 * reach, square.height + 2 * reach, corner + reach) - rounded(square.width + 2 * offset, square.height + 2 * offset, corner + offset)
     await expect(band - 4 * (square.width + square.height)).toBeGreaterThanOrEqual(0)
+  },
+}
+
+// «انتخاب» and a person from the story fixtures, in the reader's language, as a
+// Contact Card names its own checkbox. Drawn in the render, since a name typed
+// into Controls would be one the page never draws in both languages.
+const NamedCheckbox = (args: CheckboxProps) => {
+  const { i18n } = useLingui()
+  const { locale } = usePreferences()
+  return <Checkbox {...args} aria-label={`${i18n._('Select')} ${fixtures(locale).contacts[0]?.fullName ?? ''}`} />
+}
+
+// A visible label beside the checkbox, which it points at by id.
+const LabelledCheckbox = (args: CheckboxProps) => {
+  const { i18n } = useLingui()
+  const label = useId()
+  return (
+    <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: `${spacing.xs}px` }}>
+      <Checkbox {...args} aria-labelledby={label} />
+      <Box component="span" id={label}>
+        {i18n._('Select all')}
+      </Box>
+    </Box>
+  )
+}
+
+export const Named: Story = {
+  globals: { locale: 'fa-IR' },
+  parameters: { controls: { disable: true } },
+  render: (args) => <NamedCheckbox {...args} />,
+  play: async ({ canvasElement }) => {
+    // KN-423: the name reaches the input the checkbox role belongs to. MUI 9
+    // spreads a prop it does not know onto the span round the input, so the
+    // name sat there, and the checkbox itself had none.
+    const i18n = i18nFor('fa-IR')
+    const name = `${i18n._('Select')} ${fixtures('fa-IR').contacts[0]?.fullName ?? ''}`
+    const box = within(canvasElement).getByRole('checkbox', { name })
+    await expect(box).toHaveAttribute('aria-label', name)
+    await expect(rootOf(canvasElement)).not.toHaveAttribute('aria-label')
+  },
+}
+
+export const LabelledBy: Story = {
+  globals: { locale: 'fa-IR' },
+  parameters: { controls: { disable: true } },
+  render: (args) => <LabelledCheckbox {...args} />,
+  play: async ({ canvasElement }) => {
+    // The other way to name it, a visible label it points at, on a checkbox of
+    // its own: aria-labelledby outranks aria-label, so one checkbox with both
+    // would not prove the aria-label route, KN-423.
+    const i18n = i18nFor('fa-IR')
+    const name = i18n._('Select all')
+    const box = within(canvasElement).getByRole('checkbox', { name })
+    await expect(box).toHaveAttribute('aria-labelledby', within(canvasElement).getByText(name).id)
+    await expect(rootOf(canvasElement)).not.toHaveAttribute('aria-labelledby')
   },
 }

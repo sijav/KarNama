@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
-import type { Locale } from '../../i18n'
+import { i18nFor, type Locale } from '../../i18n'
 import { elevation, semantic, spacing, status } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
@@ -202,12 +202,14 @@ export const Pressed: Story = {
 export const Selected: Story = {
   args: { selected: true },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     // Node 137:44 Selected: bg/brand/container, the lifted edge, the checkbox
     // checked and the delete in view.
     const card = cardOf(canvasElement)
     await expect(getComputedStyle(card).backgroundColor).toBe(computed(card, 'backgroundColor', semantic['bg/brand/container']))
-    await expect(within(card).getByRole('checkbox')).toBeChecked()
+    // Named for the job opportunity it selects, on the input the role belongs
+    // to, KN-423.
+    await expect(within(card).getByRole('checkbox', { name: `${i18nFor('fa-IR')._('Select')} ${args.title}` })).toBeChecked()
     await expect(getComputedStyle(card).boxShadow).toContain(computed(card, 'boxShadow', elevation.card).split(', ')[0] ?? 'missing')
   },
 }
@@ -344,9 +346,11 @@ export const LongTitle: Story = {
 export const InEnglish: Story = {
   args: jobIn('en-US', 0),
   globals: { locale: 'en-US' },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     // Left to right, the stripe is at the left.
     const card = cardOf(canvasElement)
     await expect(Math.round(stripeOf(card).getBoundingClientRect().left - card.getBoundingClientRect().left)).toBe(0)
+    // Its checkbox named in English, folded at rest, KN-423.
+    await expect(within(card).getByRole('checkbox', { name: `${i18nFor('en-US')._('Select')} ${args.title}` })).not.toBeChecked()
   },
 }

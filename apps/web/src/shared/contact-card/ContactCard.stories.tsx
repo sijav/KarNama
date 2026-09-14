@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
-import type { Locale } from '../../i18n'
+import { i18nFor, type Locale } from '../../i18n'
 import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
@@ -192,7 +192,8 @@ export const FullSelected: Story = {
     // checkbox checked and the delete in view.
     const card = cardOf(canvasElement)
     await expect(getComputedStyle(card).backgroundColor).toBe(computedColour(card, semantic['bg/brand/container']))
-    await expect(within(card).getByRole('checkbox')).toBeChecked()
+    // Named for whoever it selects, on the input the role belongs to, KN-423.
+    await expect(within(card).getByRole('checkbox', { name: `${i18nFor('fa-IR')._('Select')} ${args.contact.name}` })).toBeChecked()
     await userEvent.click(deleteOf(card))
     await expect(args.onDelete).toHaveBeenCalledTimes(1)
   },
@@ -288,6 +289,10 @@ export const InEnglish: Story = {
   globals: { locale: 'en-US' },
   play: async ({ args, canvasElement }) => {
     await expect(openerOf(canvasElement, args.contact.name)).toBeVisible()
+    // Its checkbox named in English too, folded at rest, KN-423.
+    const i18n = i18nFor('en-US')
+    const name = `${i18n._('Select')} ${args.contact.name}`
+    await expect(within(cardOf(canvasElement)).getByRole('checkbox', { name })).not.toBeChecked()
   },
 }
 

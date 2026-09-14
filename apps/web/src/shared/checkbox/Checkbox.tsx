@@ -130,7 +130,7 @@ const Frame = ({ mark, disabled }: { mark: Mark; disabled: boolean }) => (
 
 // Composes MUI's Checkbox because indeterminate is a DOM PROPERTY, assigned to
 // the input through its ref; spread onto an <input>, React would drop it.
-export const Checkbox = ({ indeterminate = false, disabled = false, ...rest }: CheckboxProps) => {
+export const Checkbox = ({ indeterminate = false, disabled = false, 'aria-label': label, 'aria-labelledby': labelledBy, ...rest }: CheckboxProps) => {
   // The node in state, not a ref object: the first render genuinely has no
   // node, the callback sets it, and the effect re-runs, including when React
   // remounts the input. A ref would make the null check below unreachable.
@@ -148,8 +148,11 @@ export const Checkbox = ({ indeterminate = false, disabled = false, ...rest }: C
   <MuiCheckbox
     {...rest}
     // `slotProps.input.ref`, not `inputRef`: MUI 9 removed `inputRef` from
-    // SwitchBase, and an unknown prop is silently ignored.
-    slotProps={{ input: { ref: setInput } }}
+    // SwitchBase, and an unknown prop is silently ignored. The name goes to the
+    // input too, the element the checkbox role sits on: SwitchBase spreads a prop
+    // it does not know onto the span round it, so a card's aria-label named the
+    // span and left the checkbox with no name at all, KN-423.
+    slotProps={{ input: { ref: setInput, 'aria-label': label, 'aria-labelledby': labelledBy } }}
     disabled={disabled}
     indeterminate={indeterminate}
     icon={<Frame mark="none" disabled={disabled} />}
