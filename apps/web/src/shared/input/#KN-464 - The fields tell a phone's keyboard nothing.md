@@ -45,13 +45,17 @@ What is not:
      name's step finishes, `done`;
    - the contact modal, the add flow's form, the job modal's posting link and the
      board's rename save, `done`, on every single-line field;
-   - the Search Bar, which filters as the reader types, `search`;
+   - the Search Bar, which filters as the reader types, keeps its `type="search"`
+     and no hint, as the plan review below settled, KN-547; this line said
+     `search` until then, and was corrected after KN-464's roast;
    - the add flow's paste field and the description are several lines, where the
      key makes a new line, and are left as the browser has them.
 3. **The contact modal's fields take their keyboards**: the email `type="email"`,
-   the phone `type="tel"` and `inputMode="tel"`, the social link `type="url"`.
+   the phone `type="tel"`, the social link `type="url"`, and no `inputMode` where
+   the type already says it, as the plan review below settled; this step named an
+   `inputMode` for the phone until then.
 4. **Autocomplete where it is the reader's own**: the sign-in fields already, and
-   `off` on the contact modal's name, role, company, email and phone, which hold
+   `off` on every field of the contact modal, the social link included, which hold
    somebody else's: a `name`, `email` or `tel` there would offer the reader their
    own details for another person's record.
 
@@ -65,8 +69,11 @@ What is not:
   hint and autocomplete.
 - **The contact modal**: a story, `KeyboardsForEachField`, in both languages, that
   reads its six fields.
-- **The rest** by one assertion each in a story that already opens them: the add
-  flow's form, the job modal's link, the board's rename and the Search Bar.
+- **The rest** by assertions in stories that already open them: the job modal's
+  link in `Info` and `InEnglish`, and the board's rename in `Managing`. As built,
+  the add flow's form got a pair of stories of its own, `KeyboardsOnTheForm`, and
+  the Search Bar none, since nothing about it changed; KN-464's roast found the
+  fields these leave unread, filed as its child.
 - **Red first**: every new assertion fails on today's code where it reads an
   enter key hint, and the contact modal's where it reads a type.
 - **Plant**: the Input dropping `enterKeyHint` fails the Input's story and every
