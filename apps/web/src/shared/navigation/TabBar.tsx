@@ -11,8 +11,10 @@ export interface TabBarProps {
 }
 
 // Node 185:19's measures that bind no variable: the bar 72 tall and its one
-// pixel of border/default along the top.
-const HEIGHT = 72
+// pixel of border/default along the top. The height is exported because the
+// page under the bar keeps that much clear at its foot.
+export const TAB_BAR_HEIGHT = 72
+const HEIGHT = TAB_BAR_HEIGHT
 const EDGE = 1
 
 // The phone's navigation of node 185:19: the full width, bg/surface, the same

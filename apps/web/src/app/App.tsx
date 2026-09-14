@@ -5,7 +5,7 @@ import { apiErrorText } from '../core/api'
 import { useAuth } from '../core/auth'
 import { AuthScreen, JobsScreen, NetworkScreen } from '../screens'
 import { Button } from '../shared/button'
-import { Navigation, type Destination } from '../shared/navigation'
+import { Navigation, TAB_BAR_HEIGHT, type Destination } from '../shared/navigation'
 import { SettingsControl } from '../shared/settings'
 import { spacing } from '../theme/tokens'
 import { addressOf, destinationIn } from './routes'
@@ -82,7 +82,7 @@ export const App = () => {
           display: 'flex',
           flexDirection: 'column',
           p: 6,
-          pb: { xs: `calc(72px + env(safe-area-inset-bottom) + ${spacing.lg}px)`, md: 6 },
+          pb: { xs: `calc(${TAB_BAR_HEIGHT}px + env(safe-area-inset-bottom) + ${spacing.lg}px)`, md: 6 },
         }}
       >
         <Box sx={{ display: 'flex', flexShrink: 0, justifyContent: 'flex-end', alignItems: 'center' }}>

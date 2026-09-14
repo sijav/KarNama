@@ -2,4 +2,4 @@ export { CURRENT, DESTINATIONS, useDestinationName, type Destination } from './d
 export { Navigation, type NavigationProps } from './Navigation'
 export { NavItem, type NavItemProps } from './NavItem'
 export { Sidebar, type SidebarProps } from './Sidebar'
-export { TabBar, type TabBarProps } from './TabBar'
+export { TabBar, TAB_BAR_HEIGHT, type TabBarProps } from './TabBar'

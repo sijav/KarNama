@@ -37,6 +37,9 @@ const HEADER_CONTENT = 28
 const EMPTY = 80
 const EDGE = 1
 const FOCUS_RING = 3
+// The ring round a column while a card is dragged over it, and once it lands,
+// drawn inside the column so a neighbour's does not overlap it.
+const DROP_RING = 2
 
 // The Icon Button is a 32 square round its 16 icon, where the header has 28 of
 // height and draws the bare icon at its padding's end, 8 from the count: the
@@ -185,9 +188,9 @@ export const KanbanColumn = ({
     sx: (theme: Theme) => ({
       '& > *': { pointerEvents: stableDropTarget ? 'none' : undefined },
       outline: dropFeedback
-        ? `2px solid ${dropFeedback === 'saved' ? theme.karnama.status[token].base : theme.karnama.semantic['border/focus']}`
+        ? `${DROP_RING}px solid ${dropFeedback === 'saved' ? theme.karnama.status[token].base : theme.karnama.semantic['border/focus']}`
         : undefined,
-      outlineOffset: -2,
+      outlineOffset: -DROP_RING,
     }),
   }
   // Empty when nothing renders: Children.count counts false, null and an empty
