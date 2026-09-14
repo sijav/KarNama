@@ -1,6 +1,7 @@
 import type { StoryObj } from '@storybook/react-vite'
+import { useCallback, useRef, type ReactNode } from 'react'
 import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
-import { AuthProvider, STORAGE_KEY as SESSION_KEY, sessionFor } from '../core/auth'
+import { AuthProvider, STORAGE_KEY as SESSION_KEY, sessionFor, type Session } from '../core/auth'
 import { i18nFor, type Locale } from '../i18n'
 import { allowConsole } from '../shared/console-guard'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
@@ -11,6 +12,35 @@ import { AuthScreen } from './AuthScreen'
 // A number the mock accepts, in the shape the design asks for.
 const PHONE = '09120000000'
 
+// What a story's `codes` parameter holds, when it is a list of numbers.
+const codesOf = (value: unknown): readonly number[] | undefined =>
+  Array.isArray(value) && value.every((entry): entry is number => typeof entry === 'number') ? value : undefined
+
+// A fixed run of codes for a story that must know them, KN-466: each send takes the
+// next number, from zero to below one, and the mock turns it into five digits. Its
+// place is kept in a ref, so a render of the decorator cannot start it over.
+const SeededAuth = ({
+  initial,
+  codes,
+  children,
+}: {
+  initial: Session | null
+  codes: readonly number[] | undefined
+  children: ReactNode
+}) => {
+  const at = useRef(0)
+  const random = useCallback(() => {
+    const value = codes?.[at.current % codes.length] ?? 0
+    at.current += 1
+    return value
+  }, [codes])
+  return (
+    <AuthProvider initial={initial} {...(codes === undefined ? {} : { random })}>
+      {children}
+    </AuthProvider>
+  )
+}
+
 const meta = {
   title: 'Screens/SignIn',
   render: () => <AuthScreen />,
@@ -19,9 +49,13 @@ const meta = {
     (Story, context) => (
       // Nobody is signed in unless the story asks for it: `session` seeds one
       // with no name, which is how the signup step is reached without a code.
-      <AuthProvider initial={context.parameters.session === true ? sessionFor(PHONE, new Date(Date.UTC(2026, 8, 12)).toISOString()) : null}>
+      // `codes` fixes the codes the mock makes, KN-466.
+      <SeededAuth
+        initial={context.parameters.session === true ? sessionFor(PHONE, new Date(Date.UTC(2026, 8, 12)).toISOString()) : null}
+        codes={codesOf(context.parameters.codes)}
+      >
         <Story />
-      </AuthProvider>
+      </SeededAuth>
     ),
   ],
 } satisfies StoryMeta<typeof AuthScreen>
@@ -121,8 +155,18 @@ export const SigningIn: Story = {
 // A phone's screen, the file's 390 by 844.
 const SCREEN = { width: 390, height: 844 }
 
+// The codes the phone story's sends make, KN-466: 0.5 and 0.25 are exact in
+// floating point, so the mock's five digits are exactly these two.
+const FIXED_CODES = [0.5, 0.25]
+const FIRST = '50000'
+const SECOND = '25000'
+
+// The five digits the notice shows now.
+const codeOnScreen = (canvasElement: HTMLElement) => /(\d{5})/.exec(within(canvasElement).getByRole('status').textContent)?.[1] ?? ''
+
 export const SigningInOnAPhone: Story = {
   globals: { locale: 'fa-IR' },
+  parameters: { codes: FIXED_CODES },
   play: async ({ canvasElement }) => {
     // KN-459, the owner on a phone: the code was only ever written to the
     // console, and a phone has no console, so the live product could not be
@@ -138,28 +182,34 @@ export const SigningInOnAPhone: Story = {
       await userEvent.type(canvas.getByLabelText('شماره موبایل'), PHONE)
       await userEvent.click(canvas.getByRole('button', { name: 'ارسال کد' }))
 
-      // The code, where a reader can see it, said plainly to be a stand-in.
+      // The code, where a reader can see it, said plainly to be a stand-in, and
+      // the one the story's fixed source made.
       const shown = await canvas.findByRole('status')
       await expect(shown).toHaveTextContent('هنوز پیامکی واقعاً ارسال نمی‌شود')
-      const digits = /(\d{5})/.exec(shown.textContent)?.[1] ?? ''
-      await expect(digits).toHaveLength(5)
+      await expect(codeOnScreen(canvasElement)).toBe(FIRST)
 
-      // Another code asked for, and the notice shows the NEW one: it could
-      // otherwise go on showing the first while only the second is accepted,
-      // and a reader would type what they can see and be refused, KN-462.
-      // Not "the two differ", which two random five-digit codes need not, but
-      // the thing that matters: what the notice says NOW is what signs the
-      // reader in. A notice left on the first code fails the name step below.
+      // Another code asked for, and the notice changes to it, KN-466: a resend
+      // that did nothing leaves the first showing, and this waits out and fails,
+      // where it used to read whatever five digits were there.
       await userEvent.click(canvas.getByRole('button', { name: 'ارسال کد دیگر' }))
-      const latest = await waitFor(() => {
-        const shown = /(\d{5})/.exec(canvas.getByRole('status').textContent)?.[1] ?? ''
-        if (shown === '') throw new Error('the notice shows no code')
-        return shown
+      await waitFor(async () => {
+        await expect(codeOnScreen(canvasElement)).toBe(SECOND)
       })
 
-      // And the code on the screen is the one that works: typed in, it signs
-      // the reader in, which the name step asks for next on a first login.
-      await userEvent.type(canvas.getByLabelText('کد پنج رقمی'), latest)
+      // The first code no longer signs in: typed in, it is refused, and no name
+      // step comes. The field holds it, so the refusal is of that code.
+      const field = canvas.getByLabelText('کد پنج رقمی')
+      await userEvent.type(field, FIRST)
+      await expect(field).toHaveValue(FIRST)
+      await userEvent.click(canvas.getByRole('button', { name: 'ورود' }))
+      await expect(await canvas.findByText('این کد درست نیست. دوباره امتحان کن.')).toBeInTheDocument()
+      await expect(canvas.queryByLabelText('اسم و فامیل')).toBeNull()
+
+      // And the code on the screen now is the one that works: the field cleared,
+      // since it holds five digits at most, and the new code typed in signs the
+      // reader in, which the name step asks for next on a first login.
+      await userEvent.clear(field)
+      await userEvent.type(field, SECOND)
       await userEvent.click(canvas.getByRole('button', { name: 'ورود' }))
       await waitFor(async () => {
         await expect(canvas.getByLabelText('اسم و فامیل')).toBeInTheDocument()

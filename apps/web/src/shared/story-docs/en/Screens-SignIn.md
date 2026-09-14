@@ -41,8 +41,9 @@ which the screen has nothing left to ask.
 ### SigningInOnAPhone
 
 Signing in on a phone, where there is no console: the code is on the screen,
-said plainly to be a stand-in until a real message is sent, and the story reads
-it from there and finishes signing in.
+said plainly to be a stand-in until a real message is sent. The story knows the
+codes the mock makes, so it sees a resend change the code on the screen, the
+first code refused, and the new one sign the reader in.
 
 ### EnterFinishesTheStep
 

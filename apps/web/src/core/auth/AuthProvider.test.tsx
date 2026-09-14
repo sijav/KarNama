@@ -14,14 +14,14 @@ import { sessionFor } from './auth'
  */
 const PHONE = '09120000000'
 
-const capture = (initial?: ReturnType<typeof sessionFor> | null) => {
+const capture = (initial?: ReturnType<typeof sessionFor> | null, random?: () => number) => {
   let held: AuthValue | undefined
   const Probe = () => {
     held = useContext(AuthContext)
     return <span>{held.session?.phone ?? ''}</span>
   }
   const html = renderToString(
-    <AuthProvider {...(initial === undefined ? {} : { initial })}>
+    <AuthProvider {...(initial === undefined ? {} : { initial })} {...(random === undefined ? {} : { random })}>
       <Probe />
     </AuthProvider>,
   )
@@ -76,6 +76,20 @@ describe('the mocked provider', () => {
     // a session with no name yet, which is the first login.
     expect(held.verify(codes.at(-1) ?? '')).toBeNull()
     expect(JSON.parse(kept.at(-1) ?? '{}')).toMatchObject({ phone: PHONE, name: '' })
+  })
+
+  it('sends the codes its random source makes, a new one on a resend, and accepts only the newest, KN-466', async () => {
+    vi.stubGlobal('localStorage', { getItem: () => null, setItem: () => undefined, removeItem: () => undefined })
+    const codes = sentCodes()
+    // Exact in floating point, so the mock's five digits are exactly these.
+    const turns = [0.5, 0.25]
+    let at = 0
+    const { held } = capture(undefined, () => turns[at++] ?? 0)
+    await held.requestCode(PHONE)
+    await held.resend()
+    expect(codes).toEqual(['50000', '25000'])
+    expect(held.verify('50000')).toBe('wrong')
+    expect(held.verify('25000')).toBeNull()
   })
 
   // What the screen is GIVEN cannot be read here: `capture` renders once with

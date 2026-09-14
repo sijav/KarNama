@@ -100,6 +100,11 @@ const keep = (session: Session | null) => {
 export interface AuthProviderProps {
   /** Seeds who is signed in, for a story or a test. */
   initial?: Session | null
+  /**
+   * The randomness the mock makes its codes from, for a story or a test that must
+   * know them, KN-466. Given nothing, the codes come from `Math.random`.
+   */
+  random?: () => number
   children: ReactNode
 }
 
@@ -112,7 +117,7 @@ export interface AuthProviderProps {
  * real provider replaces `requestCode` and `verify` behind this same interface
  * when the API's auth lands, KN-036.
  */
-export const AuthProvider = ({ initial, children }: AuthProviderProps) => {
+export const AuthProvider = ({ initial, random, children }: AuthProviderProps) => {
   const [session, setSession] = useState<Session | null>(() => (initial === undefined ? stored() : initial))
   const [sent, setSent] = useState<SentCode | null>(null)
   const latest = useRef<Session | null>(session)
@@ -150,15 +155,18 @@ export const AuthProvider = ({ initial, children }: AuthProviderProps) => {
     keep(next)
   }, [])
 
-  const send = useCallback((phone: string) => {
-    const made = sendCode(phone, Date.now())
-    pending.current = made
-    setSent(made)
-    // Where the SMS would have gone. The mock says so out loud rather than
-    // leaving whoever is testing to guess what to type.
-    console.info(`KarNama mock SMS to ${made.phone}: ${made.code}`)
-    return made
-  }, [])
+  const send = useCallback(
+    (phone: string) => {
+      const made = sendCode(phone, Date.now(), random)
+      pending.current = made
+      setSent(made)
+      // Where the SMS would have gone. The mock says so out loud rather than
+      // leaving whoever is testing to guess what to type.
+      console.info(`KarNama mock SMS to ${made.phone}: ${made.code}`)
+      return made
+    },
+    [random],
+  )
 
   const value = useMemo<AuthValue>(
     () => ({
