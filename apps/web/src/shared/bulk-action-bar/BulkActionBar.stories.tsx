@@ -243,15 +243,37 @@ export const ReachedFromInsideTheList: Story = {
     // The announcement names the key, at the moment the bar is there to reach.
     await expect(canvasElement.ownerDocument.body).toHaveTextContent('برای کارهای گروهی F6 را بزن')
 
-    // The runner's own keyboard, KN-225: a key the browser routes, not a
-    // synthetic event the page merely receives.
+    // The runner's own keyboard, KN-225. It shows what the bar does once the page
+    // has a key, and nothing about the browser: the runner's Chromium is
+    // headless, with no panes of its own to take F6 first. What a browser does
+    // with F6 was measured apart, KN-469, and the docs record it: the page hears
+    // F6 first, and a page that prevents its default keeps the focus.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
     const browser = await import('vitest/browser')
-    await browser.userEvent.keyboard('{F6}')
     const bar = barOf(canvasElement)
-    await waitFor(async () => {
-      await expect(bar.contains(canvasElement.ownerDocument.activeElement)).toBe(true)
-    })
+    // Whether each F6's default was prevented, read on the window, which hears a
+    // key after the document, where the bar listens.
+    const prevented: boolean[] = []
+    const record = (event: KeyboardEvent) => {
+      if (event.key === 'F6') prevented.push(event.defaultPrevented)
+    }
+    window.addEventListener('keydown', record)
+    try {
+      // Shift+F6 is how the browsers go back through their panes and frames, so
+      // the bar leaves it alone: focus stays on the row, its default stands.
+      await browser.userEvent.keyboard('{Shift>}{F6}{/Shift}')
+      await expect(middle).toHaveFocus()
+
+      // F6 brings the reader to the bar, its default prevented, which is what
+      // keeps a browser from taking focus out of the page.
+      await browser.userEvent.keyboard('{F6}')
+      await waitFor(async () => {
+        await expect(bar.contains(canvasElement.ownerDocument.activeElement)).toBe(true)
+      })
+      await expect(prevented).toEqual([false, true])
+    } finally {
+      window.removeEventListener('keydown', record)
+    }
 
     // And it got there without walking the list: no row took focus on the way.
     await expect(rows.some((row) => row === canvasElement.ownerDocument.activeElement)).toBe(false)

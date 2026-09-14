@@ -70,11 +70,16 @@ export const BulkActionBar = ({ type, count, onClear, onDelete, onChangeStatus, 
   // 2.1.4 then asks for a way to turn it off; Alt+Shift is how Windows switches
   // keyboard layout, which a Persian reader does constantly; Ctrl+Shift+B and
   // Alt+D are the browser's. F6 is the long-standing key for moving between a
-  // window's regions, it is not a character key, and nothing types it.
+  // window's regions, it is not a character key, and nothing types it. A browser
+  // hands the page F6 before it cycles its own panes, and stays out once the page
+  // prevents the default: measured with real keys in Chrome 152 and Firefox 151
+  // on 2026-09-14, KN-469.
   useEffect(() => {
     if (!selected) return
     const jump = (event: KeyboardEvent) => {
-      if (event.key !== SHORTCUT || event.altKey || event.ctrlKey || event.metaKey) return
+      // Shift+F6 is how the browsers go back through their panes and frames, so
+      // it stays theirs, KN-469.
+      if (event.key !== SHORTCUT || event.shiftKey || event.altKey || event.ctrlKey || event.metaKey) return
       const first = bar.current?.querySelector('button')
       if (!first) return
       event.preventDefault()

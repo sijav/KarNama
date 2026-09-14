@@ -76,3 +76,13 @@ F6 rather than a letter or a chord: a letter is typed into fields, and WCAG
 switches keyboard layout, which a Persian reader does constantly; and the
 obvious chords belong to the browser. F6 is the long-standing key for moving
 between a window's regions, and nothing types it.
+
+A browser hands the page F6 before it uses the key itself, and stays out once the
+page has prevented its default. Measured on 2026-09-14 on Windows 11, build 26200,
+in Chrome 152.0.7977.83 and in Firefox 151.0, Playwright's own build since no
+other Firefox was installed, with keys sent through the operating system: a page
+that did not take F6 heard it and then lost focus to the browser, and a page that
+took it, as the bar does, kept focus. Shift+F6 is how both browsers go back
+through their panes, so the bar leaves it alone. The story's keys come from its
+test runner, whose browser has no panes of its own, so the story shows what the
+bar does with a key and not what a browser does with it first.
