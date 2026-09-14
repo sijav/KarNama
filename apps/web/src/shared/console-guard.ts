@@ -45,9 +45,10 @@ export interface ConsoleGuard {
 
 /**
  * The guard watching the real console, so a story can reach it, and null
- * between tests. A story that provokes a message says so through `allowConsole`
- * rather than replacing the console, which would take the guard off for the
- * rest of that test.
+ * between tests. A story that provokes a message from the runner says so
+ * through `allowConsole`, and one that expects the product's own reports holds
+ * them back with `passOnUnmarked`; neither replaces the console outright, which
+ * would take the guard off for the rest of that test, KN-522.
  */
 let watching: ConsoleGuard | null = null
 
@@ -66,6 +67,22 @@ export const setWatching = (guard: ConsoleGuard | null): void => {
 export const allowConsole = (pattern: RegExp): void => {
   watching?.allow(pattern)
 }
+
+/**
+ * A stand-in for `console.error` in a test that expects the product's own
+ * reports: it holds back what the product marks, so those do not fill the
+ * published Storybook's console, and hands everything else to `through`, the
+ * console as it was, which in a test is the guard, so an unmarked error still
+ * fails the test, KN-522.
+ *
+ * `through` has to be read before the console is replaced: read after a spy has
+ * taken its place, it is the spy, and the stand-in calls itself.
+ */
+export const passOnUnmarked =
+  (through: (...args: unknown[]) => void) =>
+  (...args: unknown[]): void => {
+    if (!isOurs(args)) through(...args)
+  }
 
 /**
  * Wraps `error` and `warn` so anything unmarked is recorded, and everything is

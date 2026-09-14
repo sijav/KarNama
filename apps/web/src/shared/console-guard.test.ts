@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { installConsoleGuard, isOurs, MARK, report } from './console-guard'
+import { installConsoleGuard, isOurs, MARK, passOnUnmarked, report } from './console-guard'
 
 /**
  * The guard is what says "no React warnings", so the guard itself is driven
@@ -73,10 +73,21 @@ describe('the console guard', () => {
   })
 
   it('says what the product says through the real console, marked', () => {
-    const said = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    // Read before the spy takes the console's place, so anything unmarked still
+    // reaches the guard the setup put there, KN-522.
+    const through = console.error.bind(console)
+    const said = vi.spyOn(console, 'error').mockImplementation(passOnUnmarked(through))
     report('Tooltip: its child did not take a ref')
     expect(said).toHaveBeenCalledWith(expect.stringContaining(MARK))
     expect(said).toHaveBeenCalledWith(expect.stringContaining('did not take a ref'))
     said.mockRestore()
+  })
+
+  it('holds back what the product marks and passes everything else on, KN-522', () => {
+    const target = fake()
+    const standIn = passOnUnmarked(target.console.error)
+    standIn(`${MARK} Tooltip: its child did not take a ref`)
+    standIn('Cannot call startTransition while rendering.')
+    expect(target.said).toEqual(['error Cannot call startTransition while rendering.'])
   })
 })

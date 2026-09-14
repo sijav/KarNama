@@ -208,10 +208,10 @@ export const InATooltip: Story = {
     // aria-describedby the Tooltip clones onto its child were dropped and the
     // tip could never open. A console.error from either component is a failure
     // of this story as much as a missing tip is.
-    const said: string[] = []
-    const watching = spyOn(console, 'error').mockImplementation((...args: unknown[]) => {
-      said.push(String(args[0]))
-    })
+    // Watched without being replaced: the spy calls through to the console as it
+    // was, which in the runner is KN-401's guard, so the guard hears what the
+    // story hears, KN-522.
+    const watching = spyOn(console, 'error')
     try {
       const button = within(canvasElement).getByRole('button', { name: 'حذف وضعیت' })
 
@@ -239,7 +239,7 @@ export const InATooltip: Story = {
       await expect(button).toHaveFocus()
       await expect(await within(canvasElement.ownerDocument.body).findByRole('tooltip')).toHaveTextContent('این وضعیت')
 
-      await expect(said).toEqual([])
+      await expect(watching).not.toHaveBeenCalled()
     } finally {
       watching.mockRestore()
     }

@@ -8,6 +8,7 @@ import { formatCount } from '../../i18n/formatCount'
 import { messages as fa } from '../../i18n/locales/fa-IR'
 import { contrast, MIN_CONTRAST } from '../../theme/darkMode'
 import { elevation } from '../../theme/tokens'
+import { allowConsole, passOnUnmarked } from '../console-guard'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Tooltip, TOOLTIP_SURFACE } from './Tooltip'
 
@@ -124,10 +125,14 @@ const HintedExample = ({ title }: { title: string }) => {
   )
 }
 
-// The reports are the point, so each story that expects one captures it
-// rather than printing it: the published Storybook console stays clean.
+// The reports are the point, so each story that expects one captures it rather
+// than printing it: the published Storybook console stays clean. Only the
+// product's own marked reports are held back; anything else goes on to the
+// console as it was, which in the runner is KN-401's guard, so an unmarked error
+// still fails the story, KN-522.
 const captureConsoleErrors = () => {
-  const spy = spyOn(console, 'error').mockImplementation(() => undefined)
+  const through = console.error.bind(console)
+  const spy = spyOn(console, 'error').mockImplementation(passOnUnmarked(through))
   return () => {
     spy.mockRestore()
   }
@@ -290,7 +295,13 @@ export const DescribedAtFocusInPersian: Story = {
 
 export const ReportsATriggerThatDropsItsProps: Story = {
   args: { children: <RefOnlyButton /> },
-  beforeEach: captureConsoleErrors,
+  // A child that drops its props is what this story is about, so MUI's own
+  // development warning about it is provoked on purpose and said to the guard,
+  // KN-522; the product's report is what the story asserts.
+  beforeEach: () => {
+    allowConsole(/not forwarding its props correctly/u)
+    return captureConsoleErrors()
+  },
   play: async () => {
     // KN-233. The node arrived, the props did not. MUI reports this only in
     // development; this is reported in every build, which the production
