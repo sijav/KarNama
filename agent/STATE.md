@@ -42,19 +42,22 @@ fixtures' records and an uneven seeded board, filing KN-540 and KN-541; KN-440, 
 status keeping its column when recoloured, filing KN-542 to KN-545; KN-446, the
 Icon Button forwarding only what its types name, filing KN-546 and a note on
 KN-449; KN-464, every field telling a phone's keyboard what it holds and what its
-key does, filing KN-547 and KN-548.
+key does, filing KN-547 and KN-548; KN-465, a story reading the sign-in code off
+the provider, filing KN-549.
 
-**KN-465 (f19275e)**: a story, `Core/AuthProvider`, reads the sign-in code off the
-provider after a send and after a resend, finds the screen showing exactly that,
-and signs in with the shown code, since `verify` checks the code the provider keeps
-aside, not the one it hands the screen. It passed on the code as it was, a missing
-test, so three deterministic plants are its proof. Its roast filed **KN-549**, the
-story reading the mock's console line.
+**KN-466 (d84eeba)**: `AuthProvider` takes an optional `random` source, handed to
+`sendCode`; the product passes none, so its codes still come from `Math.random`.
+The sign-in stories' decorator, `SeededAuth`, feeds `parameters.codes` through it,
+and `SigningInOnAPhone` on `[0.5, 0.25]` sees `50000`, waits for the resend to
+show `25000`, finds `50000` refused and signs in with `25000`; the provider's node
+test does the same. A dead resend and a resend that keeps the first code aside
+each fail both. Its roast confirmed the exit and filed **KN-550**: `codesOf`
+takes any number where the comment says zero to below one.
 
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
 to no story; its note lists every arm by line, 5 points in the backlog.
 
-**What fails in a full run, and why**: the web unit project passes whole, 1381.
+**What fails in a full run, and why**: the web unit project passes whole, 1382.
 The storybook project fails the five modal stories KN-494 carries, the board's
 `Adding`, which calls the live API, KN-495, and the Job Card's `Pressed` in
 parallel only, KN-365's kind. The API's 156 tests pass and its coverage gate
@@ -93,18 +96,17 @@ fails on auth and extraction files, KN-486. Of the e2e suite, only
 
 ## The next step
 
-KN-466 is in progress: the resend check passes against a resend that does nothing.
-The plan,
-`apps/web/src/core/auth/#KN-466 - The resend check passes against a resend that does nothing.md`,
-gives `AuthProvider` an optional `random` source handed to `sendCode`, which already
-takes one; the sign-in stories' decorator feeds `parameters.codes` in turn, its
-place kept in a ref; `SigningInOnAPhone` takes `[0.5, 0.25]`, so the codes are
-exactly `50000` and `25000`, waits for the notice to change after the resend,
-finds `50000` refused and signs in with `25000`; and the provider's node test does
-the same. Its plan review with Codex was running when this was written; drafts are
-in the session's scratchpad. Do not edit the provider, its test, the sign-in
-stories or their docs until the review lands; then build it red first, with the
-two plants the plan names. KN-549 can then use the same fixed source.
+KN-467 is in progress: the job modal was left out of the forms work. Reading it
+on 2026-09-14 found the form already built by Codex's 2234d66 of 2026-09-12: the
+tabs sit in a `form` with `noValidate` and an `onSubmit` that calls `save`, and
+Save is `type="submit" form={formId}`; the card's note says so. The plan,
+`apps/web/src/shared/job-modal/#KN-467 - The job modal was left out of the forms work.md`,
+adds the missing proof: `EnterSaves` in `JobModal.stories.tsx` presses the
+runner's own Enter in the cleared title (the refusal, no save), in the typed
+title (the save) and in the description (a new line, no save), with four plants
+on `JobModal.tsx`, and the story's docs in both languages. Its plan review with
+Codex was running when this was written; drafts are in the session's scratchpad.
+Do not edit the stories or their docs until the review lands.
 
 ## What to read first
 
