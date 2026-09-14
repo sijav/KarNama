@@ -7354,6 +7354,10 @@ CHILD OF KN-167, recorded in prose because board.json cannot express parent_task
 
 - 2026-09-14, done in a264964. The exit's last clause holds for the API's 156 tests and not for npm test, whose coverage gate fails on auth and extraction files KN-486 carries, none touched here, as the plan review said it could not be claimed. The first in-process check timed out at 5000 ms until the test loaded schema.ts with its file, as schema.test.ts does; the plan beside the entry records it, and no budget was raised.
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260914T142840-task-kn-403-kn-167-traded-the-schema-entry-test-s-5-s-51c5f2.md, filed none, dismissed: its one limitation, that no test would fail if schema-command.ts gained a top-level import of schema.js, because the in-process test preloads it and the process tests read only status and stderr, is real and is not filed: the roast itself found the current source correct and the light runs light, the plan beside the entry already records the blind spot, and a guard against a future import is a refusal nobody asked for, which rule zero says to write down rather than build
+
 ### `KN-404` The API's process tests run whatever dist exists, so a stale build passes them
 
 - **status** backlog · **severity** low · **points** 2 · **area** api · **objective** OKR-1
