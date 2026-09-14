@@ -37,31 +37,24 @@ tabs.
 
 **Closed today, earlier**: KN-483, KN-401, KN-403, KN-405, KN-423, KN-428,
 KN-352, KN-356, KN-431 and KN-532, their roasts filing KN-527 to KN-537; KN-419,
-two tabs agreeing, roast filed KN-538 and KN-539; KN-437 and KN-438, the story
-fixtures' records and an uneven seeded board, roast filed KN-540 and KN-541;
-KN-440, a status keeping its column when recoloured, plan review filed KN-542 and
-KN-543, roast filed KN-544 and KN-545.
+two tabs agreeing, filing KN-538 and KN-539; KN-437 and KN-438, the story
+fixtures' records and an uneven seeded board, filing KN-540 and KN-541; KN-440, a
+status keeping its column when recoloured, filing KN-542 to KN-545; KN-446, the
+Icon Button forwarding only what its types name, filing KN-546 and a note on
+KN-449; KN-464, every field telling a phone's keyboard what it holds and what its
+key does, filing KN-547 and KN-548.
 
-**KN-446 (a1fab80)**: the Icon Button forwards exactly the props its types name,
-MUI's clone marker declared with why. Measured on the way: `InATooltip`'s console
-spy starts too late to hear MUI's forwarding error, noted on **KN-449**, and the
-project's console guard hears React's own warnings only, KN-401. Its roast filed
-**KN-546**.
-
-**KN-464 (c483ccd)**: every field tells a phone's keyboard what it holds and what
-its key does. The Input takes `enterKeyHint`; the sign-in's keys say `send`, `go`
-and `done`; every single-line field of the contact modal, the add form, the job
-modal's link and the rename says `done`; the contact modal's email, phone and link
-take their types, and all six of its fields `autoComplete="off"`, since they hold
-another person's details. The Search Bar keeps `type="search"` and no hint, and
-what its key should do is **KN-547**. A reader, `shared/story-fixtures/keyboard.ts`,
-serves the keyboard stories; `enterKeyHint` joined the lint rule's structural
-props. Its roast filed **KN-548**, the fields the stories leave unread.
+**KN-465 (f19275e)**: a story, `Core/AuthProvider`, reads the sign-in code off the
+provider after a send and after a resend, finds the screen showing exactly that,
+and signs in with the shown code, since `verify` checks the code the provider keeps
+aside, not the one it hands the screen. It passed on the code as it was, a missing
+test, so three deterministic plants are its proof. Its roast filed **KN-549**, the
+story reading the mock's console line.
 
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
 to no story; its note lists every arm by line, 5 points in the backlog.
 
-**What fails in a full run, and why**: the web unit project passes whole, 1379.
+**What fails in a full run, and why**: the web unit project passes whole, 1381.
 The storybook project fails the five modal stories KN-494 carries, the board's
 `Adding`, which calls the live API, KN-495, and the Job Card's `Pressed` in
 parallel only, KN-365's kind. The API's 156 tests pass and its coverage gate
@@ -100,17 +93,18 @@ fails on auth and extraction files, KN-486. Of the e2e suite, only
 
 ## The next step
 
-KN-465 is in progress: no test reads `mockCode` off the provider that sent the
-code, which KN-462's exit asked for. The plan,
-`apps/web/src/core/auth/#KN-465 - Nothing reads mockCode off the provider that sent the code.md`,
-adds `core/auth/AuthProvider.stories.tsx`, titled `Core/AuthProvider`: a provider
-of the story's own around the real `AuthScreen` and a probe reading `useAuth()`,
-comparing the code the provider holds with the code the screen draws, after a
-send and after a resend, in Persian and in English, as `Core/PreferencesProvider`'s
-probe does. **KN-466** owns deterministic codes and the first code no longer
-signing in; this card does not touch it. Its plan review with Codex was running
-when this was written; drafts are in the session's scratchpad. Build it when the
-review is judged, with the two plants the plan names.
+KN-466 is in progress: the resend check passes against a resend that does nothing.
+The plan,
+`apps/web/src/core/auth/#KN-466 - The resend check passes against a resend that does nothing.md`,
+gives `AuthProvider` an optional `random` source handed to `sendCode`, which already
+takes one; the sign-in stories' decorator feeds `parameters.codes` in turn, its
+place kept in a ref; `SigningInOnAPhone` takes `[0.5, 0.25]`, so the codes are
+exactly `50000` and `25000`, waits for the notice to change after the resend,
+finds `50000` refused and signs in with `25000`; and the provider's node test does
+the same. Its plan review with Codex was running when this was written; drafts are
+in the session's scratchpad. Do not edit the provider, its test, the sign-in
+stories or their docs until the review lands; then build it red first, with the
+two plants the plan names. KN-549 can then use the same fixed source.
 
 ## What to read first
 
