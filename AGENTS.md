@@ -51,6 +51,13 @@ packages/graphql  the schema and the generated types both sides import
 agent           the loop, the board and its tooling, the roast archive
 ```
 
+**The board is the todo skill's database**, `.claude/todo.db`, committed, the
+owner's choice of 2026-09-14. `todo` in these files means `node
+~/.claude/skills/todo/todo.mjs` or `python ~/.claude/skills/todo/todo.py`, which
+are the same tool. `agent/TODO_BOARD.md` is rendered from it with `todo render
+--out agent/TODO_BOARD.md` and committed with it. `agent/board.json` is the
+archive of the JSON board the loop ran on from 2026-09-07 until then, KN-482.
+
 Deployment: the web app to GitHub Pages, the API to a Render free web service,
 Postgres on Supabase. Render's free tier sleeps after 15 minutes, so the first
 request after a nap takes roughly 50 seconds. That is a product constraint, not
@@ -64,15 +71,15 @@ the server on load.
 The owner's, 2026-09-12. A board of four hundred cards says how much is left and
 nothing about what is left before the product does its job, so the board carries
 **objectives of its own**: records with an id, a name, a description and a
-position in the order they are met, in `agent/board.json` beside the tasks. A
-task's `okr` is a **reference** to one of them, checked by `todo validate`: a
-name the board does not hold is a typo pointing at nothing, not a new objective.
+position in the order they are met. A task's objective is a **reference** to one
+of them, checked when it is set and by `todo validate`: a name the board does
+not hold is a typo pointing at nothing, not a new objective.
 
 ```bash
-node agent/scripts/todo.mjs okr                       # the objectives and what is left in each
-node agent/scripts/todo.mjs okr add --name "..." --description "..."
-node agent/scripts/todo.mjs okr done OKR-1            # met; the next open one becomes current
-node agent/scripts/todo.mjs set KN-123 --okr OKR-2    # which objective a task serves
+todo okr                                  # the objectives and what is left in each
+todo okr add --name "..." --description "..."
+todo okr done OKR-1                       # met; the next open one becomes current
+todo set KN-123 --okr OKR-2               # which objective a task serves
 ```
 
 The **current** objective is the first one still open, and `next` works through

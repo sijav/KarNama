@@ -68,6 +68,23 @@ current one if unfinished), and what to read first. Keep it under about 120
 lines. A context reset that loses work is a failure of this step, not of the
 harness.
 
+## The owner's rules of 2026-09-14, which override anything older below
+
+- **The board is the todo skill's database**, `.claude/todo.db`: "YO DEFINETLY
+  DB!". `todo` below means `node ~/.claude/skills/todo/todo.mjs`, or
+  `python ~/.claude/skills/todo/todo.py`, which is the same tool.
+  `agent/board.json` is the archive of the JSON board the loop ran on until then,
+  and `agent/scripts/todo.mjs` and `agent/scripts/roast.mjs` refuse the real
+  board, KN-482. `agent/TODO_BOARD.md` is rendered from the database with `todo
+  render --out agent/TODO_BOARD.md` and committed with every board change.
+- **The shared skills serve every project.** "I care about ALL PROJECTS
+  compatibility": a change to a skill under `~/.claude/skills` only adds, and is
+  checked against a copy of every board on the machine before it is committed.
+- **A model's work is never roasted by the same model.** "you don't roast
+  somebody's work via that same person! you roast it yourself". The roast skill's
+  task kind goes to Codex, which is right for work Claude did; work Codex did is
+  roasted by Claude.
+
 ## The owner's rules of 2026-09-12, which override anything older below
 
 - **The pages, now.** "How fast can you start doing the pages? I need them by 6
@@ -127,18 +144,19 @@ because everything built on top of it inherits the lie.
 ## Step 2 · Pick the work
 
 ```bash
-npm run todo -- next
+todo next
 ```
 
 The script picks, not you, and it applies the law:
 
-> Work already **in progress** outranks work **awaiting its roast**, which
-> outranks anything **new**. Only then does **severity** decide, then the
-> **smaller story point**, then the **older id**. A task whose blockers are not
-> all settled is not a candidate at all, whatever its severity.
+> Work already **in progress** outranks anything **new**. Then the **current
+> objective** comes first, then **severity**, then the **smaller story point**,
+> then the **older id**. A task whose blockers are not all done, or that is
+> blocked, is not a candidate at all, whatever its severity.
 
-**Exactly one task may be in progress**, and the tool enforces it. That is what
-makes "finish before starting" safe: with two open at once, a merely high task
+**Exactly one task may be in progress.** The skill warns when a second one
+starts rather than refusing, since it serves every project, so keeping this rule
+is on us. It is what makes "finish before starting" safe: with two open at once, a merely high task
 left in progress outranks an unblocked critical one indefinitely.
 
 If you disagree with the pick, the fix is to correct the severity, the points or
@@ -147,7 +165,7 @@ the parents on the board and run it again. Never to override it in your head.
 Move it before you touch a file:
 
 ```bash
-npm run todo -- move KN-014 in_progress
+todo move KN-014 in_progress
 ```
 
 If something genuinely stops the task, park it with a stated cause, because a
@@ -155,20 +173,25 @@ blocked task is invisible to the selection law and a block with no reason is a
 task that silently leaves the board:
 
 ```bash
-npm run todo -- move KN-014 blocked --reason "waiting on the owner's call about phone OTP versus magic link"
+todo move KN-014 blocked --reason "waiting on the owner's call about phone OTP versus magic link"
 ```
+
+The block is a row beside the status, so the card keeps the status it had; any
+other move clears the block and says so.
 
 **The to-do is written before the work, always.** The moment the owner asks for
 something it becomes a board entry, before you begin it. The moment you discover
 work it becomes a board entry, before you do it. This holds for everything, not
 only code.
 
-Every task carries all ten fields, filled at creation: `id`, `title`, `desc`,
-`why` (the story: who needs this, what breaks without it), `severity`, `points`,
-`area`, `parent` (blocking ids, `[]` when nothing blocks it), `status`, and
+Every task carries all its fields, filled at creation: `title`, `desc`, `why`
+(the story: who needs this, what breaks without it), `severity`, `points`,
+`area`, `okr`, `parent` (blocking ids, left out when nothing blocks it) and
 `exit` (the condition under which it may be called done, which must be
-checkable, normally a named test or scenario). `npm run todo -- add` refuses an
-incomplete task, which is the point.
+checkable, normally a named test or scenario). The id is the board's next one,
+and the status starts at backlog. `todo add` refuses a card missing any of the
+six it requires; `--area` and `--okr` it accepts without demanding, so always
+pass them.
 
 Before filing anything, **search the board for it first**. A match is not a new
 task; it is evidence the existing one matters more than its severity says.
@@ -303,11 +326,12 @@ reversed the previous order, which was review, then roast, then close on the
 round.
 
 ```bash
-npm run todo -- move KN-014 done --evidence "how the exit condition was actually checked"
+todo move KN-014 done --evidence "how the exit condition was actually checked"
 ```
 
-The board asks for three things, and neither a roast nor a verifier is among
-them, the owner's rule of 2026-09-11:
+Three things belong to a close, and neither a roast nor a verifier is among
+them, the owner's rule of 2026-09-11. The skill records the evidence and checks
+none of the three, so each one is ours to keep:
 
 1. **`--evidence`**, one line of what was done, on the record where the roast
    can read it.
@@ -340,11 +364,18 @@ this one is finished.
 
 ```bash
 # KN-014 is already `done`. This runs against the closed, committed work.
-npm run roast -- KN-014 \
-  --summary "what I actually did, honestly, including what I am unsure about" \
+python ~/.claude/skills/roast/roast.py task \
+  --title "KN-014 <the title>" --why "<why, from the card>" \
+  --exit-condition "<exit, from the card>" \
+  --did "what I actually did, honestly, including what I am unsure about" \
+  --files "$(git diff --name-only HEAD~1)" \
   --ask "a real question about this task's mechanism" \
   --ask "a second one, aimed at where you think it is weakest" &
 ```
+
+**Never with the same model that did the work**, the owner's rule of 2026-09-14.
+The task kind goes to Codex, which is right for work Claude did. Work Codex did
+is roasted by Claude, as a subagent reading the diff.
 
 **While a roast is reading the worktree, do not edit the files it is reading.**
 Changing them underneath produces findings about code that no longer exists, and
@@ -364,9 +395,9 @@ are least sure of rather than at what you are proudest of. Good shapes:
 - The card has six states in Figma. Which of them does this component not
   actually reach, and can you get it into that state from the story?
 
-The harness sends the task card, the exit condition, your summary and the diff,
-gives Codex read access to the repository, and archives the reply under
-`agent/roasts/`.
+The skill sends the card's why and exit condition, your account and the changed
+files, gives the reviewer read access to the repository, and writes the reply to
+a file of its own under `%TEMP%/claude-roast/<project>/`, which its output names.
 
 ## Step 6 · The roast lands: judge it, file EVERYTHING, then forget it or revert
 
@@ -401,12 +432,12 @@ That is what makes "done" mean something. Without it, a task is finished when
 somebody says so; with it, a task is finished when everything its review turned
 up has also been dealt with, and the board can tell you which.
 
-**The board tool here does not support this yet.** `agent/board.json` has a
-`parent` field and it means BLOCKED BY, which is a different relation: a
-blocker must finish before the task can start, while a finding comes out of a
-task that is already closed. Filing a finding as a blocker would deadlock it.
-Until the tool carries both, record the parent in the finding's description and
-say so. The global `todo` skill already has `--parent-task`.
+**The skill carries both relations.** `todo add --parent-task <id>` files a
+finding as a child of the task it came out of; `--parent` stays a blocker, which
+is a different relation: a blocker must finish before the task can start, while
+a finding comes out of a task that is already closed. Cards filed before
+2026-09-14 say `CHILD OF KN-xxx` in their prose, because board.json could not
+record it, and the move into the database set their parent from that line.
 
 **There is no fix-in-task rule any more, because there is no open task to fix
 in.** The roasted card closed at step 4, before the reviewer ever saw it. This
@@ -447,7 +478,7 @@ further on it:
 2. **Revert what you did for it.** Do not leave half a change in the tree that
    was built on a wrong assumption. Save the diff somewhere scratch if it was
    expensive, then take it out of the tree.
-3. **Take the next card from the board**, `npm run todo -- next`, which will
+3. **Take the next card from the board**, `todo next`, which will
    usually be the blocker you just filed, because you filed it at the severity
    its content deserves. Do not hand-pick it. If the law does not select it, the
    severity you gave it was wrong, and that is worth noticing.
@@ -466,18 +497,17 @@ answering the wrong question, not for grinding a score upward.
 Record the round, then adjudicate, then record what you filed:
 
 ```bash
-npm run todo -- roast KN-014 --score 8 --criticals 1 --file agent/roasts/KN-014-round-1.<stamp>.md
+todo roast KN-014 --file <the file the roast wrote>
 # judge the findings, file the survivors as tasks, then:
-npm run todo -- roast KN-014 --score 8 --criticals 1 --file <same archive> --filed KN-058,KN-059
+todo roast KN-014 --file <the same file> --filed KN-058,KN-059 --dismissed "what was rejected, and why"
 ```
 
-Re-running against the same archive updates that round rather than inventing a
+Re-running against the same file updates that round rather than inventing a
 second one. `--filed none` is the honest record when nothing survived.
 
-`--file` must exist and carry a `VERDICT` block, so a round cannot be recorded
-for a run that never happened. If your numbers are **kinder** than the archive's
-own, `--dismissed "..."` is required, naming what you rejected and why.
-Softening a verdict is allowed; softening it silently is not.
+The skill does not open the file or compare numbers, so a rejected finding is
+named in `--dismissed` every time. Softening a verdict is allowed; softening it
+silently is not.
 
 **Relay the roast to the owner in your reply**, including what you filed. The
 archive and the tool output are invisible to them.
@@ -491,8 +521,10 @@ archive and the tool output are invisible to them.
   in `PHASE-NEXT.md` instead. Those are decisions, not debt.
 - Commit, with a message that says what changed and why. The roast reviews a
   commit, so the order is: **finish, prove, commit, close, roast.**
+- After a board change, `todo render --out agent/TODO_BOARD.md`, and commit the
+  database with it, so the Markdown board a person reads is the board.
 - Rewrite `agent/STATE.md`.
-- **Go straight to `npm run todo -- next`.** Do not stop to summarise, do not
+- **Go straight to `todo next`.** Do not stop to summarise, do not
   re-open the task you just closed, and do not start polishing it because the
   roast mentioned something. That something is a card now.
 

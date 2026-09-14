@@ -1,18 +1,27 @@
 #!/usr/bin/env node
-// A thin CLI over agent/scripts/lib/contract.mjs, so the same rules run from the
-// command line and from every board mutation. They were briefly only here,
-// which made the check optional: `add` and `set` ran the structural validator
-// and nothing else, so a careless author could write a green card instructing
-// the wrong product and only find out if somebody remembered to run this.
+// A thin CLI over agent/scripts/lib/contract.mjs: does any card instruct what
+// DESIGN.md forbids? `npm run contract`.
+//
+// The board is the todo skill's database since KN-482, 2026-09-14, so the
+// cards are read from .claude/todo.db, read-only, under the names the rules
+// read them by. It used to read agent/board.json, which is now the archive of
+// the JSON board and is no longer written, so a check of it would pass forever.
 
-import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
+import { DatabaseSync } from 'node:sqlite'
 import { fileURLToPath } from 'node:url'
 
 import { contractProblems, loadContractInputs, RULES } from '../lib/contract.mjs'
 
 const ROOT = dirname(dirname(dirname(dirname(fileURLToPath(import.meta.url)))))
-const board = JSON.parse(readFileSync(join(ROOT, 'agent', 'board.json'), 'utf8'))
+const db = new DatabaseSync(join(ROOT, '.claude', 'todo.db'), { readOnly: true })
+const board = {
+  tasks: db
+    .prepare('SELECT id, title, descr, why, exit_cond FROM task ORDER BY id')
+    .all()
+    .map((task) => ({ id: task.id, title: task.title, desc: task.descr, why: task.why, exit: task.exit_cond })),
+}
+db.close()
 const { design } = loadContractInputs(ROOT)
 
 const problems = contractProblems(board, design)

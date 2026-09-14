@@ -77,6 +77,22 @@ const RENDER_PATH = process.env.KARNAMA_BOARD
   ? join(dirname(BOARD_PATH), 'TODO_BOARD.md')
   : join(AGENT_DIR, 'TODO_BOARD.md')
 
+// KN-482, 2026-09-14: the board moved into the todo skill's database,
+// .claude/todo.db, and agent/board.json is the archive of what the JSON board
+// held. This tool refuses the real board, reads included, so a stale pick can
+// never come from it and the two boards cannot split again. KARNAMA_BOARD still
+// points it at a throwaway copy, which is how the historical verifiers under
+// agent/scripts/verify drive it.
+if (!process.env.KARNAMA_BOARD) {
+  process.stderr.write(
+    'The board is .claude/todo.db now, driven by the todo skill (KN-482, 2026-09-14):\n' +
+      '  node ~/.claude/skills/todo/todo.mjs next\n' +
+      '  python ~/.claude/skills/todo/todo.py next\n' +
+      'agent/board.json is the archive of the JSON board and is no longer written.\n',
+  )
+  process.exit(1)
+}
+
 /** Highest first. `next` walks this order, so index is the rank. */
 const SEVERITIES = ['critical', 'high', 'medium', 'low']
 const STATUSES = ['backlog', 'in_progress', 'review', 'blocked', 'done', 'dropped']

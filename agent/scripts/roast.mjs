@@ -25,6 +25,20 @@ const ROOT = dirname(AGENT_DIR)
 const BOARD_PATH = join(AGENT_DIR, 'board.json')
 const ROAST_DIR = join(AGENT_DIR, 'roasts')
 
+// KN-482, 2026-09-14: the board moved into the todo skill's database, and this
+// harness read its card from agent/board.json, which is now the archive and is
+// never written, so it would review a card as it stood when the board moved, or
+// refuse any card added since. The roast skill reviews a task, and the todo
+// skill records the round on the card.
+if (!process.env.KARNAMA_BOARD) {
+  process.stderr.write(
+    'This harness read agent/board.json, which is the archive of the JSON board since KN-482, 2026-09-14.\n' +
+      '  python ~/.claude/skills/roast/roast.py task --title "KN-0xx ..." --why "..." --exit-condition "..." --did "..." --ask "..."\n' +
+      '  node ~/.claude/skills/todo/todo.mjs roast KN-0xx --file <the file the roast wrote> --filed KN-0yy,...\n',
+  )
+  process.exit(1)
+}
+
 const MODEL = 'gpt-5.6-terra'
 /** Past this the prompt costs more than the extra context is worth. */
 const DIFF_LIMIT = 180_000
