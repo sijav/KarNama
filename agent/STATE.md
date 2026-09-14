@@ -30,24 +30,23 @@ its diff is its children, KN-484 to KN-503 and KN-521 still open; the dark
 
 **The owner's asks of 2026-09-14, done**: KN-479 language flags; KN-480 the
 language Select in Settings; KN-478 the shell's controls as Icon Buttons.
-**KN-481** matched the board and network to their frames (198a36f); its roast
-filed KN-519 and KN-520, its audit KN-512 to KN-514 and KN-518. **Blocked on the
-owner, asked 2026-09-14 in chat**: KN-515 a phone board header's add button,
-KN-516 a phone board's sort row, KN-517 history's place among the modal's tabs.
+**KN-481** matched the board and network to their frames (198a36f). **Blocked
+on the owner, asked 2026-09-14 in chat**: KN-515 a phone board header's add
+button, KN-516 a phone board's sort row, KN-517 history's place among the modal's
+tabs.
 
-**Closed today since**: KN-483, KN-401, KN-403, KN-405; KN-423 (5159f0f), the
-Checkbox names its input. **KN-428 (63f6870)**: a phone starts a selection with
-a press held on a card, as Card / Mobile 491:751 and the Checkbox 204:11 say in
-their descriptions, through `useHold` in `shared/job-card/hold.ts` and a
-`selecting` prop; KN-527 carries the same gap on a tablet; Safari on an iPhone
-was not checked; its roast filed KN-528, KN-529 and KN-530. **KN-352
-(26f86f1)**: no product change; `UncheckingOnAPhone` proves focus stays on a
-phone card's checkbox when the last card chosen is unchecked by keyboard; its
-roast filed KN-531. **KN-356 (6bf0c27)**: no product change, its groundwork
-924e515 having built it; App/Shell's `Selecting` counts what is fixed at a
-phone's foot, the tab bar at rest, only the Bulk Action Bar while a card is
-held, the tab bar again after, and fails when Navigation ignores `selecting` or
-App never passes it. Its roast is with Codex.
+**Closed today since**: KN-483, KN-401, KN-403, KN-405, KN-423. **KN-428
+(63f6870)**: a phone starts a selection with a press held on a card, as Card /
+Mobile 491:751 and the Checkbox 204:11 describe, through `useHold` in
+`shared/job-card/hold.ts`; its roast filed KN-528 to KN-530; KN-527 is the
+tablet's gap. **KN-352 (26f86f1)** and **KN-356 (6bf0c27)**: no product change,
+stories proving what KN-428 and 924e515 had already built; their roasts filed
+KN-531, KN-533 (a phone cannot select a person on the network page at all) and
+KN-534. **KN-431 (38ac449)**: on the board the bulk bar counts, selects and
+deletes only what the search shows; `SelectingWhileSearching` failed on the old
+code and passes now; in the app 30 sample job opportunities searched down to 10
+lost exactly those 10 to select all and delete, in both languages. Its roast is
+with Codex.
 
 **KN-427 re-pointed, not worked**: JobsScreen leaves 52 of its 149 branch arms
 to no story, 26 of them KN-477's drag handlers; its note lists every arm by line
@@ -58,9 +57,6 @@ The storybook project fails the five modal stories KN-494 carries, the board's
 `Adding`, which calls the live API, KN-495, and the Job Card's `Pressed` in
 parallel only, KN-365's kind. The API's 156 tests pass and its coverage gate
 fails on auth and extraction files, KN-486.
-
-**Found on the way and filed**: KN-505, clean paths rather than `#/`, the
-owner's question; KN-507, the Settings dialog's Theme and sample-data parts.
 
 ## The owner's rules, most recent first
 
@@ -91,16 +87,15 @@ owner's question; KN-507, the Settings dialog's Theme and sample-data parts.
 
 ## The next step
 
-Relay KN-356's roast when it lands, judge it and file what survives as its
-children. KN-431 is in progress, a data loss: on the board, select all takes
-every job opportunity rather than what the search found, and the bulk delete and
-status change act on the whole selection whether the search shows it or not, so
-a reader who searches, selects all and deletes loses what was hidden. Read how
-JobsScreen and NetworkScreen select and delete around a search, write a story
-that searches, selects all and deletes and watch it fail on today's code, then
-the plan beside JobsScreen, its roast, the fix, and the story passing with the
-hidden job opportunities surviving. Do not edit App's stories or the shell's
-docs until KN-356's roast has landed: it is reading them.
+Relay KN-431's roast when it lands, judge it and file what survives as its
+children. KN-532 is in progress, the network half of KN-431's data loss: the
+network page draws the people its search matches, but its Bulk Action Bar counts
+and deletes the whole selection and `onSelecting` reports it, so a person chosen
+and then searched out of view is deleted with the rest. Plan beside
+NetworkScreen, roast it, write the story and watch it fail on today's code, then
+the fix, the story passing, plants, and a look in the app in both languages. Do
+not edit the board screen's files until KN-431's roast has landed: it is reading
+them.
 
 ## What to read first
 

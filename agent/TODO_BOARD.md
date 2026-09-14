@@ -13,6 +13,12 @@ Project **KarNama** · 220 of 534 tasks done · 496 of 1088 points.
 | 1 | OKR-1 | MVP: the pages | now | 186 | 142 |
 | 2 | OKR-2 | Everything after the MVP | later | 126 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-532` | The network page's bulk delete also deletes the people a search hides | high | 1 | web | none | The network page's bulk bar counts and deletes only the selected people the search shows, and a story selects one person, searches them out of view, selects another, deletes, and finds the first still there once the search is cleared. |
+
 ## Blocked (8)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -26,13 +32,12 @@ Project **KarNama** · 220 of 534 tasks done · 496 of 1088 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (304)
+## Backlog (303)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-103` | Coverage from the storybook project is discarded for any file the unit project also touches | critical | 3 | agent | KN-003 | A function reached only from a story and living in a file that also has unit tests counts as covered, a per-project coverage report exists, and a planted uncovered branch in such a file fails the run. |
 | `KN-212` | The tooltip stories are Persian-only, so the four language and theme combinations cannot be checked | high | 1 | web | KN-221 | At least one story renders text that actually changes with the Language toolbar, so English and Persian are visibly different, and the component is seen in all four combinations. Whether the lint exemption for title should be narrowed is answered either way rather than left, since it is what let this through. |
-| `KN-532` | The network page's bulk delete also deletes the people a search hides | high | 1 | web | none | The network page's bulk bar counts and deletes only the selected people the search shows, and a story selects one person, searches them out of view, selects another, deletes, and finds the first still there once the search is cleared. |
 | `KN-223` | The tooltip's fixed-width policy is unstated, and no story shows a short or an overlong title | high | 2 | web | KN-221 | The story docs state, in both languages, that the width is fixed at the frame's 260 by design and what a long title does, and two stories render a short and an overlong title through lingui, each asserting the 260 width and the long one asserting it wraps rather than overflows. |
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
@@ -9073,7 +9078,7 @@ KN-352's roast, confirmed against 26f86f1: the plan beside the board screen says
 
 ### `KN-532` The network page's bulk delete also deletes the people a search hides
 
-- **status** backlog · **severity** high · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 Found while planning KN-431, 2026-09-14. NetworkScreen.tsx draws shown, the contacts the search matches, line 90, but its Bulk Action Bar counts selected, line 205, and deletes selected, line 211, the whole selection whether the search shows it or not, and onSelecting reports selected too, line 84. So a reader who selects a person, searches so that person is out of view, selects another and presses delete loses both, and is told the bar held what they could see. The same class as KN-422 and KN-431, on the other page that selects; the network's bar offers no select all, so that half of KN-431 does not arise here.
