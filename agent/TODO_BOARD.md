@@ -13,6 +13,12 @@ Project **KarNama** · 233 of 553 tasks done · 521 of 1110 points.
 | 1 | OKR-1 | MVP: the pages | now | 191 | 155 |
 | 2 | OKR-2 | Everything after the MVP | later | 127 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-522` | Two stories replace console.error with a mock, which takes KN-401's guard off for as long as they run | high | 2 | web | none | No story or test replaces console.error or console.warn with an implementation that bypasses the guard; the Tooltip and IconButton stories still assert their marked diagnostics and keep the published Storybook's console clean, or say why both cannot hold; an unmarked plain-string error said inside one of those stories fails it, shown once by a planted control. |
+
 ## Blocked (8)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -26,7 +32,7 @@ Project **KarNama** · 233 of 553 tasks done · 521 of 1110 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (310)
+## Backlog (309)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -36,7 +42,6 @@ Project **KarNama** · 233 of 553 tasks done · 521 of 1110 points.
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
 | `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
-| `KN-522` | Two stories replace console.error with a mock, which takes KN-401's guard off for as long as they run | high | 2 | web | none | No story or test replaces console.error or console.warn with an implementation that bypasses the guard; the Tooltip and IconButton stories still assert their marked diagnostics and keep the published Storybook's console clean, or say why both cannot hold; an unmarked plain-string error said inside one of those stories fails it, shown once by a planted control. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -8749,6 +8754,10 @@ From KN-477's review, W-05, confirmed: JobsScreen passes extractJob from core/ap
 
 **Evidence.** c6172c3: JobsScreen takes onExtract and App passes extractJob; Adding passes on a stand-in both as the checkout is and with apps/web/.env.local taken away (Vite's loadEnv seeing no VITE_API_URL), after failing at line 516 in both before; a plant putting the core/api import back fails it at line 517
 
+**Roasts.**
+
+- round 1: C:\Users\sinaj\AppData\Local\Temp\claude-roast\2b1874631dd1\20260914T203243-task-kn-495-the-board-screen-calls-the-live-api-itsel-841d29.md, filed none, dismissed: Nothing to dismiss: the round found no defect. It confirmed that the Jobs stories' meta and App are the only renderers and both pass a reader; that App's stories and the e2e specs reach AddJobModal, onExtract, extractJob and authenticated unchanged in demo and live modes; that the claim of passing with no VITE_API_URL is honest, core/api building its client at load without an address and without fetching; that the prop type is shared from AddJobModalProps; and that no comment, doc or commit message misleads.
+
 ### `KN-496` Dark mode never tells the browser it is dark: native controls, scrollbars and the date picker stay light
 
 - **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
@@ -9061,7 +9070,7 @@ KN-483's plan review: postingText removes a script, style, nav or footer block o
 
 ### `KN-522` Two stories replace console.error with a mock, which takes KN-401's guard off for as long as they run
 
-- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-134
 

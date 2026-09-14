@@ -39,19 +39,20 @@ tabs.
 KN-352, KN-356, KN-431 and KN-532, their roasts filing KN-527 to KN-537; KN-419,
 filing KN-538 and KN-539; KN-437 and KN-438, filing KN-540 and KN-541; KN-440,
 filing KN-542 to KN-545; KN-446, filing KN-546; KN-464, filing KN-547 and
-KN-548; KN-465, filing KN-549; KN-466, filing KN-550; KN-467, its roast finding
-nothing; KN-469, F6 measured to reach the page in Chrome 152 and Playwright's
-Firefox 151 on Windows and the bar leaving Shift+F6 alone (6e2a16d), filing
-KN-552 and KN-553.
+KN-548; KN-465, filing KN-549; KN-466, filing KN-550; KN-467, nothing; KN-469, F6
+measured to reach the page (6e2a16d), filing KN-552 and KN-553; KN-472, focus
+after a deletion landing on the card after it (f0b0702), nothing.
 
-**KN-472 (f0b0702)**: deleting a card lands focus on the card after it in its
-column, else the one before, else the column's Add Card row, else the board, and
-on the network on the person after, else before, else the page. The landing is
-chosen from `cardsOf` and `shown` when the reader asks to delete and found in the
-page by place. `FocusAfterDeletingInAColumn` deletes the rejected column's middle
-card, then its last; `FocusAfterDeleting` names the emptied column's Add Card row;
-the network's story names the person after. Four plants, one per branch, fail.
-Its roast found nothing.
+**KN-495 (c6172c3)**: `JobsScreen` takes a required `onExtract`, typed from the
+add modal's, and `App` fills it with `extractJob`; the Jobs stories hand it a
+stand-in that gives back the link, and `Adding` asserts the call. `Adding` failed
+at line 516 on the old screen as the checkout is, where `apps/web/.env.local`
+points at `localhost:4000`, and with `.env.local` taken away for the run, Vite's
+`loadEnv` seeing no `VITE_API_URL`; it passes in both now. A run with the
+variable set empty does not count as one without an address: on Windows an empty
+variable does not override `.env.local`, which the plan review found. A plant
+putting the import back fails at the call assertion, line 517. Its roast found
+nothing. The storybook project no longer fails on `Adding`.
 
 **KN-551**: `core/api/session.test.ts` fails both its cases when the unit project
 runs straight after storybook browser runs, seen twice today, and passes alone
@@ -62,11 +63,10 @@ to no story; its note lists every arm by line, 5 points in the backlog.
 
 **What fails in a full run, and why**: the web unit project passes whole, 1382,
 when nothing else is running, KN-551 otherwise. The storybook project fails the
-five modal stories KN-494 carries, four of them in `JobModal.stories.tsx`, the
-board's `Adding`, which calls the live API, KN-495, in progress, and the Job
-Card's `Pressed` in parallel only, KN-365's kind. The API's 156 tests pass and
-its coverage gate fails on auth and extraction files, KN-486. Of the e2e suite,
-only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
+five modal stories KN-494 carries, four of them in `JobModal.stories.tsx`, and the
+Job Card's `Pressed` in parallel only, KN-365's kind. The API's 156 tests pass
+and its coverage gate fails on auth and extraction files, KN-486. Of the e2e
+suite, only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
 
 ## The owner's rules, most recent first
 
@@ -100,16 +100,19 @@ only `two-tabs.spec.ts` was run on 2026-09-14, on desktop, and it passes.
 
 ## The next step
 
-KN-495 is in progress: the board screen imports `extractJob` from `core/api`
-itself, so its `Adding` story fails with no server. Red first ran twice on
-2026-09-14, with `.env.local`'s `localhost:4000` address and with `VITE_API_URL`
-empty, and both failed at line 516, the Review form never coming. The plan,
-`apps/web/src/screens/#KN-495 - The board screen calls the live API itself.md`,
-gives `JobsScreen` a required `onExtract`, which `App` fills with `extractJob`; the
-Jobs stories' meta hands it an `fn` stand-in that gives back the link, and
-`Adding` asserts the call; `### onExtract` goes in both docs. The plant puts the
-import back. Its plan review with Codex was running when this was written; the
-drafts are in the session's scratchpad.
+KN-522 is in progress: stories and a test replace `console.error` with a mock,
+which takes KN-401's guard off while they run. Measured on 2026-09-14 with an
+unmarked `console.error` planted and each file restored by hash: Tooltip's
+`ReportsATriggerThatCannotAttach` passed with it, and so did the guard's own
+unit test in `console-guard.test.ts`; IconButton's `InATooltip` failed on it
+through its own check. The plan,
+`apps/web/src/shared/#KN-522 - Two stories replace console.error with a mock.md`,
+adds `passOnUnmarked(through)` to `console-guard.ts`, holding back only the
+product's marked reports and passing the rest to the console as it was; Tooltip's
+`captureConsoleErrors` and the unit test use it, and `InATooltip` spies without
+replacing. The same plants are the positive control. Its plan review with Codex
+was running when this was written; the build script is in the session's
+scratchpad.
 
 ## What to read first
 
