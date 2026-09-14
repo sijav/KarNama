@@ -54,6 +54,13 @@ The element itself, handed back to whoever asks. A button that can be turned
 off gives back a `button`; one with an `href` gives back an `a`, and each is
 typed for what it renders, KN-447, so a caller never casts.
 
+### data-mui-internal-clone-element
+
+Not for a caller. MUI's Tooltip sets it on its child in development and reads it
+back from the button once it has mounted, to check that the child forwards what a
+Tooltip gives it; the button forwards it for that reason alone. A production
+build never sets it.
+
 ### onClick
 
 Fired when the button is pressed, by pointer or by keyboard.
@@ -118,3 +125,10 @@ only moment the difference shows.
 A flag in place of a glyph, as the language button draws it: 20 wide and
 centred in the square, and hidden from screen readers even though this flag
 names itself, so the button keeps its one name.
+
+### ForwardsWhatItDeclares
+
+What reaches the button is what its types name: a Tooltip's description and
+handlers, an opener's popup, expanded and controls attributes, and the marker
+MUI's Tooltip checks for. A title, a class or a data attribute spread in beyond
+them does not reach it.

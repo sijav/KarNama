@@ -15,7 +15,9 @@ import { Icon, type IconName } from '../icon'
  *
  * Named and narrow rather than the whole of MUI's surface: these are the props
  * a trigger must carry, and nothing here invites a caller to reach past the
- * documented API into MUI's.
+ * documented API into MUI's. The runtime keeps the same boundary, KN-446: each
+ * branch below forwards these by name, and anything else a caller spreads in, a
+ * title, a class, a data attribute, stops at the button.
  *
  * The ref is NOT here, because what it points at depends on which of the two
  * shapes below is being used: MUI renders an anchor for a button with an href,
@@ -27,7 +29,14 @@ type TooltipTrigger<Element extends HTMLElement> = Pick<
   DOMAttributes<Element>,
   'onFocus' | 'onBlur' | 'onMouseOver' | 'onMouseLeave' | 'onTouchStart' | 'onTouchEnd'
 > &
-  Pick<AriaAttributes, 'aria-describedby'>
+  Pick<AriaAttributes, 'aria-describedby'> & {
+    // MUI's Tooltip sets this on its child in development and reads it back
+    // from the child's node once mounted, logging that the child "is not
+    // forwarding its props correctly" when the node lacks it. Forwarding it is
+    // how the button shows MUI that it passes on what a Tooltip gives it; a
+    // production build never sets it, so nothing is drawn from it there.
+    'data-mui-internal-clone-element'?: boolean
+  }
 
 // What a button that opens something says about it, KN-478: that it opens a
 // menu or a dialog, whether that is open, and which element it is.
@@ -77,6 +86,22 @@ const EDGE = 1
 // An icon-only control has no text to be named by, so its name is required,
 // and a name that is only blank is refused rather than rendered nameless: null.
 export const nameOf = (label: string): string | null => (label.trim() === '' ? null : label)
+
+// Exactly what the types say a trigger and an opener carry, by name, KN-446: the
+// boundary the types draw is the one the element gets.
+const forwarded = <Element extends HTMLElement>(props: TooltipTrigger<Element> & Opener) => ({
+  onFocus: props.onFocus,
+  onBlur: props.onBlur,
+  onMouseOver: props.onMouseOver,
+  onMouseLeave: props.onMouseLeave,
+  onTouchStart: props.onTouchStart,
+  onTouchEnd: props.onTouchEnd,
+  'aria-describedby': props['aria-describedby'],
+  'aria-haspopup': props['aria-haspopup'],
+  'aria-expanded': props['aria-expanded'],
+  'aria-controls': props['aria-controls'],
+  'data-mui-internal-clone-element': props['data-mui-internal-clone-element'],
+})
 
 // The Icon Button of node 460:672: a 32 square of radius md around a 16 icon,
 // Neutral and Danger, each at rest, hovered and disabled. The Bulk Action Bar's
@@ -147,16 +172,16 @@ export const IconButton = (props: IconButtonProps) => {
   // merely optional matches neither, KN-447. Narrowing here is also what gives
   // each form the ref and the handlers for the element it actually renders.
   if (props.href === undefined) {
-    const { icon: _icon, 'aria-label': _label, tone: _tone, iconSize: _size, onClick: _click, href: _href, disabled = false, ...trigger } = props
+    const { ref, disabled = false, ...rest } = props
     return (
-      <MuiIconButton {...trigger} {...shared} disabled={disabled}>
+      <MuiIconButton ref={ref} {...forwarded(rest)} {...shared} disabled={disabled}>
         {mark}
       </MuiIconButton>
     )
   }
-  const { icon: _icon, 'aria-label': _label, tone: _tone, iconSize: _size, onClick: _click, href, ...trigger } = props
+  const { ref, href, ...rest } = props
   return (
-    <MuiIconButton {...trigger} {...shared} href={href}>
+    <MuiIconButton ref={ref} {...forwarded(rest)} {...shared} href={href}>
       {mark}
     </MuiIconButton>
   )

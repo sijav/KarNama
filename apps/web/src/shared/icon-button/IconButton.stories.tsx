@@ -380,3 +380,49 @@ export const WithAFlag: Story = {
     await expect(button).toHaveAccessibleName('زبان')
   },
 }
+
+// What a caller spreads in beyond the declared props, KN-446: a data attribute,
+// a title and a class, none of which the types name.
+const BEYOND = { 'data-caller': '1', title: '2', className: '3' }
+// Called when the button takes focus, cleared before each run.
+const focused = fn()
+
+const Declared = () => {
+  const { i18n } = useLingui()
+  return (
+    <IconButton
+      icon="trash"
+      aria-label={i18n._('Delete status')}
+      aria-describedby="4"
+      aria-haspopup="menu"
+      aria-expanded={false}
+      aria-controls="5"
+      data-mui-internal-clone-element
+      onFocus={focused}
+      {...BEYOND}
+    />
+  )
+}
+
+export const ForwardsWhatItDeclares: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  render: () => <Declared />,
+  play: async ({ canvasElement }) => {
+    // KN-446: the button passes on exactly the props its types name, a
+    // Tooltip's, an opener's and MUI's clone marker, and nothing a caller
+    // spreads in beyond them.
+    focused.mockClear()
+    const button = within(canvasElement).getByRole('button', { name: 'حذف وضعیت' })
+    await expect(button).toHaveAttribute('aria-describedby', '4')
+    await expect(button).toHaveAttribute('aria-haspopup', 'menu')
+    await expect(button).toHaveAttribute('aria-expanded', 'false')
+    await expect(button).toHaveAttribute('aria-controls', '5')
+    await expect(button).toHaveAttribute('data-mui-internal-clone-element')
+    button.focus()
+    await expect(focused).toHaveBeenCalled()
+    await expect(button).not.toHaveAttribute('data-caller')
+    await expect(button).not.toHaveAttribute('title')
+    await expect(button.classList.contains('3')).toBe(false)
+  },
+}
