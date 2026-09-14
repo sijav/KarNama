@@ -1,5 +1,6 @@
-The thirty icons of the design, each drawn in a 24 by 24 grid with a two pixel
-stroke and round ends, from link to note.
+The thirty icons of the design, from link to note, and the settings gear the
+owner added, each drawn in a 24 by 24 grid with a two pixel stroke and round
+ends.
 
 An icon takes one of the three sizes of the scale, 16, 20 or 24, and keeps its
 two pixel stroke at each. It is the secondary text colour unless it is given
@@ -11,7 +12,7 @@ it stands alone and means something, and then it is announced as an image.
 
 ### name
 
-Which of the thirty icons to draw.
+Which icon of the set to draw.
 
 ### size
 

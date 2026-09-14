@@ -287,7 +287,7 @@ const laidOutAsTheFrames = async (canvasElement: HTMLElement, i18n: I18n) => {
     await expect(at(board)).toMatchObject({ start: 0, end: 0, top: 0, height: 144 })
     await expect(getComputedStyle(board).backgroundColor).toBe(colourOf(board, semantic['bg/surface']))
     const edge = getComputedStyle(board, '::after')
-    await expect([edge.borderBottomWidth, edge.borderBottomColor]).toEqual(['1px', colourOf(board, semantic['border/default'])])
+    await expect([Number.parseFloat(edge.borderBottomWidth), edge.borderBottomColor]).toEqual([1, colourOf(board, semantic['border/default'])])
     await expect(at(titleRow())).toMatchObject({ start: 32, end: 32, top: 32, height: 44 })
     await expect(at(searchBar())).toMatchObject({ start: 32, top: 92, width: 320 })
     const sort = canvas.getByText(i18n._('Sort:')).closest('.MuiInputBase-root')
