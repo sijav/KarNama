@@ -1174,6 +1174,18 @@ The file draws two widths, 390 and 1440, and no breakpoint between them; the
 build takes MUI's `md`, 900 pixels, as the line: below it the switch sits in
 the Page Header, after its action, KN-021.
 
+**The flag, the owner's addition of 2026-09-14, KN-479**: "the language button
+should have flag next to it". Each language takes the flag of its region from
+the `country-flag-icons` package, Persian Iran's and English the United
+States', since the owner's word was to use a package rather than choose flags.
+The file draws no flag, so its size and place are written here: three by two
+across the 20 pixel icon column, radius `sm`, ringed by one pixel of
+`border/default` drawn over its edge. In the sidebar the switch is laid out as a
+Nav Item, the flag where an item's icon stands, `sm` from the edge and `xs`
+before the name, so the language's name starts where the items' names start. In
+the Page Header and in the language menu the flag leads the name, `xs` apart. It
+is decoration: the control's name is the language's own.
+
 Nothing else moves. If honouring this ever requires resizing or reflowing a
 drawn frame, stop and ask the owner rather than editing the design by hand.
 

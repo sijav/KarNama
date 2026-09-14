@@ -47,6 +47,7 @@ export type StoryTitle =
   | 'Shared/JobLevelSelect'
   | 'Shared/JobModal'
   | 'Shared/KanbanColumn'
+  | 'Shared/LanguageFlag'
   | 'Shared/LanguageSwitch'
   | 'Shared/LoadingState'
   | 'Shared/Menu'

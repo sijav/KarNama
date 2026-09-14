@@ -52,6 +52,17 @@ const asideIn = (canvasElement: HTMLElement) => {
   return aside
 }
 
+// The right edge of a row's written name, where it starts in Persian: a range
+// over the text itself, so a name centred in a wide row does not pass for one
+// at its start.
+const nameRight = (row: Element) => {
+  const text = document.createTreeWalker(row, NodeFilter.SHOW_TEXT).nextNode()
+  if (!text) throw new Error('this row has no written name')
+  const range = document.createRange()
+  range.selectNodeContents(text)
+  return range.getBoundingClientRect().right
+}
+
 export const Default: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
@@ -82,6 +93,13 @@ export const Default: Story = {
     const language = sidebar.getByRole('button', { name: 'فارسی' })
     await expect(Math.round(signOut.getBoundingClientRect().top - language.getBoundingClientRect().bottom)).toBe(8)
     await expect(language.getBoundingClientRect().height).toBe(44)
+    // The switch is laid out as the Nav Item below it, KN-479: its flag stands
+    // in the icon column and its name starts where «خروج» starts, which in
+    // Persian is at their right edges.
+    const [flag, icon] = [language.querySelector('svg'), signOut.querySelector('svg')]
+    if (!flag || !icon) throw new Error('a row at the foot has lost its flag or its icon')
+    await expect(Math.round(flag.getBoundingClientRect().right)).toBe(Math.round(icon.getBoundingClientRect().right))
+    await expect(Math.round(nameRight(language))).toBe(Math.round(nameRight(signOut)))
     await userEvent.click(items[1] ?? aside)
     await expect(args.onNavigate).toHaveBeenCalledWith('add')
     await userEvent.click(signOut)

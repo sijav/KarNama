@@ -1,21 +1,23 @@
 import { useLingui } from '@lingui/react'
-import { Button, Menu, MenuItem, type Theme } from '@mui/material'
+import { Box, Button, Menu, MenuItem, type Theme } from '@mui/material'
 import { useId, useState, type MouseEvent } from 'react'
 import { usePreferences } from '../../core/preferences'
 import { localeOrder, locales, type Locale } from '../../i18n'
-import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
+import { spacing, type as typeScale } from '../../theme/tokens'
+import { LanguageFlag } from '../language-flag'
 
 export interface LanguageSwitchProps {
   /** `sidebar` fills its row, `header` sits as a trailing action. Both are drawn chrome. */
   placement?: 'sidebar' | 'header'
 }
 
-// In the sidebar the switch is drawn as one more Nav Item at rest, 184:9: 44
-// tall, radius md, 14 at Medium in text/secondary, bg/surface-secondary when
-// hovered, its name where the items' names start, since the icon set has no
-// language glyph and the rule is to add no chrome, DESIGN.md section 5. The
-// keyboard's ring is three pixels inside it, as the Nav Item's. Under an sx
-// key, which the lint rule reads as CSS.
+// In the sidebar the switch is drawn as one more Nav Item at rest, 184:9, and
+// laid out as the Nav Item lays out its own row: 44 tall, radius md, 12 of
+// padding and 8 between the 20 column at its inline start, which holds the
+// flag, and the name at 14 and Medium in text/secondary, on
+// bg/surface-secondary when hovered. So the name starts where every Nav Item's
+// name starts. The keyboard's ring is three pixels inside it, as the Nav
+// Item's. Under an sx key, which the lint rule reads as CSS.
 const ROW = 44
 const EDGE = 1
 const FOCUS_RING = 3
@@ -26,19 +28,22 @@ const sidebarRow = {
       position: 'relative',
       flexShrink: 0,
       justifyContent: 'flex-start',
+      gap: `${spacing.xs}px`,
       boxSizing: 'border-box',
       width: '100%',
       minWidth: 0,
       height: ROW,
       paddingBlock: 0,
-      paddingInlineStart: `${spacing.sm + iconSize.md + spacing.xs}px`,
-      paddingInlineEnd: `${spacing.sm}px`,
+      paddingInline: `${spacing.sm}px`,
       borderRadius: `${theme.karnama.radius.md}px`,
       fontFamily: 'inherit',
       fontSize: `${typeScale.body.size}px`,
       fontWeight: typeScale.label.weight,
       lineHeight: 'normal',
       letterSpacing: 0,
+      // A button centres its text, and the name fills the row, so it would sit
+      // in the middle of it.
+      textAlign: 'start',
       textTransform: 'none',
       color: colour['text/secondary'],
       '&:hover': { backgroundColor: colour['bg/surface-secondary'] },
@@ -69,7 +74,10 @@ const sidebarRow = {
  *
  * Each language names itself in its own language, «فارسی» and English, which is
  * the one case where a label must NOT be translated: a reader who cannot read
- * the current language has to be able to find their own.
+ * the current language has to be able to find their own. The flag of its
+ * region leads each name, the owner's addition of 2026-09-14, KN-479, for the
+ * same reader: a flag is found before a word in a script one cannot read. It is
+ * decorative, since the name beside it is the control's name.
  */
 export const LanguageSwitch = ({ placement = 'sidebar' }: LanguageSwitchProps) => {
   const { locale, setLocale } = usePreferences()
@@ -98,13 +106,18 @@ export const LanguageSwitch = ({ placement = 'sidebar' }: LanguageSwitchProps) =
         aria-controls={anchor ? menuId : undefined}
         aria-expanded={anchor ? true : undefined}
         disableRipple={placement === 'sidebar'}
-        sx={placement === 'sidebar' ? sidebarRow.sx : { justifyContent: 'center', width: 'auto' }}
+        sx={placement === 'sidebar' ? sidebarRow.sx : { justifyContent: 'center', width: 'auto', gap: `${spacing.xs}px` }}
       >
-        {locales[locale]}
+        <LanguageFlag locale={locale} />
+        {/* The name gives way with an ellipsis rather than widening its row, as a Nav Item's label does. */}
+        <Box component="span" sx={{ flex: '1 1 auto', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {locales[locale]}
+        </Box>
       </Button>
       <Menu id={menuId} anchorEl={anchor} open={anchor !== null} onClose={close} slotProps={{ list: { 'aria-label': i18n._('Language') } }}>
         {localeOrder.map((value) => (
-          <MenuItem key={value} selected={value === locale} onClick={choose(value)}>
+          <MenuItem key={value} selected={value === locale} onClick={choose(value)} sx={{ gap: `${spacing.xs}px` }}>
+            <LanguageFlag locale={value} />
             {locales[value]}
           </MenuItem>
         ))}
