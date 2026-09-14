@@ -26,31 +26,29 @@ with their stories, then screens. Match the design exactly.**
 owner's word, Groq extraction on Render, Settings, drag and drop, collapse,
 date validation, the growing paste field. What survived four Claude reviews of
 its diff is its children, KN-483 to KN-503; the dark `color-scheme` fix waits in
-`git stash@{0}` as KN-496. KN-401 is unblocked.
+`git stash@{0}` as KN-496. KN-482 moved the board into the skill's database.
 
-**KN-482 is done**: the board is the todo skill's database, with objectives,
-blocks, notes, evidence, roast rounds, validate, render and rm in both halves.
+**The owner's asks of 2026-09-14, done today**: KN-479 (e058e19), each language
+led by its region's flag from `country-flag-icons`; KN-480 (c0685be), Settings
+chooses the language from the Select, its options led by flags, the Select
+gaining an optional `leading`; KN-478 (ce97840), settings, sign out, language and
+add contact as Icon Buttons with tips that say what their names do not. The
+shell's own controls are one `ShellControls` row, at the sidebar's foot on
+desktop and after the page's action in a phone's Page Header, so a phone can
+sign out, which closed KN-418; Codex's row above every title is gone; the
+language menu opens above its button from the sidebar and below it from a
+header; the gear is Lucide 1.41.0's `settings`, copied into the glyph set with
+its licence in `apps/web/src/shared/icon/LICENSE-lucide.txt`.
 
-**KN-479 is done** (e058e19): `LanguageFlag` from `country-flag-icons` 1.6.20,
-fa-IR Iran's and en-US the United States', in the language switch's icon
-column, its Page Header button and its menu. Codex's roast found it correct and
-one plan sentence reading backwards, KN-506. This iteration's check found
-DESIGN.md's navigation paragraph still saying the switch has no icon, repaired
-in 5c12ea5, and the contract failing on KN-492's wording since KN-477's
-findings were filed, repaired in 19f0687.
+**Roasts**: KN-479's found one plan sentence reading backwards, KN-506.
+KN-480's found its proof thin: KN-508, KN-509, KN-510. KN-478's is with Codex.
 
-**KN-480 is done** (c0685be): the Select's options take an optional `leading`,
-drawn before the name in the row and before a single chosen name in the field;
-Settings chooses the language from that Select, each language led by its flag.
-The e2e specs pick the language from the list, which MUI portals outside the
-dialog: 14 passed with the same 4 phone skips as before. Its roast goes to Codex.
-Found while looking at it: the dialog's Theme and sample-data parts are MUI
-defaults beside the Select's Label role, KN-507.
-
-**The owner's asks still open**: KN-478, settings, sign out, language and add
-contact as Icon Buttons with nothing in a row above a title, next; KN-481, every
-page beside its Figma frame; KN-505, clean paths instead of `#/`. The
-sample-data loader and the AI extraction stay.
+**Found on the way and filed**: KN-505, addresses as clean paths rather than
+`#/`, the owner's question; KN-507, the Settings dialog's Theme and sample-data
+parts are MUI defaults beside the Select. Repaired on the way: DESIGN.md's
+navigation paragraph (5c12ea5) and the contract failing on KN-492's wording
+(19f0687). Two stories fail in a full run and are not new: the Icon Button's and
+Nav Item's `Hover` in parallel, KN-365, and the board's `Adding`, KN-495.
 
 ## The owner's rules, most recent first
 
@@ -81,12 +79,15 @@ sample-data loader and the AI extraction stay.
 
 ## The next step
 
-Relay KN-480's roast when it lands, and file what survives as its children.
-Take KN-478: `todo move KN-478 in_progress`, read the Icon Button, the Tooltip,
-the Page Header, the Sidebar's foot, App.tsx's row of text buttons above each
-title and the network page's add contact, and the Figma frames they sit in; the
-icon set has no settings glyph, so the plan says where one comes from. Write the
-plan beside the work, roast it, then build.
+Relay KN-478's roast when it lands and file what survives as its children.
+Take KN-481, the owner's "it should look like the figma": move it in progress,
+write its plan beside the screens in `apps/web/src/screens/`, roast the plan,
+then set each page, the board, the add flow, the job modal, the network and
+sign-in, at 1440 and 390 in fa-IR light beside its frame on canvas `5:7`
+(DESIGN.md section 8 names them), write every difference into the card's
+notes, fix those under four points and file the rest. Figma screenshots come
+inline from `use_figma`'s `node.screenshot()`; the app's come headless with
+Playwright against the dev server.
 
 ## What to read first
 
