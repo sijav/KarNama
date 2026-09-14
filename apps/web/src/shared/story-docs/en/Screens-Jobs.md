@@ -128,6 +128,13 @@ The last card chosen on a phone, unchecked by the keyboard: the selection ends a
 the bar goes, focus stays on that checkbox, which stays in view while it has the
 keyboard's focus, and it folds away once focus has left the card.
 
+### ChangedInAnotherTab
+
+A board changed in another open tab: what that tab wrote reaches this one, and
+this tab's next change keeps it rather than writing its own older copy over it,
+and the other tab clearing the whole store leaves this one the fresh board. The
+other tab is stood in for by the storage event its write delivers.
+
 ### FocusAfterDeleting
 
 The control that asks to delete a job opportunity is on that job opportunity, so

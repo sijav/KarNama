@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
   checkCode,
   needsName,
@@ -71,14 +71,22 @@ const storage = (): Storage | undefined => {
   }
 }
 
-const stored = (): Session | null => {
+/**
+ * A session as it was written down: nothing written, something that is not a
+ * session, or a store that refuses to be read is nobody signed in. The one
+ * reading for what is stored when the provider mounts and what another tab
+ * writes, KN-419.
+ */
+const readBack = (written: () => string | null | undefined): Session | null => {
   try {
-    const raw = storage()?.getItem(STORAGE_KEY)
+    const raw = written()
     return typeof raw === 'string' ? readSession(JSON.parse(raw)) : null
   } catch {
     return null
   }
 }
+
+const stored = (): Session | null => readBack(() => storage()?.getItem(STORAGE_KEY))
 
 const keep = (session: Session | null) => {
   try {
@@ -113,6 +121,28 @@ export const AuthProvider = ({ initial, children }: AuthProviderProps) => {
   // in, so asking for a code and giving it in one batch works, as the
   // preferences' own ref does, KN-112.
   const pending = useRef<SentCode | null>(sent)
+
+  // Another tab's sign-in or sign-out, KN-419. The browser tells every other open
+  // tab of the page when one writes its storage, and never the tab that wrote,
+  // so the session that arrives is taken in without `hold`, which would write it
+  // back. Without it, signing out in one tab left every other tab on the board
+  // for whoever found it. A null key is another tab's clear(), which signs this
+  // one out too. A code this tab was waiting on goes either way: the reader is
+  // the other tab's now, or nobody.
+  useEffect(() => {
+    const arrived = (event: StorageEvent) => {
+      if (event.key !== null && event.key !== STORAGE_KEY) return
+      const next = readBack(() => event.newValue)
+      latest.current = next
+      setSession(next)
+      pending.current = null
+      setSent(null)
+    }
+    window.addEventListener('storage', arrived)
+    return () => {
+      window.removeEventListener('storage', arrived)
+    }
+  }, [])
 
   const hold = useCallback((next: Session | null) => {
     latest.current = next

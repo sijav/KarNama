@@ -1,10 +1,12 @@
 import type { I18n } from '@lingui/core'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
-import { AuthProvider, sessionFor } from '../core/auth'
+import { AuthProvider, sessionFor, STORAGE_KEY as SESSION_KEY } from '../core/auth'
 import { addressOf } from './routes'
 import { fixtures } from '../shared/story-fixtures'
 import { STORAGE_KEY } from '../core/preferences'
+import { defaultStatuses, jobFrom, STORAGE_KEY as RECORDS_KEY, type Records } from '../core/records'
+import { emptyDraft } from '../shared/add-job'
 import { i18nFor } from '../i18n'
 import { CURRENT } from '../shared/navigation'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
@@ -28,7 +30,7 @@ const meta = {
     (Story) => (
       // The shell is behind signing in, KN-046, and these stories are about the
       // shell: a reader with a name is seeded so they are the page they draw.
-      <AuthProvider initial={sessionFor('09120000000', SINCE, fixtures('fa-IR').contacts[0]?.fullName ?? '')}>
+      <AuthProvider initial={sessionFor(READER, SINCE, fixtures('fa-IR').contacts[0]?.fullName ?? '')}>
         <Story />
       </AuthProvider>
     ),
@@ -39,6 +41,9 @@ const meta = {
 // letters are not copy, and the reader's name is a fixture's, since a person's
 // name is data and never translated.
 const SINCE = new Date(Date.UTC(2026, 8, 12)).toISOString()
+
+// The seeded reader's number.
+const READER = '09120000000'
 
 
 /** Relative luminance of an `rgb(r, g, b)` string, 0 for black and 1 for white. */
@@ -479,6 +484,81 @@ export const Selecting: Story = {
       await page.viewport(before.width, before.height)
       window.location.hash = address
     }
+  },
+}
+
+// The event a browser hands every other open tab of the page when one of them
+// writes its storage, typed so the lint rule reads the name as a value.
+const STORED: keyof WindowEventMap = 'storage'
+
+export const SignedOutInAnotherTab: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-419: signing out in another tab signs this one out, where it used to
+    // leave the board open for whoever finds the tab, and nothing else that tab
+    // writes does. The other tab is stood in for by what its writes deliver
+    // here: first a change to the board, taken in with the reader still signed
+    // in, then its sign-out, the session gone from the story's own storage and
+    // the event with its key and no value.
+    const canvas = within(canvasElement)
+    const set = fixtures('fa-IR')
+    const statuses = defaultStatuses((token) => set.names[token])
+    const elsewhere = set.jobs[5]?.title ?? ''
+    const board: Records = {
+      statuses,
+      jobs: [jobFrom({ ...emptyDraft(statuses[0]?.id ?? ''), title: elsewhere, company: set.jobs[5]?.company ?? '' }, SINCE)],
+      contacts: [],
+    }
+    // Under the bare key: the reader is seeded inside the providers the preview
+    // wraps every story in, so the board's own provider, outside, has nobody
+    // signed in, KN-421.
+    const written = JSON.stringify(board)
+    window.localStorage.setItem(RECORDS_KEY, written)
+    window.dispatchEvent(new StorageEvent(STORED, { key: RECORDS_KEY, newValue: written }))
+    await expect(await canvas.findByText(elsewhere)).toBeInTheDocument()
+
+    window.localStorage.removeItem(SESSION_KEY)
+    window.dispatchEvent(new StorageEvent(STORED, { key: SESSION_KEY, newValue: null }))
+    await waitFor(async () => {
+      await expect(canvas.getByLabelText('شماره موبایل')).toBeInTheDocument()
+    })
+    await expect(canvas.queryByRole('button', { name: 'شبکه من' })).toBeNull()
+  },
+}
+
+export const SignedInInAnotherTab: Story = {
+  globals: { locale: 'fa-IR' },
+  decorators: [
+    (Story) => (
+      // Signed out here, as NobodySignedIn is, so the sign-in arrives from the
+      // other tab.
+      <AuthProvider>
+        <Story />
+      </AuthProvider>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    // KN-419: another tab's sign-in reaches this one. Its session has no name
+    // yet, a first login's, so this tab comes to the name step, and the name
+    // saved here is kept on that session. In a story the providers under the
+    // preview's own board remount when a reader arrives, and read the session
+    // back from storage, which the app's provider, above its board, never does:
+    // so that the adoption itself keeps the session a name is saved on, and
+    // drops a code this tab was waiting on, is proved by e2e/two-tabs.spec.ts,
+    // where the providers are wired as the app wires them.
+    const canvas = within(canvasElement)
+    const i18n = i18nFor('fa-IR')
+    const name = fixtures('fa-IR').contacts[0]?.fullName ?? ''
+    await expect(canvas.getByLabelText(i18n._('Mobile number'))).toBeInTheDocument()
+    const theirs = JSON.stringify(sessionFor(READER, SINCE))
+    window.localStorage.setItem(SESSION_KEY, theirs)
+    window.dispatchEvent(new StorageEvent(STORED, { key: SESSION_KEY, newValue: theirs }))
+    await userEvent.type(await canvas.findByLabelText(i18n._('Full name')), name)
+    await userEvent.click(canvas.getByRole('button', { name: i18n._('Continue') }))
+    await waitFor(async () => {
+      await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent(i18n._('My job opportunities'))
+    })
+    await expect(window.localStorage.getItem(SESSION_KEY)).toContain(name)
   },
 }
 

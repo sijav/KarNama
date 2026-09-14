@@ -1,7 +1,7 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { formatCount } from '../i18n/formatCount'
-import { defaultStatuses, jobFrom, RecordsProvider, type JobEntry, type Records } from '../core/records'
+import { defaultStatuses, jobFrom, RecordsProvider, STORAGE_KEY, type JobEntry, type Records } from '../core/records'
 import { emptyDraft } from '../shared/add-job'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { fixtures } from '../shared/story-fixtures'
@@ -940,6 +940,58 @@ export const UncheckingOnAPhone: Story = {
     } finally {
       await browser.page.viewport(before.width, before.height)
     }
+  },
+}
+
+// The event a browser hands every other open tab of the page when one of them
+// writes its storage, typed so the lint rule reads the name as a value.
+const STORED: keyof WindowEventMap = 'storage'
+
+export const ChangedInAnotherTab: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-419: another tab's change to the board reaches this one, and this tab's
+    // next change keeps it, where it used to write its own stale copy over it.
+    // The other tab is stood in for by what its write delivers here: the story's
+    // own storage written under the provider's key, then that event.
+    const canvas = within(canvasElement)
+    const set = fixtures('fa-IR')
+    const records = seeded()
+    const elsewhere = set.jobs[5]?.title ?? ''
+    const theirs: Records = {
+      ...records,
+      jobs: [
+        jobFrom(
+          { ...emptyDraft(records.statuses[0]?.id ?? ''), title: elsewhere, company: set.jobs[5]?.company ?? '' },
+          new Date(Date.UTC(2026, 8, 9, 9)).toISOString(),
+        ),
+        ...records.jobs,
+      ],
+    }
+    const written = JSON.stringify(theirs)
+    window.localStorage.setItem(STORAGE_KEY, written)
+    window.dispatchEvent(new StorageEvent(STORED, { key: STORAGE_KEY, newValue: written }))
+    await waitFor(async () => {
+      await expect(canvas.getByText(elsewhere)).toBeInTheDocument()
+    })
+
+    // This tab's own next change builds on the other tab's board: a status added
+    // here is written with the other tab's job opportunity still in it.
+    await userEvent.click(canvas.getByRole('button', { name: 'افزودن وضعیت' }))
+    await waitFor(async () => {
+      const kept = window.localStorage.getItem(STORAGE_KEY) ?? ''
+      await expect(kept).toContain(elsewhere)
+      await expect(kept).toContain('وضعیت تازه')
+    })
+
+    // Another tab's clear() of the whole store, the one write with no key,
+    // leaves this tab the fresh board as well.
+    window.localStorage.clear()
+    window.dispatchEvent(new StorageEvent(STORED, { key: null }))
+    await waitFor(async () => {
+      await expect(canvas.queryByText(elsewhere)).toBeNull()
+      await expect(canvas.queryByText(set.jobs[0]?.title ?? '')).toBeNull()
+    })
   },
 }
 

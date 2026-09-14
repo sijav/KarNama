@@ -70,6 +70,22 @@ on a phone the tab bar gives the bar its place and comes back when the selection
 is let go. The story loads the sample data and resizes the screen when it runs as
 a test.
 
+### SignedOutInAnotherTab
+
+Signing out in another open tab signs this one out too, so the tab left behind
+does not keep the board open for whoever finds it, and nothing else that tab
+writes does: its change to the board comes first, and is taken in here with the
+reader still signed in. The other tab is stood in for by the storage events its
+writes deliver.
+
+### SignedInInAnotherTab
+
+Signing in in another open tab reaches this one: a first login's session, with no
+name yet, brings this tab to the name step, and the name saved here is kept on
+that session. That a tab part way through signing in keeps the arriving session
+to save the name on, and drops the code it was waiting on, is checked end to end,
+where the providers are wired as the app wires them.
+
 ### NobodySignedIn
 
 What the app draws for somebody who has not signed in: the shell is not drawn

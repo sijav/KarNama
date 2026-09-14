@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react'
-import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { JobDraft } from '../../shared/add-job'
 import type { ContactCardContact } from '../../shared/contact-card'
 import type { JobSaved } from '../../shared/job-modal'
@@ -83,15 +83,22 @@ const storage = (): Storage | undefined => {
   }
 }
 
-const stored = (owner: string, fallback: Records): Records => {
+/**
+ * A board as it was written down: nothing written, something that is not a
+ * board, or a store that refuses to be read is the fresh one. The one reading
+ * for what is stored when the provider mounts and what another tab writes,
+ * KN-419.
+ */
+const readBack = (written: () => string | null | undefined, fallback: Records): Records => {
   try {
-    const raw = storage()?.getItem(keyFor(owner))
-    if (typeof raw !== 'string') return fallback
-    return readRecords(JSON.parse(raw), fallback)
+    const raw = written()
+    return typeof raw === 'string' ? readRecords(JSON.parse(raw), fallback) : fallback
   } catch {
     return fallback
   }
 }
+
+const stored = (owner: string, fallback: Records): Records => readBack(() => storage()?.getItem(keyFor(owner)), fallback)
 
 const keep = (owner: string, records: Records) => {
   try {
@@ -141,6 +148,27 @@ export const RecordsProvider = ({ initial, owner = '', children }: RecordsProvid
   // written down: localStorage holds text and a board of attachments would fill
   // it, so what survives a reload is what a file IS, KN-039.
   const bytes = useRef(new Map<string, File>())
+
+  // Another tab's change to this reader's board, KN-419. The browser tells every
+  // other open tab of the page when one writes its storage, and never the tab
+  // that wrote, so what arrives is taken in as it is and nothing is written
+  // back: it is stored already. Without it, this tab's next change wrote its own
+  // older copy over the other's, and a board loaded in one tab was gone from
+  // both. A null key is another tab's clear(), which leaves the fresh board. A
+  // file the other tab added has no bytes here, as one from an earlier visit has
+  // none.
+  useEffect(() => {
+    const arrived = (event: StorageEvent) => {
+      if (event.key !== null && event.key !== keyFor(owner)) return
+      const answer = readBack(() => event.newValue, empty)
+      latest.current = answer
+      setRecords(answer)
+    }
+    window.addEventListener('storage', arrived)
+    return () => {
+      window.removeEventListener('storage', arrived)
+    }
+  }, [owner, empty])
 
   const change = useCallback(
     (next: (from: Records) => Records) => {
