@@ -47,27 +47,29 @@ meant something only there.
 
 ## The approach
 
-1. **Count in the first frame that has the buttons.** The frame callback `beforeEach`
-   schedules looks for the story's buttons; while there are none it schedules
-   itself for the next frame, and in the first frame that has them it records how
-   many carry `data-state`. A frame callback runs before the paint of its frame, so
-   that first frame with buttons is the first one a reader sees them in. The
-   cleanup cancels whichever callback is pending.
-2. **The play waits for the count and asserts 45**, as now; its comment says the
-   count is taken in the first frame that has the buttons, not the first frame
-   after `beforeEach`.
-3. **The docs**, English and Persian, for `States`: if the entry says what the story
-   counts, it says in the first frame the buttons are drawn in; otherwise nothing
-   changes there.
+1. **Read what the first paint will show, from the matrix itself.** The render wraps
+   the matrix in `Audited`, which holds a ref to the matrix's root and, in a
+   `useLayoutEffect`, records how many buttons that root holds and how many of them
+   carry `data-state`. A layout effect runs after the commit has changed the DOM and
+   attached its refs, the cells' ref callbacks included, since a parent's layout
+   work comes after its children's, and before the browser paints. So the record is
+   what the reader's first frame of the matrix shows. `beforeEach` sets the record
+   back to nothing, and only the first record is kept.
+2. **The play waits for the record and asserts 75 buttons and 45 forced**, counted
+   inside the matrix's root rather than the whole document, which on a Docs page
+   holds other stories' buttons.
+3. **The docs do not change**: the `States` entries, English and Persian, describe the
+   matrix and the attribute, not how the story counts.
 4. **`Button.tsx` does not change.**
 
 ## How I will know it works
 
 - Red before: the measurement above, and KN-226's probe.
-- A plant that brings KN-454's flash back, the ref callback moved into a
-  `useEffect`, fails `States` on the count in a production build and in the Vitest
-  runner, since the first frame with buttons then paints them at rest. This is the
-  proof that the count still sees a flash; restored by hash.
+- A plant that brings KN-454's flash back, the attribute set from a `useEffect`
+  instead of the ref callback, fails `States` on the record in a production build
+  and in the Vitest runner: a passive effect runs after the layout effect, so the
+  record holds no forced cell. This is the proof that the record still sees a
+  flash; restored by hash.
 - The Button's stories under Vitest, the unit project, eslint, tsc, the docs guard.
 - A production Storybook of the change: `shared-button--states` opened headless,
   bare and inside the manager, with no failure event and no console error.
@@ -75,15 +77,62 @@ meant something only there.
 
 ## What I am unsure of
 
-- **Whether a frame callback can run between the buttons' insertion and the ref
-  callbacks that mark them.** Both happen in one React commit, one task, and a frame
-  callback runs in the rendering step between tasks, so none can. The plant above is
-  what would show a count taken too early to see a flash.
-- **The first frame with buttons may not be the frame the buttons were inserted
-  for**, if a commit lands after a frame's callbacks and before its paint. Then the
-  frame painted with the buttons is counted in its successor's callback. The
-  attribute lands in that same commit, so the successor still counts 45, and a
-  flash, a later attribute, would still count 0 there.
-- **A story that never draws its buttons** would schedule frames until the cleanup
-  cancels them; the play's wait for the count times out and fails, which is the
-  right outcome.
+- **The order inside the commit.** The record relies on React attaching the cells'
+  refs before it runs their ancestor's layout effect. React's commit does its
+  layout work children first; the plant above and the 45 on the fixed build are
+  what show it here.
+- **A layout effect is not a frame.** It reads the DOM the first paint will show
+  rather than watching the paint, which is what the exit's "the first frame in which
+  its buttons exist" asks about; the close says so plainly.
+- **A story that never draws its buttons** records none, and the play's assertion
+  fails, which is the right outcome.
+
+## Plan review, Codex, 2026-09-15
+
+Written to `%TEMP%/claude-roast/2b1874631dd1/20260914T230340-plan-kn-561-button-s-states-story-counts-no-forced-ce-231a33.md`.
+Judged against the code:
+
+- **A frame callback that reschedules itself can pass over a flash. Real, and my own
+  unsure point had it backwards.** A frame callback runs before its frame's paint;
+  a commit that lands after it paints its buttons in that frame, and an attribute
+  set from a passive effect arrives after that paint, so the next callback counts
+  45 over a frame that showed the cells at rest. The plant I had named would then
+  not fail. Taken: the frame callback is gone.
+- **No frame callback can run inside the commit that inserts and marks the
+  buttons.** Agreed; the gap is after a callback and before its paint.
+- **A layout effect on the matrix's root records what the first paint shows. Taken**
+  as the approach: it runs after the commit's DOM changes and refs and before the
+  paint, and it sees no forced cell if the attribute moves to an effect, in the
+  production canvas and under `act` alike.
+- **The count read the whole document. Real. Taken**: counted in the matrix's root.
+- **The build, the two openings, the plant, lint, tsc, the docs guard and the look
+  are verification, not invented gates.** Agreed.
+
+## Result, 2026-09-15
+
+- **`Button.stories.tsx`**: `Audited` holds a ref to the matrix's root and, in a
+  `useLayoutEffect`, hands `onFirstPaint` how many buttons the root holds and how
+  many of them carry `data-state`. `States` renders its rows inside it and keeps
+  only the first record, and its `beforeEach` sets the record back to nothing,
+  where the frame callback and its cleanup were. The play waits for the record and
+  asserts 75 buttons and 45 forced. `Forced` is unchanged.
+- **The docs do not change**, as the plan found.
+- `Button.tsx` is unchanged.
+
+**Which of the two it is: the second.** The forced states land in the commit that
+draws the buttons, so the published page does not flash and KN-454's fix holds;
+what was empty was the story's proof, whose one frame callback ran before a
+production canvas, mounting the story without `act`, had drawn any button.
+
+**On a production Storybook of the change**, `States` ended with no failure event
+and no console error, bare and inside the manager. **KN-454's flash planted back**,
+the attribute set from a `useEffect` instead of the ref callback, failed `States` on
+the record, `{ buttons: 75, forced: 0 }` against 45, under Vitest and on its own
+production build; the story was restored byte for byte after.
+
+**Passing**: the Button stories under Vitest, 5 of 5; the web unit project, 1383,
+run before any browser run; eslint and tsc clean. `Button.stories.tsx` was not
+formatted at HEAD, 64 lines of drift; the two new lines prettier would break were
+broken by hand and it keeps 64. **Looked at** in the dev Storybook: the matrix in
+Persian and in English, 75 buttons with 45 forced, right to left and left to
+right; the story pins the light scheme, so it has no dark view.

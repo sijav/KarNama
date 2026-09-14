@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
+import { useLayoutEffect, useRef, type ReactNode } from 'react'
 import { expect, fn, waitFor, within } from 'storybook/test'
 import { semantic, spacing } from '../../theme/tokens'
 import { ICON_NAMES } from '../icon'
@@ -49,12 +50,35 @@ const Forced = ({ state, ...args }: ButtonProps & { state: ButtonState }) => (
   </Box>
 )
 
-// What the browser had to draw at the first frame, filled by a frame callback
-// the story schedules BEFORE it renders: a frame callback runs after layout and
-// before the paint it belongs to, so what it counts is what the reader sees
-// first. With the attribute set from an effect this was zero, KN-454.
-let forcedAtFirstFrame: number | null = null
+// What the reader's first paint of the matrix shows, KN-454 and KN-561: read in a
+// layout effect on the matrix's root, which runs after the commit has changed the
+// DOM and attached the cells' refs and before the browser paints. A frame
+// callback, its old reader, ran before any button existed in a production canvas,
+// which mounts the story without act, and could pass over a paint it never saw.
+let firstPaint: { buttons: number; forced: number } | null = null
 /* eslint-enable lingui/no-unlocalized-strings */
+
+// The matrix's root, recording what its commit put there, KN-561. The render that
+// hands it the callback keeps only the first record.
+const Audited = ({
+  children,
+  onFirstPaint,
+}: {
+  children: ReactNode
+  onFirstPaint: (seen: { buttons: number; forced: number }) => void
+}) => {
+  const root = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const matrix = root.current
+    if (!matrix) return
+    onFirstPaint({ buttons: matrix.querySelectorAll('button').length, forced: matrix.querySelectorAll('button[data-state]').length })
+  }, [onFirstPaint])
+  return (
+    <Box ref={root} sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.lg}px` }}>
+      {children}
+    </Box>
+  )
+}
 
 const meta = {
   title: 'Shared/Button',
@@ -154,37 +178,38 @@ export const States: Story = {
   globals: { colorScheme: 'light' },
   parameters: { controls: { include: ['startIcon', 'endIcon'] } },
   beforeEach: () => {
-    forcedAtFirstFrame = null
-    const frame = requestAnimationFrame(() => {
-      forcedAtFirstFrame = document.querySelectorAll('button[data-state]').length
-    })
-    return () => {
-      cancelAnimationFrame(frame)
-    }
+    firstPaint = null
   },
   render: (args) => (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.lg}px` }}>
+    <Audited
+      onFirstPaint={(seen) => {
+        firstPaint ??= seen
+      }}
+    >
       {STATES.map((state) => (
         <Box key={state} sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, max-content)', gap: `${spacing.md}px`, alignItems: 'center' }}>
           {VARIANTS.flatMap((variant) => SIZES.map((size) => <Forced key={`${variant}-${size}`} {...args} variant={variant} size={size} state={state} />))}
         </Box>
       ))}
-    </Box>
+    </Audited>
   ),
   play: async ({ canvasElement }) => {
     // All 75 read where they stand, with no pointer and no keyboard: the fill
     // and the text of every one, Ghost's pressed opacity, and the focus ring,
     // which is an outline on four styles and Secondary's own inside edge.
-    // The 45 transient cells carried their state into the FIRST frame the
-    // browser drew, rather than being painted at rest and corrected after,
-    // KN-454. Read from a frame callback the story scheduled before it
-    // rendered, because by the time a play runs every effect has long since
-    // caught up and the flash is invisible to it.
+    // The 45 transient cells carried their state into the FIRST paint of the
+    // matrix, rather than being painted at rest and corrected after, KN-454.
+    // Read from what the matrix's root held before the browser painted, KN-561,
+    // because by the time a play runs every effect has long since caught up and
+    // the flash is invisible to it.
     const transient = STATES.filter((state) => state !== 'rest' && state !== 'disabled').length
     await waitFor(async () => {
-      await expect(forcedAtFirstFrame).not.toBeNull()
+      await expect(firstPaint).not.toBeNull()
     })
-    await expect(forcedAtFirstFrame).toBe(transient * VARIANTS.length * SIZES.length)
+    await expect(firstPaint).toEqual({
+      buttons: STATES.length * VARIANTS.length * SIZES.length,
+      forced: transient * VARIANTS.length * SIZES.length,
+    })
 
     const buttons = within(canvasElement).getAllByRole('button')
     await expect(buttons).toHaveLength(STATES.length * VARIANTS.length * SIZES.length)
