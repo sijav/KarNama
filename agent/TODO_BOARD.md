@@ -8291,6 +8291,7 @@ The owner, 2026-09-14: 'the language button should have flag next to it' and, in
 **Notes.**
 
 - The owner, 2026-09-14, on which flags: 'just install a package and use the package, you're a software dev not a politicians, nobody cares as long as you're not biased and just use a package for that'; English takes the United States flag. So the flags come from a flag package, by the locale's region: fa-IR takes the package's IR flag, en-US its US flag.
+- 2026-09-14, the next iteration's check: DESIGN.md's navigation section still drew the language switch 'with no icon, since the set has no language glyph'; corrected to name the flag in its icon column.
 
 **Roasts.**
 

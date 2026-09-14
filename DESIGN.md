@@ -693,8 +693,9 @@ its parts. From the top: the Brand Row, a 32 mark of radius md in
 `bg/brand/container`, the name at 14 and Medium over the phone at 12 in the
 reader's digits; a divider; a 16 spacer; «فضای کار» at 12 and Medium in
 `text/disabled`; the three destinations; the room the file leaves; the language
-switch, drawn as a Nav Item at rest with no icon, since the set has no language
-glyph, its name where the items' names start; and «خروج» with `log-out`. Before
+switch, drawn as a Nav Item at rest whose icon is the language's flag, the
+owner's addition of KN-479 in section 5, its name where the items' names start;
+and «خروج» with `log-out`. Before
 anyone signs in, the user and «خروج» are left out.
 
 The tab bar, `185:19`, is the screen's width and 72 tall, `bg/surface` with one
