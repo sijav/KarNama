@@ -3,13 +3,14 @@ import { Box, ButtonBase } from '@mui/material'
 import type { ReactNode } from 'react'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 import { Icon } from '../icon'
-import { LanguageSwitch } from '../language-switch'
+import { ShellControls } from '../shell-controls'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface PageHeaderProps {
   title: string
   onBack?: () => void
   action?: ReactNode
+  onSignOut?: () => void
 }
 
 // The back control's ring, the product's two pixels at an offset of two; the
@@ -24,9 +25,10 @@ const REACH = (TARGET - iconSize.md) / 2
 
 // The Page Header of node 155:56: the title at the inline start, with the
 // back arrow of 155:72 before it when there is somewhere to go back to, and
-// the primary action at the inline end. On a narrow screen the language switch
-// follows the action, DESIGN.md's section 5, since the tab bar has no room.
-export const PageHeader = ({ title, onBack, action }: PageHeaderProps) => {
+// the primary action at the inline end. On a narrow screen the shell's own
+// controls follow the action, the language, settings and signing out, KN-478,
+// since the tab bar has no room for them.
+export const PageHeader = ({ title, onBack, action, onSignOut }: PageHeaderProps) => {
   const { i18n } = useLingui()
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: `${spacing.sm}px`, width: '100%' }}>
@@ -72,7 +74,7 @@ export const PageHeader = ({ title, onBack, action }: PageHeaderProps) => {
         {action}
         {/* Below MUI's md, the build's mobile breakpoint, DESIGN.md section 5. */}
         <Box sx={{ display: { xs: 'inline-flex', md: 'none' } }}>
-          <LanguageSwitch placement="header" />
+          <ShellControls placement="header" {...(onSignOut === undefined ? {} : { onSignOut })} />
         </Box>
       </Box>
     </Box>

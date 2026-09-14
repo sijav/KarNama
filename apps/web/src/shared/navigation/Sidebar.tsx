@@ -2,9 +2,9 @@ import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import { useId } from 'react'
 import { usePreferences } from '../../core/preferences'
-import { spacing, type as typeScale } from '../../theme/tokens'
+import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 import { formatPhone } from '../contact-card'
-import { LanguageSwitch } from '../language-switch'
+import { ShellControls } from '../shell-controls'
 import { DESTINATIONS, useDestinationName, type Destination } from './destinations'
 import { NavItem } from './NavItem'
 
@@ -23,6 +23,11 @@ const WIDTH = 240
 const MARK = 32
 const EDGE = 1
 
+// The foot's row starts where its first button's centre meets the Nav Items'
+// icon column: an item's 12 of padding and half its 20 icon, less half the 32
+// button, KN-478.
+const FOOT_INSET = spacing.sm + iconSize.md / 2 - spacing.xl / 2
+
 // One line, cut rather than wrapped. Under an sx key, which the lint rule reads as CSS.
 const oneLine = { sx: { minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } } as const
 
@@ -30,7 +35,8 @@ const oneLine = { sx: { minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis
 // right in Persian, with its one pixel of border/default on the edge that faces
 // the page. From the top: the brand, the signed-in user, a divider, and under
 // «فضای کار» the three destinations; at the foot, below the room the file leaves
-// empty, the language switch, DESIGN.md section 5, and «خروج».
+// empty, the shell's own controls, the language, settings and «خروج», as a row
+// of Icon Buttons, DESIGN.md section 5, KN-478.
 export const Sidebar = ({ current, userName, userPhone, onNavigate, onSignOut }: SidebarProps) => {
   const { i18n } = useLingui()
   const { locale } = usePreferences()
@@ -187,8 +193,9 @@ export const Sidebar = ({ current, userName, userPhone, onNavigate, onSignOut }:
       </Box>
       {/* The Grow Spacer, 366:447. */}
       <Box aria-hidden sx={{ flex: '1 1 auto' }} />
-      <LanguageSwitch placement="sidebar" />
-      {onSignOut === undefined ? null : <NavItem icon="log-out" label={i18n._('Sign out')} onClick={onSignOut} />}
+      <Box sx={{ flexShrink: 0, paddingInlineStart: `${FOOT_INSET}px` }}>
+        <ShellControls placement="sidebar" {...(onSignOut === undefined ? {} : { onSignOut })} />
+      </Box>
     </Box>
   )
 }

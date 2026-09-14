@@ -14,7 +14,9 @@ the rest of the screen renders. The focus ring is drawn inside the button.
 
 ### icon
 
-Which icon from the set it shows.
+Which icon from the set it shows, or an element drawn in its place, such as a
+language's flag. An element is decoration: it is hidden inside the button, so
+the button's name stays its only name.
 
 ### aria-label
 
@@ -110,3 +112,9 @@ The tip explains and the label names, and they say different things on purpose:
 with one string in both, a tip that RENAMED the link would read exactly like one
 that described it. The name is read again while the tip is open, which is the
 only moment the difference shows.
+
+### WithAFlag
+
+A flag in place of a glyph, as the language button draws it: 20 wide and
+centred in the square, and hidden from screen readers even though this flag
+names itself, so the button keeps its one name.

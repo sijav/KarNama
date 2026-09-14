@@ -1,93 +1,42 @@
 import { useLingui } from '@lingui/react'
-import { Box, Button, Menu, MenuItem, type Theme } from '@mui/material'
-import { useId, useState, type MouseEvent } from 'react'
+import { Menu, MenuItem, useTheme } from '@mui/material'
+import { useId, useRef, useState } from 'react'
 import { usePreferences } from '../../core/preferences'
 import { localeOrder, locales, type Locale } from '../../i18n'
-import { spacing, type as typeScale } from '../../theme/tokens'
+import { inlineEndOf, inlineStartOf } from '../../theme/sides'
+import { spacing } from '../../theme/tokens'
+import { IconButton } from '../icon-button'
 import { LanguageFlag } from '../language-flag'
+import { Tooltip } from '../tooltip'
 
+// The props are documented in story-docs, not here, KN-207.
 export interface LanguageSwitchProps {
-  /** `sidebar` fills its row, `header` sits as a trailing action. Both are drawn chrome. */
   placement?: 'sidebar' | 'header'
 }
 
-// In the sidebar the switch is drawn as one more Nav Item at rest, 184:9, and
-// laid out as the Nav Item lays out its own row: 44 tall, radius md, 12 of
-// padding and 8 between the 20 column at its inline start, which holds the
-// flag, and the name at 14 and Medium in text/secondary, on
-// bg/surface-secondary when hovered. So the name starts where every Nav Item's
-// name starts. The keyboard's ring is three pixels inside it, as the Nav
-// Item's. Under an sx key, which the lint rule reads as CSS.
-const ROW = 44
-const EDGE = 1
-const FOCUS_RING = 3
-const sidebarRow = {
-  sx: (theme: Theme) => {
-    const colour = theme.karnama.semantic
-    return {
-      position: 'relative',
-      flexShrink: 0,
-      justifyContent: 'flex-start',
-      gap: `${spacing.xs}px`,
-      boxSizing: 'border-box',
-      width: '100%',
-      minWidth: 0,
-      height: ROW,
-      paddingBlock: 0,
-      paddingInline: `${spacing.sm}px`,
-      borderRadius: `${theme.karnama.radius.md}px`,
-      fontFamily: 'inherit',
-      fontSize: `${typeScale.body.size}px`,
-      fontWeight: typeScale.label.weight,
-      lineHeight: 'normal',
-      letterSpacing: 0,
-      // A button centres its text, and the name fills the row, so it would sit
-      // in the middle of it.
-      textAlign: 'start',
-      textTransform: 'none',
-      color: colour['text/secondary'],
-      '&:hover': { backgroundColor: colour['bg/surface-secondary'] },
-      '&.Mui-focusVisible::after': {
-        content: '""',
-        position: 'absolute',
-        inset: EDGE,
-        borderRadius: `${theme.karnama.radius.md - EDGE}px`,
-        borderStyle: 'solid',
-        borderWidth: FOCUS_RING,
-        borderColor: colour['border/focus'],
-        pointerEvents: 'none',
-      },
-    } as const
-  },
-}
-
-/**
- * The control that changes the language.
- *
- * `DESIGN.md` fixes where it goes and the rule is that it adds no new chrome:
- * on desktop the bottom of the sidebar `185:11`, below the nav items, where
- * there is already empty space; on mobile the Page Header `155:56` as an
- * optional trailing action, because the tab bar carries the three drawn
- * destinations and a fourth entry would change the design. This component is
- * the control itself; the Sidebar, KN-027, and the Page Header, KN-021, put it
- * in those two places.
- *
- * Each language names itself in its own language, «فارسی» and English, which is
- * the one case where a label must NOT be translated: a reader who cannot read
- * the current language has to be able to find their own. The flag of its
- * region leads each name, the owner's addition of 2026-09-14, KN-479, for the
- * same reader: a flag is found before a word in a script one cannot read. It is
- * decorative, since the name beside it is the control's name.
- */
+// The control that changes the language: an Icon Button whose icon is the
+// current language's flag, the owner's of 2026-09-14, KN-479 and KN-478. Its
+// name says what it is, «زبان»; its tip is the current language's own name, the
+// one label that must NOT be translated, since a reader who cannot read the
+// interface has to be able to find their own language. The menu lists both,
+// each in its own language beside its flag.
+//
+// The menu opens where there is room and never over its button. At the
+// sidebar's foot it opens above the button, hanging from its inline start so it
+// runs into the sidebar; in a phone's Page Header it opens below, hanging from
+// its inline end, the Menu's way. MUI's Popover places by left and right and
+// does not mirror, so each side is worked out for the direction. It opens
+// instantly, as every menu does.
 export const LanguageSwitch = ({ placement = 'sidebar' }: LanguageSwitchProps) => {
   const { locale, setLocale } = usePreferences()
   const { i18n } = useLingui()
+  const { direction } = useTheme()
+  const button = useRef<HTMLButtonElement>(null)
   const [anchor, setAnchor] = useState<HTMLElement | null>(null)
   const menuId = useId()
+  const above = placement === 'sidebar'
+  const side = above ? inlineStartOf(direction) : inlineEndOf(direction)
 
-  const open = (event: MouseEvent<HTMLElement>) => {
-    setAnchor(event.currentTarget)
-  }
   const close = () => {
     setAnchor(null)
   }
@@ -98,23 +47,33 @@ export const LanguageSwitch = ({ placement = 'sidebar' }: LanguageSwitchProps) =
 
   return (
     <>
-      <Button
-        onClick={open}
-        color="inherit"
-        size="small"
-        aria-haspopup="menu"
-        aria-controls={anchor ? menuId : undefined}
-        aria-expanded={anchor ? true : undefined}
-        disableRipple={placement === 'sidebar'}
-        sx={placement === 'sidebar' ? sidebarRow.sx : { justifyContent: 'center', width: 'auto', gap: `${spacing.xs}px` }}
+      <Tooltip title={locales[locale]}>
+        <IconButton
+          ref={button}
+          icon={<LanguageFlag locale={locale} />}
+          aria-label={i18n._('Language')}
+          aria-haspopup="menu"
+          aria-expanded={anchor ? true : undefined}
+          aria-controls={anchor ? menuId : undefined}
+          onClick={() => {
+            setAnchor(button.current)
+          }}
+        />
+      </Tooltip>
+      <Menu
+        id={menuId}
+        anchorEl={anchor}
+        open={anchor !== null}
+        onClose={close}
+        transitionDuration={0}
+        anchorOrigin={{ vertical: above ? 'top' : 'bottom', horizontal: side }}
+        transformOrigin={{ vertical: above ? 'bottom' : 'top', horizontal: side }}
+        slotProps={{
+          // 4 clear of the button, on whichever side it opens to.
+          paper: { sx: { marginTop: above ? `-${spacing['2xs']}px` : `${spacing['2xs']}px` } },
+          list: { 'aria-label': i18n._('Language') },
+        }}
       >
-        <LanguageFlag locale={locale} />
-        {/* The name gives way with an ellipsis rather than widening its row, as a Nav Item's label does. */}
-        <Box component="span" sx={{ flex: '1 1 auto', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {locales[locale]}
-        </Box>
-      </Button>
-      <Menu id={menuId} anchorEl={anchor} open={anchor !== null} onClose={close} slotProps={{ list: { 'aria-label': i18n._('Language') } }}>
         {localeOrder.map((value) => (
           <MenuItem key={value} selected={value === locale} onClick={choose(value)} sx={{ gap: `${spacing.xs}px` }}>
             <LanguageFlag locale={value} />

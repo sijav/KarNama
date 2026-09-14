@@ -17,11 +17,16 @@ number.
 Said while anything is selected, so the shell can give the foot of the screen to
 the Bulk Action Bar, KN-356.
 
+### onSignOut
+
+Signs the reader out, from the controls a phone's page header carries.
+
 ## Stories
 
 ### People
 
-The page with the fixtures' contacts, in Persian.
+The page with the fixtures' contacts, in Persian, and the header's add contact,
+an icon button with its tip.
 
 ### InEnglish
 

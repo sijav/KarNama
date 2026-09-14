@@ -6,9 +6,10 @@ When the page has somewhere to go back to, an arrow before the title leads
 there; the design draws it pointing right, back in a right to left page, and an
 English page turns it round. The arrow is 20, and the control round it takes a
 press anywhere in 24 each way. The primary action, a button, sits at the other
-end. On a narrow screen the language switch follows the action, since the tab
-bar at the bottom has room only for the three destinations; on a wide screen it
-lives in the sidebar instead.
+end. On a narrow screen the shell's own controls follow the action, the
+language, the settings and signing out, since the tab bar at the bottom has
+room only for the three destinations; on a wide screen they live at the foot of
+the sidebar instead.
 
 ## Props
 
@@ -25,6 +26,11 @@ Called when the back arrow is pressed. Leave it out and there is no arrow.
 The page's primary action, usually a primary button. Leave it out and the end
 of the row is empty.
 
+### onSignOut
+
+Called when signing out is pressed among a narrow screen's controls. Leave it
+out and there is no sign-out button there.
+
 ## Stories
 
 ### Default
@@ -39,11 +45,12 @@ The title with the back arrow before it and no action.
 
 The title alone, both optional parts left out.
 
-### LanguageOnNarrowScreens
+### ControlsOnNarrowScreens
 
-The language switch showing on a narrow screen and gone on a wide one. The
-story sets the width when it runs as a test; in Storybook itself, resize the
-window.
+The shell's own controls, the language, the settings and signing out, showing
+after the action on a narrow screen and gone on a wide one, and signing out
+pressed. The story sets the width when it runs as a test; in Storybook itself,
+resize the window.
 
 ### InEnglish
 

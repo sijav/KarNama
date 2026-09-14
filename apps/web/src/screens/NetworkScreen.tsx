@@ -3,12 +3,13 @@ import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { contactMatches, useRecords, type ContactEntry } from '../core/records'
 import { BulkActionBar } from '../shared/bulk-action-bar'
-import { Button } from '../shared/button'
 import { ContactCard } from '../shared/contact-card'
 import { EmptyState } from '../shared/empty-state'
+import { IconButton } from '../shared/icon-button'
 import { ConfirmModal, ContactModal, type ContactModalValues } from '../shared/modal'
 import { PageHeader } from '../shared/page-header'
 import { SearchBar, type SearchBarLayout } from '../shared/search-bar'
+import { Tooltip } from '../shared/tooltip'
 import { spacing } from '../theme/tokens'
 
 /**
@@ -51,9 +52,11 @@ const asValues = (held: ContactEntry): ContactModalValues => ({
 export interface NetworkScreenProps {
   /** Said while anything is selected, so the shell can give the foot of the screen to the bulk bar, KN-356. */
   onSelecting?: (selecting: boolean) => void
+  /** Signs the reader out, from the Page Header's controls on a phone, KN-478. */
+  onSignOut?: () => void
 }
 
-export const NetworkScreen = ({ onSelecting }: NetworkScreenProps) => {
+export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) => {
   const { i18n } = useLingui()
   const records = useRecords()
   // The control that asked to delete, kept as it asks, KN-344. The route from
@@ -117,14 +120,20 @@ export const NetworkScreen = ({ onSelecting }: NetworkScreenProps) => {
     <Stack ref={page} tabIndex={LOOSE} sx={{ gap: `${spacing.lg}px`, flex: '1 1 auto', minHeight: 0 }}>
       <PageHeader
         title={i18n._('My network')}
+        {...(onSignOut === undefined ? {} : { onSignOut })}
+        // Add contact is an Icon Button, the owner's of 2026-09-14, KN-478,
+        // where the file draws Button M; its tip says what the name does not.
         action={
-          <Button
-            onClick={() => {
-              setEditing({ id: null, values: NOBODY })
-            }}
-          >
-            {i18n._('Add contact')}
-          </Button>
+          <Tooltip title={i18n._('Adds a person to your network')}>
+            <IconButton
+              icon="user-plus"
+              aria-label={i18n._('Add contact')}
+              aria-haspopup="dialog"
+              onClick={() => {
+                setEditing({ id: null, values: NOBODY })
+              }}
+            />
+          </Tooltip>
         }
       />
 

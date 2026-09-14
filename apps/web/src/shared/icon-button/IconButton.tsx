@@ -1,5 +1,5 @@
-import { IconButton as MuiIconButton, type Theme } from '@mui/material'
-import { useEffect, type AriaAttributes, type DOMAttributes, type Ref } from 'react'
+import { Box, IconButton as MuiIconButton, type Theme } from '@mui/material'
+import { useEffect, type AriaAttributes, type DOMAttributes, type ReactElement, type Ref } from 'react'
 import { spacing } from '../../theme/tokens'
 import { report } from '../console-guard'
 import { Icon, type IconName } from '../icon'
@@ -29,9 +29,13 @@ type TooltipTrigger<Element extends HTMLElement> = Pick<
 > &
   Pick<AriaAttributes, 'aria-describedby'>
 
+// What a button that opens something says about it, KN-478: that it opens a
+// menu or a dialog, whether that is open, and which element it is.
+type Opener = Pick<AriaAttributes, 'aria-haspopup' | 'aria-expanded' | 'aria-controls'>
+
 // The props are documented in story-docs, not here, KN-207.
-interface IconButtonBase {
-  icon: IconName
+interface IconButtonBase extends Opener {
+  icon: IconName | ReactElement
   'aria-label': string
   tone?: 'neutral' | 'danger'
   iconSize?: 'sm' | 'md'
@@ -126,7 +130,17 @@ export const IconButton = (props: IconButtonProps) => {
         }
     },
   }
-  const mark = <Icon name={icon} size={iconSize} color="inherit" />
+  // A name draws the set's glyph. An element, a language's flag, is drawn in
+  // its place inside a span hidden from assistive technology, so the button's
+  // name stays its only name whatever the element carries, KN-478.
+  const mark =
+    typeof icon === 'string' ? (
+      <Icon name={icon} size={iconSize} color="inherit" />
+    ) : (
+      <Box component="span" aria-hidden sx={{ display: 'inline-flex' }}>
+        {icon}
+      </Box>
+    )
 
   // Two calls rather than one with an href spread in: MUI types the anchor form
   // as its own overload, taking a REQUIRED href, so a shape whose href is

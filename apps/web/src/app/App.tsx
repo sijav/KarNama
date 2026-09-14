@@ -4,9 +4,7 @@ import { useEffect, useState } from 'react'
 import { apiErrorText } from '../core/api'
 import { useAuth } from '../core/auth'
 import { AuthScreen, JobsScreen, NetworkScreen } from '../screens'
-import { Button } from '../shared/button'
 import { Navigation, TAB_BAR_HEIGHT, type Destination } from '../shared/navigation'
-import { SettingsControl } from '../shared/settings'
 import { spacing } from '../theme/tokens'
 import { addressOf, destinationIn } from './routes'
 
@@ -21,9 +19,10 @@ import { addressOf, destinationIn } from './routes'
  * mounts is the tree a story renders.
  *
  * The navigation, KN-027, carries the three destinations and, on a wide screen,
- * the language switch at the sidebar's foot. On a phone the sidebar gives way to
- * the tab bar, which has room for nothing more, so each screen's Page Header
- * carries the switch there, DESIGN.md section 5, KN-355.
+ * the shell's own controls at the sidebar's foot: the language, settings and
+ * signing out. On a phone the sidebar gives way to the tab bar, which has room
+ * for nothing more, so each screen's Page Header carries them, DESIGN.md
+ * section 5, KN-478. Nothing sits in a row above a page's title.
  *
  * The destination is the address's, KN-042: `#/jobs`, `#/add` and `#/network`,
  * a hash because GitHub Pages has no server to rewrite a deep link. `add` is a
@@ -36,7 +35,7 @@ export const App = () => {
   // the navigation is the shell's and the selection is the page's.
   const [selecting, setSelecting] = useState(false)
   const [current, setCurrent] = useState<Destination>(() => destinationIn(window.location.hash))
-  const { session, signingUp, signOut, error, busy } = useAuth()
+  const { session, signingUp, signOut, error } = useAuth()
   const { i18n } = useLingui()
 
   // The address and the state follow each other: the navigation sets the hash,
@@ -85,24 +84,17 @@ export const App = () => {
           pb: { xs: `calc(${TAB_BAR_HEIGHT}px + env(safe-area-inset-bottom) + ${spacing.lg}px)`, md: 6 },
         }}
       >
-        <Box sx={{ display: 'flex', flexShrink: 0, justifyContent: 'flex-end', alignItems: 'center' }}>
-          <SettingsControl />
-          <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-            <Button variant="text" disabled={busy ?? false} onClick={signOut}>
-              {i18n._('Sign out')}
-            </Button>
-          </Box>
-        </Box>
         {error ? (
           <Box role="alert" sx={{ color: 'error.main' }}>
             {apiErrorText(i18n, error)}
           </Box>
         ) : null}
         {current === 'network' ? (
-          <NetworkScreen onSelecting={setSelecting} />
+          <NetworkScreen onSelecting={setSelecting} onSignOut={signOut} />
         ) : (
           <JobsScreen
             onSelecting={setSelecting}
+            onSignOut={signOut}
             addOpen={current === 'add'}
             onAddClose={() => {
               navigate('jobs')

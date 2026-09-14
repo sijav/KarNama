@@ -5,6 +5,7 @@ import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { semantic, spacing, status } from '../../theme/tokens'
 import { ICON_NAMES } from '../icon'
+import { LanguageFlag } from '../language-flag'
 import { fixtures } from '../story-fixtures'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Tooltip } from '../tooltip'
@@ -350,5 +351,32 @@ export const ALinkInATooltip: Story = {
 
     // And neither component complained while any of that happened.
     await expect(console.error).not.toHaveBeenCalled()
+  },
+}
+
+// A flag in place of a glyph, as the language switch draws it, KN-478. The flag
+// here names itself on purpose: hidden inside the button, it still cannot give
+// the button a second name.
+const Flagged = () => {
+  const { i18n } = useLingui()
+  return <IconButton icon={<LanguageFlag locale="fa-IR" aria-label={i18n._('Language')} />} aria-label={i18n._('Language')} />
+}
+
+export const WithAFlag: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  render: () => <Flagged />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const button = canvas.getByRole('button', { name: 'زبان' })
+    const box = button.getBoundingClientRect()
+    await expect([box.width, box.height]).toEqual([32, 32])
+    // The 20 wide flag, centred in the 32 square.
+    const flag = button.querySelector('svg')?.getBoundingClientRect()
+    await expect(flag?.width).toBe(20)
+    await expect(Math.round((flag?.left ?? 0) - box.left)).toBe(6)
+    // Decoration: no image in the accessibility tree, one name on the button.
+    await expect(canvas.queryByRole('img')).toBeNull()
+    await expect(button).toHaveAccessibleName('زبان')
   },
 }

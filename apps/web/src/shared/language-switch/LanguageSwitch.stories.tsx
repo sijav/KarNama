@@ -1,60 +1,92 @@
+import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
+import { i18nFor, localeOrder, locales, type Locale } from '../../i18n'
 import { iconSize, spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { LanguageSwitch } from './LanguageSwitch'
+
+// Room on the side the menu opens to, since a menu at the viewport's edge is
+// clamped 16 from it: from the sidebar it opens above the button and runs to
+// the inline end, so the button sits at the start; from the header it opens
+// below and runs back to the start, so the button sits at the end.
+const ROOM = spacing['3xl'] * 2
 
 const meta = {
   title: 'Shared/LanguageSwitch',
   component: LanguageSwitch,
   args: { placement: 'sidebar' },
   argTypes: { placement: { control: 'inline-radio', options: ['sidebar', 'header'] } },
+  decorators: [
+    (Story, { args }) => (
+      <Box sx={{ display: 'flex', justifyContent: args.placement === 'header' ? 'flex-end' : 'flex-start', padding: `${ROOM}px` }}>
+        <Story />
+      </Box>
+    ),
+  ],
 } satisfies StoryMeta<typeof LanguageSwitch>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-// The flag in a control, found by what it is rather than by a class name. Which
-// flag each language draws is LanguageFlag's to prove; these stories prove the
-// switch shows the right language's.
+// The flag in a control, found by what it is rather than by a class name.
 const flagOf = (control: Element) => {
   const flag = control.querySelector('svg')
   if (!flag) throw new Error('this control has no flag')
   return flag
 }
 
-// Where a control's written name is drawn: a range over the text itself, so a
-// name centred in a wide box does not pass for one at its start.
-const nameOf = (control: Element) => {
-  const text = document.createTreeWalker(control, NodeFilter.SHOW_TEXT).nextNode()
-  if (!text) throw new Error('this control has no written name')
-  const range = document.createRange()
-  range.selectNodeContents(text)
-  return range.getBoundingClientRect()
+// The switch's button, by its name in a language.
+const buttonOf = (canvasElement: HTMLElement, locale: Locale) =>
+  within(canvasElement).getByRole('button', { name: i18nFor(locale)._('Language') })
+
+// Where the open menu sits against its button: 4 above or below it, and flush
+// with the side it hangs from, the right or the left as the direction makes it.
+const opensFrom = async (button: HTMLElement, panel: HTMLElement, { above, side }: { above: boolean; side: 'start' | 'end' }) => {
+  const [anchor, menu] = [button.getBoundingClientRect(), panel.getBoundingClientRect()]
+  await expect(Math.round(above ? anchor.top - menu.bottom : menu.top - anchor.bottom)).toBe(spacing['2xs'])
+  const rtl = getComputedStyle(button).direction === 'rtl'
+  if ((side === 'start') === rtl) await expect(Math.round(menu.right)).toBe(Math.round(anchor.right))
+  else await expect(Math.round(menu.left)).toBe(Math.round(anchor.left))
 }
+
+// Opens the menu in a language and checks it: both languages naming themselves
+// in their own language beside a flag each, the two flags different, the
+// button's the current language's, the menu named in the reader's language,
+// and the panel clear of the button on the side it opens to.
+const menuOpens =
+  (locale: Locale, where: { above: boolean; side: 'start' | 'end' }): NonNullable<Story['play']> =>
+  async ({ canvasElement }) => {
+    const i18n = i18nFor(locale)
+    const button = buttonOf(canvasElement, locale)
+    await userEvent.click(button)
+    const menu = await within(canvasElement.ownerDocument.body).findByRole('menu')
+    const panel = menu.parentElement
+    if (!panel) throw new Error('the menu has no panel')
+    const items = within(menu).getAllByRole('menuitem')
+    await expect(items.map((item) => item.textContent)).toEqual(localeOrder.map((value) => locales[value]))
+    const flags = items.map((item) => flagOf(item).innerHTML)
+    await expect(new Set(flags).size).toBe(localeOrder.length)
+    await expect(flagOf(button).innerHTML).toBe(flags[localeOrder.indexOf(locale)])
+    await expect(menu).toHaveAccessibleName(i18n._('Language'))
+    await opensFrom(button, panel, where)
+    await userEvent.keyboard('{Escape}')
+  }
 
 export const Sidebar: Story = {
   // Pinned, because the play function names a language. A story that asserts
   // Persian while the toolbar is set to English fails for a reason that is not
-  // a defect, and a red interaction badge nobody can explain is worse than no
-  // badge: the next person learns to ignore it.
+  // a defect.
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
-    const button = within(canvasElement).getByRole('button')
-    // The button shows the CURRENT language in its own language, which is the
-    // one label that must not be translated: a reader who cannot read the
-    // current language has to be able to find their own. The flag beside it is
-    // decoration, so the name is the language's alone.
-    await expect(button).toHaveTextContent('فارسی')
-    await expect(button).toHaveAccessibleName('فارسی')
-    // Laid out as a Nav Item, KN-479: the flag in the 20 icon column 12 in from
-    // the inline start, the right in Persian, and the name 8 after it, where a
-    // Nav Item's name starts.
-    const row = button.getBoundingClientRect()
-    const flag = flagOf(button).getBoundingClientRect()
-    await expect(Math.round(row.right - flag.right)).toBe(spacing.sm)
-    await expect(flag.width).toBe(iconSize.md)
-    await expect(Math.round(flag.left - nameOf(button).right)).toBe(spacing.xs)
+    // An Icon Button, 32 square, its icon the current language's 20 wide flag,
+    // named «زبان» and described by the language's own name, which is its tip.
+    const button = buttonOf(canvasElement, 'fa-IR')
+    const box = button.getBoundingClientRect()
+    await expect([box.width, box.height]).toEqual([spacing.xl, spacing.xl])
+    await expect(flagOf(button).getBoundingClientRect().width).toBe(iconSize.md)
+    await expect(button).toHaveAccessibleDescription(locales['fa-IR'])
+    await expect(button).toHaveAttribute('aria-haspopup', 'menu')
   },
 }
 
@@ -62,77 +94,49 @@ export const Header: Story = {
   args: { placement: 'header' },
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
-    // In the Page Header the flag leads the name too, 8 before it.
-    const button = within(canvasElement).getByRole('button')
-    await expect(button).toHaveAccessibleName('فارسی')
-    await expect(Math.round(flagOf(button).getBoundingClientRect().left - nameOf(button).right)).toBe(spacing.xs)
+    const box = buttonOf(canvasElement, 'fa-IR').getBoundingClientRect()
+    await expect([box.width, box.height]).toEqual([spacing.xl, spacing.xl])
   },
 }
 
 export const Open: Story = {
   globals: { locale: 'fa-IR' },
-  play: async ({ canvasElement }) => {
-    const button = within(canvasElement).getByRole('button')
-    await userEvent.click(button)
-    // The menu portals out of the canvas, so it is found on the document, and
-    // `find` rather than `get` because MUI transitions it in: asserting on the
-    // container immediately catches it mid-animation and calls it invisible.
-    // Presence and content rather than visibility: MUI grows the menu in, and
-    // `findBy` retries on presence, not on the transition finishing, so a
-    // visibility assertion here catches it mid-animation every time.
-    const items = await within(document.body).findAllByRole('menuitem')
-    await expect(items).toHaveLength(2)
-    // Both languages name themselves in their own language, which is the point:
-    // a reader who cannot read the current one still finds theirs.
-    await expect(items[0]).toHaveTextContent('فارسی')
-    await expect(items[1]).toHaveTextContent('English')
-    // And the one label that IS translated, which proves the catalog reached
-    // the portalled popover rather than only the tree under the provider.
-    await expect(items[0]?.closest('[role="menu"]')).toHaveAttribute('aria-label', 'زبان')
-    // Each language is led by its own flag, the two are different, and the
-    // button's is the current language's. Measured by markup, not position,
-    // since the menu is still growing in.
-    const [persian, english] = items.map((item) => flagOf(item).innerHTML)
-    await expect(persian).not.toBe(english)
-    await expect(flagOf(button).innerHTML).toBe(persian)
-  },
+  play: menuOpens('fa-IR', { above: true, side: 'start' }),
+}
+
+export const OpenInEnglish: Story = {
+  globals: { locale: 'en-US' },
+  play: menuOpens('en-US', { above: true, side: 'start' }),
+}
+
+export const OpenInTheHeader: Story = {
+  args: { placement: 'header' },
+  globals: { locale: 'fa-IR' },
+  play: menuOpens('fa-IR', { above: false, side: 'end' }),
+}
+
+export const OpenInTheHeaderInEnglish: Story = {
+  args: { placement: 'header' },
+  globals: { locale: 'en-US' },
+  play: menuOpens('en-US', { above: false, side: 'end' }),
 }
 
 export const Switching: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    await expect(canvas.getByRole('button')).toHaveTextContent('فارسی')
-
-    await userEvent.click(canvas.getByRole('button'))
-    const items = await within(document.body).findAllByRole('menuitem')
-    const english = items[1]
+    await userEvent.click(buttonOf(canvasElement, 'fa-IR'))
+    const english = (await within(canvasElement.ownerDocument.body).findAllByRole('menuitem'))[localeOrder.indexOf('en-US')]
     if (!english) throw new Error('the menu did not render an English option')
     const englishFlag = flagOf(english).innerHTML
     await userEvent.click(english)
 
-    // The whole point of the control. The button now names the language it
-    // switched to, with that language's flag, and the document direction
-    // followed it, which is the part a locale change is easiest to get wrong.
-    await expect(canvas.getByRole('button')).toHaveTextContent('English')
-    await expect(flagOf(canvas.getByRole('button')).innerHTML).toBe(englishFlag)
+    // The whole point of the control: the button is named in English now, shows
+    // English's flag and is described by English's name, and the document's
+    // direction and language followed it.
+    const button = await within(canvasElement).findByRole('button', { name: i18nFor('en-US')._('Language') })
+    await expect(button).toHaveAccessibleDescription(locales['en-US'])
+    await expect(flagOf(button).innerHTML).toBe(englishFlag)
     await expect(document.documentElement).toHaveAttribute('dir', 'ltr')
     await expect(document.documentElement).toHaveAttribute('lang', 'en-US')
-  },
-}
-
-export const InEnglish: Story = {
-  globals: { locale: 'en-US' },
-  play: async ({ canvasElement }) => {
-    const button = within(canvasElement).getByRole('button')
-    await expect(button).toHaveTextContent('English')
-    await userEvent.click(button)
-    // The accessible name of the menu IS translated, unlike the language names
-    // inside it, so this is what proves the catalog reached the popover.
-    await expect(within(document.body).getByRole('menu')).toHaveAccessibleName('Language')
-    // The flag leading the button is English's, the second in the menu.
-    const english = (await within(document.body).findAllByRole('menuitem'))[1]
-    if (!english) throw new Error('the menu did not render an English option')
-    await expect(flagOf(button).innerHTML).toBe(flagOf(english).innerHTML)
   },
 }

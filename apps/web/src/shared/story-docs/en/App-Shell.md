@@ -26,10 +26,18 @@ is where a layout bug shows.
 
 ### LanguageOnAPhone
 
-At a phone's width the sidebar gives way to the tab bar, and the language switch
-is in the page's header: choosing English there turns the page and keeps the
-choice. The story resizes the screen when it runs as a test; in Storybook
-itself, narrow the window and use the switch yourself.
+At a phone's width the sidebar gives way to the tab bar, and the shell's own
+controls are in the page's header: choosing English from the language button
+there turns the page and keeps the choice, and the page's title stays whole
+beside the controls in both languages. The story resizes the screen when it
+runs as a test; in Storybook itself, narrow the window and use the switch
+yourself.
+
+### SigningOutOnAPhone
+
+At a phone's width, signing out from the page header's controls, since the tab
+bar has no room for it: the sign-in screen comes back. The story resizes the
+screen when it runs as a test.
 
 ### Navigating
 

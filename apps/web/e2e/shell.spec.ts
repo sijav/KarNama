@@ -47,7 +47,7 @@ test('the language choice survives a reload', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
 
-  await page.getByRole('button', { name: 'فارسی' }).click()
+  await page.getByRole('button', { name: 'زبان' }).click()
   await page.getByRole('menuitem', { name: 'English' }).click()
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('My job opportunities')

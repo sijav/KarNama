@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
+import { i18nFor, localeOrder } from '../../i18n'
 import { semantic } from '../../theme/tokens'
 import { Button } from '../button'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -8,19 +9,35 @@ import { PageHeader, type PageHeaderProps } from './PageHeader'
 
 const px = (value: string) => Number.parseFloat(value) || 0
 
-// The language switch opens a menu; every other control here does not.
-const opensMenu = (button: HTMLElement) => button.ariaHasPopup !== null
+// The shell's own controls, which a narrow screen's header carries after the
+// action, KN-478, told apart from the header's own controls by their names.
+const SHELL_NAMES = new Set(
+  localeOrder.flatMap((locale) => {
+    const i18n = i18nFor(locale)
+    return [i18n._('Language'), i18n._('Settings'), i18n._('Sign out')]
+  }),
+)
+const isShellControl = (button: HTMLElement) => SHELL_NAMES.has(button.getAttribute('aria-label') ?? '')
 
 // The title and the action's label are copy, drawn in the reader's language
 // inside the render; which slots show is what each story is about, so the
 // Controls panel is off: a title typed there would be a value the page never
 // draws in both languages.
-const Drawn = ({ onBack, withAction }: { onBack?: PageHeaderProps['onBack'] | undefined; withAction: boolean }) => {
+const Drawn = ({
+  onBack,
+  onSignOut,
+  withAction,
+}: {
+  onBack?: PageHeaderProps['onBack'] | undefined
+  onSignOut?: PageHeaderProps['onSignOut'] | undefined
+  withAction: boolean
+}) => {
   const { i18n } = useLingui()
   return (
     <PageHeader
       title={i18n._('My job opportunities')}
       {...(onBack === undefined ? {} : { onBack })}
+      {...(onSignOut === undefined ? {} : { onSignOut })}
       {...(withAction ? { action: <Button>{i18n._('Add job opportunity')}</Button> } : {})}
     />
   )
@@ -29,7 +46,7 @@ const Drawn = ({ onBack, withAction }: { onBack?: PageHeaderProps['onBack'] | un
 const meta = {
   title: 'Shared/PageHeader',
   component: PageHeader,
-  args: { title: '', onBack: fn() },
+  args: { title: '', onBack: fn(), onSignOut: fn() },
   parameters: { controls: { disable: true } },
 } satisfies StoryMeta<typeof PageHeader>
 
@@ -62,7 +79,7 @@ export const Default: Story = {
     // Node 155:56: the title at the inline start, the primary action at the
     // inline end, and no back arrow.
     const heading = await titleOf(canvasElement)
-    const controls = within(canvasElement).getAllByRole('button').filter((button) => !opensMenu(button))
+    const controls = within(canvasElement).getAllByRole('button').filter((button) => !isShellControl(button))
     await expect(controls).toHaveLength(1)
     const [action] = controls
     if (!action) throw new Error('no action rendered')
@@ -79,7 +96,7 @@ export const WithBack: Story = {
     // way, KN-206 and KN-320, reaching into the gap rather than moving the
     // arrow.
     const heading = await titleOf(canvasElement)
-    const [back] = within(canvasElement).getAllByRole('button').filter((button) => !opensMenu(button))
+    const [back] = within(canvasElement).getAllByRole('button').filter((button) => !isShellControl(button))
     if (!back) throw new Error('no back control rendered')
     await expect(back.getAttribute('aria-label')?.length).toBeGreaterThan(0)
     const arrow = back.querySelector('svg')
@@ -99,31 +116,40 @@ export const TitleOnly: Story = {
   render: () => <Drawn withAction={false} />,
   play: async ({ canvasElement }) => {
     // Both slots are optional: with neither, the title stands alone, and only
-    // the narrow screen's language switch is a control.
+    // the narrow screen's shell controls are controls.
     await titleOf(canvasElement)
-    const controls = within(canvasElement).queryAllByRole('button').filter((button) => !opensMenu(button))
+    const controls = within(canvasElement).queryAllByRole('button').filter((button) => !isShellControl(button))
     await expect(controls).toHaveLength(0)
   },
 }
 
-export const LanguageOnNarrowScreens: Story = {
+export const ControlsOnNarrowScreens: Story = {
   globals: { locale: 'fa-IR' },
-  render: () => <Drawn withAction />,
-  play: async ({ canvasElement }) => {
-    // The switch shows below the build's mobile breakpoint, MUI's md, and not
-    // above it. The width is set with the runner's own viewport; in the
-    // published Storybook, resize the window to see it go.
+  render: (args) => <Drawn withAction onSignOut={args.onSignOut} />,
+  play: async ({ args, canvasElement }) => {
+    // The shell's own controls, the language, settings and signing out, show
+    // below the build's mobile breakpoint, MUI's md, after the action, and not
+    // above it, KN-478. The width is set with the runner's own viewport; in the
+    // published Storybook, resize the window to see them go.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
       if ('__STORYBOOK_PREVIEW__' in globalThis) return
-      throw new Error('LanguageOnNarrowScreens is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
+      throw new Error('ControlsOnNarrowScreens is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
     }
     const browser = await import('vitest/browser')
-    const switchOf = () => within(canvasElement).getByRole('button', { hidden: true, name: (_, element) => element instanceof HTMLElement && opensMenu(element) })
-    await browser.page.viewport(390, 844)
-    await expect(switchOf()).toBeVisible()
-    await browser.page.viewport(1440, 900)
-    await expect(switchOf()).not.toBeVisible()
-    await browser.page.viewport(414, 896)
+    const i18n = i18nFor('fa-IR')
+    const controls = () =>
+      [i18n._('Language'), i18n._('Settings'), i18n._('Sign out')].map((name) => within(canvasElement).getByRole('button', { hidden: true, name }))
+    try {
+      await browser.page.viewport(390, 844)
+      for (const control of controls()) await expect(control).toBeVisible()
+      const [, , signOut] = controls()
+      await userEvent.click(signOut ?? canvasElement)
+      await expect(args.onSignOut).toHaveBeenCalledTimes(1)
+      await browser.page.viewport(1440, 900)
+      for (const control of controls()) await expect(control).not.toBeVisible()
+    } finally {
+      await browser.page.viewport(414, 896)
+    }
   },
 }
 

@@ -51,18 +51,6 @@ const asideIn = (canvasElement: HTMLElement) => {
   if (!aside) throw new Error('no sidebar')
   return aside
 }
-
-// The right edge of a row's written name, where it starts in Persian: a range
-// over the text itself, so a name centred in a wide row does not pass for one
-// at its start.
-const nameRight = (row: Element) => {
-  const text = document.createTreeWalker(row, NodeFilter.SHOW_TEXT).nextNode()
-  if (!text) throw new Error('this row has no written name')
-  const range = document.createRange()
-  range.selectNodeContents(text)
-  return range.getBoundingClientRect().right
-}
-
 export const Default: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
@@ -88,18 +76,22 @@ export const Default: Story = {
     const items = within(nav).getAllByRole('button')
     await expect(items.map((item) => item.textContent)).toEqual(['فرصت‌های شغلی من', 'افزودن فرصت شغلی', 'شبکه من'])
     await expect(items[0]?.getAttribute('aria-current')).toBe(CURRENT)
+    // At the foot, 24 from the bottom, the shell's own controls, KN-478: the
+    // language, settings and «خروج» as Icon Buttons on one line, the first
+    // centred on the destinations' icon column.
     const signOut = sidebar.getByRole('button', { name: 'خروج' })
+    const language = sidebar.getByRole('button', { name: 'زبان' })
+    const settings = sidebar.getByRole('button', { name: 'تنظیمات' })
     await expect(Math.round(box.bottom - signOut.getBoundingClientRect().bottom)).toBe(24)
-    const language = sidebar.getByRole('button', { name: 'فارسی' })
-    await expect(Math.round(signOut.getBoundingClientRect().top - language.getBoundingClientRect().bottom)).toBe(8)
-    await expect(language.getBoundingClientRect().height).toBe(44)
-    // The switch is laid out as the Nav Item below it, KN-479: its flag stands
-    // in the icon column and its name starts where «خروج» starts, which in
-    // Persian is at their right edges.
-    const [flag, icon] = [language.querySelector('svg'), signOut.querySelector('svg')]
-    if (!flag || !icon) throw new Error('a row at the foot has lost its flag or its icon')
-    await expect(Math.round(flag.getBoundingClientRect().right)).toBe(Math.round(icon.getBoundingClientRect().right))
-    await expect(Math.round(nameRight(language))).toBe(Math.round(nameRight(signOut)))
+    const foot = signOut.getBoundingClientRect().top
+    await expect([language, settings].map((button) => button.getBoundingClientRect().top)).toEqual([foot, foot])
+    const destinationIcon = items[0]?.querySelector('svg')
+    if (!destinationIcon) throw new Error('a destination has lost its icon')
+    const centreOf = (element: Element) => {
+      const rect = element.getBoundingClientRect()
+      return Math.round(rect.left + rect.width / 2)
+    }
+    await expect(centreOf(language)).toBe(centreOf(destinationIcon))
     await userEvent.click(items[1] ?? aside)
     await expect(args.onNavigate).toHaveBeenCalledWith('add')
     await userEvent.click(signOut)
@@ -138,7 +130,7 @@ export const SwitchLanguage: Story = {
     // The switch at the foot changes the language and the direction: the
     // sidebar speaks English and its edge moves to the right.
     const aside = asideIn(canvasElement)
-    await userEvent.click(within(aside).getByRole('button', { name: 'فارسی' }))
+    await userEvent.click(within(aside).getByRole('button', { name: 'زبان' }))
     const english = (await within(document.body).findAllByRole('menuitem'))[1]
     if (!english) throw new Error('the menu has no English')
     await userEvent.click(english)

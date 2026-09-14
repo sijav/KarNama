@@ -29,6 +29,10 @@ place, and node 185:19 says the tab bar gives its place, KN-356.
 Said when the add flow closes, so whoever owns the address can go back to the
 board.
 
+### onSignOut
+
+Signs the reader out, from the controls a phone's page header carries.
+
 ## Stories
 
 ### DragAndDrop

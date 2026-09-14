@@ -4,8 +4,9 @@ page, the right in Persian.
 From the top: the product's name and mark, the signed-in user with their phone,
 and under «فضای کار» the three places the product goes, the board, adding a job
 opportunity and the network, the current one marked. At the foot, where the
-design leaves room, the language switch and signing out. Before anyone signs
-in, the user and signing out are left out.
+design leaves room, the shell's own controls, the language, the settings and
+signing out, as a row of icon buttons. Before anyone signs in, the user and
+signing out are left out.
 
 ## Props
 

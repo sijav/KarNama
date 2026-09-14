@@ -37,8 +37,12 @@ export type IconName =
   | 'tag'
   | 'layers'
   | 'note'
+  | 'settings'
 
-// In DESIGN.md's order, which the unit test holds it to.
+// In DESIGN.md's order, which the unit test holds it to: the file's thirty,
+// then the owner's addition, `settings`, KN-478. The file draws no settings, so
+// its geometry is Lucide 1.41.0's own, the family the thirty are redrawn from,
+// written into this grid; Lucide's licence travels with it in LICENSE-lucide.txt.
 export const ICON_NAMES = [
   'link',
   'search',
@@ -70,6 +74,7 @@ export const ICON_NAMES = [
   'tag',
   'layers',
   'note',
+  'settings',
 ] as const satisfies readonly IconName[]
 
 // What an icon draws: its stroked paths and its filled ones.

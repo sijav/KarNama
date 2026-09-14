@@ -693,9 +693,9 @@ its parts. From the top: the Brand Row, a 32 mark of radius md in
 `bg/brand/container`, the name at 14 and Medium over the phone at 12 in the
 reader's digits; a divider; a 16 spacer; «فضای کار» at 12 and Medium in
 `text/disabled`; the three destinations; the room the file leaves; the language
-switch, drawn as a Nav Item at rest whose icon is the language's flag, the
-owner's addition of KN-479 in section 5, its name where the items' names start;
-and «خروج» with `log-out`. Before
+switch, settings and «خروج», the file's `log-out`, as one row of Icon Buttons,
+the shell's own controls, the owner's instruction of KN-478 over the file's
+«خروج» Nav Item, the first centred on the items' icon column. Before
 anyone signs in, the user and «خروج» are left out.
 
 The tab bar, `185:19`, is the screen's width and 72 tall, `bg/surface` with one
@@ -896,6 +896,14 @@ alert-circle, user-plus, tag, layers, note. Default colour `text/secondary`,
 overridable per instance. Every icon keeps its two pixel stroke at every size: the file's
 instances resize the drawing and not the stroke, as the Color Picker's 14
 pixel check shows, so the Icon draws a non-scaling stroke, KN-008.
+
+The owner's icons, beyond the file's thirty: settings. The file draws no
+settings, and the owner asked for one as an icon, KN-478, so the gear is
+Lucide's own `settings` from lucide-static 1.41.0, the family the file's thirty
+are redrawn from, whose `log-out` the file's matches point for point. It is
+written into the same 24 grid with the same two pixel round stroke, its arcs in
+absolute coordinates, and Lucide's ISC licence travels with it in
+`apps/web/src/shared/icon/LICENSE-lucide.txt`.
 
 ---
 
@@ -1152,8 +1160,8 @@ asked **only on first sign-in**, and is required there.
 
 ## 5. Where the language switch goes
 
-The owner's testing request of 2026-09-12 adds a Settings control beside the
-existing mobile sign-out action and at the same position on desktop. It opens
+The owner's testing request of 2026-09-12 adds a Settings control, since
+2026-09-14 one of the shell's own controls, below, KN-478. It opens
 the existing modal shell at 420 pixels, with language and light, dark, or device
 appearance choices, plus an explicit sample-data loader. This is an owner-requested
 addition composed from existing controls, not a new Figma screen. The language
@@ -1184,11 +1192,22 @@ the `country-flag-icons` package, Persian Iran's and English the United
 States', since the owner's word was to use a package rather than choose flags.
 The file draws no flag, so its size and place are written here: three by two
 across the 20 pixel icon column, radius `sm`, ringed by one pixel of
-`border/default` drawn over its edge. In the sidebar the switch is laid out as a
-Nav Item, the flag where an item's icon stands, `sm` from the edge and `xs`
-before the name, so the language's name starts where the items' names start. In
-the Page Header and in the language menu the flag leads the name, `xs` apart. It
-is decoration: the control's name is the language's own.
+`border/default` drawn over its edge. Since KN-478 the switch is an Icon Button
+whose icon is the flag, below; in the language menu the flag leads each
+language's name, `xs` apart. It is decoration: the control's name is «زبان».
+
+**The shell's own controls are Icon Buttons, the owner's instruction of
+2026-09-14, KN-478**: "settings, signout, language, add contact, all needs to be
+a icon button!" The language, settings and signing out are the Icon Button of
+`460:672`, each with a Tooltip saying what its name does not: the language's is
+the current language's own name, its icon that language's flag. On desktop they
+are one row at the sidebar's foot, 12 apart, in place of the language row and
+the file's «خروج» Nav Item; on a phone they follow the page's action in the Page
+Header, and nothing sits in a row above a page's title. The network's add
+contact, which the file draws as Button M in its Page Header, is the Icon Button
+with `user-plus` there. The language menu opens above its button from the
+sidebar and below it from a header, never over it. The settings gear is the
+owner's icon, section 2.
 
 Nothing else moves. If honouring this ever requires resizing or reflowing a
 drawn frame, stop and ask the owner rather than editing the design by hand.

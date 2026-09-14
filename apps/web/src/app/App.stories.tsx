@@ -111,11 +111,40 @@ export const LanguageOnAPhone: Story = {
     try {
       await page.viewport(PHONE.width, PHONE.height)
       await waitFor(() => expect(canvasElement.querySelector('aside')).toBeNull())
-      await userEvent.click(canvas.getByRole('button', { name: 'فارسی' }))
+      // The title keeps the whole of itself beside the header's controls, in
+      // the page's own 342 between its gutters, KN-478.
+      const uncut = async () => {
+        const heading = canvas.getByRole('heading', { level: 1 })
+        await expect(heading.scrollWidth).toBeLessThanOrEqual(heading.clientWidth)
+      }
+      await uncut()
+      await userEvent.click(canvas.getByRole('button', { name: 'زبان' }))
       await userEvent.click(await within(canvasElement.ownerDocument.body).findByRole('menuitem', { name: 'English' }))
       await waitFor(() => expect(window.document.documentElement).toHaveAttribute('dir', 'ltr'))
       await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('My job opportunities')
+      await uncut()
       await expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '{}')).toMatchObject({ locale: 'en-US' })
+    } finally {
+      await page.viewport(before.width, before.height)
+    }
+  },
+}
+
+export const SigningOutOnAPhone: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // A phone reader signs out from the Page Header's «خروج», KN-478 and
+    // KN-418: the tab bar has no room for it and the sidebar is not drawn.
+    // The screen is resized by the runner's own browser, KN-225.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
+    const canvas = within(canvasElement)
+    const before = { width: window.innerWidth, height: window.innerHeight }
+    try {
+      await page.viewport(PHONE.width, PHONE.height)
+      await waitFor(() => expect(canvasElement.querySelector('aside')).toBeNull())
+      await userEvent.click(canvas.getByRole('button', { name: 'خروج' }))
+      await expect(await canvas.findByRole('button', { name: 'ارسال کد' })).toBeInTheDocument()
     } finally {
       await page.viewport(before.width, before.height)
     }

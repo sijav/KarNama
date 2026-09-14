@@ -8,6 +8,9 @@
  */
 export const messages: Record<string, string> = {
   Settings: 'Settings',
+  'Language, theme and sample data': 'Language, theme and sample data',
+  'Signs you out of your account on this device': 'Signs you out of your account on this device',
+  'Adds a person to your network': 'Adds a person to your network',
   Theme: 'Theme',
   Light: 'Light',
   Dark: 'Dark',

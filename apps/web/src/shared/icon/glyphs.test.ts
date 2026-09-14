@@ -6,19 +6,26 @@ import { GLYPHS, ICON_NAMES } from './glyphs'
 
 const DESIGN = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..', '..', 'DESIGN.md')
 
-// The list in DESIGN.md's component families: the names between "The icon
-// set, all at 24×24:" and the full stop before "Default colour".
-const designList = () => {
+// A comma list DESIGN.md writes after a phrase, up to the full stop that ends it.
+const listIn = (pattern: RegExp, what: string) => {
   const text = readFileSync(DESIGN, 'utf8').replace(/\s+/g, ' ')
-  const list = /The icon set, all at 24×24: ([^.]+)\. Default colour/.exec(text)?.[1]
-  if (!list) throw new Error('DESIGN.md does not list the icon set')
+  const list = pattern.exec(text)?.[1]
+  if (!list) throw new Error(`DESIGN.md does not list ${what}`)
   return list.split(',').map((name) => name.trim())
 }
 
+// The file's set in DESIGN.md's component families: the names between "The icon
+// set, all at 24×24:" and the full stop before "Default colour".
+const designList = () => listIn(/The icon set, all at 24×24: ([^.]+)\. Default colour/, 'the icon set')
+
+// The owner's icons beyond the file's, KN-478: the names after "The owner's
+// icons, beyond the file's thirty:".
+const addedList = () => listIn(/The owner's icons, beyond the file's thirty: ([^.]+)\./, "the owner's icons")
+
 describe('the icon set', () => {
-  it('is exactly the thirty DESIGN.md lists, in its order', () => {
+  it("is the thirty DESIGN.md lists, in its order, then the owner's additions", () => {
     expect(designList()).toHaveLength(30)
-    expect([...ICON_NAMES]).toEqual(designList())
+    expect([...ICON_NAMES]).toEqual([...designList(), ...addedList()])
   })
 
   it('draws every icon it names, inside the 24 grid', () => {

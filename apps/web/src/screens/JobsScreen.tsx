@@ -70,9 +70,11 @@ export interface JobsScreenProps {
   onAddClose?: () => void
   /** Said while anything is selected, so the shell can give the foot of the screen to the bulk bar, KN-356. */
   onSelecting?: (selecting: boolean) => void
+  /** Signs the reader out, from the Page Header's controls on a phone, KN-478. */
+  onSignOut?: () => void
 }
 
-export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScreenProps) => {
+export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut }: JobsScreenProps) => {
   const { i18n } = useLingui()
   const { locale } = usePreferences()
   const records = useRecords()
@@ -274,9 +276,10 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting }: JobsScr
       </Box>
       <PageHeader
         title={i18n._('My job opportunities')}
+        {...(onSignOut === undefined ? {} : { onSignOut })}
         // The action is the desktop's. On a phone the header already carries
-        // the language switch, KN-355, and the tab bar carries adding as a
-        // destination of its own, so a third control here only takes the room
+        // the shell's own controls, KN-478, and the tab bar carries adding as a
+        // destination of its own, so one more control here only takes the room
         // the title needs and leaves it cut.
         {...(wide
           ? {

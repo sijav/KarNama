@@ -55,6 +55,12 @@ export const People: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByText(fixtures('fa-IR').contacts[0]?.fullName ?? '')).toBeInTheDocument()
+    // Add contact is an Icon Button in the header, KN-478: 32 square, named
+    // «افزودن مخاطب», and described by what it does rather than by its name again.
+    const add = canvas.getByRole('button', { name: 'افزودن مخاطب' })
+    const box = add.getBoundingClientRect()
+    await expect([box.width, box.height]).toEqual([32, 32])
+    await expect(add).toHaveAccessibleDescription('یک نفر را به شبکه‌ات اضافه می‌کند')
   },
 }
 

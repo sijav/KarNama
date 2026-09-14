@@ -11,6 +11,9 @@
  */
 export const messages: Record<string, string> = {
   Settings: 'تنظیمات',
+  'Language, theme and sample data': 'زبان، پوسته و داده‌های نمونه',
+  'Signs you out of your account on this device': 'از حسابت روی این دستگاه خارج می‌شوی',
+  'Adds a person to your network': 'یک نفر را به شبکه‌ات اضافه می‌کند',
   Theme: 'پوسته',
   Light: 'روشن',
   Dark: 'تیره',

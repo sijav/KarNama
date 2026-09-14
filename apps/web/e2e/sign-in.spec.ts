@@ -72,7 +72,7 @@ test('a wrong code says so and another can be sent', async ({ page }) => {
   await expect(page.getByText('تو را چه صدا کنیم؟')).toBeVisible()
 })
 
-test('signing out clears the session and asks for a number again', async ({ page, browserName }, testInfo) => {
+test('signing out clears the session and asks for a number again', async ({ page }) => {
   const codes = codesFrom(page)
   await signIn(page, codes)
   await page.getByLabel('کد پنج رقمی').fill(codes[0] ?? '')
@@ -81,9 +81,8 @@ test('signing out clears the session and asks for a number again', async ({ page
   await page.getByRole('button', { name: 'ادامه' }).click()
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('فرصت‌های شغلی من')
 
-  // The control is in the sidebar, which a phone does not draw: the tab bar has
-  // room for the three destinations and nothing else, DESIGN.md section 5.
-  test.skip(testInfo.project.name === 'mobile', `${browserName} at a phone's width has no sidebar to sign out from`)
+  // At the sidebar's foot on a desktop, and in the page header's controls on a
+  // phone, KN-478 and KN-418.
   await page.getByRole('button', { name: 'خروج' }).click()
 
   await expect(page.getByRole('button', { name: 'ارسال کد' })).toBeVisible()
@@ -91,8 +90,7 @@ test('signing out clears the session and asks for a number again', async ({ page
   expect(kept).toBeNull()
 })
 
-test("one reader never sees another reader's archive", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name === 'mobile', 'signing out is in the sidebar, which a phone does not draw')
+test("one reader never sees another reader's archive", async ({ page }) => {
   const codes = codesFrom(page)
 
   // The first reader signs in and keeps a job opportunity.
