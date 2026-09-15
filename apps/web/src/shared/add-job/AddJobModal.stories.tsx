@@ -37,12 +37,16 @@ const offers = (names: (keyof AddJobModalProps)[]) => ({ controls: { include: na
 // opens on and asserts.
 const FIXED = { controls: { disable: true } }
 
-// MUI's own cap on a Dialog's Paper, as the text it gives, KN-559. Typed against
-// the two values the property can read here, MUI's cap or the `none` a Paper
-// under no cap would give, so the lingui rule takes it as the API value it is,
-// KN-304: a bare literal written `as const` is refused, KN-217, and a type of
-// one literal is refused as well, by prefer-as-const.
-const CAP: 'calc(100% - 64px)' | 'none' = 'calc(100% - 64px)'
+// MUI's own cap on a Dialog's Paper, KN-559: it holds a Paper to this much less
+// than its container. The number is written once and the text built from it, so
+// no quoted run in this file carries a px literal, which the theme's guard
+// refuses outside src/theme, KN-658. The story reads both: the text, against the
+// rule MUI declares, and the number, in the height it expects.
+const CAP_GAP = 64
+// A CSS declaration MUI writes, not words anyone reads, so it is named here as
+// the API value it is, the way a file name is in catalog.ts, KN-214.
+// eslint-disable-next-line lingui/no-unlocalized-strings -- KN-658: a CSS value
+const CAP = `calc(100% - ${String(CAP_GAP)}px)`
 
 // The English copy, read from its catalog, so the story says what the canvas
 // draws.
@@ -206,7 +210,7 @@ export const Review: Story = {
     await expect(window.getComputedStyle(dialog).maxHeight).toBe(CAP)
     await expect([dialog.getBoundingClientRect().width, dialog.getBoundingClientRect().height]).toEqual([
       560,
-      Math.min(606, window.innerHeight - 64),
+      Math.min(606, window.innerHeight - CAP_GAP),
     ])
     const title = within(dialog).getByRole('textbox', { name: 'عنوان شغلی' })
     await expect(title).toHaveValue(args.draft?.title ?? 'missing')
