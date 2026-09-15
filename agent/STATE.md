@@ -41,35 +41,33 @@ KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-586 is closed** (709c4e5, pushed; board 548708c). The sign-in code step draws
-the Code Input, `shared/code-input`: one real text field, numeric, with the
-one-time-code hint and no `maxLength`, laid over five `aria-hidden` boxes 56 tall and
-8 apart; the box at the caret takes two pixels of `border/focus`, digits show in the
-reader's digits, and a refused code takes the Input's alert line with red resting
-edges. `latinDigits` moved from `core/auth` to `i18n/digits.ts`. Its 11 stories cover
-`CodeInput.tsx` whole, and the sign-in e2e types the code with real keys, 10 of 10.
-Autofill is proven only as far as the field goes: a phone's own suggestion needs the
-live text message to name the site's origin, **KN-600**, api, low. Its Codex roast
-was running when this was written, `kn586-task-roast.log` in the scratchpad, and so
-was the Pages run for 709c4e5.
+**KN-215 is closed** (4d0abb0, pushed; board 1b5c153). `'^(props|stories)$'` is gone
+from the lingui rule's ignore array, where it let both words through in every file.
+`sectionOf` in `story-docs/parse.ts` returns the name its comparisons narrowed, and
+`gate-fixtures/unlocalized-section-words.tsx` fails `eslint --no-ignore` with three
+reports and gives none with the entry put back in memory; `KN-003.mjs` requires it by
+name and requires its three reports, and `lingui-ignore.test.ts` refuses an entry that
+lets either word through. Its exit was corrected after the plan review, since `npm run
+lint` ignores the fixtures. It was KN-094's last child, so **two Codex roasts were
+running** when this was written: KN-215's, `kn215-task-roast.log`, and KN-094's with
+KN-215, `kn094-parent-roast.log`, both in the scratchpad.
 
-**KN-601, found while testing KN-586**, medium: `two-tabs.spec.ts`'s second test waits
-for the contact modal's 'Full name' and a button no catalog names, where the signup
-step says 'First and last name' and 'Start', so it times out on desktop. The spec
-came with KN-419, 30f6b8e.
+**KN-586 is closed and its roast recorded** (709c4e5; board e5abce4; Pages passed). The
+sign-in code step draws the Code Input, `shared/code-input`. Its roast filed **KN-602**,
+low, a Persian digit typed into the middle of the code sends the caret to the end, and
+**KN-603**, low, an input method's composition is cleared and full-width digits are
+dropped. Found while building it: **KN-600**, api, low, a phone's own one-time-code
+suggestion needs the live text message to name the site's origin; **KN-601**, medium,
+`two-tabs.spec.ts`'s second test waits for words the signup step does not use.
 
-**KN-427 is closed and its roast recorded** (084fa51, board 97ba59d; both Pages runs
-passed). The roast confirmed the exit; **KN-599**, low: its drag story, docs and plan
-call the synthetic DragEvents the play dispatches the browser's own drag events.
-**KN-598**, low, from its new story: the contact modal keeps a job opportunity another
-tab deleted, so MUI warns of an out-of-range Select value; PersonForAJobDeletedElsewhere
-allows that one warning, TECH-DEBT.md section 22, which KN-598's exit removes.
+**KN-427 is closed and its roast recorded** (084fa51): **KN-599**, low, its drag story
+calls the synthetic DragEvents it dispatches the browser's own; **KN-598**, low, the
+contact modal keeps a job opportunity another tab deleted, TECH-DEBT.md section 22.
 
 **KN-587 is closed and its roast recorded** (c7698a3): **KN-597**, low, the sign-in
-screen's focus mark outlives a `changeNumber` the live provider ignores while a
-request is out.
+screen's focus mark outlives a `changeNumber` the live provider ignores.
 
-**Open and filed today**: KN-592 to KN-601.
+**Open and filed today**: KN-592 to KN-603.
 
 **What fails in a full run**: the Job Card's `Pressed` in parallel only, KN-365's
 kind. `App.tsx` line 107 is uncovered, KN-491's. `RemoteAuthProvider.tsx` and
@@ -101,22 +99,24 @@ arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-586's roast lands**, judge it, file survivors as children of KN-586
-(`--area web --okr OKR-1`), record with `todo roast KN-586 --file ... --filed ...
---dismissed ...`, relay it to the owner, and commit the rendered board.
+**When the two roasts land**, judge each: file KN-215's survivors as its children and
+the round's on KN-094 as KN-094's (`--area web`, `--okr OKR-1` for anything under four
+points), record with `todo roast <id> --file ... --filed ... --dismissed ...`, relay
+both to the owner, and commit the rendered board. If KN-094's round finds nothing, the
+parent is finished.
 
-**KN-215 is next**, medium, 1 point, web: `apps/web/eslint.config.js` puts
-`'^(props|stories)$'` in `lingui/no-unlocalized-strings`' ignore array, which skips
-those two values in every file, so `aria-label="stories"` and `title="props"` pass.
-It was written for the story-docs parser's section names; `parse.ts` already types
-them as a `Section` union, which `useTsTypes` may exempt without the entry. The exit:
-`aria-label="stories"` and `title="props"` fail `npm run lint` in a committed fixture,
-the parser still recognises both headings, and the ignore array no longer names
-them. The fixtures live in `src/gate-fixtures`, which an ordinary lint run ignores.
+**KN-216 is next**, medium, 1 point, web: `.storybook/main.ts` indexes
+`'../src/!(gate-fixtures)/**/*.stories.@(ts|tsx)'`, which needs a folder after `src`,
+so a story file directly under `src` would be in neither Storybook nor the storybook
+test project; the docs guard, `story-docs/guard.test.ts`'s `storyFiles`, globs every
+story and excludes `gate-fixtures/**` by a rule of its own. The exit: a story file
+directly under `src` is indexed and run, `src/gate-fixtures` stays excluded from both,
+and the guard derives its list from the rule Storybook uses, proved by a fixture at
+the root of `src` that appears in Storybook's index and in the guard alike.
 
 ## What to read first
 
 `AGENTS.md` (section 7), `DESIGN.md`, `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-215`, `eslint.config.js`'s `linguiOptions`,
-`story-docs/parse.ts`, `src/gate-fixtures/README.md` and
-`src/i18n/lingui-ignore.test.ts`.
+`agent/TODO_BOARD.md`, then `todo show KN-216`, `.storybook/main.ts`,
+`story-docs/guard.test.ts`, `story-docs/stories-glob.test.ts` and `vitest.config.ts`'s
+storybook project.
