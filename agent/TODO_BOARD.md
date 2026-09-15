@@ -4,13 +4,13 @@
 
 Project **KarNama** · 283 of 635 tasks done · 620 of 1255 points.
 
-**Next up: `KN-387` The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text** (medium, 1 pt, web)
+**Next up: `KN-413` The Input's docs still say the line under the field always keeps its height, which KN-287 ended** (medium, 1 pt, web)
 
 ## Objectives
 
 | position | id | name | state | open | done |
 | -- | -- | ---- | ----- | ---- | ---- |
-| 1 | OKR-1 | MVP: the pages | now | 214 | 205 |
+| 1 | OKR-1 | MVP: the pages | now | 213 | 205 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
 ## Blocked (9)
@@ -27,7 +27,7 @@ Project **KarNama** · 283 of 635 tasks done · 620 of 1255 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (338)
+## Backlog (337)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +82,6 @@ Project **KarNama** · 283 of 635 tasks done · 620 of 1255 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-387` | The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text | medium | 1 | web | none | In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages. |
 | `KN-413` | The Input's docs still say the line under the field always keeps its height, which KN-287 ended | medium | 1 | web | none | Both language docs say what the field does: no line and no room without a message, a line of one height with a helper or an error, and what that means for a form when an error appears, which is that it does move; nothing in either file contradicts it; the Docs page reads right in both languages. |
 | `KN-432` | The delete confirmation says 'this job opportunity' while deleting several | medium | 1 | web | none | The confirmation names how many are going in both languages, and a story deleting two reads it. |
 | `KN-434` | Prose is back in the TSX where story-docs owns it, and it prints in the Persian docs | medium | 1 | web | none | No prop or story in the screens or IconButton carries prose the markdown already holds, and the Persian docs page shows no English. |
@@ -658,12 +657,13 @@ Project **KarNama** · 283 of 635 tasks done · 620 of 1255 points.
 | `KN-362` | Reading a posting moves focus to an unnamed box rather than to the status that says what is happening | medium | 3 | web | none | Focus goes to an element named by the loading message, or to the status region itself, and a story reads the focused element's accessible name. |
 | `KN-184` | The order check reads the whole document, not the fenced block it claims to | low | 2 | agent | none | The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed. |
 
-## Dropped (5)
+## Dropped (6)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-577` | Route by path, not by hash: /KarNama/jobs, /add and /network, each served on GitHub Pages | critical | 3 | web | none | In a production build served the way GitHub Pages serves it, /KarNama/jobs, /KarNama/add and /KarNama/network each answer 200 and open their page on a hard refresh, in both languages; an unknown path under /KarNama/ opens the board through 404.html; an old /KarNama/#/network address lands on /KarNama/network; the navigation changes the path and Back returns to the page before; the e2e specs open paths and pass; the stories and the unit project pass. |
 | `KN-312` | The Icon Button's hover eases in over MUI's 150 ms where the design's state changes take 300 | medium | 1 | web | none | The Icon Button's hover changes over 300 ms from a named motion token, the story reads the transition's duration, and DESIGN.md says which components' state changes take it. |
+| `KN-387` | The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text | medium | 1 | web | none | In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages. |
 | `KN-084` | Make the AGENTS.md section 5 gate runnable before any workspace exists | low | 1 | infra | KN-001 | npm run lint, npm run lint:tsc, npm test and npm run build each exit zero and say what they did on a clean checkout with no workspace directories, and each still fails honestly once apps/web exists and contains a failing check. |
 | `KN-176` | KN-162 closed against an exit condition it deliberately did not meet | low | 1 | agent | none | KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail. |
 | `KN-379` | BlankName reads the console before the Icon Button's report effect is sure to have run outside the test runner | low | 1 | web | none | BlankName waits for the report with waitFor before asserting it, and passes in the published Storybook's interaction panel as well as under Vitest. |
@@ -7465,7 +7465,7 @@ CHILD OF KN-031, recorded in prose because board.json cannot express parent_task
 
 ### `KN-387` The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** dropped · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-021
 
@@ -7474,6 +7474,8 @@ CHILD OF KN-021, recorded in prose because board.json cannot express parent_task
 **Why.** It is the one control a phone reader in the wrong language looks for, and a word in capitals in MUI's type reads as a stray from another product.
 
 **Exit condition.** In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages.
+
+**Dropped because.** Obsolete by the owner's decision of 2026-09-14: the language control is an Icon Button showing its flag, built by KN-478 and KN-479, both done; LanguageSwitch.tsx draws an IconButton with LanguageFlag in the Page Header and the sidebar alike, so no text button in MUI's capitals is left for this card to style.
 
 **Notes.**
 
