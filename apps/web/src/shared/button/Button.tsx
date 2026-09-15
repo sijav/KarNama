@@ -124,6 +124,7 @@ export const Button = ({
       sx={(theme) => {
         const colour = theme.karnama.semantic
         const fill = (role: Role | null) => (role === null ? 'transparent' : colour[role])
+        const hovered = { backgroundColor: fill(look.hover.fill), color: colour[look.hover.text], boxShadow: 'none' }
         return {
           position: 'relative',
           boxSizing: 'border-box',
@@ -165,11 +166,14 @@ export const Button = ({
           // none of. The real pseudo-classes are gated on its absence, so a
           // pointer crossing a forced cell cannot add a second state on top and
           // draw something the file never draws.
-          '&:hover:not([data-state]), &[data-state="hover"]': {
-            backgroundColor: fill(look.hover.fill),
-            color: colour[look.hover.text],
-            boxShadow: 'none',
-          },
+          //
+          // The browser's own hover is drawn only where the primary input can
+          // hover, KN-318: a touch screen keeps :hover on what was tapped, so a
+          // hover fill drawn for every device stayed after a tap. (hover: hover)
+          // reads the primary input alone, so a touch-first device with a mouse
+          // draws no hover fill. The forced state draws it on every device.
+          '@media (hover: hover)': { '&:hover:not([data-state])': hovered },
+          '&[data-state="hover"]': hovered,
           '&:active:not([data-state]), &[data-state="pressed"]': {
             backgroundColor: fill(look.pressed.fill),
             color: colour[look.pressed.text],
