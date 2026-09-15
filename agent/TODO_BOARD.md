@@ -13,6 +13,12 @@ Project **KarNama** · 271 of 620 tasks done · 602 of 1226 points.
 | 1 | OKR-1 | MVP: the pages | now | 211 | 193 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-335` | The blocked delete's reason is placed to the physical left in Persian, not at the inline start | medium | 1 | web | none | The start placement asks MUI for right in a right to left page and left in a left to right one, and a story with room on both sides checks the tip is at the inline start. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 271 of 620 tasks done · 602 of 1226 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (335)
+## Backlog (334)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 271 of 620 tasks done · 602 of 1226 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-335` | The blocked delete's reason is placed to the physical left in Persian, not at the inline start | medium | 1 | web | none | The start placement asks MUI for right in a right to left page and left in a left to right one, and a story with room on both sides checks the tip is at the inline start. |
 | `KN-336` | A sort change is read out twice, and the keyboard story never shows the new order on the control | medium | 1 | web | none | A change is read out once, by the focused control or by the status but not both, and a story holding the value in state shows the new order on the closed control. |
 | `KN-338` | The Status Picker's add chip is a child of its radio group | medium | 1 | web | none | The add chip is a sibling of the radio group in one wrapping row that still lays it out after the last choice, and a story finds it outside the group. |
 | `KN-343` | The compact Contact Card's mail is a button that assigns a location, not a mailto link | medium | 1 | web | none | The compact mail is an anchor with a mailto href styled as the Icon Button, and a story reads its href. |
@@ -6602,7 +6607,7 @@ CHILD OF KN-012, recorded in prose because board.json cannot express parent_task
 
 ### `KN-335` The blocked delete's reason is placed to the physical left in Persian, not at the inline start
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-018
 
