@@ -41,33 +41,31 @@ KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-215 is closed** (4d0abb0, pushed; board 1b5c153). `'^(props|stories)$'` is gone
-from the lingui rule's ignore array, where it let both words through in every file.
-`sectionOf` in `story-docs/parse.ts` returns the name its comparisons narrowed, and
-`gate-fixtures/unlocalized-section-words.tsx` fails `eslint --no-ignore` with three
-reports and gives none with the entry put back in memory; `KN-003.mjs` requires it by
-name and requires its three reports, and `lingui-ignore.test.ts` refuses an entry that
-lets either word through. Its exit was corrected after the plan review, since `npm run
-lint` ignores the fixtures. It was KN-094's last child, so **two Codex roasts were
-running** when this was written: KN-215's, `kn215-task-roast.log`, and KN-094's with
-KN-215, `kn094-parent-roast.log`, both in the scratchpad.
+**KN-216 is closed** (63304bb, pushed; board 832ebbc). `.storybook/main.ts` indexes
+`'../src/{*,!(gate-fixtures)/**/*}.stories.@(ts|tsx)'`, so a story at the root of `src`
+is indexed and run; the docs guard lists Storybook's own `getStoriesPathsFromConfig`
+rather than a glob of its own, and a test on a scratch tree proves the root story in and
+`gate-fixtures` out. A story planted once at the real root was in `index.json`, ran in
+the storybook project and was asked for by the guard, then removed. It was KN-095's last
+child, so **two Codex roasts were running** when this was written: KN-216's,
+`kn216-task-roast.log`, and KN-095's with KN-216 and KN-217, `kn095-parent-roast.log`,
+both in the scratchpad.
 
-**KN-586 is closed and its roast recorded** (709c4e5; board e5abce4; Pages passed). The
-sign-in code step draws the Code Input, `shared/code-input`. Its roast filed **KN-602**,
-low, a Persian digit typed into the middle of the code sends the caret to the end, and
-**KN-603**, low, an input method's composition is cleared and full-width digits are
-dropped. Found while building it: **KN-600**, api, low, a phone's own one-time-code
-suggestion needs the live text message to name the site's origin; **KN-601**, medium,
-`two-tabs.spec.ts`'s second test waits for words the signup step does not use.
+**KN-215 is closed and its roast recorded** (4d0abb0): `'^(props|stories)$'` is gone
+from the lingui rule. Its roast filed **KN-604**, medium, the exempt names `status`,
+`include`, `query`, `import` and `userName` pass copy in every file, and **KN-605**, low,
+AGENTS.md's `useTsTypes` line is too narrow. KN-094's round with it filed **KN-606**, low,
+KN-087.mjs's comment names a stories-only lint block that is gone, and dismissed a test
+that refuses any new ignore entry as a gate nobody asked for, the owner's to ask for. All
+three are KN-094's children.
 
-**KN-427 is closed and its roast recorded** (084fa51): **KN-599**, low, its drag story
-calls the synthetic DragEvents it dispatches the browser's own; **KN-598**, low, the
-contact modal keeps a job opportunity another tab deleted, TECH-DEBT.md section 22.
+**KN-586 is closed and its roast recorded** (709c4e5). The sign-in code step draws the
+Code Input. Filed from it: **KN-600**, api, low; **KN-601**, medium, `two-tabs.spec.ts`'s
+second test waits for words the signup step does not use; **KN-602** and **KN-603**,
+low. **KN-427** (084fa51) left **KN-598** and **KN-599**, low, and **KN-587** (c7698a3)
+**KN-597**, low.
 
-**KN-587 is closed and its roast recorded** (c7698a3): **KN-597**, low, the sign-in
-screen's focus mark outlives a `changeNumber` the live provider ignores.
-
-**Open and filed today**: KN-592 to KN-603.
+**Open and filed today**: KN-592 to KN-606.
 
 **What fails in a full run**: the Job Card's `Pressed` in parallel only, KN-365's
 kind. `App.tsx` line 107 is uncovered, KN-491's. `RemoteAuthProvider.tsx` and
@@ -99,24 +97,24 @@ arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When the two roasts land**, judge each: file KN-215's survivors as its children and
-the round's on KN-094 as KN-094's (`--area web`, `--okr OKR-1` for anything under four
+**When the two roasts land**, judge each: file KN-216's survivors as its children and
+the round's on KN-095 as KN-095's (`--area web`, `--okr OKR-1` for anything under four
 points), record with `todo roast <id> --file ... --filed ... --dismissed ...`, relay
-both to the owner, and commit the rendered board. If KN-094's round finds nothing, the
+both to the owner, and commit the rendered board. If KN-095's round finds nothing, the
 parent is finished.
 
-**KN-216 is next**, medium, 1 point, web: `.storybook/main.ts` indexes
-`'../src/!(gate-fixtures)/**/*.stories.@(ts|tsx)'`, which needs a folder after `src`,
-so a story file directly under `src` would be in neither Storybook nor the storybook
-test project; the docs guard, `story-docs/guard.test.ts`'s `storyFiles`, globs every
-story and excludes `gate-fixtures/**` by a rule of its own. The exit: a story file
-directly under `src` is indexed and run, `src/gate-fixtures` stays excluded from both,
-and the guard derives its list from the rule Storybook uses, proved by a fixture at
-the root of `src` that appears in Storybook's index and in the guard alike.
+**KN-228 is next**, medium, 1 point, web: without the repository's story-test flag, the
+Checkbox Hover story returns only when `globalThis.__STORYBOOK_PREVIEW__` exists, an
+undocumented Storybook internal. The card's fix is a second flag of the repository's
+own, set in `.storybook/preview-head.html`, which Storybook injects into its preview and
+the Vitest page does not load, read after the test flag. The exit: the Hover story reads
+no Storybook or Vitest internal; the published Storybook still renders it as a canvas
+with no error, checked on a production build; and removing either repository flag makes
+the story fail in the environment that flag belonged to.
 
 ## What to read first
 
 `AGENTS.md` (section 7), `DESIGN.md`, `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-216`, `.storybook/main.ts`,
-`story-docs/guard.test.ts`, `story-docs/stories-glob.test.ts` and `vitest.config.ts`'s
-storybook project.
+`agent/TODO_BOARD.md`, then `todo show KN-228`, the Checkbox stories' Hover story,
+`.storybook/preview-head.html` if it exists, where `__KARNAMA_STORY_TEST__` is set, and
+`npm run check:storybook` in `apps/web`.
