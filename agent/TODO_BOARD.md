@@ -4,7 +4,7 @@
 
 Project **KarNama** · 265 of 614 tasks done · 596 of 1219 points.
 
-**Next up: `KN-321` The Page Header's language switch is tested at 390 and 1440, not either side of the 900 it turns on** (medium, 1 pt, web)
+**Next up: `KN-321` The Page Header's shell controls are tested at 390 and 1440, not either side of the 900 they turn on** (medium, 1 pt, web)
 
 ## Objectives
 
@@ -12,6 +12,12 @@ Project **KarNama** · 265 of 614 tasks done · 596 of 1219 points.
 | -- | -- | ---- | ----- | ---- | ---- |
 | 1 | OKR-1 | MVP: the pages | now | 211 | 187 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-321` | The Page Header's shell controls are tested at 390 and 1440, not either side of the 900 they turn on | medium | 1 | web | none | ControlsOnNarrowScreens shows the shell's three controls in the Page Header at 899 wide and hides them at 900. |
 
 ## Blocked (9)
 
@@ -27,7 +33,7 @@ Project **KarNama** · 265 of 614 tasks done · 596 of 1219 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (335)
+## Backlog (334)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -81,7 +87,6 @@ Project **KarNama** · 265 of 614 tasks done · 596 of 1219 points.
 | `KN-182` | KN-166's verifier makes this repository fail when a sibling project moves | medium | 1 | agent | none | KarNama's verification does not depend on any path outside this repository; a missing sibling is reported as unavailable rather than as a failure; and the rules check for SkipBureau lives in SkipBureau and gates SkipBureau, proved by running both with the sibling renamed. |
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
-| `KN-321` | The Page Header's language switch is tested at 390 and 1440, not either side of the 900 it turns on | medium | 1 | web | none | The story shows the switch at 899 wide and hides it at 900. |
 | `KN-324` | The Loading State's dots start on a frame with all three dim, and no story reads their opacity | medium | 1 | web | none | The first painted frame is the file's, the middle dot at 1 and the others at 0.4, and a story reads the three opacities at the start and one turn later. |
 | `KN-325` | A Loading State whose startedAt moves past fifteen seconds shows the reading line for a render first | medium | 1 | web | none | A startedAt already past fifteen seconds shows the slow line on its first render, whether mounted with it or changed to it, and a story changes it while mounted. |
 | `KN-326` | The Loading State's first line is not reliably announced, since its status region mounts already holding it | medium | 1 | web | none | The status region is in the page before its first line is written, so the first line is a change, and a story shows the region empty when it mounts and filled after. |
@@ -6354,6 +6359,10 @@ CHILD OF KN-009, recorded in prose because board.json cannot express parent_task
 
 **Evidence.** d2deddd: in dark the Primary's and the Destructive's hover and pressed fills step darker than the state before them by the light pair's own contrast ratio, found by bisection, where the walk to white's bar had left the danger fills at one lightness and a pressed Primary brighter than its rest; darkMode.test.ts reads both styles from the Button's looks and holds each step's order and ratio, and failed on all four steps before the change; KN-108's pairs still pass; darkMode.ts covered whole, unit 1494 of 1494, lint and tsc clean; DESIGN.md states the rule; seen in dark in fa-IR and en-US, the Contact Modal's Save and the Confirm modal's delete darker hovered and darker again pressed
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T125052-task-kn-319-in-the-derived-dark-palette-the-primary-s-256d6a.md, filed none, dismissed: That the focus ring's contrast against a filled button was already below 3:1: pre-existing, as the roast says, not made worse by darker fills, and already filed as KN-399, the dark brand fill under 3:1 on the surface with the focus ring matching a brand button. That accentStep is no guarantee for arbitrary future token pairs, whose close steps or low saturation could round to one hex or miss the ratio by more than 0.05: outside the card, and the test reads its styles from the Button's LOOKS, so a filled style added there is held to the same order and step without anyone listing it. The rest of the round confirmed the work: the changed tokens reach only the Button's Primary and Destructive states and MUI's primary.dark and error.dark, white stays at 4.5 or more on each, the states darken in sequence by about 1.31 to one, keeping the bisection's lower bound is the safe side after rounding, and the comments, DESIGN.md and the commit say what the code does.
+
 ### `KN-320` The Page Header's back control is a 20 by 20 target, under the 24 the product asks of a control
 
 - **status** done · **severity** high · **points** 1 · **area** web · **objective** OKR-1
@@ -6372,17 +6381,17 @@ CHILD OF KN-021, recorded in prose because board.json cannot express parent_task
 
 - round 1: ./agent/roasts/KN-320-round-1.2026-09-11T19-14-49-391Z.md, score 9.5, 0 critical(s), filed none
 
-### `KN-321` The Page Header's language switch is tested at 390 and 1440, not either side of the 900 it turns on
+### `KN-321` The Page Header's shell controls are tested at 390 and 1440, not either side of the 900 they turn on
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-021
 
-CHILD OF KN-021, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-021 roast. LanguageOnNarrowScreens sets the viewport to 390 and then 1440, so a breakpoint moved to 600, 768 or 1200 would still pass. DESIGN.md's section 5 puts it at MUI's md, 900.
+CHILD OF KN-021, recorded in prose because board.json cannot express parent_task yet, KN-188: found by the KN-021 roast. LanguageOnNarrowScreens sets the viewport to 390 and then 1440, so a breakpoint moved to 600, 768 or 1200 would still pass. DESIGN.md's section 5 puts it at MUI's md, 900. Re-pointed 2026-09-15, read before planning: since KN-478 the story is ControlsOnNarrowScreens, and what the Page Header shows below md is the shell's three Icon Buttons, the language, settings and signing out, in a Box drawn display xs inline-flex and md none; the story still sets 390, clicks signing out, then sets 1440, so the premise holds for all three.
 
 **Why.** Between 600 and 900 a tablet shows the header's switch, and only the two widths either side of 900 prove where it turns.
 
-**Exit condition.** The story shows the switch at 899 wide and hides it at 900.
+**Exit condition.** ControlsOnNarrowScreens shows the shell's three controls in the Page Header at 899 wide and hides them at 900.
 
 ### `KN-322` Storybook never loads Vazirmatn, so every story draws its type in the system font
 
