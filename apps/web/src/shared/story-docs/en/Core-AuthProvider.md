@@ -1,9 +1,12 @@
-Who is signed in, and the mock that sends the sign-in code, which it hands to the
-screen as the code to show, since no message is really sent yet.
+Who is signed in, and the mock that sends the sign-in code. No message is really
+sent yet, so the mock hands the screen the code to show, through a context of its
+own rather than the contract a real provider fills, and only to a screen reading
+the mock's own value.
 
-The story renders the provider around the real sign-in screen and a probe that
-reads the provider by name, so the code the provider holds is compared with the
-code the screen draws, and the code the screen draws is then used to sign in.
+The stories render the provider around the real sign-in screen and a probe that
+reads the mock's code the way the screen does, so the code the provider holds is
+compared with the code the screen draws, and the code the screen draws is then
+used to sign in.
 
 ## Stories
 
@@ -15,3 +18,9 @@ exactly the one the provider holds, and the last one signs in.
 ### English
 
 The same, in English.
+
+### NoCodeUnderAnotherProvider
+
+Another provider mounted inside the mock, stood in for by one waiting for a code,
+each around its own sign-in screen: once the mock has sent a code, the mock's
+screen shows it and the other screen shows none.

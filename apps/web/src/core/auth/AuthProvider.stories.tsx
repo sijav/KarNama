@@ -3,17 +3,17 @@ import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, type Locale } from '../../i18n'
 import { AuthScreen } from '../../screens/AuthScreen'
 import type { StoryMeta } from '../../shared/story-docs/story-meta'
-import { AuthProvider, useAuth } from './AuthProvider'
+import { AuthContext, AuthProvider, useMockCode, type AuthValue } from './AuthProvider'
 
 // A number the mock accepts.
 const PHONE = '09120000000'
 
 // A probe, not a product component, and it lives inside this file on purpose, as
 // the preferences provider's does: stories are outside coverage. It reads the
-// provider by name and writes the code it holds into a span, since what is
-// asserted is the provider's state, not anything a reader sees.
+// mock's code the way the screen does, KN-460, and writes it into a span, since
+// what is asserted is the provider's state, not anything a reader sees.
 const CodeProbe = () => {
-  const { mockCode } = useAuth()
+  const mockCode = useMockCode()
   return <span data-testid="mock-code">{mockCode ?? ''}</span>
 }
 
@@ -98,4 +98,63 @@ export const Persian: Story = {
 export const English: Story = {
   globals: { locale: 'en-US' },
   play: codeShownIn('en-US'),
+}
+
+// A provider that does not mock, stood in for by a value waiting for a code, as a
+// real provider is once it has sent one, KN-460. Nothing it holds is a code.
+const WAITING: AuthValue = {
+  session: null,
+  awaiting: true,
+  signingUp: false,
+  phone: PHONE,
+  requestCode: () => true,
+  resend: () => undefined,
+  verify: () => null,
+  saveName: () => undefined,
+  signOut: () => undefined,
+}
+
+// The mock's randomness held at 0.5, which makes exactly this code, KN-466.
+const HALF = () => 0.5
+const MADE = '50000'
+
+// The mock around two sign-in screens: its own, and one under another provider
+// mounted inside it, as a story or the preview can mount one.
+const MockAroundAnother = () => (
+  <AuthProvider initial={null} random={HALF}>
+    <div data-testid="mocked">
+      <AuthScreen />
+    </div>
+    <AuthContext.Provider value={WAITING}>
+      <div data-testid="another">
+        <AuthScreen />
+      </div>
+    </AuthContext.Provider>
+  </AuthProvider>
+)
+
+export const NoCodeUnderAnotherProvider: Story = {
+  globals: { locale: 'fa-IR' },
+  render: () => <MockAroundAnother />,
+  play: async ({ canvasElement }) => {
+    // KN-460: the mock's code reaches only a screen reading the mock's own value.
+    // Once the mock has sent a code, its own screen shows it, and the screen under
+    // the other provider, waiting for a code inside the same mock, shows none.
+    const canvas = within(canvasElement)
+    const mocked = canvas.getByTestId('mocked')
+    const another = canvas.getByTestId('another')
+    const i18n = i18nFor('fa-IR')
+    const sends = spyOn(console, 'info').mockImplementation(() => undefined)
+    try {
+      await expect(within(another).getByLabelText(i18n._('Five digit code'))).toBeInTheDocument()
+      await userEvent.type(within(mocked).getByLabelText(i18n._('Mobile number')), PHONE)
+      await userEvent.click(within(mocked).getByRole('button', { name: i18n._('Send the code') }))
+      await waitFor(async () => {
+        await expect(shownCode(mocked)).toBe(MADE)
+      })
+      await expect(within(another).queryByRole('status')).toBeNull()
+    } finally {
+      sends.mockRestore()
+    }
+  },
 }

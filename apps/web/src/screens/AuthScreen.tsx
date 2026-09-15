@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react'
 import { Box, Stack } from '@mui/material'
 import { useEffect, useState, type SyntheticEvent } from 'react'
 import { apiErrorText } from '../core/api'
-import { useAuth } from '../core/auth'
+import { useAuth, useMockCode } from '../core/auth'
 import { Button, type ButtonType, type ButtonVariant } from '../shared/button'
 import { Input, type InputDirection } from '../shared/input'
 import { radius, spacing, type as typeScale } from '../theme/tokens'
@@ -36,6 +36,7 @@ const SUBMIT: ButtonType = 'submit'
 export const AuthScreen = () => {
   const { i18n } = useLingui()
   const auth = useAuth()
+  const mockCode = useMockCode()
   const [phone, setPhone] = useState('')
   const [code, setCode] = useState('')
   const [name, setName] = useState('')
@@ -113,8 +114,9 @@ export const AuthScreen = () => {
       {/* The code itself, on the screen, KN-459: no message is really sent, and
           the console was the only place it appeared, which a phone does not
           have. Marked plainly as a stand-in so nobody mistakes it for something
-          that arrived, and it goes with the mock. */}
-      {auth.mockCode === null ? null : (
+          that arrived. It comes from the mock alone, never from the contract a
+          real provider fills, KN-460, and goes with the mock. */}
+      {mockCode === null ? null : (
         <Box
           role="status"
           sx={(theme) => ({
@@ -141,7 +143,7 @@ export const AuthScreen = () => {
               color: theme.karnama.semantic['text/primary'],
             })}
           >
-            {auth.mockCode}
+            {mockCode}
           </Box>
         </Box>
       )}

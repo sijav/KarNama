@@ -18,7 +18,7 @@ test('server login, wrong code, signup, extraction, reload and logout', async ({
   const phone = `091${String(Math.floor(Math.random() * 100_000_000)).padStart(8, '0')}`
   await page.getByLabel('شماره موبایل', { exact: true }).fill(phone)
   await page.getByRole('button', { name: 'ارسال کد', exact: true }).click()
-  await expect(page.getByText('هیچ پیامی واقعاً ارسال نمی‌شود', { exact: false })).toHaveCount(0)
+  await expect(page.getByText('هنوز پیامکی واقعاً ارسال نمی‌شود', { exact: false })).toHaveCount(0)
   await expect(page.getByLabel('کد پنج رقمی')).toBeVisible()
   const payload: unknown = await (await request.get(`http://127.0.0.1:4400/__test__/code?phone=${phone}`)).json()
   if (typeof payload !== 'object' || payload === null || !('code' in payload) || typeof payload.code !== 'string')

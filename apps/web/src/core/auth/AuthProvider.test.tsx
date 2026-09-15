@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { renderToString } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
-import { AuthContext, AuthProvider, STORAGE_KEY, type AuthValue } from './AuthProvider'
+import { AuthContext, AuthProvider, codeFor, STORAGE_KEY, useMockCode, type AuthValue } from './AuthProvider'
 import { sessionFor } from './auth'
 
 /**
@@ -94,12 +94,32 @@ describe('the mocked provider', () => {
 
   // What the screen is GIVEN cannot be read here: `capture` renders once with
   // `renderToString`, so a code sent afterwards never reaches a second render,
-  // and an assertion on a fresh provider's `mockCode` says nothing about the
-  // one that sent it. That is why the line this replaced was vacuous, KN-462.
-  // It is covered where it is observable, in SigningInOnAPhone, which reads the
-  // code off the screen, resends, and signs in with the new one. Core/AuthProvider's
-  // stories read it off the provider itself, after a send and after a resend, find
-  // the screen showing exactly that, and sign in with it, KN-465.
+  // and an assertion on a fresh provider's code says nothing about the one that
+  // sent it. That is why the line this replaced was vacuous, KN-462. It is covered
+  // where it is observable, in SigningInOnAPhone, which reads the code off the
+  // screen, resends, and signs in with the new one. Core/AuthProvider's stories
+  // read it the way the screen does, after a send and after a resend, find the
+  // screen showing exactly that, and sign in with it, KN-465; and they mount
+  // another provider inside the mock, whose screen gets none, KN-460.
+
+  it('gives its code only to a component reading its own value, KN-460', () => {
+    // Any value but the mock's own is another provider's, which gets nothing.
+    const standIn = (): AuthValue => ({
+      session: null,
+      awaiting: true,
+      signingUp: false,
+      phone: PHONE,
+      requestCode: () => true,
+      resend: () => undefined,
+      verify: () => null,
+      saveName: () => undefined,
+      signOut: () => undefined,
+    })
+    const mine = standIn()
+    expect(codeFor({ auth: mine, code: '12345' }, mine)).toBe('12345')
+    expect(codeFor({ auth: mine, code: '12345' }, standIn())).toBeNull()
+    expect(codeFor(null, mine)).toBeNull()
+  })
 
   it('is expired when no code was ever sent', () => {
     vi.stubGlobal('localStorage', { getItem: () => null, setItem: () => undefined, removeItem: () => undefined })
@@ -181,11 +201,15 @@ describe('the mocked provider', () => {
 
   it('does nothing, rather than throwing, for a component outside the provider', async () => {
     let held: AuthValue | undefined
+    let code: string | null | undefined
     const Probe = () => {
       held = useContext(AuthContext)
+      code = useMockCode()
       return <span>{held.phone}</span>
     }
     renderToString(<Probe />)
+    // No mock above it, so no code to show, KN-460.
+    expect(code).toBeNull()
     expect(held?.session).toBeNull()
     expect(held?.requestCode(PHONE)).toBe(false)
     expect(held?.verify('12345')).toBeNull()

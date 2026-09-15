@@ -99,7 +99,6 @@ export const RemoteAuthProvider = ({ children }: { children: ReactNode }) => {
       setRetry((value) => value + 1)
     },
     signingUp: session !== null && !session.name.trim(),
-    mockCode: null,
     requestCode: async (typed) => {
       const number = normalisePhone(typed)
       if (!number) return false

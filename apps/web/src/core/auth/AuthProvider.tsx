@@ -23,15 +23,6 @@ export interface AuthValue {
   signingUp: boolean
   /** The number the code was sent to, for the screen to show. */
   phone: string
-  /**
-   * The code the MOCK just made, for the screen to show the reader, KN-459.
-   *
-   * No message is really sent, and until one is, the console was the only place
-   * the code appeared. A phone has no console, so nobody could sign in on the
-   * device this product is mostly for. Null once there is nothing pending, and
-   * it goes the moment a real sender exists.
-   */
-  mockCode: string | null
   /** Sends a code to a number. False when the number is not one. */
   requestCode: (typed: string) => boolean | Promise<boolean>
   /** Sends the same number another code. */
@@ -53,7 +44,6 @@ const NO_AUTH: AuthValue = {
   awaiting: false,
   signingUp: false,
   phone: '',
-  mockCode: null,
   requestCode: () => false,
   resend: () => undefined,
   verify: () => null,
@@ -62,6 +52,31 @@ const NO_AUTH: AuthValue = {
 }
 
 export const AuthContext = createContext<AuthValue>(NO_AUTH)
+
+/**
+ * The code the MOCK just made, and the mock's own value it belongs to, KN-460.
+ *
+ * No message is really sent, and a phone has no console, so the screen shows the
+ * code, KN-459. It used to be a field of `AuthValue`, the contract a real sender
+ * fills, where a provider that filled it would put a live code on the screen. It
+ * travels here instead, in a context only the mock provides, and is handed only
+ * to a component reading the mock's own value: a provider mounted inside the mock,
+ * as a story can mount one, gives its screen a value of its own, which gets
+ * nothing. When a real sender comes, this goes, and the screen's notice with it.
+ */
+interface MockDelivery {
+  auth: AuthValue
+  code: string | null
+}
+
+const MockCodeContext = createContext<MockDelivery | null>(null)
+
+/** The mock's code for a component that reads `auth`: only the mock's own value gets it. */
+export const codeFor = (delivery: MockDelivery | null, auth: AuthValue): string | null =>
+  delivery !== null && delivery.auth === auth ? delivery.code : null
+
+/** The code the sign-in screen shows, or null under any provider but the mock. */
+export const useMockCode = (): string | null => codeFor(useContext(MockCodeContext), useContext(AuthContext))
 
 const storage = (): Storage | undefined => {
   try {
@@ -174,8 +189,6 @@ export const AuthProvider = ({ initial, random, children }: AuthProviderProps) =
       awaiting: sent !== null && session === null,
       signingUp: session !== null && needsName(session),
       phone: sent?.phone ?? session?.phone ?? '',
-      // Shown on the screen because a phone has no console, KN-459.
-      mockCode: sent?.code ?? null,
       requestCode: (typed) => {
         // Stored in one shape whatever the reader typed, Persian digits and a
         // +98 included, so the code goes to the number they meant.
@@ -209,7 +222,15 @@ export const AuthProvider = ({ initial, random, children }: AuthProviderProps) =
     [hold, send, sent, session],
   )
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  // The code beside the value it belongs to, never inside it, KN-460: made from the
+  // very value the context below is given, in the same render.
+  const delivery = useMemo<MockDelivery>(() => ({ auth: value, code: sent?.code ?? null }), [value, sent])
+
+  return (
+    <AuthContext.Provider value={value}>
+      <MockCodeContext.Provider value={delivery}>{children}</MockCodeContext.Provider>
+    </AuthContext.Provider>
+  )
 }
 
 export const useAuth = (): AuthValue => useContext(AuthContext)
