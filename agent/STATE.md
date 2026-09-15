@@ -40,24 +40,22 @@ through on a list. The replan weighs `@storybook/test-runner` with
 `--failOnConsole` (a new dependency, the owner's yes to install), a `webServer`,
 no Docs pages, an explicit timeout and the channel hooked by a property setter.
 
-**Closed on 2026-09-15**, pushed and roasted by Codex: KN-554 (bb953c8), KN-560
-(481b66c), KN-561 (bfeafa6, roast filed KN-566), KN-562 (abd9c82, roast filed
-KN-568) and KN-563 (83877dc: an `updateArgs` during a play renders the story again
-at once and its loaders restore every `fn()`, so Preferences keeps its mocks and
-clears them as its play starts; roast found nothing; KN-569 carries its replay).
-**KN-255** (97ce2e9): the Checkbox, FilterChip, StatusChip, Tooltip and
-PreferencesProvider stories offer only the controls their plays hold for, or read
-their args; the Checkbox gained a `Default` first so its Docs page keeps its
-controls. **Its roast by Codex is running** (scratch `kn255-roast.log`).
+**Closed on 2026-09-15**, pushed and roasted by Codex: KN-554, KN-560, KN-561
+(roast filed KN-566), KN-562 (roast filed KN-568), KN-563 (an `updateArgs` during
+a play renders the story again at once and its loaders restore every `fn()`;
+KN-569 carries its replay), **KN-255** (97ce2e9: the Checkbox, FilterChip,
+StatusChip, Tooltip and PreferencesProvider stories offer only the controls their
+plays hold for; roast filed **KN-575**, the sweep reading a dropped URL arg or an
+unstarted play as clean) and **KN-570** (34c1124: the Jobs screen's stories no
+longer offer `addOpen`; roast found nothing).
 
 **`node agent/scripts/storybook/controls-sweep.mjs [--only <regex>]`**, committed
 by KN-255, builds Storybook, opens every story and each one with a play once per
 offered control changed through URL args, and lists the broken ones and JSON
-controls for elements. On the tree of 97ce2e9: 373 stories, 362 with a play,
-**137 broken, carried by KN-570 to KN-574**, and six failing with nothing changed
-(AddJobModal `Review` KN-559, JobModal's four KN-494, Input `Multiline` under
-load). It must read `control.disable`, since `control: false` is prepared as
-`{ disable: true }` with its inferred type kept.
+controls for elements. On 97ce2e9: 373 stories, 362 with a play, 137 broken, now
+121 with KN-570's sixteen gone, carried by **KN-571 to KN-574**. It reads
+`control.disable`, since `control: false` is prepared as `{ disable: true }`. It
+does not yet report unapplied or untried changes, KN-575.
 
 **How to measure the published Storybook**: build with `KARNAMA_STORYBOOK_BASE` in
 Node's own `env`, never on a Git Bash command line; serve under that base; fetch
@@ -97,12 +95,16 @@ coverage gate fails on auth and extraction files, KN-486. KN-551:
 
 ## The next step
 
-**KN-570 is in progress**: JobsScreen's sixteen stories with a play fail when
-`addOpen` is changed in Controls. The meta sets `addOpen: false` and callbacks,
-and no story offers any other editable control. Next: the plan beside
-`src/screens/JobsScreen.stories.tsx`, Codex's review, the change, the sweep with
-`--only '^screens-jobs--'`, the JobsScreen stories under Vitest, unit, eslint,
-tsc, the Docs page in both languages. Then read KN-255's roast when it lands.
+**KN-275 is in progress**: a named role for a control's resting edge at 3:1, the
+owner's decision of 2026-09-10, KN-273. Measured: `border/default` is 1.24 on
+white; `#7f8694`, text/secondary's hue made lighter, is 3.41, 3.66 and 3.32 on
+the three light backgrounds; its dark row, derived and walked to 3 against the
+dark surface as `border/focus` is, `#707786`, is 3.46, 3.02 and 3.55. The plan,
+`apps/web/src/theme/#KN-275 - Add a resting edge role for controls at 3 to 1.md`,
+names it `border/control` for the Input, the Checkbox and the Select, and leaves
+the Search Bar and the Sort Control, built after the decision, to a card of their
+own. Codex is reviewing it; then build, the two plants, the stories, KN-004.mjs,
+the contract, and a look in all four combinations.
 
 ## What to read first
 

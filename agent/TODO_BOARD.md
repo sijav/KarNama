@@ -13,6 +13,12 @@ Project **KarNama** · 242 of 575 tasks done · 540 of 1157 points.
 | 1 | OKR-1 | MVP: the pages | now | 200 | 164 |
 | 2 | OKR-2 | Everything after the MVP | later | 130 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-275` | Add a resting edge role for controls at 3:1, and draw the Input and the Checkbox with it | high | 3 | web | none | tokens.ts carries a named role for a control's resting edge, a neutral in text/secondary's hue at 3.3:1 or more on bg/surface, bg/page and bg/surface-secondary, and darkMode.ts derives it and checks it at 3:1 or more on the three dark backgrounds, each ratio asserted by a unit test with a mutation back to border/default failing it; the Input's resting border and the Checkbox's unchecked frame use it, and the Input's Default story and the Checkbox's Unchecked story assert it; every other state of both still renders as drawn; DESIGN.md's token tables list the role as the owner's addition under KN-273; the token verifier and the contract pass; and the Input and the Checkbox are seen at rest in all four combinations. |
+
 ## Blocked (8)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -26,7 +32,7 @@ Project **KarNama** · 242 of 575 tasks done · 540 of 1157 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (322)
+## Backlog (321)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -51,7 +57,6 @@ Project **KarNama** · 242 of 575 tasks done · 540 of 1157 points.
 | `KN-221` | The catalogs are never compiled, so a message with a count or a placeholder renders raw ICU in production | high | 3 | web | none | A message with a plural and a placeholder renders correctly in BOTH locales in a production build, checked by rendering it from the built output or under NODE_ENV=production rather than in development, with Persian digits in fa-IR; a mutation that loads the catalogs uncompiled again makes that check fail; and the catalog tests still prove every English id has a non-empty Persian translation. |
 | `KN-226` | Nothing committed checks that the published Storybook renders its stories without errors | high | 3 | infra | KN-494, KN-554, KN-560, KN-561, KN-562, KN-563 | A committed check builds Storybook for production, opens every story in headless Chromium, and fails on any page error or console error; it runs before the Pages workflow publishes; and a mutation removing the Hover story's test-runner guard makes it fail on the emitted import error. |
 | `KN-265` | Employment type becomes eight values, and a job can hold more than one | high | 3 | api | none | DESIGN.md's employment type list gives the eight values as the owner's decision of 2026-09-10, with the overlap noted, and says the field holds more than one; the Prisma schema has the eight and a record holds a list of them, through a migration that carries existing values over and is tested; the GraphQL schema and the generated types expose a list; the catalogs carry English ids and Persian for the two new values; and KN-073 is left holding only the job level list. |
-| `KN-275` | Add a resting edge role for controls at 3:1, and draw the Input and the Checkbox with it | high | 3 | web | none | tokens.ts carries a named role for a control's resting edge, a neutral in text/secondary's hue at 3.3:1 or more on bg/surface, bg/page and bg/surface-secondary, and darkMode.ts derives it and checks it at 3:1 or more on the three dark backgrounds, each ratio asserted by a unit test with a mutation back to border/default failing it; the Input's resting border and the Checkbox's unchecked frame use it, and the Input's Default story and the Checkbox's Unchecked story assert it; every other state of both still renders as drawn; DESIGN.md's token tables list the role as the owner's addition under KN-273; the token verifier and the contract pass; and the Input and the Checkbox are seen at rest in all four combinations. |
 | `KN-279` | Give the selected Filter Chip a blue edge at 3:1, apart from its pressed edge | high | 3 | web | KN-272 | A selected Filter Chip's edge is drawn in a named role at 3:1 or more against bg/surface, bg/page, bg/surface-secondary and its own fill, in light and in the derived dark, each ratio asserted by a unit test with a mutation back to the fill-coloured edge failing it; the Selected story asserts the edge; a pressed unselected chip is still told apart from a selected one, by at least 3:1 between their two indicators or by a difference that is not colour, such as the edge's width, and a focused chip beside a selected one keeps its ring visibly apart from the selected edge, both asserted on rendered chips side by side, including a chip held pressed from the keyboard; DESIGN.md records the edge under the owner's decision of KN-276; and the chip is seen unselected, selected and pressed in all four combinations. |
 | `KN-416` | The shell has no Apollo client, no auth state and no error boundary | high | 3 | web | KN-036 | AppProviders creates the Apollo client against the API's URL with the honest slow-start handling the design asks for, the shell holds who is signed in, and a screen that throws renders the error state rather than a blank page, each with a story or a test; a deep link to a screen that throws still shows the shell. |
 | `KN-460` | The mocked code rides in the production auth contract, where a real sender could leak a live one | high | 3 | web | none | AuthValue cannot carry a code, the screen reads it from something only the mock provides, and a provider that does not mock it cannot show one. |
@@ -5443,7 +5448,7 @@ CHILD OF KN-011, recorded in prose because board.json cannot express parent_task
 
 ### `KN-275` Add a resting edge role for controls at 3:1, and draw the Input and the Checkbox with it
 
-- **status** backlog · **severity** high · **points** 3 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 3 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-011
 
@@ -9770,6 +9775,10 @@ Found by KN-255's measurement, 2026-09-15: KN-247's sweep run over every story o
 **Exit condition.** Every story with a play function in the JobsScreen story file reads its expectations from the active args or offers only the controls its assertions hold for; KN-247's sweep over every story, each offered control changed by its type, finds none of them broken; and those stories pass under Vitest.
 
 **Evidence.** 34c1124: the JobsScreen meta excludes addOpen from Controls through a list typed against its props, so no story offers a control; the committed controls-sweep on a fresh build of the change found 21 stories, none offering a control and none broken, where KN-255's measurement found 16 broken under addOpen; the JobsScreen stories 21 of 21 under Vitest, unit 1383, eslint and tsc clean; the Jobs Docs page in both languages lists only the callbacks in its Controls table and keeps addOpen's prose
+
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T010125-task-kn-570-jobsscreen-s-stories-offer-the-add-modal--dff12c.md, filed none, dismissed: Nothing found. The round confirmed the meta's exclusion leaves all nineteen played stories with no editable control, the phone stories and the two without a play still showing what they are for, the Docs page truthful with addOpen absent from its Controls and kept in its prose in both languages, the sweep valid for what is offered and the Vitest run for what played, KN-575 considered, no story overriding the meta's controls, and one typed list sized right.
 
 ### `KN-571` The modal stories offer open, step, tab and mode controls that break their plays
 
