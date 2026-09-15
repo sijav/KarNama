@@ -1,18 +1,28 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { useCallback, useRef, type ReactNode } from 'react'
 import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
-import { AuthProvider, STORAGE_KEY as SESSION_KEY, sessionFor, type Session } from '../core/auth'
+import { AuthProvider, RESEND_SECONDS, STORAGE_KEY as SESSION_KEY, sessionFor, type Session } from '../core/auth'
 import { i18nFor, type Locale } from '../i18n'
+import { formatClock } from '../i18n/formatClock'
 import { allowConsole } from '../shared/console-guard'
 import { formatPhone } from '../shared/contact-card'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { fixtures } from '../shared/story-fixtures'
+import { holdClock } from '../shared/story-fixtures/clock'
 import { keyboardOf, type Keyboard } from '../shared/story-fixtures/keyboard'
 import { elevation, semantic } from '../theme/tokens'
 import { AuthScreen } from './AuthScreen'
 
 // A number the mock accepts, in the shape the design asks for.
 const PHONE = '09120000000'
+
+// Another number, for a reader who mistyped the first, KN-587.
+const OTHER_PHONE = '09121111111'
+
+// The time a story holds Date.now at, and a second of it, so the minute before a
+// resend passes at once, KN-587.
+const START = Date.UTC(2026, 8, 15, 9)
+const ONE_SECOND = 1000
 
 // What a story's `codes` parameter holds, when it is a list of numbers.
 const codesOf = (value: unknown): readonly number[] | undefined =>
@@ -118,6 +128,8 @@ export const SigningIn: Story = {
       const sent = /mock SMS to \S+: (\d+)/.exec(String(args[0]))
       if (sent?.[1]) codes.push(sent[1])
     })
+    // The minute before a resend passes at once, KN-587.
+    const clock = holdClock(START)
     try {
       await userEvent.type(canvas.getByLabelText('شماره موبایل'), PHONE)
       await userEvent.click(canvas.getByRole('button', { name: 'ارسال کد' }))
@@ -125,8 +137,10 @@ export const SigningIn: Story = {
         await expect(codes.length).toBeGreaterThan(0)
       })
 
-      // Another code can be asked for, and the last one sent is the one that works.
-      await userEvent.click(canvas.getByRole('button', { name: 'ارسال کد دیگر' }))
+      // Another code can be asked for once the minute is up, KN-587, and the last
+      // one sent is the one that works.
+      clock.forward(RESEND_SECONDS * ONE_SECOND)
+      await userEvent.click(await canvas.findByRole('button', { name: i18nFor('fa-IR')._('Send the code again') }))
       await waitFor(async () => {
         await expect(codes.length).toBeGreaterThan(1)
       })
@@ -151,6 +165,7 @@ export const SigningIn: Story = {
       })
     } finally {
       said.mockRestore()
+      clock.release()
     }
   },
 }
@@ -180,6 +195,7 @@ export const SigningInOnAPhone: Story = {
     const { page } = await import('vitest/browser')
     const canvas = within(canvasElement)
     const before = { width: window.innerWidth, height: window.innerHeight }
+    const clock = holdClock(START)
     try {
       await page.viewport(SCREEN.width, SCREEN.height)
       await userEvent.type(canvas.getByLabelText('شماره موبایل'), PHONE)
@@ -191,10 +207,12 @@ export const SigningInOnAPhone: Story = {
       await expect(shown).toHaveTextContent('هنوز پیامکی واقعاً ارسال نمی‌شود')
       await expect(codeOnScreen(canvasElement)).toBe(FIRST)
 
-      // Another code asked for, and the notice changes to it, KN-466: a resend
-      // that did nothing leaves the first showing, and this waits out and fails,
-      // where it used to read whatever five digits were there.
-      await userEvent.click(canvas.getByRole('button', { name: 'ارسال کد دیگر' }))
+      // Another code asked for once the minute is up, KN-587, and the notice
+      // changes to it, KN-466: a resend that did nothing leaves the first showing,
+      // and this waits out and fails, where it used to read whatever five digits
+      // were there.
+      clock.forward(RESEND_SECONDS * ONE_SECOND)
+      await userEvent.click(await canvas.findByRole('button', { name: i18nFor('fa-IR')._('Send the code again') }))
       await waitFor(async () => {
         await expect(codeOnScreen(canvasElement)).toBe(SECOND)
       })
@@ -218,6 +236,7 @@ export const SigningInOnAPhone: Story = {
         await expect(canvas.getByLabelText('نام و نام خانوادگی')).toBeInTheDocument()
       })
     } finally {
+      clock.release()
       await page.viewport(before.width, before.height)
     }
   },
@@ -354,22 +373,23 @@ const cardIsTheFrames = async (canvasElement: HTMLElement, width: number, title:
   await expect(bodyStyle.color).toBe(borrowed(form, 'color', semantic['text/secondary']))
 }
 
-// The file's two screens, and the card each gives it: 440 on a desktop, and on a
-// phone the screen less the page's 24 at either side.
+// The file's two screens, the card each gives it, and the room inside the card's
+// 32 of padding: 440 and 376 on a desktop, and on a phone the screen less the
+// page's 24 at either side, 342 and 278.
 const WIDTHS = [
-  { screen: { width: 1440, height: 900 }, card: 440 },
-  { screen: { width: 390, height: 844 }, card: 342 },
+  { screen: { width: 1440, height: 900 }, card: 440, inner: 376 },
+  { screen: { width: 390, height: 844 }, card: 342, inner: 278 },
 ]
 
 // The measure run at each screen, set by the runner's own browser, which only
 // the runner has, KN-225, and the screen put back after.
-const atBothWidths = async (measure: (card: number) => Promise<void>) => {
+const atBothWidths = async (measure: (card: number, inner: number) => Promise<void>) => {
   const { page } = await import('vitest/browser')
   const before = { width: window.innerWidth, height: window.innerHeight }
   try {
-    for (const { screen, card } of WIDTHS) {
+    for (const { screen, card, inner } of WIDTHS) {
       await page.viewport(screen.width, screen.height)
-      await measure(card)
+      await measure(card, inner)
     }
   } finally {
     await page.viewport(before.width, before.height)
@@ -395,19 +415,59 @@ export const LoginAsTheFrames: Story = {
   },
 }
 
+// What 407:6972 and 407:7043 draw under the code step's action, KN-587: the Resend
+// Timer and then the Change Number frame, each the card's inner width, 22 tall and
+// 24 under what is above it; the timer at 14 Regular, centred, in text/disabled,
+// and the Footer Link at 14 Medium, centred, in text/brand.
+const linesUnderTheAction = async (canvasElement: HTMLElement, inner: number, timerText: string) => {
+  const form = canvasElement.querySelector('form')
+  if (!form) throw new Error('no sign-in card')
+  const canvas = within(canvasElement)
+  const i18n = i18nFor('fa-IR')
+  const action = canvas.getByRole('button', { name: i18n._('Confirm and sign in') }).getBoundingClientRect()
+  const timer = canvas.getByText(timerText)
+  const link = canvas.getByRole('button', { name: i18n._('Change the number') })
+  const timerBox = timer.getBoundingClientRect()
+  const linkBox = link.getBoundingClientRect()
+  await expect([timerBox.width, timerBox.height, Math.round(timerBox.top - action.bottom)]).toEqual([inner, 22, 24])
+  await expect([linkBox.width, linkBox.height, Math.round(linkBox.top - timerBox.bottom)]).toEqual([inner, 22, 24])
+  const timerStyle = getComputedStyle(timer)
+  await expect([px(timerStyle.fontSize), timerStyle.fontWeight, px(timerStyle.lineHeight)]).toEqual([14, '400', 22])
+  await expect(timerStyle.textAlign).toBe('center')
+  await expect(timerStyle.color).toBe(borrowed(form, 'color', semantic['text/disabled']))
+  const linkStyle = getComputedStyle(link)
+  await expect([px(linkStyle.fontSize), linkStyle.fontWeight, px(linkStyle.lineHeight)]).toEqual([14, '500', 22])
+  await expect(linkStyle.color).toBe(borrowed(form, 'color', semantic['text/brand']))
+  // The link's words sit mid-row, read with a Range over them rather than from its
+  // box, AGENTS.md section 7.
+  const words = document.createRange()
+  words.selectNodeContents(link)
+  const drawn = words.getBoundingClientRect()
+  await expect(Math.abs(drawn.left + drawn.width / 2 - (linkBox.left + linkBox.width / 2))).toBeLessThan(1)
+}
+
 export const CodeAsTheFrames: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
     const i18n = i18nFor('fa-IR')
     const canvas = within(canvasElement)
-    await userEvent.type(canvas.getByLabelText(i18n._('Mobile number')), PHONE)
-    await userEvent.click(canvas.getByRole('button', { name: i18n._('Send the code') }))
-    await canvas.findByLabelText(i18n._('Five digit code'))
-    await atBothWidths(async (card) => {
-      await cardIsTheFrames(canvasElement, card, i18n._('Enter the code'), `${i18n._('Sent to')} ${formatPhone('fa-IR', PHONE)}`)
-      await expect(canvas.getByRole('button', { name: i18n._('Confirm and sign in') })).toBeInTheDocument()
-    })
+    // The clock held a second past the send, where the file draws its countdown.
+    const clock = holdClock(START)
+    try {
+      await userEvent.type(canvas.getByLabelText(i18n._('Mobile number')), PHONE)
+      await userEvent.click(canvas.getByRole('button', { name: i18n._('Send the code') }))
+      await canvas.findByLabelText(i18n._('Five digit code'))
+      clock.forward(ONE_SECOND)
+      const timerText = `${i18n._('Send the code again in')} ${formatClock('fa-IR', RESEND_SECONDS - 1)}`
+      await canvas.findByText(timerText)
+      await atBothWidths(async (card, inner) => {
+        await cardIsTheFrames(canvasElement, card, i18n._('Enter the code'), `${i18n._('Sent to')} ${formatPhone('fa-IR', PHONE)}`)
+        await linesUnderTheAction(canvasElement, inner, timerText)
+      })
+    } finally {
+      clock.release()
+    }
   },
 }
 
@@ -428,5 +488,81 @@ export const SignupAsTheFrames: Story = {
       await expect(canvas.getByLabelText(i18n._('First and last name'))).toHaveAttribute('placeholder', i18n._('Mehdi Rezaei'))
       await expect(canvas.getByRole('button', { name: i18n._('Start') })).toBeInTheDocument()
     })
+  },
+}
+
+// The countdown to a resend, KN-587, walked on a held clock: the minute in the
+// reader's digits right after the send with no resend offered, the file's 00:59 a
+// second on, one second left, and at the end a link that sends another code and
+// starts the count again. A move of the clock shows at the countdown's next look,
+// a quarter of a second later, which findBy waits for.
+const countsDownIn =
+  (locale: Locale): NonNullable<Story['play']> =>
+  async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const i18n = i18nFor(locale)
+    const line = (seconds: number) => `${i18n._('Send the code again in')} ${formatClock(locale, seconds)}`
+    const sends = spyOn(console, 'info').mockImplementation(() => undefined)
+    const clock = holdClock(START)
+    try {
+      await userEvent.type(canvas.getByLabelText(i18n._('Mobile number')), PHONE)
+      await userEvent.click(canvas.getByRole('button', { name: i18n._('Send the code') }))
+      await expect(await canvas.findByText(line(RESEND_SECONDS))).toBeInTheDocument()
+      await expect(canvas.queryByRole('button', { name: i18n._('Send the code again') })).toBeNull()
+
+      clock.forward(ONE_SECOND)
+      await expect(await canvas.findByText(line(RESEND_SECONDS - 1))).toBeInTheDocument()
+      clock.forward((RESEND_SECONDS - 2) * ONE_SECOND)
+      await expect(await canvas.findByText(line(1))).toBeInTheDocument()
+
+      clock.forward(ONE_SECOND)
+      await userEvent.click(await canvas.findByRole('button', { name: i18n._('Send the code again') }))
+      await waitFor(async () => {
+        await expect(sends).toHaveBeenCalledTimes(2)
+      })
+      await expect(await canvas.findByText(line(RESEND_SECONDS))).toBeInTheDocument()
+    } finally {
+      clock.release()
+      sends.mockRestore()
+    }
+  }
+
+export const CountsDownToAResend: Story = {
+  globals: { locale: 'fa-IR' },
+  play: countsDownIn('fa-IR'),
+}
+
+export const CountsDownToAResendInEnglish: Story = {
+  globals: { locale: 'en-US' },
+  play: countsDownIn('en-US'),
+}
+
+export const ChangingTheNumber: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-587: a mistyped number changed from the code step, as 407:6997's reaction
+    // goes back to Login. The number step returns with the number as it was typed,
+    // in its field and focused, and the code goes to the number typed instead.
+    const canvas = within(canvasElement)
+    const i18n = i18nFor('fa-IR')
+    const sends = spyOn(console, 'info').mockImplementation(() => undefined)
+    try {
+      await userEvent.type(canvas.getByLabelText(i18n._('Mobile number')), PHONE)
+      await userEvent.click(canvas.getByRole('button', { name: i18n._('Send the code') }))
+      await userEvent.click(await canvas.findByRole('button', { name: i18n._('Change the number') }))
+
+      const number = await canvas.findByLabelText(i18n._('Mobile number'))
+      await expect(canvas.getByText(i18n._('Sign in to KarNama'))).toBeInTheDocument()
+      await expect(number).toHaveValue(PHONE)
+      await expect(number).toHaveFocus()
+
+      await userEvent.clear(number)
+      await userEvent.type(number, OTHER_PHONE)
+      await userEvent.click(canvas.getByRole('button', { name: i18n._('Send the code') }))
+      await expect(await canvas.findByText(`${i18n._('Sent to')} ${formatPhone('fa-IR', OTHER_PHONE)}`)).toBeInTheDocument()
+      await expect(String(sends.mock.calls.at(-1)?.[0])).toContain(OTHER_PHONE)
+    } finally {
+      sends.mockRestore()
+    }
   },
 }

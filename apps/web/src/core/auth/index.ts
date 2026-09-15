@@ -1,6 +1,7 @@
 export {
   CODE_LENGTH,
   CODE_MINUTES,
+  RESEND_SECONDS,
   checkCode,
   isPhone,
   latinDigits,

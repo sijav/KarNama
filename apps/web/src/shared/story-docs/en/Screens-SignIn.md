@@ -13,6 +13,11 @@ same two calls when the API's auth lands.
 A number is read however it is typed: Persian or Arabic digits, spaces and
 dashes, `+98` or `0098`, and it is kept as `09xxxxxxxxx`.
 
+On the code step another code can be asked for a minute after the last, as the
+API allows. Until then the step counts the minute down in the reader's digits,
+and then offers to send another. Changing the number goes back to the number
+step, with the number kept as it was typed.
+
 ## Stories
 
 ### Login
@@ -34,16 +39,16 @@ The first step with the language switched, where the direction flips.
 
 ### SigningIn
 
-A reader signed in from end to end: a number given, a code asked for again, the
-last one sent typed in, and the name the first login asks for taken, after
-which the screen has nothing left to ask.
+A reader signed in from end to end: a number given, a code asked for again once
+the minute before a resend is up, the last one sent typed in, and the name the
+first login asks for taken, after which the screen has nothing left to ask.
 
 ### SigningInOnAPhone
 
 Signing in on a phone, where there is no console: the code is on the screen,
 said plainly to be a stand-in until a real message is sent. The story knows the
-codes the mock makes, so it sees a resend change the code on the screen, the
-first code refused, and the new one sign the reader in.
+codes the mock makes, so it sees a resend, once the minute is up, change the
+code on the screen, the first code refused, and the new one sign the reader in.
 
 ### EnterFinishesTheStep
 
@@ -72,9 +77,29 @@ the field's example number, and the note under the action.
 ### CodeAsTheFrames
 
 The code step at both widths, measured against the same card: the heading says
-where the code went, and the action confirms the code and signs in.
+where the code went, and under the action come the countdown to a resend, a
+second after the send as the design draws it, and the link back to the number,
+each the card's inner width, 22 tall and 24 apart, in the design's type and
+colours.
 
 ### SignupAsTheFrames
 
 The first login's step at both widths, measured against the same card, with the
 name's field and the action that starts.
+
+### CountsDownToAResend
+
+The minute before another code may be asked for, counted down in Persian digits
+on a held clock: a minute right after the send with no resend offered, the
+design's 00:59 a second later, one second left, and then a link that sends
+another code and starts the count again.
+
+### CountsDownToAResendInEnglish
+
+The same, in English, in Latin digits.
+
+### ChangingTheNumber
+
+A mistyped number changed from the code step: the number step comes back with
+the number as it was typed, in its field and focused, and the code goes to the
+number typed instead.

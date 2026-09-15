@@ -1574,10 +1574,21 @@ with the body 8 under it in Body, `text/secondary`. Login ends with a note at 12
 Regular on the normal line, centred, in `text/disabled`, 2.54 to one on the card,
 which is the owner's to settle, KN-591. KN-518.
 
+**Under the code step's action**, `407:6972` and `407:7043` draw two lines, 24
+apart, each the card's inner width and 22 tall. The Resend Timer, `407:6996`,
+«ارسال دوباره‌ی کد تا ۰۰:۵۹», 14 Regular, centred, `text/disabled`, counts down the minute the API
+asks before another code, its `retryAfterSeconds`, in the reader's digits, with
+the time beside the words until KN-221. The file draws nothing once it ends; the
+build's reading is the same line as a Footer Link, «ارسال دوباره‌ی کد», which sends another
+code and starts the count again. The Footer Link `407:6998`, in the Change Number
+frame `407:6997`, «ویرایش شماره», 14 Medium, centred, `text/brand` and pressed across
+the card's width, goes back to the number step with the number kept, as its
+reaction goes back to Login, and puts the reader in the number field. The timer's
+`text/disabled` is 2.54 to one, as the Terms Note's is, KN-591. KN-587.
+
 What the frames draw and the build does not, each a card: the code step's five
-boxes, KN-586; its countdown to a resend and «ویرایش شماره», KN-587; and the
-signup's «بعداً کاملش می‌کنم», which the name section 4 requires contradicts,
-KN-588. The build keeps its own words, until the owner says, where the file's
+boxes, KN-586; and the signup's «بعداً کاملش می‌کنم», which the name section 4 requires
+contradicts, KN-588. The build keeps its own words, until the owner says, where the file's
 would promise a text message the mocked provider never sends, on Login and Code,
 KN-589, and where its note names terms and a privacy policy the product does not
 have, KN-590. The signup body says «برد فرصت‌های شغلی‌ات» where the file says «برد

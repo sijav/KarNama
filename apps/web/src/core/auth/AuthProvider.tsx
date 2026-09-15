@@ -25,14 +25,17 @@ export interface AuthValue {
   phone: string
   /** Sends a code to a number. False when the number is not one. */
   requestCode: (typed: string) => boolean | Promise<boolean>
-  /** Sends the same number another code. */
+  /** Sends the same number another code, once `retryAt` has passed. */
   resend: () => void | Promise<void>
+  /** Leaves the code step for the number step, to send a code to another number, KN-587. */
+  changeNumber: () => void
   /** Checks a code and signs in, or says why not. */
   verify: (typed: string) => CodeProblem | null | Promise<CodeProblem | null>
   /** The first login's name. */
   saveName: (name: string) => void | Promise<void>
   busy?: boolean
   error?: string | null
+  /** When another code may be asked for, in milliseconds since 1970; the code step counts down to it. */
   retryAt?: number
   restoring?: boolean
   retrySession?: () => void
@@ -46,6 +49,7 @@ const NO_AUTH: AuthValue = {
   phone: '',
   requestCode: () => false,
   resend: () => undefined,
+  changeNumber: () => undefined,
   verify: () => null,
   saveName: () => undefined,
   signOut: () => undefined,
@@ -189,6 +193,7 @@ export const AuthProvider = ({ initial, random, children }: AuthProviderProps) =
       awaiting: sent !== null && session === null,
       signingUp: session !== null && needsName(session),
       phone: sent?.phone ?? session?.phone ?? '',
+      ...(sent === null ? {} : { retryAt: sent.retryAt }),
       requestCode: (typed) => {
         // Stored in one shape whatever the reader typed, Persian digits and a
         // +98 included, so the code goes to the number they meant.
@@ -198,8 +203,15 @@ export const AuthProvider = ({ initial, random, children }: AuthProviderProps) =
         return true
       },
       resend: () => {
+        // Not before the minute is up, which the API refuses too, KN-587.
         const held = pending.current
-        if (held) send(held.phone)
+        if (held && Date.now() >= held.retryAt) send(held.phone)
+      },
+      changeNumber: () => {
+        // The code sent goes, which ends the code step; the screen keeps the
+        // number the reader typed, KN-587.
+        pending.current = null
+        setSent(null)
       },
       verify: (typed) => {
         const held = pending.current

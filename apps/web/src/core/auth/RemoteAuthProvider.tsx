@@ -110,6 +110,12 @@ export const RemoteAuthProvider = ({ children }: { children: ReactNode }) => {
       if (pending.current || Date.now() < retryAt) return
       await run(() => send(phone))
     },
+    changeNumber: () => {
+      // Back to the number step, KN-587; nothing while a request is out, as signOut.
+      if (pending.current) return
+      setError(null)
+      setAwaiting(false)
+    },
     verify: async (code) => {
       if (pending.current) return null
       try {

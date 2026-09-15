@@ -3,10 +3,16 @@ import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, type Locale } from '../../i18n'
 import { AuthScreen } from '../../screens/AuthScreen'
 import type { StoryMeta } from '../../shared/story-docs/story-meta'
+import { holdClock } from '../../shared/story-fixtures/clock'
+import { RESEND_SECONDS } from './auth'
 import { AuthContext, AuthProvider, useMockCode, type AuthValue } from './AuthProvider'
 
 // A number the mock accepts.
 const PHONE = '09120000000'
+
+// The time the story holds Date.now at, so the minute before a resend passes at
+// once, KN-587.
+const START = Date.UTC(2026, 8, 15, 9)
 
 // A probe, not a product component, and it lives inside this file on purpose, as
 // the preferences provider's does: stories are outside coverage. It reads the
@@ -53,6 +59,7 @@ const codeShownIn =
     const probe = () => canvas.getByTestId('mock-code').textContent
     const i18n = i18nFor(locale)
     const sends = spyOn(console, 'info').mockImplementation(() => undefined)
+    const clock = holdClock(START)
     // The code of the given send, once the mock has said it.
     const sent = async (at: number) => {
       await waitFor(async () => {
@@ -72,7 +79,9 @@ const codeShownIn =
       })
       await expect(shownCode(canvasElement)).toBe(probe())
 
-      await userEvent.click(canvas.getByRole('button', { name: i18n._('Send another code') }))
+      // Another, once the minute before a resend is up, KN-587.
+      clock.forward(RESEND_SECONDS * 1000)
+      await userEvent.click(await canvas.findByRole('button', { name: i18n._('Send the code again') }))
       const second = await sent(1)
       await waitFor(async () => {
         await expect(probe()).toBe(second)
@@ -86,6 +95,7 @@ const codeShownIn =
       await userEvent.click(canvas.getByRole('button', { name: i18n._('Confirm and sign in') }))
       await expect(await canvas.findByLabelText(i18n._('First and last name'))).toBeInTheDocument()
     } finally {
+      clock.release()
       sends.mockRestore()
     }
   }
@@ -109,6 +119,7 @@ const WAITING: AuthValue = {
   phone: PHONE,
   requestCode: () => true,
   resend: () => undefined,
+  changeNumber: () => undefined,
   verify: () => null,
   saveName: () => undefined,
   signOut: () => undefined,

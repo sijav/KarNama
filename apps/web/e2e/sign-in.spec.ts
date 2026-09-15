@@ -13,6 +13,13 @@ const PHONE = '09120000000'
 const SHOWN = '۰۹۱۲ ۰۰۰ ۰۰۰۰'
 const NAME = 'سارا محمدی'
 const OTHER_PHONE = '09121111111'
+// The other number as the code step shows it, KN-587.
+const SHOWN_OTHER = '۰۹۱۲ ۱۱۱ ۱۱۱۱'
+// The countdown's words, the resend and the way back to the number, as 407:6996
+// and 407:6998 write them, KN-587.
+const COUNTING = 'ارسال دوباره‌ی کد تا'
+const AGAIN = 'ارسال دوباره‌ی کد'
+const CHANGE = 'ویرایش شماره'
 const SECRET = 'کار محرمانه'
 
 /** The codes the mock says it sent, in the order it sent them. */
@@ -33,6 +40,10 @@ const signIn = async (page: Page, codes: string[]) => {
 }
 
 test.beforeEach(async ({ page }) => {
+  // Playwright's clock goes in before the first navigation, as it requires, so a
+  // test can run a resend's minute on at once; until then it keeps real time,
+  // KN-587.
+  await page.clock.install()
   await page.goto('/')
   await page.evaluate(() => {
     window.localStorage.clear()
@@ -67,8 +78,32 @@ test('a wrong code says so and another can be sent', async ({ page }) => {
   await page.getByRole('button', { name: 'تأیید و ورود' }).click()
   await expect(page.getByText('این کد درست نیست. دوباره امتحان کن.')).toBeVisible()
 
-  // Resending really sends another: the mock says so, and the new one works.
-  await page.getByRole('button', { name: 'ارسال کد دیگر' }).click()
+  // Resending really sends another, once the minute the step counts down is up,
+  // KN-587: the mock says so, and the new one works.
+  await expect(page.getByText(COUNTING)).toBeVisible()
+  await page.clock.runFor(60_000)
+  await page.getByRole('button', { name: AGAIN, exact: true }).click()
+  await expect.poll(() => codes.length).toBeGreaterThan(1)
+  await page.getByLabel('کد پنج رقمی').fill(codes.at(-1) ?? '')
+  await page.getByRole('button', { name: 'تأیید و ورود' }).click()
+  await expect(page.getByText('خوش آمدی')).toBeVisible()
+})
+
+test('a mistyped number is changed from the code step, and the code goes to the number typed instead', async ({ page }) => {
+  const codes = codesFrom(page)
+  await signIn(page, codes)
+
+  // «ویرایش شماره», KN-587: back to the number step, with the number as it was
+  // typed in its field and focused.
+  await page.getByRole('button', { name: CHANGE, exact: true }).click()
+  const number = page.getByLabel('شماره موبایل')
+  await expect(number).toHaveValue(PHONE)
+  await expect(number).toBeFocused()
+
+  // The code goes to the number typed instead, and signs that number in.
+  await number.fill(OTHER_PHONE)
+  await page.getByRole('button', { name: 'ارسال کد' }).click()
+  await expect(page.getByText(`ارسال شده به ${SHOWN_OTHER}`)).toBeVisible()
   await expect.poll(() => codes.length).toBeGreaterThan(1)
   await page.getByLabel('کد پنج رقمی').fill(codes.at(-1) ?? '')
   await page.getByRole('button', { name: 'تأیید و ورود' }).click()

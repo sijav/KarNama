@@ -12,8 +12,9 @@ used to sign in.
 
 ### Persian
 
-A code asked for, and another after it: each time the code the screen shows is
-exactly the one the provider holds, and the last one signs in.
+A code asked for, and another after it once the minute before a resend has
+passed on a held clock: each time the code the screen shows is exactly the one
+the provider holds, and the last one signs in.
 
 ### English
 

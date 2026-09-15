@@ -1,10 +1,11 @@
 import { useLingui } from '@lingui/react'
-import { Box, Stack } from '@mui/material'
-import { useEffect, useState, type ReactNode, type SyntheticEvent } from 'react'
+import { Box, ButtonBase, Stack } from '@mui/material'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type SyntheticEvent } from 'react'
 import { apiErrorText } from '../core/api'
 import { useAuth, useMockCode } from '../core/auth'
 import { usePreferences } from '../core/preferences'
-import { Button, type ButtonType, type ButtonVariant } from '../shared/button'
+import { formatClock } from '../i18n/formatClock'
+import { Button, type ButtonType } from '../shared/button'
 import { formatPhone } from '../shared/contact-card'
 import { Input, type InputDirection } from '../shared/input'
 import { BrandRow } from '../shared/navigation'
@@ -28,9 +29,18 @@ const CARD_WIDTH = 440
 // The card's one pixel of edge, drawn inside.
 const EDGE = 1
 
-// The resend is a quiet action beside the primary one, typed so the lint rule
-// reads it as a value.
-const QUIET: ButtonVariant = 'text'
+// A second, and how often the resend's countdown looks at the clock: four times a
+// second, so the time on the screen is never more than a quarter of a second
+// behind the clock, KN-587.
+const SECOND = 1000
+const TICK = 250
+
+// A Footer Link's focus, two pixels of border/focus, as the add modal's link draws it.
+const FOCUS_EDGE = 2
+
+// The seconds left before another code may be asked for, rounded up, so the count
+// reaches zero at the moment a resend is taken.
+const secondsUntil = (retryAt: number) => Math.max(0, Math.ceil((retryAt - Date.now()) / SECOND))
 
 // A field of latin data: a phone number, an email or a link runs left to
 // right whatever the page does, KN-458. Typed so the lint rule reads it as a
@@ -52,6 +62,72 @@ const Heading = ({ title, children }: { title: string; children: ReactNode }) =>
   </Stack>
 )
 
+// Node 407:6998's Footer Link: 14 at Medium on the Body line of 22, centred, in
+// text/brand, and pressed anywhere across the card's width, as its frame, 407:6997,
+// fills it. Drawn on ButtonBase as the add modal's link to the manual form is; the
+// file draws no disabled link, so a disabled one takes the Button's disabled text,
+// KN-587.
+const FooterLink = ({ children, disabled, onClick }: { children: string; disabled: boolean; onClick: () => void }) => (
+  <ButtonBase
+    disableRipple
+    disabled={disabled}
+    onClick={onClick}
+    sx={(theme) => ({
+      fontFamily: 'inherit',
+      fontSize: `${typeScale.body.size}px`,
+      lineHeight: `${typeScale.body.lineHeight}px`,
+      fontWeight: typeScale.label.weight,
+      color: theme.karnama.semantic['text/brand'],
+      borderRadius: `${theme.karnama.radius.sm}px`,
+      '&.Mui-disabled': { color: theme.karnama.semantic['text/disabled'] },
+      '&.Mui-focusVisible': { outlineWidth: FOCUS_EDGE, outlineStyle: 'solid', outlineColor: theme.karnama.semantic['border/focus'] },
+    })}
+  >
+    {children}
+  </ButtonBase>
+)
+
+// Node 407:6996's Resend Timer: the words and, beside them rather than inside,
+// KN-221, the time left in the reader's digits, at 14 Regular on 22, centred, in
+// text/disabled. When no time is left the same line is a Footer Link that asks for
+// another code, which the file does not draw, KN-587. The screen keys it by
+// retryAt, so every send starts the count again.
+const Resend = ({ retryAt, busy, onResend }: { retryAt: number; busy: boolean; onResend: () => void }) => {
+  const { i18n } = useLingui()
+  const { locale } = usePreferences()
+  const [left, setLeft] = useState(() => secondsUntil(retryAt))
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      const next = secondsUntil(retryAt)
+      setLeft(next)
+      if (next === 0) window.clearInterval(timer)
+    }, TICK)
+    return () => {
+      window.clearInterval(timer)
+    }
+  }, [retryAt])
+  if (left === 0) {
+    return (
+      <FooterLink disabled={busy} onClick={onResend}>
+        {i18n._('Send the code again')}
+      </FooterLink>
+    )
+  }
+  return (
+    <Box
+      sx={(theme) => ({
+        fontSize: `${typeScale.body.size}px`,
+        lineHeight: `${typeScale.body.lineHeight}px`,
+        fontWeight: typeScale.body.weight,
+        textAlign: 'center',
+        color: theme.karnama.semantic['text/disabled'],
+      })}
+    >
+      {`${i18n._('Send the code again in')} ${formatClock(locale, left)}`}
+    </Box>
+  )
+}
+
 export const AuthScreen = () => {
   const { i18n } = useLingui()
   const { locale } = usePreferences()
@@ -61,16 +137,23 @@ export const AuthScreen = () => {
   const [code, setCode] = useState('')
   const [name, setName] = useState('')
   const [problem, setProblem] = useState<string | null>(null)
-  const [now, setNow] = useState(() => Date.now())
-  useEffect(() => {
-    if (!auth.retryAt) return
-    const timer = window.setInterval(() => {
-      setNow(Date.now())
-    }, 1000)
-    return () => {
-      window.clearInterval(timer)
-    }
-  }, [auth.retryAt])
+
+  // «ویرایش شماره» marks the return, and once the number step is back its field
+  // takes focus: the link went with the code step, and focus would otherwise fall
+  // to the page's body, KN-587.
+  const card = useRef<HTMLFormElement>(null)
+  const returning = useRef(false)
+  useLayoutEffect(() => {
+    if (!returning.current || auth.awaiting) return
+    returning.current = false
+    card.current?.querySelector('input')?.focus()
+  }, [auth.awaiting])
+  const changeNumber = () => {
+    returning.current = true
+    setCode('')
+    setProblem(null)
+    auth.changeNumber()
+  }
 
   const askForCode = async () => {
     setProblem((await auth.requestCode(phone)) ? null : i18n._('Write your mobile number, 11 digits starting 09'))
@@ -183,17 +266,20 @@ export const AuthScreen = () => {
       <Button type={SUBMIT} disabled={auth.busy ?? false}>
         {i18n._('Confirm and sign in')}
       </Button>
-      {/* A resend where the file draws its countdown and «ویرایش شماره», KN-587. */}
-      <Button
-        variant={QUIET}
-        disabled={(auth.busy ?? false) || now < (auth.retryAt ?? 0)}
-        onClick={() => {
+      <Resend
+        key={auth.retryAt ?? 0}
+        retryAt={auth.retryAt ?? 0}
+        busy={auth.busy ?? false}
+        onResend={() => {
           setProblem(null)
           void Promise.resolve(auth.resend()).catch(() => undefined)
         }}
-      >
-        {i18n._('Send another code')}
-      </Button>
+      />
+      {/* «ویرایش شماره», 407:6997: back to the number step with the number kept, as
+          its reaction goes back to Login, 407:6951, KN-587. */}
+      <FooterLink disabled={auth.busy ?? false} onClick={changeNumber}>
+        {i18n._('Change the number')}
+      </FooterLink>
     </>
   ) : (
     <>
@@ -219,6 +305,7 @@ export const AuthScreen = () => {
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', p: 6, bgcolor: 'background.default' }}>
       <Stack
+        ref={card}
         component="form"
         noValidate
         onSubmit={finish}

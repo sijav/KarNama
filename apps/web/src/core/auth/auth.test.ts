@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   CODE_LENGTH,
+  RESEND_SECONDS,
   checkCode,
   isPhone,
   latinDigits,
@@ -56,6 +57,10 @@ describe('the code the mock sends', () => {
     expect(sent.expiresAt).toBeGreaterThan(1000)
   })
 
+  it('lets another be asked for a minute after it, as the API does, KN-587', () => {
+    expect(sendCode('09120000000', 1000, () => 0.5).retryAt).toBe(1000 + RESEND_SECONDS * 1000)
+  })
+
   it.each([
     ['the right code', 0, null],
     ['a wrong code', 0, 'wrong'],
@@ -71,7 +76,7 @@ describe('the code the mock sends', () => {
   })
 
   it('reads a code typed in Persian digits', () => {
-    const sent = { phone: '09120000000', code: '12345', expiresAt: 10_000 }
+    const sent = { phone: '09120000000', code: '12345', expiresAt: 10_000, retryAt: 0 }
     expect(checkCode(sent, '۱۲۳۴۵', 0)).toBeNull()
   })
 })

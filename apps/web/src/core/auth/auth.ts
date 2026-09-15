@@ -14,16 +14,20 @@ export interface Session {
   since: string
 }
 
-/** A code the mock sent: which number it was for, what it was, and when it expires. */
+/** A code the mock sent: which number it was for, what it was, when it expires, and when another may be asked for. */
 export interface SentCode {
   phone: string
   code: string
   expiresAt: number
+  retryAt: number
 }
 
 /** How long a code is good for. Long enough to read an SMS, short enough to matter. */
 export const CODE_MINUTES = 2
 export const CODE_LENGTH = 5
+
+/** How long before another code may be asked for: the API's own `retryAfterSeconds`, KN-587. */
+export const RESEND_SECONDS = 60
 
 // Iranian mobile numbers, the only ones the product asks for: eleven digits
 // from 09, or the same number written with +98 or 0098 in front of the 9.
@@ -59,11 +63,12 @@ export const makeCode = (random: () => number = Math.random): string =>
     .padStart(CODE_LENGTH, '0')
     .slice(0, CODE_LENGTH)
 
-/** What the mock sends: the code, for that number, good for two minutes. */
+/** What the mock sends: the code, for that number, good for two minutes, and another not before a minute. */
 export const sendCode = (phone: string, now: number, random?: () => number): SentCode => ({
   phone,
   code: makeCode(random),
   expiresAt: now + CODE_MINUTES * 60 * 1000,
+  retryAt: now + RESEND_SECONDS * 1000,
 })
 
 /** Why a code was refused, or null when it is the right one. */

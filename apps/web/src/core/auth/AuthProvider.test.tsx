@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { renderToString } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
 import { AuthContext, AuthProvider, codeFor, STORAGE_KEY, useMockCode, type AuthValue } from './AuthProvider'
-import { sessionFor } from './auth'
+import { RESEND_SECONDS, sessionFor } from './auth'
 
 /**
  * The mocked provider, driven from the node side.
@@ -13,6 +13,10 @@ import { sessionFor } from './auth'
  * the real state, so what is checked is what they did.
  */
 const PHONE = '09120000000'
+
+// The time Date.now is held at where a test needs the minute before a resend to
+// pass at once, KN-587.
+const START = Date.UTC(2026, 8, 15, 9)
 
 const capture = (initial?: ReturnType<typeof sessionFor> | null, random?: () => number) => {
   let held: AuthValue | undefined
@@ -64,18 +68,28 @@ describe('the mocked provider', () => {
       removeItem: () => kept.push(''),
     })
     const codes = sentCodes()
-    const { held } = capture()
+    const now = vi.spyOn(Date, 'now').mockReturnValue(START)
+    try {
+      const { held } = capture()
 
-    await held.requestCode(PHONE)
-    expect(held.verify('00000')).toBe('wrong')
+      await held.requestCode(PHONE)
+      expect(held.verify('00000')).toBe('wrong')
 
-    await held.resend()
-    expect(codes).toHaveLength(2)
+      // Another is not sent before the minute the API asks for, KN-587, and is
+      // once it is up.
+      await held.resend()
+      expect(codes).toHaveLength(1)
+      now.mockReturnValue(START + RESEND_SECONDS * 1000)
+      await held.resend()
+      expect(codes).toHaveLength(2)
 
-    // The code the mock last sent is the one that works, and signing in keeps
-    // a session with no name yet, which is the first login.
-    expect(held.verify(codes.at(-1) ?? '')).toBeNull()
-    expect(JSON.parse(kept.at(-1) ?? '{}')).toMatchObject({ phone: PHONE, name: '' })
+      // The code the mock last sent is the one that works, and signing in keeps
+      // a session with no name yet, which is the first login.
+      expect(held.verify(codes.at(-1) ?? '')).toBeNull()
+      expect(JSON.parse(kept.at(-1) ?? '{}')).toMatchObject({ phone: PHONE, name: '' })
+    } finally {
+      now.mockRestore()
+    }
   })
 
   it('sends the codes its random source makes, a new one on a resend, and accepts only the newest, KN-466', async () => {
@@ -84,12 +98,37 @@ describe('the mocked provider', () => {
     // Exact in floating point, so the mock's five digits are exactly these.
     const turns = [0.5, 0.25]
     let at = 0
-    const { held } = capture(undefined, () => turns[at++] ?? 0)
-    await held.requestCode(PHONE)
-    await held.resend()
-    expect(codes).toEqual(['50000', '25000'])
-    expect(held.verify('50000')).toBe('wrong')
-    expect(held.verify('25000')).toBeNull()
+    const now = vi.spyOn(Date, 'now').mockReturnValue(START)
+    try {
+      const { held } = capture(undefined, () => turns[at++] ?? 0)
+      await held.requestCode(PHONE)
+      now.mockReturnValue(START + RESEND_SECONDS * 1000)
+      await held.resend()
+      expect(codes).toEqual(['50000', '25000'])
+      expect(held.verify('50000')).toBe('wrong')
+      expect(held.verify('25000')).toBeNull()
+    } finally {
+      now.mockRestore()
+    }
+  })
+
+  it('drops the code it sent when the reader goes back to change the number, KN-587', async () => {
+    vi.stubGlobal('localStorage', { getItem: () => null, setItem: () => undefined, removeItem: () => undefined })
+    const codes = sentCodes()
+    const now = vi.spyOn(Date, 'now').mockReturnValue(START)
+    try {
+      const { held } = capture()
+      await held.requestCode(PHONE)
+      held.changeNumber()
+      // The code sent no longer signs in, and there is no number to send another
+      // to, even once the minute is up.
+      now.mockReturnValue(START + RESEND_SECONDS * 1000)
+      await held.resend()
+      expect(codes).toHaveLength(1)
+      expect(held.verify(codes[0] ?? '')).toBe('expired')
+    } finally {
+      now.mockRestore()
+    }
   })
 
   // What the screen is GIVEN cannot be read here: `capture` renders once with
@@ -111,6 +150,7 @@ describe('the mocked provider', () => {
       phone: PHONE,
       requestCode: () => true,
       resend: () => undefined,
+      changeNumber: () => undefined,
       verify: () => null,
       saveName: () => undefined,
       signOut: () => undefined,
@@ -216,6 +256,7 @@ describe('the mocked provider', () => {
     await expect(Promise.resolve(held?.resend())).resolves.toBeUndefined()
     await expect(Promise.resolve(held?.saveName('a'))).resolves.toBeUndefined()
     expect(() => {
+      held?.changeNumber()
       held?.signOut()
     }).not.toThrow()
   })
