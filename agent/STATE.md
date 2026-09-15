@@ -41,38 +41,38 @@ KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-230 is closed** (9bf6c7e; board 788440f; pushed). The docs guard reads storybook/test's
-`fn` by the name each story file imports it by, and each story's own `on*` args keys, so a
-story whose own args set a callback to anything else, or a meta whose `fn` is a local
-function, fails; four planted files under the OS temp directory prove both, and the
-imports it accepts. Its exit was narrowed after the plan review to callback keys written
-in a story's own args object: a spread, one call or one member stays out of reach, and
-the guard's comment says so. On the real tree, RestartWhileReading's `onExtract` made a
-call to `String` failed the guard naming it; a first attempt made a syntax error that
-stopped Vitest, and its exit of 1 proved nothing until the saved output was read. Its
-Codex roast was running when this was written, `kn230-task-roast.log` in the scratchpad.
+**KN-257 is closed** (ab5168f; board 6803bfd; pushed). `getComputedStyle` is out of the
+lingui rule's `ignoreFunctions`, which exempted every literal in every call of it, and
+`'^::(before|after|placeholder)$'` is in `ignore`. The story files hold 44 selector
+literals, 27 `::before`, 15 `::after` and 2 `::placeholder`; without the function
+exemption the rule reports 42, the other two sitting under Input's `eslint-disable` block
+for KN-214. `src/gate-fixtures/unlocalized-computed-style.tsx` holds one call with a
+literal of copy, required by name in KN-003.mjs. **Its plan review caught two mistakes of
+mine**: the card, the plan and board commit 8483710 said 42 literals beside a breakdown
+that made 44, ripgrep's count mode counting lines, now a line in AGENTS.md section 7; and
+a fixture of four calls held to one report could not say which call failed, so the fixture
+holds only the copy and the stories under lint show the selectors pass. Its Codex roast was
+running when this was written, `kn257-task-roast.log` in the scratchpad.
+
+**KN-230 is closed and its roast recorded** (9bf6c7e): the docs guard reads storybook/test's
+`fn` by the name each story file imports it by, and each story's own `on*` args keys. Its
+roast filed **KN-609**, low, the guard skipping a callback a story's own args write as a
+method, `onPress() {}`, a child of KN-013; it dismissed a namespace-imported spy being
+refused, a loud false rejection, and Tabs' render wiring `setValue`, outside the exit.
 
 **KN-228 is closed and its roast recorded** (f499ea7, plan fixed in 0c3fd02): twelve plays
-know the published Storybook by Vite's documented mode, `import.meta.env.MODE !== 'test'`,
-not Storybook's private global, and `vitest.setup.ts` refuses any other mode. The roast
-filed nothing: a Storybook test runner driving a published Storybook would take the canvas
-return, as the old guard did too. **Its close ran past a formatting check whose failure a
-pipe hid**, the lesson AGENTS.md section 7 already holds.
+know the published Storybook by `import.meta.env.MODE !== 'test'`, and `vitest.setup.ts`
+refuses any other mode; nothing filed. **Its close ran past a formatting check whose
+failure a pipe hid.**
 
-**KN-216 is closed and its roast recorded** (63304bb): a story at the root of `src` is
-indexed and run, and the docs guard lists Storybook's own `getStoriesPathsFromConfig`.
-Its roast and KN-095's round with it filed **KN-607**, low, KN-095.mjs's expected story
-list, and **KN-608**, low, story-meta.ts's comment, both KN-095's children. **KN-215**
-(4d0abb0) left **KN-604**, medium, the exempt names `status`, `include`, `query`,
-`import` and `userName`, and **KN-605** and **KN-606**, low, KN-094's children; that round
-dismissed a test refusing any new ignore entry as a gate nobody asked for, the owner's to
-ask for.
+**KN-216** (63304bb) left **KN-607** and **KN-608**, low, KN-095's children. **KN-215**
+(4d0abb0) left **KN-604**, medium, the exempt names `status`, `include`, `query`, `import`
+and `userName`, and **KN-605** and **KN-606**, low; that round dismissed a test refusing
+any new ignore entry as a gate nobody asked for, the owner's to ask for. **KN-586**
+(709c4e5) left **KN-600**, **KN-601**, medium, `two-tabs.spec.ts`'s stale second test, and
+**KN-602** and **KN-603**; KN-427 left KN-598 and KN-599, and KN-587 left KN-597, all low.
 
-**KN-586** (709c4e5) left **KN-600**, **KN-601**, medium, `two-tabs.spec.ts`'s stale second
-test, and **KN-602** and **KN-603**; KN-427 left KN-598 and KN-599, and KN-587 left KN-597,
-all low.
-
-**Open and filed today**: KN-592 to KN-608.
+**Open and filed today**: KN-592 to KN-609.
 
 **What fails in a full run**: the Job Card's `Pressed` in parallel only, KN-365's
 kind. `App.tsx` line 107 is uncovered, KN-491's. `RemoteAuthProvider.tsx` and
@@ -104,23 +104,22 @@ arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-230's roast lands**, judge it, file survivors as its children (`--area web
---okr OKR-1` for anything under four points), record with `todo roast KN-230 --file ...
---filed ... --dismissed ...`, relay it to the owner, and commit the rendered board.
+**When KN-257's roast lands**, judge it, file survivors as its children (`--area web
+--okr OKR-1` for anything under four points), record with `todo roast KN-257 --file ...
+--filed ... --dismissed ...`, relay it to the owner, and commit the rendered board. KN-257
+is a child of KN-011, so a finding hangs off KN-011, which waits on 18 more.
 
-**KN-257 is next**, medium, 1 point, web: `getComputedStyle` sits in the lingui rule's
-`ignoreFunctions`, which skips every literal in every call, for the one selector the card
-names, `'::placeholder'`. Measured before planning: the story files pass it a string about
-40 times, `'::before'` and `'::after'` far more often than `'::placeholder'`, so an exact
-pattern for `::placeholder` alone would fail the rest, and the card needs re-pointing
-before its plan. Its exit asks `getComputedStyle` out of `ignoreFunctions`, the selector
-exempted by an exact pattern with its reason, lint passing, and a check that a call with a
-literal of copy is flagged while one with the selector is not.
+**KN-304 is next**, medium, 1 point, web, a child of KN-023: on a hovered or chosen tab
+the indicator, the tab's `::after`, paints over the focus ring, its `::before`, along the
+ring's bottom band, grey over blue. Its exit asks a focused tab's ring unbroken in every
+state, the indicator drawn beneath it or clear of it, shown in a story that focuses a
+hovered tab and reads the ring's bottom band as `border/focus`. Measure before planning:
+how the Tabs draw and stack the two pseudo-elements, what the Figma draws for a focused
+tab that is hovered or chosen, and whether a story already reads the ring.
 
 ## What to read first
 
 `AGENTS.md` (section 7), `DESIGN.md`, `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-257`, `apps/web/eslint.config.js`'s
-`ignoreFunctions` and `ignore`, `src/i18n/lingui-ignore.test.ts`, and the
-`getComputedStyle` calls in the story files. **Never chain a check through a pipe into a
-commit or a close, and give every parallel command its own `cd`.**
+`agent/TODO_BOARD.md`, then `todo show KN-304`, `apps/web/src/shared/tabs/`, and the
+Figma frame of the tabs. **Never chain a check through a pipe into a commit or a close,
+give every parallel command its own `cd`, and sum a breakdown before writing its total.**
