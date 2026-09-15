@@ -81,13 +81,17 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
 
 ## The next step
 
-1. **KN-359's roast lands**: reproduce each finding, file the survivors with
-   `--parent-task KN-359 --area web --okr OKR-1`, record the round, render, commit, push, relay.
-2. **KN-362 is in progress**, medium, 1 point, a child of KN-029: while a posting is read the add
-   modal focuses a `tabIndex` -1 Box around the Loading State with no role or name. Exit: focus goes
-   to an element named by the loading message, or to the status region itself, and a story reads
-   the focused element's name. Plan it beside `AddJobModal.tsx`, have it reviewed, story first;
-   do not edit `AddJobModal.tsx` until KN-359's roast has landed, since the roast reads it.
+1. **KN-359's roast is recorded**: KN-631, the Input docs claiming the message line keeps its height,
+   and KN-632, ErrorStep's diagnostics, filed.
+2. **KN-362 is closed** (30565a4; board 945b8b5): the add modal's loading panel is a `group` named by
+   the Loading State's line through `lineId`; the Loading State takes `announceFirstLine`, false in
+   the add modal, so the first sentence is said once, by the focus. Two plan reviews shaped it.
+   **Its roast is running**, `kn362-roast.mjs` writing `kn362-roast.txt` in the scratchpad: judge,
+   file with `--parent-task KN-362 --area web --okr OKR-1`, record, relay.
+3. **KN-370 is in progress**, medium, 1 point, docs, a child of KN-010: DESIGN.md's KN-264 paragraph
+   and `StatusChip.tsx:35` say "first letter" and "always cuts the END" where `dir=auto` reads the
+   first strong character and the ellipsis cuts the visual end. Its plan is written beside
+   `StatusChip.tsx`; next, its plan review, then the story `MarkLedDigitsResolveLtr` and the words.
 
 ## What to read first
 
