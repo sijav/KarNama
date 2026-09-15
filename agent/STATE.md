@@ -101,17 +101,22 @@ The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-325's roast lands**, judge it, file survivors with `--parent-task KN-325`, which
-hangs them off KN-022 (`--area web --okr OKR-1` under four points), record with `todo roast
-KN-325 --file ... --filed ... --dismissed ...`, relay it to the owner, and commit the board.
+**KN-325's roast is recorded, nothing filed** (fe8e85b): its one edge case, a snapshot read
+just before fifteen seconds and committed after them, is the ordinary change at fifteen seconds.
+**KN-618** is filed, medium, a child of KN-477: the Settings dialog's sample data status region
+mounts already holding its line, KN-326's kind.
 
 **KN-326 is in progress**, medium, 1 point, a child of KN-022: the Loading State's first line
-is not reliably announced, since its status region mounts already holding it; its exit asks for
-the region in the page before its first line is written, and a story showing it empty at mount
-and filled after. **It edits the files KN-325's roast reads: read and plan, do not write, until
-that roast lands.** The tension to plan around: KN-324 made the first painted frame the file's,
-line included, so a line written a frame late breaks it; precedents keep a region mounted and
-empty, the Input's alert, KN-286, and the Bulk Action Bar's count, DESIGN.md section 1.
+is not reliably announced, since its status region mounts already holding it. Its plan sits
+beside `LoadingState.tsx` and is at its Codex review, `kn326-plan-review.log` in the scratchpad:
+do not edit the Loading State, its stories, its story docs or DESIGN.md until it lands. The
+design: the outer Box keeps `role="status"`; the dots and the visible line take `aria-hidden`,
+the line still drawn on the first frame for KN-324; an out of sight span between them, the Bulk
+Action Bar's clip and named edge, is empty on the mounting render and given the line a frame and
+a task later; a new story `WritesItsFirstLineAfterMounting` destructures Storybook's `mount`,
+used by no other story here, and reads the span empty, then filled. Linted in memory, clean.
+The scripts are in the scratchpad: `kn326-plant.mjs`, `kn326-checks.mjs`, `kn326-look.mjs`,
+`kn326-close.mjs`.
 
 ## What to read first
 
