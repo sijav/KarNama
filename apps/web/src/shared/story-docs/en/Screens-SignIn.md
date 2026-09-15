@@ -77,10 +77,10 @@ the field's example number, and the note under the action.
 ### CodeAsTheFrames
 
 The code step at both widths, measured against the same card: the heading says
-where the code went, and under the action come the countdown to a resend, a
-second after the send as the design draws it, and the link back to the number,
-each the card's inner width, 22 tall and 24 apart, in the design's type and
-colours.
+where the code went, the Code Row's five boxes fill the card's inner width 8 apart
+and 56 tall, and under the action come the countdown to a resend, a second after
+the send as the design draws it, and the link back to the number, each the card's
+inner width, 22 tall and 24 apart, in the design's type and colours.
 
 ### SignupAsTheFrames
 

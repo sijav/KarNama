@@ -6,6 +6,7 @@ import { useAuth, useMockCode } from '../core/auth'
 import { usePreferences } from '../core/preferences'
 import { formatClock } from '../i18n/formatClock'
 import { Button, type ButtonType } from '../shared/button'
+import { CodeInput } from '../shared/code-input'
 import { formatPhone } from '../shared/contact-card'
 import { Input, type InputDirection } from '../shared/input'
 import { BrandRow } from '../shared/navigation'
@@ -251,14 +252,11 @@ export const AuthScreen = () => {
           </Box>
         </Box>
       )}
-      {/* One field where the file draws five boxes, KN-586. */}
-      <Input
+      {/* The file's Code Row, 407:6981 and 407:7052: five boxes over one field that
+          types, pastes and takes a phone's autofill, KN-586. */}
+      <CodeInput
         label={i18n._('Five digit code')}
-        inputMode="numeric"
-        autoComplete="one-time-code"
         enterKeyHint="go"
-        maxLength={5}
-        direction={LATIN}
         value={code}
         onChange={setCode}
         {...(problem === null ? {} : { error: problem })}

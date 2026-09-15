@@ -4,7 +4,6 @@ export {
   RESEND_SECONDS,
   checkCode,
   isPhone,
-  latinDigits,
   makeCode,
   needsName,
   normalisePhone,

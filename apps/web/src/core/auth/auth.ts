@@ -1,3 +1,5 @@
+import { latinDigits } from '../../i18n/digits'
+
 /**
  * Signing in: a mobile number, then a five digit code, DESIGN.md section 3.
  *
@@ -32,19 +34,6 @@ export const RESEND_SECONDS = 60
 // Iranian mobile numbers, the only ones the product asks for: eleven digits
 // from 09, or the same number written with +98 or 0098 in front of the 9.
 const DIGITS = /^\d+$/
-
-/** The digit tables a reader might type in: Persian, Arabic-Indic, and the Latin they are stored in. */
-const PERSIAN_DIGITS = '۰۱۲۳۴۵۶۷۸۹'
-const ARABIC_DIGITS = '٠١٢٣٤٥٦٧٨٩'
-
-/** The same text with every digit written in Latin, so a number reads the same however it was typed. */
-export const latinDigits = (text: string): string =>
-  // Replaced rather than walked character by character: spreading a string
-  // splits what a reader sees as one sign, which the lint rule is right about.
-  text.replace(/[۰-۹٠-٩]/g, (sign) => {
-    const persian = PERSIAN_DIGITS.indexOf(sign)
-    return String(persian === -1 ? ARABIC_DIGITS.indexOf(sign) : persian)
-  })
 
 /** The number as it is stored, 09xxxxxxxxx, or null when it is not one. */
 export const normalisePhone = (typed: string): string | null => {

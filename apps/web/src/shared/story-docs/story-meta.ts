@@ -35,6 +35,7 @@ export type StoryTitle =
   | 'Shared/CardMenu'
   | 'Shared/ChangeStatusModal'
   | 'Shared/Checkbox'
+  | 'Shared/CodeInput'
   | 'Shared/ColorPicker'
   | 'Shared/ConfirmModal'
   | 'Shared/ContactCard'

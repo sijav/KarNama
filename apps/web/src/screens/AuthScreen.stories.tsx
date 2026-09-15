@@ -415,6 +415,19 @@ export const LoginAsTheFrames: Story = {
   },
 }
 
+// The Code Row, 407:6981 and 407:7052, KN-586: five boxes filling the card's inner
+// width 8 apart, each 56 tall, left to right, over the one field named for the code.
+const codeRowIsTheFrames = async (canvasElement: HTMLElement, inner: number) => {
+  const field = within(canvasElement).getByRole('textbox', { name: i18nFor('fa-IR')._('Five digit code') })
+  const row = field.previousElementSibling
+  if (!(row instanceof HTMLElement)) throw new Error('the code input has no row of boxes')
+  const boxes = [...row.children].filter((box): box is HTMLElement => box instanceof HTMLElement)
+  const share = Math.round(((inner - 4 * 8) / 5) * 10) / 10
+  await expect(Math.round(row.getBoundingClientRect().width)).toBe(inner)
+  await expect(boxes.map((box) => Math.round(box.getBoundingClientRect().width * 10) / 10)).toEqual([share, share, share, share, share])
+  await expect(boxes.map((box) => box.getBoundingClientRect().height)).toEqual([56, 56, 56, 56, 56])
+}
+
 // What 407:6972 and 407:7043 draw under the code step's action, KN-587: the Resend
 // Timer and then the Change Number frame, each the card's inner width, 22 tall and
 // 24 under what is above it; the timer at 14 Regular, centred, in text/disabled,
@@ -463,6 +476,7 @@ export const CodeAsTheFrames: Story = {
       await canvas.findByText(timerText)
       await atBothWidths(async (card, inner) => {
         await cardIsTheFrames(canvasElement, card, i18n._('Enter the code'), `${i18n._('Sent to')} ${formatPhone('fa-IR', PHONE)}`)
+        await codeRowIsTheFrames(canvasElement, inner)
         await linesUnderTheAction(canvasElement, inner, timerText)
       })
     } finally {

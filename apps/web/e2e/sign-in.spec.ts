@@ -55,7 +55,15 @@ test('a number and the code it was sent reach the board, and the first login giv
   const codes = codesFrom(page)
   await signIn(page, codes)
 
-  await page.getByLabel('کد پنج رقمی').fill(codes[0] ?? '')
+  // Typed with the keyboard's own keys into the Code Input, KN-586: its five boxes
+  // show the code in Persian digits before it signs in.
+  const code = codes[0] ?? ''
+  const field = page.getByLabel('کد پنج رقمی')
+  await field.click()
+  await page.keyboard.type(code)
+  await expect(field.locator('xpath=preceding-sibling::*[1]')).toHaveText(
+    code.replace(/\d/g, (digit) => String.fromCodePoint(0x6f0 + Number(digit))),
+  )
   await page.getByRole('button', { name: 'تأیید و ورود' }).click()
 
   // The first login asks who this is before anything else.

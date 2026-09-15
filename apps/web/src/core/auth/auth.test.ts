@@ -4,7 +4,6 @@ import {
   RESEND_SECONDS,
   checkCode,
   isPhone,
-  latinDigits,
   makeCode,
   needsName,
   normalisePhone,
@@ -37,10 +36,6 @@ describe('the number a reader types', () => {
   ])('refuses %s', (_case, typed) => {
     expect(normalisePhone(typed)).toBeNull()
     expect(isPhone(typed)).toBe(false)
-  })
-
-  it('writes every digit in Latin and leaves everything else alone', () => {
-    expect(latinDigits('۰۹-abc')).toBe('09-abc')
   })
 })
 

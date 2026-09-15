@@ -927,6 +927,7 @@ of the contract.
 | Nav / Sidebar       | `185:11`  | desktop, on the RIGHT                                                                           |
 | Nav / Tab Bar       | `185:19`  | mobile, at the bottom                                                                           |
 | Checkbox            | `204:11`  | Unchecked, Checked, Indeterminate, Hover, Disabled                                              |
+| Code Input          | `407:6981`| the Code Row of the Auth Code frames, five boxes over one field; no library component |
 | Tab Item            | `204:20`  | Default, Active, Hover                                                                          |
 | Bulk Action Bar     | `401:436` | Type=Jobs, Type=Contacts                                                                        |
 | Job Modal           | `210:276` | tabs Info, Note, Contacts, Files                                                                |
@@ -1586,8 +1587,20 @@ the card's width, goes back to the number step with the number kept, as its
 reaction goes back to Login, and puts the reader in the number field. The timer's
 `text/disabled` is 2.54 to one, as the Terms Note's is, KN-591. KN-587.
 
-What the frames draw and the build does not, each a card: the code step's five
-boxes, KN-586; and the signup's «بعداً کاملش می‌کنم», which the name section 4 requires
+**The Code Row**, `407:6981` and `407:7052`, is the Code Input, KN-586, which the
+Components page does not hold: five boxes filling the card's inner width 8 apart,
+56 tall, radius md, `bg/surface` with one pixel of `border/default` inside, each
+digit 20 at SemiBold on a line of 32 in `text/primary`, in the reader's digits and
+left to right whatever the page. The boxes are drawn over one real text field,
+numeric, with the one-time-code hint and no length limit, so typing, pasting and a
+phone's autofill are the field's own and a screen reader meets only the field. The
+build's readings, where the file draws one state: the box at the caret takes two
+pixels of `border/focus` while the field has focus; a press on a box puts the caret
+there; and a refused code takes the Input's error line, with every resting edge in
+`border/error`. A phone suggests the code only when the text message names the
+site, KN-600.
+
+What the frames draw and the build does not, each a card: the signup's «بعداً کاملش می‌کنم», which the name section 4 requires
 contradicts, KN-588. The build keeps its own words, until the owner says, where the file's
 would promise a text message the mocked provider never sends, on Login and Code,
 KN-589, and where its note names terms and a privacy policy the product does not
