@@ -42,35 +42,35 @@ description asking for a turning `spinnerArc` the node does not draw.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-335 is closed** (5f56aae; board 71fc8cf; pushed), one point, the last open child of
-KN-018. The Tooltip asked MUI for `left` for its start placement, and Popper mirrors only its
-`-start` and `-end` placements, so the Status menu's blocked delete was asked for the physical
-left in Persian; flipped for want of room, it stood 2 from the menu, since MUI's 14 beside a left
-or right placement is a logical margin that lands on the far side right to left. It now asks for
-`inlineStartOf(direction)`, and the tip puts 10, read from `259:295`, on its edge facing the
-trigger for whichever side Popper settles on, keyed on `data-popper-placement`; `BESIDE_GAP` is a
-component constant, the plan review's theme spacing role not taken. `BesideTheStart`,
-`BesideTheStartInEnglish` and `DeleteBlocked` read the side and the 10, and failed against the
-old component at the side, at 14 and at 2. Its Codex roast was running when this was written,
-`kn335-task-roast.log` in the scratchpad. **KN-018's whole-task round**, over KN-335, comes once
-that roast is judged and files nothing.
+**KN-336 is closed** (54f5e2b; board d87526b; pushed), one point, the last open child of
+KN-024. The Sort Control's status region repeated what the combobox MUI gives focus back to
+already carries, so it and the state that fed it are gone and `Sorted by` left both catalogs.
+MUI 9's closed type-ahead reads a row's text from its React children and finds none in
+`OptionLabel`, measured in both languages, so nothing but the open list changes the order.
+`ChangedByKeyboard` holds the order in state and reads the closed control showing it, focus on it
+and no status region; it failed alone against the old component at the status region. The unit
+count fell from 1496 to 1494 because `catalog.test.ts` makes two tests per id the code uses. No
+screen reader was run. Its Codex roast was running when this was written, `kn336-task-roast.log`
+in the scratchpad. **KN-024's whole-task round**, over KN-336, comes once that roast is judged and
+files nothing.
 
-**KN-332 is closed and its roast recorded, nothing filed** (6ed2856, 3b99e3b): a single Select
-reads only its first value, in its field and its checks. KN-012 waits on KN-333, KN-334 and
-KN-357. **KN-331 is closed and recorded** (5999321, 0bec7ed), KN-620 filed, so **KN-025's
-whole-task round**, over KN-330, KN-331 and KN-620, waits until KN-620 closes.
+**KN-335 is closed and its roast recorded** (5f56aae; recorded in 8f497d4): the Tooltip's start
+placement asks MUI for the inline start and the tip stands 10 from its trigger on the side Popper
+settles on. Filed **KN-621**, low, a tip beside its trigger grows from its far edge right to left,
+reproduced as `transform-origin: 260px 41px` on the reason at the menu's right, and **KN-622**,
+low, agent: AGENTS.md's hardcoding section says a value that is not a token gets a named role in
+the theme, while DESIGN.md's component table and every component keep an unbound measure as a
+component constant. So **KN-018's whole-task round** waits on KN-621 and KN-622.
 
-**AGENTS.md section 7 gained, today** (21938a1, d271046): ESLint's `lintText` types what a draft
-imports from the files on disk; a play runs only when a story mounts or is remounted; a union's
-story args and Show code; a look hands a story a list through the preview, not the URL; an open
-MUI list hides the field from role queries.
+**KN-332 is closed and recorded, nothing filed** (6ed2856, 3b99e3b). KN-012 waits on KN-333,
+KN-334 and KN-357. **KN-331 is closed and recorded** (5999321, 0bec7ed): **KN-025's whole-task
+round** waits on KN-620. AGENTS.md section 7 gained five lessons today (21938a1, d271046).
 
-**Earlier today**: KN-326, KN-325 and KN-324 closed and recorded. **Filed today and open**:
-KN-615, KN-617, KN-618, KN-619, KN-620.
+**Filed today and open**: KN-615, KN-617, KN-618, KN-619, KN-620, KN-621, KN-622.
 
 **Still open from earlier**: **KN-009 waits on KN-614**; KN-021 waits on KN-387; KN-022 on
-KN-327, KN-615, KN-616 and KN-619; **KN-025 on KN-620**; KN-012 on KN-333, KN-334 and KN-357.
-KN-612 and KN-613, low.
+KN-327, KN-615, KN-616 and KN-619; **KN-025 on KN-620**; **KN-018 on KN-621 and KN-622**; KN-012
+on KN-333, KN-334 and KN-357. KN-612 and KN-613, low.
 
 **A Storybook spec alone**: `STORYBOOK_DIR=<build> npx playwright test --config
 playwright.storybook.config.ts storybook/button-touch`. A filter is a regular expression on
@@ -106,24 +106,24 @@ The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-335's roast lands**, judge it, file survivors with `--parent-task KN-335`, which hangs
-them off KN-018 (`--area web --okr OKR-1` under four points), record with `todo roast KN-335
+**When KN-336's roast lands**, judge it, file survivors with `--parent-task KN-336`, which hangs
+them off KN-024 (`--area web --okr OKR-1` under four points), record with `todo roast KN-336
 --file ... --filed ... --dismissed ...`, relay it to the owner, and commit the board. If it files
-nothing, roast KN-018 together with KN-335 as the whole-task round.
+nothing, roast KN-024 together with KN-336 as the whole-task round.
 
-**KN-336 is in progress**, medium, 1 point, a child of KN-024: choosing a sort order returns
-focus to the combobox, whose new value a screen reader reads, and the status region then says
-the order again; the status also keeps its text, so the same order chosen twice is not read the
-second time; and `ChangedByKeyboard` passes a fixed value and `fn()`, so the closed control still
-shows Newest after Enter. Its exit: a change is read out once, by the focused control or by the
-status but not both, and a story holding the value in state shows the new order on the closed
-control. **Measure first**: what the combobox and the status each say after a choice, and when.
+**KN-338 is in progress**, medium, 1 point, a child of KN-020: the Status Picker's dashed
+«+ وضعیت تازه» ButtonBase renders inside its RadioGroup after the radios, so the group holds an
+interactive element that is not one of its choices. Its exit: the add chip is a sibling of the
+radio group in one wrapping row that still lays it out after the last choice, and a story finds it
+outside the group. **Measure first**: the picker's markup, how the row wraps, and what the stories
+read about the chip and the group.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md` (the Sort Control), `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-336`, `SortControl.tsx`, its stories and story docs.
+`AGENTS.md` (section 7), `DESIGN.md` (the Status Picker), `agent/RALPH.md`, the head of
+`agent/TODO_BOARD.md`, then `todo show KN-338`, `StatusPicker.tsx`, its stories and story docs.
 **Never chain a check through a pipe into a commit or a close, give every parallel command its own
 `cd` in a subshell, give a search that finds nothing a positive control, write a Grep glob with a
 folder in it from the repo root, find a docs paragraph by its headings rather than by retyping
-Persian, and find a story's controls inside `#storybook-root`.**
+Persian, find a story's controls inside `#storybook-root`, and write long scripts with the Write
+tool, since a long heredoc once failed to parse.**
