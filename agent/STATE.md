@@ -42,29 +42,35 @@ description asking for a turning `spinnerArc` the node does not draw.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-326 is closed** (9914921; board e51b1a8; pushed), one point. The Loading State's status
-region says `aria-atomic`, hides its dots and visible line from assistive technology, the line
-still drawn from the first frame for KN-324, and holds an out of sight span, the Bulk Action
-Bar's clip, empty on the render that mounts the state and given the line 100 ms later by a timer
-the effect's cleanup clears, so a screen reader hears the first line as a change. The story
-`WritesItsFirstLineAfterMounting` mounts the state from «Extract details», the add flow's own
-message, pressed with `fireEvent`, and reads the span empty then filled; it failed against
-HEAD's component and under a plant. No screen reader was run. **Found building it and recorded,
-AGENTS.md section 7, b9d540b**: addon-docs' Stories block leaves out every story whose play
-destructures `mount`, whatever `parameters.docs.story.autoplay` says. Its Codex roast was
-running when this was written, `kn326-task-roast.log` in the scratchpad.
+**KN-332 is closed** (6ed2856; board 4a06a30; pushed), one point, a child of KN-012. A single
+Select handed MUI its first value but drew each row's check from the whole list, so two values
+checked two rows; it now takes `held`, the list when multiple and its first value otherwise, for
+both. `TwoValuesWithoutMultiple`, its Controls off at the plan review's ask, failed alone against
+the old component with two rows checked. Seen in fa-IR light and dark, and in en-US through
+`__STORYBOOK_PREVIEW__.onUpdateArgs`, since the URL's args left a list arg unchanged. Its Codex
+roast was running when this was written, `kn332-task-roast.log` in the scratchpad. KN-012 waits
+on KN-333, KN-334 and KN-357.
 
-**KN-325 is closed and its roast recorded, nothing filed** (23ef6c9, fe8e85b): a `startedAt`
-already past fifteen seconds shows the slow line on its first render, read from a store per
-start with `useSyncExternalStore`; react-hooks 7's `purity` refuses `Date.now()` while
-rendering, and ESLint's `lintText` lints a design in memory, AGENTS.md section 7, 92a81d9.
-**KN-324** is closed and recorded (fb21239, db7a721). **Filed today and open**: KN-615, the
-Loading State's stories under reduced motion; KN-617, AGENTS.md's `.po` catalog instructions;
-**KN-618**, the Settings dialog's status region, KN-326's kind, a child of KN-477.
+**KN-331 is closed and its roast recorded** (5999321; recorded in 0bec7ed). The Bulk Action
+Bar's props are a union, the job list's member requiring both callbacks and the network's naming
+them optional `never`, and every story draws its bar through `barFor`: the docs guard keeps every
+callback's `fn()` in the meta, so a story of the network's type still held the job callbacks,
+which tsc refused in a spread and Show code printed. The roast found the union mutable, reproduced:
+`delete props.onSelectAll` and `props.type = 'jobs'` compile, readonly refuses both, and
+`Object.assign` still compiles. Filed **KN-620**, low, a child of **KN-025**, so KN-025's
+whole-task round, over KN-330, KN-331 and KN-620, waits until KN-620 closes.
 
-**Still open from earlier**: **KN-009 waits on KN-614**, then KN-009 is roasted with all its
-children; KN-021 waits on KN-387; KN-022 on KN-327, KN-615 and KN-616. KN-612 and KN-613,
-low. **Open and filed today**: KN-592 to KN-618.
+**AGENTS.md section 7 gained, today** (21938a1, d271046): ESLint's `lintText` types what a draft
+imports from the files on disk; a play runs only when a story mounts or is remounted; a union's
+story args and Show code; a look hands a story a list through the preview, not the URL; an open
+MUI list hides the field from role queries.
+
+**Earlier today**: KN-326 closed and recorded (9914921, cf3c9a7), KN-619 filed; KN-325 and KN-324
+closed and recorded. **Filed today and open**: KN-615, KN-617, KN-618, KN-619, KN-620.
+
+**Still open from earlier**: **KN-009 waits on KN-614**; KN-021 waits on KN-387; KN-022 on
+KN-327, KN-615, KN-616 and KN-619; **KN-025 on KN-620**; KN-012 on KN-333, KN-334 and KN-357.
+KN-612 and KN-613, low.
 
 **A Storybook spec alone**: `STORYBOOK_DIR=<build> npx playwright test --config
 playwright.storybook.config.ts storybook/button-touch`. A filter is a regular expression on
@@ -100,22 +106,24 @@ The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-326's roast lands**, judge it, file survivors with `--parent-task KN-326`, which
-hangs them off KN-022 (`--area web --okr OKR-1` under four points), record with `todo roast
-KN-326 --file ... --filed ... --dismissed ...`, relay it to the owner, and commit the board.
+**When KN-332's roast lands**, judge it, file survivors with `--parent-task KN-332`, which hangs
+them off KN-012 (`--area web --okr OKR-1` under four points), record with `todo roast KN-332
+--file ... --filed ... --dismissed ...`, relay it to the owner, and commit the board.
 
-**KN-331 is in progress**, medium, 1 point, a child of KN-025: a Jobs Bulk Action Bar given no
-`onSelectAll` or `onChangeStatus` silently drops the file's buttons, both callbacks being
-optional so the Contacts type need not pass them; its exit asks that a Jobs bar cannot be
-written without both, by its type or by two components, and that the docs guard still reads
-every prop, react-docgen reading only the props a union shares. **Measure first**: the props,
-how the Jobs type draws its buttons, and every place a Bulk Action Bar is written today.
+**KN-335 is in progress**, medium, 1 point, a child of KN-018: the Tooltip maps its start
+placement to MUI's `left` and relies on MUI to mirror it, but MUI's Popper mirrors only the
+`-start` and `-end` placements, read in `BasePopper.js`'s `flipPlacement`, so in a right to left
+page the blocked delete's reason is asked for the physical left; the StatusMenu's
+`DeleteBlocked` story showed it on the right only because Popper flipped it for want of room. Its
+exit: start asks MUI for right in a right to left page and left in a left to right one, and a
+story with room on both sides checks the tip sits at the inline start. `theme/sides.ts` already
+has `inlineStartOf`.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md` (the Bulk Action Bar), `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-331`, `BulkActionBar.tsx`, its stories and story
-docs, and where it is used. **Never chain a check through a pipe into a commit or a close,
-give every parallel command its own `cd`, give a search that finds nothing a positive
-control, write a Grep glob with a folder in it from the repo root, and lint a design in memory
-before writing it.**
+`AGENTS.md` (section 7), `DESIGN.md` (the Tooltip), `agent/RALPH.md`, the head of
+`agent/TODO_BOARD.md`, then `todo show KN-335`, `Tooltip.tsx`, its stories and story docs, and
+`StatusMenu.stories.tsx`'s `DeleteBlocked`. **Never chain a check through a pipe into a commit or
+a close, give every parallel command its own `cd`, give a search that finds nothing a positive
+control, write a Grep glob with a folder in it from the repo root, and check a draft that imports
+another draft with a compiler host, not `lintText`.**
