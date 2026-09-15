@@ -594,9 +594,10 @@ being invisible on the surface it sits on, `border/default` on Hover and
 Label role in `text/secondary`, 8 above a row of choices that wraps, 8 both
 ways, each item at the top of its line, and ends it with the dashed «+ وضعیت
 تازه», 28 tall, `text/brand`, a 16 plus, one pixel of `border/default` dashed
-4 and 3, which CSS draws with its own dash. The choices are one radio group:
-Tab reaches the chosen one and the arrows move and choose, the Color Picker's
-way; the keyboard's choice takes the three pixel ring, told from Selected's two
+4 and 3, which CSS draws with its own dash. The choices are one radio group,
+which the add chip follows in the row from outside, KN-338: Tab reaches the
+chosen one and the arrows move and choose, the Color Picker's way; the
+keyboard's choice takes the three pixel ring, told from Selected's two
 by its width. The file uses it in the add form and the Change Status modal.
 
 The **Status Control**, `199:21`, is the clickable wrapper the card and the job

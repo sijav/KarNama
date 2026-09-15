@@ -86,43 +86,56 @@ export const StatusPicker = ({ statuses, value, onChange, onAdd, autoFocus = fal
       >
         {i18n._('Status')}
       </Box>
-      <RadioGroup
-        row
-        value={value}
-        aria-labelledby={labelId}
-        onChange={(_, chosen) => {
-          onChange(chosen)
-        }}
-        // Left and right move the way they point in every browser, the Color
-        // Picker's arrowsAcross, KN-373; an arrow on the add chip, which sits in
-        // this group, is left to the browser.
-        onKeyDown={arrowsAcross}
-        // The file's Choices, 427:571: a row that wraps, 8 both ways, its items
-        // at the top of their line.
-        sx={{ flexWrap: 'wrap', alignItems: 'flex-start', gap: `${spacing.xs}px` }}
-      >
-        {statuses.map((option) => (
-          <Radio
-            key={option.id}
-            value={option.id}
-            autoFocus={autoFocus && option.id === value}
-            disableRipple
-            icon={<StatusChoice option={option} selected={false} />}
-            checkedIcon={<StatusChoice option={option} selected />}
-            slotProps={{ input: { 'aria-label': option.name } }}
-            sx={(theme) => ({
-              padding: 0,
-              borderRadius: `${theme.karnama.radius.full}px`,
-              [`&:hover .${CHOICE}[data-selected="false"]::after`]: { borderColor: theme.karnama.semantic['border/default'] },
-              [`&.Mui-focusVisible .${CHOICE}::after`]: { borderWidth: FOCUS_RING, borderColor: theme.karnama.semantic['border/focus'] },
-            })}
-          />
-        ))}
+      {/* The file's Choices, 427:571: a row that wraps, 8 both ways, its items at
+          the top of their line, ending with the add chip. The chip is not a
+          choice, so it follows the radio group rather than sitting in it, KN-338.
+          They share a row of inline flow: the group an inline element round its
+          radios, each radio and the chip an inline item 8 before the next and 8
+          above the line below, and the row gives the last line's 8 back. A flex
+          row would need the group to give up its box, display: contents, which
+          browsers have dropped from the accessibility tree before. */}
+      <Box sx={{ marginBlockEnd: `-${spacing.xs}px` }}>
+        <RadioGroup
+          value={value}
+          aria-labelledby={labelId}
+          onChange={(_, chosen) => {
+            onChange(chosen)
+          }}
+          // Left and right move the way they point in every browser, the Color
+          // Picker's arrowsAcross, KN-373; the add chip is outside the group, so an
+          // arrow on it is the browser's.
+          onKeyDown={arrowsAcross}
+          sx={{ display: 'inline' }}
+        >
+          {statuses.map((option) => (
+            <Radio
+              key={option.id}
+              value={option.id}
+              autoFocus={autoFocus && option.id === value}
+              disableRipple
+              icon={<StatusChoice option={option} selected={false} />}
+              checkedIcon={<StatusChoice option={option} selected />}
+              slotProps={{ input: { 'aria-label': option.name } }}
+              sx={(theme) => ({
+                padding: 0,
+                verticalAlign: 'top',
+                marginInlineEnd: `${spacing.xs}px`,
+                marginBlockEnd: `${spacing.xs}px`,
+                borderRadius: `${theme.karnama.radius.full}px`,
+                [`&:hover .${CHOICE}[data-selected="false"]::after`]: { borderColor: theme.karnama.semantic['border/default'] },
+                [`&.Mui-focusVisible .${CHOICE}::after`]: { borderWidth: FOCUS_RING, borderColor: theme.karnama.semantic['border/focus'] },
+              })}
+            />
+          ))}
+        </RadioGroup>
         <ButtonBase
           disableRipple
           onClick={onAdd}
           sx={(theme) => ({
             position: 'relative',
+            verticalAlign: 'top',
+            marginInlineEnd: `${spacing.xs}px`,
+            marginBlockEnd: `${spacing.xs}px`,
             height: ADD_HEIGHT,
             paddingInline: `${spacing.sm}px`,
             gap: `${spacing['2xs']}px`,
@@ -157,7 +170,7 @@ export const StatusPicker = ({ statuses, value, onChange, onAdd, autoFocus = fal
           <Icon name="plus" size="sm" />
           {i18n._('New status')}
         </ButtonBase>
-      </RadioGroup>
+      </Box>
     </Box>
   )
 }

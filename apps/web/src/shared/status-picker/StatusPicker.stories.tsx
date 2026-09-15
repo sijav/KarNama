@@ -1,3 +1,4 @@
+import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18n } from '../../i18n'
@@ -45,6 +46,13 @@ export const Default: Story = {
     // choices, 427:567, each the medium chip in a shell of 4, the chosen one
     // ringed two pixels of border/focus, and the dashed add chip, 28 tall.
     const group = within(canvasElement).getByRole('radiogroup')
+    // The add chip is not a choice, so it stands outside the group, KN-338, in
+    // the row the group lays its choices out in.
+    const add = within(canvasElement).getByRole('button', { name: i18n._('New status') })
+    await expect(group.contains(add)).toBe(false)
+    const row = group.parentElement
+    if (!row) throw new Error('the group has no row round it')
+    await expect(add.parentElement).toBe(row)
     const label = canvasElement.ownerDocument.getElementById(group.getAttribute('aria-labelledby') ?? '')
     if (!label) throw new Error('the group has no label')
     await expect([label.textContent, px(getComputedStyle(label).fontSize), px(getComputedStyle(label).lineHeight)]).toEqual([
@@ -53,7 +61,7 @@ export const Default: Story = {
       16,
     ])
     await expect(getComputedStyle(label).color).toBe(computedColour(label, semantic['text/secondary']))
-    await expect(Math.round(group.getBoundingClientRect().top - label.getBoundingClientRect().bottom)).toBe(8)
+    await expect(Math.round(row.getBoundingClientRect().top - label.getBoundingClientRect().bottom)).toBe(8)
     const radios = within(group).getAllByRole('radio')
     await expect(radios.map((radio) => radio.getAttribute('aria-label'))).toEqual(args.statuses.map((status) => status.name))
     for (const radio of radios) {
@@ -66,7 +74,19 @@ export const Default: Story = {
         chosen ? computedColour(shell, semantic['border/focus']) : 'rgba(0, 0, 0, 0)',
       ])
     }
-    const add = within(group).getByRole('button', { name: i18n._('New status') })
+    // After the last choice: on its line, 8 beyond it, or, where the chip does
+    // not fit there, at the start of the next line, 8 below it.
+    const last = radios.at(-1)
+    if (!last) throw new Error('no choices')
+    const lastBox = shellOf(last).getBoundingClientRect()
+    const addBox = add.getBoundingClientRect()
+    const rowBox = row.getBoundingClientRect()
+    const rtl = getComputedStyle(row).direction === 'rtl'
+    const onLastLine = Math.round(addBox.top) === Math.round(lastBox.top)
+    const beyond = Math.round(rtl ? lastBox.left - addBox.right : addBox.left - lastBox.right)
+    const below = Math.round(addBox.top - lastBox.bottom)
+    const fromStart = Math.round(rtl ? rowBox.right - addBox.right : addBox.left - rowBox.left)
+    await expect(onLastLine ? [beyond] : [below, fromStart]).toEqual(onLastLine ? [8] : [8, 0])
     await expect(add.getBoundingClientRect().height).toBe(28)
     // The page's face, not the browser's button font, KN-351.
     await expect(getComputedStyle(add).fontFamily).toBe(getComputedStyle(group).fontFamily)
@@ -74,6 +94,61 @@ export const Default: Story = {
       'dashed',
       computedColour(add, semantic['text/brand']),
     ])
+  },
+}
+
+// Narrow enough that the choices wrap, KN-338: the chip must still follow the
+// last choice, not a box round the group.
+const NARROW = 300
+
+export const Wrapping: Story = {
+  globals: { locale: 'fa-IR' },
+  decorators: [
+    (Story) => (
+      <Box sx={{ width: NARROW }}>
+        <Story />
+      </Box>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    // The choices over more than one line, 8 between items both ways, and the add
+    // chip outside the group after the last choice: on its line 8 beyond it, or
+    // first on the next line, 8 below it.
+    const group = within(canvasElement).getByRole('radiogroup')
+    const add = within(canvasElement).getByRole('button', { name: i18n._('New status') })
+    await expect(group.contains(add)).toBe(false)
+    const row = group.parentElement
+    if (!row) throw new Error('the group has no row round it')
+    const rtl = getComputedStyle(row).direction === 'rtl'
+    const boxes = [
+      ...within(group)
+        .getAllByRole('radio')
+        .map((radio) => shellOf(radio)),
+      add,
+    ].map((element) => element.getBoundingClientRect())
+    const lines: DOMRect[][] = []
+    for (const box of boxes) {
+      const line = lines.find((each) => Math.abs((each[0]?.top ?? 0) - box.top) < 1)
+      if (line) line.push(box)
+      else lines.push([box])
+    }
+    await expect(lines.length).toBeGreaterThan(1)
+    const across = lines.flatMap((line) =>
+      line.slice(1).map((box, index) => Math.round(rtl ? (line[index]?.left ?? 0) - box.right : box.left - (line[index]?.right ?? 0))),
+    )
+    const down = lines
+      .slice(1)
+      .map((line, index) => Math.round((line[0]?.top ?? 0) - Math.max(...(lines[index] ?? []).map((box) => box.bottom))))
+    await expect([...new Set([...across, ...down])]).toEqual([8])
+    const addBox = boxes.at(-1)
+    const lastBox = boxes.at(-2)
+    if (!addBox || !lastBox) throw new Error('no chip or no choice')
+    const rowBox = row.getBoundingClientRect()
+    const onLastLine = Math.abs(addBox.top - lastBox.top) < 1
+    const beyond = Math.round(rtl ? lastBox.left - addBox.right : addBox.left - lastBox.right)
+    const below = Math.round(addBox.top - lastBox.bottom)
+    const fromStart = Math.round(rtl ? rowBox.right - addBox.right : addBox.left - rowBox.left)
+    await expect(onLastLine ? [beyond] : [below, fromStart]).toEqual(onLastLine ? [8] : [8, 0])
   },
 }
 
@@ -94,7 +169,7 @@ export const ByKeyboard: Story = {
     await expect(args.onChange).toHaveBeenLastCalledWith(next.getAttribute('value'))
     await waitFor(() => expect(px(getComputedStyle(shellOf(next), '::after').borderTopWidth)).toBe(3))
     await userEvent.tab()
-    await expect(within(group).getByRole('button', { name: i18n._('New status') })).toHaveFocus()
+    await expect(within(canvasElement).getByRole('button', { name: i18n._('New status') })).toHaveFocus()
     await userEvent.keyboard('{Enter}')
     await expect(args.onAdd).toHaveBeenCalledTimes(1)
   },
@@ -135,7 +210,7 @@ export const InEnglish: Story = {
 // to be overridden, as in use. From the second status, which has a neighbour
 // on each side in its row, the left arrow lands on the choice that sits to its
 // left on screen and the right arrow on the one to its right, and the row takes
-// both keys itself; an arrow pressed on «+ وضعیت تازه», inside the same group,
+// both keys itself; an arrow pressed on «+ وضعیت تازه», outside the group,
 // moves nothing. In the published Storybook there is no runner to press keys,
 // so press them yourself. The runner is known by the flag
 // .storybook/vitest.setup.ts sets, KN-225.
@@ -167,7 +242,8 @@ const arrowsFollowTheScreen =
     within(group).getByRole('radio', { checked: true }).focus()
     const start = focused()
     let last: KeyboardEvent | undefined
-    group.addEventListener('keydown', (event) => {
+    // On the canvas, so a key pressed on the add chip, outside the group, is heard.
+    canvasElement.addEventListener('keydown', (event) => {
       last = event
     })
     // Each press reports the choice it lands on, but the one the args keep
@@ -187,7 +263,7 @@ const arrowsFollowTheScreen =
     await expect(right.top).toBe(start.top)
     await expect(right.left).toBeGreaterThanOrEqual(start.right)
     // On the add chip, an arrow is the browser's and moves nothing.
-    const add = within(group).getByRole('button', { name: i18n._('New status') })
+    const add = within(canvasElement).getByRole('button', { name: i18n._('New status') })
     add.focus()
     await browser.userEvent.keyboard('{ArrowLeft}')
     await expect(add).toHaveFocus()

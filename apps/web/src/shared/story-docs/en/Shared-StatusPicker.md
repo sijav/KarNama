@@ -3,7 +3,8 @@ ringed in blue, and a dashed «+ وضعیت تازه» that makes a new status i
 
 Status is chosen with chips, never a dropdown. The chips are one radio group:
 Tab reaches the chosen one, and the arrows move and choose. The add chip is the
-next Tab stop. The add form and the Change Status modal use it; the Status
+next Tab stop; it follows the choices outside their group, so a screen reader does
+not count it among them. The add form and the Change Status modal use it; the Status
 Control opens it from a card.
 
 ## Props
@@ -35,6 +36,11 @@ it does. Off unless set.
 ### Default
 
 The picker as the add form shows it, measured against the design.
+
+### Wrapping
+
+The picker 300 wide, so its choices wrap: 8 between them both ways, and the add
+chip after the last of them, outside their group.
 
 ### ByKeyboard
 
