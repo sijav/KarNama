@@ -13,6 +13,12 @@ Project **KarNama** · 278 of 629 tasks done · 612 of 1240 points.
 | 1 | OKR-1 | MVP: the pages | now | 213 | 200 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-358` | The phone's add form reads title before company, where 243:726 draws the company first | medium | 1 | design | none | The owner has chosen one order for the phone's form, DESIGN.md records it, and the form follows it at 390. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 278 of 629 tasks done · 612 of 1240 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (337)
+## Backlog (336)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 278 of 629 tasks done · 612 of 1240 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-358` | The phone's add form reads title before company, where 243:726 draws the company first | medium | 1 | design | none | The owner has chosen one order for the phone's form, DESIGN.md records it, and the form follows it at 390. |
 | `KN-359` | The add modal's Paste step is 398 tall where the file draws 401: its label keeps the Input's 16 | medium | 1 | web | none | Paste, PasteFilled and Error measure the file's 401, 401 and 423 with the label on its 19, and the Input's own label stays 16 everywhere else. |
 | `KN-362` | Reading a posting moves focus to an unnamed box rather than to the status that says what is happening | medium | 1 | web | none | Focus goes to an element named by the loading message, or to the status region itself, and a story reads the focused element's accessible name. |
 | `KN-370` | The Status Chip's direction contract says 'first letter' where dir=auto reads the first strong character, and 'cuts the end' where the ellipsis cuts the line's visual end | medium | 1 | docs | none | DESIGN.md's KN-264 paragraph and the comment in StatusChip.tsx say the first strong directional character decides, a letter or a direction mark, and that the ellipsis cuts the line's visual end, naming what that hides in a mixed-script name; no 'always' is left in either; and a story renders an LRM-led digit name in the Persian interface and finds the chip ltr. |
@@ -7013,7 +7018,7 @@ CHILD OF KN-012, recorded in prose because board.json cannot express parent_task
 
 ### `KN-358` The phone's add form reads title before company, where 243:726 draws the company first
 
-- **status** backlog · **severity** medium · **points** 1 · **area** design · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** design · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-029
 

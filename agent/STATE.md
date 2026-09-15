@@ -36,28 +36,36 @@ on 2026-09-12 "If you have AI test, remove that, I didn't ask for an AI API
 test". The owner was told on 2026-09-15 that the Codex log they pasted holds the
 Groq key they had pasted to Codex, that no file, commit or board entry holds it,
 and to rotate it. Never repeat that key anywhere. **Filed for the owner, not yet
-asked**: KN-588, KN-589, KN-590, KN-591, and **KN-616**.
+asked**: KN-588, KN-589, KN-590, KN-591, KN-616, and now **KN-358**.
 
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-345 is closed** (3261606; board 0690d8b; pushed), a child of KN-028: a Modal given a blank
-title reports it through `console-guard`'s `report` from an effect and renders nothing.
-`ReportsABlankTitle` reads the marked report and that the trigger opens no dialog; it failed alone
-against the old shell. Its exit was edited on the board after the plan review, which turned down a
-report that still drew the dialog. Its roast is recorded (1bfb23e), after a first launch
-threw on an apostrophe in its script: `trim` leaves zero-width and direction marks, so a title of
-only those is not refused, filed as **KN-627**, low. **KN-626** filed too: PanelModal's blank
-title, the same gap. KN-028 waits on KN-346, KN-626 and KN-627.
+**KN-348 is closed** (242280f; board c90cf75; pushed), a child of KN-031: `onDelete` is required in
+the Contact Modal's edit member and `?: never` in its add member; the stories' meta is an edit
+instance and `modalFor` builds the add; the board's edit Contact Modal closes into a Confirm modal
+and deletes only on confirming. `DeletingAPersonAsksFirst` failed against the old board first. Its
+roast is recorded (8707a1e): **KN-628** filed, focus after a confirmed delete lands on the job
+modal's `div` with role presentation (Cancel measured by keyboard returns to the person row), and
+**KN-629**, the Contact Modal's Docs Controls table lists only `mode`, from KN-571's `include`.
 
-**Earlier today, closed and recorded**: KN-343 (on KN-415's 2b5b205; KN-625 filed, raw mailto),
-KN-338 (the Status Picker's add chip outside its group; KN-624 filed), KN-336, KN-335, KN-332,
-KN-331, and KN-024's whole-task round (KN-623 filed).
+**KN-349 is closed** (d3b3596; board 0ec7a3f; pushed), a child of KN-031: `PanelModal` places the
+Dialog's root on the visual viewport, `top`, `bottom: 'auto'` and `height` from two
+`useSyncExternalStore` snapshots, and caps the Paper at `calc(100% - 32px)`.
+`FooterAboveTheKeyboard` stands in a 544 visual viewport over 390 by 844 and failed first, Save at
+679; `FooterInAPhoneView` at a literal 390 by 544 passed before and after, a size check only;
+`WithoutAVisualViewport` stands in `null`. No real phone keyboard was run. **Its roast is running
+in the background**, `kn349-roast.mjs` writing `kn349-roast.txt` in the scratchpad.
+
+**Earlier today, closed and recorded**: KN-345 (KN-626, KN-627 filed), KN-343 (KN-625), KN-338
+(KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331 (KN-620), and KN-024's whole-task round
+(KN-623).
 
 **Rounds waiting**: KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on
-KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-028 on KN-346 and KN-626.
-**Still open from earlier**: KN-009 waits on KN-614; KN-021 on KN-387; KN-022 on KN-327, KN-615,
-KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357.
+KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-028 on KN-346, KN-626 and
+KN-627; **KN-031 on KN-628 and KN-629**. **Still open from earlier**: KN-009 waits on KN-614;
+KN-021 on KN-387; KN-022 on KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and
+KN-357.
 
 **What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
 `Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` can overrun its 5 seconds
@@ -82,38 +90,20 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
 
 ## The next step
 
-1. **KN-345's roast is recorded**, KN-627 filed; nothing is waiting on it.
-2. **KN-348 is in progress**, medium, 1 point, a child of KN-031: an Edit Contact Modal can be
-   written without the delete. Measured: `ContactModalProps` is already a union, from KN-386, the
-   edit member's `initial` a required key that may be `undefined` while the record loads, which
-   `TheRecordArrivesAfterItsId` needs; `onDelete` is optional in both members, and the Delete
-   footer draws only when the mode is edit and `onDelete` is given. **Its plan is written**, beside
-   `ContactModal.tsx`, with the in-memory tsc run that refused `onDelete` required in edit in four
-   places: `JobsScreen.tsx:636`, an edit Contact Modal with no delete (the job modal's own
-   `onDeleteContact` there deletes at once with `records.deleteContacts([id])`), the stories' meta
-   `onDelete: fn()` beside its add mode, and the `Loading` and `LateRecord` renders. **Its plan review is judged and recorded in the
-   plan**, both asks taken, and the card is raised to 3 points: the stories' meta becomes a valid
-   edit instance with `onDelete: fn()` (measured, tsc then refuses only JobsScreen and the `Loading`
-   and `LateRecord` renders) AND one mode render builds the add shape without `recordId`, `initial`
-   or `onDelete`, every add story setting `mode: 'add'`; and JobsScreen's edit asks before deleting,
-   closing the editor into a Confirm modal and calling `records.deleteContacts` only on confirming,
-   as the network page does, with a board screen story proving it. **Build from the plan**: the story
-   first (Delete in edit, none in add, and the board's confirmed delete), the control run, then the
-   type, stories, JobsScreen and both docs. Scratch helpers: `kn348-union-tsc.mjs`,
-   `kn348-meta-tsc.mjs`; the apply pattern of `kn338-apply-rest.mjs`. The work: `onDelete` required
-   in the edit member and `?: never` in the add one, KN-331's shape. **KN-331's lessons apply**,
-   AGENTS.md section 7: the docs guard wants every callback's `fn()` in the meta, so the meta's
-   `onDelete: fn()` stays; a story's args type lays the meta's args over each member, so a custom
-   render spreading args into the component is refused, TS2375, and one render must hand the
-   component only its member's props, as `barFor` in `BulkActionBar.stories.tsx` does; check tsc
-   with a compiler host serving the drafts, not `lintText`. The Contact Modal stories have custom
-   renders `Rerendering`, `Loading` and `LateRecord`. Read both edit callers, `JobsScreen.tsx` and
-   `NetworkScreen.tsx`, for `onDelete`.
+1. **KN-349's roast lands**: read the file `kn349-roast.txt` names, reproduce each finding, file the
+   survivors with `--parent-task KN-349 --area web --okr OKR-1`, record with `todo roast KN-349`,
+   render, commit, push, and relay it to the owner.
+2. **KN-358 is in progress**, medium, 1 point, design, a child of KN-029: the phone's add form reads
+   title before company, where 243:726 is said to draw the company first; its exit needs the
+   owner's choice. Read 243:726 and the desktop Review, 150:94, in Figma, to state which order each
+   draws and whether the phone's order is only the desktop row's left-to-right array stacked, since
+   the design is right to left. Then block it with that reason, ask the owner through the question
+   tool, with the filed owner cards that fit, and take `todo next`.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-348`,
-`ContactModal.tsx`, its stories and story docs, `#KN-331`'s plan in `shared/bulk-action-bar`.
-**Never chain a check through a pipe into a commit or a close, write long scripts with the Write
-tool, keep apostrophes out of single-quoted strings in scripts, find a story's controls inside
-`#storybook-root`, and read an accessibility claim from the browser's own tree.**
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-358`,
+the job form's title and company fields. **Never chain a check through a pipe into a commit or a
+close, write long scripts with the Write tool, keep apostrophes out of single-quoted strings in
+scripts, find a story's controls inside `#storybook-root`, and read an accessibility claim from
+the browser's own tree.** The Persian catalog is `apps/web/src/i18n/locales/fa-IR.ts`.
