@@ -533,3 +533,24 @@ in Persian, rather than showing Persian with nothing said.
 way to read a Docs page's globals, or `userGlobals` in `DocsContextProps`: read
 it typed, delete the shape check and this entry, and the Language Switch Docs
 page still follows the toolbar in both directions.
+
+## 22. One board story allows MUI's warning of a Select value it no longer offers
+
+**What.** `PersonForAJobDeletedElsewhere`, in
+`apps/web/src/screens/JobsScreen.stories.tsx`, calls
+`allowConsole(/out-of-range value/u)`, so the warning MUI prints while that story
+runs does not fail it, KN-427.
+
+**Why it is like that.** When another open tab deletes a job opportunity while a
+person is being written on it, the contact modal keeps the deleted job's id as the
+person's related job, and its Select no longer offers that id: MUI warns, in
+development, and the field shows the raw id. The story exists to take the board
+screen's branches for that path, and the defect is the contact modal's, filed as
+KN-598.
+
+**What it costs.** Another warning in that story that also says "out-of-range
+value" would pass unheard; every other warning still fails it.
+
+**The check that retires this.** KN-598: once the contact modal lets go of a related
+job opportunity that has left the board, the story passes without the call, and the
+call and this entry go.

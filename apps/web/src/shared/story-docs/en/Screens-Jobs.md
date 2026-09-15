@@ -43,11 +43,13 @@ of its own, so the board can be shown and tested without a server.
 
 ### DragAndDrop
 
-Drag a desktop card to another status, including an empty or collapsed column.
-Hover over Rejected for half a second to preview it; dropping saves the new status
-and history. A column opened by dragging closes again afterward. Escape cancels.
-On phones, use the card menu to change status. Keyboard users can select a card
-and use the bulk status action.
+A card dragged between statuses on a desktop. Held over the collapsed rejected
+column for half a second, the column opens; dropped, the card takes the column's
+status, the column is ringed in its colour for a second, and a column the drag
+opened closes again. The story drives the board's own handlers with the browser's
+drag events: a drag from the card's link is refused, a click while dragging opens
+nothing, and a drop on the card's own column moves nothing. On a phone a card
+changes status from its menu.
 
 ### Board
 
@@ -73,14 +75,14 @@ The add destination, which opens the flow over the board; closing it says so.
 ### Working
 
 A board being used: searching narrows every column, a card opens the job
-opportunity, and selecting one brings up the bulk bar, which moves it to
-another status.
+opportunity, and selecting one brings up the bulk bar, which moves it to another
+status; its confirmation, pressed again as it closes, moves it once.
 
 ### Managing
 
 The board being managed: a column renamed from its menu, another added, a job
-opportunity deleted from its modal after a confirmation, and the rejected
-column opened from its collapsed header.
+opportunity deleted from its modal after a confirmation, and the rejected column
+opened from its collapsed header and closed again from its open one.
 
 ### People
 
@@ -91,9 +93,10 @@ network page too.
 
 ### BackingOut
 
-Every way out of a change: a rename backed out of, a colour taken from the
-column menu, an empty column deleted where one holding a job opportunity says
-why it cannot be, a status change cancelled, and a deletion refused.
+Every way out of a change: a rename backed out of, and one saved blank, which
+keeps the name; a colour taken from the column menu, an empty column deleted where
+one holding a job opportunity says why it cannot be, a status change cancelled,
+and a deletion refused.
 
 ### Adding
 
@@ -108,8 +111,9 @@ A board with nothing on it: the empty state's own action opens the same flow.
 
 ### Selecting
 
-Several at once: one selected, then every one of them, the selection let go
-of, and two deleted together after the confirmation.
+Several at once: one selected, then every one of them, the selection let go of,
+and two deleted together after the confirmation, which, pressed again as it
+closes, deletes nothing more.
 
 ### SelectingWhileSearching
 
@@ -120,10 +124,12 @@ still on the board once the search is cleared.
 
 ### OnAPhone
 
-The board at a phone's width, where the columns give way to a row of status
-chips and the chosen status's cards stand alone under them. A card there
-carries its own menu, which is where changing a status and deleting live when
-there is no hover to fold them behind.
+The board at a phone's width, where the columns give way to a row of status chips
+and the chosen status's cards stand alone under them. A card there carries its own
+menu, which is where changing a status and deleting live when there is no hover to
+fold them behind. A job opportunity whose status is changed from inside its modal
+and then deleted there leaves focus on the board, since nothing of it is left in
+the column the phone shows.
 
 ### SelectingOnAPhone
 
@@ -169,3 +175,20 @@ so the fallback does not take over the ordinary case.
 A card deleted from the middle of a column leaves the reader on the card after
 it, and the last card leaves them on the card before it, never on the first card
 of the whole board, which would read as the product jumping somewhere on its own.
+
+### PeopleInFull
+
+A person kept against a job opportunity with everything the contact modal takes:
+an add backed out of keeps no one, a person added with every field keeps each, and
+edited with the role emptied, the role goes and the rest stays.
+
+### PersonForAJobDeletedElsewhere
+
+Another open tab deletes a job opportunity while a person is being written on it:
+the job modal goes with its job, the contact modal stays, and saving keeps the
+person with no job, for a person being edited and for one being added.
+
+### WithoutSigningOut
+
+A board given no way to sign out, at a phone's width: its header carries the
+language switch and no sign out.

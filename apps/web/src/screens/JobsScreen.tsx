@@ -10,7 +10,7 @@ import { EmptyState } from '../shared/empty-state'
 import { FilterChip } from '../shared/filter-chip'
 import { Input } from '../shared/input'
 import { JobCard, type JobCardLayout } from '../shared/job-card'
-import { formatDay, JobModal, type JobSaved } from '../shared/job-modal'
+import { formatDay, JobModal } from '../shared/job-modal'
 import { AddColumn, EmptyColumn, KanbanColumn, type KanbanColumnProps } from '../shared/kanban-column'
 import { ChangeStatusModal, ConfirmModal, ContactModal, Modal, type ContactModalValues } from '../shared/modal'
 import { PageHeader } from '../shared/page-header'
@@ -81,6 +81,11 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   const { locale } = usePreferences()
   const records = useRecords()
   const columns = columnOrder(records.statuses)
+  // A board always has a status, so its first column is always there: a stored
+  // board with none reads back as the defaults, a column holding a job opportunity
+  // is never deleted, and a board holding none shows the empty state, which has no
+  // column menu. Only a screen drawn outside RecordsProvider has no status, which no
+  // reader meets, KN-427.
   const first = columns[0]?.id ?? ''
 
   const [search, setSearch] = useState('')
@@ -186,12 +191,15 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   // then found in the page, by place, since each column lays its cards out in
   // the order `cardsOf` gives.
   const landingsFor = (ids: readonly string[]) => {
+    // A phone always shows a column, since a board always has a status, KN-427.
     const shownColumns = wide ? columns : showing === undefined ? [] : [showing]
     for (const [at, column] of shownColumns.entries()) {
       const cards = cardsOf(column.id)
       const index = cards.findIndex((entry) => ids.includes(entry.id))
       if (index === -1) continue
       const holder = wide ? lanes.current?.children.item(at) : pile.current
+      // The row of columns and a phone's pile are in the page whenever a card that
+      // can ask to be deleted is, so no reader meets a missing holder, KN-427.
       if (!holder) return []
       const kept = (entry: JobEntry) => !ids.includes(entry.id)
       const order = [...cards.slice(index + 1).filter(kept), ...cards.slice(0, index).filter(kept).reverse()]
@@ -205,6 +213,8 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   }
   const remember = (ids: readonly string[]) => {
     const active = window.document.activeElement
+    // Every control that asks to delete is an HTML button or menu item, and a page
+    // with nothing focused gives its body, so no reader meets the null, KN-427.
     asked.current = active instanceof HTMLElement ? active : null
     landings.current = landingsFor(ids)
   }
@@ -216,13 +226,6 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
     // DESTINATION would otherwise reopen the modal over the board the moment it
     // closed, since the address still asked for it, KN-044.
     onAddClose?.()
-  }
-
-  const save = (saved: JobSaved) => {
-    if (job) records.saveJob(job.id, saved)
-    // Saving is the end of reading it: the modal closes, as every other modal
-    // in the product does when its work is done.
-    setReading(null)
   }
 
   const move = (status: string) => {
@@ -255,9 +258,10 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   }, [held.length, onSelecting])
 
   const people = records.jobs.map((entry) => ({ value: entry.id, label: entry.draft.title }))
-  // Which record the contact modal is on, or null while it is adding. A const,
-  // so it stays narrowed inside the handlers it is used in.
-  const personId = person?.id ?? null
+  // The person the contact modal is editing, or null while it adds or is closed:
+  // narrowed once, here, so the edit's modal and handlers know their record without
+  // a check no reader can fail, KN-427.
+  const editing = person !== undefined && person.id !== null ? { id: person.id, values: person.values } : null
 
   const card = (entry: JobEntry) => (
     <JobCard
@@ -550,7 +554,13 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
           onAddStatus={() => {
             records.addStatus(i18n._('New status'))
           }}
-          onSave={save}
+          // Written here, where the job is known, since the modal is drawn only while
+          // its job exists, KN-427. Saving is the end of reading it: the modal closes,
+          // as every other modal in the product does when its work is done.
+          onSave={(saved) => {
+            records.saveJob(job.id, saved)
+            setReading(null)
+          }}
           onDelete={() => {
             remember([job.id])
             setDeleting([job.id])
@@ -565,6 +575,8 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
           }}
           onOpenContact={(id) => {
             const held = records.contacts.find((entry) => entry.id === id)
+            // The job modal offers only the people contactsOf read for this job in the
+            // same render, so the person is always found, KN-427.
             if (held) {
               setPerson({
                 id: held.id,
@@ -595,7 +607,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
       {/* Adding and editing are different shapes, KN-386: an Edit carries the
           id it is on and the record that belongs to it, so a form cannot be
           filled from one contact and saved onto another. */}
-      {personId === null ? (
+      {editing === null ? (
         <ContactModal
           open={person !== undefined}
           mode="add"
@@ -624,8 +636,8 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
         <ContactModal
           open
           mode="edit"
-          recordId={personId}
-          initial={person === undefined ? undefined : { id: personId, values: person.values }}
+          recordId={editing.id}
+          initial={editing}
           jobs={people}
           onSave={(values) => {
             const contact = {
@@ -637,7 +649,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
               linkedin: values.linkedin.trim() === '' ? null : values.linkedin.trim(),
               job: records.jobs.find((entry) => entry.id === values.jobId)?.draft.title ?? null,
             }
-            records.saveContact(personId, contact, values.jobId)
+            records.saveContact(editing.id, contact, values.jobId)
             setPerson(undefined)
           }}
           onCancel={() => {
@@ -685,6 +697,10 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
             enterKeyHint="done"
             value={renaming?.name ?? ''}
             onChange={(name) => {
+              // With no rename open this field is out of the keyboard's reach: Enter
+              // closes the modal and focus is back on the column's menu button at once,
+              // before the dissolve ends, so a key pressed straight after lands there,
+              // measured three times for KN-427.
               setRenaming((was) => (was ? { ...was, name } : was))
             }}
           />

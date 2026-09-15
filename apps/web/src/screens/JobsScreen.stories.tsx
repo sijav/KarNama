@@ -2,8 +2,9 @@ import type { Decorator, StoryObj } from '@storybook/react-vite'
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, isLocale } from '../i18n'
 import { formatCount } from '../i18n/formatCount'
-import { defaultStatuses, jobFrom, RecordsProvider, STORAGE_KEY, type JobEntry, type Records } from '../core/records'
+import { defaultStatuses, jobFrom, readRecords, RecordsProvider, STORAGE_KEY, type JobEntry, type Records } from '../core/records'
 import { emptyDraft, type JobDraft } from '../shared/add-job'
+import { allowConsole } from '../shared/console-guard'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { fixtures } from '../shared/story-fixtures'
 import { JobsScreen, type JobsScreenProps } from './JobsScreen'
@@ -104,8 +105,128 @@ export const InEnglish: Story = {
   decorators: [fixtureBoard],
 }
 
+// The browser's own drag events, typed so the lint rule reads their names as
+// values, and the format a card carries its job opportunity in, as the screen
+// names it.
+type Dragging = 'dragstart' | 'dragover' | 'dragleave' | 'drop' | 'dragend'
+type CardTransfer = 'application/x-karnama-job'
+const CARD_FORMAT: CardTransfer = 'application/x-karnama-job'
+
+// One drag event, sent as the browser sends it: bubbling, cancelable and carrying
+// the drag's own DataTransfer, which testing library would copy into an empty one.
+const drag = (target: Element, type: Dragging, carried: DataTransfer, relatedTarget: EventTarget | null = null) => {
+  const event = new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: carried, relatedTarget })
+  target.dispatchEvent(event)
+  return event
+}
+
 export const DragAndDrop: Story = {
   globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-427: a card dragged between statuses on a desktop, by the browser's own
+    // drag events on the board's real cards and columns. This proves the screen's
+    // handlers; the real mouse's drag is the e2e's, drag-cards.spec.ts.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const set = fixtures('fa-IR')
+    const columns = defaultStatuses((token) => set.names[token])
+    const saved = columns[0]?.name ?? ''
+    const applied = columns[1]?.name ?? ''
+    const rejected = columns.at(-1)?.name ?? ''
+    const first = set.jobs[0]?.title ?? ''
+    const held = set.jobs[4]?.title ?? ''
+    const column = (name: string) => canvas.getByRole('region', { name })
+    const card = (name: string) => {
+      const article = canvas.getByRole('button', { name }).closest('article')
+      if (!article) throw new Error('the card has no article around it')
+      return article
+    }
+    const outline = (name: string) => getComputedStyle(column(name)).outlineStyle
+    const resting = outline(applied)
+    // What the page shows of a drag begun: the collapsed rejected column's header
+    // stops taking the pointer, so a drop lands on the column itself.
+    const draggingShown = async () => {
+      await waitFor(async () => {
+        const header = column(rejected).firstElementChild
+        if (!(header instanceof HTMLElement)) throw new Error('the rejected column has no header')
+        await expect(getComputedStyle(header).pointerEvents).toBe('none')
+      })
+    }
+
+    // With no drag on, a column takes neither a dragover nor a drop.
+    const idle = new DataTransfer()
+    await expect(drag(column(applied), 'dragover', idle).defaultPrevented).toBe(false)
+    await expect(drag(column(applied), 'drop', idle).defaultPrevented).toBe(false)
+
+    // A drag from the card's link is the link's own, and the card refuses it: no
+    // drag begins, so a column still takes no dragover.
+    await expect(drag(within(card(first)).getByRole('link'), 'dragstart', idle).defaultPrevented).toBe(true)
+    await expect(drag(column(applied), 'dragover', idle).defaultPrevented).toBe(false)
+
+    // From the card the drag begins, carrying its job opportunity; once the page
+    // shows it, a click on the card's title opens nothing.
+    const carried = new DataTransfer()
+    await expect(drag(card(first), 'dragstart', carried).defaultPrevented).toBe(false)
+    await expect(carried.getData(CARD_FORMAT)).not.toBe('')
+    await draggingShown()
+    await userEvent.click(within(card(first)).getByRole('button', { name: first }))
+    await expect(body.queryByRole('dialog')).toBeNull()
+
+    // Over the collapsed rejected column its ring shows, a second dragover there
+    // changes nothing, and once its half second is up it opens with its card.
+    await expect(drag(column(rejected), 'dragover', carried).defaultPrevented).toBe(true)
+    await expect(drag(column(rejected), 'dragover', carried).defaultPrevented).toBe(true)
+    await waitFor(async () => {
+      await expect(outline(rejected)).not.toBe(resting)
+    })
+    await waitFor(
+      async () => {
+        await expect(within(column(rejected)).getByText(held)).toBeInTheDocument()
+      },
+      { timeout: 2000 },
+    )
+
+    // Leaving into its own card keeps the ring; leaving the column clears it.
+    drag(column(rejected), 'dragleave', carried, within(column(rejected)).getByText(held))
+    await expect(outline(rejected)).not.toBe(resting)
+    drag(column(rejected), 'dragleave', carried, canvasElement)
+    await waitFor(async () => {
+      await expect(outline(rejected)).toBe(resting)
+    })
+
+    // Dropped on its own column the card stays, and the drag's end, which the card
+    // says, leaves the rejected column the drag opened folded again.
+    drag(column(saved), 'dragover', carried)
+    await expect(drag(column(saved), 'drop', carried).defaultPrevented).toBe(true)
+    drag(card(first), 'dragend', carried)
+    await waitFor(async () => {
+      await expect(within(column(rejected)).queryByText(held)).toBeNull()
+    })
+    await expect(within(column(saved)).getByText(first)).toBeInTheDocument()
+
+    // Dragged again and dropped on another column, it moves there, the status
+    // region says where it went, and that column is ringed in its status's colour
+    // for a second, then is not.
+    const again = new DataTransfer()
+    drag(card(first), 'dragstart', again)
+    await draggingShown()
+    drag(column(applied), 'dragover', again)
+    await expect(drag(column(applied), 'drop', again).defaultPrevented).toBe(true)
+    await waitFor(async () => {
+      await expect(within(column(applied)).getByText(first)).toBeInTheDocument()
+    })
+    drag(card(first), 'dragend', again)
+    await expect(canvas.getAllByRole('status').some((region) => region.textContent === `${first}: ${applied}`)).toBe(true)
+    await waitFor(async () => {
+      await expect(outline(applied)).not.toBe(resting)
+    })
+    await waitFor(
+      async () => {
+        await expect(outline(applied)).toBe(resting)
+      },
+      { timeout: 2500 },
+    )
+  },
 }
 
 export const Empty: Story = {
@@ -166,7 +287,11 @@ export const Working: Story = {
     await userEvent.click(within(bar).getByRole('button', { name: 'تغییر وضعیت' }))
     const change = await body.findByRole('dialog')
     await userEvent.click(within(change).getByRole('radio', { name: set.names.offer }))
-    await userEvent.click(within(change).getByRole('button', { name: 'تأیید' }))
+    // Pressed a second time as the dialog dissolves, it moves the card once,
+    // KN-427: the button is held before the first press.
+    const confirmMove = within(change).getByRole('button', { name: 'تأیید' })
+    await userEvent.click(confirmMove)
+    await userEvent.click(confirmMove)
 
     // And the column it moved TO now holds it, read inside that column: the
     // card was on the board before the move as well, so finding the title
@@ -233,6 +358,12 @@ export const Managing: Story = {
     await userEvent.click(canvas.getByRole('button', { name: new RegExp(rejected) }))
     await waitFor(async () => {
       await expect(within(canvas.getByRole('region', { name: rejected })).getByText(held)).toBeInTheDocument()
+    })
+
+    // And its open header folds it again, KN-427.
+    await userEvent.click(within(canvas.getByRole('region', { name: rejected })).getByRole('button', { expanded: true }))
+    await waitFor(async () => {
+      await expect(canvas.queryByText(held)).toBeNull()
     })
   },
 }
@@ -414,6 +545,17 @@ export const BackingOut: Story = {
     const closing = await body.findByRole('dialog')
     await userEvent.click(within(closing).getByRole('button', { name: 'بستن' }))
     await gone()
+
+    // A rename saved blank keeps the name it had, KN-427.
+    const i18n = i18nFor('fa-IR')
+    await userEvent.click(menuOf(savedName))
+    await userEvent.click(await body.findByRole('menuitem', { name: i18n._('Rename') }))
+    const blank = await body.findByRole('dialog')
+    await userEvent.clear(within(blank).getByRole('textbox'))
+    await userEvent.type(within(blank).getByRole('textbox'), ' ')
+    await userEvent.click(within(blank).getByRole('button', { name: i18n._('Save') }))
+    await gone()
+    await expect(canvas.getAllByText(savedName).length).toBeGreaterThan(0)
 
     // A column takes a colour from the same menu, and the picker opened again
     // shows that colour chosen: the picker closing says only that it closed.
@@ -635,7 +777,11 @@ export const Selecting: Story = {
     const again = await canvas.findByRole('region', { name: 'کارهای گروهی' })
     await userEvent.click(within(again).getByRole('button', { name: 'حذف' }))
     const confirm = await body.findByRole('dialog')
-    await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
+    // Pressed a second time as the dialog dissolves, it deletes nothing more,
+    // KN-427: the button is held before the first press.
+    const confirmDelete = within(confirm).getByRole('button', { name: 'حذف' })
+    await userEvent.click(confirmDelete)
+    await userEvent.click(confirmDelete)
     // Asked for by role, which waits for the page to be given back to the
     // accessibility tree after the confirmation closes as well as for the two
     // to be gone.
@@ -795,6 +941,31 @@ export const OnAPhone: Story = {
       await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
       await waitFor(async () => {
         await expect(canvas.queryByText(last)).toBeNull()
+      })
+
+      // A job opportunity whose status is changed from inside its modal leaves the
+      // status the phone shows; deleted there, nothing of it is left in that column
+      // to land on, so focus lands on the board itself, KN-427.
+      const i18n = i18nFor('fa-IR')
+      const opened = set.jobs[0]?.title ?? ''
+      await userEvent.click(await canvas.findByRole('button', { name: new RegExp(columns[0]?.name ?? '') }))
+      await userEvent.click(await canvas.findByRole('button', { name: opened }))
+      const job = await body.findByRole('dialog')
+      await userEvent.click(await within(job).findByRole('button', { name: new RegExp(`^${i18n._('Status')}:`) }))
+      const picking = await body.findByRole('dialog', { name: i18n._('Change status') })
+      await userEvent.click(within(picking).getByRole('radio', { name: set.names.offer }))
+      await userEvent.click(within(picking).getByRole('button', { name: i18n._('Confirm') }))
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog', { name: i18n._('Change status') })).toBeNull()
+      })
+      await userEvent.click(await within(job).findByRole('button', { name: i18n._('Delete job opportunity') }))
+      const confirmDelete = await body.findByRole('dialog', { name: i18n._('Delete this job opportunity?') })
+      await userEvent.click(within(confirmDelete).getByRole('button', { name: i18n._('Delete') }))
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog')).toBeNull()
+      })
+      await waitFor(async () => {
+        await expect(canvasElement.ownerDocument.activeElement?.contains(canvas.getByRole('searchbox'))).toBe(true)
       })
     } finally {
       await page.viewport(before.width, before.height)
@@ -1201,5 +1372,174 @@ export const FocusAfterDeletingInAColumn: Story = {
     await waitFor(async () => {
       await expect(within(column).getByRole('button', { name: before })).toHaveFocus()
     })
+  },
+}
+
+export const PeopleInFull: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-427: a person kept against a job opportunity with everything the contact
+    // modal takes. An add backed out of keeps no one; a person added with every
+    // field keeps each; edited with the role emptied, the role goes and the rest
+    // stays. What is kept is read from the story's own store, KN-178.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const i18n = i18nFor('fa-IR')
+    const set = fixtures('fa-IR')
+    const first = set.jobs[0]?.title ?? ''
+    const person = set.contacts[0]
+    if (!person) throw new Error('the fixtures hold no contact')
+    const stored = (): unknown => JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '{}')
+
+    await userEvent.click(canvas.getByRole('button', { name: first }))
+    const job = await body.findByRole('dialog')
+    await userEvent.click(within(job).getByRole('tab', { name: i18n._('Related people') }))
+
+    // Backed out of, an add keeps no one.
+    await userEvent.click(within(job).getByRole('button', { name: i18n._('Add contact') }))
+    const cancelled = await body.findByRole('dialog', { name: i18n._('Add contact') })
+    await userEvent.type(within(cancelled).getByLabelText(i18n._('Full name')), person.fullName)
+    await userEvent.click(within(cancelled).getByRole('button', { name: i18n._('Cancel') }))
+    await waitFor(async () => {
+      await expect(body.queryByRole('dialog', { name: i18n._('Add contact') })).toBeNull()
+    })
+    await expect(within(job).queryByRole('button', { name: person.fullName })).toBeNull()
+
+    // Added with every field the modal takes, each is kept.
+    await userEvent.click(within(job).getByRole('button', { name: i18n._('Add contact') }))
+    const adding = await body.findByRole('dialog', { name: i18n._('Add contact') })
+    // Every field the fixture's first contact fills, refused by name if it ever stops.
+    type Field = 'role' | 'company' | 'email' | 'phone' | 'linkedin'
+    const filled = (value: string | null, field: Field) => {
+      if (value === null) throw new Error(`the fixture contact has no ${field}`)
+      return value
+    }
+    const fields: (readonly [string, string])[] = [
+      [i18n._('Full name'), person.fullName],
+      [i18n._('Role'), filled(person.role, 'role')],
+      [i18n._('Company'), filled(person.company, 'company')],
+      [i18n._('Email'), filled(person.email, 'email')],
+      [i18n._('Phone'), filled(person.phone, 'phone')],
+      [i18n._('Social link'), filled(person.linkedin, 'linkedin')],
+    ]
+    for (const [label, value] of fields) await userEvent.type(within(adding).getByLabelText(label), value)
+    await userEvent.click(within(adding).getByRole('button', { name: i18n._('Save') }))
+    const kept = {
+      name: person.fullName,
+      company: person.company,
+      email: person.email,
+      phone: person.phone,
+      linkedin: person.linkedin,
+      job: first,
+    }
+    await waitFor(async () => {
+      await expect(stored()).toMatchObject({ contacts: [{ contact: { ...kept, role: person.role } }] })
+    })
+
+    // Edited with the role emptied, the role goes and the rest stays.
+    await userEvent.click(await within(job).findByRole('button', { name: person.fullName }))
+    const editing = await body.findByRole('dialog', { name: i18n._('Edit contact') })
+    await userEvent.clear(within(editing).getByLabelText(i18n._('Role')))
+    await userEvent.click(within(editing).getByRole('button', { name: i18n._('Save') }))
+    await waitFor(async () => {
+      await expect(stored()).toMatchObject({ contacts: [{ contact: { ...kept, role: null } }] })
+    })
+  },
+}
+
+export const PersonForAJobDeletedElsewhere: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-427: another open tab deletes a job opportunity while a person is being
+    // written on it. The job modal goes with its job, the contact modal stays, and
+    // saving keeps the person with no job: first a person being edited, then one
+    // being added. The other tab is stood in for by what its write delivers, as in
+    // ChangedInAnotherTab.
+    //
+    // Until KN-598 the contact modal keeps the deleted job's id, which its Select no
+    // longer offers, and MUI warns of the out-of-range value: allowed for this story
+    // alone, TECH-DEBT.md section 22.
+    allowConsole(/out-of-range value/u)
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const i18n = i18nFor('fa-IR')
+    const set = fixtures('fa-IR')
+    const [first = '', second = ''] = set.jobs.slice(0, 2).map((job) => job.title)
+    const [one = '', two = ''] = set.contacts.slice(0, 2).map((contact) => contact.fullName)
+    const stored = (): unknown => JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '{}')
+    // The other tab's write: this tab's own board as its store holds it, less a job.
+    const deletedElsewhere = (title: string) => {
+      const records = readRecords(stored(), seeded())
+      const written = JSON.stringify({ ...records, jobs: records.jobs.filter((entry) => entry.draft.title !== title) })
+      window.localStorage.setItem(STORAGE_KEY, written)
+      window.dispatchEvent(new StorageEvent(STORED, { key: STORAGE_KEY, newValue: written }))
+    }
+    const peopleOf = async (title: string) => {
+      await userEvent.click(await canvas.findByRole('button', { name: title }))
+      const job = await body.findByRole('dialog')
+      await userEvent.click(within(job).getByRole('tab', { name: i18n._('Related people') }))
+      return job
+    }
+
+    // A person kept against the second job opportunity, then opened to edit.
+    const job = await peopleOf(second)
+    await userEvent.click(within(job).getByRole('button', { name: i18n._('Add contact') }))
+    const adding = await body.findByRole('dialog', { name: i18n._('Add contact') })
+    await userEvent.type(within(adding).getByLabelText(i18n._('Full name')), one)
+    await userEvent.click(within(adding).getByRole('button', { name: i18n._('Save') }))
+    await userEvent.click(await within(job).findByRole('button', { name: one }))
+    const editing = await body.findByRole('dialog', { name: i18n._('Edit contact') })
+
+    // The job goes in the other tab: its card and its modal go, the edit stays, and
+    // saving keeps the person with no job.
+    deletedElsewhere(second)
+    await waitFor(async () => {
+      await expect(body.queryByText(second)).toBeNull()
+    })
+    await userEvent.click(within(editing).getByRole('button', { name: i18n._('Save') }))
+    await waitFor(async () => {
+      await expect(stored()).toMatchObject({ contacts: [{ contact: { name: one, job: null } }] })
+    })
+
+    // A person being added to the first job opportunity when it goes the same way is
+    // kept with no job too.
+    const other = await peopleOf(first)
+    await userEvent.click(within(other).getByRole('button', { name: i18n._('Add contact') }))
+    const late = await body.findByRole('dialog', { name: i18n._('Add contact') })
+    await userEvent.type(within(late).getByLabelText(i18n._('Full name')), two)
+    deletedElsewhere(first)
+    await waitFor(async () => {
+      await expect(body.queryByText(first)).toBeNull()
+    })
+    await userEvent.click(within(late).getByRole('button', { name: i18n._('Save') }))
+    // The records keep the newest person first.
+    await waitFor(async () => {
+      await expect(stored()).toMatchObject({ contacts: [{ contact: { name: two, job: null } }, { contact: { name: one, job: null } }] })
+    })
+  },
+}
+
+export const WithoutSigningOut: Story = {
+  globals: { locale: 'fa-IR' },
+  // A board given no way to sign out, which the prop's being optional allows.
+  render: ({ onSignOut: _noSigningOut, ...args }) => <JobsScreen {...args} />,
+  play: async ({ canvasElement }) => {
+    // KN-427: on a phone the Page Header carries the shell's own controls, and
+    // signing out is among them only when the board is given a way to, KN-478. The
+    // language switch, there either way, shows the header was read. The screen is
+    // resized by the runner's own browser, which only the runner has, KN-225, and
+    // put back after.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
+    const canvas = within(canvasElement)
+    const i18n = i18nFor('fa-IR')
+    const before = { width: window.innerWidth, height: window.innerHeight }
+    try {
+      await page.viewport(PHONE.width, PHONE.height)
+      await expect(await canvas.findByRole('button', { name: i18n._('Language') })).toBeInTheDocument()
+      await expect(canvas.queryByRole('button', { name: i18n._('Sign out') })).toBeNull()
+    } finally {
+      await page.viewport(before.width, before.height)
+    }
   },
 }
