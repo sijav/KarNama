@@ -45,24 +45,26 @@ holds the Groq key; never repeat that key anywhere.
 KN-635); KN-370 (nothing); KN-385 (KN-636); KN-413 (KN-637, KN-638); KN-432 (nothing); KN-434
 (KN-639, KN-640); KN-435 (nothing); KN-439 (KN-641, KN-642); KN-444 (nothing); KN-448 (KN-643);
 KN-449 (KN-645); KN-455 (nothing: its roast's claim that a disabled Button takes the real hover was
-measured false, MUI giving a disabled button `pointer-events: none`). KN-387 is dropped: the
-language switch it would have styled is the flag Icon Button of KN-478 and KN-479. **KN-644 is
-filed** under KN-013: both Button docs pages still say `States` counts its cells from a frame
-callback, which KN-561 replaced. Earlier: KN-345 (KN-626, KN-627), KN-343 (KN-625), KN-338
-(KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331 (KN-620), KN-024's round (KN-623).
+measured false, MUI giving a disabled button `pointer-events: none`); KN-461 (KN-646, KN-647,
+KN-648). KN-387 is dropped: the language switch it would have styled is the flag Icon Button of
+KN-478 and KN-479. **KN-644 is filed** under KN-013: both Button docs pages still say `States`
+counts its cells from a frame callback, which KN-561 replaced. Earlier: KN-345 (KN-626, KN-627),
+KN-343 (KN-625), KN-338 (KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331 (KN-620),
+KN-024's round (KN-623).
 
 **Rounds waiting**: KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on
 KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-028 on KN-346, KN-626 and
 KN-627; KN-031 on KN-628 and KN-629; KN-439 on KN-641 and KN-642; KN-448 on KN-643; KN-449 on
-KN-645; KN-013 on KN-644 among its twelve. **Still open from earlier**: KN-009 waits on KN-614;
-KN-022 on KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357; KN-029 on its
-other children.
+KN-645; KN-461 on KN-646, KN-647 and KN-648; KN-013 on KN-644 among its twelve. **Still open from
+earlier**: KN-009 waits on KN-614; KN-022 on KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333,
+KN-334 and KN-357; KN-029 on its other children.
 
 **What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
 `Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` overruns its 5 seconds while
 the machine is loaded, KN-551, as it did in the full runs of KN-435, KN-439, KN-444, KN-449 and
-KN-455, though not in KN-448's or KN-461's: rerun the file alone, then read the unit project.
-`App.tsx` line 107 uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486.
+KN-455, though not in KN-448's, KN-461's or KN-470's: rerun the file alone, then read the unit
+project. `App.tsx` line 107 uncovered, KN-491. The API's gate fails on `extraction.service.ts`,
+KN-486.
 
 ## The owner's rules, most recent first
 
@@ -86,21 +88,23 @@ KN-455, though not in KN-448's or KN-461's: rerun the file alone, then read the 
 
 ## The next step
 
-1. **KN-461 is closed** (c306926; board e61be7b): both SignIn docs pages open on the code made for
-   the number and say the code step shows it, with the console gone, and `e2e/sign-in.spec.ts`
-   says the mock makes, shows and logs the code. The code step's heading, the product's own copy,
-   stays with KN-589. **Its roast is running**, `kn461-roast.mjs` writing `kn461-roast.txt`: judge,
-   file with `--parent-task KN-461 --area docs --okr OKR-1`, record, relay.
-2. **KN-470 is in progress**, medium, 1 point, web: the bulk bar's key listener, on the document,
-   checks only the key and its modifiers, so with a selection live and a modal open the key tries
-   to move focus behind the scrim. Exit: the key does nothing while a dialog has focus, and a story
-   opens one with a selection live and presses it. Measure first: the card is from the KN-330
-   roast.
+1. **KN-470 is closed** (6c1f16c; board f529e54): the bulk bar's F6 listener returns while the page
+   holds an element marked `aria-modal`, before it prevents anything; `QuietWhileAModalIsOpen`
+   presses F6 on a Confirm modal's Cancel over a live selection, failed before the guard and passes
+   after, and two mutations each fail one of its two reads. **Its roast is running**,
+   `kn470-roast.mjs` writing `kn470-roast.txt`: judge, file with
+   `--parent-task KN-470 --area web --okr OKR-1`, record, relay.
+2. **KN-461's roast is recorded**: KN-646, the Persian phone entry's subject; KN-647, SigningIn's
+   "last one sent"; KN-648, the auth comments still pointing a tester at the console.
+3. **KN-474 is in progress**, medium, 1 point, web: `FocusAfterDeleting` and
+   `FocusAfterDeletingFromTheModal` assert only that focus is inside the screen and not on the
+   body. Exit: both stories name the control they expect to have focus. Measure first: the card is
+   from the KN-344 roast, and KN-472 waits on it.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-470`,
-the Bulk Action Bar and the screens that host it, and the KN-470 plan once written. **Never chain a
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-474`
+and `todo show KN-472`, the two focus stories, and the KN-474 plan once written. **Never chain a
 check through a pipe into a commit or a close, write long scripts with the Write tool, keep
 apostrophes out of single-quoted strings in scripts, find a story's controls inside
 `#storybook-root`, and read an accessibility claim from the browser's own tree.** The Persian
