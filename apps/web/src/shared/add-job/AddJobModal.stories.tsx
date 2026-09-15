@@ -37,6 +37,13 @@ const offers = (names: (keyof AddJobModalProps)[]) => ({ controls: { include: na
 // opens on and asserts.
 const FIXED = { controls: { disable: true } }
 
+// MUI's own cap on a Dialog's Paper, as the text it gives, KN-559. Typed against
+// the two values the property can read here, MUI's cap or the `none` a Paper
+// under no cap would give, so the lingui rule takes it as the API value it is,
+// KN-304: a bare literal written `as const` is refused, KN-217, and a type of
+// one literal is refused as well, by prefer-as-const.
+const CAP: 'calc(100% - 64px)' | 'none' = 'calc(100% - 64px)'
+
 // The English copy, read from its catalog, so the story says what the canvas
 // draws.
 const english = setupI18n({ locale: 'en-US', messages: { 'en-US': en } })
@@ -189,7 +196,18 @@ export const Review: Story = {
     // title and the company marked required, in 420 that scroll; Save hands
     // the draft over, in its status.
     const dialog = await dialogNamed('افزودن فرصت شغلی')
-    await expect([dialog.getBoundingClientRect().width, dialog.getBoundingClientRect().height]).toEqual([560, 606])
+    // The frame's 606 where there is room for it, and the cap where there is
+    // not, KN-559: MUI caps a Dialog's Paper at CAP of its container, so a
+    // Storybook manager's short canvas, 380 at 1280 by 720, draws 316 of the
+    // modal while the runner's 1440 by 900 holds the whole 606. The cap's own
+    // text is read too, so a library that changed the rule fails this story for
+    // a reader to judge instead of being followed in silence; the number is
+    // written out, since a computed max-height is no dependable pixel count.
+    await expect(window.getComputedStyle(dialog).maxHeight).toBe(CAP)
+    await expect([dialog.getBoundingClientRect().width, dialog.getBoundingClientRect().height]).toEqual([
+      560,
+      Math.min(606, window.innerHeight - 64),
+    ])
     const title = within(dialog).getByRole('textbox', { name: 'عنوان شغلی' })
     await expect(title).toHaveValue(args.draft?.title ?? 'missing')
     await expect(title).toBeRequired()
