@@ -60,7 +60,7 @@ const namesOf = (bar: HTMLElement) =>
 // Storybook there is none to set, so the measures are the reader's to see.
 const atWidth = async (width: number, height: number) => {
   if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
-    if ('__STORYBOOK_PREVIEW__' in globalThis) return false
+    if (import.meta.env.MODE !== 'test') return false
     throw new Error('the bar is measured outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
   }
   const browser = await import('vitest/browser')

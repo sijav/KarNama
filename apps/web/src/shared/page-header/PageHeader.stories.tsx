@@ -136,7 +136,7 @@ export const ControlsOnNarrowScreens: Story = {
     // above it, KN-478. The width is set with the runner's own viewport; in the
     // published Storybook, resize the window to see them go.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
-      if ('__STORYBOOK_PREVIEW__' in globalThis) return
+      if (import.meta.env.MODE !== 'test') return
       throw new Error('ControlsOnNarrowScreens is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
     }
     const browser = await import('vitest/browser')

@@ -278,7 +278,7 @@ export const Matrix: Story = {
     // in the published Storybook there is none, so try them by hand. The
     // runner is known by the flag .storybook/vitest.setup.ts sets, KN-225.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
-      if ('__STORYBOOK_PREVIEW__' in globalThis) return
+      if (import.meta.env.MODE !== 'test') return
       throw new Error('Matrix is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
     }
     const browser = await import('vitest/browser')
@@ -315,7 +315,7 @@ export const KeyboardFocus: Story = {
     // Focus by the keyboard shows the file's two pixels of border/focus:
     // inside, in place of the edge, on Secondary; outside on every other.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
-      if ('__STORYBOOK_PREVIEW__' in globalThis) return
+      if (import.meta.env.MODE !== 'test') return
       throw new Error('KeyboardFocus is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
     }
     const browser = await import('vitest/browser')

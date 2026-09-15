@@ -184,7 +184,7 @@ export const ToldApartFromSelected: Story = {
     // Holding a chip pressed takes a real key, which only the runner has; in the
     // published Storybook the story is a canvas to press by hand, KN-225's flag.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
-      if ('__STORYBOOK_PREVIEW__' in globalThis) return
+      if (import.meta.env.MODE !== 'test') return
       throw new Error('ToldApartFromSelected is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
     }
     const browser = await import('vitest/browser')

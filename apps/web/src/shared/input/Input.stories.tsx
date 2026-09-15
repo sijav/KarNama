@@ -623,7 +623,7 @@ export const Hover: Story = {
     // testing, and only the test runner can drive one. In Storybook's UI the
     // story is a canvas; anywhere else without the flag is an error, KN-225.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
-      if ('__STORYBOOK_PREVIEW__' in globalThis) return
+      if (import.meta.env.MODE !== 'test') return
       throw new Error('Hover is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
     }
     const browser = await import('vitest/browser')

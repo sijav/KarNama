@@ -22,6 +22,17 @@ beforeAll(project.beforeAll)
 // Storybook never does. Owned by this repository, unlike `__vitest_browser__`,
 // the Vitest internal the Checkbox Hover story used to rely on, which an upgrade
 // could rename and so turn every run into a silent pass.
+//
+// A story that finds no flag is a canvas only outside Vite's mode `test`, the
+// mode Vitest runs in, and throws inside it, KN-228: Storybook's preview head,
+// body and viteFinal all reach this page too, so nothing on Storybook's side
+// could say the published Storybook is the one rendering. A run in another mode
+// would let a story missing the flag pass as a canvas, so it stops here instead.
+if (import.meta.env.MODE !== 'test') {
+  throw new Error(
+    `The storybook project runs in mode ${import.meta.env.MODE}, not test, so a story missing the story-test flag would pass as a canvas`,
+  )
+}
 Object.assign(globalThis, { __KARNAMA_STORY_TEST__: true })
 
 // Every story starts with the runner's real pointer where it hovers nothing,

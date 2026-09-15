@@ -204,7 +204,7 @@ export const Hover: Story = {
     // published Storybook there is none to move, so hover a tab yourself. The
     // runner is known by the flag .storybook/vitest.setup.ts sets, KN-225.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
-      if ('__STORYBOOK_PREVIEW__' in globalThis) return
+      if (import.meta.env.MODE !== 'test') return
       throw new Error('Hover is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
     }
     const browser = await import('vitest/browser')
@@ -232,7 +232,7 @@ export const InEnglish: Story = {
 // by the flag .storybook/vitest.setup.ts sets, KN-225.
 const realKeys = async () => {
   if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
-    if ('__STORYBOOK_PREVIEW__' in globalThis) return null
+    if (import.meta.env.MODE !== 'test') return null
     throw new Error('Tab is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
   }
   return import('vitest/browser')

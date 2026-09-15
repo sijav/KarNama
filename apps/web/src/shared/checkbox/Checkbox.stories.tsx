@@ -237,10 +237,12 @@ export const Hover: Story = {
     // `.storybook/vitest.setup.ts`, which only the Vitest project loads, KN-225.
     // It used to be `__vitest_browser__`, a Vitest internal an upgrade could
     // rename. And a missing flag must FAIL rather than pass, so the canvas
-    // branch also needs Storybook's own preview to be the thing rendering the
-    // story; anything else is an error, not a quiet skip.
+    // branch also needs the story to be outside Vite's mode `test`, the mode
+    // Vitest runs in and vitest.setup.ts insists on, KN-228, where it once read
+    // Storybook's private preview global; inside it, a missing flag is an error,
+    // not a quiet skip.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
-      if ('__STORYBOOK_PREVIEW__' in globalThis) return
+      if (import.meta.env.MODE !== 'test') return
       throw new Error('Hover is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
     }
     const browser = await import('vitest/browser')
