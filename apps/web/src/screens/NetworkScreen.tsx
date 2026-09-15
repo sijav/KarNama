@@ -1,7 +1,9 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
 import { useLayoutEffect, useRef, useState } from 'react'
+import { usePreferences } from '../core/preferences'
 import { contactMatches, useRecords, type ContactEntry } from '../core/records'
+import { formatCount } from '../i18n/formatCount'
 import { BulkActionBar } from '../shared/bulk-action-bar'
 import { ContactCard } from '../shared/contact-card'
 import { EmptyState } from '../shared/empty-state'
@@ -57,6 +59,7 @@ export interface NetworkScreenProps {
 
 export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) => {
   const { i18n } = useLingui()
+  const { locale } = usePreferences()
   const records = useRecords()
   // The control that asked to delete, kept as it asks, KN-344. The route from
   // inside the contact modal is why it cannot be read when the confirmation
@@ -136,6 +139,10 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
   }
 
   const nobodyYet = records.contacts.length === 0
+  // How many are going: one is this contact, several are these, KN-432. Held while the
+  // confirmation dissolves, so its copy does not turn singular as it closes.
+  const [going, setGoing] = useState(0)
+  if (deleting !== null && deleting.length !== going) setGoing(deleting.length)
 
   return (
     <Stack ref={page} tabIndex={LOOSE} sx={{ flex: '1 1 auto', minHeight: 0 }}>
@@ -278,8 +285,13 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
         // still in the page, KN-472, else the page, which takes focus for this
         // and nothing else.
         fallback={() => landings.current.find((element) => element.isConnected) ?? page.current}
-        title={i18n._('Delete contact')}
-        body={i18n._('This contact is deleted for good and cannot be brought back.')}
+        title={going > 1 ? i18n._('Delete these contacts?') : i18n._('Delete contact')}
+        // Their count in the reader's own digits goes beside the message, never inside it.
+        body={
+          going > 1
+            ? `${formatCount(locale, going)} ${i18n._('contacts are deleted for good and cannot be brought back.')}`
+            : i18n._('This contact is deleted for good and cannot be brought back.')
+        }
         confirmLabel={i18n._('Delete')}
         onConfirm={remove}
         onCancel={() => {

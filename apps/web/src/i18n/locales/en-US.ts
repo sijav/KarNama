@@ -166,14 +166,18 @@ export const messages: Record<string, string> = {
   'New status': 'New status',
   Select: 'Select',
   'Delete contact': 'Delete contact',
+  'Delete these contacts?': 'Delete these contacts?',
   'Send an email': 'Send an email',
   'Opens in your mail app': 'Opens in your mail app',
   Cancel: 'Cancel',
   Confirm: 'Confirm',
   Close: 'Close',
   'Delete this job opportunity?': 'Delete this job opportunity?',
+  'Delete these job opportunities?': 'Delete these job opportunities?',
   'This job opportunity is deleted for good and cannot be brought back.':
     'This job opportunity is deleted for good and cannot be brought back.',
+  'job opportunities are deleted for good and cannot be brought back.':
+    'job opportunities are deleted for good and cannot be brought back.',
   'Edit contact': 'Edit contact',
   'Full name': 'Full name',
   'e.g. Sara Mohammadi': 'e.g. Sara Mohammadi',
@@ -257,4 +261,5 @@ export const messages: Record<string, string> = {
   'Write your first and last name': 'Write your first and last name',
   Start: 'Start',
   'This contact is deleted for good and cannot be brought back.': 'This contact is deleted for good and cannot be brought back.',
+  'contacts are deleted for good and cannot be brought back.': 'contacts are deleted for good and cannot be brought back.',
 }

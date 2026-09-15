@@ -245,6 +245,19 @@ export const LettingGoOfASelection: Story = {
     await waitFor(async () => {
       await expect(bar).toHaveTextContent(formatCount('fa-IR', 2))
     })
+    // With two chosen, the confirmation names both, KN-432: the title for several and
+    // the count in the reader's own digits; backing out of it keeps them.
+    await userEvent.click(within(bar).getByRole('button', { name: 'حذف' }))
+    const askingBoth = await within(canvasElement.ownerDocument.body).findByRole('dialog')
+    await expect(askingBoth).toHaveAccessibleName('این مخاطب‌ها حذف شوند؟')
+    await expect(askingBoth).toHaveTextContent(formatCount('fa-IR', 2))
+    await expect(askingBoth).toHaveTextContent('مخاطب برای همیشه حذف می‌شوند و برگشتی ندارند.')
+    await userEvent.click(within(askingBoth).getByRole('button', { name: 'انصراف' }))
+    // And it keeps saying how many as it dissolves, rather than turning singular.
+    await expect(askingBoth).toHaveTextContent('این مخاطب‌ها حذف شوند؟')
+    await waitFor(async () => {
+      await expect(within(canvasElement.ownerDocument.body).queryByRole('dialog')).toBeNull()
+    })
     second.focus()
     await userEvent.click(second)
     await waitFor(async () => {

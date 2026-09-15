@@ -777,10 +777,17 @@ export const Selecting: Story = {
     const again = await canvas.findByRole('region', { name: 'کارهای گروهی' })
     await userEvent.click(within(again).getByRole('button', { name: 'حذف' }))
     const confirm = await body.findByRole('dialog')
+    // Two are going, and the confirmation says so, KN-432: the title for several,
+    // and the count in the reader's own digits at the head of its body.
+    await expect(confirm).toHaveAccessibleName('این فرصت‌های شغلی حذف شوند؟')
+    await expect(confirm).toHaveTextContent(formatCount('fa-IR', 2))
+    await expect(confirm).toHaveTextContent('فرصت شغلی برای همیشه حذف می‌شود و برگشتی ندارد.')
     // Pressed a second time as the dialog dissolves, it deletes nothing more,
     // KN-427: the button is held before the first press.
     const confirmDelete = within(confirm).getByRole('button', { name: 'حذف' })
     await userEvent.click(confirmDelete)
+    // And it keeps saying how many as it dissolves, rather than turning singular, KN-432.
+    await expect(confirm).toHaveTextContent('این فرصت‌های شغلی حذف شوند؟')
     await userEvent.click(confirmDelete)
     // Asked for by role, which waits for the page to be given back to the
     // accessibility tree after the confirmation closes as well as for the two

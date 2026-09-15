@@ -3,6 +3,7 @@ import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
 import { useEffect, useId, useLayoutEffect, useRef, useState, type SyntheticEvent } from 'react'
 import { usePreferences } from '../core/preferences'
 import { columnOrder, contactsOf, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
+import { formatCount } from '../i18n/formatCount'
 import { AddJobModal, type AddJobModalProps, type JobDraft } from '../shared/add-job'
 import { BulkActionBar } from '../shared/bulk-action-bar'
 import { Button, type ButtonType, type ButtonVariant } from '../shared/button'
@@ -265,6 +266,10 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   // narrowed once, here, so the edit's modal and handlers know their record without
   // a check no reader can fail, KN-427.
   const editing = person !== undefined && person.id !== null ? { id: person.id, values: person.values } : null
+  // How many are going: one is this job opportunity, several are these, KN-432. Held
+  // while the confirmation dissolves, so its copy does not turn singular as it closes.
+  const [going, setGoing] = useState(0)
+  if (deleting !== null && deleting.length !== going) setGoing(deleting.length)
 
   const card = (entry: JobEntry) => (
     <JobCard
@@ -737,8 +742,13 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
         // still in the page, KN-472, else the board itself, which takes focus for
         // this and nothing else.
         fallback={() => landings.current.find((element) => element.isConnected) ?? board.current}
-        title={i18n._('Delete this job opportunity?')}
-        body={i18n._('This job opportunity is deleted for good and cannot be brought back.')}
+        title={going > 1 ? i18n._('Delete these job opportunities?') : i18n._('Delete this job opportunity?')}
+        // Their count in the reader's own digits goes beside the message, never inside it.
+        body={
+          going > 1
+            ? `${formatCount(locale, going)} ${i18n._('job opportunities are deleted for good and cannot be brought back.')}`
+            : i18n._('This job opportunity is deleted for good and cannot be brought back.')
+        }
         confirmLabel={i18n._('Delete')}
         onConfirm={remove}
         onCancel={() => {
