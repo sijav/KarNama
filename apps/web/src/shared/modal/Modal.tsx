@@ -1,7 +1,8 @@
 import { useLingui } from '@lingui/react'
 import { Box, Dialog, type Theme } from '@mui/material'
-import { useId, type ReactNode } from 'react'
+import { useEffect, useId, type ReactNode } from 'react'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
+import { report } from '../console-guard'
 import { IconButton } from '../icon-button'
 
 // The props are documented in story-docs, not here, KN-207.
@@ -105,6 +106,18 @@ export const ModalActions = ({ children }: { children: ReactNode }) => (
 // change of status.
 export const Modal = ({ open, title, width, onClose, children, actions, onClosed }: ModalProps) => {
   const titleId = useId()
+  // The title names the dialog, so a blank one would leave it unnamed, KN-345. No
+  // type can see a title the catalog hands over at run time, so the shell refuses
+  // it: it says so as the product's own diagnostic, as the Tooltip reports a trigger
+  // it cannot attach, and draws no dialog at all.
+  const unnamed = title.trim() === ''
+  useEffect(() => {
+    if (!unnamed) return
+    report(
+      'Modal: its title is blank, so the dialog would have no accessible name, and it is not drawn. Give it the words that say what it is for.',
+    )
+  }, [unnamed])
+  if (unnamed) return null
   return (
     <Dialog
       open={open}

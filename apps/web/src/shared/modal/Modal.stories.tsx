@@ -3,14 +3,15 @@ import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import type { Locale } from '../../i18n'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
 import { elevation, semantic } from '../../theme/tokens'
 import { Button } from '../button'
+import { passOnUnmarked } from '../console-guard'
 import type { StoryMeta } from '../story-docs/story-meta'
-import { Modal, type ModalProps } from './Modal'
+import { DISSOLVE_MS, Modal, type ModalProps } from './Modal'
 
 // The file's Confirm specimen, node 150:92, its title from the catalog in the
 // language a story pins, so the args hold what the canvas draws.
@@ -186,5 +187,35 @@ export const InEnglish: Story = {
     const dialog = await body(canvasElement).findByRole('dialog', { name: args.title })
     await waitFor(() => expect(dialog).toBeVisible())
     await userEvent.keyboard('{Escape}')
+  },
+}
+
+// The product's own reports held back and read, anything unmarked handed on to the
+// guard, KN-522, as the Tooltip's stories hold theirs.
+const captureConsoleErrors = () => {
+  const through = console.error.bind(console)
+  const spy = spyOn(console, 'error').mockImplementation(passOnUnmarked(through))
+  return () => {
+    spy.mockRestore()
+  }
+}
+
+export const ReportsABlankTitle: Story = {
+  // A title of one space, which names nothing, KN-345; its Controls are off, since
+  // the play is about that title alone.
+  args: { title: ' ' },
+  globals: { locale: 'fa-IR' },
+  parameters: { controls: { disable: true } },
+  beforeEach: captureConsoleErrors,
+  play: async ({ canvasElement }) => {
+    // The shell says so as the product's own diagnostic, as the Tooltip reports a
+    // trigger it cannot attach, and draws nothing: pressed, the trigger opens no
+    // dialog, where one would open with no name.
+    await waitFor(async () => {
+      await expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/title is blank/))
+    })
+    await userEvent.click(within(canvasElement).getByRole('button'))
+    await new Promise((resolve) => setTimeout(resolve, DISSOLVE_MS * 2))
+    await expect(body(canvasElement).queryByRole('dialog')).toBeNull()
   },
 }
