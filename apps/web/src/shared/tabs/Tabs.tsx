@@ -145,6 +145,12 @@ export const Tabs = ({ 'aria-label': label, value, onChange, tabs }: TabsProps) 
                   content: '""',
                   position: 'absolute',
                   inset: EDGE,
+                  // Over the indicator: two positioned pseudo-elements with no
+                  // z-index paint in tree order, so the ::after's two pixels
+                  // covered the ring's outer row on a hovered or chosen tab,
+                  // KN-304. The indicator lies beneath it where they meet and
+                  // shows below it.
+                  zIndex: 1,
                   borderRadius: `${theme.karnama.radius.sm}px`,
                   borderStyle: 'solid',
                   borderWidth: FOCUS_RING,

@@ -7,6 +7,7 @@ import { useArgs } from 'storybook/preview-api'
 import { clearAllMocks, expect, fn, userEvent, within } from 'storybook/test'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
+import { darkSemantic } from '../../theme/darkMode'
 import { semantic, spacing } from '../../theme/tokens'
 import { Input } from '../input'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -271,6 +272,79 @@ export const TabReachesTheText: Story = {
     within(canvasElement).getByRole('tab', { selected: true }).focus()
     await browser.userEvent.keyboard('{Tab}')
     await expect(panel).toHaveFocus()
+  },
+}
+
+// A colour's channels, from the rgb() the browser computes, to compare with a
+// drawn pixel's.
+const channels = (colour: string) => (colour.match(/\d+/g) ?? []).slice(0, 3).map(Number)
+
+// What Chromium drew at CSS rows of an element, down its middle column, read from
+// the runner's own screenshot of it: a computed style says what each of two
+// overlapping pseudo-elements would draw, and only the pixels say which is on top,
+// KN-304.
+const drawnRows = async (png: string, element: HTMLElement, rows: readonly number[]) => {
+  const bytes = Uint8Array.from(window.atob(png), (char) => char.charCodeAt(0))
+  const bitmap = await createImageBitmap(new Blob([bytes], { type: 'image/png' }))
+  const canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
+  // A binding rather than a literal in the call: lingui's rule passes a call's
+  // argument only when its parameter is a union of literals, and getContext's 2d
+  // overload types it as a single literal, KN-304.
+  const kind: OffscreenRenderingContextId = '2d'
+  const context = canvas.getContext(kind)
+  if (!context) throw new Error('the canvas gave no 2d context')
+  context.drawImage(bitmap, 0, 0)
+  // A whole number of pixels to a CSS pixel, or each row read is a blend of two:
+  // the storybook project's page is sized so the runner draws a story one to one,
+  // and vitest.config.ts says why.
+  const scale = bitmap.height / element.getBoundingClientRect().height
+  if (!Number.isInteger(scale)) throw new Error(`the runner drew ${String(scale)} pixels to a CSS pixel, so each row is a blend`)
+  const column = Math.floor(bitmap.width / 2)
+  return rows.map((row) => [...context.getImageData(column, Math.floor((row + 0.5) * scale), 1, 1).data.slice(0, 3)])
+}
+
+// A focused tab's ring drawn whole over its line: the ring's bottom band in
+// border/focus, row by row from the ring's own inset and width, and the tab's last
+// row in the line's colour, so the read is seen to find the line. The line is
+// first shown to differ from the ring, so the band's read can fail.
+const ringOverLine = async (browser: NonNullable<Awaited<ReturnType<typeof realKeys>>>, tab: HTMLElement, line: string) => {
+  await expect(tab).toHaveFocus()
+  await expect(tab).toHaveClass('Mui-focusVisible')
+  const ring = getComputedStyle(tab, '::before')
+  const indicator = getComputedStyle(tab, '::after')
+  const focus = computedColour(tab, darkSemantic['border/focus'])
+  await expect(ring.borderBottomColor).toBe(focus)
+  await expect(indicator.backgroundColor).toBe(computedColour(tab, line))
+  await expect(indicator.backgroundColor).not.toBe(focus)
+  const height = tab.getBoundingClientRect().height
+  const inside = height - px(ring.bottom)
+  const band = Array.from({ length: px(ring.borderBottomWidth) }, (_, offset) => inside - 1 - offset)
+  const drawn = await drawnRows(await browser.page.screenshot({ element: tab, save: false }), tab, [...band, height - 1])
+  await expect(drawn).toEqual([...band.map(() => channels(focus)), channels(indicator.backgroundColor)])
+}
+
+export const FocusRingOverTheLine: Story = {
+  // Dark, where the grey line and the chosen tab's brand line both differ from
+  // the ring; in light the brand line is the ring's own blue. The chosen tab is
+  // the one the args chose, read from the row.
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    const browser = await realKeys()
+    if (!browser) return
+    const tabs = within(canvasElement).getAllByRole('tab')
+    const at = tabs.findIndex((tab) => tab.getAttribute('aria-selected') === 'true')
+    const chosen = tabs[at]
+    const next = tabs[(at + 1) % tabs.length]
+    if (!chosen || !next) throw new Error('no chosen tab, or no tab after it')
+    // A real pointer on the next tab, then real keys from the chosen one: the
+    // arrow that goes on in Persian focuses it without choosing it, and the
+    // other arrow comes back.
+    await browser.userEvent.hover(next)
+    chosen.focus()
+    await browser.userEvent.keyboard('{ArrowLeft}')
+    await ringOverLine(browser, next, darkSemantic['border/default'])
+    await browser.userEvent.keyboard('{ArrowRight}')
+    await ringOverLine(browser, chosen, darkSemantic['bg/brand/default'])
   },
 }
 

@@ -103,7 +103,14 @@ export default defineConfig({
           browser: {
             enabled: true,
             headless: true,
-            provider: playwright(),
+            // The page the tester iframe is drawn in, as big as the largest
+            // viewport a story asks for, the frames' desktop, 1440 by 900, which
+            // holds Storybook's default 1200 by 900 and the phones' sizes too.
+            // Vitest's orchestrator scales the iframe down to fit the page, and at
+            // Playwright's default, 1280 by 720, it drew every story at 0.8, so a
+            // screenshot's pixel was no CSS pixel and a story reading what is drawn
+            // read a blend of two rows, KN-304.
+            provider: playwright({ contextOptions: { viewport: { width: 1440, height: 900 } } }),
             instances: [{ browser: 'chromium' }],
             commands: { parkPointer },
           },

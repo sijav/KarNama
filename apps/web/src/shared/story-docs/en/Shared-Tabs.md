@@ -62,6 +62,14 @@ Storybook itself, press Tab yourself.
 A panel of text alone stays a stop for Tab, so Tab goes from the chosen tab to
 the panel and a keyboard reaches what it says.
 
+### FocusRingOverTheLine
+
+A focused tab keeps its whole ring over the line beneath it, whether the pointer
+is on it or it is chosen, in the dark scheme, where both lines differ from the
+ring. The story presses real keys, moves a real pointer and reads what is drawn
+when it runs as a test; in Storybook itself, press Tab, point at the next tab and
+move to it with an arrow key yourself.
+
 ### ValuesWithSpaces
 
 Two tabs whose values hold a space, as a caller is free to pick: each tab still
