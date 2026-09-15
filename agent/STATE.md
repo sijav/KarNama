@@ -38,44 +38,43 @@ Groq key they had pasted to Codex, that no file, commit or board entry holds it,
 and to rotate it. Never repeat that key anywhere. **Filed for the owner by
 KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
 
-**Roasts run on Codex terra, pinned.** `roast.py`'s task and plan chains end in
-`claude/sonnet`, and their Codex reserve `gpt-5.6` is refused on this ChatGPT
-account with a 400, so when terra is out of usage Claude's work went to Claude:
-KN-533's first roast did and was stopped. Every roast and plan review now passes
-`--model gpt-5.6-terra`, which tries terra alone; AGENTS.md section 7 records it.
+**Roasts run on Codex terra, pinned**: every roast and plan review passes
+`--model gpt-5.6-terra`. `roast.py`'s chains end in `claude/sonnet`, and `gpt-5.6`
+is refused on this account, so without the pin Claude's work goes to Claude when
+terra is out of usage; AGENTS.md section 7 has it.
 
-**KN-571 is closed** (e1df5cc, pushed): the six modal story files offer only the
-controls their plays hold for and that show. The controls sweep on a fresh
-production build finds none broken, untried or unapplied, where it found 39. Modal
-gained a `Default` that opens in its own canvas and waits behind its trigger on the
-Docs page, pinned to fa-IR; ContactModal's `mode` has `control: false`. Its Codex
-roast was running when this was written (`kn571-task-roast.log` in the scratchpad),
-to be judged and recorded, and so was the Pages run for e1df5cc. **KN-594**, filed
-while planning it: the AddJobModal, JobModal and ContactModal Docs pages are
-covered by their own open dialogs, 19, 15 and 2.
+**KN-574 is closed** (5b343bc, pushed): the LanguageSwitch, LanguageFlag, Sidebar,
+NavItem, TabBar, Icon and Tokens stories offer only the controls their plays hold
+for. The controls sweep on a fresh production build finds none broken, untried or
+unapplied, where it found 18; Icon's colour roles, which the sweep cannot type
+since each holds a slash, were planted through the stories' args. Its Codex roast
+was running when this was written (`kn574-task-roast.log` in the scratchpad), to
+be judged and recorded, and so was the Pages run for 5b343bc.
 
-**KN-533 is closed** and its roast recorded: **KN-592**, medium, no e2e holds a real
-touch on the network page as board.spec.ts's does; **KN-593**, low, the phone and
-selecting docs and DESIGN.md's two phone-selection paragraphs say more than the
-code; KN-527 noted, the network card has the board's md-and-wider touch gap too.
-**KN-572** notes that KN-533's three phone stories break under Controls. Its Pages
-run passed.
+**KN-571 is closed** and its roast recorded (0b0ed94): **KN-595**, low, Modal's
+Shell fails for a width wider than its canvas, since the panel keeps 16 from each
+edge; KN-594 noted that Modal's `Default` changes nothing visible on its Docs page
+until its trigger is pressed; dismissed, with blocks.js as evidence, the claim that
+Docs controls make plays fail, since a Docs page runs no play unless a story sets
+autoplay. KN-571's Pages run passed, and 018cb2d's.
 
-**Measured, and in AGENTS.md section 7**: a Docs page draws stories inline, so an
-open modal covers it, and a frame of its own follows no toolbar; the Docs Controls
-block trims by `include`, never by `disable`, so a control no story can hold needs
-`control: false`. The unit project's `session.test.ts` can overrun its 5 seconds
-while a story run loads the machine, KN-551; alone it passes.
+**Filed earlier today and open**: KN-592, medium, no e2e holds a real touch on the
+network page; KN-593, low, the phone and selecting docs say more than the code;
+**KN-594**, medium, the AddJobModal, JobModal and ContactModal Docs pages are
+covered by their own open dialogs, 19, 15 and 2; KN-572 and KN-573 carry the same
+controls rule for the cards and the form controls.
 
 **How to measure**: `node agent/scripts/storybook/controls-sweep.mjs --only
 '<regex>' --out <file>` builds a production Storybook and sweeps each story's
-controls; read its JSON for what each story offered and whether it was tried. The
+controls; read its JSON for what each story offered and whether it was tried. It
+types only URL-safe values: letters, digits, space, underscore and dash. The
 published Storybook: build with `KARNAMA_STORYBOOK_BASE` from PowerShell or Node's
 `env`, never a Git Bash line.
 
 **What fails in a full run**: the Job Card's `Pressed` in parallel only, KN-365's
 kind. `App.tsx` line 107 is uncovered, KN-491's. The API's gate fails on
-`extraction.service.ts`, KN-486.
+`extraction.service.ts`, KN-486. The unit project's `session.test.ts` can overrun
+its 5 seconds while a story run loads the machine, KN-551; alone it passes.
 
 ## The owner's rules, most recent first
 
@@ -99,16 +98,21 @@ kind. `App.tsx` line 107 is uncovered, KN-491's. The API's gate fails on
 
 ## The next step
 
-**KN-574 is next**, high, 3 points: the LanguageSwitch, LanguageFlag, Sidebar,
-NavItem, TabBar, Icon and Tokens stories offer controls that break their plays.
-KN-571's way: measure with the sweep first, since the card's list is from 83877dc;
-offer per story only what its play holds for and what shows, read the args where
-the play can, and keep each Docs page's table, a disabled first story keeping it.
-Plan beside the work, reviewed with `--model gpt-5.6-terra`. Judge and record
-KN-571's roast when it lands, and read the Pages run for e1df5cc to its end.
+**KN-587 is next**, high, 3 points: the sign-in code step shows no countdown to a
+resend and no way back to change the number. Read Auth Desktop Code `407:6972`
+and Mobile Code `407:7043` with use_figma, their text, styles and reactions,
+before planning: the Resend Timer «ارسال دوباره‌ی کد تا ۰۰:۵۹» at 14 Regular in
+`text/disabled` and «ویرایش شماره» at 14 Medium in `text/brand`, both centred under
+the action. The app's code step has a Text Button «ارسال کد دیگر», disabled until the
+provider's `retryAt`, and no way back. **A message may not take a value** until
+KN-221 compiles the catalogs, AGENTS.md section 7: the countdown's time goes beside
+its words, never inside them. KN-589, the frames' promise of a text message while
+the provider is mocked, is the owner's and stays apart. The exit asks for stories
+at 1440 and 390 and the sign-in e2e changing a number. Judge and record KN-574's
+roast when it lands.
 
 ## What to read first
 
-`AGENTS.md` (sections 4 and 7), `DESIGN.md`, `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-574`, KN-571's plan in
-`apps/web/src/shared/modal/`, and the seven story files.
+`AGENTS.md` (section 7), `DESIGN.md` (section 8, the Auth Card), `agent/RALPH.md`,
+the head of `agent/TODO_BOARD.md`, then `todo show KN-587`, `AuthScreen.tsx` and its
+stories, the auth provider's `retryAt`, and `e2e/sign-in.spec.ts`.
