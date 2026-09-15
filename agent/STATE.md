@@ -46,11 +46,12 @@ KN-635); KN-370 (nothing); KN-385 (KN-636); KN-413 (KN-637, KN-638); KN-432 (not
 (KN-639, KN-640); KN-435 (nothing); KN-439 (KN-641, KN-642); KN-444 (nothing); KN-448 (KN-643);
 KN-449 (KN-645); KN-455 (nothing: its roast's claim that a disabled Button takes the real hover was
 measured false, MUI giving a disabled button `pointer-events: none`); KN-461 (KN-646, KN-647,
-KN-648). KN-387 is dropped: the language switch it would have styled is the flag Icon Button of
-KN-478 and KN-479. **KN-644 is filed** under KN-013: both Button docs pages still say `States`
-counts its cells from a frame callback, which KN-561 replaced. Earlier: KN-345 (KN-626, KN-627),
-KN-343 (KN-625), KN-338 (KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331 (KN-620),
-KN-024's round (KN-623).
+KN-648). **Dropped**: KN-387, the language switch it would have styled being the flag Icon Button
+of KN-478 and KN-479; KN-474, satisfied by KN-472's f0b0702, both focus stories already naming the
+control they expect, measured passing. **KN-644 is filed** under KN-013: both Button docs pages
+still say `States` counts its cells from a frame callback, which KN-561 replaced. Earlier: KN-345
+(KN-626, KN-627), KN-343 (KN-625), KN-338 (KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332,
+KN-331 (KN-620), KN-024's round (KN-623).
 
 **Rounds waiting**: KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on
 KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-028 on KN-346, KN-626 and
@@ -88,24 +89,23 @@ KN-486.
 
 ## The next step
 
-1. **KN-470 is closed** (6c1f16c; board f529e54): the bulk bar's F6 listener returns while the page
-   holds an element marked `aria-modal`, before it prevents anything; `QuietWhileAModalIsOpen`
-   presses F6 on a Confirm modal's Cancel over a live selection, failed before the guard and passes
-   after, and two mutations each fail one of its two reads. **Its roast is running**,
-   `kn470-roast.mjs` writing `kn470-roast.txt`: judge, file with
-   `--parent-task KN-470 --area web --okr OKR-1`, record, relay.
-2. **KN-461's roast is recorded**: KN-646, the Persian phone entry's subject; KN-647, SigningIn's
-   "last one sent"; KN-648, the auth comments still pointing a tester at the console.
-3. **KN-474 is in progress**, medium, 1 point, web: `FocusAfterDeleting` and
-   `FocusAfterDeletingFromTheModal` assert only that focus is inside the screen and not on the
-   body. Exit: both stories name the control they expect to have focus. Measure first: the card is
-   from the KN-344 roast, and KN-472 waits on it.
+1. **KN-470's roast is running** (work 6c1f16c; board f529e54), `kn470-roast.mjs` writing
+   `kn470-roast.txt`: judge, file with `--parent-task KN-470 --area web --okr OKR-1`, record, relay.
+2. **KN-474 is dropped** (board a9f0197): KN-472 had already made `FocusAfterDeleting` and
+   `FocusAfterDeletingFromTheModal` name the control that takes focus; both, with
+   `FocusAfterDeletingInAColumn`, pass.
+3. **KN-489 is in progress**, medium, 1 point, deploy: `.github/workflows/pages.yml` builds with
+   `VITE_API_URL` from `vars.KARNAMA_API_URL` unchecked, and `client.ts` turns an empty value into a
+   client that rejects every call, so a deploy without the variable reports success. Exit: the
+   build step fails when `VITE_API_URL` is empty, beginning with a check, and running that step
+   with the variable empty exits non-zero. Measure first, including whether the variable is set
+   today, so the check does not fail every deploy.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-474`
-and `todo show KN-472`, the two focus stories, and the KN-474 plan once written. **Never chain a
-check through a pipe into a commit or a close, write long scripts with the Write tool, keep
-apostrophes out of single-quoted strings in scripts, find a story's controls inside
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-489`,
+`.github/workflows/pages.yml`, `apps/web/src/core/api/client.ts`, and the KN-489 plan once written.
+**Never chain a check through a pipe into a commit or a close, write long scripts with the Write
+tool, keep apostrophes out of single-quoted strings in scripts, find a story's controls inside
 `#storybook-root`, and read an accessibility claim from the browser's own tree.** The Persian
 catalog is `apps/web/src/i18n/locales/fa-IR.ts`.

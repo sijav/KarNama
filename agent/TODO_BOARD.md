@@ -13,6 +13,12 @@ Project **KarNama** · 294 of 648 tasks done · 631 of 1268 points.
 | 1 | OKR-1 | MVP: the pages | now | 213 | 216 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-489` | The Pages build ships an empty API address and reports success when KARNAMA_API_URL is missing | medium | 1 | deploy | none | The build step fails when VITE_API_URL is empty: the step begins with a check, and running that step with the variable empty exits non-zero. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 294 of 648 tasks done · 631 of 1268 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (337)
+## Backlog (336)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 294 of 648 tasks done · 631 of 1268 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-489` | The Pages build ships an empty API address and reports success when KARNAMA_API_URL is missing | medium | 1 | deploy | none | The build step fails when VITE_API_URL is empty: the step begins with a check, and running that step with the variable empty exits non-zero. |
 | `KN-490` | The deployed demo never wakes the sleeping API, so the first extraction waits out the cold start | medium | 1 | web | none | With demo sign-in the app requests the health endpoint once on load, which a story or test observes, and the add modal still explains a slow answer. |
 | `KN-496` | Dark mode never tells the browser it is dark: native controls, scrollbars and the date picker stay light | medium | 1 | web | none | html computes color-scheme dark in dark and light in light, asserted by a story; the date field's calendar glyph is visible in fa-IR dark. |
 | `KN-514` | In English at 390 the job modal's footer wraps its delete button onto two lines | medium | 1 | web | none | At 390 in en-US the footer's three actions each keep one line and the Button's height, and a story at that width asserts it. |
@@ -9064,7 +9069,7 @@ From KN-477's review, A-06, confirmed in extraction.service.ts: a 401 for a bad 
 
 ### `KN-489` The Pages build ships an empty API address and reports success when KARNAMA_API_URL is missing
 
-- **status** backlog · **severity** medium · **points** 1 · **area** deploy · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** deploy · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-477
 
