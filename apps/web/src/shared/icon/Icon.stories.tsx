@@ -12,6 +12,10 @@ const SIZES = Object.keys(iconSize).filter((size): size is keyof typeof iconSize
 const BASE: keyof typeof iconSize = 'base'
 const INHERIT: NonNullable<IconProps['color']> = 'inherit'
 const COLOURS = [...Object.keys(semantic).filter((role): role is keyof typeof semantic => role in semantic), INHERIT] as const
+// The colour an icon takes unless told, and the CSS value a colour prop draws, so
+// a story expects the colour its Controls hold, KN-574.
+const SECONDARY: keyof typeof semantic = 'text/secondary'
+const colourOf = (color: IconProps['color']) => (color === INHERIT ? INHERIT : semantic[color ?? SECONDARY])
 
 const meta = {
   title: 'Shared/Icon',
@@ -55,14 +59,17 @@ const isTheFiles = async (svg: Element, size: number) => {
 }
 
 export const Default: Story = {
+  // A name makes it an image, Named's case, so it is not offered, KN-574.
+  parameters: { controls: { include: ['name', 'size', 'color'] } },
   globals: { colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
     const svg = canvasElement.querySelector('svg')
     if (!svg) throw new Error('no icon rendered')
     await isTheFiles(svg, iconSize[args.size ?? BASE])
-    // Decorative unless named, and text/secondary unless told otherwise.
+    // Decorative unless named, in the colour the Controls hold, text/secondary
+    // unless told otherwise.
     await expect(svg).toHaveAttribute('aria-hidden', 'true')
-    await expect(getComputedStyle(svg).color).toBe(computedColour(svg, semantic['text/secondary']))
+    await expect(getComputedStyle(svg).color).toBe(computedColour(svg, colourOf(args.color)))
   },
 }
 
@@ -117,15 +124,19 @@ export const Sizes: Story = {
 
 export const Coloured: Story = {
   args: { name: 'check', color: 'text/brand' },
+  // A name makes it an image, Named's case, so it is not offered, KN-574.
+  parameters: { controls: { include: ['name', 'size', 'color'] } },
   globals: { colorScheme: 'light' },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     const svg = canvasElement.querySelector('svg')
     if (!svg) throw new Error('no icon rendered')
-    // The colour follows the prop, and the strokes follow the colour.
-    await expect(getComputedStyle(svg).color).toBe(computedColour(svg, semantic['text/brand']))
+    // The colour follows the prop, and a shape's paint follows the colour: its
+    // stroke, or its fill where the file fills it, as more's three dots, KN-574.
+    await expect(getComputedStyle(svg).color).toBe(computedColour(svg, colourOf(args.color)))
     const [shape] = shapesOf(svg)
     if (!shape) throw new Error('the icon draws nothing')
-    await expect(getComputedStyle(shape).stroke).toBe(getComputedStyle(svg).color)
+    const paint = shape.getAttribute('fill') === 'currentColor' ? getComputedStyle(shape).fill : getComputedStyle(shape).stroke
+    await expect(paint).toBe(getComputedStyle(svg).color)
   },
 }
 

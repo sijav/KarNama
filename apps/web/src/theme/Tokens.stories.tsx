@@ -96,6 +96,9 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Semantic: Story = {
+  // About one family, so the family is not offered; the Docs page's table keeps
+  // it, since it trims by include and never by disable, KN-571, KN-574.
+  parameters: { controls: { disable: true } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByTestId('swatches')).toBeInTheDocument()
@@ -104,6 +107,8 @@ export const Semantic: Story = {
 }
 
 export const Status: Story = {
+  // About one family, as Semantic is, KN-574.
+  parameters: { controls: { disable: true } },
   args: { family: 'status' },
   play: async ({ canvasElement }) => {
     // Nine statuses: five defaults and four reserved for user-defined ones. A
@@ -117,6 +122,8 @@ export const Spacing: Story = { args: { family: 'spacing' } }
 export const Radius: Story = { args: { family: 'radius' } }
 
 export const Type: Story = {
+  // About one family, as Semantic is, KN-574.
+  parameters: { controls: { disable: true } },
   args: { family: 'type' },
   play: async ({ canvasElement }) => {
     // The design's face is loaded before anything is measured, KN-322: the

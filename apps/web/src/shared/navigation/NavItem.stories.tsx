@@ -63,18 +63,24 @@ export const Default: Story = {
     const icon = item.querySelector('svg')
     if (!icon) throw new Error('the item has no icon')
     await expect([icon.getBoundingClientRect().width, Math.round(box.right - icon.getBoundingClientRect().right)]).toEqual([20, 12])
-    const label = within(item).getByText(args.label)
+    // The label's own element, after the icon and there for an empty label too,
+    // so the play holds for any label the Controls hold, KN-574.
+    const label = icon.nextElementSibling
+    if (!label) throw new Error('the item has no label')
     await expect(Math.round(icon.getBoundingClientRect().left - label.getBoundingClientRect().right)).toBe(8)
     await expect([px(style.fontSize), Number(style.fontWeight)]).toEqual([14, 500])
-    await expect(style.color).toBe(computed(item, 'color', semantic['text/secondary']))
+    // Its colour and the current page as active says, KN-574.
+    await expect(style.color).toBe(computed(item, 'color', args.active === true ? semantic['text/brand'] : semantic['text/secondary']))
     await expect(style.fontFamily).toBe(getComputedStyle(canvasElement).fontFamily)
-    await expect(item).not.toHaveAttribute('aria-current')
+    await expect(item.getAttribute('aria-current')).toBe(args.active === true ? CURRENT : null)
     await userEvent.click(item)
     await expect(args.onClick).toHaveBeenCalledTimes(1)
   },
 }
 
 export const Active: Story = {
+  // Being active is its point, so it is not offered, KN-574.
+  parameters: { controls: { include: ['icon', 'label'] } },
   args: { active: true },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
@@ -87,6 +93,8 @@ export const Active: Story = {
 }
 
 export const Hover: Story = {
+  // The resting item's hover; an active one keeps its fill, which is Active's, KN-574.
+  parameters: { controls: { include: ['icon', 'label'] } },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
     // Node 512:738: bg/surface-secondary under the pointer, over the

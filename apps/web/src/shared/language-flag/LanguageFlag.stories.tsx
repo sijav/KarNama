@@ -3,7 +3,7 @@ import { IR, US } from 'country-flag-icons/react/3x2'
 import { flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import { expect, within } from 'storybook/test'
-import { localeOrder, locales } from '../../i18n'
+import { localeOrder, locales, type Locale } from '../../i18n'
 import { iconSize, radius, semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { LanguageFlag } from './LanguageFlag'
@@ -17,6 +17,10 @@ const meta = {
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+// Each locale's flag in the package, so a story compares the drawing with the
+// flag of the locale its Controls hold, KN-574.
+const FLAGS: Record<Locale, typeof IR> = { 'fa-IR': IR, 'en-US': US }
 
 // What the package's own component draws, rendered apart from the canvas, so a
 // story can say which flag is on screen without naming the flag's colours.
@@ -50,11 +54,15 @@ const flagIn = (canvasElement: HTMLElement) => {
 }
 
 export const Persian: Story = {
+  // A name makes the drawing an image, Named's case, so only the locale is
+  // offered, KN-574.
+  parameters: { controls: { include: ['locale'] } },
   globals: { colorScheme: 'light' },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     const { svg, host } = flagIn(canvasElement)
-    // Iran's flag, as the package draws it, three by two across the 20 column.
-    await expect(svg.innerHTML).toBe(drawnBy(IR))
+    // The locale's flag, Iran's for Persian, as the package draws it, three by two
+    // across the 20 column.
+    await expect(svg.innerHTML).toBe(drawnBy(FLAGS[args.locale]))
     const box = host.getBoundingClientRect()
     await expect(box.width).toBe(iconSize.md)
     await expect(box.height).toBeCloseTo((iconSize.md * 2) / 3, 1)
@@ -73,21 +81,23 @@ export const Persian: Story = {
 
 export const English: Story = {
   args: { locale: 'en-US' },
-  play: async ({ canvasElement }) => {
+  // As Persian's, only the locale is offered, KN-574.
+  parameters: { controls: { include: ['locale'] } },
+  play: async ({ args, canvasElement }) => {
     const { svg, host } = flagIn(canvasElement)
-    // The United States' flag, the owner's choice for English.
-    await expect(svg.innerHTML).toBe(drawnBy(US))
+    // The locale's flag, the United States' for English, the owner's choice.
+    await expect(svg.innerHTML).toBe(drawnBy(FLAGS[args.locale]))
     await expect(host).toHaveAttribute('aria-hidden', 'true')
   },
 }
 
 export const Named: Story = {
   args: { locale: 'en-US', 'aria-label': locales['en-US'] },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     // Given a name, the flag is an image with that name, for a control made of
     // the flag alone. The name is said once, from the label, not again from a
-    // title inside the drawing.
-    const image = within(canvasElement).getByRole('img', { name: locales['en-US'] })
+    // title inside the drawing: the name the Controls hold, KN-574.
+    const image = within(canvasElement).getByRole('img', { name: args['aria-label'] ?? '' })
     await expect(image).not.toHaveAttribute('aria-hidden')
     await expect(image.querySelector('title')).toBeNull()
   },

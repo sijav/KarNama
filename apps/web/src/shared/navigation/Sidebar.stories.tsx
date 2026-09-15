@@ -2,6 +2,7 @@ import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
 import { semantic } from '../../theme/tokens'
+import { formatPhone } from '../contact-card'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { CURRENT } from './destinations'
 import { Sidebar, type SidebarProps } from './Sidebar'
@@ -70,12 +71,25 @@ export const Default: Story = {
     const sidebar = within(aside)
     await expect(sidebar.getByText('کارنما')).toBeInTheDocument()
     await expect(sidebar.getByText('ک')).toBeInTheDocument()
-    await expect(sidebar.getByText(args.userName ?? 'missing')).toBeInTheDocument()
-    await expect(sidebar.getByText('۰۹۱۲ ۳۴۵ ۶۷۸۹')).toBeInTheDocument()
+    // The name and the phone the Controls hold, found in the User Row, which
+    // follows the Brand Row as 406:451 and 406:457 draw them, so text the rest of
+    // the sidebar prints is never found twice; the phone as the Sidebar's own
+    // formatPhone draws it in the Persian this story pins, each when there is
+    // text to find, KN-574.
+    const userRow = aside.children.item(1)
+    if (!(userRow instanceof HTMLElement)) throw new Error('the sidebar has no user row')
+    if (args.userName !== undefined && args.userName !== '') await expect(within(userRow).getByText(args.userName)).toBeInTheDocument()
+    if (args.userPhone !== undefined && args.userPhone !== '') {
+      await expect(within(userRow).getByText(formatPhone('fa-IR', args.userPhone))).toBeInTheDocument()
+    }
     const nav = sidebar.getByRole('navigation', { name: 'فضای کار' })
     const items = within(nav).getAllByRole('button')
     await expect(items.map((item) => item.textContent)).toEqual(['فرصت‌های شغلی من', 'افزودن فرصت شغلی', 'شبکه من'])
-    await expect(items[0]?.getAttribute('aria-current')).toBe(CURRENT)
+    // The item args.current names is the current page, and only it, KN-574.
+    const current = DESTINATIONS.indexOf(args.current)
+    await expect(items.map((item) => item.getAttribute('aria-current'))).toEqual(
+      items.map((_, index) => (index === current ? CURRENT : null)),
+    )
     // At the foot, 24 from the bottom, the shell's own controls, KN-478: the
     // language, settings and «خروج» as Icon Buttons on one line, the first
     // centred on the destinations' icon column.
@@ -100,6 +114,8 @@ export const Default: Story = {
 }
 
 export const NetworkCurrent: Story = {
+  // The current page is its point, so it is not offered, KN-574.
+  parameters: { controls: { include: ['userName', 'userPhone'] } },
   args: { current: 'network' },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
@@ -112,6 +128,8 @@ export const NetworkCurrent: Story = {
 }
 
 export const WithoutUser: Story = {
+  // Its render passes no user, so only the current page is a control, KN-574.
+  parameters: { controls: { include: ['current'] } },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   // The props a signed-in page gives are left out.
   render: (args) => <Sidebar current={args.current} onNavigate={args.onNavigate} />,
@@ -143,12 +161,17 @@ export const SwitchLanguage: Story = {
 export const InEnglish: Story = {
   args: { userName: 'Mahdi Rezaei' },
   globals: { locale: 'en-US' },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     // Left to right, the edge faces the page on the right and the brand mark
-    // is at the left.
+    // is at the left; the phone the Controls hold, in its User Row, in the English
+    // this story pins, KN-574.
     const aside = asideIn(canvasElement)
     await expect(px(getComputedStyle(aside).borderRightWidth)).toBe(1)
     await expect(within(aside).getByText('K')).toBeInTheDocument()
-    await expect(within(aside).getByText('0912 345 6789')).toBeInTheDocument()
+    const userRow = aside.children.item(1)
+    if (!(userRow instanceof HTMLElement)) throw new Error('the sidebar has no user row')
+    if (args.userPhone !== undefined && args.userPhone !== '') {
+      await expect(within(userRow).getByText(formatPhone('en-US', args.userPhone))).toBeInTheDocument()
+    }
   },
 }

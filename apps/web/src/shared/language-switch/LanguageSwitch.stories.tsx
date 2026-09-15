@@ -4,7 +4,7 @@ import { expect, userEvent, within } from 'storybook/test'
 import { i18nFor, localeOrder, locales, type Locale } from '../../i18n'
 import { iconSize, spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
-import { LanguageSwitch } from './LanguageSwitch'
+import { LanguageSwitch, type LanguageSwitchProps } from './LanguageSwitch'
 
 // Room on the side the menu opens to, since a menu at the viewport's edge is
 // clamped 16 from it: from the sidebar it opens above the button and runs to
@@ -50,13 +50,25 @@ const opensFrom = async (button: HTMLElement, panel: HTMLElement, { above, side 
   else await expect(Math.round(menu.left)).toBe(Math.round(anchor.left))
 }
 
+// Where the menu opens from: above its button and from the start in the
+// sidebar, below it and from the end in a header.
+interface Where {
+  above: boolean
+  side: 'start' | 'end'
+}
+const HEADER: NonNullable<LanguageSwitchProps['placement']> = 'header'
+const IN_THE_SIDEBAR: Where = { above: true, side: 'start' }
+const IN_A_HEADER: Where = { above: false, side: 'end' }
+
 // Opens the menu in a language and checks it: both languages naming themselves
 // in their own language beside a flag each, the two flags different, the
 // button's the current language's, the menu named in the reader's language,
 // and the panel clear of the button on the side it opens to.
 const menuOpens =
-  (locale: Locale, where: { above: boolean; side: 'start' | 'end' }): NonNullable<Story['play']> =>
-  async ({ canvasElement }) => {
+  (locale: Locale): NonNullable<Story['play']> =>
+  async ({ args, canvasElement }) => {
+    // The side it opens from follows the placement the Controls hold, KN-574.
+    const where = args.placement === HEADER ? IN_A_HEADER : IN_THE_SIDEBAR
     const i18n = i18nFor(locale)
     const button = buttonOf(canvasElement, locale)
     await userEvent.click(button)
@@ -101,24 +113,24 @@ export const Header: Story = {
 
 export const Open: Story = {
   globals: { locale: 'fa-IR' },
-  play: menuOpens('fa-IR', { above: true, side: 'start' }),
+  play: menuOpens('fa-IR'),
 }
 
 export const OpenInEnglish: Story = {
   globals: { locale: 'en-US' },
-  play: menuOpens('en-US', { above: true, side: 'start' }),
+  play: menuOpens('en-US'),
 }
 
 export const OpenInTheHeader: Story = {
   args: { placement: 'header' },
   globals: { locale: 'fa-IR' },
-  play: menuOpens('fa-IR', { above: false, side: 'end' }),
+  play: menuOpens('fa-IR'),
 }
 
 export const OpenInTheHeaderInEnglish: Story = {
   args: { placement: 'header' },
   globals: { locale: 'en-US' },
-  play: menuOpens('en-US', { above: false, side: 'end' }),
+  play: menuOpens('en-US'),
 }
 
 export const Switching: Story = {

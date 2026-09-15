@@ -57,9 +57,13 @@ export const Default: Story = {
     const [jobs, add] = tabs
     if (!jobs || !add) throw new Error('fewer than two tabs')
     await expect(Math.round(box.right - jobs.getBoundingClientRect().right)).toBe(0)
-    await expect(jobs.getAttribute('aria-current')).toBe(CURRENT)
-    await expect(getComputedStyle(jobs).color).toBe(computed(jobs, semantic['text/brand']))
-    await expect(getComputedStyle(add).color).toBe(computed(add, semantic['text/secondary']))
+    // The tab args.current names is current, in text/brand, and the others are
+    // text/secondary, whichever page the Controls choose, KN-574.
+    const current = DESTINATIONS.indexOf(args.current)
+    for (const [index, tab] of tabs.entries()) {
+      await expect(tab.getAttribute('aria-current')).toBe(index === current ? CURRENT : null)
+      await expect(getComputedStyle(tab).color).toBe(computed(tab, index === current ? semantic['text/brand'] : semantic['text/secondary']))
+    }
     await expect(jobs.querySelector('svg')?.getBoundingClientRect().width).toBe(24)
     await expect([px(getComputedStyle(jobs).fontSize), Number(getComputedStyle(jobs).fontWeight)]).toEqual([12, 500])
     await userEvent.click(add)
