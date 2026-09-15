@@ -8343,6 +8343,10 @@ OnTheDesktop and OnAPhone assert the box and the inline offsets and nothing vert
 
 **Evidence.** Work 9062dbb. isTheFiles in SearchBar.stories.tsx, which OnTheDesktop and OnAPhone call with their heights and four other stories call at 44, now reads the input's top below the bar, its height against Body's 22, and the icon's top, against the file's numbers read with get_metadata: 7 and 8 in the 36 bar of 241:29 and 252:48, and 11 and 12 in the 44 of 241:156 and the set's 155:86, 155:89 and 401:437; Filled reads its clear control at 12, 401:441. Three changes to SearchBar.tsx, its items aligned at the start, a line height of 24, and 4 of padding at its block start, each left all ten stories passing before the new reads and failed the six stories calling isTheFiles after, the file restored by hash. tsc and lint pass; the unit project passed but for session.test.ts overrunning its 5 s under load, KN-551, which passed alone; Prettier drift unchanged. The plan review approved the plan. Nothing a reader sees changed, so no look.
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T200435-task-kn-444-the-search-bar-size-stories-claim-the-tex-915ab9.md, filed none, dismissed: Nothing to dismiss: the roast found no defect, and checked that exact reads hold in CSS pixels, that focus and the clear control move nothing down the bar, and that no comment, card or commit message claims more than the code does.
+
 ### `KN-445` The Search Bar's size stories hardcode their props instead of rendering from args
 
 - **status** backlog · **severity** low · **points** 1 · **area** web · **objective** OKR-1
