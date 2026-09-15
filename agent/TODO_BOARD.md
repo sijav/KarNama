@@ -10,8 +10,14 @@ Project **KarNama** · 283 of 635 tasks done · 620 of 1255 points.
 
 | position | id | name | state | open | done |
 | -- | -- | ---- | ----- | ---- | ---- |
-| 1 | OKR-1 | MVP: the pages | now | 213 | 205 |
+| 1 | OKR-1 | MVP: the pages | now | 212 | 205 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-413` | The Input's docs still say the line under the field always keeps its height, which KN-287 ended | medium | 1 | web | none | Both language docs say what the field does: no line and no room without a message, a line of one height with a helper or an error, and what that means for a form when an error appears, which is that it does move; nothing in either file contradicts it; the Docs page reads right in both languages. |
 
 ## Blocked (9)
 
@@ -27,7 +33,7 @@ Project **KarNama** · 283 of 635 tasks done · 620 of 1255 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (337)
+## Backlog (335)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 283 of 635 tasks done · 620 of 1255 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-413` | The Input's docs still say the line under the field always keeps its height, which KN-287 ended | medium | 1 | web | none | Both language docs say what the field does: no line and no room without a message, a line of one height with a helper or an error, and what that means for a form when an error appears, which is that it does move; nothing in either file contradicts it; the Docs page reads right in both languages. |
 | `KN-432` | The delete confirmation says 'this job opportunity' while deleting several | medium | 1 | web | none | The confirmation names how many are going in both languages, and a story deleting two reads it. |
 | `KN-434` | Prose is back in the TSX where story-docs owns it, and it prints in the Persian docs | medium | 1 | web | none | No prop or story in the screens or IconButton carries prose the markdown already holds, and the Persian docs page shows no English. |
 | `KN-435` | Saving a rename with a blank name silently discards it | medium | 1 | web | none | A blank rename is refused with the field's own error and the modal stays open; a story presses Save on an empty field. |
@@ -111,7 +116,6 @@ Project **KarNama** · 283 of 635 tasks done · 620 of 1255 points.
 | `KN-601` | The two-tabs e2e's second test waits for a name field and a button the signup step does not have, so it always times out | medium | 1 | web | none | two-tabs.spec.ts finds the signup step by its own words, «نام و نام خانوادگی» and «شروع کن», and both its tests pass on desktop against a fresh build. |
 | `KN-618` | Settings' sample data message may go unread, since its status region mounts already holding it | medium | 1 | web | none | The Settings dialog's status region is in the page, empty, before the samples load, and the loaded message is written into it after, shown by a story that reads it empty before the press and holding the message after. |
 | `KN-626` | A PanelModal given a blank title has no accessible name | medium | 1 | web | none | A blank title given to PanelModal is reported at the console as the product's own diagnostic and PanelModal renders nothing, and a story shows both. |
-| `KN-631` | The Input docs say the line under the field always keeps its height, which KN-287 reversed | medium | 1 | web | none | Both Input story docs describe the line as the component draws it, taking no room without a message and added when a helper or an error appears, and name the owner decision of KN-287. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
 | `KN-082` | Parse the capture as a tree, not with line patterns | medium | 2 | agent | KN-002 | The capture is parsed into a node tree, a nested ordinal-prefixed text node inside frame 505:3 does not change the copy-change count, an unclosed frame tag fails with a parse error rather than slicing to end of file, and both mutations are planted to prove it. |
 | `KN-086` | Make the elevation checks order-aware and the regression exemption scoped | medium | 2 | agent | KN-004 | Swapping the two shadow columns of either elevation row fails the verifier, the sentence "Elevation/Card is the only elevation in the Figma file, as it used to be the only elevation documented" fails it, the paragraph that legitimately records the correction still passes, and the success line names elevation. |
@@ -657,13 +661,14 @@ Project **KarNama** · 283 of 635 tasks done · 620 of 1255 points.
 | `KN-362` | Reading a posting moves focus to an unnamed box rather than to the status that says what is happening | medium | 3 | web | none | Focus goes to an element named by the loading message, or to the status region itself, and a story reads the focused element's accessible name. |
 | `KN-184` | The order check reads the whole document, not the fenced block it claims to | low | 2 | agent | none | The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed. |
 
-## Dropped (6)
+## Dropped (7)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-577` | Route by path, not by hash: /KarNama/jobs, /add and /network, each served on GitHub Pages | critical | 3 | web | none | In a production build served the way GitHub Pages serves it, /KarNama/jobs, /KarNama/add and /KarNama/network each answer 200 and open their page on a hard refresh, in both languages; an unknown path under /KarNama/ opens the board through 404.html; an old /KarNama/#/network address lands on /KarNama/network; the navigation changes the path and Back returns to the page before; the e2e specs open paths and pass; the stories and the unit project pass. |
 | `KN-312` | The Icon Button's hover eases in over MUI's 150 ms where the design's state changes take 300 | medium | 1 | web | none | The Icon Button's hover changes over 300 ms from a named motion token, the story reads the transition's duration, and DESIGN.md says which components' state changes take it. |
 | `KN-387` | The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text | medium | 1 | web | none | In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages. |
+| `KN-631` | The Input docs say the line under the field always keeps its height, which KN-287 reversed | medium | 1 | web | none | Both Input story docs describe the line as the component draws it, taking no room without a message and added when a helper or an error appears, and name the owner decision of KN-287. |
 | `KN-084` | Make the AGENTS.md section 5 gate runnable before any workspace exists | low | 1 | infra | KN-001 | npm run lint, npm run lint:tsc, npm test and npm run build each exit zero and say what they did on a clean checkout with no workspace directories, and each still fails honestly once apps/web exists and contains a failing check. |
 | `KN-176` | KN-162 closed against an exit condition it deliberately did not meet | low | 1 | agent | none | KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail. |
 | `KN-379` | BlankName reads the console before the Icon Button's report effect is sure to have run outside the test runner | low | 1 | web | none | BlankName waits for the report with waitFor before asserting it, and passes in the published Storybook's interaction panel as well as under Vitest. |
@@ -7826,7 +7831,7 @@ CHILD OF KN-227, recorded in prose because board.json cannot express parent_task
 
 ### `KN-413` The Input's docs still say the line under the field always keeps its height, which KN-287 ended
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-011
 
@@ -10849,7 +10854,7 @@ The owner chose on 2026-09-15, asked through the question tool about KN-590, to 
 
 ### `KN-631` The Input docs say the line under the field always keeps its height, which KN-287 reversed
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** dropped · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-029
 
@@ -10858,6 +10863,8 @@ Found by the KN-359 roast and checked on 2026-09-15: story-docs/en/Shared-Input.
 **Why.** A reader of the Input Docs page, in either language, is told the opposite of what the field does and of what the owner decided.
 
 **Exit condition.** Both Input story docs describe the line as the component draws it, taking no room without a message and added when a helper or an error appears, and name the owner decision of KN-287.
+
+**Dropped because.** A duplicate of KN-413, the same defect filed earlier from the KN-296 roast; filed on 2026-09-15 from the KN-359 roast without searching the board first. The work is done under KN-413.
 
 ### `KN-632` ErrorStep reads only the whole dialog 423, so a failure cannot say whether the label or the message moved
 

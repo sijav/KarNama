@@ -93,11 +93,15 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
    with its planted `rtl`. Its amended plan was not reviewed a second time. **Its roast is
    running**, `kn370-roast.mjs` writing `kn370-roast.txt`: judge, file with
    `--parent-task KN-370 --area docs --okr OKR-1`, record, relay.
-4. **KN-385 is in progress**, medium, 1 point, a child of KN-026: a role or company of only spaces
-   still draws the Contact Card's blank role line and divider, and the contact prop's docs say the
-   role cannot be missing. Exit: the card trims each part, the Contact Modal trims role and company
-   on save, a story shows a role of spaces drawing no line, and both docs say role and company may
-   be missing. Check first whether the screens already trim before storing.
+   Its roast is recorded, nothing filed.
+4. **KN-385 is closed** (6d35d00; board 5508947): the Contact Card builds its role line from the
+   trimmed parts, the Contact Modal saves role and company trimmed, and both docs say every part but
+   the name may be missing; the screens already trimmed before storing. **Its roast is running**,
+   `kn385-roast.mjs` writing `kn385-roast.txt`: judge, file with
+   `--parent-task KN-385 --area web --okr OKR-1`, record, relay.
+5. **KN-387 is dropped**: the Page Header's language switch it would have styled as text is, by the
+   owner's decision of 2026-09-14, an Icon Button with its flag, built by KN-478 and KN-479, both
+   done; `LanguageSwitch.tsx` draws `IconButton` with `LanguageFlag` in both placements.
 
 ## What to read first
 
