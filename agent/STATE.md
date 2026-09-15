@@ -96,12 +96,20 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
    Its roast is recorded, nothing filed.
 4. **KN-385 is closed** (6d35d00; board 5508947): the Contact Card builds its role line from the
    trimmed parts, the Contact Modal saves role and company trimmed, and both docs say every part but
-   the name may be missing; the screens already trimmed before storing. **Its roast is running**,
-   `kn385-roast.mjs` writing `kn385-roast.txt`: judge, file with
-   `--parent-task KN-385 --area web --okr OKR-1`, record, relay.
+   the name may be missing; the screens already trimmed before storing. Its roast is recorded:
+   KN-636, blank email, phone, job and LinkedIn rows from a kept record, filed.
 5. **KN-387 is dropped**: the Page Header's language switch it would have styled as text is, by the
    owner's decision of 2026-09-14, an Icon Button with its flag, built by KN-478 and KN-479, both
    done; `LanguageSwitch.tsx` draws `IconButton` with `LanguageFlag` in both placements.
+6. **KN-631 is dropped** as a duplicate of KN-413, filed without searching the board first.
+   **KN-413 is closed** (11a58d5; board ea9a49f): both Input docs open with what the line under the
+   field does, 64 and 90 for a field of one line, wrapping and multiline stated, as its plan review
+   narrowed it. **Its roast is running**, `kn413-roast.mjs` writing `kn413-roast.txt`: judge, file
+   with `--parent-task KN-413 --area web --okr OKR-1`, record, relay.
+7. **KN-432 is in progress**, medium, 1 point, web: the delete confirmation says "this job
+   opportunity" while deleting several. Exit: the confirmation names how many are going in both
+   languages, and a story deleting two reads it. A count inside a message renders raw in the
+   production build until KN-221, AGENTS.md section 7: put it beside the message.
 
 ## What to read first
 
