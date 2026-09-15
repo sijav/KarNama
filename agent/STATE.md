@@ -44,11 +44,12 @@ holds the Groq key; never repeat that key anywhere.
 (nothing); KN-359 (KN-632; KN-631 dropped as a duplicate of KN-413); KN-362 (KN-633, KN-634,
 KN-635); KN-370 (nothing); KN-385 (KN-636); KN-413 (KN-637, KN-638); KN-432 (nothing); KN-434
 (KN-639, KN-640); KN-435 (nothing); KN-439 (KN-641, KN-642); KN-444 (nothing); KN-448 (KN-643);
-KN-449 (KN-645). KN-387 is dropped: the language switch it would have styled is the flag Icon
-Button of KN-478 and KN-479. **KN-644 is filed** under KN-013, found while measuring KN-455: both
-Button docs pages still say `States` counts its cells from a frame callback, which KN-561
-replaced. Earlier: KN-345 (KN-626, KN-627), KN-343 (KN-625), KN-338 (KN-624), KN-336, KN-335
-(KN-621, KN-622), KN-332, KN-331 (KN-620), KN-024's round (KN-623).
+KN-449 (KN-645); KN-455 (nothing: its roast's claim that a disabled Button takes the real hover was
+measured false, MUI giving a disabled button `pointer-events: none`). KN-387 is dropped: the
+language switch it would have styled is the flag Icon Button of KN-478 and KN-479. **KN-644 is
+filed** under KN-013: both Button docs pages still say `States` counts its cells from a frame
+callback, which KN-561 replaced. Earlier: KN-345 (KN-626, KN-627), KN-343 (KN-625), KN-338
+(KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331 (KN-620), KN-024's round (KN-623).
 
 **Rounds waiting**: KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on
 KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-028 on KN-346, KN-626 and
@@ -60,8 +61,8 @@ other children.
 **What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
 `Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` overruns its 5 seconds while
 the machine is loaded, KN-551, as it did in the full runs of KN-435, KN-439, KN-444, KN-449 and
-KN-455, though not in KN-448's: rerun the file alone, then read the unit project. `App.tsx` line
-107 uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486.
+KN-455, though not in KN-448's or KN-461's: rerun the file alone, then read the unit project.
+`App.tsx` line 107 uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486.
 
 ## The owner's rules, most recent first
 
@@ -85,25 +86,22 @@ KN-455, though not in KN-448's: rerun the file alone, then read the unit project
 
 ## The next step
 
-1. **KN-455 is closed** (00f3e8e; board ab9fe9b): each `data-state` twin in `Button.tsx` carries
-   `:not(.Mui-disabled)`, so a disabled Button draws its disabled look whatever the attribute says;
-   `DisabledWhateverItsState` reads all forty-five disabled and forced cells, failed before the gate
-   and passes after, and both Button docs pages describe it. **Its roast is running**,
-   `kn455-roast.mjs` writing `kn455-roast.txt`: judge, file with
-   `--parent-task KN-455 --area web --okr OKR-1`, record, relay.
-2. **KN-449's roast is recorded**: KN-645 filed, two Icon Button story comments timing the
-   Tooltip's missing-ref report wrongly.
-3. **KN-461 is in progress**, medium, 1 point, docs: the sign-in docs say the code was sent and send
-   readers to the console, and `e2e/sign-in.spec.ts` says a resend really sends, while the mock
-   sends nothing and the code step shows the code, KN-459. Exit: neither SignIn introduction
-   mentions the console or says the code was sent, and the spec's comments say the mock makes and
-   shows the code. Measure first; the product's own copy is KN-589's, the owner's to settle.
+1. **KN-461 is closed** (c306926; board e61be7b): both SignIn docs pages open on the code made for
+   the number and say the code step shows it, with the console gone, and `e2e/sign-in.spec.ts`
+   says the mock makes, shows and logs the code. The code step's heading, the product's own copy,
+   stays with KN-589. **Its roast is running**, `kn461-roast.mjs` writing `kn461-roast.txt`: judge,
+   file with `--parent-task KN-461 --area docs --okr OKR-1`, record, relay.
+2. **KN-470 is in progress**, medium, 1 point, web: the bulk bar's key listener, on the document,
+   checks only the key and its modifiers, so with a selection live and a modal open the key tries
+   to move focus behind the scrim. Exit: the key does nothing while a dialog has focus, and a story
+   opens one with a selection live and presses it. Measure first: the card is from the KN-330
+   roast.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-461`,
-the SignIn story docs in both languages, `e2e/sign-in.spec.ts`, and the KN-461 plan once written.
-**Never chain a check through a pipe into a commit or a close, write long scripts with the Write
-tool, keep apostrophes out of single-quoted strings in scripts, find a story's controls inside
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-470`,
+the Bulk Action Bar and the screens that host it, and the KN-470 plan once written. **Never chain a
+check through a pipe into a commit or a close, write long scripts with the Write tool, keep
+apostrophes out of single-quoted strings in scripts, find a story's controls inside
 `#storybook-root`, and read an accessibility claim from the browser's own tree.** The Persian
 catalog is `apps/web/src/i18n/locales/fa-IR.ts`.
