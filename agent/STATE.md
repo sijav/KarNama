@@ -41,28 +41,32 @@ KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-313 is closed** (fa5c0e8; board 1f36f9e; pushed). The Icon Button's hover fill and icon
-colour sit under `@media (hover: hover)`: a tap on a touch screen leaves `:hover` on what was
-tapped, and MUI resets its own hover only in the style it gives a button with a ripple,
-which this one has not. **`e2e/storybook/icon-button-touch.spec.ts`** runs in the Storybook
-check against the production build, the Pages workflow's own: in Playwright's Pixel 7 it
-taps each tone and reads what it drew at rest, `:hover` left on it, and with desktop Chrome
-it hovers each and reads the fill. Against a build of the code before the fix, made into the
-scratchpad, its touch test failed. `IconButton.tsx` keeps its 50 lines of formatting drift:
-its `sx` body sits two spaces deeper than Prettier's, so a changed line stays one line there
-and a comment goes where the file already matches. Its Codex roast was running when this
-was written, `kn313-task-roast.log` in the scratchpad.
+**KN-318 is closed** (3da53b9; board 4236843; pushed). The Button's own hover sits under
+`@media (hover: hover)` while KN-316's forced `data-state="hover"` draws on every device,
+both before the pressed rule. `e2e/storybook/button-touch.spec.ts` runs in the Storybook
+check: in Playwright's Pixel 7 it taps the Matrix story's fifteen enabled Buttons and reads
+each fill and text as at rest, **skipping with its reason if a tap leaves no `:hover`**, and
+with desktop Chrome it hovers each until its fill changes. Against a production build of
+the code before the fix, made into the scratchpad, the touch test failed. Its Codex roast
+was running when this was written, `kn318-task-roast.log` in the scratchpad.
 
-**KN-312 is dropped**: the file draws the Icon Button's hover over 120 ms ease out, read
-with use_figma, not the 300 its exit asked, which DESIGN.md's motion paragraph sets aside,
-and **KN-350** carries every built component's reactions; the reading is a note on KN-350.
+**KN-313 is closed and its roast recorded** (fa5c0e8): the Icon Button the same way, with
+`e2e/storybook/icon-button-touch.spec.ts`. Its round filed **KN-612**, low, the comment
+saying the device can hover where `(hover: hover)` reads the primary input only, and
+**KN-613**, low, its touch check failing rather than skipping if a tap stops leaving
+`:hover`, which would stop the Storybook publishing while the button is right: first
+dismissed as the check's control, filed when KN-318's plan review raised it again.
+**KN-312 is dropped** into KN-350, the Icon Button's reaction being 120 ms ease out.
 
-**KN-304 is closed and its roast recorded** (bdac52f): a focused tab's ring paints over its
-line, and the storybook runner's page is 1440 by 900, so a story is drawn one to one where it
-was drawn at 0.8. Its roast filed **KN-611**, low, the pixel read taking the tab's middle
-column only. **KN-257** (ab5168f) left **KN-610**, low; **KN-230** left **KN-609**, low.
-Earlier today KN-228, KN-216, KN-215, KN-586, KN-427 and KN-587 left KN-597 to KN-608.
-**Open and filed today**: KN-592 to KN-611.
+**KN-304 is closed and its roast recorded** (bdac52f): a focused tab's ring over its line,
+and the storybook runner's page at 1440 by 900 so a story is drawn one to one. Its roast
+filed KN-611. KN-257 left KN-610, KN-230 left KN-609. **Open and filed today**: KN-592 to
+KN-613.
+
+**Running a single Storybook spec**: `STORYBOOK_DIR=<build> npx playwright test --config
+playwright.storybook.config.ts storybook/button-touch`. A filter is a regular expression
+matched against the path: `button-touch` alone also matches `icon-button-touch`, and a
+backslash in one is eaten on the way through npx.
 
 **What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
 `Full On A Phone`, in parallel only, KN-365's kind: rerun a lone failure alone. `App.tsx`
@@ -94,23 +98,22 @@ The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-313's roast lands**, judge it, file survivors as its children (`--area web
---okr OKR-1` for anything under four points), record with `todo roast KN-313 --file ...
---filed ... --dismissed ...`, relay it to the owner, and commit the rendered board. KN-313
-is a child of KN-014, which waits on KN-378 as well.
+**When KN-318's roast lands**, judge it, file survivors as its children (`--area web
+--okr OKR-1` for anything under four points), record with `todo roast KN-318 --file ...
+--filed ... --dismissed ...`, relay it to the owner, and commit the rendered board.
 
-**KN-318 is next**, medium, 1 point, web: the Button's hover fill stays after a tap on a touch
-screen, KN-313's sibling. The same shape should fit, measured first: which rules in
-`Button.tsx` draw a hover across its styles and states, whether MUI's Button reset is
-ripple-only as the IconButton's is, and which Button story renders unpinned; the probe is
-`kn313-probe.mjs` in the scratchpad, and the check can grow beside
-`e2e/storybook/icon-button-touch.spec.ts`. A production Storybook build takes about two
-minutes and can be made into the scratchpad with `STORYBOOK_DIR` pointing the check at it.
+**KN-319 is next**, medium, 1 point, web: in the derived dark palette a pressed Destructive
+button is brighter than its default. **It is KN-009's last open child**, so when it closes,
+KN-009 is roasted together with all its children. Its description says the three danger
+fills go through `deriveDarkSurface`; `darkMode.ts` now derives them with `accentFill`,
+walking each darker until white reads on it, KN-108, so measure the three dark fills, their
+order of lightness and their contrast with `text/on-accent` before planning, and re-point the
+card if its premise has moved.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md` (the Button family), `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-318`, `apps/web/src/shared/button/Button.tsx` and
-`apps/web/e2e/storybook/icon-button-touch.spec.ts`. **Never chain a check through a pipe
-into a commit or a close, give every parallel command its own `cd`, sum a breakdown before
-writing its total, and give a search that finds nothing a positive control.**
+`AGENTS.md` (section 7), `DESIGN.md` (its dark mode paragraphs), `agent/RALPH.md`, the head
+of `agent/TODO_BOARD.md`, then `todo show KN-319`, `apps/web/src/theme/darkMode.ts` and
+its test. **Never chain a check through a pipe into a commit or a close, give every
+parallel command its own `cd`, sum a breakdown before writing its total, and give a search
+that finds nothing a positive control.**
