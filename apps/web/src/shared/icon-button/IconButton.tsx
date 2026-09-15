@@ -88,19 +88,23 @@ const EDGE = 1
 export const nameOf = (label: string): string | null => (label.trim() === '' ? null : label)
 
 // Exactly what the types say a trigger and an opener carry, by name, KN-446: the
-// boundary the types draw is the one the element gets.
+// boundary the types draw is the one the element gets. A name nobody gave is left
+// out rather than passed as undefined, which would still replace a prop of the
+// button's own set before it, KN-448.
 const forwarded = <Element extends HTMLElement>(props: TooltipTrigger<Element> & Opener) => ({
-  onFocus: props.onFocus,
-  onBlur: props.onBlur,
-  onMouseOver: props.onMouseOver,
-  onMouseLeave: props.onMouseLeave,
-  onTouchStart: props.onTouchStart,
-  onTouchEnd: props.onTouchEnd,
-  'aria-describedby': props['aria-describedby'],
-  'aria-haspopup': props['aria-haspopup'],
-  'aria-expanded': props['aria-expanded'],
-  'aria-controls': props['aria-controls'],
-  'data-mui-internal-clone-element': props['data-mui-internal-clone-element'],
+  ...(props.onFocus === undefined ? {} : { onFocus: props.onFocus }),
+  ...(props.onBlur === undefined ? {} : { onBlur: props.onBlur }),
+  ...(props.onMouseOver === undefined ? {} : { onMouseOver: props.onMouseOver }),
+  ...(props.onMouseLeave === undefined ? {} : { onMouseLeave: props.onMouseLeave }),
+  ...(props.onTouchStart === undefined ? {} : { onTouchStart: props.onTouchStart }),
+  ...(props.onTouchEnd === undefined ? {} : { onTouchEnd: props.onTouchEnd }),
+  ...(props['aria-describedby'] === undefined ? {} : { 'aria-describedby': props['aria-describedby'] }),
+  ...(props['aria-haspopup'] === undefined ? {} : { 'aria-haspopup': props['aria-haspopup'] }),
+  ...(props['aria-expanded'] === undefined ? {} : { 'aria-expanded': props['aria-expanded'] }),
+  ...(props['aria-controls'] === undefined ? {} : { 'aria-controls': props['aria-controls'] }),
+  ...(props['data-mui-internal-clone-element'] === undefined
+    ? {}
+    : { 'data-mui-internal-clone-element': props['data-mui-internal-clone-element'] }),
 })
 
 // The Icon Button of node 460:672: a 32 square of radius md around a 16 icon,
@@ -176,17 +180,24 @@ export const IconButton = (props: IconButtonProps) => {
   // as its own overload, taking a REQUIRED href, so a shape whose href is
   // merely optional matches neither, KN-447. Narrowing here is also what gives
   // each form the ref and the handlers for the element it actually renders.
+  //
+  // What a Tooltip or a caller hands on goes last, KN-448, so nothing the button
+  // sets of its own can replace the focus, pointer and touch handlers and the
+  // description a Tooltip gives it, which MUI has already composed with the
+  // caller's, or the state an opener gives it. A handler of the button's own under
+  // one of those names would be dropped whenever one is given, so it is composed
+  // with the forwarded one, never set beside it.
   if (props.href === undefined) {
     const { ref, disabled = false, ...rest } = props
     return (
-      <MuiIconButton ref={ref} {...forwarded(rest)} {...shared} disabled={disabled}>
+      <MuiIconButton ref={ref} {...shared} disabled={disabled} {...forwarded(rest)}>
         {mark}
       </MuiIconButton>
     )
   }
   const { ref, href, ...rest } = props
   return (
-    <MuiIconButton ref={ref} {...forwarded(rest)} {...shared} href={href}>
+    <MuiIconButton ref={ref} {...shared} href={href} {...forwarded(rest)}>
       {mark}
     </MuiIconButton>
   )
