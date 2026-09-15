@@ -81,8 +81,8 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
 ## The next step
 
 1. **Run KN-358's roast** in the background; when it lands, reproduce each finding, file the
-   survivors with `--parent-task KN-358 --area design --okr OKR-1`, record with `todo roast
-   KN-358`, render, commit, push, and relay it.
+   survivors with `--parent-task KN-358 --area design --okr OKR-1`, record the round with
+   `todo roast KN-358`, render, commit, push, and relay it.
 2. **Take `todo next`**, move it in progress, plan it beside the work, have the plan reviewed, and
    build it story first.
 
