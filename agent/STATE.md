@@ -30,22 +30,23 @@ findings are KN-484 to KN-503 and KN-521; the dark `color-scheme` fix waits in
 
 **The owner answered four questions on 2026-09-15**, through the question tool; see the rules
 below. KN-358 is closed on it; **KN-588** is to build the skip; **KN-590** waits on **KN-630**, the
-pages; **KN-616** is to build the arc, now medium, 3 points. DESIGN.md records three of them
-(the phone form, the arc, the pages); section 4's "required there" is corrected when KN-588 is
-built. **Still waiting on the owner**: KN-515, KN-516, KN-517 (asked 2026-09-14); the Search Bar
-and Sort Control taking KN-275's `border/control`, and **KN-486**, the `fetch`-stubbing tests of
-`extraction.service.ts` (both asked in chat 2026-09-15). **Filed and not yet asked**: KN-589 and
-KN-591. The Codex log the owner pasted holds the Groq key; never repeat that key anywhere.
+pages; **KN-616** is to build the arc, medium, 3 points. DESIGN.md records three of them; section
+4's "required there" is corrected when KN-588 is built. **Still waiting on the owner**: KN-515,
+KN-516, KN-517 (asked 2026-09-14); the Search Bar and Sort Control taking KN-275's
+`border/control`, and **KN-486**, the `fetch`-stubbing tests of `extraction.service.ts` (both asked
+in chat 2026-09-15). **Filed and not yet asked**: KN-589 and KN-591. The Codex log the owner pasted
+holds the Groq key; never repeat that key anywhere.
 
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**Closed today and recorded**: KN-348 (242280f; its roast filed KN-628, focus after a confirmed
-delete on the board, and KN-629, the Contact Modal's Controls table); KN-349 (d3b3596; the panel
-on the visual viewport; its roast found nothing); KN-358 (the design commit of the owner's answers;
-**its roast is to be run** with `kn358-roast.mjs` in the scratchpad). Earlier: KN-345 (KN-626,
-KN-627), KN-343 (KN-625), KN-338 (KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331
-(KN-620), KN-024's whole-task round (KN-623).
+**Closed today and recorded**: KN-348 (242280f; roast filed KN-628, KN-629); KN-349 (d3b3596;
+roast found nothing); KN-358 (the design commit of the owner's answers; roast found nothing).
+**KN-359 is closed** (0b8f9c3; board 69d7fff): the add modal's paste label is `unstyledText.pasteLabel`,
+12 on 19 with no spacing, named beside the five type roles; the Input takes `labelStyle`; Paste and
+PasteFilled read 401 and Error 423. **Its roast is running in the background**, `kn359-roast.mjs`
+writing `kn359-roast.txt` in the scratchpad. Earlier: KN-345 (KN-626, KN-627), KN-343 (KN-625),
+KN-338 (KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331 (KN-620), KN-024's round (KN-623).
 
 **Rounds waiting**: KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on
 KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-028 on KN-346, KN-626 and
@@ -80,16 +81,18 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
 
 ## The next step
 
-1. **Run KN-358's roast** in the background; when it lands, reproduce each finding, file the
-   survivors with `--parent-task KN-358 --area design --okr OKR-1`, record the round with
-   `todo roast KN-358`, render, commit, push, and relay it.
-2. **Take `todo next`**, move it in progress, plan it beside the work, have the plan reviewed, and
-   build it story first.
+1. **KN-359's roast lands**: reproduce each finding, file the survivors with
+   `--parent-task KN-359 --area web --okr OKR-1`, record the round, render, commit, push, relay.
+2. **KN-362 is in progress**, medium, 1 point, a child of KN-029: while a posting is read the add
+   modal focuses a `tabIndex` -1 Box around the Loading State with no role or name. Exit: focus goes
+   to an element named by the loading message, or to the status region itself, and a story reads
+   the focused element's name. Plan it beside `AddJobModal.tsx`, have it reviewed, story first;
+   do not edit `AddJobModal.tsx` until KN-359's roast has landed, since the roast reads it.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show` of the
-card `next` gives. **Never chain a check through a pipe into a commit or a close, write long
-scripts with the Write tool, keep apostrophes out of single-quoted strings in scripts, find a
-story's controls inside `#storybook-root`, and read an accessibility claim from the browser's own
-tree.** The Persian catalog is `apps/web/src/i18n/locales/fa-IR.ts`.
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-362`,
+`AddJobModal.tsx`'s loading step and `LoadingState.tsx`. **Never chain a check through a pipe into
+a commit or a close, write long scripts with the Write tool, keep apostrophes out of single-quoted
+strings in scripts, find a story's controls inside `#storybook-root`, and read an accessibility
+claim from the browser's own tree.** The Persian catalog is `apps/web/src/i18n/locales/fa-IR.ts`.
