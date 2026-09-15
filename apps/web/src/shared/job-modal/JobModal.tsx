@@ -697,10 +697,13 @@ export const JobModal = ({
       </Box>
       <Rule />
       {/* The Footer, 210:86: Cancel and Save at the inline start, the delete at
-          the end, in 16 and 24. */}
+          the end, in 16 and 24. Where the three do not fit on a row, English on a
+          phone, KN-514, the delete takes a row of its own and keeps the inline end,
+          rather than squeezing its label onto two lines of a fixed height. */}
       <Box
         sx={{
           display: 'flex',
+          flexWrap: 'wrap',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexShrink: 0,
@@ -709,7 +712,7 @@ export const JobModal = ({
           paddingInline: `${spacing.lg}px`,
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: `${spacing.sm}px` }}>
+        <Box sx={{ display: 'flex', flexShrink: 0, alignItems: 'center', gap: `${spacing.sm}px` }}>
           <Button variant="ghost" onClick={onClose}>
             {i18n._('Cancel')}
           </Button>
@@ -717,9 +720,13 @@ export const JobModal = ({
             {i18n._('Save')}
           </Button>
         </Box>
-        <Button variant="destructive" onClick={onDelete}>
-          {i18n._('Delete job opportunity')}
-        </Button>
+        {/* A box of its own, since the Button takes no sx: the auto margin keeps it at
+            the inline end on a row of its own, where space-between alone would not. */}
+        <Box sx={{ flexShrink: 0, marginInlineStart: 'auto' }}>
+          <Button variant="destructive" onClick={onDelete}>
+            {i18n._('Delete job opportunity')}
+          </Button>
+        </Box>
       </Box>
     </Dialog>
   )

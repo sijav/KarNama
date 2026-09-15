@@ -636,3 +636,48 @@ export const InfoInTheDark: Story = {
     await expect(getComputedStyle(posted).colorScheme).toBe('dark')
   },
 }
+
+// How many lines a button's label takes, by the line boxes of its own text.
+const linesOf = (button: HTMLElement) => {
+  const text = [...button.childNodes].find((node) => node.nodeType === Node.TEXT_NODE)
+  if (!text) throw new Error('the button has no label of text')
+  const range = button.ownerDocument.createRange()
+  range.selectNodeContents(text)
+  return new Set([...range.getClientRects()].map((rect) => Math.round(rect.top))).size
+}
+
+// The footer in English on a phone, KN-514: «Delete job opportunity» does not fit
+// beside Cancel and Save at 390, so it takes a row of its own at the inline end,
+// and no label breaks onto a second line inside its fixed height.
+export const InEnglishOnAPhone: Story = {
+  parameters: FIXED,
+  args: { job: recordIn('en-US'), statuses: fixtures('en-US').statusOptions.slice(0, 5) },
+  globals: { locale: 'en-US', colorScheme: 'light' },
+  play: async ({ args }) => {
+    // The screen is resized by the runner's own browser, which only the runner
+    // has, KN-225.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
+    const before = { width: window.innerWidth, height: window.innerHeight }
+    try {
+      await page.viewport(390, 844)
+      const dialog = await dialogNamed(args.job.draft.title)
+      await waitFor(() => expect(dialog.getBoundingClientRect().width).toBe(358))
+      const i18n = english
+      const [cancel, save, remove] = [i18n._('Cancel'), i18n._('Save'), i18n._('Delete job opportunity')].map((name) =>
+        within(dialog).getByRole('button', { name }),
+      )
+      if (!cancel || !save || !remove) throw new Error('the footer is missing a button')
+      for (const button of [cancel, save, remove]) {
+        await expect(linesOf(button)).toBe(1)
+        await expect(button.getBoundingClientRect().height).toBe(44)
+      }
+      // At the footer's inline end, its padding of 24 from the edge.
+      const footer = remove.parentElement?.parentElement
+      if (!footer) throw new Error('the delete sits in no footer')
+      await expect(Math.round(footer.getBoundingClientRect().right - remove.getBoundingClientRect().right)).toBe(24)
+    } finally {
+      await page.viewport(before.width, before.height)
+    }
+  },
+}

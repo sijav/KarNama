@@ -156,3 +156,9 @@ every change: what the reader is typing stays.
 The Info tab in the derived dark scheme, in Persian. The posting date's field is
 the browser's own date field, whose calendar glyph the browser draws, so the page
 tells the browser it is dark, and the glyph is drawn light on the dark field.
+
+### InEnglishOnAPhone
+
+The modal in English at a phone's 390. The delete's label does not fit beside
+Cancel and Save, so it takes a row of its own at the inline end, and every action
+keeps one line and the Button's height.
