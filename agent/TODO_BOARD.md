@@ -6581,6 +6581,10 @@ CHILD OF KN-012, recorded in prose because board.json cannot express parent_task
 
 **Evidence.** 6ed2856: the Select takes what it holds once, the whole list when multiple and its first value otherwise, for MUI's value and each row's check, so a single select given two values shows, fills and checks the first alone; TwoValuesWithoutMultiple gives it full-time and remote, its Controls off, reads the field, aria-selected and the checked rows, and failed alone against the component as it was with two rows checked; Select stories 10 of 10, unit 1496 of 1496, lint and tsc clean; seen open in fa-IR light and dark, and in en-US light given remote then full-time through Storybook's preview
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T152504-task-kn-332-a-single-select-given-two-values-checks-b-93cdf9.md, filed none, dismissed: Nothing to file: the roast read held, MUI's hidden input, the single-choice change, every caller, the Sort Control's own check and a first value no option has as sound, and found no false claim in the commit, comments or docs. It could not run Vitest in its sandbox; the story's runs here are the evidence.
+
 ### `KN-333` A Select option whose value is the empty string reads as nothing chosen
 
 - **status** backlog · **severity** low · **points** 1 · **area** web · **objective** OKR-1
