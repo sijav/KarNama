@@ -42,27 +42,26 @@ description asking for a turning `spinnerArc` the node does not draw.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-338 is closed** (d8ba566; board ba11242; pushed), one point, a child of KN-020. The Status
-Picker's add chip stood inside its radio group, which was the wrapping row of choices. Now the
-choices and the chip share a row of inline flow: the group an inline element round its radios,
-each radio and the chip an inline item top aligned with 8 after and below it, the row giving the
-last line's 8 back. Built in the page first and read from Chromium's own accessibility tree
-through the DevTools protocol, this and a flex row with `display: contents` both kept the named
-group and the chip outside it; this one was built because Safari's handling of `display: contents`
-cannot be checked here. `Default` and the new `Wrapping`, 300 wide, failed against the old
-component at the chip inside the group. Its Codex roast was running when this was written,
-`kn338-task-roast.log` in the scratchpad. **Filed from it: KN-624**, low: components hand their
-click event to callbacks typed to take nothing, and Storybook warns "Accessing the Story Store is
-deprecated" while its channel serializes it, measured by the warning's stack on ByKeyboard and the
-Bulk Action Bar's Jobs. KN-020 waits on KN-339, KN-383 and KN-624.
+**KN-343 is closed on earlier work** (board f1b9394): its exit was already met by KN-415's
+2b5b205, the compact Contact Card's mail an Icon Button link with a mailto href that
+`WritingToThem` reads, measured on 2026-09-15 as an `A` 32 by 32 beside the delete, and nothing was
+changed. Its roast found the mailto built from the raw address in both layouts, so an address
+holding `?` or `#` breaks the link: filed as a low child of KN-026, the card after KN-624.
 
-**KN-024's whole-task round is recorded** (e0fc63a): the Sort Control's hover motion is KN-350
-already, and **KN-623** was filed, low: its docs and comment say the chosen order is read out,
-which no screen reader has checked. KN-024 waits on KN-623 for its next round. **KN-336's roast**
-found nothing (abd4cc2).
+**KN-338 is closed and its roast recorded, nothing filed** (d8ba566, 52be8ff): the Status Picker's
+add chip stands outside its radio group in a row of inline flow, the group an inline element and
+each radio and the chip an inline item with 8 after and below it. Built in the page first and read
+from Chromium's own accessibility tree through the DevTools protocol; `display: contents` was not
+used because Safari's handling of it cannot be checked here. **KN-624**, low, filed from building
+it: components hand their click event to callbacks typed to take nothing, and Storybook warns
+"Accessing the Story Store is deprecated" while its channel serializes it.
 
-**Rounds waiting**: **KN-018 on KN-621 and KN-622**; **KN-024 on KN-623**; **KN-025 on KN-620**.
-**Filed today and open**: KN-615, KN-617, KN-618, KN-619, KN-620, KN-621, KN-622, KN-623, KN-624.
+**KN-336, KN-335, KN-332 and KN-331 are closed and recorded.** KN-024's whole-task round filed
+**KN-623**, its docs' claim that the order is read out; its motion finding is KN-350's.
+
+**Rounds waiting**: **KN-018 on KN-621 and KN-622**; **KN-024 on KN-623**; **KN-025 on KN-620**;
+KN-020 on KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and the mailto card.
+**Filed today and open**: KN-615, KN-617 to KN-625.
 
 **Still open from earlier**: **KN-009 waits on KN-614**; KN-021 waits on KN-387; KN-022 on KN-327,
 KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357. KN-612 and KN-613, low.
@@ -102,24 +101,24 @@ arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-338's roast lands**, judge it, file survivors with `--parent-task KN-338`, which hangs
-them off KN-020 (`--area web --okr OKR-1` under four points), record with `todo roast KN-338
---file ... --filed ... --dismissed ...`, relay it to the owner, and commit the board.
-
-**KN-343 is in progress**, medium, 1 point, a child of KN-026: the compact Contact Card's mail
-Icon Button calls `window.location.assign` with a mailto address, since the Icon Button takes no
-href, so it is announced as a button, cannot be opened in a new window or copied as a link, and its
-handler runs in no story. Its exit: the compact mail is an anchor with a mailto href styled as the
-Icon Button, and a story reads its href. **Measure first**: the Icon Button's props and element,
-how the full Contact Card writes its mail, and what the stories press.
+**KN-345 is in progress**, medium, 1 point, a child of KN-028: a Modal given a blank title has no
+accessible name. Planned, the plan beside `Modal.tsx`, its Codex plan review running when this was
+written, `kn345-plan-review.log` in the scratchpad. The plan: the Modal reports a blank title
+through `shared/console-guard.ts`'s `report`, from an effect keyed on the title, as the Tooltip,
+the Icon Button and the Checkbox report misuse, and a story `ReportsABlankTitle` captures the
+report with `passOnUnmarked`. The card's exit asks for a refusal by the type or a thrown error in
+development: the type cannot see a runtime title, and nothing in `apps/web/src` throws in
+development only, so the plan asks the review and, if it agrees, edits the exit with the reason.
+`PanelModal` has the same gap and is to be filed as its own card. HEAD drift of `Modal.tsx`, its
+stories and both docs is 0.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md` (the Contact Card and the Icon Button), `agent/RALPH.md`, the
-head of `agent/TODO_BOARD.md`, then `todo show KN-343`, `ContactCard.tsx`, `IconButton.tsx`, their
-stories and story docs. **Never chain a check through a pipe into a commit or a close, give every
-parallel command its own `cd` in a subshell, give a search that finds nothing a positive control,
-find a docs paragraph by its headings rather than by retyping Persian, find a story's controls
-inside `#storybook-root`, read an accessibility claim from the browser's own tree through the
-DevTools protocol, not from Playwright's computed roles, and write long scripts with the Write
-tool.**
+`AGENTS.md` (section 7), `DESIGN.md` (the modals), `agent/RALPH.md`, the head of
+`agent/TODO_BOARD.md`, then `todo show KN-345`, its plan beside `Modal.tsx`, `Modal.tsx`,
+`Modal.stories.tsx`, `shared/console-guard.ts`, and the Tooltip's `ReportsATriggerThatCannotAttach`.
+**Never chain a check through a pipe into a commit or a close, give every parallel command its own
+`cd` in a subshell, give a search that finds nothing a positive control, find a docs paragraph by
+its headings rather than by retyping Persian, find a story's controls inside `#storybook-root`,
+read an accessibility claim from the browser's own tree through the DevTools protocol, and write
+long scripts with the Write tool.**
