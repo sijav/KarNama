@@ -41,35 +41,43 @@ KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-427 is closed** (084fa51, pushed; board d7766b5). JobsScreen's 24 stories take
-97 of 97 functions and 155 of 161 branch arms of `JobsScreen.tsx`, where they took
-113 of 163; the six arms left, lines 89, 195, 203, 218, 580 and 704, each carry a
-comment naming the state and why no reader reaches it, 704's measured three times
-in the dev Storybook. DragAndDrop's play dispatches the browser's own drag events.
-New stories PeopleInFull, PersonForAJobDeletedElsewhere and WithoutSigningOut; `save`
-and the contact modal's record rewritten so two unreachable arms are gone. Its Codex
-roast was running when this was written, `kn427-task-roast.log` in the scratchpad,
-and so was the Pages run for 084fa51.
+**KN-586 is closed** (709c4e5, pushed; board 548708c). The sign-in code step draws
+the Code Input, `shared/code-input`: one real text field, numeric, with the
+one-time-code hint and no `maxLength`, laid over five `aria-hidden` boxes 56 tall and
+8 apart; the box at the caret takes two pixels of `border/focus`, digits show in the
+reader's digits, and a refused code takes the Input's alert line with red resting
+edges. `latinDigits` moved from `core/auth` to `i18n/digits.ts`. Its 11 stories cover
+`CodeInput.tsx` whole, and the sign-in e2e types the code with real keys, 10 of 10.
+Autofill is proven only as far as the field goes: a phone's own suggestion needs the
+live text message to name the site's origin, **KN-600**, api, low. Its Codex roast
+was running when this was written, `kn586-task-roast.log` in the scratchpad, and so
+was the Pages run for 709c4e5.
 
-**KN-598, filed by KN-427's new story**, low: the contact modal keeps a job
-opportunity another tab deleted, so MUI warns of an out-of-range Select value and
-the field shows the raw id. PersonForAJobDeletedElsewhere allows that one warning,
-TECH-DEBT.md section 22, which KN-598's exit removes.
+**KN-601, found while testing KN-586**, medium: `two-tabs.spec.ts`'s second test waits
+for the contact modal's 'Full name' and a button no catalog names, where the signup
+step says 'First and last name' and 'Start', so it times out on desktop. The spec
+came with KN-419, 30f6b8e.
 
-**KN-587 is closed and its roast recorded** (c7698a3, board a00e60e): **KN-597**,
-low, the sign-in screen's focus mark outlives a `changeNumber` the live provider
-ignores while a request is out. Its Pages run passed. AGENTS.md section 7 now holds
-KN-587's lessons: `holdClock` for a play that must reach a timer's end, Playwright's
-clock before the first navigation, and a Codex roast that cannot run Vitest.
+**KN-427 is closed and its roast recorded** (084fa51, board 97ba59d; both Pages runs
+passed). The roast confirmed the exit; **KN-599**, low: its drag story, docs and plan
+call the synthetic DragEvents the play dispatches the browser's own drag events.
+**KN-598**, low, from its new story: the contact modal keeps a job opportunity another
+tab deleted, so MUI warns of an out-of-range Select value; PersonForAJobDeletedElsewhere
+allows that one warning, TECH-DEBT.md section 22, which KN-598's exit removes.
 
-**Open and filed today**: KN-592 to KN-598.
+**KN-587 is closed and its roast recorded** (c7698a3): **KN-597**, low, the sign-in
+screen's focus mark outlives a `changeNumber` the live provider ignores while a
+request is out.
+
+**Open and filed today**: KN-592 to KN-601.
 
 **What fails in a full run**: the Job Card's `Pressed` in parallel only, KN-365's
 kind. `App.tsx` line 107 is uncovered, KN-491's. `RemoteAuthProvider.tsx` and
 AuthScreen's live branches run in no test, KN-503's. The API's gate fails on
 `extraction.service.ts`, KN-486. `session.test.ts` can overrun its 5 seconds while
-a story run loads the machine, KN-551. DESIGN.md holds seven older em dashes,
-KN-083's. The board screen's six commented arms stay untaken by design, KN-427.
+a story run loads the machine, KN-551. `two-tabs.spec.ts`'s second test, KN-601.
+DESIGN.md holds seven older em dashes, KN-083's. The board screen's six commented
+arms stay untaken by design, KN-427.
 
 ## The owner's rules, most recent first
 
@@ -93,22 +101,22 @@ KN-083's. The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-427's roast lands**, judge it, file survivors as children of KN-427
-(`--area web --okr OKR-1`), record with `todo roast KN-427 --file ... --filed ...
+**When KN-586's roast lands**, judge it, file survivors as children of KN-586
+(`--area web --okr OKR-1`), record with `todo roast KN-586 --file ... --filed ...
 --dismissed ...`, relay it to the owner, and commit the rendered board.
 
-**KN-586 is next**, high, 5 points: the sign-in code step has one field where Auth
-Code `407:6972` and `407:7043` draw a Code Row, `407:6981`: five boxes filling the row
-8 apart, 56 tall, radius md, `bg/surface` with one pixel of `border/default`, the
-current box two pixels of `border/focus`, each digit 20 SemiBold in `text/primary`,
-centred, in the reader's digits. The exit asks for typing, pasting, the phone's
-one-time-code autofill and Backspace across the boxes, one field a screen reader
-meets, and the sign-in stories and e2e signing in through it. It is a component of its
-own: read the file's Components page for one before planning, and the boxes' strokes,
-text and reactions with use_figma.
+**KN-215 is next**, medium, 1 point, web: `apps/web/eslint.config.js` puts
+`'^(props|stories)$'` in `lingui/no-unlocalized-strings`' ignore array, which skips
+those two values in every file, so `aria-label="stories"` and `title="props"` pass.
+It was written for the story-docs parser's section names; `parse.ts` already types
+them as a `Section` union, which `useTsTypes` may exempt without the entry. The exit:
+`aria-label="stories"` and `title="props"` fail `npm run lint` in a committed fixture,
+the parser still recognises both headings, and the ignore array no longer names
+them. The fixtures live in `src/gate-fixtures`, which an ordinary lint run ignores.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md` (sections 1, 2 and 8), `agent/RALPH.md`, the head
-of `agent/TODO_BOARD.md`, then `todo show KN-586`, `AuthScreen.tsx`, its stories, the
-Input component and `e2e/sign-in.spec.ts`.
+`AGENTS.md` (section 7), `DESIGN.md`, `agent/RALPH.md`, the head of
+`agent/TODO_BOARD.md`, then `todo show KN-215`, `eslint.config.js`'s `linguiOptions`,
+`story-docs/parse.ts`, `src/gate-fixtures/README.md` and
+`src/i18n/lingui-ignore.test.ts`.
