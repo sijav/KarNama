@@ -41,42 +41,35 @@ KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-587 is closed** (c7698a3, pushed; board 8cfafe1): under the code step's
-action the Resend Timer counts down the API's minute in the reader's digits and
-becomes a Footer Link «ارسال دوباره‌ی کد» at zero, the build's reading since the
-file draws no end to it; «ویرایش شماره» returns to the number step with the
-number kept and focused. The mock now gives `retryAt` and refuses an early resend;
-`AuthValue` has `changeNumber`. Stories 18 of 18, unit 1477 of 1477, sign-in e2e 10
-of 10. Its Codex roast was running when this was written, `kn587-task-roast.log`
-in the scratchpad, and so was the Pages run for c7698a3. KN-591 was noted that the
-timer shares the Terms Note's 2.54 to one, and KN-503 that the live provider's
-`changeNumber` and the screen's restoring, error and busy branches run in no test.
+**KN-427 is closed** (084fa51, pushed; board d7766b5). JobsScreen's 24 stories take
+97 of 97 functions and 155 of 161 branch arms of `JobsScreen.tsx`, where they took
+113 of 163; the six arms left, lines 89, 195, 203, 218, 580 and 704, each carry a
+comment naming the state and why no reader reaches it, 704's measured three times
+in the dev Storybook. DragAndDrop's play dispatches the browser's own drag events.
+New stories PeopleInFull, PersonForAJobDeletedElsewhere and WithoutSigningOut; `save`
+and the contact modal's record rewritten so two unreachable arms are gone. Its Codex
+roast was running when this was written, `kn427-task-roast.log` in the scratchpad,
+and so was the Pages run for 084fa51.
 
-**KN-574's roast is recorded** (da07398): **KN-596**, low, the Sidebar's Default and
-InEnglish plays take the aside's second child for its User Row unchecked; filed
-under KN-011, since KN-574 is itself KN-011's child. 74f5f0d's Pages run passed,
-which holds KN-574; 5b343bc's own run was cancelled by that push.
+**KN-598, filed by KN-427's new story**, low: the contact modal keeps a job
+opportunity another tab deleted, so MUI warns of an out-of-range Select value and
+the field shows the raw id. PersonForAJobDeletedElsewhere allows that one warning,
+TECH-DEBT.md section 22, which KN-598's exit removes.
 
-**Learned in KN-587, to add to AGENTS.md section 7 once its roast lands** (the roast
-may be reading AGENTS.md now):
+**KN-587 is closed and its roast recorded** (c7698a3, board a00e60e): **KN-597**,
+low, the sign-in screen's focus mark outlives a `changeNumber` the live provider
+ignores while a request is out. Its Pages run passed. AGENTS.md section 7 now holds
+KN-587's lessons: `holdClock` for a play that must reach a timer's end, Playwright's
+clock before the first navigation, and a Codex roast that cannot run Vitest.
 
-- A play that must reach the end of a timer holds `Date.now` with `holdClock`,
-  `shared/story-fixtures/clock.ts`. user-event, testing-library's `waitFor`,
-  Storybook's instrumenter, React's scheduler and Vitest read no `Date.now` at call
-  time, checked in node_modules; a component reading the clock on an interval shows
-  the move at its next look, so the play waits with `findBy`.
-- Playwright's `page.clock.install()` goes before the first navigation, in the
-  spec's `beforeEach`; `runFor` fires a repeating interval, `fastForward` each due
-  timer once.
-
-**Open and filed today**: KN-592, KN-593, KN-594, KN-595, KN-596.
+**Open and filed today**: KN-592 to KN-598.
 
 **What fails in a full run**: the Job Card's `Pressed` in parallel only, KN-365's
 kind. `App.tsx` line 107 is uncovered, KN-491's. `RemoteAuthProvider.tsx` and
 AuthScreen's live branches run in no test, KN-503's. The API's gate fails on
 `extraction.service.ts`, KN-486. `session.test.ts` can overrun its 5 seconds while
-a story run loads the machine, KN-551; alone it passes. DESIGN.md holds seven older
-em dashes, KN-083's.
+a story run loads the machine, KN-551. DESIGN.md holds seven older em dashes,
+KN-083's. The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The owner's rules, most recent first
 
@@ -100,22 +93,22 @@ em dashes, KN-083's.
 
 ## The next step
 
-**When KN-587's roast lands**, judge it, file survivors as children of KN-587
-(`--area web --okr OKR-1`), record with `todo roast KN-587 --file ... --filed ...
---dismissed ...`, relay it to the owner, add the two lessons above to AGENTS.md
-section 7, and commit them with the rendered board.
+**When KN-427's roast lands**, judge it, file survivors as children of KN-427
+(`--area web --okr OKR-1`), record with `todo roast KN-427 --file ... --filed ...
+--dismissed ...`, relay it to the owner, and commit the rendered board.
 
-**KN-427 is next**, high, 5 points: JobsScreen leaves 52 of its 149 branch arms to
-no story, 26 of them the drag handlers KN-477 added, which the DragAndDrop story has
-no play for. Its note of 2026-09-14 lists the other 26 by line; the lines have moved
-since KN-422 and KN-477. The exit: every branch of `JobsScreen.tsx` is taken by a
-story or carries a comment saying which state it belongs to and why no reader can
-reach it. Measure first, as KN-587 did: the storybook project on
-`JobsScreen.stories.tsx` with `--coverage.include=src/screens/JobsScreen.tsx
---coverage.reporter=json --coverage.reportOnFailure=true`, and list the untaken arms
-from `coverage-final.json`.
+**KN-586 is next**, high, 5 points: the sign-in code step has one field where Auth
+Code `407:6972` and `407:7043` draw a Code Row, `407:6981`: five boxes filling the row
+8 apart, 56 tall, radius md, `bg/surface` with one pixel of `border/default`, the
+current box two pixels of `border/focus`, each digit 20 SemiBold in `text/primary`,
+centred, in the reader's digits. The exit asks for typing, pasting, the phone's
+one-time-code autofill and Backspace across the boxes, one field a screen reader
+meets, and the sign-in stories and e2e signing in through it. It is a component of its
+own: read the file's Components page for one before planning, and the boxes' strokes,
+text and reactions with use_figma.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md` (section 8), `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-427`, `JobsScreen.tsx` and its stories.
+`AGENTS.md` (section 7), `DESIGN.md` (sections 1, 2 and 8), `agent/RALPH.md`, the head
+of `agent/TODO_BOARD.md`, then `todo show KN-586`, `AuthScreen.tsx`, its stories, the
+Input component and `e2e/sign-in.spec.ts`.
