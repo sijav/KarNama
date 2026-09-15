@@ -13,6 +13,12 @@ Project **KarNama** · 276 of 626 tasks done · 607 of 1233 points.
 | 1 | OKR-1 | MVP: the pages | now | 212 | 198 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-348` | An Edit Contact Modal can be written without the record or the delete | medium | 1 | web | none | Edit cannot be written without initial and onDelete, by its type or two components, and the docs guard still reads every prop. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 276 of 626 tasks done · 607 of 1233 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (336)
+## Backlog (335)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 276 of 626 tasks done · 607 of 1233 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-348` | An Edit Contact Modal can be written without the record or the delete | medium | 1 | web | none | Edit cannot be written without initial and onDelete, by its type or two components, and the docs guard still reads every prop. |
 | `KN-349` | On a phone the panel modal's footer can sit under the software keyboard | medium | 1 | web | none | The panel keeps its footer in view above the software keyboard, capped against the visual viewport, and a story at 390 by 544 shows Save visible with the last field focused. |
 | `KN-358` | The phone's add form reads title before company, where 243:726 draws the company first | medium | 1 | design | none | The owner has chosen one order for the phone's form, DESIGN.md records it, and the form follows it at 390. |
 | `KN-359` | The add modal's Paste step is 398 tall where the file draws 401: its label keeps the Input's 16 | medium | 1 | web | none | Paste, PasteFilled and Error measure the file's 401, 401 and 423 with the label on its 19, and the Input's own label stays 16 everywhere else. |
@@ -6833,7 +6838,7 @@ CHILD OF KN-031, recorded in prose because board.json cannot express parent_task
 
 ### `KN-348` An Edit Contact Modal can be written without the record or the delete
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-031
 
