@@ -15,3 +15,16 @@
 process.env.NODE_ENV = 'test'
 process.env.WEB_ORIGIN = 'https://sijav.github.io'
 process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/karnama-test'
+
+/**
+ * No test reaches a provider, or anything but this machine, KN-486. Every `fetch`
+ * goes through this, which lets 127.0.0.1 through and refuses any other host before
+ * a request exists. Assigned rather than stubbed: `vi.unstubAllGlobals()` puts back
+ * what was there before a test's first stub, and that has to be this, not Node's.
+ */
+const reach = globalThis.fetch
+globalThis.fetch = (input, init) => {
+  const { hostname } = new URL(input instanceof Request ? input.url : input)
+  if (hostname !== '127.0.0.1') return Promise.reject(new Error(`No test may reach ${hostname}, KN-486`))
+  return reach(input, init)
+}
