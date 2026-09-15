@@ -94,9 +94,8 @@ through signing in, KN-601, and the phone network selection, KN-651, fail every 
 
 ## The next step
 
-1. **KN-524's roast is running**, `kn524-roast.mjs` writing `kn524-roast.txt`: judge each finding
-   against the code, file survivors with `--parent-task KN-524 --area web --okr OKR-1`, record with
-   `todo roast KN-524 --file <md> --filed <ids|none> --dismissed "..."`, and relay.
+1. **KN-524's roast is recorded** (ab88b60): no findings, nothing filed; it confirmed the grammar,
+   the early-close line once a fence, and that the Docs page's three Markdown blocks miss no case.
 2. **KN-535 is in progress**, medium, 1 point, web, from KN-431's roast: `SelectingWhileSearching`
    never deletes or moves while a hidden chosen card is still in the selection, since select all has
    already replaced the selection with the shown ids, and no step changes a status under a search.
