@@ -122,6 +122,7 @@ export const messages: Record<string, string> = {
   'Reading the job posting…': 'داره آگهی رو می‌خونه…',
   'Still reading. If the server was asleep, waking it takes up to a minute.':
     'هنوز داره می‌خونه. اگه سرور خواب بوده، بیدار شدنش تا یه دقیقه طول می‌کشه.',
+  'Move the start back': 'زمان آغاز را عقب ببر',
   'job opportunity selected': 'فرصت شغلی انتخاب شده',
   'job opportunities selected': 'فرصت شغلی انتخاب شده',
   'contact selected': 'مخاطب انتخاب شده',

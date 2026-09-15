@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box, keyframes } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useMemo, useState, useSyncExternalStore } from 'react'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { untilSlow } from './wait'
 
@@ -36,25 +36,36 @@ const turn = keyframes({
 // travels from the inline start to the inline end.
 const turnsAgo = (dot: number) => (DOTS.length + MIDDLE - dot) % DOTS.length
 
-// Whether the wait has run past fifteen seconds. It is timed from startedAt,
-// or from when the state first shows, and a new startedAt starts it again.
+// Whether the wait has run past fifteen seconds, timed from startedAt or from when the state
+// first shows. The answer is the clock's, so it is a store outside React for each start,
+// KN-325: its snapshot is read from the clock the first time and kept, so React's repeated
+// reads agree, and its timer, set for every start, marks it past when the fifteen seconds are
+// up and tells React. A start already past shows the slow line on the render that gives it,
+// and a clock set back after the timer fired does not take the line back.
+const slowStore = (start: number) => {
+  let slow: boolean | undefined
+  return {
+    subscribe: (onChange: () => void) => {
+      const timer = window.setTimeout(
+        () => {
+          slow = true
+          onChange()
+        },
+        untilSlow(start, Date.now()),
+      )
+      return () => {
+        window.clearTimeout(timer)
+      }
+    },
+    past: () => (slow ??= untilSlow(start, Date.now()) === 0),
+  }
+}
+
 const useSlow = (startedAt: number | undefined) => {
   const [shownAt] = useState(Date.now)
   const start = startedAt ?? shownAt
-  // The start the wait has been seen to run past.
-  const [pastFor, setPastFor] = useState(() => (untilSlow(start, shownAt) === 0 ? start : undefined))
-  useEffect(() => {
-    const timer = window.setTimeout(
-      () => {
-        setPastFor(start)
-      },
-      untilSlow(start, Date.now()),
-    )
-    return () => {
-      window.clearTimeout(timer)
-    }
-  }, [start])
-  return pastFor === start
+  const store = useMemo(() => slowStore(start), [start])
+  return useSyncExternalStore(store.subscribe, store.past)
 }
 
 // The Loading State of node 159:92, shown while a posting is read in the add

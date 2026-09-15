@@ -25,6 +25,12 @@ The state as it first shows, the dots taking their turns.
 A wait that began more than fifteen seconds ago, so the line says why it is
 slow.
 
+### StartMovesPastFifteenSeconds
+
+A wait whose start the button moves more than fifteen seconds back, as a host
+restarting the wait would: the line says why it is slow from that moment, and
+never shows the reading line on the way, even when it was saying so already.
+
 ### InEnglish
 
 The state in English, the lit dot moving from left to right.

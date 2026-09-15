@@ -437,8 +437,10 @@ up to a minute to wake, DEPLOY.md, and three dots alone for that long look
 hung. So from fifteen seconds the line reads «هنوز داره می‌خونه. اگه سرور خواب
 بوده، بیدار شدنش تا یه دقیقه طول می‌کشه.», which says it is still working and
 names the likely cause without claiming it. The state is a status region, so a
-screen reader reads the change out. The file draws no second line; the copy is
-KN-022's, in the file's register. KN-022.
+screen reader reads the change out, and a start already past fifteen seconds
+when it is given, or moved to, shows that line at once, with no reading line
+between, KN-325. The file draws no second line; the copy is KN-022's, in the
+file's register. KN-022.
 
 ### The Bulk Action Bar
 

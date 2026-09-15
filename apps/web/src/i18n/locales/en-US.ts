@@ -118,6 +118,7 @@ export const messages: Record<string, string> = {
   'Reading the job posting…': 'Reading the job posting…',
   'Still reading. If the server was asleep, waking it takes up to a minute.':
     'Still reading. If the server was asleep, waking it takes up to a minute.',
+  'Move the start back': 'Move the start back',
   'job opportunity selected': 'job opportunity selected',
   'job opportunities selected': 'job opportunities selected',
   'contact selected': 'contact selected',

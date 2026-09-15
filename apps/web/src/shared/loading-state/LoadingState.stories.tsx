@@ -1,7 +1,10 @@
+import { useLingui } from '@lingui/react'
 import type { StoryObj } from '@storybook/react-vite'
-import { expect, within } from 'storybook/test'
+import { useState } from 'react'
+import { expect, fireEvent, within } from 'storybook/test'
 import { i18n } from '../../i18n'
 import { semantic } from '../../theme/tokens'
+import { Button } from '../button'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { LoadingState } from './LoadingState'
 import { COLD_START_AFTER_MS } from './wait'
@@ -101,6 +104,60 @@ export const PastFifteenSeconds: Story = {
     // keep turning.
     const { line } = await drawsTheFrame(canvasElement, { colours: false })
     await expect(line.textContent).toBe(i18n._('Still reading. If the server was asleep, waking it takes up to a minute.'))
+  },
+}
+
+// A wait whose start moves while the state shows, as a host restarting it would: the start
+// begins when the story shows, and the button moves it to twice fifteen seconds before the press.
+// The start is the story's own state and not an arg, so the story's Controls are off.
+const MovingStart = () => {
+  const { i18n } = useLingui()
+  const [startedAt, setStartedAt] = useState(Date.now)
+  return (
+    <>
+      <LoadingState startedAt={startedAt} />
+      <Button
+        onClick={() => {
+          setStartedAt(Date.now() - 2 * COLD_START_AFTER_MS)
+        }}
+      >
+        {i18n._('Move the start back')}
+      </Button>
+    </>
+  )
+}
+
+export const StartMovesPastFifteenSeconds: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => <MovingStart />,
+  play: async ({ canvasElement }) => {
+    // A start moved past fifteen seconds shows the slow line on the render that moves it,
+    // KN-325: each press goes through fireEvent, which Storybook runs inside React's act, so the
+    // line is read once the press has rendered and before any timer can run. Every text the line
+    // shows is recorded, and after one more microtask, when the observer has had its records,
+    // the reading line is not among them.
+    const region = within(canvasElement).getByRole('status')
+    const line = region.lastElementChild
+    if (!(line instanceof HTMLParagraphElement)) throw new Error('the loading state does not end in its line')
+    const slow = i18n._('Still reading. If the server was asleep, waking it takes up to a minute.')
+    const reading = i18n._('Reading the job posting…')
+    await expect(line.textContent).toBe(reading)
+    const shown: (string | null)[] = []
+    const observer = new window.MutationObserver(() => {
+      shown.push(line.textContent)
+    })
+    observer.observe(line, { subtree: true, childList: true, characterData: true })
+    const button = within(canvasElement).getByRole('button')
+    try {
+      await fireEvent.click(button)
+      await expect(line.textContent).toBe(slow)
+      await fireEvent.click(button)
+      await expect(line.textContent).toBe(slow)
+      await Promise.resolve()
+      await expect(shown.filter((text) => text === reading)).toEqual([])
+    } finally {
+      observer.disconnect()
+    }
   },
 }
 
