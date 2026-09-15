@@ -7,6 +7,8 @@ import { untilSlow } from './wait'
 // The props are documented in story-docs, not here, KN-207.
 export interface LoadingStateProps {
   startedAt?: number
+  lineId?: string
+  announceFirstLine?: boolean
 }
 
 // Node 159:98's dots: three of 10, spacing/2xs apart, in border/focus, the
@@ -102,14 +104,17 @@ const useWritten = () => {
 // up to a minute to wake and dots alone would look hung. The region is a
 // status, read whole; what a screen reader hears of it is only its out of
 // sight line, written after the region appears, while the line on screen is
-// drawn from the first frame.
-export const LoadingState = ({ startedAt }: LoadingStateProps) => {
+// drawn from the first frame. Where focus lands on a panel named by the line on
+// screen, which says the first line already, the region leaves that line out and
+// speaks only a later one, KN-362.
+export const LoadingState = ({ startedAt, lineId, announceFirstLine = true }: LoadingStateProps) => {
   const { i18n } = useLingui()
   const slow = useSlow(startedAt)
   const written = useWritten()
   const line = slow
     ? i18n._('Still reading. If the server was asleep, waking it takes up to a minute.')
     : i18n._('Reading the job posting…')
+  const spoken = (announceFirstLine ? written : slow) ? line : ''
   return (
     <Box
       role="status"
@@ -161,11 +166,12 @@ export const LoadingState = ({ startedAt }: LoadingStateProps) => {
           whiteSpace: 'nowrap',
         }}
       >
-        {written ? line : ''}
+        {spoken}
       </Box>
       <Box
         component="p"
         aria-hidden
+        {...(lineId === undefined ? {} : { id: lineId })}
         sx={(theme) => ({
           margin: 0,
           fontSize: `${typeScale.body.size}px`,

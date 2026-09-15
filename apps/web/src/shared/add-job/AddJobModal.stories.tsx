@@ -128,6 +128,9 @@ export const ExtractsToReview: Story = {
   },
 }
 
+// Longer than the 100 ms the Loading State waits before its first spoken line, KN-326.
+const QUIET_MS = 300
+
 export const Loading: Story = {
   parameters: FIXED,
   args: { source: LINK, onExtract: fn(() => new Promise<Partial<JobDraft>>(() => undefined)) },
@@ -140,6 +143,18 @@ export const Loading: Story = {
     await userEvent.click(within(dialog).getByRole('button', { name: 'استخراج اطلاعات' }))
     const status = await within(dialog).findByRole('status')
     await expect(status).toHaveTextContent('داره آگهی رو می‌خونه')
+    // Focus moves with the step onto the panel, a group that holds the status and is named
+    // by the message, not onto a box with no name; and once the 100 ms KN-326 waits are
+    // up, the status has not said the first line again, since the focus said it, KN-362.
+    await waitFor(async () => {
+      const focused = window.document.activeElement
+      if (!(focused instanceof HTMLElement)) throw new Error('nothing has focus')
+      await expect(focused.getAttribute('role')).toBe('group')
+      await expect(focused).toContainElement(status)
+      await expect(focused).toHaveAccessibleName('داره آگهی رو می‌خونه…')
+    })
+    await new Promise((resolve) => window.setTimeout(resolve, QUIET_MS))
+    await expect(status.children[1]?.textContent).toBe('')
     await waitFor(() => expect(dialog.getBoundingClientRect().width).toBe(360))
     await expect(within(dialog).queryByRole('button')).toBeNull()
   },

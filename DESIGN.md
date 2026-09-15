@@ -787,8 +787,9 @@ critical path's «click into the field» (**PasteFilled**, `371:422`). The file
 draws the label at its automatic 19, which the code keeps too, KN-359, so Paste
 is 401 tall, as the file is. **Loading**, `243:964`, is the same dialog as a
 panel of 360, 32 above and below and 24 at the sides, holding the Loading State
-alone; it takes focus, and Escape there goes back to the paste field with what
-was pasted. **Review**, `150:94`, is the form in 420 of the modal's 606,
+alone; it takes focus as a group named by the Loading State's line, whose status
+then speaks only a later line, KN-362, and Escape there goes back to the paste
+field with what was pasted. **Review**, `150:94`, is the form in 420 of the modal's 606,
 scrolling beyond, its bar in the modal's padding at the inline end: two columns
 of 248 with 16 between, from the inline start the title and the company, then
 employment type and location, experience and level, the posting and the salary,

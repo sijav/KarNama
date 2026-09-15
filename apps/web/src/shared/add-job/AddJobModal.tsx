@@ -132,6 +132,7 @@ export const AddJobModal = ({
   const loadingPanel = useRef<HTMLDivElement>(null)
   const formId = useId()
   const pasteFormId = useId()
+  const loadingLineId = useId()
   const stepBody = useRef<HTMLDivElement>(null)
   const shownStep = useRef(flow.step)
   useEffect(() => {
@@ -217,8 +218,10 @@ export const AddJobModal = ({
         }}
       >
         {flow.step === 'loading' ? (
-          <Box ref={loadingPanel} tabIndex={-1} sx={{ outline: 'none' }}>
-            <LoadingState startedAt={flow.startedAt} />
+          // The panel takes focus as a group named by the line on screen, not the status, which
+          // is a live region, and the status leaves that first line to the name, KN-362.
+          <Box ref={loadingPanel} tabIndex={-1} role="group" aria-labelledby={loadingLineId} sx={{ outline: 'none' }}>
+            <LoadingState startedAt={flow.startedAt} lineId={loadingLineId} announceFirstLine={false} />
           </Box>
         ) : (
           <>

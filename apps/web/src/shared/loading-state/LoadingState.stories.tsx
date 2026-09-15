@@ -204,6 +204,61 @@ export const WritesItsFirstLineAfterMounting: Story = {
   },
 }
 
+// A wait whose first line is said by the focus it gets, as the add flow's panel names itself by
+// the line: the status stays quiet for that line and speaks when the line changes. The button
+// moves the start, as in StartMovesPastFifteenSeconds, so the Controls are off.
+const Quiet = () => {
+  const { i18n } = useLingui()
+  const [startedAt, setStartedAt] = useState(Date.now)
+  return (
+    <>
+      <LoadingState startedAt={startedAt} announceFirstLine={false} />
+      <Button
+        onClick={() => {
+          setStartedAt(Date.now() - 2 * COLD_START_AFTER_MS)
+        }}
+      >
+        {i18n._('Move the start back')}
+      </Button>
+    </>
+  )
+}
+
+// Longer than the 100 ms before a first spoken line, KN-326.
+const QUIET_MS = 300
+
+export const SpeaksOnlyALaterLine: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => <Quiet />,
+  play: async ({ canvasElement }) => {
+    // KN-362: given announceFirstLine false, the spoken line stays empty past the 100 ms KN-326
+    // waits, since focus names the panel by that line, and holds the slow line once the wait
+    // runs past fifteen seconds, which a screen reader then reads out as a change.
+    const region = within(canvasElement).getByRole('status')
+    const spoken = region.children[1]
+    if (!(spoken instanceof HTMLSpanElement)) throw new Error('the loading state has no spoken line')
+    await new Promise((resolve) => window.setTimeout(resolve, QUIET_MS))
+    await expect(spoken.textContent).toBe('')
+    await fireEvent.click(within(canvasElement).getByRole('button'))
+    await expect(spoken.textContent).toBe(i18n._('Still reading. If the server was asleep, waking it takes up to a minute.'))
+  },
+}
+
+export const SpeaksTheSlowLineAtOnce: Story = {
+  // Set when this file loads, as in PastFifteenSeconds. Its play reads the spoken line at once,
+  // which a Controls change to either arg would move, so the Controls are off.
+  args: { startedAt: Date.now() - 2 * COLD_START_AFTER_MS, announceFirstLine: false },
+  globals: { locale: 'fa-IR' },
+  parameters: { controls: { disable: true } },
+  play: async ({ canvasElement }) => {
+    // KN-362: told not to speak its first line, a wait already past fifteen seconds speaks the
+    // slow line on its first render, so the state is never silent for good.
+    const spoken = within(canvasElement).getByRole('status').children[1]
+    if (!(spoken instanceof HTMLSpanElement)) throw new Error('the loading state has no spoken line')
+    await expect(spoken.textContent).toBe(i18n._('Still reading. If the server was asleep, waking it takes up to a minute.'))
+  },
+}
+
 export const InEnglish: Story = {
   globals: { locale: 'en-US', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
