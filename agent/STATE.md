@@ -20,7 +20,7 @@ on **Neon**. GitHub Pages for web, Render for the API with a 50 second cold
 start the UI must handle honestly. lingui, **English ids**. **Components first
 with their stories, then screens. Match the design exactly.**
 
-## Where things stand, 2026-09-15
+## Where things stand, 2026-09-16
 
 **Codex's work of 2026-09-12 stays on main**, KN-477: login mocked at the owner's
 word, Groq extraction on Render, Settings, drag and drop, collapse, date
@@ -41,37 +41,36 @@ holds the Groq key; never repeat that key anywhere.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**Closed today, each roast recorded**: KN-348 (filed KN-628, KN-629); KN-349 (nothing); KN-358
-(nothing); KN-359 (KN-632; KN-631 dropped as a duplicate of KN-413); KN-362 (KN-633, KN-634,
-KN-635); KN-370 (nothing); KN-385 (KN-636); KN-413 (KN-637, KN-638); KN-432 (nothing); KN-434
-(KN-639, KN-640); KN-435 (nothing); KN-439 (KN-641, KN-642); KN-444 (nothing); KN-448 (KN-643);
-KN-449 (KN-645); KN-455 (nothing: its roast's claim that a disabled Button takes the real hover was
-measured false, MUI giving a disabled button `pointer-events: none`); KN-461 (KN-646, KN-647,
-KN-648); KN-470 (KN-649, F6 dead for the 150 ms a closed modal dissolves); KN-489 (KN-650, the
-check calling only ASCII white space empty; its first real Pages run succeeded); KN-490 (KN-652, the
-wake-up spec's route comment claiming more than it checks). **Dropped**: KN-387, the language switch
-it would have styled being the flag Icon Button of KN-478 and KN-479; KN-474, satisfied by KN-472's
-f0b0702, both focus stories already naming the control they expect, measured passing. **Filed while
-working**: KN-644 under KN-013, both Button docs pages still saying `States` counts its cells from a
-frame callback; KN-651 under KN-027, the network e2e test choosing two people on a phone by hover
-and timing out, failing on HEAD too. Earlier: KN-345 (KN-626, KN-627), KN-343 (KN-625), KN-338
-(KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331 (KN-620), KN-024's round (KN-623).
+**Closed 2026-09-16**: **KN-514** (ebd4f57): the job modal's footer wraps, the delete keeping a row
+of its own at the inline end where the three actions do not fit, `InEnglishOnAPhone` proving it at
+390; DESIGN.md's Job Modal section records the decision (3bb60c1). Its roast filed **KN-653**: the
+plan and the commit say nothing moves above 390, while English keeps the delete's own row
+until 411. **KN-524** (a43bb15; board d67e628): the story-docs parser's fences are CommonMark's at the top
+level, and the first line in a fence that holds its run without closing it is reported, since the
+Docs page's bundled markdown-to-jsx ends the fence there; AGENTS.md section 3 and section 7 say so.
+KN-551 was given the messages its card asked for.
 
-**Rounds waiting**: KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on
-KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-027 on KN-651 among its five;
-KN-028 on KN-346, KN-626 and KN-627; KN-031 on KN-628 and KN-629; KN-439 on KN-641 and KN-642;
-KN-448 on KN-643; KN-449 on KN-645; KN-461 on KN-646, KN-647 and KN-648; KN-470 on KN-649; KN-477
-on twenty-one, KN-650 and KN-652 among them; KN-013 on KN-644 among its twelve. **Still open from
-earlier**: KN-009 waits on KN-614; KN-022 on KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333,
-KN-334 and KN-357; KN-029 on its other children.
+**Closed 2026-09-15, each roast recorded**: KN-348 (KN-628, KN-629); KN-349; KN-358; KN-359
+(KN-632); KN-362 (KN-633 to KN-635); KN-370; KN-385 (KN-636); KN-413 (KN-637, KN-638); KN-432;
+KN-434 (KN-639, KN-640); KN-435; KN-439 (KN-641, KN-642); KN-444; KN-448 (KN-643); KN-449
+(KN-645); KN-455; KN-461 (KN-646 to KN-648); KN-470 (KN-649); KN-489 (KN-650); KN-490 (KN-652);
+KN-496. **Dropped**: KN-387, KN-474. **Filed while working**: KN-644 under KN-013, KN-651 under
+KN-027.
+
+**Rounds waiting**: KN-514 on KN-653; KN-007 on KN-407 and KN-408; KN-018 on KN-621 and KN-622;
+KN-024 on KN-623; KN-025 on KN-620; KN-020 on KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385
+and KN-625; KN-027 on KN-651 among its five; KN-028 on KN-346, KN-626 and KN-627; KN-031 on KN-628
+and KN-629; KN-439 on KN-641 and KN-642; KN-448 on KN-643; KN-449 on KN-645; KN-461 on KN-646 to
+KN-648; KN-470 on KN-649; KN-477 on twenty-one, KN-650 and KN-652 among them; KN-013 on KN-644
+among its twelve. **Still open from earlier**: KN-009 waits on KN-614; KN-022 on KN-327, KN-615,
+KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357; KN-029 on its other children.
 
 **What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
-`Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` overruns its 5 seconds while
-the machine is loaded, KN-551, as it did in the full runs of KN-435, KN-439, KN-444, KN-449, KN-455,
-KN-490 and KN-496: rerun the file alone, then read the unit project. In the e2e suite, the two-tabs
-test of a tab part way through signing in, KN-601, and the phone network selection, KN-651, fail
-every run. `App.tsx` line 107 uncovered, KN-491. The API's gate fails on `extraction.service.ts`,
-KN-486.
+`Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` fails under load, KN-551:
+its demo case times out at 5 seconds and its live case then sees the request spy called twice; rerun
+the file alone, then read the unit project. In the e2e suite, the two-tabs test of a tab part way
+through signing in, KN-601, and the phone network selection, KN-651, fail every run. `App.tsx` line
+107 uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486.
 
 ## The owner's rules, most recent first
 
@@ -95,24 +94,23 @@ KN-486.
 
 ## The next step
 
-1. **KN-496 is closed** (2f16a4a; board 4d5ccd9): `AppProviders` renders `CssBaseline` with
-   `enableColorScheme`, so `html` computes `color-scheme` light or dark with the scheme; `Persian`,
-   `PersianDark` and the Job Modal's new `InfoInTheDark` read it, each read `normal` before, and the
-   posting date's glyph draws light in fa-IR dark. **Its roast is running**, `kn496-roast.mjs`
-   writing `kn496-roast.txt`: judge, file with `--parent-task KN-496 --area web --okr OKR-1`, record,
-   relay.
-2. **KN-490's roast is recorded**: KN-652 filed under KN-477.
-3. **KN-514 is in progress**, medium, 1 point, web: at 390 by 844 in en-US the job modal's footer
-   breaks «Delete job opportunity» onto two lines and grows the button past the Button's 44. Exit: at
-   390 in en-US the footer's three actions each keep one line and the Button's height, and a story at
-   that width asserts it. Measure first; the file draws only Persian, so how the footer yields in
-   English is decided here.
+1. **KN-524's roast is running**, `kn524-roast.mjs` writing `kn524-roast.txt`: judge each finding
+   against the code, file survivors with `--parent-task KN-524 --area web --okr OKR-1`, record with
+   `todo roast KN-524 --file <md> --filed <ids|none> --dismissed "..."`, and relay.
+2. **KN-535 is in progress**, medium, 1 point, web, from KN-431's roast: `SelectingWhileSearching`
+   never deletes or moves while a hidden chosen card is still in the selection, since select all has
+   already replaced the selection with the shown ids, and no step changes a status under a search.
+   `JobsScreen.tsx` uses `held` for both, near lines 473 and 476. Exit: a story chooses a card,
+   searches it out of view, chooses a shown card and deletes it, then does the same with a status
+   change; the hidden cards are neither deleted nor moved; and with the bar's delete, then its status
+   change, put back on `selected`, the story fails each time. Measure first.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-514`,
-`JobModal.tsx`'s footer and the Job Modal's `Phone` and `InEnglish` stories, and the KN-514 plan
-once written. **Never chain a check through a pipe into a commit or a close, write long scripts with
-the Write tool, keep apostrophes out of single-quoted strings in scripts, find a story's controls
-inside `#storybook-root`, and read an accessibility claim from the browser's own tree.** The Persian
-catalog is `apps/web/src/i18n/locales/fa-IR.ts`.
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-535`,
+`JobsScreen.tsx` around `held` and `selected`, the `SelectingWhileSearching` story, and KN-431's
+plan. **Never chain a check through a pipe into a commit or a close, write long scripts with the
+Write tool, keep apostrophes out of single-quoted strings in scripts, find a story's controls inside
+`#storybook-root`, and read an accessibility claim from the browser's own tree.** Keep a failing
+run's full output in a file before filtering it. The Persian catalog is
+`apps/web/src/i18n/locales/fa-IR.ts`.

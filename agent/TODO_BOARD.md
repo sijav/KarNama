@@ -13,6 +13,12 @@ Project **KarNama** · 299 of 653 tasks done · 636 of 1273 points.
 | 1 | OKR-1 | MVP: the pages | now | 213 | 221 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-535` | SelectingWhileSearching never deletes or moves while a hidden chosen card is still in the selection | medium | 1 | web | none | A story chooses a card, searches it out of view, chooses a shown card and deletes it, then does the same with a status change; the hidden cards are neither deleted nor moved; and with the bar's delete, then its status change, put back on selected, the story fails each time. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 299 of 653 tasks done · 636 of 1273 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (337)
+## Backlog (336)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 299 of 653 tasks done · 636 of 1273 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-535` | SelectingWhileSearching never deletes or moves while a hidden chosen card is still in the selection | medium | 1 | web | none | A story chooses a card, searches it out of view, chooses a shown card and deletes it, then does the same with a status change; the hidden cards are neither deleted nor moved; and with the bar's delete, then its status change, put back on selected, the story fails each time. |
 | `KN-543` | The API seeds the five default statuses with rejected before offer, against the design's order | medium | 1 | api | none | The API's seed writes the defaults' positions in the design's order, offer before rejected and rejected last, and a test of the seed asserts that order. |
 | `KN-544` | A column starts collapsed when its colour is rejected's, not when it is the Rejected status | medium | 1 | web | none | The board starts collapsed only the Rejected status, by its id: a story gives a status of the reader's own red and finds its column open, gives Rejected another colour and finds it still collapsed, and fails on the colour rule. |
 | `KN-559` | AddJobModal's Review story asserts a 606 tall modal, which Storybook's manager canvas cannot hold | medium | 1 | web | none | Review states the room its size assertion needs, through its viewport parameters or by asserting against the room it is given, and passes inside the manager of a production Storybook opened at 1280 by 720, bare, and in the Vitest runner. |
@@ -9713,7 +9718,7 @@ KN-356's roast, confirmed against 6bf0c27: App/Shell's Selecting asserts at 1440
 
 ### `KN-535` SelectingWhileSearching never deletes or moves while a hidden chosen card is still in the selection
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-431
 
