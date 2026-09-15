@@ -2,9 +2,15 @@ A text field with its label above and a helper or error line below, from the
 design's Input. Every form in the product uses it: add job, manual entry,
 contact, note, admin.
 
-**The line under the field always keeps its height.** With no message, with a
-helper, or with an error, it is the same size, so a validation error appearing
-never pushes the rest of a form down.
+**The line under the field takes room only when it has something to say**, the
+owner's decision of KN-287. With no message there is no line and no gap: a field
+of one line is 64 tall. A helper or an error adds the line, 4 below the field and
+22 a line, so the same field with a message of one line is 90, and a message that
+wraps takes 22 more for each line. An error takes a helper's place in that line.
+So an error moves what follows down only when it adds the line or makes it
+longer: under a field with no helper it does, and in place of a helper as long as
+itself it does not. A field of several lines starts at 140 tall instead and grows
+with its text.
 
 The label is bound to the field, so clicking it focuses the field and a screen
 reader names the field by it. The helper or error is the field's description,
