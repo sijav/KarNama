@@ -13,21 +13,28 @@ export interface LoadingStateProps {
 // middle one lit and the others at 0.4. The size and the opacity bind no
 // variable, so they are component constants.
 const DOTS = [0, 1, 2] as const
+const MIDDLE = 1
 const DOT = 10
 const DIM = 0.4
 const LIT = 1
 
 // The file draws one frame and leaves the motion to code, its description
 // says. Each dot takes a turn of 300 ms, the design's state change, DESIGN.md
-// section 7, so the lit dot crosses the three in 900; when the middle one is
-// lit the others are at 0.4, which is the file's frame.
+// section 7, so the lit dot crosses the three in 900. A dot is lit at the ends
+// of its cycle, brightening over the half turn before and dimming over the
+// half turn after, and the motion starts on the middle dot's lit moment, so
+// the first frame painted is the file's, KN-324.
 const TURN_MS = 300
 const turn = keyframes({
-  '0%': { opacity: DIM },
-  '16.667%': { opacity: LIT },
-  '33.333%': { opacity: DIM },
-  '100%': { opacity: DIM },
+  '0%': { opacity: LIT },
+  '16.667%': { opacity: DIM },
+  '83.333%': { opacity: DIM },
+  '100%': { opacity: LIT },
 })
+// How many turns ago each dot was lit when the motion starts: the middle one
+// now, the one before it one turn ago and the one after it two, so the lit dot
+// travels from the inline start to the inline end.
+const turnsAgo = (dot: number) => (DOTS.length + MIDDLE - dot) % DOTS.length
 
 // Whether the wait has run past fifteen seconds. It is timed from startedAt,
 // or from when the state first shows, and a new startedAt starts it again.
@@ -83,9 +90,9 @@ export const LoadingState = ({ startedAt }: LoadingStateProps) => {
               height: DOT,
               borderRadius: `${theme.karnama.radius.full}px`,
               backgroundColor: theme.karnama.semantic['border/focus'],
-              opacity: dot === 1 ? LIT : DIM,
+              opacity: dot === MIDDLE ? LIT : DIM,
               animation: `${turn} ${DOTS.length * TURN_MS}ms linear infinite`,
-              animationDelay: `${(dot - DOTS.length) * TURN_MS}ms`,
+              animationDelay: `${-turnsAgo(dot) * TURN_MS}ms`,
               // Still, the file's frame, for a reader who asked for less motion.
               '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
             })}

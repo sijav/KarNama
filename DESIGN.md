@@ -425,11 +425,12 @@ Node `159:92` is three dots of 10, spacing/2xs apart, in `border/focus`, the
 middle one lit and the others at 0.4, and the line «داره آگهی رو می‌خونه…» 16
 below them in Body, `text/secondary`. Its only use is the Loading Panel of the
 add flow, `243:965`, on `bg/surface`, so the dots frame's own `bg/surface` fill
-is left out. The file draws one frame and its description leaves the motion to
-code: each dot takes a turn of 300 ms, the state change of section 7, so the lit
-dot crosses the three in 900, and the moment the middle one is lit is the
-file's frame. A reader who asks for less motion gets that frame, standing
-still.
+is left out. The file draws one frame, and its description, which still names a
+spinning arc the node does not draw, leaves the motion to code: each dot takes a
+turn of 300 ms, the state change of section 7, so the lit dot crosses the three
+in 900, and the moment the middle one is lit is the file's frame, which the
+motion starts on, KN-324. A reader who asks for less motion gets that frame,
+standing still.
 
 **Past fifteen seconds the line changes.** Render's free tier sleeps and takes
 up to a minute to wake, DEPLOY.md, and three dots alone for that long look

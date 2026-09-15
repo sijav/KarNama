@@ -59,11 +59,35 @@ const drawsTheFrame = async (canvasElement: HTMLElement, { colours }: { colours:
   return { line, dots }
 }
 
+// The dots' motion read where it stands, KN-324: each dot's one animation,
+// once ready, is paused and put at a time. At 0, the frame painted first, the
+// dots are the file's, the middle one lit and the others at 0.4; a turn of
+// 300 ms on, the lit dot is the next one. They play again after.
+const startsOnTheFilesFrame = async (dots: HTMLElement[]) => {
+  await expect(dots.map((dot) => dot.getAnimations().length)).toEqual([1, 1, 1])
+  const animations = dots.flatMap((dot) => dot.getAnimations())
+  await Promise.all(animations.map((animation) => animation.ready))
+  const opacitiesAt = (time: number) => {
+    for (const animation of animations) {
+      animation.pause()
+      animation.currentTime = time
+    }
+    return dots.map((dot) => Number(getComputedStyle(dot).opacity))
+  }
+  try {
+    await expect(opacitiesAt(0)).toEqual([0.4, 1, 0.4])
+    await expect(opacitiesAt(300)).toEqual([0.4, 0.4, 1])
+  } finally {
+    for (const animation of animations) animation.play()
+  }
+}
+
 export const Reading: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
-    const { line } = await drawsTheFrame(canvasElement, { colours: true })
+    const { line, dots } = await drawsTheFrame(canvasElement, { colours: true })
     await expect(line.textContent).toBe(i18n._('Reading the job posting…'))
+    await startsOnTheFilesFrame(dots)
   },
 }
 
@@ -85,7 +109,8 @@ export const InEnglish: Story = {
   play: async ({ canvasElement }) => {
     const { line, dots } = await drawsTheFrame(canvasElement, { colours: true })
     await expect(line.textContent).toBe(i18n._('Reading the job posting…'))
-    // Left to right, the first dot takes the first turn from the left.
+    // Left to right, the first dot sits at the left, so the lit dot, which
+    // travels from the first dot to the last, moves from left to right.
     const [first, last] = [dots[0], dots.at(-1)]
     if (!first || !last) throw new Error('no dots')
     await expect(first.getBoundingClientRect().left).toBeLessThan(last.getBoundingClientRect().left)

@@ -27,4 +27,4 @@ slow.
 
 ### InEnglish
 
-The state in English, the dots taking their turns from the left.
+The state in English, the lit dot moving from left to right.
