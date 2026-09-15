@@ -8521,6 +8521,10 @@ From the KN-316 roast. The data-state twins are not gated on the button being en
 
 **Evidence.** Work 00f3e8e. Each data-state twin in Button.tsx, hover, pressed and focus, now carries :not(.Mui-disabled), so a forced state is drawn only on an enabled button. Forced in the stories takes disabled, and DisabledWhateverItsState renders every style in every size disabled and forced into each transient state, reading on all forty-five the attribute, the disabled fill and text, opacity 1, and no ring beyond Secondary's edge, as node 31:4's Disabled variants, read with use_figma, draw them. The story failed before the gate, expected 0.9 to be 1, and passes after; with the focus or the pressed gate taken off it fails, and with the hover gate off it passes, since the disabled rule already replaces a forced hover. Both Button docs pages describe it. The plan review approved. tsc and lint pass; the six Button stories pass; the unit project passed but for session.test.ts overrunning its 5 s under load, KN-551, which passed alone; Prettier drift unchanged. Looked at in fa-IR and en-US, light as the story pins it: forty-five greyed buttons at opacity 1 with no outline and no console error.
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T204210-task-kn-455-a-disabled-button-with-a-forced-state-dra-0456ae.md, filed none, dismissed: Not filed: that a disabled Button can still take the real hover fill. MUI ButtonBase gives .Mui-disabled pointer-events none, ButtonBase.js lines 80 to 84, and a real mouse over the Matrix disabled Primary M left it unhovered, pointer-events none and gray/200, where the enabled one beside it took bg/brand/hover, so the comment holds. And that the story would not catch a future hover-only property: it reads every property node 31:4 changes between the states, and a new one comes with its own read. The gates, States, the Controls and the structure were reported correct.
+
 ### `KN-456` Two story-doc files still carry em dashes
 
 - **status** backlog · **severity** low · **points** 1 · **area** docs · **objective** OKR-1
