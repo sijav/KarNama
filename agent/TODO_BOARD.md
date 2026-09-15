@@ -131,7 +131,7 @@ Project **KarNama** · 250 of 591 tasks done · 562 of 1188 points.
 | `KN-448` | The Icon Button spreads a Tooltip's props before its own, which is the unsafe side | medium | 1 | web | none | The injected props are spread last, and the comment says what that protects. |
 | `KN-449` | The InATooltip story's console spy is installed too late to see what it claims to watch | medium | 1 | web | none | The spy is in place before the render and calls through, and the story still passes. |
 | `KN-455` | A disabled Button with a forced state draws something node 31:4 never draws | medium | 1 | web | none | A disabled button shows its disabled look whatever data-state says, and a story renders one to prove it. |
-| `KN-461` | The sign-in docs still send readers to the browser console for the code | medium | 1 | docs | none | Neither language's SignIn introduction mentions the console as where the code is. |
+| `KN-461` | The sign-in docs and e2e comments describe a message that is sent, where the mock sends none | medium | 1 | docs | none | Neither language's SignIn introduction mentions the console as where the code is or says the code was sent, and sign-in.spec.ts's comments say the mock makes and shows the code rather than that a message is sent. |
 | `KN-470` | The bulk bar's key listener fires while a modal owns the page | medium | 1 | web | none | The key does nothing while a dialog has focus, and a story opens one with a selection live and presses it. |
 | `KN-474` | The focus stories accept any descendant, so a regression to the page root would pass | medium | 1 | web | none | Both stories name the control they expect to have focus. |
 | `KN-489` | The Pages build ships an empty API address and reports success when KARNAMA_API_URL is missing | medium | 1 | deploy | none | The build step fails when VITE_API_URL is empty: the step begins with a check, and running that step with the variable empty exits non-zero. |
@@ -8309,16 +8309,20 @@ From the KN-459 roast. mockCode is a field of AuthValue, which is the contract e
 
 - round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T024454-task-kn-460-the-mocked-code-rides-in-the-production-a-a79c56.md, filed none, dismissed: Nothing found. The round confirmed AuthValue, NO_AUTH and RemoteAuthProvider carry no code; the screen reads only useMockCode, whose delivery must be the very AuthContext value, which refuses a nested provider's fresh value and a spread of the mock's; nested mocks and StrictMode or storage renders rebuild both together; no app, story or e2e code reads a code from AuthValue; codeFor's test, NoCodeUnderAnotherProvider, the sign-in stories and connected.spec.ts's exact wording can each fail; and the docs are true. An inner AuthContext.Provider handed the mock's own object is the mock's value by design, not another provider.
 
-### `KN-461` The sign-in docs still send readers to the browser console for the code
+### `KN-461` The sign-in docs and e2e comments describe a message that is sent, where the mock sends none
 
 - **status** backlog · **severity** medium · **points** 1 · **area** docs · **objective** OKR-1
 - **blocked by** none
 
-From the KN-459 roast: the Screens-SignIn page's introduction, in both languages, still says the code is in the browser console. KN-459 put it on the screen because a phone has no console, and only the new story's own entry says so. Correct the introduction in en and fa, since that paragraph is what a reader of the docs meets first.
+The sign-in docs still send readers to the browser console for the code, found earlier. And KN-518's roast, 2026-09-15: both languages' SignIn introductions open by saying the five digit code was sent to the number, «کد پنج رقمی که برایش فرستاده شده», and e2e/sign-in.spec.ts says a resend really sends another code, while the provider is mocked, nothing is sent, and the code step says so and shows the code, KN-459.
 
 **Why.** Documentation that contradicts the product is worse than none: it is the stale mock guidance the next person carries forward when the real sender lands.
 
-**Exit condition.** Neither language's SignIn introduction mentions the console as where the code is.
+**Exit condition.** Neither language's SignIn introduction mentions the console as where the code is or says the code was sent, and sign-in.spec.ts's comments say the mock makes and shows the code rather than that a message is sent.
+
+**Notes.**
+
+- 2026-09-15, widened by KN-518's roast from the console alone to the docs' 'was sent' and the e2e's 'really sends', the same untrue account of a mocked message.
 
 ### `KN-462` The mockCode assertion proves the opposite of what it claims, and no test covers a resend
 
@@ -9156,6 +9160,10 @@ KN-481's audit of Auth Login, 407:6951 and 407:7022, against AuthScreen at 1440 
 **Notes.**
 
 - 2026-09-15, from Codex's plan review: the exit said the code and signup steps are fixed the same way, and the frames draw on them things the app does not have at all, filed as KN-586 to KN-588, and copy that promises what the product does not do, for the owner. The exit now says what the same way covers and names where the rest went; nothing it asked of the Login card changed.
+
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T053323-task-kn-518-the-sign-in-card-is-not-its-frame-no-mark-e5d90f.md, filed KN-461, dismissed: One finding survived and was folded into KN-461 rather than filed again: the sign-in docs' 'was sent' and the e2e's 'really sends' describe a message the mock never sends, the same untrue account KN-461 held for the console. Dismissed as outside the exit: busy, error and restoring layouts and the dark edge colour are not measured, and they draw from the theme's semantic values with no frame to mismatch. The round confirmed the card at 440 and 342 with the frame's padding, gap, radius, edge and shadow; the Brand Row moved rather than copied; the new ids in both catalogs with the retired ones unused; formatPhone on the code step; the renamed controls in both e2e specs; and connected.spec.ts honestly reported as not run.
 
 ### `KN-519` The network's cards stretch to fill two columns where 252:53 draws them fixed at 556 and wrapping
 
