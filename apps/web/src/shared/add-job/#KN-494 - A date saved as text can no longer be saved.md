@@ -171,3 +171,19 @@ The checks:
   2026 in en-US dark; a job posted «۱۴۰۵/۰۶/؟؟» opened with it in a field of text
   and the expiry an empty picker, in both. The screenshots caught the dialog as it
   faded in, so the values read off the page are what was seen.
+
+## After the roast, 2026-09-15
+
+Codex's roast found two claims above untrue, each confirmed in the code and filed
+as a child of KN-494:
+
+- **"Up to about 425 formattings in each calendar"** undercounts: a date with a
+  four-digit year that matches nothing is compared with 426 Persian days and 366
+  Gregorian ones, formatting each twice, about 1,584 `Intl` calls, and Codex timed
+  200 such dates at about 2.2 seconds, on every load of the board.
+- **"A date kept as text is drawn as written"** is not true of the board: the card's
+  `formatDay` hands anything that is not a day to `new Date`, and V8 reads
+  «2026/09/01» or «Tuesday, September 1, 2026» as a date and draws it in the
+  reader's calendar; and `dayOf` and `deadlineOf` still sort kept text as a string,
+  so «last spring» can sort as the newest job and «when it is filled» as the most
+  urgent.
