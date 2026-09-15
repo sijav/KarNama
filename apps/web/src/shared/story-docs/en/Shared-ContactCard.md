@@ -17,7 +17,8 @@ values are cut with an ellipsis rather than wrapped.
 ### contact
 
 The contact: name, role, company, email, phone, the job opportunity they are
-linked to, and LinkedIn. Any but the name and role may be missing.
+linked to, and LinkedIn. Any but the name may be missing, the role and the company
+too, as a name-only contact has.
 
 ### layout
 
@@ -117,6 +118,11 @@ The full card in English.
 
 A contact with only a name: the card holds the name alone, with no empty role
 line and no divider.
+
+### BlankRoleAndCompany
+
+A contact whose role and company are only spaces is still a name-only contact:
+the card holds the name alone, with no blank role line and no divider.
 
 ### NameOnlyCompact
 

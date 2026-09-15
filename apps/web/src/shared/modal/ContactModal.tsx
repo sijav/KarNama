@@ -127,7 +127,7 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
   const nameMissing = shown.name.trim() === ''
   const save = () => {
     setTried(true)
-    if (!nameMissing) onSave({ ...shown, name: shown.name.trim() })
+    if (!nameMissing) onSave({ ...shown, name: shown.name.trim(), role: shown.role.trim(), company: shown.company.trim() })
   }
   return (
     <PanelModal

@@ -251,7 +251,12 @@ export const ContactCard = ({
   // is in view on every card while anyone is chosen, as the Checkbox 204:11 says,
   // KN-533.
   const folded = !selected && (!phone || !selecting)
-  const role = [contact.role, contact.company].filter((part) => part !== null && part !== '').join(' · ')
+  // Each part trimmed before it is kept, so a role or a company of only spaces is
+  // nothing and draws no line, KN-385.
+  const role = [contact.role, contact.company]
+    .map((part) => part?.trim() ?? '')
+    .filter((part) => part !== '')
+    .join(' · ')
   if (layout === 'compact') {
     return (
       <Box

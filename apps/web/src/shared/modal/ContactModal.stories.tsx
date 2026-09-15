@@ -177,11 +177,14 @@ export const SavesWithOnlyAName: Story = {
   args: { mode: 'add' },
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement, args }) => {
-    // The owner's decision of KN-071: a full name and nothing else saves.
+    // The owner's decision of KN-071: a full name and nothing else saves, and a role
+    // or a company of only spaces is nothing, saved empty, KN-385.
     const dialog = await open(canvasElement)
-    const [name] = within(dialog).getAllByRole('textbox')
-    if (!name) throw new Error('no name field')
+    const [name, role, company] = within(dialog).getAllByRole('textbox')
+    if (!name || !role || !company) throw new Error('no name, role or company field')
     await userEvent.type(name, fixtures('fa-IR').contacts[2]?.fullName ?? 'missing')
+    await userEvent.type(role, '   ')
+    await userEvent.type(company, ' ')
     const save = within(dialog).getAllByRole('button').at(-1)
     if (!save) throw new Error('no save')
     await userEvent.click(save)

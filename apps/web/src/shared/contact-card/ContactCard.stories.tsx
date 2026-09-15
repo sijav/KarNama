@@ -506,6 +506,18 @@ export const NameOnly: Story = {
   },
 }
 
+export const BlankRoleAndCompany: Story = {
+  args: { contact: { ...nameOnlyIn('fa-IR'), role: '   ', company: ' ' } },
+  play: async ({ args, canvasElement }) => {
+    // A role and a company of only spaces, KN-385: still a name-only contact, so the
+    // card holds the title row alone, with no blank role line and no divider.
+    const card = cardOf(canvasElement)
+    await expect(openerOf(canvasElement, args.contact.name)).toBeInTheDocument()
+    await expect(card.querySelector('p, hr')).toBeNull()
+    await expect(card.getBoundingClientRect().height).toBe(24 + 30 + 24)
+  },
+}
+
 export const NameOnlyCompact: Story = {
   args: { contact: nameOnlyIn('fa-IR'), layout: 'compact' },
   play: async ({ args, canvasElement }) => {
