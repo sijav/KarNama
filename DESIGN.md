@@ -844,8 +844,11 @@ and CSS's own dash here. **Files**, `210:275`, are rows of a 40 tile, the name a
 `bg/surface-secondary`; then the drop zone on `bg/surface-secondary`, «فایل را
 اینجا رها کن» over Button S Secondary «انتخاب فایل». The footer, 16 and 24 under a
 rule, puts Cancel and Save at the inline start and Destructive «حذف فرصت شغلی» at
-the end, where the file says «حذف آگهی», KN-329's rule. Saving without a title or
-a company goes back to Info and says which. KN-030.
+the end, where the file says «حذف آگهی», KN-329's rule. The file draws it in
+Persian alone; where the three do not fit on one row, as in English on a phone,
+the delete takes a row of its own 12 below and keeps the inline end, rather than
+breaking its label onto a second line of the Button's 44, KN-514. Saving without
+a title or a company goes back to Info and says which. KN-030.
 
 ### A stroke is drawn inside, and takes no space
 
