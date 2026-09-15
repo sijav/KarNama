@@ -194,3 +194,20 @@ The checks:
 
 Left for after the deploy: `/KarNama/jobs`, `/add` and `/network`, and an old
 `/KarNama/#/network`, on the live site.
+
+## After the deploy, 2026-09-15
+
+The exit quoted at the top is the one this plan was written against; the board's
+has named `jobs.html`, `add.html` and `network.html` since the correction above.
+
+Pages run 34920990647 deployed 5503d73. On the live site, `/KarNama/jobs`, `/add`
+and `/network` answered 200 with no redirect and `/KarNama/nowhere` 404, each with
+the app's `index.html`; `/KarNama/storybook/` answered Storybook's own page. In a
+browser, `/KarNama/#/network` landed on `/KarNama/network` showing My network in
+English, and `/KarNama/add` opened «افزودن فرصت شغلی» over the board in Persian.
+
+Codex's roast found three things this change left, each confirmed and filed as a
+child of KN-505: closing the add flow pushes `/jobs` over `/add`, so Back reopens
+it; the board's own add buttons open the flow without writing `/add`; and a
+`KARNAMA_BASE` of `/KarNama`, measured, compiles `BASE_URL` without its slash, so
+every page reads as the board and the navigation writes `/KarNamanetwork`.

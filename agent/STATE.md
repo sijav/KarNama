@@ -31,9 +31,20 @@ findings are KN-484 to KN-503 and KN-521; the dark `color-scheme` fix waits in
 **The owner's asks of 2026-09-14 are done**: KN-479 flags, KN-480 the language
 Select in Settings, KN-478 the shell's controls as Icon Buttons, KN-481 the board
 and network matched to their frames. **Blocked on the owner, asked 2026-09-14**:
-KN-515, KN-516, KN-517. **Asked in chat on 2026-09-15**: whether the Search Bar and
-the Sort Control take KN-275's `border/control`; `DESIGN.md` records the question
-beside the decision of KN-273.
+KN-515, KN-516, KN-517. **Asked in chat on 2026-09-15, not answered**: whether the
+Search Bar and the Sort Control take KN-275's `border/control`; `DESIGN.md` records
+the question beside the decision of KN-273.
+
+**KN-505 is closed** (7e7e879, the owner's instruction of 2026-09-15): the app's
+addresses are paths under the base, `/KarNama/jobs`, `/add` and `/network`; the
+build writes `404.html`, `jobs.html`, `add.html` and `network.html` beside
+`index.html`; an old `#/network?from=a` is replaced by its path. Checked on the
+live site after Pages run 34920990647: each page 200 with no redirect,
+`/KarNama/nowhere` 404, `/KarNama/#/network` landing on `/KarNama/network`, in
+English and Persian. Its roast filed **KN-579** (closing the add flow pushes
+`/jobs` over `/add`, so Back reopens it), **KN-580** (the board's own add buttons
+never write `/add`) and **KN-581** (a `KARNAMA_BASE` without its slash reads every
+page as the board).
 
 **KN-226**, the check that the published Storybook renders without errors, waits
 on KN-494 alone. Its plan, `apps/web/e2e/storybook/#KN-226 - ....md`, weighs
@@ -41,15 +52,9 @@ on KN-494 alone. Its plan, `apps/web/e2e/storybook/#KN-226 - ....md`, weighs
 to install), a `webServer`, no Docs pages and an explicit timeout.
 
 **Closed on 2026-09-15**, pushed and roasted by Codex: KN-554, KN-560, KN-561
-(KN-566), KN-562 (KN-568), KN-563 (KN-569), **KN-255** (97ce2e9: five components'
-stories offer only the controls their plays hold for; roast filed **KN-575**,
-the sweep reading a dropped URL arg or an unstarted play as clean), **KN-570**
-(34c1124: the Jobs screen offers no `addOpen`; nothing found) and **KN-275**
-(8ee298d: `border/control`, `#7f8694` light and `#707786` dark, the resting edge of
-the Input, the Checkbox and the Select, their disabled edges kept on
-`border/default`; `KN-004.mjs`, already failing at HEAD on three hexes, fixed;
-its roast filed **KN-576**, the decision's sentence that a disabled control keeps
-the file's edge, which a disabled Input in error does not).
+(KN-566), KN-562 (KN-568), KN-563 (KN-569), KN-255 (KN-575), KN-570, KN-275
+(KN-576), KN-279 (034e1b4, the selected Filter Chip's `border/selected` edge;
+KN-578) and KN-505 (KN-579 to KN-581).
 
 **`node agent/scripts/storybook/controls-sweep.mjs [--only <regex>]`**, committed
 by KN-255, measures which stories' offered controls break their plays: 121 broken
@@ -58,23 +63,29 @@ on the tree after KN-570, carried by **KN-571 to KN-574**. It reads
 
 **How to measure the published Storybook**: build with `KARNAMA_STORYBOOK_BASE` in
 Node's own `env`, never on a Git Bash command line, or build at the root without
-it; hear the end on `window.__STORYBOOK_ADDONS_CHANNEL__` hooked by a property
-setter; `playFunctionThrewException` for a thrown play. A story's pinned globals
-beat URL globals: look at dark through an unpinned story.
+it, when `import.meta.env.BASE_URL` compiles as `./`; hear the end on
+`window.__STORYBOOK_ADDONS_CHANNEL__` hooked by a property setter;
+`playFunctionThrewException` for a thrown play. A story's pinned globals beat URL
+globals: look at dark through an unpinned story.
 
 **What fails in a full run**: the storybook project fails KN-494's five stories,
 AddJobModal `Review` among them, and the Job Card's `Pressed` in parallel only,
 KN-365's kind. The API's coverage gate fails on auth and extraction files, KN-486.
+`App.tsx` line 107, the provider's error above the page, is uncovered, KN-491's.
 
 ## The owner's rules, most recent first
 
+- **2026-09-15.** "Bro GitHub pages do work with normal deep linking routing like
+  ../daramad-name": real paths, a page per destination so each answers 200, and
+  `404.html` for anything else, taken right after KN-279.
 - **2026-09-14.** The board is the todo skill's database, and `agent/board.json`
   is its archive. The shared skills serve ALL projects: a change only adds, and
   is checked against a copy of every board on the machine. A model's work is
   never roasted by that model. A suggestion is not a directive. Flags come from a
   package. Settings and a phone's sign out do not exist in Figma, so they are
   invented, as icons. "It should look like the figma." The owner reads on a
-  phone: literal truth, no excuses.
+  phone: literal truth, no excuses. An instruction carries its date, and a later
+  one overrides an earlier.
 - **2026-09-12, to Codex, still standing.** Mock the login for now. Keep the
   sample data and the AI extraction. Do not change a layout nobody asked to
   change. Commit and push after work. Never ask the owner to redeploy when
@@ -90,32 +101,15 @@ KN-365's kind. The API's coverage gate fails on auth and extraction files, KN-48
   checked by `roast.py plan` from the repository root before building, and they
   stay. Write long scripts with the Write tool.
 
-**KN-279** (034e1b4) is closed: `border/selected`, `#2563eb` light and `#3670ed`
-dark, a selected Filter Chip's one pixel edge, told from pressing by width, 1.5
-against 1, in a story that holds a real Space; **its roast is running**, scratch
-`kn279-roast.log`.
+## The next step
 
-**KN-505 is in progress, critical by the owner's instruction of 2026-09-15**: "Bro
-GitHub pages do work with normal deep linking routing like ../daramad-name", and
-asked when, "Right after KN-279". The app routes by hash on the false claim in
-`routes.ts` that Pages cannot serve a deep link; `pages.yml` has copied
-`index.html` to `404.html` since KN-051. Measured on the live site:
-`/KarNama/network` answers 404 with the app, `/KarNama/404` answers 200 from
-`404.html` with no redirect, `/KarNama/storybook` answers 301 to a trailing slash.
-So the build writes `jobs.html`, `add.html` and `network.html`, each 200. The plan
-is beside `src/app/routes.ts`, going to Codex. KN-577 was its duplicate, dropped.
-
-## The next step (earlier in this iteration)
-
-**KN-279 is in progress**: the selected Filter Chip's blue edge, the owner's
-decision of KN-276. Measured: `#2563eb` is 4.82, 5.17 and 4.70 on the light
-backgrounds and 4.24 on the selected fill; the dark `border/focus`, `#3670ed`, is
-3.48, 3.04, 3.57 and 3.33 on the dark fill. The selected edge is the pressed edge's
-colour, so the plan, beside `FilterChip.tsx`, makes `border/selected` a role of its
-own and tells pressing apart by width, one pixel against 1.5, which may be too
-little to see. Codex's plan review found it sound: width is a difference the exit
-names, and more would need the owner; hold Space only after `vitest/browser`'s own
-click, since the runner's keyboard may not act on a control focused otherwise.
+**KN-460 is in progress**, high: the mock's sign-in code rides in `AuthValue`, the
+contract a real provider fills. The plan, beside `src/core/auth/AuthProvider.tsx`,
+takes `mockCode` out of `AuthValue` and gives the code through a context private to
+the mock, `{ auth, code }`, which `useMockCode()` hands out only to a reader of the
+mock's own value, so a provider mounted inside the mock cannot show it. Codex found
+it sound, the comparison needed, and asked that `connected.spec.ts`, which already
+expects no notice in live mode, be run as well.
 
 ## What to read first
 
