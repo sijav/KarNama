@@ -248,3 +248,127 @@ Judged against the code and the measurements above:
   off would do the same with less.
 - **The per-test timeout has to be set, Playwright's default being 30 seconds.
   Real**: `Multiline` needs 24 seconds alone and 57 inside the manager.
+
+## Replanned, 2026-09-15
+
+The six cards that blocked this one are closed: KN-494, KN-554, KN-560, KN-561,
+KN-562 and KN-563. The review's points are taken, and so there is no list of
+known failures: a story that errors fails the check.
+
+1. **No new dependency.** `@playwright/test` 1.62.1 is installed and already runs
+   the e2e suite; `@storybook/test-runner` would bring Jest and needs the owner's
+   yes to install. The check is a Playwright spec.
+2. **A static server of its own**, `e2e/storybook/serve.ts`, run by Node 24 as it is,
+   types stripped: it serves `storybook-static` under `KARNAMA_STORYBOOK_BASE`, or
+   `/`, answers 404 outside it, and before it listens refuses a build whose
+   `iframe.html` asks for files it does not hold under that base, naming how many
+   and the first three, and a directory with no `index.json`. Measured with a draft:
+   the build for `/KarNama/storybook/` served under another base, and a directory
+   with no build, each stopped at once with its message and exit 1.
+3. **Playwright's `webServer`**, not a global setup: `playwright.storybook.config.ts`
+   starts the server on a port of its own, 6106, with `reuseExistingServer` off, so a
+   server left from another build is never the one checked; the base reaches it
+   through the config's `env`, from Node, since Git Bash rewrites a value that
+   starts with `/`, measured again today on `/` itself. One Chromium project, fully
+   parallel, no retries, a timeout of 120 seconds a story, the list reporter here
+   and GitHub's with HTML under `playwright-report/storybook` in CI.
+4. **The check**, `e2e/storybook/published.spec.ts`: one test per story in
+   `index.json`, titled by its id; Docs pages are left out, since `docsRendered`
+   does not wait on the stories inside and the exit names stories. Before the
+   page's scripts run, an init script defines `__STORYBOOK_ADDONS_CHANNEL__` with a
+   setter that subscribes as Storybook assigns it, as `agent/scripts/verify/KN-245.mjs`
+   did, to `storyFinished` and to `playFunctionThrewException`,
+   `unhandledErrorsWhilePlaying`, `storyThrewException`, `storyErrored` and
+   `storyMissing`. Console errors and page errors are recorded. The test opens
+   `iframe.html?id=<id>&viewMode=story`, waits for `storyFinished` or a failure,
+   settles 400 milliseconds, and fails listing every failure event and every error,
+   or saying the channel was never assigned, or that the story never ended.
+   `storyFinished`'s status is not read.
+5. **Kept out of `npm run e2e`**: `playwright.config.ts` ignores `storybook/**`.
+6. **A script**, `check:storybook` in `apps/web/package.json`: `storybook build`, then
+   the config.
+7. **The workflow**: `KARNAMA_STORYBOOK_BASE` moves to the `build` job's `env`, read by
+   the Storybook build and the check; after "Build Storybook", Chromium is installed
+   with its system dependencies and the check runs against the build the job made,
+   before the sites are assembled and uploaded, so a failure publishes nothing and
+   Pages keeps serving the last good site; its report is uploaded when it fails.
+8. **Records**: `AGENTS.md` section 5 names the check.
+
+### How I will know it works
+
+- The check passes on today's tree, every story.
+- **The card's mutation**: the Checkbox `Hover` story's test-runner guard taken out,
+  Storybook built, and the check run for that story fails naming the import error;
+  restored by hash and built again.
+- **A console error** said by a story as it renders, and **a play that throws after
+  an await**, each fail the check naming it; restored by hash.
+- A build under another base stops the run before any story, said.
+- lint, tsc, and `npm run e2e -- --list` not listing the new spec.
+- After the push, the Pages run is read to its end.
+
+### Measured before building, 2026-09-15
+
+A production build of 76beef5 under `/KarNama/storybook/`, the base set from
+PowerShell, and the first probe opening every entry bare, six at a time, with 120
+seconds each: the 73 files `iframe.html` asks for loaded under the base, and the
+429 entries, stories and Docs pages, took 132 seconds with **none erroring**, no
+failure event, no console error, no page error. The median entry took 1.4 seconds,
+and Input's `Multiline` 40.2. `storyFinished` said `error` 37 times, the
+accessibility addon's reports, which this check does not read, KN-063's.
+
+### Replan review, Codex, 2026-09-15
+
+Sound, with one correction, taken. The Playwright spec against the build the job
+already made is the simplest honest way without a dependency; `webServer` on its
+own port with no reuse fails rather than check some other server; an init script
+runs before the page's scripts, so the setter hears Storybook assign its channel,
+and the six event names are the runtime's own; the Hover mutation proves the
+failure the exit names; Docs pages stay out.
+
+**The correction**: the plan said two cores, and Playwright's default is half the
+logical cores, so on two it would be one worker and about 13 minutes. The
+repository is public, where GitHub's `ubuntu-latest` runner has four, so two
+workers by default, and the 132 seconds measured six at a time here suggest about
+seven minutes there, an estimate until the first run. `workers` is left at its
+default rather than raised before a run has shown four Chromium pages stable
+there.
+
+**The detail**: the check hears a story until `storyFinished` and for the 400
+milliseconds after it; an error a story schedules later than that is not heard,
+and the spec says so rather than claim more.
+
+## Put back, 2026-09-15
+
+Built as the Replanned section says, items 1 to 8, and run before any commit.
+
+**What the check measured.** On the production build of 76beef5 above, at
+Playwright's default workers, half of this machine's 32 threads: 377 stories
+passed and SearchBar's `Debounced` failed, its play throwing `expected "onSearch"
+to be called 1 times, but got 0 times`. Alone, at one worker, it passed 10 of 10.
+The stories of the five files that write their args back while they play,
+ColorPicker, Input, SearchBar, SettingsDialog and Tabs, each run six times at the
+default workers: `Debounced` failed 6 of 6 and the other 360 passed. The probe
+above ran six at a time and saw nothing, so the load is what shows it.
+
+**Why.** KN-563's mechanism, in a story KN-563 did not touch. Each keystroke writes
+the args back through `useArgs`; the preview renders the story again at once while
+it plays, `rerender` in Storybook 10.5.10's runtime; that render runs the loaders
+again, and `resetAllMocksLoader` calls `mockRestore` on every `fn()`, which wipes
+its calls. The search runs 300 ms after the last key, so when the last key's render
+lands later than that, the call is gone before the play reads it. Filed as
+**KN-584**, which blocks this card: wired in as it stands, the check would stop
+Pages deploys, the app's with them, whenever the runner is busy.
+
+**Found in the check itself.** The spec read `STORYBOOK_DIR` against the working
+directory, so the config named from the repository root found no build and no
+tests; `serve.ts` was changed to resolve from `apps/web`, the spec not yet. To fix
+on return.
+
+**Taken out of the tree and saved**, a patch and a tarball in this session's
+scratchpad under `kn226-work`: `e2e/storybook/serve.ts`,
+`e2e/storybook/published.spec.ts` and `playwright.storybook.config.ts`, new; and
+`playwright.config.ts`'s ignore, the `check:storybook` script, `pages.yml`'s job
+env and three check steps, and the `AGENTS.md` section 5 line, changed. The patch
+applied cleanly to the reverted tree. Still to do then: the spec's path, prettier
+on the two new e2e files, the Hover mutation, the console error and the throw
+after an await, the other base, and the Pages run.
