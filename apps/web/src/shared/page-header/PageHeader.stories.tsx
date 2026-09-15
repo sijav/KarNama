@@ -149,7 +149,11 @@ export const ControlsOnNarrowScreens: Story = {
       const [, , signOut] = controls()
       await userEvent.click(signOut ?? canvasElement)
       await expect(args.onSignOut).toHaveBeenCalledTimes(1)
-      await browser.page.viewport(1440, 900)
+      // 899 and 900 sit either side of md, so the line moved to a lower width
+      // fails at 899 and to a higher one at 900, KN-321.
+      await browser.page.viewport(899, 900)
+      for (const control of controls()) await expect(control).toBeVisible()
+      await browser.page.viewport(900, 900)
       for (const control of controls()) await expect(control).not.toBeVisible()
     } finally {
       await browser.page.viewport(414, 896)
