@@ -41,29 +41,26 @@ KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-321 is closed** (54e58dd; board 6e16e80; pushed), one point. `ControlsOnNarrowScreens`
-keeps 390 by 844 for the click on signing out, and checks the shell's three controls in the
-Page Header visible at 899 by 900 and hidden at 900 by 900, in place of 1440. With the
-controls' line planted at `sm` the story failed at 899, and at `lg` at 900. KN-021 waits on
-KN-387 alone. Its Codex roast was running when this was written, `kn321-task-roast.log` in
-the scratchpad.
+**KN-324 is closed** (fb21239; board acfa4b6; pushed), one point. The Loading State's dots
+are lit at the ends of their 900 ms cycle and each delayed by how many turns ago it was lit,
+-300, 0 and -600 ms, so the first frame painted is the file's, 0.4, 1 and 0.4, where all
+three had started at 0.4 and the file's frame first showed 450 ms in. `Reading` pauses each
+dot's animation once ready and reads the opacities at 0 and one turn on; it failed at 0
+before the change and at 300 with the delays reversed. DESIGN.md says the motion starts on
+the file's frame, and that the Figma description still names a `spinnerArc` the node does
+not draw. **KN-615** is filed, medium, measured: the Loading State's stories fail for a
+Storybook viewer with reduced motion, in `drawsTheFrame`. Its Codex roast was running when
+this was written, `kn324-task-roast.log` in the scratchpad.
 
-**The Grep tool matches a glob with a slash in it from the session's working directory**,
-whatever path the search is given, AGENTS.md section 7, 070fcb4. Nine of this session's
-searches came back empty that way where the glob written from the repo root finds matches;
-seven had nothing resting on them, KN-304's plan's claim was caught by its review, and
-KN-321's by its positive control.
+**KN-321 is closed and its roast recorded, nothing filed** (54e58dd, 026d15f): the Page
+Header's shell controls are checked at 899 and 900. **The Grep tool matches a glob with a
+slash in it from the session's working directory**, AGENTS.md section 7, 070fcb4; a `cd` in
+a foreground Bash call moves that directory for the session, so put it back.
 
-**KN-319's roast is recorded, nothing filed** (03573b7): the focus ring under 3:1 on a filled
-button is KN-399's, and `accentStep` on token pairs added later is outside the card.
-
-**KN-318 and KN-313 are closed and their roasts recorded** (3da53b9, fa5c0e8): the Button's
-and the Icon Button's hover sit under `@media (hover: hover)`, proved by
-`e2e/storybook/button-touch.spec.ts` and `icon-button-touch.spec.ts` in the Storybook
-check. KN-318 filed **KN-614**, low, a skipped touch check passing the Pages workflow
-unseen; KN-313 filed **KN-612** and **KN-613**, low. **KN-009 waits on KN-614**, and when it
-closes KN-009 is roasted with all its children. KN-312 is dropped into KN-350. KN-304 filed
-KN-611; KN-257 KN-610; KN-230 KN-609. **Open and filed today**: KN-592 to KN-614.
+**KN-318 and KN-313 are closed and their roasts recorded** (3da53b9, fa5c0e8). KN-318 filed
+**KN-614**, low; KN-313 filed **KN-612** and **KN-613**, low. **KN-009 waits on KN-614**, and
+when it closes KN-009 is roasted with all its children. KN-022 waits on KN-325, KN-326,
+KN-327 and KN-615; KN-021 on KN-387. **Open and filed today**: KN-592 to KN-615.
 
 **A Storybook spec alone**: `STORYBOOK_DIR=<build> npx playwright test --config
 playwright.storybook.config.ts storybook/button-touch`. A filter is a regular expression on
@@ -99,23 +96,24 @@ The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-321's roast lands**, judge it, file survivors as its children (`--area web
---okr OKR-1` for anything under four points), record with `todo roast KN-321 --file ...
---filed ... --dismissed ...`, relay it to the owner, and commit the rendered board. KN-321 is
-a child of KN-021, so a finding hangs off KN-021.
+**When KN-324's roast lands**, judge it, file survivors with `--parent-task KN-324`, which
+hangs them off KN-022 (`--area web --okr OKR-1` under four points), record with `todo roast
+KN-324 --file ... --filed ... --dismissed ...`, relay it to the owner, and commit the
+rendered board.
 
-**KN-324 is next**, medium, 1 point, web, a child of KN-022: the Loading State's dots start
-on a frame with all three dim, and no story reads their opacity; its exit asks for the first
-painted frame to be the file's, the middle dot at 1 and the others at 0.4, and a story that
-reads the three opacities at the start and one turn later. **Measure its premise first**: the
-card predates the SQLite board, so read the Loading State's dots, their delays and DESIGN.md's
-paragraph on them before planning.
+**KN-325 is next**, medium, 1 point, web, a child of KN-022: a Loading State whose
+`startedAt` moves past fifteen seconds shows the reading line for a render first; its exit
+asks for the slow line on the first render, whether mounted with such a start or changed to
+it, and a story that changes it while mounted. **It edits the files KN-324's roast reads,
+`LoadingState.tsx` and its stories: read, do not write, until that roast lands.** Measure
+first: `useSlow` keeps the start it saw run past and turns only on a zero delay timer; find
+whether reading the clock while rendering passes the react-hooks lint before planning on it.
 
 ## What to read first
 
 `AGENTS.md` (section 7), `DESIGN.md` (the Loading State), `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-324` and the Loading State's component and stories
-under `apps/web/src/shared/loading-state/`. **Never chain a check through a pipe into a commit
-or a close, give every parallel command its own `cd`, sum a breakdown before writing its
-total, give a search that finds nothing a positive control, and write a Grep glob with a
-folder in it from the repo root.**
+`agent/TODO_BOARD.md`, then `todo show KN-325`, `LoadingState.tsx`'s `useSlow`, `wait.ts`
+and the Loading State's stories. **Never chain a check through a pipe into a commit or a
+close, give every parallel command its own `cd`, sum a breakdown before writing its total,
+give a search that finds nothing a positive control, and write a Grep glob with a folder in
+it from the repo root.**
