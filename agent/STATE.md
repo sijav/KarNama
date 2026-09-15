@@ -36,89 +36,71 @@ on 2026-09-12 "If you have AI test, remove that, I didn't ask for an AI API
 test". The owner was told on 2026-09-15 that the Codex log they pasted holds the
 Groq key they had pasted to Codex, that no file, commit or board entry holds it,
 and to rotate it. Never repeat that key anywhere. **Filed for the owner, not yet
-asked**: KN-588, KN-589, KN-590, KN-591, and **KN-616**, Figma's Loading State
-description asking for a turning `spinnerArc` the node does not draw.
+asked**: KN-588, KN-589, KN-590, KN-591, and **KN-616**.
 
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-343 is closed on earlier work** (board f1b9394): its exit was already met by KN-415's
-2b5b205, the compact Contact Card's mail an Icon Button link with a mailto href that
-`WritingToThem` reads, measured on 2026-09-15 as an `A` 32 by 32 beside the delete, and nothing was
-changed. Its roast found the mailto built from the raw address in both layouts, so an address
-holding `?` or `#` breaks the link: filed as a low child of KN-026, the card after KN-624.
+**KN-345 is closed** (3261606; board 0690d8b; pushed), a child of KN-028: a Modal given a blank
+title reports it through `console-guard`'s `report` from an effect and renders nothing.
+`ReportsABlankTitle` reads the marked report and that the trigger opens no dialog; it failed alone
+against the old shell. Its exit was edited on the board after the plan review, which turned down a
+report that still drew the dialog. **Its Codex roast has NOT run**: the first launch threw a
+SyntaxError from an apostrophe in `kn345-roast.mjs`'s account, now fixed; relaunch it with
+`node <scratchpad>/kn345-roast.mjs 3261606`. **KN-626** filed: PanelModal's blank title, same
+gap. KN-028 waits on KN-346 and KN-626.
 
-**KN-338 is closed and its roast recorded, nothing filed** (d8ba566, 52be8ff): the Status Picker's
-add chip stands outside its radio group in a row of inline flow, the group an inline element and
-each radio and the chip an inline item with 8 after and below it. Built in the page first and read
-from Chromium's own accessibility tree through the DevTools protocol; `display: contents` was not
-used because Safari's handling of it cannot be checked here. **KN-624**, low, filed from building
-it: components hand their click event to callbacks typed to take nothing, and Storybook warns
-"Accessing the Story Store is deprecated" while its channel serializes it.
+**Earlier today, closed and recorded**: KN-343 (on KN-415's 2b5b205; KN-625 filed, raw mailto),
+KN-338 (the Status Picker's add chip outside its group; KN-624 filed), KN-336, KN-335, KN-332,
+KN-331, and KN-024's whole-task round (KN-623 filed).
 
-**KN-336, KN-335, KN-332 and KN-331 are closed and recorded.** KN-024's whole-task round filed
-**KN-623**, its docs' claim that the order is read out; its motion finding is KN-350's.
-
-**Rounds waiting**: **KN-018 on KN-621 and KN-622**; **KN-024 on KN-623**; **KN-025 on KN-620**;
-KN-020 on KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and the mailto card.
-**Filed today and open**: KN-615, KN-617 to KN-625.
-
-**Still open from earlier**: **KN-009 waits on KN-614**; KN-021 waits on KN-387; KN-022 on KN-327,
-KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357. KN-612 and KN-613, low.
-
-**A Storybook spec alone**: `STORYBOOK_DIR=<build> npx playwright test --config
-playwright.storybook.config.ts storybook/button-touch`. A filter is a regular expression on
-the path, and a backslash in one is eaten on the way through npx.
+**Rounds waiting**: KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on
+KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-028 on KN-346 and KN-626.
+**Still open from earlier**: KN-009 waits on KN-614; KN-021 on KN-387; KN-022 on KN-327, KN-615,
+KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357.
 
 **What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
-`Full On A Phone`, in parallel only, KN-365's kind: rerun a lone failure alone. `App.tsx`
-line 107 is uncovered, KN-491's. `RemoteAuthProvider.tsx` and AuthScreen's live branches
-run in no test, KN-503's. The API's gate fails on `extraction.service.ts`, KN-486.
-`session.test.ts` can overrun its 5 seconds while a story run or lint loads the machine, KN-551,
-seen again on 2026-09-15: rerun the file alone, then the unit project. `two-tabs.spec.ts`'s second
-test, KN-601. DESIGN.md holds seven older em dashes, KN-083's. The board screen's six commented
-arms stay untaken by design, KN-427.
+`Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` can overrun its 5 seconds
+while the machine is loaded, KN-551: rerun the file alone, then the unit project. `App.tsx` line
+107 uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486.
 
 ## The owner's rules, most recent first
 
-- **2026-09-15.** "Bro GitHub pages do work with normal deep linking routing like
-  ../daramad-name": real paths, a page per destination, `404.html` for the rest.
-- **2026-09-14.** The board is the todo skill's database. The shared skills
-  serve ALL projects: a change only adds. A model's work is never roasted by that
-  model. "It should look like the figma." The owner reads on a phone: literal
-  truth, no excuses. An instruction carries its date; a later one overrides.
-- **2026-09-12, to Codex, still standing.** Mock the login. Keep the sample data
-  and the AI extraction. Do not change a layout nobody asked to change. Commit
-  and push after work. Never ask the owner to redeploy when nothing changed. "If
-  you have AI test, remove that": whether it reaches stubbed tests is asked.
-- **2026-09-11.** Push after every close: commit, close, push, then roast. Only
-  new component cards and their blockers are `critical`. No proof at the close:
-  test what changed, look at it, close with one line. Roasts stay. A finding
-  about the loop is `low`. 100 percent coverage. **Do not invent gates.**
-- **A finding is a CHILD of its task**, one level, with `--area` and `--okr`.
-  **Plans live beside the work**, checked by `roast.py plan` from the repository
-  root before building, and they stay. Write long scripts with the Write tool.
+- **2026-09-15.** GitHub Pages deep links: real paths, a page per destination, `404.html` for the
+  rest.
+- **2026-09-14.** The board is the todo skill's database. The shared skills serve ALL projects: a
+  change only adds. A model's work is never roasted by that model. "It should look like the figma."
+  The owner reads on a phone: literal truth, no excuses. An instruction carries its date; a later
+  one overrides.
+- **2026-09-12, to Codex, still standing.** Mock the login. Keep the sample data and the AI
+  extraction. Commit and push after work. Never ask the owner to redeploy when nothing changed.
+- **2026-09-11.** Push after every close: commit, close, push, then roast. Only new component cards
+  and their blockers are `critical`. No proof at the close. Roasts stay. A finding about the loop is
+  `low`. 100 percent coverage. **Do not invent gates.**
+- **A finding is a CHILD of its task**, one level, with `--area` and `--okr`. **Plans live beside
+  the work**, checked by `roast.py plan` before building, and they stay.
 
 ## The next step
 
-**KN-345 is in progress**, medium, 1 point, a child of KN-028: a Modal given a blank title has no
-accessible name. Planned, the plan beside `Modal.tsx`, its Codex plan review running when this was
-written, `kn345-plan-review.log` in the scratchpad. The plan: the Modal reports a blank title
-through `shared/console-guard.ts`'s `report`, from an effect keyed on the title, as the Tooltip,
-the Icon Button and the Checkbox report misuse, and a story `ReportsABlankTitle` captures the
-report with `passOnUnmarked`. The card's exit asks for a refusal by the type or a thrown error in
-development: the type cannot see a runtime title, and nothing in `apps/web/src` throws in
-development only, so the plan asks the review and, if it agrees, edits the exit with the reason.
-`PanelModal` has the same gap and is to be filed as its own card. HEAD drift of `Modal.tsx`, its
-stories and both docs is 0.
+1. **Relaunch KN-345's roast** in the background, then judge it when it lands.
+2. **KN-348 is in progress**, medium, 1 point, a child of KN-031: an Edit Contact Modal can be
+   written without the delete. Measured: `ContactModalProps` is already a union, from KN-386, the
+   edit member's `initial` a required key that may be `undefined` while the record loads, which
+   `TheRecordArrivesAfterItsId` needs; `onDelete` is optional in both members, and the Delete
+   footer draws only when the mode is edit and `onDelete` is given. The work: `onDelete` required
+   in the edit member and `?: never` in the add one, KN-331's shape. **KN-331's lessons apply**,
+   AGENTS.md section 7: the docs guard wants every callback's `fn()` in the meta, so the meta's
+   `onDelete: fn()` stays; a story's args type lays the meta's args over each member, so a custom
+   render spreading args into the component is refused, TS2375, and one render must hand the
+   component only its member's props, as `barFor` in `BulkActionBar.stories.tsx` does; check tsc
+   with a compiler host serving the drafts, not `lintText`. The Contact Modal stories have custom
+   renders `Rerendering`, `Loading` and `LateRecord`. Read both edit callers, `JobsScreen.tsx` and
+   `NetworkScreen.tsx`, for `onDelete`.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md` (the modals), `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-345`, its plan beside `Modal.tsx`, `Modal.tsx`,
-`Modal.stories.tsx`, `shared/console-guard.ts`, and the Tooltip's `ReportsATriggerThatCannotAttach`.
-**Never chain a check through a pipe into a commit or a close, give every parallel command its own
-`cd` in a subshell, give a search that finds nothing a positive control, find a docs paragraph by
-its headings rather than by retyping Persian, find a story's controls inside `#storybook-root`,
-read an accessibility claim from the browser's own tree through the DevTools protocol, and write
-long scripts with the Write tool.**
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-348`,
+`ContactModal.tsx`, its stories and story docs, `#KN-331`'s plan in `shared/bulk-action-bar`.
+**Never chain a check through a pipe into a commit or a close, write long scripts with the Write
+tool, keep apostrophes out of single-quoted strings in scripts, find a story's controls inside
+`#storybook-root`, and read an accessibility claim from the browser's own tree.**
