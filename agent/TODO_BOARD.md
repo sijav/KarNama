@@ -13,6 +13,12 @@ Project **KarNama** · 287 of 640 tasks done · 624 of 1260 points.
 | 1 | OKR-1 | MVP: the pages | now | 213 | 209 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-439` | The status fixtures' count disagrees with the board they now describe | medium | 1 | web | none | The count is either gone or equal to the number of job opportunities the fixtures put in that status, in both languages. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 287 of 640 tasks done · 624 of 1260 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (337)
+## Backlog (336)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 287 of 640 tasks done · 624 of 1260 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-439` | The status fixtures' count disagrees with the board they now describe | medium | 1 | web | none | The count is either gone or equal to the number of job opportunities the fixtures put in that status, in both languages. |
 | `KN-444` | The Search Bar's size stories claim the text is placed as drawn and never read its placement | medium | 1 | web | none | Both stories assert the text's top offset and the icon's vertical centring against the file's numbers. |
 | `KN-448` | The Icon Button spreads a Tooltip's props before its own, which is the unsafe side | medium | 1 | web | none | The injected props are spread last, and the comment says what that protects. |
 | `KN-449` | The InATooltip story's console spy is installed too late to see what it claims to watch | medium | 1 | web | none | The spy is in place before the render and calls through, and the story still passes. |
@@ -8201,6 +8206,10 @@ JobsScreen.tsx 423: the rename modal's Save calls renameStatus only when the tri
 
 **Evidence.** Story first: BackingOut presses Save on a blank rename and reads the dialog still open with the field refused, and failed against the old code; tsc, lint and 25 board stories pass; the unit project passes but for session.test.ts overrunning its 5 s under load, KN-551, which passes alone; looked at in fa-IR and en-US, light and dark
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T193336-task-kn-435-saving-a-rename-with-a-blank-name-silentl-43e576.md, filed none, dismissed: Nothing to dismiss: the roast confirmed the error returns after a refusal as the Contact Modal's does and is announced again, that rapid Saves leave no stale state since each opening starts with tried false, and that the story waits past the close; it named no defect.
+
 ### `KN-436` The AddJobModal's abandoned-reading story waits on a fixed sleep
 
 - **status** backlog · **severity** low · **points** 1 · **area** web · **objective** OKR-1
@@ -8248,7 +8257,7 @@ KN-305 gave every status exactly one job opportunity, so the fixture board canno
 
 ### `KN-439` The status fixtures' count disagrees with the board they now describe
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 Each status fixture carries a count, and custom-2 carries 0 while the board KN-305 built puts job-7 in that column; eight of the nine disagree. A column renders its count and its cards separately, KanbanColumn.tsx 13, so a story can draw the name and 0 above a card. The count is read by no story at all, grepped; either delete it from both JSON files and both types, or derive it from the jobs in that column.
