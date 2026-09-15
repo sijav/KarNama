@@ -117,8 +117,13 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
 8. **KN-434 is in progress**, medium, 1 point, web: JSDoc prose back in the TSX that story-docs
    owns and that prints in English on the Persian docs page, on the Icon Button's `href` and above
    stories in the screens, App and Button. Exit: no prop or story there carries prose the markdown
-   holds, and the Persian docs page shows no English. Measure first: its line numbers are from
-   2026-09-12.
+   holds, and the Persian docs page shows no English. Measured: seven `/** */` blocks above story
+   exports print their English on the Persian Docs pages, `People`, `Adding` and `Selecting` on the
+   board's, `Editing` on the network page's, `Navigating` and `FromAnOldAddress` on the shell's,
+   `States` on the Button's; the Icon Button's page holds none, so that half is already gone. The
+   markdown holds all seven in both languages. **Its plan is written** beside the screens: four
+   blocks go, three keep the sentence that explains the story's code as a `//` comment. **Its plan
+   review is running**; then `kn434-apply.mjs`, and `kn434-pages.mjs` for the after-search.
 
 ## What to read first
 
