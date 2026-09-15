@@ -41,18 +41,21 @@ KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-319 is closed** (d2deddd; board 9e72015; pushed), two points after a re-point. In the
-derived dark palette the rest fills keep `accentFill`'s walk to white's bar, and a new
-`accentStep` gives hover and pressed their own hue at the lightness that puts them the light
-pair's own contrast ratio, about 1.3 to one, darker than the state before, found by
-bisection. Before, the three danger fills sat at one lightness and a pressed Primary was
-brighter than its rest; now the Contact Modal's Save reads luminance 0.1672, 0.1161 and
-0.0772 at rest, hovered and pressed in dark, and the Confirm modal's delete 0.1825, 0.1275
-and 0.0845. `darkMode.test.ts` reads the filled styles from the Button's `LOOKS` and failed
-on all four steps before the change. DESIGN.md's dark mode paragraph states the rule. **A
-plant's `console.log` never reaches the unit project's output**: write what a throwaway test
-measures to a file. Its Codex roast was running when this was written,
-`kn319-task-roast.log` in the scratchpad.
+**KN-321 is closed** (54e58dd; board 6e16e80; pushed), one point. `ControlsOnNarrowScreens`
+keeps 390 by 844 for the click on signing out, and checks the shell's three controls in the
+Page Header visible at 899 by 900 and hidden at 900 by 900, in place of 1440. With the
+controls' line planted at `sm` the story failed at 899, and at `lg` at 900. KN-021 waits on
+KN-387 alone. Its Codex roast was running when this was written, `kn321-task-roast.log` in
+the scratchpad.
+
+**The Grep tool matches a glob with a slash in it from the session's working directory**,
+whatever path the search is given, AGENTS.md section 7, 070fcb4. Nine of this session's
+searches came back empty that way where the glob written from the repo root finds matches;
+seven had nothing resting on them, KN-304's plan's claim was caught by its review, and
+KN-321's by its positive control.
+
+**KN-319's roast is recorded, nothing filed** (03573b7): the focus ring under 3:1 on a filled
+button is KN-399's, and `accentStep` on token pairs added later is outside the card.
 
 **KN-318 and KN-313 are closed and their roasts recorded** (3da53b9, fa5c0e8): the Button's
 and the Icon Button's hover sit under `@media (hover: hover)`, proved by
@@ -96,23 +99,23 @@ The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-319's roast lands**, judge it, file survivors as its children (`--area web
---okr OKR-1` for anything under four points), record with `todo roast KN-319 --file ...
---filed ... --dismissed ...`, relay it to the owner, and commit the rendered board. KN-319 is
-a child of KN-009, so a finding hangs off KN-009.
+**When KN-321's roast lands**, judge it, file survivors as its children (`--area web
+--okr OKR-1` for anything under four points), record with `todo roast KN-321 --file ...
+--filed ... --dismissed ...`, relay it to the owner, and commit the rendered board. KN-321 is
+a child of KN-021, so a finding hangs off KN-021.
 
-**KN-321 is next**, medium, 1 point, web, a child of KN-021: the Page Header's language
-switch is tested at 390 and 1440, not either side of the 900 it turns on; its exit asks the
-story to show the switch at 899 wide and hide it at 900. **Measure its premise first**:
-since KN-478 the shell's controls are Icon Buttons that follow a page's action in the Page
-Header on a phone, so read the story `LanguageOnNarrowScreens` and how `PageHeader.tsx`
-decides where the switch shows before planning.
+**KN-324 is next**, medium, 1 point, web, a child of KN-022: the Loading State's dots start
+on a frame with all three dim, and no story reads their opacity; its exit asks for the first
+painted frame to be the file's, the middle dot at 1 and the others at 0.4, and a story that
+reads the three opacities at the start and one turn later. **Measure its premise first**: the
+card predates the SQLite board, so read the Loading State's dots, their delays and DESIGN.md's
+paragraph on them before planning.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md` (section 5, where the language switch goes),
-`agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, then `todo show KN-321`,
-`apps/web/src/shared/page-header/PageHeader.tsx` and its stories. **Never chain a check
-through a pipe into a commit or a close, give every parallel command its own `cd`, sum a
-breakdown before writing its total, and give a search that finds nothing a positive
-control.**
+`AGENTS.md` (section 7), `DESIGN.md` (the Loading State), `agent/RALPH.md`, the head of
+`agent/TODO_BOARD.md`, then `todo show KN-324` and the Loading State's component and stories
+under `apps/web/src/shared/loading-state/`. **Never chain a check through a pipe into a commit
+or a close, give every parallel command its own `cd`, sum a breakdown before writing its
+total, give a search that finds nothing a positive control, and write a Grep glob with a
+folder in it from the repo root.**
