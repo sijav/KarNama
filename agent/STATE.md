@@ -30,101 +30,78 @@ findings are KN-484 to KN-503 and KN-521; the dark `color-scheme` fix waits in
 
 **Waiting on the owner.** Asked 2026-09-14: KN-515, KN-516, KN-517. Asked in chat
 on 2026-09-15, neither answered yet: whether the Search Bar and the Sort Control
-take KN-275's `border/control` (`DESIGN.md` records the question beside KN-273's
-decision); and **KN-486**, blocked: whether tests of `extraction.service.ts` that
-stub `fetch` are allowed, after the owner told Codex on 2026-09-12 "If you have AI
-test, remove that, I didn't ask for an AI API test". The owner was also told, on
-2026-09-15, that the Codex log they pasted on 2026-09-14 holds the Groq key they
-had pasted to Codex, that no file, commit or board entry holds it, and to rotate
-it. Never repeat that key anywhere.
+take KN-275's `border/control`; and **KN-486**, blocked: whether tests of
+`extraction.service.ts` that stub `fetch` are allowed, after the owner told Codex
+on 2026-09-12 "If you have AI test, remove that, I didn't ask for an AI API
+test". The owner was told on 2026-09-15 that the Codex log they pasted holds the
+Groq key they had pasted to Codex, that no file, commit or board entry holds it,
+and to rotate it. Never repeat that key anywhere.
 
-**KN-486 (part), b0e2e3f**: every API file but `extraction.service.ts` is at 100
-percent with no network and no database: `readPosting` against a mocked DNS lookup
-and a scripted request, the pg adapter with `pg` mocked, the resolvers and the auth
-service's refusals with stand-ins. `vitest.setup.ts` assigns a guard over `fetch`
-that refuses any host but 127.0.0.1. A plant that switched the guard off let the
-guard test's own requests be attempted, POSTs with no body or key to Groq, OpenAI,
-Kavenegar and example.com; the test now sends them already aborted. `npm test` in
-`apps/api` still fails on that one file.
+**KN-494 is closed** (c3950d8): `readRecords` turns a date written before the date
+picker, «۱۰ شهریور ۱۴۰۵», «September 1, 2026» or «1 September 2026», into its day
+through `days.ts`, in UTC; a date no calendar reads stays as text in a text field
+and no longer blocks a save; the fixtures hold days. Its roast filed **KN-582**
+(the card's `formatDay` redraws kept text V8 can parse, and `dayOf`/`deadlineOf`
+sort kept text as strings) and **KN-583** (an unreadable date costs about 1,600
+`Intl` calls on every load), both medium, attached by the skill to KN-477.
 
-**KN-505 is closed** (7e7e879): addresses are paths under the base, `/KarNama/jobs`,
-`/add` and `/network`; the build writes `404.html`, `jobs.html`, `add.html` and
-`network.html`; an old `#/network?from=a` is replaced by its path. Checked on the
-live site after the deploy. Its roast filed **KN-579** (closing the add flow pushes
-`/jobs` over `/add`, so Back reopens it), **KN-580** (the board's own add buttons
-never write `/add`) and **KN-581** (a `KARNAMA_BASE` without its slash).
+**KN-486 (part), b0e2e3f**: every API file but `extraction.service.ts` at 100
+percent with no network; `vitest.setup.ts` refuses `fetch` to any host but
+127.0.0.1. **KN-505** (7e7e879, paths not hashes; KN-579 to KN-581) and **KN-460**
+(047f316, the mock's code out of `AuthValue`; nothing found) are closed.
 
-**KN-460 is closed** (047f316): `AuthValue` carries no code; the mock gives its code
-through a private context paired with its own value, and `useMockCode` hands it
-only to a component reading that value. `connected.spec.ts`'s no-notice check
-looked for words the notice never had; it uses the catalog's words now, and a
-planted notice fails it. Its roast found nothing.
+**Closed on 2026-09-15**, pushed and roasted: KN-554, KN-560, KN-561, KN-562,
+KN-563, KN-255, KN-570, KN-275, KN-279, KN-505, KN-460 and KN-494.
 
-**KN-226**, the check that the published Storybook renders without errors, waits
-on KN-494 alone.
+**How to measure the published Storybook**: build with `KARNAMA_STORYBOOK_BASE`
+from PowerShell or Node's own `env`, never a Git Bash line, which rewrites any
+value starting with `/`, even `/` itself; hook `__STORYBOOK_ADDONS_CHANNEL__`
+with a setter, since the preview assigns it plainly (`runtime.js` 12862);
+`playFunctionThrewException` for a thrown play. On 76beef5 all 429 entries,
+stories and Docs pages, opened bare with no error in 132 seconds, six at a time.
 
-**Closed on 2026-09-15**, pushed and roasted by Codex: KN-554, KN-560, KN-561
-(KN-566), KN-562 (KN-568), KN-563 (KN-569), KN-255 (KN-575), KN-570, KN-275
-(KN-576), KN-279 (KN-578), KN-505 (KN-579 to KN-581) and KN-460.
-
-**`node agent/scripts/storybook/controls-sweep.mjs [--only <regex>]`** measures
-which stories' offered controls break their plays: 121 broken after KN-570,
-carried by KN-571 to KN-574; it does not yet report unapplied changes, KN-575.
-
-**How to measure the published Storybook**: build with `KARNAMA_STORYBOOK_BASE` in
-Node's own `env`, never on a Git Bash command line, or build at the root without
-it, when `import.meta.env.BASE_URL` compiles as `./`; hear the end on
-`window.__STORYBOOK_ADDONS_CHANNEL__` hooked by a property setter;
-`playFunctionThrewException` for a thrown play. A story's pinned globals beat URL
-globals: look at dark through an unpinned story.
-
-**What fails in a full run**: the storybook project fails KN-494's five stories,
-AddJobModal `Review` among them, and the Job Card's `Pressed` in parallel only,
-KN-365's kind. `App.tsx` line 107, the provider's error above the page, is
-uncovered, KN-491's. The API's gate fails on `extraction.service.ts`, KN-486.
+**What fails in a full run**: the Job Card's `Pressed` in parallel only, KN-365's
+kind. `App.tsx` line 107 is uncovered, KN-491's. The API's gate fails on
+`extraction.service.ts`, KN-486.
 
 **The live-mode e2e** (`npm run e2e:connected` in `apps/web`) runs against
-`agent/scripts/scenario-server.mjs`, PGlite and test doubles for SMS and AI, built
-from `apps/api/dist`; it touches no shared system.
+`agent/scripts/scenario-server.mjs`, PGlite and test doubles, from
+`apps/api/dist`; it touches no shared system.
 
 ## The owner's rules, most recent first
 
 - **2026-09-15.** "Bro GitHub pages do work with normal deep linking routing like
-  ../daramad-name": real paths, a page per destination so each answers 200, and
-  `404.html` for anything else, taken right after KN-279.
-- **2026-09-14.** The board is the todo skill's database, and `agent/board.json`
-  is its archive. The shared skills serve ALL projects: a change only adds, and
-  is checked against a copy of every board on the machine. A model's work is
-  never roasted by that model. A suggestion is not a directive. Flags come from a
-  package. Settings and a phone's sign out do not exist in Figma, so they are
-  invented, as icons. "It should look like the figma." The owner reads on a
-  phone: literal truth, no excuses. An instruction carries its date, and a later
-  one overrides an earlier.
-- **2026-09-12, to Codex, still standing.** Mock the login for now. Keep the
-  sample data and the AI extraction. Do not change a layout nobody asked to
-  change. Commit and push after work. Never ask the owner to redeploy when
-  nothing changed. "If you have AI test, remove that, I didn't ask for an AI API
-  test": whether that reaches tests that stub `fetch` is asked, KN-486.
+  ../daramad-name": real paths, a page per destination, `404.html` for the rest.
+- **2026-09-14.** The board is the todo skill's database. The shared skills
+  serve ALL projects: a change only adds. A model's work is never roasted by that
+  model. "It should look like the figma." The owner reads on a phone: literal
+  truth, no excuses. An instruction carries its date; a later one overrides.
+- **2026-09-12, to Codex, still standing.** Mock the login. Keep the sample data
+  and the AI extraction. Do not change a layout nobody asked to change. Commit
+  and push after work. Never ask the owner to redeploy when nothing changed. "If
+  you have AI test, remove that": whether it reaches stubbed tests is asked.
 - **2026-09-11.** Push after every close: commit, close, push, then roast. Only
-  new component cards and their blockers are `critical`; a finding on a built
-  component is `high` or lower. No proof at the close: test what changed,
-  stories, unit tests, lint, tsc, look at it, close with one line. Roasts stay. A
-  finding about the loop is `low` unless it breaks the work. 100 percent coverage
-  is a product rule. **Do not invent gates**, rule zero of `agent/RALPH.md`.
-- **A finding is a CHILD of its task**, one level, `todo add --parent-task`, with
-  `--area` and `--okr`. **Plans live beside the work**, `#<id> - <title>.md`,
-  checked by `roast.py plan` from the repository root before building, and they
-  stay. Write long scripts with the Write tool.
+  new component cards and their blockers are `critical`. No proof at the close:
+  test what changed, look at it, close with one line. Roasts stay. A finding
+  about the loop is `low`. 100 percent coverage. **Do not invent gates.**
+- **A finding is a CHILD of its task**, one level, with `--area` and `--okr`.
+  **Plans live beside the work**, checked by `roast.py plan` from the repository
+  root before building, and they stay. Write long scripts with the Write tool.
 
 ## The next step
 
-**KN-494 is in progress**, high: a job whose dates were written as text, «۱۰ شهریور
-۱۴۰۵» in the story fixtures, shows an empty date and cannot be saved, and five
-stories fail on it (AddJobModal Review; JobModal Note, Change Status, Save And
-Delete, Starts Over For Another Record). It blocks KN-226.
+**KN-226 is in progress**, high: a committed check that opens every story of a
+production Storybook and fails on a page or console error, before Pages
+publishes. Its blockers are closed. The plan beside `apps/web/e2e/storybook`
+is replanned (uncommitted): a Playwright spec, `published.spec.ts`, one test per
+story, the channel hooked by a setter; its own server, `serve.ts`, run by Node
+24 as TypeScript, refusing a build made for another base; `webServer` on port
+6106 with no reuse; 120 seconds a story, no retries; the check in `pages.yml`
+before the assembly. Drafts of the three files are in the scratchpad's
+`kn226-draft`. **Codex is reviewing the replan**; build after it lands, then the
+Hover mutation the exit names.
 
 ## What to read first
 
-`AGENTS.md` (section 7 is what keeps going wrong), `DESIGN.md`,
-`agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, then `todo next` and
-`node agent/scripts/verify/contract.mjs`.
+`AGENTS.md` (section 7), `DESIGN.md`, `agent/RALPH.md`, the head of
+`agent/TODO_BOARD.md`, then `todo next` and the KN-226 plan.
