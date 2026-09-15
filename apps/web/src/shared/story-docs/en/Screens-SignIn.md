@@ -1,12 +1,12 @@
-Signing in: a mobile number, then the five digit code that was sent to it, then
-a name the first time.
+Signing in: a mobile number, then the five digit code made for it, then a name
+the first time.
 
 Page-map row 6 draws the three as three screens, and they are three steps of
 one flow: the same card, a different heading and field. Everything in the
 archive belongs to someone, so the product shows nothing until this is done.
 
 **No message is really sent.** The provider is mocked for the MVP, the owner's
-decision: the code is written to the browser console and the page says so,
+decision: the code step shows the code itself, said plainly to be a stand-in,
 rather than pretending an SMS is on its way. The real provider replaces the
 same two calls when the API's auth lands.
 
@@ -45,10 +45,11 @@ first login asks for taken, after which the screen has nothing left to ask.
 
 ### SigningInOnAPhone
 
-Signing in on a phone, where there is no console: the code is on the screen,
-said plainly to be a stand-in until a real message is sent. The story knows the
-codes the mock makes, so it sees a resend, once the minute is up, change the
-code on the screen, the first code refused, and the new one sign the reader in.
+Signing in on a phone, with the code read where every reader finds it, on the
+screen, said plainly to be a stand-in until a real message is sent. The story
+knows the codes the mock makes, so it sees a resend, once the minute is up,
+change the code on the screen, the first code refused, and the new one sign the
+reader in.
 
 ### EnterFinishesTheStep
 

@@ -3,9 +3,10 @@ import { expect, test, type Page } from '@playwright/test'
 /**
  * Signing in, end to end, KN-046.
  *
- * The provider is mocked for the MVP, the owner's decision: no SMS is sent and
- * the code is written to the console, so the test reads it there, which is
- * exactly what whoever is testing the product does.
+ * The provider is mocked for the MVP, the owner's decision: no SMS is sent. The
+ * mock makes the code, shows it on the code step, KN-459, and logs it to the
+ * console; this test reads the logged line, and the stories' SigningInOnAPhone
+ * reads the code where a reader does, on the screen.
  */
 const PHONE = '09120000000'
 // The number as the code step shows it, in the reader's digits grouped as the
@@ -22,7 +23,7 @@ const AGAIN = 'ارسال دوباره‌ی کد'
 const CHANGE = 'ویرایش شماره'
 const SECRET = 'کار محرمانه'
 
-/** The codes the mock says it sent, in the order it sent them. */
+/** The codes the mock made, in the order it made them, from the line it logs for each. */
 const codesFrom = (page: Page): string[] => {
   const codes: string[] = []
   page.on('console', (message) => {
@@ -51,7 +52,7 @@ test.beforeEach(async ({ page }) => {
   await page.reload()
 })
 
-test('a number and the code it was sent reach the board, and the first login gives a name', async ({ page }) => {
+test('a number and the code made for it reach the board, and the first login gives a name', async ({ page }) => {
   const codes = codesFrom(page)
   await signIn(page, codes)
 
@@ -78,7 +79,7 @@ test('a number and the code it was sent reach the board, and the first login giv
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('فرصت‌های شغلی من')
 })
 
-test('a wrong code says so and another can be sent', async ({ page }) => {
+test('a wrong code says so and another can be asked for', async ({ page }) => {
   const codes = codesFrom(page)
   await signIn(page, codes)
 
@@ -86,8 +87,8 @@ test('a wrong code says so and another can be sent', async ({ page }) => {
   await page.getByRole('button', { name: 'تأیید و ورود' }).click()
   await expect(page.getByText('این کد درست نیست. دوباره امتحان کن.')).toBeVisible()
 
-  // Resending really sends another, once the minute the step counts down is up,
-  // KN-587: the mock says so, and the new one works.
+  // Asking again makes another, once the minute the step counts down is up,
+  // KN-587: the mock logs it, and the new one works.
   await expect(page.getByText(COUNTING)).toBeVisible()
   await page.clock.runFor(60_000)
   await page.getByRole('button', { name: AGAIN, exact: true }).click()
