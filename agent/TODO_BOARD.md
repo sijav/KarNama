@@ -13,6 +13,12 @@ Project **KarNama** · 266 of 614 tasks done · 597 of 1219 points.
 | 1 | OKR-1 | MVP: the pages | now | 210 | 188 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-324` | The Loading State's dots start on a frame with all three dim, and no story reads their opacity | medium | 1 | web | none | The first painted frame is the file's, the middle dot at 1 and the others at 0.4, and a story reads the three opacities at the start and one turn later. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 266 of 614 tasks done · 597 of 1219 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (334)
+## Backlog (333)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -81,7 +87,6 @@ Project **KarNama** · 266 of 614 tasks done · 597 of 1219 points.
 | `KN-182` | KN-166's verifier makes this repository fail when a sibling project moves | medium | 1 | agent | none | KarNama's verification does not depend on any path outside this repository; a missing sibling is reported as unavailable rather than as a failure; and the rules check for SkipBureau lives in SkipBureau and gates SkipBureau, proved by running both with the sibling renamed. |
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
-| `KN-324` | The Loading State's dots start on a frame with all three dim, and no story reads their opacity | medium | 1 | web | none | The first painted frame is the file's, the middle dot at 1 and the others at 0.4, and a story reads the three opacities at the start and one turn later. |
 | `KN-325` | A Loading State whose startedAt moves past fifteen seconds shows the reading line for a render first | medium | 1 | web | none | A startedAt already past fifteen seconds shows the slow line on its first render, whether mounted with it or changed to it, and a story changes it while mounted. |
 | `KN-326` | The Loading State's first line is not reliably announced, since its status region mounts already holding it | medium | 1 | web | none | The status region is in the page before its first line is written, so the first line is a change, and a story shows the region empty when it mounts and filled after. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
@@ -6390,6 +6395,10 @@ CHILD OF KN-021, recorded in prose because board.json cannot express parent_task
 
 **Evidence.** 54e58dd: ControlsOnNarrowScreens keeps 390, the phone the design draws, for the click, and checks the shell's three controls shown at 899 wide and hidden at 900 in place of 1440; with the controls' line planted at sm the story failed at 899, and at lg at 900; Page Header stories 5 of 5, unit 1494 of 1494, lint and tsc clean
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T131059-task-kn-321-the-page-header-s-shell-controls-are-test-68224c.md, filed none, dismissed: Nothing to dismiss: the round found nothing and confirmed the work. The Page Header has one width rule, the shell controls' Box at MUI's md, 900 in the installed source, and the action, the back control and the title change nothing at that line. The story finds the three controls while hidden and reads the display change as it happens, each resize awaited, and its finally puts back 414 by 896 after a failing assertion too, where the English story after it depends on no width. Dropping 1440 loses no state, since a min-width rule hidden at 900 stays hidden above it, and the name, the comment, the plan and the commit say what the code does.
+
 ### `KN-322` Storybook never loads Vazirmatn, so every story draws its type in the system font
 
 - **status** done · **severity** high · **points** 1 · **area** web · **objective** OKR-2
@@ -6420,7 +6429,7 @@ Found while building KN-022. Node 159:80's mark is bg/surface-secondary, #f3f4f6
 
 ### `KN-324` The Loading State's dots start on a frame with all three dim, and no story reads their opacity
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-022
 
