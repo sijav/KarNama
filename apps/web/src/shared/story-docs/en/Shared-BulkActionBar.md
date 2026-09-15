@@ -88,3 +88,10 @@ took it, as the bar does, kept focus. Shift+F6 is how both browsers go back
 through their panes, so the bar leaves it alone. The story's keys come from its
 test runner, whose browser has no panes of its own, so the story shows what the
 bar does with a key and not what a browser does with it first.
+
+### QuietWhileAModalIsOpen
+
+A selection live and a Confirm modal open over it, as a screen raises one from
+the bar, with focus on its Cancel. F6 does nothing: it takes focus to no control
+of the bar behind the scrim and leaves the key's default alone, since a modal
+owns the page while it is up.

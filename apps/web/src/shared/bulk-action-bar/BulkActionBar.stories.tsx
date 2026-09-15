@@ -4,6 +4,7 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18n } from '../../i18n'
 import { formatCount } from '../../i18n/formatCount'
 import { elevation, semantic } from '../../theme/tokens'
+import { ConfirmModal } from '../modal'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
 import { BulkActionBar, type BulkActionBarProps, type BulkActionBarType } from './BulkActionBar'
@@ -296,5 +297,64 @@ export const ReachedFromInsideTheList: Story = {
     // And it got there without walking the list: no row took focus on the way.
     await expect(rows.some((row) => row === canvasElement.ownerDocument.activeElement)).toBe(false)
     await expect(bar).toHaveAttribute('aria-keyshortcuts', 'F6')
+  },
+}
+
+// A modal over a live selection, as a screen raises one from the bar, KN-470.
+const OverAModal = (args: Args) => (
+  <Box>
+    {barFor(args)}
+    <ConfirmModal
+      open
+      title={i18n._('Delete these job opportunities?')}
+      body={i18n._('job opportunities are deleted for good and cannot be brought back.')}
+      confirmLabel={i18n._('Delete')}
+      onConfirm={() => undefined}
+      onCancel={() => undefined}
+    />
+  </Box>
+)
+
+export const QuietWhileAModalIsOpen: Story = {
+  globals: { locale: 'fa-IR' },
+  // A fixed modal over the bar, so no control applies.
+  parameters: { controls: { disable: true } },
+  render: (args) => <OverAModal {...args} />,
+  play: async ({ canvasElement }) => {
+    // KN-470: a modal owns the page while it is up, so F6 there neither takes
+    // focus to the bar behind the scrim nor keeps the key from the browser.
+    const dialog = await within(canvasElement.ownerDocument.body).findByRole('dialog')
+    const cancel = within(dialog).getByRole('button', { name: i18n._('Cancel') })
+    await waitFor(async () => {
+      await expect(cancel).toHaveFocus()
+    })
+
+    // The runner's own keyboard, as ReachedFromInsideTheList's, KN-225.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const browser = await import('vitest/browser')
+    // By CSS, since the open modal hides the rest of the page from roles.
+    const bar = canvasElement.querySelector('[aria-keyshortcuts]')
+    if (!(bar instanceof HTMLElement)) throw new Error('the bar is not in the page')
+    // What inside the bar took focus, and whether each F6 had its default
+    // prevented, read on the window, which hears a key after the document.
+    const reached: EventTarget[] = []
+    const took = (event: FocusEvent) => {
+      if (event.target) reached.push(event.target)
+    }
+    const prevented: boolean[] = []
+    const record = (event: KeyboardEvent) => {
+      if (event.key === 'F6') prevented.push(event.defaultPrevented)
+    }
+    bar.addEventListener('focusin', took)
+    window.addEventListener('keydown', record)
+    try {
+      await browser.userEvent.keyboard('{F6}')
+      await expect(prevented).toEqual([false])
+      await expect(reached).toEqual([])
+      await expect(cancel).toHaveFocus()
+    } finally {
+      bar.removeEventListener('focusin', took)
+      window.removeEventListener('keydown', record)
+    }
   },
 }

@@ -44,6 +44,15 @@ type KeyName = 'F6'
 // cannot disagree.
 const SHORTCUT: KeyName = 'F6'
 
+/** What marks a modal dialog in the page: MUI's Dialog puts it on its paper. */
+type ModalMark = '[aria-modal="true"]'
+
+// A modal owns the page while it is up, KN-470, so the bar leaves F6 alone then:
+// the key neither takes focus to the bar behind the scrim nor is kept from the
+// browser. Read off the document rather than off the focused element, since MUI's
+// focus trap can hold focus on the container round the paper it marks.
+const MODAL: ModalMark = '[aria-modal="true"]'
+
 const EDGE = 1
 const DIVIDER_HEIGHT = 24
 
@@ -94,6 +103,7 @@ export const BulkActionBar = ({ type, count, onClear, onDelete, onChangeStatus, 
       // Shift+F6 is how the browsers go back through their panes and frames, so
       // it stays theirs, KN-469.
       if (event.key !== SHORTCUT || event.shiftKey || event.altKey || event.ctrlKey || event.metaKey) return
+      if (window.document.querySelector(MODAL) !== null) return
       const first = bar.current?.querySelector('button')
       if (!first) return
       event.preventDefault()
