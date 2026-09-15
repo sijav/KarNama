@@ -127,10 +127,17 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
    removed; the source scan and the five Persian Docs pages find none left. **Its roast is
    running**, `kn434-roast.mjs` writing `kn434-roast.txt`: judge, file with
    `--parent-task KN-434 --area web --okr OKR-1`, record, relay.
-9. **KN-435 is in progress**, medium, 1 point, web: saving a rename with a blank name silently
-   discards it. Exit: a blank rename is refused with the field's own error and the modal stays open,
-   and a story presses Save on an empty field. `BackingOut` asserts today that a blank save keeps
-   the name, so that story changes with it.
+   Its roast is recorded: KN-639, the kept Editing comment describing blanks the story never saves,
+   and KN-640, the Button form JSDoc, filed.
+9. **KN-435 is closed** (d16713a; board 3728570): a blank rename keeps the modal open with the
+   Status field's own error, "Write the status name", «نام وضعیت را بنویس», held by `tried` in the
+   rename state; `BackingOut` finds the dialog again past a close's fade and reads the refusal. The
+   unit project passed but for `session.test.ts` overrunning its 5 s under load, KN-551, which
+   passed alone. **Its roast is running**, `kn435-roast.mjs` writing `kn435-roast.txt`: judge, file
+   with `--parent-task KN-435 --area web --okr OKR-1`, record, relay.
+10. **KN-439 is in progress**, medium, 1 point, web: the status fixtures' count disagrees with the
+    board they describe. Exit: the count is gone, or equal to the job opportunities the fixtures put
+    in that status, in both languages. Measure first: its reading is from 2026-09-12.
 
 ## What to read first
 
