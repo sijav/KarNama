@@ -9737,7 +9737,7 @@ KN-431's roast, confirmed against 38ac449: by the time SelectingWhileSearching d
 
 **Roasts.**
 
-- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T223823-task-kn-535-selectingwhilesearching-never-deletes-or--ed4329.md, filed KN-431, dismissed: Nothing dismissed: its one finding was confirmed against the code, JobsScreen.tsx line 729 taking the dialog's value from moving[0], and is filed. The rest confirmed the implementation and the story: held as the selection within what the search shows, the bar counting, deleting and moving it, both destructive paths proved, the fresh focus making the second choice of the same folded checkbox self-contained, and the helpers proportionate. It ran no Vitest, its sandbox refusing Vite.
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T223823-task-kn-535-selectingwhilesearching-never-deletes-or--ed4329.md, filed KN-654, dismissed: Nothing dismissed: its one finding was confirmed against the code, JobsScreen.tsx line 729 taking the dialog's value from moving[0], and is filed as KN-654. The rest confirmed the implementation and the story: held as the selection within what the search shows, the bar counting, deleting and moving it, both destructive paths proved, the fresh focus making the second choice of the same folded checkbox self-contained, and the helpers proportionate. It ran no Vitest, its sandbox refusing Vite.
 
 ### `KN-536` JobsScreen's held comment says a job deleted in another tab falls out of it, which nothing makes true
 
