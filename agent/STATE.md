@@ -42,15 +42,17 @@ holds the Groq key; never repeat that key anywhere.
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
 **Closed 2026-09-16**: **KN-514** (ebd4f57): the job modal's footer wraps, the delete keeping a row
-of its own at the inline end where the three actions do not fit; DESIGN.md's Job Modal section
-records the decision (3bb60c1). Its roast filed **KN-653**: the plan and the commit say nothing
-moves above 390, while English keeps the delete's own row until 411. **KN-524** (a43bb15): the
-story-docs parser's fences are CommonMark's at the top level, and the first line in a fence that
-holds its run without closing it is reported, since the Docs page's bundled markdown-to-jsx ends the
-fence there; AGENTS.md sections 3 and 7 say so; its roast found nothing (ab88b60). KN-551 was given
-the messages its card asked for. **KN-535** (74d9239; board 5ec17f6): `ActingWhileSearching` proves
-the bulk bar leaves a card the search hides alone, through a delete and through a status change,
-and fails with either put back on `selected`; its roast is running.
+of its own where the three actions do not fit; DESIGN.md records the decision (3bb60c1); its roast
+filed **KN-653**, the plan's claim that nothing moves above 390 where English wraps until 411.
+**KN-524** (a43bb15): the story-docs parser's fences are CommonMark's at the top level, and the
+first line in a fence that holds its run without closing it is reported, since the Docs page's
+bundled markdown-to-jsx ends the fence there; its roast found nothing. **KN-535** (74d9239):
+`ActingWhileSearching` proves the bulk bar leaves a card the search hides alone through a delete and
+through a status change, and fails with either put back on `selected`; its roast filed **KN-654**,
+the Change Status dialog's opening status asserted nowhere, which flattened onto KN-431 by the
+one-level rule. **KN-543** (f5ab9f5; board 8699905): the API's seed writes the five statuses in the
+design's order, the offer column before rejected, with a case in `cli.test.ts` reading the rows;
+its roast is running. KN-551 was given the messages its card asked for.
 
 **Closed 2026-09-15, each roast recorded**: KN-348 (KN-628, KN-629); KN-349; KN-358; KN-359
 (KN-632); KN-362 (KN-633 to KN-635); KN-370; KN-385 (KN-636); KN-413 (KN-637, KN-638); KN-432;
@@ -59,21 +61,22 @@ KN-434 (KN-639, KN-640); KN-435; KN-439 (KN-641, KN-642); KN-444; KN-448 (KN-643
 KN-496. **Dropped**: KN-387, KN-474. **Filed while working**: KN-644 under KN-013, KN-651 under
 KN-027.
 
-**Rounds waiting**: KN-431 on KN-536; KN-514 on KN-653; KN-007 on KN-407 and KN-408; KN-018 on
-KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on KN-339, KN-383 and KN-624; KN-026
-on KN-384, KN-385 and KN-625; KN-027 on KN-651 among its five; KN-028 on KN-346, KN-626 and KN-627;
-KN-031 on KN-628 and KN-629; KN-439 on KN-641 and KN-642; KN-448 on KN-643; KN-449 on KN-645;
-KN-461 on KN-646 to KN-648; KN-470 on KN-649; KN-477 on twenty-one, KN-650 and KN-652 among them;
-KN-013 on KN-644 among its twelve. **Still open from earlier**: KN-009 waits on KN-614; KN-022 on
-KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357; KN-029 on its other
-children.
+**Rounds waiting**: KN-431 on KN-536 and KN-654; KN-514 on KN-653; KN-007 on KN-407 and KN-408;
+KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on KN-339, KN-383 and
+KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-027 on KN-651 among its five; KN-028 on KN-346,
+KN-626 and KN-627; KN-031 on KN-628 and KN-629; KN-439 on KN-641 and KN-642; KN-448 on KN-643;
+KN-449 on KN-645; KN-461 on KN-646 to KN-648; KN-470 on KN-649; KN-477 on twenty-one, KN-650 and
+KN-652 among them; KN-013 on KN-644 among its twelve. **Still open from earlier**: KN-009 waits on
+KN-614; KN-022 on KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357; KN-029 on
+its other children.
 
 **What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
 `Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` fails under load, KN-551:
 its demo case times out at 5 seconds and its live case then sees the request spy called twice; rerun
 the file alone, then read the unit project. In the e2e suite, the two-tabs test of a tab part way
 through signing in, KN-601, and the phone network selection, KN-651, fail every run. `App.tsx` line
-107 uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486.
+107 uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486, so the api
+workspace's database tests are run directly, `npx vitest run src/database`, 68 of them.
 
 ## The owner's rules, most recent first
 
@@ -97,23 +100,24 @@ through signing in, KN-601, and the phone network selection, KN-651, fail every 
 
 ## The next step
 
-1. **KN-535's roast is running**, `kn535-roast.mjs` writing `kn535-roast.txt`: judge each finding
-   against the code, file survivors with `--parent-task KN-535 --area web --okr OKR-1`, record with
-   `todo roast KN-535 --file <md> --filed <ids|none> --dismissed "..."`, and relay.
-2. **KN-543 is in progress**, medium, 1 point, api, from KN-440's plan review: `seed.ts`'s
-   `DEFAULT_STATUSES`, lines 40 to 46 and commented "in board order", lists rejected before offer,
-   and the seed writes each one's `position` from that list's index, line 145, so a board read from
-   the API by position draws rejected before the offer column. DESIGN.md keeps offer before rejected
-   and rejected last, the owner's KN-070. Exit: the seed writes the defaults' positions in the
-   design's order, and a test of the seed asserts it. No `seed.test.ts` exists yet; find what covers
-   `seed.ts` today before planning.
+1. **KN-543's roast is running**, `kn543-roast.mjs` writing `kn543-roast.txt`: judge each finding
+   against the code, file survivors with `--parent-task KN-543 --area api --okr OKR-1`, record with
+   `todo roast KN-543 --file <md> --filed <ids|none> --dismissed "..."`, and relay.
+2. **KN-544 is in progress**, medium, 1 point, web, from KN-440's roast: `JobsScreen.tsx` line 155,
+   `isCollapsed`, starts a column folded when `tokenOf(records.statuses, id)` is `rejected`, which is
+   the column's COLOUR, so a reader's own status given red starts folded and a Rejected column given
+   another colour starts open. KN-440 settled that a colour is not which status a column is, and the
+   order now reads the id. Exit: the board starts collapsed only the Rejected status, by its id; a
+   story gives a status of the reader's own red and finds its column open, gives Rejected another
+   colour and finds it still collapsed, and fails on the colour rule.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-543`,
-`apps/api/src/database/seed.ts`, whatever test runs the seed today, and the web's own column order
-in `apps/web/src/core/records`. **Never chain a check through a pipe into a commit or a close, write
-long scripts with the Write tool, keep apostrophes out of single-quoted strings in scripts, find a
-story's controls inside `#storybook-root`, and read an accessibility claim from the browser's own
-tree.** Keep a failing run's full output in a file before filtering it. The Persian catalog is
-`apps/web/src/i18n/locales/fa-IR.ts`.
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-544`,
+`JobsScreen.tsx` around `isCollapsed` and `tokenOf`, `core/records/records.ts`, KN-440's plan beside
+it, and the board's collapse stories. **Never chain a check through a pipe into a commit or a close,
+write long scripts with the Write tool, keep apostrophes out of single-quoted strings in scripts,
+find a story's controls inside `#storybook-root`, and read an accessibility claim from the browser's
+own tree.** Keep a failing run's full output in a file before filtering it, and give a `-t` filter a
+positive control: a run that matches nothing exits 0 and reports every test skipped. The Persian
+catalog is `apps/web/src/i18n/locales/fa-IR.ts`.
