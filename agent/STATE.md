@@ -90,7 +90,22 @@ KN-365's kind. The API's coverage gate fails on auth and extraction files, KN-48
   checked by `roast.py plan` from the repository root before building, and they
   stay. Write long scripts with the Write tool.
 
-## The next step
+**KN-279** (034e1b4) is closed: `border/selected`, `#2563eb` light and `#3670ed`
+dark, a selected Filter Chip's one pixel edge, told from pressing by width, 1.5
+against 1, in a story that holds a real Space; **its roast is running**, scratch
+`kn279-roast.log`.
+
+**KN-505 is in progress, critical by the owner's instruction of 2026-09-15**: "Bro
+GitHub pages do work with normal deep linking routing like ../daramad-name", and
+asked when, "Right after KN-279". The app routes by hash on the false claim in
+`routes.ts` that Pages cannot serve a deep link; `pages.yml` has copied
+`index.html` to `404.html` since KN-051. Measured on the live site:
+`/KarNama/network` answers 404 with the app, `/KarNama/404` answers 200 from
+`404.html` with no redirect, `/KarNama/storybook` answers 301 to a trailing slash.
+So the build writes `jobs.html`, `add.html` and `network.html`, each 200. The plan
+is beside `src/app/routes.ts`, going to Codex. KN-577 was its duplicate, dropped.
+
+## The next step (earlier in this iteration)
 
 **KN-279 is in progress**: the selected Filter Chip's blue edge, the owner's
 decision of KN-276. Measured: `#2563eb` is 4.82, 5.17 and 4.70 on the light
