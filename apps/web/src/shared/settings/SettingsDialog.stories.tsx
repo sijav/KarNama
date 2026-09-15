@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react'
 import type { StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { useArgs } from 'storybook/preview-api'
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { clearAllMocks, expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, localeOrder, locales, type Locale } from '../../i18n'
 import { Button } from '../button'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -82,7 +82,14 @@ const openSettings = async (canvasElement: HTMLElement, locale: unknown) => {
 }
 
 export const Preferences: Story = {
+  // Each choice writes the args, and a story whose args change while it plays
+  // is rendered again at once, its loaders restoring every fn() first: in a
+  // published Storybook that cleared the call the play was about to check,
+  // KN-563. So this story keeps its mocks across its renders, and its play
+  // clears them as it starts and reads only the calls it made.
+  parameters: { test: { restoreMocks: false } },
   play: async ({ args, canvasElement, globals }) => {
+    clearAllMocks()
     const body = within(canvasElement.ownerDocument.body)
     const { i18n, dialog, language } = await openSettings(canvasElement, globals.locale)
     // The language is a Select, KN-480. Choosing the other language calls
