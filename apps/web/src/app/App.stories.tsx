@@ -174,14 +174,8 @@ export const SigningOutOnAPhone: Story = {
 // typed so the lint rule reads the name as a value.
 const MOVED: keyof WindowEventMap = 'popstate'
 
-/**
- * The address and the page follow each other, KN-505.
- *
- * The navigation pushes a path under the site's base, and a path the history
- * moves to by anything else, the back button or a shared link, is read back into
- * the page. A path pushed from outside fires no popstate of its own, so the story
- * fires the one a browser's Back would.
- */
+// A path pushed from outside fires no popstate of its own, so the story fires the
+// one a browser's Back would, KN-505.
 export const Navigating: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
@@ -227,12 +221,8 @@ export const Navigating: Story = {
   },
 }
 
-/**
- * An address shared while the page was in the hash, KN-505: it opens the page it
- * names, and that page's path replaces it. The frame's address is given the old
- * hash before the shell renders, as a shared link gives it, and the whole address
- * is put back after.
- */
+// The frame's address is given the old hash before the shell renders, as a shared
+// link gives it, and the whole address is put back after, KN-505.
 export const FromAnOldAddress: Story = {
   globals: { locale: 'fa-IR' },
   beforeEach: () => {

@@ -368,15 +368,6 @@ export const Managing: Story = {
   },
 }
 
-/**
- * The people and the files kept against one job opportunity, and the ways out.
- *
- * Both live inside the job modal behind their own tabs, and both are the
- * network's records rather than the job's, KN-056: a person added here is on
- * the network page too. The cancels are here for the same reason the saves
- * are — a modal that cannot be backed out of is a trap, and each of these
- * three has its own way out.
- */
 export const People: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
@@ -632,13 +623,6 @@ export const BackingOut: Story = {
   },
 }
 
-/**
- * Adding, by each of the three roads the board offers.
- *
- * The header's action, a column's own Add Card row and the empty state all
- * reach the same flow; what differs is the status the new job opportunity
- * lands in, which is the column it was asked for from.
- */
 export const Adding: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ args, canvasElement }) => {
@@ -726,10 +710,6 @@ export const AddingFromEmpty: Story = {
   },
 }
 
-/**
- * Several at once: what the bulk bar does with a selection, and the card's own
- * menu, which is the same work asked for one at a time.
- */
 export const Selecting: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {

@@ -170,10 +170,6 @@ export const Playground: Story = {
   },
 }
 
-/**
- * Every one of the 75: five styles, three sizes, five states, all rendered from
- * args and all visible without a test running, KN-316.
- */
 export const States: Story = {
   globals: { colorScheme: 'light' },
   parameters: { controls: { include: ['startIcon', 'endIcon'] } },

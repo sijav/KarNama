@@ -50,10 +50,9 @@ const asValues = (held: ContactEntry): ContactModalValues => ({
   jobId: held.jobId,
 })
 
+// The props are documented in story-docs, not here, KN-207.
 export interface NetworkScreenProps {
-  /** Said while anything is selected, so the shell can give the foot of the screen to the bulk bar, KN-356. */
   onSelecting?: (selecting: boolean) => void
-  /** Signs the reader out, from the Page Header's controls on a phone, KN-478. */
   onSignOut?: () => void
 }
 

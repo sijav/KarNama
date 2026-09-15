@@ -138,13 +138,9 @@ export const Keeping: Story = {
   },
 }
 
-/**
- * A person written in full, changed, and let go of.
- *
- * The fields beyond the name are all optional and all kept the same way: what
- * is typed is kept, what is left empty is kept as nothing rather than as an
- * empty string, so a card does not draw a blank line where a role would be.
- */
+// The fields beyond the name are all optional and all kept the same way: what is
+// typed is kept, what is left empty is kept as nothing rather than as an empty
+// string, so a card does not draw a blank line where a role would be.
 export const Editing: Story = {
   parameters: { contacts: false },
   globals: { locale: 'fa-IR' },

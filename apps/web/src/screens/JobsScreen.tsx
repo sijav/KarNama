@@ -64,16 +64,12 @@ const MOBILE: JobCardLayout = 'mobile'
 const WIDE_BAR: SearchBarLayout = 'desktop'
 const NARROW_BAR: SearchBarLayout = 'mobile'
 
+// The props are documented in story-docs, not here, KN-207.
 export interface JobsScreenProps {
-  /** Opens the add flow, which is what the add destination is, KN-042. */
   addOpen?: boolean
-  /** Said when the add flow closes, so the address can go back to the board. */
   onAddClose?: () => void
-  /** Said while anything is selected, so the shell can give the foot of the screen to the bulk bar, KN-356. */
   onSelecting?: (selecting: boolean) => void
-  /** Signs the reader out, from the Page Header's controls on a phone, KN-478. */
   onSignOut?: () => void
-  /** Reads a pasted link or text into the add flow's Review step: the server's reader, which the shell fills in, KN-495. */
   onExtract: AddJobModalProps['onExtract']
 }
 
