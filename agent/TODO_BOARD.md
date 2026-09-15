@@ -13,6 +13,12 @@ Project **KarNama** · 259 of 608 tasks done · 588 of 1211 points.
 | 1 | OKR-1 | MVP: the pages | now | 212 | 181 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-230` | The callback fn() rule reads only the meta's args, not what each story actually passes | medium | 1 | web | none | The guard fails for a story whose own args override a callback with anything but Storybook's fn(), and for an fn not imported from storybook/test, proved by a planted story of each kind, while the current stories still pass. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 259 of 608 tasks done · 588 of 1211 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (336)
+## Backlog (335)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -80,7 +86,6 @@ Project **KarNama** · 259 of 608 tasks done · 588 of 1211 points.
 | `KN-180` | Verifiers claim to be read-only while their test runs write to node_modules | medium | 1 | agent | none | No verifier claims to be read-only when the commands it spawns write anywhere; those that need a writable tree say so in one line naming what they write; and a verifier that cannot complete reports that it could not RUN a check rather than counting it as a pass or a failure. |
 | `KN-182` | KN-166's verifier makes this repository fail when a sibling project moves | medium | 1 | agent | none | KarNama's verification does not depend on any path outside this repository; a missing sibling is reported as unavailable rather than as a failure; and the rules check for SkipBureau lives in SkipBureau and gates SkipBureau, proved by running both with the sibling renamed. |
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
-| `KN-230` | The callback fn() rule reads only the meta's args, not what each story actually passes | medium | 1 | web | none | The guard fails for a story whose own args override a callback with anything but Storybook's fn(), and for an fn not imported from storybook/test, proved by a planted story of each kind, while the current stories still pass. |
 | `KN-257` | The getComputedStyle lingui exemption covers every string, not the one selector it is for | medium | 1 | web | none | getComputedStyle is no longer in ignoreFunctions; the one selector the stories pass is exempted by an exact pattern with its reason beside it; lint passes; and a check shows a getComputedStyle call with a literal of copy is flagged while getComputedStyle(element, '::placeholder') is not. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-304` | On a hovered or chosen tab the indicator paints over the focus ring's bottom edge | medium | 1 | web | none | A focused tab's ring is unbroken in every state, the indicator drawn beneath it or clear of it, shown in a story that focuses a hovered tab and reads the ring's bottom band as border/focus. |
@@ -4603,6 +4608,10 @@ CHILD OF KN-225, recorded in prose because board.json cannot express parent_task
 
 **Evidence.** f499ea7: the twelve guards in ten story files read import.meta.env.MODE !== 'test' where they read Storybook's private __STORYBOOK_PREVIEW__, and vitest.setup.ts refuses a mode other than test; the ten files pass under the storybook project, 99 of 99; with the story-test flag removed each of the twelve guards fails on its own message; a mode set in the project's config stops the run at the setup; a production build checked their 99 stories with no error, and with Checkbox Hover's canvas branch removed that story failed; unit 1488 of 1488, lint and tsc clean
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T103606-task-kn-228-twelve-plays-tell-the-published-storybook-ae37eb.md, filed none, dismissed: A Storybook test runner driving a running or published Storybook would take the canvas return in all twelve guards and pass a play's first half: true, and unchanged by KN-228, since the guard it replaced returned whenever __STORYBOOK_PREVIEW__ existed, which a running Storybook's preview sets, measured present in the dev preview; KN-225's guarantee was always the Vitest storybook project's, where a missing flag still fails, shown by removing it, and no such runner is in the repository. The wording that says the test runner, or that the published Storybook has no runner: in this repository the one runner is the Vitest storybook project and the published Storybook has none, so the sentences are true of it. The roast itself confirmed the Pages build runs in production mode and that the twelve inline guards are the right shape.
+
 ### `KN-229` The Tooltip's Controls table lost its children prop when its JSDoc went
 
 - **status** done · **severity** critical · **points** 1 · **area** web · **objective** OKR-1
@@ -4628,7 +4637,7 @@ CHILD OF KN-207, recorded in prose because board.json cannot express parent_task
 
 ### `KN-230` The callback fn() rule reads only the meta's args, not what each story actually passes
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-013
 
