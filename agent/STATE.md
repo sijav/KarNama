@@ -44,8 +44,8 @@ holds the Groq key; never repeat that key anywhere.
 roast found nothing); KN-358 (the design commit of the owner's answers; roast found nothing).
 **KN-359 is closed** (0b8f9c3; board 69d7fff): the add modal's paste label is `unstyledText.pasteLabel`,
 12 on 19 with no spacing, named beside the five type roles; the Input takes `labelStyle`; Paste and
-PasteFilled read 401 and Error 423. **Its roast is running in the background**, `kn359-roast.mjs`
-writing `kn359-roast.txt` in the scratchpad. Earlier: KN-345 (KN-626, KN-627), KN-343 (KN-625),
+PasteFilled read 401 and Error 423; its roast is recorded, KN-631 and KN-632 filed. KN-362 and
+KN-370 are closed, below. Earlier: KN-345 (KN-626, KN-627), KN-343 (KN-625),
 KN-338 (KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331 (KN-620), KN-024's round (KN-623).
 
 **Rounds waiting**: KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on
@@ -101,8 +101,9 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-362`,
-`AddJobModal.tsx`'s loading step and `LoadingState.tsx`. **Never chain a check through a pipe into
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-385`,
+its plan beside `ContactCard.tsx`, and the scripts `kn385-apply-stories.mjs` and
+`kn385-apply-component.mjs` in the scratchpad, written before its plan review. **Never chain a check through a pipe into
 a commit or a close, write long scripts with the Write tool, keep apostrophes out of single-quoted
 strings in scripts, find a story's controls inside `#storybook-root`, and read an accessibility
 claim from the browser's own tree.** The Persian catalog is `apps/web/src/i18n/locales/fa-IR.ts`.

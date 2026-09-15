@@ -13,6 +13,12 @@ Project **KarNama** · 282 of 635 tasks done · 619 of 1255 points.
 | 1 | OKR-1 | MVP: the pages | now | 215 | 204 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-385` | A role or company of only spaces still draws the Contact Card's blank role line and divider, and the contact prop's docs say role cannot be missing | medium | 1 | web | none | The card trims each part before joining, and the Contact Modal trims role and company when it saves, so a role of ' ' draws no line and no divider, which a story shows; and both languages' docs for the contact prop say role and company may be missing. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 282 of 635 tasks done · 619 of 1255 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (339)
+## Backlog (338)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 282 of 635 tasks done · 619 of 1255 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-385` | A role or company of only spaces still draws the Contact Card's blank role line and divider, and the contact prop's docs say role cannot be missing | medium | 1 | web | none | The card trims each part before joining, and the Contact Modal trims role and company when it saves, so a role of ' ' draws no line and no divider, which a story shows; and both languages' docs for the contact prop say role and company may be missing. |
 | `KN-387` | The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text | medium | 1 | web | none | In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages. |
 | `KN-413` | The Input's docs still say the line under the field always keeps its height, which KN-287 ended | medium | 1 | web | none | Both language docs say what the field does: no line and no room without a message, a line of one height with a helper or an error, and what that means for a form when an error appears, which is that it does move; nothing in either file contradicts it; the Docs page reads right in both languages. |
 | `KN-432` | The delete confirmation says 'this job opportunity' while deleting several | medium | 1 | web | none | The confirmation names how many are going in both languages, and a story deleting two reads it. |
@@ -7245,6 +7250,10 @@ CHILD OF KN-010, recorded in prose because board.json cannot express parent_task
 
 **Evidence.** MarkLedDigitsResolveLtr reads the mark-led chip ltr in the Persian interface and fails with the chip's dir planted rtl; DESIGN.md, the chip's comment, the direction stories' comments and both docs say the first strong code point decides and where the ellipsis sits, with no always or first letter left; 13 chip stories, tsc, lint and 1495 unit tests pass; looked at in fa-IR and en-US, light and dark
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T184201-task-kn-370-the-status-chip-direction-contract-says-f-cb26c9.md, filed none, dismissed: Nothing to dismiss: the roast confirmed the label is one text node, the corrected bidi and ellipsis wording against the HTML and CSS specifications, and that the story reads the element carrying dir=auto; it named no defect.
+
 ### `KN-371` LatinLedInPersian proves the Status Chip overflows, not which part of the name stays in view
 
 - **status** backlog · **severity** low · **points** 1 · **area** web · **objective** OKR-1
@@ -7429,7 +7438,7 @@ CHILD OF KN-026, recorded in prose because board.json cannot express parent_task
 
 ### `KN-385` A role or company of only spaces still draws the Contact Card's blank role line and divider, and the contact prop's docs say role cannot be missing
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-026
 
