@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box, Dialog } from '@mui/material'
-import { useId, type ReactNode } from 'react'
+import { useId, useSyncExternalStore, type ReactNode } from 'react'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 import { IconButton } from '../icon-button'
 
@@ -19,6 +19,23 @@ export interface PanelModalProps {
 const DISSOLVE_MS = 150
 const EDGE = 1
 const CLOSE_OVERHANG = (spacing.xl - iconSize.md) / 2
+
+// What a phone's software keyboard leaves in view, KN-349. Safari on iOS and Chrome on
+// Android shrink the visual viewport under a keyboard and leave the layout viewport, which the
+// Dialog's fixed root fills, as it was, so a panel centred in that root sat behind the
+// keyboard. The root is placed on the visual viewport instead, read as two numbers so that each
+// read is stable, and left where MUI puts it in a browser without one.
+const onVisualViewport = (onChange: () => void) => {
+  const seen = window.visualViewport
+  seen?.addEventListener('resize', onChange)
+  seen?.addEventListener('scroll', onChange)
+  return () => {
+    seen?.removeEventListener('resize', onChange)
+    seen?.removeEventListener('scroll', onChange)
+  }
+}
+const seenTop = () => window.visualViewport?.offsetTop ?? null
+const seenHeight = () => window.visualViewport?.height ?? null
 
 // A divider across the whole panel, edge to edge, as 270:152 draws it.
 const Divider = () => (
@@ -44,12 +61,15 @@ const Divider = () => (
 export const PanelModal = ({ open, title, width, onClose, children, actions, aside }: PanelModalProps) => {
   const { i18n } = useLingui()
   const titleId = useId()
+  const viewTop = useSyncExternalStore(onVisualViewport, seenTop)
+  const viewHeight = useSyncExternalStore(onVisualViewport, seenHeight)
   return (
     <Dialog
       open={open}
       onClose={onClose}
       aria-labelledby={titleId}
       transitionDuration={DISSOLVE_MS}
+      {...(viewTop === null || viewHeight === null ? {} : { sx: { top: `${viewTop}px`, bottom: 'auto', height: `${viewHeight}px` } })}
       slotProps={{
         backdrop: { sx: (theme) => ({ backgroundColor: theme.karnama.semantic['overlay/scrim'] }) },
         paper: {
@@ -57,6 +77,8 @@ export const PanelModal = ({ open, title, width, onClose, children, actions, asi
             boxSizing: 'border-box',
             width,
             maxWidth: `calc(100% - ${2 * spacing.md}px)`,
+            // Kept 16 from the top and the bottom of what can be seen, as from the sides.
+            maxHeight: `calc(100% - ${2 * spacing.md}px)`,
             margin: `${spacing.md}px`,
             display: 'flex',
             flexDirection: 'column',
