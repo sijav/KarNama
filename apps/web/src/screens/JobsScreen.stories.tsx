@@ -6,7 +6,7 @@ import { defaultStatuses, jobFrom, RecordsProvider, STORAGE_KEY, type JobEntry, 
 import { emptyDraft, type JobDraft } from '../shared/add-job'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { fixtures } from '../shared/story-fixtures'
-import { JobsScreen } from './JobsScreen'
+import { JobsScreen, type JobsScreenProps } from './JobsScreen'
 
 // A board of the fixtures' own job opportunities, one per status, so the screen
 // draws what the design draws rather than a made-up set, KN-062.
@@ -36,10 +36,15 @@ const seeded = (): Records => {
 // posting needs no server, KN-495.
 const readsTheLink = (source: string): Promise<Partial<JobDraft>> => Promise.resolve({ postingUrl: source })
 
+// Each story walks a scenario that opens the add flow from the board, never opens
+// it, or starts with it open, so a control opening it from outside makes their
+// plays untrue, KN-570.
+const HIDDEN_CONTROLS: (keyof JobsScreenProps)[] = ['addOpen']
+
 const meta = {
   title: 'Screens/Jobs',
   component: JobsScreen,
-  parameters: { layout: 'fullscreen' },
+  parameters: { layout: 'fullscreen', controls: { exclude: HIDDEN_CONTROLS } },
   args: { addOpen: false, onAddClose: fn() , onSelecting: fn(), onSignOut: fn(), onExtract: fn(readsTheLink)},
   decorators: [
     (Story, context) => (
