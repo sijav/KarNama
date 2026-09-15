@@ -87,7 +87,12 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
    written without the delete. Measured: `ContactModalProps` is already a union, from KN-386, the
    edit member's `initial` a required key that may be `undefined` while the record loads, which
    `TheRecordArrivesAfterItsId` needs; `onDelete` is optional in both members, and the Delete
-   footer draws only when the mode is edit and `onDelete` is given. The work: `onDelete` required
+   footer draws only when the mode is edit and `onDelete` is given. **Its plan is written**, beside
+   `ContactModal.tsx`, with the in-memory tsc run that refused `onDelete` required in edit in four
+   places: `JobsScreen.tsx:636`, an edit Contact Modal with no delete (the job modal's own
+   `onDeleteContact` there deletes at once with `records.deleteContacts([id])`), the stories' meta
+   `onDelete: fn()` beside its add mode, and the `Loading` and `LateRecord` renders. Raised to 2
+   points. Next: its Codex plan review, `kn348-plan-review.mjs` in the scratchpad. The work: `onDelete` required
    in the edit member and `?: never` in the add one, KN-331's shape. **KN-331's lessons apply**,
    AGENTS.md section 7: the docs guard wants every callback's `fn()` in the meta, so the meta's
    `onDelete: fn()` stays; a story's args type lays the meta's args over each member, so a custom
