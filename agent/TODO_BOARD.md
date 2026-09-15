@@ -13,6 +13,12 @@ Project **KarNama** · 297 of 652 tasks done · 634 of 1272 points.
 | 1 | OKR-1 | MVP: the pages | now | 214 | 219 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-514` | In English at 390 the job modal's footer wraps its delete button onto two lines | medium | 1 | web | none | At 390 in en-US the footer's three actions each keep one line and the Button's height, and a story at that width asserts it. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 297 of 652 tasks done · 634 of 1272 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (338)
+## Backlog (337)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 297 of 652 tasks done · 634 of 1272 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-514` | In English at 390 the job modal's footer wraps its delete button onto two lines | medium | 1 | web | none | At 390 in en-US the footer's three actions each keep one line and the Button's height, and a story at that width asserts it. |
 | `KN-524` | The story-docs parser closes a fence on any three matching characters, so a longer or deeply indented fence left open passes | medium | 1 | web | none | parseStoryDoc opens a fence with three or more backticks or tildes indented at most three spaces and closes it only with the same character, at least as many, indented at most three spaces and followed by nothing but spaces; four backticks closed by three, and a closer indented four spaces, are each reported as an open fence at the opening line, with a unit test asserting the message; the guard still passes on every docs file; the parser's comment and AGENTS.md describe the fences it recognises. |
 | `KN-535` | SelectingWhileSearching never deletes or moves while a hidden chosen card is still in the selection | medium | 1 | web | none | A story chooses a card, searches it out of view, chooses a shown card and deletes it, then does the same with a status change; the hidden cards are neither deleted nor moved; and with the bar's delete, then its status change, put back on selected, the story fails each time. |
 | `KN-543` | The API seeds the five default statuses with rejected before offer, against the design's order | medium | 1 | api | none | The API's seed writes the defaults' positions in the design's order, offer before rejected and rejected last, and a test of the seed asserts that order. |
@@ -9420,7 +9425,7 @@ KN-481's audit: every card on 241:2 and 241:146 dates itself relatively, «۲ ر
 
 ### `KN-514` In English at 390 the job modal's footer wraps its delete button onto two lines
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 KN-481's regression captures: at 390 by 844 in en-US, light and dark, the job modal's footer holds Cancel, Save and the destructive action, whose label «Delete job opportunity» breaks into two lines and grows the button past the Button's 44. The Persian label fits. The file draws only Persian, so how the footer yields in English is decided here.
