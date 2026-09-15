@@ -162,9 +162,13 @@ export const Select = ({ label, options, value, multiple = false, placeholder, d
               borderRadius: 'inherit',
               borderStyle: 'solid',
               borderWidth: EDGE,
-              borderColor: colour['border/default'],
+              // The owner's role for a control's resting edge, KN-275.
+              borderColor: colour['border/control'],
               pointerEvents: 'none',
             },
+            // Disabled keeps the file's edge, as an inactive control asks no
+            // contrast of it, KN-275.
+            '&.Mui-disabled::before': { borderColor: colour['border/default'] },
             '&.Mui-focused::before': { borderWidth: FOCUS_EDGE, borderColor: colour['border/focus'] },
             // Open, 448:610: one and a half of border/focus, which wins over
             // the focused two while the menu is up.

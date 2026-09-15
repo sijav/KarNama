@@ -93,6 +93,15 @@ frame it was read from with `get_variable_defs`. Do not delete them as strays.
 rather than as greys: they are black at an alpha, and the alpha is the whole
 token. It is not a colour any component may paint with.
 
+#### The owner's additions, which the file does not have
+
+A role the owner decided on that no Figma variable carries. Each row names the
+decision that made it, so it is never mistaken for a value read from the file.
+
+| Token            | Decided  | Value     | Note                                                                 |
+| ---------------- | -------- | --------- | -------------------------------------------------------------------- |
+| `border/control` | `KN-273` | `#7f8694` | a control's resting edge, the Input's, the unchecked Checkbox's and the Select's: text/secondary's hue made lighter to the last value at 3.3 to one on `bg/page`, `bg/surface` and `bg/surface-secondary`, and walked to 3 to one in dark, KN-275 |
+
 ### Colour, status
 
 Five defaults and four reserved for user-defined statuses. Each has a `base`,
@@ -462,7 +471,7 @@ nothing is selected, so the first selection is announced.
 ### The Select, its options and its menu
 
 Node `183:26` is the Input's family, its description says: the label above, a
-field 44 tall of radius md with one pixel of `border/default` inside, 16 of
+field 44 tall of radius md with one pixel of `border/control` inside, KN-275, 16 of
 padding, the value in Body and the 20 chevron-down in `text/secondary` at the
 inline end, 8 from the value. Default shows «انتخاب کنید…» in `text/secondary`;
 Filled the choice in `text/primary`; Focus two pixels of `border/focus`;
@@ -850,7 +859,9 @@ they clear **3 to one**, WCAG 1.4.11's bar for the parts of a control that show
 its state, against `bg/page`, `bg/surface` and `bg/surface-secondary`: the
 derivation alone left the focus colour at 2.81 to one on the surface, KN-271.
 `border/default` is not checked, because it shows no state and the design
-itself draws it at 1.24 to one on white. The change between a focused and an
+itself draws it at 1.24 to one on white. `border/control`, the owner's resting
+edge for a control, is walked to 3 to one against the surface as those two are,
+KN-275. The change between a focused and an
 unfocused control, WCAG 2.4.13's measure, is each component's own, KN-244 for
 the Input.
 
@@ -1361,10 +1372,12 @@ option, they chose **a new named role for a control's resting edge**: a grey in
 the file's own hue at 3 to one or more on every surface a control sits on,
 picked with margin and derived for dark like the other borders. Not keeping the
 file's colour, not taking `text/secondary`, and not asking the designer first.
-The Input, the Checkbox and the Select when it is built use it; the Hover edge
-keeps its drawn colour, and cards, dividers and the Filter Chip keep
-`border/default`. Like the order of the columns and the history tab, this
-departs from the file on the owner's call. KN-275 builds it.
+The Input, the Checkbox and the Select use it, `border/control`, and a disabled
+one keeps the edge the file draws; the Hover edge keeps its drawn colour, and
+cards, dividers and the Filter Chip keep `border/default`. Like the order of the
+columns and the history tab, this departs from the file on the owner's call.
+KN-275 built it; the Search Bar and the Sort Control, built since, still draw
+`border/default`, and whether they take it is the owner's to say.
 
 **A selected Filter Chip shows a blue edge.** Owner, KN-276, put and answered
 through the question tool. Node `159:71` shows selection only by the pale

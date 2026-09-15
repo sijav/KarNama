@@ -148,7 +148,9 @@ export const Default: Story = {}
 // holds for, KN-255.
 export const Unchecked: Story = {
   parameters: { controls: { include: ['disabled'] } },
-  play: async ({ canvasElement }) => {
+  // Pinned to light, so the expected edge is one known token.
+  globals: { colorScheme: 'light' },
+  play: async ({ args, canvasElement }) => {
     const box = await namedBox(canvasElement)
     await expect(box).not.toBeChecked()
     // The property, not an attribute. `toHaveAttribute` would pass for a
@@ -156,6 +158,10 @@ export const Unchecked: Story = {
     // KN-013, so the assertion has to read the element.
     await expect(box).toHaveProperty('indeterminate', false)
     await edgeIsTheFiles(canvasElement)
+    // The owner's role for a control's resting edge, KN-275; disabled, the edge
+    // sinks into the secondary surface, as the file draws it.
+    const edge = args.disabled ? semantic['bg/surface-secondary'] : semantic['border/control']
+    await expect(edgeOf(frameOf(canvasElement)).colour).toBe(computedColour(canvasElement, edge))
   },
 }
 
@@ -214,7 +220,7 @@ export const Hover: Story = {
   play: async ({ canvasElement }) => {
     const box = await namedBox(canvasElement)
     const frame = frameOf(canvasElement)
-    await expect(edgeOf(frame).colour).toBe(computedColour(canvasElement, semantic['border/default']))
+    await expect(edgeOf(frame).colour).toBe(computedColour(canvasElement, semantic['border/control']))
 
     // A REAL pointer, not a dispatched event. `:hover` is the browser's own
     // hit-testing, and no synthetic mouseover sets it, so `storybook/test`'s

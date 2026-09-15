@@ -88,7 +88,7 @@ const Frame = ({ mark, disabled }: { mark: Mark; disabled: boolean }) => (
         // and Chromium floors a border's width to whole CSS pixels, so a 1.5
         // border draws 1 at every device pixel ratio, measured. A shadow draws
         // the 1.5, inside the frame and out of layout, KN-281.
-        boxShadow: `inset 0 0 0 ${EDGE}px ${disabled ? colour['bg/surface-secondary'] : filled ? colour['bg/brand/default'] : colour['border/default']}`,
+        boxShadow: `inset 0 0 0 ${EDGE}px ${disabled ? colour['bg/surface-secondary'] : filled ? colour['bg/brand/default'] : colour['border/control']}`,
         // Forced colours remove a shadow and keep a border, so there the edge is
         // a one pixel border in the system's colour for a control's edge, on a
         // pseudo-element laid over the frame so it takes none of its space and

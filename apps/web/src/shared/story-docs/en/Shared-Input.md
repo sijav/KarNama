@@ -127,7 +127,7 @@ Called with the new text and the change event.
 ### Default
 
 Empty, showing the placeholder: 44 tall, 16 at each side, one pixel of the
-default border.
+resting border, dark enough to be found at three to one.
 
 ### FromArgs
 
@@ -242,7 +242,7 @@ field is described by the error until it clears and the helper comes back.
 ### BlankErrorIsNoError
 
 An empty error beside one of only spaces, one of only a zero-width non-joiner and
-one of only a right-to-left mark: none is an error, so all four keep the default
+one of only a right-to-left mark: none is an error, so all four keep the resting
 border, are not marked invalid, and show the helper.
 
 ### ErrorAnnouncedWhileTyping

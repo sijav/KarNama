@@ -154,6 +154,7 @@ const offBoard = [
   ['red/700', '31:4', '#b91c1c'],
   ['text/error', '95:39', '#b91c1c'],
   ['black/base', '31:4', '#000000'],
+  ['overlay/scrim', '377:6244', '#00000080'],
 ]
 
 for (const [name, node, hex] of offBoard) {
@@ -165,8 +166,43 @@ for (const [name, node, hex] of offBoard) {
   if (!row.toLowerCase().includes(hex)) problems.push(`${name} should be ${hex}: ${row.trim()}`)
 }
 
+// The shadows bound to no effect style besides the tooltip's, each found by the
+// node it was read from and required to say it is not a style: the Bulk Action
+// Bar's, KN-025, and the job card's focus halo, KN-015. They were added to the
+// document after this checker last changed, and it failed on their colours.
+const unstyledShadows = [
+  ['401:436', '#00000029'],
+  ['137:44', '#2563EB2E'],
+]
+for (const [node, hex] of unstyledShadows) {
+  const row = rows.find((line) => line.includes(`\`${node}\``) && line.includes(hex))
+  if (!row) problems.push(`the shadow ${hex} from ${node} appears in no elevation row`)
+  else if (!row.includes('no style')) problems.push(`the shadow row for ${node} does not say it is no style: ${row.trim()}`)
+}
+
+// The owner's additions: roles the owner decided on that the file does not have.
+// Each row has to name its decision, so a value no Figma variable carries is let
+// through only where the document says whose decision it is, KN-275.
+const ownerAdditions = [['border/control', 'KN-273', '#7f8694']]
+
+for (const [name, decision, hex] of ownerAdditions) {
+  const row = rows.find((line) => line.includes(`\`${name}\``) && line.includes(`\`${decision}\``))
+  if (!row) {
+    problems.push(`${name} is not recorded as the owner's addition under ${decision}`)
+    continue
+  }
+  if (!row.toLowerCase().includes(hex)) problems.push(`${name} should be ${hex}: ${row.trim()}`)
+}
+
 const documentedExtras = ['#ef4444', '#d43030', '#b91c1c', '#bfdbfe', '#1e40af', '#e5e7eb', '#0000000f', '#0000000a', '#0000001f', '#00000014', '#0000003d', '#000000']
-const known = new Set([...Object.values(semantic), ...Object.values(status).flat(), ...documentedExtras])
+const known = new Set([
+  ...Object.values(semantic),
+  ...Object.values(status).flat(),
+  ...documentedExtras,
+  ...offBoard.map(([, , hex]) => hex),
+  ...unstyledShadows.map(([, hex]) => hex.toLowerCase()),
+  ...ownerAdditions.map(([, , hex]) => hex),
+])
 for (const hex of new Set((doc.match(/#[0-9a-fA-F]{6,8}/g) ?? []).map((h) => h.toLowerCase()))) {
   if (!known.has(hex)) problems.push(`${hex} appears in the document but is not a Figma token or a documented extra`)
 }

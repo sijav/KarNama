@@ -27,6 +27,11 @@ export const semantic = {
   'border/default': '#e5e7eb',
   'border/focus': '#2563eb',
   'border/error': '#ef4444',
+  // A control's resting edge, the owner's addition and not a Figma variable,
+  // KN-273: text/secondary's hue made lighter to the last value at 3.3:1 on the
+  // page, the surface and the secondary surface. The file's border/default is
+  // 1.24:1 on white, KN-275.
+  'border/control': '#7f8694',
   'accent/200': '#bfdbfe',
   'accent/700': '#1e40af',
   'gray/200': '#e5e7eb',

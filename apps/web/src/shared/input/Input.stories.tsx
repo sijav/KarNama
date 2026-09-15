@@ -294,13 +294,14 @@ export const Default: Story = {
     const field = fieldOf(canvasElement)
     const box = within(canvasElement).getByRole('textbox')
     const style = getComputedStyle(field)
-    // Node 95:3: 44 tall, 16 at each side, radius md, one pixel of border/default
-    // drawn inside, so the text sits 16 from the edge, not 17, KN-266.
+    // Node 95:3: 44 tall, 16 at each side, radius md, one pixel of the owner's
+    // resting edge, border/control, KN-275, drawn inside, so the text sits 16
+    // from the edge, not 17, KN-266.
     await expect(field.offsetHeight).toBe(44)
     await expect([style.paddingLeft, style.paddingRight].map(Number.parseFloat)).toEqual([16, 16])
     await expect(Number.parseFloat(style.borderTopLeftRadius)).toBe(8)
     await expect(Number.parseFloat(edgeOf(field).borderTopWidth)).toBe(1)
-    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/control']))
     await expect(textInsets(field, box)).toEqual([16, 16])
   },
 }
@@ -603,6 +604,9 @@ export const Disabled: Story = {
     await expect(box).toBeDisabled()
     await expect(getComputedStyle(field).backgroundColor).toBe(computedColour(field, semantic['bg/surface-secondary']))
     await expect(getComputedStyle(box).webkitTextFillColor).toBe(computedColour(box, semantic['text/disabled']))
+    // And the file's edge, not the owner's resting role: an inactive control
+    // asks no contrast of its edge, KN-275.
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
   },
 }
 
@@ -614,7 +618,7 @@ export const Hover: Story = {
   play: async ({ canvasElement }) => {
     const box = within(canvasElement).getByRole('textbox')
     const field = fieldOf(canvasElement)
-    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/control']))
     // A REAL pointer, the Checkbox's pattern: `:hover` is the browser's own hit
     // testing, and only the test runner can drive one. In Storybook's UI the
     // story is a canvas; anywhere else without the flag is an error, KN-225.
@@ -975,7 +979,7 @@ export const BlankErrorIsNoError: Story = {
       const box = within(input).getByRole('textbox')
       const field = fieldOf(input)
       await expect(box).not.toHaveAttribute('aria-invalid')
-      await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
+      await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/control']))
       const line = canvasElement.ownerDocument.getElementById(box.getAttribute('aria-describedby') ?? '')
       if (!line) throw new Error('the field describes itself by nothing')
       await expect(line.textContent).not.toBe('')
@@ -1115,7 +1119,7 @@ export const StartsAtRest: Story = {
   globals: { colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     const field = fieldOf(canvasElement)
-    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/default']))
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['border/control']))
   },
 }
 

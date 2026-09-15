@@ -105,7 +105,7 @@ const nameOf = (element: Element) => {
 }
 
 // Node 183:7 at rest: the label 12 on 16 at 500 in text/primary, 4 above a
-// field 44 tall of radius md with one pixel of border/default inside it, the
+// field 44 tall of radius md with one pixel of border/control inside it, the
 // value 16 from the inline start and the chevron, 20 in text/secondary, 16
 // from the inline end.
 const atRest = async (canvasElement: HTMLElement, { colours }: { colours: boolean }) => {
@@ -124,7 +124,7 @@ const atRest = async (canvasElement: HTMLElement, { colours }: { colours: boolea
   await expect([Math.round(start ?? 0), Math.round(chevronEnd ?? 0)]).toEqual([16, 16])
   if (colours) {
     await expect(labelStyle.color).toBe(computed(label, 'color', semantic['text/primary']))
-    await expect(getComputedStyle(field, '::before').borderTopColor).toBe(computed(field, 'color', semantic['border/default']))
+    await expect(getComputedStyle(field, '::before').borderTopColor).toBe(computed(field, 'color', semantic['border/control']))
     await expect(getComputedStyle(chevron).color).toBe(computed(field, 'color', semantic['text/secondary']))
   }
   return { combobox, field, chevron }
@@ -185,6 +185,9 @@ export const Disabled: Story = {
     const { combobox, field, chevron } = await atRest(canvasElement, { colours: false })
     await expect(getComputedStyle(field).backgroundColor).toBe(computed(field, 'color', semantic['bg/surface-secondary']))
     await expect(getComputedStyle(chevron).color).toBe(computed(field, 'color', semantic['text/disabled']))
+    // The file's edge, not the owner's resting role: an inactive control asks no
+    // contrast of its edge, KN-275.
+    await expect(getComputedStyle(field, '::before').borderTopColor).toBe(computed(field, 'color', semantic['border/default']))
     // Out of the tab order, and announced as unavailable.
     await expect(combobox).toHaveAttribute('aria-disabled', 'true')
     await expect(combobox).not.toHaveAttribute('tabindex')

@@ -220,7 +220,10 @@ export const Input = ({
         endAdornment={drawn(trailingIcon) ? <Slot>{trailingIcon}</Slot> : undefined}
         sx={(theme) => {
           const colour = theme.karnama.semantic
-          const edge = error === undefined ? colour['border/default'] : colour['border/error']
+          // At rest the owner's role, since an empty field is found by its edge
+          // alone, KN-275; disabled keeps the file's edge, as an inactive control
+          // asks no contrast of it; in error, the error's.
+          const edge = error !== undefined ? colour['border/error'] : disabled ? colour['border/default'] : colour['border/control']
           return {
             // The file's stroke is inside the field and takes no space, so the
             // padding is the file's in every state and the text sits spacing/md

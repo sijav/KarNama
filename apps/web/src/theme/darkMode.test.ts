@@ -259,6 +259,35 @@ describe('the borders that show a state can be seen', () => {
 })
 
 /**
+ * A control's resting edge, the owner's decision of KN-273: an empty field or an
+ * unchecked box has nothing but its edge to be found by, and the file's
+ * border/default is 1.24 to one on white. So the role is a grey in
+ * text/secondary's hue picked with margin, 3.3 or more on every light background
+ * a control sits on, and in dark it is walked to WCAG 1.4.11's 3:1 as the state
+ * borders are. Numbers, as above, so moving a constant cannot move them, KN-275.
+ */
+describe("a control's resting edge can be found", () => {
+  const backgrounds = ['bg/page', 'bg/surface', 'bg/surface-secondary'] as const
+
+  it.each(backgrounds)('border/control clears 3.3:1 on the light %s', (background) => {
+    expect(contrast(semantic['border/control'], semantic[background])).toBeGreaterThanOrEqual(3.3)
+  })
+
+  it.each(backgrounds)('border/control clears 3:1 on the dark %s', (background) => {
+    expect(contrast(darkSemantic['border/control'], darkSemantic[background])).toBeGreaterThanOrEqual(3)
+  })
+
+  // Measured round the circle, as above.
+  it.each([
+    ['light', semantic['border/control']],
+    ['dark', darkSemantic['border/control']],
+  ])("the %s border/control is in text/secondary's hue", (_scheme, edge) => {
+    const apart = Math.abs(hexToHsl(edge).h - hexToHsl(semantic['text/secondary']).h)
+    expect(Math.min(apart, 360 - apart)).toBeLessThan(1)
+  })
+})
+
+/**
  * The fills: a dark tint of their own hue, and what the product draws on them
  * readable. The brand container is the selected Filter Chip: text/brand on it,
  * and its pressed edge in border/focus, KN-272. The ratios are written as the

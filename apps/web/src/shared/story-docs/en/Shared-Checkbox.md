@@ -83,7 +83,8 @@ Rendered from its args: every control changes the Checkbox.
 
 ### Unchecked
 
-The default. The frame is the surface colour with the default border.
+The default. The frame is the surface colour with the resting border, dark enough
+to be found at three to one.
 
 ### Checked
 
@@ -96,7 +97,7 @@ rather than the markup.
 
 ### Hover
 
-The default border turns to the focus colour while a pointer is over the box,
+The resting border turns to the focus colour while a pointer is over the box,
 and only while it is unchecked, enabled and not partial. The story moves a
 REAL pointer when it runs as a test, because `:hover` is the browser's own
 hit-testing and no synthetic event can set it. In Storybook itself there is
