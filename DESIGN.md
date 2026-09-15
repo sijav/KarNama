@@ -639,8 +639,9 @@ fill and the three pixel ring drawn inside. KN-018.
 
 **Type=Status** is the column's menu: «تغییر نام», «تغییر رنگ», «حذف وضعیت». Delete
 blocked, `259:295`, is the Disabled item with the reason in a Tooltip beside the
-menu at its inline start; the item stays in the keyboard's path so the reason
-can be read. Change colour replaces the menu with the Color Picker in its place,
+menu at its inline start, 10 from it, KN-335; the item stays in the keyboard's
+path so the reason can be read. Change colour replaces the menu with the Color
+Picker in its place,
 `259:184`. **Type=Card** is a job opportunity's menu on a phone: «تغییر وضعیت»,
 «باز کردن لینک آگهی», and delete, which the file labels «حذف آگهی»; the code says
 «حذف فرصت شغلی» under the terminology rule, as KN-329 records for the bar's

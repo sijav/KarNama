@@ -1,7 +1,7 @@
 import { i18n, setupI18n } from '@lingui/core'
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
-import type { StoryObj } from '@storybook/react-vite'
+import type { Decorator, StoryObj } from '@storybook/react-vite'
 import { useEffect, useId, useState, type ComponentPropsWithRef } from 'react'
 import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { formatCount } from '../../i18n/formatCount'
@@ -431,4 +431,52 @@ export const ReadableInDark: Story = {
 const hexOf = (colour: string) => {
   const [r = 0, g = 0, b = 0] = [...colour.matchAll(/\d+/g)].map((match) => Number(match[0]))
   return `#${[r, g, b].map((part) => part.toString(16).padStart(2, '0')).join('')}`
+}
+
+// Room on both sides of the trigger, so a tip beside it has nowhere it must be
+// flipped to and stands where it is asked to, KN-335.
+const withRoomOnBothSides: Decorator = (Story) => (
+  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+    <Story />
+  </Box>
+)
+
+// The trigger's box and the open tip's once it has grown: MUI grows the tip from
+// three quarters, so its edges are read only when its transform is gone.
+const besideTheTrigger = async (canvasElement: HTMLElement) => {
+  const trigger = within(canvasElement).getByRole('button')
+  await userEvent.tab()
+  await within(document.body).findByRole('tooltip')
+  const surface = drawnSurface()
+  await waitFor(async () => {
+    await expect(getComputedStyle(surface).transform).toBe('none')
+  })
+  return { trigger: trigger.getBoundingClientRect(), tip: surface.getBoundingClientRect() }
+}
+
+export const BesideTheStart: Story = {
+  args: { placement: 'start' },
+  globals: { locale: 'fa-IR' },
+  // The play needs the tip beside its trigger, so the title is the one control.
+  parameters: { controls: { include: ['title'] } },
+  decorators: [withRoomOnBothSides],
+  play: async ({ canvasElement }) => {
+    // 259:295: the reason beside what it explains, at the inline start, the right
+    // in Persian, 10 from it, KN-335. With room on both sides nothing but the
+    // placement decides the side.
+    const { trigger, tip } = await besideTheTrigger(canvasElement)
+    await expect(Math.round(tip.left - trigger.right)).toBe(10)
+  },
+}
+
+export const BesideTheStartInEnglish: Story = {
+  args: { placement: 'start' },
+  globals: { locale: 'en-US' },
+  parameters: { controls: { include: ['title'] } },
+  decorators: [withRoomOnBothSides],
+  play: async ({ canvasElement }) => {
+    // The start is the left in English, and the gap the same 10.
+    const { trigger, tip } = await besideTheTrigger(canvasElement)
+    await expect(Math.round(trigger.left - tip.right)).toBe(10)
+  },
 }

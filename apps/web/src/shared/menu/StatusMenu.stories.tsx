@@ -8,6 +8,7 @@ import { formatCount } from '../../i18n/formatCount'
 import { spacing } from '../../theme/tokens'
 import { IconButton } from '../icon-button'
 import type { StoryMeta } from '../story-docs/story-meta'
+import { TOOLTIP_SURFACE } from '../tooltip'
 import { StatusMenu, type StatusMenuProps } from './StatusMenu'
 
 // The column header's three dots, 259:2, and the menu that hangs from them.
@@ -94,6 +95,12 @@ export const DeleteBlocked: Story = {
     await waitFor(() => expect(remove).toHaveFocus())
     const tip = await within(canvasElement.ownerDocument.body).findByRole('tooltip')
     await expect(tip).toHaveTextContent(`${i18n._('This status has')} ${formatCount('fa-IR', args.jobCount)}`)
+    // Beside the menu at its inline start, the right in Persian, 10 from it, as
+    // 259:295 draws it, KN-335; read once MUI has grown the tip to its size.
+    const surface = canvasElement.ownerDocument.body.querySelector(`.${TOOLTIP_SURFACE}`)
+    if (!(surface instanceof HTMLElement)) throw new Error('the reason has no drawn surface')
+    await waitFor(() => expect(getComputedStyle(surface).transform).toBe('none'))
+    await expect(Math.round(surface.getBoundingClientRect().left - menu.getBoundingClientRect().right)).toBe(10)
     await userEvent.keyboard('{Enter}')
     await expect(args.onDelete).not.toHaveBeenCalled()
     await userEvent.keyboard('{Escape}')

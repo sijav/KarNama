@@ -25,8 +25,9 @@ Optional, because most tips do not need one.
 ### placement
 
 `bottom`, the default, under the trigger, or `start`, beside it at the inline
-start, the right in Persian, as the Status menu's blocked delete explains
-itself beside the menu.
+start, the right in Persian and the left in English, 10 from it, as the Status
+menu's blocked delete explains itself beside the menu. Where the start has no
+room the tip goes to the other side, still 10 from its trigger.
 
 ### children
 
@@ -138,3 +139,12 @@ white, and the dark palette turns text roles light, so the fill became a light
 grey with white on it and every tooltip read at about 1.34 to one. The fill is
 still what the design says and the text follows it, through the same helper the
 palette uses, so it clears the 4.5 the rest of the palette is held to.
+
+### BesideTheStart
+
+The tip at its trigger's inline start, the right in Persian, 10 from it. The
+trigger has room on both sides, so only the placement decides the side.
+
+### BesideTheStartInEnglish
+
+The same in English, where the start is the left.

@@ -1,6 +1,7 @@
-import { Box, Tooltip as MuiTooltip, type Theme } from '@mui/material'
+import { Box, Tooltip as MuiTooltip, tooltipClasses, useTheme, type Theme } from '@mui/material'
 import { cloneElement, useCallback, useEffect, useId, useRef, type ReactElement, type ReactNode } from 'react'
 import { ensureContrast } from '../../theme/darkMode'
+import { inlineEndOf, inlineStartOf } from '../../theme/sides'
 import { report } from '../console-guard'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 
@@ -10,6 +11,11 @@ import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 // inherit MUI's 300 cap instead: identical for the one string in the file,
 // different for every other.
 const TIP_WIDTH = 260
+
+// How far the tip stands from its trigger when it sits beside it, from node
+// 259:295, where the blocked delete's reason is 10 from the menu, KN-335. No
+// variable is bound to it either.
+const BESIDE_GAP = 10
 
 // A class on the DRAWN surface, KN-222, so a test finds the element it means
 // rather than whatever MUI happens to put first inside its popper, which is
@@ -46,6 +52,7 @@ export interface TooltipProps {
 // Node 410:469, on MUI's Tooltip, which already opens on keyboard focus as well
 // as hover, closes on Escape, and keeps the tip on screen.
 export const Tooltip = ({ title, icon, placement = 'bottom', children }: TooltipProps) => {
+  const { direction } = useTheme()
   // The description, present from the first render, KN-231. MUI links the
   // tip only while it is OPEN, and it opens about 100ms after focus, so a
   // screen reader announcing the focused trigger heard no description at
@@ -110,10 +117,11 @@ export const Tooltip = ({ title, icon, placement = 'bottom', children }: Tooltip
         // asserting the computed value caught that. This turns the behaviour off
         // at the source; the sx keeps it off if MUI's default ever changes.
         disableInteractive
-        // Below the trigger, or beside it at the inline start: MUI's Popper turns
-        // left into right in a right to left page, so left is the start in both.
-        // The Status menu's blocked delete explains itself beside the menu, 259:295.
-        placement={placement === 'start' ? 'left' : 'bottom'}
+        // Below the trigger, or beside it at the inline start, where the Status
+        // menu's blocked delete explains itself, 259:295. Popper places by left and
+        // right and mirrors only its -start and -end placements, so the start is
+        // named for the direction, KN-335.
+        placement={placement === 'start' ? inlineStartOf(direction) : 'bottom'}
         // DESCRIBE the trigger, never name it, KN-209. MUI's default LABELS its
         // child through aria-labelledby, which outranks the child's own aria-label,
         // so an icon-only "Delete status" button was announced as the tip's
@@ -165,6 +173,19 @@ export const Tooltip = ({ title, icon, placement = 'bottom', children }: Tooltip
               // See the note above: the tip must never eat a click aimed at the
               // control it is describing.
               pointerEvents: 'none',
+              // Beside its trigger the gap faces the trigger, on whichever side
+              // Popper settles: the start, or the end when the start has no room.
+              // MUI's own 14 is on the tip's inline start for the right and its
+              // inline end for the left, the far side in a right to left page,
+              // where the reason stood 2 from the menu, KN-335.
+              [`.${tooltipClasses.popper}[data-popper-placement*="${inlineStartOf(theme.direction)}"] &`]: {
+                marginInlineStart: 0,
+                marginInlineEnd: `${BESIDE_GAP}px`,
+              },
+              [`.${tooltipClasses.popper}[data-popper-placement*="${inlineEndOf(theme.direction)}"] &`]: {
+                marginInlineStart: `${BESIDE_GAP}px`,
+                marginInlineEnd: 0,
+              },
             }),
           },
         }}

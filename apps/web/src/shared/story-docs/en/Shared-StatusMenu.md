@@ -44,7 +44,8 @@ The three actions, and Rename handing over.
 
 ### DeleteBlocked
 
-A column holding three job opportunities: delete is disabled and says why.
+A column holding three job opportunities: delete is disabled and says why,
+beside the menu at its inline start, 10 from it.
 
 ### ChangeColour
 
