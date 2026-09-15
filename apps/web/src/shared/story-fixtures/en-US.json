@@ -1,16 +1,16 @@
 {
   "statuses": [
-    { "token": "new", "name": "Saved", "count": 12 },
-    { "token": "applied", "name": "Applied", "count": 7 },
-    { "token": "interview", "name": "Interview", "count": 3 },
-    { "token": "rejected", "name": "Rejected", "count": 14 },
-    { "token": "offer", "name": "Job offer", "count": 1 },
-    { "token": "custom-1", "name": "Custom 1", "count": 2 },
-    { "token": "custom-2", "name": "Custom 2", "count": 0 },
-    { "token": "custom-3", "name": "Custom 3", "count": 5 },
-    { "token": "custom-4", "name": "Custom 4", "count": 1 }
+    { "token": "new", "name": "Saved" },
+    { "token": "applied", "name": "Applied" },
+    { "token": "interview", "name": "Interview" },
+    { "token": "rejected", "name": "Rejected" },
+    { "token": "offer", "name": "Job offer" },
+    { "token": "custom-1", "name": "Custom 1" },
+    { "token": "custom-2", "name": "Custom 2" },
+    { "token": "custom-3", "name": "Custom 3" },
+    { "token": "custom-4", "name": "Custom 4" }
   ],
-  "renamedStatus": { "token": "applied", "name": "Sent my CV", "count": 7 },
+  "renamedStatus": { "token": "applied", "name": "Sent my CV" },
   "longStatusName": "Waiting to hear back after the second technical interview with the engineering manager and HR",
   "jobs": [
     { "id": "job-1", "title": "Frontend developer", "company": "Pars New Technologies", "status": "applied", "location": "Tehran", "postedAt": "2026-08-30", "link": "https://example.com/jobs/1" },

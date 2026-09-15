@@ -14,8 +14,8 @@ const ORDER: readonly StatusToken[] = ['new', 'applied', 'interview', 'offer', '
 // A status a fixture job opportunity is moved to.
 const OFFER: StatusToken = 'offer'
 
-// The column the board fixture leaves empty, the fixtures' own count for custom-2
-// being zero, and the column the board collapses.
+// The column the board fixture leaves empty, since no fixture job opportunity sits in
+// custom-2, and the column the board collapses.
 const EMPTY: StatusToken = 'custom-2'
 const REJECTED: StatusToken = 'rejected'
 
@@ -102,6 +102,18 @@ describe('story fixtures', () => {
         expect(Object.isFrozen(option)).toBe(true)
       }
       expect(Object.isFrozen(set.statusOptions)).toBe(true)
+    }
+  })
+
+  it('hold no count on a status, since the board gives each column its own job opportunities, KN-439', () => {
+    // A count written beside the job opportunities disagreed with them in six of
+    // the nine statuses, and nothing read it. tsc refuses a typed read of one, not
+    // a count left in the JSON, which parseFixtures would carry into the status.
+    for (const locale of LOCALES) {
+      const set = fixtures(locale)
+      const counted = set.statuses.filter((entry) => Object.hasOwn(entry, 'count')).map((entry) => entry.token)
+      expect(counted, `${locale}'s statuses holding a count`).toEqual([])
+      expect(Object.hasOwn(set.renamedStatus, 'count'), `${locale}'s renamed status holds a count`).toBe(false)
     }
   })
 
@@ -209,12 +221,12 @@ describe('story fixtures', () => {
 
   it('name a status by its token, and refuse a set that leaves one of the nine unnamed', () => {
     expect(statusName('en-US', 'interview')).toBe(fixtures('en-US').statuses.find((entry) => entry.token === 'interview')?.name)
-    const missing: RawFixtures = { statuses: [], renamedStatus: { token: 'new', name: 'x', count: 0 }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames }
+    const missing: RawFixtures = { statuses: [], renamedStatus: { token: 'new', name: 'x' }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames }
     expect(() => parseFixtures(missing)).toThrow(/have no status new/)
   })
 
   it('refuse a status token that is not one of the nine', () => {
-    const bad: RawFixtures = { statuses: [{ token: 'purple-ish', name: 'x', count: 0 }], renamedStatus: { token: 'new', name: 'x', count: 0 }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames }
+    const bad: RawFixtures = { statuses: [{ token: 'purple-ish', name: 'x' }], renamedStatus: { token: 'new', name: 'x' }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames }
     expect(() => parseFixtures(bad)).toThrow(/does not exist: purple-ish/)
   })
 })

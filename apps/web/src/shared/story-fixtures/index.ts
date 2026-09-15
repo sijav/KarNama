@@ -22,7 +22,6 @@ import faIR from './fa-IR.json'
 export interface StatusFixture {
   token: StatusToken
   name: string
-  count: number
 }
 
 export interface JobFixture {
@@ -141,8 +140,8 @@ export interface Fixtures {
 
 // The shape of one locale's JSON, with its status tokens still plain strings.
 export interface RawFixtures {
-  statuses: readonly { token: string; name: string; count: number }[]
-  renamedStatus: { token: string; name: string; count: number }
+  statuses: readonly { token: string; name: string }[]
+  renamedStatus: { token: string; name: string }
   longStatusName: string
   jobs: readonly (Omit<JobFixture, 'status'> & { status: string })[]
   contacts: readonly ContactFixture[]

@@ -1,16 +1,16 @@
 {
   "statuses": [
-    { "token": "new", "name": "ذخیره‌شده", "count": 12 },
-    { "token": "applied", "name": "درخواست‌شده", "count": 7 },
-    { "token": "interview", "name": "مصاحبه", "count": 3 },
-    { "token": "rejected", "name": "رد شده", "count": 14 },
-    { "token": "offer", "name": "پیشنهاد کار", "count": 1 },
-    { "token": "custom-1", "name": "سفارشی ۱", "count": 2 },
-    { "token": "custom-2", "name": "سفارشی ۲", "count": 0 },
-    { "token": "custom-3", "name": "سفارشی ۳", "count": 5 },
-    { "token": "custom-4", "name": "سفارشی ۴", "count": 1 }
+    { "token": "new", "name": "ذخیره‌شده" },
+    { "token": "applied", "name": "درخواست‌شده" },
+    { "token": "interview", "name": "مصاحبه" },
+    { "token": "rejected", "name": "رد شده" },
+    { "token": "offer", "name": "پیشنهاد کار" },
+    { "token": "custom-1", "name": "سفارشی ۱" },
+    { "token": "custom-2", "name": "سفارشی ۲" },
+    { "token": "custom-3", "name": "سفارشی ۳" },
+    { "token": "custom-4", "name": "سفارشی ۴" }
   ],
-  "renamedStatus": { "token": "applied", "name": "رزومه فرستادم", "count": 7 },
+  "renamedStatus": { "token": "applied", "name": "رزومه فرستادم" },
   "longStatusName": "در انتظار پاسخ مصاحبهٔ فنی دوم با مدیر تیم مهندسی نرم‌افزار و منابع انسانی",
   "jobs": [
     { "id": "job-1", "title": "توسعه‌دهنده فرانت‌اند", "company": "فناوران نوین پارس", "status": "applied", "location": "تهران", "postedAt": "2026-08-30", "link": "https://example.com/jobs/1" },
