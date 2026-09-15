@@ -4,20 +4,14 @@
 
 Project **KarNama** · 294 of 648 tasks done · 631 of 1268 points.
 
-**Next up: `KN-474` The focus stories accept any descendant, so a regression to the page root would pass** (medium, 1 pt, web)
+**Next up: `KN-489` The Pages build ships an empty API address and reports success when KARNAMA_API_URL is missing** (medium, 1 pt, deploy)
 
 ## Objectives
 
 | position | id | name | state | open | done |
 | -- | -- | ---- | ----- | ---- | ---- |
-| 1 | OKR-1 | MVP: the pages | now | 214 | 216 |
+| 1 | OKR-1 | MVP: the pages | now | 213 | 216 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-474` | The focus stories accept any descendant, so a regression to the page root would pass | medium | 1 | web | none | Both stories name the control they expect to have focus. |
 
 ## Blocked (9)
 
@@ -674,13 +668,14 @@ Project **KarNama** · 294 of 648 tasks done · 631 of 1268 points.
 | `KN-362` | Reading a posting moves focus to an unnamed box rather than to the status that says what is happening | medium | 3 | web | none | Focus goes to an element named by the loading message, or to the status region itself, and a story reads the focused element's accessible name. |
 | `KN-184` | The order check reads the whole document, not the fenced block it claims to | low | 2 | agent | none | The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed. |
 
-## Dropped (7)
+## Dropped (8)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
 | `KN-577` | Route by path, not by hash: /KarNama/jobs, /add and /network, each served on GitHub Pages | critical | 3 | web | none | In a production build served the way GitHub Pages serves it, /KarNama/jobs, /KarNama/add and /KarNama/network each answer 200 and open their page on a hard refresh, in both languages; an unknown path under /KarNama/ opens the board through 404.html; an old /KarNama/#/network address lands on /KarNama/network; the navigation changes the path and Back returns to the page before; the e2e specs open paths and pass; the stories and the unit project pass. |
 | `KN-312` | The Icon Button's hover eases in over MUI's 150 ms where the design's state changes take 300 | medium | 1 | web | none | The Icon Button's hover changes over 300 ms from a named motion token, the story reads the transition's duration, and DESIGN.md says which components' state changes take it. |
 | `KN-387` | The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text | medium | 1 | web | none | In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages. |
+| `KN-474` | The focus stories accept any descendant, so a regression to the page root would pass | medium | 1 | web | none | Both stories name the control they expect to have focus. |
 | `KN-631` | The Input docs say the line under the field always keeps its height, which KN-287 reversed | medium | 1 | web | none | Both Input story docs describe the line as the component draws it, taking no room without a message and added when a helper or an error appears, and name the owner decision of KN-287. |
 | `KN-084` | Make the AGENTS.md section 5 gate runnable before any workspace exists | low | 1 | infra | KN-001 | npm run lint, npm run lint:tsc, npm test and npm run build each exit zero and say what they did on a clean checkout with no workspace directories, and each still fails honestly once apps/web exists and contains a failing check. |
 | `KN-176` | KN-162 closed against an exit condition it deliberately did not meet | low | 1 | agent | none | KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail. |
@@ -8808,7 +8803,7 @@ From the KN-344 roast. onClosed is MUI's transition-exit callback, which cannot 
 
 ### `KN-474` The focus stories accept any descendant, so a regression to the page root would pass
 
-- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** dropped · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 From the KN-344 roast. FocusAfterDeleting and FocusAfterDeletingFromTheModal assert only that focus is inside the screen and not on the body, so a fallback that regressed from a card's button to the page's own root Stack would still pass. Assert WHICH control has focus, by its accessible name, which is also what KN-472 needs in order to mean anything.
@@ -8816,6 +8811,8 @@ From the KN-344 roast. FocusAfterDeleting and FocusAfterDeletingFromTheModal ass
 **Why.** This is the fourth assertion this session that passes for a state weaker than the one it claims, and the one guarding where a reader lands after deleting.
 
 **Exit condition.** Both stories name the control they expect to have focus.
+
+**Dropped because.** Satisfied by KN-472, commit f0b0702: FocusAfterDeleting now asserts focus on the emptied column's Add Card row by its name, and FocusAfterDeletingFromTheModal on the person after the deleted one by name, so neither accepts any descendant or a page-root fallback any more. Measured 2026-09-15: both, with FocusAfterDeletingInAColumn, pass.
 
 ### `KN-475` The record-handoff story would pass with the description and note reset deleted
 
