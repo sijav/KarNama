@@ -11,12 +11,30 @@ import { BulkActionBar, type BulkActionBarProps, type BulkActionBarType } from '
 const TYPES: readonly BulkActionBarType[] = ['jobs', 'contacts']
 const CONTROLLED: (keyof BulkActionBarProps)[] = ['type', 'count']
 
+// What a story's render is handed: the meta's args, which give every callback so the Actions
+// panel records each, KN-207, with the story's own over them. A story of the network's type
+// therefore still holds the job list's two callbacks, which the bar's own props refuse.
+type Args =
+  Extract<BulkActionBarProps, { type: 'jobs' }> | Omit<Extract<BulkActionBarProps, { type: 'contacts' }>, 'onChangeStatus' | 'onSelectAll'>
+
+// The bar a caller could write for the type the args hold, KN-331: the job list's with all four
+// callbacks, the network's with its own two. Every story draws its bar through this, so neither
+// the Contacts story nor a reader who switches the type in Controls hands the bar what its props
+// refuse, and Show code offers a call that compiles.
+const barFor = (args: Args) =>
+  args.type === 'jobs' ? (
+    <BulkActionBar {...args} />
+  ) : (
+    <BulkActionBar type="contacts" count={args.count} onClear={args.onClear} onDelete={args.onDelete} />
+  )
+
 const meta = {
   title: 'Shared/BulkActionBar',
   component: BulkActionBar,
   args: { type: 'jobs', count: 2, onClear: fn(), onDelete: fn(), onChangeStatus: fn(), onSelectAll: fn() },
   argTypes: { type: { control: 'radio', options: TYPES }, count: { control: { type: 'number', min: 0, step: 1 } } },
   parameters: { controls: { include: CONTROLLED } },
+  render: barFor,
 } satisfies StoryMeta<typeof BulkActionBar>
 
 export default meta
@@ -192,7 +210,7 @@ export const ReachedBeforeTheList: Story = {
   // page's order, and floats at the bottom of the screen all the same.
   render: (args) => (
     <Box>
-      <BulkActionBar {...args} />
+      {barFor(args)}
       <Box component="ul" sx={{ margin: 0, padding: 0, listStyle: 'none' }}>
         {fixtures('fa-IR').jobs.map((job) => (
           <li key={job.id}>
@@ -223,7 +241,7 @@ export const ReachedFromInsideTheList: Story = {
           </li>
         ))}
       </Box>
-      <BulkActionBar {...args} />
+      {barFor(args)}
     </Box>
   ),
   play: async ({ canvasElement }) => {

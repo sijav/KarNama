@@ -31,11 +31,13 @@ Called when Delete is pressed; the page asks before it deletes.
 
 ### onChangeStatus
 
-The job list's only. Called when Change status is pressed.
+The job list's bar cannot be written without it, and the network's cannot be
+given it. Called when Change status is pressed.
 
 ### onSelectAll
 
-The job list's only. Called when Select all is pressed.
+The job list's bar cannot be written without it, and the network's cannot be
+given it. Called when Select all is pressed.
 
 ## Stories
 

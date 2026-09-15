@@ -10,14 +10,28 @@ import { IconButton } from '../icon-button'
 export type BulkActionBarType = 'jobs' | 'contacts'
 
 // The props are documented in story-docs, not here, KN-207.
-export interface BulkActionBarProps {
-  type: BulkActionBarType
+interface SharedProps {
   count: number
   onClear: () => void
   onDelete: () => void
-  onChangeStatus?: () => void
-  onSelectAll?: () => void
 }
+
+// The job list's bar offers Select all and Change status, so it cannot be written without
+// either; the network's offers neither, and names both as never so it cannot be handed them,
+// not even in a spread, KN-331.
+interface JobsBarProps extends SharedProps {
+  type: 'jobs'
+  onChangeStatus: () => void
+  onSelectAll: () => void
+}
+
+interface ContactsBarProps extends SharedProps {
+  type: 'contacts'
+  onChangeStatus?: never
+  onSelectAll?: never
+}
+
+export type BulkActionBarProps = JobsBarProps | ContactsBarProps
 
 // Node 401:436's measures that bind no variable: the edge and the divider, one
 // pixel wide and 24 tall. Written as pixels: MUI reads a bare number up to 1
@@ -172,12 +186,12 @@ export const BulkActionBar = ({ type, count, onClear, onDelete, onChangeStatus, 
           >
             {text}
           </Box>
-          {type === 'jobs' && onSelectAll !== undefined ? (
+          {type === 'jobs' ? (
             <Button variant="ghost" size="S" onClick={onSelectAll}>
               {i18n._('Select all')}
             </Button>
           ) : null}
-          {type === 'jobs' && onChangeStatus !== undefined ? (
+          {type === 'jobs' ? (
             <Button variant="secondary" size="S" onClick={onChangeStatus}>
               {i18n._('Change status')}
             </Button>
