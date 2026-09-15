@@ -9,7 +9,6 @@ import {
   saveAccountName,
   SESSION_EXPIRED,
   verifyLoginCode,
-  warmApi,
 } from '../api'
 import { normalisePhone, type CodeProblem, type Session } from './auth'
 import { AuthContext, type AuthValue } from './AuthProvider'
@@ -29,7 +28,6 @@ export const RemoteAuthProvider = ({ children }: { children: ReactNode }) => {
   const [retry, setRetry] = useState(0)
   const pending = useRef(false)
   useEffect(() => {
-    warmApi()
     const expired = () => {
       setSession(null)
       setAwaiting(false)
