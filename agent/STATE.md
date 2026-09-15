@@ -42,31 +42,31 @@ description asking for a turning `spinnerArc` the node does not draw.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-332 is closed** (6ed2856; board 4a06a30; pushed), one point, a child of KN-012. A single
-Select handed MUI its first value but drew each row's check from the whole list, so two values
-checked two rows; it now takes `held`, the list when multiple and its first value otherwise, for
-both. `TwoValuesWithoutMultiple`, its Controls off at the plan review's ask, failed alone against
-the old component with two rows checked. Seen in fa-IR light and dark, and in en-US through
-`__STORYBOOK_PREVIEW__.onUpdateArgs`, since the URL's args left a list arg unchanged. Its Codex
-roast was running when this was written, `kn332-task-roast.log` in the scratchpad. KN-012 waits
-on KN-333, KN-334 and KN-357.
+**KN-335 is closed** (5f56aae; board 71fc8cf; pushed), one point, the last open child of
+KN-018. The Tooltip asked MUI for `left` for its start placement, and Popper mirrors only its
+`-start` and `-end` placements, so the Status menu's blocked delete was asked for the physical
+left in Persian; flipped for want of room, it stood 2 from the menu, since MUI's 14 beside a left
+or right placement is a logical margin that lands on the far side right to left. It now asks for
+`inlineStartOf(direction)`, and the tip puts 10, read from `259:295`, on its edge facing the
+trigger for whichever side Popper settles on, keyed on `data-popper-placement`; `BESIDE_GAP` is a
+component constant, the plan review's theme spacing role not taken. `BesideTheStart`,
+`BesideTheStartInEnglish` and `DeleteBlocked` read the side and the 10, and failed against the
+old component at the side, at 14 and at 2. Its Codex roast was running when this was written,
+`kn335-task-roast.log` in the scratchpad. **KN-018's whole-task round**, over KN-335, comes once
+that roast is judged and files nothing.
 
-**KN-331 is closed and its roast recorded** (5999321; recorded in 0bec7ed). The Bulk Action
-Bar's props are a union, the job list's member requiring both callbacks and the network's naming
-them optional `never`, and every story draws its bar through `barFor`: the docs guard keeps every
-callback's `fn()` in the meta, so a story of the network's type still held the job callbacks,
-which tsc refused in a spread and Show code printed. The roast found the union mutable, reproduced:
-`delete props.onSelectAll` and `props.type = 'jobs'` compile, readonly refuses both, and
-`Object.assign` still compiles. Filed **KN-620**, low, a child of **KN-025**, so KN-025's
-whole-task round, over KN-330, KN-331 and KN-620, waits until KN-620 closes.
+**KN-332 is closed and its roast recorded, nothing filed** (6ed2856, 3b99e3b): a single Select
+reads only its first value, in its field and its checks. KN-012 waits on KN-333, KN-334 and
+KN-357. **KN-331 is closed and recorded** (5999321, 0bec7ed), KN-620 filed, so **KN-025's
+whole-task round**, over KN-330, KN-331 and KN-620, waits until KN-620 closes.
 
 **AGENTS.md section 7 gained, today** (21938a1, d271046): ESLint's `lintText` types what a draft
 imports from the files on disk; a play runs only when a story mounts or is remounted; a union's
 story args and Show code; a look hands a story a list through the preview, not the URL; an open
 MUI list hides the field from role queries.
 
-**Earlier today**: KN-326 closed and recorded (9914921, cf3c9a7), KN-619 filed; KN-325 and KN-324
-closed and recorded. **Filed today and open**: KN-615, KN-617, KN-618, KN-619, KN-620.
+**Earlier today**: KN-326, KN-325 and KN-324 closed and recorded. **Filed today and open**:
+KN-615, KN-617, KN-618, KN-619, KN-620.
 
 **Still open from earlier**: **KN-009 waits on KN-614**; KN-021 waits on KN-387; KN-022 on
 KN-327, KN-615, KN-616 and KN-619; **KN-025 on KN-620**; KN-012 on KN-333, KN-334 and KN-357.
@@ -106,24 +106,24 @@ The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-332's roast lands**, judge it, file survivors with `--parent-task KN-332`, which hangs
-them off KN-012 (`--area web --okr OKR-1` under four points), record with `todo roast KN-332
---file ... --filed ... --dismissed ...`, relay it to the owner, and commit the board.
+**When KN-335's roast lands**, judge it, file survivors with `--parent-task KN-335`, which hangs
+them off KN-018 (`--area web --okr OKR-1` under four points), record with `todo roast KN-335
+--file ... --filed ... --dismissed ...`, relay it to the owner, and commit the board. If it files
+nothing, roast KN-018 together with KN-335 as the whole-task round.
 
-**KN-335 is in progress**, medium, 1 point, a child of KN-018: the Tooltip maps its start
-placement to MUI's `left` and relies on MUI to mirror it, but MUI's Popper mirrors only the
-`-start` and `-end` placements, read in `BasePopper.js`'s `flipPlacement`, so in a right to left
-page the blocked delete's reason is asked for the physical left; the StatusMenu's
-`DeleteBlocked` story showed it on the right only because Popper flipped it for want of room. Its
-exit: start asks MUI for right in a right to left page and left in a left to right one, and a
-story with room on both sides checks the tip sits at the inline start. `theme/sides.ts` already
-has `inlineStartOf`.
+**KN-336 is in progress**, medium, 1 point, a child of KN-024: choosing a sort order returns
+focus to the combobox, whose new value a screen reader reads, and the status region then says
+the order again; the status also keeps its text, so the same order chosen twice is not read the
+second time; and `ChangedByKeyboard` passes a fixed value and `fn()`, so the closed control still
+shows Newest after Enter. Its exit: a change is read out once, by the focused control or by the
+status but not both, and a story holding the value in state shows the new order on the closed
+control. **Measure first**: what the combobox and the status each say after a choice, and when.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md` (the Tooltip), `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-335`, `Tooltip.tsx`, its stories and story docs, and
-`StatusMenu.stories.tsx`'s `DeleteBlocked`. **Never chain a check through a pipe into a commit or
-a close, give every parallel command its own `cd`, give a search that finds nothing a positive
-control, write a Grep glob with a folder in it from the repo root, and check a draft that imports
-another draft with a compiler host, not `lintText`.**
+`AGENTS.md` (section 7), `DESIGN.md` (the Sort Control), `agent/RALPH.md`, the head of
+`agent/TODO_BOARD.md`, then `todo show KN-336`, `SortControl.tsx`, its stories and story docs.
+**Never chain a check through a pipe into a commit or a close, give every parallel command its own
+`cd` in a subshell, give a search that finds nothing a positive control, write a Grep glob with a
+folder in it from the repo root, find a docs paragraph by its headings rather than by retyping
+Persian, and find a story's controls inside `#storybook-root`.**
