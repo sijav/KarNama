@@ -41,18 +41,19 @@ holds the Groq key; never repeat that key anywhere.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**Closed 2026-09-16**: **KN-514** (ebd4f57), the job modal's footer wrapping its delete onto a row
-of its own; DESIGN.md records it (3bb60c1); roast filed **KN-653**. **KN-524** (a43bb15), the
-story-docs parser's fences read as CommonMark's at the top level, with the line a Docs page would
-end a fence at reported; roast found nothing. **KN-535** (74d9239), `ActingWhileSearching` proving
-the bulk bar leaves a card the search hides alone through a delete and a status change; roast filed
-**KN-654**, the Change Status dialog's opening status asserted nowhere, which flattened onto
-KN-431. **KN-543** (f5ab9f5), the API's seed writing the five statuses in the design's order with a
-case in `cli.test.ts` reading the rows; roast filed **KN-655**, `cli.test.ts`'s header claiming less
-than the file now holds. **KN-544** (962fd07; board 7546169), a column starting folded by which
-status it is rather than by its colour, `records.ts` exporting `REJECTED` and
-`CollapsedByStatusNotColour` proving it; its roast is running. KN-551 was given the messages its
-card asked for.
+**Closed 2026-09-16**: **KN-514** (ebd4f57), the job modal's footer giving its delete a row of its
+own; DESIGN.md records it (3bb60c1); roast filed **KN-653**. **KN-524** (a43bb15), the story-docs
+parser's fences read as CommonMark's at the top level with the line a Docs page would end a fence at
+reported; roast found nothing. **KN-535** (74d9239), `ActingWhileSearching` proving the bulk bar
+leaves a card the search hides alone; roast filed **KN-654**, which flattened onto KN-431. **KN-543**
+(f5ab9f5), the API's seed writing the statuses in the design's order; roast filed **KN-655**.
+**KN-544** (962fd07), a column starting folded by which status it is rather than by its colour,
+`records.ts` exporting `REJECTED`; roast filed **KN-656**, the id written twice and a comment saying
+a default's id IS its token, and raised **KN-542** to medium rather than filing its sample-loader
+finding twice. **KN-559** (16b8034; board ca549c9), the add modal's `Review` asserting the height the
+room allows, `Math.min(606, innerHeight - 64)` with MUI's cap asserted as text, proved inside a
+production Storybook's manager at 1280 by 720; its roast is running. KN-551 was given the messages
+its card asked for.
 
 **Closed 2026-09-15, each roast recorded**: KN-348 (KN-628, KN-629); KN-349; KN-358; KN-359
 (KN-632); KN-362 (KN-633 to KN-635); KN-370; KN-385 (KN-636); KN-413 (KN-637, KN-638); KN-432;
@@ -61,14 +62,15 @@ KN-434 (KN-639, KN-640); KN-435; KN-439 (KN-641, KN-642); KN-444; KN-448 (KN-643
 KN-496. **Dropped**: KN-387, KN-474. **Filed while working**: KN-644 under KN-013, KN-651 under
 KN-027.
 
-**Rounds waiting**: KN-440 on KN-545; KN-431 on KN-536 and KN-654; KN-543 on KN-655; KN-514 on
-KN-653; KN-007 on KN-407 and KN-408; KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on
-KN-620; KN-020 on KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-027 on KN-651
-among its five; KN-028 on KN-346, KN-626 and KN-627; KN-031 on KN-628 and KN-629; KN-439 on KN-641
-and KN-642; KN-448 on KN-643; KN-449 on KN-645; KN-461 on KN-646 to KN-648; KN-470 on KN-649;
-KN-477 on twenty-one, KN-650 and KN-652 among them; KN-013 on KN-644 among its twelve. **Still open
-from earlier**: KN-009 waits on KN-614; KN-022 on KN-327, KN-615, KN-616 and KN-619; KN-012 on
-KN-333, KN-334 and KN-357; KN-029 on its other children.
+**Rounds waiting**: KN-013 on eleven, KN-219, KN-232, KN-556 to KN-558, KN-564, KN-566, KN-568,
+KN-569, KN-609 and KN-644; KN-440 on KN-545; KN-431 on KN-536 and KN-654; KN-543 on KN-655; KN-544
+on KN-656; KN-514 on KN-653; KN-007 on KN-407 and KN-408; KN-018 on KN-621 and KN-622; KN-024 on
+KN-623; KN-025 on KN-620; KN-020 on KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625;
+KN-027 on KN-651 among its five; KN-028 on KN-346, KN-626 and KN-627; KN-031 on KN-628 and KN-629;
+KN-439 on KN-641 and KN-642; KN-448 on KN-643; KN-449 on KN-645; KN-461 on KN-646 to KN-648; KN-470
+on KN-649; KN-477 on twenty-one, KN-650 and KN-652 among them. **Still open from earlier**: KN-009
+waits on KN-614; KN-022 on KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357;
+KN-029 on its other children.
 
 **What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
 `Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` fails under load, KN-551:
@@ -100,25 +102,24 @@ workspace's database tests are run directly, `npx vitest run src/database`, 68 o
 
 ## The next step
 
-1. **KN-544's roast is running**, `kn544-roast.mjs` writing `kn544-roast.txt`: judge each finding
-   against the code, file survivors with `--parent-task KN-544 --area web --okr OKR-1`, record with
-   `todo roast KN-544 --file <md> --filed <ids|none> --dismissed "..."`, and relay.
-2. **KN-559 is in progress**, medium, 1 point, web, from KN-013's roast by way of KN-226's
-   measurement: the add modal's `Review` story asserts the frame's 606 height, and inside a
-   production Storybook's manager at 1280 by 720 the canvas is shorter, so the dialog is capped by
-   the room it has and the story throws «expected [560, 316] to deeply equal [560, 606]». Exit:
-   `Review` states the room its size assertion needs, through its viewport parameters or by
-   asserting against the room it is given, and passes inside the manager of a production Storybook
-   at 1280 by 720, bare, and in the Vitest runner.
+1. **KN-559's roast is running**, `kn559-roast.mjs` writing `kn559-roast.txt`: judge each finding
+   against the code, file survivors with `--parent-task KN-559 --area web --okr OKR-1`, record with
+   `todo roast KN-559 --file <md> --filed <ids|none> --dismissed "..."`, and relay.
+2. **KN-542 is in progress**, medium, 1 point, web, from KN-440's plan review and found again by
+   KN-544's roast: `core/records/samples.ts` line 24, `withSamples` finds the status a sample default
+   belongs in by its id and then by its colour token, so a reader who deleted a default and gave a
+   status of their own that default's colour has the samples land in their own status and the
+   default unrestored. Exit: `withSamples` matches a default only by its id, and a unit test with
+   the default offer deleted and a status of the reader's own coloured offer's green finds the
+   default restored and the reader's status holding nothing new.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-559`,
-`AddJobModal.stories.tsx`'s `Review` and whatever sets a story's viewport in this repository,
-KN-226's plan and its measurement notes, and DESIGN.md's add modal, 560 wide with Review at 606.
-**Never chain a check through a pipe into a commit or a close, write long scripts with the Write
-tool, keep apostrophes out of single-quoted strings in scripts, find a story's controls inside
-`#storybook-root`, and read an accessibility claim from the browser's own tree.** Keep a failing
-run's full output in a file before filtering it, and give a `-t` filter a positive control: a run
-that matches nothing exits 0 and reports every test skipped. The Persian catalog is
-`apps/web/src/i18n/locales/fa-IR.ts`.
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-542`,
+`core/records/samples.ts` and `samples.test.ts` if there is one, `records.ts`'s `DEFAULT_TOKENS`,
+`REJECTED` and `columnOrder`, and KN-440's plan beside them. **Never chain a check through a pipe
+into a commit or a close, write long scripts with the Write tool, keep apostrophes out of
+single-quoted strings in scripts, find a story's controls inside `#storybook-root`, and read an
+accessibility claim from the browser's own tree.** Keep a failing run's full output in a file before
+filtering it, and give a `-t` filter a positive control: a run that matches nothing exits 0 and
+reports every test skipped. The Persian catalog is `apps/web/src/i18n/locales/fa-IR.ts`.
