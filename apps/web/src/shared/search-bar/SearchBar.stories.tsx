@@ -3,7 +3,7 @@ import type { StoryObj } from '@storybook/react-vite'
 import { useRef, useState } from 'react'
 import { useArgs } from 'storybook/preview-api'
 import { clearAllMocks, expect, fireEvent, fn, userEvent, within } from 'storybook/test'
-import { semantic } from '../../theme/tokens'
+import { semantic, type as typeScale } from '../../theme/tokens'
 import { fixtures } from '../story-fixtures'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { DEBOUNCE_MS, SearchBar, type SearchBarProps } from './SearchBar'
@@ -100,7 +100,8 @@ const partsOf = (canvasElement: HTMLElement) => {
 
 // What node 155:92 draws in every state: the phone's 44 unless told otherwise,
 // radius md, the text 16 from the edge, the search icon at 20 in text/secondary
-// at the inline start.
+// at the inline start, and the text and the icon where the file puts them down
+// the bar, KN-444.
 const isTheFiles = async (canvasElement: HTMLElement, height = MOBILE_HEIGHT) => {
   const { field, bar } = partsOf(canvasElement)
   const box = bar.getBoundingClientRect()
@@ -117,6 +118,12 @@ const isTheFiles = async (canvasElement: HTMLElement, height = MOBILE_HEIGHT) =>
   await expect(Math.round(start)).toBe(16)
   const fieldBox = field.getBoundingClientRect()
   await expect(Math.round(rtl ? iconBox.left - fieldBox.right : fieldBox.left - iconBox.right)).toBe(8)
+  // Down the bar: the input is the text's line, with no padding and Body's line
+  // height, and the icon is centred, each where the file puts it.
+  const placed = placedIn(height)
+  await expect(fieldBox.top - box.top).toBe(placed.text)
+  await expect(fieldBox.height).toBe(typeScale.body.lineHeight)
+  await expect(iconBox.top - box.top).toBe(placed.icon)
 }
 
 export const Default: Story = {
@@ -151,7 +158,7 @@ export const Filled: Story = {
   args: { value: TYPED },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
-    const { field } = partsOf(canvasElement)
+    const { field, bar } = partsOf(canvasElement)
     await isTheFiles(canvasElement)
     // 401:437: the text in text/primary, and the clear control, 20 square at
     // the inline end, named.
@@ -161,6 +168,8 @@ export const Filled: Story = {
     await expect(clear.getAttribute('aria-label')?.length).toBeGreaterThan(0)
     const box = clear.getBoundingClientRect()
     await expect([box.width, box.height]).toEqual([20, 20])
+    // Centred down the bar as the search icon is, 401:441.
+    await expect(box.top - bar.getBoundingClientRect().top).toBe(MOBILE_PLACED.icon)
   },
 }
 
@@ -274,6 +283,20 @@ const DESKTOP_WIDTH = 320
 const DESKTOP_HEIGHT = 36
 const MOBILE_WIDTH = 358
 const MOBILE_HEIGHT = 44
+
+// Where the file puts the text's line and each 20 square below the bar's top,
+// read for KN-444: the text at 7 and the icon at 8 in those 36 tall bars; in the
+// 44, the phone's and the set's own three states, `155:86`, `155:89` and
+// `401:437`, the text at 11, and the icon and Filled's clear control at 12.
+const DESKTOP_PLACED = { text: 7, icon: 8 }
+const MOBILE_PLACED = { text: 11, icon: 12 }
+
+// The file's placement for a bar of the height given.
+const placedIn = (height: number) => {
+  if (height === DESKTOP_HEIGHT) return DESKTOP_PLACED
+  if (height === MOBILE_HEIGHT) return MOBILE_PLACED
+  throw new Error(`the file draws no bar ${String(height)} tall`)
+}
 
 export const OnTheDesktop: Story = {
   parameters: { controls: { disable: true } },
