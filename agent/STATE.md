@@ -45,10 +45,10 @@ asked**: KN-588, KN-589, KN-590, KN-591, and **KN-616**.
 title reports it through `console-guard`'s `report` from an effect and renders nothing.
 `ReportsABlankTitle` reads the marked report and that the trigger opens no dialog; it failed alone
 against the old shell. Its exit was edited on the board after the plan review, which turned down a
-report that still drew the dialog. **Its Codex roast has NOT run**: the first launch threw a
-SyntaxError from an apostrophe in `kn345-roast.mjs`'s account, now fixed; relaunch it with
-`node <scratchpad>/kn345-roast.mjs 3261606`. **KN-626** filed: PanelModal's blank title, same
-gap. KN-028 waits on KN-346 and KN-626.
+report that still drew the dialog. Its roast is recorded (1bfb23e), after a first launch
+threw on an apostrophe in its script: `trim` leaves zero-width and direction marks, so a title of
+only those is not refused, filed as **KN-627**, low. **KN-626** filed too: PanelModal's blank
+title, the same gap. KN-028 waits on KN-346, KN-626 and KN-627.
 
 **Earlier today, closed and recorded**: KN-343 (on KN-415's 2b5b205; KN-625 filed, raw mailto),
 KN-338 (the Status Picker's add chip outside its group; KN-624 filed), KN-336, KN-335, KN-332,
@@ -82,7 +82,7 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
 
 ## The next step
 
-1. **Relaunch KN-345's roast** in the background, then judge it when it lands.
+1. **KN-345's roast is recorded**, KN-627 filed; nothing is waiting on it.
 2. **KN-348 is in progress**, medium, 1 point, a child of KN-031: an Edit Contact Modal can be
    written without the delete. Measured: `ContactModalProps` is already a union, from KN-386, the
    edit member's `initial` a required key that may be `undefined` while the record loads, which
