@@ -145,6 +145,6 @@ Built as planned after the review.
   With Checkbox Hover's guard made unreachable, `kn228-canvas-plant.mjs`, a second build
   failed `shared-checkbox--hover` with `playFunctionThrewException` and its own message,
   the other 13 passing; then the story was put back exactly.
-- `npm run lint` and `npm run lint:tsc` clean in `apps/web`, and the unit project 1488 of
-  1488. The eight story files that carried formatting drift at HEAD keep exactly theirs;
-  the other two, `vitest.setup.ts` and this plan are formatted.
+- `npm run lint` and `npm run lint:tsc` clean in `apps/web`, and the unit project passes
+  1488 of 1488. The eight story files that carried formatting drift at HEAD keep exactly
+  theirs; the other two, `vitest.setup.ts` and this plan are formatted.
