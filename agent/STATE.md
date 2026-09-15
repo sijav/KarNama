@@ -41,19 +41,23 @@ KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-228 is closed** (f499ea7; board and plan 0c3fd02; pushed). The twelve guards in ten
-story files that took a play's canvas branch only when Storybook's private
-`__STORYBOOK_PREVIEW__` existed read Vite's documented `import.meta.env.MODE !== 'test'`,
-and `.storybook/vitest.setup.ts` refuses any other mode. The card named one story and a
-`preview-head.html` flag, which could not work, since `@storybook/addon-vitest` puts the
-preview head, body and `viteFinal` in the Vitest page too; it was re-pointed before
-planning. Checked: 99 of 99 stories; each guard failing on its own message with the flag
-removed; a mode set in the project's config stopped by the setup; a production build's
-99 stories clean, and Checkbox Hover failing with its canvas branch removed. **The close
-ran past a formatting check whose failure a pipe hid**, `prettier --check | tail && close`,
-the lesson AGENTS.md section 7 already holds: f499ea7 carried an unformatted plan, fixed
-in 0c3fd02. Its Codex roast was running when this was written, `kn228-task-roast.log` in
-the scratchpad.
+**KN-230 is closed** (9bf6c7e; board 788440f; pushed). The docs guard reads storybook/test's
+`fn` by the name each story file imports it by, and each story's own `on*` args keys, so a
+story whose own args set a callback to anything else, or a meta whose `fn` is a local
+function, fails; four planted files under the OS temp directory prove both, and the
+imports it accepts. Its exit was narrowed after the plan review to callback keys written
+in a story's own args object: a spread, one call or one member stays out of reach, and
+the guard's comment says so. On the real tree, RestartWhileReading's `onExtract` made a
+call to `String` failed the guard naming it; a first attempt made a syntax error that
+stopped Vitest, and its exit of 1 proved nothing until the saved output was read. Its
+Codex roast was running when this was written, `kn230-task-roast.log` in the scratchpad.
+
+**KN-228 is closed and its roast recorded** (f499ea7, plan fixed in 0c3fd02): twelve plays
+know the published Storybook by Vite's documented mode, `import.meta.env.MODE !== 'test'`,
+not Storybook's private global, and `vitest.setup.ts` refuses any other mode. The roast
+filed nothing: a Storybook test runner driving a published Storybook would take the canvas
+return, as the old guard did too. **Its close ran past a formatting check whose failure a
+pipe hid**, the lesson AGENTS.md section 7 already holds.
 
 **KN-216 is closed and its roast recorded** (63304bb): a story at the root of `src` is
 indexed and run, and the docs guard lists Storybook's own `getStoriesPathsFromConfig`.
@@ -100,25 +104,23 @@ arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-228's roast lands**, judge it, file survivors as its children (`--area web
---okr OKR-1` for anything under four points), record with `todo roast KN-228 --file ...
+**When KN-230's roast lands**, judge it, file survivors as its children (`--area web
+--okr OKR-1` for anything under four points), record with `todo roast KN-230 --file ...
 --filed ... --dismissed ...`, relay it to the owner, and commit the rendered board.
 
-**KN-230 is next**, medium, 1 point, web: the docs guard, `story-docs/guard.test.ts`'s
-`readStoryFile`, requires an `fn()` for every `on*` prop in the META args alone, read
-from `_metaAnnotations.args`; a story whose own args override a callback with a plain
-function, or a render that replaces it, still passes, and any function called `fn`
-counts. Storybook's `CsfFile` holds each story's own annotations in `_storyAnnotations`.
-Today every story file takes `fn` from `storybook/test`, and `on*:` keys stand 33 times
-in 7 story files. The exit: the guard fails for a story whose own args override a
-callback with anything but Storybook's `fn()`, and for an `fn` not imported from
-`storybook/test`, proved by a planted story of each kind, while the current stories
-still pass.
+**KN-257 is next**, medium, 1 point, web: `getComputedStyle` sits in the lingui rule's
+`ignoreFunctions`, which skips every literal in every call, for the one selector the card
+names, `'::placeholder'`. Measured before planning: the story files pass it a string about
+40 times, `'::before'` and `'::after'` far more often than `'::placeholder'`, so an exact
+pattern for `::placeholder` alone would fail the rest, and the card needs re-pointing
+before its plan. Its exit asks `getComputedStyle` out of `ignoreFunctions`, the selector
+exempted by an exact pattern with its reason, lint passing, and a check that a call with a
+literal of copy is flagged while one with the selector is not.
 
 ## What to read first
 
 `AGENTS.md` (section 7), `DESIGN.md`, `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-230`, `story-docs/guard.test.ts`'s
-`readStoryFile` and its callback check, and the 33 `on*:` keys in the story files.
-**Never chain a check through a pipe into a commit or a close**: read its exit code on
-its own.
+`agent/TODO_BOARD.md`, then `todo show KN-257`, `apps/web/eslint.config.js`'s
+`ignoreFunctions` and `ignore`, `src/i18n/lingui-ignore.test.ts`, and the
+`getComputedStyle` calls in the story files. **Never chain a check through a pipe into a
+commit or a close, and give every parallel command its own `cd`.**
