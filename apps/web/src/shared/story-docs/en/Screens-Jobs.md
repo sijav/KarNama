@@ -165,6 +165,13 @@ renamed, and the second given the job offer's colour from its column's menu, and
 every column stays where it was, the reader's own in the order they were added
 and rejected last.
 
+### CollapsedByStatusNotColour
+
+A board the reader has coloured: Rejected wearing purple and a status of their
+own wearing red. Only Rejected starts folded to its count, because which status
+a column is, is its id and never its colour, so the red column stands open with
+its job opportunity on the board; Rejected's header opens it.
+
 ### FocusAfterDeleting
 
 The control that asks to delete a job opportunity is on that job opportunity, so

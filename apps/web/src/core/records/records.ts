@@ -43,6 +43,16 @@ export interface Records {
 /** The five the design draws, in the board's order: rejected last, KN-070. */
 export const DEFAULT_TOKENS: readonly StatusToken[] = ['new', 'applied', 'interview', 'offer', 'rejected']
 
+/**
+ * The Rejected status, by the id it keeps for good.
+ *
+ * Which status a column is, is its id and never its colour, KN-440, and Rejected
+ * is the one column the board starts folded, the owner's KN-070. A default's id
+ * IS its token, `defaultStatuses` below, so the order and the fold read the same
+ * value rather than two rules that can disagree, KN-544.
+ */
+export const REJECTED: StatusToken = 'rejected'
+
 /** Where a new status's colour comes from: the four reserved slots, then round again. */
 const CUSTOM_TOKENS: readonly StatusToken[] = ['custom-1', 'custom-2', 'custom-3', 'custom-4']
 

@@ -2,9 +2,10 @@ import type { Decorator, StoryObj } from '@storybook/react-vite'
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, isLocale } from '../i18n'
 import { formatCount } from '../i18n/formatCount'
-import { defaultStatuses, jobFrom, readRecords, RecordsProvider, STORAGE_KEY, type JobEntry, type Records } from '../core/records'
+import { defaultStatuses, jobFrom, readRecords, RecordsProvider, REJECTED, STORAGE_KEY, type JobEntry, type Records } from '../core/records'
 import { emptyDraft, type JobDraft } from '../shared/add-job'
 import { allowConsole } from '../shared/console-guard'
+import type { StatusOption } from '../shared/status-picker'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { fixtures } from '../shared/story-fixtures'
 import { JobsScreen, type JobsScreenProps } from './JobsScreen'
@@ -1339,6 +1340,62 @@ export const RecolouringKeepsItsPlace: Story = {
         await expect(before.compareDocumentPosition(region) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
       before = region
     }
+  },
+}
+
+// A board the reader has coloured, KN-544: Rejected wearing purple and a status
+// of their own wearing red. Seeded rather than driven through the column menus,
+// since opening a column to reach its menu writes the reader's own fold and
+// loses the arrival state the story is about.
+const colouredBoard: Decorator = (Story) => {
+  const set = fixtures('fa-IR')
+  // A status of the reader's own is one whose id is not one of the design's
+  // five, KN-440; the fixtures' own custom status is one, and here it wears the
+  // red that used to decide the fold.
+  const own = set.statusOptions.find((status) => status.token === 'custom-1')
+  if (!own) throw new Error('the fixtures hold no custom status')
+  const statuses: StatusOption[] = [
+    ...defaultStatuses((token) => set.names[token]).map((status): StatusOption =>
+      status.id === REJECTED ? { ...status, token: 'custom-2' } : status,
+    ),
+    { ...own, token: 'rejected' },
+  ]
+  const jobs = [own.id, REJECTED].map((status, at) =>
+    jobFrom(
+      { ...emptyDraft(status), title: set.jobs[at]?.title ?? '', company: set.jobs[at]?.company ?? '' },
+      new Date(Date.UTC(2026, 8, at + 1, 9)).toISOString(),
+    ),
+  )
+  return (
+    <RecordsProvider initial={{ statuses, jobs, contacts: [] }}>
+      <Story />
+    </RecordsProvider>
+  )
+}
+
+export const CollapsedByStatusNotColour: Story = {
+  globals: { locale: 'fa-IR' },
+  decorators: [colouredBoard],
+  play: async ({ canvasElement }) => {
+    // KN-544: which status a column is, is its id and never its colour, KN-440,
+    // so the reader's own red column starts open and Rejected, wearing purple,
+    // starts folded to its count, as the owner settled in KN-070.
+    const canvas = within(canvasElement)
+    const set = fixtures('fa-IR')
+    const mine = set.jobs[0]?.title ?? ''
+    const held = set.jobs[1]?.title ?? ''
+    const rejected = set.names.rejected
+
+    await expect(canvas.getByText(mine)).toBeInTheDocument()
+    await expect(canvas.queryByText(held)).toBeNull()
+
+    // And Rejected's header opens it, its own job opportunity read inside that
+    // column: the board has other columns, so finding the title anywhere proves
+    // nothing about where it is.
+    await userEvent.click(canvas.getByRole('button', { name: new RegExp(rejected) }))
+    await waitFor(async () => {
+      await expect(within(canvas.getByRole('region', { name: rejected })).getByText(held)).toBeInTheDocument()
+    })
   },
 }
 

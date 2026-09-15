@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react'
 import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
 import { useEffect, useId, useLayoutEffect, useRef, useState, type SyntheticEvent } from 'react'
 import { usePreferences } from '../core/preferences'
-import { columnOrder, contactsOf, jobsIn, tokenOf, useRecords, type JobEntry } from '../core/records'
+import { columnOrder, contactsOf, jobsIn, REJECTED, tokenOf, useRecords, type JobEntry } from '../core/records'
 import { formatCount } from '../i18n/formatCount'
 import { AddJobModal, type AddJobModalProps, type JobDraft } from '../shared/add-job'
 import { BulkActionBar } from '../shared/bulk-action-bar'
@@ -160,7 +160,10 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   const addingTo = adding ?? (addOpen ? first : null)
   const showing = columns.find((column) => column.id === chosen) ?? columns[0]
   const job = records.jobs.find((entry) => entry.id === reading)
-  const isCollapsed = (id: string) => (folded[id] ?? tokenOf(records.statuses, id) === 'rejected') && dragExpanded !== id
+  // Which status a column is, is its id and never its colour, KN-440: the board
+  // starts only Rejected folded, the owner's KN-070, however the reader has
+  // coloured their own statuses, KN-544.
+  const isCollapsed = (id: string) => (folded[id] ?? id === REJECTED) && dragExpanded !== id
   const cardsOf = (id: string) => jobsIn(records.jobs, id, search, order)
   // The column's own size, which is what says whether it can be deleted: the
   // searched count reads zero while a search hides its cards, and deleting it
