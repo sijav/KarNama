@@ -13,6 +13,12 @@ Project **KarNama** · 249 of 585 tasks done · 559 of 1176 points.
 | 1 | OKR-1 | MVP: the pages | now | 201 | 171 |
 | 2 | OKR-2 | Everything after the MVP | later | 131 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-518` | The sign-in card is not its frame: no mark, a smaller heading, other copy, a flat card | high | 3 | web | none | At 1440 and 390 in fa-IR light the sign-in card measures as 407:6951 and 407:7022 draw it, mark, type, copy, radius, padding, gap and shadow, the shadow named in DESIGN.md's elevation table and the brand row shared with the sidebar's rather than copied; the code and signup steps are compared and fixed the same way. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 249 of 585 tasks done · 559 of 1176 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (323)
+## Backlog (322)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -52,7 +58,6 @@ Project **KarNama** · 249 of 585 tasks done · 559 of 1176 points.
 | `KN-221` | The catalogs are never compiled, so a message with a count or a placeholder renders raw ICU in production | high | 3 | web | none | A message with a plural and a placeholder renders correctly in BOTH locales in a production build, checked by rendering it from the built output or under NODE_ENV=production rather than in development, with Persian digits in fa-IR; a mutation that loads the catalogs uncompiled again makes that check fail; and the catalog tests still prove every English id has a non-empty Persian translation. |
 | `KN-265` | Employment type becomes eight values, and a job can hold more than one | high | 3 | api | none | DESIGN.md's employment type list gives the eight values as the owner's decision of 2026-09-10, with the overlap noted, and says the field holds more than one; the Prisma schema has the eight and a record holds a list of them, through a migration that carries existing values over and is tested; the GraphQL schema and the generated types expose a list; the catalogs carry English ids and Persian for the two new values; and KN-073 is left holding only the job level list. |
 | `KN-416` | The shell has no Apollo client, no auth state and no error boundary | high | 3 | web | KN-036 | AppProviders creates the Apollo client against the API's URL with the honest slow-start handling the design asks for, the shell holds who is signed in, and a screen that throws renders the error state rather than a blank page, each with a story or a test; a deep link to a screen that throws still shows the shell. |
-| `KN-518` | The sign-in card is not its frame: no mark, a smaller heading, other copy, a flat card | high | 3 | web | none | At 1440 and 390 in fa-IR light the sign-in card measures as 407:6951 and 407:7022 draw it, mark, type, copy, radius, padding, gap and shadow, the shadow named in DESIGN.md's elevation table and the brand row shared with the sidebar's rather than copied; the code and signup steps are compared and fixed the same way. |
 | `KN-533` | A phone cannot start a selection on the network page: the full Contact Card shows its checkbox only on hover or focus | high | 3 | web | none | A phone can choose a person on the network page the way the file draws it, the Bulk Action Bar comes up in the tab bar's place, a story at 390 by 844 chooses two people and deletes them, and App/Shell counts one element fixed at the foot while a person is chosen. |
 | `KN-571` | The modal stories offer open, step, tab and mode controls that break their plays | high | 3 | web | none | Every story with a play function in the AddJobModal, JobModal, ContactModal, ChangeStatusModal, ConfirmModal and Modal story files reads its expectations from the active args or offers only the controls its assertions hold for; KN-247's sweep over every story, each offered control changed by its type, finds none of them broken; and those stories pass under Vitest. |
 | `KN-574` | The navigation, language and token stories offer controls that break their plays | high | 3 | web | none | Every story with a play function in the LanguageSwitch, LanguageFlag, Sidebar, NavItem, TabBar, Icon and Tokens story files reads its expectations from the active args or offers only the controls its assertions hold for; KN-247's sweep over every story, each offered control changed by its type, finds none of them broken; and those stories pass under Vitest. |
@@ -4523,6 +4528,10 @@ CHILD OF KN-220, recorded in prose because board.json cannot express parent_task
 - 2026-09-15, found by KN-584's probe, for the replan: a story whose play writes its args says storyFinished for each render that causes, and SearchBar's Debounced and Input's TypingIntoABoundValue said it before their plays had ended in 10 runs of 10, 16 pages at once. The saved spec waits for the first storyFinished and 400 ms more, so it can read such a story before its play ends and miss a failure after that; Debounced's was heard only because it came within those 400 ms. When a play began, the end is the storyFinished after the phase played or errored, as scratchpad/kn584-probe.mjs waits for it.
 - 2026-09-15, KN-584's probe also found KN-585: Input's TypingIntoABoundValue fails in a production Storybook with the CPU slowed four times, 10 of 10 with 8 pages at once and 1 of 10 alone, and passed slowed twice with 8 pages at once, 10 of 10. It is not made a blocker of this card on that measurement. If the check's first run on ubuntu-latest fails on it, it becomes one.
 - 2026-09-15, Codex's second replan review: the exit's 'fails on any page error or console error' is broader than any finite check. This one hears a story until its play has ended and 400 milliseconds more, and an error a story schedules later than that is not heard; the spec, the AGENTS.md line and the close say so rather than claim more.
+
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T044910-task-kn-226-nothing-committed-checks-that-the-publish-513328.md, filed none, dismissed: Nothing found. The round confirmed that the channel setter is installed before Storybook's scripts run; that the spec waits past the final play phase instead of the storyFinished a render its args cause says early, which the runtime shows is needed; that no remount, second assignment of the channel, failed navigation or failure within the 400 ms can turn a failing story into a pass; that serve.ts strips queries, decodes paths, keeps to its base and checks the build's assets before listening; that port 6106 with reuseExistingServer false fails on an occupied port rather than checking another server; that the workflow supplies the base to the job, builds, installs Chromium, checks before assembling and uploads the report only on failure, the gate asked for; and that the mutations prove the Hover import error, a console error and a late throw. The ubuntu-latest run was still going when it read.
 
 ### `KN-227` The token-file guard can be passed by a function, a Map, or copy assigned to fontFamily, and its retirement is a wish
 
@@ -9125,7 +9134,7 @@ KN-481's audit: the job modal's frames, 243:1213 and 243:1078, draw four tabs. T
 
 ### `KN-518` The sign-in card is not its frame: no mark, a smaller heading, other copy, a flat card
 
-- **status** backlog · **severity** high · **points** 3 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 3 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 KN-481's audit of Auth Login, 407:6951 and 407:7022, against AuthScreen at 1440 and 390 in fa-IR light. The file's card has radius 16, 32 of padding, 24 between its parts and a shadow of black at 6 percent, 0 4 blur 16, bound to no style; the app's has radius 8, 24, 16 and none. The file's Brand Row is the 32 Brand Mark «ک» in bg/brand/default with «کارنما» at 20 SemiBold, 8 apart, the sidebar's own; the app writes «کارنما» at 24 with no mark. The heading is Heading/L, 24, where the app uses 20. The copy: the body «شماره موبایلت را وارد کن؛ یک کد پنج‌رقمی برایت پیامک می‌کنیم.» where the app says «شماره موبایلت را وارد کن»; the placeholder «۰۹۱۲ ۳۴۵ ۶۷۸۹» where the app says «۰۹۱۲ ۰۰۰ ۰۰۰۰»; the note «با ادامه‌دادن، قوانین و حریم خصوصی کارنما را می‌پذیری.» where the app says «با ورود، می‌پذیری که کارنما سوابقت را چطور نگه می‌دارد.». The code and signup steps, 407:6972 and 407:7000, share the card and were not compared.
