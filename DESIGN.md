@@ -621,8 +621,9 @@ the order at Label's weight in `text/primary`, and the 16 chevron. Hover takes
 Its menu, `447:601`, is the Options Menu at 240, **6** below the control where
 the Select's is 4, hanging from the control's inline end, with the four orders
 of section 3 as Option Rows. The set draws no Focus, so the keyboard's is the
-Select family's two pixels. A change is read out from a status region, «مرتب‌شده
-بر اساس» and the order. KN-024.
+Select family's two pixels. A change is read out once, by the control focus
+comes back to, which then shows the order chosen, and not again by a status
+region. KN-024 and KN-336.
 
 ### The Menu and its items
 

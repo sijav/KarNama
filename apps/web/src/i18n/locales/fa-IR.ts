@@ -166,7 +166,6 @@ export const messages: Record<string, string> = {
   Oldest: 'قدیمی‌ترین',
   'Nearest deadline': 'نزدیک‌ترین مهلت',
   'Company name, A to Z': 'نام شرکت (الفبا)',
-  'Sorted by': 'مرتب‌شده بر اساس',
   Status: 'وضعیت',
   'New status': 'وضعیت تازه',
   Select: 'انتخاب',

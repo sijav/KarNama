@@ -1,4 +1,5 @@
 import type { StoryObj } from '@storybook/react-vite'
+import { useState } from 'react'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18n } from '../../i18n'
 import { elevation, semantic } from '../../theme/tokens'
@@ -50,6 +51,21 @@ const insetsOf = (control: HTMLElement, element: Element) => {
 }
 
 const rowsOf = (listbox: HTMLElement) => [...listbox.children].filter((row) => row instanceof HTMLLIElement)
+
+// The screen's side of the contract, as the board keeps it: it holds the order
+// and takes each change, so the closed control shows the order chosen, KN-336.
+const Holding = ({ value, onChange }: SortControlProps) => {
+  const [order, setOrder] = useState(value)
+  return (
+    <SortControl
+      value={order}
+      onChange={(next) => {
+        setOrder(next)
+        onChange(next)
+      }}
+    />
+  )
+}
 
 export const Default: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
@@ -121,9 +137,14 @@ export const Open: Story = {
 
 export const ChangedByKeyboard: Story = {
   globals: { locale: 'fa-IR' },
+  // The holder keeps the order from its first render on, so a control would
+  // change nothing it shows, and the play starts from newest.
+  parameters: { controls: { disable: true } },
+  render: (args) => <Holding {...args} />,
   play: async ({ args, canvasElement }) => {
-    // Arrows reach another order, Enter picks it, the menu closes with focus
-    // back on the control, and the change is read out.
+    // Arrows reach another order, Enter picks it, and the menu closes with focus
+    // back on the control, which shows the order chosen: that is what is read as
+    // focus comes back, and no status region says it again, KN-336.
     const { combobox } = controlOf(canvasElement)
     await userEvent.tab()
     await userEvent.keyboard('{ArrowDown}')
@@ -133,7 +154,9 @@ export const ChangedByKeyboard: Story = {
     await expect(args.onChange).toHaveBeenCalledWith(SORT_ORDERS[1])
     await waitFor(() => expect(within(canvasElement.ownerDocument.body).queryByRole('listbox')).toBeNull())
     await expect(combobox).toHaveFocus()
-    await expect(within(canvasElement).getByRole('status')).toHaveTextContent(`${i18n._('Sorted by')} ${sortLabels(i18n).oldest}`)
+    const prefix = canvasElement.ownerDocument.getElementById(combobox.getAttribute('aria-labelledby') ?? '')
+    await expect(prefix?.nextElementSibling?.textContent).toBe(sortLabels(i18n).oldest)
+    await expect(within(canvasElement).queryByRole('status')).toBeNull()
   },
 }
 

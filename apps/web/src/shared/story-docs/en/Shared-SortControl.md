@@ -5,7 +5,8 @@ It offers exactly four orders: newest, oldest, nearest deadline, and company
 name from A to Z. Status is not one of them, since the board's columns already
 sort by it. The list opens under the control and works like the Select's: the
 arrows move, Enter chooses, Escape and Tab close, and focus goes back to the
-control. Each change is read out.
+control. The control then shows the order chosen, which is what is read out as
+focus comes back to it, and nothing else says it again.
 
 ## Props
 
@@ -29,7 +30,8 @@ The list open, the four orders offered and the one in use checked.
 
 ### ChangedByKeyboard
 
-Another order chosen with the arrows and Enter, and the change read out.
+Another order chosen with the arrows and Enter: focus comes back to the control,
+which shows the order chosen, and no status region says it again.
 
 ### InEnglish
 
