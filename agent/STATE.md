@@ -42,30 +42,29 @@ description asking for a turning `spinnerArc` the node does not draw.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-325 is closed** (23ef6c9; board fc491a8; pushed), one point. `useSlow` reads a store per
-start with `useSyncExternalStore`: its snapshot is the clock read on the first read and kept,
-and its timer, set for every start, marks it past and tells React, so a `startedAt` already
-past fifteen seconds shows the slow line on the render that gives it; before, a start moved
-between two past starts flipped the line to the reading line and back 2 ms apart. The story
-`StartMovesPastFifteenSeconds` moves the start behind a button, «Move the start back», presses
-it with `fireEvent`, which `@storybook/react`'s `beforeAll` wraps in its act and the
-instrumenter runs synchronously, and reads the slow line straight after; it failed alone at that
-read, line 153, before the change and under a plant. The plan had two Codex reviews. Its Codex
-roast was running when this was written, `kn325-task-roast.log` in the scratchpad.
-**Measured and recorded**: react-hooks 7.1.1's `purity` refuses `Date.now()` while rendering,
-and ESLint's `lintText` on a file's own path lints a design in memory, AGENTS.md section 7,
-92a81d9. React 19.0.8's `act` errors when `IS_REACT_ACT_ENVIRONMENT` is off, which it is outside
-Storybook's own act scopes, and a production build has no `act`.
+**KN-326 is closed** (9914921; board e51b1a8; pushed), one point. The Loading State's status
+region says `aria-atomic`, hides its dots and visible line from assistive technology, the line
+still drawn from the first frame for KN-324, and holds an out of sight span, the Bulk Action
+Bar's clip, empty on the render that mounts the state and given the line 100 ms later by a timer
+the effect's cleanup clears, so a screen reader hears the first line as a change. The story
+`WritesItsFirstLineAfterMounting` mounts the state from «Extract details», the add flow's own
+message, pressed with `fireEvent`, and reads the span empty then filled; it failed against
+HEAD's component and under a plant. No screen reader was run. **Found building it and recorded,
+AGENTS.md section 7, b9d540b**: addon-docs' Stories block leaves out every story whose play
+destructures `mount`, whatever `parameters.docs.story.autoplay` says. Its Codex roast was
+running when this was written, `kn326-task-roast.log` in the scratchpad.
 
-**KN-324 is closed and its roast recorded** (fb21239, db7a721): the dots start on the file's
-frame. **KN-615**, medium, the Loading State's stories fail for a viewer with reduced motion;
-**KN-617**, low, AGENTS.md sends a new string through a `.po` catalog the app does not have, the
-catalogs being the hand-written `src/i18n/locales/en-US.ts` and `fa-IR.ts`. KN-179 already holds
-that `no-restricted-globals` is set in no ESLint config.
+**KN-325 is closed and its roast recorded, nothing filed** (23ef6c9, fe8e85b): a `startedAt`
+already past fifteen seconds shows the slow line on its first render, read from a store per
+start with `useSyncExternalStore`; react-hooks 7's `purity` refuses `Date.now()` while
+rendering, and ESLint's `lintText` lints a design in memory, AGENTS.md section 7, 92a81d9.
+**KN-324** is closed and recorded (fb21239, db7a721). **Filed today and open**: KN-615, the
+Loading State's stories under reduced motion; KN-617, AGENTS.md's `.po` catalog instructions;
+**KN-618**, the Settings dialog's status region, KN-326's kind, a child of KN-477.
 
 **Still open from earlier**: **KN-009 waits on KN-614**, then KN-009 is roasted with all its
-children; KN-021 waits on KN-387; KN-022 on KN-326, KN-327, KN-615 and KN-616. KN-612 and
-KN-613, low. **Open and filed today**: KN-592 to KN-617.
+children; KN-021 waits on KN-387; KN-022 on KN-327, KN-615 and KN-616. KN-612 and KN-613,
+low. **Open and filed today**: KN-592 to KN-618.
 
 **A Storybook spec alone**: `STORYBOOK_DIR=<build> npx playwright test --config
 playwright.storybook.config.ts storybook/button-touch`. A filter is a regular expression on
@@ -101,28 +100,22 @@ The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The next step
 
-**KN-325's roast is recorded, nothing filed** (fe8e85b): its one edge case, a snapshot read
-just before fifteen seconds and committed after them, is the ordinary change at fifteen seconds.
-**KN-618** is filed, medium, a child of KN-477: the Settings dialog's sample data status region
-mounts already holding its line, KN-326's kind.
+**When KN-326's roast lands**, judge it, file survivors with `--parent-task KN-326`, which
+hangs them off KN-022 (`--area web --okr OKR-1` under four points), record with `todo roast
+KN-326 --file ... --filed ... --dismissed ...`, relay it to the owner, and commit the board.
 
-**KN-326 is in progress**, medium, 1 point, a child of KN-022: the Loading State's first line
-is not reliably announced, since its status region mounts already holding it. Its plan sits
-beside `LoadingState.tsx` and is at its Codex review, `kn326-plan-review.log` in the scratchpad:
-do not edit the Loading State, its stories, its story docs or DESIGN.md until it lands. The
-design: the outer Box keeps `role="status"`; the dots and the visible line take `aria-hidden`,
-the line still drawn on the first frame for KN-324; an out of sight span between them, the Bulk
-Action Bar's clip and named edge, is empty on the mounting render and given the line a frame and
-a task later; a new story `WritesItsFirstLineAfterMounting` destructures Storybook's `mount`,
-used by no other story here, and reads the span empty, then filled. Linted in memory, clean.
-The scripts are in the scratchpad: `kn326-plant.mjs`, `kn326-checks.mjs`, `kn326-look.mjs`,
-`kn326-close.mjs`.
+**KN-331 is in progress**, medium, 1 point, a child of KN-025: a Jobs Bulk Action Bar given no
+`onSelectAll` or `onChangeStatus` silently drops the file's buttons, both callbacks being
+optional so the Contacts type need not pass them; its exit asks that a Jobs bar cannot be
+written without both, by its type or by two components, and that the docs guard still reads
+every prop, react-docgen reading only the props a union shares. **Measure first**: the props,
+how the Jobs type draws its buttons, and every place a Bulk Action Bar is written today.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md` (the Loading State, the Input's error, the Bulk Action
-Bar), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, then `todo show KN-326`,
-`LoadingState.tsx`, its stories, and how the Input and the Bulk Action Bar keep their live
-regions. **Never chain a check through a pipe into a commit or a close, give every parallel
-command its own `cd`, give a search that finds nothing a positive control, write a Grep glob
-with a folder in it from the repo root, and lint a design in memory before writing it.**
+`AGENTS.md` (section 7), `DESIGN.md` (the Bulk Action Bar), `agent/RALPH.md`, the head of
+`agent/TODO_BOARD.md`, then `todo show KN-331`, `BulkActionBar.tsx`, its stories and story
+docs, and where it is used. **Never chain a check through a pipe into a commit or a close,
+give every parallel command its own `cd`, give a search that finds nothing a positive
+control, write a Grep glob with a folder in it from the repo root, and lint a design in memory
+before writing it.**
