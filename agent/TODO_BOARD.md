@@ -13,6 +13,12 @@ Project **KarNama** · 291 of 643 tasks done · 628 of 1263 points.
 | 1 | OKR-1 | MVP: the pages | now | 212 | 213 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-455` | A disabled Button with a forced state draws something node 31:4 never draws | medium | 1 | web | none | A disabled button shows its disabled look whatever data-state says, and a story renders one to prove it. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 291 of 643 tasks done · 628 of 1263 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (336)
+## Backlog (335)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 291 of 643 tasks done · 628 of 1263 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-455` | A disabled Button with a forced state draws something node 31:4 never draws | medium | 1 | web | none | A disabled button shows its disabled look whatever data-state says, and a story renders one to prove it. |
 | `KN-461` | The sign-in docs and e2e comments describe a message that is sent, where the mock sends none | medium | 1 | docs | none | Neither language's SignIn introduction mentions the console as where the code is or says the code was sent, and sign-in.spec.ts's comments say the mock makes and shows the code rather than that a message is sent. |
 | `KN-470` | The bulk bar's key listener fires while a modal owns the page | medium | 1 | web | none | The key does nothing while a dialog has focus, and a story opens one with a selection live and presses it. |
 | `KN-474` | The focus stories accept any descendant, so a regression to the page root would pass | medium | 1 | web | none | Both stories name the control they expect to have focus. |
@@ -8499,7 +8504,7 @@ From the KN-316 roast. The States story sets data-state from a useEffect, which 
 
 ### `KN-455` A disabled Button with a forced state draws something node 31:4 never draws
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 From the KN-316 roast. The data-state twins are not gated on the button being enabled, and the disabled rule only overrides the fill and the text, so a disabled Ghost with data-state=pressed keeps the 0.9 opacity, and any disabled button with data-state=focus draws the focus ring, because that rule comes after the disabled one. Nothing renders that combination today, since the States story sets the attribute only for the three transient states and disables only the disabled row, so it is latent in the hook rather than visible. Either refuse the attribute while the button is disabled, with :not(.Mui-disabled) on each twin, or have the disabled rule reset the opacity and the ring.
