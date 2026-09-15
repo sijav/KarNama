@@ -454,6 +454,7 @@ short and the lessons sit in a file every iteration reads.
 - `npm run` truncates arguments at a newline on Windows: call node or python directly. The Bash tool's heredocs turn a doubled backslash into one: write scripts with Write, or build a backslash with chr(92).
 - `String.replace` with a string expands `$'` and `$&`: pass a function.
 - `roast.py` keeps its sessions under `.claude/` of the directory it runs in: run it from the repository root. A background roast that names `HEAD~1` reads whatever HEAD is when it starts: name the commit.
+- `roast.py`'s task and plan chains end in `claude/sonnet`, and their Codex reserve, `gpt-5.6`, is refused on this ChatGPT account with a 400, so when terra is out of usage Claude's work goes to Claude, which the owner forbids: KN-533's first roast did, and was stopped. Pass `--model gpt-5.6-terra` for Claude's work, which tries terra alone; a failed run prints only Codex's first 300 characters, the banner, so read the error from `codex exec` itself (2026-09-15).
 - The production Storybook is not the Vitest one: body box-sizing, and act(). Portable stories apply no updateArgs, so anything that needs the store is proved in a production build. A story's pinned globals beat URL globals; view dark through an unpinned story.
 - Read the file with use_figma before trusting a code comment about it.
 - Forced colours: box-shadow removed, borders kept, SVG author strokes kept.
