@@ -432,6 +432,12 @@ in 900, and the moment the middle one is lit is the file's frame, which the
 motion starts on, KN-324. A reader who asks for less motion gets that frame,
 standing still.
 
+**A turning arc replaces the dots**, the owner's decision of 2026-09-15, KN-616:
+the node's description asks for a spinning arc animated in code, and the owner
+chose it over the dots the node draws. The dots stay until KN-616 builds the
+arc; the node draws no arc, so its size, stroke and turn are settled in KN-616's
+plan.
+
 **Past fifteen seconds the line changes.** Render's free tier sleeps and takes
 up to a minute to wake, DEPLOY.md, and three dots alone for that long look
 hung. So from fifteen seconds the line reads «هنوز داره می‌خونه. اگه سرور خواب
@@ -782,8 +788,10 @@ scrolling beyond, its bar in the modal's padding at the inline end: two columns
 of 248 with 16 between, from the inline start the title and the company, then
 employment type and location, experience and level, the posting and the salary,
 the source and the expiry, the posting's link across the row, and the Status
-Picker; one column below MUI's sm. The phone draws the company before the title,
-`243:726`; the code keeps the desktop's reading order. The title and the
+Picker; one column below MUI's sm. **The phone keeps the title first**, the
+owner's decision of 2026-09-15, KN-358: `243:726` draws no form of its own but
+the desktop Review at 358 wide, whose left to right wrap stacks the company
+first. The title and the
 company carry the required mark, the owner's KN-075, a star in `text/error`
 after the label, said by the field's `aria-required`; saving without them says
 «عنوان شغلی را بنویس» and «نام شرکت را بنویس». A pasted link fills the posting's
@@ -932,7 +940,7 @@ of the contract.
 | Search Bar          | `155:92`  | Default, Focus, Filled                                                                          |
 | Filter Chip         | `159:71`  | Default, Hover, Pressed, Selected, doubles as the status counter                                |
 | Empty State         | `159:80`  | title and body as text properties, a required Primary M action; used for jobs, contacts and search |
-| Loading State       | `159:92`  | three dots taking 300 ms turns; the line says why past fifteen seconds                          |
+| Loading State       | `159:92`  | dots until KN-616's turning arc, the owner's choice; the line says why past fifteen seconds     |
 | Menu Item           | `181:22`  | Default, Hover, Disabled, Destructive                                                           |
 | Menu                | `512:8350`| Type=Status, Type=Card                                                                          |
 | Select              | `183:26`  | Default, Filled, Focus, Disabled, Open                                                          |
@@ -1620,7 +1628,8 @@ What the frames draw and the build does not, each a card: the signup's «بعد�
 contradicts, KN-588. The build keeps its own words, until the owner says, where the file's
 would promise a text message the mocked provider never sends, on Login and Code,
 KN-589, and where its note names terms and a privacy policy the product does not
-have, KN-590. The signup body says «برد فرصت‌های شغلی‌ات» where the file says «برد
+have yet: the owner's decision of 2026-09-15 is to write both pages and link the
+note to them, KN-590. The signup body says «برد فرصت‌های شغلی‌ات» where the file says «برد
 آگهی‌هایت», the terminology rule of section 3, as KN-329 records for the bar's
 count.
 
