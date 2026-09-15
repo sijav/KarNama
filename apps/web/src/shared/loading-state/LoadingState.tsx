@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box, keyframes } from '@mui/material'
-import { useMemo, useState, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { untilSlow } from './wait'
 
@@ -68,17 +68,52 @@ const useSlow = (startedAt: number | undefined) => {
   return useSyncExternalStore(store.subscribe, store.past)
 }
 
+// The out of sight line's one pixel edge, written as pixels: MUI reads a bare
+// number up to 1 as a fraction.
+const EDGE = 1
+
+// How long the status region stays in the page empty before its first line is
+// written, KN-326. No standard names a delay every screen reader needs; 100 ms
+// is the convention the plan's review named, and it is one timer, which a
+// background tab still runs.
+const FIRST_LINE_AFTER_MS = 100
+
+// Whether the line has been written into the status region. Not on the render
+// that mounts it: a region that enters the page already holding its text is
+// not read out by every screen reader, where a change to a region already there
+// is, KN-326. The cleanup clears the timer, so a state gone before it fires
+// leaves nothing behind.
+const useWritten = () => {
+  const [written, setWritten] = useState(false)
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setWritten(true)
+    }, FIRST_LINE_AFTER_MS)
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [])
+  return written
+}
+
 // The Loading State of node 159:92, shown while a posting is read in the add
 // flow: the three dots, 16 above the line that says what is happening. Past
 // fifteen seconds the line says why it is slow, since a sleeping server takes
 // up to a minute to wake and dots alone would look hung. The region is a
-// status, so the change is read out.
+// status, read whole; what a screen reader hears of it is only its out of
+// sight line, written after the region appears, while the line on screen is
+// drawn from the first frame.
 export const LoadingState = ({ startedAt }: LoadingStateProps) => {
   const { i18n } = useLingui()
   const slow = useSlow(startedAt)
+  const written = useWritten()
+  const line = slow
+    ? i18n._('Still reading. If the server was asleep, waking it takes up to a minute.')
+    : i18n._('Reading the job posting…')
   return (
     <Box
       role="status"
+      aria-atomic
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -110,8 +145,27 @@ export const LoadingState = ({ startedAt }: LoadingStateProps) => {
           />
         ))}
       </Box>
+      {/* Out of sight but read by a screen reader, the usual clip, and out of
+          flow, so the dots and the line keep their gap. */}
+      <Box
+        component="span"
+        sx={{
+          position: 'absolute',
+          width: `${EDGE}px`,
+          height: `${EDGE}px`,
+          margin: `-${EDGE}px`,
+          padding: 0,
+          border: 0,
+          overflow: 'hidden',
+          clip: 'rect(0 0 0 0)',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {written ? line : ''}
+      </Box>
       <Box
         component="p"
+        aria-hidden
         sx={(theme) => ({
           margin: 0,
           fontSize: `${typeScale.body.size}px`,
@@ -121,7 +175,7 @@ export const LoadingState = ({ startedAt }: LoadingStateProps) => {
           color: theme.karnama.semantic['text/secondary'],
         })}
       >
-        {slow ? i18n._('Still reading. If the server was asleep, waking it takes up to a minute.') : i18n._('Reading the job posting…')}
+        {line}
       </Box>
     </Box>
   )

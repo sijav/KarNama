@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react'
 import type { StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
-import { expect, fireEvent, within } from 'storybook/test'
+import { expect, fireEvent, waitFor, within } from 'storybook/test'
 import { i18n } from '../../i18n'
 import { semantic } from '../../theme/tokens'
 import { Button } from '../button'
@@ -158,6 +158,49 @@ export const StartMovesPastFifteenSeconds: Story = {
     } finally {
       observer.disconnect()
     }
+  },
+}
+
+// A wait that starts when the story's button is pressed, «Extract details», the add flow's own:
+// the Loading State mounts on the press, as it does in the add flow. A story that mounted it from
+// its play through Storybook's mount would be left off the Docs page, KN-326. What shows is the
+// story's own state and not an arg, so the story's Controls are off.
+const Extracting = () => {
+  const { i18n } = useLingui()
+  const [reading, setReading] = useState(false)
+  return reading ? (
+    <LoadingState />
+  ) : (
+    <Button
+      onClick={() => {
+        setReading(true)
+      }}
+    >
+      {i18n._('Extract details')}
+    </Button>
+  )
+}
+
+export const WritesItsFirstLineAfterMounting: Story = {
+  parameters: { controls: { disable: true } },
+  render: () => <Extracting />,
+  play: async ({ canvasElement }) => {
+    // The status region is in the page, empty, on the render that mounts the state, and the line
+    // is written into its out of sight span after, so a screen reader reads the first line out as
+    // a change, KN-326: the press goes through fireEvent, which Storybook runs inside React's act,
+    // so the state has mounted and no timer has run when the span is read.
+    await fireEvent.click(within(canvasElement).getByRole('button'))
+    const region = within(canvasElement).getByRole('status')
+    const [dots, spoken, line] = [...region.children]
+    if (!(line instanceof HTMLParagraphElement) || !(spoken instanceof HTMLSpanElement) || !dots)
+      throw new Error('the loading state is not the dots, the spoken line and the line')
+    await expect([region.getAttribute('aria-atomic'), dots.getAttribute('aria-hidden'), line.getAttribute('aria-hidden')]).toEqual([
+      'true',
+      'true',
+      'true',
+    ])
+    await expect(spoken.textContent).toBe('')
+    await waitFor(() => expect(spoken.textContent).toBe(i18n._('Reading the job posting…')))
   },
 }
 
