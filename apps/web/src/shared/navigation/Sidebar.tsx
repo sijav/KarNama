@@ -5,6 +5,7 @@ import { usePreferences } from '../../core/preferences'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 import { formatPhone } from '../contact-card'
 import { ShellControls } from '../shell-controls'
+import { BrandRow } from './BrandRow'
 import { DESTINATIONS, useDestinationName, type Destination } from './destinations'
 import { NavItem } from './NavItem'
 
@@ -17,8 +18,8 @@ export interface SidebarProps {
   onSignOut?: () => void
 }
 
-// Node 185:11's measures that bind no variable: 240 wide; the brand mark and
-// the avatar 32 squares; one pixel of edge and divider.
+// Node 185:11's measures that bind no variable: 240 wide; the avatar a 32
+// square; one pixel of edge and divider.
 const WIDTH = 240
 const MARK = 32
 const EDGE = 1
@@ -42,7 +43,6 @@ export const Sidebar = ({ current, userName, userPhone, onNavigate, onSignOut }:
   const { locale } = usePreferences()
   const nameOf = useDestinationName()
   const workspace = useId()
-  const brand = i18n._('KarNama')
   return (
     <Box
       component="aside"
@@ -62,41 +62,8 @@ export const Sidebar = ({ current, userName, userPhone, onNavigate, onSignOut }:
         overflowY: 'auto',
       })}
     >
-      {/* The Brand Row, 406:451: the mark, the name's first letter in
-          text/on-accent on bg/brand/default, and the name at 20 and SemiBold. */}
-      <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0, gap: `${spacing.xs}px`, height: MARK }}>
-        <Box
-          aria-hidden
-          sx={(theme) => ({
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            width: MARK,
-            height: MARK,
-            borderRadius: `${theme.karnama.radius.md}px`,
-            backgroundColor: theme.karnama.semantic['bg/brand/default'],
-            color: theme.karnama.semantic['text/on-accent'],
-            fontSize: `${typeScale.title.size}px`,
-            fontWeight: typeScale['heading/m'].weight,
-            lineHeight: 'normal',
-          })}
-        >
-          {brand.charAt(0)}
-        </Box>
-        <Box
-          component="span"
-          sx={(theme) => ({
-            ...oneLine.sx,
-            fontSize: `${typeScale['heading/m'].size}px`,
-            fontWeight: typeScale['heading/m'].weight,
-            lineHeight: 'normal',
-            color: theme.karnama.semantic['text/primary'],
-          })}
-        >
-          {brand}
-        </Box>
-      </Box>
+      {/* The Brand Row, 406:451, the one the sign-in card draws too, KN-518. */}
+      <BrandRow />
       {/* The User Row, 406:457: a 32 avatar in bg/brand/container, the name at
           14 and Medium over the phone at 12, 4 apart. */}
       {userName === undefined ? null : (

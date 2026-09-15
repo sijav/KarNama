@@ -624,8 +624,8 @@ export const SignedInInAnotherTab: Story = {
     const theirs = JSON.stringify(sessionFor(READER, SINCE))
     window.localStorage.setItem(SESSION_KEY, theirs)
     window.dispatchEvent(new StorageEvent(STORED, { key: SESSION_KEY, newValue: theirs }))
-    await userEvent.type(await canvas.findByLabelText(i18n._('Full name')), name)
-    await userEvent.click(canvas.getByRole('button', { name: i18n._('Continue') }))
+    await userEvent.type(await canvas.findByLabelText(i18n._('First and last name')), name)
+    await userEvent.click(canvas.getByRole('button', { name: i18n._('Start') }))
     await waitFor(async () => {
       await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent(i18n._('My job opportunities'))
     })

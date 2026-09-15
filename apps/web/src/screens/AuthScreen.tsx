@@ -1,25 +1,32 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack } from '@mui/material'
-import { useEffect, useState, type SyntheticEvent } from 'react'
+import { useEffect, useState, type ReactNode, type SyntheticEvent } from 'react'
 import { apiErrorText } from '../core/api'
 import { useAuth, useMockCode } from '../core/auth'
+import { usePreferences } from '../core/preferences'
 import { Button, type ButtonType, type ButtonVariant } from '../shared/button'
+import { formatPhone } from '../shared/contact-card'
 import { Input, type InputDirection } from '../shared/input'
-import { radius, spacing, type as typeScale } from '../theme/tokens'
+import { BrandRow } from '../shared/navigation'
+import { spacing, type as typeScale } from '../theme/tokens'
 
 /**
  * Signing in: a number, then the five digit code, then a name the first time,
  * KN-046.
  *
  * Page-map row 6 draws the three as three screens, and they are three steps of
- * one flow: the card is the same 440 wide, the heading and the field change.
- * No SMS is sent, the owner's decision for the MVP: the mocked provider writes
- * the code to the console and the page says so, rather than pretending a
- * message is on its way.
+ * one flow: the card is the same, the heading and the field change. No SMS is
+ * sent, the owner's decision for the MVP: the mocked provider writes the code to
+ * the console and the page says so, rather than pretending a message is on its
+ * way.
  */
 
-// Node 407:6951's card, 440 wide, and the room it keeps round its contents.
+// Node 407:6952's Auth Card, the same on every step: 440 wide on a desktop, the
+// page's 24 at either side on a phone, 342 at 390, KN-518.
 const CARD_WIDTH = 440
+
+// The card's one pixel of edge, drawn inside.
+const EDGE = 1
 
 // The resend is a quiet action beside the primary one, typed so the lint rule
 // reads it as a value.
@@ -33,8 +40,21 @@ const LATIN: InputDirection = 'ltr'
 // The button that finishes the form, typed for the same reason.
 const SUBMIT: ButtonType = 'submit'
 
+// Each step's heading, 407:6957: the title at 24 and SemiBold on the font's
+// normal line, which is the file's 38, bound to no text style as the Brand Row's
+// name is not, and the body 8 under it in Body, text/secondary, KN-518.
+const Heading = ({ title, children }: { title: string; children: ReactNode }) => (
+  <Stack sx={{ gap: `${spacing.xs}px` }}>
+    <Box sx={{ fontSize: `${typeScale['heading/l'].size}px`, fontWeight: typeScale['heading/l'].weight, lineHeight: 'normal' }}>
+      {title}
+    </Box>
+    <Box sx={{ color: 'text.secondary' }}>{children}</Box>
+  </Stack>
+)
+
 export const AuthScreen = () => {
   const { i18n } = useLingui()
+  const { locale } = usePreferences()
   const auth = useAuth()
   const mockCode = useMockCode()
   const [phone, setPhone] = useState('')
@@ -68,7 +88,7 @@ export const AuthScreen = () => {
   }
   const submit = async () => {
     if (auth.signingUp) {
-      if (name.trim() === '') setProblem(i18n._('Write the full name'))
+      if (name.trim() === '') setProblem(i18n._('Write your first and last name'))
       else await auth.saveName(name)
       return
     }
@@ -89,28 +109,29 @@ export const AuthScreen = () => {
     setProblem(refused === 'expired' ? i18n._('That code has expired. Ask for another one.') : i18n._('That code is not right. Try again.'))
   }
 
+  // The steps' own words where the file's promise nothing the product does not
+  // do: the text message the Login and Code lines would promise waits on KN-589.
   const step = auth.signingUp ? (
     <>
-      <Box sx={{ fontSize: `${typeScale['heading/m'].size}px`, fontWeight: typeScale['heading/m'].weight }}>
-        {i18n._('What should we call you?')}
-      </Box>
+      {/* The file's body says «برد آگهی‌هایت»; «آگهی» is only the external source,
+          so this says «فرصت‌های شغلی», as KN-329 does. */}
+      <Heading title={i18n._('Welcome')}>{i18n._('Just tell us your name so we can build your job opportunities board.')}</Heading>
       <Input
-        label={i18n._('Full name')}
+        label={i18n._('First and last name')}
         autoComplete="name"
         enterKeyHint="done"
-        placeholder={i18n._('e.g. Sara Mohammadi')}
+        placeholder={i18n._('Mehdi Rezaei')}
         value={name}
         onChange={setName}
         {...(problem === null ? {} : { error: problem })}
       />
       <Button type={SUBMIT} disabled={auth.busy ?? false}>
-        {i18n._('Continue')}
+        {i18n._('Start')}
       </Button>
     </>
   ) : auth.awaiting ? (
     <>
-      <Box sx={{ fontSize: `${typeScale['heading/m'].size}px`, fontWeight: typeScale['heading/m'].weight }}>{i18n._('Enter the code')}</Box>
-      <Box sx={{ color: 'text.secondary' }}>{`${i18n._('Sent to')} ${auth.phone}`}</Box>
+      <Heading title={i18n._('Enter the code')}>{`${i18n._('Sent to')} ${formatPhone(locale, auth.phone)}`}</Heading>
       {/* The code itself, on the screen, KN-459: no message is really sent, and
           the console was the only place it appeared, which a phone does not
           have. Marked plainly as a stand-in so nobody mistakes it for something
@@ -147,6 +168,7 @@ export const AuthScreen = () => {
           </Box>
         </Box>
       )}
+      {/* One field where the file draws five boxes, KN-586. */}
       <Input
         label={i18n._('Five digit code')}
         inputMode="numeric"
@@ -159,8 +181,9 @@ export const AuthScreen = () => {
         {...(problem === null ? {} : { error: problem })}
       />
       <Button type={SUBMIT} disabled={auth.busy ?? false}>
-        {i18n._('Sign in')}
+        {i18n._('Confirm and sign in')}
       </Button>
+      {/* A resend where the file draws its countdown and «ویرایش شماره», KN-587. */}
       <Button
         variant={QUIET}
         disabled={(auth.busy ?? false) || now < (auth.retryAt ?? 0)}
@@ -174,10 +197,7 @@ export const AuthScreen = () => {
     </>
   ) : (
     <>
-      <Box sx={{ fontSize: `${typeScale['heading/m'].size}px`, fontWeight: typeScale['heading/m'].weight }}>
-        {i18n._('Sign in to KarNama')}
-      </Box>
-      <Box sx={{ color: 'text.secondary' }}>{i18n._('Write your mobile number')}</Box>
+      <Heading title={i18n._('Sign in to KarNama')}>{i18n._('Write your mobile number')}</Heading>
       <Input
         label={i18n._('Mobile number')}
         type="tel"
@@ -185,7 +205,7 @@ export const AuthScreen = () => {
         autoComplete="tel"
         enterKeyHint="send"
         direction={LATIN}
-        placeholder={i18n._('0912 000 0000')}
+        placeholder={i18n._('0912 345 6789')}
         value={phone}
         onChange={setPhone}
         {...(problem === null ? {} : { error: problem })}
@@ -202,16 +222,31 @@ export const AuthScreen = () => {
         component="form"
         noValidate
         onSubmit={finish}
-        sx={{
+        sx={(theme) => ({
+          position: 'relative',
+          boxSizing: 'border-box',
           width: '100%',
           maxWidth: `${CARD_WIDTH}px`,
-          gap: `${spacing.md}px`,
-          p: `${spacing.lg}px`,
-          borderRadius: `${radius.md}px`,
-          bgcolor: 'background.paper',
-        }}
+          gap: `${spacing.lg}px`,
+          padding: `${spacing.xl}px`,
+          borderRadius: `${theme.karnama.radius.lg}px`,
+          backgroundColor: theme.karnama.semantic['bg/surface'],
+          boxShadow: theme.karnama.elevation.authCard,
+          // The edge is drawn inside and takes no room, DESIGN.md's rule for a
+          // stroke, as the job card draws its own.
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            inset: 0,
+            borderRadius: 'inherit',
+            borderStyle: 'solid',
+            borderWidth: EDGE,
+            borderColor: theme.karnama.semantic['border/default'],
+            pointerEvents: 'none',
+          },
+        })}
       >
-        <Box sx={{ fontSize: `${typeScale['heading/l'].size}px`, fontWeight: typeScale['heading/l'].weight }}>{i18n._('KarNama')}</Box>
+        <BrandRow />
         {auth.restoring ? (
           <>
             <Box role="status">{i18n._('Restoring your session…')}</Box>
@@ -226,9 +261,23 @@ export const AuthScreen = () => {
             {apiErrorText(i18n, auth.error)}
           </Box>
         ) : null}
-        <Box sx={{ color: 'text.secondary', fontSize: `${typeScale.label.size}px` }}>
-          {i18n._('Signing in means you accept how KarNama keeps your records.')}
-        </Box>
+        {/* The Terms Note, 407:6971, on the number's step alone as the file draws
+            it: 12 at Regular on the font's normal line, centred, in text/disabled,
+            2.54 to one on the card, KN-591. Its words are the product's own until
+            the owner settles the terms and privacy the file's name, KN-590. */}
+        {auth.restoring || auth.awaiting || auth.signingUp ? null : (
+          <Box
+            sx={(theme) => ({
+              fontSize: `${typeScale.label.size}px`,
+              fontWeight: typeScale.body.weight,
+              lineHeight: 'normal',
+              textAlign: 'center',
+              color: theme.karnama.semantic['text/disabled'],
+            })}
+          >
+            {i18n._('Signing in means you accept how KarNama keeps your records.')}
+          </Box>
+        )}
       </Stack>
     </Box>
   )

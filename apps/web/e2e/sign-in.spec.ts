@@ -8,6 +8,9 @@ import { expect, test, type Page } from '@playwright/test'
  * exactly what whoever is testing the product does.
  */
 const PHONE = '09120000000'
+// The number as the code step shows it, in the reader's digits grouped as the
+// file writes a phone, KN-518.
+const SHOWN = '۰۹۱۲ ۰۰۰ ۰۰۰۰'
 const NAME = 'سارا محمدی'
 const OTHER_PHONE = '09121111111'
 const SECRET = 'کار محرمانه'
@@ -25,7 +28,7 @@ const codesFrom = (page: Page): string[] => {
 const signIn = async (page: Page, codes: string[]) => {
   await page.getByLabel('شماره موبایل').fill(PHONE)
   await page.getByRole('button', { name: 'ارسال کد' }).click()
-  await expect(page.getByText(`ارسال شده به ${PHONE}`)).toBeVisible()
+  await expect(page.getByText(`ارسال شده به ${SHOWN}`)).toBeVisible()
   await expect.poll(() => codes.length).toBeGreaterThan(0)
 }
 
@@ -42,12 +45,12 @@ test('a number and the code it was sent reach the board, and the first login giv
   await signIn(page, codes)
 
   await page.getByLabel('کد پنج رقمی').fill(codes[0] ?? '')
-  await page.getByRole('button', { name: 'ورود' }).click()
+  await page.getByRole('button', { name: 'تأیید و ورود' }).click()
 
   // The first login asks who this is before anything else.
-  await expect(page.getByText('تو را چه صدا کنیم؟')).toBeVisible()
-  await page.getByLabel('اسم و فامیل').fill(NAME)
-  await page.getByRole('button', { name: 'ادامه' }).click()
+  await expect(page.getByText('خوش آمدی')).toBeVisible()
+  await page.getByLabel('نام و نام خانوادگی').fill(NAME)
+  await page.getByRole('button', { name: 'شروع کن' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('فرصت‌های شغلی من')
 
@@ -61,24 +64,24 @@ test('a wrong code says so and another can be sent', async ({ page }) => {
   await signIn(page, codes)
 
   await page.getByLabel('کد پنج رقمی').fill('00000')
-  await page.getByRole('button', { name: 'ورود' }).click()
+  await page.getByRole('button', { name: 'تأیید و ورود' }).click()
   await expect(page.getByText('این کد درست نیست. دوباره امتحان کن.')).toBeVisible()
 
   // Resending really sends another: the mock says so, and the new one works.
   await page.getByRole('button', { name: 'ارسال کد دیگر' }).click()
   await expect.poll(() => codes.length).toBeGreaterThan(1)
   await page.getByLabel('کد پنج رقمی').fill(codes.at(-1) ?? '')
-  await page.getByRole('button', { name: 'ورود' }).click()
-  await expect(page.getByText('تو را چه صدا کنیم؟')).toBeVisible()
+  await page.getByRole('button', { name: 'تأیید و ورود' }).click()
+  await expect(page.getByText('خوش آمدی')).toBeVisible()
 })
 
 test('signing out clears the session and asks for a number again', async ({ page }) => {
   const codes = codesFrom(page)
   await signIn(page, codes)
   await page.getByLabel('کد پنج رقمی').fill(codes[0] ?? '')
-  await page.getByRole('button', { name: 'ورود' }).click()
-  await page.getByLabel('اسم و فامیل').fill(NAME)
-  await page.getByRole('button', { name: 'ادامه' }).click()
+  await page.getByRole('button', { name: 'تأیید و ورود' }).click()
+  await page.getByLabel('نام و نام خانوادگی').fill(NAME)
+  await page.getByRole('button', { name: 'شروع کن' }).click()
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('فرصت‌های شغلی من')
 
   // At the sidebar's foot on a desktop, and in the page header's controls on a
@@ -96,9 +99,9 @@ test("one reader never sees another reader's archive", async ({ page }) => {
   // The first reader signs in and keeps a job opportunity.
   await signIn(page, codes)
   await page.getByLabel('کد پنج رقمی').fill(codes[0] ?? '')
-  await page.getByRole('button', { name: 'ورود' }).click()
-  await page.getByLabel('اسم و فامیل').fill(NAME)
-  await page.getByRole('button', { name: 'ادامه' }).click()
+  await page.getByRole('button', { name: 'تأیید و ورود' }).click()
+  await page.getByLabel('نام و نام خانوادگی').fill(NAME)
+  await page.getByRole('button', { name: 'شروع کن' }).click()
   await page.getByRole('button', { name: 'افزودن فرصت شغلی' }).first().click()
   await page.getByRole('dialog').getByRole('button', { name: 'خودت دستی وارد کن' }).click()
   await page.getByRole('dialog').getByLabel('عنوان شغلی*').fill(SECRET)
@@ -112,9 +115,9 @@ test("one reader never sees another reader's archive", async ({ page }) => {
   await page.getByRole('button', { name: 'ارسال کد' }).click()
   await expect.poll(() => codes.length).toBeGreaterThan(1)
   await page.getByLabel('کد پنج رقمی').fill(codes.at(-1) ?? '')
-  await page.getByRole('button', { name: 'ورود' }).click()
-  await page.getByLabel('اسم و فامیل').fill('کسی دیگر')
-  await page.getByRole('button', { name: 'ادامه' }).click()
+  await page.getByRole('button', { name: 'تأیید و ورود' }).click()
+  await page.getByLabel('نام و نام خانوادگی').fill('کسی دیگر')
+  await page.getByRole('button', { name: 'شروع کن' }).click()
 
   // The board they get is their own, which is empty, KN-421.
   await expect(page.getByText('هنوز آگهی‌ای اضافه نکردی')).toBeVisible()

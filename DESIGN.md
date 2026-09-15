@@ -158,6 +158,7 @@ shadows, and each value below was read from the named node with
 | no style, options menu | `408:487` | `#0000001F` `0 8` blur 24 spread -4 | none                       |
 | no style, contact hover | `463:698` | `#0000000F` `0 2` blur 8 spread 0 | none                        |
 | no style, card focus | `137:44` | `#2563EB2E` `0 0` blur 0 spread 3 | none                            |
+| no style, sign-in card  | `407:6952` | `#0000000F` `0 4` blur 16 spread 0  | none                               |
 
 The third row is **not an effect style**. The tooltip at `410:469` draws its own
 shadow, 24 percent black, read from the frame's `get_design_context` because
@@ -171,7 +172,8 @@ It is `elevation.bulkBar`. KN-025. The fifth is the Options Menu at `408:487`, t
 Modal style's first layer alone, at its own 12 percent, bound to no style,
 `elevation.optionsMenu`. KN-012. The sixth is the compact Contact Card's hover,
 `463:698`, 6 percent black, `elevation.contactCardHover`. KN-026. The seventh is the job card's Focus at `137:44`, a
-halo of `border/focus` at 18 percent spread 3, `elevation.cardFocus`. KN-015. The thirteen-frame sweep below did not include `410:469`,
+halo of `border/focus` at 18 percent spread 3, `elevation.cardFocus`. KN-015. The eighth is the sign-in card at `407:6952`, 6 percent black 4 below and
+blurred 16, `elevation.authCard`. KN-518. The thirteen-frame sweep below did not include `410:469`,
 which is how it was missed until KN-218 read the frame itself.
 
 An earlier version of this document said Card was the only elevation in the
@@ -1548,10 +1550,28 @@ Confirm `305:1232`, Desktop Empty `305:2243`.
 
 **Row 6, y=5500, signing in.** Desktop Login `407:6951`, Desktop Code `407:6972`,
 Desktop Signup `407:7000`, and the mobile three at `407:7022`, `407:7043` and
-`407:7071`. The Login card is 440 by 387: a brand row, a heading of
-«ورود به کارنما» over «شماره موبایلت را وارد کن», one Input, one primary action,
-and a terms note. Login then Code then Signup is what makes the phone OTP flow
+`407:7071`. Login then Code then Signup is what makes the phone OTP flow
 unambiguous.
+
+**The Auth Card**, `407:6952`, is one card on every step: 440 wide on a desktop and
+342 on a phone, the page's 24 at either side, centred on `bg/page`; 32 of padding
+and 24 between its parts; radius lg, `bg/surface` and one pixel of `border/default`
+inside; and its own shadow, `elevation.authCard`. It opens with the sidebar's Brand
+Row, the one component both draw, then the step's heading: the title at 24 and
+SemiBold on the font's normal line, which is the file's 38, bound to no text style,
+with the body 8 under it in Body, `text/secondary`. Login ends with a note at 12 and
+Regular on the normal line, centred, in `text/disabled`, 2.54 to one on the card,
+which is the owner's to settle, KN-591. KN-518.
+
+What the frames draw and the build does not, each a card: the code step's five
+boxes, KN-586; its countdown to a resend and «ویرایش شماره», KN-587; and the
+signup's «بعداً کاملش می‌کنم», which the name section 4 requires contradicts,
+KN-588. The build keeps its own words, until the owner says, where the file's
+would promise a text message the mocked provider never sends, on Login and Code,
+KN-589, and where its note names terms and a privacy policy the product does not
+have, KN-590. The signup body says «برد فرصت‌های شغلی‌ات» where the file says «برد
+آگهی‌هایت», the terminology rule of section 3, as KN-329 records for the bar's
+count.
 
 ## 9. RTL, and what it does to the DOM
 

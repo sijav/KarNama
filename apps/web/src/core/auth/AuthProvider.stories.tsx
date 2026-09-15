@@ -83,8 +83,8 @@ const codeShownIn =
       // it reaches the name step. verify checks the code the provider keeps aside,
       // not the one it hands the screen, so only this can see the two part.
       await userEvent.type(canvas.getByLabelText(i18n._('Five digit code')), shownCode(canvasElement))
-      await userEvent.click(canvas.getByRole('button', { name: i18n._('Sign in') }))
-      await expect(await canvas.findByLabelText(i18n._('Full name'))).toBeInTheDocument()
+      await userEvent.click(canvas.getByRole('button', { name: i18n._('Confirm and sign in') }))
+      await expect(await canvas.findByLabelText(i18n._('First and last name'))).toBeInTheDocument()
     } finally {
       sends.mockRestore()
     }

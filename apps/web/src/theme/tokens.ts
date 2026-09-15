@@ -80,13 +80,13 @@ export const type = {
 } as const
 
 /**
- * The two effect styles, and five shadows that are not styles. A card sits on
+ * The two effect styles, and six shadows that are not styles. A card sits on
  * the page, a modal sits above everything. The tooltip at `410:469`, the Bulk
- * Action Bar at `401:436`, the Options Menu at `408:487` and the compact
- * Contact Card's hover at `463:698` and the job card's focus at `137:44` each
- * draw their own
+ * Action Bar at `401:436`, the Options Menu at `408:487`, the compact
+ * Contact Card's hover at `463:698`, the job card's focus at `137:44` and the
+ * sign-in card at `407:6952` each draw their own
  * unnamed shadow, bound to no effect style, so each is named here for the
- * surface that uses it. KN-218, KN-025, KN-012, KN-026, KN-015.
+ * surface that uses it. KN-218, KN-025, KN-012, KN-026, KN-015, KN-518.
  */
 export const elevation = {
   card: '0 1px 3px 0 #0000000F, 0 1px 2px 0 #0000000A',
@@ -96,6 +96,7 @@ export const elevation = {
   optionsMenu: '0 8px 24px -4px #0000001F',
   contactCardHover: '0 2px 8px 0 #0000000F',
   cardFocus: '0 0 0 3px #2563EB2E',
+  authCard: '0 4px 16px 0 #0000000F',
 } as const
 
 export const fontFamily = "'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif"

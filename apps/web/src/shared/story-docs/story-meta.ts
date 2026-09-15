@@ -29,6 +29,7 @@ export type StoryTitle =
   | 'Foundations/Tokens'
   | 'Shared/AddColumn'
   | 'Shared/AddJobModal'
+  | 'Shared/BrandRow'
   | 'Shared/BulkActionBar'
   | 'Shared/Button'
   | 'Shared/CardMenu'

@@ -40,6 +40,7 @@ describe('the theme is generated from the tokens', () => {
       'optionsMenu',
       'contactCardHover',
       'cardFocus',
+      'authCard',
     ])
   })
 })

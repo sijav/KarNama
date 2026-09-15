@@ -61,3 +61,20 @@ arrives in.
 ### KeyboardsForEachStepInEnglish
 
 The same, in English.
+
+### LoginAsTheFrames
+
+The first step at the design's two widths, 1440 and 390, measured against the
+card the design draws: its width, the room inside it and between its parts, its
+corners, edge and shadow, the Brand Row, the heading's title and line under it,
+the field's example number, and the note under the action.
+
+### CodeAsTheFrames
+
+The code step at both widths, measured against the same card: the heading says
+where the code went, and the action confirms the code and signs in.
+
+### SignupAsTheFrames
+
+The first login's step at both widths, measured against the same card, with the
+name's field and the action that starts.
