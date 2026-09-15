@@ -4,7 +4,7 @@
 
 Project **KarNama** · 246 of 581 tasks done · 552 of 1168 points.
 
-**Next up: `KN-486` The API's 100 percent coverage gate fails: extraction, the posting fetcher and the database adapter are barely tested** (high, 3 pt, api)
+**Next up: `KN-494` A date saved as text can no longer be saved, and five stories fail on it** (high, 3 pt, web)
 
 ## Objectives
 
@@ -13,7 +13,13 @@ Project **KarNama** · 246 of 581 tasks done · 552 of 1168 points.
 | 1 | OKR-1 | MVP: the pages | now | 201 | 168 |
 | 2 | OKR-2 | Everything after the MVP | later | 130 | 78 |
 
-## Blocked (8)
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-494` | A date saved as text can no longer be saved, and five stories fail on it | high | 3 | web | none | A stored job with postedAt «۱۰ شهریور ۱۴۰۵» opens with its date visible and saves after a note edit; the five stories pass in both languages. |
+
+## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -22,11 +28,12 @@ Project **KarNama** · 246 of 581 tasks done · 552 of 1168 points.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-515` | A phone's board header cannot hold the file's add button beside the shell's controls | high | 2 | web | none | The owner has chosen, DESIGN.md section 5 records it, and a phone's board header at 390 shows the choice with the title whole in both languages. |
+| `KN-486` | The API's 100 percent coverage gate fails: extraction, the posting fetcher and the database adapter are barely tested | high | 3 | api | none | npm test in apps/api passes its 100 percent thresholds, and a test stubs fetch to throw for any host but 127.0.0.1, so no test can reach a provider. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (323)
+## Backlog (321)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -52,8 +59,6 @@ Project **KarNama** · 246 of 581 tasks done · 552 of 1168 points.
 | `KN-226` | Nothing committed checks that the published Storybook renders its stories without errors | high | 3 | infra | KN-494, KN-554, KN-560, KN-561, KN-562, KN-563 | A committed check builds Storybook for production, opens every story in headless Chromium, and fails on any page error or console error; it runs before the Pages workflow publishes; and a mutation removing the Hover story's test-runner guard makes it fail on the emitted import error. |
 | `KN-265` | Employment type becomes eight values, and a job can hold more than one | high | 3 | api | none | DESIGN.md's employment type list gives the eight values as the owner's decision of 2026-09-10, with the overlap noted, and says the field holds more than one; the Prisma schema has the eight and a record holds a list of them, through a migration that carries existing values over and is tested; the GraphQL schema and the generated types expose a list; the catalogs carry English ids and Persian for the two new values; and KN-073 is left holding only the job level list. |
 | `KN-416` | The shell has no Apollo client, no auth state and no error boundary | high | 3 | web | KN-036 | AppProviders creates the Apollo client against the API's URL with the honest slow-start handling the design asks for, the shell holds who is signed in, and a screen that throws renders the error state rather than a blank page, each with a story or a test; a deep link to a screen that throws still shows the shell. |
-| `KN-486` | The API's 100 percent coverage gate fails: extraction, the posting fetcher and the database adapter are barely tested | high | 3 | api | none | npm test in apps/api passes its 100 percent thresholds, and a test stubs fetch to throw for any host but 127.0.0.1, so no test can reach a provider. |
-| `KN-494` | A date saved as text can no longer be saved, and five stories fail on it | high | 3 | web | none | A stored job with postedAt «۱۰ شهریور ۱۴۰۵» opens with its date visible and saves after a note edit; the five stories pass in both languages. |
 | `KN-518` | The sign-in card is not its frame: no mark, a smaller heading, other copy, a flat card | high | 3 | web | none | At 1440 and 390 in fa-IR light the sign-in card measures as 407:6951 and 407:7022 draw it, mark, type, copy, radius, padding, gap and shadow, the shadow named in DESIGN.md's elevation table and the brand row shared with the sidebar's rather than copied; the code and signup steps are compared and fixed the same way. |
 | `KN-533` | A phone cannot start a selection on the network page: the full Contact Card shows its checkbox only on hover or focus | high | 3 | web | none | A phone can choose a person on the network page the way the file draws it, the Bulk Action Bar comes up in the tab bar's place, a story at 390 by 844 chooses two people and deletes them, and App/Shell counts one element fixed at the foot while a person is chosen. |
 | `KN-571` | The modal stories offer open, step, tab and mode controls that break their plays | high | 3 | web | none | Every story with a play function in the AddJobModal, JobModal, ContactModal, ChangeStatusModal, ConfirmModal and Modal story files reads its expectations from the active args or offers only the controls its assertions hold for; KN-247's sweep over every story, each offered control changed by its type, finds none of them broken; and those stories pass under Vitest. |
@@ -8278,6 +8283,10 @@ From the KN-459 roast. mockCode is a field of AuthValue, which is the contract e
 
 **Evidence.** 047f316: AuthValue carries no code; the mock gives it through a private context paired with its own value, and useMockCode hands it only to a component reading that value, which the sign-in screen does; codeFor tested with a real code, and NoCodeUnderAnotherProvider shows the mock's screen with 50000 and a screen under another provider inside the mock with none; plants, each restored by hash: codeFor without its comparison fails both, the screen reading nothing fails seven stories, and a notice under every provider fails connected.spec.ts's live login at line 21, whose check looked for words the notice never had before; the unit project 1423, Core/AuthProvider and SignIn stories 12 of 12, sign-in and two-tabs e2e 10 passed, connected e2e 12 of 12 in live mode against the local fixture; eslint, tsc and prettier clean; seen in fa-IR and en-US, light and dark
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T024454-task-kn-460-the-mocked-code-rides-in-the-production-a-a79c56.md, filed none, dismissed: Nothing found. The round confirmed AuthValue, NO_AUTH and RemoteAuthProvider carry no code; the screen reads only useMockCode, whose delivery must be the very AuthContext value, which refuses a nested provider's fresh value and a spread of the mock's; nested mocks and StrictMode or storage renders rebuild both together; no app, story or e2e code reads a code from AuthValue; codeFor's test, NoCodeUnderAnotherProvider, the sign-in stories and connected.spec.ts's exact wording can each fail; and the docs are true. An inner AuthContext.Provider handed the mock's own object is the mock's value by design, not another provider.
+
 ### `KN-461` The sign-in docs still send readers to the browser console for the code
 
 - **status** backlog · **severity** medium · **points** 1 · **area** docs · **objective** OKR-1
@@ -8695,6 +8704,7 @@ From KN-477's review, A-03, H-02 and H-03, confirmed: env.ts makes AUTH_SECRET o
 
 - **status** backlog · **severity** high · **points** 3 · **area** api · **objective** OKR-1
 - **blocked by** none
+- **blocked** Waiting on the owner, asked 2026-09-15: whether tests of extraction.service.ts that stub fetch are allowed, after the owner told Codex on 2026-09-12: If you have AI test, remove that, I didn't ask for an AI API test.
 - **came out of** KN-477
 
 From KN-477's review, A-04 and H-07, measured on 2026-09-14 with npx vitest run --coverage in apps/api, whose database is in-memory PGlite: all 132 tests pass and the gate fails at 80.37 percent of statements and 68.09 of branches, extraction.service.ts at 17.02, posting.ts at 36.06 and database.service.ts at 16.66. ea9863b removed extraction.test.ts at the owner's word, which was about tests calling a real AI API; those tests stubbed fetch and never did. Restore unit tests of our own code that stub fetch, and test readPosting against a stubbed DNS lookup and HTTP server, so no test ever reaches a provider or the internet.
@@ -8702,6 +8712,10 @@ From KN-477's review, A-04 and H-07, measured on 2026-09-14 with npx vitest run 
 **Why.** Coverage is a product rule, and the fetcher is the code that guards against reading private addresses: untested, a refactor can open it with every test green.
 
 **Exit condition.** npm test in apps/api passes its 100 percent thresholds, and a test stubs fetch to throw for any host but 127.0.0.1, so no test can reach a provider.
+
+**Notes.**
+
+- 2026-09-15: every API file but extraction.service.ts is at 100 percent and committed, with no network and no database: the posting fetcher, the pg adapter, the resolvers, the auth service's refusals, and a fetch guard in vitest.setup.ts that refuses any host but 127.0.0.1. npm test still fails on that one file. If the owner allows stubbed tests they come back from ea9863b's parent, fitted to the code as it is; if not, what happens to that file's coverage is the owner's decision too.
 
 ### `KN-487` A login code can be guessed slowly, and any number locked out cheaply
 
@@ -8789,7 +8803,7 @@ From KN-477's review, W-03, C-05 and C-09, confirmed: JobsScreen passes onCollap
 
 ### `KN-494` A date saved as text can no longer be saved, and five stories fail on it
 
-- **status** backlog · **severity** high · **points** 3 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 3 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-477
 

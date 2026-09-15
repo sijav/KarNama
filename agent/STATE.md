@@ -28,38 +28,48 @@ validation, the growing paste field, the job modal's form. Its surviving review
 findings are KN-484 to KN-503 and KN-521; the dark `color-scheme` fix waits in
 `git stash@{0}` as KN-496.
 
-**The owner's asks of 2026-09-14 are done**: KN-479 flags, KN-480 the language
-Select in Settings, KN-478 the shell's controls as Icon Buttons, KN-481 the board
-and network matched to their frames. **Blocked on the owner, asked 2026-09-14**:
-KN-515, KN-516, KN-517. **Asked in chat on 2026-09-15, not answered**: whether the
-Search Bar and the Sort Control take KN-275's `border/control`; `DESIGN.md` records
-the question beside the decision of KN-273.
+**Waiting on the owner.** Asked 2026-09-14: KN-515, KN-516, KN-517. Asked in chat
+on 2026-09-15, neither answered yet: whether the Search Bar and the Sort Control
+take KN-275's `border/control` (`DESIGN.md` records the question beside KN-273's
+decision); and **KN-486**, blocked: whether tests of `extraction.service.ts` that
+stub `fetch` are allowed, after the owner told Codex on 2026-09-12 "If you have AI
+test, remove that, I didn't ask for an AI API test". The owner was also told, on
+2026-09-15, that the Codex log they pasted on 2026-09-14 holds the Groq key they
+had pasted to Codex, that no file, commit or board entry holds it, and to rotate
+it. Never repeat that key anywhere.
 
-**KN-505 is closed** (7e7e879, the owner's instruction of 2026-09-15): the app's
-addresses are paths under the base, `/KarNama/jobs`, `/add` and `/network`; the
-build writes `404.html`, `jobs.html`, `add.html` and `network.html` beside
-`index.html`; an old `#/network?from=a` is replaced by its path. Checked on the
-live site after Pages run 34920990647: each page 200 with no redirect,
-`/KarNama/nowhere` 404, `/KarNama/#/network` landing on `/KarNama/network`, in
-English and Persian. Its roast filed **KN-579** (closing the add flow pushes
+**KN-486 (part), b0e2e3f**: every API file but `extraction.service.ts` is at 100
+percent with no network and no database: `readPosting` against a mocked DNS lookup
+and a scripted request, the pg adapter with `pg` mocked, the resolvers and the auth
+service's refusals with stand-ins. `vitest.setup.ts` assigns a guard over `fetch`
+that refuses any host but 127.0.0.1. A plant that switched the guard off let the
+guard test's own requests be attempted, POSTs with no body or key to Groq, OpenAI,
+Kavenegar and example.com; the test now sends them already aborted. `npm test` in
+`apps/api` still fails on that one file.
+
+**KN-505 is closed** (7e7e879): addresses are paths under the base, `/KarNama/jobs`,
+`/add` and `/network`; the build writes `404.html`, `jobs.html`, `add.html` and
+`network.html`; an old `#/network?from=a` is replaced by its path. Checked on the
+live site after the deploy. Its roast filed **KN-579** (closing the add flow pushes
 `/jobs` over `/add`, so Back reopens it), **KN-580** (the board's own add buttons
-never write `/add`) and **KN-581** (a `KARNAMA_BASE` without its slash reads every
-page as the board).
+never write `/add`) and **KN-581** (a `KARNAMA_BASE` without its slash).
+
+**KN-460 is closed** (047f316): `AuthValue` carries no code; the mock gives its code
+through a private context paired with its own value, and `useMockCode` hands it
+only to a component reading that value. `connected.spec.ts`'s no-notice check
+looked for words the notice never had; it uses the catalog's words now, and a
+planted notice fails it. Its roast found nothing.
 
 **KN-226**, the check that the published Storybook renders without errors, waits
-on KN-494 alone. Its plan, `apps/web/e2e/storybook/#KN-226 - ....md`, weighs
-`@storybook/test-runner` with `--failOnConsole` (a new dependency, the owner's yes
-to install), a `webServer`, no Docs pages and an explicit timeout.
+on KN-494 alone.
 
 **Closed on 2026-09-15**, pushed and roasted by Codex: KN-554, KN-560, KN-561
 (KN-566), KN-562 (KN-568), KN-563 (KN-569), KN-255 (KN-575), KN-570, KN-275
-(KN-576), KN-279 (034e1b4, the selected Filter Chip's `border/selected` edge;
-KN-578) and KN-505 (KN-579 to KN-581).
+(KN-576), KN-279 (KN-578), KN-505 (KN-579 to KN-581) and KN-460.
 
-**`node agent/scripts/storybook/controls-sweep.mjs [--only <regex>]`**, committed
-by KN-255, measures which stories' offered controls break their plays: 121 broken
-on the tree after KN-570, carried by **KN-571 to KN-574**. It reads
-`control.disable`; it does not yet report unapplied or untried changes, KN-575.
+**`node agent/scripts/storybook/controls-sweep.mjs [--only <regex>]`** measures
+which stories' offered controls break their plays: 121 broken after KN-570,
+carried by KN-571 to KN-574; it does not yet report unapplied changes, KN-575.
 
 **How to measure the published Storybook**: build with `KARNAMA_STORYBOOK_BASE` in
 Node's own `env`, never on a Git Bash command line, or build at the root without
@@ -70,8 +80,12 @@ globals: look at dark through an unpinned story.
 
 **What fails in a full run**: the storybook project fails KN-494's five stories,
 AddJobModal `Review` among them, and the Job Card's `Pressed` in parallel only,
-KN-365's kind. The API's coverage gate fails on auth and extraction files, KN-486.
-`App.tsx` line 107, the provider's error above the page, is uncovered, KN-491's.
+KN-365's kind. `App.tsx` line 107, the provider's error above the page, is
+uncovered, KN-491's. The API's gate fails on `extraction.service.ts`, KN-486.
+
+**The live-mode e2e** (`npm run e2e:connected` in `apps/web`) runs against
+`agent/scripts/scenario-server.mjs`, PGlite and test doubles for SMS and AI, built
+from `apps/api/dist`; it touches no shared system.
 
 ## The owner's rules, most recent first
 
@@ -89,7 +103,8 @@ KN-365's kind. The API's coverage gate fails on auth and extraction files, KN-48
 - **2026-09-12, to Codex, still standing.** Mock the login for now. Keep the
   sample data and the AI extraction. Do not change a layout nobody asked to
   change. Commit and push after work. Never ask the owner to redeploy when
-  nothing changed.
+  nothing changed. "If you have AI test, remove that, I didn't ask for an AI API
+  test": whether that reaches tests that stub `fetch` is asked, KN-486.
 - **2026-09-11.** Push after every close: commit, close, push, then roast. Only
   new component cards and their blockers are `critical`; a finding on a built
   component is `high` or lower. No proof at the close: test what changed,
@@ -103,13 +118,10 @@ KN-365's kind. The API's coverage gate fails on auth and extraction files, KN-48
 
 ## The next step
 
-**KN-460 is in progress**, high: the mock's sign-in code rides in `AuthValue`, the
-contract a real provider fills. The plan, beside `src/core/auth/AuthProvider.tsx`,
-takes `mockCode` out of `AuthValue` and gives the code through a context private to
-the mock, `{ auth, code }`, which `useMockCode()` hands out only to a reader of the
-mock's own value, so a provider mounted inside the mock cannot show it. Codex found
-it sound, the comparison needed, and asked that `connected.spec.ts`, which already
-expects no notice in live mode, be run as well.
+**KN-494 is in progress**, high: a job whose dates were written as text, «۱۰ شهریور
+۱۴۰۵» in the story fixtures, shows an empty date and cannot be saved, and five
+stories fail on it (AddJobModal Review; JobModal Note, Change Status, Save And
+Delete, Starts Over For Another Record). It blocks KN-226.
 
 ## What to read first
 
