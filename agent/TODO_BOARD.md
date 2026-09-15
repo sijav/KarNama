@@ -13,6 +13,12 @@ Project **KarNama** · 275 of 624 tasks done · 606 of 1231 points.
 | 1 | OKR-1 | MVP: the pages | now | 211 | 197 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-345` | A modal given a blank title has no accessible name | medium | 1 | web | none | A blank title is refused, by the type or with a thrown error in development, and a story or test shows it. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 275 of 624 tasks done · 606 of 1231 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (335)
+## Backlog (334)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 275 of 624 tasks done · 606 of 1231 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-345` | A modal given a blank title has no accessible name | medium | 1 | web | none | A blank title is refused, by the type or with a thrown error in development, and a story or test shows it. |
 | `KN-348` | An Edit Contact Modal can be written without the record or the delete | medium | 1 | web | none | Edit cannot be written without initial and onDelete, by its type or two components, and the docs guard still reads every prop. |
 | `KN-349` | On a phone the panel modal's footer can sit under the software keyboard | medium | 1 | web | none | The panel keeps its footer in view above the software keyboard, capped against the visual viewport, and a story at 390 by 544 shows Save visible with the last field focused. |
 | `KN-358` | The phone's add form reads title before company, where 243:726 draws the company first | medium | 1 | design | none | The owner has chosen one order for the phone's form, DESIGN.md records it, and the form follows it at 390. |
@@ -6681,6 +6686,10 @@ CHILD OF KN-020, recorded in prose because board.json cannot express parent_task
 
 **Evidence.** d8ba566: the Status Picker's choices and add chip share a row of inline flow, the radio group an inline element round its radios and the chip after it outside the group, each item top aligned with 8 after and below it and the row giving the last line's 8 back; built in the page first, this and a display: contents flex row both kept the named group with its nine radios and the chip outside it in Chromium's own accessibility tree, and this one needs no display: contents; Default reads the chip outside the group in its row after the last choice, and Wrapping, 300 wide, the wrapped lines 8 both ways with the chip after the last choice, and both failed against the component as it was at the chip inside the group; Status Picker stories 7 of 7, the two modals 20 of 20, unit 1494 of 1494, lint and tsc clean; seen in fa-IR light and dark, at 390 and in en-US
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T162711-task-kn-338-the-status-picker-s-add-chip-is-a-child-o-d94e10.md, filed none, dismissed: Nothing to file: it found the inline row's margins keep 8 both ways without taking from the next sibling, the RadioGroup no longer measured as a box, the add chip the next Tab stop outside the group with arrowsAcross unaffected, the two stories proving containment, row, position and gaps, and no false claim. It could not run Vitest in its sandbox. KN-624 came from building KN-338, not from this roast.
+
 ### `KN-339` StatusChoice is exported with no story of its own
 
 - **status** backlog · **severity** low · **points** 1 · **area** web · **objective** OKR-1
@@ -6779,7 +6788,7 @@ CHILD OF KN-028, recorded in prose because board.json cannot express parent_task
 
 ### `KN-345` A modal given a blank title has no accessible name
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-028
 
