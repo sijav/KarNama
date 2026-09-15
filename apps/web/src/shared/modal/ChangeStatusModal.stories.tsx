@@ -11,6 +11,9 @@ import type { StatusToken } from '../../theme/tokens'
 
 // The status the story opens on.
 const INTERVIEW: StatusToken = 'interview'
+// The statuses the story hands over, and so the only values its value can take,
+// offered as a select rather than as text, KN-571.
+const STATUSES = fixtures('fa-IR').statusOptions
 
 // The modal opens from a trigger; either answer closes it and calls the args.
 const WithTrigger = ({ onConfirm, onCancel, ...args }: ChangeStatusModalProps) => {
@@ -44,7 +47,8 @@ const WithTrigger = ({ onConfirm, onCancel, ...args }: ChangeStatusModalProps) =
 const meta = {
   title: 'Shared/ChangeStatusModal',
   component: ChangeStatusModal,
-  args: { open: false, statuses: fixtures('fa-IR').statusOptions, value: INTERVIEW, onConfirm: fn(), onCancel: fn(), onAdd: fn() },
+  args: { open: false, statuses: STATUSES, value: INTERVIEW, onConfirm: fn(), onCancel: fn(), onAdd: fn() },
+  argTypes: { value: { control: 'select', options: STATUSES.map((status) => status.id) } },
   parameters: { controls: { include: ['value'] } },
   render: (args) => <WithTrigger {...args} />,
 } satisfies StoryMeta<typeof ChangeStatusModal>

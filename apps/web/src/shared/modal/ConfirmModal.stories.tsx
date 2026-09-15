@@ -70,13 +70,14 @@ export const DeleteAJobOpportunity: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ args, canvasElement }) => {
     // The question, what cannot be undone, and Cancel with focus as it opens,
-    // so the first key changes nothing; the red action deletes.
+    // so the first key changes nothing; the red action deletes. Read from the
+    // args whatever the Controls hold, KN-571: the body as its paragraph's own
+    // text, and the actions as the dialog's last two buttons, which an empty
+    // label does not hide.
     await userEvent.click(within(canvasElement).getByRole('button'))
     const dialog = await body(canvasElement).findByRole('dialog', { name: args.title })
-    await expect(dialog).toHaveTextContent(args.body)
-    const [cancel, confirm] = within(dialog)
-      .getAllByRole('button')
-      .filter((button) => button.textContent !== '')
+    await expect(dialog.querySelector('p')?.textContent).toBe(args.body)
+    const [cancel, confirm] = within(dialog).getAllByRole('button').slice(-2)
     if (!cancel || !confirm) throw new Error('two actions expected')
     await waitFor(() => expect(cancel).toHaveFocus())
     await userEvent.click(confirm)

@@ -21,6 +21,12 @@ const FIRST_TAB: JobModalTab = 'info'
 const DROP: keyof HTMLElementEventMap = 'drop'
 const TABS: JobModalTab[] = ['info', 'history', 'note', 'contacts', 'files']
 const CONTROLLED: (keyof JobModalProps)[] = ['open', 'tab']
+// The controls a story offers: only the args its play holds for and that change
+// what is on screen, KN-255, KN-571.
+const offers = (names: (keyof JobModalProps)[]) => ({ controls: { include: names } })
+// A story that offers none: a closed modal holds nothing its play asserts, and
+// the tab decides which panel the play reads.
+const FIXED = { controls: { disable: true } }
 
 // A job opportunity's whole record from the story fixtures: the first job with
 // what reading its posting found, its description, skills, note, the first
@@ -114,6 +120,7 @@ const panelOf = (dialog: HTMLElement) => {
 }
 
 export const Info: Story = {
+  parameters: FIXED,
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
     // Node 210:101: 720 by 617; the title and the company, the Status Control
@@ -145,6 +152,7 @@ export const Info: Story = {
 }
 
 export const History: Story = {
+  parameters: FIXED,
   args: { tab: 'history' },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
@@ -159,6 +167,7 @@ export const History: Story = {
 }
 
 export const Note: Story = {
+  parameters: FIXED,
   args: { tab: 'note' },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
@@ -181,6 +190,7 @@ export const Note: Story = {
 }
 
 export const Contacts: Story = {
+  parameters: FIXED,
   args: { tab: 'contacts' },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
@@ -202,6 +212,7 @@ export const Contacts: Story = {
 }
 
 export const Files: Story = {
+  parameters: FIXED,
   args: { tab: 'files' },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
@@ -239,6 +250,8 @@ export const Files: Story = {
 }
 
 export const ChangeStatus: Story = {
+  // The header's Status Control is there on every tab, KN-571.
+  parameters: offers(['tab']),
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
     // The Status Control in the header opens the Change Status modal over the
@@ -261,6 +274,7 @@ export const ChangeStatus: Story = {
 }
 
 export const SaveAndDelete: Story = {
+  parameters: FIXED,
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
     // Saving without a title says so on the Info tab; with one, it hands the
@@ -285,6 +299,7 @@ export const SaveAndDelete: Story = {
 const linesIn = (field: HTMLElement) => (field instanceof HTMLTextAreaElement ? field.value.split('\n').length : 0)
 
 export const EnterSaves: Story = {
+  parameters: FIXED,
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
     // The owner, 2026-09-12: the fields are a form and Save submits it, KN-463,
@@ -365,6 +380,8 @@ const FromTheBoard = (args: JobModalProps) => {
 }
 
 export const OpensFromCard: Story = {
+  // Its open is the card's to say, so only the tab is a control, KN-571.
+  parameters: offers(['tab']),
   args: { open: false },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   render: (args) => <FromTheBoard {...args} />,
@@ -397,6 +414,8 @@ const AskedTab = (args: JobModalProps) => {
 }
 
 export const TabFollowsItsProp: Story = {
+  // Its tab is its parent's, so neither control would hold or show, KN-571.
+  parameters: FIXED,
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   render: (args) => <AskedTab {...args} />,
   play: async ({ args, canvasElement }) => {
@@ -408,6 +427,8 @@ export const TabFollowsItsProp: Story = {
 }
 
 export const Phone: Story = {
+  // Its assertions, which only the runner reaches, hold on any tab, KN-571.
+  parameters: offers(['tab']),
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
     // On a phone's width, 243:1078, the modal sits 16 from the edges, the
@@ -429,6 +450,7 @@ export const Phone: Story = {
 }
 
 export const InEnglish: Story = {
+  parameters: FIXED,
   args: { job: recordIn('en-US'), statuses: fixtures('en-US').statusOptions.slice(0, 5) },
   globals: { locale: 'en-US' },
   play: async ({ args }) => {
@@ -460,6 +482,7 @@ const keptAsWritten = (): JobRecord => {
 }
 
 export const KeepsAWrittenDate: Story = {
+  parameters: FIXED,
   args: { job: keptAsWritten() },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {

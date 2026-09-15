@@ -41,6 +41,12 @@ The buttons at the end, the least drastic first.
 
 ## Stories
 
+### Default
+
+The shell in Persian, as its title and width controls set it, open from the start
+in its own canvas. On this page it waits behind its trigger, since an open modal
+would cover the page.
+
 ### Shell
 
 The shell as the confirmation uses it, measured against the design.

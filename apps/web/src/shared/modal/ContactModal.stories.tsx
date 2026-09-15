@@ -85,6 +85,10 @@ const meta = {
   title: 'Shared/ContactModal',
   component: ContactModal,
   args: { open: false, mode: 'add', jobs: jobsIn('fa-IR'), onSave: fn(), onCancel: fn(), onDelete: fn() },
+  // The mode decides which props the modal takes, a record and its id to edit and
+  // neither to add, so it cannot change alone: an Add story switched to Edit has
+  // no record and throws. Its row stays in the table, with no editor, KN-571.
+  argTypes: { mode: { control: false } },
   parameters: { controls: { include: ['mode'] } },
   render: (args) => <WithTrigger {...args} />,
 } satisfies StoryMeta<typeof ContactModal>

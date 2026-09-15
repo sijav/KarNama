@@ -20,10 +20,11 @@ const titleIn = (locale: Locale) => {
 }
 
 // The shell opens from a trigger and holds the specimen's body and actions;
-// the story holds whether it is open, and closing calls the args' own.
-const WithTrigger = ({ onClose, ...args }: ModalProps) => {
+// the story holds whether it is open, from the start where a story says so, and
+// closing calls the args' own.
+const WithTrigger = ({ onClose, startsOpen = false, ...args }: ModalProps & { startsOpen?: boolean }) => {
   const { i18n } = useLingui()
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(startsOpen)
   const close = () => {
     setOpen(false)
     onClose()
@@ -85,20 +86,39 @@ const computed = (host: HTMLElement, property: 'color' | 'boxShadow' | 'backgrou
 
 const body = (canvasElement: HTMLElement) => within(canvasElement.ownerDocument.body)
 
+export const Default: Story = {
+  // The shell open from the start in its own canvas, as its title and width
+  // controls set it, so a change to either shows at once, KN-571. A Docs page
+  // draws its stories inline, where an open modal would lay its scrim over the
+  // whole page, KN-594, and a frame of its own follows neither the Language nor
+  // the Theme toolbar, measured, so there it waits behind its trigger. It is in the
+  // Persian its title arg is written in, as the file's other stories pin theirs.
+  globals: { locale: 'fa-IR' },
+  render: (args, { viewMode }) => <WithTrigger {...args} startsOpen={viewMode !== 'docs'} />,
+}
+
 export const Shell: Story = {
+  // Its measures hold for any width, read from the args, and not for any title:
+  // an empty one leaves the header at the close's 20, a title KN-345 will refuse,
+  // KN-571.
+  parameters: { controls: { include: ['width'] } },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
-    // Nodes 150:92 and 377:6244: a modal dialog named by its title, 360 wide,
-    // 24 of padding and 16 between its parts, radius lg, Elevation/Modal, over
-    // the file's scrim; the title in Heading/M, the close at the other end, a
-    // divider on each side of the body, and the actions at the inline end.
+    // Nodes 150:92 and 377:6244: a modal dialog named by its title, as wide as
+    // its args say, the file's 360 by default, 24 of padding and 16 between its
+    // parts, radius lg, Elevation/Modal, over the file's scrim; the title in
+    // Heading/M, the close at the other end, a divider on each side of the body,
+    // and the actions at the inline end.
     await userEvent.click(within(canvasElement).getByRole('button'))
     const dialog = await body(canvasElement).findByRole('dialog', { name: args.title })
     const paper = dialog.querySelector('h2')?.parentElement?.parentElement
     if (!(paper instanceof HTMLElement)) throw new Error('the dialog has no panel')
     const style = getComputedStyle(paper)
     await expect([paper.getBoundingClientRect().width, px(style.paddingTop), px(style.rowGap), px(style.borderTopLeftRadius)]).toEqual([
-      360, 24, 16, 16,
+      args.width,
+      24,
+      16,
+      16,
     ])
     await expect(style.boxShadow).toBe(computed(paper, 'boxShadow', elevation.modal))
     // The dialog is MUI's panel, in its container, in the modal's root, whose

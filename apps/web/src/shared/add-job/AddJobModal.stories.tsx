@@ -29,6 +29,13 @@ const LINK = fixtures('fa-IR').extraction.postingUrl
 
 const STEPS: Exclude<AddJobStep, 'loading'>[] = ['paste', 'review', 'manual', 'error']
 const CONTROLLED: (keyof AddJobModalProps)[] = ['open', 'step', 'source']
+// The controls a story offers: only the args its play holds for and that change
+// what is on screen, so changing one in Controls and pressing Rerun never has the
+// story report something untrue about the canvas, KN-255, KN-571.
+const offers = (names: (keyof AddJobModalProps)[]) => ({ controls: { include: names } })
+// A story that offers none: open, step and source each change the state its play
+// opens on and asserts.
+const FIXED = { controls: { disable: true } }
 
 // The English copy, read from its catalog, so the story says what the canvas
 // draws.
@@ -65,6 +72,8 @@ const dialogNamed = async (name: string) => {
 }
 
 export const Paste: Story = {
+  // An entered source makes leaving ask, KN-571.
+  parameters: FIXED,
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
     // Node 166:62: 560 wide, the paste field 140 tall under its label with its
@@ -83,6 +92,7 @@ export const Paste: Story = {
 }
 
 export const PasteFilled: Story = {
+  parameters: FIXED,
   args: { source: LINK },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async () => {
@@ -98,6 +108,7 @@ export const PasteFilled: Story = {
 }
 
 export const ExtractsToReview: Story = {
+  parameters: FIXED,
   args: { source: LINK },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
@@ -112,6 +123,7 @@ export const ExtractsToReview: Story = {
 }
 
 export const Loading: Story = {
+  parameters: FIXED,
   args: { source: LINK, onExtract: fn(() => new Promise<Partial<JobDraft>>(() => undefined)) },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async () => {
@@ -128,6 +140,7 @@ export const Loading: Story = {
 }
 
 export const LeaveWhileReading: Story = {
+  parameters: FIXED,
   args: { source: LINK, onExtract: fn(() => new Promise<Partial<JobDraft>>(() => undefined)) },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
@@ -145,6 +158,9 @@ export const LeaveWhileReading: Story = {
 }
 
 export const Review: Story = {
+  // Its draft carries its own link, which wins over source, so source changes
+  // nothing on screen here, KN-571.
+  parameters: FIXED,
   args: { step: 'review', source: LINK, draft: foundIn('fa-IR') },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
@@ -166,6 +182,8 @@ export const Review: Story = {
 }
 
 export const ReviewInEnglish: Story = {
+  // Its draft's own link wins over source, as Review's does, KN-571.
+  parameters: FIXED,
   args: { step: 'review', source: LINK, draft: foundIn('en-US'), statuses: fixtures('en-US').statusOptions.slice(0, 5) },
   globals: { locale: 'en-US' },
   play: async ({ args }) => {
@@ -182,6 +200,8 @@ export const ReviewInEnglish: Story = {
 }
 
 export const Manual: Story = {
+  // A pasted link fills the empty form's posting link, KN-571.
+  parameters: offers(['source']),
   args: { step: 'manual' },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
@@ -201,6 +221,8 @@ export const Manual: Story = {
 }
 
 export const ManualPath: Story = {
+  // The paste field shows the source before the way round is taken, KN-571.
+  parameters: offers(['source']),
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async () => {
     // «خودت دستی وارد کن» goes to the empty form.
@@ -211,6 +233,7 @@ export const ManualPath: Story = {
 }
 
 export const ErrorStep: Story = {
+  parameters: FIXED,
   args: { step: 'error', source: LINK, onExtract: fn(() => Promise.reject(new Error('unreadable'))) },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
@@ -231,6 +254,8 @@ export const ErrorStep: Story = {
 }
 
 export const LeavingAsks: Story = {
+  // Its draft's own link wins over source, as Review's does, KN-571.
+  parameters: FIXED,
   args: { step: 'review', source: LINK, draft: foundIn('fa-IR') },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
@@ -254,6 +279,9 @@ export const LeavingAsks: Story = {
 }
 
 export const Phone: Story = {
+  // Its draft's own link wins over source, and its assertions, which only the
+  // runner reaches, read the form of that step, KN-571.
+  parameters: FIXED,
   args: { step: 'review', source: LINK, draft: foundIn('fa-IR') },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async () => {
@@ -277,6 +305,8 @@ export const Phone: Story = {
 }
 
 export const InEnglish: Story = {
+  // The paste field shows the source, KN-571.
+  parameters: offers(['source']),
   args: { statuses: fixtures('en-US').statusOptions.slice(0, 5) },
   globals: { locale: 'en-US' },
   play: async () => {
@@ -373,6 +403,7 @@ export const AnswerAfterLeaving: Story = {
         }),
     ),
   },
+  parameters: FIXED,
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
     const dialog = await dialogNamed('افزودن فرصت شغلی')
@@ -415,12 +446,16 @@ const formIn =
   }
 
 export const KeyboardsOnTheForm: Story = {
+  // A pasted link fills the empty form's posting link, KN-571.
+  parameters: offers(['source']),
   args: { step: 'manual' },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: formIn('fa-IR'),
 }
 
 export const KeyboardsOnTheFormInEnglish: Story = {
+  // A pasted link fills the empty form's posting link, KN-571.
+  parameters: offers(['source']),
   args: { step: 'manual', statuses: fixtures('en-US').statusOptions.slice(0, 5) },
   globals: { locale: 'en-US' },
   play: formIn('en-US'),
