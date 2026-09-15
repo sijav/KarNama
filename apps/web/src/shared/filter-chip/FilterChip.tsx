@@ -87,16 +87,17 @@ export const FilterChip = ({ label, count, selected = false, onToggle }: FilterC
 
           // The stroke, inside the chip and out of its layout as the file draws
           // it: a border on a pseudo-element laid over the chip, the Input's way,
-          // KN-266. One pixel of border/default, and none when selected, which
-          // 159:69 draws with no stroke until KN-279 gives it the owner's blue.
+          // KN-266. One pixel of border/default, and of border/selected when
+          // selected: 159:69 draws none, and the owner chose a blue edge, KN-276,
+          // told from pressing by its width, one pixel against 1.5, KN-279.
           '&::before': {
             content: '""',
             position: 'absolute',
             inset: 0,
             borderRadius: 'inherit',
-            borderStyle: selected ? 'none' : 'solid',
+            borderStyle: 'solid',
             borderWidth: EDGE,
-            borderColor: colour['border/default'],
+            borderColor: selected ? colour['border/selected'] : colour['border/default'],
             pointerEvents: 'none',
           },
 

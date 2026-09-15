@@ -288,6 +288,24 @@ describe("a control's resting edge can be found", () => {
 })
 
 /**
+ * A selected Filter Chip's edge, the owner's decision of KN-276: the chip showed
+ * selection only by a fill 1.22 to one on white, so its one pixel edge turns a
+ * blue at 3 to one or more on every surface it sits on and against the fill inside
+ * it, in both schemes. Numbers, as above, KN-279.
+ */
+describe("a selected Filter Chip's edge can be seen", () => {
+  const around = ['bg/page', 'bg/surface', 'bg/surface-secondary', 'bg/brand/container'] as const
+
+  it.each(around)('border/selected clears 3:1 against the light %s', (background) => {
+    expect(contrast(semantic['border/selected'], semantic[background])).toBeGreaterThanOrEqual(3)
+  })
+
+  it.each(around)('border/selected clears 3:1 against the dark %s', (background) => {
+    expect(contrast(darkSemantic['border/selected'], darkSemantic[background])).toBeGreaterThanOrEqual(3)
+  })
+})
+
+/**
  * The fills: a dark tint of their own hue, and what the product draws on them
  * readable. The brand container is the selected Filter Chip: text/brand on it,
  * and its pressed edge in border/focus, KN-272. The ratios are written as the

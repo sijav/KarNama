@@ -32,6 +32,9 @@ export const semantic = {
   // page, the surface and the secondary surface. The file's border/default is
   // 1.24:1 on white, KN-275.
   'border/control': '#7f8694',
+  // A selected Filter Chip's one pixel edge, the owner's addition of KN-276: the
+  // blue of border/focus today, a role of its own so the two can part, KN-279.
+  'border/selected': '#2563eb',
   'accent/200': '#bfdbfe',
   'accent/700': '#1e40af',
   'gray/200': '#e5e7eb',

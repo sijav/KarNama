@@ -3,7 +3,7 @@ import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
 import { formatCount } from '../../i18n/formatCount'
 import { contrast } from '../../theme/darkMode'
-import { spacing } from '../../theme/tokens'
+import { semantic, spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { statusName } from '../story-fixtures'
 import { FilterChip } from './FilterChip'
@@ -127,26 +127,88 @@ export const Default: Story = {
     // goes through formatCount rather than into the string raw.
     await expect(chip.textContent).toBe(`${args.label} (${formatCount('fa-IR', args.count)})`)
     await expect(chip).toHaveAttribute('aria-pressed', String(args.selected ?? false))
-    // Node 159:63: a one pixel edge, inside, and the text 12 from each side;
-    // 159:69, selected, draws no edge until KN-279's blue one.
+    // Node 159:63: a one pixel edge, inside, and the text 12 from each side; a
+    // selected chip's is the owner's blue, at 3:1 or more on its fill, KN-279.
     const edge = await isTheFiles(canvasElement)
-    await expect([edge.borderTopStyle, Number.parseFloat(edge.borderTopWidth)]).toEqual(args.selected ? ['none', 0] : ['solid', 1])
+    await expect([edge.borderTopStyle, Number.parseFloat(edge.borderTopWidth)]).toEqual(['solid', 1])
+    if (args.selected) {
+      const fill = hexOf(getComputedStyle(chip).backgroundColor)
+      await expect(contrast(hexOf(edge.borderTopColor), fill)).toBeGreaterThanOrEqual(3)
+    }
   },
 }
 
 export const Selected: Story = {
   args: { selected: true },
-  globals: { locale: 'fa-IR' },
+  // Pinned to light, so the edge is one known token.
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
   // Selection is what this story is, so it is not offered, KN-255.
   parameters: { controls: { include: ['label', 'count'] } },
   play: async ({ canvasElement }) => {
     // Announced, not only shown. A colour change alone tells a screen reader
     // nothing, and this chip IS the filter state.
     await expect(within(canvasElement).getByRole('button')).toHaveAttribute('aria-pressed', 'true')
-    // Node 159:69 draws no stroke, until KN-279's blue edge, and the text
-    // still sits 12 from each side.
+    // Node 159:69 draws no stroke; the owner chose a blue one, one pixel of
+    // border/selected, KN-276, KN-279, and the text still sits 12 from each side.
     const edge = await isTheFiles(canvasElement)
-    await expect(edge.borderTopStyle).toBe('none')
+    await expect([edge.borderTopStyle, Number.parseFloat(edge.borderTopWidth)]).toEqual(['solid', 1])
+    await expect(hexOf(edge.borderTopColor)).toBe(semantic['border/selected'])
+  },
+}
+
+export const ToldApartFromSelected: Story = {
+  // An unselected chip beside a selected one, at rest, focused and held pressed
+  // from the keyboard, each indicator measured against the selected edge beside
+  // it. The pressed edge is the selected edge's blue, so width tells them apart,
+  // one and a half against one, and the ring is three, KN-279. Pinned to light,
+  // so the colours are the tokens'.
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  parameters: { controls: { include: ['label', 'count'] } },
+  render: (args) => (
+    <Box sx={{ display: 'flex', gap: `${spacing.md}px` }}>
+      <FilterChip {...args} selected={false} />
+      <FilterChip {...args} selected />
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const [unselected, selected] = within(canvasElement).getAllByRole('button')
+    if (!unselected || !selected) throw new Error('the two chips were not found')
+    const edge = (chip: HTMLElement) => {
+      const style = getComputedStyle(chip, '::before')
+      return { width: px(style.borderTopWidth), colour: hexOf(style.borderTopColor) }
+    }
+    // At rest: one pixel each, grey and the owner's blue.
+    await expect(edge(unselected)).toEqual({ width: 1, colour: semantic['border/default'] })
+    await expect(edge(selected)).toEqual({ width: 1, colour: semantic['border/selected'] })
+
+    // Holding a chip pressed takes a real key, which only the runner has; in the
+    // published Storybook the story is a canvas to press by hand, KN-225's flag.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
+      if ('__STORYBOOK_PREVIEW__' in globalThis) return
+      throw new Error('ToldApartFromSelected is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
+    }
+    const browser = await import('vitest/browser')
+
+    // Focused from a real Tab: a ring three wide against the selected edge's one.
+    await browser.userEvent.keyboard('{Tab}')
+    await expect(unselected).toHaveFocus()
+    await expect(unselected.matches(':focus-visible')).toBe(true)
+    const ring = getComputedStyle(unselected, '::after')
+    await expect([ring.borderTopStyle, px(ring.borderTopWidth), hexOf(ring.borderTopColor)]).toEqual(['solid', 3, semantic['border/focus']])
+    await expect(px(ring.borderTopWidth)).toBeGreaterThan(edge(selected).width)
+
+    // Held pressed with a real Space: an inset edge one and a half wide in the
+    // same blue, against the selected edge's one.
+    await browser.userEvent.keyboard('{Space>}')
+    try {
+      await expect(unselected.matches(':active')).toBe(true)
+      const shadow = getComputedStyle(unselected).boxShadow
+      const spread = px(/([\d.]+)px inset/.exec(shadow)?.[1] ?? '')
+      await expect([spread, hexOf(shadow)]).toEqual([1.5, semantic['border/focus']])
+      await expect(spread).toBeGreaterThan(edge(selected).width)
+    } finally {
+      await browser.userEvent.keyboard('{/Space}')
+    }
   },
 }
 

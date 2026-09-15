@@ -40,7 +40,17 @@ Off, in Persian. The count is in Persian digits.
 ### Selected
 
 On. The assertion is on `aria-pressed`, not on the colour: a fill change alone
-tells a screen reader nothing, and this chip **is** the filter state.
+tells a screen reader nothing, and this chip **is** the filter state. Its edge is
+one pixel of blue, three to one on every surface and on its fill, and thinner than
+the one and a half a pressed chip draws.
+
+### ToldApartFromSelected
+
+An unselected chip beside a selected one. The selected edge and the pressed edge
+are the same blue, so width tells them apart: held pressed from the keyboard, the
+unselected chip draws one and a half pixels against the selected chip's one, and
+focused, a ring of three. The key is held only when the story runs as a test; in
+Storybook, focus the first chip and hold Space yourself.
 
 ### InEnglish
 

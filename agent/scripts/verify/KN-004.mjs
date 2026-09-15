@@ -183,7 +183,10 @@ for (const [node, hex] of unstyledShadows) {
 // The owner's additions: roles the owner decided on that the file does not have.
 // Each row has to name its decision, so a value no Figma variable carries is let
 // through only where the document says whose decision it is, KN-275.
-const ownerAdditions = [['border/control', 'KN-273', '#7f8694']]
+const ownerAdditions = [
+  ['border/control', 'KN-273', '#7f8694'],
+  ['border/selected', 'KN-276', '#2563eb'],
+]
 
 for (const [name, decision, hex] of ownerAdditions) {
   const row = rows.find((line) => line.includes(`\`${name}\``) && line.includes(`\`${decision}\``))

@@ -294,6 +294,14 @@ export const darkSemantic = {
   // at 3:1 against the surface as the two above are: an empty field or an
   // unchecked box is found by its edge alone. Derived alone it was 2.81, KN-275.
   'border/control': ensureContrast(deriveDark(semantic['border/control']), darkSurface, NON_TEXT_CONTRAST),
+  // A selected Filter Chip's edge, the owner's addition of KN-276: derived and
+  // walked to 3:1 against the surface as the state borders are, and then against
+  // the dark selected fill it sits round, KN-279.
+  'border/selected': ensureContrast(
+    ensureContrast(deriveDark(semantic['border/selected']), darkSurface, NON_TEXT_CONTRAST),
+    deriveDarkFill(semantic['bg/brand/container']),
+    NON_TEXT_CONTRAST,
+  ),
   // A fill, one of DARK_FILLS: the Secondary and Text buttons' pressed state,
   // under text/brand. Derived as a foreground it came out light, 1.30 to one
   // under its own text, KN-108.

@@ -101,6 +101,7 @@ decision that made it, so it is never mistaken for a value read from the file.
 | Token            | Decided  | Value     | Note                                                                 |
 | ---------------- | -------- | --------- | -------------------------------------------------------------------- |
 | `border/control` | `KN-273` | `#7f8694` | a control's resting edge, the Input's, the unchecked Checkbox's and the Select's: text/secondary's hue made lighter to the last value at 3.3 to one on `bg/page`, `bg/surface` and `bg/surface-secondary`, and walked to 3 to one in dark, KN-275 |
+| `border/selected` | `KN-276` | `#2563eb` | a selected Filter Chip's one pixel edge: the blue of `border/focus` today, at 3 to one or more on every surface and on the selected fill in both schemes, told from the pressed edge by its width, one pixel against 1.5, KN-279 |
 
 ### Colour, status
 
@@ -339,8 +340,8 @@ and three covers 6W + 62, clearing it for any chip at all, its padding alone
 being 24. WCAG's understanding of 2.4.13 says as much of any indicator inset
 from the edge: it needs to be thicker than two pixels, and in its own example
 a two pixel inset indicator fails where three passes. A second band would have done it for two, the edge turning blue on
-focus, until KN-279 gives a selected chip an edge of the same blue, and then
-the ring alone would fall short there. The ring's colour clears 3 to one on
+focus, but a selected chip's edge is that blue already, KN-279, and there the
+ring alone would fall short. The ring's colour clears 3 to one on
 every fill the chip has: 5.17 on `bg/surface` in light and 3.04 in the derived
 dark, 4.70 and 3.57 on the hover fill, and 4.24 and 3.33 on the selected one.
 Its inner edge is 1 from the line's box, and the label's ink, Persian dots and
@@ -348,9 +349,8 @@ marks included, stays between 8.25 and 24.75 of the chip's 32, measured, so
 the ring never touches it. Pressed, the chip's inset 1.5 is already blue under
 the ring's outer half pixel, which paints over it, so on a pressed chip focus
 changes 2.5 wide, about 5W + 48, still clearing the perimeter for any chip 25
-or more wide; and KN-279's
-one pixel selected edge sits outside the ring, so focus is told from pressed
-and from selected by its width.
+or more wide; and the one pixel selected edge, KN-279, sits outside the ring,
+so focus is told from pressed and from selected by its width.
 
 ### An Input's error needs a message
 
@@ -1390,7 +1390,9 @@ on every surface and against the fill inside it, `#2563eb` in light. Not a
 check before the label, which would grow the chip as it toggles, not keeping
 the file's fill, and not asking the designer first. That blue is already the
 chip's pressed edge, so selection gets an edge of its own or is proved apart
-from pressing. KN-279 builds it, after KN-272 fixes the dark fill.
+from pressing. KN-279 built it, `border/selected`, a role of its own though the
+same blue today, and a pressed chip is told from a selected one by its edge's
+width, one and a half against one.
 
 **A field's message line is drawn only when there is something to say.**
 Owner, KN-285, put and answered through the question tool. All 91 Input
