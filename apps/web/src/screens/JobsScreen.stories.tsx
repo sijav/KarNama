@@ -880,6 +880,88 @@ export const SelectingWhileSearching: Story = {
   },
 }
 
+export const ActingWhileSearching: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-535: a card chosen and then searched out of view stays chosen, KN-431,
+    // and neither the bar's delete nor its status change takes it along with the
+    // card chosen after it. The seeded board gives the first five fixture job
+    // opportunities a status each in the board's order, so the first is saved
+    // and the fourth is in offer; «آسمان» is in the companies of the second and
+    // the fourth alone, so a search for it hides the first.
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const set = fixtures('fa-IR')
+    const first = set.jobs[0]?.title ?? ''
+    const second = set.jobs[1]?.title ?? ''
+    const fourth = set.jobs[3]?.title ?? ''
+    const bar = () => canvas.getByRole('region', { name: 'کارهای گروهی' })
+    const barCounts = async (count: number) => {
+      await waitFor(async () => {
+        await expect(bar()).toHaveTextContent(formatCount('fa-IR', count))
+      })
+    }
+    // Folded away until focus is inside the card, KN-341.
+    const check = (name: string) => {
+      const card = canvas.getByRole('button', { name }).closest('article')
+      if (!card) throw new Error('the card has no article around it')
+      const box = within(card).getByRole('checkbox')
+      box.focus()
+      return box
+    }
+    const search = canvas.getByRole('searchbox')
+    const column = (name: string) => within(canvas.getByRole('region', { name }))
+    // The first card chosen and searched out of view, then one the search shows
+    // chosen after it: the bar counts that one alone, while the first is still
+    // in the selection. Select all is never pressed, since it would put the
+    // shown cards in place of the selection and there would be nothing hidden
+    // left in it, KN-431.
+    const chooseHiddenThen = async (shown: string) => {
+      await userEvent.click(check(first))
+      await barCounts(1)
+      await userEvent.type(search, 'آسمان')
+      await waitFor(async () => {
+        await expect(canvas.queryByText(first)).toBeNull()
+        await expect(canvas.getByText(shown)).toBeInTheDocument()
+      })
+      await userEvent.click(check(shown))
+      await barCounts(1)
+    }
+
+    // Deleting takes the card the search shows and leaves the hidden one.
+    await chooseHiddenThen(second)
+    await userEvent.click(within(bar()).getByRole('button', { name: 'حذف' }))
+    const confirm = await body.findByRole('dialog')
+    await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
+    await waitFor(async () => {
+      await expect(body.queryByRole('dialog')).toBeNull()
+    })
+    await userEvent.clear(search)
+    await waitFor(async () => {
+      await expect(column(set.names.new).getByText(first)).toBeInTheDocument()
+    })
+    await expect(canvas.queryByText(second)).toBeNull()
+
+    // A status change moves the card the search shows and leaves the hidden one
+    // where it was. The delete cleared the whole selection, so the first is
+    // chosen again, now that clearing the search has brought it back.
+    await chooseHiddenThen(fourth)
+    await userEvent.click(within(bar()).getByRole('button', { name: 'تغییر وضعیت' }))
+    const change = await body.findByRole('dialog')
+    await userEvent.click(within(change).getByRole('radio', { name: set.names.interview }))
+    await userEvent.click(within(change).getByRole('button', { name: 'تأیید' }))
+    await waitFor(async () => {
+      await expect(body.queryByRole('dialog')).toBeNull()
+    })
+    await userEvent.clear(search)
+    await waitFor(async () => {
+      await expect(column(set.names.interview).getByText(fourth)).toBeInTheDocument()
+    })
+    await expect(column(set.names.new).getByText(first)).toBeInTheDocument()
+    await expect(column(set.names.interview).queryByText(first)).toBeNull()
+  },
+}
+
 // A phone's screen, the file's 390 by 844.
 const PHONE = { width: 390, height: 844 }
 

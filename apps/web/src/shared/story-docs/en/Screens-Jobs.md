@@ -123,6 +123,13 @@ is not counted, select all takes only what the search found, and deleting after
 the confirmation takes those alone, so every job opportunity the search hid is
 still on the board once the search is cleared.
 
+### ActingWhileSearching
+
+Acting with a search active: a card chosen before the search and hidden by it
+stays chosen, yet deleting the shown card chosen after it does not take it
+along, and neither does changing that card's status, so once the search is
+cleared the hidden job opportunity is still on the board, in its own column.
+
 ### OnAPhone
 
 The board at a phone's width, where the columns give way to a row of status chips
