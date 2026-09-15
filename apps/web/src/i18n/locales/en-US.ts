@@ -217,6 +217,7 @@ export const messages: Record<string, string> = {
   'Company name': 'Company name',
   'Write the job title': 'Write the job title',
   'Write the company name': 'Write the company name',
+  'Write the status name': 'Write the status name',
   Location: 'Location',
   'Required experience': 'Required experience',
   'Posted on': 'Posted on',

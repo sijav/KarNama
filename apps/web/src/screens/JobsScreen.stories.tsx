@@ -537,7 +537,10 @@ export const BackingOut: Story = {
     await userEvent.click(within(closing).getByRole('button', { name: 'بستن' }))
     await gone()
 
-    // A rename saved blank keeps the name it had, KN-427.
+    // A rename saved blank is refused with the field's own error, and the modal stays
+    // open until it is backed out of, keeping the name it had, KN-427 and KN-435. The
+    // dialog is found again once a close's 150 ms would be over, so one still dissolving
+    // cannot pass for one that stayed.
     const i18n = i18nFor('fa-IR')
     await userEvent.click(menuOf(savedName))
     await userEvent.click(await body.findByRole('menuitem', { name: i18n._('Rename') }))
@@ -545,6 +548,15 @@ export const BackingOut: Story = {
     await userEvent.clear(within(blank).getByRole('textbox'))
     await userEvent.type(within(blank).getByRole('textbox'), ' ')
     await userEvent.click(within(blank).getByRole('button', { name: i18n._('Save') }))
+    await waitFor(async () => {
+      await expect(within(blank).getByRole('textbox')).toHaveAttribute('aria-invalid', 'true')
+    })
+    await new Promise((resolve) => window.setTimeout(resolve, 300))
+    const still = body.getByRole('dialog')
+    const refused = within(still).getByRole('textbox')
+    await expect(refused).toHaveAttribute('aria-invalid', 'true')
+    await expect(refused).toHaveAccessibleDescription(i18n._('Write the status name'))
+    await userEvent.click(within(still).getByRole('button', { name: i18n._('Cancel') }))
     await gone()
     await expect(canvas.getAllByText(savedName).length).toBeGreaterThan(0)
 

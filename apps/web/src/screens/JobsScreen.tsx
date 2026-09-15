@@ -141,7 +141,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   // their id while the question is open, and nobody otherwise.
   const [deletingPeople, setDeletingPeople] = useState<readonly string[]>([])
   // A column being renamed: its id and the name as it is being typed.
-  const [renaming, setRenaming] = useState<{ id: string; name: string } | null>(null)
+  const [renaming, setRenaming] = useState<{ id: string; name: string; tried: boolean } | null>(null)
   // The control that asked to delete, kept as it asks, KN-344: by the time the
   // confirmation closes it may not be in the page any more, and that is the
   // case this is for. A ref, because nothing renders differently for it.
@@ -235,7 +235,12 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   }
 
   const rename = () => {
-    if (renaming && renaming.name.trim() !== '') records.renameStatus(renaming.id, renaming.name.trim())
+    // A blank name is refused with the field's own error and the modal stays open, KN-435.
+    if (renaming === null || renaming.name.trim() === '') {
+      setRenaming((was) => (was ? { ...was, tried: true } : was))
+      return
+    }
+    records.renameStatus(renaming.id, renaming.name.trim())
     setRenaming(null)
   }
 
@@ -468,7 +473,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
                 setAdding(column.id)
               }}
               onRename={() => {
-                setRenaming({ id: column.id, name: column.name })
+                setRenaming({ id: column.id, name: column.name, tried: false })
               }}
               onColourChange={(colour) => {
                 records.recolourStatus(column.id, colour)
@@ -706,6 +711,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
             label={i18n._('Status')}
             enterKeyHint="done"
             value={renaming?.name ?? ''}
+            {...(renaming?.tried === true && renaming.name.trim() === '' ? { error: i18n._('Write the status name') } : {})}
             onChange={(name) => {
               // With no rename open this field is out of the keyboard's reach: Enter
               // closes the modal and focus is back on the column's menu button at once,

@@ -218,6 +218,7 @@ export const messages: Record<string, string> = {
   'Company name': 'نام شرکت',
   'Write the job title': 'عنوان شغلی را بنویس',
   'Write the company name': 'نام شرکت را بنویس',
+  'Write the status name': 'نام وضعیت را بنویس',
   Location: 'موقعیت مکانی',
   'Required experience': 'سابقه‌ی موردنیاز',
   'Posted on': 'تاریخ انتشار',

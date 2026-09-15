@@ -93,8 +93,9 @@ network page too.
 
 ### BackingOut
 
-Every way out of a change: a rename backed out of, and one saved blank, which
-keeps the name; a colour taken from the column menu, an empty column deleted where
+Every way out of a change: a rename backed out of, and one saved blank, which the
+field refuses with its own error until it is backed out of; a colour taken from
+the column menu, an empty column deleted where
 one holding a job opportunity says why it cannot be, a status change cancelled,
 and a deletion refused.
 
