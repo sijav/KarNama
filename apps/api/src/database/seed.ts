@@ -36,13 +36,22 @@ export interface SeedResult {
   jobRecordIds: string[]
 }
 
-/** The five the design ships with, in board order, with their token colours. */
+/**
+ * The five the design ships with, in the board's order, with their token
+ * colours.
+ *
+ * This order is the seed's whole say in how a board reads, since each status's
+ * `position` is its index here. The offer column comes before rejected and
+ * rejected is last, the owner's decision of KN-070, which the web keeps in its
+ * own `DEFAULT_TOKENS`; the list said otherwise until KN-543, so a board read
+ * by position drew a reader's rejected column before their offers.
+ */
 const DEFAULT_STATUSES: readonly { key: StatusKey; name: string; color: string }[] = [
   { key: 'new', name: 'ذخیره‌شده', color: 'new' },
   { key: 'applied', name: 'درخواست‌شده', color: 'applied' },
   { key: 'interview', name: 'مصاحبه', color: 'interview' },
-  { key: 'rejected', name: 'رد شده', color: 'rejected' },
   { key: 'offer', name: 'پیشنهاد کار', color: 'offer' },
+  { key: 'rejected', name: 'رد شده', color: 'rejected' },
 ]
 
 const JOB_RECORDS: readonly {

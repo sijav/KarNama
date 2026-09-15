@@ -52,6 +52,28 @@ describe('the database CLI', () => {
     await db.close()
   })
 
+  it('seeds the five default statuses in the design order, with rejected last', async () => {
+    // KN-543: a status's position comes from DEFAULT_STATUSES' own index, so that
+    // list IS the board order a reader is given, and the design puts the offer
+    // column before rejected with rejected last, the owner's KN-070. Read from
+    // the rows rather than from the sentence the CLI prints, which says nothing
+    // about order.
+    const db = await freshDb()
+    const client = pgShapedClient(db)
+
+    await runCommand('migrate', 'ignored', () => client)
+    await runCommand('seed', 'ignored', () => client)
+    const seeded = await db.query<{ key: string; position: number }>('SELECT "key", "position" FROM "statuses" ORDER BY "position";')
+    expect(seeded.rows).toEqual([
+      { key: 'new', position: 0 },
+      { key: 'applied', position: 1 },
+      { key: 'interview', position: 2 },
+      { key: 'offer', position: 3 },
+      { key: 'rejected', position: 4 },
+    ])
+    await db.close()
+  })
+
   it('refuses an unknown command and still closes the connection', async () => {
     const db = await freshDb()
     let ended = false
