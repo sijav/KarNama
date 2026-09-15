@@ -46,20 +46,19 @@ interface ContactModalShared {
   jobs: readonly SelectOption[]
   onSave: (values: ContactModalValues) => void
   onCancel: () => void
-  /** Drawn only while editing, but taken either way so a caller can pass one shape. */
-  onDelete?: () => void
 }
 
 /**
- * Adding takes no record; editing takes the id it is editing and the record,
- * which is undefined until it has loaded. A union rather than optional props,
- * so an Edit that forgets which record it is on cannot be written at all.
+ * Adding takes no record; editing takes the id it is editing, the record, which
+ * is undefined until it has loaded, and the delete it offers. A union rather
+ * than optional props, so an Edit that forgets which record it is on, or its
+ * delete, cannot be written at all, KN-348.
  */
 export type ContactModalProps =
   // Adding can start from something, a job opportunity already chosen when the
   // person is added from inside one, but it has no record and no id.
-  | (ContactModalShared & { mode: 'add'; recordId?: never; initial?: ContactModalValues })
-  | (ContactModalShared & { mode: 'edit'; recordId: string; initial: ContactModalRecord | undefined })
+  | (ContactModalShared & { mode: 'add'; recordId?: never; initial?: ContactModalValues; onDelete?: never })
+  | (ContactModalShared & { mode: 'edit'; recordId: string; initial: ContactModalRecord | undefined; onDelete: () => void })
 
 // Node 270:152's width, which binds no variable.
 const WIDTH = 560
@@ -146,7 +145,7 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
           </Button>
         </>
       }
-      {...(mode === 'edit' && onDelete !== undefined
+      {...(mode === 'edit'
         ? {
             aside: (
               <Button variant="destructive" onClick={onDelete}>

@@ -188,6 +188,12 @@ Another open tab deletes a job opportunity while a person is being written on it
 the job modal goes with its job, the contact modal stays, and saving keeps the
 person with no job, for a person being edited and for one being added.
 
+### DeletingAPersonAsksFirst
+
+A person deleted from their edit form is asked about first, as on the network page:
+the edit closes into the confirmation, backing out keeps the person, and confirming
+deletes them from the store and from the job modal.
+
 ### WithoutSigningOut
 
 A board given no way to sign out, at a phone's width: its header carries the

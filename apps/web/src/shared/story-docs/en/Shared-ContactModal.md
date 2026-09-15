@@ -55,7 +55,8 @@ Called when the form is closed without saving.
 
 ### onDelete
 
-Called when Edit's delete is pressed; the page asks before it deletes.
+Called when Edit's delete is pressed; the page asks before it deletes. Required
+when editing and refused when adding, which draws no delete.
 
 ## Stories
 

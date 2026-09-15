@@ -81,16 +81,36 @@ const Rerendering = ({ initial, ...args }: Extract<ContactModalProps, { mode: 'e
   )
 }
 
+// The props of the mode the args hold, KN-348. The args of the meta are those of an
+// edit, its record, its id and its delete, for the docs guard and the Actions panel,
+// so the args of an Add story still carry all three, which an add refuses: the add
+// is built from the args without them, as barFor does for the Bulk Action Bar.
+type Args =
+  | Extract<ContactModalProps, { mode: 'edit' }>
+  | Pick<Extract<ContactModalProps, { mode: 'add' }>, 'mode' | 'open' | 'jobs' | 'onSave' | 'onCancel'>
+const modalFor = (args: Args): ContactModalProps =>
+  args.mode === 'edit' ? args : { mode: 'add', open: args.open, jobs: args.jobs, onSave: args.onSave, onCancel: args.onCancel }
+
 const meta = {
   title: 'Shared/ContactModal',
   component: ContactModal,
-  args: { open: false, mode: 'add', jobs: jobsIn('fa-IR'), onSave: fn(), onCancel: fn(), onDelete: fn() },
-  // The mode decides which props the modal takes, a record and its id to edit and
-  // neither to add, so it cannot change alone: an Add story switched to Edit has
-  // no record and throws. Its row stays in the table, with no editor, KN-571.
+  args: {
+    open: false,
+    mode: 'edit',
+    recordId: FIRST_CONTACT.id,
+    initial: { id: FIRST_CONTACT.id, values: recordIn('fa-IR') },
+    jobs: jobsIn('fa-IR'),
+    onSave: fn(),
+    onCancel: fn(),
+    onDelete: fn(),
+  },
+  // The mode decides which props the modal takes, a record, its id and a delete to
+  // edit and none of them to add, so it cannot change alone: an Add story switched
+  // to Edit has no record and throws. Its row stays in the table, with no editor,
+  // KN-571.
   argTypes: { mode: { control: false } },
   parameters: { controls: { include: ['mode'] } },
-  render: (args) => <WithTrigger {...args} />,
+  render: (args) => <WithTrigger {...modalFor(args)} />,
 } satisfies StoryMeta<typeof ContactModal>
 
 export default meta
@@ -107,6 +127,7 @@ const open = async (canvasElement: HTMLElement) => {
 }
 
 export const Add: Story = {
+  args: { mode: 'add' },
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
     // Node 270:152, Mode=Add: 560 wide, the header 68 and the footer 76, the
@@ -129,6 +150,7 @@ export const Add: Story = {
     ]).toEqual([248, 248])
     await expect(within(form).getByRole('combobox')).toBeVisible()
     await expect(within(footer).getAllByRole('button')).toHaveLength(2)
+    await expect(within(dialog).queryByRole('button', { name: i18nFor('fa-IR')._('Delete contact') })).toBeNull()
     await userEvent.keyboard('{Escape}')
   },
 }
@@ -143,9 +165,8 @@ export const Edit: Story = {
     // This story is an edit, so its initial is a record: the union says so.
     if (args.mode !== 'edit') throw new Error('this story is about editing a record')
     await expect(name).toHaveValue(args.initial?.values.name ?? '')
-    const buttons = within(dialog).getAllByRole('button')
-    const remove = buttons.at(-1)
-    if (!remove) throw new Error('no delete')
+    const remove = within(dialog).getByRole('button', { name: i18nFor('fa-IR')._('Delete contact') })
+    await expect(within(dialog).getAllByRole('button').at(-1)).toBe(remove)
     await userEvent.click(remove)
     await expect(args.onDelete).toHaveBeenCalledTimes(1)
     await userEvent.keyboard('{Escape}')
@@ -153,6 +174,7 @@ export const Edit: Story = {
 }
 
 export const SavesWithOnlyAName: Story = {
+  args: { mode: 'add' },
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement, args }) => {
     // The owner's decision of KN-071: a full name and nothing else saves.
@@ -176,6 +198,7 @@ export const SavesWithOnlyAName: Story = {
 }
 
 export const NameIsRequired: Story = {
+  args: { mode: 'add' },
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement, args }) => {
     // Save with no name: the name field in its error state, nothing saved.
@@ -191,6 +214,7 @@ export const NameIsRequired: Story = {
 }
 
 export const CancelDiscards: Story = {
+  args: { mode: 'add' },
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement, args }) => {
     // What was typed goes with Cancel, and the next opening starts empty.
@@ -232,7 +256,7 @@ export const KeepsTypingThroughARerender: Story = {
 }
 
 export const InEnglish: Story = {
-  args: { jobs: jobsIn('en-US') },
+  args: { mode: 'add', jobs: jobsIn('en-US') },
   globals: { locale: 'en-US' },
   play: async ({ canvasElement }) => {
     const dialog = await open(canvasElement)
@@ -242,6 +266,7 @@ export const InEnglish: Story = {
 }
 
 export const EnterSaves: Story = {
+  args: { mode: 'add' },
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement, args }) => {
     // The owner, 2026-09-12: the fields are a form and its Save submits it, so
@@ -269,7 +294,13 @@ export const EnterSaves: Story = {
 
 // A parent that hands over the id first and the record afterwards, which is
 // what a page does when it knows WHICH record it wants before it has loaded it.
-const Loading = ({ jobs, onSave, onCancel, held }: Pick<Extract<ContactModalProps, { mode: 'edit' }>, 'jobs' | 'onSave' | 'onCancel'> & { held?: ContactModalRecord }) => {
+const Loading = ({
+  jobs,
+  onSave,
+  onCancel,
+  onDelete,
+  held,
+}: Pick<Extract<ContactModalProps, { mode: 'edit' }>, 'jobs' | 'onSave' | 'onCancel' | 'onDelete'> & { held?: ContactModalRecord }) => {
   // Starts holding whatever record the story gives it, so a story can render
   // the SECOND id while the FIRST record's values are still the ones being
   // passed. That one render is the whole defect, KN-476.
@@ -292,7 +323,7 @@ const Loading = ({ jobs, onSave, onCancel, held }: Pick<Extract<ContactModalProp
           setRecord({ id: SECOND_CONTACT.id, values: { ...recordIn('fa-IR'), name: SECOND_CONTACT.fullName } })
         }}
       />
-      <ContactModal open mode="edit" recordId={id} initial={record} jobs={jobs} onSave={onSave} onCancel={onCancel} />
+      <ContactModal open mode="edit" recordId={id} initial={record} jobs={jobs} onSave={onSave} onCancel={onCancel} onDelete={onDelete} />
     </>
   )
 }
@@ -300,9 +331,18 @@ const Loading = ({ jobs, onSave, onCancel, held }: Pick<Extract<ContactModalProp
 export const TheRecordArrivesAfterItsId: Story = {
   parameters: { controls: { disable: true } },
   globals: { locale: 'fa-IR' },
-  render: (args) => (
-    <Loading jobs={args.jobs} onSave={args.onSave} onCancel={args.onCancel} held={{ id: FIRST_CONTACT.id, values: recordIn('fa-IR') }} />
-  ),
+  render: (args) => {
+    if (args.mode !== 'edit') throw new Error('this story is about editing a record')
+    return (
+      <Loading
+        jobs={args.jobs}
+        onSave={args.onSave}
+        onCancel={args.onCancel}
+        onDelete={args.onDelete}
+        held={{ id: FIRST_CONTACT.id, values: recordIn('fa-IR') }}
+      />
+    )
+  },
   play: async ({ args, canvasElement }) => {
     // KN-386 and KN-476: a page knows which record it wants before it has it,
     // so there is a render carrying the NEW id and the OLD record's values.
@@ -338,7 +378,7 @@ export const TheRecordArrivesAfterItsId: Story = {
 
 // A modal opened on a record that has not loaded, whose id never changes: the
 // record simply arrives afterwards, KN-476.
-const LateRecord = ({ jobs, onSave, onCancel }: Pick<Extract<ContactModalProps, { mode: 'edit' }>, 'jobs' | 'onSave' | 'onCancel'>) => {
+const LateRecord = ({ jobs, onSave, onCancel, onDelete }: Pick<Extract<ContactModalProps, { mode: 'edit' }>, 'jobs' | 'onSave' | 'onCancel' | 'onDelete'>) => {
   const [record, setRecord] = useState<ContactModalRecord | undefined>(undefined)
   return (
     <>
@@ -349,7 +389,16 @@ const LateRecord = ({ jobs, onSave, onCancel }: Pick<Extract<ContactModalProps, 
           setRecord({ id: FIRST_CONTACT.id, values: { ...recordIn('fa-IR'), name: FIRST_CONTACT.fullName } })
         }}
       />
-      <ContactModal open mode="edit" recordId={FIRST_CONTACT.id} initial={record} jobs={jobs} onSave={onSave} onCancel={onCancel} />
+      <ContactModal
+        open
+        mode="edit"
+        recordId={FIRST_CONTACT.id}
+        initial={record}
+        jobs={jobs}
+        onSave={onSave}
+        onCancel={onCancel}
+        onDelete={onDelete}
+      />
     </>
   )
 }
@@ -357,7 +406,10 @@ const LateRecord = ({ jobs, onSave, onCancel }: Pick<Extract<ContactModalProps, 
 export const TheRecordArrivesAfterOpening: Story = {
   parameters: { controls: { disable: true } },
   globals: { locale: 'fa-IR' },
-  render: (args) => <LateRecord jobs={args.jobs} onSave={args.onSave} onCancel={args.onCancel} />,
+  render: (args) => {
+    if (args.mode !== 'edit') throw new Error('this story is about editing a record')
+    return <LateRecord jobs={args.jobs} onSave={args.onSave} onCancel={args.onCancel} onDelete={args.onDelete} />
+  },
   play: async ({ args, canvasElement }) => {
     // The same rule seen the other way, and with the id NEVER changing, KN-476:
     // opened before its record exists, the form is empty and fills itself when
@@ -404,12 +456,13 @@ const fieldsIn =
   }
 
 export const KeyboardsForEachField: Story = {
+  args: { mode: 'add' },
   globals: { locale: 'fa-IR' },
   play: fieldsIn('fa-IR'),
 }
 
 export const KeyboardsForEachFieldInEnglish: Story = {
-  args: { jobs: jobsIn('en-US') },
+  args: { mode: 'add', jobs: jobsIn('en-US') },
   globals: { locale: 'en-US' },
   play: fieldsIn('en-US'),
 }

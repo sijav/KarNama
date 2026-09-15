@@ -140,6 +140,9 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   // A person being written from inside the job modal: their id when one is
   // being edited, null for a new one, undefined when that modal is closed.
   const [person, setPerson] = useState<{ id: string | null; values: ContactModalValues } | undefined>(undefined)
+  // The person deleted from their edit form, asked about before they go, KN-348:
+  // their id while the question is open, and nobody otherwise.
+  const [deletingPeople, setDeletingPeople] = useState<readonly string[]>([])
   // A column being renamed: its id and the name as it is being typed.
   const [renaming, setRenaming] = useState<{ id: string; name: string } | null>(null)
   // The control that asked to delete, kept as it asks, KN-344: by the time the
@@ -655,6 +658,12 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
           onCancel={() => {
             setPerson(undefined)
           }}
+          // Asked about first, as the network page asks, KN-348: the edit closes
+          // into the confirmation, and nobody goes until it is confirmed.
+          onDelete={() => {
+            setDeletingPeople([editing.id])
+            setPerson(undefined)
+          }}
         />
       )}
 
@@ -734,6 +743,20 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
         onConfirm={remove}
         onCancel={() => {
           setDeleting(null)
+        }}
+      />
+
+      <ConfirmModal
+        open={deletingPeople.length > 0}
+        title={i18n._('Delete contact')}
+        body={i18n._('This contact is deleted for good and cannot be brought back.')}
+        confirmLabel={i18n._('Delete')}
+        onConfirm={() => {
+          records.deleteContacts(deletingPeople)
+          setDeletingPeople([])
+        }}
+        onCancel={() => {
+          setDeletingPeople([])
         }}
       />
     </Stack>
