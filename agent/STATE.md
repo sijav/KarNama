@@ -46,19 +46,20 @@ KN-635); KN-370 (nothing); KN-385 (KN-636); KN-413 (KN-637, KN-638); KN-432 (not
 (KN-639, KN-640); KN-435 (nothing); KN-439 (KN-641, KN-642); KN-444 (nothing); KN-448 (KN-643);
 KN-449 (KN-645); KN-455 (nothing: its roast's claim that a disabled Button takes the real hover was
 measured false, MUI giving a disabled button `pointer-events: none`); KN-461 (KN-646, KN-647,
-KN-648). **Dropped**: KN-387, the language switch it would have styled being the flag Icon Button
-of KN-478 and KN-479; KN-474, satisfied by KN-472's f0b0702, both focus stories already naming the
-control they expect, measured passing. **KN-644 is filed** under KN-013: both Button docs pages
-still say `States` counts its cells from a frame callback, which KN-561 replaced. Earlier: KN-345
-(KN-626, KN-627), KN-343 (KN-625), KN-338 (KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332,
-KN-331 (KN-620), KN-024's round (KN-623).
+KN-648); KN-470 (KN-649, F6 dead for the 150 ms a closed modal dissolves). **Dropped**: KN-387, the
+language switch it would have styled being the flag Icon Button of KN-478 and KN-479; KN-474,
+satisfied by KN-472's f0b0702, both focus stories already naming the control they expect, measured
+passing. **KN-644 is filed** under KN-013: both Button docs pages still say `States` counts its
+cells from a frame callback, which KN-561 replaced. Earlier: KN-345 (KN-626, KN-627), KN-343
+(KN-625), KN-338 (KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331 (KN-620), KN-024's round
+(KN-623).
 
 **Rounds waiting**: KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on
 KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-028 on KN-346, KN-626 and
 KN-627; KN-031 on KN-628 and KN-629; KN-439 on KN-641 and KN-642; KN-448 on KN-643; KN-449 on
-KN-645; KN-461 on KN-646, KN-647 and KN-648; KN-013 on KN-644 among its twelve. **Still open from
-earlier**: KN-009 waits on KN-614; KN-022 on KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333,
-KN-334 and KN-357; KN-029 on its other children.
+KN-645; KN-461 on KN-646, KN-647 and KN-648; KN-470 on KN-649; KN-477 on twenty-one; KN-013 on
+KN-644 among its twelve. **Still open from earlier**: KN-009 waits on KN-614; KN-022 on KN-327,
+KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357; KN-029 on its other children.
 
 **What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
 `Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` overruns its 5 seconds while
@@ -89,23 +90,24 @@ KN-486.
 
 ## The next step
 
-1. **KN-470's roast is running** (work 6c1f16c; board f529e54), `kn470-roast.mjs` writing
-   `kn470-roast.txt`: judge, file with `--parent-task KN-470 --area web --okr OKR-1`, record, relay.
-2. **KN-474 is dropped** (board a9f0197): KN-472 had already made `FocusAfterDeleting` and
-   `FocusAfterDeletingFromTheModal` name the control that takes focus; both, with
-   `FocusAfterDeletingInAColumn`, pass.
-3. **KN-489 is in progress**, medium, 1 point, deploy: `.github/workflows/pages.yml` builds with
-   `VITE_API_URL` from `vars.KARNAMA_API_URL` unchecked, and `client.ts` turns an empty value into a
-   client that rejects every call, so a deploy without the variable reports success. Exit: the
-   build step fails when `VITE_API_URL` is empty, beginning with a check, and running that step
-   with the variable empty exits non-zero. Measure first, including whether the variable is set
-   today, so the check does not fail every deploy.
+1. **KN-489 is closed** (a8e7d8e; board 58fccd2): `Build the web app` in `pages.yml` begins with a
+   check that stops the build with an `::error` annotation when `VITE_API_URL` is unset, empty or
+   only white space; the step's own `run`, read with `yaml` and run in bash with `npm` stood in,
+   exited 0 for all four values before and exits 1 for the blank three after. **Its roast is
+   running**, `kn489-roast.mjs` writing `kn489-roast.txt`: judge, file with
+   `--parent-task KN-489 --area deploy --okr OKR-1`, record, relay. **Read the Pages run that push
+   started** with `gh run list --workflow pages.yml`; the variable is set, so it should build.
+2. **KN-470's roast is recorded**: KN-649 filed, F6 dead while a closed modal's paper dissolves.
+3. **KN-490 is in progress**, medium, 1 point, web: `warmApi` runs only inside
+   `RemoteAuthProvider`, and Pages signs in with the demo's mock provider, so nothing wakes Render
+   on load. Exit: with demo sign-in the app requests the health endpoint once on load, which a story
+   or test observes, and the add modal still explains a slow answer. Measure first.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-489`,
-`.github/workflows/pages.yml`, `apps/web/src/core/api/client.ts`, and the KN-489 plan once written.
-**Never chain a check through a pipe into a commit or a close, write long scripts with the Write
-tool, keep apostrophes out of single-quoted strings in scripts, find a story's controls inside
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-490`,
+`apps/web/src/core/api/client.ts`, the auth providers, and the KN-490 plan once written. **Never
+chain a check through a pipe into a commit or a close, write long scripts with the Write tool, keep
+apostrophes out of single-quoted strings in scripts, find a story's controls inside
 `#storybook-root`, and read an accessibility claim from the browser's own tree.** The Persian
 catalog is `apps/web/src/i18n/locales/fa-IR.ts`.
