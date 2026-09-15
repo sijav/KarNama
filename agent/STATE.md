@@ -96,18 +96,22 @@ The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-324's roast lands**, judge it, file survivors with `--parent-task KN-324`, which
-hangs them off KN-022 (`--area web --okr OKR-1` under four points), record with `todo roast
-KN-324 --file ... --filed ... --dismissed ...`, relay it to the owner, and commit the
-rendered board.
+**KN-324's roast is recorded** (db7a721): it confirmed the work and filed **KN-616**, low,
+for the owner, not yet asked: Figma's Loading State description asks for a turning
+`spinnerArc` the node does not draw. **KN-617**, low, is filed too: AGENTS.md section 3 sends a
+new string through a `.po` file and `lingui extract`, where the catalogs are the hand-written
+`src/i18n/locales/en-US.ts` and `fa-IR.ts`, held by `catalog.test.ts`.
 
-**KN-325 is next**, medium, 1 point, web, a child of KN-022: a Loading State whose
-`startedAt` moves past fifteen seconds shows the reading line for a render first; its exit
-asks for the slow line on the first render, whether mounted with such a start or changed to
-it, and a story that changes it while mounted. **It edits the files KN-324's roast reads,
-`LoadingState.tsx` and its stories: read, do not write, until that roast lands.** Measure
-first: `useSlow` keeps the start it saw run past and turns only on a zero delay timer; find
-whether reading the clock while rendering passes the react-hooks lint before planning on it.
+**KN-325 is in progress**, medium, 1 point, a child of KN-022; its plan sits beside
+`LoadingState.tsx` and is at its SECOND Codex review, `kn325-plan-review2.log` in the
+scratchpad: do not edit the Loading State, its stories, the catalogs, its story docs or
+DESIGN.md until it lands. The plan after the first review: `useSlow` reads a store per start
+with `useSyncExternalStore`, its snapshot the clock read once and kept, its timer set for every
+start and marking it past; a story `StartMovesPastFifteenSeconds` holds the start in state
+behind a Button, «Move the start back», presses it with `fireEvent`, which Storybook's React
+preview runs inside its own act, and reads the slow line straight after, first against today's
+component, where it must fail. Measured: `Date.now()` while rendering fails
+`react-hooks/purity`, recorded in AGENTS.md section 7 as 92a81d9, not yet pushed.
 
 ## What to read first
 
