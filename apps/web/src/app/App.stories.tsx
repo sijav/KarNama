@@ -67,7 +67,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Persian: Story = {
-  globals: { locale: 'fa-IR' },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     // The page's heading is the Page Header's, the current destination's name,
@@ -76,6 +76,9 @@ export const Persian: Story = {
     // The navigation is in the shell, the board the current page.
     await expect(canvas.getByRole('button', { name: 'فرصت‌های شغلی من' }).getAttribute('aria-current')).toBe(CURRENT)
     await expect(document.documentElement).toHaveAttribute('dir', 'rtl')
+    // The browser is told the page is light, so its own controls are drawn light,
+    // KN-496.
+    await expect(getComputedStyle(document.documentElement).colorScheme).toBe('light')
   },
 }
 
@@ -87,6 +90,9 @@ export const PersianDark: Story = {
     // text is light, which is the thing that breaks if the flip is dropped.
     const page = getComputedStyle(canvasElement.firstElementChild ?? canvasElement).backgroundColor
     await expect(luminanceOf(page)).toBeLessThan(0.3)
+    // And the browser is told so, KN-496: without it the page stayed light to the
+    // browser, and so did a date field's glyph, the scrollbars and a phone's picker.
+    await expect(getComputedStyle(document.documentElement).colorScheme).toBe('dark')
   },
 }
 

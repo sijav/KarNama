@@ -93,7 +93,11 @@ const ThemedTree = ({ children, remoteAuth }: { children: ReactNode; remoteAuth:
     <I18nProvider i18n={catalog}>
       <CacheProvider value={cache}>
         <ThemeProvider theme={theme}>
-          <CssBaseline />
+          {/* The browser is told which scheme the page is in, KN-496: without it a
+              dark page kept the browser's light controls, a near-black calendar
+              glyph on a dark date field, light scrollbars, and a light date picker
+              on a phone. */}
+          <CssBaseline enableColorScheme />
           {/* The board's records, inside the catalog so the five statuses the
               product starts with are named in the reader's language, KN-042. */}
           <SessionProvider>

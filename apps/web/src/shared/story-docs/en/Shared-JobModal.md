@@ -150,3 +150,9 @@ typed into the one before it.
 
 The same record handed over as a new object, which is what the provider does on
 every change: what the reader is typing stays.
+
+### InfoInTheDark
+
+The Info tab in the derived dark scheme, in Persian. The posting date's field is
+the browser's own date field, whose calendar glyph the browser draws, so the page
+tells the browser it is dark, and the glyph is drawn light on the dark field.

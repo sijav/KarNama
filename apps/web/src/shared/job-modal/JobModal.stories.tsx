@@ -622,3 +622,17 @@ export const KeepsTypingForTheSameRecord: Story = {
     await expect(body.getByRole('textbox', { name: 'عنوان شغلی' })).toHaveValue(typed)
   },
 }
+
+// Info in the derived dark scheme, KN-496: the posting date's field is a native
+// date field, whose calendar glyph the browser draws by the page's color-scheme
+// and nothing on the page can measure, so the story reads that scheme.
+export const InfoInTheDark: Story = {
+  parameters: FIXED,
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ args }) => {
+    const dialog = await dialogNamed(args.job.draft.title)
+    const posted = panelOf(dialog).querySelector('input[type="date"]')
+    if (!(posted instanceof HTMLInputElement)) throw new Error('the Info panel draws no date field')
+    await expect(getComputedStyle(posted).colorScheme).toBe('dark')
+  },
+}
