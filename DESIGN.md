@@ -504,7 +504,9 @@ use.
 2026-09-10, and the file draws only one value. A multiple select keeps its menu
 open after each choice, checks each chosen row, and lists the names in the
 field in the reader's own list style, `Intl.ListFormat`, cut with an ellipsis
-when they do not fit. The two selects the file names, «نوع همکاری» and «سطح
+when they do not fit. A single select handed more than one value reads only the
+first, in its field and in its checks, KN-332. The two selects the file names,
+«نوع همکاری» and «سطح
 شغلی», are `EmploymentTypeSelect` and `JobLevelSelect`, their values English
 ids and their names from the catalog. On the screens the only Select drawn is
 the contact modal's «آگهی مربوطه», whose own prompt is why the prompt is a prop.

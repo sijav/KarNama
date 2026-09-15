@@ -56,6 +56,10 @@ export const Select = ({ label, options, value, multiple = false, placeholder, d
   const labelId = useId()
   const shown = placeholder ?? i18n._('Choose…')
   const labelOf = (chosen: string) => options.find((option) => option.value === chosen)?.label ?? chosen
+  // What the select holds: the whole list when multiple, and otherwise its first
+  // value alone, which MUI is handed and each row's check reads, so a caller's
+  // longer list cannot check a row the field does not show, KN-332.
+  const held = multiple ? value : value.slice(0, 1)
   const change = (event: SelectChangeEvent<string | string[]>) => {
     const next = event.target.value
     // A multiple select can hand back a string from autofill, comma joined.
@@ -87,7 +91,7 @@ export const Select = ({ label, options, value, multiple = false, placeholder, d
         // run, KN-134.
         variant="standard"
         disabled={disabled}
-        value={multiple ? [...value] : (value[0] ?? '')}
+        value={multiple ? [...held] : (held[0] ?? '')}
         onChange={change}
         IconComponent={Chevron}
         input={<InputBase />}
@@ -181,7 +185,7 @@ export const Select = ({ label, options, value, multiple = false, placeholder, d
       >
         {options.map((option) => (
           <MenuItem key={option.value} value={option.value} disabled={option.disabled === true} disableRipple sx={optionRow.sx}>
-            <OptionLabel label={option.label} chosen={value.includes(option.value)} leading={option.leading} />
+            <OptionLabel label={option.label} chosen={held.includes(option.value)} leading={option.leading} />
           </MenuItem>
         ))}
       </MuiSelect>

@@ -25,7 +25,8 @@ too; a multiple select lists the names alone.
 ### value
 
 The values chosen, as a list: at most one unless the select is multiple. An
-empty list shows the prompt.
+empty list shows the prompt. A select that is not multiple reads only the first
+value, in its field and in its list.
 
 ### multiple
 
@@ -75,6 +76,11 @@ Escape and Tab.
 ### Multiple
 
 Two choices at once, as the employment type allows.
+
+### TwoValuesWithoutMultiple
+
+A single select handed two values: the field shows the first, and the list
+checks only its row.
 
 ### InEnglish
 

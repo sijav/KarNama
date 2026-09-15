@@ -334,6 +334,30 @@ export const Multiple: Story = {
   },
 }
 
+export const TwoValuesWithoutMultiple: Story = {
+  args: { value: [FULL_TIME, REMOTE] },
+  globals: { locale: 'fa-IR' },
+  // The play needs both values and a single select, so no control changes either.
+  parameters: { controls: { disable: true } },
+  play: async ({ args, canvasElement }) => {
+    // A caller's longer list, KN-332: a single select reads the first value
+    // alone, so the field shows one choice and the list checks one row.
+    const { combobox } = partsOf(canvasElement)
+    const first = args.options.find((option) => option.value === FULL_TIME)?.label
+    if (first === undefined) throw new Error('no full-time option')
+    await expect(combobox.textContent).toBe(first)
+    await userEvent.click(combobox)
+    const listbox = await listboxOf(canvasElement)
+    await expect(listbox).not.toHaveAttribute('aria-multiselectable')
+    const rows = rowsOf(listbox)
+    // MUI's own choice: the one row equal to the value it was handed.
+    await expect(rows.filter((row) => row.getAttribute('aria-selected') === 'true').map((row) => row.textContent)).toEqual([first])
+    // These options lead with nothing, so a row's only svg is its check.
+    await expect(rows.filter((row) => row.querySelector('svg') !== null).map((row) => row.textContent)).toEqual([first])
+    await userEvent.keyboard('{Escape}')
+  },
+}
+
 export const InEnglish: Story = {
   args: { ...EN, value: [FULL_TIME] },
   globals: { locale: 'en-US', colorScheme: 'light' },
