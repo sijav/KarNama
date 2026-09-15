@@ -97,10 +97,11 @@ const linguiOptions = {
     // The entry for `globalsUpdated`, the preview-channel event the docs page
     // subscribes to, went with KN-203: the page takes Storybook's own
     // GLOBALS_UPDATED constant, so no literal of it is left to exempt.
-    // The two section headings of the story-docs markdown format, matched while
-    // PARSING a file. Named rather than shape-matched, so this exempts the
-    // parser's comparison and not every occurrence of the words.
-    '^(props|stories)$',
+    // The entry for the story-docs format's two section names, `props` and
+    // `stories`, went with KN-215. Its comment said it exempted the parser's
+    // comparison and not every occurrence of the words, but an entry is tested
+    // against every string the rule reads, so `aria-label="stories"` passed in
+    // any file. The parser returns the name it compared now, which needs none.
     // A CSS media query is an API string, not copy. Written out in full rather
     // than as a wildcard for anything in brackets, because the point of this
     // list is that each entry names one thing.

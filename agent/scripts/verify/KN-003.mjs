@@ -155,7 +155,10 @@ check('EVERY planted unlocalized string FAILS the lint', () => {
     'unlocalized-setattribute.tsx',
     'unlocalized-tokenlike.tsx',
     'unlocalized-story-title.stories.tsx',
+    'unlocalized-section-words.tsx',
   ]
+  // The lingui reports a fixture of several holes gives, one a hole, KN-215.
+  const REPORTS = { 'unlocalized-section-words.tsx': 3 }
   const absent = required.filter((name) => !fixtures.includes(name))
   if (absent.length) return `these fixtures are required by name and are missing: ${absent.join(', ')}`
 
@@ -171,6 +174,14 @@ check('EVERY planted unlocalized string FAILS the lint', () => {
     // exit non-zero and would prove nothing about the rule.
     if (!output.includes('lingui/no-unlocalized-strings')) {
       problems.push(`${fixture} failed, but not on the lingui rule: ${output.slice(0, 300)}`)
+      continue
+    }
+    // A fixture of several holes gives a report for each, KN-215: one report is all
+    // the check above asks, and a fixture of three would still give it on its text
+    // alone if an attribute went through again.
+    const given = output.split('lingui/no-unlocalized-strings').length - 1
+    if (fixture in REPORTS && given !== REPORTS[fixture]) {
+      problems.push(`${fixture} gave ${given} lingui reports, where each of its ${REPORTS[fixture]} holes gives one`)
     }
   }
   return problems.length ? problems.join(' | ') : null

@@ -54,9 +54,9 @@ const sectionOf = (line: string): Section | null => {
     .replace(/^##\s+/, '')
     .trim()
     .toLowerCase()
-  if (name === 'props') return 'props'
-  if (name === 'stories') return 'stories'
-  return null
+  // The name the comparison narrowed, not a literal of its own, which the lingui
+  // rule would read as copy, KN-215.
+  return name === 'props' || name === 'stories' ? name : null
 }
 
 /**

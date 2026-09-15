@@ -443,6 +443,7 @@ short and the lessons sit in a file every iteration reads.
 - MUI's Chip is `max-width: 100%` of its group: beside a count, hold it in a `min-width: 0` item or the count is pushed out.
 - Figma's hidden layer gives up its room: fold a control to no room and fade it, never `display: none`, which drops it from the Tab order.
 - A bare literal `'x' as const` skips the lingui rule entirely (KN-217); type the binding against a union instead. The rule also skips a literal compared with `===`, ignores every string under an `sx` key, and recognises `i18n._()` only on an instance named `i18n`.
+- `useTsTypes` passes a literal only when its contextual type is a union made wholly of string literals, so a literal returned from a function typed `Section | null` is copy to the lingui rule: return the value a comparison narrowed instead (KN-215).
 - Stories that drive the real pointer collide when story files run in parallel (KN-365): rerun a lone failure alone before reading it as a regression.
 - A radio group's arrows: Blink flips left and right by direction, WebKit never does; the pickers take the two keys themselves (KN-301).
 - The Browser pane's key action wants `ArrowLeft`, not `Left`, and a click first; its type action inserts text without key events, its drag does not start an HTML5 drag, and while the window is hidden it runs no animation frames and its screenshots time out: look headless with Playwright from a scratchpad script, `createRequire` from `apps/web/package.json`, at `deviceScaleFactor` 2.

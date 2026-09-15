@@ -47,18 +47,22 @@ const COPY = ['Delete', 'Save', 'Cancel', 'Close', 'x', 'Delete this application
 // The three letters in Latin-1's punctuation block, U+00AA, U+00B5 and U+00BA,
 // which the entry this config used to carry let through, KN-366.
 const LATIN_1_LETTERS = ['1ª', '5µ', 'º']
+// The story-docs format's two section names, which an entry of this config let
+// through in every file until KN-215, aria-label="stories" among them.
+const SECTION_WORDS = ['props', 'stories']
 // What has no letter in it and so cannot be copy: digits in three scripts,
 // whitespace, punctuation and symbols.
 const NOT_COPY = ['12', '۱۲', '١٢', '—', '…', '#', '؟', '،', '·', '→', '12:30', '(0)']
 
 describe('the lingui rule’s ignore entries, compiled as the rule compiles them', () => {
   it('are all read out of the config', () => {
-    expect(entries.length).toBeGreaterThanOrEqual(3)
+    expect(entries.length).toBeGreaterThanOrEqual(2)
     expect(entries).toContain('^(rtl|ltr|fa-IR|en-US)$')
   })
 
-  it('whitelist no copy, in either language, nor the three Latin-1 letters', () => {
-    for (const text of [...COPY, ...LATIN_1_LETTERS]) expect(compiled.filter((pattern) => pattern.test(text)).map(String)).toEqual([])
+  it('whitelist no copy, in either language, nor the three Latin-1 letters, nor the story-docs section names', () => {
+    for (const text of [...COPY, ...LATIN_1_LETTERS, ...SECTION_WORDS])
+      expect(compiled.filter((pattern) => pattern.test(text)).map(String)).toEqual([])
   })
 
   it('leave what has no letter to the plugin, whose own pattern lets it through and checks every letter', () => {

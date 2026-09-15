@@ -52,6 +52,14 @@ RegExp(entry)` and no flags, so the no-letter entry `^[^\p{L}]*$` meant "no
   U+00BF whole, and three of those are letters, KN-366. The entry is gone: the
   plugin's own `/^[^\p{L}]+$/u` already skips what has no letter.
 
+- `unlocalized-section-words.tsx`: `stories` as an `aria-label` and as text, and
+  `props` as a `title`. The entry `^(props|stories)$` was written for the two
+  section names the story-docs parser returned, and the rule tests an ignore entry
+  against every string in every file, so both words passed anywhere, KN-215. The
+  parser returns the name it compared now, and the entry is gone. `KN-003.mjs`
+  requires this fixture's three reports, since its text alone would still fail if
+  an attribute went through again.
+
 - `unlinted-copy.mdx` — a bare English label in MDX. No lint block reads an
   `.mdx`, so it passes `npm run lint`; Storybook indexes no MDX, so it reaches
   no page either, and `stories-glob.test.ts` checks that no stories pattern
