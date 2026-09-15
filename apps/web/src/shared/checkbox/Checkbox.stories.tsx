@@ -140,7 +140,14 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+// Rendered from its args, so every control changes the Checkbox, and the Docs
+// page, whose Controls are the first story's, offers all three, KN-255.
+export const Default: Story = {}
+
+// Each story from here pins a state, so it offers only the controls its play
+// holds for, KN-255.
 export const Unchecked: Story = {
+  parameters: { controls: { include: ['disabled'] } },
   play: async ({ canvasElement }) => {
     const box = await namedBox(canvasElement)
     await expect(box).not.toBeChecked()
@@ -154,6 +161,7 @@ export const Unchecked: Story = {
 
 export const Checked: Story = {
   args: { checked: true },
+  parameters: { controls: { include: ['indeterminate', 'disabled'] } },
   play: async ({ canvasElement }) => {
     await expect(await namedBox(canvasElement)).toBeChecked()
     await edgeIsTheFiles(canvasElement)
@@ -183,6 +191,7 @@ export const Checked: Story = {
 
 export const Indeterminate: Story = {
   args: { indeterminate: true },
+  parameters: { controls: { include: ['checked', 'disabled'] } },
   play: async ({ canvasElement }) => {
     const box = await namedBox(canvasElement)
     // There is no `indeterminate` content attribute in HTML. If this were
@@ -199,6 +208,9 @@ export const Hover: Story = {
   // Pinned to light so the expected colour is one known token, not whichever
   // palette the toolbar happens to be on.
   globals: { colorScheme: 'light' },
+  // Its play starts on the unchecked, enabled resting edge, which each control
+  // changes, so none is offered, KN-255.
+  parameters: { controls: { disable: true } },
   play: async ({ canvasElement }) => {
     const box = await namedBox(canvasElement)
     const frame = frameOf(canvasElement)
@@ -236,6 +248,7 @@ export const Hover: Story = {
 
 export const Disabled: Story = {
   args: { disabled: true },
+  parameters: { controls: { include: ['indeterminate'] } },
   play: async ({ canvasElement }) => {
     const box = await namedBox(canvasElement)
     await expect(box).toBeDisabled()
@@ -261,6 +274,7 @@ export const Disabled: Story = {
 }
 
 export const KeyboardOnly: Story = {
+  parameters: { controls: { include: ['indeterminate'] } },
   play: async ({ args, canvasElement }) => {
     const box = await namedBox(canvasElement)
     // Reachable by Tab and toggleable by Space, with no pointer anywhere in

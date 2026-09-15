@@ -1,7 +1,7 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { useContext } from 'react'
 import { expect, spyOn, userEvent, within } from 'storybook/test'
-import type { Locale } from '../../i18n'
+import { localeOrder, type Locale } from '../../i18n'
 import type { StoryMeta } from '../../shared/story-docs/story-meta'
 import type { ColorSchemePreference } from '../../theme/useColorScheme'
 import { PreferencesContext, PreferencesProvider } from './PreferencesProvider'
@@ -59,10 +59,19 @@ const SeededProbe = ({ initialLocale, initialColorScheme }: ProbeProps) => (
   </PreferencesProvider>
 )
 
+// The colour schemes a reader can choose, as the Settings dialog offers them.
+const SCHEMES: ColorSchemePreference[] = ['light', 'dark', 'system']
+
 const meta = {
   title: 'Core/PreferencesProvider',
   component: SeededProbe,
   args: { initialLocale: 'fa-IR', initialColorScheme: 'light' },
+  // A choice among what the provider can hold, where a text control would take
+  // any string, KN-255.
+  argTypes: {
+    initialLocale: { control: 'select', options: localeOrder },
+    initialColorScheme: { control: 'select', options: SCHEMES },
+  },
 } satisfies StoryMeta<typeof SeededProbe>
 
 export default meta
@@ -78,12 +87,14 @@ type Story = StoryObj<typeof meta>
  * is put back here, and the story checks both halves: its own store holds the
  * two choices, and nothing was written to a real Storage in this frame.
  */
-const clickingBothSetters = async (canvasElement: HTMLElement) => {
+const clickingBothSetters = async (canvasElement: HTMLElement, seed: ProbeProps) => {
   const canvas = within(canvasElement)
-  // The seeded state, asserted first. Without this the story could pass by
-  // starting in the state it is supposed to end in.
-  await expect(canvas.getByTestId('locale')).toHaveTextContent('fa-IR')
-  await expect(canvas.getByTestId('colorScheme')).toHaveTextContent('light')
+  // The seeded state, asserted first, as the args give it. Without this the
+  // story could pass by starting in the state it is supposed to end in; seeded
+  // with en-US or dark from Controls, the click proves nothing for that field,
+  // KN-255.
+  await expect(canvas.getByTestId('locale')).toHaveTextContent(seed.initialLocale)
+  await expect(canvas.getByTestId('colorScheme')).toHaveTextContent(seed.initialColorScheme)
 
   const shared = spyOn(Storage.prototype, 'setItem')
   try {
@@ -102,10 +113,10 @@ const clickingBothSetters = async (canvasElement: HTMLElement) => {
 
 export const Persian: Story = {
   globals: { locale: 'fa-IR' },
-  play: async ({ canvasElement }) => clickingBothSetters(canvasElement),
+  play: async ({ args, canvasElement }) => clickingBothSetters(canvasElement, args),
 }
 
 export const English: Story = {
   globals: { locale: 'en-US' },
-  play: async ({ canvasElement }) => clickingBothSetters(canvasElement),
+  play: async ({ args, canvasElement }) => clickingBothSetters(canvasElement, args),
 }

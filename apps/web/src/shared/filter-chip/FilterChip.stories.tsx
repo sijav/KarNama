@@ -1,6 +1,7 @@
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
+import { formatCount } from '../../i18n/formatCount'
 import { contrast } from '../../theme/darkMode'
 import { spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -118,21 +119,26 @@ const isTheFiles = async (canvasElement: HTMLElement) => {
 
 export const Default: Story = {
   globals: { locale: 'fa-IR' },
-  play: async ({ canvasElement }) => {
+  // The Docs page's Controls are this story's, so it reads what it expects from
+  // its args rather than from the chip it starts as, KN-255.
+  play: async ({ args, canvasElement }) => {
     const chip = within(canvasElement).getByRole('button')
     // The count is in the reader's own digits, which is the whole reason it
-    // goes through i18n.number rather than into the string raw.
-    await expect(chip).toHaveTextContent(`${statusName('fa-IR', 'interview')} (۳)`)
-    await expect(chip).toHaveAttribute('aria-pressed', 'false')
-    // Node 159:63: a one pixel edge, inside, and the text 12 from each side.
+    // goes through formatCount rather than into the string raw.
+    await expect(chip.textContent).toBe(`${args.label} (${formatCount('fa-IR', args.count)})`)
+    await expect(chip).toHaveAttribute('aria-pressed', String(args.selected ?? false))
+    // Node 159:63: a one pixel edge, inside, and the text 12 from each side;
+    // 159:69, selected, draws no edge until KN-279's blue one.
     const edge = await isTheFiles(canvasElement)
-    await expect([edge.borderTopStyle, Number.parseFloat(edge.borderTopWidth)]).toEqual(['solid', 1])
+    await expect([edge.borderTopStyle, Number.parseFloat(edge.borderTopWidth)]).toEqual(args.selected ? ['none', 0] : ['solid', 1])
   },
 }
 
 export const Selected: Story = {
   args: { selected: true },
   globals: { locale: 'fa-IR' },
+  // Selection is what this story is, so it is not offered, KN-255.
+  parameters: { controls: { include: ['label', 'count'] } },
   play: async ({ canvasElement }) => {
     // Announced, not only shown. A colour change alone tells a screen reader
     // nothing, and this chip IS the filter state.
@@ -146,10 +152,10 @@ export const Selected: Story = {
 
 export const InEnglish: Story = {
   globals: { locale: 'en-US' },
-  play: async ({ canvasElement }) => {
+  play: async ({ args, canvasElement }) => {
     // Same component, Latin digits. The label is record data and arrives as
     // whatever the user named the status, so it does not translate.
-    await expect(within(canvasElement).getByRole('button')).toHaveTextContent(`${statusName('fa-IR', 'interview')} (3)`)
+    await expect(within(canvasElement).getByRole('button').textContent).toBe(`${args.label} (${formatCount('en-US', args.count)})`)
     // And the same 12 either side, the direction turned.
     await isTheFiles(canvasElement)
   },
@@ -158,6 +164,9 @@ export const InEnglish: Story = {
 export const Counting: Story = {
   args: { count: 1234 },
   globals: { locale: 'fa-IR' },
+  // The grouping of this count is what this story is, so the count is not
+  // offered, KN-255.
+  parameters: { controls: { include: ['label', 'selected'] } },
   play: async ({ canvasElement }) => {
     // Grouping is locale business too, not just the digits.
     await expect(within(canvasElement).getByRole('button')).toHaveTextContent('۱٬۲۳۴')
@@ -168,8 +177,9 @@ export const Toggling: Story = {
   play: async ({ args, canvasElement }) => {
     const chip = within(canvasElement).getByRole('button')
     await userEvent.click(chip)
-    // Reports the state it is moving TO, so a caller never has to invert it.
-    await expect(args.onToggle).toHaveBeenCalledWith(true)
+    // Reports the state it is moving TO, so a caller never has to invert it:
+    // the other one from the selected it was given, KN-255.
+    await expect(args.onToggle).toHaveBeenCalledWith(!(args.selected ?? false))
   },
 }
 
@@ -181,9 +191,9 @@ export const KeyboardOnly: Story = {
     await userEvent.tab()
     await expect(chip).toHaveFocus()
     await userEvent.keyboard('{Enter}')
-    await expect(args.onToggle).toHaveBeenLastCalledWith(true)
+    await expect(args.onToggle).toHaveBeenLastCalledWith(!(args.selected ?? false))
     await userEvent.keyboard(' ')
-    await expect(args.onToggle).toHaveBeenLastCalledWith(true)
+    await expect(args.onToggle).toHaveBeenLastCalledWith(!(args.selected ?? false))
     await expect(args.onToggle).toHaveBeenCalledTimes(2)
   },
 }

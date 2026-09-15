@@ -34,6 +34,16 @@ const chipOf = (name: HTMLElement) => {
   return chip
 }
 
+// The story's one chip, found without its name, so a label changed or emptied in
+// Controls does not lose it: the chip is the element that takes its direction
+// from the name, KN-255.
+const theChip = (canvasElement: HTMLElement) => {
+  const chips = [...canvasElement.querySelectorAll<HTMLElement>('[dir="auto"]')]
+  const chip = chips[0]
+  if (chips.length !== 1 || !chip) throw new Error(`expected one chip in the canvas, found ${String(chips.length)}`)
+  return chip
+}
+
 const DEFAULTS: DefaultStatus[] = ['new', 'applied', 'interview', 'rejected', 'offer']
 
 // A status a user renamed to something long: record data, so not translated.
@@ -90,13 +100,16 @@ export const Default: Story = {}
 
 export const FromArgs: Story = {
   // Nothing like the defaults: a custom slot at the column-header size. The
-  // chip must follow the args, or the Controls panel is controlling nothing.
+  // chip must follow the args, or the Controls panel is controlling nothing, so
+  // every expectation is read from them, KN-255.
   globals: { colorScheme: 'light' },
   args: { status: 'custom-2', label: statusName('fa-IR', 'custom-2'), size: 'M' },
   play: async ({ args, canvasElement }) => {
-    const chip = chipOf(within(canvasElement).getByText(args.label))
-    await expect(chip.offsetHeight).toBe(28)
-    await expect(getComputedStyle(chip).backgroundColor).toBe(computedColour(chip, statusTokens['custom-2'].container))
+    const chip = theChip(canvasElement)
+    await expect(chip.textContent).toBe(args.label)
+    const [, height] = MEASURES.find(([size]) => size === args.size) ?? []
+    await expect(chip.offsetHeight).toBe(height)
+    await expect(getComputedStyle(chip).backgroundColor).toBe(computedColour(chip, statusTokens[args.status].container))
   },
 }
 
@@ -144,8 +157,10 @@ export const AllStatuses: Story = {
 
 export const ColumnHeaderSize: Story = {
   args: { size: 'M' },
+  // The size is what this story is, so it is not offered, KN-255.
+  parameters: { controls: { include: ['status', 'label'] } },
   play: async ({ canvasElement }) => {
-    const chip = chipOf(within(canvasElement).getByText(statusName('fa-IR', 'applied')))
+    const chip = theChip(canvasElement)
     // Size=M: 28 tall, body's 14 and 22 with label's weight and tracking.
     await expect(chip.offsetHeight).toBe(28)
     const style = getComputedStyle(chip)
@@ -155,7 +170,7 @@ export const ColumnHeaderSize: Story = {
 
 export const DisplayOnly: Story = {
   play: async ({ canvasElement }) => {
-    const chip = chipOf(within(canvasElement).getByText(statusName('fa-IR', 'applied')))
+    const chip = theChip(canvasElement)
     // Nothing to press and nothing to land on: no role, no tabindex, and Tab
     // passes it by. A focus ring on every card is exactly what this avoids.
     await expect(chip).not.toHaveAttribute('role')
@@ -170,6 +185,8 @@ export const RenamedStatus: Story = {
   // The user renamed Applied. The chip shows THEIR name, from the record, and
   // not the catalog's, which no longer describes this status.
   args: { status: 'applied', label: fixtures('fa-IR').renamedStatus.name },
+  // The renamed label is what this story is, so it is not offered, KN-255.
+  parameters: { controls: { include: ['status', 'size'] } },
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByText(fixtures('fa-IR').renamedStatus.name)).toBeInTheDocument()
     await expect(within(canvasElement).queryByText(statusName('fa-IR', 'applied'))).not.toBeInTheDocument()

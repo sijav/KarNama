@@ -351,6 +351,14 @@ A story composing several instances has no single component to drive: either
 spread args across all of them, or disable the panel and say why. An empty panel
 is honest, a dead one is not.
 
+A story with a play function offers only the controls its play holds for, through
+`parameters.controls.include`, or reads its expectations from its args, or
+disables the panel and says why, KN-255: Storybook offers every control unless
+told otherwise, and a reviewer who changes one and presses Rerun meets a failure
+nothing caused. The first story's controls are the Docs page's, so it keeps every
+control that holds, or a story with no play goes first, as StatusChip's `Default`
+does. `node agent/scripts/storybook/controls-sweep.mjs` measures it by hand.
+
 `argTypes` carries the control shape only. Descriptions live in markdown.
 
 ### Style

@@ -155,6 +155,9 @@ const meta = {
     title: BLOCKED.reason,
     children: <button type="button">{BLOCKED.label}</button>,
   },
+  // The trigger and the icon are React elements, which no control can take, so
+  // their rows show with no editor, KN-255.
+  argTypes: { children: { control: false }, icon: { control: false } },
 } satisfies StoryMeta<typeof Tooltip>
 
 export default meta
@@ -327,6 +330,8 @@ export const AcceptsATriggerThatMountsLate: Story = {
 }
 
 export const ReportsATriggerSwappedForOneThatCannotAttach: Story = {
+  // Its wrapper takes the title alone, so the title is its one control, KN-255.
+  parameters: { controls: { include: ['title'] } },
   render: (args) => <SwappingTooltip title={args.title} />,
   beforeEach: captureConsoleErrors,
   play: async () => {
@@ -337,6 +342,8 @@ export const ReportsATriggerSwappedForOneThatCannotAttach: Story = {
 }
 
 export const KeepsTheTriggersOwnDescription: Story = {
+  // Its wrapper takes the title alone, so the title is its one control, KN-255.
+  parameters: { controls: { include: ['title'] } },
   render: (args) => <HintedExample title={args.title} />,
   beforeEach: captureConsoleErrors,
   play: async ({ args, canvasElement }) => {

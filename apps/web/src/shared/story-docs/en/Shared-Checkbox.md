@@ -77,6 +77,10 @@ changes after that is not read again.
 
 ## Stories
 
+### Default
+
+Rendered from its args: every control changes the Checkbox.
+
 ### Unchecked
 
 The default. The frame is the surface colour with the default border.
