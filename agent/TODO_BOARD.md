@@ -6643,6 +6643,10 @@ CHILD OF KN-024, recorded in prose because board.json cannot express parent_task
 
 **Evidence.** 54f5e2b: the Sort Control's status region and the state that fed it are gone, so a change is read by the combobox MUI gives focus back to, which shows the order chosen, and not again; nothing but the open list changes the order, MUI's closed type-ahead finding no text in the rows; ChangedByKeyboard holds the order in state and reads the closed control showing the order chosen, focus on it and no status region, and failed alone against the component as it was, at the status region; Sorted by left both catalogs; Sort Control stories 4 of 4, unit 1494 of 1494, lint and tsc clean; seen in fa-IR light and dark and in en-US; no screen reader was run
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T160243-task-kn-336-a-sort-change-is-read-out-twice-and-the-k-cf0ebc.md, filed none, dismissed: Nothing to file. Its one caveat, that the docs and comment say the order is read out while no screen reader was run, is the card's own exit in the card's words, about the structure a screen reader reads as focus comes back, and the commit and the close's evidence both say no screen reader was run. It confirmed every order change comes from the open list with focus restored, nothing relied on the removed region, and the component renders no status region in any portal.
+
 ### `KN-337` The Status Control's popup says it is a dialog, is not one, and opens with focus on its bare panel
 
 - **status** done · **severity** high · **points** 1 · **area** web · **objective** OKR-1
