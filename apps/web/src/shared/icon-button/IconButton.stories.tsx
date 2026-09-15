@@ -213,47 +213,50 @@ const Explained = () => {
 export const InATooltip: Story = {
   parameters: { controls: { disable: true } },
   globals: { locale: 'fa-IR' },
+  // KN-310: the button used to declare only its own props, so the ref and the
+  // aria-describedby the Tooltip clones onto its child were dropped and the tip
+  // could never open. A console.error from either component is a failure of this
+  // story as much as a missing tip is. Watched from before the render, KN-449:
+  // the Tooltip reports a child that took no ref in its ref callback, and MUI one
+  // that took no props in a mount effect, both before a play starts. And watched
+  // without being replaced: the spy calls through to the console as it was,
+  // which in the runner is KN-401's guard, so the guard hears what the story
+  // hears, KN-522.
+  beforeEach: () => {
+    const report = spyOn(console, 'error')
+    return () => {
+      report.mockRestore()
+    }
+  },
   render: () => <Explained />,
   play: async ({ canvasElement }) => {
-    // KN-310: the button used to declare only its own props, so the ref and the
-    // aria-describedby the Tooltip clones onto its child were dropped and the
-    // tip could never open. A console.error from either component is a failure
-    // of this story as much as a missing tip is.
-    // Watched without being replaced: the spy calls through to the console as it
-    // was, which in the runner is KN-401's guard, so the guard hears what the
-    // story hears, KN-522.
-    const watching = spyOn(console, 'error')
-    try {
-      const button = within(canvasElement).getByRole('button', { name: 'حذف وضعیت' })
+    const button = within(canvasElement).getByRole('button', { name: 'حذف وضعیت' })
 
-      // Described from the first render, before anything is opened, KN-231: a
-      // screen reader on the focused button hears the tip's text, and the
-      // button keeps its OWN name rather than being renamed by the tip.
-      const describes = button.getAttribute('aria-describedby') ?? ''
-      await expect(describes).not.toBe('')
-      const description = describes
-        .split(' ')
-        .map((id) => canvasElement.ownerDocument.getElementById(id)?.textContent ?? '')
-        .join(' ')
-      await expect(description).toContain('این وضعیت')
+    // Described from the first render, before anything is opened, KN-231: a
+    // screen reader on the focused button hears the tip's text, and the
+    // button keeps its OWN name rather than being renamed by the tip.
+    const describes = button.getAttribute('aria-describedby') ?? ''
+    await expect(describes).not.toBe('')
+    const description = describes
+      .split(' ')
+      .map((id) => canvasElement.ownerDocument.getElementById(id)?.textContent ?? '')
+      .join(' ')
+    await expect(description).toContain('این وضعیت')
 
-      // It opens on hover, and on focus alone, which is the clause a
-      // hover-only tip fails.
-      await userEvent.hover(button)
-      const tip = await within(canvasElement.ownerDocument.body).findByRole('tooltip')
-      await expect(tip).toHaveTextContent('این وضعیت')
-      await userEvent.unhover(button)
-      await waitFor(async () => {
-        await expect(within(canvasElement.ownerDocument.body).queryByRole('tooltip')).toBeNull()
-      })
-      await userEvent.tab()
-      await expect(button).toHaveFocus()
-      await expect(await within(canvasElement.ownerDocument.body).findByRole('tooltip')).toHaveTextContent('این وضعیت')
+    // It opens on hover, and on focus alone, which is the clause a
+    // hover-only tip fails.
+    await userEvent.hover(button)
+    const tip = await within(canvasElement.ownerDocument.body).findByRole('tooltip')
+    await expect(tip).toHaveTextContent('این وضعیت')
+    await userEvent.unhover(button)
+    await waitFor(async () => {
+      await expect(within(canvasElement.ownerDocument.body).queryByRole('tooltip')).toBeNull()
+    })
+    await userEvent.tab()
+    await expect(button).toHaveFocus()
+    await expect(await within(canvasElement.ownerDocument.body).findByRole('tooltip')).toHaveTextContent('این وضعیت')
 
-      await expect(watching).not.toHaveBeenCalled()
-    } finally {
-      watching.mockRestore()
-    }
+    await expect(console.error).not.toHaveBeenCalled()
   },
 }
 
