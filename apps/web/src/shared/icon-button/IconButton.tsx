@@ -127,6 +127,11 @@ export const IconButton = (props: IconButtonProps) => {
     'aria-label': name,
     disableRipple: true,
     onClick,
+    // The hover is drawn only where the device can hover, KN-313: a touch screen
+    // keeps :hover on what was tapped, so a fill drawn for every device stayed
+    // after a tap, measured in Playwright's Pixel 7. MUI's own reset under
+    // (hover: none) is in the style it gives a button with a ripple, and this one
+    // has none.
     sx: (theme: Theme) => {
         const colour = theme.karnama.semantic
         const hover =
@@ -140,7 +145,7 @@ export const IconButton = (props: IconButtonProps) => {
           padding: 0,
           borderRadius: `${theme.karnama.radius.md}px`,
           color: colour['text/secondary'],
-          '&:hover': { backgroundColor: hover.fill, color: hover.icon },
+          '@media (hover: hover)': { '&:hover': { backgroundColor: hover.fill, color: hover.icon } },
           '&.Mui-disabled': { opacity: DISABLED_OPACITY, color: colour['text/disabled'] },
           '&.Mui-focusVisible::after': {
             content: '""',
