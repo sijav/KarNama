@@ -43,22 +43,25 @@ holds the Groq key; never repeat that key anywhere.
 **Closed today, each roast recorded**: KN-348 (filed KN-628, KN-629); KN-349 (nothing); KN-358
 (nothing); KN-359 (KN-632; KN-631 dropped as a duplicate of KN-413); KN-362 (KN-633, KN-634,
 KN-635); KN-370 (nothing); KN-385 (KN-636); KN-413 (KN-637, KN-638); KN-432 (nothing); KN-434
-(KN-639, KN-640); KN-435 (nothing); KN-439 (KN-641, KN-642); KN-444 (nothing); KN-448 (KN-643).
-KN-387 is dropped: the language switch it would have styled is the flag Icon Button of KN-478 and
-KN-479. Earlier: KN-345 (KN-626, KN-627), KN-343 (KN-625), KN-338 (KN-624), KN-336, KN-335
+(KN-639, KN-640); KN-435 (nothing); KN-439 (KN-641, KN-642); KN-444 (nothing); KN-448 (KN-643);
+KN-449 (KN-645). KN-387 is dropped: the language switch it would have styled is the flag Icon
+Button of KN-478 and KN-479. **KN-644 is filed** under KN-013, found while measuring KN-455: both
+Button docs pages still say `States` counts its cells from a frame callback, which KN-561
+replaced. Earlier: KN-345 (KN-626, KN-627), KN-343 (KN-625), KN-338 (KN-624), KN-336, KN-335
 (KN-621, KN-622), KN-332, KN-331 (KN-620), KN-024's round (KN-623).
 
 **Rounds waiting**: KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on
 KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-028 on KN-346, KN-626 and
-KN-627; KN-031 on KN-628 and KN-629; KN-439 on KN-641 and KN-642; KN-448 on KN-643. **Still open
-from earlier**: KN-009 waits on KN-614; KN-022 on KN-327, KN-615, KN-616 and KN-619; KN-012 on
-KN-333, KN-334 and KN-357; KN-029 on its other children.
+KN-627; KN-031 on KN-628 and KN-629; KN-439 on KN-641 and KN-642; KN-448 on KN-643; KN-449 on
+KN-645; KN-013 on KN-644 among its twelve. **Still open from earlier**: KN-009 waits on KN-614;
+KN-022 on KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357; KN-029 on its
+other children.
 
 **What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
 `Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` overruns its 5 seconds while
-the machine is loaded, KN-551, as it did in the full runs of KN-435, KN-439, KN-444 and KN-449,
-though not in KN-448's: rerun the file alone, then read the unit project. `App.tsx` line 107
-uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486.
+the machine is loaded, KN-551, as it did in the full runs of KN-435, KN-439, KN-444, KN-449 and
+KN-455, though not in KN-448's: rerun the file alone, then read the unit project. `App.tsx` line
+107 uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486.
 
 ## The owner's rules, most recent first
 
@@ -82,24 +85,25 @@ uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486.
 
 ## The next step
 
-1. **KN-449 is closed** (d0c449c; board 020cd08): `InATooltip` puts its `console.error` spy up in
-   `beforeEach`, calling through, and the play reads `console.error`. With MUI's clone marker left
-   out of what the Icon Button forwards, the story passed while MUI warned before the change, and
-   fails after it. **Its roast is running**, `kn449-roast.mjs` writing `kn449-roast.txt`: judge,
-   file with `--parent-task KN-449 --area web --okr OKR-1`, record, relay.
-2. **KN-448's roast is recorded**: KN-643 filed, the comment saying a handler of the button's own
-   is composed with the forwarded one where none exists.
-3. **KN-455 is in progress**, medium, 1 point, web: a disabled Button given a forced `data-state`
-   draws what node `31:4` never draws, the pressed Ghost's 0.9 opacity or the focus ring, since the
-   state twins are not gated on the button being enabled. Exit: a disabled button shows its disabled
-   look whatever `data-state` says, and a story renders one to prove it. Measure first: the card is
-   from the KN-316 roast.
+1. **KN-455 is closed** (00f3e8e; board ab9fe9b): each `data-state` twin in `Button.tsx` carries
+   `:not(.Mui-disabled)`, so a disabled Button draws its disabled look whatever the attribute says;
+   `DisabledWhateverItsState` reads all forty-five disabled and forced cells, failed before the gate
+   and passes after, and both Button docs pages describe it. **Its roast is running**,
+   `kn455-roast.mjs` writing `kn455-roast.txt`: judge, file with
+   `--parent-task KN-455 --area web --okr OKR-1`, record, relay.
+2. **KN-449's roast is recorded**: KN-645 filed, two Icon Button story comments timing the
+   Tooltip's missing-ref report wrongly.
+3. **KN-461 is in progress**, medium, 1 point, docs: the sign-in docs say the code was sent and send
+   readers to the console, and `e2e/sign-in.spec.ts` says a resend really sends, while the mock
+   sends nothing and the code step shows the code, KN-459. Exit: neither SignIn introduction
+   mentions the console or says the code was sent, and the spec's comments say the mock makes and
+   shows the code. Measure first; the product's own copy is KN-589's, the owner's to settle.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-455`,
-`Button.tsx` and its stories, and the KN-455 plan beside them once written. **Never chain a check
-through a pipe into a commit or a close, write long scripts with the Write tool, keep apostrophes
-out of single-quoted strings in scripts, find a story's controls inside `#storybook-root`, and read
-an accessibility claim from the browser's own tree.** The Persian catalog is
-`apps/web/src/i18n/locales/fa-IR.ts`.
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-461`,
+the SignIn story docs in both languages, `e2e/sign-in.spec.ts`, and the KN-461 plan once written.
+**Never chain a check through a pipe into a commit or a close, write long scripts with the Write
+tool, keep apostrophes out of single-quoted strings in scripts, find a story's controls inside
+`#storybook-root`, and read an accessibility claim from the browser's own tree.** The Persian
+catalog is `apps/web/src/i18n/locales/fa-IR.ts`.
