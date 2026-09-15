@@ -9204,6 +9204,10 @@ From KN-477's review, C-03, and seen in the browser on 2026-09-14: AppProviders 
 
 **Evidence.** Work 2f16a4a. AppProviders.tsx renders CssBaseline with enableColorScheme, so html computes color-scheme from the theme's palette mode, light in light and dark in dark; the same change parked in git stash@{0} was written by hand and the stash left as it was. App/Shell's Persian, pinned to light, reads light; PersianDark reads dark; the Job Modal's new InfoInTheDark reads its posting date field computing dark; all three read normal before the change and pass after, with the thirty App/Shell and Job Modal stories. Both Job Modal docs pages describe the story. The plan review approved. tsc and lint pass; the unit project passed but for session.test.ts overrunning its 5 s under load, KN-551, which passed alone; Prettier drift unchanged. Looked at in the dev Storybook: in fa-IR dark the posting date field's calendar glyph and date are drawn light on the dark field, and in light dark on white; App/Shell in English reads light and dark in the two schemes.
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T214109-task-kn-496-dark-mode-never-tells-the-browser-it-is-d-f28439.md, filed none, dismissed: Not filed: that the comments, docs and commit describe a phone's native date picker as following the page's scheme. None does: the comment and the commit name a light picker on a phone among what the missing signal left light, as the card saw it, and the docs speak of the glyph alone; that the full native picker cannot be guaranteed by CSS was the question asked, not a claim made. And that the system-change path has no story of its own, which the roast found correctly wired, a gap in coverage rather than a defect. The mechanism, the themed controls, the Settings and system wiring, the stories and the single declaration were reported correct.
+
 ### `KN-497` Dates are typed into the browser's Gregorian picker, which neither the add form nor the Job Modal draws
 
 - **status** backlog · **severity** medium · **points** 5 · **area** web · **objective** OKR-2
