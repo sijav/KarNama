@@ -106,10 +106,19 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
    field does, 64 and 90 for a field of one line, wrapping and multiline stated, as its plan review
    narrowed it. **Its roast is running**, `kn413-roast.mjs` writing `kn413-roast.txt`: judge, file
    with `--parent-task KN-413 --area web --okr OKR-1`, record, relay.
-7. **KN-432 is in progress**, medium, 1 point, web: the delete confirmation says "this job
-   opportunity" while deleting several. Exit: the confirmation names how many are going in both
-   languages, and a story deleting two reads it. A count inside a message renders raw in the
-   production build until KN-221, AGENTS.md section 7: put it beside the message.
+   Its roast is recorded: KN-637, the multiline field measured by its frame, and KN-638, the plan's
+   stale line, filed.
+7. **KN-432 is closed** (cd47a99; board 0c1792d): both delete confirmations say "these" and lead
+   their body with the count in the reader's digits beside the message when several are going; one
+   keeps today's copy. The first build turned the copy singular as the dialog dissolved; a story
+   caught it and the count is now held in state. **Its roast is running**, `kn432-roast.mjs`
+   writing `kn432-roast.txt`: judge, file with `--parent-task KN-432 --area web --okr OKR-1`,
+   record, relay.
+8. **KN-434 is in progress**, medium, 1 point, web: JSDoc prose back in the TSX that story-docs
+   owns and that prints in English on the Persian docs page, on the Icon Button's `href` and above
+   stories in the screens, App and Button. Exit: no prop or story there carries prose the markdown
+   holds, and the Persian docs page shows no English. Measure first: its line numbers are from
+   2026-09-12.
 
 ## What to read first
 

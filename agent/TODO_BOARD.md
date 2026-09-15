@@ -13,6 +13,12 @@ Project **KarNama** · 285 of 638 tasks done · 622 of 1258 points.
 | 1 | OKR-1 | MVP: the pages | now | 213 | 207 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-434` | Prose is back in the TSX where story-docs owns it, and it prints in the Persian docs | medium | 1 | web | none | No prop or story in the screens or IconButton carries prose the markdown already holds, and the Persian docs page shows no English. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 285 of 638 tasks done · 622 of 1258 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (337)
+## Backlog (336)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 285 of 638 tasks done · 622 of 1258 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-434` | Prose is back in the TSX where story-docs owns it, and it prints in the Persian docs | medium | 1 | web | none | No prop or story in the screens or IconButton carries prose the markdown already holds, and the Persian docs page shows no English. |
 | `KN-435` | Saving a rename with a blank name silently discards it | medium | 1 | web | none | A blank rename is refused with the field's own error and the modal stays open; a story presses Save on an empty field. |
 | `KN-439` | The status fixtures' count disagrees with the board they now describe | medium | 1 | web | none | The count is either gone or equal to the number of job opportunities the fixtures put in that status, in both languages. |
 | `KN-444` | The Search Bar's size stories claim the text is placed as drawn and never read its placement | medium | 1 | web | none | Both stories assert the text's top offset and the icon's vertical centring against the file's numbers. |
@@ -8143,6 +8148,10 @@ JobsScreen.tsx 457 and NetworkScreen.tsx 165 pass a singular title and body to t
 
 **Evidence.** Stories first: Selecting and LettingGoOfASelection read the several-items title and the count, as shown and as the dialog dissolves, and failed against the old code; tsc, lint, 37 stories and 1503 unit tests with the catalog test pass; looked at on both screens in fa-IR and en-US, light and dark
 
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260915T190739-task-kn-432-the-delete-confirmation-says-this-job-opp-9ca208.md, filed none, dismissed: Nothing to dismiss: the roast confirmed the held count cannot paint stale since React restarts the render before commit, the Persian count leads its sentence with its grouping, and the duplication between the two screens is appropriate; it named no defect.
+
 ### `KN-433` An Icon Button given both href and disabled renders an anchor that still navigates
 
 - **status** done · **severity** high · **points** 1 · **area** web · **objective** OKR-1
@@ -8162,7 +8171,7 @@ KN-415 gave IconButton an href so the contact card's mail control could be a lin
 
 ### `KN-434` Prose is back in the TSX where story-docs owns it, and it prints in the Persian docs
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 KN-207 keeps prop and story prose in story-docs, not in the component. KN-415 put a JSDoc on IconButton's new href prop and docblocks above five stories: IconButton.tsx 31 to 40, JobsScreen.stories.tsx 193, 437 and 530, NetworkScreen.stories.tsx 135, App.stories.tsx 124. DocsPage renders MUI's Controls table, which reads the JSDoc, so the English prose prints above the localised entry in the Persian docs. Delete all six; the markdown already carries them in both languages.
