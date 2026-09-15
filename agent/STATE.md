@@ -121,9 +121,16 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
    exports print their English on the Persian Docs pages, `People`, `Adding` and `Selecting` on the
    board's, `Editing` on the network page's, `Navigating` and `FromAnOldAddress` on the shell's,
    `States` on the Button's; the Icon Button's page holds none, so that half is already gone. The
-   markdown holds all seven in both languages. **Its plan is written** beside the screens: four
-   blocks go, three keep the sentence that explains the story's code as a `//` comment. **Its plan
-   review is running**; then `kn434-apply.mjs`, and `kn434-pages.mjs` for the after-search.
+   markdown holds all seven in both languages. **KN-434 is closed** (8771719; board f92c240): four
+   story blocks deleted, three code-explaining sentences kept as `//` comments, and, as its plan
+   review added, the seven JSDoc prop descriptions in `JobsScreenProps` and `NetworkScreenProps`
+   removed; the source scan and the five Persian Docs pages find none left. **Its roast is
+   running**, `kn434-roast.mjs` writing `kn434-roast.txt`: judge, file with
+   `--parent-task KN-434 --area web --okr OKR-1`, record, relay.
+9. **KN-435 is in progress**, medium, 1 point, web: saving a rename with a blank name silently
+   discards it. Exit: a blank rename is refused with the field's own error and the modal stays open,
+   and a story presses Save on an empty field. `BackingOut` asserts today that a blank save keeps
+   the name, so that story changes with it.
 
 ## What to read first
 
