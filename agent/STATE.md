@@ -39,42 +39,44 @@ and to rotate it. Never repeat that key anywhere. **Filed for the owner by
 KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
 
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
-`--model gpt-5.6-terra`. `roast.py`'s chains end in `claude/sonnet`, and `gpt-5.6`
-is refused on this account, so without the pin Claude's work goes to Claude when
-terra is out of usage; AGENTS.md section 7 has it.
+`--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-574 is closed** (5b343bc, pushed): the LanguageSwitch, LanguageFlag, Sidebar,
-NavItem, TabBar, Icon and Tokens stories offer only the controls their plays hold
-for. The controls sweep on a fresh production build finds none broken, untried or
-unapplied, where it found 18; Icon's colour roles, which the sweep cannot type
-since each holds a slash, were planted through the stories' args. Its Codex roast
-was running when this was written (`kn574-task-roast.log` in the scratchpad), to
-be judged and recorded, and so was the Pages run for 5b343bc.
+**KN-587 is closed** (c7698a3, pushed; board 8cfafe1): under the code step's
+action the Resend Timer counts down the API's minute in the reader's digits and
+becomes a Footer Link «ارسال دوباره‌ی کد» at zero, the build's reading since the
+file draws no end to it; «ویرایش شماره» returns to the number step with the
+number kept and focused. The mock now gives `retryAt` and refuses an early resend;
+`AuthValue` has `changeNumber`. Stories 18 of 18, unit 1477 of 1477, sign-in e2e 10
+of 10. Its Codex roast was running when this was written, `kn587-task-roast.log`
+in the scratchpad, and so was the Pages run for c7698a3. KN-591 was noted that the
+timer shares the Terms Note's 2.54 to one, and KN-503 that the live provider's
+`changeNumber` and the screen's restoring, error and busy branches run in no test.
 
-**KN-571 is closed** and its roast recorded (0b0ed94): **KN-595**, low, Modal's
-Shell fails for a width wider than its canvas, since the panel keeps 16 from each
-edge; KN-594 noted that Modal's `Default` changes nothing visible on its Docs page
-until its trigger is pressed; dismissed, with blocks.js as evidence, the claim that
-Docs controls make plays fail, since a Docs page runs no play unless a story sets
-autoplay. KN-571's Pages run passed, and 018cb2d's.
+**KN-574's roast is recorded** (da07398): **KN-596**, low, the Sidebar's Default and
+InEnglish plays take the aside's second child for its User Row unchecked; filed
+under KN-011, since KN-574 is itself KN-011's child. 74f5f0d's Pages run passed,
+which holds KN-574; 5b343bc's own run was cancelled by that push.
 
-**Filed earlier today and open**: KN-592, medium, no e2e holds a real touch on the
-network page; KN-593, low, the phone and selecting docs say more than the code;
-**KN-594**, medium, the AddJobModal, JobModal and ContactModal Docs pages are
-covered by their own open dialogs, 19, 15 and 2; KN-572 and KN-573 carry the same
-controls rule for the cards and the form controls.
+**Learned in KN-587, to add to AGENTS.md section 7 once its roast lands** (the roast
+may be reading AGENTS.md now):
 
-**How to measure**: `node agent/scripts/storybook/controls-sweep.mjs --only
-'<regex>' --out <file>` builds a production Storybook and sweeps each story's
-controls; read its JSON for what each story offered and whether it was tried. It
-types only URL-safe values: letters, digits, space, underscore and dash. The
-published Storybook: build with `KARNAMA_STORYBOOK_BASE` from PowerShell or Node's
-`env`, never a Git Bash line.
+- A play that must reach the end of a timer holds `Date.now` with `holdClock`,
+  `shared/story-fixtures/clock.ts`. user-event, testing-library's `waitFor`,
+  Storybook's instrumenter, React's scheduler and Vitest read no `Date.now` at call
+  time, checked in node_modules; a component reading the clock on an interval shows
+  the move at its next look, so the play waits with `findBy`.
+- Playwright's `page.clock.install()` goes before the first navigation, in the
+  spec's `beforeEach`; `runFor` fires a repeating interval, `fastForward` each due
+  timer once.
+
+**Open and filed today**: KN-592, KN-593, KN-594, KN-595, KN-596.
 
 **What fails in a full run**: the Job Card's `Pressed` in parallel only, KN-365's
-kind. `App.tsx` line 107 is uncovered, KN-491's. The API's gate fails on
-`extraction.service.ts`, KN-486. The unit project's `session.test.ts` can overrun
-its 5 seconds while a story run loads the machine, KN-551; alone it passes.
+kind. `App.tsx` line 107 is uncovered, KN-491's. `RemoteAuthProvider.tsx` and
+AuthScreen's live branches run in no test, KN-503's. The API's gate fails on
+`extraction.service.ts`, KN-486. `session.test.ts` can overrun its 5 seconds while
+a story run loads the machine, KN-551; alone it passes. DESIGN.md holds seven older
+em dashes, KN-083's.
 
 ## The owner's rules, most recent first
 
@@ -98,21 +100,22 @@ its 5 seconds while a story run loads the machine, KN-551; alone it passes.
 
 ## The next step
 
-**KN-587 is next**, high, 3 points: the sign-in code step shows no countdown to a
-resend and no way back to change the number. Read Auth Desktop Code `407:6972`
-and Mobile Code `407:7043` with use_figma, their text, styles and reactions,
-before planning: the Resend Timer «ارسال دوباره‌ی کد تا ۰۰:۵۹» at 14 Regular in
-`text/disabled` and «ویرایش شماره» at 14 Medium in `text/brand`, both centred under
-the action. The app's code step has a Text Button «ارسال کد دیگر», disabled until the
-provider's `retryAt`, and no way back. **A message may not take a value** until
-KN-221 compiles the catalogs, AGENTS.md section 7: the countdown's time goes beside
-its words, never inside them. KN-589, the frames' promise of a text message while
-the provider is mocked, is the owner's and stays apart. The exit asks for stories
-at 1440 and 390 and the sign-in e2e changing a number. Judge and record KN-574's
-roast when it lands.
+**When KN-587's roast lands**, judge it, file survivors as children of KN-587
+(`--area web --okr OKR-1`), record with `todo roast KN-587 --file ... --filed ...
+--dismissed ...`, relay it to the owner, add the two lessons above to AGENTS.md
+section 7, and commit them with the rendered board.
+
+**KN-427 is next**, high, 5 points: JobsScreen leaves 52 of its 149 branch arms to
+no story, 26 of them the drag handlers KN-477 added, which the DragAndDrop story has
+no play for. Its note of 2026-09-14 lists the other 26 by line; the lines have moved
+since KN-422 and KN-477. The exit: every branch of `JobsScreen.tsx` is taken by a
+story or carries a comment saying which state it belongs to and why no reader can
+reach it. Measure first, as KN-587 did: the storybook project on
+`JobsScreen.stories.tsx` with `--coverage.include=src/screens/JobsScreen.tsx
+--coverage.reporter=json --coverage.reportOnFailure=true`, and list the untaken arms
+from `coverage-final.json`.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md` (section 8, the Auth Card), `agent/RALPH.md`,
-the head of `agent/TODO_BOARD.md`, then `todo show KN-587`, `AuthScreen.tsx` and its
-stories, the auth provider's `retryAt`, and `e2e/sign-in.spec.ts`.
+`AGENTS.md` (section 7), `DESIGN.md` (section 8), `agent/RALPH.md`, the head of
+`agent/TODO_BOARD.md`, then `todo show KN-427`, `JobsScreen.tsx` and its stories.
