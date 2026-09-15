@@ -31,43 +31,40 @@ findings are KN-484 to KN-503 and KN-521; the dark `color-scheme` fix waits in
 **The owner's asks of 2026-09-14 are done**: KN-479 flags, KN-480 the language
 Select in Settings, KN-478 the shell's controls as Icon Buttons, KN-481 the board
 and network matched to their frames. **Blocked on the owner, asked 2026-09-14**:
-KN-515, KN-516, KN-517.
+KN-515, KN-516, KN-517. **Asked in chat on 2026-09-15**: whether the Search Bar and
+the Sort Control take KN-275's `border/control`; `DESIGN.md` records the question
+beside the decision of KN-273.
 
 **KN-226**, the check that the published Storybook renders without errors, waits
-on KN-494 alone. Its plan, `apps/web/e2e/storybook/#KN-226 - ....md`, measured
-eleven failing entries in a production Storybook; Codex ruled out letting them
-through on a list. The replan weighs `@storybook/test-runner` with
-`--failOnConsole` (a new dependency, the owner's yes to install), a `webServer`,
-no Docs pages, an explicit timeout and the channel hooked by a property setter.
+on KN-494 alone. Its plan, `apps/web/e2e/storybook/#KN-226 - ....md`, weighs
+`@storybook/test-runner` with `--failOnConsole` (a new dependency, the owner's yes
+to install), a `webServer`, no Docs pages and an explicit timeout.
 
 **Closed on 2026-09-15**, pushed and roasted by Codex: KN-554, KN-560, KN-561
-(roast filed KN-566), KN-562 (roast filed KN-568), KN-563 (an `updateArgs` during
-a play renders the story again at once and its loaders restore every `fn()`;
-KN-569 carries its replay), **KN-255** (97ce2e9: the Checkbox, FilterChip,
-StatusChip, Tooltip and PreferencesProvider stories offer only the controls their
-plays hold for; roast filed **KN-575**, the sweep reading a dropped URL arg or an
-unstarted play as clean) and **KN-570** (34c1124: the Jobs screen's stories no
-longer offer `addOpen`; roast found nothing).
+(KN-566), KN-562 (KN-568), KN-563 (KN-569), **KN-255** (97ce2e9: five components'
+stories offer only the controls their plays hold for; roast filed **KN-575**,
+the sweep reading a dropped URL arg or an unstarted play as clean), **KN-570**
+(34c1124: the Jobs screen offers no `addOpen`; nothing found) and **KN-275**
+(8ee298d: `border/control`, `#7f8694` light and `#707786` dark, the resting edge of
+the Input, the Checkbox and the Select, their disabled edges kept on
+`border/default`; `KN-004.mjs`, already failing at HEAD on three hexes, fixed;
+its roast filed **KN-576**, the decision's sentence that a disabled control keeps
+the file's edge, which a disabled Input in error does not).
 
 **`node agent/scripts/storybook/controls-sweep.mjs [--only <regex>]`**, committed
-by KN-255, builds Storybook, opens every story and each one with a play once per
-offered control changed through URL args, and lists the broken ones and JSON
-controls for elements. On 97ce2e9: 373 stories, 362 with a play, 137 broken, now
-121 with KN-570's sixteen gone, carried by **KN-571 to KN-574**. It reads
-`control.disable`, since `control: false` is prepared as `{ disable: true }`. It
-does not yet report unapplied or untried changes, KN-575.
+by KN-255, measures which stories' offered controls break their plays: 121 broken
+on the tree after KN-570, carried by **KN-571 to KN-574**. It reads
+`control.disable`; it does not yet report unapplied or untried changes, KN-575.
 
 **How to measure the published Storybook**: build with `KARNAMA_STORYBOOK_BASE` in
-Node's own `env`, never on a Git Bash command line; serve under that base; fetch
-what `iframe.html` names first; hear the end on
-`window.__STORYBOOK_ADDONS_CHANNEL__`, hooked by a property setter;
-`playFunctionThrewException` for a thrown play, whose `storyFinished` still says
-`success`. `__STORYBOOK_PREVIEW__.onForceRemount({ storyId })` replays a story.
+Node's own `env`, never on a Git Bash command line, or build at the root without
+it; hear the end on `window.__STORYBOOK_ADDONS_CHANNEL__` hooked by a property
+setter; `playFunctionThrewException` for a thrown play. A story's pinned globals
+beat URL globals: look at dark through an unpinned story.
 
-**What fails in a full run**: the storybook project fails KN-494's five modal
-stories, and the Job Card's `Pressed` in parallel only, KN-365's kind. The API's
-coverage gate fails on auth and extraction files, KN-486. KN-551:
-`core/api/session.test.ts` can fail straight after storybook browser runs.
+**What fails in a full run**: the storybook project fails KN-494's five stories,
+AddJobModal `Review` among them, and the Job Card's `Pressed` in parallel only,
+KN-365's kind. The API's coverage gate fails on auth and extraction files, KN-486.
 
 ## The owner's rules, most recent first
 
@@ -95,16 +92,15 @@ coverage gate fails on auth and extraction files, KN-486. KN-551:
 
 ## The next step
 
-**KN-275 is in progress**: a named role for a control's resting edge at 3:1, the
-owner's decision of 2026-09-10, KN-273. Measured: `border/default` is 1.24 on
-white; `#7f8694`, text/secondary's hue made lighter, is 3.41, 3.66 and 3.32 on
-the three light backgrounds; its dark row, derived and walked to 3 against the
-dark surface as `border/focus` is, `#707786`, is 3.46, 3.02 and 3.55. The plan,
-`apps/web/src/theme/#KN-275 - Add a resting edge role for controls at 3 to 1.md`,
-names it `border/control` for the Input, the Checkbox and the Select, and leaves
-the Search Bar and the Sort Control, built after the decision, to a card of their
-own. Codex is reviewing it; then build, the two plants, the stories, KN-004.mjs,
-the contract, and a look in all four combinations.
+**KN-279 is in progress**: the selected Filter Chip's blue edge, the owner's
+decision of KN-276. Measured: `#2563eb` is 4.82, 5.17 and 4.70 on the light
+backgrounds and 4.24 on the selected fill; the dark `border/focus`, `#3670ed`, is
+3.48, 3.04, 3.57 and 3.33 on the dark fill. The selected edge is the pressed edge's
+colour, so the plan, beside `FilterChip.tsx`, makes `border/selected` a role of its
+own and tells pressing apart by width, one pixel against 1.5, which may be too
+little to see. Codex's plan review found it sound: width is a difference the exit
+names, and more would need the owner; hold Space only after `vitest/browser`'s own
+click, since the runner's keyboard may not act on a control focused otherwise.
 
 ## What to read first
 
