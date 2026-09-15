@@ -21,7 +21,12 @@ export const withSamples = (from: Records, i18n: I18n, now = new Date()): Record
   ).statuses
   const statuses = [...from.statuses]
   const sampleStatuses = defaults.map((entry) => {
-    const existing = statuses.find((held) => held.id === entry.id) ?? statuses.find((held) => held.token === entry.token)
+    // Which status a status is, is its id, KN-440, and a default keeps that id
+    // for good while its colour is the reader's to change, KN-544. Matching a
+    // colour as well took a status of the reader's own for a default they had
+    // deleted, so its sample job opportunities landed in that status and the
+    // default was never restored, KN-542.
+    const existing = statuses.find((held) => held.id === entry.id)
     if (existing) return existing
     statuses.push(entry)
     return entry

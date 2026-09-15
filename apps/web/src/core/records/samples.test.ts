@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { i18nFor } from '../../i18n'
 import { emptyDraft, missingFields } from '../../shared/add-job'
-import { emptyRecords, jobFrom, readRecords } from './records'
+import { defaultStatuses, emptyRecords, jobFrom, readRecords } from './records'
 import { withSamples } from './samples'
 
 describe('sample records', () => {
@@ -49,5 +49,25 @@ describe('sample records', () => {
     expect(samples.statuses).toHaveLength(5)
     expect(samples.statuses[0]).toEqual(initial.statuses[0])
     expect(samples.jobs.every((job) => samples.statuses.some((status) => status.id === job.draft.status))).toBe(true)
+  })
+
+  it('restores a deleted default rather than a status of the reader that merely wears its colour', () => {
+    // KN-542: which status a status is, is its id, KN-440. A reader who deleted
+    // the Job offer column and gave a status of their own its green had the
+    // sample job opportunities meant for Job offer land in that status, and the
+    // default was never restored.
+    const initial = {
+      statuses: [
+        ...defaultStatuses((token) => token).filter((status) => status.id !== 'offer'),
+        { id: 'own', token: 'offer', name: 'My own stage' },
+      ],
+      jobs: [],
+      contacts: [],
+    } satisfies Parameters<typeof withSamples>[0]
+    const samples = withSamples(initial, i18nFor('en-US'))
+    expect(samples.statuses.map((status) => status.id)).toContain('offer')
+    expect(samples.statuses.find((status) => status.id === 'own')).toEqual(initial.statuses.at(-1))
+    expect(samples.jobs.some((job) => job.draft.status === 'offer')).toBe(true)
+    expect(samples.jobs.some((job) => job.draft.status === 'own')).toBe(false)
   })
 })
