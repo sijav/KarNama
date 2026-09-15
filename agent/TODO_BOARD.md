@@ -4528,6 +4528,7 @@ CHILD OF KN-220, recorded in prose because board.json cannot express parent_task
 - 2026-09-15, found by KN-584's probe, for the replan: a story whose play writes its args says storyFinished for each render that causes, and SearchBar's Debounced and Input's TypingIntoABoundValue said it before their plays had ended in 10 runs of 10, 16 pages at once. The saved spec waits for the first storyFinished and 400 ms more, so it can read such a story before its play ends and miss a failure after that; Debounced's was heard only because it came within those 400 ms. When a play began, the end is the storyFinished after the phase played or errored, as scratchpad/kn584-probe.mjs waits for it.
 - 2026-09-15, KN-584's probe also found KN-585: Input's TypingIntoABoundValue fails in a production Storybook with the CPU slowed four times, 10 of 10 with 8 pages at once and 1 of 10 alone, and passed slowed twice with 8 pages at once, 10 of 10. It is not made a blocker of this card on that measurement. If the check's first run on ubuntu-latest fails on it, it becomes one.
 - 2026-09-15, Codex's second replan review: the exit's 'fails on any page error or console error' is broader than any finite check. This one hears a story until its play has ended and 400 milliseconds more, and an error a story schedules later than that is not heard; the spec, the AGENTS.md line and the close say so rather than claim more.
+- 2026-09-15, the first run on ubuntu-latest, the Pages run for c4e8128: Chromium installed in 22 seconds, 'Running 378 tests using 2 workers', '378 passed (6.5m)', the report step skipped and the deploy succeeded.
 
 **Roasts.**
 
@@ -10028,4 +10029,8 @@ Found by KN-584's probe, 2026-09-15, not by a roast: a production Storybook of 7
 **Why.** A reader on a slow phone who opens the published Input story sees it fail with the typed keys gone, which reads as the Input dropping what a person types, KN-253's defect. And KN-226's check, on a runner slow enough, would stop the deploy on it. The measurement did not make it a blocker of KN-226: it passed slowed twice.
 
 **Exit condition.** On a production Storybook opened in headless Chromium with the CPU slowed four times, TypingIntoABoundValue passes 10 runs of 10 with 8 pages at once; the cause of the lost keys is named at the close; and the app's production build, its Input typed into the same way on a page slowed four times, is measured and said.
+
+**Notes.**
+
+- 2026-09-15: TypingIntoABoundValue passed in KN-226's first run on ubuntu-latest, 378 stories using 2 workers, so the check did not stop the deploy on it.
 

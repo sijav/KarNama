@@ -464,4 +464,7 @@ Built as the Replanned sections say, and measured on production builds made unde
   the plan and `AGENTS.md` keep HEAD's.
 - **Records.** `AGENTS.md` section 5 names the check and what it hears; section 7
   says where a play ends.
-- **Not yet shown**: the run on `ubuntu-latest`, read after the push.
+- **On `ubuntu-latest`**, the Pages run for c4e8128, read to its end after the push:
+  Chromium installed in 22 seconds, "Running 378 tests using 2 workers", "378
+  passed (6.5m)", the report step skipped, and the site deployed. Input's
+  `TypingIntoABoundValue`, KN-585's, passed there.
