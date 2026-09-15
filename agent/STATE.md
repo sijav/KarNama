@@ -43,21 +43,22 @@ holds the Groq key; never repeat that key anywhere.
 **Closed today, each roast recorded**: KN-348 (filed KN-628, KN-629); KN-349 (nothing); KN-358
 (nothing); KN-359 (KN-632; KN-631 dropped as a duplicate of KN-413); KN-362 (KN-633, KN-634,
 KN-635); KN-370 (nothing); KN-385 (KN-636); KN-413 (KN-637, KN-638); KN-432 (nothing); KN-434
-(KN-639, KN-640); KN-435 (nothing). KN-387 is dropped: the language switch it would have styled is
-the flag Icon Button of KN-478 and KN-479. Earlier: KN-345 (KN-626, KN-627), KN-343 (KN-625),
-KN-338 (KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331 (KN-620), KN-024's round (KN-623).
+(KN-639, KN-640); KN-435 (nothing); KN-439 (KN-641, KN-642). KN-387 is dropped: the language
+switch it would have styled is the flag Icon Button of KN-478 and KN-479. Earlier: KN-345 (KN-626,
+KN-627), KN-343 (KN-625), KN-338 (KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331
+(KN-620), KN-024's round (KN-623).
 
 **Rounds waiting**: KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on
 KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-028 on KN-346, KN-626 and
-KN-627; KN-031 on KN-628 and KN-629. **Still open from earlier**: KN-009 waits on KN-614; KN-022 on
-KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357; KN-029 on its other
-children.
+KN-627; KN-031 on KN-628 and KN-629; KN-439 on KN-641 and KN-642. **Still open from earlier**:
+KN-009 waits on KN-614; KN-022 on KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and
+KN-357; KN-029 on its other children.
 
 **What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
-`Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` can overrun its 5 seconds
-while the machine is loaded, KN-551, as it did in KN-435's and KN-439's full runs: rerun the file
-alone, then read the unit project. `App.tsx` line 107 uncovered, KN-491. The API's gate fails on
-`extraction.service.ts`, KN-486.
+`Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` overruns its 5 seconds while
+the machine is loaded, KN-551, as it did in the full runs of KN-435, KN-439 and KN-444: rerun the
+file alone, then read the unit project. `App.tsx` line 107 uncovered, KN-491. The API's gate fails
+on `extraction.service.ts`, KN-486.
 
 ## The owner's rules, most recent first
 
@@ -81,22 +82,22 @@ alone, then read the unit project. `App.tsx` line 107 uncovered, KN-491. The API
 
 ## The next step
 
-1. **KN-439 is closed** (0e740e0; board 4d6dd03): the status fixtures carry no count, which six of
-   the nine got wrong and nothing read. `story-fixtures.test.ts` asserts none in either language;
-   it failed first on fa-IR's nine, and again for a count put back on en-US's custom-4 and on its
-   `renamedStatus`, as the plan review asked. **Its roast is running**, `kn439-roast.mjs` writing
-   `kn439-roast.txt`: judge, file with `--parent-task KN-439 --area web --okr OKR-1`, record, relay.
-2. **KN-444 is in progress**, medium, 1 point, web: the Search Bar's size stories, `OnTheDesktop`
-   and `OnAPhone`, assert the box and the inline offsets and nothing vertical. Exit: both stories
-   assert the text's top offset and the icon's vertical centring against the file's numbers. The
-   card reads the text's top as 7 in the 36 bar and 11 in the 44, and the 20 icon centred in both:
-   read node `155:92` again before trusting it.
+1. **KN-444 is closed** (9062dbb; board 3ecf3dd): `isTheFiles` in `SearchBar.stories.tsx` reads the
+   input's top, its 22 and the icon's top against the file's 7 and 8 in the 36 bar and 11 and 12 in
+   the 44, and Filled reads its clear control at 12. Three changes to `SearchBar.tsx` passed the
+   old stories and fail the new; the plan review approved. **Its roast is running**,
+   `kn444-roast.mjs` writing `kn444-roast.txt`: judge, file with
+   `--parent-task KN-444 --area web --okr OKR-1`, record, relay.
+2. **KN-448 is in progress**, medium, 1 point, web: the Icon Button spreads a Tooltip's props
+   before its own, so an `onFocus` or `onMouseOver` of its own would one day replace MUI's composed
+   handlers and the tip would stop opening. Exit: the injected props are spread last, and the
+   comment says what that protects. Measure first.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-444`,
-`SearchBar.stories.tsx`, and the KN-444 plan beside it once written. **Never chain a check through
-a pipe into a commit or a close, write long scripts with the Write tool, keep apostrophes out of
-single-quoted strings in scripts, find a story's controls inside `#storybook-root`, and read an
-accessibility claim from the browser's own tree.** The Persian catalog is
-`apps/web/src/i18n/locales/fa-IR.ts`.
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-448`,
+`IconButton.tsx` and its stories, and the KN-448 plan beside them once written. **Never chain a
+check through a pipe into a commit or a close, write long scripts with the Write tool, keep
+apostrophes out of single-quoted strings in scripts, find a story's controls inside
+`#storybook-root`, and read an accessibility claim from the browser's own tree.** The Persian
+catalog is `apps/web/src/i18n/locales/fa-IR.ts`.

@@ -13,6 +13,12 @@ Project **KarNama** · 289 of 642 tasks done · 626 of 1262 points.
 | 1 | OKR-1 | MVP: the pages | now | 213 | 211 |
 | 2 | OKR-2 | Everything after the MVP | later | 133 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-448` | The Icon Button spreads a Tooltip's props before its own, which is the unsafe side | medium | 1 | web | none | The injected props are spread last, and the comment says what that protects. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 289 of 642 tasks done · 626 of 1262 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (337)
+## Backlog (336)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 289 of 642 tasks done · 626 of 1262 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-448` | The Icon Button spreads a Tooltip's props before its own, which is the unsafe side | medium | 1 | web | none | The injected props are spread last, and the comment says what that protects. |
 | `KN-449` | The InATooltip story's console spy is installed too late to see what it claims to watch | medium | 1 | web | none | The spy is in place before the render and calls through, and the story still passes. |
 | `KN-455` | A disabled Button with a forced state draws something node 31:4 never draws | medium | 1 | web | none | A disabled button shows its disabled look whatever data-state says, and a story renders one to prove it. |
 | `KN-461` | The sign-in docs and e2e comments describe a message that is sent, where the mock sends none | medium | 1 | docs | none | Neither language's SignIn introduction mentions the console as where the code is or says the code was sent, and sign-in.spec.ts's comments say the mock makes and shows the code rather than that a message is sent. |
@@ -8385,7 +8390,7 @@ TooltipTrigger takes ref from MUI's IconButton props, which resolves to Ref of H
 
 ### `KN-448` The Icon Button spreads a Tooltip's props before its own, which is the unsafe side
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 The spread is first and its comment defends a hazard that cannot happen: aria-label and disabled are destructured out by name before the rest, so they are never in it. MUI's Tooltip already composes the child's own handlers into the ones it injects, so putting the injected ones first means the day IconButton declares an onFocus or onMouseOver of its own, it clobbers MUI's composite and the tip stops opening with neither detector noticing, since both only check aria-describedby. Put the spread last and say why.
