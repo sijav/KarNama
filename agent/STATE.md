@@ -41,46 +41,39 @@ KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-257 is closed** (ab5168f; board 6803bfd; pushed). `getComputedStyle` is out of the
-lingui rule's `ignoreFunctions`, which exempted every literal in every call of it, and
-`'^::(before|after|placeholder)$'` is in `ignore`. The story files hold 44 selector
-literals, 27 `::before`, 15 `::after` and 2 `::placeholder`; without the function
-exemption the rule reports 42, the other two sitting under Input's `eslint-disable` block
-for KN-214. `src/gate-fixtures/unlocalized-computed-style.tsx` holds one call with a
-literal of copy, required by name in KN-003.mjs. **Its plan review caught two mistakes of
-mine**: the card, the plan and board commit 8483710 said 42 literals beside a breakdown
-that made 44, ripgrep's count mode counting lines, now a line in AGENTS.md section 7; and
-a fixture of four calls held to one report could not say which call failed, so the fixture
-holds only the copy and the stories under lint show the selectors pass. Its Codex roast was
-running when this was written, `kn257-task-roast.log` in the scratchpad.
+**KN-304 is closed** (bdac52f; board 9828274; pushed), two points. A focused tab's ring,
+its `::before`, takes `zIndex: 1` over its indicator, the `::after`, which had painted over
+the ring's outermost bottom row: grey on a hovered tab, and the brand line on a chosen tab
+in dark. `FocusRingOverTheLine` reads the drawn pixels from the runner's screenshot, the
+first story that does. **Building found the storybook runner drew every story at 0.8**:
+Vitest's orchestrator scales the tester iframe to fit its page, left at Playwright's 1280
+by 720, while Storybook gives each story 1200 by 900 and some plays 1440 by 900. The
+project's page is 1440 by 900 in `vitest.config.ts` now, and the story refuses a scale
+that is not a whole number. With it the storybook project passes 405 of 406, the one
+failure JobCard's `Pressed`, which passes alone. **A mistake of mine it recorded**: the plan
+first said no story sets a viewport, from a search whose brace glob matched no file, and the
+second plan review found the plays that resize to 1440 by 900. AGENTS.md section 7 gained
+how lingui's `useTsTypes` reads a call's argument, and the runner's scale. Its Codex roast was running when this was written, `kn304-task-roast.log`
+in the scratchpad.
 
-**KN-230 is closed and its roast recorded** (9bf6c7e): the docs guard reads storybook/test's
-`fn` by the name each story file imports it by, and each story's own `on*` args keys. Its
-roast filed **KN-609**, low, the guard skipping a callback a story's own args write as a
-method, `onPress() {}`, a child of KN-013; it dismissed a namespace-imported spy being
-refused, a loud false rejection, and Tabs' render wiring `setValue`, outside the exit.
+**KN-257 is closed and its roast recorded** (ab5168f): `getComputedStyle` left the lingui
+rule's `ignoreFunctions`, and `'^::(before|after|placeholder)$'` is in `ignore`. Its roast
+filed **KN-610**, low, the entry's comment calling the three selectors never copy where the
+entry passes them as any string, a child of KN-011. **KN-230's roast** filed **KN-609**,
+low, the docs guard skipping a callback written as a method, a child of KN-013.
 
-**KN-228 is closed and its roast recorded** (f499ea7, plan fixed in 0c3fd02): twelve plays
-know the published Storybook by `import.meta.env.MODE !== 'test'`, and `vitest.setup.ts`
-refuses any other mode; nothing filed. **Its close ran past a formatting check whose
-failure a pipe hid.**
+**Earlier today**: KN-228 (f499ea7) filed nothing; KN-216 left KN-607 and KN-608; KN-215
+left KN-604, medium, and KN-605 and KN-606; KN-586 left KN-600, KN-601, medium, KN-602 and
+KN-603; KN-427 left KN-598 and KN-599; KN-587 left KN-597. **Open and filed today**: KN-592
+to KN-610.
 
-**KN-216** (63304bb) left **KN-607** and **KN-608**, low, KN-095's children. **KN-215**
-(4d0abb0) left **KN-604**, medium, the exempt names `status`, `include`, `query`, `import`
-and `userName`, and **KN-605** and **KN-606**, low; that round dismissed a test refusing
-any new ignore entry as a gate nobody asked for, the owner's to ask for. **KN-586**
-(709c4e5) left **KN-600**, **KN-601**, medium, `two-tabs.spec.ts`'s stale second test, and
-**KN-602** and **KN-603**; KN-427 left KN-598 and KN-599, and KN-587 left KN-597, all low.
-
-**Open and filed today**: KN-592 to KN-609.
-
-**What fails in a full run**: the Job Card's `Pressed` in parallel only, KN-365's
-kind. `App.tsx` line 107 is uncovered, KN-491's. `RemoteAuthProvider.tsx` and
-AuthScreen's live branches run in no test, KN-503's. The API's gate fails on
-`extraction.service.ts`, KN-486. `session.test.ts` can overrun its 5 seconds while
-a story run loads the machine, KN-551. `two-tabs.spec.ts`'s second test, KN-601.
-DESIGN.md holds seven older em dashes, KN-083's. The board screen's six commented
-arms stay untaken by design, KN-427.
+**What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
+`Full On A Phone`, in parallel only, KN-365's kind: rerun a lone failure alone. `App.tsx`
+line 107 is uncovered, KN-491's. `RemoteAuthProvider.tsx` and AuthScreen's live branches
+run in no test, KN-503's. The API's gate fails on `extraction.service.ts`, KN-486.
+`session.test.ts` can overrun its 5 seconds while a story run loads the machine, KN-551.
+`two-tabs.spec.ts`'s second test, KN-601. DESIGN.md holds seven older em dashes, KN-083's.
+The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The owner's rules, most recent first
 
@@ -104,22 +97,25 @@ arms stay untaken by design, KN-427.
 
 ## The next step
 
-**When KN-257's roast lands**, judge it, file survivors as its children (`--area web
---okr OKR-1` for anything under four points), record with `todo roast KN-257 --file ...
---filed ... --dismissed ...`, relay it to the owner, and commit the rendered board. KN-257
-is a child of KN-011, so a finding hangs off KN-011, which waits on 18 more.
+**When KN-304's roast lands**, judge it, file survivors as its children (`--area web
+--okr OKR-1` for anything under four points), record with `todo roast KN-304 --file ...
+--filed ... --dismissed ...`, relay it to the owner, and commit the rendered board. KN-304
+is a child of KN-023, so a finding hangs off KN-023, which waits on KN-375, KN-376 and
+KN-377.
 
-**KN-304 is next**, medium, 1 point, web, a child of KN-023: on a hovered or chosen tab
-the indicator, the tab's `::after`, paints over the focus ring, its `::before`, along the
-ring's bottom band, grey over blue. Its exit asks a focused tab's ring unbroken in every
-state, the indicator drawn beneath it or clear of it, shown in a story that focuses a
-hovered tab and reads the ring's bottom band as `border/focus`. Measure before planning:
-how the Tabs draw and stack the two pseudo-elements, what the Figma draws for a focused
-tab that is hovered or chosen, and whether a story already reads the ring.
+**`todo next` picks KN-312**, medium, 1 point: the Icon Button's hover over 300 ms from a
+motion token. **Its exit contradicts DESIGN.md**: the 300 is the prototype map's summary,
+and DESIGN.md says the components' own reactions win, 200 ms ease in and out or 120 ms ease
+out; its own note of 2026-09-11 says so and names **KN-350**, backlog, medium, 3 points,
+which carries every built component's reactions, the Icon Button's included.
+`IconButton.tsx` sets no transition, so it keeps MUI's 150. Settle it on the board before
+touching a file: drop KN-312 as superseded by KN-350 with that reason, or re-point it to
+the Icon Button's own reaction read with use_figma, then run `todo next` again.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md`, `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-304`, `apps/web/src/shared/tabs/`, and the
-Figma frame of the tabs. **Never chain a check through a pipe into a commit or a close,
-give every parallel command its own `cd`, and sum a breakdown before writing its total.**
+`AGENTS.md` (section 7), `DESIGN.md` (its motion paragraph in section 7), `agent/RALPH.md`,
+the head of `agent/TODO_BOARD.md`, then `todo show KN-312` and `todo show KN-350`.
+**Never chain a check through a pipe into a commit or a close, give every parallel command
+its own `cd`, sum a breakdown before writing its total, and give a search that finds
+nothing a positive control.**
