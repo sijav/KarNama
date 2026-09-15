@@ -34,32 +34,37 @@ and network matched to their frames. **Blocked on the owner, asked 2026-09-14**:
 KN-515, KN-516, KN-517.
 
 **KN-226**, the check that the published Storybook renders without errors, waits
-in the backlog on KN-494 alone now. Its plan, `apps/web/e2e/storybook/#KN-226 -
-....md`, measured eleven failing entries in a production Storybook; Codex ruled
-out letting them through on a list. The replan weighs `@storybook/test-runner`
-with `--failOnConsole` (a new dependency, the owner's yes to install), a
-`webServer`, no Docs pages, an explicit timeout and the channel hooked by a
-property setter. KN-559 and a note on KN-063 came from the same measurement.
+on KN-494 alone. Its plan, `apps/web/e2e/storybook/#KN-226 - ....md`, measured
+eleven failing entries in a production Storybook; Codex ruled out letting them
+through on a list. The replan weighs `@storybook/test-runner` with
+`--failOnConsole` (a new dependency, the owner's yes to install), a `webServer`,
+no Docs pages, an explicit timeout and the channel hooked by a property setter.
 
-**Closed on 2026-09-15**, each a story failing only in a production Storybook,
-pushed and roasted by Codex: **KN-554** (bb953c8) IconButton `BlankName`;
-**KN-560** (481b66c) App/Shell `SignedInInAnotherTab`, with KN-564 and KN-565
-filed on the way; **KN-561** (bfeafa6) Button `States`, roast filed KN-566;
-**KN-562** (abd9c82) the Input's English twin, roast filed KN-568; **KN-563**
-(83877dc) SettingsDialog `Preferences`: an `updateArgs` during a play renders the
-story again at once and that render's loaders restore every `fn()`, so the story
-sets `parameters.test.restoreMocks` false and its play clears the mocks first.
-Its roast found nothing. **KN-569** carries Preferences failing when played again
-in one session, its first play's args kept, and under `colorScheme` dark.
+**Closed on 2026-09-15**, pushed and roasted by Codex: KN-554 (bb953c8), KN-560
+(481b66c), KN-561 (bfeafa6, roast filed KN-566), KN-562 (abd9c82, roast filed
+KN-568) and KN-563 (83877dc: an `updateArgs` during a play renders the story again
+at once and its loaders restore every `fn()`, so Preferences keeps its mocks and
+clears them as its play starts; roast found nothing; KN-569 carries its replay).
+**KN-255** (97ce2e9): the Checkbox, FilterChip, StatusChip, Tooltip and
+PreferencesProvider stories offer only the controls their plays hold for, or read
+their args; the Checkbox gained a `Default` first so its Docs page keeps its
+controls. **Its roast by Codex is running** (scratch `kn255-roast.log`).
+
+**`node agent/scripts/storybook/controls-sweep.mjs [--only <regex>]`**, committed
+by KN-255, builds Storybook, opens every story and each one with a play once per
+offered control changed through URL args, and lists the broken ones and JSON
+controls for elements. On the tree of 97ce2e9: 373 stories, 362 with a play,
+**137 broken, carried by KN-570 to KN-574**, and six failing with nothing changed
+(AddJobModal `Review` KN-559, JobModal's four KN-494, Input `Multiline` under
+load). It must read `control.disable`, since `control: false` is prepared as
+`{ disable: true }` with its inferred type kept.
 
 **How to measure the published Storybook**: build with `KARNAMA_STORYBOOK_BASE` in
 Node's own `env`, never on a Git Bash command line; serve under that base; fetch
-what `iframe.html` names first; open `iframe.html?id=<id>&viewMode=story`, or
-`index.html?path=/story/<id>` for the manager; hear the end on
-`window.__STORYBOOK_ADDONS_CHANNEL__`, hooked by a property setter:
+what `iframe.html` names first; hear the end on
+`window.__STORYBOOK_ADDONS_CHANNEL__`, hooked by a property setter;
 `playFunctionThrewException` for a thrown play, whose `storyFinished` still says
 `success`. `__STORYBOOK_PREVIEW__.onForceRemount({ storyId })` replays a story.
-The scratch scripts are this session's.
 
 **What fails in a full run**: the storybook project fails KN-494's five modal
 stories, and the Job Card's `Pressed` in parallel only, KN-365's kind. The API's
@@ -92,21 +97,12 @@ coverage gate fails on auth and extraction files, KN-486. KN-551:
 
 ## The next step
 
-**KN-255 is in progress**: stories whose offered controls make their play
-functions untrue. Measured on 2026-09-15 with KN-247's sweep generalised to every
-story of a production Storybook of 83877dc, each offered control changed by its
-type through URL args, verdict the errored phase or `playFunctionThrewException`:
-372 stories in 438 seconds, 362 with a play, **155 broken by a control they
-offer, in 35 files**. The card was re-pointed to the five components it named,
-Checkbox (6 stories), FilterChip (6), StatusChip (4), PreferencesProvider (2) and
-the Tooltip, which no longer breaks but offers `children` and `icon` as JSON; the
-rest are **KN-570** JobsScreen, **KN-571** the modals, **KN-572** the cards and
-board, **KN-573** the form controls, **KN-574** navigation, language and tokens.
-Its exit's repository guard was dropped under rule zero, with a note; the rule
-goes into `AGENTS.md` section 4 in words. Next: the plan beside the work, then
-Codex. The sweep, `kn255-sweep.mjs`, is scratch; the plan weighs committing it,
-since six cards' exits name it. The Docs page's Controls follow the primary
-story, the first export, so restricting that story's controls empties the page's.
+**KN-570 is in progress**: JobsScreen's sixteen stories with a play fail when
+`addOpen` is changed in Controls. The meta sets `addOpen: false` and callbacks,
+and no story offers any other editable control. Next: the plan beside
+`src/screens/JobsScreen.stories.tsx`, Codex's review, the change, the sweep with
+`--only '^screens-jobs--'`, the JobsScreen stories under Vitest, unit, eslint,
+tsc, the Docs page in both languages. Then read KN-255's roast when it lands.
 
 ## What to read first
 
