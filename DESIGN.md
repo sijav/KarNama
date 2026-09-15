@@ -567,6 +567,17 @@ stretched over the card, so a press anywhere else opens the contact. The
 Checkbox keeps its ring whole in the Title Group, which clips nothing, KN-293.
 KN-026.
 
+**A phone chooses a person with a held press**, KN-533. The phone's network,
+`252:411`, draws the full card, and its cards press to Mobile Selection,
+`305:1842`, over a Smart Animate of 250 ms, the job card's press of KN-428. So on a
+phone a press on the card's own button, held 500 ms within 10 pixels, chooses the
+person; while anyone is chosen every card shows its Checkbox, unchecked on those not
+chosen, as the Checkbox `204:11` says, so a second is chosen with a tap; a tap
+still opens the contact, and the click a hold's release sends opens nothing. The
+phone's card has no hover, which a tap would leave behind, and its Checkbox and
+delete unfold while the focus inside is the keyboard's. Mobile Selection draws the
+Bulk Action Bar of Type=Contacts 24 above the foot, in the tab bar's place.
+
 ### The Status Picker, its choices and the Status Control
 
 The **Status Choice**, `427:567`, is the medium Status Chip in a shell of 4,

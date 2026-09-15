@@ -207,6 +207,10 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
                 key={held.id}
                 contact={held.contact}
                 selected={selected.includes(held.id)}
+                // A phone chooses by holding a person, and while anyone is
+                // chosen every card shows its checkbox, KN-533.
+                phone={!wide}
+                selecting={chosen.length > 0}
                 onOpen={() => {
                   setEditing({ id: held.id, values: asValues(held) })
                 }}

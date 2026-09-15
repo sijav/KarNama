@@ -3,6 +3,7 @@ import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, type Locale } from '../../i18n'
 import { semantic } from '../../theme/tokens'
+import { HOLD_MS, SLOP } from '../hold'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
 import { ContactCard, type ContactCardContact, type ContactCardProps } from './ContactCard'
@@ -37,7 +38,7 @@ const nameOnlyIn = (locale: Locale): ContactCardContact => ({
   linkedin: null,
 })
 
-const CONTROLLED: (keyof ContactCardProps)[] = ['contact', 'layout', 'selected']
+const CONTROLLED: (keyof ContactCardProps)[] = ['contact', 'layout', 'selected', 'phone', 'selecting']
 const LAYOUTS: NonNullable<ContactCardProps['layout']>[] = ['full', 'compact']
 
 // The file's full card is 360 wide and its compact one 560; the card fills its
@@ -89,6 +90,53 @@ const seen = (checkbox: HTMLElement) => checkbox.parentElement?.checkVisibility(
 
 // The full card's delete, named in either language.
 const deleteOf = (card: HTMLElement) => within(card).getByRole('button', { name: /حذف|Delete/u })
+
+// How far the name starts from the card's inline start, inside its padding: from
+// the right, in Persian.
+const nameInset = (card: HTMLElement, name: HTMLElement) =>
+  Math.round(card.getBoundingClientRect().right - px(getComputedStyle(card).paddingRight) - name.getBoundingClientRect().right)
+
+// What a finger does to a phone's card, dispatched as the browser would, the job
+// card's, KN-428: a press, a drift, a lift, the browser taking the touch for a
+// scroll. These prove the card's own handlers, not a phone's gesture recognition.
+type Pointing = 'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel'
+type Finger = 'touch'
+const FINGER: Finger = 'touch'
+type Mouse = 'mouse'
+const MOUSE: Mouse = 'mouse'
+const pointer = (target: Element, type: Pointing, init: PointerEventInit = {}) => {
+  const box = target.getBoundingClientRect()
+  return target.dispatchEvent(
+    new PointerEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      isPrimary: true,
+      pointerId: 1,
+      pointerType: FINGER,
+      button: 0,
+      clientX: box.left + box.width / 2,
+      clientY: box.top + box.height / 2,
+      ...init,
+    }),
+  )
+}
+// The click a release sends, with a detail of 1, or a key, with 0.
+type Clicking = 'click'
+const CLICK: Clicking = 'click'
+const clickOn = (target: Element, detail: number) =>
+  target.dispatchEvent(new MouseEvent(CLICK, { bubbles: true, cancelable: true, detail }))
+// A contextmenu, as a phone's browser may send for its own long press: true when
+// nothing prevented it.
+type Menuing = 'contextmenu'
+const CONTEXT: Menuing = 'contextmenu'
+const contextOn = (target: Element) => target.dispatchEvent(new MouseEvent(CONTEXT, { bubbles: true, cancelable: true }))
+// A wait of the hold's own length, begun after the card's timer: timers of one
+// delay run in the order they were set, so when it ends the card's hold would
+// already have run, and a check that nothing was chosen is not a guess.
+const pastTheHold = () =>
+  new Promise<void>((resolve) => {
+    window.setTimeout(resolve, HOLD_MS)
+  })
 
 export const Full: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
@@ -196,6 +244,156 @@ export const FullSelected: Story = {
     await expect(within(card).getByRole('checkbox', { name: `${i18nFor('fa-IR')._('Select')} ${args.contact.name}` })).toBeChecked()
     await userEvent.click(deleteOf(card))
     await expect(args.onDelete).toHaveBeenCalledTimes(1)
+  },
+}
+
+export const FullOnAPhone: Story = {
+  args: { phone: true },
+  globals: { locale: 'fa-IR' },
+  play: async ({ args, canvasElement }) => {
+    // A press held on a phone's card chooses the person, the network's cards
+    // pressing to Mobile Selection, 252:411 to 305:1842, KN-533, and the click its
+    // release sends opens nothing. At rest it is the desktop's card, the checkbox
+    // folded and the name at the inline start, and a hold starts no text
+    // selection.
+    const card = cardOf(canvasElement)
+    const name = openerOf(canvasElement, args.contact.name)
+    await expect(seen(within(card).getByRole('checkbox'))).toBe(false)
+    await expect(nameInset(card, name)).toBe(0)
+    await expect(getComputedStyle(card).userSelect).toBe('none')
+    // Waited for with room past the hold's own half second, which a loaded
+    // runner can stretch; the wait ends as soon as the call arrives.
+    pointer(name, 'pointerdown')
+    await waitFor(() => expect(args.onSelectedChange).toHaveBeenCalledTimes(1), { timeout: HOLD_MS * 4 })
+    await expect(args.onSelectedChange).toHaveBeenLastCalledWith(true)
+    pointer(name, 'pointerup')
+    clickOn(name, 1)
+    await expect(args.onOpen).not.toHaveBeenCalled()
+
+    // A hold whose release sends no click, as a phone may after a long press,
+    // leaves the tap after it to open the contact.
+    pointer(name, 'pointerdown')
+    await waitFor(() => expect(args.onSelectedChange).toHaveBeenCalledTimes(2), { timeout: HOLD_MS * 4 })
+    pointer(name, 'pointerup')
+    pointer(name, 'pointerdown')
+    pointer(name, 'pointerup')
+    clickOn(name, 1)
+    await expect(args.onOpen).toHaveBeenCalledTimes(1)
+
+    // A contextmenu during a press, which a phone's browser may send for its own
+    // long press, is that hold arriving first: it chooses at once and shows no
+    // menu, and one just after the hold shows none either.
+    pointer(name, 'pointerdown')
+    await expect(contextOn(name)).toBe(false)
+    await expect(args.onSelectedChange).toHaveBeenCalledTimes(3)
+    await expect(contextOn(name)).toBe(false)
+    pointer(name, 'pointerup')
+
+    // After a hold the keyboard's Enter still opens the contact: the click it
+    // sends carries a detail of 0. The runner's own key, KN-225; elsewhere that
+    // click.
+    const browser = '__KARNAMA_STORY_TEST__' in globalThis ? await import('vitest/browser') : null
+    name.focus()
+    if (browser) {
+      await browser.userEvent.keyboard('{Enter}')
+    } else {
+      clickOn(name, 0)
+    }
+    await expect(args.onOpen).toHaveBeenCalledTimes(2)
+    name.blur()
+
+    // And the phone's card has no hover, which a tap would leave behind: the
+    // runner's pointer over it lifts no edge and unfolds nothing, where the
+    // desktop's lifts both, FullHover.
+    if (!browser) return
+    await browser.userEvent.hover(card)
+    await waitFor(() => expect(card.matches(':hover')).toBe(true))
+    await expect(getComputedStyle(card).boxShadow).toBe('none')
+    await expect(seen(within(card).getByRole('checkbox'))).toBe(false)
+  },
+}
+
+export const FullNotAHoldOnAPhone: Story = {
+  args: { phone: true },
+  globals: { locale: 'fa-IR' },
+  play: async ({ args, canvasElement }) => {
+    // What does not choose a person on a phone, KN-533. Each check waits the
+    // hold's own length, begun after the card's timer, so the card's hold would
+    // have run by the time it looks. A finger leaving the card is not among them:
+    // a touch browser captures the pointer on its press, so that seldom arrives,
+    // KN-533's plan review.
+    const card = cardOf(canvasElement)
+    const name = openerOf(canvasElement, args.contact.name)
+    const box = name.getBoundingClientRect()
+
+    // A tap, which opens the contact.
+    pointer(name, 'pointerdown')
+    const tapped = pastTheHold()
+    pointer(name, 'pointerup')
+    clickOn(name, 1)
+    await tapped
+    await expect(args.onOpen).toHaveBeenCalledTimes(1)
+
+    // A press that drifts further than the slop, a scroll beginning, and the
+    // moves after it.
+    pointer(name, 'pointerdown')
+    const drifted = pastTheHold()
+    pointer(name, 'pointermove', { clientX: box.left + box.width / 2 + SLOP + 1 })
+    pointer(name, 'pointermove', { clientX: box.left + box.width / 2 + 2 * SLOP })
+    await drifted
+    pointer(name, 'pointerup')
+
+    // One the browser takes over for a scroll.
+    pointer(name, 'pointerdown')
+    const cancelled = pastTheHold()
+    pointer(name, 'pointercancel')
+    await cancelled
+
+    // A second finger, and a right click, whose menu is the browser's to show.
+    pointer(name, 'pointerdown', { isPrimary: false, pointerId: 2 })
+    await pastTheHold()
+    pointer(name, 'pointerdown', { button: 2, pointerType: MOUSE })
+    const right = pastTheHold()
+    await expect(contextOn(name)).toBe(true)
+    await right
+
+    // A press on the checkbox, the delete or a link, each its own control. The
+    // checkbox and delete are folded at rest, and pressed here as they are while
+    // the page is choosing or the keyboard is inside the card.
+    const [link] = within(card).getAllByRole('link')
+    if (!link) throw new Error('the card has no link')
+    for (const control of [within(card).getByRole('checkbox'), deleteOf(card), link]) {
+      pointer(control, 'pointerdown')
+      await pastTheHold()
+      pointer(control, 'pointerup')
+    }
+
+    await expect(args.onSelectedChange).not.toHaveBeenCalled()
+    await expect(args.onOpen).toHaveBeenCalledTimes(1)
+  },
+}
+
+export const FullSelectingOnAPhone: Story = {
+  args: { phone: true, selecting: true },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args, canvasElement }) => {
+    // While anyone on the page is chosen, every phone card shows its checkbox, as
+    // the Checkbox 204:11 says: unchecked on a person not chosen, before the name,
+    // which moves over by 28 as the hover's does, over the press's 250 ms, KN-533.
+    // The delete stays folded, and a tap on the checkbox chooses the person.
+    const card = cardOf(canvasElement)
+    const name = openerOf(canvasElement, args.contact.name)
+    const checkbox = within(card).getByRole('checkbox', { name: `${i18nFor('fa-IR')._('Select')} ${args.contact.name}` })
+    await expect(seen(checkbox)).toBe(true)
+    await expect(checkbox).not.toBeChecked()
+    await expect(nameInset(card, name)).toBe(28)
+    await expect(deleteOf(card).getBoundingClientRect().width).toBe(0)
+    const fold = checkbox.closest('.KarnamaContactCard-check')
+    if (!fold) throw new Error('the checkbox has no fold round it')
+    await expect(getComputedStyle(fold).transitionDuration.split(', ')).toEqual(['0.25s', '0.25s'])
+    await userEvent.click(checkbox)
+    await expect(args.onSelectedChange).toHaveBeenCalledWith(true)
+    await expect(args.onOpen).not.toHaveBeenCalled()
   },
 }
 

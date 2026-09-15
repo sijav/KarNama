@@ -73,8 +73,8 @@ other side.
 While a page is selecting, the Bulk Action Bar has the foot of the screen to
 itself: on a desktop the sidebar stays beside the page while the bar floats, and
 on a phone the tab bar gives the bar its place and comes back when the selection
-is let go. The story loads the sample data and resizes the screen when it runs as
-a test.
+is let go, on the board and on the network, where a card is held to choose it.
+The story loads the sample data and resizes the screen when it runs as a test.
 
 ### SignedOutInAnotherTab
 

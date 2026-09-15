@@ -526,6 +526,32 @@ export const Selecting: Story = {
         await expect(foot[0]?.contains(tabBar())).toBe(true)
       })
       await expect(canvas.queryByRole('region', { name: 'کارهای گروهی' })).toBeNull()
+
+      // The network on a phone, KN-533: a person held brings the bar up in the tab
+      // bar's place, the one thing fixed at the foot and 24 above it, and letting
+      // go brings the tab bar back.
+      await userEvent.click(canvas.getByRole('button', { name: 'شبکه من' }))
+      await waitFor(async () => {
+        await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('شبکه من')
+      })
+      const name = canvas.getAllByRole('article')[0]?.querySelector('.KarnamaContactCard-name')
+      if (!(name instanceof HTMLElement)) throw new Error('the phone network shows no person')
+      touch(name, 'pointerdown')
+      const choosing = await canvas.findByRole('region', { name: 'کارهای گروهی' }, { timeout: 2000 })
+      touch(name, 'pointerup')
+      await waitFor(async () => {
+        const foot = fixedAtFoot(canvasElement)
+        await expect(foot).toHaveLength(1)
+        await expect(foot[0]).toBe(choosing)
+      })
+      await expect(Math.round(window.innerHeight - choosing.getBoundingClientRect().bottom)).toBe(24)
+      await expect(tabBar()).toBeNull()
+      await userEvent.click(within(choosing).getByRole('button', { name: 'لغو انتخاب' }))
+      await waitFor(async () => {
+        const foot = fixedAtFoot(canvasElement)
+        await expect(foot).toHaveLength(1)
+        await expect(foot[0]?.contains(tabBar())).toBe(true)
+      })
     } finally {
       await page.viewport(before.width, before.height)
       window.history.replaceState(null, '', address)

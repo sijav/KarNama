@@ -3,9 +3,9 @@ import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, type Locale } from '../../i18n'
 import { elevation, semantic, spacing, status } from '../../theme/tokens'
+import { HOLD_MS, SLOP } from '../hold'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
-import { HOLD_MS, SLOP } from './hold'
 import { JobCard, type JobCardProps } from './JobCard'
 
 type Job = Pick<JobCardProps, 'title' | 'company' | 'date' | 'status' | 'link'>

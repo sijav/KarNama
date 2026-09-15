@@ -66,6 +66,13 @@ cleared.
 The page at a phone's width, where the search bar stops taking the desktop
 toolbar's 320 and becomes the page's own, at the taller of its two heights.
 
+### SelectingOnAPhone
+
+At a phone's width, a person held is chosen and the bar comes up, every card
+shows its checkbox, a second person is chosen with a tap on theirs, and the two
+are deleted through the bar after its confirmation. The story resizes the screen
+and holds the card when it runs as a test.
+
 ### ItsOwnSearch
 
 The search box named and described for the people this page holds, rather than

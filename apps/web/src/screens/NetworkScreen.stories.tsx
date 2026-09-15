@@ -408,6 +408,101 @@ export const OnAPhone: Story = {
   },
 }
 
+// A press on a person's card as synthetic pointer events, and the click a
+// release sends: they run the card's own hold, KN-533, and prove nothing about a
+// phone's gesture recognition.
+type Pointing = 'pointerdown' | 'pointerup'
+type Finger = 'touch'
+const FINGER: Finger = 'touch'
+const touch = (target: Element, type: Pointing) => {
+  const box = target.getBoundingClientRect()
+  target.dispatchEvent(
+    new PointerEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      isPrimary: true,
+      pointerId: 1,
+      pointerType: FINGER,
+      button: 0,
+      clientX: box.left + box.width / 2,
+      clientY: box.top + box.height / 2,
+    }),
+  )
+}
+type Clicking = 'click'
+const CLICK: Clicking = 'click'
+
+export const SelectingOnAPhone: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // A phone chooses people by holding one, the network's cards pressing to
+    // Mobile Selection, 252:411 to 305:1842, KN-533: the bar comes up and every
+    // card shows its checkbox, so a second person is chosen with a tap on theirs,
+    // and the two are deleted through the bar after its confirmation. The
+    // runner's own viewport, which only the runner has, KN-225, put back after.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const [first = '', second = '', third = ''] = fixtures('fa-IR')
+      .contacts.slice(0, 3)
+      .map((contact) => contact.fullName)
+    const cardOf = (name: string) => {
+      const card = canvas.getByRole('button', { name }).closest('article')
+      if (!card) throw new Error('the person has no card around them')
+      return card
+    }
+    // Whether a checkbox is seen: its root's, since the native input the role
+    // sits on is always transparent under the drawn frame.
+    const seen = (checkbox: HTMLElement) => checkbox.parentElement?.checkVisibility({ opacityProperty: true }) ?? false
+    const before = { width: window.innerWidth, height: window.innerHeight }
+    try {
+      // A phone: the people in one column, and their cards the phone's.
+      await page.viewport(PHONE.width, PHONE.height)
+      await waitFor(async () => {
+        const grid = cardOf(first).parentElement ?? canvasElement
+        await expect(getComputedStyle(grid).gridTemplateColumns.split(' ')).toHaveLength(1)
+      })
+
+      // The first person held: the bar comes up counting one, and the click the
+      // release sends opens nothing.
+      const held = canvas.getByRole('button', { name: first })
+      touch(held, 'pointerdown')
+      const bar = await canvas.findByRole('region', { name: 'کارهای گروهی' }, { timeout: 2000 })
+      touch(held, 'pointerup')
+      held.dispatchEvent(new MouseEvent(CLICK, { bubbles: true, cancelable: true, detail: 1 }))
+      await expect(bar).toHaveTextContent(formatCount('fa-IR', 1))
+      await expect(body.queryByRole('dialog')).toBeNull()
+
+      // Every card shows its checkbox while anyone is chosen, checked on the one
+      // held, and the second person is chosen with a tap on theirs.
+      await waitFor(async () => {
+        await expect(canvas.getAllByRole('checkbox').map((box) => seen(box))).toEqual([true, true, true])
+      })
+      await expect(within(cardOf(first)).getByRole('checkbox')).toBeChecked()
+      await userEvent.click(within(cardOf(second)).getByRole('checkbox'))
+      await waitFor(async () => {
+        await expect(bar).toHaveTextContent(formatCount('fa-IR', 2))
+      })
+
+      // Both deleted through the bar, after the confirmation every deletion asks
+      // for, and the third person stays.
+      await userEvent.click(within(bar).getByRole('button', { name: 'حذف' }))
+      const confirm = await body.findByRole('dialog')
+      await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog')).toBeNull()
+        await expect(canvas.queryByText(first)).toBeNull()
+        await expect(canvas.queryByText(second)).toBeNull()
+      })
+      await expect(canvas.getByText(third)).toBeInTheDocument()
+      await expect(canvas.queryByRole('region', { name: 'کارهای گروهی' })).toBeNull()
+    } finally {
+      await page.viewport(before.width, before.height)
+    }
+  },
+}
+
 export const FocusAfterDeletingFromTheModal: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {

@@ -3,10 +3,10 @@ import { Box, ButtonBase, type Theme } from '@mui/material'
 import { useRef, useState, type HTMLAttributes, type MouseEvent, type ReactNode } from 'react'
 import { iconSize, spacing, status, type as typeScale, type StatusToken } from '../../theme/tokens'
 import { Checkbox } from '../checkbox'
+import { useHold } from '../hold'
 import { Icon } from '../icon'
 import { IconButton } from '../icon-button'
 import { CardMenu } from '../menu'
-import { useHold } from './hold'
 
 // The props are documented in story-docs, not here, KN-207.
 /** The desktop board's card, or the phone's, which carries its own menu. */

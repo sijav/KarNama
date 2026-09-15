@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import { usePreferences } from '../../core/preferences'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 import { Checkbox } from '../checkbox'
+import { useHold } from '../hold'
 import { Icon, type IconName } from '../icon'
 import { IconButton } from '../icon-button'
 import { dialable, formatPhone } from './phone'
@@ -23,6 +24,8 @@ export interface ContactCardProps {
   contact: ContactCardContact
   layout?: 'full' | 'compact'
   selected?: boolean
+  phone?: boolean
+  selecting?: boolean
   onOpen: () => void
   onSelectedChange: (selected: boolean) => void
   onDelete: () => void
@@ -50,9 +53,14 @@ const FOCUS_RING = 3
 // way, KN-015.
 const CHECK = 'KarnamaContactCard-check'
 const BIN = 'KarnamaContactCard-delete'
+// The card's own button, the name, where a press on a phone may hold, KN-533.
+const OPENER = 'KarnamaContactCard-name'
 // Folded, the checkbox gives up its 20 frame, the 8 after it and the four its
 // root already gives back, so the name starts where it would alone.
 const FOLDED_CHECK = iconSize.md + spacing.xs + spacing['2xs']
+// The phone's press, from the network's cards to Mobile Selection, 252:411 to
+// 305:1842: Smart Animate over 250 ms, the job card's, KN-533.
+const PRESS_MS = 250
 
 // The name is 16 at SemiBold on the file's automatic line height, composed as the
 // Empty State's title is: Title's size and line height with Heading/M's weight.
@@ -66,7 +74,7 @@ const oneLine = { sx: { minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis
 // layout, and hover and selected as the one and a half over it. Held under an
 // sx key, where the lint rule reads it as CSS.
 const frame = {
-  sx: (theme: Theme, layout: 'full' | 'compact', selected: boolean) => {
+  sx: (theme: Theme, layout: 'full' | 'compact', selected: boolean, phone = false) => {
     const colour = theme.karnama.semantic
     const lifted = {
       boxShadow: `inset 0 0 0 ${HOVER_EDGE}px ${colour['border/focus']}`,
@@ -89,12 +97,30 @@ const frame = {
         pointerEvents: 'none',
       },
       ...(selected ? lifted : {}),
-      '&:hover':
-        layout === 'compact' && !selected
-          ? { ...lifted, boxShadow: `${lifted.boxShadow}, ${theme.karnama.elevation.contactCardHover}` }
-          : lifted,
-      [`&:hover .${CHECK}, &:focus-within .${CHECK}`]: { marginInlineEnd: `-${spacing['2xs']}px`, opacity: 1, pointerEvents: 'auto' },
-      [`&:hover .${BIN}, &:focus-within .${BIN}`]: { width: DELETE, marginInlineStart: 0, opacity: 1, pointerEvents: 'auto' },
+      ...(phone
+        ? {
+            // A press held on a phone's card chooses the person, KN-533, so a hold
+            // starts no text selection and no callout, and the card has no hover,
+            // which a tap would leave behind. The checkbox and delete unfold while
+            // the focus inside is the keyboard's, not :focus-within, which the
+            // focus a closing modal gives back to the name would match, the job
+            // card's reason, KN-428.
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+            WebkitTouchCallout: 'none',
+            [`&:has(:focus-visible) .${CHECK}`]: { marginInlineEnd: `-${spacing['2xs']}px`, opacity: 1, pointerEvents: 'auto' },
+            [`&:has(:focus-visible) .${BIN}`]: { width: DELETE, marginInlineStart: 0, opacity: 1, pointerEvents: 'auto' },
+            // A reader who asks for less motion gets the unfolding at once.
+            '@media (prefers-reduced-motion: reduce)': { [`& .${CHECK}, & .${BIN}`]: { transition: 'none' } },
+          }
+        : {
+            '&:hover':
+              layout === 'compact' && !selected
+                ? { ...lifted, boxShadow: `${lifted.boxShadow}, ${theme.karnama.elevation.contactCardHover}` }
+                : lifted,
+            [`&:hover .${CHECK}, &:focus-within .${CHECK}`]: { marginInlineEnd: `-${spacing['2xs']}px`, opacity: 1, pointerEvents: 'auto' },
+            [`&:hover .${BIN}, &:focus-within .${BIN}`]: { width: DELETE, marginInlineStart: 0, opacity: 1, pointerEvents: 'auto' },
+          }),
     } as const
   },
 }
@@ -102,9 +128,20 @@ const frame = {
 // The name, the card's own button: its ::after covers the whole card, so a
 // press anywhere that is not another control opens the contact, and its ring,
 // drawn inside the card's edge, is the card's focus.
-const Name = ({ layout, onOpen, children }: { layout: 'full' | 'compact'; onOpen: () => void; children: ReactNode }) => (
+const Name = ({
+  layout,
+  className,
+  onOpen,
+  children,
+}: {
+  layout: 'full' | 'compact'
+  className?: string
+  onOpen: (event: { detail: number }) => void
+  children: ReactNode
+}) => (
   <ButtonBase
     disableRipple
+    {...(className === undefined ? {} : { className })}
     onClick={onOpen}
     sx={(theme) => ({
       position: 'static',
@@ -186,10 +223,34 @@ const Link = ({
 // Selected. A contact has no detail view, so everything is on the card, and
 // the card opens the contact's modal, already editable. The full card's
 // checkbox and delete join its title row on hover, with focus inside, or when
-// selected; the compact card, for the phone, keeps its mail and delete in view.
-export const ContactCard = ({ contact, layout = 'full', selected = false, onOpen, onSelectedChange, onDelete }: ContactCardProps) => {
+// selected, and on a phone a press held on it chooses the person, KN-533; the
+// compact card keeps its mail and delete in view.
+export const ContactCard = ({
+  contact,
+  layout = 'full',
+  selected = false,
+  phone = false,
+  selecting = false,
+  onOpen,
+  onSelectedChange,
+  onDelete,
+}: ContactCardProps) => {
   const { i18n } = useLingui()
   const { locale } = usePreferences()
+  // A press held on a phone's card chooses the person, the network's cards
+  // pressing to Mobile Selection, 252:411 to 305:1842, KN-533: only a press that
+  // starts where a tap would open the contact, not on the checkbox, the delete or
+  // a link. A person already chosen stays as they are.
+  const hold = useHold(
+    (target) => target instanceof Element && target.closest(`.${OPENER}`) !== null,
+    () => {
+      if (!selected) onSelectedChange(true)
+    },
+  )
+  // Folded at rest and in view while selected. On a phone, which has no hover, it
+  // is in view on every card while anyone is chosen, as the Checkbox 204:11 says,
+  // KN-533.
+  const folded = !selected && (!phone || !selecting)
   const role = [contact.role, contact.company].filter((part) => part !== null && part !== '').join(' · ')
   if (layout === 'compact') {
     return (
@@ -254,8 +315,9 @@ export const ContactCard = ({ contact, layout = 'full', selected = false, onOpen
   return (
     <Box
       component="article"
+      {...(phone ? hold.events : {})}
       sx={(theme) => ({
-        ...frame.sx(theme, 'full', selected),
+        ...frame.sx(theme, 'full', selected, phone),
         display: 'flex',
         flexDirection: 'column',
         gap: `${spacing.sm}px`,
@@ -286,7 +348,10 @@ export const ContactCard = ({ contact, layout = 'full', selected = false, onOpen
               zIndex: 1,
               flexShrink: 0,
               margin: `-${spacing['2xs']}px`,
-              ...(selected ? {} : { marginInlineEnd: `-${FOLDED_CHECK}px`, opacity: 0, pointerEvents: 'none' }),
+              // A phone's unfolds over the press's 250 ms; the desktop's hover
+              // unfolds it at once, as it always has.
+              ...(phone ? { transition: `margin ${PRESS_MS}ms ease-in-out, opacity ${PRESS_MS}ms ease-in-out` } : {}),
+              ...(folded ? { marginInlineEnd: `-${FOLDED_CHECK}px`, opacity: 0, pointerEvents: 'none' } : {}),
             }}
           >
             <Checkbox
@@ -297,7 +362,14 @@ export const ContactCard = ({ contact, layout = 'full', selected = false, onOpen
               }}
             />
           </Box>
-          <Name layout="full" onOpen={onOpen}>
+          <Name
+            layout="full"
+            className={OPENER}
+            onOpen={(event) => {
+              // The click a hold's release sends opens nothing, KN-533.
+              if (!hold.heldClick(event)) onOpen()
+            }}
+          >
             {contact.name}
           </Name>
         </Box>
@@ -317,6 +389,9 @@ export const ContactCard = ({ contact, layout = 'full', selected = false, onOpen
             height: DELETE,
             borderRadius: `${theme.karnama.radius.md}px`,
             color: theme.karnama.semantic['text/secondary'],
+            ...(phone
+              ? { transition: `width ${PRESS_MS}ms ease-in-out, margin ${PRESS_MS}ms ease-in-out, opacity ${PRESS_MS}ms ease-in-out` }
+              : {}),
             // Folded: no width, and the row's 8 before it taken back.
             ...(selected ? {} : { width: 0, marginInlineStart: `-${spacing.xs}px`, opacity: 0, pointerEvents: 'none' }),
             '&:hover': { backgroundColor: theme.karnama.semantic['bg/surface-secondary'], color: theme.karnama.semantic['text/error'] },

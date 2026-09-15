@@ -28,6 +28,16 @@ linked to, and LinkedIn. Any but the name and role may be missing.
 Whether the contact is selected, which shows the checkbox ticked and the card in
 the brand's pale blue.
 
+### phone
+
+Whether the card is on a phone, where a press held on it chooses the person, the
+click its release sends opens nothing, and the card has no hover.
+
+### selecting
+
+Whether anyone on the page is chosen: on a phone every card then shows its
+checkbox, so a second person is chosen with a tap.
+
 ### onOpen
 
 Called when the card is pressed; the page opens the contact's modal.
@@ -59,6 +69,24 @@ a test; in Storybook itself, press Tab yourself.
 ### FullSelected
 
 The full card selected.
+
+### FullOnAPhone
+
+The full card on a phone: a press held on it chooses the person and the click its
+release sends opens nothing, a tap after a hold still opens the contact, a menu
+the phone's browser asks for during the press is that hold, and Enter still opens
+it. The pointer over it lifts nothing, since a phone's card has no hover.
+
+### FullNotAHoldOnAPhone
+
+What does not choose a person on a phone: a tap, a press that drifts, one the
+browser takes for a scroll, a second finger, a right click, and a press on the
+checkbox, the delete or a link.
+
+### FullSelectingOnAPhone
+
+The full card on a phone while someone on the page is chosen: its checkbox shows,
+unchecked, and moves the name over, so a second person is chosen with a tap.
 
 ### CheckboxRingIsWhole
 
