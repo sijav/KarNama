@@ -372,3 +372,96 @@ env and three check steps, and the `AGENTS.md` section 5 line, changed. The patc
 applied cleanly to the reverted tree. Still to do then: the spec's path, prettier
 on the two new e2e files, the Hover mutation, the console error and the throw
 after an await, the other base, and the Pages run.
+
+## Replanned again, 2026-09-15
+
+KN-584 is closed (080f4b4), and the saved code is back in the tree. Its probe
+changed two things in that code; the rest of the Replanned section stands.
+
+1. **The build is named from `apps/web`.** `published.spec.ts` read `STORYBOOK_DIR`
+   against the working directory, so the config named from the repository root
+   found no build and no tests, measured. It resolves from its own directory, two
+   up, as `serve.ts` does, and a missing build still fails the run as it loads.
+2. **A story ends when its play has.** A play that writes its args says
+   `storyFinished` for each render that causes: SearchBar's `Debounced` and Input's
+   `TypingIntoABoundValue` said it before their plays ended in 10 runs of 10. So the
+   first `storyFinished` is not the end, and a failure later than it and the 400
+   milliseconds after goes unheard. The init script also hears
+   `storyRenderPhaseChanged`. When a `playing` phase came, the story ends at a
+   `storyFinished` after the phase `played` or `errored`; with none, at the first
+   `storyFinished`; and at once on a failure event. The 400 milliseconds stay.
+3. **KN-585 is not a blocker.** Input's `TypingIntoABoundValue` fails with the CPU
+   slowed four times and passed slowed twice. If the check's first run on
+   `ubuntu-latest` fails on it, that card blocks this one; nothing is let through.
+
+### How I will know it works, again
+
+- From the repository root, `--list` names every story of the build.
+- On the build of 080f4b4, today's stories, the check passes every story at the
+  default workers, from `apps/web`, its workers line recorded.
+- **One mutated build carrying three plants.** The Checkbox `Hover` story's
+  test-runner guard is taken out, the card's mutation. A `console.error` is added
+  to a story's render. And `Debounced`'s play throws 1.5 seconds after its last
+  assertion, later than its first `storyFinished` and 400 milliseconds. The saved
+  spec, before its end is changed, runs `Debounced` on that build and should pass it,
+  not hearing the throw. The changed spec runs the three and fails each, naming the
+  import error, the console error and the throw. Restored by hash, and built again.
+- The check run under a base other than the build's stops before any story, said.
+- lint, tsc, prettier on the two new files, and `npm run e2e -- --list` not listing
+  the spec.
+- After the push, the Pages run is read to its end.
+
+### Second replan review, Codex, 2026-09-15
+
+`gpt-5.6-terra` at medium, `gpt-5.6` being out of usage for four more minutes.
+Sound, and not to gate Pages until it is built: the spec in the tree is still the
+saved one, which it read, and which ends at the first `storyFinished` and resolves
+the build from the working directory; `--list` from the repository root failed on
+`<repo>/storybook-static/index.json`, and listed 378 from `apps/web`. The phase end
+is right, read against `runPhase`, `played`, `playFunctionThrewException`,
+`storyThrewException` and `storyFinished` in the runtime: it covers a story with
+no play, a render that throws, a play that destructures `mount` and one that writes
+its args, failure events still end at once, and the test's timeout bounds it. It is
+the runtime's internal contract, not a documented API, so the pinned Storybook and
+the mutation matter. `import.meta.dirname` is stable in Node 24. The mutated build
+proves the paths it plants, not every future change to the channel. Taken:
+
+1. **The wait's timeout** is what is left of the test's, measured from the test's
+   start less a margin, not the whole timeout less ten seconds, since the page's
+   load is spent from the same budget.
+2. **The bound is said**: no finite check hears every later error. This one hears
+   a story until its play has ended and 400 milliseconds more; the spec, the
+   `AGENTS.md` line, the card's note and the close say so.
+
+## Result, 2026-09-15
+
+Built as the Replanned sections say, and measured on production builds made under
+`/KarNama/storybook/` from PowerShell.
+
+- **The build is found from anywhere.** `--list` from the repository root named
+  378 tests. The main e2e config lists 98 in 13 files, none from `e2e/storybook`.
+- **Today's stories pass.** On the build of 080f4b4: "Running 378 tests using 16
+  workers", 378 passed in 2.1 minutes.
+- **Another base stops the run.** Under `/other/`, `serve.ts` refused before any
+  story: "This build was not made for /other/: 72 of the 73 files its iframe.html
+  asks for are not under it", three of them named. The run ended with the web
+  server unable to start, exit 1.
+- **One mutated build with three plants**, each found in its built bundle. The
+  saved spec, which ends at the first `storyFinished`, ran `Debounced` and passed
+  it in 1.4 seconds, not hearing the throw planted 1.5 seconds after its last
+  assertion. The changed spec ran the three and failed all three, naming each:
+  - Checkbox `Hover`, the card's mutation: `playFunctionThrewException` and
+    "vitest/browser can be imported only inside the Browser Mode. Instead, it was
+    imported outside of Vitest."
+  - `Debounced`: `playFunctionThrewException` and "KN-226 planted: a throw after
+    an await".
+  - StatusChip `Default`: "KN-226 planted: a console error as the story renders",
+    twice.
+- **Restored.** The three story files were checked out again, and their hashes
+  match the ones recorded before planting: 3b6dd4c, 6ee4d84 and cfab005. Storybook
+  was built again from them.
+- **Clean.** eslint and tsc are clean. The three new files have formatter drift 0;
+  the plan and `AGENTS.md` keep HEAD's.
+- **Records.** `AGENTS.md` section 5 names the check and what it hears; section 7
+  says where a play ends.
+- **Not yet shown**: the run on `ubuntu-latest`, read after the push.

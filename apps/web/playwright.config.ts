@@ -10,7 +10,9 @@ import { defineConfig, devices } from '@playwright/test'
  */
 export default defineConfig({
   testDir: './e2e',
-  testIgnore: 'connected.spec.ts',
+  // The connected spec has a config of its own, and so does the published
+  // Storybook's check, which needs a Storybook build, KN-226.
+  testIgnore: ['connected.spec.ts', 'storybook/**'],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

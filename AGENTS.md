@@ -382,8 +382,12 @@ done when the tests for what it changed pass, its stories and unit tests, lint
 and the type checker are clean on the workspace it touched, and it has been
 looked at, items 5 to 7 below. No per-task verifier script and nothing re-run
 at the close; the full suite and the build, items 3 and 4, run before a batch
-is pushed, and the Pages workflow builds the app and Storybook on every push. A
-bug found later is a later card.
+is pushed, and the Pages workflow builds the app and Storybook on every push,
+and opens every story of that Storybook build before it publishes, failing on a
+page error, a console error or a thrown play heard until the story's play has
+ended and 400 milliseconds after, KN-226: `npm run check:storybook` in
+`apps/web` builds and runs the same check here. A bug found later is a later
+card.
 
 1. `npm run lint`, zero warnings.
 2. `npm run lint:tsc`, clean.
@@ -479,6 +483,7 @@ short and the lessons sit in a file every iteration reads.
 - `ReturnType<typeof within>` lints as `any`, four unsafe-member errors: a helper that queries a story's canvas takes the element and calls `within` itself (KN-466).
 - The runner's keyboard types into a field only after the runner's own click: after testing-library's click the field has focus, yet a real key types nothing into it, while a real Enter in an input still submits its form. Click with `vitest/browser`'s `userEvent.click` before real keys that edit (KN-467).
 - Git Bash rewrites a value that starts with `/` into a Windows path on its way to a Windows program: `KARNAMA_STORYBOOK_BASE=/KarNama/storybook/ npx storybook build` built for `/Program Files/Git/KarNama/storybook/`, and a probe of that build spent 35 minutes timing out on 404s. Set such a value in Node's own `env`, or in PowerShell, and fetch a build's own assets before measuring it (KN-226).
+- A play that writes its args says `storyFinished` for every render that causes, before the play has ended: SearchBar's `Debounced` and Input's `TypingIntoABoundValue` did in 10 runs of 10. A story's end is the `storyFinished` after the phase `played` or `errored`, heard on `storyRenderPhaseChanged`; the first `storyFinished` read a story before its play failed (KN-584, KN-226).
 - A story whose play changes its args is rendered again at once in a production Storybook, and that render's loaders restore every `storybook/test` mock, so a call a spy recorded is gone before the play reads it; the runner applies no args update and never shows it. Keep the mocks across that story's renders with `parameters.test.restoreMocks` false, on the story alone, and clear them when its play starts, since nothing else then clears the calls the file's shared spies hold (KN-563).
 - The args a play writes stay in its story for the session, and a remount, Rerun among them, plays again from them: a play that assumes its story's own args fails the second time (KN-563's remount).
 - GitHub Pages has no rewrites, but it serves `/x` from `x.html` with 200, a directory with a 301 to its trailing slash, and a path it has no file for from `404.html` with 404, all measured on the live site. The app routed by hash from KN-042 on the claim that Pages could not serve a deep link, while the workflow was already serving one through `404.html` (KN-505).

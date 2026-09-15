@@ -30,6 +30,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # One base for the Storybook build and the check that opens it, KN-226. The
+    # app's build reads KARNAMA_BASE, not this.
+    env:
+      KARNAMA_STORYBOOK_BASE: /KarNama/storybook/
     steps:
       - uses: actions/checkout@v4
 
@@ -52,8 +56,26 @@ jobs:
 
       - name: Build Storybook
         run: npm run build-storybook --workspace @karnama/web
-        env:
-          KARNAMA_STORYBOOK_BASE: /KarNama/storybook/
+
+      # Every story of that build opened in headless Chromium before anything is
+      # published, KN-226: a page error, a console error or a thrown play, heard
+      # until the story's play has ended and 400 milliseconds after, stops the
+      # run here, the app's deploy with it, and Pages keeps serving the last good
+      # site.
+      - name: Install Chromium for the Storybook check
+        working-directory: apps/web
+        run: npx playwright install --with-deps chromium
+
+      - name: Open every story of the Storybook build
+        working-directory: apps/web
+        run: npx playwright test --config playwright.storybook.config.ts
+
+      - name: Keep the Storybook check's report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-check-report
+          path: apps/web/playwright-report/storybook
 
       - name: Assemble the two sites
         run: |
