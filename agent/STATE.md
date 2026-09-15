@@ -40,24 +40,24 @@ holds the Groq key; never repeat that key anywhere.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**Closed today and recorded**: KN-348 (242280f; roast filed KN-628, KN-629); KN-349 (d3b3596;
-roast found nothing); KN-358 (the design commit of the owner's answers; roast found nothing).
-**KN-359 is closed** (0b8f9c3; board 69d7fff): the add modal's paste label is `unstyledText.pasteLabel`,
-12 on 19 with no spacing, named beside the five type roles; the Input takes `labelStyle`; Paste and
-PasteFilled read 401 and Error 423; its roast is recorded, KN-631 and KN-632 filed. KN-362 and
-KN-370 are closed, below. Earlier: KN-345 (KN-626, KN-627), KN-343 (KN-625),
+**Closed today, each roast recorded**: KN-348 (filed KN-628, KN-629); KN-349 (nothing); KN-358
+(nothing); KN-359 (KN-632; KN-631 dropped as a duplicate of KN-413); KN-362 (KN-633, KN-634,
+KN-635); KN-370 (nothing); KN-385 (KN-636); KN-413 (KN-637, KN-638); KN-432 (nothing); KN-434
+(KN-639, KN-640); KN-435 (nothing). KN-387 is dropped: the language switch it would have styled is
+the flag Icon Button of KN-478 and KN-479. Earlier: KN-345 (KN-626, KN-627), KN-343 (KN-625),
 KN-338 (KN-624), KN-336, KN-335 (KN-621, KN-622), KN-332, KN-331 (KN-620), KN-024's round (KN-623).
 
 **Rounds waiting**: KN-018 on KN-621 and KN-622; KN-024 on KN-623; KN-025 on KN-620; KN-020 on
 KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385 and KN-625; KN-028 on KN-346, KN-626 and
-KN-627; KN-031 on KN-628 and KN-629. **Still open from earlier**: KN-009 waits on KN-614; KN-021 on
-KN-387; KN-022 on KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357; KN-029 on
-its other children.
+KN-627; KN-031 on KN-628 and KN-629. **Still open from earlier**: KN-009 waits on KN-614; KN-022 on
+KN-327, KN-615, KN-616 and KN-619; KN-012 on KN-333, KN-334 and KN-357; KN-029 on its other
+children.
 
 **What fails in a full run**: the Job Card's `Pressed`, and at times ContactCard's
 `Full On A Phone`, in parallel only, KN-365's kind. `session.test.ts` can overrun its 5 seconds
-while the machine is loaded, KN-551: rerun the file alone, then the unit project. `App.tsx` line
-107 uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486.
+while the machine is loaded, KN-551, as it did in KN-435's and KN-439's full runs: rerun the file
+alone, then read the unit project. `App.tsx` line 107 uncovered, KN-491. The API's gate fails on
+`extraction.service.ts`, KN-486.
 
 ## The owner's rules, most recent first
 
@@ -81,69 +81,22 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
 
 ## The next step
 
-1. **KN-359's roast is recorded**: KN-631, the Input docs claiming the message line keeps its height,
-   and KN-632, ErrorStep's diagnostics, filed.
-2. **KN-362 is closed** (30565a4; board 945b8b5): the add modal's loading panel is a `group` named by
-   the Loading State's line through `lineId`; the Loading State takes `announceFirstLine`, false in
-   the add modal, so the first sentence is said once, by the focus. Two plan reviews shaped it.
-   Its roast is recorded: KN-633, the first loading line reaching a screen reader only through the
-   focus name, KN-634, the split props, and KN-635, two comments, filed.
-3. **KN-370 is closed** (54b28fe; board cf8f745): DESIGN.md and the chip say the first strong code
-   point, bidi class L, R or AL, decides, and where the ellipsis sits; `MarkLedDigitsResolveLtr`
-   with its planted `rtl`. Its amended plan was not reviewed a second time. **Its roast is
-   running**, `kn370-roast.mjs` writing `kn370-roast.txt`: judge, file with
-   `--parent-task KN-370 --area docs --okr OKR-1`, record, relay.
-   Its roast is recorded, nothing filed.
-4. **KN-385 is closed** (6d35d00; board 5508947): the Contact Card builds its role line from the
-   trimmed parts, the Contact Modal saves role and company trimmed, and both docs say every part but
-   the name may be missing; the screens already trimmed before storing. Its roast is recorded:
-   KN-636, blank email, phone, job and LinkedIn rows from a kept record, filed.
-5. **KN-387 is dropped**: the Page Header's language switch it would have styled as text is, by the
-   owner's decision of 2026-09-14, an Icon Button with its flag, built by KN-478 and KN-479, both
-   done; `LanguageSwitch.tsx` draws `IconButton` with `LanguageFlag` in both placements.
-6. **KN-631 is dropped** as a duplicate of KN-413, filed without searching the board first.
-   **KN-413 is closed** (11a58d5; board ea9a49f): both Input docs open with what the line under the
-   field does, 64 and 90 for a field of one line, wrapping and multiline stated, as its plan review
-   narrowed it. **Its roast is running**, `kn413-roast.mjs` writing `kn413-roast.txt`: judge, file
-   with `--parent-task KN-413 --area web --okr OKR-1`, record, relay.
-   Its roast is recorded: KN-637, the multiline field measured by its frame, and KN-638, the plan's
-   stale line, filed.
-7. **KN-432 is closed** (cd47a99; board 0c1792d): both delete confirmations say "these" and lead
-   their body with the count in the reader's digits beside the message when several are going; one
-   keeps today's copy. The first build turned the copy singular as the dialog dissolved; a story
-   caught it and the count is now held in state. **Its roast is running**, `kn432-roast.mjs`
-   writing `kn432-roast.txt`: judge, file with `--parent-task KN-432 --area web --okr OKR-1`,
-   record, relay.
-8. **KN-434 is in progress**, medium, 1 point, web: JSDoc prose back in the TSX that story-docs
-   owns and that prints in English on the Persian docs page, on the Icon Button's `href` and above
-   stories in the screens, App and Button. Exit: no prop or story there carries prose the markdown
-   holds, and the Persian docs page shows no English. Measured: seven `/** */` blocks above story
-   exports print their English on the Persian Docs pages, `People`, `Adding` and `Selecting` on the
-   board's, `Editing` on the network page's, `Navigating` and `FromAnOldAddress` on the shell's,
-   `States` on the Button's; the Icon Button's page holds none, so that half is already gone. The
-   markdown holds all seven in both languages. **KN-434 is closed** (8771719; board f92c240): four
-   story blocks deleted, three code-explaining sentences kept as `//` comments, and, as its plan
-   review added, the seven JSDoc prop descriptions in `JobsScreenProps` and `NetworkScreenProps`
-   removed; the source scan and the five Persian Docs pages find none left. **Its roast is
-   running**, `kn434-roast.mjs` writing `kn434-roast.txt`: judge, file with
-   `--parent-task KN-434 --area web --okr OKR-1`, record, relay.
-   Its roast is recorded: KN-639, the kept Editing comment describing blanks the story never saves,
-   and KN-640, the Button form JSDoc, filed.
-9. **KN-435 is closed** (d16713a; board 3728570): a blank rename keeps the modal open with the
-   Status field's own error, "Write the status name", «نام وضعیت را بنویس», held by `tried` in the
-   rename state; `BackingOut` finds the dialog again past a close's fade and reads the refusal. The
-   unit project passed but for `session.test.ts` overrunning its 5 s under load, KN-551, which
-   passed alone. **Its roast is running**, `kn435-roast.mjs` writing `kn435-roast.txt`: judge, file
-   with `--parent-task KN-435 --area web --okr OKR-1`, record, relay.
-10. **KN-439 is in progress**, medium, 1 point, web: the status fixtures' count disagrees with the
-    board they describe. Exit: the count is gone, or equal to the job opportunities the fixtures put
-    in that status, in both languages. Measure first: its reading is from 2026-09-12.
+1. **KN-439 is closed** (0e740e0; board 4d6dd03): the status fixtures carry no count, which six of
+   the nine got wrong and nothing read. `story-fixtures.test.ts` asserts none in either language;
+   it failed first on fa-IR's nine, and again for a count put back on en-US's custom-4 and on its
+   `renamedStatus`, as the plan review asked. **Its roast is running**, `kn439-roast.mjs` writing
+   `kn439-roast.txt`: judge, file with `--parent-task KN-439 --area web --okr OKR-1`, record, relay.
+2. **KN-444 is in progress**, medium, 1 point, web: the Search Bar's size stories, `OnTheDesktop`
+   and `OnAPhone`, assert the box and the inline offsets and nothing vertical. Exit: both stories
+   assert the text's top offset and the icon's vertical centring against the file's numbers. The
+   card reads the text's top as 7 in the 36 bar and 11 in the 44, and the 20 icon centred in both:
+   read node `155:92` again before trusting it.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-385`,
-its plan beside `ContactCard.tsx`, and the scripts `kn385-apply-stories.mjs` and
-`kn385-apply-component.mjs` in the scratchpad, written before its plan review. **Never chain a check through a pipe into
-a commit or a close, write long scripts with the Write tool, keep apostrophes out of single-quoted
-strings in scripts, find a story's controls inside `#storybook-root`, and read an accessibility
-claim from the browser's own tree.** The Persian catalog is `apps/web/src/i18n/locales/fa-IR.ts`.
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-444`,
+`SearchBar.stories.tsx`, and the KN-444 plan beside it once written. **Never chain a check through
+a pipe into a commit or a close, write long scripts with the Write tool, keep apostrophes out of
+single-quoted strings in scripts, find a story's controls inside `#storybook-root`, and read an
+accessibility claim from the browser's own tree.** The Persian catalog is
+`apps/web/src/i18n/locales/fa-IR.ts`.
