@@ -13,7 +13,9 @@
  * are then kept out of every entry, text under a section before its first
  * `###`, and a `###` outside both sections, KN-202; a heading of level one or of
  * levels four to six, a fence that never closes, and an entry with no prose,
- * KN-405. The guard fails on any; a Docs page renders the rest.
+ * KN-405; and the first line inside a fence that holds its marks without
+ * closing it, where a Docs page ends the fence, KN-524. The guard fails on any;
+ * a Docs page renders the rest.
  */
 
 export interface StoryDoc {
@@ -66,8 +68,39 @@ const sectionOf = (line: string): Section | null => {
  * would register as a prop entry, and the guard would then demand a prop by
  * that name. Documentation that describes this very format is the obvious way
  * to hit it, and this file's own docs page will do exactly that.
+ *
+ * This is the parser's top-level fence grammar, KN-524, CommonMark's for a
+ * fence outside a list or a block quote, neither of which it follows: a fence
+ * opens on a line of at most three spaces and then three or more backticks or
+ * tildes, and closes only on a line of at most three spaces and then the same
+ * character, at least as many times, with nothing after the marks but spaces
+ * and tabs. Four spaces or a tab before the marks make an indented code block,
+ * which opens no fence. One reading is the Docs page renderer's and not
+ * CommonMark's: a backtick in a backtick fence's info string still opens a
+ * fence, as the markdown-to-jsx that `@storybook/addon-docs` bundles opens one,
+ * where CommonMark would open none.
  */
-const FENCE = /^\s*(?:```|~~~)/
+const OPENER = /^ {0,3}(?:`{3,}|~{3,})/
+
+// The run of marks at the start of what it is given.
+const MARKS = /^(?:`+|~+)/
+
+/** The run of marks a line opens a fence with, or empty for a line that opens none. */
+const openingRun = (line: string): string => {
+  if (!OPENER.test(line)) return ''
+  const marks = line.trimStart()
+  return marks.slice(0, marks.length - marks.replace(MARKS, '').length)
+}
+
+/**
+ * Whether a line closes the fence a run opened: after at most three spaces the
+ * run, or a longer one of its character, and then nothing but spaces and tabs,
+ * the carriage return of a Windows line ending included.
+ */
+const closes = (line: string, run: string): boolean => {
+  const marks = line.replace(/^ {0,3}/, '')
+  return marks.startsWith(run) && /^[ \t]*\r?$/.test(marks.replace(MARKS, ''))
+}
 
 export const parseStoryDoc = (markdown: string): StoryDoc => {
   const doc: StoryDoc = { description: '', props: {}, stories: {}, problems: [] }
@@ -92,9 +125,13 @@ export const parseStoryDoc = (markdown: string): StoryDoc => {
   // out of every entry.
   let discard = false
   let buffer: string[] = []
-  // The open fence's marker, empty while none is open, and the line it opened.
+  // The open fence's run of marks, empty while none is open, and the line it
+  // opened.
   let fence = ''
   let fenceLine = 0
+  // Set once a line of the open fence has been reported as where a Docs page
+  // ends it, KN-524.
+  let pageEnded = false
   // The line the lines in `buffer` began on, for a problem about them.
   let from = 1
 
@@ -121,14 +158,26 @@ export const parseStoryDoc = (markdown: string): StoryDoc => {
     // Inside a fence, everything is content, including something that looks
     // like a heading.
     if (fence) {
-      if (line.trimStart().startsWith(fence)) fence = ''
+      if (closes(line, fence)) {
+        fence = ''
+      } else if (!pageEnded && line.includes(fence)) {
+        // A Docs page's Markdown ends a fence at the first place its run appears
+        // after the opening line, wherever it stands, so the page ends it here
+        // and the fence's own closing line then opens another. Past this line
+        // the page no longer reads the fence as this does, so only this one.
+        pageEnded = true
+        report(number, `the ${fence} in this line leaves the fence open in Markdown, but a Docs page ends the fence here`)
+      }
       buffer.push(line)
       return
     }
-    if (FENCE.test(line)) {
-      // The marker itself, so a ``` block is not closed by a ~~~ line.
-      fence = line.trimStart().slice(0, 3)
+    const run = openingRun(line)
+    if (run) {
+      // The whole run, so a fence of four backticks is not closed by three, nor
+      // a ``` block by a ~~~ line.
+      fence = run
       fenceLine = number
+      pageEnded = false
       buffer.push(line)
       return
     }

@@ -184,3 +184,84 @@ describe('parseStoryDoc, the shapes KN-405 reports', () => {
     ])
   })
 })
+
+/** The message for the first line in a fence that holds its run without closing it, where a Docs page ends it, KN-524. */
+const pageCloses = (line: number, run: string) =>
+  `line ${line}: the ${run} in this line leaves the fence open in Markdown, but a Docs page ends the fence here`
+
+describe('parseStoryDoc, the fences KN-524 recognises', () => {
+  const head = ['## Props', '### placement', 'Where.']
+  const tail = ['## Stories', '### Default', 'D.']
+
+  it('reports four backticks closed only by three as an open fence at its opening line, naming the four', () => {
+    const markdown = [...head, '````md', '### notAProp', '```', ...tail].join('\n')
+    const doc = parseStoryDoc(markdown)
+    expect(Object.keys(doc.props)).toEqual(['placement'])
+    expect(doc.stories).toEqual({})
+    expect(problemsIn(markdown)).toEqual([openFence(4, '````')])
+  })
+
+  it('keeps a ### between four backticks and three inside the fence, which a later four closes', () => {
+    const markdown = [...head, '````', '### notAProp', '```', '````', ...tail].join('\n')
+    const doc = parseStoryDoc(markdown)
+    expect(Object.keys(doc.props)).toEqual(['placement'])
+    expect(doc.stories).toEqual({ Default: 'D.' })
+    expect(problemsIn(markdown)).toEqual([])
+  })
+
+  it('reports three backticks and a closer indented four spaces as an open fence at the opening line', () => {
+    const markdown = [...head, '```', 'code', '    ```', ...tail].join('\n')
+    expect(parseStoryDoc(markdown).stories).toEqual({})
+    expect(problemsIn(markdown)).toEqual([openFence(4, '```'), pageCloses(6, '```')])
+  })
+
+  it.each(['    ```', '\t```'])('opens no fence at %j, so the heading after it is read', (opener) => {
+    const markdown = [...head, opener, '### size', 'How big.'].join('\n')
+    expect(parseStoryDoc(markdown).props).toEqual({ placement: `Where.\n${opener}`, size: 'How big.' })
+    expect(problemsIn(markdown)).toEqual([])
+  })
+
+  it('opens a fence on backticks whose info string holds a backtick, as a Docs page does and CommonMark does not', () => {
+    const markdown = [...head, '``` a`b', '### notAProp', '```', ...tail].join('\n')
+    const doc = parseStoryDoc(markdown)
+    expect(Object.keys(doc.props)).toEqual(['placement'])
+    expect(doc.stories).toEqual({ Default: 'D.' })
+    expect(problemsIn(markdown)).toEqual([])
+  })
+
+  it.each(['   ```', '````', '```   ', '```\t'])('closes a fence of three backticks at %j', (closer) => {
+    const markdown = [...head, '```', 'code', closer, ...tail].join('\n')
+    expect(parseStoryDoc(markdown).stories).toEqual({ Default: 'D.' })
+    expect(problemsIn(markdown)).toEqual([])
+  })
+
+  it('closes a fence at a Windows line end, and a fence of three tildes at four', () => {
+    expect(problemsIn([...head, '```', 'code', '```', ...tail].join('\r\n'))).toEqual([])
+    expect(problemsIn([...head, '~~~', 'code', '~~~~', ...tail].join('\n'))).toEqual([])
+  })
+
+  it.each(['~~~', '``'])('does not close a fence of three backticks at %j', (line) => {
+    const markdown = [...head, '```', 'code', line, ...tail].join('\n')
+    expect(parseStoryDoc(markdown).stories).toEqual({})
+    expect(problemsIn(markdown)).toEqual([openFence(4, '```')])
+  })
+
+  it.each([
+    ['text after the marks', '``` more'],
+    ['marks in mid-line', 'a ``` b'],
+    ['the marks after four spaces', '    ```'],
+    ['the marks after a tab', '\t```'],
+  ])('reports a line with %s, which a Docs page takes for the end of the fence', (_shape, line) => {
+    const markdown = [...head, '```', line, '```', ...tail].join('\n')
+    expect(parseStoryDoc(markdown).stories).toEqual({ Default: 'D.' })
+    expect(problemsIn(markdown)).toEqual([pageCloses(5, '```')])
+  })
+
+  it('reports only the first such line in a fence, and the first in the next fence too', () => {
+    expect(problemsIn([...head, '```', 'a ``` b', 'c ``` d', '```', ...tail].join('\n'))).toEqual([pageCloses(5, '```')])
+    expect(problemsIn([...head, '```', 'a ``` b', '```', '~~~', 'c ~~~ d', '~~~', ...tail].join('\n'))).toEqual([
+      pageCloses(5, '```'),
+      pageCloses(8, '~~~'),
+    ])
+  })
+})

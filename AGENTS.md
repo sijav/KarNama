@@ -171,7 +171,13 @@ them one prop or one story. These fail the same guard, naming the file and the
 line: another `##` section, a second `###` of one name, and an entry or text
 outside every entry, KN-202; and, outside a fence, a line starting with one `#`
 or with four to six and then a space, a tab or its end, a fence that never
-closes, and an entry with no prose, KN-405.
+closes, and an entry with no prose, KN-405. A fence is CommonMark's at the top
+level: three or more backticks or tildes after at most three spaces, closed only
+by a line of the same character, at least as many, after at most three spaces
+and before nothing but spaces or tabs, a backtick in a backtick fence's info
+string still opening one as a Docs page reads it. Inside a fence, the first line
+that holds its marks without closing it fails too, since a Docs page's Markdown
+ends the fence there, KN-524.
 
 No MDX either: Storybook indexes `*.stories.ts(x)` alone. No lint block reads an
 `.mdx`, so a story or a docs page written in one would carry copy the lingui
