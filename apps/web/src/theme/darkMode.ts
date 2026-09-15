@@ -231,8 +231,9 @@ const darkSurface = deriveDarkSurface(semantic['bg/surface'])
  * left the danger fills at 3.9 and 4.1 to one under it and the two pressed
  * fills at 4.1 and 3.8, short of 4.5 even under pure white, while the one check
  * walked the text against the brand fill alone. Lighter text cannot help a fill
- * that came out light, so each fill that carries it is walked darker until it
- * reads; one that already clears it is left as it was, KN-108. The text is the
+ * that came out light, so each rest fill that carries it is walked darker until
+ * it reads; one that already clears it is left as it was, KN-108. Its hover and
+ * pressed fills then step darker from it, below, KN-319. The text is the
  * design's white, kept: text on a saturated fill is light in both schemes, and
  * deriveDark, which flips a light neutral to a dark one as a surface should,
  * turned it black. The list is the palette's rows below and the tests read it:
@@ -250,6 +251,35 @@ const onAccent = semantic['text/on-accent']
 const accentFill = (hex: string) => ensureContrast(deriveDarkSurface(hex), onAccent)
 
 /**
+ * A filled button's hover or pressed fill, a step darker than the state before it, KN-319.
+ *
+ * Walked to white's bar each on its own, a style's rest, hover and pressed fills all stopped
+ * at that edge: the danger fills at one lightness, and a pressed Primary brighter than its
+ * rest. So a state takes its own token's hue and saturation, at the lightness that puts it
+ * the light pair's own contrast ratio darker than the state just before it, as the file
+ * steps them in light. Darker than a fill white already clears only raises white's ratio.
+ * Luminance rises with lightness in one hue, so the lightness is found by halving the range
+ * a fixed number of times, keeping the darker bound.
+ */
+const accentStep = (hex: string, lightBefore: string, darkBefore: string): string => {
+  const wanted = (luminance(darkBefore) + 0.05) / contrast(lightBefore, hex) - 0.05
+  const { h, s } = hexToHsl(hex)
+  let [low, high] = [0, 1]
+  for (let step = 0; step < 24; step += 1) {
+    const middle = (low + high) / 2
+    if (luminance(hslToHex({ h, s, l: middle })) < wanted) low = middle
+    else high = middle
+  }
+  return hslToHex({ h, s, l: low })
+}
+const brandRest = accentFill(semantic['bg/brand/default'])
+const brandHover = accentStep(semantic['bg/brand/hover'], semantic['bg/brand/default'], brandRest)
+const brandPressed = accentStep(semantic['accent/700'], semantic['bg/brand/hover'], brandHover)
+const dangerRest = accentFill(semantic['bg/danger/default'])
+const dangerHover = accentStep(semantic['bg/danger/hover'], semantic['bg/danger/default'], dangerRest)
+const dangerPressed = accentStep(semantic['red/700'], semantic['bg/danger/hover'], dangerHover)
+
+/**
  * Every semantic token, derived. Not the design's values.
  *
  * Written out one line per token rather than mapped over `Object.entries`,
@@ -262,13 +292,14 @@ export const darkSemantic = {
   'bg/page': deriveDarkSurface(semantic['bg/page']),
   'bg/surface': deriveDarkSurface(semantic['bg/surface']),
   'bg/surface-secondary': deriveDarkSurface(semantic['bg/surface-secondary']),
-  // Fills that carry text/on-accent, walked until it reads on them.
-  'bg/brand/default': accentFill(semantic['bg/brand/default']),
-  'bg/brand/hover': accentFill(semantic['bg/brand/hover']),
+  // Fills that carry text/on-accent: each rest walked until it reads on it, its
+  // hover and pressed a step darker than the state before, KN-319.
+  'bg/brand/default': brandRest,
+  'bg/brand/hover': brandHover,
   // A fill, one of DARK_FILLS: a selected Filter Chip reads text/brand on it.
   'bg/brand/container': deriveDarkFill(semantic['bg/brand/container']),
-  'bg/danger/default': accentFill(semantic['bg/danger/default']),
-  'bg/danger/hover': accentFill(semantic['bg/danger/hover']),
+  'bg/danger/default': dangerRest,
+  'bg/danger/hover': dangerHover,
   // Text is derived AND THEN checked against the surface it sits on. The
   // derivation alone left secondary at 3.71 to one, brand at 2.62 and error at
   // 3.38, all below the 4.5 that makes normal text readable, while every HSL
@@ -277,7 +308,7 @@ export const darkSemantic = {
   'text/primary': ensureContrast(deriveDark(semantic['text/primary']), darkSurface),
   'text/secondary': ensureContrast(deriveDark(semantic['text/secondary']), darkSurface),
   'text/disabled': deriveDark(semantic['text/disabled']),
-  // Read on every accent fill, which are walked to it above rather than it to one of them.
+  // Read on every accent fill, which move for it above rather than it for one of them.
   'text/on-accent': onAccent,
   'text/brand': ensureContrast(deriveDark(semantic['text/brand']), darkSurface),
   'text/error': ensureContrast(deriveDark(semantic['text/error']), darkSurface),
@@ -306,11 +337,13 @@ export const darkSemantic = {
   // under text/brand. Derived as a foreground it came out light, 1.30 to one
   // under its own text, KN-108.
   'accent/200': deriveDarkFill(semantic['accent/200']),
-  // A fill, the Primary button's pressed state, under text/on-accent.
-  'accent/700': accentFill(semantic['accent/700']),
+  // A fill, the Primary button's pressed state, under text/on-accent, a step
+  // darker than its hover, KN-319.
+  'accent/700': brandPressed,
   'gray/200': deriveDark(semantic['gray/200']),
-  // A fill, the Destructive button's pressed state, derived as the danger fills are.
-  'red/700': accentFill(semantic['red/700']),
+  // A fill, the Destructive button's pressed state, a step darker than the danger
+  // hover, KN-319.
+  'red/700': dangerPressed,
   // The scrim dims whatever is under a modal, and black at half dims a dark
   // page as it does a light one, so it is the design's in both.
   'overlay/scrim': semantic['overlay/scrim'],

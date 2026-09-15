@@ -381,3 +381,28 @@ describe('every text the theme puts on a fill reads there, KN-108', () => {
     for (const name of ACCENT_FILLS) expect(luminance(darkSemantic[name]), name).toBeLessThan(0.5)
   })
 })
+
+/**
+ * A filled button's states in dark, KN-319: the rest, hover and pressed fills of every style
+ * whose three fills carry white, each darker than the one before by the light pair's own
+ * step. Walked to white's bar alone they stopped together, the danger fills at one lightness
+ * and a pressed Primary brighter than its rest. Read from the Button's looks, as the pairs
+ * above are, which hold white on each of these fills at 4.5 to one, KN-108.
+ */
+describe("a filled button's states step darker in dark, as they do in light, KN-319", () => {
+  const accent = new Set<string>(ACCENT_FILLS)
+  const steps = Object.entries(LOOKS).flatMap(([variant, look]) => {
+    const [rest, hover, pressed] = [look.rest.fill, look.hover.fill, look.pressed.fill]
+    if (rest === null || ![rest, hover, pressed].every((fill) => accent.has(fill))) return []
+    return [[variant, rest, hover] as const, [variant, hover, pressed] as const]
+  })
+
+  it('reads the Primary and the Destructive, the two styles filled in every state', () => {
+    expect([...new Set(steps.map(([variant]) => variant))]).toEqual(['primary', 'destructive'])
+  })
+
+  it.each(steps)('%s steps from %s to %s, darker by the light step', (_variant, before, after) => {
+    expect(luminance(darkSemantic[after])).toBeLessThan(luminance(darkSemantic[before]))
+    expect(contrast(darkSemantic[before], darkSemantic[after])).toBeCloseTo(contrast(semantic[before], semantic[after]), 1)
+  })
+})

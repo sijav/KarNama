@@ -879,16 +879,22 @@ unfocused control, WCAG 2.4.13's measure, is each component's own, KN-244 for
 the Input.
 
 **A fill that carries white text moves, not the text.** `text/on-accent` stays
-the design's white in dark, and the six fills it sits on, the brand fill and
-its hover, the danger fill and its hover, and the Primary and Destructive
-buttons' pressed fills, are walked darker in their own hue until white clears
-4.5 on each: the derivation alone left the danger fills and the pressed fills
-between 3.75 and 4.12, short even under pure white. The pressed fill of the
-Secondary and Text buttons, `accent/200`, is a dark tint of its hue as the brand
-container is, where it had come out light under its own text at 1.30 to one. A
-test reads every text and fill the palette and the Button pair, KN-108. The
-light palette is the design's, and its Destructive rest is 3.76, KN-396, the
-owner's to settle.
+the design's white in dark, and the two rest fills it sits on, the brand fill
+and the danger fill, are walked darker in their own hue until white clears 4.5
+on each: the derivation alone left the danger fills and the pressed fills
+between 3.75 and 4.12, short even under pure white. **Hover and pressed then
+step darker than the state before them**, as the file steps them in light: each
+takes its own hue at the lightness that puts it the light pair's own contrast
+ratio below the state before it, about 1.3 to one, so a Primary or a Destructive
+button darkens as it is hovered and again as it is pressed, and white only reads
+better on it. Walked to white's bar each on its own, the three danger fills had
+stopped at one lightness and a pressed Primary had come out brighter than its
+rest, KN-319. The pressed fill of the Secondary and Text buttons, `accent/200`,
+is a dark tint of its hue as the brand container is, where it had come out light
+under its own text at 1.30 to one. A test reads every text and fill the palette
+and the Button pair, KN-108, and another the order of a filled button's states,
+KN-319. The light palette is the design's, and its Destructive rest is 3.76,
+KN-396, the owner's to settle.
 
 ---
 
