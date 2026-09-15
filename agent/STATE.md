@@ -91,8 +91,16 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
    `ContactModal.tsx`, with the in-memory tsc run that refused `onDelete` required in edit in four
    places: `JobsScreen.tsx:636`, an edit Contact Modal with no delete (the job modal's own
    `onDeleteContact` there deletes at once with `records.deleteContacts([id])`), the stories' meta
-   `onDelete: fn()` beside its add mode, and the `Loading` and `LateRecord` renders. Raised to 2
-   points. Next: its Codex plan review, `kn348-plan-review.mjs` in the scratchpad. The work: `onDelete` required
+   `onDelete: fn()` beside its add mode, and the `Loading` and `LateRecord` renders. **Its plan review is judged and recorded in the
+   plan**, both asks taken, and the card is raised to 3 points: the stories' meta becomes a valid
+   edit instance with `onDelete: fn()` (measured, tsc then refuses only JobsScreen and the `Loading`
+   and `LateRecord` renders) AND one mode render builds the add shape without `recordId`, `initial`
+   or `onDelete`, every add story setting `mode: 'add'`; and JobsScreen's edit asks before deleting,
+   closing the editor into a Confirm modal and calling `records.deleteContacts` only on confirming,
+   as the network page does, with a board screen story proving it. **Build from the plan**: the story
+   first (Delete in edit, none in add, and the board's confirmed delete), the control run, then the
+   type, stories, JobsScreen and both docs. Scratch helpers: `kn348-union-tsc.mjs`,
+   `kn348-meta-tsc.mjs`; the apply pattern of `kn338-apply-rest.mjs`. The work: `onDelete` required
    in the edit member and `?: never` in the add one, KN-331's shape. **KN-331's lessons apply**,
    AGENTS.md section 7: the docs guard wants every callback's `fn()` in the meta, so the meta's
    `onDelete: fn()` stays; a story's args type lays the meta's args over each member, so a custom
