@@ -2,7 +2,7 @@ import { setupI18n } from '@lingui/core'
 import type { StoryObj } from '@storybook/react-vite'
 import { useRef, useState } from 'react'
 import { useArgs } from 'storybook/preview-api'
-import { expect, fn, userEvent, within } from 'storybook/test'
+import { clearAllMocks, expect, fn, userEvent, within } from 'storybook/test'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
 import { semantic, status, type StatusToken } from '../../theme/tokens'
@@ -152,7 +152,12 @@ export const Default: Story = {
 }
 
 export const KeyboardOnly: Story = {
+  // Each choice writes the args while the play runs, so the story keeps its
+  // mocks across the renders that causes and clears them as it starts, as
+  // AGENTS.md section 7 says, KN-584.
+  parameters: { test: { restoreMocks: false } },
   play: async ({ args, canvasElement }) => {
+    clearAllMocks()
     const group = within(canvasElement).getByRole('radiogroup')
     // One Tab stop, on the chosen colour, and the arrow keys move AND choose,
     // as a native radio group does.
@@ -173,7 +178,11 @@ export const KeyboardOnly: Story = {
 }
 
 export const Picking: Story = {
+  // The pick writes the args while the play runs, so the story keeps its mocks
+  // across the render that causes, as KeyboardOnly does, KN-584.
+  parameters: { test: { restoreMocks: false } },
   play: async ({ args, canvasElement }) => {
+    clearAllMocks()
     // A pointer picks too, and what it picks is told as the token, never a
     // colour outside the nine.
     const [, second] = within(canvasElement).getAllByRole('radio')

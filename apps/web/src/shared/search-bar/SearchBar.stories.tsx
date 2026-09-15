@@ -2,7 +2,7 @@ import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { useRef, useState } from 'react'
 import { useArgs } from 'storybook/preview-api'
-import { expect, fireEvent, fn, userEvent, within } from 'storybook/test'
+import { clearAllMocks, expect, fireEvent, fn, userEvent, within } from 'storybook/test'
 import { semantic } from '../../theme/tokens'
 import { fixtures } from '../story-fixtures'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -166,7 +166,11 @@ export const Filled: Story = {
 
 export const Clearing: Story = {
   args: { value: TYPED },
+  // Its click writes the args while it plays, so it keeps its mocks across the
+  // render that causes, as Debounced below does, KN-584.
+  parameters: { test: { restoreMocks: false } },
   play: async ({ args, canvasElement }) => {
+    clearAllMocks()
     const { field } = partsOf(canvasElement)
     // Clearing empties the field, searches for nothing at once, takes the
     // clear control away, and gives focus back to the field.
@@ -179,7 +183,15 @@ export const Clearing: Story = {
 }
 
 export const Debounced: Story = {
+  // Each key writes the args, and a story whose args change while it plays is
+  // rendered again at once, its loaders restoring every fn() first. The search
+  // runs DEBOUNCE_MS after the last key, and in a published Storybook on a busy
+  // page a render that began after it restored the spy before the play read
+  // it, KN-584. So this story keeps its mocks across its renders, as the
+  // Settings Dialog's Preferences does, and its play clears them as it starts.
+  parameters: { test: { restoreMocks: false } },
   play: async ({ args, canvasElement }) => {
+    clearAllMocks()
     const { field } = partsOf(canvasElement)
     // Typed quickly: nothing is searched while the keys come, and once they
     // stop, one search runs with every key in it, the last included.

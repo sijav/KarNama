@@ -4,7 +4,7 @@ import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { useRef, useState } from 'react'
 import { useArgs } from 'storybook/preview-api'
-import { expect, fn, userEvent, within } from 'storybook/test'
+import { clearAllMocks, expect, fn, userEvent, within } from 'storybook/test'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
 import { semantic, spacing } from '../../theme/tokens'
@@ -167,7 +167,12 @@ export const Default: Story = {
 
 export const KeyboardOnly: Story = {
   globals: { locale: 'fa-IR' },
+  // Choosing writes the args while the play runs, so the story keeps its mocks
+  // across the render that causes and clears them as it starts, as AGENTS.md
+  // section 7 says, KN-584.
+  parameters: { test: { restoreMocks: false } },
   play: async ({ args, canvasElement }) => {
+    clearAllMocks()
     const tabs = within(canvasElement).getAllByRole('tab')
     const [info, history, , , files] = tabs
     if (!info || !history || !files) throw new Error('fewer than five tabs')
