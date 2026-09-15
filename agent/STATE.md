@@ -86,12 +86,18 @@ while the machine is loaded, KN-551: rerun the file alone, then the unit project
 2. **KN-362 is closed** (30565a4; board 945b8b5): the add modal's loading panel is a `group` named by
    the Loading State's line through `lineId`; the Loading State takes `announceFirstLine`, false in
    the add modal, so the first sentence is said once, by the focus. Two plan reviews shaped it.
-   **Its roast is running**, `kn362-roast.mjs` writing `kn362-roast.txt` in the scratchpad: judge,
-   file with `--parent-task KN-362 --area web --okr OKR-1`, record, relay.
-3. **KN-370 is in progress**, medium, 1 point, docs, a child of KN-010: DESIGN.md's KN-264 paragraph
-   and `StatusChip.tsx:35` say "first letter" and "always cuts the END" where `dir=auto` reads the
-   first strong character and the ellipsis cuts the visual end. Its plan is written beside
-   `StatusChip.tsx`; next, its plan review, then the story `MarkLedDigitsResolveLtr` and the words.
+   Its roast is recorded: KN-633, the first loading line reaching a screen reader only through the
+   focus name, KN-634, the split props, and KN-635, two comments, filed.
+3. **KN-370 is closed** (54b28fe; board cf8f745): DESIGN.md and the chip say the first strong code
+   point, bidi class L, R or AL, decides, and where the ellipsis sits; `MarkLedDigitsResolveLtr`
+   with its planted `rtl`. Its amended plan was not reviewed a second time. **Its roast is
+   running**, `kn370-roast.mjs` writing `kn370-roast.txt`: judge, file with
+   `--parent-task KN-370 --area docs --okr OKR-1`, record, relay.
+4. **KN-385 is in progress**, medium, 1 point, a child of KN-026: a role or company of only spaces
+   still draws the Contact Card's blank role line and divider, and the contact prop's docs say the
+   role cannot be missing. Exit: the card trims each part, the Contact Modal trims role and company
+   on save, a story shows a role of spaces drawing no line, and both docs say role and company may
+   be missing. Check first whether the screens already trim before storing.
 
 ## What to read first
 
