@@ -36,33 +36,31 @@ on 2026-09-12 "If you have AI test, remove that, I didn't ask for an AI API
 test". The owner was told on 2026-09-15 that the Codex log they pasted holds the
 Groq key they had pasted to Codex, that no file, commit or board entry holds it,
 and to rotate it. Never repeat that key anywhere. **Filed for the owner by
-KN-518 on 2026-09-15**, not yet asked: KN-588, the signup's skip against the
-required name; KN-589, the frames' text-message promise while the provider is
-mocked; KN-590, a terms and privacy note for pages that do not exist; KN-591, the
-note's 2.54 to one contrast.
+KN-518**, not yet asked: KN-588 (the signup's skip against the required name),
+KN-589 (the frames' text-message promise while the provider is mocked), KN-590
+(terms and privacy pages that do not exist), KN-591 (the note's 2.54 to one).
 
-**KN-518 is closed** (37df5c8, board 26d768d, pushed). The sign-in card has the
-file's measures on every step, `elevation.authCard`, the sidebar's Brand Row
-moved to `shared/navigation/BrandRow`, and each step's heading at 24 on the normal
-line, which measures the file's 38. The copy follows the frames where it promises
-nothing untrue. Its Codex roast was running when this was written
-(`kn518-task-roast.log` in the scratchpad), to be judged and recorded, and so was
-the Pages run for 26d768d. The frames' code boxes are **KN-586** and the countdown
-with a change of number **KN-587**, both high.
+**KN-533 is closed** (ff0542f, board d001af5, pushed). On a phone the network's
+full Contact Card takes the job card's held press: `useHold` moved to
+`shared/hold`, the card takes `phone` and `selecting`, the hold starts only on the
+name's own button, and every phone card shows its checkbox while anyone is
+chosen. Stories: the Contact Card's three phone stories, the network page's
+`SelectingOnAPhone` at 390 by 844, and App/Shell's `Selecting`, which now also
+holds a person on the phone's network. Its Codex roast was running when this was
+written, and so was the Pages run for ff0542f, 34935295842. **A leftover it
+made**: its three phone stories and the `phone` and `selecting` controls it added
+break under Controls, AGENTS.md section 4's KN-255 rule, which is KN-572's scope
+for the Contact Card file; noted there.
 
-**KN-226 is closed and proven on ubuntu-latest**: 378 stories using 2 workers
-passed in 6.5 minutes and the site deployed; its roast found nothing. **KN-584**
-(080f4b4) is closed, its roast found nothing. **KN-585**, medium, OKR-2: Input's
-`TypingIntoABoundValue` loses keys only on a page slowed four times, passed on
-ubuntu-latest. **KN-569** covers seven stories whose second play fails.
-
-**Measured for KN-518**: with `NODE_ENV=production`, `@lingui/core` 6.6.0
-returns a message with a value raw, `{phone}`, since the catalogs load
-uncompiled, KN-221; no message may take a value until that card.
+**KN-518 is closed** and its roast recorded (6db4a5b, its finding folded into
+KN-461); the Pages run for 26d768d passed. The frames' code boxes are **KN-586**
+and the countdown with a change of number **KN-587**, both high. **KN-226** is
+closed and proven on ubuntu-latest. **KN-585**, medium: Input's
+`TypingIntoABoundValue` loses keys only on a page slowed four times. **KN-569**
+covers seven stories whose second play fails.
 
 **How to measure the published Storybook**: build with `KARNAMA_STORYBOOK_BASE`
-from PowerShell or Node's own `env`, never a Git Bash line; a play that writes
-its args says `storyFinished` for each render that causes, so a play's end is the
+from PowerShell or Node's own `env`, never a Git Bash line; a play's end is the
 `storyFinished` after `played` or `errored`. The scratchpad's `kn584-probe.mjs`
 takes `WORKERS`, `REPEAT`, `THROTTLE`, `ONLY` and `REMOUNT`; `kn518-look.mjs`
 screenshots the sign-in steps from a production build.
@@ -93,14 +91,18 @@ kind. `App.tsx` line 107 is uncovered, KN-491's. The API's gate fails on
 
 ## The next step
 
-**KN-533 is in progress**, high: a phone cannot start a selection on the network
-page, since the full Contact Card unfolds its checkbox only on hover or focus.
-Read the file's network Mobile Selection, 305:1842, and the Contact Card's
-description and reactions with use_figma, and the job card's held press of
-KN-428, before planning. Judge and record KN-518's roast when it lands, and read
-the Pages run for 26d768d to its end.
+**KN-571 is in progress**, high, 3 points: the AddJobModal, JobModal,
+ContactModal, ChangeStatusModal, ConfirmModal and Modal stories offer open, step,
+tab and mode controls that break their plays. Each play story offers only the
+controls its play holds for, reads its expectations from its args, or disables
+the panel and says why, as the Checkbox, Filter Chip and Input stories do; measure
+with `agent/scripts/storybook/controls-sweep.mjs` on a production Storybook.
+AddJobModal's Review also fails on its size inside the manager, KN-559. Write the
+plan beside the work in `shared/modal`, have Codex review it, then build. Judge
+and record KN-533's roast when it lands, and read the Pages run for ff0542f to its
+end.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md`, `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo next` and KN-533's card.
+`AGENTS.md` (sections 4 and 7), `DESIGN.md`, `agent/RALPH.md`, the head of
+`agent/TODO_BOARD.md`, then `todo show KN-571` and the six story files.
