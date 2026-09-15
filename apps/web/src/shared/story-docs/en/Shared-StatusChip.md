@@ -73,13 +73,21 @@ view.
 ### LatinLedInPersian
 
 A name led by a Latin word in the Persian interface: the chip runs left to
-right, so the ellipsis cuts the name's end.
+right, so the ellipsis sits at its right, where the Persian run begins, and what
+it cuts is the start of that run.
 
 ### DigitLedResolvesRtl
 
-A Persian name led by digits in the English interface: the first letter
-decides, and the chip runs right to left.
+A Persian name led by digits in the English interface: the digits are not
+strong, so the first strong character, a Persian letter, decides, and the chip
+runs right to left.
 
 ### NoLettersFollowsThePage
 
-A name with no letter at all follows the page's direction.
+A name with no strong character, these digits alone, follows the page's direction.
+
+### MarkLedDigitsResolveLtr
+
+A name led by a left to right mark before digits, in the Persian interface: the
+mark is the first strong character, though no letter, so the chip runs left to
+right.

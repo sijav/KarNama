@@ -241,8 +241,9 @@ const Named = ({ label }: { label: string }) => (
 
 export const LatinLedInPersian: Story = {
   // The case dir=auto is there for, KN-264: a name led by a Latin word in the
-  // Persian interface runs left to right, so the ellipsis cuts its end and its
-  // start stays in view.
+  // Persian interface runs left to right, so the ellipsis sits at the right of
+  // the line, where the Persian run begins: the Latin start stays in view, and
+  // what is cut is the start of the Persian run, KN-370.
   parameters: { controls: { disable: true } },
   globals: { locale: 'fa-IR' },
   render: () => <Named label={NAMES.latinLed} />,
@@ -255,8 +256,8 @@ export const LatinLedInPersian: Story = {
 }
 
 export const DigitLedResolvesRtl: Story = {
-  // A Persian name led by digits, in the English interface: digits have no
-  // direction of their own, so the first letter decides, and it is Persian.
+  // A Persian name led by digits, in the English interface: these digits are not
+  // strong, so the first strong character after them decides, a Persian letter.
   parameters: { controls: { disable: true } },
   globals: { locale: 'en-US' },
   render: () => <Named label={NAMES.digitLed} />,
@@ -268,13 +269,28 @@ export const DigitLedResolvesRtl: Story = {
 }
 
 export const NoLettersFollowsThePage: Story = {
-  // A name with no letter at all has no direction of its own and follows the
-  // page's: left to right in the English interface.
+  // A name with no strong character, these digits alone, has no direction of its
+  // own and follows the page's: left to right in the English interface.
   parameters: { controls: { disable: true } },
   globals: { locale: 'en-US' },
   render: () => <Named label={NAMES.noLetters} />,
   play: async ({ canvasElement }) => {
     const name = within(within(canvasElement).getByTestId('column')).getByText(NAMES.noLetters)
+    await expect(getComputedStyle(chipOf(name))).toHaveProperty('direction', 'ltr')
+  },
+}
+
+export const MarkLedDigitsResolveLtr: Story = {
+  // A left to right mark before digits, in the Persian interface, KN-370: the mark is
+  // the first strong character, though no letter, so the chip runs left to right where
+  // the same digits alone follow the page. The browser resolves it, not code of the
+  // chip, so this reads the contract rather than a fix.
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  render: () => <Named label={NAMES.markLed} />,
+  play: async ({ canvasElement }) => {
+    const name = within(within(canvasElement).getByTestId('column')).getByText(NAMES.markLed)
+    await expect(document.documentElement).toHaveAttribute('dir', 'rtl')
     await expect(getComputedStyle(chipOf(name))).toHaveProperty('direction', 'ltr')
   },
 }

@@ -243,11 +243,16 @@ than its container is cut with an ellipsis on one line, never wrapped onto a
 second, so a column header or a card keeps its height and its width. The whole
 name stays the chip's text, so a screen reader reads all of it. The chip takes
 its direction from the name, not the page, as the label in `84:4` does: the
-first letter decides, so a name led by a Latin word runs left to right in the
-Persian interface, a Persian name led by digits runs right to left in the
-English one, and the ellipsis cuts the end of the name with its start in view.
-A name with no letter at all, digits or emoji alone, has no direction of its own
-and follows the page's. KN-264.
+first strong code point decides, one of Unicode bidi class L, R or AL. Letters
+and the left and right marks are the common ones, and the Persian digits these
+stories use are not strong. So a name led by a Latin word runs left to right in
+the Persian interface, a Persian name led by digits runs right to left in the
+English one, a name led by a left to right mark before digits runs left to right
+in the Persian one, and a name with no strong code point follows the page's. The
+ellipsis sits at the end of the line as it is drawn, the right of a left to right
+chip and the left of a right to left one: in a chip running left to right that
+holds a Persian run, that run is drawn right to left, so what the ellipsis hides
+of it is its start. KN-264, KN-370.
 
 ### The Input focused while invalid
 

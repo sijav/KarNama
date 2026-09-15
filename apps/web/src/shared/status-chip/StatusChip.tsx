@@ -32,8 +32,10 @@ export const StatusChip = ({ status, label, size = 'S' }: StatusChipProps) => {
     <Box
       component="span"
       // The name is the user's, in either script, so the chip takes its
-      // direction from the name rather than the page, and the ellipsis always
-      // cuts the END of it, KN-238.
+      // direction from its first strong code point, bidi class L, R or AL, such
+      // as a letter or a direction mark, rather than the page, and the ellipsis
+      // sits at the end of the line as drawn, which in a name of two scripts can
+      // be the start of a run, KN-238, KN-370.
       dir="auto"
       sx={(theme) => ({
         // The flex box 84:4 draws, centred by alignment with no vertical

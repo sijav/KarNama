@@ -88,6 +88,7 @@ export interface MixedStatusNamesFixture {
   latinLed: string
   digitLed: string
   noLetters: string
+  markLed: string
 }
 
 export interface NoteFixture {
