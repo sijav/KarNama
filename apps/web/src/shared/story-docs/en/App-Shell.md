@@ -41,10 +41,16 @@ screen when it runs as a test.
 
 ### Navigating
 
-The address and the page following each other: the navigation writes the hash,
-and a hash written by anything else, the back button, a typed address, a
-shared link, is read back into the page. While the add flow is open over the
+The address and the page following each other: the navigation writes the page's
+path under the site's base, and a path the history moves to by anything else,
+the back button or a shared link, is read back into the page. Going to the page
+already shown adds nothing to the history. While the add flow is open over the
 board, the board stays the current page in the navigation.
+
+### FromAnOldAddress
+
+An address shared while the page was in the hash, #/network, opens the network
+page, and the network page's path takes its place in the address.
 
 ### LaidOutAsTheFrames
 

@@ -1,9 +1,9 @@
 import type { I18n } from '@lingui/core'
 import type { StoryObj } from '@storybook/react-vite'
 import { useEffect, useRef, type ReactNode } from 'react'
-import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { AuthProvider, sessionFor, STORAGE_KEY as SESSION_KEY } from '../core/auth'
-import { addressOf } from './routes'
+import { addressOf, siteBase } from './routes'
 import { fixtures } from '../shared/story-fixtures'
 import { STORAGE_KEY } from '../core/preferences'
 import { defaultStatuses, jobFrom, STORAGE_KEY as RECORDS_KEY, type Records } from '../core/records'
@@ -36,6 +36,16 @@ const meta = {
       </AuthProvider>
     ),
   ],
+  // The shell writes its page into the frame's address, KN-505, and Storybook
+  // writes the next story's id onto whatever path the frame is at, so a page
+  // opened here would open the next shell story on it, or 404 on a reload. The
+  // path the story started on is put back when the story is torn down.
+  beforeEach: () => {
+    const { pathname } = window.location
+    return () => {
+      window.history.replaceState(window.history.state, '', `${pathname}${window.location.search}${window.location.hash}`)
+    }
+  },
 } satisfies StoryMeta<typeof App>
 
 // When the seeded reader signed in. Built rather than written: a date's own
@@ -160,34 +170,46 @@ export const SigningOutOnAPhone: Story = {
   },
 }
 
+// The event a browser fires when the history moves by anything but a push,
+// typed so the lint rule reads the name as a value.
+const MOVED: keyof WindowEventMap = 'popstate'
+
 /**
- * The address and the page follow each other.
+ * The address and the page follow each other, KN-505.
  *
- * The navigation writes the hash, and a hash written by anything else — the
- * back button, a typed address, a shared link — is read back into the page.
- * Hash routing rather than paths because GitHub Pages cannot rewrite a deep
- * link to the app's one file, KN-045.
+ * The navigation pushes a path under the site's base, and a path the history
+ * moves to by anything else, the back button or a shared link, is read back into
+ * the page. A path pushed from outside fires no popstate of its own, so the story
+ * fires the one a browser's Back would.
  */
 export const Navigating: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
-    // The runner's own page carries the hash, so it is put back after.
-    const before = window.location.hash
+    const base = siteBase(import.meta.env.BASE_URL, window.location.href)
+    // The frame's own address, its path, query and hash, put back whole after.
+    const before = window.location.href
     try {
-      // Going to another page writes the address.
+      // Going to another page writes the address, a path with no hash.
       await userEvent.click(canvas.getByRole('button', { name: 'شبکه من' }))
       await waitFor(async () => {
         await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('شبکه من')
       })
-      await expect(window.location.hash).toBe(addressOf('network'))
+      await expect([window.location.pathname, window.location.hash]).toEqual([addressOf('network', base), ''])
 
-      // And an address written by anything else is read back into the page:
-      // the add destination opens the add flow over the board, and closing it
-      // puts the address back on the board rather than leaving it asking for a
-      // flow that is no longer open, KN-044.
-      window.location.hash = addressOf('add')
+      // Going to the page already shown adds nothing to the history.
+      const pushed = spyOn(window.history, 'pushState')
+      await userEvent.click(canvas.getByRole('button', { name: 'شبکه من' }))
+      await expect(pushed).not.toHaveBeenCalled()
+      pushed.mockRestore()
+
+      // And an address the history moves to by anything else is read back into
+      // the page: the add destination opens the add flow over the board, and
+      // closing it puts the address back on the board rather than leaving it
+      // asking for a flow that is no longer open, KN-044.
+      window.history.pushState(null, '', addressOf('add', base))
+      window.dispatchEvent(new PopStateEvent(MOVED))
       const adding = await body.findByRole('dialog')
       // The board stays the current page under the flow, as its frames draw
       // it, KN-481. The dialog takes the page out of the accessibility tree
@@ -198,10 +220,33 @@ export const Navigating: Story = {
       await waitFor(async () => {
         await expect(body.queryByRole('dialog')).toBeNull()
       })
-      await expect(window.location.hash).toBe(addressOf('jobs'))
+      await expect([window.location.pathname, window.location.hash]).toEqual([addressOf('jobs', base), ''])
     } finally {
-      window.location.hash = before
+      window.history.replaceState(null, '', before)
     }
+  },
+}
+
+/**
+ * An address shared while the page was in the hash, KN-505: it opens the page it
+ * names, and that page's path replaces it. The frame's address is given the old
+ * hash before the shell renders, as a shared link gives it, and the whole address
+ * is put back after.
+ */
+export const FromAnOldAddress: Story = {
+  globals: { locale: 'fa-IR' },
+  beforeEach: () => {
+    const before = window.location.href
+    // `#/network`, the address KN-042 wrote for the network page.
+    window.history.replaceState(null, '', `#${addressOf('network', '/')}`)
+    return () => {
+      window.history.replaceState(null, '', before)
+    }
+  },
+  play: async ({ canvasElement }) => {
+    const base = siteBase(import.meta.env.BASE_URL, window.location.href)
+    await expect(within(canvasElement).getByRole('heading', { level: 1 })).toHaveTextContent('شبکه من')
+    await expect([window.location.pathname, window.location.hash]).toEqual([addressOf('network', base), ''])
   },
 }
 
@@ -272,7 +317,7 @@ const laidOutAsTheFrames = async (canvasElement: HTMLElement, i18n: I18n) => {
     })
   }
   const before = { width: window.innerWidth, height: window.innerHeight }
-  const address = window.location.hash
+  const address = window.location.href
   try {
     await page.viewport(DESKTOP.width, DESKTOP.height)
     await waitFor(() => expect(canvasElement.querySelector('aside')).not.toBeNull())
@@ -344,7 +389,7 @@ const laidOutAsTheFrames = async (canvasElement: HTMLElement, i18n: I18n) => {
     await expect(at(card)).toMatchObject({ start: 16, top: at(narrow).height + 16, width: main().clientWidth - 32 })
   } finally {
     await page.viewport(before.width, before.height)
-    window.location.hash = address
+    window.history.replaceState(null, '', address)
   }
 }
 
@@ -414,7 +459,7 @@ export const Selecting: Story = {
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
     const before = { width: window.innerWidth, height: window.innerHeight }
-    const address = window.location.hash
+    const address = window.location.href
     const tabBar = () => canvas.queryByRole('navigation', { name: 'فضای کار' })
     try {
       // A desktop, with the sample data loaded from Settings as a reader loads it.
@@ -483,7 +528,7 @@ export const Selecting: Story = {
       await expect(canvas.queryByRole('region', { name: 'کارهای گروهی' })).toBeNull()
     } finally {
       await page.viewport(before.width, before.height)
-      window.location.hash = address
+      window.history.replaceState(null, '', address)
     }
   },
 }

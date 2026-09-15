@@ -14,7 +14,7 @@ for (const locale of ['en-US', 'fa-IR']) {
       )
       let code = 'AUTH_NOT_CONFIGURED'
       await page.route('**/graphql', (route) => route.fulfill({ json: { errors: [{ message: code, extensions: { code } }], data: null } }))
-      await page.goto('/#/add')
+      await page.goto('/add')
       const dialog = page.getByRole('dialog')
       const input = dialog.getByRole('textbox').first()
       const dimensions = () =>

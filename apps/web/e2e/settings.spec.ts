@@ -61,7 +61,7 @@ test('settings apply immediately and survive reload; sample loading does not dup
   await dialog.getByRole('radio', { name: 'تیره', exact: true }).click()
   await page.screenshot({ path: testInfo.outputPath('settings-fa-dark.png') })
   await dialog.getByRole('button', { name: 'تمام', exact: true }).click()
-  await page.goto('/#/network')
+  await page.goto('/network')
   await expect(page.getByRole('article')).toHaveCount(6)
   await page.screenshot({ path: testInfo.outputPath('network-fa-dark.png'), fullPage: true })
   await page.reload()

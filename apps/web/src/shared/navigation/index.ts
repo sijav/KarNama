@@ -1,3 +1,4 @@
+export { DESTINATION_IDS } from './destinationIds'
 export { CURRENT, DESTINATIONS, useDestinationName, type Destination } from './destinations'
 export { Navigation, type NavigationProps } from './Navigation'
 export { NavItem, type NavItemProps } from './NavItem'

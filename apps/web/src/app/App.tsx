@@ -6,7 +6,21 @@ import { useAuth } from '../core/auth'
 import { AuthScreen, JobsScreen, NetworkScreen } from '../screens'
 import { Navigation, TAB_BAR_HEIGHT, type Destination } from '../shared/navigation'
 import { spacing } from '../theme/tokens'
-import { addressOf, destinationIn } from './routes'
+import { addressOf, destinationIn, pathForHash, siteBase } from './routes'
+
+// The site's base, `/KarNama/` on GitHub Pages and `/` on a dev server, which
+// every address the app reads and writes sits under. Read as a path against the
+// page, since a Storybook build gives the preview a relative one.
+const BASE = siteBase(import.meta.env.BASE_URL, window.location.href)
+
+// The page the address is at. An address from when the page was in the hash,
+// shared before the app moved to paths, is replaced by the path it names, once,
+// as the shell first renders, KN-505.
+const addressed = (): Destination => {
+  const moved = pathForHash(window.location.hash, BASE)
+  if (moved !== undefined) window.history.replaceState(window.history.state, '', moved)
+  return destinationIn(window.location.pathname, BASE)
+}
 
 /**
  * The application shell.
@@ -24,8 +38,8 @@ import { addressOf, destinationIn } from './routes'
  * for nothing more, so each screen's Page Header carries them, DESIGN.md
  * section 5, KN-478. Nothing sits in a row above a page's title.
  *
- * The destination is the address's, KN-042: `#/jobs`, `#/add` and `#/network`,
- * a hash because GitHub Pages has no server to rewrite a deep link. `add` is a
+ * The destination is the address's path under the base, KN-505: `/jobs`, `/add`
+ * and `/network`, each served on Pages from a page the build writes. `add` is a
  * destination in the navigation and a modal on the board, as the design has it:
  * job detail and adding are never pages of their own.
  */
@@ -34,24 +48,27 @@ export const App = () => {
   // foot of the screen to the Bulk Action Bar, KN-356. It lives here because
   // the navigation is the shell's and the selection is the page's.
   const [selecting, setSelecting] = useState(false)
-  const [current, setCurrent] = useState<Destination>(() => destinationIn(window.location.hash))
+  const [current, setCurrent] = useState<Destination>(addressed)
   const { session, signingUp, signOut, error } = useAuth()
   const { i18n } = useLingui()
 
-  // The address and the state follow each other: the navigation sets the hash,
-  // and the back button, a typed address or a shared link sets the state.
+  // The address and the state follow each other: the navigation pushes a path,
+  // and the back button, or anything else that moves the history, sets the state.
   useEffect(() => {
     const read = () => {
-      setCurrent(destinationIn(window.location.hash))
+      setCurrent(destinationIn(window.location.pathname, BASE))
     }
-    window.addEventListener('hashchange', read)
+    window.addEventListener('popstate', read)
     return () => {
-      window.removeEventListener('hashchange', read)
+      window.removeEventListener('popstate', read)
     }
   }, [])
 
+  // A pushed path fires no popstate, so the state is set here too. Going to the
+  // page already shown adds nothing to the history, as a hash left unchanged did.
   const navigate = (destination: Destination) => {
-    window.location.hash = addressOf(destination)
+    const address = addressOf(destination, BASE)
+    if (window.location.pathname !== address) window.history.pushState(null, '', address)
     setCurrent(destination)
   }
 

@@ -15,7 +15,7 @@ const REZA = 'رضا کریمی'
 
 test.beforeEach(async ({ page }) => {
   await signedIn(page)
-  await page.goto('/#/network')
+  await page.goto('/network')
   await emptyBoard(page)
   await page.reload()
 })

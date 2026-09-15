@@ -59,12 +59,12 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p site/storybook
+          # The app's build writes 404.html and a page for each destination,
+          # KN-505: Pages serves a path from the .html file of that name with
+          # 200, so /KarNama/network from network.html, and a path it has no
+          # file for from 404.html with 404.
           cp -r apps/web/dist/. site/
           cp -r apps/web/storybook-static/. site/storybook/
-          # Pages has no server-side routing, so a hard refresh on a deep link
-          # asks for a file that does not exist. Serving the app's index.html as
-          # the 404 hands the request to the client router instead.
-          cp site/index.html site/404.html
           # Jekyll would otherwise drop every _-prefixed file, which is most of
           # what a bundler emits.
           touch site/.nojekyll
@@ -74,8 +74,11 @@ jobs:
           set -euo pipefail
           test -f site/index.html
           test -f site/404.html
+          test -f site/jobs.html
+          test -f site/add.html
+          test -f site/network.html
           test -f site/storybook/index.html
-          echo "app and storybook both present"
+          echo "app, its pages and storybook all present"
 
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -17,7 +17,7 @@ for (const locale of ['en-US', 'fa-IR']) {
         expect(route.request().headers().authorization).toBeUndefined()
         await route.fulfill({ json: { errors: [{ message: 'UNAUTHENTICATED', extensions: { code: 'UNAUTHENTICATED' } }], data: null } })
       })
-      await page.goto('/#/add')
+      await page.goto('/add')
       const dialog = page.getByRole('dialog')
       await dialog.getByRole('textbox').first().fill('Example job description for a session check.')
       await dialog.getByRole('button', { name: english ? 'Extract details' : 'استخراج اطلاعات' }).click()

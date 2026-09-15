@@ -133,11 +133,11 @@ test('pasted ad text survives saving, editing with Enter, and reloading', async 
 })
 
 test('the add destination opens the flow and goes back to the board when it is closed', async ({ page }) => {
-  await page.goto('/#/add')
+  await page.goto('/add')
 
   await expect(page.getByRole('dialog')).toBeVisible()
   await page.getByRole('dialog').getByRole('button', { name: 'انصراف' }).click()
 
   await expect(page.getByRole('dialog')).toHaveCount(0)
-  await expect(page).toHaveURL(/#\/jobs$/)
+  await expect(page).toHaveURL(/\/jobs$/)
 })

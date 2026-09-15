@@ -1,11 +1,14 @@
 import { useLingui } from '@lingui/react'
 import type { Theme } from '@mui/material'
 import type { IconName } from '../icon'
+import type { Destination } from './destinationIds'
+
+export type { Destination }
 
 // The three places the product goes, in the order the sidebar and the tab bar
 // draw them, DESIGN.md section 3: the board, adding a job opportunity, and the
-// network page. Job detail is a modal, never a destination.
-export type Destination = 'jobs' | 'add' | 'network'
+// network page. Job detail is a modal, never a destination. Their ids live in
+// destinationIds.ts, which the build reads too, KN-505.
 
 export const DESTINATIONS: readonly { id: Destination; icon: IconName }[] = [
   { id: 'jobs', icon: 'file' },
