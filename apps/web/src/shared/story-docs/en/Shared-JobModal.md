@@ -131,7 +131,14 @@ On a phone's width, the tabs scrolling.
 
 ### InEnglish
 
-The tabs in English.
+The tabs in English, and a note saved in English with the record's dates the days
+the fixtures hold.
+
+### KeepsAWrittenDate
+
+A record kept before the date picker, whose posting date no calendar reads: the
+Info tab shows it as written, in a field of text, a note saves with it unchanged,
+and cleared it is a picker again.
 
 ### StartsOverForAnotherRecord
 

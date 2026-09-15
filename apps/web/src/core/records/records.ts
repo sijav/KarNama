@@ -1,4 +1,4 @@
-import { emptyDraft, type JobDraft } from '../../shared/add-job'
+import { dayFrom, emptyDraft, type JobDraft } from '../../shared/add-job'
 import type { ContactCardContact } from '../../shared/contact-card'
 import type { JobContact, JobFile, JobRecord, JobSaved, StatusChange } from '../../shared/job-modal'
 import type { SortOrder } from '../../shared/sort-control'
@@ -196,13 +196,25 @@ export const isRecords = (value: unknown): value is Records => {
 const isContact = (value: unknown): value is ContactEntry =>
   typeof value === 'object' && value !== null && 'id' in value && typeof value.id === 'string' && 'contact' in value && 'jobId' in value
 
+// A job kept before the date picker may hold a date as its reader wrote it,
+// «۱۰ شهریور ۱۴۰۵»: read, it is its day, and one no calendar reads stays as
+// written, for the form to show, KN-494. The next save writes the day back.
+const withDays = (job: JobEntry): JobEntry => ({
+  ...job,
+  draft: {
+    ...job.draft,
+    postedAt: dayFrom(job.draft.postedAt) ?? job.draft.postedAt,
+    expiresAt: dayFrom(job.draft.expiresAt) ?? job.draft.expiresAt,
+  },
+})
+
 /** A stored set, with anything it no longer understands dropped rather than thrown away whole. */
 export const readRecords = (raw: unknown, fallback: Records): Records => {
   if (!isRecords(raw)) return fallback
   const statuses = raw.statuses.filter((entry): entry is StatusOption => typeof entry.id === 'string' && isToken(entry.token))
   if (statuses.length === 0) return fallback
   const ids = new Set(statuses.map((entry) => entry.id))
-  const jobs = raw.jobs.filter((job) => typeof job.id === 'string' && ids.has(job.draft.status))
+  const jobs = raw.jobs.filter((job) => typeof job.id === 'string' && ids.has(job.draft.status)).map(withDays)
   // A board stored before the network had contacts of its own simply has none,
   // rather than failing to open, KN-056.
   const held: unknown[] = Array.isArray(raw.contacts) ? raw.contacts : []

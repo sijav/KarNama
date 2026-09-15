@@ -1,9 +1,11 @@
 import type { EmploymentType, JobLevel } from '../job-selects'
+import { isDay } from './days'
 
 // A job opportunity as the add modal holds it before it is saved, DESIGN.md
 // section 4: the three required fields, title, company and status, and the
-// optional ones the form draws, 150:94. Dates are ISO calendar days; salary
-// and experience may be ranges or other descriptive text.
+// optional ones the form draws, 150:94. Dates are ISO calendar days, or, on a job
+// kept before the date picker, a date as its reader wrote it, KN-494; salary and
+// experience may be ranges or other descriptive text.
 export interface JobDraft {
   title: string
   company: string
@@ -50,17 +52,8 @@ export const draftFrom = (status: string, source: string, found: Partial<JobDraf
 // Missing required values and invalid optional values share inline feedback.
 export type Missing = 'title' | 'company' | 'postedAt' | 'expiresAt' | 'postingUrl'
 const REQUIRED: readonly Missing[] = ['title', 'company']
-const POSTED: Missing = 'postedAt'
 const EXPIRES: Missing = 'expiresAt'
 const LINK: Missing = 'postingUrl'
-const validDay = (value: string): boolean => {
-  if (value === '') return true
-  if (!/^\d{4}-\d{2}-\d{2}$/u.test(value)) return false
-  const [year = 0, month = 1, day = 1] = value.split('-').map(Number)
-  const date = new Date(0)
-  date.setUTCFullYear(year, month - 1, day)
-  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value
-}
 
 export const validPostingUrl = (value: string): boolean => {
   if (value.trim() === '') return true
@@ -72,15 +65,13 @@ export const validPostingUrl = (value: string): boolean => {
   }
 }
 
+// A date that is not a day is no reason to refuse a save: the picker makes only
+// days, so such a date was written before it and is kept as written, KN-494. An
+// expiry before its posting is, and only when both are days, since text compared
+// with a day as a string says nothing about which comes first.
 export const missingFields = (draft: JobDraft): Missing[] => {
   const invalid = REQUIRED.filter((field) => draft[field].trim() === '')
-  if (!validDay(draft.postedAt)) invalid.push(POSTED)
-  if (
-    !validDay(draft.expiresAt) ||
-    (validDay(draft.postedAt) && draft.postedAt !== '' && draft.expiresAt !== '' && draft.expiresAt < draft.postedAt)
-  ) {
-    invalid.push(EXPIRES)
-  }
+  if (isDay(draft.postedAt) && isDay(draft.expiresAt) && draft.expiresAt < draft.postedAt) invalid.push(EXPIRES)
   if (!validPostingUrl(draft.postingUrl)) invalid.push(LINK)
   return invalid
 }

@@ -168,6 +168,16 @@ describe('what is kept between visits', () => {
     expect(readRecords(raw, fallback)).toEqual(fallback)
   })
 
+  it('turns a date its reader wrote into its day, and keeps one it cannot read as written, KN-494', () => {
+    const written = jobWith({ id: 'w', postedAt: '۱۰ شهریور ۱۴۰۵', expiresAt: '4 September 2026' })
+    const unread = jobWith({ id: 'u', postedAt: 'last spring', expiresAt: 'when it is filled' })
+    const read = readRecords({ statuses, jobs: [written, unread] }, fallback)
+    expect(read.jobs.map((job) => [job.id, job.draft.postedAt, job.draft.expiresAt])).toEqual([
+      ['w', '2026-09-01', '2026-09-04'],
+      ['u', 'last spring', 'when it is filled'],
+    ])
+  })
+
   it('drops a job whose status the board no longer holds, and keeps the rest', () => {
     const orphan = { ...jobWith({ id: 'b' }), draft: { ...jobWith({ id: 'b' }).draft, status: 'gone' } }
     const read = readRecords({ statuses, jobs: [...set.jobs, orphan] }, fallback)

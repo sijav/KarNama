@@ -70,9 +70,10 @@ const structuralProps =
   // SVG presentation attributes: 'round', 'none', a colour name. Drawing
   // instructions, not copy.
   '|fill|stroke|strokeLinecap|strokeLinejoin' +
-  // The options of Intl's formatters, 'numeric', 'long', 'short': how a date
-  // or a list is written, never the words themselves.
-  '|day|month|year|numeric|style' +
+  // The options of Intl's formatters, 'numeric', 'long', 'short', and the time
+  // zone one writes in, 'UTC', KN-494: how a date or a list is written, never
+  // the words themselves.
+  '|day|month|year|numeric|style|timeZone' +
   // import.meta.glob's options, a query suffix and an export name, read by
   // Vite at build time.
   '|query|import' +

@@ -281,20 +281,10 @@ export const SaveAndDelete: Story = {
   },
 }
 
-// The record the Enter story saves: the fixture's own, its dates as the days the
-// fixture means. The fixture writes them as a reader would, «۱۰ شهریور ۱۴۰۵»,
-// which the form cannot save, KN-494, and a record that cannot be saved cannot
-// show what saving does.
-const savable = (): JobRecord => {
-  const record = recordIn('fa-IR')
-  return { ...record, draft: { ...record.draft, postedAt: '2026-09-01', expiresAt: '2026-09-04' } }
-}
-
 // How many lines a field of several holds.
 const linesIn = (field: HTMLElement) => (field instanceof HTMLTextAreaElement ? field.value.split('\n').length : 0)
 
 export const EnterSaves: Story = {
-  args: { job: savable() },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
     // The owner, 2026-09-12: the fields are a form and Save submits it, KN-463,
@@ -452,6 +442,44 @@ export const InEnglish: Story = {
     // A link's keyboard, and a key that saves, in English too, KN-464.
     await expect(within(dialog).getByRole('textbox', { name: i18n._('Posting link') })).toHaveAttribute('type', 'url')
     await expect(within(dialog).getByRole('textbox', { name: i18n._('Posting link') })).toHaveAttribute('enterkeyhint', 'done')
+    // And the English record saves a note, its dates the days the fixtures hold,
+    // KN-494: they used to be written «1 September 2026», which the form refused.
+    await userEvent.click(within(dialog).getByRole('tab', { name: i18n._('Note') }))
+    await userEvent.type(within(panelOf(dialog)).getByRole('textbox', { name: i18n._('Note') }), ' They called back.')
+    await userEvent.click(within(dialog).getByRole('button', { name: i18n._('Save') }))
+    await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ postedAt: '2026-09-01', expiresAt: '2026-09-04' }))
+  },
+}
+
+// A record kept before the date picker, whose posting date no calendar reads,
+// written as its reader wrote it with the day not known, KN-494.
+const WRITTEN = '۱۴۰۵/۰۶/؟؟'
+const keptAsWritten = (): JobRecord => {
+  const record = recordIn('fa-IR')
+  return { ...record, draft: { ...record.draft, postedAt: WRITTEN } }
+}
+
+export const KeepsAWrittenDate: Story = {
+  args: { job: keptAsWritten() },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args }) => {
+    // KN-494: a date no calendar reads stays in the Info tab as written, in a
+    // field of text a reader can change, rather than a picker that would show
+    // nothing, and it does not stop a note from saving.
+    const dialog = await dialogNamed(args.job.draft.title)
+    const posted = within(panelOf(dialog)).getByRole('textbox', { name: 'تاریخ انتشار' })
+    await expect(posted).toHaveValue(WRITTEN)
+    await expect(posted).not.toHaveAttribute('type', 'date')
+    // The expiry, a day, keeps its picker.
+    await expect(within(panelOf(dialog)).getByLabelText('تاریخ انقضا')).toHaveAttribute('type', 'date')
+    await userEvent.click(within(dialog).getByRole('tab', { name: 'یادداشت' }))
+    await userEvent.type(within(panelOf(dialog)).getByRole('textbox', { name: 'یادداشت' }), ' تماس گرفتند.')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'ذخیره' }))
+    await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ postedAt: WRITTEN }))
+    // Cleared, it is a picker again.
+    await userEvent.click(within(dialog).getByRole('tab', { name: 'اطلاعات فرصت شغلی' }))
+    await userEvent.clear(within(panelOf(dialog)).getByRole('textbox', { name: 'تاریخ انتشار' }))
+    await expect(within(panelOf(dialog)).getByLabelText('تاریخ انتشار')).toHaveAttribute('type', 'date')
   },
 }
 

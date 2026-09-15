@@ -4,6 +4,7 @@ import { spacing } from '../../theme/tokens'
 import { Input, type InputDirection } from '../input'
 import { EmploymentTypeSelect, JobLevelSelect } from '../job-selects'
 import { StatusPicker, type StatusOption } from '../status-picker'
+import { isDay } from './days'
 import type { JobDraft, Missing } from './draft'
 
 // A field of latin data: a phone number, an email or a link runs left to right
@@ -51,19 +52,32 @@ export const JobFields = ({ draft, missing, onChange }: JobFieldsProps) => {
       }}
     />
   )
-  const date = (key: 'postedAt' | 'expiresAt', label: string) => (
-    <Input
-      label={label}
-      type="date"
-      direction={LATIN}
-      value={draft[key]}
-      {...(key === 'expiresAt' && draft.postedAt !== '' ? { min: draft.postedAt } : {})}
-      {...(missing.includes(key) ? { error: i18n._('Enter a valid date; expiry cannot be before publication') } : {})}
-      onChange={(value) => {
-        onChange({ ...draft, [key]: value })
-      }}
-    />
-  )
+  // A date is a day, which the picker holds, or a date written before the picker,
+  // KN-494, which a picker would show as nothing: that one is a field of text,
+  // holding it as written for the reader to change, and cleared it is a picker again.
+  const date = (key: 'postedAt' | 'expiresAt', label: string) =>
+    draft[key] !== '' && !isDay(draft[key]) ? (
+      <Input
+        label={label}
+        enterKeyHint="done"
+        value={draft[key]}
+        onChange={(value) => {
+          onChange({ ...draft, [key]: value })
+        }}
+      />
+    ) : (
+      <Input
+        label={label}
+        type="date"
+        direction={LATIN}
+        value={draft[key]}
+        {...(key === 'expiresAt' && isDay(draft.postedAt) ? { min: draft.postedAt } : {})}
+        {...(missing.includes(key) ? { error: i18n._('Enter a valid date; expiry cannot be before publication') } : {})}
+        onChange={(value) => {
+          onChange({ ...draft, [key]: value })
+        }}
+      />
+    )
   return (
     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, alignItems: 'start', gap: `${spacing.md}px` }}>
       <Input

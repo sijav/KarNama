@@ -165,6 +165,22 @@ export const Review: Story = {
   },
 }
 
+export const ReviewInEnglish: Story = {
+  args: { step: 'review', source: LINK, draft: foundIn('en-US'), statuses: fixtures('en-US').statusOptions.slice(0, 5) },
+  globals: { locale: 'en-US' },
+  play: async ({ args }) => {
+    // The Review step in English saves what reading found, its dates the days
+    // the fixtures hold, KN-494: they used to be written «1 September 2026»,
+    // which the form refused.
+    const i18n = english
+    const dialog = await dialogNamed(i18n._('Add job opportunity'))
+    await userEvent.click(within(dialog).getByRole('button', { name: i18n._('Save') }))
+    await expect(args.onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ title: fixtures('en-US').jobs[0]?.title, postedAt: '2026-09-01', expiresAt: '2026-09-04' }),
+    )
+  },
+}
+
 export const Manual: Story = {
   args: { step: 'manual' },
   globals: { locale: 'fa-IR', colorScheme: 'light' },

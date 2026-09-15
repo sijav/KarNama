@@ -79,6 +79,10 @@ Escape while reading goes back to the paste field, the link kept.
 
 The filled form, corrected and saved.
 
+### ReviewInEnglish
+
+The filled form in English, saved with the days reading found.
+
 ### Manual
 
 The empty form, refusing to save without a title and a company.

@@ -2,13 +2,20 @@ import { describe, expect, it } from 'vitest'
 import { draftFrom, emptyDraft, hasContent, isLink, missingFields } from './draft'
 
 describe('the add modal draft', () => {
-  it('refuses malformed dates, impossible days, reversed dates and unsafe posting links', () => {
+  it('keeps a date written before the picker, refuses an expiry before its posting, and refuses unsafe posting links, KN-494', () => {
     const draft = { ...emptyDraft('s'), title: 'Developer', company: 'Company' }
-    expect(missingFields({ ...draft, postedAt: 'not a date' })).toEqual(['postedAt'])
-    expect(missingFields({ ...draft, postedAt: '2026-02-30' })).toEqual(['postedAt'])
+    // The picker makes only days, so a date that is not one was written before
+    // it, and is kept rather than refused.
+    expect(missingFields({ ...draft, postedAt: 'not a date' })).toEqual([])
+    expect(missingFields({ ...draft, postedAt: '2026-02-30' })).toEqual([])
     expect(missingFields({ ...draft, postedAt: '2024-02-29', expiresAt: '2024-03-01' })).toEqual([])
     expect(missingFields({ ...draft, postedAt: '2026-09-12', expiresAt: '2026-09-01' })).toEqual(['expiresAt'])
+    // Only two days are put in order: text is never compared with a day, though
+    // «۱۰ شهریور ۱۴۰۵» sorts after 2026-09-01 as a string and «soon» after 2026.
+    expect(missingFields({ ...draft, postedAt: '۱۰ شهریور ۱۴۰۵', expiresAt: '2026-09-01' })).toEqual([])
+    expect(missingFields({ ...draft, postedAt: '2026-09-12', expiresAt: 'soon' })).toEqual([])
     expect(missingFields({ ...draft, postingUrl: 'javascript:alert(1)' })).toEqual(['postingUrl'])
+    expect(missingFields({ ...draft, postingUrl: 'not a link' })).toEqual(['postingUrl'])
     expect(missingFields({ ...draft, postingUrl: 'https://example.com/jobs/1' })).toEqual([])
   })
   it('starts empty in the status it is given', () => {
