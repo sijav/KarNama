@@ -93,3 +93,10 @@ transient cells carry their state into the first frame the browser draws
 instead of showing their rest look and being corrected after it. The story
 counts them from a frame callback it schedules before it renders, which is the
 only place that difference is visible.
+
+### DisabledWhateverItsState
+
+Every style in every size, disabled, and forced into hover, pressed and focus by
+the attribute States uses. Each keeps the disabled look the design draws, its
+grey with no pressed opacity and no focus ring beyond Secondary's own edge, since
+a disabled button can be in none of the three.

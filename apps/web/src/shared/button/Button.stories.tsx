@@ -24,13 +24,17 @@ const Labelled = (args: ButtonProps) => {
 /* eslint-disable lingui/no-unlocalized-strings -- state names and a DOM attribute, not copy: nothing here is ever rendered */
 const STATES = ['rest', 'hover', 'pressed', 'disabled', 'focus'] as const
 type ButtonState = (typeof STATES)[number]
+// The three a pointer or a keyboard puts a button in.
+const TRANSIENT = STATES.filter((state) => state !== 'rest' && state !== 'disabled')
 
 // The mechanism the component's users never see: the component draws each
 // transient state for `data-state` as well as for the browser's own
 // pseudo-class, and this puts the attribute on the rendered button. It cannot
 // be a prop, because Button declares its props and forwards nothing else, so
-// the cell holds a ref to its own box and reaches the button inside it.
-const Forced = ({ state, ...args }: ButtonProps & { state: ButtonState }) => (
+// the cell holds a ref to its own box and reaches the button inside it. A cell
+// given `disabled` is disabled whatever its state, so a forced state can be tried
+// on a disabled button, KN-455.
+const Forced = ({ state, disabled = false, ...args }: ButtonProps & { state: ButtonState }) => (
   // A ref callback, not an effect: React runs a passive effect AFTER the
   // browser has painted, so every transient cell showed its REST look for a
   // frame first, KN-454. A ref callback runs in the commit, before the paint,
@@ -46,7 +50,7 @@ const Forced = ({ state, ...args }: ButtonProps & { state: ButtonState }) => (
     }}
     sx={{ display: 'inline-flex' }}
   >
-    <Labelled {...args} disabled={state === 'disabled'} />
+    <Labelled {...args} disabled={disabled || state === 'disabled'} />
   </Box>
 )
 
@@ -240,6 +244,49 @@ export const States: Story = {
     await browser.userEvent.hover(focused)
     await expect(getComputedStyle(focused).backgroundColor).toBe(rest.fill)
     await browser.userEvent.unhover(focused)
+  },
+}
+
+// A disabled button forced into each transient state, KN-455: node 31:4 draws a
+// disabled button at full opacity with no ring, Secondary's one pixel edge alone,
+// so the attribute that shows a state in Storybook must not draw one over the
+// disabled look. Nothing in the product both disables a button and forces its
+// state; this is the combination the hook must not make possible.
+export const DisabledWhateverItsState: Story = {
+  globals: { colorScheme: 'light' },
+  parameters: { controls: { include: ['startIcon', 'endIcon'] } },
+  render: (args) => (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.lg}px` }}>
+      {TRANSIENT.map((state) => (
+        <Box
+          key={state}
+          sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, max-content)', gap: `${spacing.md}px`, alignItems: 'center' }}
+        >
+          {VARIANTS.flatMap((variant) =>
+            SIZES.map((size) => <Forced key={`${variant}-${size}`} {...args} variant={variant} size={size} state={state} disabled />),
+          )}
+        </Box>
+      ))}
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const buttons = within(canvasElement).getAllByRole('button')
+    await expect(buttons).toHaveLength(TRANSIENT.length * VARIANTS.length * SIZES.length)
+    const cells = TRANSIENT.flatMap((state) => VARIANTS.flatMap((variant) => SIZES.map((size) => ({ state, variant, size }))))
+    for (const [index, cell] of cells.entries()) {
+      const button = buttons[index]
+      if (!button) throw new Error('a button is missing')
+      // Forced and off at once, and drawn as off: the disabled fill and text, no
+      // pressed opacity, and no focus ring beyond Secondary's own edge.
+      await expect(button).toHaveAttribute('data-state', cell.state)
+      await expect(button).toBeDisabled()
+      const { fill, text } = wanted(button, cell.variant, 'disabled')
+      const style = getComputedStyle(button)
+      await expect([style.backgroundColor, style.color]).toEqual([fill, text])
+      await expect(Number(style.opacity)).toBe(1)
+      const ring = cell.variant === 'secondary' ? getComputedStyle(button, '::before').borderTopWidth : style.outlineWidth
+      await expect(px(ring)).toBe(cell.variant === 'secondary' ? 1 : 0)
+    }
   },
 }
 

@@ -172,9 +172,14 @@ export const Button = ({
           // hover fill drawn for every device stayed after a tap. (hover: hover)
           // reads the primary input alone, so a touch-first device with a mouse
           // draws no hover fill. The forced state draws it on every device.
+          //
+          // A forced state is drawn only on a button that is enabled, KN-455: the
+          // browser never puts a disabled button in any of the three, so a forced
+          // one must not either, or a disabled Ghost would keep its pressed
+          // opacity and a disabled button would draw the focus ring.
           '@media (hover: hover)': { '&:hover:not([data-state])': hovered },
-          '&[data-state="hover"]': hovered,
-          '&:active:not([data-state]), &[data-state="pressed"]': {
+          '&[data-state="hover"]:not(.Mui-disabled)': hovered,
+          '&:active:not([data-state]), &[data-state="pressed"]:not(.Mui-disabled)': {
             backgroundColor: fill(look.pressed.fill),
             color: colour[look.pressed.text],
             ...(variant === 'ghost' ? { opacity: GHOST_PRESSED_OPACITY } : {}),
@@ -182,7 +187,7 @@ export const Button = ({
           '&.Mui-disabled': { backgroundColor: fill(look.disabled.fill), color: colour[look.disabled.text] },
           // Focus as the file draws it: two pixels of border/focus, inside in
           // place of Secondary's edge, outside every other style.
-          '&.Mui-focusVisible:not([data-state]), &[data-state="focus"]': look.edge
+          '&.Mui-focusVisible:not([data-state]), &[data-state="focus"]:not(.Mui-disabled)': look.edge
             ? { '&::before': { borderWidth: FOCUS_EDGE, borderColor: colour['border/focus'] } }
             : { outlineWidth: FOCUS_EDGE, outlineStyle: 'solid', outlineColor: colour['border/focus'], outlineOffset: 0 },
         }
