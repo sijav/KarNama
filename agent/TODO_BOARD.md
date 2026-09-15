@@ -13,6 +13,12 @@ Project **KarNama** · 248 of 585 tasks done · 556 of 1176 points.
 | 1 | OKR-1 | MVP: the pages | now | 202 | 170 |
 | 2 | OKR-2 | Everything after the MVP | later | 131 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-226` | Nothing committed checks that the published Storybook renders its stories without errors | high | 3 | infra | KN-494, KN-554, KN-560, KN-561, KN-562, KN-563, KN-584 | A committed check builds Storybook for production, opens every story in headless Chromium, and fails on any page error or console error; it runs before the Pages workflow publishes; and a mutation removing the Hover story's test-runner guard makes it fail on the emitted import error. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 248 of 585 tasks done · 556 of 1176 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (324)
+## Backlog (323)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -50,7 +56,6 @@ Project **KarNama** · 248 of 585 tasks done · 556 of 1176 points.
 | `KN-127` | The resolver-registration check reads text rather than the container | high | 3 | api | KN-120 | A resolver registered in a way the text scan cannot see, a default export in a file not named *.resolver.ts, is detected, and the check reads the resolvers from a booted Nest context rather than from source text. |
 | `KN-158` | The story-docs rule in AGENTS.md describes a system that does not exist | high | 3 | web | none | Either src/shared/story-docs/{en,fa} exists with a page for every story, the three existing stories are migrated off JSDoc on meta, and a guard test fails when either language is missing a prop or story; or AGENTS.md is corrected to describe what the repository actually does and the main.ts comment with it. Whichever is chosen, no story in the tree contradicts the written rule afterwards, proved by a check rather than by reading. |
 | `KN-221` | The catalogs are never compiled, so a message with a count or a placeholder renders raw ICU in production | high | 3 | web | none | A message with a plural and a placeholder renders correctly in BOTH locales in a production build, checked by rendering it from the built output or under NODE_ENV=production rather than in development, with Persian digits in fa-IR; a mutation that loads the catalogs uncompiled again makes that check fail; and the catalog tests still prove every English id has a non-empty Persian translation. |
-| `KN-226` | Nothing committed checks that the published Storybook renders its stories without errors | high | 3 | infra | KN-494, KN-554, KN-560, KN-561, KN-562, KN-563, KN-584 | A committed check builds Storybook for production, opens every story in headless Chromium, and fails on any page error or console error; it runs before the Pages workflow publishes; and a mutation removing the Hover story's test-runner guard makes it fail on the emitted import error. |
 | `KN-265` | Employment type becomes eight values, and a job can hold more than one | high | 3 | api | none | DESIGN.md's employment type list gives the eight values as the owner's decision of 2026-09-10, with the overlap noted, and says the field holds more than one; the Prisma schema has the eight and a record holds a list of them, through a migration that carries existing values over and is tested; the GraphQL schema and the generated types expose a list; the catalogs carry English ids and Persian for the two new values; and KN-073 is left holding only the job level list. |
 | `KN-416` | The shell has no Apollo client, no auth state and no error boundary | high | 3 | web | KN-036 | AppProviders creates the Apollo client against the API's URL with the honest slow-start handling the design asks for, the shell holds who is signed in, and a screen that throws renders the error state rather than a blank page, each with a story or a test; a deep link to a screen that throws still shows the shell. |
 | `KN-518` | The sign-in card is not its frame: no mark, a smaller heading, other copy, a flat card | high | 3 | web | none | At 1440 and 390 in fa-IR light the sign-in card measures as 407:6951 and 407:7022 draw it, mark, type, copy, radius, padding, gap and shadow, the shadow named in DESIGN.md's elevation table and the brand row shared with the sidebar's rather than copied; the code and signup steps are compared and fixed the same way. |
@@ -4500,7 +4505,7 @@ CHILD OF KN-220, recorded in prose because board.json cannot express parent_task
 
 ### `KN-226` Nothing committed checks that the published Storybook renders its stories without errors
 
-- **status** backlog · **severity** high · **points** 3 · **area** infra · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 3 · **area** infra · **objective** OKR-1
 - **blocked by** KN-494, KN-554, KN-560, KN-561, KN-562, KN-563, KN-584
 - **came out of** KN-013
 

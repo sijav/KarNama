@@ -37,28 +37,36 @@ test". The owner was told on 2026-09-15 that the Codex log they pasted holds the
 Groq key they had pasted to Codex, that no file, commit or board entry holds it,
 and to rotate it. Never repeat that key anywhere.
 
-**KN-494 is closed** (c3950d8): `readRecords` turns a date written before the date
-picker, «۱۰ شهریور ۱۴۰۵», «September 1, 2026» or «1 September 2026», into its day
-through `days.ts`, in UTC; a date no calendar reads stays as text in a text field
-and no longer blocks a save; the fixtures hold days. Its roast filed **KN-582**
-(the card's `formatDay` redraws kept text V8 can parse, and `dayOf`/`deadlineOf`
-sort kept text as strings) and **KN-583** (an unreadable date costs about 1,600
-`Intl` calls on every load), both medium, attached by the skill to KN-477.
+**KN-584 is closed** (080f4b4, pushed; its Codex roast was running when this was
+written, log `kn584-task-roast.log` in the scratchpad, to be judged and recorded).
+KN-226's check, run before any commit, failed SearchBar's `Debounced` at 16
+workers: its typing writes the args, the preview renders again, and a render
+queued behind one waiting for animations began after the search, its
+`resetAllMocksLoader` wiping the call. The five plays that write their args and
+read a spy, SearchBar's `Debounced` and `Clearing`, ColorPicker's `KeyboardOnly`
+and `Picking`, Tabs' `KeyboardOnly`, now keep their mocks
+(`parameters.test.restoreMocks` false, `clearAllMocks()` first), as `AGENTS.md`
+section 7 says. After: 590 tests at 16 workers passed.
 
-**KN-486 (part), b0e2e3f**: every API file but `extraction.service.ts` at 100
-percent with no network; `vitest.setup.ts` refuses `fetch` to any host but
-127.0.0.1. **KN-505** (7e7e879, paths not hashes; KN-579 to KN-581) and **KN-460**
-(047f316, the mock's code out of `AuthValue`; nothing found) are closed.
+**Its probe filed and widened.** **KN-585**, medium, OKR-2: Input's
+`TypingIntoABoundValue` keeps one of twenty keys on a page slowed four times,
+passed slowed twice, so not a KN-226 blocker unless CI fails on it. **KN-569**
+widened: a second play after a remount fails for seven stories, not only
+`Preferences`.
 
-**Closed on 2026-09-15**, pushed and roasted: KN-554, KN-560, KN-561, KN-562,
-KN-563, KN-255, KN-570, KN-275, KN-279, KN-505, KN-460 and KN-494.
+**KN-494** (c3950d8, KN-582 and KN-583), **KN-486 (part)** (b0e2e3f, blocked),
+**KN-505** (7e7e879) and **KN-460** (047f316) are closed as before. **Closed on
+2026-09-15**, pushed and roasted: KN-554, KN-560 to KN-563, KN-255, KN-570,
+KN-275, KN-279, KN-505, KN-460, KN-494; and KN-584, roast pending.
 
 **How to measure the published Storybook**: build with `KARNAMA_STORYBOOK_BASE`
 from PowerShell or Node's own `env`, never a Git Bash line, which rewrites any
-value starting with `/`, even `/` itself; hook `__STORYBOOK_ADDONS_CHANNEL__`
-with a setter, since the preview assigns it plainly (`runtime.js` 12862);
-`playFunctionThrewException` for a thrown play. On 76beef5 all 429 entries,
-stories and Docs pages, opened bare with no error in 132 seconds, six at a time.
+value starting with `/`; hook `__STORYBOOK_ADDONS_CHANNEL__` with a setter
+(`runtime.js` 12862); `playFunctionThrewException` for a thrown play. **A play
+that writes its args says `storyFinished` for each render that causes**, so a
+play's end is the `storyFinished` after the phase `played` or `errored`. The
+scratchpad's `kn584-probe.mjs` takes `WORKERS`, `REPEAT`, `THROTTLE` (the CPU
+slowed through the DevTools protocol), `ONLY` and `REMOUNT`.
 
 **What fails in a full run**: the Job Card's `Pressed` in parallel only, KN-365's
 kind. `App.tsx` line 107 is uncovered, KN-491's. The API's gate fails on
@@ -90,16 +98,18 @@ kind. `App.tsx` line 107 is uncovered, KN-491's. The API's gate fails on
 
 ## The next step
 
-**KN-226 is in progress**, high: a committed check that opens every story of a
-production Storybook and fails on a page or console error, before Pages
-publishes. Its blockers are closed. The plan beside `apps/web/e2e/storybook`
-is replanned (uncommitted): a Playwright spec, `published.spec.ts`, one test per
-story, the channel hooked by a setter; its own server, `serve.ts`, run by Node
-24 as TypeScript, refusing a build made for another base; `webServer` on port
-6106 with no reuse; 120 seconds a story, no retries; the check in `pages.yml`
-before the assembly. Drafts of the three files are in the scratchpad's
-`kn226-draft`. **Codex is reviewing the replan**; build after it lands, then the
-Hover mutation the exit names.
+**KN-226 is in progress again**, high, its blockers all closed. Its code, saved
+when it was put back, is restored in the tree from the scratchpad's `kn226-work`
+(uncommitted): `e2e/storybook/serve.ts` and `published.spec.ts`,
+`playwright.storybook.config.ts`, the ignore, the `check:storybook` script,
+`pages.yml`'s job env and check steps, the `AGENTS.md` section 5 line. **Replan
+first**, from its plan's Put back section and the card's notes: the spec reads
+`STORYBOOK_DIR` against the working directory, as `serve.ts` no longer does; and
+it ends a story at the first `storyFinished`, which a play writing its args says
+before it ends. Then Codex's review, prettier on the two new e2e files, the Hover
+mutation, a console error and a throw after an await, a build under another base,
+commit, close, push, the Pages run read to its end, the roast. Judge and record
+KN-584's roast when it lands.
 
 ## What to read first
 
