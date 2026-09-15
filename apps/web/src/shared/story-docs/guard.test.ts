@@ -1,10 +1,13 @@
-import { readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { basename, join, relative } from 'node:path'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { basename, dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { globSync } from 'node:fs'
 import { withDefaultConfig } from 'react-docgen-typescript'
+import { getStoriesPathsFromConfig } from 'storybook/internal/core-server'
 import { loadCsf } from 'storybook/internal/csf-tools'
 import { beforeAll, describe, expect, it } from 'vitest'
+import config from '../../../.storybook/main'
 import { fileNameFor, TITLE_SHAPE } from './catalog'
 import { parseStoryDoc, type StoryDoc } from './parse'
 
@@ -45,16 +48,24 @@ interface StoryFile {
 }
 
 /**
- * Every story file Storybook is configured to pick up, `.ts` as well as `.tsx`.
+ * Every story file Storybook indexes, as Storybook's own finder lists them from
+ * the `stories` patterns of `.storybook/main.ts`, KN-216:
+ * `getStoriesPathsFromConfig` normalises the patterns and runs the story index's
+ * glob. The guard kept a glob of its own until then, a second rule that took a
+ * story at the root of `src` and one under a folder named like `gate-fixtures`,
+ * neither of which Storybook showed.
  *
- * Minus `gate-fixtures`, because `.storybook/main.ts` excludes it: it holds a
+ * `gate-fixtures` itself stays out because `main.ts` leaves it out: it holds a
  * story that exists to FAIL the lint, KN-095, and it is not a component anyone
  * documents.
  */
-const storyFiles = (): string[] =>
-  globSync('**/*.stories.@(ts|tsx)', { cwd: SRC, exclude: ['gate-fixtures/**'] })
-    .map((name) => join(SRC, name))
-    .sort()
+const storyFilesFor = async (configDir: string, workingDir: string): Promise<string[]> => {
+  const { stories } = config
+  // Storybook also takes the patterns as a function of the presets' own list,
+  // which only Storybook can run; main.ts gives a list.
+  if (!Array.isArray(stories)) throw new Error('.storybook/main.ts gives its stories as a function, which the guard cannot list')
+  return (await getStoriesPathsFromConfig({ stories, configDir, workingDir })).sort()
+}
 
 /**
  * Reads one story file's meta and story list from **Storybook's own CSF
@@ -180,8 +191,8 @@ const readDoc = (language: 'en' | 'fa', title: string): StoryDoc | null => {
 let files: StoryFile[]
 let props: Map<string, string[]>
 
-beforeAll(() => {
-  files = storyFiles().map(readStoryFile)
+beforeAll(async () => {
+  files = (await storyFilesFor(join(WEB, '.storybook'), WEB)).map(readStoryFile)
   props = propsByComponent()
 }, 120_000)
 
@@ -191,6 +202,30 @@ describe('story-docs guard', () => {
     // empty list satisfies all of them identically.
     expect(files.length).toBeGreaterThan(0)
     expect(files.map((entry) => entry.title)).toContain('Shared/LanguageSwitch')
+  })
+
+  it('lists what Storybook indexes: a story at the root of src, and nothing under gate-fixtures', async () => {
+    // KN-216. A tree of its own under the OS temp directory, read with the same
+    // call and main.ts's own patterns, so a story an interrupted run leaves
+    // behind lies where neither Storybook nor Vitest looks.
+    const tree = mkdtempSync(join(tmpdir(), 'story-files-'))
+    try {
+      mkdirSync(join(tree, '.storybook'))
+      const planted = [
+        'src/Root.stories.tsx',
+        'src/shared/thing/Thing.stories.ts',
+        'src/gate-fixtures/Gate.stories.tsx',
+        'src/gate-fixtures-kept/Near.stories.tsx',
+      ]
+      for (const file of planted) {
+        mkdirSync(dirname(join(tree, file)), { recursive: true })
+        writeFileSync(join(tree, file), '')
+      }
+      const listed = (await storyFilesFor(join(tree, '.storybook'), tree)).map((file) => relative(tree, file).split('\\').join('/'))
+      expect(listed).toEqual(['src/Root.stories.tsx', 'src/shared/thing/Thing.stories.ts'])
+    } finally {
+      rmSync(tree, { recursive: true, force: true })
+    }
   })
 
   it('every story title is a shape that maps to exactly one file name', () => {

@@ -7,7 +7,14 @@ const config: StorybookConfig = {
   // and run a probe as if it were a component. No MDX: no lint block reads an
   // .mdx, so a story written in one would carry copy nothing checks, and the
   // docs pages are built from story-docs markdown instead, KN-097.
-  stories: ['../src/!(gate-fixtures)/**/*.stories.@(ts|tsx)'],
+  //
+  // A story at the root of `src` is a story too, KN-216: the pattern before
+  // this needed a folder after `src`. One specifier rather than a second for
+  // the root, because Storybook warns at every start for a specifier that finds
+  // nothing. picomatch reads `!(gate-fixtures)` as a first folder whose name
+  // does not START with `gate-fixtures`, so `gate-fixtures-anything` stays out
+  // as well, measured; the docs guard lists what this finds, so the two agree.
+  stories: ['../src/{*,!(gate-fixtures)/**/*}.stories.@(ts|tsx)'],
   addons: ['@storybook/addon-docs', '@storybook/addon-a11y', '@storybook/addon-vitest'],
   framework: { name: '@storybook/react-vite', options: {} },
   // Documentation prose lives in markdown under story-docs, never as JSDoc in a
