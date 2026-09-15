@@ -106,6 +106,13 @@ const linguiOptions = {
     // than as a wildcard for anything in brackets, because the point of this
     // list is that each entry names one thing.
     '^\\(prefers-color-scheme: (dark|light)\\)$',
+    // The pseudo-elements a story reads a computed style of, as in
+    // `getComputedStyle(field, '::before')`: CSS selectors the browser resolves,
+    // never copy. Named in full, since an entry is tested against every string in
+    // every file, so these three pass anywhere and nothing else does. The whole
+    // function was exempt until KN-257, and so was every literal in any call of
+    // it, `getComputedStyle(element, 'Job title')` among them.
+    '^::(before|after|placeholder)$',
     // A shape-based exemption for Storybook paths used to live here,
     // `^[A-Z][A-Za-z]*(/[A-Z][A-Za-z ]*)+$`, and it reopened the exact hole
     // KN-087 closed: `New/Applied` matches it, so `aria-label="New/Applied"`
@@ -179,10 +186,10 @@ const linguiOptions = {
     // Listed as a function rather than as a pattern over braces, so it exempts
     // this one call and not every string that happens to contain them.
     '*.keyboard',
-    // Its second argument names a pseudo-element, '::placeholder', a CSS
-    // selector the browser resolves styles for. It never renders anything, so
-    // there is no copy in it to translate. KN-248.
-    'getComputedStyle',
+    // `getComputedStyle` used to be here, KN-248, for the pseudo-element a story
+    // reads a computed style of. A function name exempts every literal in every
+    // call of it, so `getComputedStyle(element, 'Job title')` passed; the three
+    // selectors are exempted by value in `ignore` instead, KN-257.
     // The rest of testing-library's queries, the plural forms of those above,
     // and the matchers a play function asserts rendered output with, KN-214:
     // the literal is the expected value, as for the queries above.

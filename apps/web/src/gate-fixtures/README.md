@@ -60,6 +60,13 @@ RegExp(entry)` and no flags, so the no-letter entry `^[^\p{L}]*$` meant "no
   requires this fixture's three reports, since its text alone would still fail if
   an attribute went through again.
 
+- `unlocalized-computed-style.tsx`: `getComputedStyle` with a literal of copy where
+  its pseudo-element goes. `getComputedStyle` was in `ignoreFunctions` so a story
+  could read a pseudo-element's computed style, and a function exemption skips every
+  literal in every call of it, so copy passed there, KN-257. The three selectors the
+  stories pass, `::before`, `::after` and `::placeholder`, are exempted by value now,
+  and `npm run lint` over the stories shows they still pass.
+
 - `unlinted-copy.mdx` — a bare English label in MDX. No lint block reads an
   `.mdx`, so it passes `npm run lint`; Storybook indexes no MDX, so it reaches
   no page either, and `stories-glob.test.ts` checks that no stories pattern

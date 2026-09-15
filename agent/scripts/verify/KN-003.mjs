@@ -156,6 +156,7 @@ check('EVERY planted unlocalized string FAILS the lint', () => {
     'unlocalized-tokenlike.tsx',
     'unlocalized-story-title.stories.tsx',
     'unlocalized-section-words.tsx',
+    'unlocalized-computed-style.tsx',
   ]
   // The lingui reports a fixture of several holes gives, one a hole, KN-215.
   const REPORTS = { 'unlocalized-section-words.tsx': 3 }
