@@ -35,32 +35,37 @@ take KN-275's `border/control`; and **KN-486**, blocked: whether tests of
 on 2026-09-12 "If you have AI test, remove that, I didn't ask for an AI API
 test". The owner was told on 2026-09-15 that the Codex log they pasted holds the
 Groq key they had pasted to Codex, that no file, commit or board entry holds it,
-and to rotate it. Never repeat that key anywhere. **Filed for the owner by
-KN-518**, not yet asked: KN-588, KN-589, KN-590, KN-591.
+and to rotate it. Never repeat that key anywhere. **Filed for the owner, not yet
+asked**: KN-588, KN-589, KN-590, KN-591, and **KN-616**, Figma's Loading State
+description asking for a turning `spinnerArc` the node does not draw.
 
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**KN-324 is closed** (fb21239; board acfa4b6; pushed), one point. The Loading State's dots
-are lit at the ends of their 900 ms cycle and each delayed by how many turns ago it was lit,
--300, 0 and -600 ms, so the first frame painted is the file's, 0.4, 1 and 0.4, where all
-three had started at 0.4 and the file's frame first showed 450 ms in. `Reading` pauses each
-dot's animation once ready and reads the opacities at 0 and one turn on; it failed at 0
-before the change and at 300 with the delays reversed. DESIGN.md says the motion starts on
-the file's frame, and that the Figma description still names a `spinnerArc` the node does
-not draw. **KN-615** is filed, medium, measured: the Loading State's stories fail for a
-Storybook viewer with reduced motion, in `drawsTheFrame`. Its Codex roast was running when
-this was written, `kn324-task-roast.log` in the scratchpad.
+**KN-325 is closed** (23ef6c9; board fc491a8; pushed), one point. `useSlow` reads a store per
+start with `useSyncExternalStore`: its snapshot is the clock read on the first read and kept,
+and its timer, set for every start, marks it past and tells React, so a `startedAt` already
+past fifteen seconds shows the slow line on the render that gives it; before, a start moved
+between two past starts flipped the line to the reading line and back 2 ms apart. The story
+`StartMovesPastFifteenSeconds` moves the start behind a button, «Move the start back», presses
+it with `fireEvent`, which `@storybook/react`'s `beforeAll` wraps in its act and the
+instrumenter runs synchronously, and reads the slow line straight after; it failed alone at that
+read, line 153, before the change and under a plant. The plan had two Codex reviews. Its Codex
+roast was running when this was written, `kn325-task-roast.log` in the scratchpad.
+**Measured and recorded**: react-hooks 7.1.1's `purity` refuses `Date.now()` while rendering,
+and ESLint's `lintText` on a file's own path lints a design in memory, AGENTS.md section 7,
+92a81d9. React 19.0.8's `act` errors when `IS_REACT_ACT_ENVIRONMENT` is off, which it is outside
+Storybook's own act scopes, and a production build has no `act`.
 
-**KN-321 is closed and its roast recorded, nothing filed** (54e58dd, 026d15f): the Page
-Header's shell controls are checked at 899 and 900. **The Grep tool matches a glob with a
-slash in it from the session's working directory**, AGENTS.md section 7, 070fcb4; a `cd` in
-a foreground Bash call moves that directory for the session, so put it back.
+**KN-324 is closed and its roast recorded** (fb21239, db7a721): the dots start on the file's
+frame. **KN-615**, medium, the Loading State's stories fail for a viewer with reduced motion;
+**KN-617**, low, AGENTS.md sends a new string through a `.po` catalog the app does not have, the
+catalogs being the hand-written `src/i18n/locales/en-US.ts` and `fa-IR.ts`. KN-179 already holds
+that `no-restricted-globals` is set in no ESLint config.
 
-**KN-318 and KN-313 are closed and their roasts recorded** (3da53b9, fa5c0e8). KN-318 filed
-**KN-614**, low; KN-313 filed **KN-612** and **KN-613**, low. **KN-009 waits on KN-614**, and
-when it closes KN-009 is roasted with all its children. KN-022 waits on KN-325, KN-326,
-KN-327 and KN-615; KN-021 on KN-387. **Open and filed today**: KN-592 to KN-615.
+**Still open from earlier**: **KN-009 waits on KN-614**, then KN-009 is roasted with all its
+children; KN-021 waits on KN-387; KN-022 on KN-326, KN-327, KN-615 and KN-616. KN-612 and
+KN-613, low. **Open and filed today**: KN-592 to KN-617.
 
 **A Storybook spec alone**: `STORYBOOK_DIR=<build> npx playwright test --config
 playwright.storybook.config.ts storybook/button-touch`. A filter is a regular expression on
@@ -96,28 +101,23 @@ The board screen's six commented arms stay untaken by design, KN-427.
 
 ## The next step
 
-**KN-324's roast is recorded** (db7a721): it confirmed the work and filed **KN-616**, low,
-for the owner, not yet asked: Figma's Loading State description asks for a turning
-`spinnerArc` the node does not draw. **KN-617**, low, is filed too: AGENTS.md section 3 sends a
-new string through a `.po` file and `lingui extract`, where the catalogs are the hand-written
-`src/i18n/locales/en-US.ts` and `fa-IR.ts`, held by `catalog.test.ts`.
+**When KN-325's roast lands**, judge it, file survivors with `--parent-task KN-325`, which
+hangs them off KN-022 (`--area web --okr OKR-1` under four points), record with `todo roast
+KN-325 --file ... --filed ... --dismissed ...`, relay it to the owner, and commit the board.
 
-**KN-325 is in progress**, medium, 1 point, a child of KN-022; its plan sits beside
-`LoadingState.tsx` and is at its SECOND Codex review, `kn325-plan-review2.log` in the
-scratchpad: do not edit the Loading State, its stories, the catalogs, its story docs or
-DESIGN.md until it lands. The plan after the first review: `useSlow` reads a store per start
-with `useSyncExternalStore`, its snapshot the clock read once and kept, its timer set for every
-start and marking it past; a story `StartMovesPastFifteenSeconds` holds the start in state
-behind a Button, «Move the start back», presses it with `fireEvent`, which Storybook's React
-preview runs inside its own act, and reads the slow line straight after, first against today's
-component, where it must fail. Measured: `Date.now()` while rendering fails
-`react-hooks/purity`, recorded in AGENTS.md section 7 as 92a81d9, not yet pushed.
+**KN-326 is in progress**, medium, 1 point, a child of KN-022: the Loading State's first line
+is not reliably announced, since its status region mounts already holding it; its exit asks for
+the region in the page before its first line is written, and a story showing it empty at mount
+and filled after. **It edits the files KN-325's roast reads: read and plan, do not write, until
+that roast lands.** The tension to plan around: KN-324 made the first painted frame the file's,
+line included, so a line written a frame late breaks it; precedents keep a region mounted and
+empty, the Input's alert, KN-286, and the Bulk Action Bar's count, DESIGN.md section 1.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `DESIGN.md` (the Loading State), `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo show KN-325`, `LoadingState.tsx`'s `useSlow`, `wait.ts`
-and the Loading State's stories. **Never chain a check through a pipe into a commit or a
-close, give every parallel command its own `cd`, sum a breakdown before writing its total,
-give a search that finds nothing a positive control, and write a Grep glob with a folder in
-it from the repo root.**
+`AGENTS.md` (section 7), `DESIGN.md` (the Loading State, the Input's error, the Bulk Action
+Bar), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, then `todo show KN-326`,
+`LoadingState.tsx`, its stories, and how the Input and the Bulk Action Bar keep their live
+regions. **Never chain a check through a pipe into a commit or a close, give every parallel
+command its own `cd`, give a search that finds nothing a positive control, write a Grep glob
+with a folder in it from the repo root, and lint a design in memory before writing it.**
