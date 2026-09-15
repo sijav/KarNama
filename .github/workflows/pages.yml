@@ -48,7 +48,18 @@ jobs:
       # has to match or every asset 404s in production while looking fine
       # locally.
       - name: Build the web app
-        run: npm run build --workspace @karnama/web
+        # The build stops before it starts when the API's address is missing, KN-489:
+        # an empty VITE_API_URL builds a client that rejects every call as
+        # API_NOT_CONFIGURED, and deploys went out that way on 2026-09-12, each
+        # reporting success. White space counts as empty, since the client would
+        # take it for an address and call it.
+        run: |
+          set -euo pipefail
+          if [ -z "$(printf '%s' "${VITE_API_URL:-}" | tr -d '[:space:]')" ]; then
+            echo "::error title=KARNAMA_API_URL is empty::The Pages build needs the repository variable KARNAMA_API_URL, the API's GraphQL address. Without it the app rejects every call as API_NOT_CONFIGURED."
+            exit 1
+          fi
+          npm run build --workspace @karnama/web
         env:
           KARNAMA_BASE: /KarNama/
           VITE_API_URL: ${{ vars.KARNAMA_API_URL }}
