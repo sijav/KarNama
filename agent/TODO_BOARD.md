@@ -13,6 +13,12 @@ Project **KarNama** · 250 of 591 tasks done · 562 of 1188 points.
 | 1 | OKR-1 | MVP: the pages | now | 206 | 172 |
 | 2 | OKR-2 | Everything after the MVP | later | 131 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-533` | A phone cannot start a selection on the network page: the full Contact Card shows its checkbox only on hover or focus | high | 3 | web | none | A phone can choose a person on the network page the way the file draws it, the Bulk Action Bar comes up in the tab bar's place, a story at 390 by 844 chooses two people and deletes them, and App/Shell counts one element fixed at the foot while a person is chosen. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 250 of 591 tasks done · 562 of 1188 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (328)
+## Backlog (327)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -52,7 +58,6 @@ Project **KarNama** · 250 of 591 tasks done · 562 of 1188 points.
 | `KN-221` | The catalogs are never compiled, so a message with a count or a placeholder renders raw ICU in production | high | 3 | web | none | A message with a plural and a placeholder renders correctly in BOTH locales in a production build, checked by rendering it from the built output or under NODE_ENV=production rather than in development, with Persian digits in fa-IR; a mutation that loads the catalogs uncompiled again makes that check fail; and the catalog tests still prove every English id has a non-empty Persian translation. |
 | `KN-265` | Employment type becomes eight values, and a job can hold more than one | high | 3 | api | none | DESIGN.md's employment type list gives the eight values as the owner's decision of 2026-09-10, with the overlap noted, and says the field holds more than one; the Prisma schema has the eight and a record holds a list of them, through a migration that carries existing values over and is tested; the GraphQL schema and the generated types expose a list; the catalogs carry English ids and Persian for the two new values; and KN-073 is left holding only the job level list. |
 | `KN-416` | The shell has no Apollo client, no auth state and no error boundary | high | 3 | web | KN-036 | AppProviders creates the Apollo client against the API's URL with the honest slow-start handling the design asks for, the shell holds who is signed in, and a screen that throws renders the error state rather than a blank page, each with a story or a test; a deep link to a screen that throws still shows the shell. |
-| `KN-533` | A phone cannot start a selection on the network page: the full Contact Card shows its checkbox only on hover or focus | high | 3 | web | none | A phone can choose a person on the network page the way the file draws it, the Bulk Action Bar comes up in the tab bar's place, a story at 390 by 844 chooses two people and deletes them, and App/Shell counts one element fixed at the foot while a person is chosen. |
 | `KN-571` | The modal stories offer open, step, tab and mode controls that break their plays | high | 3 | web | none | Every story with a play function in the AddJobModal, JobModal, ContactModal, ChangeStatusModal, ConfirmModal and Modal story files reads its expectations from the active args or offers only the controls its assertions hold for; KN-247's sweep over every story, each offered control changed by its type, finds none of them broken; and those stories pass under Vitest. |
 | `KN-574` | The navigation, language and token stories offer controls that break their plays | high | 3 | web | none | Every story with a play function in the LanguageSwitch, LanguageFlag, Sidebar, NavItem, TabBar, Icon and Tokens story files reads its expectations from the active args or offers only the controls its assertions hold for; KN-247's sweep over every story, each offered control changed by its type, finds none of them broken; and those stories pass under Vitest. |
 | `KN-587` | The sign-in code step shows no countdown to a resend and no way back to change the number | high | 3 | web | none | While a resend waits, the code step says how long in the file's words and the reader's digits, counting down, and offers the resend when it ends; «ویرایش شماره» returns to the number step with the number kept; both as the file draws them at 1440 and 390, with stories, and the sign-in e2e changing a number. |
@@ -9332,7 +9337,7 @@ Found while planning KN-431, 2026-09-14. NetworkScreen.tsx draws shown, the cont
 
 ### `KN-533` A phone cannot start a selection on the network page: the full Contact Card shows its checkbox only on hover or focus
 
-- **status** backlog · **severity** high · **points** 3 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 3 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-027
 

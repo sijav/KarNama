@@ -35,46 +35,41 @@ take KN-275's `border/control`; and **KN-486**, blocked: whether tests of
 on 2026-09-12 "If you have AI test, remove that, I didn't ask for an AI API
 test". The owner was told on 2026-09-15 that the Codex log they pasted holds the
 Groq key they had pasted to Codex, that no file, commit or board entry holds it,
-and to rotate it. Never repeat that key anywhere.
+and to rotate it. Never repeat that key anywhere. **Filed for the owner by
+KN-518 on 2026-09-15**, not yet asked: KN-588, the signup's skip against the
+required name; KN-589, the frames' text-message promise while the provider is
+mocked; KN-590, a terms and privacy note for pages that do not exist; KN-591, the
+note's 2.54 to one contrast.
 
-**KN-584 is closed** (080f4b4, pushed; its Codex roast was running when this was
-written, log `kn584-task-roast.log` in the scratchpad, to be judged and recorded).
-KN-226's check, run before any commit, failed SearchBar's `Debounced` at 16
-workers: its typing writes the args, the preview renders again, and a render
-queued behind one waiting for animations began after the search, its
-`resetAllMocksLoader` wiping the call. The five plays that write their args and
-read a spy, SearchBar's `Debounced` and `Clearing`, ColorPicker's `KeyboardOnly`
-and `Picking`, Tabs' `KeyboardOnly`, now keep their mocks
-(`parameters.test.restoreMocks` false, `clearAllMocks()` first), as `AGENTS.md`
-section 7 says. After: 590 tests at 16 workers passed.
+**KN-518 is closed** (37df5c8, board 26d768d, pushed). The sign-in card has the
+file's measures on every step, `elevation.authCard`, the sidebar's Brand Row
+moved to `shared/navigation/BrandRow`, and each step's heading at 24 on the normal
+line, which measures the file's 38. The copy follows the frames where it promises
+nothing untrue. Its Codex roast was running when this was written
+(`kn518-task-roast.log` in the scratchpad), to be judged and recorded, and so was
+the Pages run for 26d768d. The frames' code boxes are **KN-586** and the countdown
+with a change of number **KN-587**, both high.
 
-**Its probe filed and widened.** **KN-585**, medium, OKR-2: Input's
-`TypingIntoABoundValue` keeps one of twenty keys on a page slowed four times,
-passed slowed twice, so not a KN-226 blocker unless CI fails on it. **KN-569**
-widened: a second play after a remount fails for seven stories, not only
-`Preferences`.
+**KN-226 is closed and proven on ubuntu-latest**: 378 stories using 2 workers
+passed in 6.5 minutes and the site deployed; its roast found nothing. **KN-584**
+(080f4b4) is closed, its roast found nothing. **KN-585**, medium, OKR-2: Input's
+`TypingIntoABoundValue` loses keys only on a page slowed four times, passed on
+ubuntu-latest. **KN-569** covers seven stories whose second play fails.
 
-**KN-494** (c3950d8, KN-582 and KN-583), **KN-486 (part)** (b0e2e3f, blocked),
-**KN-505** (7e7e879) and **KN-460** (047f316) are closed as before. **Closed on
-2026-09-15**, pushed and roasted: KN-554, KN-560 to KN-563, KN-255, KN-570,
-KN-275, KN-279, KN-505, KN-460, KN-494; and KN-584, roast pending.
+**Measured for KN-518**: with `NODE_ENV=production`, `@lingui/core` 6.6.0
+returns a message with a value raw, `{phone}`, since the catalogs load
+uncompiled, KN-221; no message may take a value until that card.
 
 **How to measure the published Storybook**: build with `KARNAMA_STORYBOOK_BASE`
-from PowerShell or Node's own `env`, never a Git Bash line, which rewrites any
-value starting with `/`; hook `__STORYBOOK_ADDONS_CHANNEL__` with a setter
-(`runtime.js` 12862); `playFunctionThrewException` for a thrown play. **A play
-that writes its args says `storyFinished` for each render that causes**, so a
-play's end is the `storyFinished` after the phase `played` or `errored`. The
-scratchpad's `kn584-probe.mjs` takes `WORKERS`, `REPEAT`, `THROTTLE` (the CPU
-slowed through the DevTools protocol), `ONLY` and `REMOUNT`.
+from PowerShell or Node's own `env`, never a Git Bash line; a play that writes
+its args says `storyFinished` for each render that causes, so a play's end is the
+`storyFinished` after `played` or `errored`. The scratchpad's `kn584-probe.mjs`
+takes `WORKERS`, `REPEAT`, `THROTTLE`, `ONLY` and `REMOUNT`; `kn518-look.mjs`
+screenshots the sign-in steps from a production build.
 
 **What fails in a full run**: the Job Card's `Pressed` in parallel only, KN-365's
 kind. `App.tsx` line 107 is uncovered, KN-491's. The API's gate fails on
 `extraction.service.ts`, KN-486.
-
-**The live-mode e2e** (`npm run e2e:connected` in `apps/web`) runs against
-`agent/scripts/scenario-server.mjs`, PGlite and test doubles, from
-`apps/api/dist`; it touches no shared system.
 
 ## The owner's rules, most recent first
 
@@ -98,20 +93,14 @@ kind. `App.tsx` line 107 is uncovered, KN-491's. The API's gate fails on
 
 ## The next step
 
-**KN-226 is in progress again**, high, its blockers all closed. Its code, saved
-when it was put back, is restored in the tree from the scratchpad's `kn226-work`
-(uncommitted): `e2e/storybook/serve.ts` and `published.spec.ts`,
-`playwright.storybook.config.ts`, the ignore, the `check:storybook` script,
-`pages.yml`'s job env and check steps, the `AGENTS.md` section 5 line. **Replan
-first**, from its plan's Put back section and the card's notes: the spec reads
-`STORYBOOK_DIR` against the working directory, as `serve.ts` no longer does; and
-it ends a story at the first `storyFinished`, which a play writing its args says
-before it ends. Then Codex's review, prettier on the two new e2e files, the Hover
-mutation, a console error and a throw after an await, a build under another base,
-commit, close, push, the Pages run read to its end, the roast. Judge and record
-KN-584's roast when it lands.
+**KN-533 is in progress**, high: a phone cannot start a selection on the network
+page, since the full Contact Card unfolds its checkbox only on hover or focus.
+Read the file's network Mobile Selection, 305:1842, and the Contact Card's
+description and reactions with use_figma, and the job card's held press of
+KN-428, before planning. Judge and record KN-518's roast when it lands, and read
+the Pages run for 26d768d to its end.
 
 ## What to read first
 
 `AGENTS.md` (section 7), `DESIGN.md`, `agent/RALPH.md`, the head of
-`agent/TODO_BOARD.md`, then `todo next` and the KN-226 plan.
+`agent/TODO_BOARD.md`, then `todo next` and KN-533's card.
