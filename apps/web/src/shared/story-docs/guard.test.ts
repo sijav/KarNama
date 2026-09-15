@@ -28,6 +28,9 @@ const WEB = join(fileURLToPath(new URL('.', import.meta.url)), '..', '..', '..')
 const SRC = join(WEB, 'src')
 const DOCS = join(SRC, 'shared', 'story-docs')
 
+/** A node of the Babel tree Storybook's CSF parser keeps, as `_metaAnnotations` holds them. */
+type AstNode = ReturnType<typeof loadCsf>['_metaAnnotations'][string]
+
 interface StoryFile {
   file: string
   title: string
@@ -43,8 +46,10 @@ interface StoryFile {
    */
   componentUnreadable: boolean
   stories: string[]
-  /** The meta's args whose value is a `fn()` call. */
+  /** The meta's args whose value calls storybook/test's `fn`, under the name the file imports it by. */
   spied: string[]
+  /** Each story's own args keys named like a callback, `on` and a capital, and whether each calls that `fn`. */
+  ownCallbacks: { story: string; key: string; callsSpy: boolean }[]
 }
 
 /**
@@ -130,21 +135,41 @@ export const readStoryFile = (file: string): StoryFile => {
   const component = parsed._meta?.component
   const isIdentifier = typeof component === 'string' && /^[A-Za-z_$][\w$]*$/.test(component)
 
-  // The meta's args that are `fn()` spies, read from the parsed meta, KN-207.
-  // AGENTS.md gives every callback prop an fn() so the Actions panel records
-  // it; from the AST rather than the text, so a comment mentioning fn() cannot
-  // stand in for one.
-  const args = parsed._metaAnnotations.args
-  const spied =
+  // The name this file gives storybook/test's `fn`, read from its imports, KN-230:
+  // `CsfFile.imports` holds only the sources, and a local function called `fn`
+  // is not the spy the Actions panel records.
+  const spyName =
+    parsed._ast.program.body
+      .flatMap((node) => (node.type === 'ImportDeclaration' && node.source.value === 'storybook/test' ? node.specifiers : []))
+      .flatMap((specifier) =>
+        specifier.type === 'ImportSpecifier' &&
+        (specifier.imported.type === 'Identifier' ? specifier.imported.name : specifier.imported.value) === 'fn'
+          ? [specifier.local.name]
+          : [],
+      )[0] ?? null
+
+  // The keys an args object writes, each with whether its value calls that name,
+  // from the AST rather than the text, so a comment mentioning fn() cannot stand
+  // in for one, KN-207. A spread, or args written as one call or member, is out
+  // of reach and gives nothing.
+  const written = (args: AstNode | undefined) =>
     args?.type === 'ObjectExpression'
       ? args.properties.flatMap((property) => {
           if (property.type !== 'ObjectProperty') return []
           const key = property.key.type === 'Identifier' ? property.key.name : property.key.type === 'StringLiteral' ? property.key.value : null
           const { value } = property
-          const isSpy = value.type === 'CallExpression' && value.callee.type === 'Identifier' && value.callee.name === 'fn'
-          return key !== null && isSpy ? [key] : []
+          const callsSpy = value.type === 'CallExpression' && value.callee.type === 'Identifier' && value.callee.name === spyName
+          return key === null ? [] : [{ key, callsSpy }]
         })
       : []
+
+  // The meta's args that are storybook/test's `fn()`, KN-207: AGENTS.md gives
+  // every callback prop one, so the Actions panel records it.
+  const spied = written(parsed._metaAnnotations.args).flatMap(({ key, callsSpy }) => (callsSpy ? [key] : []))
+  // Each story's own args keys named like a callback, KN-230.
+  const ownCallbacks = Object.entries(parsed._storyAnnotations).flatMap(([story, annotations]) =>
+    written(annotations.args).flatMap(({ key, callsSpy }) => (/^on[A-Z]/.test(key) ? [{ story, key, callsSpy }] : [])),
+  )
 
   return {
     file,
@@ -153,8 +178,25 @@ export const readStoryFile = (file: string): StoryFile => {
     componentUnreadable: component !== undefined && !isIdentifier,
     stories: parsed.indexInputs.map((input) => input.exportName),
     spied,
+    ownCallbacks,
   }
 }
+
+/**
+ * What is wrong with a story file's callbacks, given the callback props it has to
+ * record, KN-207 and KN-230: each one its meta does not give storybook/test's `fn`,
+ * and each callback a story's own args set to anything else. Callbacks inside a
+ * spread, or in args written as one call or member, are out of the parser's reach,
+ * and so is a render that replaces one.
+ */
+const callbackProblems = (entry: StoryFile, callbacks: readonly string[]): string[] => [
+  ...callbacks
+    .filter((name) => !entry.spied.includes(name))
+    .map((name) => `${entry.title}: callback prop ${name} has no fn() in the meta args`),
+  ...entry.ownCallbacks
+    .filter(({ callsSpy }) => !callsSpy)
+    .map(({ story, key }) => `${entry.title}: ${story} sets ${key} in its own args to something other than storybook/test's fn()`),
+]
 
 /** Props per component displayName, from one batched TypeScript program. */
 const propsByComponent = (): Map<string, string[]> => {
@@ -275,14 +317,60 @@ describe('story-docs guard', () => {
     }
   })
 
-  it('every callback prop has an fn() in the meta args, so the Actions panel records it', () => {
+  it("every callback is storybook/test's fn(), in the meta args and in each story's own, so the Actions panel records it", () => {
     // The props come from react-docgen, so a new callback on a component is
-    // covered the day it is added, without anyone remembering this list.
+    // covered the day it is added, without anyone remembering this list; a
+    // story's own args are read for every story file, with a component or not.
     for (const entry of files) {
-      if (!entry.component) continue
-      for (const name of (props.get(entry.component) ?? []).filter((prop) => /^on[A-Z]/.test(prop))) {
-        expect.soft(entry.spied, `${entry.title}: callback prop ${name} has no fn() in the meta args`).toContain(name)
-      }
+      const callbacks = entry.component ? (props.get(entry.component) ?? []).filter((prop) => /^on[A-Z]/.test(prop)) : []
+      expect.soft(callbackProblems(entry, callbacks), entry.title).toEqual([])
+    }
+  })
+
+  it('refuses a story that sets a callback to a plain function, and an fn not taken from storybook/test, KN-230', () => {
+    // Planted story files under the OS temp directory, read as the guard reads
+    // one: one of each kind the rule refuses, and two it accepts.
+    const tree = mkdtempSync(join(tmpdir(), 'story-callbacks-'))
+    const plant = (name: string, lines: string[]) => {
+      const file = join(tree, `${name}.tsx`)
+      writeFileSync(file, lines.join('\n'))
+      return readStoryFile(file)
+    }
+    try {
+      const plain = plant('Plain', [
+        "import { fn } from 'storybook/test'",
+        "export default { title: 'Plant/Plain', args: { onPress: fn() } }",
+        'export const Plain = { args: { onPress: () => undefined } }',
+      ])
+      expect(callbackProblems(plain, ['onPress'])).toEqual([
+        "Plant/Plain: Plain sets onPress in its own args to something other than storybook/test's fn()",
+      ])
+
+      const local = plant('Local', [
+        'const fn = () => () => undefined',
+        "export default { title: 'Plant/Local', args: { onPress: fn() } }",
+        'export const Spied = { args: { onPress: fn() } }',
+      ])
+      expect(callbackProblems(local, ['onPress'])).toEqual([
+        'Plant/Local: callback prop onPress has no fn() in the meta args',
+        "Plant/Local: Spied sets onPress in its own args to something other than storybook/test's fn()",
+      ])
+
+      const imported = plant('Imported', [
+        "import { fn } from 'storybook/test'",
+        "export default { title: 'Plant/Imported', args: { onPress: fn() } }",
+        'export const Spied = { args: { onPress: fn(() => undefined) } }',
+      ])
+      expect(callbackProblems(imported, ['onPress'])).toEqual([])
+
+      const aliased = plant('Aliased', [
+        "import { fn as spy } from 'storybook/test'",
+        "export default { title: 'Plant/Aliased', args: { onPress: spy() } }",
+        'export const Spied = { args: { onPress: spy() } }',
+      ])
+      expect(callbackProblems(aliased, ['onPress'])).toEqual([])
+    } finally {
+      rmSync(tree, { recursive: true, force: true })
     }
   })
 
