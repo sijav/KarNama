@@ -80,6 +80,16 @@ export const type = {
 } as const
 
 /**
+ * Text bound to no text style, named for the surface that draws it, as the
+ * shadows below are, and not a sixth role. The add modal's paste label, `166:68`,
+ * is the Label's size and weight on Figma's automatic line for it, 19, with no
+ * letter spacing, KN-359.
+ */
+export const unstyledText = {
+  pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+} as const
+
+/**
  * The two effect styles, and six shadows that are not styles. A card sits on
  * the page, a modal sits above everything. The tooltip at `410:469`, the Bulk
  * Action Bar at `401:436`, the Options Menu at `408:487`, the compact

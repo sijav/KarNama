@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, type SyntheticEvent } from 'react'
 import { apiErrorText, apiProblem } from '../../core/api'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { Button, type ButtonType } from '../button'
-import { Input } from '../input'
+import { Input, type InputLabelStyle } from '../input'
 import { LoadingState } from '../loading-state'
 import { ConfirmModal, DISSOLVE_MS, ModalActions, ModalDivider, ModalHeader, modalPaper, modalScrim } from '../modal'
 import type { StatusOption } from '../status-picker'
@@ -35,6 +35,9 @@ export interface AddJobModalProps {
 const SUBMIT: ButtonType = 'submit'
 
 const PASTE: Exclude<AddJobStep, 'loading'> = 'paste'
+
+// The paste field's label, bound to no text style in the file, KN-359.
+const PASTE_LABEL: InputLabelStyle = 'paste'
 // The fields a step starts at, found by their tags, typed for the same reason.
 const TEXTAREA: keyof HTMLElementTagNameMap = 'textarea'
 const INPUT: keyof HTMLElementTagNameMap = 'input'
@@ -243,6 +246,7 @@ export const AddJobModal = ({
                 >
                   <Input
                     multiline
+                    labelStyle={PASTE_LABEL}
                     label={i18n._('Posting link or full text')}
                     placeholder={i18n._('Paste the posting link, or copy the whole posting text here')}
                     value={flow.source}

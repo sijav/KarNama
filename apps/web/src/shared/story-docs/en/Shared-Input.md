@@ -55,6 +55,11 @@ Maximum number of characters accepted by the field.
 The field's name, shown above it and read out as its accessible name. Copy, so
 pass it through the catalog.
 
+### labelStyle
+
+Which label the field draws: `field`, the Input's own, or `paste`, the add modal's
+paste field's, 12 on a 19 line with no letter spacing, as the file draws it.
+
 ### value
 
 The text, when the field is controlled.
@@ -258,6 +263,11 @@ helper is then described by nothing.
 
 The field of several lines starts at 140 pixels tall. Its editable area fills
 the frame and grows with the text up to eight rows, then scrolls internally.
+
+### PasteLabel
+
+The add modal's paste field's label, which the file draws on a 19 line with no
+letter spacing where every other field's label sits on 16.
 
 ### Required
 

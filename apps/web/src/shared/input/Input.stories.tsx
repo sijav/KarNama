@@ -288,7 +288,7 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   // Not error: it asserts the default border.
-  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'disabled', 'name']),
+  parameters: offers(['label', 'labelStyle', 'value', 'defaultValue', 'placeholder', 'helperText', 'disabled', 'name']),
   globals: { colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     const field = fieldOf(canvasElement)
@@ -644,6 +644,8 @@ export const LabelIsBound: Story = {
     await expect(box).toHaveAccessibleName(label.textContent)
     await userEvent.click(label)
     await expect(box).toHaveFocus()
+    // The Input set's label, 95:38: 16 tall with 0.2 of letter spacing, KN-359.
+    await expect([label.getBoundingClientRect().height, px(getComputedStyle(label).letterSpacing)]).toEqual([16, 0.2])
   },
 }
 
@@ -1082,6 +1084,20 @@ export const Multiline: Story = {
     await expect(field.offsetHeight).toBeLessThanOrEqual(208)
     await expect(box.scrollHeight).toBeGreaterThan(box.clientHeight)
     await expect(field.getBoundingClientRect().height).toBe(box.getBoundingClientRect().height + 32)
+  },
+}
+
+export const PasteLabel: Story = {
+  // The add modal's paste field, 166:67: its label, 166:68, is bound to no text
+  // style, 12 on Figma's automatic 19 with no letter spacing, KN-359.
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'error', 'disabled', 'name']),
+  args: { multiline: true, labelStyle: 'paste' },
+  globals: { colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    const label = canvasElement.querySelector('label')
+    if (!label) throw new Error('there is no label element')
+    const style = getComputedStyle(label)
+    await expect([label.getBoundingClientRect().height, px(style.letterSpacing), px(style.fontSize)]).toEqual([19, 0, 12])
   },
 }
 

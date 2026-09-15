@@ -1,6 +1,6 @@
 import { Box, InputBase } from '@mui/material'
 import { useId, type ChangeEvent, type InputHTMLAttributes, type ReactNode } from 'react'
-import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
+import { iconSize, spacing, type as typeScale, unstyledText } from '../../theme/tokens'
 import { isBlank } from './blank'
 
 // The props are documented in story-docs, not here, KN-207.
@@ -13,6 +13,11 @@ import { isBlank } from './blank'
  * RTL field and a number reads back in pieces, KN-458.
  */
 export type InputDirection = 'page' | 'ltr'
+
+// Which label a field draws: the Input set's, 95:38, or the add modal's paste
+// field's, 166:68, which is bound to no text style, KN-359.
+export type InputLabelStyle = 'field' | 'paste'
+const FIELD_LABEL: InputLabelStyle = 'field'
 
 export interface InputProps {
   label: string
@@ -35,6 +40,7 @@ export interface InputProps {
   leadingIcon?: ReactNode
   trailingIcon?: ReactNode
   multiline?: boolean
+  labelStyle?: InputLabelStyle
   required?: boolean
   onChange?: (value: string, event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
 }
@@ -135,6 +141,7 @@ export const Input = ({
   error: given,
   disabled = false,
   multiline = false,
+  labelStyle = FIELD_LABEL,
   required = false,
   direction = 'page',
   onChange,
@@ -152,6 +159,7 @@ export const Input = ({
   // An element id, never shown.
   // eslint-disable-next-line lingui/no-unlocalized-strings -- KN-214
   const messageId = `${id}-message`
+  const labelType = labelStyle === 'paste' ? unstyledText.pasteLabel : labelText
   // A blank error is no error: a form that clears one to '' rather than to
   // undefined leaves the field valid, with its helper under it, KN-254.
   const error = given === undefined || isBlank(given) ? undefined : given
@@ -169,10 +177,10 @@ export const Input = ({
         htmlFor={id}
         sx={(theme) => ({
           marginBottom: `${spacing['2xs']}px`,
-          fontSize: `${labelText.size}px`,
-          lineHeight: `${labelText.lineHeight}px`,
-          fontWeight: labelText.weight,
-          letterSpacing: `${labelText.letterSpacing}px`,
+          fontSize: `${labelType.size}px`,
+          lineHeight: `${labelType.lineHeight}px`,
+          fontWeight: labelType.weight,
+          letterSpacing: `${labelType.letterSpacing}px`,
           color: theme.karnama.semantic['text/primary'],
         })}
       >

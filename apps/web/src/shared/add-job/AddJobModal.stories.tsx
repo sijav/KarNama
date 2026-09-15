@@ -83,6 +83,10 @@ export const Paste: Story = {
     await expect(dialog.getBoundingClientRect().width).toBe(560)
     const field = within(dialog).getByRole('textbox', { name: 'لینک آگهی یا متن کامل آگهی' })
     await expect(field.parentElement?.getBoundingClientRect().height).toBe(140)
+    // 401 tall, the file's, with the label on its automatic 19, KN-359.
+    await expect(dialog.getBoundingClientRect().height).toBe(401)
+    const label = within(dialog).getByText('لینک آگهی یا متن کامل آگهی', { selector: 'label' })
+    await expect(label.getBoundingClientRect().height).toBe(19)
     await expect(field).toHaveAccessibleDescription('هم لینک را می‌پذیرد، هم متن کامل آگهی را — لازم نیست چیزی را جدا کنی.')
     await expect(within(dialog).getByRole('button', { name: 'خودت دستی وارد کن' })).toBeInTheDocument()
     await expect(within(dialog).getByRole('button', { name: 'استخراج اطلاعات' })).toBeDisabled()
@@ -100,6 +104,8 @@ export const PasteFilled: Story = {
     // has been touched as well as filled, the critical path's «click into the
     // field».
     const dialog = await dialogNamed('افزودن فرصت شغلی')
+    // 401 tall, as Paste, KN-359.
+    await expect(dialog.getBoundingClientRect().height).toBe(401)
     const extract = within(dialog).getByRole('button', { name: 'استخراج اطلاعات' })
     await expect(extract).toBeDisabled()
     await userEvent.click(within(dialog).getByRole('textbox', { name: 'لینک آگهی یا متن کامل آگهی' }))
@@ -241,6 +247,8 @@ export const ErrorStep: Story = {
     // says why in text/error, the way round stays, and «دوباره امتحان کن»
     // reads it again; failing again, it stays here.
     const dialog = await dialogNamed('نشد آگهی را بخوانیم')
+    // 423 tall, the file's: the label on its 19 and the message on two lines, KN-359.
+    await expect(dialog.getBoundingClientRect().height).toBe(423)
     const field = within(dialog).getByRole('textbox', { name: 'لینک آگهی یا متن کامل آگهی' })
     await expect(field).toHaveValue(LINK)
     await expect(field).toHaveAccessibleDescription(

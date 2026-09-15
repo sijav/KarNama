@@ -209,6 +209,11 @@ documentation frame `416:21`:
 `Body` carries letter spacing 0 and `Label` carries 0.2, read from the component
 frames.
 
+**One text is bound to no style**, and it is not a sixth role: the add modal's paste
+label, `166:68`, is the Label's 12 on 19, Figma's automatic line for it, with no
+letter spacing. The code names it for that surface, `unstyledText.pasteLabel`, as
+it names the shadows bound to no effect style, KN-359.
+
 **No size outside these five is permitted.** The file says so directly, and it
 records the cleanup: 11 and 18 were corrected to 12 and 20, and **`Body/Small`
 at 13 was deleted entirely**, with the column counters moving to 12 and
@@ -779,8 +784,8 @@ the row «لینک یا متن آگهی نداری؟ خودت دستی وارد 
 in `text/brand`; then Cancel and Primary «استخراج اطلاعات», disabled until the
 field is filled and has been touched, taking focus counting as touching, the
 critical path's «click into the field» (**PasteFilled**, `371:422`). The file
-draws the label at its automatic 19; the code keeps the Input's 16, so Paste is
-398 tall where the file is 401. **Loading**, `243:964`, is the same dialog as a
+draws the label at its automatic 19, which the code keeps too, KN-359, so Paste
+is 401 tall, as the file is. **Loading**, `243:964`, is the same dialog as a
 panel of 360, 32 above and below and 24 at the sides, holding the Loading State
 alone; it takes focus, and Escape there goes back to the paste field with what
 was pasted. **Review**, `150:94`, is the form in 420 of the modal's 606,
