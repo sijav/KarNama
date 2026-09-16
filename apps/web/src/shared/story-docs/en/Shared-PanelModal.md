@@ -71,4 +71,4 @@ did.
 ### ReportsABlankTitle
 
 A title of one space, which names nothing: the modal reports it at the console,
-and pressing the trigger opens no dialog.
+and asked to open it draws no dialog at all.
