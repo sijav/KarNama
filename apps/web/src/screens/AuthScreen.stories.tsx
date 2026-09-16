@@ -94,9 +94,10 @@ export const Code: Story = {
     await userEvent.type(canvas.getByLabelText('شماره موبایل'), PHONE)
     await userEvent.click(canvas.getByRole('button', { name: 'ارسال کد' }))
 
-    // The code step says where the code went, the number in the reader's digits
-    // grouped as the file writes it, and that nothing was really sent.
-    await expect(canvas.getByText(`ارسال شده به ${formatPhone('fa-IR', PHONE)}`)).toBeInTheDocument()
+    // The code step names whose code is on the screen, the number in the reader's
+    // digits grouped as the file writes it, and says nothing was really sent. It
+    // does not say the code went anywhere, because it did not, KN-589.
+    await expect(canvas.getByText(`کد مربوط به ${formatPhone('fa-IR', PHONE)}`)).toBeInTheDocument()
     await userEvent.type(canvas.getByLabelText('کد پنج رقمی'), '00000')
     await userEvent.click(canvas.getByRole('button', { name: 'تأیید و ورود' }))
     await expect(canvas.getByText('این کد درست نیست. دوباره امتحان کن.')).toBeInTheDocument()
@@ -341,7 +342,14 @@ const borrowed = (host: HTMLElement, property: 'color' | 'backgroundColor' | 'bo
 // one pixel of border/default inside and its own shadow; the Brand Row first; and
 // the step's heading, the title at 24 and SemiBold on the file's line of 38 with
 // the body 8 under it in Body, text/secondary.
-const cardIsTheFrames = async (canvasElement: HTMLElement, width: number, title: string, body: string) => {
+const cardIsTheFrames = async (
+  locale: Locale,
+  canvasElement: HTMLElement,
+  width: number,
+  title: string,
+  body: string,
+  bodyHeight: number,
+) => {
   const form = canvasElement.querySelector('form')
   if (!form) throw new Error('no sign-in card')
   const style = getComputedStyle(form)
@@ -356,7 +364,10 @@ const cardIsTheFrames = async (canvasElement: HTMLElement, width: number, title:
   await expect(edge.borderTopColor).toBe(borrowed(form, 'borderTopColor', semantic['border/default']))
   const [brand, heading] = [...form.children]
   if (!(brand instanceof HTMLElement) || !(heading instanceof HTMLElement)) throw new Error('the card has no brand row and heading')
-  const i18n = i18nFor('fa-IR')
+  // The brand name in the language the story pins: «کارنما» in Persian and
+  // KarNama in English, so this cannot look for the Persian word on an English
+  // page, KN-589.
+  const i18n = i18nFor(locale)
   const name = i18n._('KarNama')
   await expect(within(brand).getByText(name)).toBeInTheDocument()
   await expect(within(brand).getByText(name.charAt(0)).getBoundingClientRect().height).toBe(32)
@@ -371,6 +382,14 @@ const cardIsTheFrames = async (canvasElement: HTMLElement, width: number, title:
   const bodyStyle = getComputedStyle(bodyLine)
   await expect(px(bodyStyle.fontSize)).toBe(14)
   await expect(bodyStyle.color).toBe(borrowed(form, 'color', semantic['text/secondary']))
+  // How tall the body draws, and that it does not overflow its box. Everything
+  // above reads the body's words, size and colour, and none of it notices a wrap,
+  // so a longer translation would satisfy the copy while the card grew under it,
+  // KN-589's third plan review. The caller says the height rather than this
+  // demanding one line, because the signup step's Persian body is one line of 22
+  // at the desktop's 376 and two of 44 at the phone's 278, both measured.
+  await expect(Math.round(bodyLine.getBoundingClientRect().height)).toBe(bodyHeight)
+  await expect(bodyLine.scrollWidth).toBeLessThanOrEqual(Math.ceil(bodyLine.getBoundingClientRect().width))
 }
 
 // The file's two screens, the card each gives it, and the room inside the card's
@@ -396,13 +415,16 @@ const atBothWidths = async (measure: (card: number, inner: number) => Promise<vo
   }
 }
 
-export const LoginAsTheFrames: Story = {
-  globals: { locale: 'fa-IR', colorScheme: 'light' },
-  play: async ({ canvasElement }) => {
+// The first step against 407:6951 and 407:7022 in whichever language the story
+// pins: the same measurements, the copy read from that language's catalog, so
+// English is proved rather than merely rendered, KN-589.
+const loginAsTheFramesIn =
+  (locale: Locale): NonNullable<Story['play']> =>
+  async ({ canvasElement }) => {
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
-    const i18n = i18nFor('fa-IR')
+    const i18n = i18nFor(locale)
     await atBothWidths(async (card) => {
-      await cardIsTheFrames(canvasElement, card, i18n._('Sign in to KarNama'), i18n._('Write your mobile number'))
+      await cardIsTheFrames(locale, canvasElement, card, i18n._('Sign in to KarNama'), i18n._('Write your mobile number'), 22)
       await expect(within(canvasElement).getByLabelText(i18n._('Mobile number'))).toHaveAttribute('placeholder', i18n._('0912 345 6789'))
       // The Terms Note last: 12 at Regular, centred, in text/disabled, KN-591.
       const note = canvasElement.querySelector('form')?.lastElementChild
@@ -412,13 +434,22 @@ export const LoginAsTheFrames: Story = {
       await expect([px(noteStyle.fontSize), noteStyle.fontWeight, noteStyle.textAlign]).toEqual([12, '400', 'center'])
       await expect(noteStyle.color).toBe(borrowed(note, 'color', semantic['text/disabled']))
     })
-  },
+  }
+
+export const LoginAsTheFrames: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: loginAsTheFramesIn('fa-IR'),
+}
+
+export const LoginAsTheFramesInEnglish: Story = {
+  globals: { locale: 'en-US', colorScheme: 'light' },
+  play: loginAsTheFramesIn('en-US'),
 }
 
 // The Code Row, 407:6981 and 407:7052, KN-586: five boxes filling the card's inner
 // width 8 apart, each 56 tall, left to right, over the one field named for the code.
-const codeRowIsTheFrames = async (canvasElement: HTMLElement, inner: number) => {
-  const field = within(canvasElement).getByRole('textbox', { name: i18nFor('fa-IR')._('Five digit code') })
+const codeRowIsTheFrames = async (locale: Locale, canvasElement: HTMLElement, inner: number) => {
+  const field = within(canvasElement).getByRole('textbox', { name: i18nFor(locale)._('Five digit code') })
   const row = field.previousElementSibling
   if (!(row instanceof HTMLElement)) throw new Error('the code input has no row of boxes')
   const boxes = [...row.children].filter((box): box is HTMLElement => box instanceof HTMLElement)
@@ -432,11 +463,11 @@ const codeRowIsTheFrames = async (canvasElement: HTMLElement, inner: number) => 
 // Timer and then the Change Number frame, each the card's inner width, 22 tall and
 // 24 under what is above it; the timer at 14 Regular, centred, in text/disabled,
 // and the Footer Link at 14 Medium, centred, in text/brand.
-const linesUnderTheAction = async (canvasElement: HTMLElement, inner: number, timerText: string) => {
+const linesUnderTheAction = async (locale: Locale, canvasElement: HTMLElement, inner: number, timerText: string) => {
   const form = canvasElement.querySelector('form')
   if (!form) throw new Error('no sign-in card')
   const canvas = within(canvasElement)
-  const i18n = i18nFor('fa-IR')
+  const i18n = i18nFor(locale)
   const action = canvas.getByRole('button', { name: i18n._('Confirm and sign in') }).getBoundingClientRect()
   const timer = canvas.getByText(timerText)
   const link = canvas.getByRole('button', { name: i18n._('Change the number') })
@@ -459,11 +490,14 @@ const linesUnderTheAction = async (canvasElement: HTMLElement, inner: number, ti
   await expect(Math.abs(drawn.left + drawn.width / 2 - (linkBox.left + linkBox.width / 2))).toBeLessThan(1)
 }
 
-export const CodeAsTheFrames: Story = {
-  globals: { locale: 'fa-IR', colorScheme: 'light' },
-  play: async ({ canvasElement }) => {
+// The code step against 407:6972 and 407:7043 in whichever language the story
+// pins: the clock, the digits and every lookup follow that locale, so English is
+// proved rather than merely rendered, KN-589.
+const codeAsTheFramesIn =
+  (locale: Locale): NonNullable<Story['play']> =>
+  async ({ canvasElement }) => {
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
-    const i18n = i18nFor('fa-IR')
+    const i18n = i18nFor(locale)
     const canvas = within(canvasElement)
     // The clock held a second past the send, where the file draws its countdown.
     const clock = holdClock(START)
@@ -472,17 +506,27 @@ export const CodeAsTheFrames: Story = {
       await userEvent.click(canvas.getByRole('button', { name: i18n._('Send the code') }))
       await canvas.findByLabelText(i18n._('Five digit code'))
       clock.forward(ONE_SECOND)
-      const timerText = `${i18n._('Send the code again in')} ${formatClock('fa-IR', RESEND_SECONDS - 1)}`
+      const timerText = `${i18n._('Send the code again in')} ${formatClock(locale, RESEND_SECONDS - 1)}`
       await canvas.findByText(timerText)
+      const body = `${i18n._('Code for')} ${formatPhone(locale, PHONE)}`
       await atBothWidths(async (card, inner) => {
-        await cardIsTheFrames(canvasElement, card, i18n._('Enter the code'), `${i18n._('Sent to')} ${formatPhone('fa-IR', PHONE)}`)
-        await codeRowIsTheFrames(canvasElement, inner)
-        await linesUnderTheAction(canvasElement, inner, timerText)
+        await cardIsTheFrames(locale, canvasElement, card, i18n._('Enter the code'), body, 22)
+        await codeRowIsTheFrames(locale, canvasElement, inner)
+        await linesUnderTheAction(locale, canvasElement, inner, timerText)
       })
     } finally {
       clock.release()
     }
-  },
+  }
+
+export const CodeAsTheFrames: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: codeAsTheFramesIn('fa-IR'),
+}
+
+export const CodeAsTheFramesInEnglish: Story = {
+  globals: { locale: 'en-US', colorScheme: 'light' },
+  play: codeAsTheFramesIn('en-US'),
 }
 
 export const SignupAsTheFrames: Story = {
@@ -494,10 +538,15 @@ export const SignupAsTheFrames: Story = {
     const canvas = within(canvasElement)
     await atBothWidths(async (card) => {
       await cardIsTheFrames(
+        'fa-IR',
         canvasElement,
         card,
         i18n._('Welcome'),
         i18n._('Just tell us your name so we can build your job opportunities board.'),
+        // This body is the long one: one line inside the desktop card's 376, two
+        // inside the phone's 278. Measured at both, and asserted rather than
+        // exempted, so a change that wrapped it on the desktop would be caught.
+        card === 440 ? 22 : 44,
       )
       await expect(canvas.getByLabelText(i18n._('First and last name'))).toHaveAttribute('placeholder', i18n._('Mehdi Rezaei'))
       await expect(canvas.getByRole('button', { name: i18n._('Start') })).toBeInTheDocument()
@@ -573,7 +622,7 @@ export const ChangingTheNumber: Story = {
       await userEvent.clear(number)
       await userEvent.type(number, OTHER_PHONE)
       await userEvent.click(canvas.getByRole('button', { name: i18n._('Send the code') }))
-      await expect(await canvas.findByText(`${i18n._('Sent to')} ${formatPhone('fa-IR', OTHER_PHONE)}`)).toBeInTheDocument()
+      await expect(await canvas.findByText(`${i18n._('Code for')} ${formatPhone('fa-IR', OTHER_PHONE)}`)).toBeInTheDocument()
       await expect(String(sends.mock.calls.at(-1)?.[0])).toContain(OTHER_PHONE)
     } finally {
       sends.mockRestore()

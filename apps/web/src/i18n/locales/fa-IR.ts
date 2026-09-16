@@ -244,7 +244,7 @@ export const messages: Record<string, string> = {
   'Send the code': 'ارسال کد',
   'Write your mobile number, 11 digits starting 09': 'شماره موبایلت را بنویس، ۱۱ رقم که با ۰۹ شروع می‌شود',
   'Enter the code': 'کد را وارد کن',
-  'Sent to': 'ارسال شده به',
+  'Code for': 'کد مربوط به',
   'Five digit code': 'کد پنج رقمی',
   'Send the code again in': 'ارسال دوباره‌ی کد تا',
   'Send the code again': 'ارسال دوباره‌ی کد',

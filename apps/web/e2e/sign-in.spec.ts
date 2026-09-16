@@ -36,7 +36,7 @@ const codesFrom = (page: Page): string[] => {
 const signIn = async (page: Page, codes: string[]) => {
   await page.getByLabel('شماره موبایل').fill(PHONE)
   await page.getByRole('button', { name: 'ارسال کد' }).click()
-  await expect(page.getByText(`ارسال شده به ${SHOWN}`)).toBeVisible()
+  await expect(page.getByText(`کد مربوط به ${SHOWN}`)).toBeVisible()
   await expect.poll(() => codes.length).toBeGreaterThan(0)
 }
 
@@ -112,7 +112,7 @@ test('a mistyped number is changed from the code step, and the code goes to the 
   // The code goes to the number typed instead, and signs that number in.
   await number.fill(OTHER_PHONE)
   await page.getByRole('button', { name: 'ارسال کد' }).click()
-  await expect(page.getByText(`ارسال شده به ${SHOWN_OTHER}`)).toBeVisible()
+  await expect(page.getByText(`کد مربوط به ${SHOWN_OTHER}`)).toBeVisible()
   await expect.poll(() => codes.length).toBeGreaterThan(1)
   await page.getByLabel('کد پنج رقمی').fill(codes.at(-1) ?? '')
   await page.getByRole('button', { name: 'تأیید و ورود' }).click()

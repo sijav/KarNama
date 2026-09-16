@@ -75,13 +75,21 @@ card the design draws: its width, the room inside it and between its parts, its
 corners, edge and shadow, the Brand Row, the heading's title and line under it,
 the field's example number, and the note under the action.
 
+### LoginAsTheFramesInEnglish
+
+The same, in English.
+
 ### CodeAsTheFrames
 
-The code step at both widths, measured against the same card: the heading says
-where the code went, the Code Row's five boxes fill the card's inner width 8 apart
+The code step at both widths, measured against the same card: the heading names
+whose code is on the screen, the Code Row's five boxes fill the card's inner width 8 apart
 and 56 tall, and under the action come the countdown to a resend, a second after
 the send as the design draws it, and the link back to the number, each the card's
 inner width, 22 tall and 24 apart, in the design's type and colours.
+
+### CodeAsTheFramesInEnglish
+
+The same, in English.
 
 ### SignupAsTheFrames
 

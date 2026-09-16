@@ -243,7 +243,7 @@ export const messages: Record<string, string> = {
   'Send the code': 'Send the code',
   'Write your mobile number, 11 digits starting 09': 'Write your mobile number, 11 digits starting 09',
   'Enter the code': 'Enter the code',
-  'Sent to': 'Sent to',
+  'Code for': 'Code for',
   'Five digit code': 'Five digit code',
   'Send the code again in': 'Send the code again in',
   'Send the code again': 'Send the code again',

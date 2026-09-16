@@ -215,7 +215,7 @@ export const AuthScreen = () => {
     </>
   ) : auth.awaiting ? (
     <>
-      <Heading title={i18n._('Enter the code')}>{`${i18n._('Sent to')} ${formatPhone(locale, auth.phone)}`}</Heading>
+      <Heading title={i18n._('Enter the code')}>{`${i18n._('Code for')} ${formatPhone(locale, auth.phone)}`}</Heading>
       {/* The code itself, on the screen, KN-459: no message is really sent, and
           the console was the only place it appeared, which a phone does not
           have. Marked plainly as a stand-in so nobody mistakes it for something

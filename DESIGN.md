@@ -1649,11 +1649,23 @@ there; and a refused code takes the Input's error line, with every resting edge 
 site, KN-600.
 
 What the frames draw and the build does not, each a card: the signup's «بعداً کاملش می‌کنم», which the name section 4 requires
-contradicts, KN-588. The build keeps its own words, until the owner says, where the file's
-would promise a text message the mocked provider never sends, on Login and Code,
-KN-589, and where its note names terms and a privacy policy the product does not
-have yet: the owner's decision of 2026-09-15 is to write both pages and link the
-note to them, KN-590. The signup body says «برد فرصت‌های شغلی‌ات» where the file says «برد
+contradicts, KN-588. **The Login and Code heading sublines are the build's own
+words, and only those two**, decided 2026-09-16. The file draws four: «شماره
+موبایلت را وارد کن؛ یک کد پنج‌رقمی برایت پیامک می‌کنیم.» on Login, `407:6951`
+and `407:7022`, and «کد پنج‌رقمی را به ۰۹۱۲ ۳۴۵ ۶۷۸۹ پیامک کردیم.» on Code,
+`407:6972` and `407:7043`. The build draws two: «شماره موبایلت را وارد کن»,
+which claims nothing, and «کد مربوط به» with the number, which names whose code
+is on the screen. Nothing is sent while the provider is mocked — `AuthProvider`'s
+`send` makes the code, holds it pending and writes it to the console, and
+KN-459's notice puts it on the screen — so the file's two lines would tell a
+reader something that is not happening. Asked on 2026-09-16 the owner declined to
+choose, so **the decision is the author's**, KN-589, under the rule that the
+first screen does not say what is untrue; the file's lines return when a real
+provider sends. **It covers those two sublines and nothing else**: the resend
+timer and its link still read «ارسال دوباره‌ی کد», which presupposes a send that
+never happened, and that is KN-664. The note names terms and a privacy policy the
+product does not have yet: the owner's decision of 2026-09-15 is to write both
+pages and link the note to them, KN-590. The signup body says «برد فرصت‌های شغلی‌ات» where the file says «برد
 آگهی‌هایت», the terminology rule of section 3, as KN-329 records for the bar's
 count.
 
