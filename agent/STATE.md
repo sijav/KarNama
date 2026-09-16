@@ -29,51 +29,60 @@ by hand**, so `git stash@{0}` duplicates committed code; left for the owner to d
 
 **Closed 2026-09-16**: KN-514, KN-524, KN-535, KN-543, KN-544, KN-559, KN-658, KN-542, KN-564,
 KN-565, **KN-589** (d4b86c0), **KN-665**, **KN-667**, **KN-591** (874d4ce), **KN-601** (b5498ed),
-**KN-669**, **KN-670**, **KN-618** (4be8a8e), **KN-675** (23e188e), **KN-626** (4c099cb; board
-8380ddb). **Dropped**: KN-657.
+**KN-669**, **KN-670**, **KN-618** (4be8a8e), **KN-675** (23e188e), **KN-626** (4c099cb),
+**KN-678** (6b32e24), **KN-651** (c083050), **KN-679** (7bc88a7), **KN-680** (3e5c29e).
+**Dropped**: KN-657.
 
-**Three comment overclaims in one day, all mine, all one shape** — KN-667, KN-669, KN-670 — and the
-rule is `AGENTS.md` section 7: absolute coverage language on a partial mechanism, traced through the
-exact iterable, branch, scheme and use sites before it is committed. **KN-675 was the fourth of that
-shape and the first in prose**, and its own roast then found two more sentences of it left in the
-settings docs and comments: **KN-676** and **KN-677**.
+**THE E2E SUITE IS GREEN**: 93 passed, 0 failed, 9 skipped over 102 tests, from 92 and 1. KN-651
+was the last red.
 
-**KN-626's lesson is about proof, not about dialogs**, and it is in `AGENTS.md` at e0ddfca. Two
-readings of one run were wrong for one reason. The runner names a story's test by its **display
-name, spaced** — `ReportsABlankTitle` runs as `Reports A Blank Title` — so the control's
-`-t ReportsABlankTitle` matched nothing, vitest reported `Tests 6 skipped (6)`, exited 0, and the
-script called that a pass: an absence in a pass's clothes. The same wrong name then made the script's
-own regex miss a real failure the summary line was reporting two lines above it. **A run that
-skipped everything or ran none is a failure to run.** And the plan review caught the second half:
-**a negative asserted after an interaction can pass because the interaction never happened** — a
-dialog missing after a press is what an unpressed trigger leaves behind too, and no `waitFor` mends
-an absence that passes on its first poll. So the story hands the panel `open: true` and watches it
-refuse, which fails against the old component on the report that was never made.
+**Six overclaims in one day, all mine, all one shape**, and this is the thing to watch: KN-667,
+KN-669, KN-670, KN-675, KN-679, KN-680. Absolute coverage language on a partial mechanism. The last
+two are the instructive pair: **KN-679 wrote the rule down and KN-680 was that same rule broken in
+the sentence that wrote it** — the entry recording what the story-docs guard cannot do itself said
+the guard checks "every callback", which it cannot. Writing the lesson is not applying it.
 
-**Open and worth knowing**: **KN-668**, KN-591's last child — the code step's notice draws
-`text/secondary` on `bg/surface-secondary`, 4.3929, and the light guard asserts tokens against
-`bg/surface` alone so it cannot see it; **KN-663**, the catalog test never compares an English
-message with its id; **KN-664**, the resend controls still presuppose a send; **KN-666**, the
-sidebar's «فضای کار» label is the same 2.54 defect; **KN-662**, the two Empty State instances draw
-different bodies; **KN-671**, the two-tabs spec's Persian locators name no English id; **KN-627**,
-widened 2026-09-16 to **both** shells, since `PanelModal` now carries Modal's `trim()` predicate and
-so its zero-width gap as well; **KN-672**, **KN-673**, **KN-674** from KN-618.
+**What KN-626 and KN-651 taught about proof, now in `AGENTS.md` section 7.**
+
+- The runner names a story's test by its **display name, spaced**, so `-t ReportsABlankTitle` matched
+  nothing, vitest said `Tests 6 skipped (6)`, exited 0, and the control read it as a pass. **A run
+  that skipped everything or ran none is a failure to run.** The same wrong name then made the
+  script's own regex miss a real failure the summary line was reporting two lines above it.
+- **A negative asserted after an interaction can pass because the interaction never happened.** A
+  dialog missing after a press is what an unpressed trigger leaves behind too. Hand the component
+  the state that must be refused and watch it refuse.
+- **`locator.check()` CLICKS even where the context has touch** — read in `playwright-core`'s bundle:
+  `_setChecked` calls `this._click(...)`. So a phone test that checks a box proves the desktop's
+  gesture, and it passes: KN-651's spec went 6 of 6 across both projects that way before the review
+  caught it. `tap()` is the touch path. Playwright 1.62 has no long press, so a held press is CDP
+  `Input.dispatchTouchEvent` with a wait on what the hold produces between start and end.
+- **The story-docs guard checks structure, never prose.** It would pass a sentence and its opposite
+  identically, so it is no evidence that a docs claim is true.
+
+**Open and worth knowing**: **KN-668**, the code step's notice at 4.3929 on `bg/surface-secondary`;
+**KN-664**, the resend controls presuppose a send; **KN-666**, the sidebar's «فضای کار» label;
+**KN-662**, the two Empty State bodies; **KN-671**, the two-tabs spec's Persian locators;
+**KN-627**, widened to BOTH shells, since `PanelModal` now carries Modal's `trim()` predicate and so
+its zero-width gap — two separate predicates that merely match, so each must be changed explicitly;
+**KN-672**, **KN-673**, **KN-674** from KN-618; **KN-676** and **KN-677** from KN-675.
 
 **Still waiting on the owner**: KN-515, KN-516, KN-517; the Search Bar and Sort Control taking
 KN-275's `border/control`; **KN-486**, the `fetch`-stubbing tests of `extraction.service.ts`. The
 Codex log the owner pasted holds the Groq key; never repeat that key anywhere.
 
 **Roasts run on Codex terra, pinned**: every roast and plan review passes `--model gpt-5.6-terra`.
-`roast.py` takes the work as `--did`, the file list as `--files` and the diff as `--diff`; the plan
-goes in `--did` too, and omitting `--fresh` resumes that mode's session so a re-review sees its own
-earlier round. `todo roast` needs `--file`, the path the reviewer wrote its answer to.
+`roast.py` takes the work as `--did`, the file list as `--files`, the diff as `--diff`; a plan goes
+in `--did` too, and omitting `--fresh` resumes that mode's session so a re-review sees its own
+earlier round. `todo roast` needs `--file`, the reviewer's answer file, and `--filed none` when a
+round finds nothing.
 
 ## What fails, measured 2026-09-16
 
 The unit project is 1529 of 1531: the two are `session.test.ts` under load, KN-551, which passes
 alone 2 of 2 every time. The storybook project loses whichever pointer-driven stories run beside
-each other, KN-365. The e2e suite is 92 passed, 1 failed, 9 skipped, the one KN-651; **"a fresh
-build" means `CI=1`**, since the config reuses an existing server otherwise. `App.tsx` line 107
+each other, KN-365. **The e2e suite passes whole**; **"a fresh build" means `CI=1`**, since the
+config reuses a running server otherwise, and its webServer runs `tsc --noEmit` first, so a mutation
+that leaves a symbol unused stops the server rather than failing a test. `App.tsx` line 107
 uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486, so the api workspace's
 database tests are run directly, `npx vitest run src/database`, 68.
 
@@ -101,29 +110,30 @@ database tests are run directly, `npx vitest run src/database`, 68.
 
 ## The next step
 
-**KN-651 is in progress**, medium, 1 point, web, and its plan is NOT yet written. It is the last red
-in the e2e suite. `e2e/network.spec.ts` lines 63 to 67 select two people by hovering each card and
-checking its checkbox; in the mobile project, a Pixel 7 with touch, `locator.check` times out after
-30 seconds, because since KN-533 a phone's contact card keeps its `Checkbox` folded away until a
-**held press** starts a selection, which is DESIGN.md's Contact Card section. It fails the same way
-against `main.tsx` and `RemoteAuthProvider.tsx` as HEAD has them, so it predates KN-490.
+**KN-663 is in progress**, medium, 1 point, web. Its plan is written beside the work at
+`apps/web/src/i18n/` and is **with the reviewer**; nothing is built yet. The card: nothing compares
+an English message with its id, so KN-565's first attempt shipped
+`'You have not added a job opportunity yet': 'You have not added a job posting yet'` past all 484
+catalog cases. Measured rather than recalled: **en-US holds 239 entries, 0 whose message differs
+from its id, and 0 containing braces**, so no ICU or placeholder syntax can trip a strict rule — and
+the file's own docstring already declares it an identity map that stays one, so the card checks a
+contract the file states about itself. `catalog.test.ts` has eight cases and not one reads an
+English value; its idiom for a catalog-wide rule is to collect offenders and assert the list empty.
+The plan's questions to the review: strict equality rather than the Persian case's `bare()`, and
+whether the in-file pretend-value proof is worth having beside an external mutation control.
 
-Its exit condition names the shape of the fix: the test chooses the two people **as a phone does**
-in the mobile project, a held press on the first card and a tap on the second, and still hovers and
-checks on the desktop, and it passes in both projects. So the plan's work is finding how the spec
-tells the two projects apart and what actually starts a selection by touch.
-
-**KN-626's roast** was launched and has not landed; judge it, file survivors with
-`--parent-task KN-626`, record the round with `--file`, relay it.
+**KN-680's roast** was launched and has not landed; judge it, file survivors with
+`--parent-task KN-680`, record with `--file`, relay it.
 
 ## What to read first
 
-`AGENTS.md` section 7, `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-651`, and
-`apps/web/e2e/network.spec.ts`. **Never chain a check through a pipe into a commit or a close, write
-long scripts with the Write tool, and keep apostrophes out of single-quoted strings in scripts.** A
-backgrounded run's "exit code 0" is the shell line's, not the runner's, and a vitest run that
-skipped every test exits 0 as well: **read the summary line, and refuse it on "skipped" or a zero
-total.** When a script edits several files, compute them all in memory and write only if every count
-matches. A story proves a rendered line only where the story itself pins the global. And check a
-path before asserting it: two guesses were wrong on 2026-09-16, `panel-modal/` and `console-guard/`,
-both of which cost a round.
+`AGENTS.md` section 7, `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-663`, and
+`apps/web/src/i18n/catalog.test.ts`. **Never chain a check through a pipe into a commit or a close,
+write long scripts with the Write tool, and keep apostrophes out of single-quoted strings in
+scripts.** A backgrounded run's "exit code 0" is the shell line's, not the runner's, and a run that
+skipped every test exits 0 too: **read the summary line, and refuse it on "skipped" or a zero
+total** — and keep "could not run" distinct from "does not hold". When a script edits several files,
+compute them all in memory and write only if every count matches. A story proves a rendered line
+only where the story itself pins the global. And check a path before asserting it: `panel-modal/`,
+`console-guard/` and `playwright-core` under `apps/web` were all wrong guesses on 2026-09-16, each
+costing a round.
