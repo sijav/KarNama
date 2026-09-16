@@ -65,6 +65,18 @@ the filtered card's absence before opening the column menu. **One screen story g
 `ActingWhileSearching`, on a bare assertion after a `waitFor`, which the plan had predicted and my own
 conclusion overrode.
 
+**Its roast found one defect, KN-696, and the rest are clean bills worth keeping**, because they are
+what the card most needed checked. **No KN-422-style mismatch**: both screens derive cards, empty
+states, visible counts, select-all, bulk delete and bulk status changes from the applied value, so
+during the 300 ms gap the field alone changes while actions still apply to exactly the cards shown.
+**The clear assertions are real** rather than passing on a retry that outlasts the pause: after
+`pauseAt` the page's timers cannot advance during Playwright's retries, so restoration cannot come
+from the debounce. **The control genuinely restores the old behaviour**, filtering in the same React
+batch as the controlled field. And one inaccuracy of mine, recorded: the account I gave the reviewer
+described a `settle()` helper running the clock forward after seeding, which the `pauseAt` rewrite had
+removed. It never reached the repository, but **an account handed to a reviewer must be re-read
+against the diff it describes.**
+
 ## Open children, and what is waiting
 
 **KN-016 waits on two**: **KN-689**, now in progress, and **KN-692**, that no story pins that a layout
@@ -73,6 +85,12 @@ change leaves a pending search alone.
 **KN-062 waits on five**: KN-686, KN-687, KN-688, and from KN-685's roast **KN-693**, the verifier
 still prints a sentinel on its FAILURE paths, and **KN-694**, nothing re-checks that each sentinel is
 still held only by its own locale JSON.
+
+**KN-695 waits on one**: **KN-696**, from its own roast. KN-695 updated the BOARD docs in both
+languages to say the search waits, and never touched `Screens-Network.md` in either, which still says
+only that a search narrows the page. KN-695's exit said "the screen docs in both languages", which is
+plural and covers both screens, so it is a miss against its own exit rather than a new requirement,
+and the contacts page has its own clocked e2e test proving the wait its documentation omits.
 
 **Also open**: KN-681 and KN-682 from KN-666; KN-684 from KN-668; KN-673 and KN-674 from KN-618;
 KN-676 and KN-677 from KN-675. **KN-683 IS FOR THE OWNER**: walking `text/secondary` to a readable
