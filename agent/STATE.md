@@ -30,7 +30,7 @@ the owner to drop.
 KN-565, KN-589, KN-665, KN-667, KN-591, KN-601, KN-669, KN-670, KN-618, KN-675, KN-626, KN-678,
 KN-651, KN-679, KN-680, KN-666, KN-668, KN-672, **KN-306** (d8c9d9f), **KN-380** (17472be),
 **KN-685** (43898ec), **KN-690** (db6f4e6), **KN-691** (fb0e32b), **KN-695** (e29b86e),
-**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445, board ffd704d). **Dropped**: KN-657, and **KN-663**
+**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491, board 4fe2895). **Dropped**: KN-657, and **KN-663**
 (de6157c), filed on a false premise its own plan review caught.
 
 ## KN-697, the search in the address, and it is the one to read first
@@ -103,10 +103,16 @@ already measures 0. **Read the drift, never chain it.**
 
 ## Open children, and what is waiting
 
-**KN-698 waits on two**: **KN-701**, the two comments that overclaim, and **KN-704**, from KN-700's own roast — the new
+**KN-698 waits on two**, KN-701 being closed and its own roast having filed another: **KN-704**, from KN-700's roast — the new
 routing tests run at base `/`, so the production basename is argued from the router's implementation rather than
 browser-tested, and the defect KN-700 fixed lived precisely under that basename. KN-700 itself is closed, and the board
-flattened KN-704 onto KN-698 by the one-level rule rather than hanging it off a child.
+flattened KN-704 onto KN-698 by the one-level rule rather than hanging it off a child. And **KN-708**,
+from KN-701's roast: the module note in `routes.ts` still says "the three things it has no opinion
+about" when KN-697 made it five, adding `QUERY` and `searchStep`; and the `PATH` comment KN-701 itself
+wrote says an unrouted destination "draws the board", which holds only past the auth gate, since `Shell`
+returns `AuthScreen` before `<Routes>` exists. **The lesson is how both survived**: KN-701's close
+asserted that note was UNCHANGED, and that decision was right about the clause the card named while
+neither I nor the review read the rest of the paragraph it sits in.
 
 **KN-697 waits on one**: **KN-703**, its plan's section 3 still saying only `src/app` imports the router and that the
 screen stories render bare — both true when written and both made untrue by that card's own change.
@@ -115,8 +121,11 @@ screen stories render bare — both true when written and both made untrue by th
 KN-687, KN-688, KN-694, and **KN-705** from KN-693's roast — the verifier echoes its build environment
 at startup, `VITE_API_URL` included, so a value supplied through the environment that contains a
 sentinel prints before any check runs, which falsifies KN-693's own universal claim. **KN-695 has NO
-open children left**: KN-696 closed, which is why the board asked for a round on the PARENT together
-with every child, on whether KN-695 is actually finished; that round is running.
+open children left**, so the board asked for a round on the PARENT together with every child, on whether
+KN-695 was actually finished. **That round ran and said it is NOT**, filing two: **KN-706**, in progress,
+four story entries describing a search without saying when it acts, and **KN-707**, the Search Bar docs
+claiming the contacts page gives no accessible label, which it now does. It confirmed the behaviour and
+`searchStep` are right, and that KN-697 changed where the applied value is stored rather than the wait.
 
 **Also open**: KN-681, KN-682, KN-684, KN-673, KN-674, KN-676, KN-677; **KN-699**, the moving storybook
 failures; **KN-702**, `todo set` with no id crashing with a raw SQLite TypeError instead of usage.
@@ -166,31 +175,32 @@ because `todo render` writes every description into the board and the database i
 - **A finding is a CHILD of its task**, one level, with `--area` and `--okr`. **Plans live beside the
   work**, checked by `roast.py plan` before building, and they stay.
 
-## The next step: KN-701, two comments claim more than the code does
+## The next step: KN-706, four story entries describe a search without saying when
 
-**In progress**, medium, 1 point, web, a child of KN-698. Plan at
-`apps/web/src/app/#KN-701 - Two comments claim more than the code does.md`, **with Codex for review**,
-uncommitted until that round lands.
+**In progress**, medium, 1 point, web, a child of KN-695 filed by the parent round. Plan at
+`apps/web/src/shared/story-docs/#KN-706 - Four story entries describe a search without saying when.md`,
+**with Codex for review**, uncommitted until that round lands.
 
-**HALF THIS CARD IS ALREADY FIXED, BY ANOTHER CARD.** It was filed saying `routes.ts` and `App.tsx` both
-claim react-router reads and writes the address while `Shell` still parsed route segments by hand.
-**KN-700 deleted that hand-split**, so the module note is now true as written: the router reads through
-`useLocation`, `useMatch` and `useSearchParams` and writes through `useNavigate` and `setSearchParams`,
-and the three things the note says it has no opinion about — `PATH`, `pathForHash`, `siteBase` — are
-exactly what remains. **That half is left alone and recorded, never reworded into a different shade of
-true.**
+**THIS CARD MAY LEGITIMATELY EDIT NOTHING, and its exit permits that**: either the four entries gain the
+timing, or the card records why a story entry describes only what its scenario shows. **Two rounds have
+split on it.** Planning KN-696 I judged these scenarios rather than timing claims and that card's review
+agreed, calling it no separate finding; the PARENT round said they are reader-facing search descriptions
+that omit when it acts.
 
-**What is actually wrong** is the comment above `PATH`, and it makes two false claims in one sentence:
-that a destination added with no route is a type error, and that a route pointed at the wrong page is
-one. The mapped type forces an ENTRY for every destination, and forces each entry's value to be its own
-key's path. It never requires a `<Route>` to exist, and never checks which element a route renders — so
-a destination with an entry and no route compiles and falls through to the board, which is the exact
-outcome the sentence promises it prevents.
+**The four are ITINERARIES.** `Working` reads "A board being used: searching narrows every column, a card
+opens the job opportunity, and selecting one brings up the bulk bar…" — the search is one item of four.
+`Keeping` is the same shape, one of five. Neither is a statement about how the search behaves.
 
-**The proof is demonstrated rather than asserted**, because the sentence was wrong ABOUT THE COMPILER: a
-temporary fourth `Destination` should make `tsc` error on the missing `PATH` entry and say nothing about
-the absent route, reverted from a byte snapshot with the restore verified by comparison rather than by
-Git state.
+**My first argument was wrong, and checking before writing killed it.** I was going to say no story entry
+in this format ever carries timing. `Debounced` does — "A word typed quickly: no search while the keys
+come, then one search with the whole word" — and so do `ResetWhilePending` and, on a SCREEN,
+`CountsDownToAResend`. A near-miss worth keeping: `Shared-SearchBar.md` line 62 states timing too, but it
+sits under `### onSearch`, a PROP entry, which is a different artefact from a story.
+
+**The line the evidence supports**: an entry states timing when the timing is what that story
+DEMONSTRATES. Strip the pause from `Debounced` and no story is left; strip it from `Working` and every
+step still stands. So the contract belongs in the introductions, which KN-695 and KN-696 corrected in all
+four files, and the entries stay itineraries — which is the exit's second branch, taken on evidence.
 
 ## What to read first
 
