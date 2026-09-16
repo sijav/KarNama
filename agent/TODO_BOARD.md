@@ -4,7 +4,7 @@
 
 Project **KarNama** · 330 of 697 tasks done · 673 of 1330 points.
 
-**Next up: `KN-689` A parent that answers a change one commit late loses the search, where KN-016 promises the final keystroke is never dropped** (high, 2 pt, web)
+**Next up: `KN-697` The search never reaches the address, so a searched board cannot be shared, bookmarked or reloaded** (high, 3 pt, web)
 
 ## Objectives
 
@@ -13,7 +13,7 @@ Project **KarNama** · 330 of 697 tasks done · 673 of 1330 points.
 | 1 | OKR-1 | MVP: the pages | now | 223 | 252 |
 | 2 | OKR-2 | Everything after the MVP | later | 134 | 78 |
 
-## Blocked (9)
+## Blocked (10)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -22,12 +22,13 @@ Project **KarNama** · 330 of 697 tasks done · 673 of 1330 points.
 | `KN-073` | Confirm the employment type and job level option lists | high | 2 | design | KN-002 | DESIGN.md states the lists as confirmed with the source that confirmed them, section 6 no longer lists them as provisional, and KN-012 and KN-034 use the confirmed values. |
 | `KN-077` | Settle the two copy strings that frame 505:3 records as not yet applied | high | 2 | design | KN-002 | DESIGN.md states the wording and the screen for both strings, section 6 no longer lists them, and agent/design-manifest.json records them as disposed so the capture-derived pending check stays green. |
 | `KN-515` | A phone's board header cannot hold the file's add button beside the shell's controls | high | 2 | web | none | The owner has chosen, DESIGN.md section 5 records it, and a phone's board header at 390 shows the choice with the title whole in both languages. |
+| `KN-689` | A parent that answers a change one commit late loses the search, where KN-016 promises the final keystroke is never dropped | high | 2 | web | KN-695 | The promise is made exact in one place and true in both: either the contract is narrowed, stated in the story docs in both languages and in DESIGN.md as the decided behaviour, that a search runs only where the parent answers the readers change in the same commit; or the bar gains a way to attribute a late answer. Either way a story drives a parent that echoes one commit late and asserts the decided behaviour, and it fails if the other behaviour is implemented. |
 | `KN-486` | The API's 100 percent coverage gate fails: extraction, the posting fetcher and the database adapter are barely tested | high | 3 | api | none | npm test in apps/api passes its 100 percent thresholds, and a test stubs fetch to throw for any host but 127.0.0.1, so no test can reach a provider. |
 | `KN-396` | The design's Destructive button draws white on #ef4444, 3.76 to one, under the 4.5 its 14 pixel label needs | medium | 1 | design | none | The owner has chosen: either bg/danger/default changes in the file and the tokens, and the Button's destructive rest clears 4.5 in the light palette, which KN-108's pair test then checks for light too; or DESIGN.md records the owner's acceptance of 3.76 with the reason. |
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (348)
+## Backlog (347)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -37,7 +38,6 @@ Project **KarNama** · 330 of 697 tasks done · 673 of 1330 points.
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
 | `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
-| `KN-689` | A parent that answers a change one commit late loses the search, where KN-016 promises the final keystroke is never dropped | high | 2 | web | KN-695 | The promise is made exact in one place and true in both: either the contract is narrowed, stated in the story docs in both languages and in DESIGN.md as the decided behaviour, that a search runs only where the parent answers the readers change in the same commit; or the bar gains a way to attribute a late answer. Either way a story drives a parent that echoes one commit late and asserts the decided behaviour, and it fails if the other behaviour is implemented. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -11889,6 +11889,7 @@ KN-062's whole-task roast, 2026-09-16, and checkable in four places that all agr
 
 - **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** KN-695
+- **blocked** waiting on the owner: whether the bar must support a page that hands the typed text back later. Put to them in plain words on 2026-09-16, after explaining what happens, and not answered; they asked for KN-697 instead. Two review rounds ruled the choice theirs rather than the authors, so nothing can be built until it is made.
 - **came out of** KN-016
 
 Found by the whole-task roast of KN-016 with KN-314, KN-315 and KN-380, 2026-09-16, and re-derived here from the effect before filing rather than taken from the reviewer. SearchBar.tsx line 94: the attempt is marked judged on the commit where the reader changed the text, and where a controlled parent has not yet echoed the change that commit still shows the old text, so text === attempt.before and the effect returns having started nothing. When the parent supplies the new value one commit later the effect re-runs, finds judged.current === attempt, and returns again. No search ever runs. The same holds for the clear: a parent that empties the field in a later commit never gets onSearch of the empty string. This is deliberate and it is what lets the bar refuse a parent that ignored a change, which ClearIgnored and IgnoredKeystrokes assert; the defect is that KN-016s exit condition says the input is debounced WITHOUT DROPPING THE FINAL KEYSTROKE, with no qualification, and the story docs record the limit only as something the bar cannot tell apart. The two are not the same promise. It cannot be fixed by guessing: a late answer and an ignored change are indistinguishable without the parent saying which change it is answering. So the contract is either narrowed, in the design and the docs, to a parent that answers in the same commit, or the bar takes a way for a late parent to be attributed.
