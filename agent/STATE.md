@@ -41,18 +41,17 @@ holds the Groq key; never repeat that key anywhere.
 **Roasts run on Codex terra, pinned**: every roast and plan review passes
 `--model gpt-5.6-terra`, AGENTS.md section 7.
 
-**Closed 2026-09-16**: **KN-514** (ebd4f57), the job modal's footer giving its delete a row of its
-own, DESIGN.md recording it (3bb60c1); roast filed **KN-653**. **KN-524** (a43bb15), the story-docs
-parser's fences as CommonMark's at the top level; roast found nothing. **KN-535** (74d9239),
-`ActingWhileSearching`; roast filed **KN-654**. **KN-543** (f5ab9f5), the API's seed in the design's
-order; roast filed **KN-655**. **KN-544** (962fd07), a column folding by which status it is, with
-`REJECTED` in `records.ts`; roast filed **KN-656** and raised **KN-542** to medium. **KN-559**
-(16b8034), the add modal's `Review` asserting the height the room allows, proved in a production
-Storybook's manager; roast filed **KN-657**. **KN-658** (247d8b9), the px literal KN-559 left in a
-story, which had the theme's literal guard failing the unit project on main: the cap's number is
-written once and its text built from it, and **KN-657 was dropped**, the comment it named being
-gone. **KN-542** (5c3989c; board 56fad43), the sample loader matching a default by its id alone;
-its roast is running, as is KN-658's. KN-551 was given the messages its card asked for.
+**Closed 2026-09-16**, each roast recorded: **KN-514** (ebd4f57), the job modal's footer, DESIGN.md
+recording the decision (3bb60c1), roast filed KN-653. **KN-524** (a43bb15), the story-docs parser's
+fences, nothing filed. **KN-535** (74d9239), `ActingWhileSearching`, filed KN-654. **KN-543**
+(f5ab9f5), the API's seed order, filed KN-655. **KN-544** (962fd07), the fold reading the status id,
+filed KN-656 and raised KN-542. **KN-559** (16b8034), `Review` asserting the height the room allows,
+filed KN-657. **KN-658** (247d8b9), the px literal KN-559 left, which had the literal guard failing
+the unit project on main; nothing filed, and **KN-657 was dropped**, its comment gone. **KN-542**
+(5c3989c), the sample loader matching a default by id alone, filed **KN-659**. **KN-564** (b45b50c;
+board 7eb0c7d), two stories waiting on a mark before they send another tab's write, the mark now a
+shared helper with the preview and the Jobs meta drawing their own; its roast is running. KN-551 was
+given the messages its card asked for.
 
 **Closed 2026-09-15, each roast recorded**: KN-348 (KN-628, KN-629); KN-349; KN-358; KN-359
 (KN-632); KN-362 (KN-633 to KN-635); KN-370; KN-385 (KN-636); KN-413 (KN-637, KN-638); KN-432;
@@ -60,8 +59,8 @@ KN-434 (KN-639, KN-640); KN-435; KN-439 (KN-641, KN-642); KN-444; KN-448 (KN-643
 (KN-645); KN-455; KN-461 (KN-646 to KN-648); KN-470 (KN-649); KN-489 (KN-650); KN-490 (KN-652);
 KN-496. **Dropped**: KN-387, KN-474, KN-657.
 
-**Rounds waiting**: KN-013 on twelve, KN-219, KN-232, KN-556 to KN-558, KN-564, KN-566, KN-568,
-KN-569, KN-609, KN-644 and KN-658; KN-440 on KN-545; KN-431 on KN-536 and KN-654; KN-543 on KN-655;
+**Rounds waiting**: KN-013 on ten, KN-219, KN-232, KN-556 to KN-558, KN-566, KN-568, KN-569, KN-609
+and KN-644; KN-542 on KN-659; KN-440 on KN-545; KN-431 on KN-536 and KN-654; KN-543 on KN-655;
 KN-544 on KN-656; KN-514 on KN-653; KN-007 on KN-407 and KN-408; KN-018 on KN-621 and KN-622;
 KN-024 on KN-623; KN-025 on KN-620; KN-020 on KN-339, KN-383 and KN-624; KN-026 on KN-384, KN-385
 and KN-625; KN-027 on KN-651 among its five; KN-028 on KN-346, KN-626 and KN-627; KN-031 on KN-628
@@ -100,26 +99,26 @@ workspace's database tests are run directly, `npx vitest run src/database`, 68 o
 
 ## The next step
 
-1. **Two roasts are running**, `kn658-roast.mjs` and `kn542-roast.mjs`, writing their `.txt` files:
-   judge each finding against the code, file survivors with `--parent-task KN-658` or
-   `--parent-task KN-542`, `--area web --okr OKR-1`, record each round through `todo roast`, naming
-   the file it wrote, what was filed and what was dismissed, and relay both to the owner.
-2. **KN-564 is in progress**, medium, 1 point, web, from KN-013's roast: App/Shell's
-   `SignedOutInAnotherTab` dispatched its first storage event 9 ms after the providers' listeners
-   were added and JobsScreen's `ChangedInAnotherTab` 23 ms after, measured by KN-560 on a production
-   Storybook, where `SignedInInAnotherTab`, dispatching 11 ms before its listeners, failed. Exit:
-   neither dispatches before the listeners are on the window, shown by the same timing on a
-   production Storybook, and both still pass under Vitest and in the production build. KN-560 added
-   a mark the play waits for, which these two reuse.
+1. **KN-564's roast is running**, `kn564-roast.mjs` writing `kn564-roast.txt`: judge each finding
+   against the code, file survivors with `--parent-task KN-564 --area web --okr OKR-1`, record the
+   round through `todo roast`, and relay it to the owner.
+2. **KN-565 is in progress**, medium, 1 point, web: the empty board's Empty State reads «هنوز
+   آگهی‌ای اضافه نکردی» over «اولین آگهی‌ات را با لینک یا متن آگهی اضافه کن...», from the ids
+   `You have not added a job posting yet` and the body id beginning `Add your first posting`,
+   against DESIGN.md section 3's terminology rule, which keeps «آگهی» for the external source alone. Exit: the title and the body say «فرصت شغلی» for the record in the English
+   ids and the Persian alike, «آگهی» kept only for the link or text pasted; nodes 243:64 and
+   305:1833 are read with use_figma and a file that says otherwise is recorded under KN-329; the
+   catalog tests pass.
 
 ## What to read first
 
-`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-564`,
-KN-560's plan and the mark it added, `App.stories.tsx`'s `SignedOutInAnotherTab` and
-`SignedInInAnotherTab`, and `JobsScreen.stories.tsx`'s `ChangedInAnotherTab`. **Never chain a check
-through a pipe into a commit or a close, write long scripts with the Write tool, keep apostrophes
-out of single-quoted strings in scripts, find a story's controls inside `#storybook-root`, and read
-an accessibility claim from the browser's own tree.** Keep a failing run's full output in a file
-before filtering it; give a `-t` filter a positive control, since a run that matches nothing exits 0
-with every test skipped; and **when a story changes, run the unit project too**, which is where the
-story guards live: KN-559 closed without it and left the literal guard red, KN-658.
+`AGENTS.md` (section 7), `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-565`,
+`apps/web/src/i18n/locales/fa-IR.ts` and `en-US.ts` for those two ids, wherever the board's Empty
+State takes its title and body, DESIGN.md section 3's terminology rule, and KN-329. **Never chain a
+check through a pipe into a commit or a close, write long scripts with the Write tool, keep
+apostrophes out of single-quoted strings in scripts, find a story's controls inside
+`#storybook-root`, and read an accessibility claim from the browser's own tree.** Keep a failing
+run's full output in a file before filtering it; give a `-t` filter a positive control, since a run
+that matches nothing exits 0 with every test skipped; **when a story changes, run the unit project
+too**, KN-658; and where a new import must go in an unsorted file, measure the spot with the drift
+tool rather than guessing, KN-564.
