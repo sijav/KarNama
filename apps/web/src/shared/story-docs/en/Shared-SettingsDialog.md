@@ -29,10 +29,10 @@ Add the fictional jobs and contacts while preserving existing records.
 ## Stories
 
 ### Preferences
-The language, appearance, and sample data controls. The Settings button owns visibility, so open is excluded from Controls. Choosing the other language, the dark appearance and sample data calls the callbacks shown in Actions; args control the selected values.
+The language, appearance, and sample data controls. The Settings button owns visibility, so open is excluded from Controls. Choosing the other language, the dark appearance and sample data calls the callbacks shown in Actions; args control the selected values. The status region under the sample data button is read before the press, empty, and again after it, holding the confirmation, since a region that arrives already holding its line is not announced.
 
 ### Loaded
-The confirmation after sample data is loaded.
+The confirmation after sample data is loaded, read from the status region that was already in the page before it, which is what makes it announced.
 
 ### PersianLight
 The dialog in Persian and light: the language dropdown shows Persian with its flag, and its list both languages, each with its own flag.

@@ -103,13 +103,31 @@ export const Preferences: Story = {
     await waitFor(() => expect(language).toHaveFocus())
     await userEvent.click(dialog.getByRole('radio', { name: i18n._('Dark') }))
     await expect(args.onColorSchemeChange).toHaveBeenCalledWith('dark')
+    // The status region is in the dialog BEFORE the press, and empty, KN-618: a
+    // region inserted already holding its line is not announced by every screen
+    // reader, only a change to a region already there is. That it HOLDS the line
+    // once loaded is proved by the Loaded story instead of here: updateArgs
+    // re-renders in a real Storybook, which is what KN-563 documented, but not
+    // under this runner, and no other story in this repository asserts a rendered
+    // consequence of it either.
+    await expect(dialog.getByRole('status').textContent).toBe('')
     await userEvent.click(dialog.getByRole('button', { name: i18n._('Load sample data') }))
     await expect(args.onLoadSamples).toHaveBeenCalledTimes(1)
     await userEvent.click(dialog.getByRole('button', { name: i18n._('Done') }))
   },
 }
 
-export const Loaded: Story = { args: { loaded: true } }
+// The other half of KN-618: Preferences proves the status region is in the page
+// and empty before the load, and this proves it holds the message once loaded.
+// Two stories rather than one transition because the transition runs through
+// updateArgs, which re-renders in a real Storybook and not under this runner.
+export const Loaded: Story = {
+  args: { loaded: true },
+  play: async ({ canvasElement, globals }) => {
+    const { i18n, dialog } = await openSettings(canvasElement, globals.locale)
+    await expect(dialog.getByRole('status')).toHaveTextContent(i18n._('Sample data loaded. Open your board or network to explore it.'))
+  },
+}
 
 // What each of the four combinations shows, KN-480: the field holds the current
 // language's flag and its own name, and the list both languages, each led by a

@@ -76,16 +76,29 @@ export const SettingsDialog = ({
             ))}
           </RadioGroup>
         </FormControl>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Box component="p" sx={{ m: 0, color: 'text.secondary' }}>
-            {i18n._(
-              'Add 30 fictional jobs and 6 contacts to test the app. Your existing records are kept; repeated loads do not add duplicates.',
-            )}
+        {/* The status region is ALWAYS in the page and empty until the load
+            finishes, KN-618: a region inserted already holding its line is not
+            announced by every screen reader, only a change to a region already
+            there is, which is why the Input keeps its alert mounted too, KN-287.
+            It sits outside the gapped group rather than in it, and carries its own
+            top spacing only when it has something to say: the group is a flex
+            column, so an empty third item there would open 8px under the button,
+            measured, and moving it out to the body would only trade that for the
+            body's 12. In block flow an empty region costs nothing. */}
+        <Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box component="p" sx={{ m: 0, color: 'text.secondary' }}>
+              {i18n._(
+                'Add 30 fictional jobs and 6 contacts to test the app. Your existing records are kept; repeated loads do not add duplicates.',
+              )}
+            </Box>
+            <Button variant="secondary" onClick={onLoadSamples}>
+              {i18n._('Load sample data')}
+            </Button>
           </Box>
-          <Button variant="secondary" onClick={onLoadSamples}>
-            {i18n._('Load sample data')}
-          </Button>
-          {loaded ? <Box role="status">{i18n._('Sample data loaded. Open your board or network to explore it.')}</Box> : null}
+          <Box role="status" sx={{ mt: loaded ? 2 : 0 }}>
+            {loaded ? i18n._('Sample data loaded. Open your board or network to explore it.') : null}
+          </Box>
         </Box>
       </Box>
     </Modal>
