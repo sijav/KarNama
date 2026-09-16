@@ -30,7 +30,7 @@ the owner to drop.
 KN-565, KN-589, KN-665, KN-667, KN-591, KN-601, KN-669, KN-670, KN-618, KN-675, KN-626, KN-678,
 KN-651, KN-679, KN-680, KN-666, KN-668, KN-672, **KN-306** (d8c9d9f), **KN-380** (17472be),
 **KN-685** (43898ec), **KN-690** (db6f4e6), **KN-691** (fb0e32b), **KN-695** (e29b86e),
-**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9, board 8b2b1ca). **Dropped**: KN-657, and **KN-663**
+**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb, board 56b0fe2). **Dropped**: KN-657, and **KN-663**
 (de6157c), filed on a false premise its own plan review caught.
 
 ## KN-697, the search in the address, and it is the one to read first
@@ -111,7 +111,10 @@ flattened KN-704 onto KN-698 by the one-level rule rather than hanging it off a 
 screen stories render bare — both true when written and both made untrue by that card's own change.
 
 **KN-016 waits on two**: KN-689, blocked on the owner, and KN-692. **KN-062 waits on five**: KN-686,
-KN-687, KN-688, KN-693, KN-694. **KN-695 waits on one**: KN-696, the contacts screen docs.
+KN-687, KN-688, KN-694, and **KN-705** from KN-693's roast — the verifier echoes its build environment
+at startup, `VITE_API_URL` included, so a value supplied through the environment that contains a
+sentinel prints before any check runs, which falsifies KN-693's own universal claim. **KN-695 waits on
+one**: **KN-696**, in progress, the contacts screen docs.
 
 **Also open**: KN-681, KN-682, KN-684, KN-673, KN-674, KN-676, KN-677; **KN-699**, the moving storybook
 failures; **KN-702**, `todo set` with no id crashing with a raw SQLite TypeError instead of usage.
