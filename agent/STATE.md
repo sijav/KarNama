@@ -195,6 +195,21 @@ render.
 live site. And the base differs between the app and Storybook, which is why `siteBase` resolves a
 relative one against the page, so a router's basename is given the same way rather than assumed.
 
+**What the EXISTING TESTS require, read rather than assumed**, after I had cited `addresses.spec.ts`
+three times without opening it:
+
+- **`/add` is a MODAL over the board, not a page.** A reload at `/add` still shows the dialog, Back
+  from it returns to `/network` with the dialog gone, and `App.tsx` line 85 passes
+  `current === 'add' ? 'jobs' : current` so the navigation keeps the board current beneath it.
+  **A router that makes `add` an ordinary route satisfies the address and breaks the design**, which
+  `DESIGN.md` states as job detail and adding never being pages of their own. This is the one to watch.
+- **`pathForHash` is proved END TO END**: `/#/network?from=shared` must land on `/network?from=shared`,
+  query kept. It survives; only where it lives is open.
+- **`siteBase` survives too**, with four unit cases, two of them Storybook's, including the preview
+  after the shell has pushed a page. `destinationIn('/iframe.html')` must fall back to the board.
+- **Every destination serves byte-identical `index.html`**, asserted against a Pages-like server, so
+  all routing is client-side over one document and nothing may depend on per-route markup.
+
 **KN-689's own plan says to replan from this point**, since it was written when no screen passed
 `onSearch` at all.
 
