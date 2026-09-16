@@ -194,7 +194,9 @@ export const AuthScreen = () => {
   }
 
   // The steps' own words where the file's promise nothing the product does not
-  // do: the text message the Login and Code lines would promise waits on KN-589.
+  // do: the Login body asks for the number, and the Code step names whose code is
+  // on the screen, so neither claims a message was sent, KN-589. The resend
+  // wording still presupposes one was, which is KN-664.
   const step = auth.signingUp ? (
     <>
       {/* The file's body says «برد آگهی‌هایت»; «آگهی» is only the external source,

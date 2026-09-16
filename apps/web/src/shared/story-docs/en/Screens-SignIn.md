@@ -26,8 +26,8 @@ The first step, and what a number that is not one says.
 
 ### Code
 
-The code step: where the code went, that nothing was really sent, and what a
-wrong code says.
+The code step: whose code is on the screen, that nothing was really sent, and
+what a wrong code says.
 
 ### Signup
 
