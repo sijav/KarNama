@@ -382,12 +382,14 @@ const cardIsTheFrames = async (
   const bodyStyle = getComputedStyle(bodyLine)
   await expect(px(bodyStyle.fontSize)).toBe(14)
   await expect(bodyStyle.color).toBe(borrowed(form, 'color', semantic['text/secondary']))
-  // How tall the body draws, and that it does not overflow its box. Everything
+  // How tall the body draws, and that it is no WIDER than its box. Everything
   // above reads the body's words, size and colour, and none of it notices a wrap,
   // so a longer translation would satisfy the copy while the card grew under it,
   // KN-589's third plan review. The caller says the height rather than this
   // demanding one line, because the signup step's Persian body is one line of 22
-  // at the desktop's 376 and two of 44 at the phone's 278, both measured.
+  // at the desktop's 376 and two of 44 at the phone's 278, both measured. The
+  // width is the only direction measured: text clipped downwards would pass both
+  // of these, KN-667.
   await expect(Math.round(bodyLine.getBoundingClientRect().height)).toBe(bodyHeight)
   await expect(bodyLine.scrollWidth).toBeLessThanOrEqual(Math.ceil(bodyLine.getBoundingClientRect().width))
 }
