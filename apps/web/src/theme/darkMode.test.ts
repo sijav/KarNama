@@ -153,9 +153,9 @@ describe('the derived palette is readable', () => {
   // palette's text and, in light, only the status chips, so the sign-in note sat
   // at 2.54 to one on the card and no test said a word about it, KN-591. The two
   // left out are left out deliberately: text/disabled, because WCAG exempts an
-  // inactive control's own label, though one informational use of it remains, the
-  // sidebar's Section Label, KN-666, so that omission is provisional rather than
-  // settled, KN-669; and text/on-accent, whose pairs are checked against the fills
+  // inactive control's own label, and since KN-666 no informational use of it is
+  // left — the sidebar's Section Label was the one, and it took text/secondary, so
+  // the omission is settled rather than provisional; and text/on-accent, whose pairs are checked against the fills
   // it sits on rather than against a surface it never touches — but in DARK only,
   // both the brand pair below and the Button list, with no LIGHT pair asserted
   // anywhere, KN-670. SAME_IN_BOTH says its value does not change between the

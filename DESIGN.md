@@ -769,8 +769,12 @@ its parts. From the top: the Brand Row, a 32 mark of radius md in
 `bg/brand/default` holding the name's first letter at 16 and SemiBold in
 `text/on-accent`, then «کارنما» at 20 and SemiBold; the User Row, a 32 avatar in
 `bg/brand/container`, the name at 14 and Medium over the phone at 12 in the
-reader's digits; a divider; a 16 spacer; «فضای کار» at 12 and Medium in
-`text/disabled`; the three destinations; the room the file leaves; the language
+reader's digits; a divider; a 16 spacer; «فضای کار» at 12 and Medium, which the
+file draws in `text/disabled`, 2.54 to one on the sidebar's `bg/surface`, under
+the 4.5 WCAG asks of text that size; it is information rather than an inactive
+control, and the accessibility decision of 2026-09-16 set that bar, so the build
+departs from the node and draws `text/secondary`, the existing token that meets
+it here at 4.83, KN-666; the three destinations; the room the file leaves; the language
 switch, settings and «خروج», the file's `log-out`, as one row of Icon Buttons,
 the shell's own controls, the owner's instruction of KN-478 over the file's
 «خروج» Nav Item, the first centred on the items' icon column. Before

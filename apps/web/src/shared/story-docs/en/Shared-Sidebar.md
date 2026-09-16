@@ -49,6 +49,11 @@ Before anyone signs in: no user and no signing out.
 The language switch at the foot turned to English; the sidebar follows and its
 edge moves to the right.
 
+### ReadableInDark
+
+The sidebar in dark, with the «فضای کار» label's contrast against the surface it
+sits on read from the screen rather than from the tokens.
+
 ### InEnglish
 
 The sidebar in English, down the left of the screen.

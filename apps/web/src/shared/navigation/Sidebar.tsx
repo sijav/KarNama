@@ -132,7 +132,9 @@ export const Sidebar = ({ current, userName, userPhone, onNavigate, onSignOut }:
         aria-labelledby={workspace}
         sx={{ display: 'flex', flexDirection: 'column', flexShrink: 0, gap: `${spacing.xs}px` }}
       >
-        {/* The Section Label, 406:454: «فضای کار» at 12 and Medium in text/disabled. */}
+        {/* The Section Label, 406:454: «فضای کار» at 12 and Medium. The file draws it in
+            text/disabled, 2.54 to one on this surface, under the 4.5 WCAG asks of text that size;
+            it is information rather than an inactive control, so it takes text/secondary, KN-666. */}
         <Box
           id={workspace}
           sx={(theme) => ({
@@ -141,7 +143,7 @@ export const Sidebar = ({ current, userName, userPhone, onNavigate, onSignOut }:
             fontSize: `${typeScale.label.size}px`,
             fontWeight: typeScale.label.weight,
             lineHeight: 'normal',
-            color: theme.karnama.semantic['text/disabled'],
+            color: theme.karnama.semantic['text/secondary'],
           })}
         >
           {i18n._('Workspace')}

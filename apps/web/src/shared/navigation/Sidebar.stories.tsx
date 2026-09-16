@@ -1,6 +1,7 @@
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
+import { MIN_CONTRAST, contrast } from '../../theme/darkMode'
 import { semantic } from '../../theme/tokens'
 import { formatPhone } from '../contact-card'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -52,6 +53,24 @@ const asideIn = (canvasElement: HTMLElement) => {
   if (!aside) throw new Error('no sidebar')
   return aside
 }
+
+// A computed rgb() colour as the hex the WCAG formula takes, as the Checkbox's stories read one:
+// three channels or it throws. Tooltip's version defaults each channel to zero, which here would
+// measure the label against black and pass whatever it is drawn in.
+const hexOf = (rgb: string) => {
+  const channels = rgb.match(/\d+/g)?.slice(0, 3) ?? []
+  if (channels.length !== 3) throw new Error(`not an rgb colour: ${rgb}`)
+  return `#${channels.map((channel) => Number(channel).toString(16).padStart(2, '0')).join('')}`
+}
+
+// The Section Label read where it is actually drawn, KN-666. The RENDERED colours rather than the
+// tokens, so a wrong surface is caught as well as a wrong token; the palette test owns the
+// token-level pairs and cannot see which surface a token is used on.
+const labelIsReadable = async (aside: HTMLElement) => {
+  const label = within(aside).getByText('فضای کار')
+  const ratio = contrast(hexOf(getComputedStyle(label).color), hexOf(getComputedStyle(aside).backgroundColor))
+  await expect(ratio).toBeGreaterThanOrEqual(MIN_CONTRAST)
+}
 export const Default: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
@@ -68,6 +87,9 @@ export const Default: Story = {
     await expect([px(style.paddingTop), px(style.paddingLeft)]).toEqual([24, 16])
     await expect([px(style.borderLeftWidth), px(style.borderRightWidth)]).toEqual([1, 0])
     await expect(style.borderLeftColor).toBe(computed(aside, semantic['border/default']))
+    // «فضای کار» is information, not an inactive control, so it takes the 4.5 the rest of the text
+    // takes, KN-666. ReadableInDark reads the same thing in the other scheme.
+    await labelIsReadable(aside)
     const sidebar = within(aside)
     await expect(sidebar.getByText('کارنما')).toBeInTheDocument()
     await expect(sidebar.getByText('ک')).toBeInTheDocument()
@@ -155,6 +177,21 @@ export const SwitchLanguage: Story = {
     await expect(document.documentElement).toHaveAttribute('dir', 'ltr')
     await expect(within(aside).getByRole('button', { name: 'My job opportunities' })).toBeInTheDocument()
     await expect([px(getComputedStyle(aside).borderLeftWidth), px(getComputedStyle(aside).borderRightWidth)]).toEqual([0, 1])
+  },
+}
+
+export const ReadableInDark: Story = {
+  // The file's only dark story. A story proves a rendered line only where it pins the global,
+  // KN-589, so the scheme is pinned here rather than threaded through a helper; the locale is
+  // pinned with it because the label is found by its Persian words.
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  // The scheme is the whole story, so no control applies.
+  parameters: { controls: { disable: true } },
+  play: async ({ canvasElement }) => {
+    // KN-666: the dark palette derives text/secondary through ensureContrast against the dark
+    // surface, while text/disabled gets no such guarantee, so this is the scheme where the old
+    // colour had nothing holding it up at all.
+    await labelIsReadable(asideIn(canvasElement))
   },
 }
 
