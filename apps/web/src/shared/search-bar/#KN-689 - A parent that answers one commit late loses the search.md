@@ -118,6 +118,74 @@ Two corrections to take into the build:
 And for the other branch, if the owner chooses provenance: the story uses the protocol and expects ONE
 search, because a parent that does not echo the token stays intentionally unattributable.
 
+## The replan, now that KN-695 has landed
+
+KN-695 closed at e29b86e, so the note above is answered: **both screens now pass `onSearch`.** The
+board's `cardsOf` and the contacts page's `shown` filter on an `appliedSearch` the bar hands over once
+typing pauses, and a clocked end-to-end spec proves the wait, failing 4 of 4 on the old wiring and
+passing 4 of 4 with it.
+
+**What that changes for this card, and what it does not.**
+
+- **The scenario is reachable at last.** Until KN-695 there was no caller at all, so a page answering a
+  keystroke late was a shape nothing in the product could even occupy. Now the callback is wired on
+  two real screens.
+- **But no reader meets the gap today, and the reason is unchanged.** Both screens pass **direct
+  `useState` setters**, `onChange={setTypedSearch}` and `onSearch={setAppliedSearch}`, so every echo
+  lands in the same commit as the reader's change. The argument above, that narrowing costs nothing
+  today, survives KN-695 with better evidence than it had: it is no longer "nothing calls this" but
+  "the two things that call it both answer immediately".
+- **The decision is still the owner's**, on the plan review's reading, because it changes a shared
+  component's public contract and the promise KN-016 carries. That has not moved.
+
+**How to put it to them, which is the part I got wrong.** The first attempt asked the owner to choose
+between "late controlled parents are unsupported" and "add provenance support", in those words, before
+explaining anything. They could not read it, and were right not to. The rule they gave in reply is now
+in `STATE.md` and `AGENTS.md`: explain what actually happens first, walking it the way a reader meets
+it, then the problem, then the suggestion, in short plain sentences with no jargon.
+
+And check before asking. Last time the question was about a case that could not happen, which one
+search would have shown. The equivalent check here: **before asking, confirm that no screen answers
+late**, so the question is honestly "should the bar support a page that does not exist yet", which is a
+different and much cheaper question than "is the bar broken".
+
+## Round two of the review, after the replan, and it corrects me
+
+**Still the owner's call.** KN-695 changed reachability, not ownership.
+
+**And my argument was partly wrong.** I wrote that both screens now pass `onSearch`, so the scenario is
+reachable. But `onSearch` is **not the controlled-value echo** this card is about: the value comes back
+through `onChange={setTypedSearch}`, in the event's normal React batch, and `onSearch` is deliberately
+later. So the right conclusion, that no reader meets the gap today, follows from the `onChange` setters
+being direct, exactly as it did before KN-695. Reaching a true conclusion by a wrong route is worth
+recording, because the route is what the next reader would reuse.
+
+**There is no third, decision-free path.** "Document the limit accurately" IS the narrow branch, and
+the exit requires that branch to be **decided and recorded**, not described as an accidental
+limitation. So this card cannot be finished by writing better prose.
+
+**A component STORY is the right proof, not an end-to-end spec.** It tests the bar's public
+controlled-parent contract, including a caller that does not exist, and inventing a delayed store in
+product code would not prove a real product path. KN-695's real-app coverage already proves the actual
+direct callers use the debounce. The story asserts the delayed field value BEFORE asserting no search,
+as planned.
+
+**A factual correction, which I asserted twice and got wrong: the "author proposal" precedent is in
+`DESIGN.md` SECTION 6, not section 3.** And where the record goes depends on the answer: if the owner
+chooses narrowing, it goes in section 3 as an **owner-approved** runtime contract, because the exit
+requires `DESIGN.md`; while no answer has been given it belongs in **section 6 as a proposal only**,
+and the card cannot close.
+
+**Name the control mutation concretely.** "Implement provenance by hand" is too vague and can fail the
+typecheck before the story ever runs, which is precisely what cost KN-695 a whole control run. The
+mutation must be a compiling behavioural change that makes the delayed echo search, run the story
+against it, then restore byte for byte. The harness keeps `pending !== null` so a delayed empty clear
+stays representable.
+
+**Once narrowing is chosen**, the smallest correct work is the delayed-parent story, both
+documentation translations, and the approved `DESIGN.md` record. **No `SearchBar.tsx` change and no
+extra end-to-end test.**
+
 ## The story, and the trap it has to avoid
 
 A story drives a page that echoes one commit late: it holds the value in state, takes `onChange` into
