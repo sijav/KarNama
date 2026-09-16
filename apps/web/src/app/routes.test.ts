@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { DESTINATION_IDS, DESTINATIONS } from '../shared/navigation'
-import { pathForHash, siteBase } from './routes'
+import { pathForHash, searchStep, siteBase } from './routes'
 
 /**
  * What is left of `routes.ts` once react-router owns the addresses, KN-698.
@@ -34,5 +34,28 @@ describe('the address and the destination', () => {
 
   it('knows the pages the navigation draws, so the build writes one for each', () => {
     expect(DESTINATIONS.map((destination) => destination.id)).toEqual([...DESTINATION_IDS])
+  })
+})
+
+/**
+ * What a settled search does to the address, KN-697. Proved here rather than in a
+ * story because the decision is only reachable through the Search Bar's 300 ms
+ * pause, which no story can time reliably; as a function every case is exact.
+ */
+describe('the step a settled search makes in the address', () => {
+  const stepFor = (held: string, search: string, text: string) => {
+    const made = searchStep(new URLSearchParams(held), search, text)
+    return [made.params.toString(), made.replace]
+  }
+
+  it.each([
+    ['', '', 'ab', 'q=ab', false, 'starting a search is a step, so Back returns the page unsearched'],
+    ['q=ab', 'ab', 'abc', 'q=abc', true, 'refining one is not, or a word would leave an entry for every pause'],
+    ['q=abc', 'abc', '', '', false, 'ending one is a step again, so Back undoes the clear'],
+    ['', '', '', '', true, 'and a settled value that changes nothing writes the same address, adding no entry'],
+    ['q=ab', 'ab', 'ab', 'q=ab', true, 'which is the same when a search is already running'],
+    ['from=a', '', 'ab', 'from=a&q=ab', false, 'and whatever else the address carries is kept'],
+  ])('%j searching %j, settling on %j, writes %j, replacing %j: %s', (held, search, text, written, replaced) => {
+    expect(stepFor(held, search, text)).toEqual([written, replaced])
   })
 })

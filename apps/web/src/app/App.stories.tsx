@@ -206,6 +206,19 @@ export const Navigating: Story = {
       await userEvent.click(canvas.getByRole('button', { name: 'شبکه من' }))
       await expect(window.history.length).toBe(entries)
 
+      // Pressing the add destination opens the flow over the board and writes its
+      // address. This is the shell's OWN path into it, where the block below is an
+      // address arriving from somewhere else; the shell carries whatever the board
+      // is searching into it and back out again, KN-697.
+      await userEvent.click(canvas.getByRole('button', { name: 'افزودن فرصت شغلی' }))
+      const pressed = await body.findByRole('dialog')
+      await expect(window.location.pathname).toBe(`${base}add`)
+      await userEvent.click(within(pressed).getByRole('button', { name: 'انصراف' }))
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog')).toBeNull()
+      })
+      await expect(window.location.pathname).toBe(`${base}jobs`)
+
       // And an address the history moves to by anything else is read back into
       // the page: the add destination opens the add flow over the board, and
       // closing it puts the address back on the board rather than leaving it

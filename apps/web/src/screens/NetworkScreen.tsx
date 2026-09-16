@@ -1,6 +1,8 @@
 import { useLingui } from '@lingui/react'
 import { Box, Stack, useMediaQuery, type Theme } from '@mui/material'
 import { useLayoutEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router'
+import { QUERY, searchStep } from '../app/routes'
 import { usePreferences } from '../core/preferences'
 import { contactMatches, useRecords, type ContactEntry } from '../core/records'
 import { formatCount } from '../i18n/formatCount'
@@ -71,9 +73,26 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
   const grid = useRef<HTMLDivElement | null>(null)
 
   // Two values, KN-695, as the board keeps them: what the FIELD shows, following
-  // every key, and what the page FILTERS BY, handed over once typing pauses.
-  const [typedSearch, setTypedSearch] = useState('')
-  const [appliedSearch, setAppliedSearch] = useState('')
+  // every key, and what the page FILTERS BY, handed over once typing pauses. What
+  // it filters by is THE ADDRESS, KN-697, exactly as the board reads it, so a
+  // searched page can be shared, bookmarked and survive a reload.
+  const [params, setParams] = useSearchParams()
+  const search = params.get(QUERY) ?? ''
+  const [typedSearch, setTypedSearch] = useState(search)
+  // The field follows the address when anything else moves it, adjusted during
+  // render for the reasons the board's copy of this gives.
+  const [shownFor, setShownFor] = useState(search)
+  if (search !== shownFor) {
+    setShownFor(search)
+    setTypedSearch(search)
+  }
+
+  // The same step the board makes, KN-697, and made in the same place so the two
+  // pages cannot drift apart about what a search does to the address.
+  const searchFor = (text: string) => {
+    const step = searchStep(params, search, text)
+    setParams(step.params, { replace: step.replace })
+  }
   const wide = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
   const [selected, setSelected] = useState<readonly string[]>([])
   // Who is being written: an id when one is being edited, null for a new one,
@@ -81,7 +100,7 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
   const [editing, setEditing] = useState<{ id: string | null; values: ContactModalValues } | undefined>(undefined)
   const [deleting, setDeleting] = useState<readonly string[] | null>(null)
 
-  const shown = records.contacts.filter((held) => contactMatches(held, appliedSearch))
+  const shown = records.contacts.filter((held) => contactMatches(held, search))
   // Only the people the search shows are counted or deleted by the bar: one the
   // search hides stays chosen, and counts again once the search shows them,
   // KN-532, as the board's held does since KN-431.
@@ -179,7 +198,7 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
           <SearchBar
             value={typedSearch}
             onChange={setTypedSearch}
-            onSearch={setAppliedSearch}
+            onSearch={searchFor}
             layout={wide ? DESKTOP : MOBILE}
             label={i18n._('Search contacts')}
             placeholder={i18n._('Search in name, role or company')}

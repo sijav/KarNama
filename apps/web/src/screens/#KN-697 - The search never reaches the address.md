@@ -220,7 +220,27 @@ mutable.
 **clearing pushes** is right, `useSearchParams` takes a copied `URLSearchParams` and its setter takes `NavigateOptions`,
 `MemoryRouter` suits the bare stories, and the render-time sync stands. In its words, that part "is not overbuilt".
 
-## 11. What is still open
+## 11. What changed during the build, and why
+
+**The step became a function, `searchStep` in `routes.ts`, rather than living in each screen.** Two reasons, and the second
+is the one that forced it. Both screens had byte-identical copies. And the guard for a settled search that changes nothing
+— type a letter, delete it before the pause — is reachable only through the 300 ms pause, which no story can time
+reliably, so as a branch inside a screen it would have been covered by luck or not at all. Measured rather than feared:
+that branch showed up uncovered at `JobsScreen.tsx:120` and `NetworkScreen.tsx:93`. As a function every case is exact and
+`routes.test.ts` proves six with no clock. The no-change case now REPLACES with the same address instead of returning
+early, which adds no history entry either way and leaves the screens with no branch of their own.
+
+**`App.stories.tsx`'s `Navigating` now presses the add destination.** It had only ever opened the flow by pushing history,
+so the shell's own path in, `onNavigate` with `add`, was never taken in a story: `App.tsx:123` sat uncovered while the
+e2e proved the behaviour, because **e2e does not feed source coverage**. Section 9 predicted this and it happened exactly
+there.
+
+**Coverage after both changes**: `routes.ts` has no uncovered lines or branches at all; `App.tsx` is down to 79 and 146,
+which are KN-698's hand-split (KN-700) and the pre-existing error branch; and both screens' remaining uncovered branches
+are the old set renumbered by the lines the refactor removed, five in the board and three in the contacts page, with
+`JobsScreen.tsx:88` being the `columns[0]?.id ?? ''` whose own comment cites KN-427.
+
+## 12. What is still open
 
 **Nothing is open.** Both rounds are judged and folded in; the one question I carried into round two, whether clearing
 pushes, came back confirmed. **No third round**: round two named two options for the add flow and this takes the first

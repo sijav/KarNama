@@ -3,7 +3,7 @@ import { readFile, stat } from 'node:fs/promises'
 import { createServer, type Server } from 'node:http'
 import { extname, join, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { signedIn } from './session'
+import { prepareBoard, signedIn } from './session'
 
 /**
  * The addresses are paths, KN-505: a page has its own, it survives a reload, Back
@@ -92,6 +92,79 @@ test('each destination the navigation opens writes its path and no hash', async 
     await expect.poll(address).toEqual([path, ''])
   }
   await expect(page.getByRole('dialog')).toBeVisible()
+})
+
+/**
+ * The search is in the address too, KN-697, so a searched board can be shared,
+ * bookmarked and reloaded. The clocked half of this, that the address moves only
+ * once typing pauses, is `search-waits.spec.ts`, which owns held time; what is
+ * here is everything reachable by navigating.
+ */
+const QUERY = 'q'
+const FIRST = 'توسعه‌دهنده فرانت‌اند'
+const SECOND = 'مدیر محصول'
+const CANCEL = 'انصراف'
+const cardFor = (page: Page, title: string) => page.getByRole('article').filter({ hasText: title })
+
+test('a searched board opens from its address, with the field filled and the cards it names', async ({ page }) => {
+  await prepareBoard(page, [FIRST, SECOND])
+  await page.goto(`/jobs?${QUERY}=${encodeURIComponent(SECOND)}`)
+
+  await expect(page.getByRole('searchbox')).toHaveValue(SECOND)
+  await expect(cardFor(page, FIRST)).toHaveCount(0)
+  await expect(cardFor(page, SECOND)).toBeVisible()
+
+  // And it survives a reload, which is the whole point of its being an address.
+  await page.reload()
+  await expect(page.getByRole('searchbox')).toHaveValue(SECOND)
+  await expect(cardFor(page, FIRST)).toHaveCount(0)
+})
+
+test('a search adds ONE history entry however long it is refined, and Back leaves the board unsearched', async ({ page }) => {
+  await prepareBoard(page, [FIRST, SECOND])
+  // The DELTA, not an absolute length: the suite has navigated before this runs.
+  const depth = () => page.evaluate(() => window.history.length)
+  const before = await depth()
+
+  // Starting a search is a step, so Back can return to the board without it.
+  await page.getByRole('searchbox').pressSequentially(SECOND)
+  await expect(cardFor(page, FIRST)).toHaveCount(0)
+  expect(await depth()).toBe(before + 1)
+
+  // Refining it is NOT a step. Without the replace, one search would leave an
+  // entry for every pause and Back would walk the reader through their own typing.
+  await page.getByRole('searchbox').pressSequentially('ی')
+  await expect(cardFor(page, SECOND)).toHaveCount(0)
+  expect(await depth()).toBe(before + 1)
+
+  await page.goBack()
+  await expect(page).toHaveURL(/\/jobs$/)
+  await expect(page.getByRole('searchbox')).toHaveValue('')
+  await expect(cardFor(page, FIRST)).toBeVisible()
+  await expect(cardFor(page, SECOND)).toBeVisible()
+})
+
+test('the add flow keeps the search the board is showing, and another page drops it', async ({ page }) => {
+  await prepareBoard(page, [FIRST, SECOND])
+  const searched = `/jobs?${QUERY}=${encodeURIComponent(SECOND)}`
+  await page.goto(searched)
+  await expect(cardFor(page, FIRST)).toHaveCount(0)
+
+  // The add flow is a MODAL over the board, DESIGN.md line 791, and the board is
+  // visible behind it, so it carries the search: cancelling must not land the
+  // reader on a board they never searched.
+  await navigation(page).getByRole('button', { name: ADD, exact: true }).click()
+  await expect(page).toHaveURL(new RegExp(`/add\\?${QUERY}=`))
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await page.getByRole('dialog').getByRole('button', { name: CANCEL }).click()
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await expect(page).toHaveURL(new RegExp(`/jobs\\?${QUERY}=`))
+  await expect(cardFor(page, FIRST)).toHaveCount(0)
+
+  // Another destination is another page, and it leaves the search behind.
+  await page.goto(searched)
+  await navigation(page).getByRole('button', { name: NETWORK, exact: true }).click()
+  await expect(page).toHaveURL(/\/network$/)
 })
 
 // The build the e2e server serves, which its command made before the suite ran.

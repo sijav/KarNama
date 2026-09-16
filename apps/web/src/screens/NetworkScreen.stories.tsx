@@ -1,4 +1,5 @@
 import type { StoryObj } from '@storybook/react-vite'
+import { MemoryRouter } from 'react-router'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { formatCount } from '../i18n/formatCount'
 import { defaultStatuses, jobFrom, RecordsProvider, type Records } from '../core/records'
@@ -41,7 +42,12 @@ const meta = {
   decorators: [
     (Story, context) => (
       <RecordsProvider initial={seeded(context.parameters.contacts !== false)}>
-        <Story />
+        {/* The page reads its search from the address, KN-697, and a router hook throws
+            outside a router. On this meta rather than the global decorator, because
+            App.stories renders <App />, which builds its own BrowserRouter. */}
+        <MemoryRouter>
+          <Story />
+        </MemoryRouter>
       </RecordsProvider>
     ),
   ],

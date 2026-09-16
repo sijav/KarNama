@@ -26,6 +26,51 @@ import { DESTINATION_IDS, type Destination } from '../shared/navigation'
  */
 export const PATH: { [D in Destination]: `/${D}` } = { jobs: '/jobs', add: '/add', network: '/network' }
 
+/**
+ * The name the search goes under in the address, `/jobs?q=…`, KN-697.
+ *
+ * Typed rather than written as a bare literal for the same reason `PATH` is: an
+ * address token is not copy, and a literal typed as a union of string literals is
+ * what `useTsTypes` skips.
+ *
+ * **The screens import this, which is the first thing in `src/screens` to import
+ * from `src/app`.** No rule forbids it and it makes no module cycle — this file
+ * imports `shared/navigation` and nothing else — and the screens already read the
+ * address through the router, so one token from the module that owns addresses
+ * adds no coupling that was not already there. The alternative was a copy in each
+ * screen, which is two places to disagree about one name.
+ */
+type QueryName = 'q'
+
+export const QUERY: QueryName = 'q'
+
+/**
+ * The step a settled search makes in the address, KN-697: the parameters to write
+ * and whether writing them should REPLACE the current entry or add one.
+ *
+ * A step for starting a search and a step for ending one, replacement for every
+ * refinement in between. Replacing everywhere would leave no entry for the
+ * unsearched page, so Back would leave the page rather than return to it; pushing
+ * everywhere would add a step for every pause while a word is typed.
+ *
+ * **A settled value that changes nothing replaces too.** The bar hands over the
+ * text after the pause, and typing a letter then deleting it before the pause
+ * settles arrives here with the search it already had; writing the same address
+ * again over the current entry adds nothing, where pushing it would leave a
+ * duplicate entry and Back would appear to do nothing.
+ *
+ * Here rather than in each screen for two reasons: the board and the contacts page
+ * had byte-identical copies of it, and a decision made in a screen can only be
+ * reached through a 300 ms pause, which no story can time reliably. As a function
+ * it is proved by `routes.test.ts` with no clock at all.
+ */
+export const searchStep = (params: URLSearchParams, search: string, text: string): { params: URLSearchParams; replace: boolean } => {
+  const next = new URLSearchParams(params)
+  if (text === '') next.delete(QUERY)
+  else next.set(QUERY, text)
+  return { params: next, replace: text === search || (search !== '' && text !== '') }
+}
+
 const isDestination = (value: string): value is Destination => DESTINATION_IDS.some((id) => id === value)
 
 /**

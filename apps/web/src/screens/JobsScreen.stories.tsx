@@ -1,4 +1,5 @@
 import type { Decorator, StoryObj } from '@storybook/react-vite'
+import { MemoryRouter } from 'react-router'
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, isLocale } from '../i18n'
 import { formatCount } from '../i18n/formatCount'
@@ -60,7 +61,15 @@ const meta = {
       // play has started.
       <ListeningAround mark={BOARD_LISTENING}>
         <RecordsProvider initial={context.parameters.seeded === false ? { statuses: seeded().statuses, jobs: [], contacts: [] } : seeded()}>
-          <Story />
+          {/* The screen reads its search from the address, KN-697, and a router hook
+              throws outside a router: "may be used only in the context of a <Router>
+              component". MemoryRouter is react-router's own answer for a routed
+              component rendered outside a browser. It is on this meta rather than the
+              global decorator because App.stories renders <App />, which builds its own
+              BrowserRouter, and a router refuses to nest inside a router. */}
+          <MemoryRouter>
+            <Story />
+          </MemoryRouter>
         </RecordsProvider>
       </ListeningAround>
     ),

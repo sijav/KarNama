@@ -74,7 +74,7 @@ const Shell = () => {
   const { session, signingUp, signOut, error } = useAuth()
   const { i18n } = useLingui()
   // The address is the router's, and the basename is already off the front of it.
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const navigate = useNavigate()
   const asked = pathname.replace(/^\//, '').split('/')[0] ?? ''
   const current: Destination = asked === 'add' || asked === 'network' ? asked : 'jobs'
@@ -92,7 +92,11 @@ const Shell = () => {
       onExtract={extractJob}
       addOpen={addOpen}
       onAddClose={() => {
-        void navigate(PATH.jobs)
+        // Back to the board with the search it had, KN-697. This still PUSHES:
+        // the close's own history is KN-579's, and replacing here would trade one
+        // defect for another, leaving two identical board entries so that Back
+        // appears to do nothing.
+        void navigate(`${PATH.jobs}${search}`)
       }}
     />
   )
@@ -112,7 +116,12 @@ const Shell = () => {
         // current destination, so a mistyped address still gets fixed by
         // pressing the page it is nearest, as it did before.
         onNavigate={(destination) => {
-          if (pathname !== PATH[destination]) void navigate(PATH[destination])
+          // The add flow is a MODAL over the board, DESIGN.md line 791, so it
+          // keeps the search the board is showing, KN-697: a reader who searches,
+          // opens it and cancels must not land on a board they never searched.
+          // Every other destination is a different page and drops the query.
+          const to = destination === 'add' ? `${PATH.add}${search}` : PATH[destination]
+          if (pathname !== PATH[destination]) void navigate(to)
         }}
         userName={session.name}
         userPhone={session.phone}
