@@ -13,6 +13,12 @@ Project **KarNama** · 314 of 670 tasks done · 651 of 1291 points.
 | 1 | OKR-1 | MVP: the pages | now | 213 | 236 |
 | 2 | OKR-2 | Everything after the MVP | later | 134 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-618` | Settings' sample data message may go unread, since its status region mounts already holding it | medium | 1 | web | none | The Settings dialog's status region is in the page, empty, before the samples load, and the loaded message is written into it after, shown by a story that reads it empty before the press and holding the message after. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 314 of 670 tasks done · 651 of 1291 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (338)
+## Backlog (337)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -83,7 +89,6 @@ Project **KarNama** · 314 of 670 tasks done · 651 of 1291 points.
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
 | `KN-590` | The sign-in note names terms and a privacy policy KarNama does not have | medium | 1 | design | KN-630 | The owner has chosen what the sign-in note says and what it links to, DESIGN.md records it, and the Login step shows it in both languages. |
-| `KN-618` | Settings' sample data message may go unread, since its status region mounts already holding it | medium | 1 | web | none | The Settings dialog's status region is in the page, empty, before the samples load, and the loaded message is written into it after, shown by a story that reads it empty before the press and holding the message after. |
 | `KN-626` | A PanelModal given a blank title has no accessible name | medium | 1 | web | none | A blank title given to PanelModal is reported at the console as the product's own diagnostic and PanelModal renders nothing, and a story shows both. |
 | `KN-651` | The network e2e test selects two people on a phone by hover, which a phone does not have, and times out | medium | 1 | web | none | The test chooses the two people as a phone does in the mobile project, a held press on the first card and a tap on the second, and still hovers and checks on the desktop, and it passes in both projects. |
 | `KN-663` | The catalog test never compares an English message with its id, so a renamed id leaves the old English copy on the screen | medium | 1 | web | none | catalog.test.ts fails when an English message differs from its id, shown by a mutation that changes one message and makes that case fail, and the whole unit project passes on the tree as it stands. |
@@ -10902,7 +10907,7 @@ AGENTS.md section 3 says the Persian lives in src/locales/fa-IR/messages.po, and
 
 ### `KN-618` Settings' sample data message may go unread, since its status region mounts already holding it
 
-- **status** backlog · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-477
 
