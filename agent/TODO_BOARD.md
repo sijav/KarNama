@@ -4,20 +4,14 @@
 
 Project **KarNama** · 321 of 680 tasks done · 658 of 1302 points.
 
-**Next up: `KN-663` The catalog test never compares an English message with its id, so a renamed id leaves the old English copy on the screen** (medium, 1 pt, web)
+**Next up: `KN-666` The sidebar's «فضای کار» section label is 12 pixel text in text/disabled, 2.54 to one, as the sign-in note was** (medium, 1 pt, design)
 
 ## Objectives
 
 | position | id | name | state | open | done |
 | -- | -- | ---- | ----- | ---- | ---- |
-| 1 | OKR-1 | MVP: the pages | now | 216 | 243 |
+| 1 | OKR-1 | MVP: the pages | now | 215 | 243 |
 | 2 | OKR-2 | Everything after the MVP | later | 134 | 78 |
-
-## In progress (1)
-
-| id | title | sev | pt | area | blocked by | exit condition |
-| -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-663` | The catalog test never compares an English message with its id, so a renamed id leaves the old English copy on the screen | medium | 1 | web | none | catalog.test.ts fails when an English message differs from its id, shown by a mutation that changes one message and makes that case fail, and the whole unit project passes on the tree as it stands. |
 
 ## Blocked (9)
 
@@ -704,7 +698,7 @@ Project **KarNama** · 321 of 680 tasks done · 658 of 1302 points.
 | `KN-680` | The AGENTS entry on the story-docs guard overstates the callback check it had just described | low | 1 | web | none | The AGENTS entry qualifies the callback check to the callbacks the guard can statically read, naming the args spread, the call or member expression and the replacing render as outside it, and no other claim in that entry outruns what guard.test.ts does. |
 | `KN-184` | The order check reads the whole document, not the fenced block it claims to | low | 2 | agent | none | The check extracts the fenced code block belonging to the close-and-roast step and compares the order of the commands WITHIN it, so a document carrying an earlier correctly-ordered example and a reversed real block is reported rather than passed. |
 
-## Dropped (9)
+## Dropped (10)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -713,6 +707,7 @@ Project **KarNama** · 321 of 680 tasks done · 658 of 1302 points.
 | `KN-387` | The Page Header's language switch draws as MUI's default button, in capitals, where the sidebar's is the product's text | medium | 1 | web | none | In the Page Header the switch draws its language's name as the product's text control does, in the body or label role, no capitals, in a colour from the tokens, read against the Page Header's other actions in Figma, and a story measures it at 390 in both languages. |
 | `KN-474` | The focus stories accept any descendant, so a regression to the page root would pass | medium | 1 | web | none | Both stories name the control they expect to have focus. |
 | `KN-631` | The Input docs say the line under the field always keeps its height, which KN-287 reversed | medium | 1 | web | none | Both Input story docs describe the line as the component draws it, taking no room without a message and added when a helper or an error appears, and name the owner decision of KN-287. |
+| `KN-663` | The catalog test never compares an English message with its id, so a renamed id leaves the old English copy on the screen | medium | 1 | web | none | catalog.test.ts fails when an English message differs from its id, shown by a mutation that changes one message and makes that case fail, and the whole unit project passes on the tree as it stands. |
 | `KN-084` | Make the AGENTS.md section 5 gate runnable before any workspace exists | low | 1 | infra | KN-001 | npm run lint, npm run lint:tsc, npm test and npm run build each exit zero and say what they did on a clean checkout with no workspace directories, and each still fails honestly once apps/web exists and contains a failing check. |
 | `KN-176` | KN-162 closed against an exit condition it deliberately did not meet | low | 1 | agent | none | KN-162's exit condition records the decision that done is terminal for every status including dropped, with the reasoning; a check refuses any OPEN card whose exit condition contains a hedge of that shape, if decided, if appropriate, or similar, so the next one cannot be written; and the check is proved by a card that currently passes and must then fail. |
 | `KN-379` | BlankName reads the console before the Icon Button's report effect is sure to have run outside the test runner | low | 1 | web | none | BlankName waits for the report with waitFor before asserting it, and passes in the published Storybook's interaction panel as well as under Vitest. |
@@ -11487,10 +11482,10 @@ Found on 2026-09-16 while building KN-565, reading both nodes with use_figma rat
 
 ### `KN-663` The catalog test never compares an English message with its id, so a renamed id leaves the old English copy on the screen
 
-- **status** in_progress · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
+- **status** dropped · **severity** medium · **points** 1 · **area** web · **objective** OKR-1
 - **blocked by** none
 
-Found on 2026-09-16 while building KN-565, by reading the diff rather than by any test. apps/web/src/i18n/locales/en-US.ts maps every id to itself: 239 entries matched and not one message differs from its key. apps/web/src/i18n/catalog.test.ts asks that every used id is in both catalogs, that English carries no id nothing uses, that both catalogs hold the same keys, and that no PERSIAN message is blank or equal to its id after casefolding. Nothing looks at an English message's value. So renaming an id and leaving its English message behind passes every one of the 484 cases: that is exactly what KN-565's first attempt did, mapping 'You have not added a job opportunity yet' to the sentence 'You have not added a job posting yet', and the suite stayed green.
+FILED ON A FALSE PREMISE, and dropped on 2026-09-16 before anything was built. The premise was «nothing looks at an English message's value». It is false: apps/web/src/i18n/i18n.test.ts line 7, «uses English sentences as ids, so the English catalog is an identity map», loops Object.entries(en) and asserts expect(message).toBe(id) for every entry. It entered in e3150cc, KN-003, on 2026-09-08 — eight days BEFORE this card was filed — and it runs in the unit project, 1 file and 10 cases passing. The card's account of KN-565 was wrong for the same reason: the bad mapping did not pass «every one of the 484 cases» with «the suite stayed green». 484 is catalog.test.ts's own count; that file was run alone, and a full unit run would have failed on i18n.test.ts. The note below, from KN-589's roast, repeats the same false claim and is wrong with it. ORIGINAL TEXT, kept for the record: Found on 2026-09-16 while building KN-565, by reading the diff rather than by any test. apps/web/src/i18n/locales/en-US.ts maps every id to itself: 239 entries matched and not one message differs from its key. apps/web/src/i18n/catalog.test.ts asks that every used id is in both catalogs, that English carries no id nothing uses, that both catalogs hold the same keys, and that no PERSIAN message is blank or equal to its id after casefolding. Nothing looks at an English message's value.
 
 **Why.** The English catalog IS the copy an English reader sees, and a rename done by hand is the likeliest way for it to go wrong, so the one operation most in need of a check is the one nothing checks. A silently wrong string in the reader's own language is worse than a loudly missing one, because nothing ever reports it.
 
@@ -11738,4 +11733,8 @@ KN-679's roast, 2026-09-16, and true against the file: AGENTS.md section 7 now s
 **Exit condition.** The AGENTS entry qualifies the callback check to the callbacks the guard can statically read, naming the args spread, the call or member expression and the replacing render as outside it, and no other claim in that entry outruns what guard.test.ts does.
 
 **Evidence.** Work 3e5c29e. Two sentences in the AGENTS entry on the story-docs guard now say what the guard can and cannot do. The callback check is qualified to the callbacks the parser can statically read, naming the three the file itself names: guard.test.ts's comment above callbackProblems says "Callbacks inside a spread, or in args written as one call or member, are out of the parser's reach, and so is a render that replaces one", and the entry now carries the same three exclusions. The proof here is the file, not a test: nothing in this repository checks AGENTS.md prose, which is exactly the limit KN-679 recorded about the docs guard, so the honest proof of a prose repair is the source it describes, read and quoted. Reading the entry again against that source turned up a second overclaim the roast had not named, and the card's exit covers it: the prop check was stated as matching react-docgen in both directions with no mention that it runs only for a story whose meta names a plain-identifier component, a meta with no component being skipped as legitimate while an unreadable one FAILS rather than skipping — a distinction guard.test.ts keeps on purpose, its comment recording that skipping it once "fails OPEN" and rewarded being hard to understand. Both are now qualified. The remaining items in the entry were checked against the twelve it(...) cases read in full earlier and correspond to them. Drift 0 on AGENTS.md. Commit 7bc88a7's message keeps the original sentence and cannot be changed; this card is the record of where the claim was made, the same handling KN-627 has for KN-626.
+
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260916T131924-task-kn-680-the-agents-entry-on-the-story-docs-guard--9505f6.md, filed none, dismissed: A clean round: approved, nothing survived to file. It checked the revised entry against guard.test.ts itself and confirmed each qualification — that the prop comparison runs only for a plain-identifier meta component, that a meta with no component skips legitimately while a present non-identifier one fails, and that the callback wording now limits the claim to statically readable values and names the three blind spots the file documents: args spreads, args written as calls or member expressions, and props a render replaces. It confirmed the file holds the stated twelve structural tests and that none evaluates the semantic truth of documentation prose, and it judged the prose neither repetitive nor prematurely abstracted, the qualifications needing to sit beside the claims they limit. It found no false claim in either the entry or the commit message.
 
