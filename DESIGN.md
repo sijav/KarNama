@@ -1620,8 +1620,9 @@ inside; and its own shadow, `elevation.authCard`. It opens with the sidebar's Br
 Row, the one component both draw, then the step's heading: the title at 24 and
 SemiBold on the font's normal line, which is the file's 38, bound to no text style,
 with the body 8 under it in Body, `text/secondary`. Login ends with a note at 12 and
-Regular on the normal line, centred, in `text/disabled`, 2.54 to one on the card,
-which is the owner's to settle, KN-591. KN-518.
+Regular on the normal line, centred. The file draws it in `text/disabled`, 2.54 to one
+on the card, under the 4.5 WCAG asks of text that size; **the owner decided on
+2026-09-16 to raise it**, so the build draws `text/secondary`, 4.83, KN-591. KN-518.
 
 **Under the code step's action**, `407:6972` and `407:7043` draw two lines, 24
 apart, each the card's inner width and 22 tall. The Resend Timer, `407:6996`,
@@ -1632,8 +1633,10 @@ build's reading is the same line as a Footer Link, «ارسال دوباره‌�
 code and starts the count again. The Footer Link `407:6998`, in the Change Number
 frame `407:6997`, «ویرایش شماره», 14 Medium, centred, `text/brand` and pressed across
 the card's width, goes back to the number step with the number kept, as its
-reaction goes back to Login, and puts the reader in the number field. The timer's
-`text/disabled` is 2.54 to one, as the Terms Note's is, KN-591. KN-587.
+reaction goes back to Login, and puts the reader in the number field. The file draws
+the timer in `text/disabled`, 2.54 to one, as it draws the Terms Note; the owner's
+decision of 2026-09-16 raises both, so the build draws `text/secondary`, KN-591.
+KN-587.
 
 **The Code Row**, `407:6981` and `407:7052`, is the Code Input, KN-586, which the
 Components page does not hold: five boxes filling the card's inner width 8 apart,

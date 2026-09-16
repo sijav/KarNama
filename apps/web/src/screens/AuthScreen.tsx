@@ -89,8 +89,10 @@ const FooterLink = ({ children, disabled, onClick }: { children: string; disable
 )
 
 // Node 407:6996's Resend Timer: the words and, beside them rather than inside,
-// KN-221, the time left in the reader's digits, at 14 Regular on 22, centred, in
-// text/disabled. When no time is left the same line is a Footer Link that asks for
+// KN-221, the time left in the reader's digits, at 14 Regular on 22, centred. The
+// file draws it in text/disabled, 2.54 to one; the owner's decision of 2026-09-16
+// raises it, so this is text/secondary, 4.83, KN-591. When no time is left the
+// same line is a Footer Link that asks for
 // another code, which the file does not draw, KN-587. The screen keys it by
 // retryAt, so every send starts the count again.
 const Resend = ({ retryAt, busy, onResend }: { retryAt: number; busy: boolean; onResend: () => void }) => {
@@ -121,7 +123,7 @@ const Resend = ({ retryAt, busy, onResend }: { retryAt: number; busy: boolean; o
         lineHeight: `${typeScale.body.lineHeight}px`,
         fontWeight: typeScale.body.weight,
         textAlign: 'center',
-        color: theme.karnama.semantic['text/disabled'],
+        color: theme.karnama.semantic['text/secondary'],
       })}
     >
       {`${i18n._('Send the code again in')} ${formatClock(locale, left)}`}
@@ -349,8 +351,10 @@ export const AuthScreen = () => {
           </Box>
         ) : null}
         {/* The Terms Note, 407:6971, on the number's step alone as the file draws
-            it: 12 at Regular on the font's normal line, centred, in text/disabled,
-            2.54 to one on the card, KN-591. Its words are the product's own until
+            it: 12 at Regular on the font's normal line, centred. The file draws it
+            in text/disabled, 2.54 to one on the card; the owner's decision of
+            2026-09-16 raises it, so this is text/secondary, 4.83, KN-591. The
+            sidebar's Section Label is the same defect and is KN-666. Its words are the product's own until
             the owner settles the terms and privacy the file's name, KN-590. */}
         {auth.restoring || auth.awaiting || auth.signingUp ? null : (
           <Box
@@ -359,7 +363,7 @@ export const AuthScreen = () => {
               fontWeight: typeScale.body.weight,
               lineHeight: 'normal',
               textAlign: 'center',
-              color: theme.karnama.semantic['text/disabled'],
+              color: theme.karnama.semantic['text/secondary'],
             })}
           >
             {i18n._('Signing in means you accept how KarNama keeps your records.')}

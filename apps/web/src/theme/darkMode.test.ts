@@ -149,6 +149,22 @@ describe('the derived palette is readable', () => {
     expect(contrast(colour, surface)).toBeGreaterThanOrEqual(MIN_CONTRAST)
   })
 
+  // The same four in LIGHT, which nothing checked. This block measured the DARK
+  // palette's text and, in light, only the status chips, so the sign-in note sat
+  // at 2.54 to one on the card and no test said a word about it, KN-591. The two
+  // left out are left out deliberately: text/disabled, because WCAG exempts an
+  // inactive control's own label, which is the only thing that may still wear it;
+  // and text/on-accent, which is checked against the fills it actually sits on
+  // rather than against a surface it never touches.
+  it.each([
+    ['text/primary', semantic['text/primary']],
+    ['text/secondary', semantic['text/secondary']],
+    ['text/brand', semantic['text/brand']],
+    ['text/error', semantic['text/error']],
+  ])('%s clears WCAG AA on the light surface too', (_name, colour) => {
+    expect(contrast(colour, semantic['bg/surface'])).toBeGreaterThanOrEqual(MIN_CONTRAST)
+  })
+
   it('puts readable text on the brand fill', () => {
     expect(contrast(darkSemantic['text/on-accent'], darkSemantic['bg/brand/default'])).toBeGreaterThanOrEqual(MIN_CONTRAST)
   })

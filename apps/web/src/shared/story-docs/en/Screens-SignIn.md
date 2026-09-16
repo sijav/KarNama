@@ -91,6 +91,16 @@ inner width, 22 tall and 24 apart, in the design's type and colours.
 
 The same, in English.
 
+### LoginNoteInDark
+
+The note under the first step, read in the dark scheme against the dark palette:
+the card's own surface, and the note in the colour that clears the contrast its
+12 pixel text needs.
+
+### CodeTimerInDark
+
+The countdown under the code step, read the same way in the dark scheme.
+
 ### SignupAsTheFrames
 
 The first login's step at both widths, measured against the same card, with the

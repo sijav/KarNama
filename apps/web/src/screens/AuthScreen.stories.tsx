@@ -10,6 +10,7 @@ import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { fixtures } from '../shared/story-fixtures'
 import { holdClock } from '../shared/story-fixtures/clock'
 import { keyboardOf, type Keyboard } from '../shared/story-fixtures/keyboard'
+import { darkSemantic } from '../theme/darkMode'
 import { elevation, semantic } from '../theme/tokens'
 import { AuthScreen } from './AuthScreen'
 
@@ -428,13 +429,15 @@ const loginAsTheFramesIn =
     await atBothWidths(async (card) => {
       await cardIsTheFrames(locale, canvasElement, card, i18n._('Sign in to KarNama'), i18n._('Write your mobile number'), 22)
       await expect(within(canvasElement).getByLabelText(i18n._('Mobile number'))).toHaveAttribute('placeholder', i18n._('0912 345 6789'))
-      // The Terms Note last: 12 at Regular, centred, in text/disabled, KN-591.
+      // The Terms Note last: 12 at Regular, centred. The file draws it in
+      // text/disabled, 2.54 to one; the owner raised it on 2026-09-16, so it is
+      // text/secondary, 4.83 on this card, KN-591.
       const note = canvasElement.querySelector('form')?.lastElementChild
       if (!(note instanceof HTMLElement)) throw new Error('the card has no note')
       await expect(note).toHaveTextContent(i18n._('Signing in means you accept how KarNama keeps your records.'))
       const noteStyle = getComputedStyle(note)
       await expect([px(noteStyle.fontSize), noteStyle.fontWeight, noteStyle.textAlign]).toEqual([12, '400', 'center'])
-      await expect(noteStyle.color).toBe(borrowed(note, 'color', semantic['text/disabled']))
+      await expect(noteStyle.color).toBe(borrowed(note, 'color', semantic['text/secondary']))
     })
   }
 
@@ -463,7 +466,8 @@ const codeRowIsTheFrames = async (locale: Locale, canvasElement: HTMLElement, in
 
 // What 407:6972 and 407:7043 draw under the code step's action, KN-587: the Resend
 // Timer and then the Change Number frame, each the card's inner width, 22 tall and
-// 24 under what is above it; the timer at 14 Regular, centred, in text/disabled,
+// 24 under what is above it; the timer at 14 Regular, centred, in text/secondary
+// where the file draws text/disabled, the owner's decision of 2026-09-16, KN-591,
 // and the Footer Link at 14 Medium, centred, in text/brand.
 const linesUnderTheAction = async (locale: Locale, canvasElement: HTMLElement, inner: number, timerText: string) => {
   const form = canvasElement.querySelector('form')
@@ -480,7 +484,7 @@ const linesUnderTheAction = async (locale: Locale, canvasElement: HTMLElement, i
   const timerStyle = getComputedStyle(timer)
   await expect([px(timerStyle.fontSize), timerStyle.fontWeight, px(timerStyle.lineHeight)]).toEqual([14, '400', 22])
   await expect(timerStyle.textAlign).toBe('center')
-  await expect(timerStyle.color).toBe(borrowed(form, 'color', semantic['text/disabled']))
+  await expect(timerStyle.color).toBe(borrowed(form, 'color', semantic['text/secondary']))
   const linkStyle = getComputedStyle(link)
   await expect([px(linkStyle.fontSize), linkStyle.fontWeight, px(linkStyle.lineHeight)]).toEqual([14, '500', 22])
   await expect(linkStyle.color).toBe(borrowed(form, 'color', semantic['text/brand']))
@@ -529,6 +533,50 @@ export const CodeAsTheFrames: Story = {
 export const CodeAsTheFramesInEnglish: Story = {
   globals: { locale: 'en-US', colorScheme: 'light' },
   play: codeAsTheFramesIn('en-US'),
+}
+
+// The two lines the owner raised to 4.5 to one on 2026-09-16, read in DARK against
+// the dark palette, KN-591. They pin the scheme themselves because Storybook runs a
+// story at its DECLARED globals: a scheme threaded through the helpers would never
+// have run in dark at all. Persian alone, since a locale changes the copy and the
+// direction and not the token path these two sx declarations take. No geometry
+// here: the light frame stories keep the design's measurements. The card's own
+// surface is read too, because a contrast claim about a colour on a surface means
+// nothing if the surface is not the one assumed.
+export const LoginNoteInDark: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const form = canvasElement.querySelector('form')
+    if (!form) throw new Error('no sign-in card')
+    const note = form.lastElementChild
+    if (!(note instanceof HTMLElement)) throw new Error('the card has no note')
+    await expect(getComputedStyle(form).backgroundColor).toBe(borrowed(form, 'backgroundColor', darkSemantic['bg/surface']))
+    await expect(getComputedStyle(note).color).toBe(borrowed(note, 'color', darkSemantic['text/secondary']))
+  },
+}
+
+export const CodeTimerInDark: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const i18n = i18nFor('fa-IR')
+    const canvas = within(canvasElement)
+    // Held a second past the send, where the countdown reads the file's 00:59.
+    const clock = holdClock(START)
+    try {
+      await userEvent.type(canvas.getByLabelText(i18n._('Mobile number')), PHONE)
+      await userEvent.click(canvas.getByRole('button', { name: i18n._('Send the code') }))
+      clock.forward(ONE_SECOND)
+      const timer = await canvas.findByText(`${i18n._('Send the code again in')} ${formatClock('fa-IR', RESEND_SECONDS - 1)}`)
+      const form = canvasElement.querySelector('form')
+      if (!form) throw new Error('no sign-in card')
+      await expect(getComputedStyle(form).backgroundColor).toBe(borrowed(form, 'backgroundColor', darkSemantic['bg/surface']))
+      await expect(getComputedStyle(timer).color).toBe(borrowed(timer, 'color', darkSemantic['text/secondary']))
+    } finally {
+      clock.release()
+    }
+  },
 }
 
 export const SignupAsTheFrames: Story = {
