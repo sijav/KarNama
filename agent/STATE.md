@@ -30,7 +30,7 @@ the owner to drop.
 KN-565, KN-589, KN-665, KN-667, KN-591, KN-601, KN-669, KN-670, KN-618, KN-675, KN-626, KN-678,
 KN-651, KN-679, KN-680, KN-666, KN-668, KN-672, **KN-306** (d8c9d9f), **KN-380** (17472be),
 **KN-685** (43898ec), **KN-690** (db6f4e6), **KN-691** (fb0e32b), **KN-695** (e29b86e),
-**KN-698** (9a0454e), **KN-697** (fc06954, board 14bd09f). **Dropped**: KN-657, and **KN-663**
+**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9, board 8b2b1ca). **Dropped**: KN-657, and **KN-663**
 (de6157c), filed on a false premise its own plan review caught.
 
 ## KN-697, the search in the address, and it is the one to read first
@@ -102,9 +102,13 @@ already measures 0. **Read the drift, never chain it.**
 
 ## Open children, and what is waiting
 
-**KN-698 waits on two**: **KN-700**, in progress, and **KN-701**, the two comments that overclaim.
+**KN-698 waits on two**: **KN-701**, the two comments that overclaim, and **KN-704**, from KN-700's own roast — the new
+routing tests run at base `/`, so the production basename is argued from the router's implementation rather than
+browser-tested, and the defect KN-700 fixed lived precisely under that basename. KN-700 itself is closed, and the board
+flattened KN-704 onto KN-698 by the one-level rule rather than hanging it off a child.
 
-**KN-697 waits on its roast**, which is running; whatever it finds becomes a child.
+**KN-697 waits on one**: **KN-703**, its plan's section 3 still saying only `src/app` imports the router and that the
+screen stories render bare — both true when written and both made untrue by that card's own change.
 
 **KN-016 waits on two**: KN-689, blocked on the owner, and KN-692. **KN-062 waits on five**: KN-686,
 KN-687, KN-688, KN-693, KN-694. **KN-695 waits on one**: KN-696, the contacts screen docs.
@@ -157,31 +161,47 @@ because `todo render` writes every description into the board and the database i
 - **A finding is a CHILD of its task**, one level, with `--area` and `--okr`. **Plans live beside the
   work**, checked by `roast.py plan` before building, and they stay.
 
-## The next step: KN-700, the shell still parses the path itself
+## The next step: KN-693, the verifier still prints a sentinel when it fails
 
-**In progress**, high, 2 points, web, a child of KN-698. Its plan is written at
-`apps/web/src/app/#KN-700 - The shell still parses the path itself.md` and is **with Codex for review**;
-it is deliberately uncommitted until that round's corrections are in it, which is how KN-697's plan was
-handled.
+**In progress**, medium, 1 point, web, a child of KN-062. Its plan is at
+`agent/scripts/verify/#KN-693 - The verifier still prints a sentinel when it fails.md`, **with Codex for
+review**, deliberately uncommitted until that round's corrections are in it.
 
-**What is wrong**: `App.tsx` lines 79 and 80 split `pathname` by hand, while a react-router `<Route
-path="/network">` matches the WHOLE remaining pathname unless it ends in a wildcard. At
-`/network/anything` the split says `network` and lights the Network tab, while the router matches only
-`<Route path="*">` and draws the BOARD. Reachable, because Pages answers an unknown path with
-`404.html`, which is the app.
+**NO VALUE MAY BE WRITTEN ANYWHERE** while working this card — not in the plan, the evidence, a commit
+message, or this file. `todo render` writes every description into the board and `.claude/todo.db` is
+committed, so naming one is exactly what puts it in the repository, which is the property the verifier
+exists to protect.
 
-**The decision recorded rather than escalated**: that address should show the board with the jobs tab.
-There is no page under `/network` — `DESIGN.md` names three destinations and no sub-pages — so the fix
-is to stop the tab disagreeing with the page, not to invent a sub-page.
+**What is wrong**: KN-685 took the values out of the verifier's SUCCESS output, on the argument that
+this loop writes evidence and commit messages out of command output as a matter of course, and then
+left them in the two paths that print when something is WRONG — which is precisely when output gets
+pasted into a card by whoever is diagnosing the break. `KN-306.mjs` line 95 interpolates `taken[0]`
+into the duplicate-locales throw, and line 203 prints `JSON.stringify(sentinel)` in the bundle-holds
+report.
 
-**The fix**: delete `asked` and take `current` from the router's own match against the same `PATH`
-values the routes use. `useMatch`, `useMatches`, `matchPath` and `useResolvedPath` are all present in
-7.18.3, checked by importing the module. **A second gain**: line 79's `?? ''` is one of `App.tsx`'s two
-remaining uncovered branches and goes with `asked`.
+**The inventory was searched rather than taken from the card**, since a card's list is written by
+someone who looked once: every other output path is clean — line 91 names the locale and the field,
+line 164 prints the count and lengths, lines 219 and 236 are fixed strings, and the rest carry script
+names, counts and file paths. **The card's two are the complete set.** Line 236 leaks nothing but names
+neither locale nor file, which is out of this card's exit.
 
-**What must not change**: line 110's add→jobs mapping, which `App.stories`'s `Navigating` asserts while
-the dialog is open; line 140's `overflowY`; KN-697's guard, which compares the PATH rather than
-`current`; and `SidebarProps.current` being a required `Destination`.
+**The fix**: name the locale and the place, never the value. The locale is recovered exactly with
+`marks.indexOf(sentinel)` against a hoisted `LOCALES`, rather than by trusting a `Map`'s iteration
+order to survive a `filter`.
+
+**THE CARD IS WRONG ABOUT ONE OF ITS THREE CLAIMS** and it must not be repeated as written. Two are
+right: KN-685's evidence says the values are "no longer in what the verifier prints", and its plan
+calls the verifier change "comments only, no behaviour". The third says the account of where the values
+remain omits the plan and the board — but that plan's line 160 names both. The genuinely false sentence
+is the **evidence's** "not in either plan", asserted while a plan held one.
+
+**The proof is forcing both paths**, not reading them: point both locales at one value for the throw,
+and plant a fixtures import into the entry BEFORE the run so check 1's own scan reports. **Neither
+forced run's output may be pasted anywhere.**
+
+**Baseline before touching it**: `KN-306.mjs` parses under `node --check` and drift is 0 on it and on
+KN-685's plan. `agent/` is not a workspace, so nothing lints `agent/scripts` and those two are the
+cover.
 
 ## What to read first
 
