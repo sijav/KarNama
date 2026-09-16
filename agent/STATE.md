@@ -62,8 +62,10 @@ and it closed a vacuous pass: two EMPTY hints would also be identical.
 
 ## Open children, and what is waiting
 
-**KN-016 waits on two**: **KN-689**, in progress and described below, and **KN-692**, that no story
-pins that a layout change leaves a pending search alone.
+**KN-016 waits on two**, and **both are parked behind KN-695**: **KN-689**, that a page answering a
+keystroke late loses the search, and **KN-692**, that no story pins that a layout change leaves a
+pending search alone. Neither can affect a reader until the screens actually use the wait, so neither
+is dropped and neither is built yet.
 
 **KN-062 waits on five**: KN-686, KN-687, KN-688, KN-693, KN-694.
 
@@ -99,6 +101,19 @@ copy already measures 0, and a NEW file must measure 0 before it is committed.
 
 ## The owner's rules, most recent first
 
+- **2026-09-16, in chat.** "I definetly do not want to remove that that 300ms looks like a debounce to
+  me, and it is mendatory to have!" **The Search Bar's 300 ms wait STAYS.** So the defect is not that
+  the code is dead, it is that the product never waits: see the next step.
+- **2026-09-16, in chat, on what caused it.** "Only the component's own tests use something is a damn
+  red flag... if something only happens because of a test, then an e2e test needs to happen for it not
+  just unit". **A story is not a caller.** Every callback prop gets an `fn()` by the working
+  agreement, so every prop looks used the moment it exists, and coverage and the docs guard are both
+  satisfied by a prop no screen passes. **Before taking or filing a card about a behaviour, name the
+  user action that reaches it and the screen that passes the prop**; if the only caller is a story it
+  is a proposal, not the product. And **a roast answers "what reaches this code?" before "is this
+  right?"** — "only its own stories" is the finding, and it outranks the rest of the round. Five cards
+  closed correctly inside code no reader runs: KN-314, KN-380, KN-690, and the planning of KN-689 and
+  KN-692.
 - **2026-09-16, in chat, after I put a question to them nobody could read.** "what the hell are you
   talking about? what do you mean by commit? why are you talking C10 English?... IT IS DAMN SUPER EASY
   TO TALK LIKE THIS RATHER THAN C20 FUCKING ENGLISH NOT EVEN NATIVE ENGLISH LAWYER CAN UNDERSTAND".
@@ -128,9 +143,23 @@ copy already measures 0, and a NEW file must measure 0 before it is committed.
 
 ## The next step
 
-**KN-689 is in progress**, high, 2 points, web, a child of KN-016. Its plan is written beside the work
-at `apps/web/src/shared/search-bar/` and is with the reviewer; nothing is built. It was raised from
-medium after KN-690's roast found the same gap independently.
+**KN-695 is in progress**, high, 2 points, web. Its plan is beside the work at
+`apps/web/src/shared/search-bar/` and is with the reviewer; nothing is built. KN-689 is parked behind
+it.
+
+**What the search really does today, checked in the code because the owner asked:** a keystroke calls
+`onChange`, the board keeps the text in state (`JobsScreen.tsx` 88) and filters records already in
+memory (`jobsIn(...)` at 167); contacts do the same at 73 and 81 through `contactMatches`. **No network
+call, no database, no AI, no autocomplete.** Enter does nothing, KN-547. **And no screen passes
+`onSearch`**, so the 300 ms wait runs for nobody.
+
+**The owner ruled the wait mandatory, which REVERSES the card**: the code is right and the screens are
+wrong. The work is to route the screens' filtering through `onSearch` and assert the wait end to end.
+
+**The test that should have caught it, and the lesson:** `apps/web/e2e/board.spec.ts` line 63, "a
+search narrows the board and says so when nothing matches", fills the real box on the real board and
+passes, and always has, **without the debounce ever running**. The scenario proves what the product
+does; nothing asserted what it should WAIT to do.
 
 **The plan's decision, for the review to test: NARROW the contract**, rather than give the bar a token
 protocol. Attributing a late answer means a new prop and a new obligation on every caller of a shared
