@@ -30,7 +30,7 @@ by hand**, so `git stash@{0}` duplicates committed code; left for the owner to d
 **Closed 2026-09-16**: KN-514, KN-524, KN-535, KN-543, KN-544, KN-559, KN-658, KN-542, KN-564,
 KN-565, **KN-589** (d4b86c0), **KN-665**, **KN-667**, **KN-591** (874d4ce), **KN-601** (b5498ed),
 **KN-669**, **KN-670**, **KN-618** (4be8a8e), **KN-675** (23e188e), **KN-626** (4c099cb),
-**KN-678** (6b32e24), **KN-651** (c083050), **KN-679** (7bc88a7), **KN-680** (3e5c29e).
+**KN-678** (6b32e24), **KN-651** (c083050), **KN-679** (7bc88a7), **KN-680** (3e5c29e), **KN-666** (739df0c).
 **Dropped**: KN-657, and **KN-663** (de6157c) — filed on a false premise, found by its own plan
 review before anything was built: `i18n.test.ts` line 7 has asserted the English identity map over
 every entry since 2026-09-08, `e3150cc`, eight days before the card. Its account of KN-565 was wrong
@@ -115,25 +115,29 @@ database tests are run directly, `npx vitest run src/database`, 68.
 
 ## The next step
 
-**KN-666 is in progress**, medium, 1 point, **design**. Its plan is written beside the work at
-`apps/web/src/shared/navigation/` and is **with the reviewer**; nothing is built yet. The card: the
-sidebar's «فضای کار» Section Label, node `406:454`, is 12 pixel text in `text/disabled` — the same
-defect the owner ruled on for the sign-in note and the resend timer on 2026-09-16, filed separately
-because that ruling named only those two lines.
+**KN-668 is in progress**, medium, 1 point, web — KN-591's last open child. Its plan is written
+beside the work at `apps/web/src/screens/` and is **with the reviewer**; nothing is built yet.
 
-Measured from the tokens rather than recalled: in light, `text/disabled` `#9ca3af` on the sidebar's
-`bg/surface` `#ffffff` is **2.5388** and `text/secondary` `#6b7280` is **4.8345**; `MIN_CONTRAST` is
-4.5. The token to move to is **already asserted on this surface in BOTH schemes** by
-`darkMode.test.ts`, and `darkMode.ts` derives it through `ensureContrast` while `text/disabled` gets
-no such guarantee — which is why the colour being left is unsafe in dark and the one being taken is
-not. **That palette test's own comment already names this card**, calling its omission of
-`text/disabled` provisional until the sidebar's label stops using it, so settling that comment is
-part of the work — as are a dark-pinning story, which this stories file has never had, a docs entry
-in each language, and the DESIGN record in the shape line 1623 uses for KN-591.
+**The card reads as one line and is not.** The notice is `AuthScreen.tsx` 238/239, `text/secondary`
+on `bg/surface-secondary`. Computed from the tokens: that pair is **4.3929**, while the same token
+is 4.5101 on `bg/page` and 4.8345 on `bg/surface` — `bg/surface-secondary` is the only surface where
+it falls short. Searching the product found nineteen uses of that surface and **six real text sites
+at 4.3929**: the notice; `JobModal.tsx` 344/345 the skill chips and 547/550 the drop zone; and
+`KanbanColumn.tsx` 153, 234 and 263, the empty message, the header title and the count, all inside
+the column's own `frame` at 127. Two further paired sites, the job modal's open-link at 317 and its
+download button at 521, hold **icons**, so they take WCAG 1.4.11's 3 to one and are not defects.
 
-The plan's question to the review is the real one: the exit wants the ratio **read by a story**, but
-this file's idiom proves a TOKEN rather than a ratio, and computing WCAG inside a story would put a
-second contrast implementation in the tree beside `darkMode.ts`'s exported `contrast()`.
+**So the plan's first question is six site edits or one token walk.** Walking `text/secondary` one
+step of lightness from `#6b7280` gives **`#69707d`**: 4.5277 on `bg/surface-secondary`, 4.6485 on
+`bg/page`, 4.9829 on `bg/surface`. That is the `border/control` precedent, DESIGN's table line 103.
+The risk to weigh is that the token has 43 text sites and `darkMode.ts` derives the DARK palette
+from this very value, so dark shifts with it and must be re-run rather than assumed.
+
+**The second question is the exit's own second half**: extend the guard from a list of tokens to
+real PAIRS. A hand list would rot; this repository reads the repository instead, as `catalog.test.ts`
+scans for ids and `guard.test.ts` defers to Storybook's indexer. Whether a guard can honestly derive
+pairs from `sx`, given a text colour inherits through nesting, is the question — and the exit
+already permits a card saying why not, which beats a guard that looks thorough and is not.
 
 ## What to read first
 
