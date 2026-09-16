@@ -11453,3 +11453,7 @@ Found on 2026-09-16 by Codex's second review of KN-589's plan. While the login i
 
 **Exit condition.** While the login is mocked, no sign-in control implies a code was already sent: the resend timer and its link are worded for a provider that shows the code rather than sends it, and the Login action is decided the same way. DESIGN.md records each departure from the file and the wording restored when a real provider sends. The resend stories and connected.spec.ts assert the new words, and the Persian is re-measured for wrapping at 390.
 
+**Notes.**
+
+- 2026-09-16, the footprint is wider than the description says: the story-docs prose carries the same presupposition in both languages, four passages across two files. In en/Screens-SignIn.md the CodeAsTheFrames entry says the countdown comes «a second after the send as the design draws it» and the CountsDownToAResend entry says «a minute right after the send with no resend offered» and «a link that sends another code and starts the count again»; fa/Screens-SignIn.md says «یک ثانیه پس از ارسال» and «درست پس از ارسال یک دقیقه و هنوز بی پیشنهاد ارسال دوباره» and «پیوندی که کد دیگری می‌فرستد». Found while gathering edit anchors for KN-589. A change of copy that leaves its own documentation asserting the thing removed has not been made, so these move with the words.
+
