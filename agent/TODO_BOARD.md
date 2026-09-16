@@ -4,7 +4,7 @@
 
 Project **KarNama** · 329 of 695 tasks done · 668 of 1323 points.
 
-**Next up: `KN-695` The Search Bar's onSearch callback and its 300 ms wait are used by no page** (high, 2 pt, web)
+**Next up: `KN-695` The product never waits: the screens filter on every keystroke and never use the Search Bar's 300 ms debounce** (high, 2 pt, web)
 
 ## Objectives
 
@@ -12,6 +12,12 @@ Project **KarNama** · 329 of 695 tasks done · 668 of 1323 points.
 | -- | -- | ---- | ----- | ---- | ---- |
 | 1 | OKR-1 | MVP: the pages | now | 222 | 251 |
 | 2 | OKR-2 | Everything after the MVP | later | 134 | 78 |
+
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-695` | The product never waits: the screens filter on every keystroke and never use the Search Bar's 300 ms debounce | high | 2 | web | none | Typing quickly into the board's search filters the cards ONCE, after the pause, rather than on every key, and the same on the contacts page. apps/web/e2e/board.spec.ts asserts BOTH halves against the real app: that the board has not narrowed in the moment after typing, and that it has after the pause; that assertion fails against the old wiring, proved by running it. Clearing still restores the board at once, asserted rather than assumed. The story docs in both languages describe the wait as something a reader now actually meets, and KN-689 and KN-692 become questions about a real caller rather than an unreachable one. |
 
 ## Blocked (9)
 
@@ -27,7 +33,7 @@ Project **KarNama** · 329 of 695 tasks done · 668 of 1323 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (347)
+## Backlog (346)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -38,7 +44,6 @@ Project **KarNama** · 329 of 695 tasks done · 668 of 1323 points.
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
 | `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
 | `KN-689` | A parent that answers a change one commit late loses the search, where KN-016 promises the final keystroke is never dropped | high | 2 | web | KN-695 | The promise is made exact in one place and true in both: either the contract is narrowed, stated in the story docs in both languages and in DESIGN.md as the decided behaviour, that a search runs only where the parent answers the readers change in the same commit; or the bar gains a way to attribute a late answer. Either way a story drives a parent that echoes one commit late and asserts the decided behaviour, and it fails if the other behaviour is implemented. |
-| `KN-695` | The Search Bar's onSearch callback and its 300 ms wait are used by no page | high | 2 | web | none | The board carries a decision, recorded with its reason: either onSearch and DEBOUNCE_MS are removed from SearchBar with their stories and their story-docs entries, and the component documents that the bar reports every keystroke through onChange and nothing else; or they stay, and both story-docs files say plainly that no page uses onSearch today and why it is kept. Whichever is chosen, no card about the pause remains open that does not serve it, and the Search Bar docs describe what the product actually does on a keystroke. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -11971,18 +11976,19 @@ Found by KN-685's roast, 2026-09-16, which proposed the mechanism. KN-685 establ
 
 **Exit condition.** agent/scripts/verify/KN-306.mjs fails when a sentinel is held by any file besides its own locale JSON, over git ls-files -z --cached --others --exclude-standard, naming the locale and the holding paths and printing no value. Proved both ways by mutation: planting the value in a second tracked file makes it fail, and removing the plant makes it pass. Its comments claim only that worktree property, and nothing about what the build read.
 
-### `KN-695` The Search Bar's onSearch callback and its 300 ms wait are used by no page
+### `KN-695` The product never waits: the screens filter on every keystroke and never use the Search Bar's 300 ms debounce
 
-- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 
 Found on 2026-09-16 while planning KN-689, by checking who actually calls the prop instead of assuming the card was about live code. NOBODY calls it. JobsScreen line 369 passes value, onChange and layout; NetworkScreen lines 176 to 182 passes those plus label and placeholder. Neither passes onSearch. The only other mentions in the repository are the component itself, its own stories, and plan markdown. The product searches LIVE on every keystroke instead: JobsScreen line 88 keeps the text in useState and line 167 calls jobsIn(records.jobs, id, search, order), which filters records already in memory; NetworkScreen line 73 and line 81 do the same through contactMatches. There is no network call, no database query, no AI and no autocomplete on the search path, and Enter does nothing at all, which is KN-547. So the 300 ms debounce and everything that decides when it fires is dead in the product. FOUR cards have been spent refining its edge cases: KN-314, KN-380, KN-690 and the planning of KN-689, and KN-689s own scenario, a page that answers a keystroke late, cannot happen while no page passes the callback at all.
 
 **Why.** Work is being spent on a code path no reader can reach, and the cards read as though the product depended on it. The owner asked what actually happens when a key is pressed and the honest answer turned out to be nothing like what four cards implied. Whichever way this goes, the board should stop generating work about it.
 
-**Exit condition.** The board carries a decision, recorded with its reason: either onSearch and DEBOUNCE_MS are removed from SearchBar with their stories and their story-docs entries, and the component documents that the bar reports every keystroke through onChange and nothing else; or they stay, and both story-docs files say plainly that no page uses onSearch today and why it is kept. Whichever is chosen, no card about the pause remains open that does not serve it, and the Search Bar docs describe what the product actually does on a keystroke.
+**Exit condition.** Typing quickly into the board's search filters the cards ONCE, after the pause, rather than on every key, and the same on the contacts page. apps/web/e2e/board.spec.ts asserts BOTH halves against the real app: that the board has not narrowed in the moment after typing, and that it has after the pause; that assertion fails against the old wiring, proved by running it. Clearing still restores the board at once, asserted rather than assumed. The story docs in both languages describe the wait as something a reader now actually meets, and KN-689 and KN-692 become questions about a real caller rather than an unreachable one.
 
 **Notes.**
 
 - 2026-09-16: the one argument for KEEPING it, recorded so the decision is not made on the dead-code point alone. If the search ever becomes a real server query rather than an in-memory filter, a wait after the last keystroke is exactly what you want, and it is already built and tested. Deleting it now is honest about today and costs that work if the product grows a server-side search later. The owner raised the question themselves by asking whether the search hits a database or an AI, so the answer today is neither, and whether it ever should is theirs.
+- 2026-09-16, the owner in chat, and this REVERSES the card: 'I definetly do not want to remove that that 300ms looks like a debounce to me, and it is mendatory to have!' So the debounce stays, by the owner's decision, and the finding is no longer that the code is dead. It is that THE PRODUCT NEVER WAITS: the board and the contacts page filter on every keystroke through onChange and never call onSearch, so the 300 ms the owner calls mandatory does not happen anywhere a reader can reach. The code is right and the screens are wrong. Proof that the suite could not see it: apps/web/e2e/board.spec.ts line 63, 'a search narrows the board and says so when nothing matches', fills the real box and asserts the board narrows, and it passes without the debounce ever running. The scenario was there all along and green.
 
