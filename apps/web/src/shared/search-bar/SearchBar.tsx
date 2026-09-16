@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import { Box, ButtonBase, InputBase } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { Icon } from '../icon'
 
@@ -62,38 +62,59 @@ export const SearchBar = ({ value, defaultValue = '', layout = 'mobile', label, 
   const [own, setOwn] = useState(defaultValue)
   const text = value ?? own
   const field = useRef<HTMLInputElement | null>(null)
-  // The value last typed, and the latest onSearch, which the search below reads
-  // when it runs rather than when it was started.
-  const typed = useRef<string | null>(null)
+  // One attempt by the reader to change the text: what the field showed before it, and whether it
+  // was typing or the clear. A fresh object every time, so React always commits one; the marker
+  // below is keyed by its identity rather than by a count.
+  const [attempt, setAttempt] = useState<{ before: string; kind: 'typed' | 'cleared' } | null>(null)
+  // The attempt already judged. A ref rather than state, so marking one cannot itself re-render and
+  // restart or cancel the pause.
+  const judged = useRef<object | null>(null)
+  // The latest onSearch, read when the search RUNS rather than when it was started, and written
+  // during commit: a search due between a commit and a passive effect would otherwise call the
+  // callback from the render before it, KN-380.
   const search = useRef(onSearch)
-  useEffect(() => {
+  useLayoutEffect(() => {
     search.current = onSearch
   })
 
-  // The search runs once typing pauses, with the value the field shows, KN-314:
-  // started when the shown text becomes what was just typed, and cancelled by
-  // any change to it. So a parent that replaces the value while a search is
-  // pending, or ignores a keystroke, never has a search run for text the field
-  // did not show; and a pending search does not outlive the bar.
+  // Each attempt is judged by its own commit, KN-380.
+  //
+  // KN-314 compared the last typed text with the text shown. That holds for a parent that stores
+  // what it is given and fails for the others a controlled bar exists to serve: one that ignores a
+  // clear kept a search running for text it had replaced, one that normalises never searched at
+  // all, and one that restored a value nobody typed searched for it.
+  //
+  // The attempt is marked judged BEFORE anything else, so an attempt the parent ignored can never be
+  // taken up later by an unrelated change to the text. Any such change re-runs this effect, whose
+  // cleanup cancels a pending search and whose early return starts nothing: other changes cancel,
+  // and only a reader's own change searches.
+  //
+  // What this cannot tell apart is written in the story docs rather than here, because it is
+  // behaviour a caller meets and the documentation rule puts that in markdown, KN-207.
   useEffect(() => {
-    if (typed.current !== text) return
+    if (!attempt || judged.current === attempt) return
+    judged.current = attempt
+    if (text === attempt.before) return
+    if (attempt.kind === 'cleared') {
+      search.current?.(text)
+      return
+    }
     const timer = setTimeout(() => search.current?.(text), DEBOUNCE_MS)
     return () => {
       clearTimeout(timer)
     }
-  }, [text])
+  }, [attempt, text])
 
   const change = (next: string) => {
-    typed.current = next
+    setAttempt({ before: text, kind: 'typed' })
     setOwn(next)
     onChange?.(next)
   }
 
   const clear = () => {
-    typed.current = null
+    setAttempt({ before: text, kind: 'cleared' })
     setOwn('')
     onChange?.('')
-    onSearch?.('')
     field.current?.focus()
   }
 

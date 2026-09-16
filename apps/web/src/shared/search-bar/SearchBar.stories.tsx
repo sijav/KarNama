@@ -2,7 +2,7 @@ import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { useRef, useState } from 'react'
 import { useArgs } from 'storybook/preview-api'
-import { clearAllMocks, expect, fireEvent, fn, userEvent, within } from 'storybook/test'
+import { clearAllMocks, expect, fireEvent, fn, userEvent, waitFor, within } from 'storybook/test'
 import { semantic, type as typeScale } from '../../theme/tokens'
 import { fixtures } from '../story-fixtures'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -185,7 +185,13 @@ export const Clearing: Story = {
     // clear control away, and gives focus back to the field.
     await userEvent.click(within(canvasElement).getByRole('button'))
     await expect(field).toHaveValue('')
-    await expect(args.onSearch).toHaveBeenLastCalledWith('')
+    // Waited for rather than asserted outright, KN-380: the search now runs from an effect, so the
+    // field commits first and the call follows. It may well arrive before this line anyway, because
+    // awaited interaction helpers flush React work — which is the reason not to assert it directly,
+    // since that would be passing by an accident of the runner.
+    await waitFor(async () => {
+      await expect(args.onSearch).toHaveBeenLastCalledWith('')
+    })
     await expect(within(canvasElement).queryByRole('button')).not.toBeInTheDocument()
     await expect(field).toHaveFocus()
   },
@@ -272,6 +278,139 @@ export const IgnoredKeystrokes: Story = {
     await expect(args.onChange).toHaveBeenCalled()
     await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_MS + 150))
     await expect(args.onSearch).not.toHaveBeenCalled()
+  },
+}
+
+// What these two stories type, neither of which is copy a reader ever sees. SHOUTED is a latin word
+// for the parent that lowercases, since TYPED is Persian and has no case. BRIEF is two characters
+// for the story that clears while a search is pending, short deliberately: a timer that has already
+// fired before the clear commits is not a timer the clear could have cancelled, and the story would
+// then fail for a reason that has nothing to do with what it tests.
+//
+// Typed so the lint rule reads them as names rather than as copy, as the job card's FINGER and the
+// contact card's VISUAL_VIEWPORT are.
+type Typing = 'ABC' | 'ab'
+const SHOUTED: Typing = 'ABC'
+const BRIEF: Typing = 'ab'
+
+// A parent that takes what is typed and refuses to empty, KN-380: the clear is reported and
+// ignored, so the field goes on showing the text.
+const KeepingText = ({ onSearch }: { onSearch?: (value: string) => void }) => {
+  const [value, setValue] = useState('')
+  return (
+    <Box sx={{ width: 320 }}>
+      <SearchBar
+        value={value}
+        onChange={(next) => {
+          if (next !== '') setValue(next)
+        }}
+        {...(onSearch ? { onSearch } : {})}
+      />
+    </Box>
+  )
+}
+
+export const ClearIgnored: Story = {
+  // A fixed parent, so no control applies.
+  parameters: { controls: { disable: true } },
+  render: (args) => <KeepingText {...(args.onSearch ? { onSearch: args.onSearch } : {})} />,
+  play: async ({ args, canvasElement }) => {
+    const { field } = partsOf(canvasElement)
+    // Typed FIRST, so the old code really has a search pending when the clear comes. A prefilled
+    // field would never start one, and this story would then pass on the very defect it exists for.
+    // Two characters, so the clear lands well inside the pause.
+    await userEvent.type(field, BRIEF)
+    await userEvent.click(within(canvasElement).getByRole('button'))
+    // The parent ignored the clear, so the field still shows what was typed.
+    await expect(field).toHaveValue(BRIEF)
+    await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_MS + 150))
+    // Neither the eager search for nothing nor the orphaned one for the text it still shows.
+    await expect(args.onSearch).not.toHaveBeenCalled()
+  },
+}
+
+// A parent that normalises what it is given, KN-380: the field shows the lowercased text, which is
+// never what was typed.
+const Lowercasing = ({ onSearch }: { onSearch?: (value: string) => void }) => {
+  const [value, setValue] = useState('')
+  return (
+    <Box sx={{ width: 320 }}>
+      <SearchBar
+        value={value}
+        onChange={(next) => {
+          setValue(next.toLowerCase())
+        }}
+        {...(onSearch ? { onSearch } : {})}
+      />
+    </Box>
+  )
+}
+
+export const NormalisingParent: Story = {
+  parameters: { controls: { disable: true } },
+  render: (args) => <Lowercasing {...(args.onSearch ? { onSearch: args.onSearch } : {})} />,
+  play: async ({ args, canvasElement }) => {
+    const { field } = partsOf(canvasElement)
+    await userEvent.type(field, SHOUTED)
+    await expect(field).toHaveValue(SHOUTED.toLowerCase())
+    await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_MS + 150))
+    // One search, for what the field shows rather than for what was typed.
+    await expect(args.onSearch).toHaveBeenCalledTimes(1)
+    await expect(args.onSearch).toHaveBeenLastCalledWith(SHOUTED.toLowerCase())
+  },
+}
+
+// A parent that empties and later puts the value back with no keystroke, KN-380: a navigation or an
+// undo elsewhere would. Only the story's play presses either.
+const Restoring = ({ onSearch }: { onSearch?: (value: string) => void }) => {
+  const [value, setValue] = useState('')
+  const last = useRef('')
+  return (
+    <Box sx={{ width: 320 }}>
+      <SearchBar
+        value={value}
+        onChange={(next) => {
+          if (next !== '') last.current = next
+          setValue(next)
+        }}
+        {...(onSearch ? { onSearch } : {})}
+      />
+      <button
+        hidden
+        data-testid="reset"
+        onClick={() => {
+          setValue('')
+        }}
+      />
+      <button
+        hidden
+        data-testid="restore"
+        onClick={() => {
+          setValue(last.current)
+        }}
+      />
+    </Box>
+  )
+}
+
+export const RestoredAfterReset: Story = {
+  parameters: { controls: { disable: true } },
+  render: (args) => <Restoring {...(args.onSearch ? { onSearch: args.onSearch } : {})} />,
+  play: async ({ args, canvasElement }) => {
+    const { field } = partsOf(canvasElement)
+    // The reader's own search is allowed to finish first, so what follows is measured against it
+    // rather than against silence. Counted rather than cleared: restoring a spy mid-play is what
+    // KN-584 was about.
+    await userEvent.type(field, TYPED)
+    await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_MS + 150))
+    await expect(args.onSearch).toHaveBeenCalledTimes(1)
+    // Emptied and put back with no keystroke: nobody asked for a search, so none runs.
+    await fireEvent.click(within(canvasElement).getByTestId('reset'))
+    await fireEvent.click(within(canvasElement).getByTestId('restore'))
+    await expect(field).toHaveValue(TYPED)
+    await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_MS + 150))
+    // Still the one the reader asked for: restoring brought no second search.
+    await expect(args.onSearch).toHaveBeenCalledTimes(1)
   },
 }
 

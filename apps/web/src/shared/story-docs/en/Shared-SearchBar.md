@@ -9,6 +9,16 @@ the field, searches for nothing straight away, and puts focus back in the field
 to type again. The field has its own name for screen readers, since the grey
 hint inside it is not a label.
 
+A search runs for what the field shows after a change the reader made, and for
+nothing else. A page that ignores what is typed is never searched for text the
+field did not show; a page that puts a value back by itself is not searched at
+all, because nobody asked for it; and a page that changes what it was given,
+lowercasing it say, is searched for what it chose rather than for the keys that
+were pressed. One thing the bar cannot tell: a page that answers a change later
+rather than in the same breath looks exactly like a page that ignored it, so no
+search runs for that change. Telling those apart would need the page to say
+which change it is answering.
+
 ## Props
 
 ### value
@@ -86,6 +96,23 @@ and no search runs for the text it no longer shows.
 
 A page that keeps the value and ignores what is typed: each key is reported, the
 field stays empty, and nothing is searched.
+
+### ClearIgnored
+
+A page that takes what is typed but refuses to empty: the field keeps showing
+the text, and nothing is searched, neither for nothing nor for the text still
+shown.
+
+### NormalisingParent
+
+A page that lowercases what it is given: one search runs, for the text the field
+shows rather than for the keys that were pressed.
+
+### RestoredAfterReset
+
+A page that empties the bar and later puts the value back with no keystroke:
+the first search runs as the reader asked, and the restoring brings no second
+one.
 
 ### OnTheDesktop
 
