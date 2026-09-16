@@ -13,6 +13,12 @@ Project **KarNama** · 321 of 680 tasks done · 658 of 1302 points.
 | 1 | OKR-1 | MVP: the pages | now | 215 | 243 |
 | 2 | OKR-2 | Everything after the MVP | later | 134 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-666` | The sidebar's «فضای کار» section label is 12 pixel text in text/disabled, 2.54 to one, as the sign-in note was | medium | 1 | design | none | The sidebar's section label is drawn in a token at 4.5 to one or better against the surface it sits on, in light and in dark, read by a story rather than only by a palette test; and DESIGN.md records the departure from node 406:454 and the owner's decision it follows. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 321 of 680 tasks done · 658 of 1302 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (340)
+## Backlog (339)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -83,7 +89,6 @@ Project **KarNama** · 321 of 680 tasks done · 658 of 1302 points.
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
 | `KN-590` | The sign-in note names terms and a privacy policy KarNama does not have | medium | 1 | design | KN-630 | The owner has chosen what the sign-in note says and what it links to, DESIGN.md records it, and the Login step shows it in both languages. |
-| `KN-666` | The sidebar's «فضای کار» section label is 12 pixel text in text/disabled, 2.54 to one, as the sign-in note was | medium | 1 | design | none | The sidebar's section label is drawn in a token at 4.5 to one or better against the surface it sits on, in light and in dark, read by a story rather than only by a palette test; and DESIGN.md records the departure from node 406:454 and the owner's decision it follows. |
 | `KN-668` | The code step's mock notice draws text/secondary on bg/surface-secondary, 4.39 to one | medium | 1 | web | none | The notice's text clears 4.5 to one against the surface it is actually drawn on, in light and in dark, read by a story; and the guard is extended from a list of tokens to a list of real foreground and background PAIRS, or a card exists saying why it is not. |
 | `KN-672` | Nothing proves the sample data press actually fills the status region | medium | 1 | web | none | A test exercises the real path from pressing Load sample data to the status region holding the confirmation, through the product's own state rather than through story args, and it is shown to fail when setLoaded is removed. |
 | `KN-069` | Narrow the KARNAMA_BOARD fence to a verifier-owned scratch directory | medium | 2 | agent | KN-065 | A KARNAMA_BOARD path in the temp tree but outside a karnama-prefixed scratch directory is refused, a path that is a hard link to a file outside the allowed roots is refused, the verifiers that use the override still work unchanged, and a test covers all three. |
@@ -11527,7 +11532,7 @@ Found by KN-589's own roast, 2026-09-16, and confirmed by reading each place. ap
 
 ### `KN-666` The sidebar's «فضای کار» section label is 12 pixel text in text/disabled, 2.54 to one, as the sign-in note was
 
-- **status** backlog · **severity** medium · **points** 1 · **area** design · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** design · **objective** OKR-1
 - **blocked by** none
 
 Found on 2026-09-16 by Codex's review of KN-591's plan, and confirmed by reading it. apps/web/src/shared/navigation/Sidebar.tsx line 135 records the Section Label, node 406:454, as «فضای کار» at 12 and Medium in text/disabled, and line 144 draws it: #9ca3af on the sidebar's bg/surface #ffffff, 2.54 to one, where WCAG 1.4.3 asks 4.5 of text that size. It is a label, information, not a disabled control, which is exactly the defect the owner ruled on for the sign-in note and the resend timer. That ruling of 2026-09-16 named those two lines, so this is filed rather than silently folded into KN-591. A sweep of the product found no third informational case: every other text/disabled is a genuinely disabled thing, the Input's disabled text, the Menu's blocked item, the Select's disabled option and the sign-in Footer Link's &.Mui-disabled.

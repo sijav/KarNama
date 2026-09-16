@@ -31,7 +31,12 @@ by hand**, so `git stash@{0}` duplicates committed code; left for the owner to d
 KN-565, **KN-589** (d4b86c0), **KN-665**, **KN-667**, **KN-591** (874d4ce), **KN-601** (b5498ed),
 **KN-669**, **KN-670**, **KN-618** (4be8a8e), **KN-675** (23e188e), **KN-626** (4c099cb),
 **KN-678** (6b32e24), **KN-651** (c083050), **KN-679** (7bc88a7), **KN-680** (3e5c29e).
-**Dropped**: KN-657.
+**Dropped**: KN-657, and **KN-663** (de6157c) — filed on a false premise, found by its own plan
+review before anything was built: `i18n.test.ts` line 7 has asserted the English identity map over
+every entry since 2026-09-08, `e3150cc`, eight days before the card. Its account of KN-565 was wrong
+the same way: 484 is `catalog.test.ts`'s own count, that file was run ALONE, and a full unit run
+would have failed. **A partial run tells you what it ran, never what exists** — in `AGENTS.md` now,
+and the seventh of the day's overclaims, the only one that manufactured work.
 
 **THE E2E SUITE IS GREEN**: 93 passed, 0 failed, 9 skipped over 102 tests, from 92 and 1. KN-651
 was the last red.
@@ -110,20 +115,25 @@ database tests are run directly, `npx vitest run src/database`, 68.
 
 ## The next step
 
-**KN-663 is in progress**, medium, 1 point, web. Its plan is written beside the work at
-`apps/web/src/i18n/` and is **with the reviewer**; nothing is built yet. The card: nothing compares
-an English message with its id, so KN-565's first attempt shipped
-`'You have not added a job opportunity yet': 'You have not added a job posting yet'` past all 484
-catalog cases. Measured rather than recalled: **en-US holds 239 entries, 0 whose message differs
-from its id, and 0 containing braces**, so no ICU or placeholder syntax can trip a strict rule — and
-the file's own docstring already declares it an identity map that stays one, so the card checks a
-contract the file states about itself. `catalog.test.ts` has eight cases and not one reads an
-English value; its idiom for a catalog-wide rule is to collect offenders and assert the list empty.
-The plan's questions to the review: strict equality rather than the Persian case's `bare()`, and
-whether the in-file pretend-value proof is worth having beside an external mutation control.
+**KN-666 is in progress**, medium, 1 point, **design**. Its plan is written beside the work at
+`apps/web/src/shared/navigation/` and is **with the reviewer**; nothing is built yet. The card: the
+sidebar's «فضای کار» Section Label, node `406:454`, is 12 pixel text in `text/disabled` — the same
+defect the owner ruled on for the sign-in note and the resend timer on 2026-09-16, filed separately
+because that ruling named only those two lines.
 
-**KN-680's roast** was launched and has not landed; judge it, file survivors with
-`--parent-task KN-680`, record with `--file`, relay it.
+Measured from the tokens rather than recalled: in light, `text/disabled` `#9ca3af` on the sidebar's
+`bg/surface` `#ffffff` is **2.5388** and `text/secondary` `#6b7280` is **4.8345**; `MIN_CONTRAST` is
+4.5. The token to move to is **already asserted on this surface in BOTH schemes** by
+`darkMode.test.ts`, and `darkMode.ts` derives it through `ensureContrast` while `text/disabled` gets
+no such guarantee — which is why the colour being left is unsafe in dark and the one being taken is
+not. **That palette test's own comment already names this card**, calling its omission of
+`text/disabled` provisional until the sidebar's label stops using it, so settling that comment is
+part of the work — as are a dark-pinning story, which this stories file has never had, a docs entry
+in each language, and the DESIGN record in the shape line 1623 uses for KN-591.
+
+The plan's question to the review is the real one: the exit wants the ratio **read by a story**, but
+this file's idiom proves a TOKEN rather than a ratio, and computing WCAG inside a story would put a
+second contrast implementation in the tree beside `darkMode.ts`'s exported `contrast()`.
 
 ## What to read first
 
