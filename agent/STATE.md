@@ -71,7 +71,16 @@ in three sites and both languages; **KN-691**, the docs say `placeholder` follow
 component has never done; **KN-692**, no story pins that a layout change leaves a pending search
 alone.
 
-**KN-062 waits on three**: KN-686, KN-687, KN-688.
+**KN-062 waits on five**: KN-686, KN-687, KN-688, and from KN-685's own roast **KN-693** and
+**KN-694**. KN-685 is itself a child, so its findings flatten onto KN-062; one level, and the skill
+says so as it files them. **KN-693 is mine and it is instructive**: KN-685 took the sentinel values
+out of the verifier's success line, arguing that this loop pastes command output into evidence, and
+left them in the two paths that print when something is WRONG, which is when output actually gets
+quoted. The argument for the change condemned what it left behind. **KN-694 is the guard KN-685's
+evidence said it could not write honestly**, supplied by the reviewer: derive the sentinels, scan
+`git ls-files -z --cached --others --exclude-standard`, and fail unless each one's only holder is its
+own locale JSON, reporting paths and never values. It claims a property of the worktree and nothing
+about what the build read, which is what separates it from the sourcemap check that was dropped.
 
 **Also open**: KN-681 and KN-682 from KN-666; KN-684 from KN-668; KN-673 and KN-674 from KN-618;
 KN-676 and KN-677 from KN-675. **KN-683 IS FOR THE OWNER**: walking `text/secondary` to a readable
@@ -126,8 +135,18 @@ verifier's cover is Prettier drift and `node --check`.
 
 ## The next step
 
-**KN-690 is in progress**, medium, 1 point, web, a child of KN-016. Nothing is built and no plan is
-written yet.
+**KN-690 is in progress**, medium, 1 point, web, a child of KN-016. Its plan is written beside the
+work at `apps/web/src/shared/search-bar/` and is with the reviewer; nothing is built.
+
+**The card names three sites and a search found five false sentences across four files.** The fourth
+file is `SearchBar.stories.tsx` line 184, inside the `Clearing` story, and it **contradicts a correct
+comment four lines below it**: line 188 already says, in KN-380's own words, that the search now runs
+from an effect so the field commits first. Correcting three sites and leaving that one is the defect
+this card exists to prevent, so it is in scope though the exit does not name it. Two hits are TRUE and
+must not be touched: `en` and `fa` line 5 both say what is typed is reported at once, and `onChange`
+really is called synchronously in the handler. The phrase in the three older plans beside the
+component stays, since a dated plan records what was true when it was written, the line KN-685's
+review drew for the e2e spec.
 
 Three sentences say clearing searches "at once" or "straight away" without the condition they
 actually carry, and the Persian says it with «بی‌درنگ»: `SearchBar.tsx` line 56, and in both
