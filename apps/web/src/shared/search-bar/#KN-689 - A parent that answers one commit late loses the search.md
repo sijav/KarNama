@@ -25,7 +25,7 @@ the decided behaviour, and it fails if the other behaviour is implemented."
    `text === attempt.before`, the attempt is marked judged, and the effect returns having started
    nothing.
 3. The page supplies the new value one commit later. The effect re-runs, finds `judged.current ===
-   attempt`, and returns again. **No search ever runs.**
+attempt`, and returns again. **No search ever runs.**
 
 The same holds for the clear. **This is deliberate**: marking judged before the equality check is what
 stops an attempt the page IGNORED being taken up later by an unrelated change, which is KN-380's third
@@ -76,8 +76,20 @@ my own biggest doubt. **Choosing between "late controlled parents are unsupporte
 support" changes the component's public contract and the promise KN-016 carries. The card permits
 either and selects neither, so it is a product decision for the owner rather than an author decision
 to ratify alone.** I asked precisely so I would be told, and ratifying my own preference against that
-would be bad faith, so the question went to the owner and this card is parked until it is answered.
-The rest of the plan is ready for whichever branch they choose.
+would be bad faith, so the question went to the owner.
+
+**What happened next, recorded because this plan would otherwise read as still waiting.** The question
+put to the owner was unreadable, and they said so: jargon, and a decision asked for before anything was
+explained. Answering their questions plainly meant checking the code, and that turned up something
+neither this plan nor its review had seen: **no screen passes `onSearch` at all.** Both callers filter
+on every keystroke through `onChange`, so the scenario this card describes, a page answering one commit
+late, cannot happen to any reader today. The owner then ruled the 300 ms wait mandatory, which became
+KN-695: the screens must use it.
+
+So this card is parked behind KN-695 rather than behind the owner, and the reason changed. Its analysis
+stands and its decision is still open, but it becomes answerable only once a screen really passes the
+callback. **Replan from this point when KN-695 lands**, because "both callers pass direct `useState`
+setters" will no longer be the argument it is above.
 
 What it confirmed, so none of it needs re-deriving:
 
