@@ -30,7 +30,7 @@ by hand**, so `git stash@{0}` duplicates committed code; left for the owner to d
 **Closed 2026-09-16**: KN-514, KN-524, KN-535, KN-543, KN-544, KN-559, KN-658, KN-542, KN-564,
 KN-565, **KN-589** (d4b86c0), **KN-665**, **KN-667**, **KN-591** (874d4ce), **KN-601** (b5498ed),
 **KN-669**, **KN-670**, **KN-618** (4be8a8e), **KN-675** (23e188e), **KN-626** (4c099cb),
-**KN-678** (6b32e24), **KN-651** (c083050), **KN-679** (7bc88a7), **KN-680** (3e5c29e), **KN-666** (739df0c).
+**KN-678** (6b32e24), **KN-651** (c083050), **KN-679** (7bc88a7), **KN-680** (3e5c29e), **KN-666** (739df0c), **KN-668** (35fa6e0).
 **Dropped**: KN-657, and **KN-663** (de6157c) — filed on a false premise, found by its own plan
 review before anything was built: `i18n.test.ts` line 7 has asserted the English identity map over
 every entry since 2026-09-08, `e3150cc`, eight days before the card. Its account of KN-565 was wrong
@@ -69,7 +69,14 @@ the guard checks "every callback", which it cannot. Writing the lesson is not ap
 **KN-662**, the two Empty State bodies; **KN-671**, the two-tabs spec's Persian locators;
 **KN-627**, widened to BOTH shells, since `PanelModal` now carries Modal's `trim()` predicate and so
 its zero-width gap — two separate predicates that merely match, so each must be changed explicitly;
-**KN-672**, **KN-673**, **KN-674** from KN-618; **KN-676** and **KN-677** from KN-675.
+**KN-672**, **KN-673**, **KN-674** from KN-618; **KN-676** and **KN-677** from KN-675; **KN-681**,
+the strict rgb-to-hex parser now copied into five stories files, and **KN-682**, its comment saying
+a zero-defaulting parser would pass whatever it is drawn in, which is true in light and backwards in
+dark, both from KN-666. **KN-683 IS FOR THE OWNER**: five more informational lines draw
+`text/secondary` at 4.3929 on `bg/surface-secondary`, and the one-change repair walks a
+Figma-defined token across 43 text sites, which is theirs to decide and not mine. **KN-684** records
+why a static `sx` scan cannot derive real colour pairs, which is the outcome KN-668's exit
+permitted.
 
 **Still waiting on the owner**: KN-515, KN-516, KN-517; the Search Bar and Sort Control taking
 KN-275's `border/control`; **KN-486**, the `fetch`-stubbing tests of `extraction.service.ts`. The
@@ -115,29 +122,30 @@ database tests are run directly, `npx vitest run src/database`, 68.
 
 ## The next step
 
-**KN-668 is in progress**, medium, 1 point, web — KN-591's last open child. Its plan is written
-beside the work at `apps/web/src/screens/` and is **with the reviewer**; nothing is built yet.
+**KN-672 is in progress**, medium, 1 point, web, out of KN-618's roast. Its plan is written beside
+the work at `apps/web/src/app/` and is **with the reviewer**; nothing is built yet.
 
-**The card reads as one line and is not.** The notice is `AuthScreen.tsx` 238/239, `text/secondary`
-on `bg/surface-secondary`. Computed from the tokens: that pair is **4.3929**, while the same token
-is 4.5101 on `bg/page` and 4.8345 on `bg/surface` — `bg/surface-secondary` is the only surface where
-it falls short. Searching the product found nineteen uses of that surface and **six real text sites
-at 4.3929**: the notice; `JobModal.tsx` 344/345 the skill chips and 547/550 the drop zone; and
-`KanbanColumn.tsx` 153, 234 and 263, the empty message, the header title and the count, all inside
-the column's own `frame` at 127. Two further paired sites, the job modal's open-link at 317 and its
-download button at 521, hold **icons**, so they take WCAG 1.4.11's 3 to one and are not defects.
+**The gap is a press that nothing crosses.** `SettingsControl.tsx` holds `loaded` at line 18, passes
+`loaded={loaded}` to the dialog at 35, and its `onLoadSamples` at 41 to 44 calls `loadSamples()` and
+then `setLoaded(true)`. KN-618's `Preferences` proves the status region is present and empty before
+the press, and its `Loaded` proves a `loaded: true` render holds the message — but **neither crosses
+the press**, so dropping line 43 leaves both green while the reader hears nothing. It cannot be
+asserted inside `Preferences`, because `updateArgs` re-renders in a real Storybook and NOT under the
+Vitest runner, KN-563, which is why KN-618 split the proof in two in the first place.
 
-**So the plan's first question is six site edits or one token walk.** Walking `text/secondary` one
-step of lightness from `#6b7280` gives **`#69707d`**: 4.5277 on `bg/surface-secondary`, 4.6485 on
-`bg/page`, 4.9829 on `bg/surface`. That is the `border/control` precedent, DESIGN's table line 103.
-The risk to weigh is that the token has 43 text sites and `darkMode.ts` derives the DARK palette
-from this very value, so dark shifts with it and must be re-run rather than assumed.
+**The cover the roast suggested exists, and was checked rather than trusted.** `App.stories.tsx`
+line 321 already presses that button, inside `laidOutAsTheFrames`, a helper at 279 to 390 shared by
+`LaidOutAsTheFrames` and its English twin. The meta is `App/Shell` with `component: App` behind a
+real `AuthProvider`, so a story there runs the real `useRecords`, `SettingsControl` and
+`loadSamples` — the product's own state, which is exactly what the exit distinguishes from story
+args. One thing not to conflate: line 325's `region` count is the board's columns, while this card's
+region is `role="status"`.
 
-**The second question is the exit's own second half**: extend the guard from a list of tokens to
-real PAIRS. A hand list would rot; this repository reads the repository instead, as `catalog.test.ts`
-scans for ids and `guard.test.ts` defers to Storybook's indexer. Whether a guard can honestly derive
-pairs from `sx`, given a text colour inherits through nesting, is the question — and the exit
-already permits a card saying why not, which beats a guard that looks thorough and is not.
+**The plan's question** is a dedicated story against folding the assertion into that geometry
+helper. I lean to the dedicated one, for the same reason the contrast assertion was kept out of
+`codeAsTheFramesIn` in KN-668, and the honest counter is that an App boot is heavy and the press is
+already there. The control is the exit's own words: remove line 43's `setLoaded(true)` and the new
+assertion must fail.
 
 ## What to read first
 
