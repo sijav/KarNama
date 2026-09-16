@@ -89,8 +89,8 @@ test('a tab part way through signing in is signed in by another tab', async ({ c
   there.on('pageerror', (error) => errors.push(error.message))
   await signedIn(there, '')
   await there.goto('/')
-  await here.getByLabel('اسم و فامیل').fill('سارا محمدی')
-  await here.getByRole('button', { name: 'ادامه' }).click()
+  await here.getByLabel('نام و نام خانوادگی').fill('سارا محمدی')
+  await here.getByRole('button', { name: 'شروع کن' }).click()
   await expect(here.getByRole('heading', { level: 1 })).toHaveText('فرصت‌های شغلی من')
   await expect(there.getByRole('heading', { level: 1 })).toHaveText('فرصت‌های شغلی من')
 
