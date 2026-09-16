@@ -13,6 +13,12 @@ Project **KarNama** · 307 of 663 tasks done · 644 of 1283 points.
 | 1 | OKR-1 | MVP: the pages | now | 213 | 229 |
 | 2 | OKR-2 | Everything after the MVP | later | 134 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-589` | The sign-in frames promise a text message the mocked provider never sends | medium | 1 | design | none | The owner has chosen the Login body and the code step's line while the provider is mocked, DESIGN.md records it, and both steps say it at 1440 and 390 in both languages. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 307 of 663 tasks done · 644 of 1283 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (338)
+## Backlog (337)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -82,7 +88,6 @@ Project **KarNama** · 307 of 663 tasks done · 644 of 1283 points.
 | `KN-186` | The plan-beside-the-work rule has no answer when the work IS in .claude | medium | 1 | agent | none | Both projects' rules say where a plan goes when the work itself is inside .claude, whichever answer is chosen, and the KN-181 plan is moved there and tracked so it cannot vanish. |
 | `KN-300` | The story docs and the plans under apps/web/src carry em dashes the documentation rule forbids | medium | 1 | docs | none | No .md under apps/web/src carries an em dash, checked with a Unicode-aware matcher, the English ones rewritten with commas and the Persian with the Persian comma, and the Docs pages for the App shell, the Checkbox and the Filter Chip still render in both languages. |
 | `KN-328` | The file's mobile Jobs bar holds 448 of content in 358, so its close and count hang 45 outside it | medium | 1 | design | none | The owner or the file settles the Bulk Action Bar's layout on a phone, and the component follows it. |
-| `KN-589` | The sign-in frames promise a text message the mocked provider never sends | medium | 1 | design | none | The owner has chosen the Login body and the code step's line while the provider is mocked, DESIGN.md records it, and both steps say it at 1440 and 390 in both languages. |
 | `KN-590` | The sign-in note names terms and a privacy policy KarNama does not have | medium | 1 | design | KN-630 | The owner has chosen what the sign-in note says and what it links to, DESIGN.md records it, and the Login step shows it in both languages. |
 | `KN-591` | The sign-in note is drawn in text/disabled, 2.54 to one on bg/surface, under the 4.5 its 12 pixel text needs | medium | 1 | design | none | The owner has chosen: the note takes a colour at 4.5 to one or more on bg/surface in both schemes, which a story reads, or DESIGN.md records the owner's acceptance of 2.54 with the reason. |
 | `KN-601` | The two-tabs e2e's second test waits for a name field and a button the signup step does not have, so it always times out | medium | 1 | web | none | two-tabs.spec.ts finds the signup step by its own words, «نام و نام خانوادگی» and «شروع کن», and both its tests pass on desktop against a fresh build. |
@@ -10521,7 +10526,7 @@ Found by KN-518 reading of the sign-in frames with use_figma, 2026-09-15. Auth D
 
 ### `KN-589` The sign-in frames promise a text message the mocked provider never sends
 
-- **status** backlog · **severity** medium · **points** 1 · **area** design · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 1 · **area** design · **objective** OKR-1
 - **blocked by** none
 
 Found by Codex's review of KN-518's plan, 2026-09-15. Auth Login 407:6951 and 407:7022 say «شماره موبایلت را وارد کن؛ یک کد پنج‌رقمی برایت پیامک می‌کنیم.», we will text you a five digit code, and Auth Code 407:6972 and 407:7043 say «کد پنج‌رقمی را به ۰۹۱۲ ۳۴۵ ۶۷۸۹ پیامک کردیم.», we texted the code to the number. DESIGN.md section 3 mocks the provider for the MVP, so no SMS is sent, and the code step's notice says plainly that no message is really sent and shows the code, KN-459. KN-518 keeps the app's wording for those two lines: «شماره موبایلت را وارد کن», the file's first clause, and «ارسال شده به» with the number.
