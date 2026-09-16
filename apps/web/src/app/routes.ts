@@ -13,10 +13,18 @@ import { DESTINATION_IDS, type Destination } from '../shared/navigation'
  * The path each destination answers to, under the base the router carries as its
  * basename.
  *
- * Every router is told its paths; this says them once. The mapped type ties each
- * to its own key, so a destination added with no route, or a route pointed at the
- * wrong page, is a type error rather than a page that quietly falls through to the
- * board.
+ * Every router is told its paths; this says them once.
+ *
+ * **What the mapped type enforces**, asked of the compiler rather than assumed,
+ * KN-701: an entry for EVERY destination, and each entry's value being its own
+ * key's path. So a destination added without an entry is a type error, and
+ * `{ jobs: '/network' }` is one too.
+ *
+ * **What it does NOT enforce**: that a `<Route>` exists for a destination, or which
+ * element a route renders. A destination with an entry and no route compiles, and
+ * the wildcard route in `App.tsx` then draws the board for it. **The type permits
+ * the gap; the ROUTE decides what a reader sees in it.** This comment used to say
+ * the type caught both, which it never did.
  *
  * Named rather than written at each `<Route>` for a second reason. A bare `/add`
  * in a prop is an address and not copy, but the string rule cannot tell, and
