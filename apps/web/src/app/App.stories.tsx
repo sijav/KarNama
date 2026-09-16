@@ -319,6 +319,17 @@ const laidOutAsTheFrames = async (canvasElement: HTMLElement, i18n: I18n) => {
     await userEvent.click(canvas.getByRole('button', { name: i18n._('Settings') }))
     const settings = await body.findByRole('dialog')
     await userEvent.click(within(settings).getByRole('button', { name: i18n._('Load sample data') }))
+    // The press is this helper's own setup — the board needs records to measure — so the helper
+    // checks that the setup worked, KN-672. It also crosses the one gap KN-618 left: Preferences
+    // proves the region is empty before the press and Loaded proves a loaded:true render holds the
+    // message, but neither crosses the press itself, so dropping setLoaded(true) from
+    // SettingsControl left both green and the reader hearing nothing. Read inside the dialog, while
+    // it is still open, and never the board's own region landmarks.
+    await waitFor(async () => {
+      await expect(within(settings).getByRole('status')).toHaveTextContent(
+        i18n._('Sample data loaded. Open your board or network to explore it.'),
+      )
+    })
     await userEvent.click(within(settings).getByRole('button', { name: i18n._('Done') }))
     await waitFor(async () => {
       await expect(body.queryByRole('dialog')).toBeNull()
