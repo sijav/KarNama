@@ -2,11 +2,12 @@ import { setupI18n } from '@lingui/core'
 import { useLingui } from '@lingui/react'
 import type { StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import type { Locale } from '../../i18n'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
 import { Button } from '../button'
+import { passOnUnmarked } from '../console-guard'
 import { Input } from '../input'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { PanelModal, type PanelModalProps } from './PanelModal'
@@ -262,5 +263,38 @@ export const WithoutAVisualViewport: Story = {
     const root = rootOf(dialog)
     await expect([root.getBoundingClientRect().top, root.getBoundingClientRect().height]).toEqual([0, window.innerHeight])
     await userEvent.keyboard('{Escape}')
+  },
+}
+
+// The product's own reports held back and read, anything unmarked handed on to the
+// guard, KN-522, as the smaller shell's stories and the Tooltip's hold theirs.
+const captureConsoleErrors = () => {
+  const through = console.error.bind(console)
+  const spy = spyOn(console, 'error').mockImplementation(passOnUnmarked(through))
+  return () => {
+    spy.mockRestore()
+  }
+}
+
+export const ReportsABlankTitle: Story = {
+  // A title of one space, which names nothing, KN-626; its Controls are off, since
+  // the play is about that title alone. The panel is asked to open directly rather
+  // than through the trigger: a dialog missing after a press is also what an
+  // unpressed trigger leaves behind, so the press could pass for the wrong reason,
+  // and no waitFor mends that, since an absence passes on its first poll. Asked to
+  // open, the panel draws nothing at all. The stories above prove the trigger opens
+  // a real one.
+  args: { title: ' ', open: true },
+  globals: { locale: 'fa-IR' },
+  parameters: { controls: { disable: true } },
+  beforeEach: captureConsoleErrors,
+  render: (args) => <PanelModal {...args} />,
+  play: async ({ canvasElement }) => {
+    // The panel says so as the product's own diagnostic, as the smaller shell does,
+    // and draws no dialog where an unnamed one would have been drawn.
+    await waitFor(async () => {
+      await expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/title is blank/))
+    })
+    await expect(within(canvasElement.ownerDocument.body).queryByRole('dialog')).toBeNull()
   },
 }

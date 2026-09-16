@@ -17,7 +17,9 @@ Whether the modal is showing.
 
 ### title
 
-The modal's title, already in the reader's language. It names the dialog.
+The modal's title, already in the reader's language. It names the dialog, so a
+blank one is reported at the console as the product's own diagnostic, and no
+dialog is drawn.
 
 ### width
 
@@ -65,3 +67,8 @@ the keyboard as it grows and the page as it scrolls under it.
 
 A browser without a visual viewport: the modal covers the window, as it always
 did.
+
+### ReportsABlankTitle
+
+A title of one space, which names nothing: the modal reports it at the console,
+and pressing the trigger opens no dialog.

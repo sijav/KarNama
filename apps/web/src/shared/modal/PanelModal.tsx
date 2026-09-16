@@ -1,7 +1,8 @@
 import { useLingui } from '@lingui/react'
 import { Box, Dialog } from '@mui/material'
-import { useId, useSyncExternalStore, type ReactNode } from 'react'
+import { useEffect, useId, useSyncExternalStore, type ReactNode } from 'react'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
+import { report } from '../console-guard'
 import { IconButton } from '../icon-button'
 
 // The props are documented in story-docs, not here, KN-207.
@@ -63,6 +64,19 @@ export const PanelModal = ({ open, title, width, onClose, children, actions, asi
   const titleId = useId()
   const viewTop = useSyncExternalStore(onVisualViewport, seenTop)
   const viewHeight = useSyncExternalStore(onVisualViewport, seenHeight)
+  // The title names the dialog, so a blank one would leave it unnamed, KN-626, as
+  // KN-345 found for the smaller shell. No type can see a title the catalog hands
+  // over at run time, so the panel refuses it: it says so as the product's own
+  // diagnostic and draws no dialog at all. The check stands after every hook above,
+  // since a return among them would change the hook order between renders.
+  const unnamed = title.trim() === ''
+  useEffect(() => {
+    if (!unnamed) return
+    report(
+      'PanelModal: its title is blank, so the dialog would have no accessible name, and it is not drawn. Give it the words that say what it is for.',
+    )
+  }, [unnamed])
+  if (unnamed) return null
   return (
     <Dialog
       open={open}
