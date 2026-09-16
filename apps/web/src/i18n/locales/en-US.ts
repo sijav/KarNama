@@ -105,9 +105,9 @@ export const messages: Record<string, string> = {
   Button: 'Button',
   Back: 'Back',
   'Add job opportunity': 'Add job opportunity',
-  'You have not added a job posting yet': 'You have not added a job posting yet',
-  'Add your first posting by its link or its text, and follow it from here.':
-    'Add your first posting by its link or its text, and follow it from here.',
+  'You have not added a job opportunity yet': 'You have not added a job opportunity yet',
+  'Add your first job opportunity from the link or text of a posting, and follow it from here.':
+    'Add your first job opportunity from the link or text of a posting, and follow it from here.',
   'You have not added anyone to your network yet': 'You have not added anyone to your network yet',
   'Keep the people you meet on the way to a job here: recruiters, managers, future teammates.':
     'Keep the people you meet on the way to a job here: recruiters, managers, future teammates.',

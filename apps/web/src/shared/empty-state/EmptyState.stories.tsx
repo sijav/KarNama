@@ -22,8 +22,8 @@ const specimens = (locale: Locale): Record<'jobs' | 'contacts' | 'search', Copy>
   const add = i18n._('Add job opportunity')
   return {
     jobs: {
-      title: i18n._('You have not added a job posting yet'),
-      body: i18n._('Add your first posting by its link or its text, and follow it from here.'),
+      title: i18n._('You have not added a job opportunity yet'),
+      body: i18n._('Add your first job opportunity from the link or text of a posting, and follow it from here.'),
       actionLabel: add,
     },
     contacts: {

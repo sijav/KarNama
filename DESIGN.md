@@ -429,6 +429,16 @@ It is decorative, so no contrast rule applies, and it is drawn as the file
 draws it; whether it should be `bg/surface` or carry an illustration is the
 owner's call.
 
+**The file's own copy calls the record «آگهی» here.** Both `243:64` and
+`305:1833` are titled «هنوز آگهی‌ای اضافه نکردی» over a body that says «آگهی»
+for the record as well, while the button of the very same instance says
+«افزودن فرصت شغلی». Section 3's terminology rule is the file's own and has no
+exception, so the code says «هنوز فرصت شغلی‌ای اضافه نکردی» and keeps «آگهی»
+for the link or the text pasted, KN-329 and KN-565. This copy is absent from
+the sixteen renames of frame `505:3`, which did rename the neighbouring
+column's empty message, so it is an omission from that pass rather than an
+exemption. The two instances' bodies differ from each other as well, KN-662.
+
 ### The Loading State says why it is slow
 
 Node `159:92` is three dots of 10, spacing/2xs apart, in `border/focus`, the

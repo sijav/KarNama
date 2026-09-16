@@ -109,9 +109,9 @@ export const messages: Record<string, string> = {
   Button: 'دکمه',
   Back: 'بازگشت',
   'Add job opportunity': 'افزودن فرصت شغلی',
-  'You have not added a job posting yet': 'هنوز آگهی‌ای اضافه نکردی',
-  'Add your first posting by its link or its text, and follow it from here.':
-    'اولین آگهی‌ات را با لینک یا متن آگهی اضافه کن تا از همین‌جا پیگیری‌اش کنی.',
+  'You have not added a job opportunity yet': 'هنوز فرصت شغلی‌ای اضافه نکردی',
+  'Add your first job opportunity from the link or text of a posting, and follow it from here.':
+    'اولین فرصت شغلی‌ات را با لینک یا متن آگهی اضافه کن تا از همین‌جا پیگیری‌اش کنی.',
   'You have not added anyone to your network yet': 'هنوز کسی رو به شبکه‌ت اضافه نکردی',
   'Keep the people you meet on the way to a job here: recruiters, managers, future teammates.':
     'آدم‌هایی را که در مسیر استخدام با آن‌ها در ارتباطی اینجا نگه دار: ریکروترها، مدیرها، هم‌تیمی‌های آینده.',

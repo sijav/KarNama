@@ -164,6 +164,9 @@ test("one reader never sees another reader's archive", async ({ page }) => {
   await page.getByRole('button', { name: 'شروع کن' }).click()
 
   // The board they get is their own, which is empty, KN-421.
-  await expect(page.getByText('هنوز آگهی‌ای اضافه نکردی')).toBeVisible()
+  await expect(page.getByText('هنوز فرصت شغلی‌ای اضافه نکردی', { exact: true })).toBeVisible()
+  await expect(
+    page.getByText('اولین فرصت شغلی‌ات را با لینک یا متن آگهی اضافه کن تا از همین‌جا پیگیری‌اش کنی.', { exact: true }),
+  ).toBeVisible()
   await expect(page.getByRole('article').filter({ hasText: SECRET })).toHaveCount(0)
 })

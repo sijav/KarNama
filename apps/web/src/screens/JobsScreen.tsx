@@ -393,10 +393,10 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
       {empty ? (
         <Box sx={{ padding: `${gutterOf(wide)}px` }}>
           <EmptyState
-            title={records.jobs.length === 0 ? i18n._('You have not added a job posting yet') : i18n._('No results found')}
+            title={records.jobs.length === 0 ? i18n._('You have not added a job opportunity yet') : i18n._('No results found')}
             body={
               records.jobs.length === 0
-                ? i18n._('Add your first posting by its link or its text, and follow it from here.')
+                ? i18n._('Add your first job opportunity from the link or text of a posting, and follow it from here.')
                 : i18n._('Nothing matches this search. Try other words or remove the filters.')
             }
             actionLabel={i18n._('Add job opportunity')}
