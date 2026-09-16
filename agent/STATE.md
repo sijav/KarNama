@@ -120,8 +120,22 @@ copy already measures 0, and a NEW file must measure 0 before it is committed.
 
 ## The next step
 
-**KN-689 is in progress**, high, 2 points, web, a child of KN-016. Nothing is built and no plan is
-written yet. It was raised from medium after KN-690's roast found the same gap independently.
+**KN-689 is in progress**, high, 2 points, web, a child of KN-016. Its plan is written beside the work
+at `apps/web/src/shared/search-bar/` and is with the reviewer; nothing is built. It was raised from
+medium after KN-690's roast found the same gap independently.
+
+**The plan's decision, for the review to test: NARROW the contract**, rather than give the bar a token
+protocol. Attributing a late answer means a new prop and a new obligation on every caller of a shared
+component, for a parent shape the product does not have: `JobsScreen.tsx` line 88 and
+`NetworkScreen.tsx` line 73 are both plain `useState` setters passed straight to `onChange`, so every
+echo lands in the same commit, measured rather than assumed. It is not a scope cut, so not
+`PHASE-NEXT.md`: nothing is deferred, and what changes is that the promise stops overstating the
+behaviour. **`DESIGN.md` has no natural home for a runtime contract** — section 2 is the table of
+states Figma draws, section 3 is decisions written into the Figma annotations, section 6 is questions
+flagged in the file — so it follows section 3's own precedent at the history-tab entry, an author
+proposal labelled as such and "recorded here so it can be argued with rather than inherited as
+settled". **KN-016's exit is left exactly as written**, the boundary KN-685's review drew for KN-306:
+correct a false record, never rewrite a requirement to match what was built.
 
 **The mechanism**, re-derived from the code twice: `SearchBar.tsx` marks an attempt judged BEFORE the
 equality check, so where a controlled page has not yet echoed the reader's change, that commit still
