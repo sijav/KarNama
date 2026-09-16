@@ -167,6 +167,42 @@ test('the add flow keeps the search the board is showing, and another page drops
   await expect(page).toHaveURL(/\/network$/)
 })
 
+/**
+ * The page drawn and the tab lit cannot disagree, KN-700.
+ *
+ * A react-router route matches the WHOLE remaining pathname unless its path ends
+ * in a wildcard, and it matches case-INSENSITIVELY. A hand-written split of the
+ * path agrees with neither, so the two tests below are one defect pointing in
+ * opposite directions. Each asserts the heading AND the lit tab, because either
+ * alone passes while the two contradict each other.
+ *
+ * TWO TESTS RATHER THAN ONE, deliberately: a test stops at its first failing
+ * assertion, so a single test would have proved only its first half against the
+ * unfixed code and carried the second on its coat-tails.
+ */
+const lit = (page: Page) => navigation(page).locator('[aria-current]')
+
+test('a deeper address draws the board, and the tab says the board', async ({ page }) => {
+  await prepareBoard(page, [FIRST, SECOND])
+
+  // No page lives under /network, so the wildcard draws the board, and the tab
+  // must say the board rather than the network page.
+  await page.goto('/network/anything')
+  await expect(heading(page)).toContainText(JOBS)
+  await expect(lit(page)).toHaveCount(1)
+  await expect(lit(page)).toHaveText(JOBS)
+})
+
+test('a shouted address draws the network page, and the tab says the network page', async ({ page }) => {
+  // The router ignores case, so /NETWORK IS the network page. The hand-split did
+  // not ignore it, and lit the board's tab over the network page: the same defect
+  // as above, pointing the other way.
+  await page.goto('/NETWORK')
+  await expect(heading(page)).toContainText(NETWORK)
+  await expect(lit(page)).toHaveCount(1)
+  await expect(lit(page)).toHaveText(NETWORK)
+})
+
 // The build the e2e server serves, which its command made before the suite ran.
 const DIST = fileURLToPath(new URL('../dist/', import.meta.url))
 

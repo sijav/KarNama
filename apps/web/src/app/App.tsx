@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react'
 import Box from '@mui/material/Box'
 import { useState } from 'react'
-import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router'
+import { BrowserRouter, Route, Routes, useLocation, useMatch, useNavigate } from 'react-router'
 import { apiErrorText, extractJob } from '../core/api'
 import { useAuth } from '../core/auth'
 import { AuthScreen, JobsScreen, NetworkScreen } from '../screens'
@@ -76,8 +76,17 @@ const Shell = () => {
   // The address is the router's, and the basename is already off the front of it.
   const { pathname, search } = useLocation()
   const navigate = useNavigate()
-  const asked = pathname.replace(/^\//, '').split('/')[0] ?? ''
-  const current: Destination = asked === 'add' || asked === 'network' ? asked : 'jobs'
+  // Which destination is showing comes from the ROUTER's own match, against the
+  // same PATH values the routes below are given, so the page drawn and the tab lit
+  // cannot disagree, KN-700. Splitting the path by hand disagreed in both
+  // directions: a route matches the WHOLE remaining pathname unless it ends in a
+  // wildcard, so `/network/anything` is the board while the split said network;
+  // and matching ignores CASE, so `/NETWORK` is the network page while the split
+  // said jobs. Both are reachable, since Pages answers an unknown path with
+  // `404.html`, which is this app.
+  const network = useMatch(PATH.network)
+  const add = useMatch(PATH.add)
+  const current: Destination = network ? 'network' : add ? 'add' : 'jobs'
 
   // Everything in the archive belongs to someone, so there is nothing to show
   // until somebody has signed in and said who they are, KN-046.
