@@ -99,6 +99,14 @@ copy already measures 0, and a NEW file must measure 0 before it is committed.
 
 ## The owner's rules, most recent first
 
+- **2026-09-16, in chat, after I put a question to them nobody could read.** "what the hell are you
+  talking about? what do you mean by commit? why are you talking C10 English?... IT IS DAMN SUPER EASY
+  TO TALK LIKE THIS RATHER THAN C20 FUCKING ENGLISH NOT EVEN NATIVE ENGLISH LAWYER CAN UNDERSTAND".
+  **Write in plain words. Short sentences. No jargon**, and "commit", "provenance" and "contract" are
+  jargon. **Explain what actually happens before asking for anything**, walking it the way a user meets
+  it: the first keystroke, then a word that matches, then Enter. Then the problem, then the suggestion.
+  And **check what the code really does before asking about it**: the question I asked was about a case
+  that cannot happen, because no page uses the callback at all, which one search would have told me.
 - **2026-09-16, in chat.** "are you commiting and pushing after fixes", yes, and every close is a work
   commit, the card closed with evidence, the board rendered and committed, then a push.
 - **2026-09-16, through the question tool.** The sign-in note and the resend timer take 4.5 to one or
