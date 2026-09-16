@@ -159,7 +159,28 @@ wrong. The work is to route the screens' filtering through `onSearch` and assert
 **The test that should have caught it, and the lesson:** `apps/web/e2e/board.spec.ts` line 63, "a
 search narrows the board and says so when nothing matches", fills the real box on the real board and
 passes, and always has, **without the debounce ever running**. The scenario proves what the product
-does; nothing asserted what it should WAIT to do.
+does; nothing asserted what it should WAIT to do. It uses `fill()`, which sets the whole value at
+once, and Playwright's assertions retry, so it would pass with or without a pause and could never fail
+on its absence.
+
+**Two facts already measured, so they are not re-derived.** Raised to 5 points; the plan is beside the
+work and round two of its review is out.
+
+- **Each screen reads the search text in exactly TWO places**, counted by listing every occurrence
+  rather than trusting the review's list: `JobsScreen.tsx` 167 (`cardsOf`, filtering) and 369
+  (`value=`, the field); `NetworkScreen.tsx` 81 (`shown`, filtering) and 177 (`value=`). Everything
+  else is a comment or a message. So the split is already the code's shape: the filtering read becomes
+  the debounced value, the field's read stays immediate, and `shown`, `found`, `held`, `shownIds`,
+  `chosen` and the bulk count all follow because they derive from the filter. `sizeOf` (171) never
+  reads it. **A second, unrelated `held` sits at `JobsScreen.tsx` 589.**
+- **The clock fights the seeded board.** `board.spec.ts`'s shared `beforeEach` (42 to 49) navigates
+  twice and seeds through the REAL add flow on purpose, while `page.clock.install()` must precede the
+  first navigation, KN-587. So a clocked test cannot reuse that setup, freezing time in the shared one
+  would touch every board test, and `add()` waits on visibility twice per record, which a frozen clock
+  could hang. Unresolved, and it is the review's open question.
+- **Most story assertions survive and that is the danger**: they sit inside `waitFor`, which retries
+  past 300 ms. What rots is a bare assertion after one (`NetworkScreen.stories.tsx` 324) and prose
+  (`JobsScreen.stories.tsx` 271 says searching narrows every column "at once").
 
 **The plan's decision, for the review to test: NARROW the contract**, rather than give the bar a token
 protocol. Attributing a late answer means a new prop and a new obligation on every caller of a shared
