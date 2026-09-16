@@ -49,7 +49,9 @@ opportunities, KN-430.
 ### placeholder
 
 The grey text in the empty box, naming the fields the search looks in. Defaults
-to the board's, and follows `label` when a page searches something else.
+to the board's, and a page that searches something else passes its own, as the
+contacts page does. It is independent of `label`: giving the box a name leaves
+the board's hint exactly where it was, which `GivenOnlyAName` shows.
 
 ### onChange
 
@@ -126,3 +128,9 @@ both draw.
 ### OnAPhone
 
 A phone's bar, 358 by 44, full width inside the page's own gutters.
+
+### GivenOnlyAName
+
+Two bars, one given nothing and one given only a name: both show the board's
+hint, and only the name differs. The hint does not follow the name, so a page
+that searches something else passes its own.

@@ -1,9 +1,10 @@
+import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { useRef, useState } from 'react'
 import { useArgs } from 'storybook/preview-api'
 import { clearAllMocks, expect, fireEvent, fn, userEvent, waitFor, within } from 'storybook/test'
-import { semantic, type as typeScale } from '../../theme/tokens'
+import { semantic, spacing, type as typeScale } from '../../theme/tokens'
 import { fixtures } from '../story-fixtures'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { DEBOUNCE_MS, SearchBar, type SearchBarProps } from './SearchBar'
@@ -471,5 +472,42 @@ export const OnAPhone: Story = {
     const box = bar.getBoundingClientRect()
     await expect([box.width, box.height]).toEqual([MOBILE_WIDTH, MOBILE_HEIGHT])
     await isTheFiles(canvasElement, MOBILE_HEIGHT)
+  },
+}
+
+// Two bars, KN-691: one given nothing, one given only a name. The name is the
+// one the contacts page really passes, drawn in the render so it follows the
+// Language toolbar, as Button's and Checkbox's stories draw their copy.
+const BareAndNamed = () => {
+  const { i18n } = useLingui()
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.md}px`, width: DESKTOP_WIDTH }}>
+      <SearchBar layout="desktop" />
+      <SearchBar layout="desktop" label={i18n._('Search contacts')} />
+    </Box>
+  )
+}
+
+export const GivenOnlyAName: Story = {
+  // Two fixed instances, so there is no single component for the panel to drive.
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  render: () => <BareAndNamed />,
+  play: async ({ canvasElement }) => {
+    // The hint does not follow the name, which the docs claimed and the
+    // component has never done: each prop falls back on its own.
+    //
+    // Compared against the bare bar rather than against the catalog's own
+    // string: a story that asserted the hint equals i18n._(...) would read the
+    // value from the same catalog the component renders from, which proves the
+    // locale was chosen and nothing about the hint. The first assertion is the
+    // review's, and it is what stops two EMPTY hints passing as identical.
+    const [bare, named] = within(canvasElement).getAllByRole('searchbox')
+    if (!(bare instanceof HTMLInputElement) || !(named instanceof HTMLInputElement)) {
+      throw new Error('the story did not render two search fields')
+    }
+    await expect(bare.placeholder.length).toBeGreaterThan(0)
+    await expect(named.placeholder).toBe(bare.placeholder)
+    await expect(named.getAttribute('aria-label')).not.toBe(bare.getAttribute('aria-label'))
   },
 }
