@@ -153,9 +153,14 @@ describe('the derived palette is readable', () => {
   // palette's text and, in light, only the status chips, so the sign-in note sat
   // at 2.54 to one on the card and no test said a word about it, KN-591. The two
   // left out are left out deliberately: text/disabled, because WCAG exempts an
-  // inactive control's own label, which is the only thing that may still wear it;
-  // and text/on-accent, which is checked against the fills it actually sits on
-  // rather than against a surface it never touches.
+  // inactive control's own label, though one informational use of it remains, the
+  // sidebar's Section Label, KN-666, so that omission is provisional rather than
+  // settled, KN-669; and text/on-accent, which is checked against the fills it
+  // actually sits on rather than against a surface it never touches.
+  //
+  // What this does NOT cover: a token is asserted against bg/surface, not against
+  // the surface it is actually used on. The code step's notice draws
+  // text/secondary on bg/surface-secondary, 4.39 to one, and passes here, KN-668.
   it.each([
     ['text/primary', semantic['text/primary']],
     ['text/secondary', semantic['text/secondary']],
