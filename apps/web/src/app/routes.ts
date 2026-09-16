@@ -5,8 +5,11 @@ import { DESTINATION_IDS, type Destination } from '../shared/navigation'
  *
  * `destinationIn` and `addressOf` lived here and are gone: react-router reads the
  * address and writes it, which is the whole point of taking a library. What is
- * left is the three things it has no opinion about: which path each destination
- * answers to, an address from when the page was in the hash, and the base.
+ * left is what the router has NO OPINION about: the paths this app answers to, how
+ * it spells a search in the address and steps through one, the address from when the
+ * page was in the hash, and the base. That is a kind and not a count, deliberately:
+ * this note gave a number until KN-697 added to the module without touching the
+ * sentence, and it then read as exhaustive while being wrong, KN-708.
  */
 
 /**
@@ -22,9 +25,12 @@ import { DESTINATION_IDS, type Destination } from '../shared/navigation'
  *
  * **What it does NOT enforce**: that a `<Route>` exists for a destination, or which
  * element a route renders. A destination with an entry and no route compiles, and
- * the wildcard route in `App.tsx` then draws the board for it. **The type permits
- * the gap; the ROUTE decides what a reader sees in it.** This comment used to say
- * the type caught both, which it never did.
+ * the wildcard route in `App.tsx` then draws the board for it, for a reader the shell
+ * has let PAST ITS AUTH GATE. `Shell` returns `AuthScreen` above `<Routes>` for anyone
+ * it is still asking to sign in or to give a name, and for them an unrouted destination
+ * draws no board either. **The type permits the gap; the ROUTE decides what fills it.**
+ * This comment used to say the type caught both, which it never did, and then said the
+ * board was drawn full stop, which is true only past that gate.
  *
  * Named rather than written at each `<Route>` for a second reason. A bare `/add`
  * in a prop is an address and not copy, but the string rule cannot tell, and
