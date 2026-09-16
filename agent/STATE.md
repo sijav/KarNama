@@ -210,6 +210,25 @@ three times without opening it:
 - **Every destination serves byte-identical `index.html`**, asserted against a Pages-like server, so
   all routing is client-side over one document and nothing may depend on per-route markup.
 
+**react-router 7.18.3 is installed and pinned EXACTLY**, not `^7.18.3`, and the version is decided by
+four facts rather than a preference. Each took a probe, so they are recorded here rather than
+re-derived:
+
+1. **React peer.** 8.4.0 needs react `>=19.2.7`; the app is on **19.0.8**.
+2. **Node floor.** 8.4.0 needs node `>=22.22`; the root `package.json` declares `>=22.12.0`. This
+   machine runs node 24, which is exactly how such a mismatch goes unnoticed.
+3. **`min-release-age`, which decides it alone.** The owner keeps seven days. **8.4.0 was published
+   2026-09-15, about a day before this**, so npm refuses it whatever react and node say.
+4. **The same rule rules out 7.18.4**, published the same day. **7.18.3, 19 days old, is the newest
+   7.x that installs**, and its own engines say `node >=20`.
+
+The caret matters: `^7.18.3` admits 7.18.4, the release the rule refuses, so a fresh install elsewhere
+would resolve to something npm then rejects. **Verified by importing it**: `react-router` exports 129
+names including `BrowserRouter`, `Routes`, `Route`, `useLocation`, `useNavigate` and `useSearchParams`,
+so the declarative API is on the package itself and no `react-router-dom` is involved. A text search of
+its `index.d.ts` found NONE of them, because that file is a barrel that re-exports; **a grep of a
+barrel is a false negative machine**, and importing the module is the check that works.
+
 **KN-689's own plan says to replan from this point**, since it was written when no screen passed
 `onSearch` at all.
 
