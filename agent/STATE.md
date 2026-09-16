@@ -28,88 +28,92 @@ the job modal's form. It waits on twenty-five children. **KN-496 landed the dark
 by hand**, so `git stash@{0}` duplicates committed code; left for the owner to drop.
 
 **Closed 2026-09-16**: KN-514, KN-524, KN-535, KN-543, KN-544, KN-559, KN-658, KN-542, KN-564,
-KN-565, **KN-589** (d4b86c0), **KN-665**, **KN-667**, **KN-591** (874d4ce), **KN-601** (b5498ed),
-**KN-669**, **KN-670**, **KN-618** (4be8a8e), **KN-675** (23e188e), **KN-626** (4c099cb),
-**KN-678** (6b32e24), **KN-651** (c083050), **KN-679** (7bc88a7), **KN-680** (3e5c29e), **KN-666** (739df0c), **KN-668** (35fa6e0), **KN-672** (4a2488c), **KN-306** (d8c9d9f).
-**Dropped**: KN-657, and **KN-663** (de6157c) — filed on a false premise, found by its own plan
-review before anything was built: `i18n.test.ts` line 7 has asserted the English identity map over
-every entry since 2026-09-08, `e3150cc`, eight days before the card. Its account of KN-565 was wrong
-the same way: 484 is `catalog.test.ts`'s own count, that file was run ALONE, and a full unit run
-would have failed. **A partial run tells you what it ran, never what exists** — in `AGENTS.md` now,
-and the seventh of the day's overclaims, the only one that manufactured work.
+KN-565, KN-589, KN-665, KN-667, KN-591, KN-601, KN-669, KN-670, KN-618, KN-675, KN-626, KN-678,
+KN-651, KN-679, KN-680, KN-666, KN-668, KN-672, **KN-306** (d8c9d9f), **KN-380** (17472be),
+**KN-685** (43898ec). **Dropped**: KN-657, and **KN-663** (de6157c), filed on a false premise its own
+plan review caught.
 
-**THE E2E SUITE IS GREEN**: 93 passed, 0 failed, 9 skipped over 102 tests, from 92 and 1. KN-651
-was the last red.
+**THE E2E SUITE IS GREEN**: 93 passed, 0 failed, 9 skipped over 102 tests.
 
-**Six overclaims in one day, all mine, all one shape**, and this is the thing to watch: KN-667,
-KN-669, KN-670, KN-675, KN-679, KN-680. Absolute coverage language on a partial mechanism. The last
-two are the instructive pair: **KN-679 wrote the rule down and KN-680 was that same rule broken in
-the sentence that wrote it** — the entry recording what the story-docs guard cannot do itself said
-the guard checks "every callback", which it cannot. Writing the lesson is not applying it.
+**KN-016 was roasted as a WHOLE TASK** with KN-314, KN-315 and KN-380, the round the board calls for
+when the last child closes. Four survivors filed, **KN-689** to **KN-692**, and two clean bills worth
+keeping: KN-314's invariant holds by derivation, `onSearch` is never called with a string the field
+did not show; and the two handlers are not duplication, since extracting them would hide the
+difference between typing and clearing. The reviewer could not run the suite in its sandbox, so every
+timing claim was re-derived here before filing.
 
-**What KN-626 and KN-651 taught about proof, now in `AGENTS.md` section 7.**
+## What KN-685 established, and what it did NOT
 
-- The runner names a story's test by its **display name, spaced**, so `-t ReportsABlankTitle` matched
-  nothing, vitest said `Tests 6 skipped (6)`, exited 0, and the control read it as a pass. **A run
-  that skipped everything or ran none is a failure to run.** The same wrong name then made the
-  script's own regex miss a real failure the summary line was reporting two lines above it.
-- **A negative asserted after an interaction can pass because the interaction never happened.** A
-  dialog missing after a press is what an unpressed trigger leaves behind too. Hand the component
-  the state that must be refused and watch it refuse.
-- **`locator.check()` CLICKS even where the context has touch** — read in `playwright-core`'s bundle:
-  `_setChecked` calls `this._click(...)`. So a phone test that checks a box proves the desktop's
-  gesture, and it passes: KN-651's spec went 6 of 6 across both projects that way before the review
-  caught it. `tap()` is the touch path. Playwright 1.62 has no long press, so a held press is CDP
-  `Input.dispatchTouchEvent` with a wait on what the hold produces between start and end.
-- **The story-docs guard checks structure, never prose.** It would pass a sentence and its opposite
-  identically, so it is no evidence that a docs claim is true.
+The fixtures' two sentinels are now values **held by no other file in the repository**, measured over
+`git ls-files -z --cached --others --exclude-standard`, tracked plus non-ignored untracked, 1281
+files, compared as bytes. **The values are named nowhere**: not in the cards, the plans, the evidence,
+the commit messages, this file, or the verifier's output, which prints their count and lengths only.
+That is the fix rather than fastidiousness: `todo render` writes every description into the board and
+the database is committed, so **naming a value is what puts it in the repository**, and it had already
+disqualified all three replacements the card itself proposed. Read the values from the two JSON files.
 
-**Open and worth knowing**: **KN-668**, the code step's notice at 4.3929 on `bg/surface-secondary`;
-**KN-664**, the resend controls presuppose a send; **KN-666**, the sidebar's «فضای کار» label;
-**KN-662**, the two Empty State bodies; **KN-671**, the two-tabs spec's Persian locators;
-**KN-627**, widened to BOTH shells, since `PanelModal` now carries Modal's `trim()` predicate and so
-its zero-width gap — two separate predicates that merely match, so each must be changed explicitly;
-**KN-672**, **KN-673**, **KN-674** from KN-618; **KN-676** and **KN-677** from KN-675; **KN-681**,
-the strict rgb-to-hex parser now copied into five stories files, and **KN-682**, its comment saying
-a zero-defaulting parser would pass whatever it is drawn in, which is true in light and backwards in
-dark, both from KN-666. **KN-683 IS FOR THE OWNER**: five more informational lines draw
-`text/secondary` at 4.3929 on `bg/surface-secondary`, and the one-change repair walks a
-Figma-defined token across 43 text sites, which is theirs to decide and not mine. **KN-684** records
-why a static `sx` scan cannot derive real colour pairs, which is the outcome KN-668's exit
-permitted.
+**NOT established: that they stay unique.** A search settled it once; nothing re-checks it, and the
+verifier says so in its own closing lines. A value copied into shipped source later makes a bundle hit
+ambiguous.
+
+**My plan was wrong first and the review caught it**, which is the part to carry: I argued the exit
+condition was unsatisfiable and proposed replacing it with a property of my own. That was a false
+generalisation from "the values I named are disqualified" to "no value can qualify". It is the mirror
+of the overclaim this repository keeps recording against me, and worse, because an overclaim ships a
+weak check while a false impossibility rewrites the requirement. All four lessons are in `AGENTS.md`
+section 7 now.
+
+## Open children, and what is waiting
+
+**From KN-016**: **KN-689**, a parent that answers one commit late loses the search, where KN-016's
+exit promises the final keystroke is never dropped; **KN-690**, the "at once" claims about clearing,
+in three sites and both languages; **KN-691**, the docs say `placeholder` follows `label`, which the
+component has never done; **KN-692**, no story pins that a layout change leaves a pending search
+alone.
+
+**KN-062 waits on three**: KN-686, KN-687, KN-688.
+
+**Also open**: KN-681 and KN-682 from KN-666; KN-684 from KN-668; KN-673 and KN-674 from KN-618;
+KN-676 and KN-677 from KN-675. **KN-683 IS FOR THE OWNER**: walking `text/secondary` to a readable
+value touches a Figma-defined token across 43 sites, which is theirs to decide.
 
 **Still waiting on the owner**: KN-515, KN-516, KN-517; the Search Bar and Sort Control taking
-KN-275's `border/control`; **KN-486**, the `fetch`-stubbing tests of `extraction.service.ts`. The
-Codex log the owner pasted holds the Groq key; never repeat that key anywhere.
+KN-275's `border/control`; **KN-486**, the `fetch`-stubbing tests of `extraction.service.ts`. Owner
+decided and still to build: KN-588, KN-630, KN-590, KN-616. The Codex log the owner pasted holds the
+Groq key; never repeat that key anywhere.
 
 **Roasts run on Codex terra, pinned**: every roast and plan review passes `--model gpt-5.6-terra`.
-`roast.py` takes the work as `--did`, the file list as `--files`, the diff as `--diff`; a plan goes
-in `--did` too, and omitting `--fresh` resumes that mode's session so a re-review sees its own
-earlier round. `todo roast` needs `--file`, the reviewer's answer file, and `--filed none` when a
-round finds nothing.
+`roast.py` takes the work as `--did`, the file list as `--files`, the diff as `--diff`; a plan goes in
+`--did` too, and omitting `--fresh` resumes that mode's session so a re-review sees its own earlier
+round. `todo roast` needs `--file`, and `--filed none` when a round finds nothing.
 
 ## What fails, measured 2026-09-16
 
-The unit project is 1529 of 1531: the two are `session.test.ts` under load, KN-551, which passes
-alone 2 of 2 every time. The storybook project loses whichever pointer-driven stories run beside
-each other, KN-365. **The e2e suite passes whole**; **"a fresh build" means `CI=1`**, since the
-config reuses a running server otherwise, and its webServer runs `tsc --noEmit` first, so a mutation
-that leaves a symbol unused stops the server rather than failing a test. `App.tsx` line 107
-uncovered, KN-491. The API's gate fails on `extraction.service.ts`, KN-486, so the api workspace's
-database tests are run directly, `npx vitest run src/database`, 68.
+The unit project is **1529 of 1531 over 42 of 43 files**, measured twice today either side of a
+fixture change and identical both times: the two are `session.test.ts` under load, KN-551, by name,
+`keeps demo authentication separate from a stored server token` and its live twin, and they pass
+alone. The storybook project loses whichever pointer-driven stories run beside each other, KN-365.
+**The e2e suite passes whole**; **"a fresh build" means `CI=1`**, since the config reuses a running
+server otherwise, and its webServer runs `tsc --noEmit` first, so a mutation that leaves a symbol
+unused stops the server rather than failing a test. `App.tsx` line 107 uncovered, KN-491. The API's
+gate fails on `extraction.service.ts`, KN-486, so the api workspace's database tests are run directly,
+`npx vitest run src/database`, 68.
+
+**eslint runs from `apps/web`**, which is where the config is; the root has none. The root `lint`
+script runs per workspace and `agent/` is not one, so **nothing lints `agent/scripts` at all**: a
+verifier's cover is Prettier drift and `node --check`.
 
 ## The owner's rules, most recent first
 
-- **2026-09-16, in chat.** "are you commiting and pushing after fixes" — yes, and the answer given
-  was the record rather than a reassurance: every close is a work commit, the card closed with
-  evidence, the board rendered and committed, then a push.
-- **2026-09-16, through the question tool.** The sign-in note and the resend timer take 4.5 to one
-  or better, KN-591. Asked in the same breath which wording the mocked sign-in steps should use:
-  "Is that really important that you stopped working for? Who cares!" **So a question of that kind
-  is not asked again.** Where a rule already decides a thing, the rule decides it.
+- **2026-09-16, in chat.** "are you commiting and pushing after fixes", yes, and every close is a work
+  commit, the card closed with evidence, the board rendered and committed, then a push.
+- **2026-09-16, through the question tool.** The sign-in note and the resend timer take 4.5 to one or
+  better, KN-591. Asked in the same breath which wording the mocked sign-in steps should use: "Is that
+  really important that you stopped working for? Who cares!" **So a question of that kind is not asked
+  again.** Where a rule already decides a thing, the rule decides it.
 - **2026-09-15, through the question tool.** The phone's add form keeps the title first, KN-358. The
-  first sign-in may skip the name, "As Figma", KN-588. KarNama writes terms and privacy pages and
-  the sign-in note links to them, KN-590 and KN-630. The Loading State turns an arc, KN-616.
+  first sign-in may skip the name, "As Figma", KN-588. KarNama writes terms and privacy pages and the
+  sign-in note links to them, KN-590 and KN-630. The Loading State turns an arc, KN-616.
 - **2026-09-14.** The board is the todo skill's database. The shared skills serve ALL projects: a
   change only adds. A model's work is never roasted by that model. "It should look like the figma."
   The owner reads on a phone: literal truth, no excuses. An instruction carries its date.
@@ -117,67 +121,31 @@ database tests are run directly, `npx vitest run src/database`, 68.
   extraction. Commit and push after work. Never ask the owner to redeploy when nothing changed.
 - **2026-09-11.** Push after every close. Only new component cards and their blockers are `critical`.
   No proof at the close. Roasts stay. A finding about the loop is `low`. **Do not invent gates.**
-- **A finding is a CHILD of its task**, one level, with `--area` and `--okr`. **Plans live beside
-  the work**, checked by `roast.py plan` before building, and they stay.
+- **A finding is a CHILD of its task**, one level, with `--area` and `--okr`. **Plans live beside the
+  work**, checked by `roast.py plan` before building, and they stay.
 
 ## The next step
 
-**KN-380 is in progress**, medium, 2 points, web, a child of KN-016 from the KN-314 roast. Its plan
-is written beside the work at `apps/web/src/shared/search-bar/`; nothing is built yet.
+**KN-690 is in progress**, medium, 1 point, web, a child of KN-016. Nothing is built and no plan is
+written yet.
 
-**Four findings, one cause, all four confirmed by reading `SearchBar.tsx` rather than taken from the
-card.** The bar decides whether to search by comparing `typed.current` with the shown `text`, when
-the question is whether THIS user change reached the field. So: a parent that ignores the clear gets
-`onSearch('')` at once AND the orphaned «foo» timer later, because `text` never changes so the
-effect never re-runs and its cleanup never cancels; a parent that normalises `F` to `f` gets no
-search at all, which the pre-KN-314 code did give; a parent that resets then restores gets a search
-the user never made; and `search.current = onSearch` is written in a passive effect, so a timer due
-between a commit and that effect calls the previous callback.
-
-**The design is the card's own**: record for each USER change the text shown before it, its kind and
-an always-differing count; one effect judges that record — already handled means cancel only, `text
-=== before` means the parent ignored it, otherwise search what the field now shows, at once for a
-clear and after the pause for typing; and the ref moves to `useLayoutEffect`. `clear()` calling
-`onSearch('')` directly is finding 1 and goes.
-
-**KN-306 closed at d8c9d9f** and with it the LAST child of KN-062, so the board called for a
-whole-task roast of KN-062 with KN-305 and KN-306; it is running. KN-062's own evidence claims
-`story-fixtures.test.ts` asserts the fixtures never reach the production bundle — the claim KN-306
-showed was false as stated — so that round has something real to judge.
-
-**The defect.** `story-fixtures.test.ts` scans shipped SOURCE for a `story-fixtures` import
-specifier, and its "can fail" case tests that regex against a literal string rather than planting an
-import. Its glob is `.ts` and `.tsx` only, so a JSON route or an alias is invisible to it, and a
-convention about source is not the artifact. **This repository already learned this once**:
-`agent/scripts/lib/verify.mjs` opens by recording that KN-058's first verifier sliced source between
-two markers, "which tests text rather than behaviour".
-
-**Measured against a CURRENT build**, 16:12, after HEAD: none of the sentinels appears in `dist`,
-the sourcemap included — so the fixtures do not ship today and this is a weak test, not a live leak.
-An earlier reading of mine used a 15:10 build and was stale. **Sentinels must be per language**:
-`en-US.json` has "Pars New Technologies", each candidate in exactly one file under `src`, while
-`fa-IR.json` has «فناوران نوین پارس», not a transliteration.
-
-**The convention it must follow**, and it decides the hard part. Verifiers are named for their card,
-are thin CLIs over `agent/scripts/lib/`, and ARE the proof — there are no test files under `agent/`.
-AGENTS.md holds them to "it fails when the thing it checks is broken, proved by mutation". And
-`fixtures/always-fails.mjs` is committed rather than written at test time "so a verifier that uses
-it stays runnable in a read-only working tree, which is where a reviewer runs it" — so a proof that
-plants an import and rebuilds cannot be the in-script one.
-
-**KN-672 closed at 4a2488c** with a clean roast. Its assertion was folded into `laidOutAsTheFrames`
-rather than given its own story, over my lean, because loading the samples IS that helper's own
-setup — the rule from it is in `AGENTS.md` at 8e50f2f.
+Three sentences say clearing searches "at once" or "straight away" without the condition they
+actually carry, and the Persian says it with «بی‌درنگ»: `SearchBar.tsx` line 56, and in both
+story-docs files the opening paragraph and the `onSearch` entry. KN-380 moved that call out of
+`clear()` into the effect, so it runs after the field commits as empty rather than inside the handler,
+and it does **not** run at all where the parent refuses the clear, which is exactly what the
+`ClearIgnored` story asserts. Its exit asks that each of the three sites say what happens, naming
+`Clearing` and `ClearIgnored` as the two cases, in both languages.
 
 ## What to read first
 
-`AGENTS.md` section 7, `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, `todo show KN-663`, and
-`apps/web/src/i18n/catalog.test.ts`. **Never chain a check through a pipe into a commit or a close,
-write long scripts with the Write tool, and keep apostrophes out of single-quoted strings in
-scripts.** A backgrounded run's "exit code 0" is the shell line's, not the runner's, and a run that
-skipped every test exits 0 too: **read the summary line, and refuse it on "skipped" or a zero
-total** — and keep "could not run" distinct from "does not hold". When a script edits several files,
-compute them all in memory and write only if every count matches. A story proves a rendered line
-only where the story itself pins the global. And check a path before asserting it: `panel-modal/`,
-`console-guard/` and `playwright-core` under `apps/web` were all wrong guesses on 2026-09-16, each
-costing a round.
+`AGENTS.md` section 7, `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, and for this card
+`apps/web/src/shared/search-bar/SearchBar.tsx` with both `Shared-SearchBar.md` files. **Never chain a
+check through a pipe into a commit or a close, write long scripts with the Write tool, and keep
+apostrophes out of single-quoted strings in scripts.** A backgrounded run's "exit code 0" is the shell
+line's, not the runner's, and a run that skipped every test exits 0 too: **read the summary line, and
+refuse it on "skipped" or a zero total**, keeping "could not run" distinct from "does not hold". When
+a script edits several files, compute them all in memory and write only if every count matches. A
+story proves a rendered line only where the story itself pins the global. Drift is **Prettier** drift,
+lines a format would change, HEAD's copy against the worktree's; `prettier --write` is safe only on a
+file whose committed copy already measures 0.
