@@ -101,6 +101,15 @@ the card's own surface, and the note in the colour that clears the contrast its
 
 The countdown under the code step, read the same way in the dark scheme.
 
+### NoticeIsReadable
+
+The mock notice under the code step, its own sentence read against its own panel
+rather than against the card behind it.
+
+### NoticeIsReadableInDark
+
+The same reading in the dark scheme.
+
 ### SignupAsTheFrames
 
 The first login's step at both widths, measured against the same card, with the

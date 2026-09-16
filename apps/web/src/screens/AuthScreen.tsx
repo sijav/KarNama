@@ -235,7 +235,12 @@ export const AuthScreen = () => {
             gap: `${spacing.sm}px`,
             padding: `${spacing.sm}px ${spacing.md}px`,
             borderRadius: `${theme.karnama.radius.md}px`,
-            backgroundColor: theme.karnama.semantic['bg/surface-secondary'],
+            // bg/page rather than bg/surface-secondary, KN-668: text/secondary on that surface is
+            // 4.3929, under the 4.5 the decision of 2026-09-16 set for informational text, and on
+            // this one it is 4.5101. The fill is the build's own to choose — the file specifies the
+            // card and the code row, not this notice, which exists only while the provider is
+            // mocked, KN-459.
+            backgroundColor: theme.karnama.semantic['bg/page'],
             color: theme.karnama.semantic['text/secondary'],
           })}
         >

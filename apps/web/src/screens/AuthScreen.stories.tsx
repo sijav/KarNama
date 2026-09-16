@@ -10,7 +10,7 @@ import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { fixtures } from '../shared/story-fixtures'
 import { holdClock } from '../shared/story-fixtures/clock'
 import { keyboardOf, type Keyboard } from '../shared/story-fixtures/keyboard'
-import { darkSemantic } from '../theme/darkMode'
+import { MIN_CONTRAST, contrast, darkSemantic } from '../theme/darkMode'
 import { elevation, semantic } from '../theme/tokens'
 import { AuthScreen } from './AuthScreen'
 
@@ -183,6 +183,23 @@ const SECOND = '25000'
 
 // The five digits the notice shows now.
 const codeOnScreen = (canvasElement: HTMLElement) => /(\d{5})/.exec(within(canvasElement).getByRole('status').textContent)?.[1] ?? ''
+
+// A computed rgb() colour as the hex the WCAG formula takes. This is a sixth copy of the strict
+// parser and KN-681 is filed to gather them into one Storybook-only helper; it throws rather than
+// defaulting a channel, so a malformed colour cannot be measured against black and read as a result.
+const hexOf = (rgb: string) => {
+  const channels = rgb.match(/\d+/g)?.slice(0, 3) ?? []
+  if (channels.length !== 3) throw new Error(`not an rgb colour: ${rgb}`)
+  return `#${channels.map((channel) => Number(channel).toString(16).padStart(2, '0')).join('')}`
+}
+
+// The mock notice read where it is drawn, KN-668: the STATUS CONTAINER's own colour against its own
+// background. The code beside the sentence is text/primary at heading size, a stronger and quite
+// different pair, so reading that one would say nothing about the sentence that was failing.
+const noticeIsReadable = async (canvasElement: HTMLElement) => {
+  const style = getComputedStyle(within(canvasElement).getByRole('status'))
+  await expect(contrast(hexOf(style.color), hexOf(style.backgroundColor))).toBeGreaterThanOrEqual(MIN_CONTRAST)
+}
 
 export const SigningInOnAPhone: Story = {
   globals: { locale: 'fa-IR' },
@@ -577,6 +594,33 @@ export const CodeTimerInDark: Story = {
       clock.release()
     }
   },
+}
+
+// The notice draws text/secondary on bg/page, 4.5101, where bg/surface-secondary gave 4.3929 —
+// under the 4.5 the decision of 2026-09-16 set for informational text, KN-668. Nothing in the
+// palette guard watches this pair and KN-684 records why it cannot, so these two assertions ARE the
+// guard for it. Persian alone: a locale changes the copy and the direction, not the colours.
+const noticeReadable: NonNullable<Story['play']> = async ({ canvasElement }) => {
+  if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+  const i18n = i18nFor('fa-IR')
+  const canvas = within(canvasElement)
+  await userEvent.type(canvas.getByLabelText(i18n._('Mobile number')), PHONE)
+  await userEvent.click(canvas.getByRole('button', { name: i18n._('Send the code') }))
+  await canvas.findByLabelText(i18n._('Five digit code'))
+  await noticeIsReadable(canvasElement)
+}
+
+export const NoticeIsReadable: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: noticeReadable,
+}
+
+export const NoticeIsReadableInDark: Story = {
+  // Dark is safe today by construction, since the dark palette ensures text/secondary against the
+  // LIGHTEST dark surface and the others are darker still; this is here because that is an
+  // inference about today's derivation, and a rendered reading outlives it.
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: noticeReadable,
 }
 
 export const SignupAsTheFrames: Story = {
