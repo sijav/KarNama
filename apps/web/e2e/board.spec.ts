@@ -1,5 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { emptyBoard, signedIn } from './session'
+import { prepareBoard } from './session'
 
 /**
  * The board, end to end, KN-043.
@@ -15,16 +15,6 @@ const OFFER = 'پیشنهاد کار'
 // What the column's menu control is called, node 259:2.
 const ACTIONS = 'کارهای وضعیت'
 
-const add = async (page: Page, title: string) => {
-  await page.getByRole('button', { name: 'افزودن فرصت شغلی' }).first().click()
-  const modal = page.getByRole('dialog')
-  await modal.getByRole('button', { name: 'خودت دستی وارد کن' }).click()
-  await modal.getByLabel('عنوان شغلی*').fill(title)
-  await modal.getByLabel('نام شرکت*').fill('یک شرکت')
-  await modal.getByRole('button', { name: 'ذخیره' }).click()
-  await expect(page.getByRole('article').filter({ hasText: title })).toBeVisible()
-}
-
 // A finger held on a card until what it starts is in view, KN-428: a real
 // touch, sent through the browser's own protocol, since Playwright's
 // touchscreen only taps and its mouse is not a touch.
@@ -39,13 +29,11 @@ const hold = async (page: Page, target: Locator, until: Locator) => {
   await session.detach()
 }
 
+// The seeding moved into `./session` for KN-695, which gave it a third caller:
+// `search-waits.spec.ts` needs the same board but must install Playwright's clock
+// before the first navigation, so it cannot run after this hook.
 test.beforeEach(async ({ page }) => {
-  await signedIn(page)
-  await page.goto('/')
-  await emptyBoard(page)
-  await page.reload()
-  await add(page, FIRST)
-  await add(page, SECOND)
+  await prepareBoard(page, [FIRST, SECOND])
 })
 
 test('the board draws a column for every status, with رد شده last and collapsed', async ({ page }, testInfo) => {
@@ -159,6 +147,12 @@ test('a search cannot make a column deletable, and Rename really renames, KN-422
   // A search that matches nothing in this column must not offer to delete it:
   // the job opportunities it holds are hidden, not gone.
   await page.getByRole('searchbox').fill(SECOND)
+  // Wait for the search to have been APPLIED before opening the menu, KN-695. The
+  // board now filters once typing pauses, so opening the menu straight away would
+  // find the cards still shown and delete disabled for the wrong reason: this
+  // test's claim is that HIDDEN records keep a column undeletable, which needs
+  // them actually hidden first.
+  await expect(page.getByRole('article').filter({ hasText: FIRST })).toHaveCount(0)
   await page.getByRole('button', { name: new RegExp(`${ACTIONS}: ${SAVED}`) }).click()
   await expect(page.getByRole('menuitem', { name: 'حذف وضعیت' })).toBeDisabled()
 

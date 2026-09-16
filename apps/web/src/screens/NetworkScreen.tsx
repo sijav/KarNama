@@ -70,7 +70,10 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
   const page = useRef<HTMLDivElement | null>(null)
   const grid = useRef<HTMLDivElement | null>(null)
 
-  const [search, setSearch] = useState('')
+  // Two values, KN-695, as the board keeps them: what the FIELD shows, following
+  // every key, and what the page FILTERS BY, handed over once typing pauses.
+  const [typedSearch, setTypedSearch] = useState('')
+  const [appliedSearch, setAppliedSearch] = useState('')
   const wide = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'), { noSsr: true })
   const [selected, setSelected] = useState<readonly string[]>([])
   // Who is being written: an id when one is being edited, null for a new one,
@@ -78,7 +81,7 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
   const [editing, setEditing] = useState<{ id: string | null; values: ContactModalValues } | undefined>(undefined)
   const [deleting, setDeleting] = useState<readonly string[] | null>(null)
 
-  const shown = records.contacts.filter((held) => contactMatches(held, search))
+  const shown = records.contacts.filter((held) => contactMatches(held, appliedSearch))
   // Only the people the search shows are counted or deleted by the bar: one the
   // search hides stays chosen, and counts again once the search shows them,
   // KN-532, as the board's held does since KN-431.
@@ -174,8 +177,9 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
             flag as the bar's height, so the two cannot disagree, KN-452. */}
         <Box sx={{ maxWidth: wide ? SEARCH_WIDTH : 'none' }}>
           <SearchBar
-            value={search}
-            onChange={setSearch}
+            value={typedSearch}
+            onChange={setTypedSearch}
+            onSearch={setAppliedSearch}
             layout={wide ? DESKTOP : MOBILE}
             label={i18n._('Search contacts')}
             placeholder={i18n._('Search in name, role or company')}

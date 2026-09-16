@@ -3,8 +3,9 @@ everything that happens to one of them.
 
 It is the product's first page. The columns are the statuses in the order the
 design settles, with rejected last and collapsed until it is opened; each card
-opens the job modal, changes its status or is deleted; the search and the sort
-control act on every column at once.
+opens the job modal, changes its status or is deleted; the sort control acts on
+every column together, and so does the search, once typing pauses for a moment.
+The field shows every key as it is typed; the cards narrow after the pause.
 
 What it holds is kept in the browser for now and read back on the next visit.
 The API cards wire it to the server; nothing a reader does here is lost in the

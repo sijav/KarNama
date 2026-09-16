@@ -268,7 +268,9 @@ export const Working: Story = {
     const set = fixtures('fa-IR')
     const first = set.jobs[0]?.title ?? ''
 
-    // Searching narrows every column at once, and clearing it brings them back.
+    // Searching narrows every column once typing pauses, KN-695, and clearing
+    // brings them back without that pause. The waits below are why this story
+    // still reads the same: they are eventual-state assertions.
     const search = canvas.getByRole('searchbox')
     await userEvent.type(search, set.jobs[1]?.title ?? '')
     await waitFor(async () => {
@@ -961,11 +963,16 @@ export const ActingWhileSearching: Story = {
     await waitFor(async () => {
       await expect(body.queryByRole('dialog')).toBeNull()
     })
+    // The card the search HID comes back only once the cleared search is applied,
+    // and clearing the field by keyboard is typing, so it waits the pause like any
+    // other key, KN-695. The card the search showed never left, so waiting for it
+    // alone proved nothing about the restore and this assertion sat outside the
+    // wait until the board actually started waiting.
     await userEvent.clear(search)
     await waitFor(async () => {
       await expect(column(set.names.interview).getByText(fourth)).toBeInTheDocument()
+      await expect(column(set.names.new).getByText(first)).toBeInTheDocument()
     })
-    await expect(column(set.names.new).getByText(first)).toBeInTheDocument()
     await expect(column(set.names.interview).queryByText(first)).toBeNull()
   },
 }

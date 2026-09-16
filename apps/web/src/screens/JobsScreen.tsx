@@ -85,7 +85,12 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   // reader meets, KN-427.
   const first = columns[0]?.id ?? ''
 
-  const [search, setSearch] = useState('')
+  // Two values, KN-695: what the FIELD shows, which follows every key, and what
+  // the board FILTERS BY, which the bar hands over once typing pauses. Before
+  // this the board filtered on every keystroke and the bar's 300 ms wait ran for
+  // nobody, since no screen passed onSearch at all.
+  const [typedSearch, setTypedSearch] = useState('')
+  const [appliedSearch, setAppliedSearch] = useState('')
   const [order, setOrder] = useState<SortOrder>(NEWEST)
   const [selected, setSelected] = useState<readonly string[]>([])
   // Rejected opens collapsed, the owner's KN-070: it is the status that grows
@@ -164,7 +169,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
   // starts only Rejected folded, the owner's KN-070, however the reader has
   // coloured their own statuses, KN-544.
   const isCollapsed = (id: string) => (folded[id] ?? id === REJECTED) && dragExpanded !== id
-  const cardsOf = (id: string) => jobsIn(records.jobs, id, search, order)
+  const cardsOf = (id: string) => jobsIn(records.jobs, id, appliedSearch, order)
   // The column's own size, which is what says whether it can be deleted: the
   // searched count reads zero while a search hides its cards, and deleting it
   // then would take the hidden job opportunities with it, KN-422.
@@ -366,7 +371,7 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
             the sort wraps under it, a row the file does not draw, KN-516. */}
         <Stack direction="row" sx={{ gap: `${spacing.sm}px`, alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
           <Box sx={{ flex: wide ? `0 1 ${SEARCH_WIDTH}px` : `1 1 ${SEARCH_WIDTH}px`, minWidth: 0 }}>
-            <SearchBar value={search} onChange={setSearch} layout={wide ? WIDE_BAR : NARROW_BAR} />
+            <SearchBar value={typedSearch} onChange={setTypedSearch} onSearch={setAppliedSearch} layout={wide ? WIDE_BAR : NARROW_BAR} />
           </Box>
           <SortControl value={order} onChange={setOrder} />
         </Stack>
