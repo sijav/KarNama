@@ -13,7 +13,7 @@
   "renamedStatus": { "token": "applied", "name": "Sent my CV" },
   "longStatusName": "Waiting to hear back after the second technical interview with the engineering manager and HR",
   "jobs": [
-    { "id": "job-1", "title": "Frontend developer", "company": "Pars New Technologies", "status": "applied", "location": "Tehran", "postedAt": "2026-08-30", "link": "https://example.com/jobs/1" },
+    { "id": "job-1", "title": "Frontend developer", "company": "Sarv Gostar Kavir", "status": "applied", "location": "Tehran", "postedAt": "2026-08-30", "link": "https://example.com/jobs/1" },
     { "id": "job-2", "title": "Senior backend software engineer focused on distributed systems and online payments", "company": "Mehr Aseman Parsian Cloud Services and Infrastructure Company", "status": "interview", "location": "Tehran, remote", "postedAt": "2026-08-21", "link": "https://example.com/jobs/2" },
     { "id": "job-3", "title": "Product designer", "company": "Diginow", "status": "new", "location": "Isfahan", "postedAt": "2026-09-02", "link": null },
     { "id": "job-4", "title": "Quality assurance specialist", "company": "Aseman Software Group", "status": "rejected", "location": "Shiraz", "postedAt": "2026-07-15", "link": "https://example.com/jobs/4" },
@@ -31,7 +31,7 @@
     { "id": "job-16", "title": "Business analyst", "company": "Ofoghnegar Data", "status": "rejected", "location": "Mashhad", "postedAt": "2026-07-21", "link": null }
   ],
   "contacts": [
-    { "id": "contact-1", "fullName": "Sara Mohammadi", "role": "HR manager", "company": "Pars New Technologies", "email": "sara@example.com", "phone": "09121234567", "linkedin": "linkedin.com/in/saramohammadi", "jobId": "job-1" },
+    { "id": "contact-1", "fullName": "Sara Mohammadi", "role": "HR manager", "company": "Sarv Gostar Kavir", "email": "sara@example.com", "phone": "09121234567", "linkedin": "linkedin.com/in/saramohammadi", "jobId": "job-1" },
     { "id": "contact-2", "fullName": "Seyed Mohammad-Reza Hosseini-Nezhad Tabatabaei", "role": "Head of talent acquisition and organisational people development", "company": "Mehr Aseman Parsian Cloud Services and Infrastructure Company", "email": "mohammadreza.hosseininezhad.tabatabaei@example.com", "phone": "09351234567", "linkedin": "linkedin.com/in/mohammadreza-hosseininezhad-tabatabaei-talent", "jobId": "job-2" },
     { "id": "contact-3", "fullName": "Ali Rezaei", "role": "Technical interviewer", "company": null, "email": null, "phone": null, "linkedin": null, "jobId": null }
   ],

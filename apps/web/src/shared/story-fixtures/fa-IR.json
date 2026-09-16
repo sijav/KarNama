@@ -13,7 +13,7 @@
   "renamedStatus": { "token": "applied", "name": "رزومه فرستادم" },
   "longStatusName": "در انتظار پاسخ مصاحبهٔ فنی دوم با مدیر تیم مهندسی نرم‌افزار و منابع انسانی",
   "jobs": [
-    { "id": "job-1", "title": "توسعه‌دهنده فرانت‌اند", "company": "فناوران نوین پارس", "status": "applied", "location": "تهران", "postedAt": "2026-08-30", "link": "https://example.com/jobs/1" },
+    { "id": "job-1", "title": "توسعه‌دهنده فرانت‌اند", "company": "سرو گستر کویر", "status": "applied", "location": "تهران", "postedAt": "2026-08-30", "link": "https://example.com/jobs/1" },
     { "id": "job-2", "title": "مهندس ارشد نرم‌افزار بک‌اند با تمرکز بر سامانه‌های توزیع‌شده و پرداخت آنلاین", "company": "شرکت خدمات و زیرساخت ابری مهر آسمان پارسیان", "status": "interview", "location": "تهران، دورکاری", "postedAt": "2026-08-21", "link": "https://example.com/jobs/2" },
     { "id": "job-3", "title": "طراح محصول", "company": "دیجی‌نو", "status": "new", "location": "اصفهان", "postedAt": "2026-09-02", "link": null },
     { "id": "job-4", "title": "کارشناس تضمین کیفیت", "company": "گروه نرم‌افزاری آسمان", "status": "rejected", "location": "شیراز", "postedAt": "2026-07-15", "link": "https://example.com/jobs/4" },
@@ -31,7 +31,7 @@
     { "id": "job-16", "title": "تحلیل‌گر کسب‌وکار", "company": "افق‌نگر داده", "status": "rejected", "location": "مشهد", "postedAt": "2026-07-21", "link": null }
   ],
   "contacts": [
-    { "id": "contact-1", "fullName": "سارا محمدی", "role": "مدیر منابع انسانی", "company": "فناوران نوین پارس", "email": "sara@example.com", "phone": "09121234567", "linkedin": "linkedin.com/in/saramohammadi", "jobId": "job-1" },
+    { "id": "contact-1", "fullName": "سارا محمدی", "role": "مدیر منابع انسانی", "company": "سرو گستر کویر", "email": "sara@example.com", "phone": "09121234567", "linkedin": "linkedin.com/in/saramohammadi", "jobId": "job-1" },
     { "id": "contact-2", "fullName": "سید محمدرضا حسینی‌نژاد طباطبایی", "role": "سرپرست جذب استعداد و توسعهٔ منابع انسانی سازمان", "company": "شرکت خدمات و زیرساخت ابری مهر آسمان پارسیان", "email": "mohammadreza.hosseininezhad.tabatabaei@example.com", "phone": "09351234567", "linkedin": "linkedin.com/in/mohammadreza-hosseininezhad-tabatabaei-talent", "jobId": "job-2" },
     { "id": "contact-3", "fullName": "علی رضایی", "role": "مصاحبه‌کنندهٔ فنی", "company": null, "email": null, "phone": null, "linkedin": null, "jobId": null }
   ],

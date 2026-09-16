@@ -42,10 +42,14 @@ A child of KN-062, from its roast.
   A production build already runs in `playwright.config.ts` line 34 and in the Pages workflow. The
   emitted tree is small and nameable: five `.html`, one `.js`, one `.js.map`, one `.css`, three
   `.woff2`.
-- **The sentinel must be PER LANGUAGE.** `en-US.json` holds "Pars New Technologies",
-  "Dadehvarzan Sepand" and "Binesh Hooshmand", each appearing in exactly one file under `src`;
-  `fa-IR.json` holds «فناوران نوین پارس», which is not a transliteration. A check that scanned one
-  language and claimed the fixtures never ship would be wrong for the other.
+- **The sentinel must be PER LANGUAGE.** The two locale files hold different values, neither a
+  transliteration of the other, so a check that scanned one language and claimed the fixtures never
+  ship would be wrong for the other. **Corrected by KN-685**, which found this paragraph had named
+  its three English candidates and checked them under `src` alone, then written a two-language claim
+  on that one-language, one-directory search. Each sentinel must occur only in its own locale's
+  fixture JSON among repository files; naming one in a plan or a card is itself one of the
+  occurrences that forbids, since the board renders every description and the database is committed.
+  So the values are derived from the fixtures and written nowhere else, this paragraph included.
 - **Measured against a CURRENT build**, made at 16:12 after HEAD: none of those sentinels appears
   anywhere in `dist`, the sourcemap included. So the fixtures do not ship today — this card is a
   weak test, not a live leak. An earlier reading of mine used a build from 15:10 and was stale; it

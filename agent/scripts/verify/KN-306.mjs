@@ -70,10 +70,18 @@ const check = (label, run) => {
  * find out whether they reach a bundle is its own joke. Taken from the data rather than hardcoded,
  * so renaming a fixture cannot silently empty the list and leave a check that scans for nothing.
  *
- * Per language because the two files hold different values: en-US has "Pars New Technologies" where
- * fa-IR has «فناوران نوین پارس», not a transliteration. Today both travel together, since the
- * fixtures' index imports both JSON files, so one would catch the other's leak — but an arrangement
- * importing one language would not, and the check should not depend on that staying true.
+ * Per language because the two locale files hold different values, neither a transliteration of the
+ * other, so a check that scanned one language and called the fixtures absent would be wrong for the
+ * other. Today both travel together, since the fixtures' index imports both JSON files, so one would
+ * catch the other's leak — but an arrangement importing one language would not, and the check should
+ * not depend on that staying true.
+ *
+ * NO LITERAL VALUE APPEARS IN THIS FILE, and that is the point rather than an omission, KN-685. Each
+ * sentinel must occur only in its own locale's fixture JSON among repository files, so writing one
+ * here would be one of the occurrences it forbids. This comment used to name both, which is exactly
+ * how the previous pair stopped being fixture-only: the board renders every card description, so a
+ * value named in a card or a plan is in the repository from then on. Read the values from the two
+ * JSON files if you need them.
  */
 const sentinels = () => {
   const taken = ['en-US', 'fa-IR'].map((locale) => {
@@ -147,7 +155,14 @@ const scanned = (marks) => {
 }
 
 const marks = sentinels()
-process.stdout.write(`KN-306: sentinels ${marks.map((mark) => JSON.stringify(mark)).join(' and ')}\n`)
+// The values are described, not printed, KN-685. Each must occur only in its own locale's fixture
+// JSON among repository files, and this loop writes evidence, notes and commit messages out of
+// command output as a matter of course, so a printed literal is one paste away from being a second
+// occurrence. The locale count and the lengths separate a right sentinel from an empty or truncated
+// one, which is all this line was for, and the values themselves are one file away.
+process.stdout.write(
+  `KN-306: ${marks.length} sentinel(s), one per locale, of ${marks.map((mark) => `${mark.length} characters`).join(' and ')}\n`,
+)
 process.stdout.write(
   `KN-306: building with KARNAMA_BASE=${BUILD_ENV.KARNAMA_BASE} VITE_AUTH_MODE=${BUILD_ENV.VITE_AUTH_MODE} VITE_API_URL=${BUILD_ENV.VITE_API_URL}\n`,
 )
@@ -231,5 +246,8 @@ process.stdout.write(
   '\nKN-306 verify passed.\n' +
     'It proves those sentinels are absent from the artifact this build emitted, and that a real\n' +
     'import from app code would have put them there. It does NOT prove that every possible fixture\n' +
-    'value is absent: it carries one value per language, read from the fixtures themselves.\n',
+    'value is absent: it carries one value per language, read from the fixtures themselves. Nor does\n' +
+    'it prove the sentinels are still unique to the fixtures. That each occurs only in its own\n' +
+    'locale JSON was established once, by a search over the repository for KN-685, and nothing here\n' +
+    're-establishes it: a value copied into shipped source later would make a hit below ambiguous.\n',
 )
