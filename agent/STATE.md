@@ -122,30 +122,32 @@ database tests are run directly, `npx vitest run src/database`, 68.
 
 ## The next step
 
-**KN-672 is in progress**, medium, 1 point, web, out of KN-618's roast. Its plan is written beside
-the work at `apps/web/src/app/` and is **with the reviewer**; nothing is built yet.
+**KN-306 is in progress**, medium, 2 points, web, a child of KN-062. Its plan is written beside the
+work at `agent/scripts/verify/`; nothing is built yet.
 
-**The gap is a press that nothing crosses.** `SettingsControl.tsx` holds `loaded` at line 18, passes
-`loaded={loaded}` to the dialog at 35, and its `onLoadSamples` at 41 to 44 calls `loadSamples()` and
-then `setLoaded(true)`. KN-618's `Preferences` proves the status region is present and empty before
-the press, and its `Loaded` proves a `loaded: true` render holds the message — but **neither crosses
-the press**, so dropping line 43 leaves both green while the reader hears nothing. It cannot be
-asserted inside `Preferences`, because `updateArgs` re-renders in a real Storybook and NOT under the
-Vitest runner, KN-563, which is why KN-618 split the proof in two in the first place.
+**The defect.** `story-fixtures.test.ts` scans shipped SOURCE for a `story-fixtures` import
+specifier, and its "can fail" case tests that regex against a literal string rather than planting an
+import. Its glob is `.ts` and `.tsx` only, so a JSON route or an alias is invisible to it, and a
+convention about source is not the artifact. **This repository already learned this once**:
+`agent/scripts/lib/verify.mjs` opens by recording that KN-058's first verifier sliced source between
+two markers, "which tests text rather than behaviour".
 
-**The cover the roast suggested exists, and was checked rather than trusted.** `App.stories.tsx`
-line 321 already presses that button, inside `laidOutAsTheFrames`, a helper at 279 to 390 shared by
-`LaidOutAsTheFrames` and its English twin. The meta is `App/Shell` with `component: App` behind a
-real `AuthProvider`, so a story there runs the real `useRecords`, `SettingsControl` and
-`loadSamples` — the product's own state, which is exactly what the exit distinguishes from story
-args. One thing not to conflate: line 325's `region` count is the board's columns, while this card's
-region is `role="status"`.
+**Measured against a CURRENT build**, 16:12, after HEAD: none of the sentinels appears in `dist`,
+the sourcemap included — so the fixtures do not ship today and this is a weak test, not a live leak.
+An earlier reading of mine used a 15:10 build and was stale. **Sentinels must be per language**:
+`en-US.json` has "Pars New Technologies", each candidate in exactly one file under `src`, while
+`fa-IR.json` has «فناوران نوین پارس», not a transliteration.
 
-**The plan's question** is a dedicated story against folding the assertion into that geometry
-helper. I lean to the dedicated one, for the same reason the contrast assertion was kept out of
-`codeAsTheFramesIn` in KN-668, and the honest counter is that an App boot is heavy and the press is
-already there. The control is the exit's own words: remove line 43's `setLoaded(true)` and the new
-assertion must fail.
+**The convention it must follow**, and it decides the hard part. Verifiers are named for their card,
+are thin CLIs over `agent/scripts/lib/`, and ARE the proof — there are no test files under `agent/`.
+AGENTS.md holds them to "it fails when the thing it checks is broken, proved by mutation". And
+`fixtures/always-fails.mjs` is committed rather than written at test time "so a verifier that uses
+it stays runnable in a read-only working tree, which is where a reviewer runs it" — so a proof that
+plants an import and rebuilds cannot be the in-script one.
+
+**KN-672 closed at 4a2488c** with a clean roast. Its assertion was folded into `laidOutAsTheFrames`
+rather than given its own story, over my lean, because loading the samples IS that helper's own
+setup — the rule from it is in `AGENTS.md` at 8e50f2f.
 
 ## What to read first
 
