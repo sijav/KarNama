@@ -8,7 +8,8 @@ mirrors in English with no reversal in the code.
 
 Selecting people brings up the bar at the foot, which deletes them after a
 confirmation. A search narrows the page by name, role, company, email or
-number.
+number, once typing pauses for a moment. The field shows every key as it is
+typed; the cards narrow after the pause.
 
 ## Props
 
