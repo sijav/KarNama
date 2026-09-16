@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 import { emptyBoard, signedIn } from './session'
 
 /**
@@ -12,6 +12,25 @@ import { emptyBoard, signedIn } from './session'
 const MINA = 'مینا رضایی'
 const RENAMED = 'مینا رضاییِ راد'
 const REZA = 'رضا کریمی'
+
+// A finger held on a card until what it starts is in view, as board.spec.ts holds
+// one for KN-428: a real touch through the browser's own protocol, since
+// Playwright's touchscreen only taps and its mouse is not a touch. It waits on
+// what the hold produces rather than sleeping past HOLD_MS, so a slow machine
+// cannot end the touch before the hold has fired. Both events go to the one
+// point, so the press never approaches the hold's 10 pixels of slop. Kept local
+// to each spec while there are two of them; a third caller is when it moves into
+// `./session`, which both already import.
+const hold = async (page: Page, target: Locator, until: Locator) => {
+  const box = await target.boundingBox()
+  if (!box) throw new Error('nothing to hold')
+  const session = await page.context().newCDPSession(page)
+  const point = { x: box.x + box.width / 2, y: box.y + box.height / 2 }
+  await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] })
+  await expect(until).toBeVisible()
+  await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await session.detach()
+}
 
 test.beforeEach(async ({ page }) => {
   await signedIn(page)
@@ -52,7 +71,7 @@ test('a contact can be edited, and the change is what the page shows', async ({ 
   await expect(page.getByText(MINA, { exact: true })).toHaveCount(0)
 })
 
-test('two people are selected and deleted through the bar at the foot', async ({ page }) => {
+test('two people are selected and deleted through the bar at the foot', async ({ page }, testInfo) => {
   for (const name of [MINA, REZA]) {
     await page.getByRole('button', { name: 'افزودن مخاطب' }).first().click()
     await page.getByRole('dialog').getByLabel('اسم و فامیل').fill(name)
@@ -60,13 +79,36 @@ test('two people are selected and deleted through the bar at the foot', async ({
     await expect(page.getByText(name)).toBeVisible()
   }
 
-  for (const name of [MINA, REZA]) {
-    const card = page.getByRole('article').filter({ hasText: name })
-    await card.hover()
-    await card.getByRole('checkbox').check()
-  }
-
+  const phone = testInfo.project.name === 'mobile'
+  const cardFor = (name: string) => page.getByRole('article').filter({ hasText: name })
   const bar = page.getByRole('region', { name: 'کارهای گروهی' })
+
+  // A phone has no hover, so the checkbox stays folded away with no pointer
+  // events until a held press starts the selection, KN-533 and DESIGN.md's
+  // Contact Card. The first person is held and the second tapped, which is how a
+  // phone does it; the desktop keeps the hover it always had.
+  if (phone) {
+    await hold(page, cardFor(MINA).getByRole('button', { name: MINA }), bar)
+  } else {
+    await cardFor(MINA).hover()
+    await cardFor(MINA).getByRole('checkbox').check()
+  }
+  // Both are asserted chosen rather than inferred from the empty state, which
+  // would follow from deleting one person as readily as two.
+  await expect(cardFor(MINA).getByRole('checkbox')).toBeChecked()
+
+  // tap() rather than check() on a phone: check() goes through Playwright's mouse
+  // click path even where the context has touch, so it would prove the desktop's
+  // gesture at a phone's viewport. tap() waits for actionability and sends the
+  // touch the project's hasTouch allows.
+  if (phone) {
+    await cardFor(REZA).getByRole('checkbox').tap()
+  } else {
+    await cardFor(REZA).hover()
+    await cardFor(REZA).getByRole('checkbox').check()
+  }
+  await expect(cardFor(REZA).getByRole('checkbox')).toBeChecked()
+
   await expect(bar).toBeVisible()
   await bar.getByRole('button', { name: 'حذف' }).click()
   await page.getByRole('dialog').getByRole('button', { name: 'حذف' }).click()
