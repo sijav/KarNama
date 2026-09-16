@@ -27,14 +27,22 @@ const sources = import.meta.glob<string>('/src/**/*.{ts,tsx}', { query: '?raw', 
 const storybookOnly = (path: string) => /\.stories\.tsx$|\.test\.tsx?$|\/story-fixtures\/|\/story-docs\/|\/gate-fixtures\//.test(path)
 
 describe('story fixtures', () => {
-  it('are imported by nothing that ships, so they never reach the production bundle', () => {
+  // The CHEAP EARLY CHECK, and only that, KN-306. It reads shipped SOURCE for an import specifier,
+  // which is a convention and not the artifact: an eager glob, a re-export or an alias would pull
+  // the fixtures into the bundle without one, and this glob sees only .ts and .tsx. What the
+  // fixtures do to the BUNDLE is checked by building it and scanning what it emitted, in
+  // agent/scripts/verify/KN-306.mjs, which is also where a planted import is shown to fail.
+  it('is named by nothing that ships, which is the convention rather than the artifact', () => {
     const shipped = Object.entries(sources).filter(([path]) => !storybookOnly(path))
     expect(shipped.length).toBeGreaterThan(10)
     const importing = shipped.filter(([, text]) => /from\s+['"][^'"]*story-fixtures[^'"]*['"]|import\(\s*['"][^'"]*story-fixtures/.test(text)).map(([path]) => path)
     expect(importing).toEqual([])
   })
 
-  it('finds an import when one is there, so the check above can fail', () => {
+  // Named for what it does: it tests the PATTERN against a literal. It does not plant an import in
+  // the tree, so it does not establish that the check above can fail on this repository — which was
+  // the false claim in its old name, and half of why KN-306 exists.
+  it('matches an import specifier when given one, which tests the pattern and not the tree', () => {
     const planted = "import { fixtures } from '../story-fixtures'"
     expect(/from\s+['"][^'"]*story-fixtures[^'"]*['"]/.test(planted)).toBe(true)
   })

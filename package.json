@@ -20,6 +20,7 @@
   "scripts": {
     "setup:browsers": "npm exec --workspace @karnama/web -- playwright install chromium",
     "contract": "node agent/scripts/verify/contract.mjs",
+    "verify:fixtures": "node agent/scripts/verify/KN-306.mjs",
     "lint": "npm run lint --workspaces --if-present",
     "lint:tsc": "npm run lint:tsc --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
