@@ -5,8 +5,10 @@ It searches job opportunities by title, company or note. What is typed is
 reported at once, and the search itself runs once typing pauses for a moment,
 with every key typed so far, the last one included, so a fast typist is not
 searched letter by letter and never loses the final letter. Clearing empties
-the field, searches for nothing straight away, and puts focus back in the field
-to type again. The field has its own name for screen readers, since the grey
+the field and puts focus back in it to type again, and it searches for nothing
+only after the field shows empty, without the pause typing takes; a page that
+keeps the previous text is not searched at all. `Clearing` and `ClearIgnored`
+are those two cases. The field has its own name for screen readers, since the grey
 hint inside it is not a label.
 
 A search runs for what the field shows after a change the reader made, and for
@@ -55,8 +57,10 @@ Fired with the text on every change, including a clear.
 
 ### onSearch
 
-Fired with the text once typing pauses, and at once when the field is cleared.
-Only ever with text the field shows: when the page replaces the value while a
+Fired with the text once typing pauses, and for the clear without that pause.
+Both run after the field has shown the change rather than inside the handler, so
+a page that keeps the previous text is not searched at all: `Clearing` and
+`ClearIgnored` are those two cases. Only ever with text the field shows: when the page replaces the value while a
 search is waiting, or does not take what was typed, that search is dropped.
 
 ## Stories

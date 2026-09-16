@@ -181,8 +181,9 @@ export const Clearing: Story = {
   play: async ({ args, canvasElement }) => {
     clearAllMocks()
     const { field } = partsOf(canvasElement)
-    // Clearing empties the field, searches for nothing at once, takes the
-    // clear control away, and gives focus back to the field.
+    // Clearing empties the field, takes the clear control away, gives focus
+    // back to it, and searches for nothing once the field shows empty, without
+    // the pause typing takes.
     await userEvent.click(within(canvasElement).getByRole('button'))
     await expect(field).toHaveValue('')
     // Waited for rather than asserted outright, KN-380: the search now runs from an effect, so the

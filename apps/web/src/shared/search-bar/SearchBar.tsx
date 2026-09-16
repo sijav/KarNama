@@ -52,8 +52,9 @@ const CLEAR = 20
 // The Search Bar of node 155:92: the search icon at the inline start, the
 // field, and in the Filled state a clear control at the inline end. Typing is
 // reported at once through onChange, and to onSearch once it pauses, with the
-// value as it stands after the last keystroke; clearing searches at once and
-// puts focus back in the field.
+// value as it stands after the last keystroke; clearing empties the field and
+// returns focus to it. When either reaches onSearch is decided by the effect
+// below, and what a caller meets by it is in the story docs, KN-207.
 export const SearchBar = ({ value, defaultValue = '', layout = 'mobile', label, placeholder, onChange, onSearch }: SearchBarProps) => {
   const { i18n } = useLingui()
   // What it searches, the board's unless the page says otherwise: the contacts
