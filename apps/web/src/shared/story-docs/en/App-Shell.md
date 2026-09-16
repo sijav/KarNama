@@ -82,7 +82,8 @@ Signing out in another open tab signs this one out too, so the tab left behind
 does not keep the board open for whoever finds it, and nothing else that tab
 writes does: its change to the board comes first, and is taken in here with the
 reader still signed in. The other tab is stood in for by the storage events its
-writes deliver.
+writes deliver, sent only once this tab's own providers are listening, since an
+event that arrives before the listener is lost.
 
 ### SignedInInAnotherTab
 

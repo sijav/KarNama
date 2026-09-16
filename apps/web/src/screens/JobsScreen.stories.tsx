@@ -8,6 +8,7 @@ import { allowConsole } from '../shared/console-guard'
 import type { StatusOption } from '../shared/status-picker'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { fixtures } from '../shared/story-fixtures'
+import { BOARD_LISTENING, ListeningAround } from '../shared/story-fixtures/listening'
 import { JobsScreen, type JobsScreenProps } from './JobsScreen'
 
 // A board of the fixtures' own job opportunities, one per status, so the screen
@@ -53,9 +54,15 @@ const meta = {
       // Each story gets its own records, so one cannot change what another
       // draws; the provider is seeded rather than read from the browser.
       // `seeded` is false for a story about a board with nothing on it.
-      <RecordsProvider initial={context.parameters.seeded === false ? { statuses: seeded().statuses, jobs: [], contacts: [] } : seeded()}>
-        <Story />
-      </RecordsProvider>
+      // The mark wraps this provider and never sits inside it, KN-564: a story
+      // that sends another tab's write waits for it, since the provider adds its
+      // storage listener in a passive effect a production canvas runs after the
+      // play has started.
+      <ListeningAround mark={BOARD_LISTENING}>
+        <RecordsProvider initial={context.parameters.seeded === false ? { statuses: seeded().statuses, jobs: [], contacts: [] } : seeded()}>
+          <Story />
+        </RecordsProvider>
+      </ListeningAround>
     ),
   ],
 } satisfies StoryMeta<typeof JobsScreen>
@@ -1258,6 +1265,13 @@ export const ChangedInAnotherTab: Story = {
         ...records.jobs,
       ],
     }
+    // The other tab's write goes only once this tab's board provider is
+    // listening, KN-564: the meta's RecordsProvider, which the mark around it
+    // covers. An event sent before that listener is on the window is lost, and
+    // in a production canvas it was sent 8 ms after it by luck alone.
+    await waitFor(async () => {
+      await expect(canvas.getByTestId(BOARD_LISTENING).hidden).toBe(true)
+    })
     const written = JSON.stringify(theirs)
     window.localStorage.setItem(STORAGE_KEY, written)
     window.dispatchEvent(new StorageEvent(STORED, { key: STORAGE_KEY, newValue: written }))

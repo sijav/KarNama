@@ -156,7 +156,9 @@ keyboard's focus, and it folds away once focus has left the card.
 A board changed in another open tab: what that tab wrote reaches this one, and
 this tab's next change keeps it rather than writing its own older copy over it,
 and the other tab clearing the whole store leaves this one the fresh board. The
-other tab is stood in for by the storage event its write delivers.
+other tab is stood in for by the storage event its write delivers, sent only
+once this tab's board provider is listening, since an event that arrives before
+the listener is lost.
 
 ### RecolouringKeepsItsPlace
 

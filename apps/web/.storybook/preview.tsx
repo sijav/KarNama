@@ -6,6 +6,7 @@ import type { Decorator, Preview } from '@storybook/react-vite'
 import { AppProviders } from '../src/app/AppProviders'
 import { isLocale, locales } from '../src/i18n'
 import { DocsPage } from '../src/shared/story-docs/DocsPage'
+import { ListeningAround, PREVIEW_LISTENING } from '../src/shared/story-fixtures/listening'
 import { fontFamily } from '../src/theme/tokens'
 import { withOwnStorage } from './own-storage'
 
@@ -24,9 +25,15 @@ const withProviders: Decorator = (Story, context) => {
   const chosen: unknown = context.globals.colorScheme
   const colorScheme = chosen === 'dark' || chosen === 'light' || chosen === 'system' ? chosen : 'light'
   return (
-    <AppProviders locale={locale} colorScheme={colorScheme}>
-      <Story />
-    </AppProviders>
+    // The mark wraps these providers and never sits inside them, KN-564: a story
+    // that sends another tab's storage event waits for it, since a provider adds
+    // its listener in a passive effect a production canvas runs after the play
+    // has started, and React runs a parent's effects after its children's.
+    <ListeningAround mark={PREVIEW_LISTENING}>
+      <AppProviders locale={locale} colorScheme={colorScheme}>
+        <Story />
+      </AppProviders>
+    </ListeningAround>
   )
 }
 

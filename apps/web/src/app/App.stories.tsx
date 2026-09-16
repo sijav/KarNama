@@ -1,6 +1,5 @@
 import type { I18n } from '@lingui/core'
 import type { StoryObj } from '@storybook/react-vite'
-import { useEffect, useRef, type ReactNode } from 'react'
 import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { AuthProvider, sessionFor, STORAGE_KEY as SESSION_KEY } from '../core/auth'
 import { addressOf, siteBase } from './routes'
@@ -11,6 +10,7 @@ import { emptyDraft } from '../shared/add-job'
 import { i18nFor } from '../i18n'
 import { CURRENT } from '../shared/navigation'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
+import { ListeningAround, OWN_LISTENING, PREVIEW_LISTENING } from '../shared/story-fixtures/listening'
 import { semantic } from '../theme/tokens'
 import { App } from './App'
 
@@ -55,7 +55,6 @@ const SINCE = new Date(Date.UTC(2026, 8, 12)).toISOString()
 
 // The seeded reader's number.
 const READER = '09120000000'
-
 
 /** Relative luminance of an `rgb(r, g, b)` string, 0 for black and 1 for white. */
 const luminanceOf = (colour: string) => {
@@ -580,6 +579,14 @@ export const SignedOutInAnotherTab: Story = {
     // Under the bare key: the reader is seeded inside the providers the preview
     // wraps every story in, so the board's own provider, outside, has nobody
     // signed in, KN-421.
+    // The other tab's writes go only once this tab's own providers are
+    // listening, KN-564: these are the preview's, which the mark around them
+    // covers, since this story brings none of its own. An event sent before
+    // that listener is on the window is lost, and in a production canvas it
+    // was sent 8 ms after it by luck alone.
+    await waitFor(async () => {
+      await expect(canvas.getByTestId(PREVIEW_LISTENING).hidden).toBe(true)
+    })
     const written = JSON.stringify(board)
     window.localStorage.setItem(RECORDS_KEY, written)
     window.dispatchEvent(new StorageEvent(STORED, { key: RECORDS_KEY, newValue: written }))
@@ -594,31 +601,13 @@ export const SignedOutInAnotherTab: Story = {
   },
 }
 
-// Hides its mark once its children's effects have run, KN-560. A provider adds its
-// storage listener in an effect, which a production canvas runs after the play
-// has started, and an event nobody listens for is lost; React runs a parent's
-// passive effects after its children's, so once this one has run, the provider
-// inside it is listening.
-const ListeningAround = ({ children }: { children: ReactNode }) => {
-  const mark = useRef<HTMLSpanElement>(null)
-  useEffect(() => {
-    if (mark.current) mark.current.hidden = true
-  }, [])
-  return (
-    <>
-      <span data-testid="listening" ref={mark} />
-      {children}
-    </>
-  )
-}
-
 export const SignedInInAnotherTab: Story = {
   globals: { locale: 'fa-IR' },
   decorators: [
     (Story) => (
       // Signed out here, as NobodySignedIn is, so the sign-in arrives from the
       // other tab.
-      <ListeningAround>
+      <ListeningAround mark={OWN_LISTENING}>
         <AuthProvider>
           <Story />
         </AuthProvider>
