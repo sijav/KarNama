@@ -30,7 +30,7 @@ by hand**, so `git stash@{0}` duplicates committed code; left for the owner to d
 **Closed 2026-09-16**: KN-514, KN-524, KN-535, KN-543, KN-544, KN-559, KN-658, KN-542, KN-564,
 KN-565, **KN-589** (d4b86c0), **KN-665**, **KN-667**, **KN-591** (874d4ce), **KN-601** (b5498ed),
 **KN-669**, **KN-670**, **KN-618** (4be8a8e), **KN-675** (23e188e), **KN-626** (4c099cb),
-**KN-678** (6b32e24), **KN-651** (c083050), **KN-679** (7bc88a7), **KN-680** (3e5c29e), **KN-666** (739df0c), **KN-668** (35fa6e0).
+**KN-678** (6b32e24), **KN-651** (c083050), **KN-679** (7bc88a7), **KN-680** (3e5c29e), **KN-666** (739df0c), **KN-668** (35fa6e0), **KN-672** (4a2488c).
 **Dropped**: KN-657, and **KN-663** (de6157c) — filed on a false premise, found by its own plan
 review before anything was built: `i18n.test.ts` line 7 has asserted the English identity map over
 every entry since 2026-09-08, `e3150cc`, eight days before the card. Its account of KN-565 was wrong

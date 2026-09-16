@@ -13,6 +13,12 @@ Project **KarNama** · 324 of 684 tasks done · 661 of 1308 points.
 | 1 | OKR-1 | MVP: the pages | now | 216 | 246 |
 | 2 | OKR-2 | Everything after the MVP | later | 134 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-306` | The fixtures' never-bundled test reads source imports, not the production bundle | medium | 2 | web | none | A check builds the web app for production and asserts that no fixture value, a sentinel only the fixtures hold, appears in the emitted files; a planted import of the fixtures from app code makes it fail. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 324 of 684 tasks done · 661 of 1308 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (341)
+## Backlog (340)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -99,7 +105,6 @@ Project **KarNama** · 324 of 684 tasks done · 661 of 1308 points.
 | `KN-147` | Nothing proves the migration runner waits between lock attempts | medium | 2 | api | none | Deleting the retry delay makes the suite fail, proved by planting exactly that, and the test asserts elapsed time or scheduled timing rather than attempt count alone. |
 | `KN-148` | The mutation harnesses re-run the whole suite once per regression | medium | 2 | agent | none | A verify that plants N regressions runs one full suite plus N filtered runs, and completes in under five minutes for KN-123, with every regression still caught, proved by running the harness before and after and comparing both the time and the caught count. |
 | `KN-175` | Verifiers that need a scratch directory cannot run in the read-only review sandbox | medium | 2 | agent | none | The repository states, in AGENTS.md or RALPH.md, whether a verifier may require a writable scratch directory; verifiers that do are either made runnable in the review environment or carry a machine-readable marker saying they cannot be, and the roast prompt tells the reviewer which; and no future roast can raise this as a novel finding. |
-| `KN-306` | The fixtures' never-bundled test reads source imports, not the production bundle | medium | 2 | web | none | A check builds the web app for production and asserts that no fixture value, a sentinel only the fixtures hold, appears in the emitted files; a planted import of the fixtures from app code makes it fail. |
 | `KN-380` | The Search Bar decides whether to search by comparing typed text with shown text, which a normalising, restoring or clear-ignoring parent defeats | medium | 2 | web | none | Stories, each failing on KN-314's code: a parent ignoring the clear gets no search and no late one; a parent lowercasing input gets one search for the lowercased text; a parent restoring a reset value gets none; and the Search Bar's existing stories still pass. |
 | `KN-389` | A column whose cards a search filtered away says it has none at this stage, while its count says it has one | medium | 2 | web | none | Read the file for a search or filtered state of the board and its columns and settle, in DESIGN.md, what a column shows when a search hides its cards and what its count counts, asking the owner if the file is silent; the column does that, and a story renders a filtered column with a live count of one. |
 | `KN-407` | The Docs page hook and its channel are still checked by hand: a fake DocsContext would cover them, as AppProviders and PreferencesProvider are covered | medium | 2 | web | none | useDocsLocale is rendered in a test against a DocsContext and a channel the test makes: it reads the toolbar from the context, follows a globalsUpdated event, stops listening when it unmounts, and reports not known when the context yields nothing; the file leaves the coverage exclusion list, or the exclusion names what is left in it and why. |
@@ -6210,7 +6215,7 @@ CHILD OF KN-062, recorded in prose because board.json cannot express parent_task
 
 ### `KN-306` The fixtures' never-bundled test reads source imports, not the production bundle
 
-- **status** backlog · **severity** medium · **points** 2 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** medium · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** none
 - **came out of** KN-062
 
@@ -11635,6 +11640,10 @@ Found by KN-618's roast, 2026-09-16. Preferences proves the region is present an
 **Exit condition.** A test exercises the real path from pressing Load sample data to the status region holding the confirmation, through the product's own state rather than through story args, and it is shown to fail when setLoaded is removed.
 
 **Evidence.** Work 4a2488c. One assertion now crosses the press, folded into laidOutAsTheFrames between the Load sample data it already clicks and the Done it already clicks: within(settings).getByRole('status') under a waitFor, asserting the exact confirmation through the active i18n, scoped to the dialog while it is still open and never the board's own region landmarks. The control is the card's exit in its own words. Removing setLoaded(true) from SettingsControl.tsx line 43 gives 2 failed | 12 passed (14), with "Laid Out As The Frames" among the failures; restoring it gives 14 passed (14). TWO failed, and that number is the summary line's own rather than a regex count of mine — both locale stories run the helper, which is what the re-review predicted when I asked whether one-locale-only failure was possible. It is worth naming that KN-668's control reported a "2" that was vitest printing one failure twice; here the summary itself says 2, which is why the summary line is the thing read. The assertion is the exact confirmation rather than merely non-empty, on the review's call over my lean: non-empty would admit an unrelated or erroneous message while the exit says the region HOLDS the confirmation. Reading the expected string from the active catalog does not make this a locale test, since the claim is that this region receives the intended confirmation in the selected locale; the id was verified in both catalogs and is the one SettingsDialog renders at line 100. It was folded rather than given its own story, also over my lean: I argued from KN-668, where a contrast assertion was kept out of a geometry helper, and the review showed the cases differ — loading the samples IS this helper's setup, since it presses that button so the board has records to measure, so checking the press worked is the helper verifying its own precondition rather than a passenger. That is now a rule in AGENTS.md at 8e50f2f. No new story and so no docs entries. tsc --noEmit and eslint --max-warnings 0 clean, each read from its own output line. Drift: App.stories.tsx at 13, its head value, so it did not grow; the plan new at 0. Two things that went wrong and are worth the record: the control script failed on its first run with a SyntaxError, an apostrophe inside a single-quoted string, which is a rule STATE.md already carries and I broke — it failed at parse time, so nothing was mutated and nothing needed restoring, and the script's counted-edit guard would have caught a half-mutated file anyway; and the re-review caught two sentences in my plan left stale by the fold decision, "the new story fails" when no story was added and "three lines" for what is a waitFor round an expectation, both repaired. What this does NOT prove, and the review said so plainly: that any screen reader announced the confirmation. That was never this card's exit.
+
+**Roasts.**
+
+- round 1: C:/Users/sinaj/AppData/Local/Temp/claude-roast/2b1874631dd1/20260916T141213-task-kn-672-nothing-proves-the-sample-data-press-actu-bdaca9.md, filed none, dismissed: A clean round: passes review, nothing survived to file. It followed the real product path itself — the App story opening SettingsControl, pressing its real Load sample data action, then reading that dialog's persistent role=status region for the exact active-locale confirmation — and confirmed that removing setLoaded(true) leaves loaded false, so the region renders empty and the assertion fails in BOTH locale stories, which is what the control measured. It judged the fold DRY in the right way rather than a shortcut: the frames helper already performs this setup for both locales, so a separate story would duplicate the App boot and the interaction without adding coverage. It also endorsed using the production message id as the expected text, since that verifies the exact confirmation rather than any non-empty announcement. It found no false claim in the added comment or the commit message. One limit it stated plainly, as it has before: it could not execute the test in its read-only checkout, Vite being blocked from writing its temporary config bundle, so it verified the state path and the mutation sensitivity from the source rather than from a run; the runs are the ones in the evidence.
 
 ### `KN-673` The sample data button and its status region are not related by aria-controls
 
