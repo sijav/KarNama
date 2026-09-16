@@ -88,6 +88,13 @@ the api workspace's database tests are run directly, `npx vitest run src/databas
 
 ## The owner's rules, most recent first
 
+- **2026-09-16, answered through the question tool.** The sign-in note and the code step's resend
+  timer take a colour at 4.5 to one or better, KN-591, and the file's 2.54 is not followed. Asked in
+  the same breath which wording the mocked sign-in steps should use, the owner answered "Is that
+  really important that you stopped working for? Who cares!" **So a question of that kind is not
+  asked again.** Where a rule already decides a thing, the rule decides it, the decision and its
+  reasoning are recorded where the next reader will find them, and the work goes on. What is worth
+  their time is what only they can settle.
 - **2026-09-15, answered through the question tool.** The phone's add form keeps the title first,
   KN-358. The first sign-in may skip the name, as Figma's «بعداً کاملش می‌کنم» draws it, "As
   Figma", KN-588. KarNama writes terms and privacy pages and the sign-in note links to them,
