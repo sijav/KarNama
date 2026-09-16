@@ -30,7 +30,7 @@ the owner to drop.
 KN-565, KN-589, KN-665, KN-667, KN-591, KN-601, KN-669, KN-670, KN-618, KN-675, KN-626, KN-678,
 KN-651, KN-679, KN-680, KN-666, KN-668, KN-672, **KN-306** (d8c9d9f), **KN-380** (17472be),
 **KN-685** (43898ec), **KN-690** (db6f4e6), **KN-691** (fb0e32b), **KN-695** (e29b86e),
-**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb, board 56b0fe2). **Dropped**: KN-657, and **KN-663**
+**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445, board ffd704d). **Dropped**: KN-657, and **KN-663**
 (de6157c), filed on a false premise its own plan review caught.
 
 ## KN-697, the search in the address, and it is the one to read first
@@ -81,15 +81,16 @@ The unit and storybook projects are **1958 of 1964**, where 1964 is the old 1958
   KN-365 rather than KN-699; the `Input` family has grown from one story to three, `Multiline` timing
   out at 15000 ms on the story's own declaration rather than on any assertion in it.
 
-The full e2e is **103 passed, 9 skipped**, run before and after the `searchStep` refactor, identical.
-Screen stories 39 of 39, `App.stories` 14 of 14.
+The full e2e is **107 passed, 9 skipped**, the four above 103 being KN-700's two new tests across both
+projects. Screen stories 39 of 39, `App.stories` 14 of 14, and the story-docs guard 12 of 12.
 
 **Coverage is measured with `--coverage.reportOnFailure=true`**, because vitest prints no report at all
 when a run fails, so a red suite hides the verdict rather than reporting it badly. `coverage/lcov.info`
 is on disk from the last run: `DA:<line>,0` is an uncovered line, `BRDA:<line>,…,0` an uncovered
-branch. Today: `routes.ts` has **none of either**; `App.tsx` is down to **79 and 146**, where 79 is the
-hand-split KN-700 is about and 146 the pre-existing error branch; both screens' remaining uncovered
-branches are the old set renumbered by the lines the refactor removed.
+branch. Today: `routes.ts` has **none of either**, and `App.tsx` is down to **one**, line 155, the
+pre-existing `{error ? (` branch — KN-700 took line 79's `?? ''` away with the hand-split, and 146 became
+155 because that change added nine lines. **Uncovered line numbers SHIFT when lines are removed**, so
+compare the set and not the numbers, or open the line and read it.
 
 **"A fresh build" means `CI=1`**, and the e2e webServer runs `tsc --noEmit` first, so **a mutation that
 leaves a symbol unused stops the server rather than failing a test**. The API's gate fails on
@@ -113,8 +114,9 @@ screen stories render bare — both true when written and both made untrue by th
 **KN-016 waits on two**: KN-689, blocked on the owner, and KN-692. **KN-062 waits on five**: KN-686,
 KN-687, KN-688, KN-694, and **KN-705** from KN-693's roast — the verifier echoes its build environment
 at startup, `VITE_API_URL` included, so a value supplied through the environment that contains a
-sentinel prints before any check runs, which falsifies KN-693's own universal claim. **KN-695 waits on
-one**: **KN-696**, in progress, the contacts screen docs.
+sentinel prints before any check runs, which falsifies KN-693's own universal claim. **KN-695 has NO
+open children left**: KN-696 closed, which is why the board asked for a round on the PARENT together
+with every child, on whether KN-695 is actually finished; that round is running.
 
 **Also open**: KN-681, KN-682, KN-684, KN-673, KN-674, KN-676, KN-677; **KN-699**, the moving storybook
 failures; **KN-702**, `todo set` with no id crashing with a raw SQLite TypeError instead of usage.
@@ -164,47 +166,31 @@ because `todo render` writes every description into the board and the database i
 - **A finding is a CHILD of its task**, one level, with `--area` and `--okr`. **Plans live beside the
   work**, checked by `roast.py plan` before building, and they stay.
 
-## The next step: KN-693, the verifier still prints a sentinel when it fails
+## The next step: KN-701, two comments claim more than the code does
 
-**In progress**, medium, 1 point, web, a child of KN-062. Its plan is at
-`agent/scripts/verify/#KN-693 - The verifier still prints a sentinel when it fails.md`, **with Codex for
-review**, deliberately uncommitted until that round's corrections are in it.
+**In progress**, medium, 1 point, web, a child of KN-698. Plan at
+`apps/web/src/app/#KN-701 - Two comments claim more than the code does.md`, **with Codex for review**,
+uncommitted until that round lands.
 
-**NO VALUE MAY BE WRITTEN ANYWHERE** while working this card — not in the plan, the evidence, a commit
-message, or this file. `todo render` writes every description into the board and `.claude/todo.db` is
-committed, so naming one is exactly what puts it in the repository, which is the property the verifier
-exists to protect.
+**HALF THIS CARD IS ALREADY FIXED, BY ANOTHER CARD.** It was filed saying `routes.ts` and `App.tsx` both
+claim react-router reads and writes the address while `Shell` still parsed route segments by hand.
+**KN-700 deleted that hand-split**, so the module note is now true as written: the router reads through
+`useLocation`, `useMatch` and `useSearchParams` and writes through `useNavigate` and `setSearchParams`,
+and the three things the note says it has no opinion about — `PATH`, `pathForHash`, `siteBase` — are
+exactly what remains. **That half is left alone and recorded, never reworded into a different shade of
+true.**
 
-**What is wrong**: KN-685 took the values out of the verifier's SUCCESS output, on the argument that
-this loop writes evidence and commit messages out of command output as a matter of course, and then
-left them in the two paths that print when something is WRONG — which is precisely when output gets
-pasted into a card by whoever is diagnosing the break. `KN-306.mjs` line 95 interpolates `taken[0]`
-into the duplicate-locales throw, and line 203 prints `JSON.stringify(sentinel)` in the bundle-holds
-report.
+**What is actually wrong** is the comment above `PATH`, and it makes two false claims in one sentence:
+that a destination added with no route is a type error, and that a route pointed at the wrong page is
+one. The mapped type forces an ENTRY for every destination, and forces each entry's value to be its own
+key's path. It never requires a `<Route>` to exist, and never checks which element a route renders — so
+a destination with an entry and no route compiles and falls through to the board, which is the exact
+outcome the sentence promises it prevents.
 
-**The inventory was searched rather than taken from the card**, since a card's list is written by
-someone who looked once: every other output path is clean — line 91 names the locale and the field,
-line 164 prints the count and lengths, lines 219 and 236 are fixed strings, and the rest carry script
-names, counts and file paths. **The card's two are the complete set.** Line 236 leaks nothing but names
-neither locale nor file, which is out of this card's exit.
-
-**The fix**: name the locale and the place, never the value. The locale is recovered exactly with
-`marks.indexOf(sentinel)` against a hoisted `LOCALES`, rather than by trusting a `Map`'s iteration
-order to survive a `filter`.
-
-**THE CARD IS WRONG ABOUT ONE OF ITS THREE CLAIMS** and it must not be repeated as written. Two are
-right: KN-685's evidence says the values are "no longer in what the verifier prints", and its plan
-calls the verifier change "comments only, no behaviour". The third says the account of where the values
-remain omits the plan and the board — but that plan's line 160 names both. The genuinely false sentence
-is the **evidence's** "not in either plan", asserted while a plan held one.
-
-**The proof is forcing both paths**, not reading them: point both locales at one value for the throw,
-and plant a fixtures import into the entry BEFORE the run so check 1's own scan reports. **Neither
-forced run's output may be pasted anywhere.**
-
-**Baseline before touching it**: `KN-306.mjs` parses under `node --check` and drift is 0 on it and on
-KN-685's plan. `agent/` is not a workspace, so nothing lints `agent/scripts` and those two are the
-cover.
+**The proof is demonstrated rather than asserted**, because the sentence was wrong ABOUT THE COMPILER: a
+temporary fourth `Destination` should make `tsc` error on the missing `PATH` entry and say nothing about
+the absent route, reverted from a byte snapshot with the restore verified by comparison rather than by
+Git state.
 
 ## What to read first
 
