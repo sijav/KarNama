@@ -43,8 +43,9 @@ default, because that is what the component set itself draws.
 ### label
 
 The box's accessible name: what a screen reader says the box searches. The
-board's is the default, and a page that searches something else passes its own, the contacts page did not, and its readers were told it searched job
-opportunities, KN-430.
+board's is the default, and a page that searches something else passes its own,
+as the contacts page does. Before KN-430, the contacts page did not, so a screen
+reader was told it searched job opportunities.
 
 ### placeholder
 
