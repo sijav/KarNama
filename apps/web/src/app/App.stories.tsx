@@ -1,14 +1,14 @@
 import type { I18n } from '@lingui/core'
 import type { StoryObj } from '@storybook/react-vite'
-import { expect, spyOn, userEvent, waitFor, within } from 'storybook/test'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
 import { AuthProvider, sessionFor, STORAGE_KEY as SESSION_KEY } from '../core/auth'
-import { addressOf, siteBase } from './routes'
+import { siteBase } from './routes'
 import { fixtures } from '../shared/story-fixtures'
 import { STORAGE_KEY } from '../core/preferences'
 import { defaultStatuses, jobFrom, STORAGE_KEY as RECORDS_KEY, type Records } from '../core/records'
 import { emptyDraft } from '../shared/add-job'
 import { i18nFor } from '../i18n'
-import { CURRENT } from '../shared/navigation'
+import { CURRENT, type Destination } from '../shared/navigation'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { ListeningAround, OWN_LISTENING, PREVIEW_LISTENING } from '../shared/story-fixtures/listening'
 import { semantic } from '../theme/tokens'
@@ -195,19 +195,23 @@ export const Navigating: Story = {
       await waitFor(async () => {
         await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('شبکه من')
       })
-      await expect([window.location.pathname, window.location.hash]).toEqual([addressOf('network', base), ''])
+      await expect([window.location.pathname, window.location.hash]).toEqual([`${base}network`, ''])
 
-      // Going to the page already shown adds nothing to the history.
-      const pushed = spyOn(window.history, 'pushState')
+      // Going to the page already shown adds nothing to the history. Asserted on
+      // the HISTORY ITSELF rather than on pushState going uncalled, KN-698: a
+      // router calls its own history implementation, so a spy on the global would
+      // fall silent for a reason that has nothing to do with the behaviour it is
+      // guarding, and pass while the guarantee broke.
+      const entries = window.history.length
       await userEvent.click(canvas.getByRole('button', { name: 'شبکه من' }))
-      await expect(pushed).not.toHaveBeenCalled()
-      pushed.mockRestore()
+      await expect(window.history.length).toBe(entries)
 
       // And an address the history moves to by anything else is read back into
       // the page: the add destination opens the add flow over the board, and
       // closing it puts the address back on the board rather than leaving it
       // asking for a flow that is no longer open, KN-044.
-      window.history.pushState(null, '', addressOf('add', base))
+      const page: Destination = 'add'
+      window.history.pushState(null, '', `${base}${page}`)
       window.dispatchEvent(new PopStateEvent(MOVED))
       const adding = await body.findByRole('dialog')
       // The board stays the current page under the flow, as its frames draw
@@ -219,7 +223,7 @@ export const Navigating: Story = {
       await waitFor(async () => {
         await expect(body.queryByRole('dialog')).toBeNull()
       })
-      await expect([window.location.pathname, window.location.hash]).toEqual([addressOf('jobs', base), ''])
+      await expect([window.location.pathname, window.location.hash]).toEqual([`${base}jobs`, ''])
     } finally {
       window.history.replaceState(null, '', before)
     }
@@ -233,7 +237,8 @@ export const FromAnOldAddress: Story = {
   beforeEach: () => {
     const before = window.location.href
     // `#/network`, the address KN-042 wrote for the network page.
-    window.history.replaceState(null, '', `#${addressOf('network', '/')}`)
+    const hash: `#/${Destination}` = '#/network'
+    window.history.replaceState(null, '', hash)
     return () => {
       window.history.replaceState(null, '', before)
     }
@@ -241,7 +246,7 @@ export const FromAnOldAddress: Story = {
   play: async ({ canvasElement }) => {
     const base = siteBase(import.meta.env.BASE_URL, window.location.href)
     await expect(within(canvasElement).getByRole('heading', { level: 1 })).toHaveTextContent('شبکه من')
-    await expect([window.location.pathname, window.location.hash]).toEqual([addressOf('network', base), ''])
+    await expect([window.location.pathname, window.location.hash]).toEqual([`${base}network`, ''])
   },
 }
 

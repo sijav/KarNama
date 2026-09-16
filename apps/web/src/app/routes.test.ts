@@ -1,36 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { DESTINATION_IDS, DESTINATIONS } from '../shared/navigation'
-import { addressOf, destinationIn, pathForHash, siteBase } from './routes'
+import { pathForHash, siteBase } from './routes'
 
+/**
+ * What is left of `routes.ts` once react-router owns the addresses, KN-698.
+ *
+ * `destinationIn` and `addressOf` are gone, and their cases with them: reading a
+ * path and writing one are the router's work now, and `addresses.spec.ts` holds
+ * it to that end to end. These two are what the router has no opinion about.
+ */
 describe('the address and the destination', () => {
-  it.each([
-    ['/jobs', '/', 'jobs'],
-    ['/add', '/', 'add'],
-    ['/network', '/', 'network'],
-    ['/KarNama/network', '/KarNama/', 'network'],
-    ['/KarNama/network/', '/KarNama/', 'network'],
-    ['/KarNama/add', '/KarNama/', 'add'],
-  ] as const)('reads %s under %s as %s', (pathname, base, destination) => {
-    expect(destinationIn(pathname, base)).toBe(destination)
-  })
-
-  it.each([
-    ['/', '/', 'the base alone'],
-    ['/KarNama/', '/KarNama/', 'the base alone on Pages'],
-    ['/nowhere', '/', 'a page that does not exist'],
-    ['/JOBS', '/', 'the wrong case'],
-    ['/network', '/KarNama/', 'a path outside the base'],
-    ['/iframe.html', '/', "Storybook's frame"],
-  ])('falls back to the board on %s under %s, %s', (pathname, base) => {
-    expect(destinationIn(pathname, base)).toBe('jobs')
-  })
-
-  it('writes the address the navigation sets, under the base', () => {
-    expect(addressOf('network', '/')).toBe('/network')
-    expect(addressOf('network', '/KarNama/')).toBe('/KarNama/network')
-    expect(destinationIn(addressOf('add', '/KarNama/'), '/KarNama/')).toBe('add')
-  })
-
   it.each([
     ['#/network', '/KarNama/', '/KarNama/network'],
     ['#network', '/', '/network'],
