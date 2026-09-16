@@ -125,6 +125,29 @@ nothing, and KN-689's plan was committed at drift 2 that way.
 
 ## The owner's rules, most recent first
 
+- **2026-09-16, in chat, and it is a general rule not a one-off.** "Create your own tools for it then
+  don't hard code things common! What the hell? Why not routing library? It is react!" **Do not
+  hand-roll what the ecosystem already solves.** There is no routing dependency in this app at all:
+  `App.tsx` calls `pushState`, listens for `popstate` and splits paths itself, and KN-697 was about to
+  bolt a hand-written query string onto that. **KN-698** replaces it with a router. The version facts,
+  from `npm view` rather than memory: react-router **8.4.0** needs react >= 19.2.7 and the app is on
+  **19.0.8**; react-router **7.18.4** needs react >= 18 and works as-is; and **nothing in the toolchain
+  blocks a react bump**, since MUI 9.4.0, `@storybook/react-vite` 10.5.10 and the Vite plugin all
+  accept react 19.x.
+- **2026-09-16, in chat.** "When user write something on search after denounce url changes along with
+  search results and what not, does that make sense? I mean how hard could it be to do like this."
+  **The search belongs in the ADDRESS**, KN-697, filed at high and 3 points. Debounce, and yes it makes
+  sense: a searched board today cannot be shared, bookmarked or reloaded. Not hard, because the shell
+  already routes by hand in `App.tsx`: `destinationIn` reads the page from the path, `navigate()`
+  pushes it, a `popstate` listener follows Back, and **no query is ever written**. Two things decided
+  with it rather than left implicit: the address is **replaced** while typing, or one search adds a
+  history step per pause; and changing page **drops** the search rather than carrying `?q=` onto
+  another page. Note `navigate()` writes base plus destination and nothing else, so it would drop a
+  query silently today.
+- **2026-09-16, and KN-689's question went UNANSWERED.** It was put in plain words, after explaining
+  what happens, using the shape the plan review drafted; the owner replied by asking for KN-697
+  instead. So the choice, whether the bar supports a page that hands the typed text back later, is
+  still open and **KN-689 is parked**, not merely waiting its turn.
 - **2026-09-16, in chat.** "I definetly do not want to remove that that 300ms looks like a debounce to
   me, and it is mendatory to have!" **The Search Bar's 300 ms wait STAYS**, and KN-695 made the
   screens use it.
@@ -156,9 +179,24 @@ nothing, and KN-689's plan was committed at drift 2 that way.
 
 ## The next step
 
-**KN-689 is in progress**, high, 2 points, web, a child of KN-016, unblocked now that KN-695 landed.
-Its plan is beside the work at `apps/web/src/shared/search-bar/` and **says to replan from this
-point**, because it was written when no screen passed `onSearch` at all.
+**KN-698 is in progress**, high, 3 points, web: routing is hand-rolled and gets a router library. Its
+plan goes beside the work at `apps/web/src/app/`. **KN-697**, the search in the address, waits on it,
+and **KN-689 is BLOCKED on the owner**, not merely backlogged: a reason on a backlog card is a comment
+and `next` offers it again, which it did.
+
+**What exists now**: `src/app/routes.ts` exports `destinationIn(pathname, base)`,
+`addressOf(destination, base)`, `pathForHash(hash, base)` and `siteBase(configured, href)`, used by
+`App.tsx`, `routes.test.ts` and `App.stories.tsx`. `App.tsx` pushes with `history.pushState` in
+`navigate()`, follows Back with a `popstate` listener, and replaces an old hash address once on first
+render.
+
+**What a router must live with**: GitHub Pages has no rewrites, so the build writes `jobs.html`,
+`add.html`, `network.html` and `404.html` and each answers 200 at its path, KN-505, measured on the
+live site. And the base differs between the app and Storybook, which is why `siteBase` resolves a
+relative one against the page, so a router's basename is given the same way rather than assumed.
+
+**KN-689's own plan says to replan from this point**, since it was written when no screen passed
+`onSearch` at all.
 
 **The mechanism**, derived from the code three times: `SearchBar.tsx` marks an attempt judged BEFORE
 the equality check, so a controlled page that has not yet echoed leaves `text === attempt.before`, the
