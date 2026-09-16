@@ -13,6 +13,12 @@ Project **KarNama** · 330 of 695 tasks done · 673 of 1326 points.
 | 1 | OKR-1 | MVP: the pages | now | 221 | 252 |
 | 2 | OKR-2 | Everything after the MVP | later | 134 | 78 |
 
+## In progress (1)
+
+| id | title | sev | pt | area | blocked by | exit condition |
+| -- | ----- | --- | -- | ---- | ---------- | -------------- |
+| `KN-689` | A parent that answers a change one commit late loses the search, where KN-016 promises the final keystroke is never dropped | high | 2 | web | KN-695 | The promise is made exact in one place and true in both: either the contract is narrowed, stated in the story docs in both languages and in DESIGN.md as the decided behaviour, that a search runs only where the parent answers the readers change in the same commit; or the bar gains a way to attribute a late answer. Either way a story drives a parent that echoes one commit late and asserts the decided behaviour, and it fails if the other behaviour is implemented. |
+
 ## Blocked (9)
 
 | id | title | sev | pt | area | blocked by | exit condition |
@@ -27,7 +33,7 @@ Project **KarNama** · 330 of 695 tasks done · 673 of 1326 points.
 | `KN-516` | A phone's board shows a Sort Control that its frame does not draw | medium | 1 | web | none | The owner has chosen, DESIGN.md records it, and a phone's board matches the choice in both languages. |
 | `KN-517` | History's place second among the job modal's tabs was never put to the owner | medium | 1 | design | none | The owner has said where history goes, DESIGN.md sections 3 and 6 state it as the owner's decision, and the job modal's tabs follow it. |
 
-## Backlog (346)
+## Backlog (345)
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
@@ -37,7 +43,6 @@ Project **KarNama** · 330 of 695 tasks done · 673 of 1326 points.
 | `KN-340` | Coverage fell to 99.33 percent with the components built on 2026-09-11 | high | 2 | web | none | npm test reports 100 percent on all four metrics, each gap closed by a story or test that exercises the branch rather than an exclusion. |
 | `KN-365` | Stories that drive the real pointer fail when the storybook run executes files in parallel | high | 2 | web | none | The stories' computed() helpers, JobCard's and NavItem's and any other that borrows the element under test, read a token's colour on an element with no transition, so a colour is never read at the start of its own transition; and the full storybook project passes three runs in a row. |
 | `KN-417` | A session in the browser is trusted whole: anyone who writes one into storage is signed in | high | 2 | web | KN-036 | The session the browser keeps is a token the API issued; a hand-written session is refused, shown by planting one and being asked for a number again; and signing out clears it on the server as well as in the browser. |
-| `KN-689` | A parent that answers a change one commit late loses the search, where KN-016 promises the final keystroke is never dropped | high | 2 | web | KN-695 | The promise is made exact in one place and true in both: either the contract is narrowed, stated in the story docs in both languages and in DESIGN.md as the decided behaviour, that a search runs only where the parent answers the readers change in the same commit; or the bar gains a way to attribute a late answer. Either way a story drives a parent that echoes one commit late and asserts the decided behaviour, and it fails if the other behaviour is implemented. |
 | `KN-050` | CI: lint, typecheck, test, build, both workspaces | high | 3 | infra | KN-003, KN-033 | The workflow passes on a clean checkout, fails when a deliberately broken test is planted, and installs the Playwright browser before the Storybook project runs. |
 | `KN-079` | Capture the documentation canvas as text, not as truncated layer names | high | 3 | design | KN-002 | A committed text capture of canvas 5:8 contains the full body of every documentation frame, no name or text field in it is exactly at the truncation cap, agent/scripts/verify/KN-002.mjs scans that text rather than the metadata names, and planting a pending marker deep inside a long string makes the verifier fail. |
 | `KN-085` | Inventory every Figma style and variable at file level, not by sampling use sites | high | 3 | design | KN-004 | A committed file-level inventory of every Figma style and variable, with its digest recorded, and agent/scripts/verify/KN-004.mjs failing when an entry in it is neither in a DESIGN.md table nor on a written exclusion list, proved by planting an entry that is in neither. |
@@ -11885,7 +11890,7 @@ KN-062's whole-task roast, 2026-09-16, and checkable in four places that all agr
 
 ### `KN-689` A parent that answers a change one commit late loses the search, where KN-016 promises the final keystroke is never dropped
 
-- **status** backlog · **severity** high · **points** 2 · **area** web · **objective** OKR-1
+- **status** in_progress · **severity** high · **points** 2 · **area** web · **objective** OKR-1
 - **blocked by** KN-695
 - **came out of** KN-016
 
