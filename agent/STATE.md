@@ -30,7 +30,7 @@ by hand**, so `git stash@{0}` duplicates committed code; left for the owner to d
 **Closed 2026-09-16**: KN-514, KN-524, KN-535, KN-543, KN-544, KN-559, KN-658, KN-542, KN-564,
 KN-565, **KN-589** (d4b86c0), **KN-665**, **KN-667**, **KN-591** (874d4ce), **KN-601** (b5498ed),
 **KN-669**, **KN-670**, **KN-618** (4be8a8e), **KN-675** (23e188e), **KN-626** (4c099cb),
-**KN-678** (6b32e24), **KN-651** (c083050), **KN-679** (7bc88a7), **KN-680** (3e5c29e), **KN-666** (739df0c), **KN-668** (35fa6e0), **KN-672** (4a2488c).
+**KN-678** (6b32e24), **KN-651** (c083050), **KN-679** (7bc88a7), **KN-680** (3e5c29e), **KN-666** (739df0c), **KN-668** (35fa6e0), **KN-672** (4a2488c), **KN-306** (d8c9d9f).
 **Dropped**: KN-657, and **KN-663** (de6157c) — filed on a false premise, found by its own plan
 review before anything was built: `i18n.test.ts` line 7 has asserted the English identity map over
 every entry since 2026-09-08, `e3150cc`, eight days before the card. Its account of KN-565 was wrong
@@ -122,8 +122,28 @@ database tests are run directly, `npx vitest run src/database`, 68.
 
 ## The next step
 
-**KN-306 is in progress**, medium, 2 points, web, a child of KN-062. Its plan is written beside the
-work at `agent/scripts/verify/`; nothing is built yet.
+**KN-380 is in progress**, medium, 2 points, web, a child of KN-016 from the KN-314 roast. Its plan
+is written beside the work at `apps/web/src/shared/search-bar/`; nothing is built yet.
+
+**Four findings, one cause, all four confirmed by reading `SearchBar.tsx` rather than taken from the
+card.** The bar decides whether to search by comparing `typed.current` with the shown `text`, when
+the question is whether THIS user change reached the field. So: a parent that ignores the clear gets
+`onSearch('')` at once AND the orphaned «foo» timer later, because `text` never changes so the
+effect never re-runs and its cleanup never cancels; a parent that normalises `F` to `f` gets no
+search at all, which the pre-KN-314 code did give; a parent that resets then restores gets a search
+the user never made; and `search.current = onSearch` is written in a passive effect, so a timer due
+between a commit and that effect calls the previous callback.
+
+**The design is the card's own**: record for each USER change the text shown before it, its kind and
+an always-differing count; one effect judges that record — already handled means cancel only, `text
+=== before` means the parent ignored it, otherwise search what the field now shows, at once for a
+clear and after the pause for typing; and the ref moves to `useLayoutEffect`. `clear()` calling
+`onSearch('')` directly is finding 1 and goes.
+
+**KN-306 closed at d8c9d9f** and with it the LAST child of KN-062, so the board called for a
+whole-task roast of KN-062 with KN-305 and KN-306; it is running. KN-062's own evidence claims
+`story-fixtures.test.ts` asserts the fixtures never reach the production bundle — the claim KN-306
+showed was false as stated — so that round has something real to judge.
 
 **The defect.** `story-fixtures.test.ts` scans shipped SOURCE for a `story-fixtures` import
 specifier, and its "can fail" case tests that regex against a literal string rather than planting an
