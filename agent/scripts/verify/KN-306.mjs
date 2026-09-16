@@ -36,6 +36,11 @@ const DIST = join(WEB, 'dist')
 const ENTRY = join(WEB, 'src', 'main.tsx')
 const FIXTURES = join(WEB, 'src', 'shared', 'story-fixtures')
 
+// The languages, in ONE place: this reads their fixture JSON below, and names which of
+// them leaked when the bundle scan reports, KN-693. Two copies of the list would be two
+// things to keep in step.
+const LOCALES = ['en-US', 'fa-IR']
+
 // The Pages workflow's own inputs, so the artifact scanned is the shape that ships. VITE_API_URL is
 // a repository variable there and Pages refuses an empty one, KN-489, because deploys went out
 // reporting success while rejecting every call. Requiring it here would make this unrunnable
@@ -84,15 +89,20 @@ const check = (label, run) => {
  * JSON files if you need them.
  */
 const sentinels = () => {
-  const taken = ['en-US', 'fa-IR'].map((locale) => {
+  const taken = LOCALES.map((locale) => {
     const held = JSON.parse(readFileSync(join(FIXTURES, `${locale}.json`), 'utf8'))
     const value = held.jobs?.[0]?.company
     if (typeof value !== 'string' || value.trim() === '')
       throw new Error(`${locale}.json has no company on its first job to use as a sentinel`)
     return value
   })
+  // NAMES THE LOCALES AND THE FIELD, NEVER THE VALUE, KN-693. This is a FAILURE path, and a
+  // failure is exactly when output gets pasted into a card by whoever is diagnosing the break,
+  // which would make the paste a second holder of a value that must occur once. Nothing is lost:
+  // a collision means both locales gave the same text, so there is no "the" value to name, and
+  // where to look is the field rather than its contents.
   if (new Set(taken).size !== taken.length)
-    throw new Error(`the two locales gave the same sentinel, ${taken[0]}, so one language is unchecked`)
+    throw new Error(`${LOCALES.join(' and ')} give the same jobs[0].company, so one language is unchecked`)
   return taken
 }
 
@@ -155,6 +165,12 @@ const scanned = (marks) => {
 }
 
 const marks = sentinels()
+
+// Which language a finding belongs to, KN-693. `scanBundle` keys its findings by the sentinel
+// and carries no locale, while `marks` is built from LOCALES in order, so the index is exact.
+// `indexOf` answers -1 for anything unrecognised, and the fallback turns that into a vague word
+// rather than into `undefined` printed at a reader.
+const localeOf = (sentinel) => LOCALES[marks.indexOf(sentinel)] ?? 'an unrecognised locale'
 // The values are described, not printed, KN-685. Each must occur only in its own locale's fixture
 // JSON among repository files, and this loop writes evidence, notes and commit messages out of
 // command output as a matter of course, so a printed literal is one paste away from being a second
@@ -198,9 +214,12 @@ if (original.includes('story-fixtures')) {
 check('the production build emits a bundle holding no fixture sentinel', () => {
   build()
   const result = scanned(marks)
-  return result.findings.length === 0
-    ? null
-    : `the bundle holds ${result.findings.map(({ sentinel, files }) => `${JSON.stringify(sentinel)} in ${files.join(', ')}`).join('; ')}`
+  // The LOCALE and the emitted files, never the value, KN-693, for the reason the duplicate
+  // throw above gives. This names the language that leaked and the artifacts holding it, which
+  // is what a reader needs; the value itself is still one `cat` away in that locale's JSON.
+  if (result.findings.length === 0) return null
+  const held = result.findings.map(({ sentinel, files }) => `the ${localeOf(sentinel)} sentinel in ${files.join(', ')}`)
+  return `the bundle holds ${held.join('; ')}`
 })
 
 check('a planted import of the fixtures from app code makes that check fail', () => {
