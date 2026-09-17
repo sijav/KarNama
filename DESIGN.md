@@ -824,6 +824,24 @@ Bulk Action Bar while selecting, which is the board's to do. KN-027.
 The add flow is a modal over the board, so while it is open the board stays the
 current page in both, as `243:814` and `243:682` draw it, KN-481.
 
+**Where focus goes when the screen changes.** The shell's page region takes it.
+That region is the `main` element, it outlives every route change while the
+screen inside it is replaced, and it carries `tabIndex={-1}` so it can be
+focused on purpose and never reached by Tab. The case this is for was measured,
+KN-473: with a delete confirmation open on the board, the browser's Back
+replaces the screen, which unmounts the board and the dialog together, and MUI's
+own restoration then aims at the opener that went with them. Focusing an element
+that has left the document does nothing, so the reader was left on the page body
+with their next Tab starting from the top.
+
+The board and the add flow are ONE screen, so opening the flow is not a change
+of screen and moves nothing: `/jobs` and `/add` differ in address and in
+destination but not in what is drawn beneath, and treating them as different
+would take focus out of the Add Job dialog at the moment it opened. Arriving at
+the application moves nothing either, since nobody has been taken anywhere yet.
+What an ordinary navigation should do, where the reader clicked the control
+themselves and it survives the change, is not settled here and is KN-715.
+
 ### The add modal
 
 Node `166:82`, the shell at 560 in four drawn steps and the loading panel of

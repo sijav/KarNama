@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import Box from '@mui/material/Box'
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Route, Routes, useLocation, useMatch, useNavigate } from 'react-router'
 import { apiErrorText, extractJob } from '../core/api'
 import { useAuth } from '../core/auth'
@@ -66,6 +66,17 @@ export const App = () => {
   )
 }
 
+/**
+ * Which SCREEN is showing, which is not the same as which destination.
+ *
+ * The add flow is a modal over the board, DESIGN.md's navigation section, so
+ * `/jobs` and `/add` are one screen and only `/network` is the other. Named
+ * rather than read off `current` where it is used, because `current` is `'add'`
+ * on the add route and keying anything on that would treat opening the flow as
+ * a change of screen, KN-473.
+ */
+type Screen = 'jobs' | 'network'
+
 const Shell = () => {
   // Whether the page under the shell is selecting, so the tab bar can give the
   // foot of the screen to the Bulk Action Bar, KN-356. It lives here because
@@ -87,6 +98,31 @@ const Shell = () => {
   const network = useMatch(PATH.network)
   const add = useMatch(PATH.add)
   const current: Destination = network ? 'network' : add ? 'add' : 'jobs'
+  const screen: Screen = current === 'network' ? 'network' : 'jobs'
+
+  // The page region, and the only thing here that outlives a route change: the
+  // screen inside it is replaced, this is not. It takes focus when the screen
+  // changes, so it is focusable on purpose and never by Tab.
+  const main = useRef<HTMLElement | null>(null)
+  const shown = useRef<Screen | undefined>(undefined)
+
+  // Where a reader carries on from when the screen is replaced under them,
+  // DESIGN.md's navigation section, KN-473. A LAYOUT effect because React runs
+  // it once the arriving route has committed and before paint, so no frame is
+  // ever painted with focus lost. The first screen is skipped, since arriving
+  // at the app should take focus from nobody, and `shown` is cleared only while
+  // signed out, never in a cleanup: that is what stops StrictMode's second
+  // setup from reading as a change of screen.
+  useLayoutEffect(() => {
+    if (!session || signingUp) {
+      shown.current = undefined
+      return
+    }
+    const before = shown.current
+    shown.current = screen
+    if (before === undefined || before === screen) return
+    main.current?.focus()
+  }, [screen, session, signingUp])
 
   // Everything in the archive belongs to someone, so there is nothing to show
   // until somebody has signed in and said who they are, KN-046.
@@ -142,6 +178,10 @@ const Shell = () => {
           clear there. */}
       <Box
         component="main"
+        ref={main}
+        // Focusable on purpose and never by Tab: the effect above puts focus
+        // here when the screen changes, KN-473.
+        tabIndex={-1}
         sx={{
           flex: '1 1 auto',
           minWidth: 0,

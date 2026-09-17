@@ -243,6 +243,120 @@ export const Navigating: Story = {
   },
 }
 
+// The defect KN-473 measured: a screen replaced under an open confirmation left
+// the reader on the page body. Driven the way a reader meets it rather than with
+// a stand-in, because a wrapper that unmounts a substitute would pass while the
+// real path stayed broken: two history entries of the app's own, a real
+// confirmation, and the browser's own Back.
+export const BackFromAConfirmation: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const base = siteBase(import.meta.env.BASE_URL, window.location.href)
+    const before = window.location.href
+    // Held across the navigation on purpose: this is the node that has to
+    // survive it, and the assertion at the end is that focus reaches THIS one.
+    const main = canvasElement.ownerDocument.querySelector('main')
+    if (!(main instanceof HTMLElement)) throw new Error('the shell draws no page region')
+    try {
+      // Cards to delete, loaded the way a reader loads them.
+      await userEvent.click(canvas.getByRole('button', { name: 'تنظیمات' }))
+      const settings = await body.findByRole('dialog')
+      await userEvent.click(within(settings).getByRole('button', { name: 'بارگذاری داده‌های نمونه' }))
+      await userEvent.click(within(settings).getByRole('button', { name: 'تمام' }))
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog')).toBeNull()
+        await expect(canvas.getAllByRole('article').length).toBeGreaterThan(1)
+      })
+
+      // Two entries of the application's own, so Back has somewhere of ours to
+      // go and cannot walk the preview frame out of the story. `pushState` fires
+      // no popstate, which is why the board is drawn before these are made.
+      // Built from the destinations' own names rather than words written into
+      // the template, as `Navigating` above does: an address spelled out in a
+      // literal is a string the translation lint has to be argued with.
+      const away: Destination = 'network'
+      const here: Destination = 'jobs'
+      window.history.pushState(null, '', `${base}${away}`)
+      window.history.pushState(null, '', `${base}${here}`)
+
+      // The confirmation, opened from the card. The desktop card folds its
+      // delete away until focus is inside the card, KN-341, and the phone card
+      // carries a menu instead; whichever layout this runner draws, the words a
+      // reader reaches for are the same.
+      const [card] = canvas.getAllByRole('article')
+      if (!card) throw new Error('the board shows no card')
+      const inside = within(card)
+      const actions = inside.queryByRole('button', { name: 'کارهای فرصت شغلی' })
+      if (actions) {
+        await userEvent.click(actions)
+        await userEvent.click(await body.findByRole('menuitem', { name: 'حذف فرصت شغلی' }))
+      } else {
+        const bin = inside.getByRole('button', { name: 'حذف فرصت شغلی' })
+        bin.focus()
+        await userEvent.click(bin)
+      }
+      const asking = await body.findByRole('dialog')
+      // Where focus starts, so what it moves FROM is recorded rather than assumed.
+      await expect(within(asking).getByRole('button', { name: 'انصراف' })).toHaveFocus()
+
+      // The browser's own Back. It is asynchronous, so the arrival is waited for
+      // rather than asserted on the next line.
+      window.history.back()
+      await waitFor(async () => {
+        await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('شبکه من')
+      })
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog')).toBeNull()
+        await expect(main).toHaveFocus()
+      })
+    } finally {
+      // `replaceState` rather than a compensating Back: a second asynchronous
+      // route change after the story has finished is a race nobody watches.
+      window.history.replaceState(null, '', before)
+    }
+  },
+}
+
+// The control for the story above, KN-473. The add flow is a modal over the
+// board, so opening it changes the address without changing the SCREEN and must
+// not move focus. This is what proves the shell keys on the screen rather than
+// on the path or on the destination, which is `add` here.
+export const OpeningTheAddFlowKeepsFocus: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const base = siteBase(import.meta.env.BASE_URL, window.location.href)
+    const before = window.location.href
+    const main = canvasElement.ownerDocument.querySelector('main')
+    if (!(main instanceof HTMLElement)) throw new Error('the shell draws no page region')
+    try {
+      // Scoped to the navigation landmark rather than asked for by name alone:
+      // the board draws «افزودن فرصت شغلی» twice more, in its Page Header and in
+      // its empty state, so the bare name matches three controls here.
+      // `Navigating` above gets away with the bare query only because it has
+      // already left the board by the time it asks.
+      const workspace = canvas.getByRole('navigation', { name: 'فضای کار' })
+      await userEvent.click(within(workspace).getByRole('button', { name: 'افزودن فرصت شغلی' }))
+      const adding = await body.findByRole('dialog')
+      await expect(window.location.pathname).toBe(`${base}add`)
+      // The dialog has focus and the page region does not: no screen changed.
+      await expect(main).not.toHaveFocus()
+      await expect(adding.contains(canvasElement.ownerDocument.activeElement)).toBe(true)
+      await userEvent.click(within(adding).getByRole('button', { name: 'انصراف' }))
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog')).toBeNull()
+      })
+      // And closing it is not a change of screen either.
+      await expect(main).not.toHaveFocus()
+    } finally {
+      window.history.replaceState(null, '', before)
+    }
+  },
+}
+
 // The frame's address is given the old hash before the shell renders, as a shared
 // link gives it, and the whole address is put back after, KN-505.
 export const FromAnOldAddress: Story = {

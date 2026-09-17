@@ -47,6 +47,26 @@ the back button or a shared link, is read back into the page. Going to the page
 already shown adds nothing to the history. While the add flow is open over the
 board, the board stays the current page in the navigation.
 
+### BackFromAConfirmation
+
+The reader is asked to confirm a deletion on the board, and then goes back. The
+screen is replaced under the open confirmation, which takes the board, the
+dialog and the control that opened it away together, so what the browser tries
+to give focus back to is no longer in the page and the page body takes it
+instead. The shell puts focus on the page region, so the next Tab carries on
+from the page that arrived rather than from the top of it. The story loads the
+sample data, makes two entries of its own so that going back has somewhere of
+the application's to go, and uses the browser's own back rather than standing in
+for it.
+
+### OpeningTheAddFlowKeepsFocus
+
+The control for the story above. The add flow is a modal over the board, so
+opening it changes the address without changing the screen, and focus stays in
+the dialog rather than moving to the page region. Telling those two apart is
+what the shell's rule turns on: the address and the current destination both say
+add, while the screen underneath is still the board.
+
 ### FromAnOldAddress
 
 An address shared while the page was in the hash, #/network, opens the network
