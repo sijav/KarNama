@@ -33,42 +33,18 @@ KN-651, KN-679, KN-680, KN-666, KN-668, KN-672, **KN-306** (d8c9d9f), **KN-380**
 **KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491), **KN-706** (19587b9), **KN-707** (df31739), **KN-708** (6454eb9), **KN-389** (5c5b31a), **KN-710** (996653f, board 1b4d692). **Dropped**: KN-657, and **KN-663**
 (de6157c), filed on a false premise its own plan review caught.
 
-## KN-697, the search in the address, and it is the one to read first
+## KN-697, the search in the address
 
-**The owner asked for it directly**: after the pause, the address changes along with the results. Both
-screens now read the search from the address with `useSearchParams`, and their two story metas gained
-a **`MemoryRouter` decorator** — never the global one in `.storybook/preview.tsx`, because
-`App.stories` renders the whole `App`, which builds its own `BrowserRouter`, and a router refuses to
-nest in a router.
-
-**Props were the alternative and one of my reasons against them was false**, which the plan review
-caught: a story passing no `onSearch` would NOT force a story-only fallback, since `JobsScreen`'s meta
-already supplies its callbacks through args. The choice stands on the smaller true reason, that
-`JobsScreen` sets `component:` so the docs guard checks props in both directions and both languages.
+Both screens read the search from the address with `useSearchParams`, and their story metas carry a
+**`MemoryRouter` decorator**, never the global one, because `App.stories` renders the whole `App`, which
+builds its own `BrowserRouter`, and a router refuses to nest in a router.
 
 **`searchStep` in `routes.ts` owns the history rule**: starting a search PUSHES so Back returns the
-unsearched page, refining REPLACES so a word leaves no entry per pause, clearing PUSHES so Back undoes
-the clear, and a settled value that changes nothing REPLACES with the same address rather than
-returning early. **The first plan said replace always, and that cannot hold**: replacing turns `/jobs`
-into `/jobs?q=…`, so the unsearched board leaves history and Back leaves the board entirely. The card
-says replaced WHILE TYPING, which is about refinements.
-
-**It is a function, and that was forced by measurement**: both screens held identical copies, and the
-no-change case is reachable only through the 300 ms pause, which no story can time — it measured
-uncovered at `JobsScreen.tsx:120` and `NetworkScreen.tsx:93`. `routes.test.ts` now proves six cases
-with no clock.
-
-**The add flow carries the query, and its close still PUSHES.** `/add` is a modal over the board,
-`DESIGN.md` line 791, with the board visible behind it, so cancelling must not land the reader on a
-board they never searched. Replacing on close was in the plan until round two showed it trades one
-defect for another — it stops Back reopening the modal but leaves two identical board entries, so Back
-appears to do nothing. **That history is KN-579's**, and that card now records why the first of its own
-two proposed fixes does not work alone.
-
-**The control held**: against the code as it was, with these specs in place, the two spec files are 10
-failed and 12 passed — the 10 are exactly the five new or extended tests across both projects, the 12
-are every pre-existing addresses test, and `search-waits` fails at the address assertion after the
-pause with Expected «مدیر محصول» and Received null.
+unsearched page, refining REPLACES so a word leaves no entry per pause, clearing PUSHES, and a settled
+value that changes nothing REPLACES rather than returning early. It is a function because both screens
+held identical copies and the no-change case is reachable only through the 300 ms pause, which no story
+can time; `routes.test.ts` proves six cases with no clock. The add flow carries the query and its close
+still PUSHES, which is KN-579's history, not this card's.
 
 ## What fails, measured 2026-09-17
 
@@ -184,64 +160,49 @@ because `todo render` writes every description into the board and the database i
 - **A finding is a CHILD of its task**, one level, with `--area` and `--okr`. **Plans live beside the
   work**, checked by `roast.py plan` before building, and they stay.
 
-## KN-389 closed, 5c5b31a, and what it settled for good
+## Recently closed, and the one durable thing each settled
 
-**The owner ruled, 2026-09-17: CHANGE THE MESSAGE.** A column's count keeps the status's real total, and a
-column a search emptied says «چیزی با این جستجو تو این مرحله نیست» instead of the stage sentence. It went
-to the question card because two board records required opposite things: **KN-422**, done and critical,
-closed on "A column's count and its deletability are the column's own, not the search's", precisely
-because a SEARCHED count of zero enabled Delete and `deleteStatus` took the hidden job opportunities with
-it; while KN-389 called the resulting pair the defect. **The rule now lives in `DESIGN.md`** under the
-kanban column, so it is settled rather than re-decided, and so the next reader does not file `241:2` again
-as a mismatch.
+**KN-389** (5c5b31a). The owner ruled, 2026-09-17: a column a search emptied changes its MESSAGE, not its
+count. KN-422 had closed critical on the count being the status's OWN after a searched zero enabled Delete
+and took hidden records, so the count stands and the sentence moves. **The rule is in `DESIGN.md`** under
+the kanban column. The signal is `sizeOf(id) > 0 && cardsOf(id).length === 0`, carried by two call sites,
+the column and `JobsScreen` 549 where the phone renders `EmptyColumn` directly. Figma did not settle it:
+`305:1547` is a structural copy of `305:1696`, and `241:2` already draws count `1` beside the empty frame.
+**Still owed**: `JobsScreen` 414 gives the phone's Filter Chips the SEARCHED count, which is KN-712.
 
-**THE FIGMA FILE DID NOT SETTLE IT**, checked rather than assumed: `305:1547` Search Empty is a structural
-COPY of `305:1696` Empty, down to which single column carries the message, so the «۰» in both says nothing
-about what a count counts; and `241:2` already draws count `1` at `241:43` beside the empty frame `241:46`
-with no card, because its counts are totals while its cards are a sample.
+**KN-710** (996653f). `AGENTS.md` line 461 now records that a regex comment stripper cannot prove a change
+is comments only, being no lexer, and that `git diff` does not settle it either, being line based; reading
+the changed lines does, and NEITHER IS A GATE. **The card corrected its own exit**, which had asked for a
+check that refuses, against rule zero and the owner's 2026-09-11 retirement of per-task verifier scripts.
+Its roast then found my KN-685 justification backwards, since KN-685 DID correct closed board evidence
+through the database and only refused to rewrite an exit condition; that is KN-713.
 
-**The signal is `sizeOf(id) > 0 && cardsOf(id).length === 0`**, not "a search is running", so a status with
-genuinely nothing keeps the stage sentence, which is true of it. Two call sites carry it: the column, and
-`JobsScreen` line 549 where the phone renders `EmptyColumn` DIRECTLY, a separate caller and not a column
-layout, which the review corrected me on. `EveryCardFiltered` and `MobileEmpty` stay at count 0 asserting
-the OLD sentence, so a swap everywhere would fail them.
+**KN-711** (3c2df74). The module note says "which path each destination answers to" again, not "the paths
+this app answers to": `/jobs` has no route of its own and the wildcard answers everything, so the old
+phrase described the route table while the module owns the map. Fifth in that chain and the first where
+the neighbouring clauses checked out clean.
 
-**Still owed from it**: `JobsScreen` line 414 gives the phone's Filter Chips the SEARCHED count while the
-column header shows the live total, so two surfaces now state different things about one status. Left out
-deliberately, and it becomes its own card if the roast judges it real.
+## The next step: KN-407, the Docs page hook is checked by hand
 
-## KN-710 closed, 996653f, and the rule it recorded
+**In progress**, medium, 2 points, web, a child of KN-007 from the KN-203 roast.
 
-**A regex comment stripper cannot prove a change is comments only**, and `AGENTS.md` line 461 now says so,
-beside the positive control lesson it belongs with: it is not a lexer, so it erases text inside a string, a
-template literal or a regex literal holding a comment marker, and a change made inside one vanishes from
-BOTH copies and they compare equal. `git diff` does not settle it either, being line based and equally
-blind to lexical context. What settles it is reading the changed lines and judging them. Neither is a gate.
+`vitest.config.ts` excludes `DocsPage.tsx` and `useDocsLocale.ts` from coverage, arguing that this
+repository covers React by rendering stories and a Docs page cannot be one. The card says that reason is
+thinner than it looks, since `AppProviders.test.tsx` and `PreferencesProvider.test.tsx` already render
+React in the unit project.
 
-**THE CARD CORRECTED ITSELF, which was the larger half of it.** Its first exit, mine, asked for a check
-that REFUSES plus a fixture the old proof passes wrongly. That breaks `agent/RALPH.md` rule zero, never
-invent a gate the owner did not ask for, and it asks for the per-task verifier script the owner RETIRED on
-2026-09-11, `AGENTS.md` line 389 and `agent/RALPH.md` lines 117 and 311. Severity is now `low`, since a
-finding about the loop is low, and the withdrawal is written into the card's own exit so the board says
-what happened. **The review then caught the same fault inside the fix**: my replacement wording said "the
-commit diff is the proof", claiming for a line based diff exactly what the card faults the stripper for
-claiming. **Sixth overclaim of the session, each one inside the correction of the last.**
+**BOTH HALVES NEED CARE, and the plan settles them before a test is written.** The unit project is
+`environment: 'node'` with no jsdom, no happy-dom and no testing-library, and every React unit test uses
+`renderToString`, which runs the render pass and NEVER runs `useEffect`. So the node side can cover the
+hook's `useState` initialiser, both arms, and cannot reach `channel.on`, `onUpdate` or the `channel.off`
+cleanup, which is three of the exit's four clauses. Worse, **KN-103** records that coverage from the
+storybook project is DISCARDED for any file the unit project also touches, so adding a node test would
+DESTROY the story side cover rather than add to it, against `thresholds` of 100 on all four metrics.
 
-**Where I judged against the review**: it asked for the rule in `agent/RALPH.md` as well. One file only,
-because `CLAUDE.md` makes a single working agreement the whole point and two copies drift.
-
-## The next step: KN-711, the module note claims a wider scope than PATH records
-
-**In progress**, medium, 1 point, web, a child of KN-698, filed from KN-708's roast and written by me.
-
-`routes.ts`'s module note says what is left is what the router has no opinion about, and then leads with
-"the paths this app answers to". `PATH` maps each DESTINATION to its path, `/jobs`, `/add`, `/network`.
-The app answers MORE than those: `App.tsx` line 166 is `<Route path="*" element={board(false)} />`, whose
-own comment says Pages serves `404.html`, which is this same app, so a mistyped address draws the archive
-rather than redirecting. The note therefore claims the module records something wider than it does. The
-original wording, "which path each destination answers to", was exact, and KN-708 widened it while
-removing the stale count. **Fifth in that chain and the smallest of them: one phrase.** The kind and not
-count framing KN-708 chose stays, and so does the count history sentence after it.
+**So the route that can work is a STORY**: a probe rendered inside a `DocsContext.Provider` with a channel
+of its own, in the browser project, with NO node test on that file, leaving `DocsPage.tsx` excluded under a
+reason corrected to say what is actually left in it. `DocsPage.tsx` imports the hook at line 4 and calls it
+at 47, so the two files are not independent and the exclusion cannot simply be emptied.
 
 ## What to read first
 
