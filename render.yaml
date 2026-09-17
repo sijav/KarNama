@@ -71,6 +71,57 @@ services:
       - key: DATABASE_URL
         sync: false
 
+      # Everything demo extraction depends on, KN-485. A variable that decides
+      # whether the service works belongs where the service is defined, and
+      # before this the API could start with none of these and report itself
+      # healthy while every extraction failed. `env.ts` now refuses to start
+      # when demo extraction is on and any of them is missing, so the failure
+      # arrives as a failed deploy rather than as a reader's failed extraction.
+      #
+      # ALL of them are `sync: false`, including the ones that are not secret,
+      # and that is deliberate. This file cannot see what the dashboard holds,
+      # and a value written here is pushed over the live one at the next
+      # Blueprint sync: guessing `groq` would repoint a service that had chosen
+      # otherwise, and guessing a hop count would change whose address the API
+      # believes. Declaring them says what a deploy needs without overwriting
+      # what a deploy already has.
+      #
+      # A newly declared `sync: false` variable is not prompted for on a service
+      # Render has already created, the same way an edited `buildCommand` is
+      # not, for the reason recorded above: the service keeps what it was made
+      # with until the Blueprint is re-synced. The secrets here were entered in
+      # the dashboard by hand when demo extraction was turned on, so this
+      # declares what is there rather than asking for anything new. A service
+      # created FRESH from this file is prompted for all five.
+      - key: AUTH_SECRET
+        sync: false
+
+      - key: GROQ_API_KEY
+        sync: false
+
+      # Which provider reads a posting. It has no default in `env.ts` any more:
+      # a default is applied while parsing, so a provider nobody chose cannot be
+      # told from one that was, and that is what let a Groq deployment boot
+      # pointing at OpenAI with no key for it.
+      - key: EXTRACTION_PROVIDER
+        sync: false
+
+      # Whether someone signed out may extract, rate limited. The refusal above
+      # fires only while this is true.
+      - key: ALLOW_DEMO_EXTRACTION
+        sync: false
+
+      # How many proxies sit in front of this service, for working out who is
+      # calling. Zero means the socket peer is the caller.
+      - key: TRUST_PROXY_HOPS
+        sync: false
+
+      # OPENAI_API_KEY and OPENAI_EXTRACTION_MODEL are deliberately absent: this
+      # deployment reads postings with Groq, and declaring a secret that nobody
+      # sets is a prompt for nothing. `env.ts` demands them only when a
+      # deployment actually chooses OpenAI, and the model as well as the key,
+      # because unlike Groq's the OpenAI model is defaulted nowhere.
+
     # Free instances spin down after 15 minutes of inactivity and take about a
     # minute to wake. That is not a surprise to this product: DESIGN.md already
     # requires the UI to handle a cold start honestly rather than look broken.

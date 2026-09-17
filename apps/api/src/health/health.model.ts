@@ -27,4 +27,19 @@ export class Health {
 
   @Field(() => String, { description: 'Configured extraction provider, without credentials' })
   extractionProvider!: string
+
+  // Four things can be missing, and a process missing any of them starts anyway
+  // and fails every extraction, KN-485. Each says WHETHER it is set and never
+  // what it is, which `health.resolver.test.ts` enforces rather than trusts.
+  @Field(() => Boolean, { description: 'Whether the signing secret is set, never what it is' })
+  authSecretConfigured!: boolean
+
+  @Field(() => Boolean, { description: 'Whether a provider was chosen, rather than falling back to OpenAI' })
+  extractionProviderConfigured!: boolean
+
+  @Field(() => Boolean, { description: 'Whether the API key for the provider in force is set, never what it is' })
+  extractionKeyConfigured!: boolean
+
+  @Field(() => Boolean, { description: 'Whether the model for the provider in force is set' })
+  extractionModelConfigured!: boolean
 }

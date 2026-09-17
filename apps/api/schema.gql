@@ -31,14 +31,26 @@ type ExtractedJob {
 }
 
 type Health {
+  """Whether the signing secret is set, never what it is"""
+  authSecretConfigured: Boolean!
+
   """Whether this process allows rate-limited demo extraction"""
   demoExtractionEnabled: Boolean!
 
   """Which environment this process believes it is in"""
   environment: String!
 
+  """Whether the API key for the provider in force is set, never what it is"""
+  extractionKeyConfigured: Boolean!
+
+  """Whether the model for the provider in force is set"""
+  extractionModelConfigured: Boolean!
+
   """Configured extraction provider, without credentials"""
   extractionProvider: String!
+
+  """Whether a provider was chosen, rather than falling back to OpenAI"""
+  extractionProviderConfigured: Boolean!
 
   """Git revision running on Render, when available"""
   revision: String
