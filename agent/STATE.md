@@ -30,7 +30,7 @@ the owner to drop.
 KN-565, KN-589, KN-665, KN-667, KN-591, KN-601, KN-669, KN-670, KN-618, KN-675, KN-626, KN-678,
 KN-651, KN-679, KN-680, KN-666, KN-668, KN-672, **KN-306** (d8c9d9f), **KN-380** (17472be),
 **KN-685** (43898ec), **KN-690** (db6f4e6), **KN-691** (fb0e32b), **KN-695** (e29b86e),
-**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491), **KN-706** (19587b9), **KN-707** (df31739), **KN-708** (6454eb9), **KN-389** (5c5b31a), **KN-710** (996653f, board 1b4d692). **Dropped**: KN-657, and **KN-663**
+**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491), **KN-706** (19587b9), **KN-707** (df31739), **KN-708** (6454eb9), **KN-389** (5c5b31a), **KN-710** (996653f), **KN-711** (3c2df74), **KN-407** (7b0ca8d, board c0e0326). **Dropped**: KN-657, and **KN-663**
 (de6157c), filed on a false premise its own plan review caught.
 
 ## KN-697, the search in the address
@@ -182,27 +182,40 @@ this app answers to": `/jobs` has no route of its own and the wildcard answers e
 phrase described the route table while the module owns the map. Fifth in that chain and the first where
 the neighbouring clauses checked out clean.
 
-## The next step: KN-407, the Docs page hook is checked by hand
+**KN-407** (7b0ca8d). The coverage exclusion for `DocsPage.tsx` and `useDocsLocale.ts` now gives the reason
+that is TRUE, in all three places that stated the untrue one: `vitest.config.ts`, the hook, and
+`docs-locale.ts`, which is the file that is actually tested and said it in the present tense. The measured
+reasons: the unit project is node with no DOM in either package and all four of its React tests use
+`renderToString`, which never runs an effect; a fake `DocsContext` needs 12 of 13 required members and two
+Storybook internals faked, with no default to spread since it is `createContext(null)`; and KN-103 discards
+a story's coverage of any file the unit project also touches. **It took the exit's second branch**, which
+the exit names, and the card was re-estimated 2 points to 1 rather than quietly costing less. The comment
+no longer offers a manual look as coverage, and KN-408 is named as the one behaviour known to be missing.
 
-**In progress**, medium, 2 points, web, a child of KN-007 from the KN-203 roast.
+## The next step: KN-426, a disabled Icon Button cannot explain why it is off
 
-`vitest.config.ts` excludes `DocsPage.tsx` and `useDocsLocale.ts` from coverage, arguing that this
-repository covers React by rendering stories and a Docs page cannot be one. The card says that reason is
-thinner than it looks, since `AppProviders.test.tsx` and `PreferencesProvider.test.tsx` already render
-React in the unit project.
+**In progress**, medium, 2 points, web. Plan at
+`apps/web/src/shared/icon-button/#KN-426 - A disabled Icon Button cannot explain why it is off.md`.
 
-**BOTH HALVES NEED CARE, and the plan settles them before a test is written.** The unit project is
-`environment: 'node'` with no jsdom, no happy-dom and no testing-library, and every React unit test uses
-`renderToString`, which runs the render pass and NEVER runs `useEffect`. So the node side can cover the
-hook's `useState` initialiser, both arms, and cannot reach `channel.on`, `onUpdate` or the `channel.off`
-cleanup, which is three of the exit's four clauses. Worse, **KN-103** records that coverage from the
-storybook project is DISCARDED for any file the unit project also touches, so adding a node test would
-DESTROY the story side cover rather than add to it, against `thresholds` of 100 on all four metrics.
+**THE OWNER RULED, 2026-09-17: REACHABLE, LIKE THE MENU.** `aria-disabled` rather than `disabled`, `onClick`
+guarded, so the button stays hoverable and focusable and its Tooltip opens and says why it is off. It went
+to the question card because two sets of records disagreed for analogous controls: the docs in both
+languages and the `Disabled` story say a disabled Icon Button is out of the tab order, while `DESIGN.md`
+668 to 670 says the blocked delete "stays in the keyboard's path so the reason can be read", which
+`Menu.tsx` implements and `DESIGN.md` 697 to 699 repeats for the card's folded controls.
 
-**So the route that can work is a STORY**: a probe rendered inside a `DocsContext.Provider` with a channel
-of its own, in the browser project, with NO node test on that file, leaving `DocsPage.tsx` excluded under a
-reason corrected to say what is actually left in it. `DocsPage.tsx` imports the hook at line 4 and calls it
-at 47, so the two files are not independent and the exclusion cannot simply be emptied.
+**THE CARD'S STATED MECHANISM IS WRONG and its own note said so.** Not "the browser fires no pointer
+events": `IconButton.tsx` 193 passes `disabled` to MUI, which sets the NATIVE attribute so there is no
+focus, and adds `.Mui-disabled`, which MUI gives `pointer-events: none` so there is no hover; and
+`Tooltip.tsx` 101 CLONES its child rather than wrapping it in a span. The conclusion holds, the reason did
+not. The story the card says was written and removed is in no commit, so its evidence cannot be checked.
+
+**THE TRAP IS THE STYLING.** `IconButton.tsx` 153 keys the drawn state on `'&.Mui-disabled'`, a class MUI
+adds only for the native prop, so dropping the prop makes the 0.7 opacity and `text/disabled` silently
+vanish while every assertion stays green. It must become `&[aria-disabled='true']`.
+
+**Nothing in the product passes `disabled` to an Icon Button today**, so this settles a rule, as KN-433 did
+for the `href` and `disabled` pair when that was latent too.
 
 ## What to read first
 
