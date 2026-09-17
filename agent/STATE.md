@@ -30,7 +30,7 @@ the owner to drop.
 KN-565, KN-589, KN-665, KN-667, KN-591, KN-601, KN-669, KN-670, KN-618, KN-675, KN-626, KN-678,
 KN-651, KN-679, KN-680, KN-666, KN-668, KN-672, **KN-306** (d8c9d9f), **KN-380** (17472be),
 **KN-685** (43898ec), **KN-690** (db6f4e6), **KN-691** (fb0e32b), **KN-695** (e29b86e),
-**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491), **KN-706** (19587b9), **KN-707** (df31739), **KN-708** (6454eb9), **KN-389** (5c5b31a, board ea8a6f6). **Dropped**: KN-657, and **KN-663**
+**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491), **KN-706** (19587b9), **KN-707** (df31739), **KN-708** (6454eb9), **KN-389** (5c5b31a), **KN-710** (996653f, board 1b4d692). **Dropped**: KN-657, and **KN-663**
 (de6157c), filed on a false premise its own plan review caught.
 
 ## KN-697, the search in the address, and it is the one to read first
@@ -210,24 +210,38 @@ the OLD sentence, so a swap everywhere would fail them.
 column header shows the live total, so two surfaces now state different things about one status. Left out
 deliberately, and it becomes its own card if the roast judges it real.
 
-## The next step: KN-710, the comments only proof would erase a change hidden in a literal
+## KN-710 closed, 996653f, and the rule it recorded
 
-**In progress**, a child of KN-698 by the one level rule, filed out of KN-708's own roast. KN-708 proved a
-comments only change by stripping comments from `routes.ts` before and after with a REGEX stripper and
-comparing the code byte for byte, and its evidence states that method as SOUND because the same stripper
-runs on both sides. Codex was right that this does not hold in general: a regex stripper does not tokenize
-TypeScript, so it also erases text inside a string, a template literal or a regex literal that contains a
-comment marker, and a real code change made inside one would vanish from both sides and compare equal. It
-holds for `routes.ts`, which has no such literal, so KN-708's conclusion stands and nothing reopens it.
-The wrong thing is the claim of METHOD, which sits in board evidence written to be reused.
+**A regex comment stripper cannot prove a change is comments only**, and `AGENTS.md` line 461 now says so,
+beside the positive control lesson it belongs with: it is not a lexer, so it erases text inside a string, a
+template literal or a regex literal holding a comment marker, and a change made inside one vanishes from
+BOTH copies and they compare equal. `git diff` does not settle it either, being line based and equally
+blind to lexical context. What settles it is reading the changed lines and judging them. Neither is a gate.
 
-**THE CARD AS I FILED IT LOOKS LIKE A RULE ZERO BREACH, and that is the first thing the plan must settle.**
-Its exit demands "a check that refuses", plus a fixture the old proof passes wrongly. `agent/RALPH.md`
-rule zero forbids inventing a gate the owner did not ask for, and its test is whether the owner asked for
-this refusal or whether I am adding it because I found something. The owner did not ask. The same file
-says a finding about the LOOP rather than the product is `low` unless it is actively breaking the work,
-and this is about the agent's own close machinery, not about KarNama. So the plan argues for writing the
-RULE down in `AGENTS.md`, correcting this card's severity and exit to match, and building no gate at all.
+**THE CARD CORRECTED ITSELF, which was the larger half of it.** Its first exit, mine, asked for a check
+that REFUSES plus a fixture the old proof passes wrongly. That breaks `agent/RALPH.md` rule zero, never
+invent a gate the owner did not ask for, and it asks for the per-task verifier script the owner RETIRED on
+2026-09-11, `AGENTS.md` line 389 and `agent/RALPH.md` lines 117 and 311. Severity is now `low`, since a
+finding about the loop is low, and the withdrawal is written into the card's own exit so the board says
+what happened. **The review then caught the same fault inside the fix**: my replacement wording said "the
+commit diff is the proof", claiming for a line based diff exactly what the card faults the stripper for
+claiming. **Sixth overclaim of the session, each one inside the correction of the last.**
+
+**Where I judged against the review**: it asked for the rule in `agent/RALPH.md` as well. One file only,
+because `CLAUDE.md` makes a single working agreement the whole point and two copies drift.
+
+## The next step: KN-711, the module note claims a wider scope than PATH records
+
+**In progress**, medium, 1 point, web, a child of KN-698, filed from KN-708's roast and written by me.
+
+`routes.ts`'s module note says what is left is what the router has no opinion about, and then leads with
+"the paths this app answers to". `PATH` maps each DESTINATION to its path, `/jobs`, `/add`, `/network`.
+The app answers MORE than those: `App.tsx` line 166 is `<Route path="*" element={board(false)} />`, whose
+own comment says Pages serves `404.html`, which is this same app, so a mistyped address draws the archive
+rather than redirecting. The note therefore claims the module records something wider than it does. The
+original wording, "which path each destination answers to", was exact, and KN-708 widened it while
+removing the stale count. **Fifth in that chain and the smallest of them: one phrase.** The kind and not
+count framing KN-708 chose stays, and so does the count history sentence after it.
 
 ## What to read first
 
