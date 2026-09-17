@@ -17,7 +17,7 @@ Project **KarNama** · 346 of 719 tasks done · 698 of 1364 points.
 
 | id | title | sev | pt | area | blocked by | exit condition |
 | -- | ----- | --- | -- | ---- | ---------- | -------------- |
-| `KN-484` | Behind Render every visitor shares one rate limit, and a malformed call spends it | medium | 2 | api | none | With TRUST_PROXY_HOPS set as Render documents it, a test shows two requests from different forwarded addresses counted separately and a source under ten characters refused without being counted; render.yaml declares the value. |
+| `KN-484` | Behind Render every visitor shares one rate limit, and a malformed call spends it | medium | 2 | api | none | One helper resolves the caller's address from CF-Connecting-IP, with a fallback for running without Cloudflare in front, and BOTH the extraction resolver and the auth resolver use it so no family keys on Render's socket peer; a test drives the real GraphQL path with two requests carrying different CF-Connecting-IP values and shows them counted separately; and a source under ten characters, or over thirty thousand, is refused with INVALID_POSTING without being counted and without reaching the extraction service, while a bad token with a short source still fails UNAUTHENTICATED. |
 
 ## Blocked (10)
 
@@ -9125,11 +9125,11 @@ From KN-477's review of Codex's API, A-01, confirmed at apps/api/src/extraction/
 - **blocked by** none
 - **came out of** KN-477
 
-From KN-477's review, A-02 and H-05, confirmed: extraction.resolver.ts keys the demo limit on req.ip, env.ts defaults TRUST_PROXY_HOPS to 0 and render.yaml never sets it, so Express reports Render's proxy address for every request. Ten demo extractions an hour are shared by everyone, and a call whose source is 'x' is counted before extract() rejects it. Set the hop count to Render's actual proxy chain, checked rather than guessed, and validate the source before counting it.
+From KN-477's review, A-02 and H-05, confirmed. extraction.resolver.ts keys the demo limit on req.ip, env.ts defaults TRUST_PROXY_HOPS to 0 and render.yaml never sets it, so Express reports Render's proxy address for every request: ten demo extractions an hour shared by everyone. A too-short source is counted before extract() rejects it, and auth.limit counts and checks in one atomic upsert, so there is no refund and validating must happen before limit is called at all. TWO OWNER DECISIONS ON 2026-09-17, AND THE SECOND REPLACES THE FIRST. I first asked because Render seemed to document no hop count, and the answer was to measure the header on the deployed API. That question was built on my own incomplete reading: Render DOES document this, and says to use CF-Connecting-IP, which Cloudflare writes on every request and overwrites, while it only appends to X-Forwarded-For so a caller controls the leftmost entry and can claim any address. Told that, the owner ruled: USE CF-CONNECTING-IP. One helper with a local fallback, used by extraction and by the auth resolver together, so the SMS and verify limits do not keep the same defect. TRUST_PROXY_HOPS leaves this card and render.yaml needs no value. Deployed header logging is NOT done: it would read real visitors addresses and would still not prove the header cannot be faked.
 
 **Why.** One visitor, or one script, can lock every reader out of extraction for an hour, and the SMS and verify limits will share the same bucket once live login is on.
 
-**Exit condition.** With TRUST_PROXY_HOPS set as Render documents it, a test shows two requests from different forwarded addresses counted separately and a source under ten characters refused without being counted; render.yaml declares the value.
+**Exit condition.** One helper resolves the caller's address from CF-Connecting-IP, with a fallback for running without Cloudflare in front, and BOTH the extraction resolver and the auth resolver use it so no family keys on Render's socket peer; a test drives the real GraphQL path with two requests carrying different CF-Connecting-IP values and shows them counted separately; and a source under ten characters, or over thirty thousand, is refused with INVALID_POSTING without being counted and without reaching the extraction service, while a bad token with a short source still fails UNAUTHENTICATED.
 
 ### `KN-485` The API starts half configured: nothing checks that demo extraction has its secret, provider and key
 
@@ -12378,7 +12378,7 @@ From KN-473's roast. The layout effect in App.tsx focuses the page region on EVE
 - **blocked by** none
 - **came out of** KN-473
 
-From KN-473's roast. The layout effect in App.tsx clears its first-run sentinel while nobody is signed in, so the first screen after signing in counts as a first run and focus is not moved. That is right for a cold load of an app that is already authenticated. It is wrong at the moment sign-in completes: the control the reader was just using has unmounted with the sign-in screen, so focus falls to the page body in exactly the way KN-473 described for a route change. The reason written for it, that nobody has been taken anywhere yet, does not cover that case.
+From KN-473's roast. The layout effect in App.tsx clears its first-run sentinel while nobody is signed in, so the first screen after signing in counts as a first run and focus is not moved. That is right for a cold load of an app that is already authenticated. It is wrong at the moment sign-in completes: the control the reader was just using has unmounted with the sign-in screen, so focus falls to the page body in exactly the way KN-473 described for a route change. The reason written for it, that nobody has been taken anywhere yet, does not cover that case. NEIGHBOUR, found by searching the board after filing rather than before, which is the wrong order: KN-597 is about focus INSIDE the sign-in screen when the live provider ignores changeNumber and a later step change moves it. This card is about focus AFTER that screen unmounts. They are adjacent and neither subsumes the other, so whoever takes one should read the other.
 
 **Why.** A reader who has just typed a verification code is the reader most likely to be on a keyboard, and they are left with nothing focused at the moment the product first shows them their archive.
 
