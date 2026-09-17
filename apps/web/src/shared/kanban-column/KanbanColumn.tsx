@@ -20,6 +20,7 @@ export interface KanbanColumnProps {
   layout?: 'desktop' | 'mobile'
   collapsed?: boolean
   children?: ReactNode
+  searchHidesCards?: boolean
   onExpand: () => void
   onCollapse?: () => void
   onAdd: () => void
@@ -130,7 +131,15 @@ const frame = {
 
 // The message of an empty column, 241:46: 12 at 400 on CSS's normal line
 // height in text/secondary, centred in a dashed box of radius md.
-export const EmptyColumn = () => {
+//
+// TWO SENTENCES, one box, KN-389. A status with no job opportunities has none
+// at this stage, which is true of it. A status whose job opportunities a search
+// is hiding still HOLDS them, and its count goes on saying so, so the stage
+// sentence would be the column contradicting its own header. The owner settled
+// this on 2026-09-17: the count keeps the status's real total, which is what
+// KN-422 made it after a searched count of zero let Delete take hidden records,
+// and the MESSAGE is the half that changes.
+export const EmptyColumn = ({ searchHidesCards = false }: { searchHidesCards?: boolean }) => {
   const { i18n } = useLingui()
   return (
     <Box
@@ -153,7 +162,7 @@ export const EmptyColumn = () => {
         color: theme.karnama.semantic['text/secondary'],
       })}
     >
-      {i18n._('No job opportunities at this stage yet')}
+      {searchHidesCards ? i18n._('Nothing at this stage matches your search') : i18n._('No job opportunities at this stage yet')}
     </Box>
   )
 }
@@ -170,6 +179,7 @@ export const KanbanColumn = ({
   layout = DESKTOP,
   collapsed = false,
   children,
+  searchHidesCards = false,
   onExpand,
   onCollapse,
   onAdd,
@@ -195,7 +205,7 @@ export const KanbanColumn = ({
   }
   // Empty when nothing renders: Children.count counts false, null and an empty
   // list, which a board that filters its cards hands over, KN-353.
-  const cards = Children.toArray(children).length === 0 ? <EmptyColumn /> : children
+  const cards = Children.toArray(children).length === 0 ? <EmptyColumn searchHidesCards={searchHidesCards} /> : children
 
   if (layout === 'mobile') {
     return (

@@ -197,6 +197,7 @@ export const messages: Record<string, string> = {
   'Write the full name': 'اسم و فامیل را بنویس',
   'Add a job opportunity to': 'افزودن فرصت شغلی به',
   'No job opportunities at this stage yet': 'هنوز فرصت شغلی‌ای تو این مرحله نیست',
+  'Nothing at this stage matches your search': 'چیزی با این جستجو تو این مرحله نیست',
   'Add status': 'افزودن وضعیت',
   'My network': 'شبکه من',
   'Sign out': 'خروج',

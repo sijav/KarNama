@@ -746,6 +746,21 @@ them, the status being chosen by the filter chips above it. The Add Column tile,
 8 above «افزودن وضعیت» at 12 and Medium, both in `text/secondary`. The file draws
 no hover for Add Card or Add Column, and none is added.
 
+**What a column says when a search empties it, and what its count counts.** The
+count is the status's OWN total and never the search's: KN-422 made it so after
+a searched count of zero enabled Delete and took the hidden job opportunities
+with it, and it stays so. The MESSAGE is the half that answers the search. A
+status holding nothing says «هنوز فرصت شغلی‌ای تو این مرحله نیست»; a status
+whose job opportunities the search is hiding says «چیزی با این جستجو تو این
+مرحله نیست», in the same box `241:46`. So `241:2` drawing the count `1` at
+`241:43` beside that empty frame is not a mismatch to be filed again: the
+file's counts are the statuses' totals, while the cards drawn are a sample with
+a `Column Spacer` standing in for the rest. The owner settled this on
+2026-09-17, the file being silent on it: the Search Empty frame `305:1547` is a
+structural copy of the Empty frame `305:1696`, down to which single column
+carries the message, so the «۰» in both says nothing about what a count counts.
+KN-389.
+
 **Collapsed, the author's reading, not drawn in the file.** The owner's rejected
 column, `رد شده ▸ 14`, is the column's frame holding its header alone, 300 by 64:
 one button with the chip, the count and a chevron where the menu's icon was,

@@ -195,6 +195,7 @@ export const messages: Record<string, string> = {
   'Write the full name': 'Write the full name',
   'Add a job opportunity to': 'Add a job opportunity to',
   'No job opportunities at this stage yet': 'No job opportunities at this stage yet',
+  'Nothing at this stage matches your search': 'Nothing at this stage matches your search',
   'Add status': 'Add status',
   'My network': 'My network',
   'Sign out': 'Sign out',

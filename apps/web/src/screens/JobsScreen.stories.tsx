@@ -899,6 +899,86 @@ export const SelectingWhileSearching: Story = {
   },
 }
 
+export const SearchEmptiesAColumn: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    // KN-389: a column a search emptied must not go on saying it has none at
+    // this stage, because the status DOES hold one and its count keeps saying
+    // so. The count is the column's own and never the search's, which is what
+    // KN-422 made it after a searched count of zero let Delete take the hidden
+    // records, so the MESSAGE is the half that answers the search. The owner
+    // settled that on 2026-09-17.
+    //
+    // The seeded board gives the first five fixture job opportunities a status
+    // each in the board's order, so searching the SECOND one's title leaves one
+    // card on the board and empties the other four statuses. The second rather
+    // than the first, because a phone opens on the FIRST column and the phone
+    // half below needs that column to be one the search emptied.
+    const canvas = within(canvasElement)
+    const set = fixtures('fa-IR')
+    const columns = defaultStatuses((token) => set.names[token])
+    const second = set.jobs[1]?.title ?? ''
+    const hidden = /چیزی با این جستجو تو این مرحله نیست/u
+    const stage = /هنوز فرصت شغلی‌ای تو این مرحله نیست/u
+
+    // Rejected is last and opens collapsed, KN-070 and KN-544, so it draws no
+    // cards and therefore no message. Asserted rather than assumed: a reorder
+    // fails HERE, instead of quietly changing which columns this story reads.
+    await expect(columns.at(-1)?.id).toBe(REJECTED)
+
+    await userEvent.type(canvas.getByRole('searchbox'), second)
+
+    // THE PRECONDITION, loud on purpose. `matches` searches five fields, the
+    // title, company, location, description and note, so a title is not
+    // provably unique against another job's prose and nothing tests that it is.
+    // A term matching two would empty fewer columns and let every assertion
+    // below pass for the wrong reason. The search settles after a pause, KN-695,
+    // which is what this waits through.
+    await waitFor(async () => {
+      await expect(canvas.getAllByRole('article')).toHaveLength(1)
+    })
+
+    // The three emptied statuses a reader can actually see. Not four: the
+    // fourth is rejected, checked below.
+    for (const column of [columns[0], columns[2], columns[3]]) {
+      const region = canvas.getByRole('region', { name: column?.name ?? '' })
+      await expect(within(region).getByText(hidden)).toBeVisible()
+      // The stage sentence would be FALSE here, since the status holds one.
+      await expect(within(region).queryByText(stage)).toBeNull()
+      // And the count still says one, in the reader's own digits.
+      await expect(within(region).getByText(formatCount('fa-IR', 1))).toBeInTheDocument()
+    }
+
+    // The status the search found keeps its card and says nothing at all.
+    const found = canvas.getByRole('region', { name: columns[1]?.name ?? '' })
+    await expect(within(found).getByRole('button', { name: second })).toBeInTheDocument()
+    await expect(within(found).queryByText(hidden)).toBeNull()
+
+    // The collapsed one is the reason this story reads three columns and not
+    // four: it is its header alone, so it has nowhere to say anything.
+    const collapsed = canvas.getByRole('region', { name: columns.at(-1)?.name ?? '' })
+    await expect(within(collapsed).queryByText(hidden)).toBeNull()
+
+    // The phone is its OWN call site in the screen, an `EmptyColumn` rendered
+    // directly rather than a column layout, so it carries the signal
+    // separately and is proved separately. The runner's own browser resizes,
+    // KN-225, and it is put back after.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
+    const before = { width: window.innerWidth, height: window.innerHeight }
+    try {
+      await page.viewport(PHONE.width, PHONE.height)
+      // A phone opens on the first column, `chosen` starting null, and that is
+      // one the search emptied.
+      await waitFor(async () => {
+        await expect(canvas.getByText(hidden)).toBeVisible()
+      })
+    } finally {
+      await page.viewport(before.width, before.height)
+    }
+  },
+}
+
 export const ActingWhileSearching: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {

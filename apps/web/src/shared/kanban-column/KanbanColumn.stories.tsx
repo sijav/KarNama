@@ -176,11 +176,33 @@ export const EveryCardFiltered: Story = {
   // A board that filters its cards hands the column a list in which nothing
   // renders, false and null and an empty list: the column says it is empty,
   // as it does with no children at all, KN-353.
+  //
+  // Its status genuinely holds NOTHING, count 0, so the stage sentence is true
+  // of it and stays. This is the counter case to SearchEmptied below: a fix
+  // that swapped the sentence everywhere would fail here, KN-389.
   args: { ...columnOf('fa-IR', 'offer', 0), children: [false, null, []] },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     const column = columnIn(canvasElement)
     await expect(within(column).getByText(/هنوز فرصت شغلی‌ای تو این مرحله نیست/u)).toBeVisible()
+  },
+}
+
+export const SearchEmptied: Story = {
+  // The other half, KN-389: the status HOLDS one job opportunity and a search
+  // is hiding it. The count goes on saying one, because a column's count is
+  // its own and never the search's, which is what KN-422 made it after a
+  // searched count of zero let Delete take the hidden records. So the MESSAGE
+  // is the half that answers the search, the owner's call of 2026-09-17.
+  args: { ...columnOf('fa-IR', 'offer', 0), count: 1, searchHidesCards: true, children: [false, null, []] },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    const column = columnIn(canvasElement)
+    await expect(within(column).getByText(/چیزی با این جستجو تو این مرحله نیست/u)).toBeVisible()
+    // The stage sentence is GONE, not merely joined: it would be false here.
+    await expect(within(column).queryByText(/هنوز فرصت شغلی‌ای تو این مرحله نیست/u)).toBeNull()
+    // And the count still says one, in the reader's own digits.
+    await expect(within(column).getByText(formatCount('fa-IR', 1))).toBeInTheDocument()
   },
 }
 

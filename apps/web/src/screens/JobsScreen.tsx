@@ -461,6 +461,13 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
           {columns.map((column) => (
             <KanbanColumn
               key={column.id}
+              // Whether this status holds job opportunities the search is
+              // hiding, which is what decides WHICH sentence the empty box
+              // says, KN-389. `sizeOf` is the status's own size and `cardsOf`
+              // applies the search, so the pair says "it has some, and none of
+              // them are showing". Not "a search is running": a status with
+              // nothing in it has none at this stage, search or no search.
+              searchHidesCards={sizeOf(column.id) > 0 && cardsOf(column.id).length === 0}
               dragEvents={{
                 onDragOver: (event) => {
                   if (!dragging) return
@@ -545,8 +552,11 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
             cardsOf(showing.id).map(card)
           ) : (
             // What the column says when it holds nothing, node 241:46, which
-            // a phone needs as much as the desktop does, KN-422.
-            <EmptyColumn />
+            // a phone needs as much as the desktop does, KN-422. This is its
+            // OWN call site rather than a column layout, so it carries the
+            // same signal separately, KN-389: the branch is also taken when no
+            // status is chosen at all, and then nothing is being hidden.
+            <EmptyColumn searchHidesCards={Boolean(showing && sizeOf(showing.id) > 0)} />
           )}
         </Stack>
       )}

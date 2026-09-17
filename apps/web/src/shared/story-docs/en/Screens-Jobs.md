@@ -124,6 +124,15 @@ is not counted, select all takes only what the search found, and deleting after
 the confirmation takes those alone, so every job opportunity the search hid is
 still on the board once the search is cleared.
 
+### SearchEmptiesAColumn
+
+A search that empties a column: the status still holds one job opportunity, so
+its count still reads one, and the box says the search found nothing at this
+stage rather than saying the status has none yet, which would be false of it.
+Three columns say it and a fourth does not, that one being collapsed and so
+having nowhere to say anything, and the phone says it too from its own call
+site.
+
 ### ActingWhileSearching
 
 Acting with a search active: a card chosen before the search and hidden by it

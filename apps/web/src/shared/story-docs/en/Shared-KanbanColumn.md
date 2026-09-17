@@ -5,7 +5,7 @@ The header carries the status in its large chip, the count in the reader's
 digits, and at its other end the column's menu: rename, change colour, delete,
 delete held back while the column still has job opportunities. The cards scroll
 between the header and the plus at the bottom, which stays where it is and adds
-a job opportunity to this status. An empty column says so in a dashed box. On a
+a job opportunity to this status. An empty column says so in a dashed box, and a column whose cards a search hid says that instead, in the same box. On a
 phone the status is chosen above the list, so the column is its cards alone. A
 column can be collapsed to its header, a single button showing the status and
 its count; pressing it opens the column. Which column starts that way is the
@@ -51,7 +51,14 @@ When set, the column is its header alone, a button that opens it.
 
 ### children
 
-The column's cards. None, and the column says it is empty.
+The column's cards. None, and the column says it is empty, in one of two ways that `searchHidesCards` chooses between.
+
+### searchHidesCards
+
+Whether this status holds job opportunities that the search is hiding. It matters only when there are no cards to draw:
+the box then says nothing at this stage matches the search, rather than saying the status has none yet, which would be
+false of a status that holds some. The count is untouched either way and goes on showing the status's own total, so a
+column can rightly read "one" beside a box saying the search found nothing here.
 
 ### onExpand
 
@@ -95,7 +102,14 @@ A column with no cards, saying so.
 ### EveryCardFiltered
 
 A column handed a list in which nothing renders, as a board that filters its
-cards hands over: it says it is empty, as a column with no cards does.
+cards hands over: it says it is empty, as a column with no cards does. Its
+status holds nothing at all, so that sentence is true of it and stays.
+
+### SearchEmptied
+
+The other half: the status holds one job opportunity and a search is hiding it.
+The count still reads one, because a column's count is its own and never the
+search's, so the box is what answers the search.
 
 ### Collapsed
 
