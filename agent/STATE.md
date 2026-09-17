@@ -26,11 +26,12 @@ with their stories, then screens. Match the design exactly.**
 children. **KN-496 landed the dark `color-scheme` fix by hand**, so
 `git stash@{0}` duplicates committed code; left for the owner to drop.
 
-Closed most recently, with their commits: **KN-708** (6454eb9), **KN-389**
-(5c5b31a), **KN-710** (996653f), **KN-711** (3c2df74), **KN-407** (7b0ca8d),
-**KN-426** (1a8fc05), **KN-468** (9422275), **KN-473** (2572b97, board 1ceb651,
-roast 7ff61aa) and **KN-484** (9ce2f7b, board 1c52933, roast d1eee9e). Earlier closes are in the board; it is
-the record, not this file.
+Closed most recently, with their commits: **KN-473** (2572b97), **KN-484**
+(9ce2f7b), **KN-716** (32aeb50) and **KN-485** (0f5a1e4, board 195f8d2).
+**KN-721 was DROPPED** (e25fd51), not built. Earlier closes are in the board; it
+is the record, not this file.
+
+In hand now: **KN-493**, every column folding when its name is pressed.
 
 ## What fails, and which failures are known
 
@@ -41,54 +42,69 @@ a regression.
 - **`session.test.ts`, two**, KN-551's pair.
 - **A pointer driven set that MOVES between identical runs**, KN-699 and
   KN-365: `Button` Matrix, the `Input` family, `JobCard` Pressed, `NavItem`
-  Hover, and sometimes two in `JobsScreen`. Stories driving the real pointer
-  collide when story files run in parallel; the `JobsScreen` pair was re-run
-  alone and passed 2 of 2.
+  Hover, and sometimes two in `JobsScreen`.
 - **`apps/api`, eight**, all `Test timed out in 5000ms` on database backed
   tests. The API coverage gate also fails at 80.37 percent, KN-486, so
-  **coverage is not a signal in that workspace**: a threshold failure there is
-  not evidence about a change, and a pass is not available to claim.
+  **coverage is not a signal in that workspace**.
 
-The **story-docs guard** is the one that catches new work: it reads the
-repository, so an exported story with no markdown entry fails it without anyone
-registering anything. Two entries per story, `en` and `fa`.
+The **story-docs guard** is the one that catches new work: an exported story
+with no markdown entry fails it without anyone registering anything. Two
+entries per story, `en` and `fa`.
+
+## The trap that cost a whole iteration, 2026-09-17
+
+**No state kept in the shell can go stale across a sign-out, in the product or
+in a story.** `AppProviders` renders `OwnBoard`, which is
+`<RecordsProvider key={session?.phone ?? ''}>`, and `main.tsx` renders `App`
+inside that key, so ANY change of reader unmounts `App`, `Shell` and every ref
+they hold. `AGENTS.md` already carried this from KN-419 and I read past it,
+because it was phrased as something a story does. The line now carries the
+consequence. **KN-721 was filed from a roast, taken, planned, reviewed twice and
+built before this was measured, then dropped as impossible.**
+
+The measurement that settled it: instrument the component with a per-mount
+identity, not just the state you suspect. The identity changing is what told a
+remount from a re-render, and nothing else would have.
 
 ## Drift, and the method that was wrong all week
 
-**Drift is PRETTIER drift, and it must be measured with the repository's own
-configuration.** Formatting a copy in a temp directory loses that configuration:
-the formatter falls back to double quotes, semicolons and an eighty column wrap
-and calls most of the file drift. That method invented a 120 to 142 overrun on
-`App.tsx` and nearly bought a round of comment cutting to fix a phantom.
-`prettier --stdin-filepath <the file's real path>` resolves it and says 0.
-`DESIGN.md` measures 236 under BOTH methods, which is what made the broken
-numbers look corroborated. `AGENTS.md` section 7 carries this.
+**Drift is PRETTIER drift, measured with the repository's own configuration.**
+`prettier --stdin-filepath <the file's real path>` resolves it; formatting a
+copy in a temp directory does not, and calls most of the file drift.
 
 A NEW file must measure 0 before it is committed, and `prettier --write` is safe
-only where the committed copy already measures 0. **Read the drift, never chain
-it.** `eslint` runs from `apps/web`; nothing lints `agent/scripts`.
+only where the committed copy already measures 0. **Hold a baseline rather than
+improving it**: `App.stories.tsx` sits at 13 and `render.yaml` at 2 em dashes,
+both pre-existing. **Read the drift, never chain it.** `eslint` runs from
+`apps/web`; nothing lints `agent/scripts`.
+
+**Generated files are not prettier's.** `apps/api/schema.gql` drifts by design;
+`schema:check` compares it byte for byte with what the generator emits, so
+formatting it would BREAK the build.
 
 ## Open children, and what is waiting
 
-**KN-473 has four open children**, all from its roast, all `web`, all OKR-1:
-**KN-716** high, **KN-717** medium, **KN-718** low, **KN-719** low. See the
-section below for what they are.
+**KN-473 has five open children**: KN-717 medium, KN-718 low, KN-719 low,
+KN-722 low, and KN-715 blocked on it. KN-716 closed, KN-721 dropped.
 
-**KN-715** is filed and blocked on KN-473: whether an ordinary navigation, where
-the reader clicked a control that survives the change, should move focus at all.
-Nobody has read it either way, and the one reading taken used a programmatic
-click, which focuses nothing.
+**KN-477 waits on twenty-five**, KN-724 and KN-725 among them, both from
+KN-485's roast: the first is a real defect, that a missing base variable
+suppresses every cross-field rule so the refusal names one thing when three are
+wrong; the second a comment falsified by its own commit.
 
-**KN-698 waits on KN-704 and KN-708 is closed**; **KN-697 waits on KN-703**;
-**KN-016 waits on KN-689**, blocked on the owner, **and KN-692**; **KN-062 waits
-on KN-686, KN-687, KN-688, KN-694 and KN-705**. **KN-695 is finished**, three
-children and three rounds, the last finding nothing.
+**KN-723** now carries three measured holes in `render.test.ts` and **the
+dependency question is the owner's**: parsing `render.yaml` needs `yaml` as a
+direct dev dependency, and their seven day `min-release-age` is deliberate.
+
+**KN-698 waits on KN-704**; **KN-697 waits on KN-703**; **KN-016 waits on
+KN-689**, blocked on the owner, **and KN-692**; **KN-062 waits on KN-686,
+KN-687, KN-688, KN-694 and KN-705**.
 
 **Also open**: KN-681, KN-682, KN-684, KN-673, KN-674, KN-676, KN-677, KN-699,
-KN-702, KN-712, KN-713, KN-714. **KN-683 IS FOR THE OWNER.** Still waiting on
-the owner: KN-515, KN-516, KN-517, KN-486. Owner decided and still to build:
-KN-588, KN-630, KN-590, KN-616. The Codex log the owner pasted holds the Groq
-key; never repeat that key anywhere.
+KN-702, KN-712, KN-713, KN-714, KN-720. **KN-683 IS FOR THE OWNER.** Still
+waiting on the owner: KN-515, KN-516, KN-517, KN-486. Owner decided and still to
+build: KN-588, KN-630, KN-590, KN-616. The Codex log the owner pasted holds the
+Groq key; never repeat that key anywhere.
 
 **KN-685's discipline still binds**: the fixtures' two sentinels are named
 nowhere, this file included, because `todo render` writes every description into
@@ -113,63 +129,38 @@ the board and the database is committed.
 - **2026-09-11.** Push after every close. Only new component cards and their
   blockers are `critical`. **No proof at the close**, and per-task verifier
   scripts with mutations are retired; a one-off planted failure to check a new
-  test is not one of those, and `AGENTS.md` asks for it. **Do not invent gates.**
+  test is not one of those. **Do not invent gates.**
 - **A finding is a CHILD of its task**, one level, with `--area` and `--okr`.
-  **Plans live beside the work**, reviewed by `roast.py plan` before building.
+  **Plans live beside the work**, reviewed by `roast.py plan` before building,
+  every time the plan changes.
 
-## The two cards closed before this one, in one paragraph each
+## KN-485, closed 2026-09-17
 
-**KN-473** (2572b97). Refused as filed and re-scoped on the board BEFORE anything was built. The card said an unmount
-leaves focus on a detached opener with nothing to catch it; MUI's `FocusTrap` does run and focuses the opener, and
-focusing a detached element is inert, so the reader ends on the body because the restore MISSES. No cleanup inside
-`ConfirmModal` could reach it, all four call sites being unconditional siblings whose fallbacks die with the screen,
-so the remedy went to the shell. Its roast filed four children, KN-716 to KN-719, the first being my own overreach.
+The API started with demo extraction on and no secret, no chosen provider and no
+key, reporting itself healthy while every extraction failed. The refusal rides
+on `validate: parseEnv`, which Nest already calls, so it is a new rule and not
+new wiring.
 
-**KN-484** (9ce2f7b). All three address keys shared one bucket. The durable fact is in `AGENTS.md` section 7: behind
-Cloudflare, `X-Forwarded-For` is caller controlled and `CF-Connecting-IP` is not. Two owner decisions, the second
-replacing the first once I corrected my own bad reporting. Its roast filed KN-720, a blank header not falling through.
-
-**Neither is retold further here on purpose.** What survives a card belongs in `AGENTS.md`, `DESIGN.md` or the plan
-beside the work; this file points at the record rather than being a second copy of it, which is how it grew to twice
-the length it is meant to be.
-
-## KN-716, closed 2026-09-17, and the one durable thing it settled
-
-**It was my own overreach from KN-473**, filed `high` by that card's roast and handed straight back by the selection
-law. The shell focused the page region on EVERY change between the board and the network page, while `DESIGN.md` said
-in the same commit that an ordinary navigation was unsettled and KN-715's.
-
-**The design that survived two refusals**: a ONE-SHOT LATCH, the board only. `JobsScreen` reports its delete
-confirmation through `onJobDeleteConfirmationOpenChange` from a layout effect with **no cleanup**; `App.tsx` consumes
-and clears it on a screen change and keeps `activeElement === body` only as a SAFETY condition. Two earlier designs
-were refused: keying on `body` alone, which is a symptom that also occurs on an ordinary navigation, and signalling
-from both screens, which would have covered a network confirmation nobody measured.
-
-**The missing cleanup is the whole design.** React runs a removed screen's layout-effect cleanup BEFORE taking its DOM
-away, then runs the surviving shell's layout effect, so the `onSelecting` pattern would have erased the signal before
-the shell could read it, in exactly the case it exists for.
-
-**Two traps worth carrying, both now in `AGENTS.md` section 7.** Two guards in sequence can make each other
-untestable: with the latch unset AND focus surviving, either one returns early, so no single mutation fails and the
-proof shows a narrowing without showing which condition draws it. And the way you DRIVE a fixture can destroy the
-condition it needs: the story meant to lose focus was first driven by clicking, and `userEvent.click` focuses what it
-clicks, so it failed on its own premise assertion rather than passing blind.
-
-**KN-473 now waits on three**: KN-717, KN-718, KN-719.
+**The one thing worth carrying: a zod default is applied DURING parsing**, so a
+`superRefine` cannot tell a value nobody chose from one chosen explicitly. The
+provider lost its default to make the rule observable, and nothing downstream
+noticed because both readers already carried that fallback themselves. Its own
+roast then found the rule is skipped entirely when a base variable is missing:
+KN-724.
 
 ## What to read first
 
 `AGENTS.md` section 7, `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, and
-for this card `apps/api/src/extraction/extraction.resolver.ts` with
-`auth.service.ts`, `env.ts`, `main.ts` and `render.yaml`.
+for this card `apps/web/src/shared/kanban-column/KanbanColumn.tsx` with
+`JobsScreen.tsx` and `KanbanColumn.stories.tsx`.
 
 **A backgrounded run's "exit code 0" is the shell line's**, and a piped
-command's `$?` is the LAST stage's: `tsc | head; echo $?` reports `head`. Read
-the exit code apart. **A green total proves nothing about a new test**: plant
-the failure once and watch it fail. **A failure set that MOVES between identical
-runs is a flake; one that holds still is a break**, and a lone failure is re-run
-alone before it is read as a regression. The runner names a story's test by its
-DISPLAY name, spaced. **`npm run` truncates arguments at a newline on Windows**:
-call node or python directly. Plan reviews are NOT saved anywhere: `roast.py`
-unlinks its scratch file after reading it and `agent/roasts/` holds task roasts
-only, so the reviewer's own session transcript is the last copy.
+command's `$?` is the LAST stage's. **A green total proves nothing about a new
+test**: plant the failure once and watch it fail. **A story that passes where it
+should fail is a measurement, not a relief.** A failure set that MOVES between
+identical runs is a flake; one that holds still is a break. The runner names a
+story's test by its DISPLAY name, spaced. **`npm run` truncates arguments at a
+newline on Windows**: call node or python directly. **The Bash tool strips a
+doubled backslash**, so a regex built through a shell heredoc matches the wrong
+thing: write such scripts with Write. Plan reviews are NOT saved: `roast.py`
+unlinks its scratch file, and `agent/roasts/` holds task roasts only.
