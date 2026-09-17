@@ -5,11 +5,11 @@ import { DESTINATION_IDS, type Destination } from '../shared/navigation'
  *
  * `destinationIn` and `addressOf` lived here and are gone: react-router reads the
  * address and writes it, which is the whole point of taking a library. What is
- * left is what the router has NO OPINION about: the paths this app answers to, how
- * it spells a search in the address and steps through one, the address from when the
- * page was in the hash, and the base. That is a kind and not a count, deliberately:
- * this note gave a number until KN-697 added to the module without touching the
- * sentence, and it then read as exhaustive while being wrong, KN-708.
+ * left is what the router has NO OPINION about: which path each destination answers
+ * to, how it spells a search in the address and steps through one, the address from
+ * when the page was in the hash, and the base. That is a kind and not a count,
+ * deliberately: this note gave a number until KN-697 added to the module without
+ * touching the sentence, and it then read as exhaustive while being wrong, KN-708.
  */
 
 /**
