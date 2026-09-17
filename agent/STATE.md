@@ -117,74 +117,45 @@ the board and the database is committed.
 - **A finding is a CHILD of its task**, one level, with `--area` and `--okr`.
   **Plans live beside the work**, reviewed by `roast.py plan` before building.
 
-## KN-473, closed 2026-09-17, and what its roast found
+## The two cards closed before this one, in one paragraph each
 
-**The card was REFUSED as filed and re-scoped before anything was built**, and
-its title, description and exit were rewritten on the board first. Measured end
-to end: a delete confirmation open on the board, then Back, lands on the network
-page with `document.activeElement` on the page body.
+**KN-473** (2572b97). Refused as filed and re-scoped on the board BEFORE anything was built. The card said an unmount
+leaves focus on a detached opener with nothing to catch it; MUI's `FocusTrap` does run and focuses the opener, and
+focusing a detached element is inert, so the reader ends on the body because the restore MISSES. No cleanup inside
+`ConfirmModal` could reach it, all four call sites being unconditional siblings whose fallbacks die with the screen,
+so the remedy went to the shell. Its roast filed four children, KN-716 to KN-719, the first being my own overreach.
 
-**The card's mechanism was wrong and this is the durable part.** It said nothing
-catches the unmount. MUI's `FocusTrap` registers a cleanup on its `[open]`
-effect that focuses the recorded opener when React removes the tree; focusing a
-DETACHED element is inert, measured, so the reader ends on the body because the
-restore MISSES, not because nothing ran. `ConfirmModal` unmounts only when its
-host screen does, all four call sites being unconditional siblings, and both
-callers end their fallback at the screen's own root, so no cleanup there could
-reach it. The remedy went to the shell: `main` takes a ref and `tabIndex={-1}`,
-and a `useLayoutEffect` moves focus there when a derived `'jobs' | 'network'`
-changes, collapsing the add route so opening the add flow does not fight its
-trap.
+**KN-484** (9ce2f7b). All three address keys shared one bucket. The durable fact is in `AGENTS.md` section 7: behind
+Cloudflare, `X-Forwarded-For` is caller controlled and `CF-Connecting-IP` is not. Two owner decisions, the second
+replacing the first once I corrected my own bad reporting. Its roast filed KN-720, a blank header not falling through.
 
-**The roast found one real thing and I agree with it.** The effect fires on
-EVERY change between the two screens, an ordinary navigation click included,
-which is exactly what `DESIGN.md` says is unsettled and hands to KN-715, and
-what the plan review told me in advance not to fold in. I recorded that answer
-and built the broad version anyway: **KN-716**, high. Also **KN-717**, focus at
-the moment sign-in completes, where the control the reader used has just
-unmounted and the first-run rule reads the arriving board as a cold load;
-**KN-718**, the page region takes focus with no name, so nothing says which
-screen arrived; **KN-719**, the English docs entry says the browser gives focus
-back where MUI's trap calls `.focus()` itself. Nothing was rejected.
+**Neither is retold further here on purpose.** What survives a card belongs in `AGENTS.md`, `DESIGN.md` or the plan
+beside the work; this file points at the record rather than being a second copy of it, which is how it grew to twice
+the length it is meant to be.
 
-## KN-484, closed 2026-09-17, and what it settled
+## KN-716, closed 2026-09-17, and the one durable thing it settled
 
-**All three address keys shared one bucket**, not just extraction: `extract-demo`, `sms-ip` and `verify-ip` all read
-`context.req.ip ?? context.req.socket.remoteAddress ?? ''` while `trust proxy` is 0, so Express reported Render's
-proxy. The card's why called the SMS and verify case future; it was already true.
+**It was my own overreach from KN-473**, filed `high` by that card's roast and handed straight back by the selection
+law. The shell focused the page region on EVERY change between the board and the network page, while `DESIGN.md` said
+in the same commit that an ordinary navigation was unsettled and KN-715's.
 
-**The durable fact, now in `AGENTS.md` section 7**: behind Cloudflare, `X-Forwarded-For` is CALLER CONTROLLED and
-`CF-Connecting-IP` is not. Cloudflare overwrites the latter on every request and only APPENDS to the former, so a
-limit keyed on `X-Forwarded-For` is one the caller chooses, which is worse than one shared bucket because it looks
-fixed. Express's numeric `trust proxy` reads that same header from the right, so a hop count inherits the problem, and
-Render publishes no chain length anyway.
+**The design that survived two refusals**: a ONE-SHOT LATCH, the board only. `JobsScreen` reports its delete
+confirmation through `onJobDeleteConfirmationOpenChange` from a layout effect with **no cleanup**; `App.tsx` consumes
+and clears it on a screen change and keeps `activeElement === body` only as a SAFETY condition. Two earlier designs
+were refused: keying on `body` alone, which is a symptom that also occurs on an ordinary navigation, and signalling
+from both screens, which would have covered a network confirmation nobody measured.
 
-**Two owner decisions, and the second replaced the first.** I reported that Render documented nothing and the owner
-chose to measure the header on the deployed service; that question rested on my incomplete reading, and told the
-truth, the owner ruled: use `CF-Connecting-IP`. Both are on the card in order. No deployed header logging was done.
+**The missing cleanup is the whole design.** React runs a removed screen's layout-effect cleanup BEFORE taking its DOM
+away, then runs the surviving shell's layout effect, so the `onSelecting` pattern would have erased the signal before
+the shell could read it, in exactly the case it exists for.
 
-`src/client-ip.ts` reads the header with the old chain behind it, all three call sites use it, and `sourceText` is
-exported so the length rule has one definition with the resolver refusing before any limit, authentication first.
-**Its roast filed KN-720**: a BLANK header does not fall through, since `??` catches only null and undefined, and the
-test comment claims the opposite while testing only the empty array.
+**Two traps worth carrying, both now in `AGENTS.md` section 7.** Two guards in sequence can make each other
+untestable: with the latch unset AND focus surviving, either one returns early, so no single mutation fails and the
+proof shows a narrowing without showing which condition draws it. And the way you DRIVE a fixture can destroy the
+condition it needs: the story meant to lose focus was first driven by clicking, and `userEvent.click` focuses what it
+clicks, so it failed on its own premise assertion rather than passing blind.
 
-## The next step: KN-716, the shell moves focus on an ordinary navigation
-
-**In progress**, high, 2 points, web, a child of KN-473 and my own overreach from it.
-
-**Measured**: focusing a nav control and activating it, in both directions, leaves `document.activeElement` on `MAIN`.
-The effect takes focus off the control the reader chose, which `DESIGN.md` line 842 says is unsettled and KN-715's.
-
-**The first design was refused by the review and the reason matters**: `activeElement === body` IS reliable at
-layout-effect time, because React runs the layout effect after commit and before paint while MUI restores focus in a
-PASSIVE effect. But `body` is a SYMPTOM, not the cause: focus also lands there on an ordinary navigation when focus
-was inside the outgoing screen, so keying on it would decide KN-715's question by another route. The policy must be a
-narrowly named transient signal from the confirmation path, with `body` kept only as a safety condition.
-
-**The hazard found by reading the precedent**: `onSelecting` is the house way a screen tells this shell something, and
-it is a layout effect that CLEARS ITSELF on unmount. Copying it would set the signal false before the shell reads it,
-in exactly the case the signal exists for. KN-473's own sentinel is never cleared in a cleanup, which is checked
-against the committed code, and that is the precedent to follow instead.
+**KN-473 now waits on three**: KN-717, KN-718, KN-719.
 
 ## What to read first
 
