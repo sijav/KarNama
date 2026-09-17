@@ -92,7 +92,10 @@ status; its confirmation, pressed again as it closes, moves it once.
 
 The board being managed: a column renamed from its menu, another added, a job
 opportunity deleted from its modal after a confirmation, and the rejected column
-opened from its collapsed header and closed again from its open one.
+opened from its collapsed header and closed again from its open one. Only that
+column, the one the board starts folded, has anything in its header to fold it
+with: every other column's status and count sit beside the menu with nothing to
+press.
 
 ### People
 

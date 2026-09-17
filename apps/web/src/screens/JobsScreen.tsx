@@ -211,7 +211,12 @@ export const JobsScreen = ({
   // Which status a column is, is its id and never its colour, KN-440: the board
   // starts only Rejected folded, the owner's KN-070, however the reader has
   // coloured their own statuses, KN-544.
-  const isCollapsed = (id: string) => (folded[id] ?? id === REJECTED) && dragExpanded !== id
+  // Named apart from the state below because TWO questions need it: which
+  // column starts folded, and which column may be folded again. Asking the
+  // state for the second takes the control away the instant the reader opens
+  // the column, which is the defect the owner reported, KN-493.
+  const startsCollapsed = (id: string) => id === REJECTED
+  const isCollapsed = (id: string) => (folded[id] ?? startsCollapsed(id)) && dragExpanded !== id
   const cardsOf = (id: string) => jobsIn(records.jobs, id, search, order)
   // The column's own size, which is what says whether it can be deleted: the
   // searched count reads zero while a search hides its cards, and deleting it
@@ -538,9 +543,24 @@ export const JobsScreen = ({
               onExpand={() => {
                 setFolded((was) => ({ ...was, [column.id]: false }))
               }}
-              onCollapse={() => {
-                setFolded((was) => ({ ...was, [column.id]: true }))
-              }}
+              // Only a column the board starts folded may be folded again,
+              // KN-493: the design draws a fold control for the collapsed
+              // column alone, so every other header carried a button a reader
+              // could not see coming.
+              //
+              // Spread rather than a ternary ending in `undefined`, because
+              // `exactOptionalPropertyTypes` refuses an explicit undefined for
+              // an optional prop: the choice is to widen the component's API or
+              // to not pass the prop at all, and not passing it is what the
+              // component's own else branch is for. `AppProviders` does the
+              // same with its locale.
+              {...(startsCollapsed(column.id)
+                ? {
+                    onCollapse: () => {
+                      setFolded((was) => ({ ...was, [column.id]: true }))
+                    },
+                  }
+                : {})}
               onAdd={() => {
                 setAdding(column.id)
               }}

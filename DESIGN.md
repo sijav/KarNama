@@ -786,6 +786,15 @@ which says it is closed and opens the column. It keeps the column's width so the
 board's rhythm and the drop target stay. The board decides which column starts
 that way. KN-060.
 
+**Folding it again, the author's reading too.** A column the board starts folded
+keeps a way to fold once it is open: the same 16 `chevron-down` its collapsed
+header shows, inside a button holding the chip and the count, 8 from what sits
+either side of it as everything in that row is. It cannot have the place the
+collapsed chevron has, the header's end, because the menu is there while the
+column is open. **No other column has one at all.** A header that folds on a
+press nobody can see coming hides a reader's work by accident, and the board
+passing this to every column is what the owner met. KN-493.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the

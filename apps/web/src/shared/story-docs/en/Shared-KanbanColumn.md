@@ -66,7 +66,9 @@ Called when a collapsed column is pressed; the board opens it.
 
 ### onCollapse
 
-Called when the expanded header's status and count are pressed. Omit it for a column that cannot be collapsed.
+Called when the expanded header's fold control is pressed: the status, the count and a chevron, which is what says the
+header can be pressed at all. The board gives it only to a column it starts folded, so every other header is its status
+and count beside the menu, with nothing in it to press. Omit it for a column that cannot be collapsed.
 
 ### onAdd
 
@@ -117,7 +119,8 @@ A column collapsed to its header and count; pressing it asks to open it.
 
 ### Expanded
 
-An expanded column whose header asks to collapse it, keeping the original header height.
+An expanded column whose header folds it again, carrying the same chevron its collapsed header shows, and keeping the
+original header height.
 
 ### LongName
 

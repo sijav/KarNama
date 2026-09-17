@@ -374,6 +374,19 @@ export const Managing: Story = {
       await expect(canvas.queryByText(first)).toBeNull()
     })
 
+    // Only the column the board STARTS folded carries a fold control, KN-493.
+    // Every other header is its status and its count beside the menu: they were
+    // a button with nothing drawn to announce it, so a press meant to read a
+    // name folded the column away under the reader. Asserted here rather than
+    // in the column's own stories because the board is what decides it, and
+    // because a component story cannot express a callback its meta must give an
+    // fn() to.
+    const ordinary = columns[1]?.name ?? ''
+    const ordinaryHeader = within(canvas.getByRole('region', { name: ordinary }))
+    await expect(ordinaryHeader.queryByRole('button', { expanded: true })).toBeNull()
+    await expect(ordinaryHeader.queryByRole('button', { expanded: false })).toBeNull()
+    await expect(ordinaryHeader.getByRole('button', { name: `کارهای وضعیت: ${ordinary}` })).toBeInTheDocument()
+
     // The rejected column opens from its collapsed header, and what proves it
     // is ITS OWN job opportunity appearing, read inside that column: the board
     // has other empty columns, so a count of empty lines anywhere proves

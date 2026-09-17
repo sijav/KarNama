@@ -119,7 +119,10 @@ export const Default: Story = {
     await expect(header.getBoundingClientRect().height).toBe(40)
     await expect(within(header).getByText(args.name).parentElement?.getBoundingClientRect().height).toBe(28)
     await expect(within(header).getByText(formatCount('fa-IR', args.count))).toBeInTheDocument()
-    const trigger = within(header).getByRole('button', { name: /^(کارهای وضعیت|Status actions):/u })
+    // Named for ITS column, not merely for being a status menu, KN-493: the
+    // prefix this asked for matched any column's menu and proved nothing about
+    // which one it found.
+    const trigger = within(header).getByRole('button', { name: `کارهای وضعیت: ${args.name}` })
     const icon = trigger.querySelector('svg')
     if (!icon) throw new Error('the trigger has no icon')
     await expect(Math.round(icon.getBoundingClientRect().left - header.getBoundingClientRect().left)).toBe(4)
@@ -242,18 +245,37 @@ export const LongName: Story = {
   args: { ...columnOf('fa-IR', 'custom-2', 1), name: fixtures('fa-IR').longStatusName },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
-    // A long status name is cut in its chip; the header keeps its 40, and the
-    // count stays 8 from the menu's icon, the header's gap in the file.
+    // A long status name is cut in its chip and the header keeps its 40. The
+    // row's gap is 8 and everything in it is that far apart; what changed with
+    // KN-493 is how many gaps there are. The fold chevron now sits between the
+    // count and the menu, so the count is 8 from the chevron and the chevron 8
+    // from the menu, where the count used to be 8 from the menu itself.
     const column = columnIn(canvasElement)
     const header = partOf(column, 0)
     await expect(header.getBoundingClientRect().height).toBe(40)
-    const trigger = within(header).getByRole('button', { name: /^(کارهای وضعیت|Status actions):/u })
+    const trigger = within(header).getByRole('button', { name: `کارهای وضعیت: ${args.name}` })
     const icon = trigger.querySelector('svg')
     if (!icon) throw new Error('the trigger has no icon')
+    // The menu keeps its designed place at the header's end whatever the name's
+    // length, which is the half of this story the chevron must not disturb.
+    await expect(Math.round(icon.getBoundingClientRect().left - header.getBoundingClientRect().left)).toBe(4)
+    const fold = within(header).getByRole('button', { expanded: true })
+    const chevron = fold.querySelector('svg')
+    if (!chevron) throw new Error('the fold control has no chevron')
     const count = within(header).getByText(formatCount('fa-IR', args.count))
-    await expect(Math.round(count.getBoundingClientRect().left - icon.getBoundingClientRect().right)).toBe(8)
+    await expect(Math.round(count.getBoundingClientRect().left - chevron.getBoundingClientRect().right)).toBe(8)
+    await expect(Math.round(chevron.getBoundingClientRect().left - icon.getBoundingClientRect().right)).toBe(8)
   },
 }
+
+// A column with NO `onCollapse` is not a story here, KN-493, and that is a
+// constraint rather than a choice: every callback carries an `fn()` in the meta
+// args, which the story-docs guard enforces, and a story that set this one to
+// undefined would fail both that guard and `exactOptionalPropertyTypes`. A
+// `render` dropping the prop would leave a control in the Controls panel
+// driving nothing, which the stories rule forbids. So the header that is NOT a
+// button is proved where the board decides it, in `JobsScreen.stories.tsx`,
+// which is also what exercises the else branch below.
 
 export const Mobile: Story = {
   args: columnOf('fa-IR', 'interview', 3, 'mobile'),

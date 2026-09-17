@@ -261,6 +261,14 @@ export const KanbanColumn = ({
     >
       <Box sx={{ ...headerRow.sx, flexShrink: 0 }}>
         {onCollapse ? (
+          // The chevron is what says this is a control, KN-493. Without it the
+          // chip and the count were a button with nothing drawn to announce it,
+          // so a press meant to read a status name folded the column away. The
+          // SAME `chevron-down` the collapsed header shows: the icon set holds
+          // no up variant and the card asks for that one. `ButtonBase` is
+          // already a centred inline-flex, so only the header's own gap is
+          // added here, which keeps the count and the chevron 8 apart as
+          // everything else in this row is.
           <ButtonBase
             disableRipple
             aria-expanded={true}
@@ -268,6 +276,7 @@ export const KanbanColumn = ({
             sx={(theme) => ({
               position: 'relative',
               minWidth: 0,
+              gap: `${spacing.xs}px`,
               fontFamily: 'inherit',
               borderRadius: `${theme.karnama.radius.md}px`,
               color: theme.karnama.semantic['text/secondary'],
@@ -275,6 +284,7 @@ export const KanbanColumn = ({
             })}
           >
             <Title name={name} token={token} count={count} />
+            <Icon name="chevron-down" size="sm" color="inherit" />
           </ButtonBase>
         ) : (
           <Title name={name} token={token} count={count} />
