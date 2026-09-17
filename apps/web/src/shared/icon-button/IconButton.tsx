@@ -149,8 +149,8 @@ export const IconButton = (props: IconButtonProps) => {
           padding: 0,
           borderRadius: `${theme.karnama.radius.md}px`,
           color: colour['text/secondary'],
-          '@media (hover: hover)': { '&:hover': { backgroundColor: hover.fill, color: hover.icon } },
-          '&.Mui-disabled': { opacity: DISABLED_OPACITY, color: colour['text/disabled'] },
+          '@media (hover: hover)': { '&:hover:not([aria-disabled="true"])': { backgroundColor: hover.fill, color: hover.icon } },
+          '&[aria-disabled="true"]': { opacity: DISABLED_OPACITY, color: colour['text/disabled'] },
           '&.Mui-focusVisible::after': {
             content: '""',
             position: 'absolute',
@@ -190,7 +190,7 @@ export const IconButton = (props: IconButtonProps) => {
   if (props.href === undefined) {
     const { ref, disabled = false, ...rest } = props
     return (
-      <MuiIconButton ref={ref} {...shared} disabled={disabled} {...forwarded(rest)}>
+      <MuiIconButton ref={ref} {...shared} aria-disabled={disabled} onClick={disabled ? undefined : onClick} {...forwarded(rest)}>
         {mark}
       </MuiIconButton>
     )

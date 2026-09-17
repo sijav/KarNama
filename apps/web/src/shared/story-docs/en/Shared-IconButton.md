@@ -34,7 +34,10 @@ Bar's close uses. The button stays 32 square either way.
 
 ### disabled
 
-Fades the button and takes it out of the tab order.
+Fades the button and refuses its press, while leaving it reachable: it keeps its
+place in the tab order and still takes a hover, so a Tooltip on it can say why it
+is off. An icon-only control has no text of its own to explain itself, which is
+why this one is reachable where a plain disabled control would not be, KN-426.
 
 ### href
 
@@ -82,7 +85,8 @@ as a test; in Storybook itself, hover a button yourself.
 
 ### Disabled
 
-Both tones disabled, faded and out of the tab order.
+Both tones off and faded, each still reached by Tab, each keeping its drawn state
+under a hover and activating nothing when pressed.
 
 ### KeyboardOnly
 
@@ -99,8 +103,16 @@ rather than printing it, on its own canvas and on this page.
 
 The button as a Tooltip's trigger: it takes the tooltip's ref and the props it
 injects, so the tip opens on hover and on focus, describes the button rather
-than renaming it, and is its description from the first render. A disabled
-button cannot do this, KN-426: the browser fires no pointer events on one.
+than renaming it, and is its description from the first render.
+
+### DisabledInATooltip
+
+The same, on a button that is off, which is the case a tooltip on an icon exists
+for: there is no text to explain itself with. It was once impossible on both
+triggers. MUI suppressed the pointer events of a natively disabled control, so
+there was no hover, and the native attribute kept it out of the tab order, so
+there was no focus either. Since KN-426 the button is off by `aria-disabled`
+instead, stays reachable, and the tip opens on hover and on focus and says why.
 
 ### HandsBackItsElement
 

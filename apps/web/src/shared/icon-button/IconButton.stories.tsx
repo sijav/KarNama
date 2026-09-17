@@ -132,16 +132,30 @@ export const Disabled: Story = {
       <Named {...args} tone="danger" disabled />
     </Box>
   ),
-  play: async ({ canvasElement }) => {
-    // 512:742 and 512:745: both tones at 0.7, the icon in text/disabled, and
-    // out of the tab order.
-    for (const button of within(canvasElement).getAllByRole('button')) {
-      await expect(button).toBeDisabled()
+  play: async ({ args, canvasElement }) => {
+    // 512:742 and 512:745: both tones at 0.7 and the icon in text/disabled. It
+    // stays IN the tab order so the reason it is off can be read, the owner's
+    // call of 2026-09-17 and DESIGN.md's rule for the blocked delete, KN-426.
+    const [neutral, danger] = within(canvasElement).getAllByRole('button')
+    if (!neutral || !danger) throw new Error('fewer than two buttons')
+    for (const button of [neutral, danger]) {
+      await expect(button).toHaveAttribute('aria-disabled', 'true')
       await expect(Number(getComputedStyle(button).opacity)).toBe(0.7)
       await expect(getComputedStyle(button).color).toBe(computedColour(button, semantic['text/disabled']))
     }
+    // THIS button takes focus, not whichever of the two Tab happened to reach:
+    // with two rendered, asking only whether a BUTTON is focused proves nothing.
     await userEvent.tab()
-    await expect(canvasElement.ownerDocument.activeElement?.tagName).not.toBe('BUTTON')
+    await expect(neutral).toHaveFocus()
+    // Hovered, it keeps the state it is drawn in. The pointer reaches it now, so
+    // this is the assertion that catches the hover fill arriving, KN-426.
+    const atRest = getComputedStyle(neutral).backgroundColor
+    await userEvent.hover(neutral)
+    await expect(getComputedStyle(neutral).backgroundColor).toBe(atRest)
+    await expect(Number(getComputedStyle(neutral).opacity)).toBe(0.7)
+    // And it is off: reachable and pressable, activating nothing.
+    await userEvent.click(neutral)
+    await expect(args.onClick).not.toHaveBeenCalled()
   },
 }
 
@@ -255,6 +269,57 @@ export const InATooltip: Story = {
     await userEvent.tab()
     await expect(button).toHaveFocus()
     await expect(await within(canvasElement.ownerDocument.body).findByRole('tooltip')).toHaveTextContent('این وضعیت')
+
+    await expect(console.error).not.toHaveBeenCalled()
+  },
+}
+
+// The blocked delete of node 259:295 is the case this exists for: an icon-only
+// control that is off, with a Tooltip saying why, KN-426.
+const ExplainedOff = () => {
+  const { i18n } = useLingui()
+  return (
+    <Tooltip title={i18n._('This status has')} placement="start">
+      <IconButton icon="trash" tone="danger" aria-label={i18n._('Delete status')} disabled />
+    </Tooltip>
+  )
+}
+
+export const DisabledInATooltip: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR' },
+  // KN-426: a disabled Icon Button used to be unreachable, so a Tooltip on it
+  // could never open, and it failed on BOTH triggers. MUI suppressed its pointer
+  // events through `.Mui-disabled`, and the native attribute kept it out of the
+  // tab order, so there was neither a hover nor a focus to open on. The owner
+  // ruled on 2026-09-17 that it stays reachable so the reason can be read, which
+  // is what `DESIGN.md` already says of the blocked delete. Watched for a console
+  // error from before the render, as `InATooltip` is: one is a failure of this
+  // story as much as a missing tip.
+  beforeEach: () => {
+    const report = spyOn(console, 'error')
+    return () => {
+      report.mockRestore()
+    }
+  },
+  render: () => <ExplainedOff />,
+  play: async ({ canvasElement }) => {
+    const button = within(canvasElement).getByRole('button', { name: 'حذف وضعیت' })
+    const body = within(canvasElement.ownerDocument.body)
+    await expect(button).toHaveAttribute('aria-disabled', 'true')
+
+    // On hover, which the old suppression made impossible.
+    await userEvent.hover(button)
+    await expect(await body.findByRole('tooltip')).toHaveTextContent('این وضعیت')
+    await userEvent.unhover(button)
+    await waitFor(async () => {
+      await expect(body.queryByRole('tooltip')).toBeNull()
+    })
+
+    // And on focus alone, which the native attribute made impossible.
+    await userEvent.tab()
+    await expect(button).toHaveFocus()
+    await expect(await body.findByRole('tooltip')).toHaveTextContent('این وضعیت')
 
     await expect(console.error).not.toHaveBeenCalled()
   },

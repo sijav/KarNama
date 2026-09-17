@@ -1324,6 +1324,18 @@ with `user-plus` there. The language menu opens above its button from the
 sidebar and below it from a header, never over it. The settings gear is the
 owner's icon, section 2.
 
+**A disabled Icon Button stays reachable, the owner's call of 2026-09-17,
+KN-426.** It is turned off by `aria-disabled` rather than the native attribute,
+with its press refused, so it keeps its place in the tab order and still takes a
+hover, and a Tooltip on it opens and says why it is off. That is the rule
+already written above for the blocked delete, that the item stays in the
+keyboard's path so the reason can be read, and an icon-only control is the case
+that needs it most, having no text of its own to explain with. It is also why
+this one component is drawn from `[aria-disabled='true']` where the Button, the
+Checkbox and the auth screen key on MUI's disabled class: those still hand MUI
+the native prop and this one no longer does, so the class it would match is
+never added.
+
 Nothing else moves. If honouring this ever requires resizing or reflowing a
 drawn frame, stop and ask the owner rather than editing the design by hand.
 
