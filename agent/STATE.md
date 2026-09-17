@@ -30,7 +30,7 @@ the owner to drop.
 KN-565, KN-589, KN-665, KN-667, KN-591, KN-601, KN-669, KN-670, KN-618, KN-675, KN-626, KN-678,
 KN-651, KN-679, KN-680, KN-666, KN-668, KN-672, **KN-306** (d8c9d9f), **KN-380** (17472be),
 **KN-685** (43898ec), **KN-690** (db6f4e6), **KN-691** (fb0e32b), **KN-695** (e29b86e),
-**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491, board 4fe2895). **Dropped**: KN-657, and **KN-663**
+**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491), **KN-706** (19587b9), **KN-707** (df31739), **KN-708** (6454eb9, board 28e5ce0). **Dropped**: KN-657, and **KN-663**
 (de6157c), filed on a false premise its own plan review caught.
 
 ## KN-697, the search in the address, and it is the one to read first
@@ -122,9 +122,18 @@ KN-687, KN-688, KN-694, and **KN-705** from KN-693's roast — the verifier echo
 at startup, `VITE_API_URL` included, so a value supplied through the environment that contains a
 sentinel prints before any check runs, which falsifies KN-693's own universal claim. **KN-695 has NO
 open children left**, so the board asked for a round on the PARENT together with every child, on whether
-KN-695 was actually finished. **That round ran and said it is NOT**, filing two: **KN-706**, in progress,
-four story entries describing a search without saying when it acts, and **KN-707**, the Search Bar docs
-claiming the contacts page gives no accessible label, which it now does. It confirmed the behaviour and
+KN-695 was actually finished. **That round ran and said it is NOT**, filing two. **KN-706 is closed** and
+deliberately edited nothing, taking its exit's record why branch: the four entries are scenario
+itineraries where timing is incidental, while `Debounced` and `CountsDownToAResend` exist to demonstrate
+timing, and its own roast upheld that and closed the last hole, since `DocsPage.tsx` renders the
+introduction before all story prose so no reader meets an entry without the contract. **KN-707 is closed too**, the Search Bar docs having claimed the contacts page gives no accessible label
+while `NetworkScreen` passes one and both `ItsOwnSearch` stories assert it. Its label entry keeps the
+example and keeps KN-430 as history, in two sentences, with the Persian borrowing its own placeholder
+phrase. **So all three children are finished, and the SECOND parent round has now run and found NOTHING**,
+which is the terminating condition the board asks for: KN-695 is finished, after three children and three
+rounds. That round judged the factoring right, `searchStep` holding the one decision that must not drift
+while the remaining screen glue owns each screen's local field, and reported no false current claim in the
+comments, documentation, names or commits. The first round had already confirmed the behaviour and
 `searchStep` are right, and that KN-697 changed where the applied value is stored rather than the wait.
 
 **Also open**: KN-681, KN-682, KN-684, KN-673, KN-674, KN-676, KN-677; **KN-699**, the moving storybook
@@ -175,32 +184,42 @@ because `todo render` writes every description into the board and the database i
 - **A finding is a CHILD of its task**, one level, with `--area` and `--okr`. **Plans live beside the
   work**, checked by `roast.py plan` before building, and they stay.
 
-## The next step: KN-706, four story entries describe a search without saying when
+## The next step: KN-389, a column a search emptied says it has none at this stage
 
-**In progress**, medium, 1 point, web, a child of KN-695 filed by the parent round. Plan at
-`apps/web/src/shared/story-docs/#KN-706 - Four story entries describe a search without saying when.md`,
+**In progress**, medium, 2 points, web, a child of KN-060 from the KN-353 roast. Plan at
+`apps/web/src/shared/kanban-column/#KN-389 - A column a search emptied says it has none at this stage.md`,
 **with Codex for review**, uncommitted until that round lands.
 
-**THIS CARD MAY LEGITIMATELY EDIT NOTHING, and its exit permits that**: either the four entries gain the
-timing, or the card records why a story entry describes only what its scenario shows. **Two rounds have
-split on it.** Planning KN-696 I judged these scenarios rather than timing claims and that card's review
-agreed, calling it no separate finding; the PARENT round said they are reader-facing search descriptions
-that omit when it acts.
+**THE OWNER SETTLED THIS ONE, 2026-09-17, and the answer is CHANGE THE MESSAGE**: the count keeps showing
+the status's real total and a column a search emptied says so in its own words. It went to the question
+card because two board records required opposite things. **KN-422**, done and critical, closed on the exit
+"A column's count and its deletability are the column's own, not the search's", and it closed because a
+SEARCHED count of zero enabled Delete and `deleteStatus` took the hidden job opportunities with it. KN-389
+calls the resulting pair, a count of one beside the empty message, the defect. So KN-422 mandated the
+state KN-389 called a bug, and the owner's rule of 2026-09-16 says a contradiction is asked about and
+REMOVED rather than re-decided.
 
-**The four are ITINERARIES.** `Working` reads "A board being used: searching narrows every column, a card
-opens the job opportunity, and selecting one brings up the bulk bar…" — the search is one item of four.
-`Keeping` is the same shape, one of five. Neither is a statement about how the search behaves.
+**THE FIGMA FILE DOES NOT SETTLE IT, and that was checked rather than assumed.** `305:1547` Search Empty
+shows every column at «۰», which looks like the count following the search, but `305:1696` Empty is the
+SAME FRAME: identical counts, the same single message in the same first column, the same spacers, the
+same Board Message box, differing only in the Empty State's copy and height. And `241:2`, the ordinary
+board, draws count `1` at `241:43` beside the Empty Column frame `241:46` with no card at all, with
+مصاحبه at 3 over one card and درخواست‌شده at 4 over two. The counts are totals and the cards are a
+sample, so the file's counts say nothing about what a count counts.
 
-**My first argument was wrong, and checking before writing killed it.** I was going to say no story entry
-in this format ever carries timing. `Debounced` does — "A word typed quickly: no search while the keys
-come, then one search with the whole word" — and so do `ResetWhilePending` and, on a SCREEN,
-`CountsDownToAResend`. A near-miss worth keeping: `Shared-SearchBar.md` line 62 states timing too, but it
-sits under `### onSearch`, a PROP entry, which is a different artefact from a story.
+**The signal is `sizeOf(id) > 0 && cardsOf(id).length === 0`**, derived in `JobsScreen` and passed down,
+NOT "a search is running": a status with genuinely no job opportunities keeps
+«هنوز فرصت شغلی‌ای تو این مرحله نیست», which is still true for it. `KanbanColumn.tsx` line 198 decides
+emptiness from `Children.toArray(children).length === 0` and cannot tell why, which is the whole gap.
 
-**The line the evidence supports**: an entry states timing when the timing is what that story
-DEMONSTRATES. Strip the pause from `Debounced` and no story is left; strip it from `Working` and every
-step still stands. So the contract belongs in the introductions, which KN-695 and KN-696 corrected in all
-four files, and the entries stay itineraries — which is the exit's second branch, taken on evidence.
+**Two call sites at least**: the desktop column, and `JobsScreen.tsx` line 549, where the phone branch
+renders `<EmptyColumn />` directly. A collapsed column draws only its `Title` and no cards, so it cannot
+show this; the `layout === 'mobile'` branch of the column DOES render `{cards}`, so whether anything
+passes it is being checked rather than assumed.
+
+**Out of scope deliberately**: `JobsScreen.tsx` line 414 gives the phone's Filter Chips the SEARCHED
+count, so after this card two surfaces state different things about one status. That is its own entry if
+the review judges it real, not a widening of this one.
 
 ## What to read first
 
