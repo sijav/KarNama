@@ -839,8 +839,17 @@ of screen and moves nothing: `/jobs` and `/add` differ in address and in
 destination but not in what is drawn beneath, and treating them as different
 would take focus out of the Add Job dialog at the moment it opened. Arriving at
 the application moves nothing either, since nobody has been taken anywhere yet.
-What an ordinary navigation should do, where the reader clicked the control
-themselves and it survives the change, is not settled here and is KN-715.
+
+**And ONLY that case.** The shell settles focus when the board's delete
+confirmation was open as the screen was replaced, which is the case that was
+measured, and not merely whenever focus has been lost. An ordinary navigation,
+where the reader activated a control that belongs to the shell and is still
+there afterwards, leaves their focus alone. Focus resting on the page body is
+the SAFETY condition on the settling, never the reason for it: it is also where
+an ordinary navigation can leave a reader whose focus was inside the outgoing
+screen, so treating it as the trigger would decide by the back door the very
+question that is still open. What an ordinary navigation should do is not
+settled here and is KN-715, KN-716.
 
 ### The add modal
 

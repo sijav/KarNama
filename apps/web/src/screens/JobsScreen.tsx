@@ -71,11 +71,27 @@ export interface JobsScreenProps {
   addOpen?: boolean
   onAddClose?: () => void
   onSelecting?: (selecting: boolean) => void
+  /**
+   * Whether the confirmation for deleting a job opportunity is open, KN-716.
+   *
+   * Named for that ONE confirmation rather than for modals in general: the shell
+   * settles focus only on the path KN-473 measured, and a signal called
+   * something broader would quietly become the policy for every dialog, which is
+   * the overreach KN-716 exists to undo.
+   */
+  onJobDeleteConfirmationOpenChange?: (open: boolean) => void
   onSignOut?: () => void
   onExtract: AddJobModalProps['onExtract']
 }
 
-export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut, onExtract }: JobsScreenProps) => {
+export const JobsScreen = ({
+  addOpen = false,
+  onAddClose,
+  onSelecting,
+  onJobDeleteConfirmationOpenChange,
+  onSignOut,
+  onExtract,
+}: JobsScreenProps) => {
   const { i18n } = useLingui()
   const { locale } = usePreferences()
   const records = useRecords()
@@ -296,6 +312,20 @@ export const JobsScreen = ({ addOpen = false, onAddClose, onSelecting, onSignOut
       onSelecting?.(false)
     }
   }, [held.length, onSelecting])
+
+  // Tells the shell while the delete confirmation is open, KN-716, so it can
+  // settle focus on the one path KN-473 measured and leave an ordinary
+  // navigation alone.
+  //
+  // **Deliberately WITHOUT the cleanup the effect above has**, and that is the
+  // whole of it. React runs a removed screen's layout-effect cleanup before it
+  // takes the DOM away, then runs the surviving shell's layout effect, so a
+  // cleanup here would clear the signal before the shell could read it, in
+  // exactly the case the signal exists for: the board replaced under an open
+  // confirmation. The shell clears it itself once it has consumed a change.
+  useLayoutEffect(() => {
+    onJobDeleteConfirmationOpenChange?.(deleting !== null)
+  }, [deleting, onJobDeleteConfirmationOpenChange])
 
   const people = records.jobs.map((entry) => ({ value: entry.id, label: entry.draft.title }))
   // The person the contact modal is editing, or null while it adds or is closed:

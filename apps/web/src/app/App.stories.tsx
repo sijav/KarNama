@@ -357,6 +357,142 @@ export const OpeningTheAddFlowKeepsFocus: Story = {
   },
 }
 
+// An ordinary navigation, KN-716: the reader activates a control that belongs to
+// the shell and survives the route change, so the shell leaves their focus where
+// they put it. The screen still changes; what does not happen is the page region
+// taking focus, which DESIGN.md's navigation section says is unsettled and KN-715.
+export const NavigatingKeepsFocus: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const before = window.location.href
+    const main = canvasElement.ownerDocument.querySelector('main')
+    if (!(main instanceof HTMLElement)) throw new Error('the shell draws no page region')
+    try {
+      // Scoped to the navigation landmark: the board draws its own controls with
+      // some of these names, as the add flow's story already found.
+      const workspace = canvas.getByRole('navigation', { name: 'فضای کار' })
+      const toNetwork = within(workspace).getByRole('button', { name: 'شبکه من' })
+      // Focused first on purpose, which is what a keyboard reader does and what
+      // this repository does everywhere it asserts focus after a click.
+      toNetwork.focus()
+      await userEvent.click(toNetwork)
+      await waitFor(async () => {
+        await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('شبکه من')
+      })
+      await expect(toNetwork).toHaveFocus()
+      await expect(main).not.toHaveFocus()
+
+      const toBoard = within(workspace).getByRole('button', { name: 'فرصت‌های شغلی من' })
+      toBoard.focus()
+      await userEvent.click(toBoard)
+      await waitFor(async () => {
+        await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('فرصت‌های شغلی من')
+      })
+      await expect(toBoard).toHaveFocus()
+      await expect(main).not.toHaveFocus()
+    } finally {
+      window.history.replaceState(null, '', before)
+    }
+  },
+}
+
+// The same navigation with a REAL pointer, KN-716. `userEvent` cannot answer this
+// one: read from the installed 14.6.6, its pointer system focuses the target on
+// mouse-down unless `pointerdown` was prevented, so a simulated click arranges
+// the focus it would then be asked about. The runner's locator drives the browser
+// itself, so this story only runs there, as `Selecting` does for the viewport.
+export const NavigatingWithAPointer: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
+    const canvas = within(canvasElement)
+    const before = window.location.href
+    const main = canvasElement.ownerDocument.querySelector('main')
+    if (!(main instanceof HTMLElement)) throw new Error('the shell draws no page region')
+    try {
+      await page.getByRole('button', { name: 'شبکه من' }).click()
+      await waitFor(async () => {
+        await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('شبکه من')
+      })
+      // What this card claims, and all it claims: the shell did not take focus.
+      await expect(main).not.toHaveFocus()
+      // And where a pointer actually leaves it is recorded rather than decided.
+      // On the control is what a browser that focuses on pointer down gives; on
+      // the body is the case KN-715 owns and this card deliberately does not.
+      const held = canvasElement.ownerDocument.activeElement
+      const workspace = canvas.getByRole('navigation', { name: 'فضای کار' })
+      await expect(held === canvasElement.ownerDocument.body || workspace.contains(held)).toBe(true)
+    } finally {
+      window.history.replaceState(null, '', before)
+    }
+  },
+}
+
+// The case that separates the two guards, KN-716. An ordinary navigation where
+// focus IS lost, because the reader had it on something inside the screen that
+// went. The shell must STILL leave them alone: losing focus is not the reason it
+// settles, only a condition on the one case it does, a screen replaced under an
+// open confirmation.
+//
+// Without this story the boundary is unproven. In the navigation story above the
+// latch is unset AND focus survives, so either guard alone returns early and
+// neither removal fails anything; here only the latch is holding the shell back.
+export const NavigatingAwayFromAFocusedCardKeepsTheShellOut: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const before = window.location.href
+    const main = canvasElement.ownerDocument.querySelector('main')
+    if (!(main instanceof HTMLElement)) throw new Error('the shell draws no page region')
+    try {
+      // Cards to put focus on, loaded the way a reader loads them.
+      await userEvent.click(canvas.getByRole('button', { name: 'تنظیمات' }))
+      const settings = await body.findByRole('dialog')
+      await userEvent.click(within(settings).getByRole('button', { name: 'بارگذاری داده‌های نمونه' }))
+      await userEvent.click(within(settings).getByRole('button', { name: 'تمام' }))
+      await waitFor(async () => {
+        await expect(body.queryByRole('dialog')).toBeNull()
+        await expect(canvas.getAllByRole('article').length).toBeGreaterThan(1)
+      })
+
+      const [card] = canvas.getAllByRole('article')
+      if (!card) throw new Error('the board shows no card')
+      const [inside] = within(card).getAllByRole('button')
+      if (!inside) throw new Error('the card carries no control to focus')
+      inside.focus()
+      await expect(inside).toHaveFocus()
+
+      // Driven by Back rather than by clicking the navigation, and that is not a
+      // detail. `userEvent.click` FOCUSES what it clicks, so activating a nav
+      // control hands focus to that control and the reader never loses it: the
+      // first version of this story clicked, and failed on its own premise with
+      // focus on a button rather than the body. Back is an ordinary navigation
+      // with no control to receive focus, which is the case this story needs.
+      const base = siteBase(import.meta.env.BASE_URL, window.location.href)
+      const away: Destination = 'network'
+      const here: Destination = 'jobs'
+      window.history.pushState(null, '', `${base}${away}`)
+      window.history.pushState(null, '', `${base}${here}`)
+      window.history.back()
+      await waitFor(async () => {
+        await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('شبکه من')
+      })
+
+      // The premise, asserted rather than assumed: focus really was lost. Without
+      // this the story could pass while never reaching the latch at all, because
+      // surviving focus would stop the shell at its other guard.
+      await expect(canvasElement.ownerDocument.activeElement).toBe(canvasElement.ownerDocument.body)
+      // And the claim: the shell still did not take it.
+      await expect(main).not.toHaveFocus()
+    } finally {
+      window.history.replaceState(null, '', before)
+    }
+  },
+}
+
 // The frame's address is given the old hash before the shell renders, as a shared
 // link gives it, and the whole address is put back after, KN-505.
 export const FromAnOldAddress: Story = {

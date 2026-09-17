@@ -49,7 +49,14 @@ const meta = {
   title: 'Screens/Jobs',
   component: JobsScreen,
   parameters: { layout: 'fullscreen', controls: { exclude: HIDDEN_CONTROLS } },
-  args: { addOpen: false, onAddClose: fn() , onSelecting: fn(), onSignOut: fn(), onExtract: fn(readsTheLink)},
+  args: {
+    addOpen: false,
+    onAddClose: fn(),
+    onSelecting: fn(),
+    onJobDeleteConfirmationOpenChange: fn(),
+    onSignOut: fn(),
+    onExtract: fn(readsTheLink),
+  },
   decorators: [
     (Story, context) => (
       // Each story gets its own records, so one cannot change what another

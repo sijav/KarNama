@@ -67,6 +67,29 @@ the dialog rather than moving to the page region. Telling those two apart is
 what the shell's rule turns on: the address and the current destination both say
 add, while the screen underneath is still the board.
 
+### NavigatingKeepsFocus
+
+An ordinary navigation, where the reader activates a control that belongs to the
+shell and is still there afterwards. The screen changes and their focus stays
+where they put it: the page region does not take it. This is the boundary the
+shell keeps, since the case above, a screen replaced under an open confirmation,
+is the only one it settles focus for.
+
+### NavigatingWithAPointer
+
+The same navigation driven by a real pointer rather than a simulated one, which
+only the test runner can do. It asserts the one thing this card claims, that the
+shell did not take focus, and records where a pointer actually leaves it rather
+than deciding that question here.
+
+### NavigatingAwayFromAFocusedCardKeepsTheShellOut
+
+An ordinary navigation where the reader's focus was on a card that goes with the
+screen, so focus is lost. The shell still leaves them alone: losing focus is not
+why it settles, only a condition on the one case where it does. This is the story
+that draws the line, since in the plainer navigation above focus survives and
+either half of the rule would have been enough on its own.
+
 ### FromAnOldAddress
 
 An address shared while the page was in the hash, #/network, opens the network

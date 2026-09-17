@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import Box from '@mui/material/Box'
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Route, Routes, useLocation, useMatch, useNavigate } from 'react-router'
 import { apiErrorText, extractJob } from '../core/api'
 import { useAuth } from '../core/auth'
@@ -106,6 +106,17 @@ const Shell = () => {
   const main = useRef<HTMLElement | null>(null)
   const shown = useRef<Screen | undefined>(undefined)
 
+  // A one-shot latch, set by the board while its delete confirmation is open,
+  // KN-716. It is what tells a screen change on the path KN-473 measured apart
+  // from an ordinary navigation, which DESIGN.md's navigation section leaves to
+  // KN-715. Stable by `useCallback` because the board lists it in an effect's
+  // dependencies, so a fresh arrow each render would have it report again on
+  // every render for nothing.
+  const jobDeleteConfirmationWasOpen = useRef(false)
+  const confirmationOpenChanged = useCallback((open: boolean) => {
+    jobDeleteConfirmationWasOpen.current = open
+  }, [])
+
   // Where a reader carries on from when the screen is replaced under them,
   // DESIGN.md's navigation section, KN-473. A LAYOUT effect because React runs
   // it once the arriving route has committed and before paint, so no frame is
@@ -121,6 +132,20 @@ const Shell = () => {
     const before = shown.current
     shown.current = screen
     if (before === undefined || before === screen) return
+
+    // CONSUME the latch: it answers one screen change and then stops, so a
+    // confirmation opened and closed normally cannot settle focus on the next
+    // navigation that happens to follow it.
+    const underAConfirmation = jobDeleteConfirmationWasOpen.current
+    jobDeleteConfirmationWasOpen.current = false
+    if (!underAConfirmation) return
+
+    // The SAFETY condition, not the policy. Focus on the body is where the
+    // reader is left when the dialog goes with the screen, KN-473; anything
+    // else means they still have somewhere, and taking it would decide
+    // KN-715's question by another route, KN-716.
+    const held = document.activeElement
+    if (held !== null && held !== document.body) return
     main.current?.focus()
   }, [screen, session, signingUp])
 
@@ -131,6 +156,9 @@ const Shell = () => {
   const board = (addOpen: boolean) => (
     <JobsScreen
       onSelecting={setSelecting}
+      // KN-716: the board says when its delete confirmation is open, which is
+      // the one case the shell settles focus for.
+      onJobDeleteConfirmationOpenChange={confirmationOpenChanged}
       onSignOut={signOut}
       // Reading a posting is the server's work, and the shell is where the
       // product meets the server, KN-495.

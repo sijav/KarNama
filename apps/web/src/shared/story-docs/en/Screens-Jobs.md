@@ -25,6 +25,15 @@ Said while anything is selected, so the shell can give the foot of the screen to
 the Bulk Action Bar: below md the tab bar and the bar are fixed to the same
 place, and node 185:19 says the tab bar gives its place, KN-356.
 
+### onJobDeleteConfirmationOpenChange
+
+Said while the confirmation for deleting a job opportunity is open, so the shell
+can tell a screen replaced under that confirmation from an ordinary navigation.
+Only the first settles focus, KN-473; the second leaves the reader's focus where
+they put it, which is still an open question of its own, KN-716 and KN-715. It is
+named for that one confirmation rather than for modals in general, so it cannot
+quietly become the rule for every dialog.
+
 ### onAddClose
 
 Said when the add flow closes, so whoever owns the address can go back to the
