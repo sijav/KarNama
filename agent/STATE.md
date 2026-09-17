@@ -30,7 +30,7 @@ the owner to drop.
 KN-565, KN-589, KN-665, KN-667, KN-591, KN-601, KN-669, KN-670, KN-618, KN-675, KN-626, KN-678,
 KN-651, KN-679, KN-680, KN-666, KN-668, KN-672, **KN-306** (d8c9d9f), **KN-380** (17472be),
 **KN-685** (43898ec), **KN-690** (db6f4e6), **KN-691** (fb0e32b), **KN-695** (e29b86e),
-**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491), **KN-706** (19587b9), **KN-707** (df31739), **KN-708** (6454eb9), **KN-389** (5c5b31a), **KN-710** (996653f), **KN-711** (3c2df74), **KN-407** (7b0ca8d, board c0e0326). **Dropped**: KN-657, and **KN-663**
+**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491), **KN-706** (19587b9), **KN-707** (df31739), **KN-708** (6454eb9), **KN-389** (5c5b31a), **KN-710** (996653f), **KN-711** (3c2df74), **KN-407** (7b0ca8d), **KN-426** (1a8fc05, board 8f52fc1). **Dropped**: KN-657, and **KN-663**
 (de6157c), filed on a false premise its own plan review caught.
 
 ## KN-697, the search in the address
@@ -192,30 +192,36 @@ a story's coverage of any file the unit project also touches. **It took the exit
 the exit names, and the card was re-estimated 2 points to 1 rather than quietly costing less. The comment
 no longer offers a manual look as coverage, and KN-408 is named as the one behaviour known to be missing.
 
-## The next step: KN-426, a disabled Icon Button cannot explain why it is off
+**KN-426** (1a8fc05). **The owner ruled, 2026-09-17: a disabled Icon Button stays REACHABLE, like the Menu.**
+It is off by `aria-disabled` with its press refused, so it keeps the tab order, still takes a hover, and its
+Tooltip opens on both triggers and says why. It went to the question card because two sets of records
+disagreed for analogous controls, the docs and the `Disabled` story against `DESIGN.md` 668 to 670 and
+`Menu.tsx`. **The card's stated mechanism was wrong** and its own note said so: not the browser withholding
+pointer events, but MUI's native attribute removing focus and `.Mui-disabled` suppressing pointer events,
+with `Tooltip` cloning rather than wrapping. **TWO styling traps**, the second found by the review: the drawn
+state was keyed on a class MUI would stop adding, and the hover fill would have lit up a disabled button once
+its pointer events returned. **Six documentation sites**, not the four first counted; the last two were found
+only by opening an entry to use as an anchor. The rule is in `DESIGN.md`.
 
-**In progress**, medium, 2 points, web. Plan at
-`apps/web/src/shared/icon-button/#KN-426 - A disabled Icon Button cannot explain why it is off.md`.
+## The next step: KN-468, a form with display contents can fall out of the accessibility tree
 
-**THE OWNER RULED, 2026-09-17: REACHABLE, LIKE THE MENU.** `aria-disabled` rather than `disabled`, `onClick`
-guarded, so the button stays hoverable and focusable and its Tooltip opens and says why it is off. It went
-to the question card because two sets of records disagreed for analogous controls: the docs in both
-languages and the `Disabled` story say a disabled Icon Button is out of the tab order, while `DESIGN.md`
-668 to 670 says the blocked delete "stays in the keyboard's path so the reason can be read", which
-`Menu.tsx` implements and `DESIGN.md` 697 to 699 repeats for the card's folded controls.
+**In progress**, medium, 2 points, web, from the KN-463 roast.
 
-**THE CARD'S STATED MECHANISM IS WRONG and its own note said so.** Not "the browser fires no pointer
-events": `IconButton.tsx` 193 passes `disabled` to MUI, which sets the NATIVE attribute so there is no
-focus, and adds `.Mui-disabled`, which MUI gives `pointer-events: none` so there is no hover; and
-`Tooltip.tsx` 101 CLONES its child rather than wrapping it in a span. The conclusion holds, the reason did
-not. The story the card says was written and removed is in no commit, so its evidence cannot be checked.
+**FOUR forms carry `display: contents`**: `JobsScreen` 745, `AddJobModal` 313, `ChangeStatusModal` 62 and
+`ContactModal` 159. **Three more forms do not**: `AuthScreen` 316, `AddJobModal` 233 and `JobModal` 670. The
+exit speaks of "each modal's form", so all seven are in scope until shown otherwise, not only the four.
 
-**THE TRAP IS THE STYLING.** `IconButton.tsx` 153 keys the drawn state on `'&.Mui-disabled'`, a class MUI
-adds only for the native prop, so dropping the prop makes the 0.7 opacity and `text/disabled` silently
-vanish while every assertion stays green. It must become `&[aria-disabled='true']`.
+The card says submission and form ownership are unaffected, but that some browser and screen reader pairs
+drop such an element from the tree, and that the forms are unnamed so they would not be reliable landmarks
+even where they are kept.
 
-**Nothing in the product passes `disabled` to an Icon Button today**, so this settles a rule, as KN-433 did
-for the `href` and `disabled` pair when that was latent too.
+**The exit has two branches**, as several cards today have had: each modal's form is in the accessibility
+tree with a name, OR the reason it does not need to be is written down.
+
+**TO SETTLE FIRST, and not from memory**: whether `display: contents` actually drops a `<form>` today, and
+whether an UNNAMED form is exposed at all. A `<form>` becomes a `form` landmark only when it carries an
+accessible name, so an unnamed one may be absent from the tree for THAT reason rather than for the styling,
+which would make the card's premise half right in the way KN-426's was.
 
 ## What to read first
 
