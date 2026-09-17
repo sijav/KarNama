@@ -30,7 +30,7 @@ the owner to drop.
 KN-565, KN-589, KN-665, KN-667, KN-591, KN-601, KN-669, KN-670, KN-618, KN-675, KN-626, KN-678,
 KN-651, KN-679, KN-680, KN-666, KN-668, KN-672, **KN-306** (d8c9d9f), **KN-380** (17472be),
 **KN-685** (43898ec), **KN-690** (db6f4e6), **KN-691** (fb0e32b), **KN-695** (e29b86e),
-**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491), **KN-706** (19587b9), **KN-707** (df31739), **KN-708** (6454eb9), **KN-389** (5c5b31a), **KN-710** (996653f), **KN-711** (3c2df74), **KN-407** (7b0ca8d), **KN-426** (1a8fc05, board 8f52fc1). **Dropped**: KN-657, and **KN-663**
+**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491), **KN-706** (19587b9), **KN-707** (df31739), **KN-708** (6454eb9), **KN-389** (5c5b31a), **KN-710** (996653f), **KN-711** (3c2df74), **KN-407** (7b0ca8d), **KN-426** (1a8fc05), **KN-468** (9422275, board cea8450). **Dropped**: KN-657, and **KN-663**
 (de6157c), filed on a false premise its own plan review caught.
 
 ## KN-697, the search in the address
@@ -203,25 +203,34 @@ state was keyed on a class MUI would stop adding, and the hover fill would have 
 its pointer events returned. **Six documentation sites**, not the four first counted; the last two were found
 only by opening an entry to use as an anchor. The rule is in `DESIGN.md`.
 
-## The next step: KN-468, a form with display contents can fall out of the accessibility tree
+**KN-468** (9422275). **The modal forms ARE in the accessibility tree**, measured rather than reasoned
+about: all four `display: contents` forms, the contact modal, change status, the add flow's review step and
+the board's rename, show a `form` node with their fields nested under it in the Chromium the storybook
+project drives. Each was attributed rather than assumed, and the rename needed a DESKTOP viewport, since at
+phone width the column has no menu, so the first reading found nothing and was not evidence. Naming was
+measured to work too, `aria-label` on a live one turning `form` into a named node. **They stay unnamed**,
+the exit's second branch and the one the original roast conditioned on intent: KN-463 built these forms for
+submission, Enter and autofill, and each sits inside a dialog its heading already names. The rule is in
+`DESIGN.md`, narrowed as the review required: the worry DID NOT REPRODUCE in the measured build, which is
+what four readings in one engine establish and no more, since the CSS Display specification still warns
+that browsers get these semantics wrong.
 
-**In progress**, medium, 2 points, web, from the KN-463 roast.
+## The next step: KN-473, the focus fallback is skipped when the modal unmounts
 
-**FOUR forms carry `display: contents`**: `JobsScreen` 745, `AddJobModal` 313, `ChangeStatusModal` 62 and
-`ContactModal` 159. **Three more forms do not**: `AuthScreen` 316, `AddJobModal` 233 and `JobModal` 670. The
-exit speaks of "each modal's form", so all seven are in scope until shown otherwise, not only the four.
+**In progress**, medium, 2 points, web, from the KN-344 roast.
 
-The card says submission and form ownership are unaffected, but that some browser and screen reader pairs
-drop such an element from the tree, and that the forms are unnamed so they would not be reliable landmarks
-even where they are kept.
+`ConfirmModal` takes an `opener` and a `fallback`, KN-344, and `settle` moves focus to the fallback only
+when the opener is gone. It is wired ONLY as `onClosed`, and only when a `fallback` was given; `Modal` 129
+maps that to MUI's `onTransitionExited`. **That cannot fire once React has removed the Dialog**, so Back, a
+route change, or any parent that stops rendering leaves focus on a detached opener with nothing to catch it.
 
-**The exit has two branches**, as several cards today have had: each modal's form is in the accessibility
-tree with a name, OR the reason it does not need to be is written down.
+**Scope is bounded**: exactly two callers pass the pair, `JobsScreen` 786 and 791 and `NetworkScreen` 304
+and 309, both falling back to the first surviving landing or the page. No story passes either today.
 
-**TO SETTLE FIRST, and not from memory**: whether `display: contents` actually drops a `<form>` today, and
-whether an UNNAMED form is exposed at all. A `<form>` becomes a `form` landmark only when it carries an
-accessible name, so an unnamed one may be absent from the tree for THAT reason rather than for the styling,
-which would make the card's premise half right in the way KN-426's was.
+**TO SETTLE IN THE PLAN**: where the cleanup belongs, since the card says "the shell" while `opener` and
+`fallback` live on `ConfirmModal` and `Modal` knows nothing of them; and how a cleanup avoids settling TWICE
+on a normal close, or stealing focus from a modal that was never open, which means reading `open` at unmount
+rather than closing over a stale prop.
 
 ## What to read first
 
