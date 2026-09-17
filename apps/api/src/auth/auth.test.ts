@@ -65,11 +65,14 @@ describe('server authentication through GraphQL and Postgres', () => {
     await db.close()
   })
 
-  const post = async (query: string, variables: Record<string, string> = {}, token = '') => {
+  const post = async (query: string, variables: Record<string, string> = {}, token = '', headers: Record<string, string> = {}) => {
     const server: unknown = app.getHttpServer()
     if (!(server instanceof Server)) throw new Error('No HTTP server')
     const operation = request(server).post('/graphql')
     if (token) operation.set('Authorization', `Bearer ${token}`)
+    // Headers rather than an options object: `token` is already positional and
+    // every existing caller passes it that way, KN-484.
+    for (const [name, value] of Object.entries(headers)) operation.set(name, value)
     const response = await operation.send({ query, variables })
     return resultSchema.parse(response.body)
   }
@@ -159,13 +162,22 @@ describe('server authentication through GraphQL and Postgres', () => {
       await db.exec('DELETE FROM auth_limits')
       expect((await post(query, {}, 'fake-token')).errors?.[0]?.extensions.code).toBe('UNAUTHENTICATED')
       expect((await post('{currentAccount{id}}')).errors?.[0]?.extensions.code).toBe('UNAUTHENTICATED')
-      for (let i = 0; i < 10; i++) expect((await post(query)).data?.extractJob).toEqual({ title: 'Demo engineer' })
-      expect((await post(query)).errors?.[0]?.extensions.code).toBe('RATE_LIMITED')
-      expect(extraction).toHaveBeenCalledTimes(10)
+      // Ten from ONE caller, then an eleventh refused. The address is the header
+      // Cloudflare writes, KN-484, which is what the limit is keyed on.
+      const alone = { 'CF-Connecting-IP': '203.0.113.9' }
+      const another = { 'CF-Connecting-IP': '198.51.100.7' }
+      for (let i = 0; i < 10; i++) expect((await post(query, {}, '', alone)).data?.extractJob).toEqual({ title: 'Demo engineer' })
+      expect((await post(query, {}, '', alone)).errors?.[0]?.extensions.code).toBe('RATE_LIMITED')
+      // A DIFFERENT caller is still served, which is the whole defect: before
+      // KN-484 every visitor arrived as Render's proxy and shared this bucket.
+      // Eleven is still under the global twenty, so this proves the per-address
+      // key differs rather than that some other bucket happened to have room.
+      expect((await post(query, {}, '', another)).data?.extractJob).toEqual({ title: 'Demo engineer' })
+      expect(extraction).toHaveBeenCalledTimes(11)
       await db.exec('DELETE FROM auth_limits')
       for (let i = 0; i < 20; i++) await app.get(AuthService).limit('extract-demo:global', 20)
-      expect((await post(query)).errors?.[0]?.extensions.code).toBe('RATE_LIMITED')
-      expect(extraction).toHaveBeenCalledTimes(10)
+      expect((await post(query, {}, '', alone)).errors?.[0]?.extensions.code).toBe('RATE_LIMITED')
+      expect(extraction).toHaveBeenCalledTimes(11)
       config.set('ALLOW_DEMO_EXTRACTION', 'false')
       expect((await post(query)).errors?.[0]?.extensions.code).toBe('UNAUTHENTICATED')
     } finally {
