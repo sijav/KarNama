@@ -30,7 +30,7 @@ the owner to drop.
 KN-565, KN-589, KN-665, KN-667, KN-591, KN-601, KN-669, KN-670, KN-618, KN-675, KN-626, KN-678,
 KN-651, KN-679, KN-680, KN-666, KN-668, KN-672, **KN-306** (d8c9d9f), **KN-380** (17472be),
 **KN-685** (43898ec), **KN-690** (db6f4e6), **KN-691** (fb0e32b), **KN-695** (e29b86e),
-**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491), **KN-706** (19587b9), **KN-707** (df31739), **KN-708** (6454eb9, board 28e5ce0). **Dropped**: KN-657, and **KN-663**
+**KN-698** (9a0454e), **KN-697** (fc06954), **KN-700** (e5cf4a9), **KN-693** (6ac6aeb), **KN-696** (ff0c445), **KN-701** (b5c9491), **KN-706** (19587b9), **KN-707** (df31739), **KN-708** (6454eb9), **KN-389** (5c5b31a, board ea8a6f6). **Dropped**: KN-657, and **KN-663**
 (de6157c), filed on a false premise its own plan review caught.
 
 ## KN-697, the search in the address, and it is the one to read first
@@ -184,42 +184,50 @@ because `todo render` writes every description into the board and the database i
 - **A finding is a CHILD of its task**, one level, with `--area` and `--okr`. **Plans live beside the
   work**, checked by `roast.py plan` before building, and they stay.
 
-## The next step: KN-389, a column a search emptied says it has none at this stage
+## KN-389 closed, 5c5b31a, and what it settled for good
 
-**In progress**, medium, 2 points, web, a child of KN-060 from the KN-353 roast. Plan at
-`apps/web/src/shared/kanban-column/#KN-389 - A column a search emptied says it has none at this stage.md`,
-**with Codex for review**, uncommitted until that round lands.
+**The owner ruled, 2026-09-17: CHANGE THE MESSAGE.** A column's count keeps the status's real total, and a
+column a search emptied says «چیزی با این جستجو تو این مرحله نیست» instead of the stage sentence. It went
+to the question card because two board records required opposite things: **KN-422**, done and critical,
+closed on "A column's count and its deletability are the column's own, not the search's", precisely
+because a SEARCHED count of zero enabled Delete and `deleteStatus` took the hidden job opportunities with
+it; while KN-389 called the resulting pair the defect. **The rule now lives in `DESIGN.md`** under the
+kanban column, so it is settled rather than re-decided, and so the next reader does not file `241:2` again
+as a mismatch.
 
-**THE OWNER SETTLED THIS ONE, 2026-09-17, and the answer is CHANGE THE MESSAGE**: the count keeps showing
-the status's real total and a column a search emptied says so in its own words. It went to the question
-card because two board records required opposite things. **KN-422**, done and critical, closed on the exit
-"A column's count and its deletability are the column's own, not the search's", and it closed because a
-SEARCHED count of zero enabled Delete and `deleteStatus` took the hidden job opportunities with it. KN-389
-calls the resulting pair, a count of one beside the empty message, the defect. So KN-422 mandated the
-state KN-389 called a bug, and the owner's rule of 2026-09-16 says a contradiction is asked about and
-REMOVED rather than re-decided.
+**THE FIGMA FILE DID NOT SETTLE IT**, checked rather than assumed: `305:1547` Search Empty is a structural
+COPY of `305:1696` Empty, down to which single column carries the message, so the «۰» in both says nothing
+about what a count counts; and `241:2` already draws count `1` at `241:43` beside the empty frame `241:46`
+with no card, because its counts are totals while its cards are a sample.
 
-**THE FIGMA FILE DOES NOT SETTLE IT, and that was checked rather than assumed.** `305:1547` Search Empty
-shows every column at «۰», which looks like the count following the search, but `305:1696` Empty is the
-SAME FRAME: identical counts, the same single message in the same first column, the same spacers, the
-same Board Message box, differing only in the Empty State's copy and height. And `241:2`, the ordinary
-board, draws count `1` at `241:43` beside the Empty Column frame `241:46` with no card at all, with
-مصاحبه at 3 over one card and درخواست‌شده at 4 over two. The counts are totals and the cards are a
-sample, so the file's counts say nothing about what a count counts.
+**The signal is `sizeOf(id) > 0 && cardsOf(id).length === 0`**, not "a search is running", so a status with
+genuinely nothing keeps the stage sentence, which is true of it. Two call sites carry it: the column, and
+`JobsScreen` line 549 where the phone renders `EmptyColumn` DIRECTLY, a separate caller and not a column
+layout, which the review corrected me on. `EveryCardFiltered` and `MobileEmpty` stay at count 0 asserting
+the OLD sentence, so a swap everywhere would fail them.
 
-**The signal is `sizeOf(id) > 0 && cardsOf(id).length === 0`**, derived in `JobsScreen` and passed down,
-NOT "a search is running": a status with genuinely no job opportunities keeps
-«هنوز فرصت شغلی‌ای تو این مرحله نیست», which is still true for it. `KanbanColumn.tsx` line 198 decides
-emptiness from `Children.toArray(children).length === 0` and cannot tell why, which is the whole gap.
+**Still owed from it**: `JobsScreen` line 414 gives the phone's Filter Chips the SEARCHED count while the
+column header shows the live total, so two surfaces now state different things about one status. Left out
+deliberately, and it becomes its own card if the roast judges it real.
 
-**Two call sites at least**: the desktop column, and `JobsScreen.tsx` line 549, where the phone branch
-renders `<EmptyColumn />` directly. A collapsed column draws only its `Title` and no cards, so it cannot
-show this; the `layout === 'mobile'` branch of the column DOES render `{cards}`, so whether anything
-passes it is being checked rather than assumed.
+## The next step: KN-710, the comments only proof would erase a change hidden in a literal
 
-**Out of scope deliberately**: `JobsScreen.tsx` line 414 gives the phone's Filter Chips the SEARCHED
-count, so after this card two surfaces state different things about one status. That is its own entry if
-the review judges it real, not a widening of this one.
+**In progress**, a child of KN-698 by the one level rule, filed out of KN-708's own roast. KN-708 proved a
+comments only change by stripping comments from `routes.ts` before and after with a REGEX stripper and
+comparing the code byte for byte, and its evidence states that method as SOUND because the same stripper
+runs on both sides. Codex was right that this does not hold in general: a regex stripper does not tokenize
+TypeScript, so it also erases text inside a string, a template literal or a regex literal that contains a
+comment marker, and a real code change made inside one would vanish from both sides and compare equal. It
+holds for `routes.ts`, which has no such literal, so KN-708's conclusion stands and nothing reopens it.
+The wrong thing is the claim of METHOD, which sits in board evidence written to be reused.
+
+**THE CARD AS I FILED IT LOOKS LIKE A RULE ZERO BREACH, and that is the first thing the plan must settle.**
+Its exit demands "a check that refuses", plus a fixture the old proof passes wrongly. `agent/RALPH.md`
+rule zero forbids inventing a gate the owner did not ask for, and its test is whether the owner asked for
+this refusal or whether I am adding it because I found something. The owner did not ask. The same file
+says a finding about the LOOP rather than the product is `low` unless it is actively breaking the work,
+and this is about the agent's own close machinery, not about KarNama. So the plan argues for writing the
+RULE down in `AGENTS.md`, correcting this card's severity and exit to match, and building no gate at all.
 
 ## What to read first
 
