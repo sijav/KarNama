@@ -29,29 +29,29 @@ children. **KN-496 landed the dark `color-scheme` fix by hand**, so
 Closed most recently, with their commits: **KN-708** (6454eb9), **KN-389**
 (5c5b31a), **KN-710** (996653f), **KN-711** (3c2df74), **KN-407** (7b0ca8d),
 **KN-426** (1a8fc05), **KN-468** (9422275), **KN-473** (2572b97, board 1ceb651,
-roast 7ff61aa). Earlier closes are in the board; it is the record, not this file.
+roast 7ff61aa) and **KN-484** (9ce2f7b, board 1c52933, roast d1eee9e). Earlier closes are in the board; it is
+the record, not this file.
 
-## What fails, measured 2026-09-17 on commit 2572b97
+## What fails, and which failures are known
 
-`npm test` exits 1. **None of it is the web change, and the count was checked
-rather than assumed**: 11 failures in `apps/web`, 8 in `apps/api`.
+`npm test` exits 1, and none of it is new work. **Take the failures one at a
+time rather than as a total**, and re-run a lone one alone before reading it as
+a regression.
 
-- **2 were mine and are fixed**: the story-docs guard, which failed because two
-  new stories had no markdown entries. It reads the repository rather than a
-  fixture, so a story with no entry fails it without anyone registering it.
-  Back to 12 of 12 once four entries were written, two per language.
-- **2 are KN-551's** `session.test.ts` pair.
-- **7 are pointer driven and pass in isolation.** The two `JobsScreen` ones were
-  re-run alone and passed, 2 of 2, which is KN-365's signature. The other five,
-  `Button` Matrix, three in the `Input` family, `JobCard` Pressed and `NavItem`
-  Hover, are attributed to KN-699's moving set rather than re-run: **two were
-  measured, five are attributed**, and the distinction is the honest one.
-- **The 8 in `apps/api`** are all `Test timed out in 5000ms` on database backed
-  tests, in a workspace the web change does not reach. The API gate also fails
-  on `extraction.service.ts`, KN-486.
+- **`session.test.ts`, two**, KN-551's pair.
+- **A pointer driven set that MOVES between identical runs**, KN-699 and
+  KN-365: `Button` Matrix, the `Input` family, `JobCard` Pressed, `NavItem`
+  Hover, and sometimes two in `JobsScreen`. Stories driving the real pointer
+  collide when story files run in parallel; the `JobsScreen` pair was re-run
+  alone and passed 2 of 2.
+- **`apps/api`, eight**, all `Test timed out in 5000ms` on database backed
+  tests. The API coverage gate also fails at 80.37 percent, KN-486, so
+  **coverage is not a signal in that workspace**: a threshold failure there is
+  not evidence about a change, and a pass is not available to claim.
 
-`npm run lint` is 0 across all three workspaces, `tsc --noEmit` 0, `npm run
-build` 0 including the API's `schema:check`, and no coverage threshold failed.
+The **story-docs guard** is the one that catches new work: it reads the
+repository, so an exported story with no markdown entry fails it without anyone
+registering anything. Two entries per story, `en` and `fa`.
 
 ## Drift, and the method that was wrong all week
 
@@ -147,25 +147,44 @@ unmounted and the first-run rule reads the arriving board as a cold load;
 screen arrived; **KN-719**, the English docs entry says the browser gives focus
 back where MUI's trap calls `.focus()` itself. Nothing was rejected.
 
-## The next step: KN-484, the rate limit behind Render
+## KN-484, closed 2026-09-17, and what it settled
 
-**In progress**, medium, 2 points, `api`, from KN-477's review.
-`extraction.resolver.ts` 20 keys the demo limit on
-`context.req.ip ?? context.req.socket.remoteAddress ?? ''`, `env.ts` 27 defaults
-`TRUST_PROXY_HOPS` to 0 with a max of 5, `main.ts` 29 sets `trust proxy` from
-it, and `render.yaml` never declares it. `auth.limit` counts and checks in ONE
-atomic upsert, so there is no refund and validating before counting means
-validating before `limit` is called at all. `extract()` rejects
-`trim().length < 10 || > 30_000`.
+**All three address keys shared one bucket**, not just extraction: `extract-demo`, `sms-ip` and `verify-ip` all read
+`context.req.ip ?? context.req.socket.remoteAddress ?? ''` while `trust proxy` is 0, so Express reported Render's
+proxy. The card's why called the SMS and verify case future; it was already true.
 
-**TWO THINGS ARE UNSETTLED AND BOTH GO IN THE PLAN.** First, `app.set('trust
-proxy')` lives in `bootstrap()`, which `Test.createTestingModule` never runs, so
-a test that sets it itself proves Express and NOT the production path, which is
-the same false proof KN-473 refused. Second, **Render documents no hop count**:
-its own article says traffic crosses Cloudflare AND Render's load balancers and
-tells you to read `x-forwarded-for`, so the exit's "as Render documents it,
-checked rather than guessed" is not satisfiable as written, and a fixed 1 would
-hand back Cloudflare's address rather than the reader's.
+**The durable fact, now in `AGENTS.md` section 7**: behind Cloudflare, `X-Forwarded-For` is CALLER CONTROLLED and
+`CF-Connecting-IP` is not. Cloudflare overwrites the latter on every request and only APPENDS to the former, so a
+limit keyed on `X-Forwarded-For` is one the caller chooses, which is worse than one shared bucket because it looks
+fixed. Express's numeric `trust proxy` reads that same header from the right, so a hop count inherits the problem, and
+Render publishes no chain length anyway.
+
+**Two owner decisions, and the second replaced the first.** I reported that Render documented nothing and the owner
+chose to measure the header on the deployed service; that question rested on my incomplete reading, and told the
+truth, the owner ruled: use `CF-Connecting-IP`. Both are on the card in order. No deployed header logging was done.
+
+`src/client-ip.ts` reads the header with the old chain behind it, all three call sites use it, and `sourceText` is
+exported so the length rule has one definition with the resolver refusing before any limit, authentication first.
+**Its roast filed KN-720**: a BLANK header does not fall through, since `??` catches only null and undefined, and the
+test comment claims the opposite while testing only the empty array.
+
+## The next step: KN-716, the shell moves focus on an ordinary navigation
+
+**In progress**, high, 2 points, web, a child of KN-473 and my own overreach from it.
+
+**Measured**: focusing a nav control and activating it, in both directions, leaves `document.activeElement` on `MAIN`.
+The effect takes focus off the control the reader chose, which `DESIGN.md` line 842 says is unsettled and KN-715's.
+
+**The first design was refused by the review and the reason matters**: `activeElement === body` IS reliable at
+layout-effect time, because React runs the layout effect after commit and before paint while MUI restores focus in a
+PASSIVE effect. But `body` is a SYMPTOM, not the cause: focus also lands there on an ordinary navigation when focus
+was inside the outgoing screen, so keying on it would decide KN-715's question by another route. The policy must be a
+narrowly named transient signal from the confirmation path, with `body` kept only as a safety condition.
+
+**The hazard found by reading the precedent**: `onSelecting` is the house way a screen tells this shell something, and
+it is a layout effect that CLEARS ITSELF on unmount. Copying it would set the signal false before the shell reads it,
+in exactly the case the signal exists for. KN-473's own sentinel is never cleared in a cleanup, which is checked
+against the committed code, and that is the precedent to follow instead.
 
 ## What to read first
 
