@@ -29,11 +29,14 @@ export interface DocsLocale {
  * seen on 2026-09-12, so here the first read serves every change and the
  * listener is for a Storybook that updates the page in place.
  *
- * Excluded from coverage, with `DocsPage`, because this repository covers React
- * by rendering stories in a real browser and a Docs page cannot be a story.
- * Everything it decides is in `docs-locale.ts`, which is tested; what is left
- * here is the wiring, and the wiring was checked by clicking the toolbar and
- * watching the page change.
+ * Excluded from coverage with `DocsPage`, and `vitest.config.ts` carries the
+ * measured reason, KN-407. In short: a Docs page cannot be a story, AND the unit
+ * project is node with no DOM, so `renderToString` never runs this effect, and a
+ * fake `DocsContext` would mean faking a `PreparedStory` and a `StoryContext`.
+ * Everything this decides is in `docs-locale.ts`, which is tested; what is left
+ * here is the subscribe and the unsubscribe. Clicking the toolbar and watching
+ * the page change exercises it, which is a LOOK rather than coverage. KN-408
+ * owns the one behaviour known to be missing.
  */
 export const useDocsLocale = (): DocsLocale => {
   const context = useContext(DocsContext)

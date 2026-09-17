@@ -72,14 +72,34 @@ export default defineConfig({
         'src/main.tsx',
         'src/**/*.d.ts',
         'src/gate-fixtures/**',
-        // The Storybook Docs page and the hook that feeds it. Excluded for the
-        // same reason `*.stories.tsx` is: this repository covers React by
-        // rendering stories in a real browser, and a Docs page cannot be
-        // rendered as a story — it needs the docs context that only Storybook's
-        // docs view provides. Every decision they make was moved into
-        // `docs-locale.ts` and `catalog.ts`, which ARE tested; what is left in
-        // these two is wiring, and the wiring is checked by opening Storybook
-        // and switching the Language toolbar, which is gate steps 5 to 7.
+        // The Storybook Docs page and the hook that feeds it. A Docs page cannot
+        // be rendered as a story, since it needs the docs context that only
+        // Storybook's docs view provides, so no story covers these two. That much
+        // this comment always said. What it also IMPLIED, and what KN-407 measured
+        // and found untrue, is that the unit project could not reach them either
+        // for the same reason. The real reasons are these three:
+        //
+        //   - The unit project is `environment: 'node'` and no DOM is installed,
+        //     in either package. All four of its React tests use `renderToString`,
+        //     which runs the render pass and never runs an effect, so the hook's
+        //     `channel.on`, its update callback and its `channel.off` cleanup are
+        //     out of reach from there whatever is written.
+        //   - Reaching them from a story instead would need a fake `DocsContext`.
+        //     Twelve of its thirteen members are required, and the two the hook
+        //     calls must return a `PreparedStory` and a `StoryContext`, neither of
+        //     which can be stubbed without `as`, `any` or `@ts-ignore`, all three
+        //     forbidden here. There is no default to spread: the context is made
+        //     as `createContext(null)`.
+        //   - KN-103 then discards a story's coverage of any file the unit project
+        //     also touches, so the two routes cannot be combined either.
+        //
+        // Every decision these two make was moved into `docs-locale.ts` and
+        // `catalog.ts`, which ARE tested. What is left is the wiring: subscribe,
+        // callback, unsubscribe. Switching the Language toolbar exercises it, gate
+        // steps 5 to 7, and that is a LOOK rather than coverage: it catches a page
+        // that stopped following the toolbar and nothing finer. The one behaviour
+        // known to be missing has its own card, KN-408, where an event yielding no
+        // locale leaves `known` true.
         'src/shared/story-docs/DocsPage.tsx',
         'src/shared/story-docs/useDocsLocale.ts',
       ],

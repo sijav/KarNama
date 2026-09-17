@@ -4,10 +4,11 @@ import { isLocale, type Locale } from '../../i18n'
  * Reading the Language toolbar out of whatever Storybook hands us.
  *
  * These are separated from the hook that uses them for one reason: they are the
- * part that can be TESTED. This repository covers React by rendering stories in
- * a real browser, and a Docs page cannot be rendered as a story, so the hook
- * itself is excluded from coverage. Everything it decides lives here instead,
- * where it is ordinary data in and data out.
+ * part that can be TESTED. A Docs page cannot be rendered as a story, and the
+ * unit project has no DOM, so the hook's effect is reachable from neither side;
+ * `vitest.config.ts` carries the measured reason it is excluded, KN-407.
+ * Everything it decides lives here instead, where it is ordinary data in and
+ * data out.
  */
 
 /** The `locale` global, or null when it is absent or not one of ours. */
