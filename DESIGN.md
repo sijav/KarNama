@@ -558,6 +558,24 @@ Confirm, and each opening starts from the job's status. The set's description
 still speaks of a radio list with a name field; the component draws the chip
 picker. KN-028.
 
+**The modal forms are in the accessibility tree, and they are unnamed on
+purpose. KN-468.** Each set of fields is wrapped in a `form` whose `onSubmit`
+does the work, KN-463, styled `display: contents` so the modal's own layout is
+unchanged. The worry that the styling would drop the form from the tree DID NOT
+REPRODUCE in the Chromium the storybook project drives: reading the tree of all
+four, the contact modal, change status, the add flow's review step and the
+board's rename, each shows a `form` node with its fields nested under it. That
+is what four readings in one engine establish and no more. The CSS Display
+specification still warns that browsers get these semantics wrong, so this is
+not a claim about every browser and screen reader. They are unnamed because a
+form is exposed as a landmark only when it has an accessible name, and each of
+these sits inside a dialog whose heading already names it, so naming the form
+would announce the same group twice, a landmark inside a landmark. The forms
+exist for submission, for Enter, and for autofill, which is what KN-463 was
+asked for, rather than for announcement. Naming one is a single `aria-label`
+away, measured to attach even with `display: contents`, if a reader ever
+reports the grouping is lost.
+
 ### The Contact Modal and the panel modal
 
 The Contact Modal, `270:152`, and the Job Modal, `210:276`, share a larger
