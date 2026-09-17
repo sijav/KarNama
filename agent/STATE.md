@@ -22,16 +22,14 @@ with their stories, then screens. Match the design exactly.**
 
 ## Where things stand, 2026-09-17
 
-**Codex's work of 2026-09-12 stays on main**, KN-477, waiting on twenty-five
+**Codex's work of 2026-09-12 stays on main**, KN-477, waiting on twenty-four
 children. **KN-496 landed the dark `color-scheme` fix by hand**, so
 `git stash@{0}` duplicates committed code; left for the owner to drop.
 
 Closed most recently, with their commits: **KN-473** (2572b97), **KN-484**
-(9ce2f7b), **KN-716** (32aeb50) and **KN-485** (0f5a1e4, board 195f8d2).
+(9ce2f7b), **KN-716** (32aeb50), **KN-485** (0f5a1e4) and **KN-493** (4368c5b).
 **KN-721 was DROPPED** (e25fd51), not built. Earlier closes are in the board; it
 is the record, not this file.
-
-In hand now: **KN-493**, every column folding when its name is pressed.
 
 ## What fails, and which failures are known
 
@@ -39,7 +37,8 @@ In hand now: **KN-493**, every column folding when its name is pressed.
 time rather than as a total**, and re-run a lone one alone before reading it as
 a regression.
 
-- **`session.test.ts`, two**, KN-551's pair.
+- **`session.test.ts`, two**, KN-551's pair. Measured again on 2026-09-17: the
+  unit project is 1524 passed, those two failed, and nothing else.
 - **A pointer driven set that MOVES between identical runs**, KN-699 and
   KN-365: `Button` Matrix, the `Input` family, `JobCard` Pressed, `NavItem`
   Hover, and sometimes two in `JobsScreen`.
@@ -51,20 +50,36 @@ The **story-docs guard** is the one that catches new work: an exported story
 with no markdown entry fails it without anyone registering anything. Two
 entries per story, `en` and `fa`.
 
-## The trap that cost a whole iteration, 2026-09-17
+## A story cannot say a callback is ABSENT, 2026-09-17
 
-**No state kept in the shell can go stale across a sign-out, in the product or
-in a story.** `AppProviders` renders `OwnBoard`, which is
+Three rules meet and close the door, and knowing this saves an hour:
+
+- The story-docs guard fails **"callback prop X has no fn() in the meta args"**
+  and **"STORY sets X in its own args to something other than fn()"**. So a
+  story cannot set a callback to `undefined`, and the meta cannot drop it.
+- **`exactOptionalPropertyTypes` is on.** An explicit `undefined` is not
+  assignable to an optional prop, in args or in JSX. Pass a prop conditionally
+  by SPREAD, `{...(cond ? { onX: fn } : {})}`, as `AppProviders` does with its
+  locale.
+- A `render` that drops the prop leaves a control in the Controls panel driving
+  nothing, which the stories rule forbids: "An empty panel is honest, a dead one
+  is not."
+
+So **prove an absent callback where the CALLER decides it**, in the screen's
+story, which is also what exercises the component's else branch. KN-493.
+
+## No shell state survives a sign-out, 2026-09-17
+
+`AppProviders` renders `OwnBoard`, which is
 `<RecordsProvider key={session?.phone ?? ''}>`, and `main.tsx` renders `App`
 inside that key, so ANY change of reader unmounts `App`, `Shell` and every ref
-they hold. `AGENTS.md` already carried this from KN-419 and I read past it,
-because it was phrased as something a story does. The line now carries the
-consequence. **KN-721 was filed from a roast, taken, planned, reviewed twice and
-built before this was measured, then dropped as impossible.**
+they hold. `AGENTS.md` carried this from KN-419 and I read past it, because it
+was phrased as something a story does. **KN-721 was filed, planned, reviewed
+twice and built before this was measured, then dropped as impossible.**
 
-The measurement that settled it: instrument the component with a per-mount
-identity, not just the state you suspect. The identity changing is what told a
-remount from a re-render, and nothing else would have.
+The measurement that settled it: instrument the component with a **per-mount
+identity**, not just the state you suspect. The identity changing is what told a
+remount from a re-render.
 
 ## Drift, and the method that was wrong all week
 
@@ -74,27 +89,30 @@ copy in a temp directory does not, and calls most of the file drift.
 
 A NEW file must measure 0 before it is committed, and `prettier --write` is safe
 only where the committed copy already measures 0. **Hold a baseline rather than
-improving it**: `App.stories.tsx` sits at 13 and `render.yaml` at 2 em dashes,
-both pre-existing. **Read the drift, never chain it.** `eslint` runs from
-`apps/web`; nothing lints `agent/scripts`.
+improving it**: `App.stories.tsx` 13, `JobsScreen.stories.tsx` 2, `DESIGN.md`
+236 with 9 em dashes, `render.yaml` 2 em dashes. **Read the drift, never chain
+it.** `eslint` runs from `apps/web`; nothing lints `agent/scripts`.
 
 **Generated files are not prettier's.** `apps/api/schema.gql` drifts by design;
-`schema:check` compares it byte for byte with what the generator emits, so
-formatting it would BREAK the build.
+`schema:check` compares it byte for byte with what the generator emits.
 
 ## Open children, and what is waiting
 
 **KN-473 has five open children**: KN-717 medium, KN-718 low, KN-719 low,
 KN-722 low, and KN-715 blocked on it. KN-716 closed, KN-721 dropped.
 
-**KN-477 waits on twenty-five**, KN-724 and KN-725 among them, both from
+**KN-477 waits on twenty-four**, KN-724 and KN-725 among them, both from
 KN-485's roast: the first is a real defect, that a missing base variable
 suppresses every cross-field rule so the refusal names one thing when three are
 wrong; the second a comment falsified by its own commit.
 
-**KN-723** now carries three measured holes in `render.test.ts` and **the
-dependency question is the owner's**: parsing `render.yaml` needs `yaml` as a
-direct dev dependency, and their seven day `min-release-age` is deliberate.
+**KN-723** carries three measured holes in `render.test.ts` and **the dependency
+question is the owner's**: parsing `render.yaml` needs `yaml` as a direct dev
+dependency, and their seven day `min-release-age` is deliberate.
+
+**KN-544** is next door to KN-493: `startsCollapsed(id) => id === REJECTED`
+compares a status id against a StatusToken, which is exactly what that card is
+about. It now has ONE named place to change.
 
 **KN-698 waits on KN-704**; **KN-697 waits on KN-703**; **KN-016 waits on
 KN-689**, blocked on the owner, **and KN-692**; **KN-062 waits on KN-686,
@@ -134,25 +152,18 @@ the board and the database is committed.
   **Plans live beside the work**, reviewed by `roast.py plan` before building,
   every time the plan changes.
 
-## KN-485, closed 2026-09-17
+## Planting a failure: the guard can be wrong about the guard
 
-The API started with demo extraction on and no secret, no chosen provider and no
-key, reporting itself healthy while every extraction failed. The refusal rides
-on `validate: parseEnv`, which Nest already calls, so it is a new rule and not
-new wiring.
-
-**The one thing worth carrying: a zod default is applied DURING parsing**, so a
-`superRefine` cannot tell a value nobody chose from one chosen explicitly. The
-provider lost its default to make the rule observable, and nothing downstream
-noticed because both readers already carried that fallback themselves. Its own
-roast then found the rule is skipped entirely when a base variable is missing:
-KN-724.
+KN-493's second plant asserted a line occurred twice and it occurred once, so a
+CORRECT mutation was refused and nothing ran. The two `<Icon name="chevron-down"`
+lines differ by two spaces of indentation, which made the anchor unique and the
+expectation false. **Count the anchor before asserting its count**, and read a
+plant's own exit code apart: the `$?` after a refused mutation is python's, not
+the runner's, and it looked like a passing plant.
 
 ## What to read first
 
-`AGENTS.md` section 7, `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`, and
-for this card `apps/web/src/shared/kanban-column/KanbanColumn.tsx` with
-`JobsScreen.tsx` and `KanbanColumn.stories.tsx`.
+`AGENTS.md` section 7, `agent/RALPH.md`, the head of `agent/TODO_BOARD.md`.
 
 **A backgrounded run's "exit code 0" is the shell line's**, and a piped
 command's `$?` is the LAST stage's. **A green total proves nothing about a new
