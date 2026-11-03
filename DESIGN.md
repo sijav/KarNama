@@ -327,6 +327,12 @@ state.
 
 ### The Checkbox keeps the room for its focus ring
 
+**Read in the original on 2026-11-03**, `204:11` has a sixth state, Checked
+Hover: the checked square and its edge in `color/bg/brand/hover` under the same
+tick, which the code draws under the pointer, KN-798. The other five are the
+copy's, and neither file draws a hover for the indeterminate square, so it keeps
+its own fill.
+
 The file draws no Focus state for the Checkbox, `204:11`, and every instance of
 it, ten on the Components canvas and eight on the Screens, sits at the inline
 start of a card's or a contact card's Title Group, flush with its edge, 2.5
@@ -1178,7 +1184,7 @@ of the contract.
 | Nav Item / Side     | `184:14`  | Default, Active, Hover                                                                          |
 | Nav / Sidebar       | `185:11`  | desktop, on the RIGHT                                                                           |
 | Nav / Tab Bar       | `185:19`  | mobile, at the bottom                                                                           |
-| Checkbox            | `204:11`  | Unchecked, Checked, Indeterminate, Hover, Disabled                                              |
+| Checkbox            | `204:11`  | Unchecked, Checked, Indeterminate, Hover, Disabled, Checked Hover                                              |
 | Code Input          | `407:6981`| the Code Row of the Auth Code frames, five boxes over one field; no library component |
 | Tab Item            | `204:20`  | Default, Active, Hover                                                                          |
 | Bulk Action Bar     | `401:436` | Type=Jobs, Type=Contacts                                                                        |

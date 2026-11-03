@@ -5,7 +5,7 @@ import { useId } from 'react'
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import { usePreferences } from '../../core/preferences'
 import { i18nFor } from '../../i18n'
-import { contrast } from '../../theme/darkMode'
+import { contrast, darkSemantic } from '../../theme/darkMode'
 import { semantic, spacing } from '../../theme/tokens'
 import { passOnUnmarked } from '../console-guard'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -539,5 +539,43 @@ export const TargetIsLargerThanTheSquare: Story = {
     const browser = await import('vitest/browser')
     await browser.userEvent.click(box, { position: { x: 1, y: 1 } })
     await expect(box).toBeChecked()
+  },
+}
+
+// State=Checked Hover, the redesign's sixth state, by the runner's real pointer,
+// as Hover is, KN-225: the checked square and its edge turn bg/brand/hover under
+// the same tick, KN-798. The palette is the scheme the story pins.
+const hoversChecked = async (canvasElement: HTMLElement, palette: Record<keyof typeof semantic, string>) => {
+  const box = await namedBox(canvasElement)
+  const frame = frameOf(canvasElement)
+  await expect(box).toBeChecked()
+  await expect(getComputedStyle(frame).backgroundColor).toBe(computedColour(canvasElement, palette['bg/brand/default']))
+  if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
+    if (import.meta.env.MODE !== 'test') return
+    throw new Error('A checked hover story is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
+  }
+  const browser = await import('vitest/browser')
+  const hover = computedColour(canvasElement, palette['bg/brand/hover'])
+  await browser.userEvent.hover(box)
+  await expect(getComputedStyle(frame).backgroundColor).toBe(hover)
+  await expect(edgeOf(frame).colour).toBe(hover)
+}
+
+export const CheckedHover: Story = {
+  args: { checked: true },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  // Its play starts on the checked, enabled square, which each control changes.
+  parameters: { controls: { disable: true } },
+  play: async ({ canvasElement }) => {
+    await hoversChecked(canvasElement, semantic)
+  },
+}
+
+export const CheckedHoverInDark: Story = {
+  args: { checked: true },
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  parameters: { controls: { disable: true } },
+  play: async ({ canvasElement }) => {
+    await hoversChecked(canvasElement, darkSemantic)
   },
 }

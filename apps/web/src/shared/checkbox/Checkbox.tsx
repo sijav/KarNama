@@ -222,6 +222,13 @@ export const Checkbox = ({ indeterminate = false, disabled = false, 'aria-label'
       [`&:hover:not(.Mui-checked):not(.Mui-disabled):not(.MuiCheckbox-indeterminate) .${FRAME}`]: {
         boxShadow: `inset 0 0 0 ${EDGE}px ${theme.karnama.semantic['border/focus']}`,
       },
+      // State=Checked Hover, the redesign's sixth state: the checked square and
+      // its edge in bg/brand/hover under the same tick, KN-798. The file draws
+      // no hover for the indeterminate square, so it keeps its own.
+      [`&:hover.Mui-checked:not(.Mui-disabled):not(.MuiCheckbox-indeterminate) .${FRAME}`]: {
+        backgroundColor: theme.karnama.semantic['bg/brand/hover'],
+        boxShadow: `inset 0 0 0 ${EDGE}px ${theme.karnama.semantic['bg/brand/hover']}`,
+      },
       // Scoped to the frame's own class. The focus ring belongs on the square,
       // and the glyph inside it must not get one of its own.
       [`&.Mui-focusVisible .${FRAME}`]: {

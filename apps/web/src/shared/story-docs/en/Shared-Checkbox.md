@@ -159,3 +159,12 @@ The pointer's target is larger than the square: the input round it is at least 2
 by 24 while the square stays the design's 20 by 20, the browser's own hit-testing
 one pixel inside each corner of the target lands on it, and in the test runner a
 real click there, outside the square, ticks it.
+
+### CheckedHover
+
+The pointer over a checked box: the square and its edge turn the brand's
+hover blue under the same tick.
+
+### CheckedHoverInDark
+
+The same in the dark scheme, in the theme's dark colours.
