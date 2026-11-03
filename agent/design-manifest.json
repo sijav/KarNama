@@ -1,13 +1,16 @@
 {
   "$comment": "What was READ from Figma, separated from what DESIGN.md SAYS about it. The verifier checks the document against this; a fresh read updates this file deliberately. Written because a verifier that carries its own list of what to look for is only checking itself: it proved each of 14 node ids appeared somewhere, so deleting a frame's whole transcription while keeping its index row still passed.",
   "source": {
-    "fileKey": "EITM6CbJY33dMY8IsMFR4R",
-    "note": "A copy. The original K1EP8GCOmelU8o4vPR7a9f is view-only and every MCP call against it fails.",
+    "fileKey": "K1EP8GCOmelU8o4vPR7a9f",
+    "note": "The original, which holds the redesign and answers every MCP call since 2026-11-03, KN-729. Everything under captures, and readOn, is the snapshot of the copy EITM6CbJY33dMY8IsMFR4R from before the redesign, kept as it was read until a fresh read of the original replaces each part deliberately.",
+    "snapshotOf": "EITM6CbJY33dMY8IsMFR4R",
     "canvases": {
       "cover": "0:1",
       "foundations": "5:3",
       "components": "5:5",
       "screens": "5:7",
+      "redesignTest": "587:7632",
+      "archive": "714:7632",
       "documentation": "5:8"
     },
     "readOn": "2026-09-07",

@@ -2,7 +2,8 @@
 
 Instructions for any AI agent, and any human, working in this repo. Read this
 before touching anything. The loop that drives the work is `agent/RALPH.md`, the
-design contract is `DESIGN.md`, and the board is `agent/TODO_BOARD.md`.
+design contract is `DESIGN.md` with the designer's handoff beside it,
+`DESIGN-HANDOFF.md`, and the board is `agent/TODO_BOARD.md`.
 
 ---
 
@@ -53,8 +54,11 @@ agent           the loop, the board and its tooling, the roast archive
 
 **The board is the todo skill's database**, `.claude/todo.db`, committed, the
 owner's choice of 2026-09-14. `todo` in these files means `node
-~/.claude/skills/todo/todo.mjs` or `python ~/.claude/skills/todo/todo.py`, which
-are the same tool. `agent/TODO_BOARD.md` is rendered from it with `todo render
+D:/Kar/Sijav-Skills/Sijav-Clauder/skills/todo/todo.mjs` or `python
+D:/Kar/Sijav-Skills/Sijav-Clauder/skills/todo/todo.py`, the sijav-clauder
+plugin's, which are the same tool; the old `~/.claude/skills/todo` path is gone
+since the skills moved into the plugin, found on 2026-11-03.
+`agent/TODO_BOARD.md` is rendered from it with `todo render
 --out agent/TODO_BOARD.md` and committed with it. `agent/board.json` is the
 archive of the JSON board the loop ran on from 2026-09-07 until then, KN-482.
 
@@ -65,6 +69,23 @@ a bug: the UI has to have an honest loading state for it and the app has to warm
 the server on load.
 
 ## 3. Rules that are not negotiable
+
+### The order of the work, the owner's of 2026-11-03
+
+"First and foremost to-do before doing anything is the design, and then is to
+fix the backend and then rest of the to-dos." On the board that is OKR-3, the
+redesign, then OKR-4, the backend, then OKR-1 and OKR-2. Within the design:
+"first create the missing components/fix the already having component's
+design", so every new component card and every card fixing an existing
+component's design is `critical`, ahead of the record model and the screens.
+
+And the roast's cadence: "you continue finish all the to-dos and for each to-do
+you run roast to write on a file, then after all finished you read all the files
+and create-todos and start working on those to-dos again". A closed card's roast
+runs in the background and writes its record; the next card starts at once; no
+plan is reviewed before building and no roast is judged as it lands. When every
+to-do is done, every record is read and its findings become cards. How a roast
+runs, on Sonnet through the claude CLI, is in `agent/RALPH.md`.
 
 ### Every task serves an objective, and the board keeps the objectives
 
@@ -236,6 +257,10 @@ logical one is a separate mistake.
 Every `.md` and `.mdx`. Persian text takes the Persian comma `،`. Check with a
 Unicode-aware matcher, not a byte-wise `grep`, which compares bytes and reports
 false hits inside Persian characters.
+
+`DESIGN-HANDOFF.md` is the designer's document, kept word for word as they wrote
+it: this rule and the other prose rules here are this repository's own and do
+not reach it.
 
 ### No TypeScript escape hatches without asking
 
@@ -440,6 +465,8 @@ debt.
 Moved here from `agent/STATE.md` on 2026-09-14, so the compressed head stays
 short and the lessons sit in a file every iteration reads.
 
+- Python's text mode on Windows writes every line ending as CRLF: write a repository file with `newline='\n'`, or a twenty-line edit becomes a whole-file diff, as DESIGN.md's drift went from 236 to 3600 on 2026-11-03.
+- A roast through an Agent subagent is not a roast here: the owner's rule of 2026-11-03 is the claude CLI with `--remote-control`, and the record names the model the CLI reports serving, never the one asked for.
 - A button draws in the browser's font, Arial in Chromium: since KN-351 the theme gives every ButtonBase the product's face; a native `<button>` outside ButtonBase still needs it.
 - A button centres its text: a name that fills a flex row sits mid-row unless the row sets `textAlign: 'start'`; measure where a name starts with a Range over its text, not with its box (KN-479).
 - An open MUI Menu or Dialog hides the rest of the page from roles: take the trigger's box before opening it, or select the trigger by CSS. A Select's list is portalled outside its dialog, so find its options on the page (KN-480).

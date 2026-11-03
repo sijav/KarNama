@@ -68,17 +68,58 @@ current one if unfinished), and what to read first. Keep it under about 120
 lines. A context reset that loses work is a failure of this step, not of the
 harness.
 
+## The owner's rules of 2026-11-03, which override anything older below
+
+- **The order of the work.** "First and foremost to-do before doing anything is
+  the design, and then is to fix the backend and then rest of the to-dos." The
+  board carries it: OKR-3, the redesign, then OKR-4, the backend, then OKR-1 and
+  OKR-2. Within the design, "first create the missing components/fix the already
+  having component's design": every new component card and every card fixing an
+  existing component's design is `critical`, ahead of the record model and the
+  screens.
+- **Build from the original Figma file**, `K1EP8GCOmelU8o4vPR7a9f`, its Screens
+  page `5:7`, with the designer's handoff `DESIGN-HANDOFF.md` beside it.
+- **Roast every to-do, read the roasts at the end.** "you continue finish all the
+  to-dos and for each to-do you run roast to write on a file, then after all
+  finished you read all the files and create-todos and start working on those
+  to-dos again". So a closed card's roast runs in the background and writes its
+  record, and the next card starts at once. Step 2b's review of the plan before
+  building is suspended: the plan is still written beside the work, then built.
+  Step 6 waits: no roast is judged as it lands. When every to-do is done, every
+  record in `.claude/roasts/` is read, its findings filed as cards, children of
+  the task each came from, and those are worked the same way.
+- **A roast runs on Sonnet 5.5 through the claude CLI, never an Agent subagent.**
+  Codex refuses `gpt-6.1-sol` on the ChatGPT account, and the owner's answer was
+  "use sonnet 5.5 agent (using claude cli) for roasting with the same roasting
+  prompt, high", then "use claude cli not agent!". The command is
+  `python -X utf8 agent/scripts/roast-sonnet.py task ...`, the skill's own flags.
+  Every claude call runs with `--remote-control`, "so it is visible in my remote
+  session in claude app"; one claude session per kind of roast is kept across
+  roasts, "one session same with codex roast"; and the record names the model the
+  CLI reports serving. This supersedes, while codex refuses, the lines below that
+  send a roast of Claude's work to Codex. "The same model" means the same model
+  id: Sonnet is not the Opus that builds.
+- **Luna writes what the reviewer is told beyond the skill's prompts.** "fix
+  prompts with luna, make sure luna writes it, if there's any mistakes call luna
+  with the same session again and tell what is the mistake and ask for fix", and
+  "for luna use codex cli". That text is `agent/scripts/roast-sonnet-prefix.txt`,
+  from `gpt-6-luna` through the codex runner, purpose `roast-prompts`; a mistake
+  in it goes back to that session, named, and Luna's corrected text replaces it.
+
 ## The owner's rules of 2026-09-14, which override anything older below
 
 - **The board is the todo skill's database**, `.claude/todo.db`: "YO DEFINETLY
-  DB!". `todo` below means `node ~/.claude/skills/todo/todo.mjs`, or
-  `python ~/.claude/skills/todo/todo.py`, which is the same tool.
+  DB!". `todo` below means
+  `node D:/Kar/Sijav-Skills/Sijav-Clauder/skills/todo/todo.mjs`, or
+  `python D:/Kar/Sijav-Skills/Sijav-Clauder/skills/todo/todo.py`, the
+  sijav-clauder plugin's, which is the same tool; it lived at `~/.claude/skills/todo` until the
+  skills moved into the plugin, found on 2026-11-03.
   `agent/board.json` is the archive of the JSON board the loop ran on until then,
   and `agent/scripts/todo.mjs` and `agent/scripts/roast.mjs` refuse the real
   board, KN-482. `agent/TODO_BOARD.md` is rendered from the database with `todo
   render --out agent/TODO_BOARD.md` and committed with every board change.
 - **The shared skills serve every project.** "I care about ALL PROJECTS
-  compatibility": a change to a skill under `~/.claude/skills` only adds, and is
+  compatibility": a change to a skill in the sijav-clauder plugin only adds, and is
   checked against a copy of every board on the machine before it is committed.
 - **A model's work is never roasted by the same model.** "you don't roast
   somebody's work via that same person! you roast it yourself". The roast skill's
@@ -253,11 +294,13 @@ It should say:
 - how you will know it worked
 
 Then hand that plan to another model **with web search**, every time you write
-or change it:
+or change it. **Suspended by the owner's rule of 2026-11-03**: the plan is written
+and then built, and the card is roasted once it closes. Kept for when the owner
+restores it:
 
 ```bash
-python ~/.claude/skills/roast/roast.py plan \
-  --title "KN-0XX <title>" \
+python -X utf8 agent/scripts/roast-sonnet.py plan \
+  --item "KN-0XX" --title "KN-0XX <title>" \
   --why "<why, from the board>" \
   --exit-condition "<exit condition, from the board>" \
   --did "$(cat 'apps/web/src/whatever/#KN-0XX - the title.md')" \
@@ -363,8 +406,9 @@ task is already closed. The review is about what to do NEXT, not about whether
 this one is finished.
 
 ```bash
-# KN-014 is already `done`. This runs against the closed, committed work.
-python ~/.claude/skills/roast/roast.py task \
+# KN-014 is already `done`. This runs against the closed, committed work, on
+# Sonnet through the claude CLI with Remote Control, the owner's rule of 2026-11-03.
+python -X utf8 agent/scripts/roast-sonnet.py task --item "KN-014" \
   --title "KN-014 <the title>" --why "<why, from the card>" \
   --exit-condition "<exit, from the card>" \
   --did "what I actually did, honestly, including what I am unsure about" \
@@ -375,7 +419,10 @@ python ~/.claude/skills/roast/roast.py task \
 
 **Never with the same model that did the work**, the owner's rule of 2026-09-14.
 The task kind goes to Codex, which is right for work Claude did. Work Codex did
-is roasted by Claude, as a subagent reading the diff.
+is roasted by Claude, as a subagent reading the diff. While codex refuses
+`gpt-6.1-sol`, the owner's rule of 2026-11-03 sends the roast of this loop's work
+to Sonnet through the claude CLI instead, as the command above does, and never to
+an Agent subagent.
 
 **While a roast is reading the worktree, do not edit the files it is reading.**
 Changing them underneath produces findings about code that no longer exists, and
@@ -400,6 +447,10 @@ files, gives the reviewer read access to the repository, and writes the reply to
 a file of its own under `%TEMP%/claude-roast/<project>/`, which its output names.
 
 ## Step 6 · The roast lands: judge it, file EVERYTHING, then forget it or revert
+
+**Held until every to-do is done**, the owner's rule of 2026-11-03: the records
+collect in `.claude/roasts/` while the board is worked, and then all of them are
+read and judged as below, their findings filed, and those cards worked in turn.
 
 **Codex's output is evidence, not a verdict.** Its score is its own opinion. Take
 each finding and judge it yourself, against the code:

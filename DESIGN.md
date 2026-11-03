@@ -3,6 +3,17 @@
 Everything here was read from the Figma file, not invented. When this file and
 Figma disagree, **Figma wins** and this file gets corrected in the same change.
 
+**The redesign, 2026-11-03.** The file named below is the original, which holds
+the redesign. Every section after this one was transcribed from a copy made
+before it, so a section is only as current as its latest dated reading: until it
+names a reading of the original on 2026-11-03 or later, read its node in the
+file before building on it. The redesign's cards rewrite each section as they
+land, the status colours with KN-730 and the rest with their own cards, and
+KN-829 reads whatever is left. The designer's written spec beside the file is
+[DESIGN-HANDOFF.md](./DESIGN-HANDOFF.md): the file's Screens page is the final
+reference, the handoff explains it, and where the two disagree the designer is
+asked.
+
 The owner's instruction, verbatim: _match it exactly like design, every
 component should be exactly like the design_. Exactly means every size, every
 state, every variant, and every token. A component that looks right but is
@@ -10,24 +21,39 @@ missing its `Focus` state does not match.
 
 ## The file
 
-**File key** `EITM6CbJY33dMY8IsMFR4R`
+**File key** `K1EP8GCOmelU8o4vPR7a9f`, the original. Until 2026-11-03 every MCP
+call against it failed with "you don't have edit access", so this document was
+transcribed from a copy, `EITM6CbJY33dMY8IsMFR4R`, which holds none of the
+redesign and is not to be read for it.
 
-That is a **copy**. The original, `K1EP8GCOmelU8o4vPR7a9f`, is view-only for the
-account the MCP is authenticated as and every call against it fails with "you
-don't have edit access". Use the copy.
+| Page          | Node id    | What it holds                                                  |
+| ------------- | ---------- | -------------------------------------------------------------- |
+| Cover         | `0:1`      | the file's own description                                     |
+| Foundations   | `5:3`      | the variables the tokens come from                             |
+| Components    | `5:5`      | every component, the redesign's among them                     |
+| Screens       | `5:7`      | the final screens, the build spec, in the seven sections below |
+| Redesign test | `587:7632` | the designer's exploration of directions, not the build spec   |
+| Archive       | `714:7632` | the screens as they were before the redesign                   |
+| Documentation | `5:8`      | old, by the handoff's own word; section 7 below is its history |
 
-| Canvas         | Node id |
-| -------------- | ------- |
-| Cover          | `0:1`   |
-| Foundations    | `5:3`   |
-| Components     | `5:5`   |
-| Screens        | `5:7`   |
-| Documentations | `5:8`   |
+| Screens section      | Node id      |
+| -------------------- | ------------ |
+| 1, the board         | `1062:54408` |
+| 2, the job modal     | `1062:54409` |
+| 3, adding a job      | `1062:54410` |
+| 4, the network       | `1062:54411` |
+| 5, the stats         | `1062:54412` |
+| 6, signing in and up | `1062:54413` |
+| 7, mobile            | `1062:54414` |
 
-Two quirks that cost time if you rediscover them:
+Three quirks that cost time if you rediscover them:
 
-- `get_metadata` **with no `nodeId` lists only the Cover page.** It does not list
-  the other canvases. Go straight to a canvas id from the table.
+- `get_metadata` **with no `nodeId` lists the pages** with their ids, and nothing
+  under them; an earlier reading here said it listed only the Cover.
+- `get_metadata` **on a whole page can be too large to come back.** Screens is
+  about 1.19 million characters and lands in a saved file instead of answering,
+  and even a section can be: Stats, `1062:54412`, is about 126 thousand. Call it
+  on a frame id, or read the saved file with a script.
 - `get_variable_defs` **refuses a canvas id** with "you currently have nothing
   selected". It needs a frame or a symbol. `7:2`, the Foundations Overview
   frame, is the one that yields the whole token set.
@@ -1559,6 +1585,10 @@ helper made only of blank characters is no helper. A new error is announced
 to a screen reader whichever way, KN-286.
 
 ## 7. The Documentation canvas, frame by frame
+
+**Superseded, 2026-11-03.** The designer's handoff calls the Documentation page
+old and not to be relied on, and [DESIGN-HANDOFF.md](./DESIGN-HANDOFF.md)
+replaces it. What follows is kept as the history of what the old canvas said.
 
 Canvas `5:8`. Every frame, with what it settles and where that now lives, so a
 reader can tell at a glance whether this document has absorbed it. Two copy

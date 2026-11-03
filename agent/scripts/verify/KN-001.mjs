@@ -74,7 +74,7 @@ check('DESIGN.md carries the Figma tokens', () => {
   const text = readFileSync(path, 'utf8')
   // The file key, one colour from each token family, and the status set. If the
   // tokens were never transcribed these are all absent.
-  const required = ['EITM6CbJY33dMY8IsMFR4R', '#2563eb', '#4b5563', '#f6f7f9', 'Vazirmatn', 'spacing', 'radius']
+  const required = ['K1EP8GCOmelU8o4vPR7a9f', '#2563eb', '#4b5563', '#f6f7f9', 'Vazirmatn', 'spacing', 'radius']
   const missing = required.filter((needle) => !text.includes(needle))
   if (missing.length) return `does not mention ${missing.join(', ')}`
   const statuses = ['new', 'applied', 'interview', 'rejected', 'offer']

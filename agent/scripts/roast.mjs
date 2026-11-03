@@ -33,8 +33,8 @@ const ROAST_DIR = join(AGENT_DIR, 'roasts')
 if (!process.env.KARNAMA_BOARD) {
   process.stderr.write(
     'This harness read agent/board.json, which is the archive of the JSON board since KN-482, 2026-09-14.\n' +
-      '  python ~/.claude/skills/roast/roast.py task --title "KN-0xx ..." --why "..." --exit-condition "..." --did "..." --ask "..."\n' +
-      '  node ~/.claude/skills/todo/todo.mjs roast KN-0xx --file <the file the roast wrote> --filed KN-0yy,...\n',
+      '  python -X utf8 agent/scripts/roast-sonnet.py task --title "KN-0xx ..." --why "..." --exit-condition "..." --did "..." --ask "..."\n' +
+      '  node D:/Kar/Sijav-Skills/Sijav-Clauder/skills/todo/todo.mjs roast KN-0xx --file <the file the roast wrote> --filed KN-0yy,...\n',
   )
   process.exit(1)
 }

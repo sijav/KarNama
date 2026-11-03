@@ -12,7 +12,8 @@ playwright-report/
 .vite/
 *.tsbuildinfo
 
-# The loop's own scratch. Roast replies ARE committed, they are the record.
+# The loop's own scratch. The roast replies in agent/roasts/ were committed as
+# the record until 2026-11-03; the roasts since then keep theirs locally, below.
 agent/roasts/*.prompt.md
 .claude/ralph-loop.local.md
 .claude/ralph-loop.paused
@@ -32,7 +33,19 @@ apps/api/dist/
 # stays, because it holds the ids that let a reviewer resume a conversation
 # and a scratch directory would silently start a fresh one every session.
 .claude/roast-sessions.json
+# The roast skill and agent/scripts/roast-sonnet.py since 2026-11-03, KN-729:
+# the codex runner's and the claude CLI's session ids are this machine's, and a
+# roast's record quotes whatever its reviewer read, which can be a file git
+# ignores, so the records stay here too. The board keeps each round's path and
+# what was done with it.
+.claude/codex-sessions/
+.claude/claude-sessions/
+.claude/roasts/
+.claude/roast-result.md
 # Plans are NOT ignored. They live beside the work they describe, named
 # "#<id> - <title>.md", and are committed with it. This line used to ignore
 # .claude/plan-*.md, which is how two plans came to be deleted on the reasoning
 # that git held them: it never had.
+
+# Python bytecode, from running the agent scripts.
+__pycache__/

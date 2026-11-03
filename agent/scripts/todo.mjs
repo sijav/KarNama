@@ -86,8 +86,8 @@ const RENDER_PATH = process.env.KARNAMA_BOARD
 if (!process.env.KARNAMA_BOARD) {
   process.stderr.write(
     'The board is .claude/todo.db now, driven by the todo skill (KN-482, 2026-09-14):\n' +
-      '  node ~/.claude/skills/todo/todo.mjs next\n' +
-      '  python ~/.claude/skills/todo/todo.py next\n' +
+      '  node D:/Kar/Sijav-Skills/Sijav-Clauder/skills/todo/todo.mjs next\n' +
+      '  python D:/Kar/Sijav-Skills/Sijav-Clauder/skills/todo/todo.py next\n' +
       'agent/board.json is the archive of the JSON board and is no longer written.\n',
   )
   process.exit(1)

@@ -138,18 +138,6 @@ failure is an environment limitation rather than a finding.
 commands as documented, either because the sandbox stops using PowerShell or
 because the execution policy allows the npm shim.
 
-## 5. The Figma original is unreadable, we work from a copy
-
-**What.** `DESIGN.md` points at file `EITM6CbJY33dMY8IsMFR4R`, which is a copy.
-The original, `K1EP8GCOmelU8o4vPR7a9f`, refuses every MCP call with "you don't
-have edit access".
-
-**The risk.** The copy can drift from the original. If the designer keeps working
-in the original, we build against a snapshot without knowing it.
-
-**The check that retires this.** When the account the Figma MCP authenticates as
-has edit access to the original, and `DESIGN.md` points at it.
-
 ---
 
 ## 6. Three dependency pins where "latest" is wrong
