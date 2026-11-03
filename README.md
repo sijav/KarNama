@@ -7,8 +7,8 @@ through your search. **The value is the trail, not the listing.**
 Persian first, right-to-left, with English as the source language for message
 ids. Live:
 
-- **App** — https://sijav.github.io/KarNama/
-- **Component library** — https://sijav.github.io/KarNama/storybook/
+- **App** — https://kar-nama.ir/
+- **Component library** — https://kar-nama.ir/storybook/
 
 ## Running it
 
@@ -53,7 +53,7 @@ The API is not part of the web build. It needs a Postgres connection string in
 
 ```
 DATABASE_URL="<the Neon POOLED connection string>"
-WEB_ORIGIN="https://sijav.github.io"
+WEB_ORIGIN="https://kar-nama.ir"
 ```
 
 Use the **pooled** string. The API opens a connection pool, and a serverless

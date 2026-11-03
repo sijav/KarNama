@@ -1,15 +1,22 @@
 name: Pages
 
-# Publishes two SEPARATE static sites from one repository:
+# Publishes two SEPARATE static sites from one repository, at the custom domain
+# kar-nama.ir:
 #
-#   /KarNama/           the web app
-#   /KarNama/storybook/ the component library
+#   /           the web app
+#   /storybook/ the component library
 #
 # They are built independently, with their own base paths, and assembled into
 # one artifact. GitHub Pages serves one site per repository, so "separated"
 # here means separate builds at separate paths rather than one bundle that
 # happens to contain both — Storybook is not routed through the app, and
 # breaking one does not take the other down.
+#
+# The bases are the domain's ROOT, not /KarNama/. With a custom domain set,
+# Pages serves the artifact at the domain's root and answers the old
+# sijav.github.io/KarNama/ with a 301 to it, so a build for /KarNama/ asks for
+# /KarNama/assets/... on a site where no such path exists and every asset
+# 404s: the blank page of 2026-11-03, KN-728.
 
 on:
   push:
@@ -33,7 +40,7 @@ jobs:
     # One base for the Storybook build and the check that opens it, KN-226. The
     # app's build reads KARNAMA_BASE, not this.
     env:
-      KARNAMA_STORYBOOK_BASE: /KarNama/storybook/
+      KARNAMA_STORYBOOK_BASE: /storybook/
     steps:
       - uses: actions/checkout@v4
 
@@ -44,9 +51,9 @@ jobs:
 
       - run: npm ci
 
-      # The app is served from /KarNama/, a dev server from /. Vite's `base`
-      # has to match or every asset 404s in production while looking fine
-      # locally.
+      # The app is served from the domain's root, as a dev server is. Vite's
+      # `base` has to match where Pages serves it or every asset 404s in
+      # production while looking fine locally, KN-728.
       - name: Build the web app
         # The build stops before it starts when the API's address is missing, KN-489:
         # an empty VITE_API_URL builds a client that rejects every call as
@@ -61,7 +68,7 @@ jobs:
           fi
           npm run build --workspace @karnama/web
         env:
-          KARNAMA_BASE: /KarNama/
+          KARNAMA_BASE: /
           VITE_API_URL: ${{ vars.KARNAMA_API_URL }}
           VITE_AUTH_MODE: demo
 
@@ -94,8 +101,8 @@ jobs:
           mkdir -p site/storybook
           # The app's build writes 404.html and a page for each destination,
           # KN-505: Pages serves a path from the .html file of that name with
-          # 200, so /KarNama/network from network.html, and a path it has no
-          # file for from 404.html with 404.
+          # 200, so /network from network.html, and a path it has no file for
+          # from 404.html with 404.
           cp -r apps/web/dist/. site/
           cp -r apps/web/storybook-static/. site/storybook/
           # Jekyll would otherwise drop every _-prefixed file, which is most of

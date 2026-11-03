@@ -9,8 +9,9 @@ import { Navigation, TAB_BAR_HEIGHT, type Destination } from '../shared/navigati
 import { spacing } from '../theme/tokens'
 import { PATH, pathForHash, siteBase } from './routes'
 
-// The site's base, `/KarNama/` on GitHub Pages and `/` on a dev server, which
-// every address the app reads and writes sits under. Read as a path against the
+// The site's base, `/` on kar-nama.ir as on a dev server, or a sub-path were the
+// site ever served under one, which every address the app reads and writes sits
+// under. Read as a path against the
 // page, since a Storybook build gives the preview a relative one, and handed to
 // the router as its basename rather than parsed by hand, KN-698.
 const BASE = siteBase(import.meta.env.BASE_URL, window.location.href)

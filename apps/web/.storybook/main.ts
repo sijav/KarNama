@@ -36,7 +36,7 @@ const config: StorybookConfig = {
       skipChildrenPropWithoutDoc: false,
     },
   },
-  // Storybook is published BESIDE the app, at `/KarNama/storybook/`, not inside
+  // Storybook is published BESIDE the app, at `/storybook/`, not inside
   // it. It needs its own base for the same reason the app does: every asset is
   // requested relative to it, so a wrong base 404s the whole page in production
   // while the dev server, served from `/`, looks perfectly fine. That is the

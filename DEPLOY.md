@@ -4,14 +4,33 @@ Three pieces, all on free tiers, all without a credit card.
 
 | piece | where | live |
 | --- | --- | --- |
-| Web app | GitHub Pages | https://sijav.github.io/KarNama/ |
-| Component library | GitHub Pages | https://sijav.github.io/KarNama/storybook/ |
+| Web app | GitHub Pages, at kar-nama.ir | https://kar-nama.ir/ |
+| Component library | GitHub Pages, at kar-nama.ir | https://kar-nama.ir/storybook/ |
 | API | Render, free web service | not yet created |
 | Database | Neon, free Postgres | not yet created |
 
 The two Pages sites are already live and redeploy on every push to `main`, from
 `.github/workflows/pages.yml`. The API and the database are the manual part,
 below, because creating the accounts needs a person.
+
+## The domain, kar-nama.ir
+
+The two Pages sites are served from the custom domain **kar-nama.ir**, set in the
+repository's Pages settings, with Cloudflare in front. GitHub serves the artifact
+at the domain's ROOT and answers the old `sijav.github.io/KarNama/` with a 301 to
+it, so both builds use the root: the app's base is `/` and Storybook's is
+`/storybook/`, in `pages.yml`. A build for `/KarNama/` asks for
+`/KarNama/assets/...` on a site where no such path exists, and every asset 404s,
+which is what the domain did on 2026-11-03, KN-728.
+
+Two settings live outside this repository, and the product needs both:
+
+- **`WEB_ORIGIN` on Render's dashboard is `https://kar-nama.ir`.** The API allows
+  exactly that one origin, and editing `render.yaml` does not change a service
+  Render already created.
+- **Cloudflare sends `http://` to `https://`**, under SSL/TLS, Edge Certificates,
+  Always Use HTTPS. Without it `http://kar-nama.ir` is a second origin, the API
+  refuses it, and everything the page asks the API for fails.
 
 ## Why Neon and not Render's own Postgres, or Supabase
 
@@ -61,9 +80,11 @@ from the file rather than from form fields nobody can review later.
    **`DATABASE_URL`**. Paste the Neon **pooled** string from step 1.
 5. **Apply.**
 
-`WEB_ORIGIN` is already set to `https://sijav.github.io` in `render.yaml`. It is
-required with no default on purpose: a default there is a permissive CORS policy
-nobody chose.
+`WEB_ORIGIN` is set to `https://kar-nama.ir` in `render.yaml`. It is required
+with no default on purpose: a default there is a permissive CORS policy nobody
+chose. A change to it in `render.yaml` reaches a service Render already created
+only after a Blueprint sync, so on a running service change it in the dashboard
+as well.
 
 ## 3. After the first deploy
 

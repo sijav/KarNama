@@ -108,10 +108,11 @@ export const pathForHash = (hash: string, base: string): string | undefined => {
  * The base as a path, read against the page it was loaded on, and handed to the
  * router as its basename.
  *
- * The app's build gives an absolute base, `/KarNama/` or `/`, which this leaves as
- * it is. Storybook's builder sets `base: './'` unless KARNAMA_STORYBOOK_BASE names
+ * The app's build gives an absolute base, `/` on the custom domain, or a sub-path
+ * such as `/KarNama/` were the site ever served under one, which this leaves as it
+ * is. Storybook's builder sets `base: './'` unless KARNAMA_STORYBOOK_BASE names
  * one, and a relative base is no path at all until it is resolved: under `./` the
  * shell would never find its page, while the frame it runs in is
- * `/KarNama/storybook/iframe.html`.
+ * `/storybook/iframe.html`.
  */
 export const siteBase = (configured: string, href: string): string => new URL(configured, href).pathname

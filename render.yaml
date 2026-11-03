@@ -62,9 +62,12 @@ services:
 
       # Required, with NO default on purpose: `env.ts` refuses to boot without
       # it, because a default here is a permissive CORS policy nobody chose.
-      # This is the GitHub Pages origin the web app is served from.
+      # The origin the web app is served from: the custom domain kar-nama.ir,
+      # over https only, KN-728. Editing this value does NOT change the live
+      # service, which keeps what it was created with until the Blueprint is
+      # re-synced, so the dashboard's WEB_ORIGIN has to be changed by hand too.
       - key: WEB_ORIGIN
-        value: https://sijav.github.io
+        value: https://kar-nama.ir
 
       # Set once in the Render dashboard from Neon's POOLED connection string.
       # `sync: false` keeps it out of this file and out of git.
