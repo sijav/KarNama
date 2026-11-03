@@ -1026,6 +1026,27 @@ starting on the panel, since a choice focused as it opens wears the keyboard's
 ring even when a pointer opened it, closes on Escape too, and gives focus back
 to what opened it. A named dialog: its title labels it. KN-748.
 
+### The time list
+
+**Date Picker / Time Item**, `786:1753`, Default, Hover and Selected, read on
+2026-11-03: a row 32 tall with 10 at its sides and a radius of 6, none bound,
+its time at the inline start in 13 on 20, Figma's automatic line, with no
+letter spacing; Default has no fill and `color/text/primary` at Regular and hovers
+into Hover, the same on `color/bg/surface-secondary`; Selected is
+`color/bg/brand/container` with the time in `color/text/brand` at Medium.
+**Date Picker / Time List**, `774:16897`, is the redesign's popover surface,
+244 wide, 6 inside it and 2 between its items, neither bound, showing six,
+۰۹:۰۰ to ۱۱:۳۰ with ۱۰:۰۰ chosen. In the calendar popover's Time List=Open,
+`780:44558`, it hangs 4 under the time field at the field's width, 242. The
+handoff gives the time only in the interview's calendar, from a half-hour
+list, so it holds the 48 half-hours of a day in the reader's digits, two of
+each, a window of six that scrolls with no bar since the file draws none, and
+opens with the chosen time third, as the file shows it, or on ۰۹:۰۰ with none
+chosen. It is a listbox on MUI's MenuList: the arrows, Home and End move,
+Enter chooses, and told to it puts focus on the chosen time as it opens; the
+keyboard's row takes the Hover fill and the three pixel ring of the Select's
+rows. KN-755.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1290,6 +1311,7 @@ of the contract.
 | Contact Modal       | `270:152` | Add, Edit                                                                                       |
 | Color Picker        | `257:17`  | offers the nine status colour pairs, the current one marked                                     |
 | Popover / Result      | `844:85811` | what can follow an interview, one press applies; the redesign's popover panel                                     |
+| Time List             | `774:16897` | the day's half-hours, six shown; Time Item `786:1753` Default, Hover, Selected                                    |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,

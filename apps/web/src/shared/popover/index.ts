@@ -1,2 +1,2 @@
 export { InterviewResultPopover, type InterviewResultPopoverProps } from './InterviewResultPopover'
-export { popoverPaper } from './popoverPaper'
+export { popoverPaper, popoverSurface } from './popoverPaper'
