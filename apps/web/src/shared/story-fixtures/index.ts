@@ -99,6 +99,14 @@ export interface StatsLabelsFixture {
   noResponse: string
 }
 
+// One source of applications on the Stats page: its name, its applications
+// and their interviews.
+export interface StatsSourceFixture {
+  name: string
+  applications: number
+  interviews: number
+}
+
 export interface NoteFixture {
   id: string
   jobId: string
@@ -151,6 +159,8 @@ export interface Fixtures {
   contactTag: string
   /** What the Stats page's first row counts, as it labels them, KN-778. */
   statsLabels: StatsLabelsFixture
+  /** Where applications came from, the last named too long for a card's row, KN-781. */
+  statsSources: readonly StatsSourceFixture[]
   /**
    * The fixtures as the product keeps them, for a story to seed a
    * `RecordsProvider` with, KN-437: every status, every job opportunity made by
@@ -176,6 +186,7 @@ export interface RawFixtures {
   toastMessage: string
   contactTag: string
   statsLabels: StatsLabelsFixture
+  statsSources: readonly StatsSourceFixture[]
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -286,6 +297,7 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     toastMessage: raw.toastMessage,
     contactTag: raw.contactTag,
     statsLabels: Object.freeze({ ...raw.statsLabels }),
+    statsSources: Object.freeze(raw.statsSources.map((source) => Object.freeze({ ...source }))),
   })
 }
 

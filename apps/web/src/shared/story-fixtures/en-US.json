@@ -56,5 +56,11 @@
   "stageAfterInterview": { "id": "technical-test", "token": "custom-2", "name": "Technical test" },
   "toastMessage": "“UX researcher” moved to No answer",
   "contactTag": "Recruiter",
-  "statsLabels": { "applied": "Applied", "interview": "Interviews", "offer": "Offers", "rejected": "Rejected", "noResponse": "No response" }
+  "statsLabels": { "applied": "Applied", "interview": "Interviews", "offer": "Offers", "rejected": "Rejected", "noResponse": "No response" },
+  "statsSources": [
+    { "name": "Jobinja", "applications": 9, "interviews": 1 },
+    { "name": "LinkedIn", "applications": 5, "interviews": 2 },
+    { "name": "e-Estekhdam", "applications": 2, "interviews": 0 },
+    { "name": "A referral from a former colleague on the platform team", "applications": 1, "interviews": 1 }
+  ]
 }

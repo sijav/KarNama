@@ -1171,6 +1171,25 @@ the count, so a screen reader reads the count and the chart says what the bars
 are, KN-823. MUI reads a size of 1 or less as a fraction of the parent, so the
 pixel is written in pixels. KN-780.
 
+### The source row
+
+**Stats / Source Row**, `1223:1807`, Context=Card and Context=Modal, read on
+2026-11-04: one source of the Stats page's applications, `spacing/md` between
+its parts, all in Body. From the inline start the source in
+`color/text/primary`, 140 wide in the card and 200 in the window of every
+source; then a bar in `color/data/bar` at `radius/sm`, 12 tall, with its count
+`spacing/2xs` after its end in `color/text/primary`; and the interviews centred
+in a 56 column in `color/text/secondary`; none of the widths bound. The file
+sets the bar's length with the area's padding against the largest source; the
+code gives each bar its share of the largest applications of the room the bar
+has, keeping 32 for the count, so the bars are in proportion, and a single
+source, Show Bar off, has none. The card's row is centred on its line and its
+name one line with an ellipsis, shown whole in Tooltip / Label under the
+pointer when it is cut, as the description asks in code; the modal's row sits
+at the top and its name takes up to three lines, as the description says,
+where the file's text node is set to one. The bar is hidden from a screen
+reader, which reads the count. KN-781.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1444,6 +1463,7 @@ of the contract.
 | Related Person        | `1096:3109`  | Default, Hover; Related Person / Mobile `1313:3295`                                                               |
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
+| Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,

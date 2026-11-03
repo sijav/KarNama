@@ -56,5 +56,11 @@
   "stageAfterInterview": { "id": "technical-test", "token": "custom-2", "name": "آزمون فنی" },
   "toastMessage": "«پژوهشگر تجربه کاربری» به بی‌پاسخ منتقل شد",
   "contactTag": "کارشناس جذب",
-  "statsLabels": { "applied": "درخواست", "interview": "مصاحبه", "offer": "پیشنهاد کار", "rejected": "رد شده", "noResponse": "بی‌پاسخ" }
+  "statsLabels": { "applied": "درخواست", "interview": "مصاحبه", "offer": "پیشنهاد کار", "rejected": "رد شده", "noResponse": "بی‌پاسخ" },
+  "statsSources": [
+    { "name": "جابینجا", "applications": 9, "interviews": 1 },
+    { "name": "لینکدین", "applications": 5, "interviews": 2 },
+    { "name": "ای‌استخدام", "applications": 2, "interviews": 0 },
+    { "name": "معرفی یکی از همکاران سابق در تیم زیرساخت", "applications": 1, "interviews": 1 }
+  ]
 }
