@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import { LOOKS } from '../shared/button'
 import { tooltipPair } from '../shared/tooltip'
-import { ACCENT_FILLS, DARK_FILLS, MIN_CONTRAST, contrast, darkSemantic, darkStatus, deriveDark, deriveDarkFill, deriveDarkSurface, ensureContrast, hexToHsl, hslToHex, luminance } from './darkMode'
+import { ACCENT_FILLS, contrast, DARK_FILLS, darkSemantic, darkStatus, deriveDark, deriveDarkFill, deriveDarkSurface, ensureContrast, hexToHsl, hslToHex, luminance, MIN_CONTRAST, ON_INVERSE } from './darkMode'
 import { buildTheme } from './theme'
 import { semantic, status } from './tokens'
 
 // The tokens a dark page takes unchanged, each for a reason stated where it is
-// derived: the scrim, KN-028, and the white on an accent fill, KN-108.
-const SAME_IN_BOTH: string[] = ['text/on-accent', 'overlay/scrim']
+// derived: the scrim, KN-028, the white on an accent fill, KN-108, and the
+// toast's action, the light brand text on a pill that turns light, KN-764.
+const SAME_IN_BOTH: string[] = ['text/on-accent', 'text/brand-inverse', 'overlay/scrim']
 
 /**
  * The dark palette is derived, so what is testable is the DERIVATION, not a
@@ -103,8 +104,9 @@ describe('the derivation does what it says', () => {
   it('gives every chromatic colour a lightness floor, so it stays readable on dark', () => {
     // Foregrounds and accents, that is: a fill is meant to be dark, and has its
     // own assertions below, KN-272, and so is a fill that carries white text,
-    // KN-108.
-    const fills = new Set<string>([...DARK_FILLS, ...ACCENT_FILLS])
+    // KN-108, and so is text read on the inverse pill, which turns light,
+    // KN-764.
+    const fills = new Set<string>([...DARK_FILLS, ...ACCENT_FILLS, ...ON_INVERSE])
     for (const [name, hex] of Object.entries(darkSemantic)) {
       const { s, l } = hexToHsl(hex)
       if (s <= 0.2 || fills.has(name)) continue
@@ -356,6 +358,13 @@ describe('the fills are dark tints of their own hue, and what sits on them reads
   it('and the light design holds both pairs too', () => {
     expect(contrast(semantic['text/brand'], semantic['bg/brand/container'])).toBeGreaterThanOrEqual(4.5)
     expect(contrast(semantic['border/focus'], semantic['bg/brand/container'])).toBeGreaterThanOrEqual(3)
+  })
+
+  it('the toast reads in both schemes: its message, bg/surface, and its action, text/brand-inverse, on its text/primary pill, KN-764', () => {
+    for (const palette of [semantic, darkSemantic]) {
+      expect(contrast(palette['bg/surface'], palette['text/primary'])).toBeGreaterThanOrEqual(MIN_CONTRAST)
+      expect(contrast(palette['text/brand-inverse'], palette['text/primary'])).toBeGreaterThanOrEqual(MIN_CONTRAST)
+    }
   })
 
   it('text/error clears 4.5:1 on red/100 in both schemes, as a hovered destructive menu item draws it, KN-793', () => {

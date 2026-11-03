@@ -84,6 +84,7 @@ export type StoryTitle =
   | 'Shared/TabBar'
   | 'Shared/Tabs'
   | 'Shared/TimeList'
+  | 'Shared/Toast'
   | 'Shared/Tooltip'
   | 'Shared/TooltipLabel'
 

@@ -223,6 +223,14 @@ export const deriveDarkFill = (hex: string): string => {
  */
 export const DARK_FILLS = ['bg/brand/container', 'accent/200', 'red/100'] as const satisfies readonly (keyof typeof semantic)[]
 
+/**
+ * The text read on an INVERSE surface, the toast's text/primary pill, which is
+ * dark in light and turns light in dark: so in dark it is a dark colour, the
+ * light scheme's own, where every other foreground is light, KN-764. One list,
+ * which the tests read to tell it from the foregrounds a dark surface carries.
+ */
+export const ON_INVERSE = ['text/brand-inverse'] as const satisfies readonly (keyof typeof semantic)[]
+
 /** The surface everything is read against, computed once so the text rows can cite it. */
 const darkSurface = deriveDarkSurface(semantic['bg/surface'])
 
@@ -312,6 +320,10 @@ export const darkSemantic = {
   // Read on every accent fill, which move for it above rather than it for one of them.
   'text/on-accent': onAccent,
   'text/brand': ensureContrast(deriveDark(semantic['text/brand']), darkSurface),
+  // The toast's action, read on the toast's text/primary pill, which turns
+  // light in dark: so it is the light scheme's own brand text, walked until it
+  // reads on that pill, KN-764.
+  'text/brand-inverse': ensureContrast(semantic['text/brand'], ensureContrast(deriveDark(semantic['text/primary']), darkSurface)),
   'text/error': ensureContrast(deriveDark(semantic['text/error']), darkSurface),
   // The resting border shows no state, and the design itself draws it at 1.24
   // to one on white, so it is derived and left there.

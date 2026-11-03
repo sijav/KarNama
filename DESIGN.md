@@ -132,6 +132,7 @@ decision that made it, so it is never mistaken for a value read from the file.
 | ---------------- | -------- | --------- | -------------------------------------------------------------------- |
 | `border/control` | `KN-273` | `#7f8694` | a control's resting edge, the Input's, the unchecked Checkbox's and the Select's: text/secondary's hue made lighter to the last value at 3.3 to one on `bg/page`, `bg/surface` and `bg/surface-secondary`, and walked to 3 to one in dark, KN-275 |
 | `border/selected` | `KN-276` | `#2563eb` | a selected Filter Chip's one pixel edge: the blue of `border/focus` today, at 3 to one or more on every surface and on the selected fill in both schemes, told from the pressed edge by its width, one pixel against 1.5, KN-279 |
+| `text/brand-inverse` | `KN-764` | `#93c5fd` | the toast's action on its `text/primary` pill, the handoff's colour, which no variable carries; in dark the pill turns light and the action takes the light scheme's `text/brand`, walked to 4.5 to one against it                                |
 
 ### Colour, status
 
@@ -197,6 +198,7 @@ shadows, and each value below was read from the named node with
 | no style, card focus | `137:44` | `#2563EB2E` `0 0` blur 0 spread 3 | none                            |
 | no style, sign-in card  | `407:6952`  | `#0000000F` `0 4` blur 16 spread 0  | none                               |
 | no style, popovers      | `844:85811` | `#12172614` `0 4` blur 12 spread 0  | none                               |
+| no style, toast         | `717:12416` | `#11182733` `0 8` blur 24 spread 0  | none                               |
 
 The third row is **not an effect style**. The tooltip at `410:469` draws its own
 shadow, 24 percent black, read from the frame's `get_design_context` because
@@ -213,7 +215,9 @@ Modal style's first layer alone, at its own 12 percent, bound to no style,
 halo of `border/focus` at 18 percent spread 3, `elevation.cardFocus`. KN-015. The eighth is the sign-in card at `407:6952`, 6 percent black 4 below and
 blurred 16, `elevation.authCard`. KN-518. The ninth is the redesign's popovers,
 `844:85811` and the two date popovers, `755:22108` and `774:16705`, #121726 at 8
-percent 4 below and blurred 12, `elevation.popover`. KN-748. The thirteen-frame sweep below did not include `410:469`,
+percent 4 below and blurred 12, `elevation.popover`. KN-748. The tenth is the
+toast, `717:12416`, `text/primary`'s #111827 at 20 percent 8 below and blurred
+24, `elevation.toast`. KN-764. The thirteen-frame sweep below did not include `410:469`,
 which is how it was missed until KN-218 read the frame itself.
 
 An earlier version of this document said Card was the only elevation in the
@@ -1068,6 +1072,30 @@ each takes the Add Stage's ring, three of `color/border/focus` inside. They
 replace the old file's Add Card, `241:142`, and Add Column, `241:34`, which
 the board still draws until KN-805 builds it from the redesign. KN-758.
 
+### The toast
+
+**Toast / Action**, `956:3193`, Default and Hover, read on 2026-11-03: «لغو» in
+13 on 20 at SemiBold in #93C5FD, which no variable carries, so it is
+`text/brand-inverse`, the handoff asking for a token; Hover underlines it. No
+frame uses the component; the frames draw the whole message, the Toast at
+`717:12416` and its copies in `1062:54408`, its message in 13 on 20 at Regular
+in `color/bg/surface` at the inline start and the action 16 after it, on a pill
+of `color/text/primary` that hugs them, 12 above and below and 16 at the
+sides, a radius of 12, none bound, with `elevation.toast`. Shown, it sits 24
+above a desktop frame's foot, centred over the page beside the 240 sidebar; the
+other copies sit below the frame, where it rises from. On a phone, where no
+frame draws it, it sits 24 over the tab bar. The handoff gives the rest: a
+message with a button stays 5 seconds and «تغییرات ذخیره شد» 3, it comes in
+over 250, and none of that motion runs for a reader who asks for less; its
+button is «لغو». MUI's Snackbar keeps the times, holding while the pointer or
+focus is on it, and closes on Escape; a press elsewhere leaves it, so the undo
+stays to hand. Its message is spoken from a status region that stays in the
+page and is written 100 after the toast opens, KN-326, so the pill's copy is
+hidden from a screen reader and the action is named with the message, «لغو:»
+and what it undoes. In dark the pill turns light with its words dark on it,
+both at 4.5 to one or more. The board writes the messages and decides where
+focus goes after an undo, KN-805. KN-764.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1335,6 +1363,7 @@ of the contract.
 | Time List             | `774:16897` | the day's half-hours, six shown; Time Item `786:1753` Default, Hover, Selected                                    |
 | Add Card Link         | `961:95525` | Default, Hover: after a column's last card, adds to that column                                                   |
 | Add Status Column     | `961:95530` | Default, Hover: a dashed stage-wide column that makes a stage                                                     |
+| Toast                 | `956:3193`  | the action, Default, Hover; the frames' whole message `717:12416`                                                 |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,

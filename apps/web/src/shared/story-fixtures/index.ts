@@ -136,6 +136,8 @@ export interface Fixtures {
    */
   interviewResults: readonly StatusOption[]
   stageAfterInterview: StatusOption
+  /** A message a toast carries, the board's after a card moves, KN-764. */
+  toastMessage: string
   /**
    * The fixtures as the product keeps them, for a story to seed a
    * `RecordsProvider` with, KN-437: every status, every job opportunity made by
@@ -158,6 +160,7 @@ export interface RawFixtures {
   mixedStatusNames: MixedStatusNamesFixture
   interviewResults: readonly { id: string; token: string; name: string }[]
   stageAfterInterview: { id: string; token: string; name: string }
+  toastMessage: string
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -265,6 +268,7 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     records: recordsOf(statusOptions, jobs, contacts),
     interviewResults: Object.freeze(raw.interviewResults.map(optionOf)),
     stageAfterInterview: optionOf(raw.stageAfterInterview),
+    toastMessage: raw.toastMessage,
   })
 }
 

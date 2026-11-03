@@ -20,7 +20,8 @@ export interface SidebarProps {
 
 // Node 185:11's measures that bind no variable: 240 wide; the avatar a 32
 // square; one pixel of edge and divider.
-const WIDTH = 240
+export const SIDEBAR_WIDTH = 240
+const WIDTH = SIDEBAR_WIDTH
 const MARK = 32
 const EDGE = 1
 

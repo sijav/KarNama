@@ -271,6 +271,8 @@ export const messages: Record<string, string> = {
   Period: 'Period',
   Daily: 'Daily',
   Weekly: 'Weekly',
+  Undo: 'Undo',
+  'Changes saved': 'Changes saved',
   Time: 'Time',
   'What was the result?': 'What was the result?',
 }

@@ -53,5 +53,6 @@
     { "id": "rejected", "token": "rejected", "name": "Rejected" },
     { "id": "withdrawn", "token": "new", "name": "Withdrawn" }
   ],
-  "stageAfterInterview": { "id": "technical-test", "token": "custom-2", "name": "Technical test" }
+  "stageAfterInterview": { "id": "technical-test", "token": "custom-2", "name": "Technical test" },
+  "toastMessage": "“UX researcher” moved to No answer"
 }

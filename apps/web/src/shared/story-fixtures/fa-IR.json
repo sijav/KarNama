@@ -53,5 +53,6 @@
     { "id": "rejected", "token": "rejected", "name": "رد شده" },
     { "id": "withdrawn", "token": "new", "name": "انصراف" }
   ],
-  "stageAfterInterview": { "id": "technical-test", "token": "custom-2", "name": "آزمون فنی" }
+  "stageAfterInterview": { "id": "technical-test", "token": "custom-2", "name": "آزمون فنی" },
+  "toastMessage": "«پژوهشگر تجربه کاربری» به بی‌پاسخ منتقل شد"
 }

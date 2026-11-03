@@ -26,6 +26,9 @@ export const semantic = {
   'text/disabled': '#9ca3af',
   'text/on-accent': '#ffffff',
   'text/brand': '#1d4ed8',
+  // The toast's action on its text/primary pill, KN-764: the handoff's colour,
+  // which no variable in the file carries.
+  'text/brand-inverse': '#93c5fd',
   'text/error': '#b91c1c',
   'border/default': '#e5e7eb',
   'border/focus': '#2563eb',
@@ -107,7 +110,9 @@ export const type = {
  * at Medium, KN-748, and the time list's times, `786:1753`, 13 on its automatic
  * 20 at Regular, Medium when chosen, KN-755. The board's add links set their
  * labels at Medium: the card link, `961:95525`, 13 on 20, and the status
- * column, `961:95530`, 14 on 22, KN-758.
+ * column, `961:95530`, 14 on 22, KN-758. The toast, `717:12416`, sets its
+ * message 13 on 20 at Regular and its action, `956:3193`, 13 on 20 at
+ * SemiBold, KN-764.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -120,6 +125,8 @@ export const unstyledText = {
   timeItem: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
   addCardLink: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
   addStatusColumn: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
+  toastMessage: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
+  toastAction: { size: 13, lineHeight: 20, weight: 600, letterSpacing: 0 },
 } as const
 
 /**
@@ -127,10 +134,10 @@ export const unstyledText = {
  * the page, a modal sits above everything. The tooltip at `410:469`, the Bulk
  * Action Bar at `401:436`, the Options Menu at `408:487`, the compact
  * Contact Card's hover at `463:698`, the job card's focus at `137:44`, the
- * sign-in card at `407:6952` and the redesign's popovers at `844:85811` each
- * draw their own unnamed shadow, bound to no effect style, so each is named
- * here for the surface that uses it. KN-218, KN-025, KN-012, KN-026, KN-015,
- * KN-518, KN-748.
+ * sign-in card at `407:6952`, the redesign's popovers at `844:85811` and the
+ * toast at `717:12416` each draw their own unnamed shadow, bound to no effect
+ * style, so each is named here for the surface that uses it. KN-218, KN-025,
+ * KN-012, KN-026, KN-015, KN-518, KN-748, KN-764.
  */
 export const elevation = {
   card: '0 1px 3px 0 #0000000F, 0 1px 2px 0 #0000000A',
@@ -142,6 +149,7 @@ export const elevation = {
   cardFocus: '0 0 0 3px #2563EB2E',
   authCard: '0 4px 16px 0 #0000000F',
   popover: '0 4px 12px 0 #12172614',
+  toast: '0 8px 24px 0 #11182733',
 } as const
 
 export const fontFamily = "'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif"

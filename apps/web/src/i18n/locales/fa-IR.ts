@@ -271,6 +271,8 @@ export const messages: Record<string, string> = {
   Period: 'بازه',
   Daily: 'روزانه',
   Weekly: 'هفتگی',
+  Undo: 'لغو',
+  'Changes saved': 'تغییرات ذخیره شد',
   Time: 'ساعت',
   'What was the result?': 'نتیجه چی بود؟',
 }
