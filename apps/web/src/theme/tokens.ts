@@ -83,10 +83,14 @@ export const type = {
  * Text bound to no text style, named for the surface that draws it, as the
  * shadows below are, and not a sixth role. The add modal's paste label, `166:68`,
  * is the Label's size and weight on Figma's automatic line for it, 19, with no
- * letter spacing, KN-359.
+ * letter spacing, KN-359. The action chip, `961:98854`, and the inline link,
+ * `961:98862`, set 12 at Medium and at Regular on that same automatic 19, which
+ * CSS's normal line for the web font rounds to 18, KN-746.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+  actionChip: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+  inlineLink: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
 } as const
 
 /**

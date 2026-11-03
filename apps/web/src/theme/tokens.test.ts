@@ -112,11 +112,18 @@ describe('the token set agrees with DESIGN.md', () => {
     expect(Object.keys(typeScale)).not.toContain('body/small')
   })
 
-  it('names the one text bound to no style for the surface that draws it, and nothing else', () => {
+  it('names each text bound to no style for the surface that draws it, and nothing else', () => {
     // The paste field's label, 166:68: the Label's size and weight on the file's automatic line of
-    // 19, with no letter spacing, bound to no text style, KN-359. Not a sixth role.
-    expect(unstyledText).toEqual({ pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 } })
+    // 19, with no letter spacing, bound to no text style, KN-359; the action chip, 961:98854, and
+    // the inline link, 961:98862, on the same automatic 19, KN-746. Not sixth or seventh roles.
+    expect(unstyledText).toEqual({
+      pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+      actionChip: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+      inlineLink: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+    })
     expect(design).toMatch(/`166:68`[^\n]*12 on 19/)
+    expect(design).toMatch(/`961:98854`[^.]*12 on 19/)
+    expect(design).toMatch(/`961:98862`[^.]*12 on 19/)
   })
 
   it('has nine statuses, five default and four reserved', () => {

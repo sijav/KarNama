@@ -837,6 +837,20 @@ design, 1.24 to 1 on white in the light scheme; the derived dark one keeps that,
 1.33 to 1 on the dark sidebar, measured 2026-11-03, and a mark is exempt from
 the contrast minimum.
 
+### The action chip and the inline link
+
+Read on 2026-11-03 from the original file, for the interview slot's question.
+**Chip / Action**, `961:98854`, Default and Hover: 27 high, an edge of one in
+`color/border/default` round `color/bg/surface` at rest, `color/text/secondary`
+round `color/bg/surface-secondary` on hover, the label 12 on 19 at Medium in
+`color/text/brand` on one line, Figma's automatic line, which CSS's normal makes 18, 3 above and below and 8 at the sides, corner 6;
+the 3 and the 6 bind to no variable and are named in the code, KN-746.
+**Link / Inline**, `961:98862`, Default and Hover: 12 on 19 at Regular in
+`color/text/secondary`, underlined at the font's own position, one line, no box;
+its Hover draws exactly what its Default does, so nothing changes on hover.
+Neither draws a focus, so the chip takes the Icon Button's ring, three in
+`border/focus` inside the edge, and the link a three pixel outline round it.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
