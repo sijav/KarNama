@@ -19,7 +19,7 @@ const STROKE = 2
 // `text/secondary` unless the caller names another role, or `inherit` to take
 // the colour of what holds it. Decorative unless it is given a name, when it is
 // an image with that name.
-export const Icon = ({ name, size = 'base', color = 'text/secondary', 'aria-label': label }: IconProps) => {
+export const Icon = ({ name, size = 'lg', color = 'text/secondary', 'aria-label': label }: IconProps) => {
   const glyph = GLYPHS[name]
   return (
     <Box

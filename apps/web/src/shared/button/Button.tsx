@@ -30,7 +30,7 @@ type Role = keyof typeof semantic
 const SIZES = {
   S: { height: 36, padding: spacing.sm, gap: spacing['2xs'], text: typeScale.body, icon: 'sm' },
   M: { height: 44, padding: spacing.md, gap: spacing.xs, text: typeScale.body, icon: 'md' },
-  L: { height: 52, padding: spacing.lg, gap: spacing.xs, text: typeScale.title, icon: 'base' },
+  L: { height: 52, padding: spacing.lg, gap: spacing.xs, text: typeScale.title, icon: 'lg' },
 } as const
 
 // What each of node 31:4's five styles draws in each state: the fill, the text

@@ -20,12 +20,17 @@ export const semantic = {
   'bg/danger/hover': '#d43030',
   'text/primary': '#111827',
   'text/secondary': '#6b7280',
+  // The redesign's, KN-730: text on bg/surface-secondary, where text/secondary
+  // falls short of 4.5 to one, as the handoff says.
+  'text/secondary-strong': '#4b5563',
   'text/disabled': '#9ca3af',
   'text/on-accent': '#ffffff',
   'text/brand': '#1d4ed8',
   'text/error': '#b91c1c',
   'border/default': '#e5e7eb',
   'border/focus': '#2563eb',
+  // The redesign's, KN-730: the Stats page's bars.
+  'data/bar': '#60a5fa',
   'border/error': '#ef4444',
   // A control's resting edge, the owner's addition and not a Figma variable,
   // KN-273: text/secondary's hue made lighter to the last value at 3.3:1 on the
@@ -53,20 +58,25 @@ export const semantic = {
 export const status = {
   new: { base: '#4b5563', container: '#e5e7eb' },
   applied: { base: '#4f46e5', container: '#e0e7ff' },
-  interview: { base: '#b45309', container: '#fef3c7' },
+  interview: { base: '#0f6876', container: '#d7f0f4' },
   rejected: { base: '#b91c1c', container: '#fee2e2' },
   offer: { base: '#166534', container: '#dcfce7' },
-  'custom-1': { base: '#0f766e', container: '#ccfbf1' },
+  'custom-1': { base: '#c2410c', container: '#ffedd5' },
   'custom-2': { base: '#7e22ce', container: '#f3e8ff' },
   'custom-3': { base: '#be185d', container: '#fce7f3' },
-  'custom-4': { base: '#155e75', container: '#cffafe' },
+  'custom-4': { base: '#a21caf', container: '#fae8ff' },
 } as const
 
 export const spacing = { '2xs': 4, xs: 8, sm: 12, md: 16, lg: 24, xl: 32, '2xl': 48, '3xl': 64 } as const
 
 export const radius = { none: 0, sm: 4, md: 8, lg: 16, full: 999 } as const
 
-export const iconSize = { sm: 16, md: 20, base: 24 } as const
+// The file's size/icon-sm, size/icon-md and size/icon-lg, KN-730.
+export const iconSize = { sm: 16, md: 20, lg: 24 } as const
+
+// The file's size/touch-target-min, the least a target is drawn for a finger,
+// KN-730.
+export const touchTarget = { min: 44 } as const
 
 /**
  * Five type roles and only five. `Body/Small` at 13 was deleted from the design

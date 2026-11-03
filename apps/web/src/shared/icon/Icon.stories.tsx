@@ -9,7 +9,7 @@ import { Icon, type IconProps } from './Icon'
 
 const SIZES = Object.keys(iconSize).filter((size): size is keyof typeof iconSize => size in iconSize)
 // The size an icon takes unless told, and the colour that follows its parent.
-const BASE: keyof typeof iconSize = 'base'
+const BASE: keyof typeof iconSize = 'lg'
 const INHERIT: NonNullable<IconProps['color']> = 'inherit'
 const COLOURS = [...Object.keys(semantic).filter((role): role is keyof typeof semantic => role in semantic), INHERIT] as const
 // The colour an icon takes unless told, and the CSS value a colour prop draws, so
@@ -20,7 +20,7 @@ const colourOf = (color: IconProps['color']) => (color === INHERIT ? INHERIT : s
 const meta = {
   title: 'Shared/Icon',
   component: Icon,
-  args: { name: 'link', size: 'base', color: 'text/secondary' },
+  args: { name: 'link', size: 'lg', color: 'text/secondary' },
   argTypes: {
     name: { control: 'select', options: ICON_NAMES },
     size: { control: 'select', options: SIZES },

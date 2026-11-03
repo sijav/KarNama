@@ -307,6 +307,7 @@ export const darkSemantic = {
   // meant to recede, and WCAG does not require contrast from it.
   'text/primary': ensureContrast(deriveDark(semantic['text/primary']), darkSurface),
   'text/secondary': ensureContrast(deriveDark(semantic['text/secondary']), darkSurface),
+  'text/secondary-strong': ensureContrast(deriveDark(semantic['text/secondary-strong']), darkSurface),
   'text/disabled': deriveDark(semantic['text/disabled']),
   // Read on every accent fill, which move for it above rather than it for one of them.
   'text/on-accent': onAccent,
@@ -320,6 +321,8 @@ export const darkSemantic = {
   // clears the page and the secondary surface too. The derivation alone left
   // focus at 2.81 to one on the surface, KN-271.
   'border/focus': ensureContrast(deriveDark(semantic['border/focus']), darkSurface, NON_TEXT_CONTRAST),
+  // A mark, the Stats page's bars, held to the 3 to one a graphic needs, KN-730.
+  'data/bar': ensureContrast(deriveDark(semantic['data/bar']), darkSurface, NON_TEXT_CONTRAST),
   'border/error': ensureContrast(deriveDark(semantic['border/error']), darkSurface, NON_TEXT_CONTRAST),
   // A control's resting edge, the owner's addition of KN-273, derived and checked
   // at 3:1 against the surface as the two above are: an empty field or an

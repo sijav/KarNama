@@ -84,6 +84,7 @@ gets added to the palette with a name, it does not get inlined.
 | `bg/danger/hover`           | `#d43030` |
 | `text/primary`              | `#111827` |
 | `text/secondary`            | `#6b7280` |
+| `text/secondary-strong` | `#4b5563`   |
 | `text/disabled`             | `#9ca3af` |
 | `text/on-accent`            | `#ffffff` |
 | `text/brand`                | `#1d4ed8` |
@@ -94,9 +95,10 @@ gets added to the palette with a name, it does not get inlined.
 | `accent/200`                | `#bfdbfe` |
 | `accent/700`                | `#1e40af` |
 | `gray/200`                  | `#e5e7eb` |
-| `red/100`              | `#fee2e2`   |
+| `red/100`               | `#fee2e2`   |
 | `red/700`                   | `#b91c1c` |
 | `overlay/scrim`             | `#00000080` |
+| `data/bar`              | `#60a5fa`   |
 
 #### Not on the Foundations board, and where each was actually read
 
@@ -136,17 +138,23 @@ decision that made it, so it is never mistaken for a value read from the file.
 Five defaults and four reserved for user-defined statuses. Each has a `base`,
 which is the text and the stripe, and a `container`, which is the chip fill.
 
+Read in the original on 2026-11-03, three pairs changed, KN-730: `interview`
+is now `petrol/700` over `petrol/100`, teal where the copy drew amber;
+`custom-1` is `orange/700` over `orange/100`, which the redesign also paints
+the accepted outcome with; and `custom-4` is `fuchsia/700` over
+`fuchsia/100`. The other six are the copy's.
+
 | Status     | base      | container | Persian      |
 | ---------- | --------- | --------- | ------------ |
 | `new`      | `#4b5563` | `#e5e7eb` | ذخیره‌شده     |
 | `applied`  | `#4f46e5` | `#e0e7ff` | درخواست‌شده   |
-| `interview`| `#b45309` | `#fef3c7` | مصاحبه       |
+| `interview`| `#0f6876` | `#d7f0f4` | مصاحبه       |
 | `rejected` | `#b91c1c` | `#fee2e2` | رد شده       |
 | `offer`    | `#166534` | `#dcfce7` | پیشنهاد کار  |
-| `custom-1` | `#0f766e` | `#ccfbf1` | سفارشی ۱     |
+| `custom-1` | `#c2410c` | `#ffedd5` | سفارشی ۱     |
 | `custom-2` | `#7e22ce` | `#f3e8ff` | سفارشی ۲     |
 | `custom-3` | `#be185d` | `#fce7f3` | سفارشی ۳     |
-| `custom-4` | `#155e75` | `#cffafe` | سفارشی ۴     |
+| `custom-4` | `#a21caf` | `#fae8ff` | سفارشی ۴     |
 
 The Persian names come from the legend at `410:470`. They are the **default**
 labels for the five built-ins; a user can rename any status, so the label is
@@ -167,7 +175,8 @@ group does not do right to left, KN-301.
 ```
 spacing  2xs 4   xs 8   sm 12   md 16   lg 24   xl 32   2xl 48   3xl 64
 radius   none 0  sm 4   md 8    lg 16   full 999
-icon     sm 16   md 20  base 24
+icon     sm 16   md 20  lg 24
+touch    min 44
 ```
 
 ### Elevation
@@ -923,10 +932,10 @@ high, `spacing/2xs` above and below and `spacing/sm` at the sides, round
 `color/text/primary` and the other with no fill in `color/text/secondary`;
 daily at the inline start. The file draws no hover and no focus, so there is
 no hover, and keyboard focus is the three pixel ring inside the pill, KN-782.
-The unchosen word is `color/text/secondary`, as the file binds it, which axe
-measures at 4.39 to one on the track, under the 4.5 a 12 pixel word needs; the
-handoff's `color/text/secondary-strong`, #4B5563, is its colour for text on
-`color/bg/surface-secondary`, and the switch takes it when KN-730 adds it.
+The file binds the unchosen word to `color/text/secondary`, which axe measures
+at 4.39 to one on the track, under the 4.5 a 12 pixel word needs, so the word
+is `color/text/secondary-strong`, the handoff's colour for text on
+`color/bg/surface-secondary`, KN-730.
 It is a native radio group, as the Color Picker's is, one Tab stop with the
 arrows moving and choosing, KN-301. Daily for the first four weeks from the
 first application and weekly after is the page's default to give it, as is

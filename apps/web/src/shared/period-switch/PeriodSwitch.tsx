@@ -20,7 +20,8 @@ const FOCUS_RING = 3
 
 // An option as node 1236:3207 draws it: its word in Label, 4 above and below
 // and 12 at the sides round radius sm, on bg/surface in text/primary when it is
-// the chosen one, with no fill in text/secondary when it is not. Hidden from
+// the chosen one, with no fill in text/secondary-strong when it is not, the
+// handoff's colour for text on bg/surface-secondary, KN-730. Hidden from
 // assistive technology, since the radio it draws is named by the same word.
 const Pill = ({ chosen, children }: { chosen: boolean; children: string }) => (
   <Box
@@ -33,7 +34,7 @@ const Pill = ({ chosen, children }: { chosen: boolean; children: string }) => (
       paddingInline: `${spacing.sm}px`,
       borderRadius: `${theme.karnama.radius.sm}px`,
       ...(chosen ? { backgroundColor: theme.karnama.semantic['bg/surface'] } : {}),
-      color: theme.karnama.semantic[chosen ? 'text/primary' : 'text/secondary'],
+      color: theme.karnama.semantic[chosen ? 'text/primary' : 'text/secondary-strong'],
       fontSize: `${typeScale.label.size}px`,
       lineHeight: `${typeScale.label.lineHeight}px`,
       fontWeight: typeScale.label.weight,

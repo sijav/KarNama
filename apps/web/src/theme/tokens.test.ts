@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import ts from 'typescript'
 import { describe, expect, it } from 'vitest'
-import { elevation, iconSize, radius, semantic, spacing, status, type as typeScale, unstyledText } from './tokens'
+import { elevation, iconSize, radius, semantic, spacing, status, touchTarget, type as typeScale, unstyledText } from './tokens'
 
 /**
  * `tokens.ts` is checked against `DESIGN.md`, which is itself checked against
@@ -67,6 +67,10 @@ describe('the token set agrees with DESIGN.md', () => {
     }
     for (const [name, value] of Object.entries(iconSize)) {
       expect(block, `icon ${name}`).toMatch(new RegExp(`(^|\\s)${name}\\s+${value}(\\s|$)`, 'm'))
+    }
+    // The file's size/touch-target-min, KN-730.
+    for (const [name, value] of Object.entries(touchTarget)) {
+      expect(block, `touch ${name}`).toMatch(new RegExp(`(^|\\s)${name}\\s+${value}(\\s|$)`, 'm'))
     }
   })
 

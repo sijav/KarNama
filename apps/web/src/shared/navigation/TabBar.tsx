@@ -68,7 +68,7 @@ export const TabBar = ({ current, onNavigate }: TabBarProps) => {
             ...insetRing.sx(theme, theme.karnama.radius.md),
           })}
         >
-          <Icon name={icon} size="base" color="inherit" />
+          <Icon name={icon} size="lg" color="inherit" />
           <Box component="span" sx={{ maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {nameOf(id)}
           </Box>

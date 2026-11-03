@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react'
 import { Box, Stack } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, userEvent, within } from 'storybook/test'
+import { darkStatus } from '../../theme/darkMode'
 import { status as statusTokens, type StatusToken } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures, statusName } from '../story-fixtures'
@@ -120,38 +121,65 @@ export const SeededName: Story = {
   render: () => <WithDefaultName status="new" size="S" />,
 }
 
+// Every status at both sizes, read against the pairs of the scheme the story
+// pins: the design's own in light, the derived ones in dark. The redesign
+// changed interview, custom-1 and custom-4, KN-730.
+const drawsEveryPair = async (canvasElement: HTMLElement, pairs: Record<StatusToken, { base: string; container: string }>) => {
+  const order: StatusToken[] = [...DEFAULTS, ...CUSTOM.map(([status]) => status)]
+  for (const [size, height, fontSize] of MEASURES) {
+    const chips = [...within(canvasElement).getByTestId(`size-${size}`).children]
+    await expect(chips).toHaveLength(9)
+    for (const [index, chip] of chips.entries()) {
+      if (!(chip instanceof HTMLElement)) throw new Error('a chip is not an element')
+      const style = getComputedStyle(chip)
+      const pair = pairs[order[index] ?? NEW]
+      // Node 82:2, each variant: its height, 8 at each side, a full radius,
+      // the status's container fill and its base text, at 12 or at 14.
+      await expect(chip.offsetHeight).toBe(height)
+      await expect([style.paddingLeft, style.paddingRight].map(Number.parseFloat)).toEqual([8, 8])
+      // And none above or below: alignment centres the line, KN-263.
+      await expect([style.paddingTop, style.paddingBottom].map(Number.parseFloat)).toEqual([0, 0])
+      await expect(Number.parseFloat(style.borderTopLeftRadius)).toBe(999)
+      await expect(Number.parseFloat(style.fontSize)).toBe(fontSize)
+      await expect(style.backgroundColor).toBe(computedColour(chip, pair.container))
+      await expect(style.color).toBe(computedColour(chip, pair.base))
+    }
+  }
+}
+
+const everyStatus = () => (
+  <Stack spacing={3}>
+    <Row size="S" />
+    <Row size="M" />
+  </Stack>
+)
+
 export const AllStatuses: Story = {
   // A fixed matrix, so the controls it cannot honour are not offered.
   parameters: { controls: { disable: true } },
   // Pinned to light, so every expected colour is the design's own token.
-  globals: { colorScheme: 'light' },
-  render: () => (
-    <Stack spacing={3}>
-      <Row size="S" />
-      <Row size="M" />
-    </Stack>
-  ),
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  render: everyStatus,
   play: async ({ canvasElement }) => {
-    const order: StatusToken[] = [...DEFAULTS, ...CUSTOM.map(([status]) => status)]
-    for (const [size, height, fontSize] of MEASURES) {
-      const chips = [...within(canvasElement).getByTestId(`size-${size}`).children]
-      await expect(chips).toHaveLength(9)
-      for (const [index, chip] of chips.entries()) {
-        if (!(chip instanceof HTMLElement)) throw new Error('a chip is not an element')
-        const style = getComputedStyle(chip)
-        const pair = statusTokens[order[index] ?? NEW]
-        // Node 82:2, each variant: its height, 8 at each side, a full radius,
-        // the status's container fill and its base text, at 12 or at 14.
-        await expect(chip.offsetHeight).toBe(height)
-        await expect([style.paddingLeft, style.paddingRight].map(Number.parseFloat)).toEqual([8, 8])
-        // And none above or below: alignment centres the line, KN-263.
-        await expect([style.paddingTop, style.paddingBottom].map(Number.parseFloat)).toEqual([0, 0])
-        await expect(Number.parseFloat(style.borderTopLeftRadius)).toBe(999)
-        await expect(Number.parseFloat(style.fontSize)).toBe(fontSize)
-        await expect(style.backgroundColor).toBe(computedColour(chip, pair.container))
-        await expect(style.color).toBe(computedColour(chip, pair.base))
-      }
-    }
+    await drawsEveryPair(canvasElement, statusTokens)
+  },
+}
+
+export const AllStatusesInEnglish: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'en-US', colorScheme: 'light' },
+  render: everyStatus,
+  play: async ({ canvasElement }) => {
+    await drawsEveryPair(canvasElement, statusTokens)
+  },
+}
+
+export const AllStatusesInDark: Story = {
+  parameters: { controls: { disable: true } },
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  render: everyStatus,
+  play: async ({ canvasElement }) => {
+    await drawsEveryPair(canvasElement, darkStatus)
   },
 }
 

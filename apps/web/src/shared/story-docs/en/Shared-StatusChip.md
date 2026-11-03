@@ -44,6 +44,14 @@ All nine statuses at both sizes, in the design's order, each measured against
 its Figma variant: height 24 or 28, 8 at each side, a full radius, the status's
 container fill and base text.
 
+### AllStatusesInEnglish
+
+Every status at both sizes in English.
+
+### AllStatusesInDark
+
+Every status at both sizes in the dark scheme, in the theme's derived pairs.
+
 ### ColumnHeaderSize
 
 Size M: 28 tall, with body's size and line height and label's weight and

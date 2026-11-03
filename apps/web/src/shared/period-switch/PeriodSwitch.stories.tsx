@@ -50,7 +50,7 @@ const partsOf = (canvasElement: HTMLElement) => {
 // bg/surface-secondary, 4 round it and between its options, radius md; each
 // option 24 high, 4 above and below and 12 at the sides, radius sm, its word in
 // Label, the chosen one on bg/surface in text/primary and the other with no
-// fill in text/secondary; daily at the inline start.
+// fill in text/secondary-strong, KN-730; daily at the inline start.
 const isDrawn = async (canvasElement: HTMLElement, chosen: Period, palette: Record<keyof typeof semantic, string>) => {
   const parts = partsOf(canvasElement)
   const { group, daily, weekly } = parts
@@ -69,7 +69,7 @@ const isDrawn = async (canvasElement: HTMLElement, chosen: Period, palette: Reco
     await expect([look.paddingTop, look.paddingRight, look.paddingBottom, look.paddingLeft].map(px)).toEqual([4, 12, 4, 12])
     await expect(px(look.borderTopLeftRadius)).toBe(4)
     await expect([px(look.fontSize), px(look.lineHeight), look.fontWeight, px(look.letterSpacing)]).toEqual([12, 16, '500', 0.2])
-    await expect(look.color).toBe(computed(pill, on ? palette['text/primary'] : palette['text/secondary']))
+    await expect(look.color).toBe(computed(pill, on ? palette['text/primary'] : palette['text/secondary-strong']))
     if (on) await expect(look.backgroundColor).toBe(computed(pill, palette['bg/surface']))
     else await expect(alphaOf(look.backgroundColor)).toBe(0)
   }
