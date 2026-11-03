@@ -2,3 +2,5 @@ export { AddJobModal, type AddJobModalProps, type AddJobStep } from './AddJobMod
 export { dayFrom, isDay } from './days'
 export { draftFrom, emptyDraft, isLink, missingFields, validPostingUrl, type JobDraft, type Missing } from './draft'
 export { JobFields, type JobFieldsProps } from './JobForm'
+export { ManualPathLink, type ManualPathLinkProps } from './ManualPathLink'
+export { PasteField, type PasteFieldProps } from './PasteField'

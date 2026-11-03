@@ -124,6 +124,11 @@ The same, at the end of the field.
 Several lines rather than one: the field starts at 140 pixels tall, with text
 16 pixels from every edge. It grows up to eight rows, then scrolls internally.
 
+### minRows
+
+For a field of several lines, how many it shows when empty, in place of the
+140 pixels: the paste field of the add form asks for one, 54 tall.
+
 ### required
 
 The field must be filled: a mark follows the label, and the field says so to a

@@ -1096,6 +1096,29 @@ and what it undoes. In dark the pill turns light with its words dark on it,
 both at 4.5 to one or more. The board writes the messages and decides where
 focus goes after an undo, KN-805. KN-764.
 
+### The paste step's field and its manual link
+
+**Paste Field**, `961:101573`, Default and Hover, read on 2026-11-03: a field 512
+wide and 54 tall, the 22 of one line with `spacing/md` round it,
+`color/bg/surface` at `radius/md`, one pixel of `color/border/default` inside
+and out of the layout, which Hover draws in `color/text/secondary`; its
+placeholder «لینک یا متن کامل آگهی رو اینجا بذارید» at 14 in
+`color/text/secondary`. In place, the Field Wraps of `166:82` stack it 4 under
+«لینک آگهی یا متن کامل آگهی» at 12 on 19, and 4 over the helper «هم لینک، هم
+متن کامل آگهی؛ لازم نیست چیزی رو جدا کنید.» at 14 on 22 in
+`color/text/secondary`, or the reading's failure in `color/text/error`; filled,
+`371:422`, a link keeps it one row. The code's `PasteField` is the Input of
+several lines asked for one row, `minRows`, growing with what is pasted to the
+Input's eight; its resting edge is the owner's `border/control`, since an empty
+field is found by its edge alone, KN-275, and its focus the Input's two of
+`border/focus`, which the file does not draw. **Manual Path Link**,
+`961:101603`, Default and Hover: «لینک یا متن آگهی ندارید؟» at 14 on 22 in
+`color/text/secondary` and `spacing/2xs` after it «ورود دستی» at Medium in
+`color/text/brand`, underlined on Hover; a button, since it turns the flow to
+the empty form, with the product's outline for the keyboard. The add modal
+takes both in KN-817, where the old copy, «لینک آگهی را بچسبان…» and «خودت دستی
+وارد کن», goes. KN-766.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1331,7 +1354,7 @@ of the contract.
 | Card                | `137:44`  | Default, Hover, Pressed, Selected, Static, Focus, desktop                                       |
 | Card / Mobile       | `491:751` | Default, Selected                                                                               |
 | Status Stripe       | `358:430` | the 4px colour bar on the card, one per status                                                  |
-| Company Logo          | `620:3684`  | the default organisation icon; a fetched logo covers the same square                                              |
+| Company Logo          | `620:3684`   | the default organisation icon; a fetched logo covers the same square                                              |
 | Modal / Confirm     | `150:92`  | delete and archive confirmation                                                                 |
 | Modal / Change Status | `150:93` |                                                                                                 |
 | Modal / Add-Edit    | `166:82`  | steps Paste, PasteFilled, Loading, Review, Manual, Error                                        |
@@ -1359,11 +1382,13 @@ of the contract.
 | Contact Card        | `248:116` | Full and Compact × Default, Hover, Selected                                                     |
 | Contact Modal       | `270:152` | Add, Edit                                                                                       |
 | Color Picker        | `257:17`  | offers the nine status colour pairs, the current one marked                                     |
-| Popover / Result      | `844:85811` | what can follow an interview, one press applies; the redesign's popover panel                                     |
-| Time List             | `774:16897` | the day's half-hours, six shown; Time Item `786:1753` Default, Hover, Selected                                    |
-| Add Card Link         | `961:95525` | Default, Hover: after a column's last card, adds to that column                                                   |
-| Add Status Column     | `961:95530` | Default, Hover: a dashed stage-wide column that makes a stage                                                     |
-| Toast                 | `956:3193`  | the action, Default, Hover; the frames' whole message `717:12416`                                                 |
+| Popover / Result      | `844:85811`  | what can follow an interview, one press applies; the redesign's popover panel                                     |
+| Time List             | `774:16897`  | the day's half-hours, six shown; Time Item `786:1753` Default, Hover, Selected                                    |
+| Add Card Link         | `961:95525`  | Default, Hover: after a column's last card, adds to that column                                                   |
+| Add Status Column     | `961:95530`  | Default, Hover: a dashed stage-wide column that makes a stage                                                     |
+| Toast                 | `956:3193`   | the action, Default, Hover; the frames' whole message `717:12416`                                                 |
+| Paste Field           | `961:101573` | Default, Hover: the add form's one-row paste field                                                                |
+| Manual Path Link      | `961:101603` | Default, Hover: the way round the paste field to the empty form                                                   |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,

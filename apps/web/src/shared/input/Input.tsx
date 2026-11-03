@@ -40,6 +40,7 @@ export interface InputProps {
   leadingIcon?: ReactNode
   trailingIcon?: ReactNode
   multiline?: boolean
+  minRows?: number
   labelStyle?: InputLabelStyle
   required?: boolean
   onChange?: (value: string, event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
@@ -48,7 +49,9 @@ export interface InputProps {
 // Node 95:38: the field is 44 tall, the same as Button M. No variable is bound.
 const FIELD_HEIGHT = 44
 // The add modal's paste field, node 166:69, the one field of several lines: 140
-// minimum height, its text 16 from every edge, KN-029.
+// minimum height, its text 16 from every edge, KN-029. A caller that asks for
+// fewer rows gets that many lines and the same 16 round them: the redesign's
+// paste field, 961:101573, is one, 54 tall, KN-766.
 const MULTILINE_HEIGHT = 140
 const MULTILINE_MAX_ROWS = 8
 
@@ -141,6 +144,7 @@ export const Input = ({
   error: given,
   disabled = false,
   multiline = false,
+  minRows,
   labelStyle = FIELD_LABEL,
   required = false,
   direction = 'page',
@@ -167,6 +171,7 @@ export const Input = ({
   // KN-287.
   const helper = helperText === undefined || isBlank(helperText) ? undefined : helperText
   const message = error ?? helper
+  const multilineHeight = minRows === undefined ? MULTILINE_HEIGHT : minRows * body.lineHeight + 2 * spacing.md
   return (
     // No gap on the column: a gap is laid before an empty line too, and the
     // line must take no room when it has nothing to say. The label keeps its 4
@@ -238,7 +243,7 @@ export const Input = ({
             // from the edge, as 95:5 and 95:19 draw it, KN-266.
             position: 'relative',
             height: multiline ? 'auto' : FIELD_HEIGHT,
-            minHeight: multiline ? MULTILINE_HEIGHT : FIELD_HEIGHT,
+            minHeight: multiline ? multilineHeight : FIELD_HEIGHT,
             flexShrink: 0,
             boxSizing: 'border-box',
             paddingInline: `${spacing.md}px`,
@@ -266,7 +271,7 @@ export const Input = ({
                   alignItems: 'flex-start',
                   paddingBlock: `${spacing.md}px`,
                   '& textarea': { padding: 0, overflowY: 'auto', resize: 'none' },
-                  '& textarea:not([aria-hidden])': { minHeight: MULTILINE_HEIGHT - 2 * spacing.md },
+                  '& textarea:not([aria-hidden])': { minHeight: multilineHeight - 2 * spacing.md },
                   '& textarea::placeholder': { color: colour['text/secondary'], opacity: 1 },
                 }
               : {}),
