@@ -436,34 +436,32 @@ is the owner's decision of KN-285.
 Node `159:80` is a round mark of 64 in `bg/surface-secondary`, a title, a body
 and a Primary M button, 12 apart, with an 8 pixel spacer frame and a second 12
 above the button, so the button sits 32 below the body. It exposes the title
-and the body as text properties, and the screens use it three times: the empty
-job list, `243:64` and `305:1833`, the contacts, `305:2266`, and a search that
-finds nothing, `305:1684`, which keeps the button that adds a job opportunity.
-The body is fixed at 220 and wraps; the title hugs one line and may be the
-wider, as the contacts' is at 236, making that instance 300. Every instance
-carries the button, and the component has no boolean to hide it, so the code's
-action is required. KN-022.
+and the body as text properties, «تیتر» and «متن». The body is fixed at 220 and
+wraps; the title hugs one line and may be the wider. The component has no
+boolean to hide the button, so the code's action is required. KN-022.
+
+**Read in the original on 2026-11-03**, it draws the same, and only its words
+and height changed, KN-792: the title is «هنوز فرصت شغلی‌ای اضافه نکردید», the
+body «اولین فرصت شغلی رو با لینک یا متن آگهی اضافه کنید تا از همین‌جا پیگیریش
+کنید.», which wraps to three lines, so the frame is 319 high where the copy's
+was 297. The copy called the record «آگهی» there, against the terminology rule,
+which the code did not follow, KN-329 and KN-565; the original no longer does.
+**No screen in the redesign uses it**: the board and the network page take
+Empty State / Jobs `894:79222` and Empty State / Network `1083:55307`, KN-769,
+and the first carries the same two sentences, which the Persian catalog now
+holds. The code still draws this one for the empty job list, the network and a
+search that finds nothing until those screens are rebuilt.
 
 **The title binds no text style.** It is 16 at SemiBold on the file's automatic
 line height, 25 in Vazirmatn. It is composed from the roles, as the Status
 Chip's M is: Title's size and line height, 16 and 24, with SemiBold. So the
-state is 296 tall where the frame is 297.
+state is 318 tall where the frame is 319.
 
 **The mark is all but invisible where it is used.** Every screen puts the Empty
 State on `bg/page`, `#f6f7f9`, and the mark is `#f3f4f6`, about 1.02 to one.
 It is decorative, so no contrast rule applies, and it is drawn as the file
 draws it; whether it should be `bg/surface` or carry an illustration is the
 owner's call.
-
-**The file's own copy calls the record «آگهی» here.** Both `243:64` and
-`305:1833` are titled «هنوز آگهی‌ای اضافه نکردی» over a body that says «آگهی»
-for the record as well, while the button of the very same instance says
-«افزودن فرصت شغلی». Section 3's terminology rule is the file's own and has no
-exception, so the code says «هنوز فرصت شغلی‌ای اضافه نکردی» and keeps «آگهی»
-for the link or the text pasted, KN-329 and KN-565. This copy is absent from
-the sixteen renames of frame `505:3`, which did rename the neighbouring
-column's empty message, so it is an omission from that pass rather than an
-exemption. The two instances' bodies differ from each other as well, KN-662.
 
 ### The extraction loading
 
@@ -1162,7 +1160,7 @@ of the contract.
 | Page Header         | `155:56`  | title, optional back button, optional primary action                                            |
 | Search Bar          | `155:92`  | Default, Focus, Filled                                                                          |
 | Filter Chip         | `159:71`  | Default, Hover, Pressed, Selected, doubles as the status counter                                |
-| Empty State         | `159:80`  | title and body as text properties, a required Primary M action; used for jobs, contacts and search |
+| Empty State         | `159:80`  | title and body as text properties, a required Primary M action; no screen in the redesign uses it |
 | Loading / Extract   | `1031:3818` | Step 1, 2 and 3: three dots and no text, the owner's decision of 1 Aban; the status says why past fifteen seconds |
 | Menu Item           | `181:22`  | Default, Hover, Disabled, Destructive                                                           |
 | Menu                | `512:8350`| Type=Status, Type=Card                                                                          |
