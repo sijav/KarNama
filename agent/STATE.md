@@ -20,7 +20,7 @@ Playwright. NestJS, GraphQL code first, Prisma, Postgres on **Neon**. The web at
 `/storybook/`, the API on Render. lingui, **English ids**. **Components first
 with their stories, then screens. Match the design exactly.**
 
-## Where things stand, 2026-11-03, evening
+## Where things stand, 2026-11-03, late evening
 
 **The owner's order: the design, then the backend, then the rest.** OKR-3, the
 redesign, is position 1; OKR-4, the backend, position 2; OKR-1 and OKR-2 follow.
@@ -28,20 +28,36 @@ Within the design every component card is `critical`, new and redrawn alike,
 ahead of the record model (KN-731 to KN-741) and the screens (KN-805 to KN-828).
 KN-829 reads every older card against the redesign last.
 
-**Done today in OKR-3**: KN-729 the tokens' pointers, KN-742 the brand mark,
-KN-746 the action chip and inline link, KN-750 the add stage chip, KN-765 the
-add-a-person row, KN-768 the extraction loading (the Loading State redrawn as
-three dots with no text on screen, the owner's decision of 1 Aban; the status
-still explains a cold start to a screen reader), and KN-777 the icon button's
-label tooltip (Tooltip / Label, which every Icon Button now carries). KN-619
-closed with KN-768's docs and KN-615 on the published build; KN-616's turning
-arc was dropped as superseded.
+**Done in OKR-3**: KN-729 the tokens' pointers, KN-742 the brand mark, KN-746,
+KN-750, KN-765, KN-768 the extraction loading, KN-777 the icon button's label
+tooltip, KN-782 the period switch, KN-792, KN-793, KN-795, KN-798, KN-801 two
+icons, KN-837 Popover / Close, KN-791 the Search Bar, KN-730 the status colours
+and foundations, KN-797 the Status Control, then KN-743 the company logo (with
+its finding KN-841), KN-748 the interview result popover, KN-755 the time list,
+KN-758 the board's add links, KN-764 the toast and KN-766 the paste field and
+the manual link.
 
-**Blocked on KN-785**, the Button's redrawn small size: KN-774 the company match
-and KN-779 the stats guidance both compose Button / S, which the redesign fills
-with `bg/surface` where the code's Secondary has none. Check each new card's
-node for a Button / S before building it. KN-763 waits on KN-837 and KN-838,
-Popover / Close and the modal shell's close.
+**New pieces other cards build on**: `shared/popover`'s `popoverSurface` and
+`popoverPaper`, the redesign's popover panel at radius 10 with
+`elevation.popover`, which the date popovers (KN-757 and the date-edit popover)
+take; `shared/date-picker`, the family KN-754 and KN-756 join; `shared/board`,
+which the outcome strip (KN-749) joins; the Input's `minRows`;
+`SIDEBAR_WIDTH` from the navigation; `text/brand-inverse`, read on the
+inverse pill, listed in darkMode's `ON_INVERSE`. **Adoption is the screens'**:
+each component card builds and stories its piece, and notes on KN-805 (the
+board) and KN-817 (the add flow) say what each swaps in and which old pieces and
+copy go.
+
+**Learned**: a browser does not letter-space a joined script, so the Persian
+chips draw about 0.2 a letter narrower than Figma's (DESIGN.md's Type section);
+a button focused by script as a popover opens is `:focus-visible` in Chromium
+even after a mouse press, where a MenuItem or a radio is not, so a popover of
+buttons starts focus on its panel.
+
+**Blocked**: KN-774 the company match and KN-779 the stats guidance on KN-785,
+the Button's redrawn small size; KN-763, KN-788 and KN-761 (the stage delete
+modal) on KN-838, the modal shell's 20 pixel close. Check each new card's node
+for a Button / S or a modal header before building it.
 
 **The redesign** is in the original Figma file `K1EP8GCOmelU8o4vPR7a9f`,
 Screens `5:7`, with the designer's handoff in `DESIGN-HANDOFF.md`. Prototype
@@ -58,9 +74,11 @@ sets WEB_ORIGIN and Cloudflare's Always Use HTTPS. Both wait in OKR-4.
 with `--remote-control`, one session per kind in `.claude/claude-sessions/`,
 and Luna's prefix. Each closed card is roasted in the background to
 `.claude/roasts/`; **none is judged until every to-do is done**. Records so far:
-KN-728, KN-729, KN-742, KN-746, KN-750, KN-765, KN-768, KN-619, then KN-777 and
-KN-615. A launcher in
-the scratchpad, `roast-768.py`, shows how to pass the arguments from Python.
+KN-728, KN-729, KN-742, KN-746, KN-750, KN-765, KN-768, KN-619, KN-777, KN-615,
+KN-782, KN-792, KN-793, KN-795, KN-798, KN-801, KN-837, KN-791, KN-730, KN-797,
+KN-743 twice (the second with KN-841), KN-748, KN-755, KN-758, KN-764 and
+KN-766. The launchers in the scratchpad, `roast-766.py` the latest, show how to
+pass the arguments from Python.
 
 ## What fails, and which failures are known
 
