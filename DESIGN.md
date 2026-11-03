@@ -1156,6 +1156,21 @@ status's colour on the board and the number is black at one weight. The dot is
 decoration, since the label says what is counted. The page writes the labels,
 KN-823, and runs the first row's count from one on entry, KN-824. KN-778.
 
+### The week bar
+
+**Stats / Week Bar**, `1168:3183`, Current=No and Current=Yes, read on
+2026-11-04: one bar of the Stats page's applications by week, 32 wide and 68
+tall at the specimen, neither bound, a column at the bottom with `spacing/2xs`
+between the count in Label, centred, and the bar, which fills the rest at
+`radius/sm`; Current=No draws the count in `color/text/secondary` over
+`color/bg/brand/container`, Current=Yes, this week, in `color/text/primary`
+over `color/bg/brand/default`. The page sets each bar's height in proportion to
+its count, the description says; the code never draws one under the count, its
+4 and a pixel of bar, 21, so a week with none keeps a line. The bar only draws
+the count, so a screen reader reads the count and the chart says what the bars
+are, KN-823. MUI reads a size of 1 or less as a fraction of the parent, so the
+pixel is written in pixels. KN-780.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1428,6 +1443,7 @@ of the contract.
 | Manual Path Link      | `961:101603` | Default, Hover: the way round the paste field to the empty form                                                   |
 | Related Person        | `1096:3109`  | Default, Hover; Related Person / Mobile `1313:3295`                                                               |
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
+| Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,
