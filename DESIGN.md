@@ -720,9 +720,12 @@ menu at its inline start, 10 from it, KN-335; the item stays in the keyboard's
 path so the reason can be read. Change colour replaces the menu with the Color
 Picker in its place,
 `259:184`. **Type=Card** is a job opportunity's menu on a phone: «تغییر وضعیت»,
-«باز کردن لینک آگهی», and delete, which the file labels «حذف آگهی»; the code says
-«حذف فرصت شغلی» under the terminology rule, as KN-329 records for the bar's
-count. A posting without a link has no link item.
+«باز کردن لینک آگهی», and «حذف فرصت شغلی», which the original labels it, read
+on 2026-11-03, KN-795; the copy said «حذف آگهی», which the code never did, under
+the terminology rule, KN-329. A posting without a link has no link item. The
+blocked delete's reason, Tooltip `410:469`, reads «این وضعیت ۳ فرصت شغلی داره؛
+برای حذفش اول باید فرصت‌های شغلی رو ببرید یه ستون دیگه.», its verb plural in the
+original where the copy's was «ببری».
 
 ### The job card
 

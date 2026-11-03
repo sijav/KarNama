@@ -155,9 +155,9 @@ export const messages: Record<string, string> = {
   Rename: 'تغییر نام',
   'Change colour': 'تغییر رنگ',
   'This status has': 'این وضعیت',
-  'job opportunity; to delete it, first move it to another column.': 'فرصت شغلی داره؛ برای حذفش اول باید فرصت شغلی رو ببری یه ستون دیگه.',
+  'job opportunity; to delete it, first move it to another column.': 'فرصت شغلی داره؛ برای حذفش اول باید فرصت شغلی رو ببرید یه ستون دیگه.',
   'job opportunities; to delete it, first move them to another column.':
-    'فرصت شغلی داره؛ برای حذفش اول باید فرصت‌های شغلی رو ببری یه ستون دیگه.',
+    'فرصت شغلی داره؛ برای حذفش اول باید فرصت‌های شغلی رو ببرید یه ستون دیگه.',
   'Job opportunity actions': 'کارهای فرصت شغلی',
   'Open the posting link': 'باز کردن لینک آگهی',
   'Delete job opportunity': 'حذف فرصت شغلی',
