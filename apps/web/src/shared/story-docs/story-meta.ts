@@ -80,6 +80,7 @@ export type StoryTitle =
   | 'Shared/ShellControls'
   | 'Shared/Sidebar'
   | 'Shared/SortControl'
+  | 'Shared/StatsNumber'
   | 'Shared/StatusChip'
   | 'Shared/StatusControl'
   | 'Shared/StatusMenu'

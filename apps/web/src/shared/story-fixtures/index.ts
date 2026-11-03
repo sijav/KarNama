@@ -90,6 +90,15 @@ export interface MixedStatusNamesFixture {
   markLed: string
 }
 
+// The Stats page's first row, by what each number counts.
+export interface StatsLabelsFixture {
+  applied: string
+  interview: string
+  offer: string
+  rejected: string
+  noResponse: string
+}
+
 export interface NoteFixture {
   id: string
   jobId: string
@@ -140,6 +149,8 @@ export interface Fixtures {
   toastMessage: string
   /** A tag a person in the network carries, KN-773. */
   contactTag: string
+  /** What the Stats page's first row counts, as it labels them, KN-778. */
+  statsLabels: StatsLabelsFixture
   /**
    * The fixtures as the product keeps them, for a story to seed a
    * `RecordsProvider` with, KN-437: every status, every job opportunity made by
@@ -164,6 +175,7 @@ export interface RawFixtures {
   stageAfterInterview: { id: string; token: string; name: string }
   toastMessage: string
   contactTag: string
+  statsLabels: StatsLabelsFixture
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -273,6 +285,7 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     stageAfterInterview: optionOf(raw.stageAfterInterview),
     toastMessage: raw.toastMessage,
     contactTag: raw.contactTag,
+    statsLabels: Object.freeze({ ...raw.statsLabels }),
   })
 }
 

@@ -55,5 +55,6 @@
   ],
   "stageAfterInterview": { "id": "technical-test", "token": "custom-2", "name": "Technical test" },
   "toastMessage": "“UX researcher” moved to No answer",
-  "contactTag": "Recruiter"
+  "contactTag": "Recruiter",
+  "statsLabels": { "applied": "Applied", "interview": "Interviews", "offer": "Offers", "rejected": "Rejected", "noResponse": "No response" }
 }

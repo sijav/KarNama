@@ -55,5 +55,6 @@
   ],
   "stageAfterInterview": { "id": "technical-test", "token": "custom-2", "name": "آزمون فنی" },
   "toastMessage": "«پژوهشگر تجربه کاربری» به بی‌پاسخ منتقل شد",
-  "contactTag": "کارشناس جذب"
+  "contactTag": "کارشناس جذب",
+  "statsLabels": { "applied": "درخواست", "interview": "مصاحبه", "offer": "پیشنهاد کار", "rejected": "رد شده", "noResponse": "بی‌پاسخ" }
 }

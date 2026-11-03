@@ -1141,6 +1141,21 @@ person, so each button is heard with whose it is. A copy writes to the
 clipboard and tells the caller, which says so with the toast, KN-764; a refused
 clipboard says nothing. KN-773.
 
+### The stats number
+
+**Stats / Number**, `1168:3159`, Status=Applied, Interview, Offer, Rejected and
+NoResponse, read on 2026-11-03: the Stats page's first row, a card of
+`color/bg/surface-secondary` at `radius/md` that fills its row, `spacing/sm`
+above and below, `spacing/md` at the sides and `spacing/2xs` between its two
+lines, at the inline start. A dot of 8, bound to no size, in the base of the
+status's pair, `color/status/applied/base` and the others, and for NoResponse
+`color/text/secondary`; `spacing/xs` after it the label in Body in
+`color/text/secondary-strong`; under them the number in Heading/L in
+`color/text/primary`, in the reader's digits. Its description: the dot is the
+status's colour on the board and the number is black at one weight. The dot is
+decoration, since the label says what is counted. The page writes the labels,
+KN-823, and runs the first row's count from one on entry, KN-824. KN-778.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1412,6 +1427,7 @@ of the contract.
 | Paste Field           | `961:101573` | Default, Hover: the add form's one-row paste field                                                                |
 | Manual Path Link      | `961:101603` | Default, Hover: the way round the paste field to the empty form                                                   |
 | Related Person        | `1096:3109`  | Default, Hover; Related Person / Mobile `1313:3295`                                                               |
+| Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,
