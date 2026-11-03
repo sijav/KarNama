@@ -9,7 +9,7 @@ import type { StoryMeta } from '../story-docs/story-meta'
 import { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './Button'
 
 const VARIANTS: readonly ButtonVariant[] = ['primary', 'secondary', 'text', 'destructive', 'ghost']
-const SIZES: readonly ButtonSize[] = ['S', 'M', 'L']
+const SIZES: readonly ButtonSize[] = ['S', 'M']
 
 // The label is copy, the file's «دکمه», drawn in the reader's language inside
 // the render, so its arg is a placeholder no control shows.
@@ -138,8 +138,8 @@ const EXPECTED: Record<ButtonVariant, Record<'rest' | 'hover' | 'pressed' | 'dis
 const GHOST_PRESSED = 0.9
 const FOCUS_EDGE = 2
 
-const HEIGHTS: Record<ButtonSize, number> = { S: 36, M: 44, L: 52 }
-const PADDING: Record<ButtonSize, number> = { S: 12, M: 16, L: 24 }
+const HEIGHTS: Record<ButtonSize, number> = { S: 36, M: 44 }
+const PADDING: Record<ButtonSize, number> = { S: 12, M: 16 }
 
 // The colours a state should show, worked out before any waiting.
 const wanted = (button: HTMLElement, variant: ButtonVariant, state: keyof (typeof EXPECTED)['primary']) => {
@@ -187,14 +187,14 @@ export const States: Story = {
       }}
     >
       {STATES.map((state) => (
-        <Box key={state} sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, max-content)', gap: `${spacing.md}px`, alignItems: 'center' }}>
+        <Box key={state} sx={{ display: 'grid', gridTemplateColumns: `repeat(${SIZES.length}, max-content)`, gap: `${spacing.md}px`, alignItems: 'center' }}>
           {VARIANTS.flatMap((variant) => SIZES.map((size) => <Forced key={`${variant}-${size}`} {...args} variant={variant} size={size} state={state} />))}
         </Box>
       ))}
     </Audited>
   ),
   play: async ({ canvasElement }) => {
-    // All 75 read where they stand, with no pointer and no keyboard: the fill
+    // All 50 read where they stand, with no pointer and no keyboard: the fill
     // and the text of every one, Ghost's pressed opacity, and the focus ring,
     // which is an outline on four styles and Secondary's own inside edge.
     // The 45 transient cells carried their state into the FIRST paint of the
@@ -260,7 +260,7 @@ export const DisabledWhateverItsState: Story = {
       {TRANSIENT.map((state) => (
         <Box
           key={state}
-          sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, max-content)', gap: `${spacing.md}px`, alignItems: 'center' }}
+          sx={{ display: 'grid', gridTemplateColumns: `repeat(${SIZES.length}, max-content)`, gap: `${spacing.md}px`, alignItems: 'center' }}
         >
           {VARIANTS.flatMap((variant) =>
             SIZES.map((size) => <Forced key={`${variant}-${size}`} {...args} variant={variant} size={size} state={state} disabled />),
@@ -297,7 +297,7 @@ export const Matrix: Story = {
   render: (args) => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.md}px` }}>
       {[false, true].map((disabled) => (
-        <Box key={String(disabled)} sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, max-content)', gap: `${spacing.md}px`, alignItems: 'center' }}>
+        <Box key={String(disabled)} sx={{ display: 'grid', gridTemplateColumns: `repeat(${SIZES.length}, max-content)`, gap: `${spacing.md}px`, alignItems: 'center' }}>
           {VARIANTS.flatMap((variant) => SIZES.map((size) => <Labelled key={`${variant}-${size}`} {...args} variant={variant} size={size} disabled={disabled} />))}
         </Box>
       ))}
@@ -305,9 +305,9 @@ export const Matrix: Story = {
   ),
   play: async ({ canvasElement }) => {
     const buttons = within(canvasElement).getAllByRole('button')
-    await expect(buttons).toHaveLength(30)
+    await expect(buttons).toHaveLength(2 * VARIANTS.length * SIZES.length)
     const combos = [false, true].flatMap((disabled) => VARIANTS.flatMap((variant) => SIZES.map((size) => ({ disabled, variant, size }))))
-    // At rest and disabled: the thirty, read as they render.
+    // At rest and disabled: the twenty, read as they render.
     for (const [index, combo] of combos.entries()) {
       const button = buttons[index]
       if (!button) throw new Error('a button is missing')
@@ -385,14 +385,14 @@ export const WithIcons: Story = {
   globals: { colorScheme: 'light' },
   parameters: { controls: { include: ['size', 'variant'] } },
   play: async ({ args, canvasElement }) => {
-    // The icons take the size's scale, 16, 20 or 24, and the label's colour,
+    // The icons take the size's scale, 16 or 20, and the label's colour,
     // with the size's gap between.
     const button = within(canvasElement).getByRole('button')
     const icons = [...button.querySelectorAll('svg')]
     await expect(icons).toHaveLength(2)
     const size = args.size ?? 'M'
-    const scale = { S: 16, M: 20, L: 24 }[size]
+    const scale = { S: 16, M: 20 }[size]
     for (const icon of icons) await expect(icon.getBoundingClientRect().width).toBe(scale)
-    await expect(px(getComputedStyle(button).columnGap)).toBe({ S: 4, M: 8, L: 8 }[size])
+    await expect(px(getComputedStyle(button).columnGap)).toBe({ S: 4, M: 8 }[size])
   },
 }

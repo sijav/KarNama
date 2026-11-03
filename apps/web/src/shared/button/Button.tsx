@@ -4,7 +4,7 @@ import { spacing, type as typeScale, type semantic } from '../../theme/tokens'
 import { Icon, type IconName } from '../icon'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'text' | 'destructive' | 'ghost'
-export type ButtonSize = 'S' | 'M' | 'L'
+export type ButtonSize = 'S' | 'M'
 export type ButtonType = 'button' | 'submit'
 
 // The props are documented in story-docs, not here, KN-207.
@@ -24,13 +24,13 @@ export interface ButtonProps {
 
 type Role = keyof typeof semantic
 
-// Node 31:4's three sizes. The heights, 36, 44 and 52, bind no variable, so
-// they are component constants; the padding, the gap, the text role and the
-// icon size are the file's tokens.
+// Node 31:4's sizes, Button / S 37:10 and Button / M 33:58. The heights, 36
+// and 44, bind no variable, so they are component constants; the padding,
+// the gap, the text role and the icon size are the file's tokens. The file's
+// L, 37:71, is used by no screen, and the handoff retires it, KN-785.
 const SIZES = {
   S: { height: 36, padding: spacing.sm, gap: spacing['2xs'], text: typeScale.body, icon: 'sm' },
   M: { height: 44, padding: spacing.md, gap: spacing.xs, text: typeScale.body, icon: 'md' },
-  L: { height: 52, padding: spacing.lg, gap: spacing.xs, text: typeScale.title, icon: 'lg' },
 } as const
 
 // What each of node 31:4's five styles draws in each state: the fill, the text
@@ -93,7 +93,7 @@ const GHOST_PRESSED_OPACITY = 0.9
 const EDGE = 1
 const FOCUS_EDGE = 2
 
-// The Button of node 31:4: five styles in three sizes, at rest, hovered,
+// The Button of node 31:4: five styles in two sizes, at rest, hovered,
 // pressed, disabled and focused, on MUI's Button restyled to the file. The
 // label arrives translated from the caller.
 export const Button = ({

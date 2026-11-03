@@ -1206,6 +1206,19 @@ Each tab is a tab of the row the board makes a tablist, KN-826, named by its
 name and count, the chosen one the row's Tab stop; the add tab is a button
 named «افزودن وضعیت»; the keyboard's ring is three inside the edge. KN-784.
 
+### The Button
+
+**Button / S**, `37:10`, **Button / M**, `33:58`, and **Button / L**, `37:71`,
+read in the original and in the copy on 2026-11-04, KN-785: each has the same
+25 variants in both, Primary, Secondary, Text, Destructive and Ghost by
+Default, Hover, Pressed, Disabled and Focus, and every one measures the same:
+S 36 tall with 12 at the sides and 4 between, a 16 icon and its label at 14 on
+22; M 44 with 16 and 8, a 20 icon and Body; L 52 with 24 and 8, a 24 icon and
+Title; all at a radius of 8. Only the icons' layer order changed, the original
+putting the leading icon at the inline start in a right to left reading, where
+the code's start icon already sits. The handoff lists Button / L among the
+components no screen uses, so the code draws S and M, and L is retired.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1432,7 +1445,7 @@ of the contract.
 
 | Family              | Node      | What it draws                                                                                   |
 | ------------------- | --------- | ----------------------------------------------------------------------------------------------- |
-| Button              | `31:4`    | 3 sizes S/M/L × 5 styles Primary/Secondary/Text/Destructive/Ghost × 5 states                     |
+| Button                | `31:4`       | S `37:10` and M `33:58` × 5 styles Primary/Secondary/Text/Destructive/Ghost × 5 states; L retired                 |
 | Status Chip         | `82:2`    | 9 statuses × 2 sizes S/M, display only                                                          |
 | Status Choice       | `427:567` | Default, Hover, Selected                                                                        |
 | Status Picker       | `427:592` | the popover that assigns a status                                                               |

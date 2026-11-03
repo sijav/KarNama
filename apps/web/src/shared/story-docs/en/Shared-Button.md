@@ -1,4 +1,4 @@
-The button of the design: five styles in three sizes, each at rest, hovered,
+The button of the design: five styles in two sizes, each at rest, hovered,
 pressed, disabled and focused.
 
 Primary is the one action a screen asks for, in the brand fill. Secondary is an
@@ -22,7 +22,7 @@ The label, already in the reader's language.
 
 ### size
 
-`S`, `M`, the default, or `L`.
+`S` or `M`, the default.
 
 ### disabled
 
@@ -78,7 +78,7 @@ A button with a leading and a trailing icon, sized and spaced to the button.
 
 ### States
 
-All 75: five styles, three sizes, five states, rendered from args and visible
+All 50: five styles, two sizes, five states, rendered from args and visible
 without a test running. Hover, pressed and focus are transient, only a pointer
 or a keyboard puts a button in them, so the component draws each of them for a
 `data-state` attribute as well as for the browser's own pseudo-class, and this
