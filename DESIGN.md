@@ -974,6 +974,25 @@ so it is the close's square of radius 6 with its grey hover and its name label,
 KN-837. The board's and the network page's toolbars draw the bar 36 high,
 KN-315.
 
+### The company logo
+
+**Company Logo / placeholder**, `620:3684`, read on 2026-11-03: a square of 36
+on `color/bg/surface-secondary` at a radius of 8 that binds no variable, the
+same as `radius/md`, centring the Icon set's `building` at 18, which is none of
+the icon sizes, its stroke of 2 in `color/text/disabled`. Beside it the file
+draws six named logos, digikala, bazaar, snapp, alibaba, torob and tapsi,
+`620:3637` to `620:3679`, each a company's own drawing in the same square, and
+the redesigned card takes one at its head. The owner's answer of 2026-11-03 is
+that a logo is fetched from the company's own website, else from its LinkedIn
+page, and where neither has one the default organisation icon is shown, as
+LinkedIn shows one; the fetching is KN-830's. So the named logos are what a
+fetched logo looks like in the square, its image covering it at the same
+radius, and the placeholder is the default organisation icon, drawn as well
+when a logo fails to load. The edge of `color/border/default` the file gives
+torob's alone belongs to that white drawing, so a fetched logo is drawn as it
+comes. Either way it is decorative, since the card writes the company's name
+beside it, KN-743.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1209,6 +1228,7 @@ of the contract.
 | Card                | `137:44`  | Default, Hover, Pressed, Selected, Static, Focus, desktop                                       |
 | Card / Mobile       | `491:751` | Default, Selected                                                                               |
 | Status Stripe       | `358:430` | the 4px colour bar on the card, one per status                                                  |
+| Company Logo          | `620:3684`  | the default organisation icon; a fetched logo covers the same square                                              |
 | Modal / Confirm     | `150:92`  | delete and archive confirmation                                                                 |
 | Modal / Change Status | `150:93` |                                                                                                 |
 | Modal / Add-Edit    | `166:82`  | steps Paste, PasteFilled, Loading, Review, Manual, Error                                        |

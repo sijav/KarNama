@@ -64,6 +64,8 @@ const structuralProps =
   // Where a link opens and what it carries, '_blank' and 'noopener': browser
   // keywords, not words for a reader.
   '|target|rel|autoComplete|inputMode' +
+  // When the browser fetches an image, 'lazy': a browser keyword too, KN-743.
+  '|loading' +
   // ARIA attributes whose values are tokens from the ARIA vocabulary, 'menu',
   // 'dialog', 'page', never text a screen reader speaks as words. aria-label
   // and aria-describedby carry words, and stay checked.

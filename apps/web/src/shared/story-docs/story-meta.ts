@@ -40,6 +40,7 @@ export type StoryTitle =
   | 'Shared/Checkbox'
   | 'Shared/CodeInput'
   | 'Shared/ColorPicker'
+  | 'Shared/CompanyLogo'
   | 'Shared/ConfirmModal'
   | 'Shared/ContactCard'
   | 'Shared/ContactModal'
