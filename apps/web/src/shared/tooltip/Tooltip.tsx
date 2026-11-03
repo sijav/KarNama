@@ -1,5 +1,5 @@
 import { Box, Tooltip as MuiTooltip, tooltipClasses, useTheme, type Theme } from '@mui/material'
-import { cloneElement, useCallback, useEffect, useId, useRef, type ReactElement, type ReactNode } from 'react'
+import { cloneElement, createContext, useCallback, useEffect, useId, useRef, type ReactElement, type ReactNode } from 'react'
 import { ensureContrast } from '../../theme/darkMode'
 import { inlineEndOf, inlineStartOf } from '../../theme/sides'
 import { report } from '../console-guard'
@@ -40,6 +40,13 @@ export const tooltipPair = (theme: Theme) => {
   const backgroundColor = theme.karnama.semantic['text/primary']
   return { backgroundColor, color: ensureContrast(theme.karnama.semantic['text/on-accent'], backgroundColor) }
 }
+
+// Whether what renders here is the element a Tooltip describes, which it
+// already speaks for. The Icon Button's own label, Tooltip / Label, stays out
+// of such an element, so the two tips never show at once, KN-777. Four icon
+// buttons keep this Tooltip until their own cards take it off, since the
+// redesign's shell and network page draw none of their tips.
+export const DescribedByATooltip = createContext(false)
 
 // The props are documented in story-docs, not here, KN-207.
 export interface TooltipProps {
@@ -108,7 +115,7 @@ export const Tooltip = ({ title, icon, placement = 'bottom', children }: Tooltip
   }, [expectNode])
 
   return (
-    <>
+    <DescribedByATooltip value>
       <MuiTooltip
         ref={attach}
         // The "does not trap the pointer" clause, and the sx below is not enough
@@ -195,6 +202,6 @@ export const Tooltip = ({ title, icon, placement = 'bottom', children }: Tooltip
       <Box component="span" id={descriptionId} hidden>
         {title}
       </Box>
-    </>
+    </DescribedByATooltip>
   )
 }

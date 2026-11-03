@@ -3,6 +3,7 @@ import { useEffect, type AriaAttributes, type DOMAttributes, type ReactElement, 
 import { spacing } from '../../theme/tokens'
 import { report } from '../console-guard'
 import { Icon, type IconName } from '../icon'
+import { TooltipLabel } from '../tooltip-label'
 
 /**
  * What a Tooltip puts on its trigger, KN-310.
@@ -110,7 +111,9 @@ const forwarded = <Element extends HTMLElement>(props: TooltipTrigger<Element> &
 // The Icon Button of node 460:672: a 32 square of radius md around a 16 icon,
 // Neutral and Danger, each at rest, hovered and disabled. The Bulk Action Bar's
 // close, 401:436, is the same square round a 20 icon, so the icon's size is a
-// prop, 16 unless told otherwise.
+// prop, 16 unless told otherwise. It names itself with Tooltip / Label, its own
+// name over it on hover and on keyboard focus, as the redesign asks of every
+// icon-only button, 1123:57071, KN-777.
 export const IconButton = (props: IconButtonProps) => {
   const { icon, 'aria-label': label, tone = 'neutral', iconSize = 'sm', onClick } = props
   const name = nameOf(label)
@@ -190,15 +193,19 @@ export const IconButton = (props: IconButtonProps) => {
   if (props.href === undefined) {
     const { ref, disabled = false, ...rest } = props
     return (
-      <MuiIconButton ref={ref} {...shared} aria-disabled={disabled} onClick={disabled ? undefined : onClick} {...forwarded(rest)}>
-        {mark}
-      </MuiIconButton>
+      <TooltipLabel title={name}>
+        <MuiIconButton ref={ref} {...shared} aria-disabled={disabled} onClick={disabled ? undefined : onClick} {...forwarded(rest)}>
+          {mark}
+        </MuiIconButton>
+      </TooltipLabel>
     )
   }
   const { ref, href, ...rest } = props
   return (
-    <MuiIconButton ref={ref} {...shared} href={href} {...forwarded(rest)}>
-      {mark}
-    </MuiIconButton>
+    <TooltipLabel title={name}>
+      <MuiIconButton ref={ref} {...shared} href={href} {...forwarded(rest)}>
+        {mark}
+      </MuiIconButton>
+    </TooltipLabel>
   )
 }

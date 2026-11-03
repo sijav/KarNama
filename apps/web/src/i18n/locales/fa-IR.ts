@@ -267,4 +267,5 @@ export const messages: Record<string, string> = {
   'Got the result': 'نتیجه گرفتم',
   'Its date changed': 'تاریخش عوض شد',
   'Add person': 'افزودن نفر',
+  'Copy email': 'کپی ایمیل',
 }

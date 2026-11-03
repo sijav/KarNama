@@ -87,7 +87,9 @@ export const type = {
  * `961:98862`, set 12 at Medium and at Regular on that same automatic 19, which
  * CSS's normal line for the web font rounds to 18, KN-746. The add chip,
  * `961:101245`, sets 13 on 22 at Medium, KN-750, and the add-a-person row,
- * `961:101547`, 14 on Figma's automatic 22 at Medium, KN-765.
+ * `961:101547`, 14 on Figma's automatic 22 at Medium, KN-765. The icon buttons'
+ * label tooltip, `1123:56920`, is 12 on 15 at Regular: the file sets it in Inter
+ * on its automatic line, and the product's one family draws it, KN-777.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -95,6 +97,7 @@ export const unstyledText = {
   inlineLink: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
   addStage: { size: 13, lineHeight: 22, weight: 500, letterSpacing: 0 },
   addContact: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
+  tooltipLabel: { size: 12, lineHeight: 15, weight: 400, letterSpacing: 0 },
 } as const
 
 /**

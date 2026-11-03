@@ -879,6 +879,28 @@ focus is the three pixel ring inside the edge, which the file does not draw,
 KN-765. It replaces the job modal's «+ افزودن مخاطب» when the related people
 tab is rebuilt.
 
+### The icon button's label tooltip
+
+**Tooltip / Label**, `1123:56919`, read on 2026-11-03, one component with no
+variants: an icon-only button's name on one line, `color/text/primary` under
+`color/text/on-accent`, `spacing/2xs` above and below and `spacing/xs` at the
+sides, `radius/sm`, no shadow, 23 high. Its text, `1123:56920`, is bound to no
+text style, 12 on 15 at Regular: the file sets it in Inter on Inter's automatic
+line, and Inter has no Persian letters, so the product's one family draws it on
+that 15, which keeps the frame's height. In dark the text follows its fill, as
+the Tooltip's does, KN-398. The spec beside it, `1123:57071`, gives its rules:
+every button that has only an icon names itself with it on hover or keyboard
+focus of the button itself, never of the whole row; above the button, centred,
+4 away, and below it when there is no room; it opens after about 300 ms, the
+next one too, and closes at once, with no motion either way, since the file
+draws none; its text is the button's aria-label, so it names nothing new. The
+Icon Button carries it, so the network row's, the related people tab's and the
+person window's buttons the spec draws it over get it when they are built,
+KN-777. Four icon buttons still sit in the old Tooltip, whose description wins
+there so two tips never show: the shell's settings, sign out and language, and
+the network page's add. The handoff draws none of their tips, so the sidebar's
+and the network page's cards take them off.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the

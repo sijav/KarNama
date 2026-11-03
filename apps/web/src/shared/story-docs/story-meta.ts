@@ -78,6 +78,7 @@ export type StoryTitle =
   | 'Shared/TabBar'
   | 'Shared/Tabs'
   | 'Shared/Tooltip'
+  | 'Shared/TooltipLabel'
 
 /** Storybook's `Meta`, with the title narrowed to a registered story path. */
 export type StoryMeta<TComponent> = Meta<TComponent> & { title: StoryTitle }

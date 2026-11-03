@@ -10,6 +10,10 @@ because an icon alone says nothing to a screen reader, and a blank name is
 refused: the button is left out and the mistake reported in the console, while
 the rest of the screen renders. The focus ring is drawn inside the button.
 
+It shows its name over itself on hover and on keyboard focus, in Tooltip / Label,
+as the redesign asks of every icon-only button; inside a Tooltip that already
+describes it, that tip is the only one.
+
 ## Props
 
 ### icon
@@ -103,7 +107,8 @@ rather than printing it, on its own canvas and on this page.
 
 The button as a Tooltip's trigger: it takes the tooltip's ref and the props it
 injects, so the tip opens on hover and on focus, describes the button rather
-than renaming it, and is its description from the first render.
+than renaming it, and is its description from the first render. The button's
+own label stays out, so it is the only tip.
 
 ### DisabledInATooltip
 
@@ -145,3 +150,12 @@ What reaches the button is what its types name: a Tooltip's description and
 handlers, an opener's popup, expanded and controls attributes, and the marker
 MUI's Tooltip checks for. A title, a class or a data attribute spread in beyond
 them does not reach it.
+
+### NamesItself
+
+Hovered, the button shows its own name over it, the same text it is called by,
+and stays called only that.
+
+### NamesItselfOnKeyboardFocus
+
+The same name, reached by Tab alone.

@@ -224,6 +224,9 @@ const Explained = () => {
   )
 }
 
+// Longer than the 300 ms Tooltip / Label waits before it opens, KN-777.
+const PAST_THE_LABELS_DELAY_MS = 450
+
 export const InATooltip: Story = {
   parameters: { controls: { disable: true } },
   globals: { locale: 'fa-IR' },
@@ -262,6 +265,10 @@ export const InATooltip: Story = {
     await userEvent.hover(button)
     const tip = await within(canvasElement.ownerDocument.body).findByRole('tooltip')
     await expect(tip).toHaveTextContent('این وضعیت')
+    // The button's own label stays out of a button a Tooltip describes, so past
+    // the label's 300 ms there is still the one tip, KN-777.
+    await new Promise((resolve) => window.setTimeout(resolve, PAST_THE_LABELS_DELAY_MS))
+    await expect(within(canvasElement.ownerDocument.body).getAllByRole('tooltip')).toHaveLength(1)
     await userEvent.unhover(button)
     await waitFor(async () => {
       await expect(within(canvasElement.ownerDocument.body).queryByRole('tooltip')).toBeNull()
@@ -503,5 +510,36 @@ export const ForwardsWhatItDeclares: Story = {
     await expect(button).not.toHaveAttribute('data-caller')
     await expect(button).not.toHaveAttribute('title')
     await expect(button.classList.contains('3')).toBe(false)
+  },
+}
+
+export const NamesItself: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // Tooltip / Label, KN-777: hovered, the button shows its own name over it,
+    // the same text as its aria-label, and is still called only that, with no
+    // description added. The pointer leaving takes it away.
+    const button = within(canvasElement).getByRole('button')
+    const name = button.getAttribute('aria-label') ?? ''
+    await expect(name).not.toBe('')
+    await userEvent.hover(button)
+    const tip = await within(document.body).findByRole('tooltip', {}, { timeout: 1000 })
+    await expect(tip).toHaveTextContent(name)
+    await expect(button).toHaveAccessibleName(name)
+    await expect(button).not.toHaveAttribute('aria-describedby')
+    await userEvent.unhover(button)
+    await waitFor(() => expect(within(document.body).queryByRole('tooltip')).toBeNull())
+  },
+}
+
+export const NamesItselfOnKeyboardFocus: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // The same name, reached by Tab alone.
+    const button = within(canvasElement).getByRole('button')
+    await userEvent.tab()
+    await expect(button).toHaveFocus()
+    const tip = await within(document.body).findByRole('tooltip', {}, { timeout: 1000 })
+    await expect(tip).toHaveTextContent(button.getAttribute('aria-label') ?? '')
   },
 }
