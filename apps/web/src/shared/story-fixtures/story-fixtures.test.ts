@@ -227,14 +227,22 @@ describe('story fixtures', () => {
     }
   })
 
+  it('offer what can follow an interview in both languages, the same ids on the same colours, KN-748', () => {
+    const shape = (locale: 'fa-IR' | 'en-US') =>
+      [...fixtures(locale).interviewResults, fixtures(locale).stageAfterInterview].map((option) => [option.id, option.token])
+    expect(shape('fa-IR')).toEqual(shape('en-US'))
+    // The order and the pairs Popover / نتیجهٔ مصاحبه, 844:85811, draws.
+    expect(fixtures('en-US').interviewResults.map((option) => option.token)).toEqual(['offer', 'custom-1', 'rejected', 'new'])
+  })
+
   it('name a status by its token, and refuse a set that leaves one of the nine unnamed', () => {
     expect(statusName('en-US', 'interview')).toBe(fixtures('en-US').statuses.find((entry) => entry.token === 'interview')?.name)
-    const missing: RawFixtures = { statuses: [], renamedStatus: { token: 'new', name: 'x' }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames }
+    const missing: RawFixtures = { statuses: [], renamedStatus: { token: 'new', name: 'x' }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames, interviewResults: [], stageAfterInterview: fixtures('en-US').stageAfterInterview }
     expect(() => parseFixtures(missing)).toThrow(/have no status new/)
   })
 
   it('refuse a status token that is not one of the nine', () => {
-    const bad: RawFixtures = { statuses: [{ token: 'purple-ish', name: 'x' }], renamedStatus: { token: 'new', name: 'x' }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames }
+    const bad: RawFixtures = { statuses: [{ token: 'purple-ish', name: 'x' }], renamedStatus: { token: 'new', name: 'x' }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames, interviewResults: [], stageAfterInterview: fixtures('en-US').stageAfterInterview }
     expect(() => parseFixtures(bad)).toThrow(/does not exist: purple-ish/)
   })
 })

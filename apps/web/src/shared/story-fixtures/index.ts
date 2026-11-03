@@ -130,6 +130,13 @@ export interface Fixtures {
   /** The statuses in the board's order, each with its own job opportunities. */
   board: readonly BoardColumnFixture[]
   /**
+   * What can follow an interview, in the order Popover / نتیجهٔ مصاحبه,
+   * 844:85811, offers it, each on the colour pair the file draws it in, KN-748;
+   * and a stage a reader made after interview, which it offers too.
+   */
+  interviewResults: readonly StatusOption[]
+  stageAfterInterview: StatusOption
+  /**
    * The fixtures as the product keeps them, for a story to seed a
    * `RecordsProvider` with, KN-437: every status, every job opportunity made by
    * the product's own `jobFrom` under the fixture's id, and every contact on the
@@ -149,6 +156,8 @@ export interface RawFixtures {
   extraction: ExtractionFixture
   jobDetail: Omit<JobDetailFixture, 'history'> & { history: readonly (Omit<StatusChangeFixture, 'status'> & { status: string })[] }
   mixedStatusNames: MixedStatusNamesFixture
+  interviewResults: readonly { id: string; token: string; name: string }[]
+  stageAfterInterview: { id: string; token: string; name: string }
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -210,6 +219,7 @@ const recordsOf = (statuses: readonly StatusOption[], jobs: readonly JobFixture[
 // can change what another reads.
 export const parseFixtures = (raw: RawFixtures): Fixtures => {
   const statusOf = (entry: RawFixtures['renamedStatus']): StatusFixture => Object.freeze({ ...entry, token: tokenOf(entry.token) })
+  const optionOf = (entry: RawFixtures['stageAfterInterview']): StatusOption => Object.freeze({ ...entry, token: tokenOf(entry.token) })
   const statuses = raw.statuses.map(statusOf)
   const statusOptions = Object.freeze(statuses.map((entry) => Object.freeze({ id: entry.token, token: entry.token, name: entry.name })))
   const jobs = Object.freeze(raw.jobs.map((job) => Object.freeze({ ...job, status: tokenOf(job.status) })))
@@ -253,6 +263,8 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
       ),
     ),
     records: recordsOf(statusOptions, jobs, contacts),
+    interviewResults: Object.freeze(raw.interviewResults.map(optionOf)),
+    stageAfterInterview: optionOf(raw.stageAfterInterview),
   })
 }
 

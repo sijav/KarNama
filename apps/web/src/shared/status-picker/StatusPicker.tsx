@@ -30,8 +30,9 @@ const FOCUS_RING = 3
 const EDGE = 1
 const ADD_HEIGHT = 28
 
-// The class on a choice's shell, so the radio round it can colour its ring.
-const CHOICE = 'KarnamaStatusChoice-shell'
+// The class on a choice's shell, so the radio or button round it can colour
+// its ring.
+export const CHOICE = 'KarnamaStatusChoice-shell'
 
 // A Status Choice, node 427:567: the medium Status Chip in a shell of 4 whose
 // ring is none at rest, border/default under the pointer and border/focus when

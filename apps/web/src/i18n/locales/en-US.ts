@@ -271,4 +271,5 @@ export const messages: Record<string, string> = {
   Period: 'Period',
   Daily: 'Daily',
   Weekly: 'Weekly',
+  'What was the result?': 'What was the result?',
 }

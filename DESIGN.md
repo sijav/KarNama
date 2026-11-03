@@ -195,7 +195,8 @@ shadows, and each value below was read from the named node with
 | no style, options menu | `408:487` | `#0000001F` `0 8` blur 24 spread -4 | none                       |
 | no style, contact hover | `463:698` | `#0000000F` `0 2` blur 8 spread 0 | none                        |
 | no style, card focus | `137:44` | `#2563EB2E` `0 0` blur 0 spread 3 | none                            |
-| no style, sign-in card  | `407:6952` | `#0000000F` `0 4` blur 16 spread 0  | none                               |
+| no style, sign-in card  | `407:6952`  | `#0000000F` `0 4` blur 16 spread 0  | none                               |
+| no style, popovers      | `844:85811` | `#12172614` `0 4` blur 12 spread 0  | none                               |
 
 The third row is **not an effect style**. The tooltip at `410:469` draws its own
 shadow, 24 percent black, read from the frame's `get_design_context` because
@@ -210,7 +211,9 @@ Modal style's first layer alone, at its own 12 percent, bound to no style,
 `elevation.optionsMenu`. KN-012. The sixth is the compact Contact Card's hover,
 `463:698`, 6 percent black, `elevation.contactCardHover`. KN-026. The seventh is the job card's Focus at `137:44`, a
 halo of `border/focus` at 18 percent spread 3, `elevation.cardFocus`. KN-015. The eighth is the sign-in card at `407:6952`, 6 percent black 4 below and
-blurred 16, `elevation.authCard`. KN-518. The thirteen-frame sweep below did not include `410:469`,
+blurred 16, `elevation.authCard`. KN-518. The ninth is the redesign's popovers,
+`844:85811` and the two date popovers, `755:22108` and `774:16705`, #121726 at 8
+percent 4 below and blurred 12, `elevation.popover`. KN-748. The thirteen-frame sweep below did not include `410:469`,
 which is how it was missed until KN-218 read the frame itself.
 
 An earlier version of this document said Card was the only elevation in the
@@ -244,7 +247,11 @@ documentation frame `416:21`:
 | `Label`     | 12 / 16            | Medium   |
 
 `Body` carries letter spacing 0 and `Label` carries 0.2, read from the component
-frames.
+frames. Figma tracks Persian too, but a browser does not space the letters of a
+joined script, so the 0.2 reaches only Latin text, and a Persian chip or label
+draws about 0.2 a letter narrower than the file's: measured in Chromium on
+2026-11-03, «انصراف» at 14 and Medium is as wide with 0.2 as without, while
+Rejected grows by 1.6. KN-748.
 
 **One text is bound to no style**, and it is not a sixth role: the add modal's paste
 label, `166:68`, is the Label's 12 on 19, Figma's automatic line for it, with no
@@ -993,6 +1000,32 @@ torob's alone belongs to that white drawing, so a fetched logo is drawn as it
 comes. Either way it is decorative, since the card writes the company's name
 beside it, KN-743.
 
+### The interview result popover
+
+**Popover / نتیجهٔ مصاحبه**, `844:85811`, one component, read on 2026-11-03:
+«نتیجه چی بود؟», `844:85812`, 14 on 22 at Medium in `color/text/primary`,
+bound to no text style, 12 over a row of Status Choices that wraps, 8 both
+ways, from the inline start: پیشنهاد کار on the offer pair, پذیرفته‌شده on
+custom-1, رد شده on rejected and انصراف on new, each at Default and hovering
+into Hover. It is the redesign's popover panel, which the two date popovers,
+`755:22108` and `774:16705`, draw too: 369 wide here and 276 there,
+`color/bg/surface` with one pixel of `color/border/default` inside that the
+file counts in the layout, 16 of padding and 12 between the parts, neither
+bound, a radius of 10 that is none of the scale, and `elevation.popover`; the
+code's `popoverPaper`. Its description says it opens under the card after
+«نتیجه گرفتم» on an interview's card and a press outside closes it; it offers
+only what can follow an interview, the four and any stage the reader made
+after interview, which the board works out, KN-731; one press applies, a
+closing outcome sending the card to its strip with the undo message and an
+offer to the offer column. No screen places it and no prototype opens it, so
+it hangs from the card's inline start, 4 below it, as the column's menu hangs
+from its trigger, and opens at once. A choice applies at a press, so each is a
+button rather than a radio, with the Status Picker's hover ring and its three
+pixel keyboard ring. MUI's Popover holds focus inside while it is open,
+starting on the panel, since a choice focused as it opens wears the keyboard's
+ring even when a pointer opened it, closes on Escape too, and gives focus back
+to what opened it. A named dialog: its title labels it. KN-748.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1256,6 +1289,7 @@ of the contract.
 | Contact Card        | `248:116` | Full and Compact × Default, Hover, Selected                                                     |
 | Contact Modal       | `270:152` | Add, Edit                                                                                       |
 | Color Picker        | `257:17`  | offers the nine status colour pairs, the current one marked                                     |
+| Popover / Result      | `844:85811` | what can follow an interview, one press applies; the redesign's popover panel                                     |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,

@@ -46,5 +46,12 @@
     "digitLed": "۱۲۳ استخدام کارشناس ارشد زیرساخت ابری و امنیت شبکه",
     "noLetters": "۱۲۳ ۴۵۶",
     "markLed": "\u200e۱۲۳ ۴۵۶"
-  }
+  },
+  "interviewResults": [
+    { "id": "offer", "token": "offer", "name": "Offer" },
+    { "id": "accepted", "token": "custom-1", "name": "Accepted" },
+    { "id": "rejected", "token": "rejected", "name": "Rejected" },
+    { "id": "withdrawn", "token": "new", "name": "Withdrawn" }
+  ],
+  "stageAfterInterview": { "id": "technical-test", "token": "custom-2", "name": "Technical test" }
 }

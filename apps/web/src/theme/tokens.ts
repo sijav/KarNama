@@ -102,7 +102,9 @@ export const type = {
  * `961:101245`, sets 13 on 22 at Medium, KN-750, and the add-a-person row,
  * `961:101547`, 14 on Figma's automatic 22 at Medium, KN-765. The icon buttons'
  * label tooltip, `1123:56920`, is 12 on 15 at Regular: the file sets it in Inter
- * on its automatic line, and the product's one family draws it, KN-777.
+ * on its automatic line, and the product's one family draws it, KN-777. The
+ * interview result popover's title, `844:85812`, is 14 on Figma's automatic 22
+ * at Medium, KN-748.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -111,16 +113,18 @@ export const unstyledText = {
   addStage: { size: 13, lineHeight: 22, weight: 500, letterSpacing: 0 },
   addContact: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
   tooltipLabel: { size: 12, lineHeight: 15, weight: 400, letterSpacing: 0 },
+  interviewResult: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
 } as const
 
 /**
- * The two effect styles, and six shadows that are not styles. A card sits on
+ * The two effect styles, and seven shadows that are not styles. A card sits on
  * the page, a modal sits above everything. The tooltip at `410:469`, the Bulk
  * Action Bar at `401:436`, the Options Menu at `408:487`, the compact
- * Contact Card's hover at `463:698`, the job card's focus at `137:44` and the
- * sign-in card at `407:6952` each draw their own
- * unnamed shadow, bound to no effect style, so each is named here for the
- * surface that uses it. KN-218, KN-025, KN-012, KN-026, KN-015, KN-518.
+ * Contact Card's hover at `463:698`, the job card's focus at `137:44`, the
+ * sign-in card at `407:6952` and the redesign's popovers at `844:85811` each
+ * draw their own unnamed shadow, bound to no effect style, so each is named
+ * here for the surface that uses it. KN-218, KN-025, KN-012, KN-026, KN-015,
+ * KN-518, KN-748.
  */
 export const elevation = {
   card: '0 1px 3px 0 #0000000F, 0 1px 2px 0 #0000000A',
@@ -131,6 +135,7 @@ export const elevation = {
   contactCardHover: '0 2px 8px 0 #0000000F',
   cardFocus: '0 0 0 3px #2563EB2E',
   authCard: '0 4px 16px 0 #0000000F',
+  popover: '0 4px 12px 0 #12172614',
 } as const
 
 export const fontFamily = "'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif"

@@ -50,6 +50,7 @@ export type StoryTitle =
   | 'Shared/Icon'
   | 'Shared/IconButton'
   | 'Shared/InlineLink'
+  | 'Shared/InterviewResultPopover'
   | 'Shared/Input'
   | 'Shared/JobCard'
   | 'Shared/JobLevelSelect'
