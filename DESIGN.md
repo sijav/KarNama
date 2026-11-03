@@ -688,8 +688,12 @@ chosen one and the arrows move and choose, the Color Picker's way; the
 keyboard's choice takes the three pixel ring, told from Selected's two
 by its width. The file uses it in the add form and the Change Status modal.
 
-The **Status Control**, `199:21`, is the clickable wrapper the card and the job
-modal put round a chip that stays display only: a pill 32 tall, `bg/surface`
+The **Status Control**, `199:21`, is the clickable wrapper the job modal puts
+round a chip that stays display only, read in the original on 2026-11-03,
+KN-797: its description says it left the card when the board became columns,
+since the column is the status, so its one use is the job modal's header. Its
+example chip now says «مصاحبه» on the interview colour, 86 wide, where the
+copy put «پیشنهاد کار» on it at 102; the drawing is the copy's: a pill 32 tall, `bg/surface`
 with one pixel of `border/default`, 4 round the small chip and 8 beyond a 14
 chevron, which is none of the icon sizes and is drawn at 14. Hover takes
 `bg/surface-secondary`; Pressed, which it shows while the picker is open, takes
@@ -1200,7 +1204,7 @@ of the contract.
 | Status Chip         | `82:2`    | 9 statuses × 2 sizes S/M, display only                                                          |
 | Status Choice       | `427:567` | Default, Hover, Selected                                                                        |
 | Status Picker       | `427:592` | the popover that assigns a status                                                               |
-| Status Control      | `199:2`   | the clickable wrapper around a chip, Default/Hover/Pressed                                      |
+| Status Control      | `199:21`  | the clickable wrapper around a chip, Default/Hover/Pressed                                      |
 | Input               | `95:39`   | Default, Filled, Focus, Error, Disabled, Hover                                                  |
 | Card                | `137:44`  | Default, Hover, Pressed, Selected, Static, Focus, desktop                                       |
 | Card / Mobile       | `491:751` | Default, Selected                                                                               |
