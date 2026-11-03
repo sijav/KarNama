@@ -86,6 +86,7 @@ export type StoryTitle =
   | 'Shared/StatusControl'
   | 'Shared/StatusMenu'
   | 'Shared/StatusPicker'
+  | 'Shared/StatusTab'
   | 'Shared/TabBar'
   | 'Shared/Tabs'
   | 'Shared/TimeList'

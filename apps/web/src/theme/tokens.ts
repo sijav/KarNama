@@ -112,7 +112,9 @@ export const type = {
  * labels at Medium: the card link, `961:95525`, 13 on 20, and the status
  * column, `961:95530`, 14 on 22, KN-758. The toast, `717:12416`, sets its
  * message 13 on 20 at Regular and its action, `956:3193`, 13 on 20 at
- * SemiBold, KN-764.
+ * SemiBold, KN-764. The mobile board's status tab, `1274:3275`, sets its count
+ * 12 on Figma's automatic 19 and its name 13 on 20, both at Medium, the name
+ * SemiBold on the chosen tab, KN-784.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -127,6 +129,8 @@ export const unstyledText = {
   addStatusColumn: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
   toastMessage: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
   toastAction: { size: 13, lineHeight: 20, weight: 600, letterSpacing: 0 },
+  statusTabCount: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+  statusTabName: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
 } as const
 
 /**

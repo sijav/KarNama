@@ -1190,6 +1190,22 @@ at the top and its name takes up to three lines, as the description says,
 where the file's text node is set to one. The bar is hidden from a screen
 reader, which reads the count. KN-781.
 
+### The mobile status tab
+
+**Tab / Status (Mobile)**, `1274:3275`, Default, Active and Add, read on 2026-11-04: a status of the mobile
+board's row of tabs, 12 on 19 for its count and 13 on 20 for its name, both at
+Medium, the name SemiBold when chosen, neither bound to a text style. A pill 36
+tall at `radius/full`, one pixel of edge counted in the layout, 14 at the sides
+and 6 between, none bound; from the inline start a dot of 8 in the status's
+base, the name and the count. Default is `color/bg/surface` edged in
+`color/border/default`, the name `color/text/primary` and the count
+`color/text/secondary`; Active is `color/bg/brand/container` edged in
+`color/text/brand` with both in it. Add is 38 by 36, 10 at the sides, dashed in
+`color/border/default` round the set's plus at 16 in `color/text/secondary`.
+Each tab is a tab of the row the board makes a tablist, KN-826, named by its
+name and count, the chosen one the row's Tab stop; the add tab is a button
+named «افزودن وضعیت»; the keyboard's ring is three inside the edge. KN-784.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1464,6 +1480,7 @@ of the contract.
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |
+| Status Tab (Mobile)   | `1274:3275`  | Default, Active, Add: the mobile board's status tabs                                                              |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,
