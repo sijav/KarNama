@@ -53,6 +53,7 @@ export type StoryTitle =
   | 'Shared/LanguageFlag'
   | 'Shared/LanguageSwitch'
   | 'Shared/LoadingState'
+  | 'Shared/LogoMark'
   | 'Shared/Menu'
   | 'Shared/Modal'
   | 'Shared/Navigation'

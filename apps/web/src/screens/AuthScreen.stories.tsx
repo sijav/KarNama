@@ -388,7 +388,10 @@ const cardIsTheFrames = async (
   const i18n = i18nFor(locale)
   const name = i18n._('KarNama')
   await expect(within(brand).getByText(name)).toBeInTheDocument()
-  await expect(within(brand).getByText(name.charAt(0)).getBoundingClientRect().height).toBe(32)
+  // The mark, node 576:7665, 32 square in the brand row, KN-742.
+  const mark = brand.querySelector('svg')
+  if (!mark) throw new Error('the brand row has no mark')
+  await expect(mark.getBoundingClientRect().height).toBe(32)
   const [titleLine, bodyLine] = [...heading.children]
   if (!(titleLine instanceof HTMLElement) || !(bodyLine instanceof HTMLElement)) throw new Error('the heading has no title and body')
   await expect(titleLine).toHaveTextContent(title)

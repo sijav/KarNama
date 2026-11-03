@@ -37,26 +37,22 @@ const computed = (host: HTMLElement, value: string) => {
   return result
 }
 
-// What nodes 406:451 and 407:6953 draw, in either direction: a 32 row, the 32
-// mark of radius md in bg/brand/default at the inline start with the name's
-// first letter at 16 and SemiBold in text/on-accent, and 8 after it the name at
-// 20 and SemiBold in text/primary.
+// What node 407:6953 draws, in either direction: a 32 row, the 32 mark of node
+// 576:7665 at the inline start, decoration beside the name, and 8 after it the
+// name at 20 and SemiBold in text/primary. The mark's own drawing is LogoMark's
+// stories' to measure.
 const isTheFiles = async (canvasElement: HTMLElement, locale: Locale) => {
   const name = nameIn(locale)
-  const mark = within(canvasElement).getByText(name.charAt(0))
   const text = within(canvasElement).getByText(name)
-  const row = mark.parentElement
-  if (!row || text.parentElement !== row) throw new Error('the mark and the name are not one row')
+  const row = text.parentElement
+  const mark = row?.querySelector('svg')
+  if (!row || mark?.parentElement !== row) throw new Error('the mark and the name are not one row')
   const rowBox = row.getBoundingClientRect()
   const markBox = mark.getBoundingClientRect()
   const textBox = text.getBoundingClientRect()
   await expect(rowBox.height).toBe(32)
   await expect([markBox.width, markBox.height]).toEqual([32, 32])
-  const markStyle = getComputedStyle(mark)
-  await expect(px(markStyle.borderTopLeftRadius)).toBe(8)
-  await expect(markStyle.backgroundColor).toBe(computed(row, semantic['bg/brand/default']))
-  await expect(markStyle.color).toBe(computed(row, semantic['text/on-accent']))
-  await expect([px(markStyle.fontSize), markStyle.fontWeight]).toEqual([16, '600'])
+  await expect(mark.getAttribute('aria-hidden')).toBe('true')
   const textStyle = getComputedStyle(text)
   await expect([px(textStyle.fontSize), textStyle.fontWeight]).toEqual([20, '600'])
   await expect(textStyle.color).toBe(computed(row, semantic['text/primary']))

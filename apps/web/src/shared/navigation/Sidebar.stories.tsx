@@ -92,7 +92,8 @@ export const Default: Story = {
     await labelIsReadable(aside)
     const sidebar = within(aside)
     await expect(sidebar.getByText('کارنما')).toBeInTheDocument()
-    await expect(sidebar.getByText('ک')).toBeInTheDocument()
+    // The mark, node 576:7665, at the start of the Brand Row, KN-742.
+    await expect(aside.children.item(0)?.querySelector('svg')?.getBoundingClientRect().width).toBe(32)
     // The name and the phone the Controls hold, found in the User Row, which
     // follows the Brand Row as 406:451 and 406:457 draw them, so text the rest of
     // the sidebar prints is never found twice; the phone as the Sidebar's own
@@ -204,7 +205,9 @@ export const InEnglish: Story = {
     // this story pins, KN-574.
     const aside = asideIn(canvasElement)
     await expect(px(getComputedStyle(aside).borderRightWidth)).toBe(1)
-    await expect(within(aside).getByText('K')).toBeInTheDocument()
+    const mark = aside.children.item(0)?.querySelector('svg')
+    if (!mark) throw new Error('the sidebar draws no brand mark')
+    await expect(mark.getBoundingClientRect().left).toBeLessThan(aside.getBoundingClientRect().left + aside.getBoundingClientRect().width / 2)
     const userRow = aside.children.item(1)
     if (!(userRow instanceof HTMLElement)) throw new Error('the sidebar has no user row')
     if (args.userPhone !== undefined && args.userPhone !== '') {

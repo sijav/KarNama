@@ -821,6 +821,22 @@ column is open. **No other column has one at all.** A header that folds on a
 press nobody can see coming hides a reader's work by accident, and the board
 passing this to every column is what the owner met. KN-493.
 
+### The brand mark
+
+`576:7665`, read on 2026-11-03 from the original file: a K made of a capsule
+and two leaves, 32 by 32 and no other size, one variant. Its exported asset is
+three paths, the capsule and the upper leaf filled `color/bg/brand/default` and
+the lower leaf `color/gray/200`, the two variables `get_variable_defs` names on
+the node. The code keeps the asset's geometry exactly and takes both fills from
+the theme, so the derived dark palette reaches the mark, KN-742. It is
+decoration beside the product's name, and a mark has no direction, so it is
+never mirrored. The Brand Row, at the sidebar's top and on the sign-in card,
+`407:6953`, draws it with the name 8 after it, in place of the name's first
+letter on a blue square that the old copy drew. The lower leaf is quiet by
+design, 1.24 to 1 on white in the light scheme; the derived dark one keeps that,
+1.33 to 1 on the dark sidebar, measured 2026-11-03, and a mark is exempt from
+the contrast minimum.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
