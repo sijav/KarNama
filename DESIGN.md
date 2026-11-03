@@ -901,6 +901,26 @@ there so two tips never show: the shell's settings, sign out and language, and
 the network page's add. The handoff draws none of their tips, so the sidebar's
 and the network page's cards take them off.
 
+### The period switch
+
+**Stats / Period Switch**, `1236:3207`, Value=روزانه and Value=هفتگی, read on
+2026-11-03: daily or weekly for the Stats page's applications card, with no
+monthly, the decision of 1 Aban. A row 32 high on `color/bg/surface-secondary`,
+`spacing/2xs` round it and between its options, `radius/md`; each option 24
+high, `spacing/2xs` above and below and `spacing/sm` at the sides, round
+`radius/sm`, its word in Label, the chosen one on `color/bg/surface` in
+`color/text/primary` and the other with no fill in `color/text/secondary`;
+daily at the inline start. The file draws no hover and no focus, so there is
+no hover, and keyboard focus is the three pixel ring inside the pill, KN-782.
+The unchosen word is `color/text/secondary`, as the file binds it, which axe
+measures at 4.39 to one on the track, under the 4.5 a 12 pixel word needs; the
+handoff's `color/text/secondary-strong`, #4B5563, is its colour for text on
+`color/bg/surface-secondary`, and the switch takes it when KN-730 adds it.
+It is a native radio group, as the Color Picker's is, one Tab stop with the
+arrows moving and choosing, KN-301. Daily for the first four weeks from the
+first application and weekly after is the page's default to give it, as is
+what each period draws, which DESIGN-HANDOFF.md's Stats rules set.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the

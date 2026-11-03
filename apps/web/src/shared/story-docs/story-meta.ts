@@ -64,6 +64,7 @@ export type StoryTitle =
   | 'Shared/NavItem'
   | 'Shared/PageHeader'
   | 'Shared/PanelModal'
+  | 'Shared/PeriodSwitch'
   | 'Shared/SearchBar'
   | 'Shared/SettingsControl'
   | 'Shared/SettingsDialog'

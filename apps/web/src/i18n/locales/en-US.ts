@@ -268,4 +268,7 @@ export const messages: Record<string, string> = {
   'Its date changed': 'Its date changed',
   'Add person': 'Add person',
   'Copy email': 'Copy email',
+  Period: 'Period',
+  Daily: 'Daily',
+  Weekly: 'Weekly',
 }
