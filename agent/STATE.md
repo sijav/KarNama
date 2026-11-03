@@ -20,44 +20,60 @@ Playwright. NestJS, GraphQL code first, Prisma, Postgres on **Neon**. The web at
 `/storybook/`, the API on Render. lingui, **English ids**. **Components first
 with their stories, then screens. Match the design exactly.**
 
-## Where things stand, 2026-11-03
+## Where things stand, 2026-11-03, evening
 
 **The owner's order: the design, then the backend, then the rest.** OKR-3, the
-redesign, is position 1 with 104 cards, KN-729 to KN-833 and KN-767 dropped;
-OKR-4, the backend, is position 2; OKR-1 and OKR-2 follow. Within the design
-every component card is `critical`, new and redrawn alike, ahead of the record
-model (KN-731 to KN-741) and the screens (KN-805 to KN-828), each screen blocked
-on the components it composes. KN-829 reads every older card against the
-redesign last.
+redesign, is position 1; OKR-4, the backend, position 2; OKR-1 and OKR-2 follow.
+Within the design every component card is `critical`, new and redrawn alike,
+ahead of the record model (KN-731 to KN-741) and the screens (KN-805 to KN-828).
+KN-829 reads every older card against the redesign last.
+
+**Done today in OKR-3**: KN-729 the tokens' pointers, KN-742 the brand mark,
+KN-746 the action chip and inline link, KN-750 the add stage chip, KN-765 the
+add-a-person row, KN-768 the extraction loading (the Loading State redrawn as
+three dots with no text on screen, the owner's decision of 1 Aban; the status
+still explains a cold start to a screen reader), and KN-777 the icon button's
+label tooltip (Tooltip / Label, which every Icon Button now carries). KN-619
+closed with KN-768's docs and KN-615 on the published build; KN-616's turning
+arc was dropped as superseded.
+
+**Blocked on KN-785**, the Button's redrawn small size: KN-774 the company match
+and KN-779 the stats guidance both compose Button / S, which the redesign fills
+with `bg/surface` where the code's Secondary has none. Check each new card's
+node for a Button / S before building it. KN-763 waits on KN-837 and KN-838,
+Popover / Close and the modal shell's close.
 
 **The redesign** is in the original Figma file `K1EP8GCOmelU8o4vPR7a9f`,
-Screens `5:7`, with the designer's handoff in `DESIGN-HANDOFF.md`. DESIGN.md's
-head says which of its sections still transcribe the old copy. The handoff's
-first open item is whether extraction can run without AI, KN-831; nothing
-changes in extraction until the owner decides.
+Screens `5:7`, with the designer's handoff in `DESIGN-HANDOFF.md`. Prototype
+motion is not exported by the MCP's `get_motion_context`: read a variant's
+reactions with use_figma, and remember Figma's After delay counts from arrival.
 
-**The domain, KN-728, is done**: the app, its assets and Storybook answer at the
-root of kar-nama.ir. **The backend is not**: the live API answers every origin
-with `access-control-allow-origin https://sijav.github.io`, because Render keeps
-the WEB_ORIGIN it was created with. KN-836 lets the code allow
-`https://kar-nama.ir` and moves an http reader to https, since Render rebuilds on
-every push; KN-834 verifies the whole path once the owner sets WEB_ORIGIN and
-Cloudflare's Always Use HTTPS. Both wait in OKR-4 behind the design.
+**The backend is not done**: the live API answers every origin with
+`access-control-allow-origin https://sijav.github.io`, because Render keeps the
+WEB_ORIGIN it was created with. KN-836 lets the code allow `https://kar-nama.ir`
+and moves an http reader to https; KN-834 verifies the whole path once the owner
+sets WEB_ORIGIN and Cloudflare's Always Use HTTPS. Both wait in OKR-4.
 
 **Roasts** run on Sonnet 5.5 through the claude CLI, `agent/scripts/roast-sonnet.py`,
-with `--remote-control`, one session per kind of roast in
-`.claude/claude-sessions/`, and Luna's prefix, `agent/scripts/roast-sonnet-prefix.txt`.
-Each closed card is roasted in the background to `.claude/roasts/`; **none is
-judged until every to-do is done**, then all are read and filed. KN-728 has two
-rounds recorded, the second through the CLI, with KN-834 and KN-835 filed.
+with `--remote-control`, one session per kind in `.claude/claude-sessions/`,
+and Luna's prefix. Each closed card is roasted in the background to
+`.claude/roasts/`; **none is judged until every to-do is done**. Records so far:
+KN-728, KN-729, KN-742, KN-746, KN-750, KN-765, KN-768, KN-619, then KN-777 and
+KN-615. A launcher in
+the scratchpad, `roast-768.py`, shows how to pass the arguments from Python.
 
 ## What fails, and which failures are known
 
-`npm test` exits 1, and none of it is new work. Take the failures one at a time:
-`session.test.ts`'s two, KN-551; a pointer-driven set that moves between runs,
-KN-699 and KN-365; `apps/api`'s eight database timeouts and its coverage at
-80.37 percent, KN-486. The retired verifiers KN-001 and KN-002 fail on their own:
-both call the old board script or read the archived `agent/board.json`.
+`npm test` exits 1, and none of it is new work: `session.test.ts`'s two, KN-551;
+the Input's Multiline timing out typing about 800 characters and spilling them
+into the next two stories, and JobCard Pressed, KN-699; the real pointer moving
+between parallel files, which fails Button Matrix and ContactCard Full On A
+Phone, KN-365; `apps/api`'s database timeouts and coverage, KN-486. **The runner
+draws several story files in one page at once**, so a story never asks the
+browser for something page-wide, such as reduced motion: read the rule off the
+style sheets instead, as LoadingState's ReducedMotion does. **Search the board
+before filing a failure**: KN-839 and KN-840 were filed and dropped as
+duplicates of KN-551 and KN-699 today.
 
 ## Drift, and the method
 
