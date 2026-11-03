@@ -86,13 +86,15 @@ export const type = {
  * letter spacing, KN-359. The action chip, `961:98854`, and the inline link,
  * `961:98862`, set 12 at Medium and at Regular on that same automatic 19, which
  * CSS's normal line for the web font rounds to 18, KN-746. The add chip,
- * `961:101245`, sets 13 on 22 at Medium, KN-750.
+ * `961:101245`, sets 13 on 22 at Medium, KN-750, and the add-a-person row,
+ * `961:101547`, 14 on Figma's automatic 22 at Medium, KN-765.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
   actionChip: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
   inlineLink: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
   addStage: { size: 13, lineHeight: 22, weight: 500, letterSpacing: 0 },
+  addContact: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
 } as const
 
 /**

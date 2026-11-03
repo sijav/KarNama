@@ -266,4 +266,5 @@ export const messages: Record<string, string> = {
   'contacts are deleted for good and cannot be brought back.': 'مخاطب برای همیشه حذف می‌شوند و برگشتی ندارند.',
   'Got the result': 'نتیجه گرفتم',
   'Its date changed': 'تاریخش عوض شد',
+  'Add person': 'افزودن نفر',
 }

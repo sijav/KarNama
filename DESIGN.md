@@ -863,6 +863,19 @@ Icon set's plus at 16 and, 4 after it, the label at Medium, both in
 leads the label, on its right in Persian. Keyboard focus is the three pixel
 ring in `border/focus` inside the edge, which the file does not draw, KN-750.
 
+### The add-a-person row
+
+**Add Contact**, `961:101547`, Default and Hover, read on 2026-11-03, its label
+14 on 22: the dashed «+ افزودن نفر» that ends the related people. As wide as
+what holds it, 672 in the file, and 46 high: an edge of one in
+`color/border/default` dashed 6 and 4 in the file and CSS's own dash here,
+drawn inside and out of the layout; `radius/md`; `spacing/sm` above and below;
+the plus at 16 leading the label at Medium, both `color/text/brand`, centred and
+`spacing/xs` apart; Hover fills it with `color/bg/surface-secondary`. Keyboard
+focus is the three pixel ring inside the edge, which the file does not draw,
+KN-765. It replaces the job modal's «+ افزودن مخاطب» when the related people
+tab is rebuilt.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
