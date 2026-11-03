@@ -1047,6 +1047,27 @@ Enter chooses, and told to it puts focus on the chosen time as it opens; the
 keyboard's row takes the Hover fill and the three pixel ring of the Select's
 rows. KN-755.
 
+### The board's add links
+
+**Board / Add Card Link**, `961:95525`, Default and Hover, read on 2026-11-03:
+a row the cards' 276 wide and 36 tall, 8 above and below, 12 at the sides and
+6 between, a radius of 8, none bound; the set's plus at 16 leads «افزودن فرصت
+شغلی» in 13 on 20 at Medium, both in `color/text/secondary`, and Hover fills
+it with `color/bg/surface-secondary`. Its description puts it right after a
+column's last card, opening the add modal with the column's status, so its
+name is «افزودن فرصت شغلی به» and the column's name, beginning with the words
+it shows. **Board / Add Status Column**, `961:95530`, Default and Hover: 300
+by 50, a stage column's width, an edge of one dashed 5 and 4 in
+`color/text/disabled` counted in the layout, 13 above and below, 16 at the
+sides and 8 between, a radius of 16, none bound; the plus at 18, none of the
+icon sizes and drawn from the set's geometry, leads «افزودن وضعیت» in
+14 on 22 at Medium, both in `color/text/secondary` and centred, and Hover fills it
+with `color/bg/surface-secondary`. Its description: an empty column that makes
+a new stage, always beside the open stages. The file draws neither a focus, so
+each takes the Add Stage's ring, three of `color/border/focus` inside. They
+replace the old file's Add Card, `241:142`, and Add Column, `241:34`, which
+the board still draws until KN-805 builds it from the redesign. KN-758.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1312,6 +1333,8 @@ of the contract.
 | Color Picker        | `257:17`  | offers the nine status colour pairs, the current one marked                                     |
 | Popover / Result      | `844:85811` | what can follow an interview, one press applies; the redesign's popover panel                                     |
 | Time List             | `774:16897` | the day's half-hours, six shown; Time Item `786:1753` Default, Hover, Selected                                    |
+| Add Card Link         | `961:95525` | Default, Hover: after a column's last card, adds to that column                                                   |
+| Add Status Column     | `961:95530` | Default, Hover: a dashed stage-wide column that makes a stage                                                     |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,

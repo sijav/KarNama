@@ -136,6 +136,8 @@ describe('the token set agrees with DESIGN.md', () => {
       tooltipLabel: { size: 12, lineHeight: 15, weight: 400, letterSpacing: 0 },
       interviewResult: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
       timeItem: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
+      addCardLink: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
+      addStatusColumn: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
     })
     expect(design).toMatch(/`166:68`[^\n]*12 on 19/)
     expect(design).toMatch(/`961:98854`[^.]*12 on 19/)
@@ -145,6 +147,8 @@ describe('the token set agrees with DESIGN.md', () => {
     expect(design).toMatch(/`1123:56920`[^.]*12 on 15/)
     expect(design).toMatch(/`844:85812`[^.]*14 on 22/)
     expect(design).toMatch(/`786:1753`[^.]*13 on 20/)
+    expect(design).toMatch(/`961:95525`[^.]*13 on 20/)
+    expect(design).toMatch(/`961:95530`[^.]*14 on 22/)
   })
 
   it('has nine statuses, five default and four reserved', () => {

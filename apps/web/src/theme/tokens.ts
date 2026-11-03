@@ -105,7 +105,9 @@ export const type = {
  * on its automatic line, and the product's one family draws it, KN-777. The
  * interview result popover's title, `844:85812`, is 14 on Figma's automatic 22
  * at Medium, KN-748, and the time list's times, `786:1753`, 13 on its automatic
- * 20 at Regular, Medium when chosen, KN-755.
+ * 20 at Regular, Medium when chosen, KN-755. The board's add links set their
+ * labels at Medium: the card link, `961:95525`, 13 on 20, and the status
+ * column, `961:95530`, 14 on 22, KN-758.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -116,6 +118,8 @@ export const unstyledText = {
   tooltipLabel: { size: 12, lineHeight: 15, weight: 400, letterSpacing: 0 },
   interviewResult: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
   timeItem: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
+  addCardLink: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
+  addStatusColumn: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
 } as const
 
 /**
