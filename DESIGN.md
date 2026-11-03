@@ -851,6 +851,18 @@ its Hover draws exactly what its Default does, so nothing changes on hover.
 Neither draws a focus, so the chip takes the Icon Button's ring, three in
 `border/focus` inside the edge, and the link a three pixel outline round it.
 
+### The add stage chip
+
+**Add Stage**, `961:101245`, Default and Hover, read on 2026-11-03, its label
+13 on 22: the dashed «+ افزودن وضعیت» that ends the grouped picker's open stages.
+A pill 126 by 30, an
+edge of one in `color/bg/brand/default` dashed 4 and 3 in the file and CSS's own
+dash here, counted in the layout; 3 above and below and 12 at the sides; the
+Icon set's plus at 16 and, 4 after it, the label at Medium, both in
+`color/text/brand`; Hover fills it with `color/bg/surface-secondary`. The plus
+leads the label, on its right in Persian. Keyboard focus is the three pixel
+ring in `border/focus` inside the edge, which the file does not draw, KN-750.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
