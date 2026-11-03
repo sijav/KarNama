@@ -43,3 +43,16 @@ time.
 ### InEnglish
 
 The menu in English, hanging from the trigger's right edge.
+
+### DestructiveHover
+
+The pointer over the destructive item: a pale red under its red word.
+
+### DestructiveHoverInDark
+
+The same in the dark scheme, in the theme's dark red.
+
+### DestructiveFocused
+
+The destructive item reached by the keyboard, with the same pale red and the
+focus ring.

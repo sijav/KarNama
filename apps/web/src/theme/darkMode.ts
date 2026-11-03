@@ -221,7 +221,7 @@ export const deriveDarkFill = (hex: string): string => {
  * under its own text, KN-272. One list, which the palette derives and the tests
  * read, so the two cannot disagree about which tokens are fills.
  */
-export const DARK_FILLS = ['bg/brand/container', 'accent/200'] as const satisfies readonly (keyof typeof semantic)[]
+export const DARK_FILLS = ['bg/brand/container', 'accent/200', 'red/100'] as const satisfies readonly (keyof typeof semantic)[]
 
 /** The surface everything is read against, computed once so the text rows can cite it. */
 const darkSurface = deriveDarkSurface(semantic['bg/surface'])
@@ -341,6 +341,9 @@ export const darkSemantic = {
   // darker than its hover, KN-319.
   'accent/700': brandPressed,
   'gray/200': deriveDark(semantic['gray/200']),
+  // A fill, one of DARK_FILLS: a hovered destructive menu item, under
+  // text/error, KN-793.
+  'red/100': deriveDarkFill(semantic['red/100']),
   // A fill, the Destructive button's pressed state, a step darker than the danger
   // hover, KN-319.
   'red/700': dangerPressed,

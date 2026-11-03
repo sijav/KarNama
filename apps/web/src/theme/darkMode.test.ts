@@ -357,6 +357,11 @@ describe('the fills are dark tints of their own hue, and what sits on them reads
     expect(contrast(semantic['text/brand'], semantic['bg/brand/container'])).toBeGreaterThanOrEqual(4.5)
     expect(contrast(semantic['border/focus'], semantic['bg/brand/container'])).toBeGreaterThanOrEqual(3)
   })
+
+  it('text/error clears 4.5:1 on red/100 in both schemes, as a hovered destructive menu item draws it, KN-793', () => {
+    expect(contrast(semantic['text/error'], semantic['red/100'])).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(darkSemantic['text/error'], darkSemantic['red/100'])).toBeGreaterThanOrEqual(4.5)
+  })
 })
 
 describe('the old assertions, kept', () => {

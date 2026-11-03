@@ -94,6 +94,7 @@ gets added to the palette with a name, it does not get inlined.
 | `accent/200`                | `#bfdbfe` |
 | `accent/700`                | `#1e40af` |
 | `gray/200`                  | `#e5e7eb` |
+| `red/100`              | `#fee2e2`   |
 | `red/700`                   | `#b91c1c` |
 | `overlay/scrim`             | `#00000080` |
 
@@ -111,6 +112,7 @@ frame it was read from with `get_variable_defs`. Do not delete them as strays.
 | `accent/700`         | `31:4`    | `#1e40af` | a primitive, not a role                       |
 | `gray/200`           | `31:4`    | `#e5e7eb` | a primitive, the same value as `border/default` |
 | `red/700`            | `31:4`    | `#b91c1c` | a primitive, the value `text/error` resolves to |
+| `red/100`           | `961:2491` | `#fee2e2`   | a primitive, the Menu Item's Destructive Hover         |
 | `text/error`         | `95:39`   | `#b91c1c` | the Input error state                         |
 | `black/base`         | `31:4`    | `#000000` | the base the two elevation shadows take alpha from |
 | `overlay/scrim`      | `377:6244` | `#00000080` | black at half behind a modal, the variable's own alpha |
@@ -703,12 +705,14 @@ Node `512:8350`: fixed at 220, `bg/surface`, one pixel of `border/default`
 inside, radius md, 4 above and below its items, `Elevation/Card`. Its items,
 `181:22`, are 40 tall with 12 of padding, Body at Regular, where the Option
 Row's names are Medium: Default `text/primary`, Hover `bg/surface-secondary`,
-Disabled `text/disabled`, Destructive `text/error`. Both menus end with their
+Disabled `text/disabled`, Destructive `text/error`, and, read in the original on
+2026-11-03, Destructive Hover, `961:2491`, `red/100` under `text/error`, into
+which the Destructive item now hovers, KN-793. Both menus end with their
 delete after a one pixel divider, so a destructive item is told apart by its
 place and its verb as well as its red. The menu opens instantly, hangs from its
 trigger's inline end, closes on Escape or a press outside, and gives focus back
-to the trigger. The file draws no focused item; the keyboard's takes the Hover
-fill and the three pixel ring drawn inside. KN-018.
+to the trigger. The file draws no focused item; the keyboard's takes its hover
+fill, the grey or the red, and the three pixel ring drawn inside. KN-018.
 
 **Type=Status** is the column's menu: «تغییر نام», «تغییر رنگ», «حذف وضعیت». Delete
 blocked, `259:295`, is the Disabled item with the reason in a Tooltip beside the
@@ -1162,7 +1166,7 @@ of the contract.
 | Filter Chip         | `159:71`  | Default, Hover, Pressed, Selected, doubles as the status counter                                |
 | Empty State         | `159:80`  | title and body as text properties, a required Primary M action; no screen in the redesign uses it |
 | Loading / Extract   | `1031:3818` | Step 1, 2 and 3: three dots and no text, the owner's decision of 1 Aban; the status says why past fifteen seconds |
-| Menu Item           | `181:22`  | Default, Hover, Disabled, Destructive                                                           |
+| Menu Item           | `181:22`  | Default, Hover, Disabled, Destructive, Destructive Hover                                                         |
 | Menu                | `512:8350`| Type=Status, Type=Card                                                                          |
 | Select              | `183:26`  | Default, Filled, Focus, Disabled, Open                                                          |
 | Option Row          | `408:465` | Default, Hover, Selected, Disabled                                                              |

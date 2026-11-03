@@ -81,6 +81,9 @@ export const Menu = ({ label, anchorEl, actions, onClose }: MenuProps) => {
             sx={(theme) => {
               const colour = theme.karnama.semantic
               const text = blocked ? colour['text/disabled'] : action.destructive === true ? colour['text/error'] : colour['text/primary']
+              // State=Hover's grey, or State=Destructive Hover's red/100 for a
+              // destructive item, 961:2491, KN-793; keyboard focus takes it too.
+              const hover = action.destructive === true ? colour['red/100'] : colour['bg/surface-secondary']
               return {
                 position: 'relative',
                 boxSizing: 'border-box',
@@ -95,7 +98,7 @@ export const Menu = ({ label, anchorEl, actions, onClose }: MenuProps) => {
                 letterSpacing: typeScale.body.letterSpacing,
                 color: text,
                 cursor: blocked ? 'default' : 'pointer',
-                '&:hover, &.Mui-focusVisible': { backgroundColor: blocked ? 'transparent' : colour['bg/surface-secondary'] },
+                '&:hover, &.Mui-focusVisible': { backgroundColor: blocked ? 'transparent' : hover },
                 '&.Mui-focusVisible::after': {
                   content: '""',
                   position: 'absolute',

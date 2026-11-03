@@ -38,6 +38,9 @@ export const semantic = {
   'accent/200': '#bfdbfe',
   'accent/700': '#1e40af',
   'gray/200': '#e5e7eb',
+  // A fill, the Menu Item's Destructive Hover, 961:2491, under text/error: a
+  // Primitives variable the file binds there directly, KN-793.
+  'red/100': '#fee2e2',
   'red/700': '#b91c1c',
   'overlay/scrim': '#00000080',
 } as const

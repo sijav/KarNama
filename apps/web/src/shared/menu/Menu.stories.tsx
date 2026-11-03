@@ -7,6 +7,7 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import type { Locale } from '../../i18n'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
+import { darkSemantic } from '../../theme/darkMode'
 import { elevation, semantic, spacing } from '../../theme/tokens'
 import { IconButton } from '../icon-button'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -182,6 +183,60 @@ export const InEnglish: Story = {
     const trigger = within(canvasElement).getByRole('button')
     const menu = await open(canvasElement)
     await expect(Math.round(menu.getBoundingClientRect().right)).toBe(Math.round(trigger.getBoundingClientRect().right))
+    await userEvent.keyboard('{Escape}')
+  },
+}
+
+// The last item, the destructive one, with the menu open.
+const destructiveIn = async (canvasElement: HTMLElement) => {
+  const item = itemsOf(await open(canvasElement)).at(-1)
+  if (!item) throw new Error('the menu has no items')
+  return item
+}
+
+// State=Destructive Hover, 961:2491, under the runner's own pointer, KN-225:
+// red/100 under the same text/error. Worked out before waiting, KN-014.
+const hoversRed = async (canvasElement: HTMLElement, palette: Record<keyof typeof semantic, string>) => {
+  if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
+    if (import.meta.env.MODE !== 'test') return
+    throw new Error(
+      'A destructive hover story is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets',
+    )
+  }
+  const browser = await import('vitest/browser')
+  const item = await destructiveIn(canvasElement)
+  const [fill, text] = [computed(item, 'color', palette['red/100']), computed(item, 'color', palette['text/error'])]
+  await browser.userEvent.hover(item)
+  await waitFor(() => expect(getComputedStyle(item).backgroundColor).toBe(fill))
+  await expect(getComputedStyle(item).color).toBe(text)
+  await userEvent.keyboard('{Escape}')
+}
+
+export const DestructiveHover: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await hoversRed(canvasElement, semantic)
+  },
+}
+
+export const DestructiveHoverInDark: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    await hoversRed(canvasElement, darkSemantic)
+  },
+}
+
+export const DestructiveFocused: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // Reached by the keyboard, the last item takes the Destructive Hover fill
+    // and the three pixel ring inside it, as the plain item takes its own.
+    const item = await destructiveIn(canvasElement)
+    await userEvent.keyboard('{End}')
+    await waitFor(() => expect(item).toHaveFocus())
+    await expect(getComputedStyle(item).backgroundColor).toBe(computed(item, 'color', semantic['red/100']))
+    const ring = getComputedStyle(item, '::after')
+    await expect([ring.borderTopStyle, px(ring.borderTopWidth)]).toEqual(['solid', 3])
     await userEvent.keyboard('{Escape}')
   },
 }
