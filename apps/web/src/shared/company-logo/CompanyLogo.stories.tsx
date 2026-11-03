@@ -57,7 +57,7 @@ const isThePlaceholder = async (canvasElement: HTMLElement, palette: Record<keyo
   for (const path of paths) {
     const drawn = getComputedStyle(path)
     await expect(drawn.stroke).toBe(stroke)
-    await expect(drawn.strokeWidth).toBe('2px')
+    await expect(px(drawn.strokeWidth)).toBe(2)
     await expect(drawn.vectorEffect).toBe('non-scaling-stroke')
   }
 }
