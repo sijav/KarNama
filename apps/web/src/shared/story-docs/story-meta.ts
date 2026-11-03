@@ -72,6 +72,7 @@ export type StoryTitle =
   | 'Shared/PasteField'
   | 'Shared/PeriodSwitch'
   | 'Shared/PopoverClose'
+  | 'Shared/RelatedPerson'
   | 'Shared/SearchBar'
   | 'Shared/SettingsControl'
   | 'Shared/SettingsDialog'

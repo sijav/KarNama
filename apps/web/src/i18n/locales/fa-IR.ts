@@ -274,6 +274,8 @@ export const messages: Record<string, string> = {
   'Put the posting link or its full text here': 'لینک یا متن کامل آگهی رو اینجا بذارید',
   'A link or the full posting text; no need to separate anything.': 'هم لینک، هم متن کامل آگهی؛ لازم نیست چیزی رو جدا کنید.',
   'Manual entry': 'ورود دستی',
+  'Remove from this job opportunity': 'برداشتن از این فرصت شغلی',
+  'Copy number': 'کپی شماره',
   Undo: 'لغو',
   'Changes saved': 'تغییرات ذخیره شد',
   Time: 'ساعت',

@@ -1119,6 +1119,28 @@ the empty form, with the product's outline for the keyboard. The add modal
 takes both in KN-817, where the old copy, «لینک آگهی را بچسبان…» and «خودت دستی
 وارد کن», goes. KN-766.
 
+### The related person
+
+**Related Person**, `1096:3109`, Default and Hover, read on 2026-11-03: the job
+modal's related people row, 672 by 60, 12 above and below, 16 at the sides and
+12 between, on `color/bg/surface`. From the inline start the name in Title and
+«سمت · شرکت» in Label in `color/text/secondary`, 40 together, which reach 2
+into the padding of a row the file fixes at 60; the person's tag in a chip of
+`color/bg/surface-secondary`, 4 and 8 round its Label; and at the inline end
+three Icon Buttons 4 apart, from the row's end «برداشتن از این فرصت شغلی» with `link-off` at
+Tone=Neutral, «کپی ایمیل» with `mail` and «کپی شماره» with `phone` at
+Tone=Primary, drawn at no opacity. Hover fills the row with
+`color/bg/surface-secondary`, lifts the chip to `color/bg/surface` and shows
+the buttons. **Related Person / Mobile**, `1313:3295`, is 358 wide and hugs,
+its items at the top, the chip 4 under the role, the buttons always shown,
+since a phone has no hover. Unlinking leaves the person in the network, as the
+description and the handoff say. The code shows the desktop buttons on keyboard
+focus inside the row too, and always where there is no hover; it draws a copy
+button only when there is a value to copy; and the row is a group named by the
+person, so each button is heard with whose it is. A copy writes to the
+clipboard and tells the caller, which says so with the toast, KN-764; a refused
+clipboard says nothing. KN-773.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1389,6 +1411,7 @@ of the contract.
 | Toast                 | `956:3193`   | the action, Default, Hover; the frames' whole message `717:12416`                                                 |
 | Paste Field           | `961:101573` | Default, Hover: the add form's one-row paste field                                                                |
 | Manual Path Link      | `961:101603` | Default, Hover: the way round the paste field to the empty form                                                   |
+| Related Person        | `1096:3109`  | Default, Hover; Related Person / Mobile `1313:3295`                                                               |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,

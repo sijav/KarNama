@@ -54,5 +54,6 @@
     { "id": "withdrawn", "token": "new", "name": "انصراف" }
   ],
   "stageAfterInterview": { "id": "technical-test", "token": "custom-2", "name": "آزمون فنی" },
-  "toastMessage": "«پژوهشگر تجربه کاربری» به بی‌پاسخ منتقل شد"
+  "toastMessage": "«پژوهشگر تجربه کاربری» به بی‌پاسخ منتقل شد",
+  "contactTag": "کارشناس جذب"
 }

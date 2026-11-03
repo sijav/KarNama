@@ -54,5 +54,6 @@
     { "id": "withdrawn", "token": "new", "name": "Withdrawn" }
   ],
   "stageAfterInterview": { "id": "technical-test", "token": "custom-2", "name": "Technical test" },
-  "toastMessage": "“UX researcher” moved to No answer"
+  "toastMessage": "“UX researcher” moved to No answer",
+  "contactTag": "Recruiter"
 }

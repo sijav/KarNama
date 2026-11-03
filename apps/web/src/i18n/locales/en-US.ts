@@ -274,6 +274,8 @@ export const messages: Record<string, string> = {
   'Put the posting link or its full text here': 'Put the posting link or its full text here',
   'A link or the full posting text; no need to separate anything.': 'A link or the full posting text; no need to separate anything.',
   'Manual entry': 'Manual entry',
+  'Remove from this job opportunity': 'Remove from this job opportunity',
+  'Copy number': 'Copy number',
   Undo: 'Undo',
   'Changes saved': 'Changes saved',
   Time: 'Time',

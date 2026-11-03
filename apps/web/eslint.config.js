@@ -51,8 +51,9 @@ const structuralProps =
   // identifier, named for the same reason as the storage key. The
   // same for the class each component puts on the part its own rules select,
   // the Checkbox's frame, the Color Picker's swatch, the reveal, check, delete
-  // and opener of the two cards, and the Status Choice's shell.
-  '|TOOLTIP_SURFACE|TOOLTIP_LABEL_SURFACE|FRAME|SWATCH|REVEAL|CHECK|BIN|OPENER|CHOICE' +
+  // and opener of the two cards, the Status Choice's shell, and the Related
+  // Person's tag and actions, KN-773.
+  '|TOOLTIP_SURFACE|TOOLTIP_LABEL_SURFACE|FRAME|SWATCH|REVEAL|CHECK|BIN|OPENER|CHOICE|TAG|ACTIONS' +
   // Storybook's own vocabulary, KN-214: the colour scheme a story pins, the
   // control a prop gets and the canvas layout. Each value is one of a few
   // names Storybook defines; none is ever shown to a reader as text.
