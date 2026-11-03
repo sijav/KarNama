@@ -47,7 +47,7 @@ type Opener = Pick<AriaAttributes, 'aria-haspopup' | 'aria-expanded' | 'aria-con
 interface IconButtonBase extends Opener {
   icon: IconName | ReactElement
   'aria-label': string
-  tone?: 'neutral' | 'danger'
+  tone?: 'neutral' | 'danger' | 'primary'
   iconSize?: 'sm' | 'md'
   onClick?: () => void
 }
@@ -109,7 +109,8 @@ const forwarded = <Element extends HTMLElement>(props: TooltipTrigger<Element> &
 })
 
 // The Icon Button of node 460:672: a 32 square of radius md around a 16 icon,
-// Neutral and Danger, each at rest, hovered and disabled. The Bulk Action Bar's
+// Neutral and Danger, each at rest, hovered and disabled, and the redesign's
+// Primary at rest and hovered. The Bulk Action Bar's
 // close, 401:436, is the same square round a 20 icon, so the icon's size is a
 // prop, 16 unless told otherwise. It names itself with Tooltip / Label, its own
 // name over it on hover and on keyboard focus, as the redesign asks of every
@@ -141,10 +142,14 @@ export const IconButton = (props: IconButtonProps) => {
     // has none.
     sx: (theme: Theme) => {
         const colour = theme.karnama.semantic
+        // Each tone's Hover: Neutral's grey, Danger's red, and the redesign's
+        // Primary, the brand container under the brand text, KN-801.
         const hover =
           tone === 'danger'
             ? { fill: theme.karnama.status.rejected.container, icon: colour['text/error'] }
-            : { fill: colour['bg/surface-secondary'], icon: colour['text/primary'] }
+            : tone === 'primary'
+              ? { fill: colour['bg/brand/container'], icon: colour['text/brand'] }
+              : { fill: colour['bg/surface-secondary'], icon: colour['text/primary'] }
         return {
           position: 'relative',
           width: spacing.xl,

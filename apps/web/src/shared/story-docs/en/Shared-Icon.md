@@ -1,4 +1,4 @@
-The thirty icons of the design, from link to note, and the settings gear the
+The thirty-two icons of the design, from link to link-off, and the settings gear the
 owner added, each drawn in a 24 by 24 grid with a two pixel stroke and round
 ends.
 

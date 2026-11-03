@@ -1189,8 +1189,8 @@ of the contract.
 | Tab Item            | `204:20`  | Default, Active, Hover                                                                          |
 | Bulk Action Bar     | `401:436` | Type=Jobs, Type=Contacts                                                                        |
 | Job Modal           | `210:276` | tabs Info, Note, Contacts, Files                                                                |
-| Icon                | `239:44`  | 30 icons, 24×24, 2px stroke, round cap and join                                                 |
-| Icon Button         | `460:672` | Neutral and Danger × Default, Hover, Disabled                                                   |
+| Icon                | `239:44`  | 32 icons, 24×24, 2px stroke, round cap and join                                                 |
+| Icon Button         | `460:672` | Neutral and Danger × Default, Hover, Disabled; Primary × Default, Hover                         |
 | Contact Card        | `248:116` | Full and Compact × Default, Hover, Selected                                                     |
 | Contact Modal       | `270:152` | Add, Edit                                                                                       |
 | Color Picker        | `257:17`  | offers the nine status colour pairs, the current one marked                                     |
@@ -1198,14 +1198,14 @@ of the contract.
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,
 building, calendar, map-pin, briefcase, banknote, clock, log-out, filter, sort,
-alert-circle, user-plus, tag, layers, note. Default colour `text/secondary`,
+alert-circle, user-plus, tag, layers, note, chart, link-off. Default colour `text/secondary`,
 overridable per instance. Every icon keeps its two pixel stroke at every size: the file's
 instances resize the drawing and not the stroke, as the Color Picker's 14
 pixel check shows, so the Icon draws a non-scaling stroke, KN-008.
 
-The owner's icons, beyond the file's thirty: settings. The file draws no
+The owner's icons, beyond the file's thirty-two: settings. The file draws no
 settings, and the owner asked for one as an icon, KN-478, so the gear is
-Lucide's own `settings` from lucide-static 1.41.0, the family the file's thirty
+Lucide's own `settings` from lucide-static 1.41.0, the family the file's icons
 are redrawn from, whose `log-out` the file's matches point for point. It is
 written into the same 24 grid with the same two pixel round stroke, its arcs in
 absolute coordinates, and Lucide's ISC licence travels with it in

@@ -26,7 +26,7 @@ const meta = {
   args: { icon: 'trash', 'aria-label': '', tone: 'neutral', iconSize: 'sm', disabled: false, onClick: fn() },
   argTypes: {
     icon: { control: 'select', options: ICON_NAMES },
-    tone: { control: 'radio', options: ['neutral', 'danger'] },
+    tone: { control: 'radio', options: ['neutral', 'danger', 'primary'] },
     iconSize: { control: 'radio', options: ['sm', 'md'] },
     disabled: { control: 'boolean' },
   },
@@ -83,19 +83,30 @@ export const Danger: Story = {
   },
 }
 
+export const Primary: Story = {
+  args: { tone: 'primary' },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args, canvasElement }) => {
+    // The redesign's Primary tone, KN-801: at rest it too looks as the neutral
+    // one does, and shows only on hover.
+    await atRest(within(canvasElement).getByRole('button'), args.iconSize)
+  },
+}
+
 export const Hover: Story = {
   globals: { colorScheme: 'light' },
-  // Both tones side by side, so the tone is not a control here.
+  // The three tones side by side, so the tone is not a control here.
   parameters: { controls: { include: ['icon'] } },
   render: (args) => (
     <Box sx={{ display: 'flex', gap: `${spacing.md}px` }}>
       <Named {...args} tone="neutral" />
       <Named {...args} tone="danger" />
+      <Named {...args} tone="primary" />
     </Box>
   ),
   play: async ({ canvasElement }) => {
-    const [neutral, danger] = within(canvasElement).getAllByRole('button')
-    if (!neutral || !danger) throw new Error('fewer than two buttons')
+    const [neutral, danger, primary] = within(canvasElement).getAllByRole('button')
+    if (!neutral || !danger || !primary) throw new Error('fewer than three buttons')
     // A real pointer, since :hover is the browser's hit-testing; in the
     // published Storybook there is none to move, so hover a button yourself.
     // The runner is known by the flag .storybook/vitest.setup.ts sets, KN-225.
@@ -120,6 +131,11 @@ export const Hover: Story = {
     await browser.userEvent.hover(danger)
     await waitFor(() => expect(getComputedStyle(danger).backgroundColor).toBe(dangerFill))
     await expect(getComputedStyle(danger).color).toBe(computedColour(danger, semantic['text/error']))
+    // Primary, the redesign's, KN-801: the brand container and the brand text.
+    const primaryFill = computedColour(primary, semantic['bg/brand/container'])
+    await browser.userEvent.hover(primary)
+    await waitFor(() => expect(getComputedStyle(primary).backgroundColor).toBe(primaryFill))
+    await expect(getComputedStyle(primary).color).toBe(computedColour(primary, semantic['text/brand']))
   },
 }
 

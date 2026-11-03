@@ -90,8 +90,8 @@ export const AllIcons: Story = {
   ),
   play: async ({ args, canvasElement }) => {
     const icons = [...canvasElement.querySelectorAll('svg')]
-    // The file's thirty, and the settings gear the owner added, KN-478.
-    await expect(icons).toHaveLength(31)
+    // The file's thirty-two, and the settings gear the owner added, KN-478.
+    await expect(icons).toHaveLength(33)
     for (const svg of icons) {
       await isTheFiles(svg, iconSize[args.size ?? BASE])
       await expect(shapesOf(svg).length).toBeGreaterThan(0)

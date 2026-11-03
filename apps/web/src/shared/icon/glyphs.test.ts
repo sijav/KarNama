@@ -19,12 +19,12 @@ const listIn = (pattern: RegExp, what: string) => {
 const designList = () => listIn(/The icon set, all at 24×24: ([^.]+)\. Default colour/, 'the icon set')
 
 // The owner's icons beyond the file's, KN-478: the names after "The owner's
-// icons, beyond the file's thirty:".
-const addedList = () => listIn(/The owner's icons, beyond the file's thirty: ([^.]+)\./, "the owner's icons")
+// icons, beyond the file's thirty-two:".
+const addedList = () => listIn(/The owner's icons, beyond the file's thirty-two: ([^.]+)\./, "the owner's icons")
 
 describe('the icon set', () => {
-  it("is the thirty DESIGN.md lists, in its order, then the owner's additions", () => {
-    expect(designList()).toHaveLength(30)
+  it("is the thirty-two DESIGN.md lists, in its order, then the owner's additions", () => {
+    expect(designList()).toHaveLength(32)
     expect([...ICON_NAMES]).toEqual([...designList(), ...addedList()])
   })
 

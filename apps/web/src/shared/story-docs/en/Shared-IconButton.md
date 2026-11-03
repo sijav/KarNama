@@ -29,7 +29,8 @@ does.
 
 ### tone
 
-`neutral`, the default, or `danger` for an action that removes something.
+`neutral`, the default, `danger` for an action that removes something, or
+`primary`, which hovers in the brand's pale blue with a blue icon.
 
 ### iconSize
 
@@ -82,9 +83,13 @@ The neutral tone at rest, named.
 
 The danger tone at rest, which looks as the neutral one does.
 
+### Primary
+
+The primary tone at rest, which looks as the neutral one does.
+
 ### Hover
 
-Both tones hovered side by side. The story moves a real pointer when it runs
+The three tones hovered side by side. The story moves a real pointer when it runs
 as a test; in Storybook itself, hover a button yourself.
 
 ### Disabled
