@@ -65,6 +65,7 @@ export type StoryTitle =
   | 'Shared/PageHeader'
   | 'Shared/PanelModal'
   | 'Shared/PeriodSwitch'
+  | 'Shared/PopoverClose'
   | 'Shared/SearchBar'
   | 'Shared/SettingsControl'
   | 'Shared/SettingsDialog'

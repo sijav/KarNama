@@ -932,6 +932,20 @@ arrows moving and choosing, KN-301. Daily for the first four weeks from the
 first application and weekly after is the page's default to give it, as is
 what each period draws, which DESIGN-HANDOFF.md's Stats rules set.
 
+### The popover's close
+
+**Popover / Close**, `848:2247`, State=Default and State=Hover, read on
+2026-11-03: the Icon set's `x` at 16, its stroke of 2 in `color/text/secondary`,
+centred in a square with a radius of 6 that binds no variable; no fill at rest,
+and `color/bg/surface-secondary` on hover, into which Default's prototype
+hovers. A press closes what it sits on without a change. The date popovers draw
+it at 22, every redesigned modal's header at 20, and the Search Bar's Filled
+clear at 16, the cross 16 at every size, so the code takes the size from its
+caller, 22 by default. The file draws no focus, and a ring inside a square this
+small would cover the cross, so keyboard focus is the product's outline, two of
+`color/border/focus` at an offset of two, KN-244. It is an icon-only button, so
+it names itself with Tooltip / Label, KN-837 and KN-777.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
