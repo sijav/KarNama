@@ -3,6 +3,7 @@ import type { StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { expect, fireEvent, waitFor, within } from 'storybook/test'
 import { i18n } from '../../i18n'
+import { darkSemantic } from '../../theme/darkMode'
 import { semantic } from '../../theme/tokens'
 import { Button } from '../button'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -32,65 +33,240 @@ const computedColour = (host: HTMLElement, colour: string) => {
   return value
 }
 
-// Node 159:92 as drawn: 32 of padding, three dots of 10, 4 apart, turning one
-// after another, and the line 16 below them at 14 on 22, all in a status
-// region. The colours, border/focus and text/secondary, are the light
-// palette's, so they are read only where a story pins the light scheme.
-const drawsTheFrame = async (canvasElement: HTMLElement, { colours }: { colours: boolean }) => {
+// Whether the viewer has asked for less motion, read as the component's own
+// media query reads it. For them the dots stand on Step 1 with no animation,
+// and every story reads that frame instead of the motion, KN-615.
+const stillForTheViewer = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+// The state's parts: its status region, the box of dots, and its two out of
+// sight lines, the one it speaks and the one a panel is named by.
+const partsOf = (canvasElement: HTMLElement) => {
   const region = within(canvasElement).getByRole('status')
-  const line = region.lastElementChild
-  const dots = [...(region.firstElementChild?.children ?? [])].filter((dot) => dot instanceof HTMLElement)
-  if (!(line instanceof HTMLParagraphElement)) throw new Error('the loading state does not end in its line')
-  await expect([getComputedStyle(region).paddingTop, getComputedStyle(region).paddingLeft].map(px)).toEqual([32, 32])
-  await expect(dots).toHaveLength(3)
-  const boxes = dots.map((dot) => dot.getBoundingClientRect())
-  for (const [index, dot] of dots.entries()) {
-    const style = getComputedStyle(dot)
-    await expect([boxes[index]?.width, boxes[index]?.height]).toEqual([10, 10])
-    if (colours) await expect(style.backgroundColor).toBe(computedColour(dot, semantic['border/focus']))
-    await expect([style.animationDuration, style.animationIterationCount]).toEqual(['0.9s', 'infinite'])
-  }
-  // The turns are a third of the cycle apart, so the lit dot travels.
-  await expect(new Set(dots.map((dot) => getComputedStyle(dot).animationDelay)).size).toBe(3)
-  const [first, second] = boxes
-  if (!first || !second) throw new Error('a dot has no box')
-  await expect(Math.round(Math.abs(second.left - first.left) - 10)).toBe(4)
-  const lineStyle = getComputedStyle(line)
-  await expect([px(lineStyle.fontSize), Number(lineStyle.fontWeight), px(lineStyle.lineHeight)]).toEqual([14, 400, 22])
-  if (colours) await expect(lineStyle.color).toBe(computedColour(line, semantic['text/secondary']))
-  await expect(Math.round(line.getBoundingClientRect().top - first.bottom)).toBe(16)
-  return { line, dots }
+  const [box, spoken, line] = [...region.children]
+  if (!(box instanceof HTMLElement) || !(spoken instanceof HTMLSpanElement) || !(line instanceof HTMLParagraphElement))
+    throw new Error('the loading state is not the dots, the spoken line and the line')
+  const dots = [...box.children].filter((dot) => dot instanceof HTMLElement)
+  return { region, box, dots, spoken, line }
 }
 
-// The dots' motion read where it stands, KN-324: each dot's one animation,
-// once ready, is paused and put at a time. At 0, the frame painted first, the
-// dots are the file's, the middle one lit and the others at 0.4; a turn of
-// 300 ms on, the lit dot is the next one. They play again after.
-const startsOnTheFilesFrame = async (dots: HTMLElement[]) => {
+// Each dot as it stands, from the left of the page whatever the language: how
+// far below the top of its box it is, and how opaque.
+const frameOf = (box: HTMLElement, dots: HTMLElement[]) => {
+  const top = box.getBoundingClientRect().top
+  return dots
+    .map((dot) => ({ rect: dot.getBoundingClientRect(), opacity: Number(getComputedStyle(dot).opacity) }))
+    .sort((a, b) => a.rect.left - b.rect.left)
+    .map(({ rect, opacity }) => [rect.top - top, opacity])
+}
+
+// The variants of node 1031:3818, Step 1, 2 and 3: the lit dot, first the left
+// one, then the middle one, then the right one, at the top of the box and
+// opaque, and the other two 8 lower at 0.45.
+const STEPS = [
+  [
+    [0, 1],
+    [8, 0.45],
+    [8, 0.45],
+  ],
+  [
+    [8, 0.45],
+    [0, 1],
+    [8, 0.45],
+  ],
+  [
+    [8, 0.45],
+    [8, 0.45],
+    [0, 1],
+  ],
+] as const
+
+// The prototype's times: each step holds 300 ms, then moves to the next in 250.
+const HOLD_MS = 300
+const MOVE_MS = 250
+const STEP_MS = HOLD_MS + MOVE_MS
+
+// Node 1031:3818 as drawn, every step alike: 32 of padding round a box of 38 by
+// 22, so the frame is 102 by 86; three round dots of 10 in border/focus, 4
+// apart, at 0, 14 and 28 from the box's left in both languages; and nothing
+// else on screen, both lines being a clipped pixel out of the flow. The palette
+// is the scheme the story pins.
+const drawsTheFrame = async (canvasElement: HTMLElement, palette: Record<keyof typeof semantic, string>) => {
+  const parts = partsOf(canvasElement)
+  const { region, box, dots, spoken, line } = parts
+  const style = getComputedStyle(region)
+  await expect([style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft].map(px)).toEqual([32, 32, 32, 32])
+  const frame = region.getBoundingClientRect()
+  const area = box.getBoundingClientRect()
+  await expect([frame.width, frame.height, area.width, area.height]).toEqual([102, 86, 38, 22])
+  await expect(dots).toHaveLength(3)
+  const lefts: number[] = []
+  for (const dot of dots) {
+    const rect = dot.getBoundingClientRect()
+    const dotStyle = getComputedStyle(dot)
+    await expect([rect.width, rect.height]).toEqual([10, 10])
+    await expect(px(dotStyle.borderTopLeftRadius)).toBeGreaterThanOrEqual(5)
+    await expect(dotStyle.backgroundColor).toBe(computedColour(dot, palette['border/focus']))
+    lefts.push(rect.left - area.left)
+  }
+  await expect(lefts).toEqual([0, 14, 28])
+  for (const hidden of [spoken, line]) {
+    const rect = hidden.getBoundingClientRect()
+    const hiddenStyle = getComputedStyle(hidden)
+    await expect([rect.width, rect.height, hiddenStyle.position, hiddenStyle.overflow]).toEqual([1, 1, 'absolute', 'hidden'])
+  }
+  return parts
+}
+
+// The motion, read where it stands, KN-324: each dot's one animation, once
+// ready, is paused and put at a time, and played again after. At 0, the frame
+// painted first, the dots are Step 1, and still are at the end of its hold; a
+// step on they are Step 2, then Step 3, then Step 1 again; halfway through the
+// first move the falling dot and the rising one meet, ease in and out being
+// symmetric. For a viewer who asked for less motion there is none, and the dots
+// stand on Step 1.
+const moves = async (box: HTMLElement, dots: HTMLElement[]) => {
+  if (stillForTheViewer()) {
+    await expect(dots.map((dot) => dot.getAnimations().length)).toEqual([0, 0, 0])
+    await expect(frameOf(box, dots)).toEqual(STEPS[0])
+    return
+  }
   await expect(dots.map((dot) => dot.getAnimations().length)).toEqual([1, 1, 1])
+  for (const dot of dots) {
+    const style = getComputedStyle(dot)
+    await expect([style.animationDuration, style.animationTimingFunction, style.animationIterationCount]).toEqual([
+      '1.65s',
+      'ease-in-out',
+      'infinite',
+    ])
+  }
   const animations = dots.flatMap((dot) => dot.getAnimations())
   await Promise.all(animations.map((animation) => animation.ready))
-  const opacitiesAt = (time: number) => {
+  const frameAt = (time: number) => {
     for (const animation of animations) {
       animation.pause()
       animation.currentTime = time
     }
-    return dots.map((dot) => Number(getComputedStyle(dot).opacity))
+    return frameOf(box, dots)
   }
   try {
-    await expect(opacitiesAt(0)).toEqual([0.4, 1, 0.4])
-    await expect(opacitiesAt(300)).toEqual([0.4, 0.4, 1])
+    await expect(frameAt(0)).toEqual(STEPS[0])
+    await expect(frameAt(HOLD_MS - 1)).toEqual(STEPS[0])
+    await expect(frameAt(STEP_MS)).toEqual(STEPS[1])
+    await expect(frameAt(2 * STEP_MS)).toEqual(STEPS[2])
+    await expect(frameAt(3 * STEP_MS)).toEqual(STEPS[0])
+    const [falling, rising, resting] = frameAt(HOLD_MS + MOVE_MS / 2)
+    for (const meeting of [falling, rising]) {
+      await expect(meeting?.[0]).toBeCloseTo(4, 1)
+      await expect(meeting?.[1]).toBeCloseTo((1 + 0.45) / 2, 2)
+    }
+    await expect(resting).toEqual([8, 0.45])
   } finally {
     for (const animation of animations) animation.play()
   }
 }
 
+// A variant of the file held still: the dots' animations paused on that step,
+// which the story then shows, and not played again. For a viewer who asked for
+// less motion the dots stand on Step 1, which is all a story can show them.
+const holds = async (canvasElement: HTMLElement, index: 0 | 1 | 2) => {
+  const { box, dots } = await drawsTheFrame(canvasElement, semantic)
+  if (stillForTheViewer()) {
+    await expect(frameOf(box, dots)).toEqual(STEPS[0])
+    return
+  }
+  const animations = dots.flatMap((dot) => dot.getAnimations())
+  await Promise.all(animations.map((animation) => animation.ready))
+  for (const animation of animations) {
+    animation.pause()
+    animation.currentTime = index * STEP_MS
+  }
+  await expect(frameOf(box, dots)).toEqual(STEPS[index])
+}
+
 export const Reading: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
-    const { line, dots } = await drawsTheFrame(canvasElement, { colours: true })
+    const { box, dots, line } = await drawsTheFrame(canvasElement, semantic)
     await expect(line.textContent).toBe(i18n._('Reading the job posting…'))
-    await startsOnTheFilesFrame(dots)
+    await moves(box, dots)
+  },
+}
+
+export const Step1: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await holds(canvasElement, 0)
+  },
+}
+
+export const Step2: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await holds(canvasElement, 1)
+  },
+}
+
+export const Step3: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await holds(canvasElement, 2)
+  },
+}
+
+export const InEnglish: Story = {
+  globals: { locale: 'en-US', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // The same steps as in Persian: the lit dot goes from left to right
+    // whatever the language.
+    const { box, dots, line } = await drawsTheFrame(canvasElement, semantic)
+    await expect(line.textContent).toBe(i18n._('Reading the job posting…'))
+    await moves(box, dots)
+  },
+}
+
+export const Dark: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    const { box, dots } = await drawsTheFrame(canvasElement, darkSemantic)
+    await moves(box, dots)
+  },
+}
+
+// The animation each dot is given for a reader who asked for less motion, read
+// off the page's own style sheets: every rule under the media query for reduced
+// motion whose selector matches the dot. Each story's providers insert their
+// own copy of the rule, so there are as many as stories have run.
+const stillAnimationsOf = (dot: HTMLElement) =>
+  [...document.styleSheets]
+    .flatMap((sheet) => [...sheet.cssRules])
+    .filter((rule) => rule instanceof CSSMediaRule && rule.conditionText === '(prefers-reduced-motion: reduce)')
+    .flatMap((rule) => (rule instanceof CSSMediaRule ? [...rule.cssRules] : []))
+    .filter((rule) => rule instanceof CSSStyleRule && dot.matches(rule.selectorText))
+    .map((rule) => (rule instanceof CSSStyleRule ? rule.style.animationName : ''))
+
+export const ReducedMotion: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // A reader who asked for less motion: each dot's animation is none, and
+    // what is left is the dots' resting frame, Step 1. Both are read here
+    // without asking the browser for less motion, which would reach every
+    // story the runner draws in the same page beside this one, KN-768: the rule
+    // off the style sheets, and the resting frame with the animations taken off
+    // and put back after. A viewer whose own setting asks for less motion sees
+    // the rule at work in every story, KN-615.
+    const { box, dots } = await drawsTheFrame(canvasElement, semantic)
+    for (const dot of dots) {
+      const still = stillAnimationsOf(dot)
+      await expect(still.length).toBeGreaterThan(0)
+      await expect(still.filter((name) => name !== 'none')).toEqual([])
+    }
+    const animations = dots.flatMap((dot) => dot.getAnimations())
+    for (const animation of animations) animation.cancel()
+    try {
+      await expect(frameOf(box, dots)).toEqual(STEPS[0])
+    } finally {
+      for (const animation of animations) animation.play()
+    }
   },
 }
 
@@ -98,12 +274,13 @@ export const PastFifteenSeconds: Story = {
   // Set when this file loads, so the wait is past fifteen seconds whenever
   // the story is opened.
   args: { startedAt: Date.now() - 2 * COLD_START_AFTER_MS },
-  globals: { locale: 'fa-IR' },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
-    // The cold start: the line says the wait is slow and why, and the dots
-    // keep turning.
-    const { line } = await drawsTheFrame(canvasElement, { colours: false })
+    // The cold start: the line, out of sight, says the wait is slow and why,
+    // and the dots keep stepping.
+    const { box, dots, line } = await drawsTheFrame(canvasElement, semantic)
     await expect(line.textContent).toBe(i18n._('Still reading. If the server was asleep, waking it takes up to a minute.'))
+    await moves(box, dots)
   },
 }
 
@@ -128,17 +305,16 @@ const MovingStart = () => {
 }
 
 export const StartMovesPastFifteenSeconds: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
   parameters: { controls: { disable: true } },
   render: () => <MovingStart />,
   play: async ({ canvasElement }) => {
-    // A start moved past fifteen seconds shows the slow line on the render that moves it,
+    // A start moved past fifteen seconds has the slow line on the render that moves it,
     // KN-325: each press goes through fireEvent, which Storybook runs inside React's act, so the
     // line is read once the press has rendered and before any timer can run. Every text the line
-    // shows is recorded, and after one more microtask, when the observer has had its records,
+    // holds is recorded, and after one more microtask, when the observer has had its records,
     // the reading line is not among them.
-    const region = within(canvasElement).getByRole('status')
-    const line = region.lastElementChild
-    if (!(line instanceof HTMLParagraphElement)) throw new Error('the loading state does not end in its line')
+    const { line } = partsOf(canvasElement)
     const slow = i18n._('Still reading. If the server was asleep, waking it takes up to a minute.')
     const reading = i18n._('Reading the job posting…')
     await expect(line.textContent).toBe(reading)
@@ -182,19 +358,18 @@ const Extracting = () => {
 }
 
 export const WritesItsFirstLineAfterMounting: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
   parameters: { controls: { disable: true } },
   render: () => <Extracting />,
   play: async ({ canvasElement }) => {
     // The status region is in the page, empty, on the render that mounts the state, and the line
-    // is written into its out of sight span after, so a screen reader reads the first line out as
-    // a change, KN-326: the press goes through fireEvent, which Storybook runs inside React's act,
+    // is written into its out of sight span after, so the first line reaches the region as a
+    // change, which is what a screen reader announces from, KN-326; no screen reader was run to
+    // hear it, KN-619. The press goes through fireEvent, which Storybook runs inside React's act,
     // so the state has mounted and no timer has run when the span is read.
     await fireEvent.click(within(canvasElement).getByRole('button'))
-    const region = within(canvasElement).getByRole('status')
-    const [dots, spoken, line] = [...region.children]
-    if (!(line instanceof HTMLParagraphElement) || !(spoken instanceof HTMLSpanElement) || !dots)
-      throw new Error('the loading state is not the dots, the spoken line and the line')
-    await expect([region.getAttribute('aria-atomic'), dots.getAttribute('aria-hidden'), line.getAttribute('aria-hidden')]).toEqual([
+    const { region, box, spoken, line } = partsOf(canvasElement)
+    await expect([region.getAttribute('aria-atomic'), box.getAttribute('aria-hidden'), line.getAttribute('aria-hidden')]).toEqual([
       'true',
       'true',
       'true',
@@ -228,15 +403,14 @@ const Quiet = () => {
 const QUIET_MS = 300
 
 export const SpeaksOnlyALaterLine: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
   parameters: { controls: { disable: true } },
   render: () => <Quiet />,
   play: async ({ canvasElement }) => {
     // KN-362: given announceFirstLine false, the spoken line stays empty past the 100 ms KN-326
     // waits, since focus names the panel by that line, and holds the slow line once the wait
-    // runs past fifteen seconds, which a screen reader then reads out as a change.
-    const region = within(canvasElement).getByRole('status')
-    const spoken = region.children[1]
-    if (!(spoken instanceof HTMLSpanElement)) throw new Error('the loading state has no spoken line')
+    // runs past fifteen seconds, which reaches the region as a change.
+    const { spoken } = partsOf(canvasElement)
     await new Promise((resolve) => window.setTimeout(resolve, QUIET_MS))
     await expect(spoken.textContent).toBe('')
     await fireEvent.click(within(canvasElement).getByRole('button'))
@@ -248,26 +422,12 @@ export const SpeaksTheSlowLineAtOnce: Story = {
   // Set when this file loads, as in PastFifteenSeconds. Its play reads the spoken line at once,
   // which a Controls change to either arg would move, so the Controls are off.
   args: { startedAt: Date.now() - 2 * COLD_START_AFTER_MS, announceFirstLine: false },
-  globals: { locale: 'fa-IR' },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
   parameters: { controls: { disable: true } },
   play: async ({ canvasElement }) => {
-    // KN-362: told not to speak its first line, a wait already past fifteen seconds speaks the
+    // KN-362: told not to speak its first line, a wait already past fifteen seconds holds the
     // slow line on its first render, so the state is never silent for good.
-    const spoken = within(canvasElement).getByRole('status').children[1]
-    if (!(spoken instanceof HTMLSpanElement)) throw new Error('the loading state has no spoken line')
+    const { spoken } = partsOf(canvasElement)
     await expect(spoken.textContent).toBe(i18n._('Still reading. If the server was asleep, waking it takes up to a minute.'))
-  },
-}
-
-export const InEnglish: Story = {
-  globals: { locale: 'en-US', colorScheme: 'light' },
-  play: async ({ canvasElement }) => {
-    const { line, dots } = await drawsTheFrame(canvasElement, { colours: true })
-    await expect(line.textContent).toBe(i18n._('Reading the job posting…'))
-    // Left to right, the first dot sits at the left, so the lit dot, which
-    // travels from the first dot to the last, moves from left to right.
-    const [first, last] = [dots[0], dots.at(-1)]
-    if (!first || !last) throw new Error('no dots')
-    await expect(first.getBoundingClientRect().left).toBeLessThan(last.getBoundingClientRect().left)
   },
 }

@@ -63,10 +63,14 @@ since the skills moved into the plugin, found on 2026-11-03.
 archive of the JSON board the loop ran on from 2026-09-07 until then, KN-482.
 
 Deployment: the web app to GitHub Pages, the API to a Render free web service,
-Postgres on Supabase. Render's free tier sleeps after 15 minutes, so the first
-request after a nap takes roughly 50 seconds. That is a product constraint, not
-a bug: the UI has to have an honest loading state for it and the app has to warm
-the server on load.
+Postgres on Neon, DEPLOY.md. Render's free tier sleeps after 15 minutes, so the
+first request after a nap takes roughly 50 seconds. That is a product
+constraint, not a bug: the UI has to have an honest loading state for it and
+the app has to warm the server on load. Since the redesign the add flow's
+loading draws three dots and no text, the owner's decision of 1 Aban on
+Loading / Extract `1031:3818`, so the honest part is out of sight: its status
+tells a screen reader that the wait is slow and why, DESIGN.md's extraction
+loading.
 
 ## 3. Rules that are not negotiable
 

@@ -42,6 +42,10 @@ apps/api/dist/
 .claude/claude-sessions/
 .claude/roasts/
 .claude/roast-result.md
+# The search skill's records, for the same reason as the roasts': each is a
+# lead read on this machine, and what it found is cited where it is used,
+# KN-768.
+.claude/searches/
 # Plans are NOT ignored. They live beside the work they describe, named
 # "#<id> - <title>.md", and are committed with it. This line used to ignore
 # .claude/plan-*.md, which is how two plans came to be deleted on the reasoning

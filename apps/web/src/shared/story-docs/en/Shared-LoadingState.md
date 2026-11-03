@@ -1,11 +1,14 @@
-What the add flow shows while it reads a posting: three dots that take turns,
-and a line that says what is happening.
+What the add flow shows while it reads a posting: three dots, the strong one
+stepping from left to right, and no text on screen, as the design decided on
+1 Aban.
 
-If the wait runs past fifteen seconds, the line changes to say it is still
-reading and why it may be slow: a server that was asleep takes up to a minute
-to wake, and three dots alone for that long would look stuck. The state is a
-status region, so a screen reader reads the change out. For a reader who has
-asked for less motion the dots stand still, the middle one lit.
+What the design does not draw is said out of sight. The state is a status
+region whose line says it is reading the posting, and past fifteen seconds that
+it is still reading and why it may be slow: a server that was asleep takes up to
+a minute to wake. The line is written into the region a moment after the region
+is in the page, so it reaches the region as a change, which is what a screen
+reader announces from; no screen reader was run to hear it. For a reader who
+has asked for less motion the dots stand still, the first one lit.
 
 ## Props
 
@@ -16,7 +19,8 @@ state first shows; a new time starts it again.
 
 ### lineId
 
-An id for the line on screen, so a panel around the state can be named by it.
+An id for the line, which is out of sight, so a panel around the state can be
+named by it.
 
 ### announceFirstLine
 
@@ -28,7 +32,33 @@ already: the status then speaks only a later line.
 
 ### Reading
 
-The state as it first shows, the dots taking their turns.
+The state as it first shows, the strong dot stepping from left to right.
+
+### Step1
+
+The design's first step held still: the left dot lit and raised.
+
+### Step2
+
+The second step held still: the middle dot lit.
+
+### Step3
+
+The third step held still: the right dot lit.
+
+### InEnglish
+
+The state in English, the strong dot stepping from left to right as it does in
+Persian.
+
+### Dark
+
+The state in the dark scheme, in the theme's dark colours.
+
+### ReducedMotion
+
+The state for a reader who has asked for less motion: the dots stand still on
+the first step.
 
 ### PastFifteenSeconds
 
@@ -39,13 +69,13 @@ slow.
 
 A wait whose start the button moves more than fifteen seconds back, as a host
 restarting the wait would: the line says why it is slow from that moment, and
-never shows the reading line on the way, even when it was saying so already.
+never holds the reading line on the way, even when it was saying so already.
 
 ### WritesItsFirstLineAfterMounting
 
 Press Extract details and the state appears: its status region is in the page
-empty, and the line is written into it a moment after, so a screen reader reads
-the first line out as a change. The line on screen shows from the first frame.
+empty, and the line is written into it a moment after, so it reaches the region
+as a change, which is what a screen reader announces from.
 
 ### SpeaksOnlyALaterLine
 
@@ -57,7 +87,3 @@ once the button moves the start more than fifteen seconds back.
 
 A state told not to speak its first line whose wait began more than fifteen
 seconds ago: the status speaks the slow line at once, so it is never silent.
-
-### InEnglish
-
-The state in English, the lit dot moving from left to right.

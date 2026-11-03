@@ -106,6 +106,9 @@ const linguiOptions = {
     // than as a wildcard for anything in brackets, because the point of this
     // list is that each entry names one thing.
     '^\\(prefers-color-scheme: (dark|light)\\)$',
+    // The same for the query a story asks with whether its viewer wants less
+    // motion, KN-768.
+    '^\\(prefers-reduced-motion: reduce\\)$',
     // The pseudo-elements a story reads a computed style of, as in
     // `getComputedStyle(field, '::before')`: CSS selectors the browser resolves,
     // never copy. Named in full, since an entry is tested against every string in

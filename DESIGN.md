@@ -465,36 +465,39 @@ the sixteen renames of frame `505:3`, which did rename the neighbouring
 column's empty message, so it is an omission from that pass rather than an
 exemption. The two instances' bodies differ from each other as well, KN-662.
 
-### The Loading State says why it is slow
+### The extraction loading
 
-Node `159:92` is three dots of 10, spacing/2xs apart, in `border/focus`, the
-middle one lit and the others at 0.4, and the line «داره آگهی رو می‌خونه…» 16
-below them in Body, `text/secondary`. Its only use is the Loading Panel of the
-add flow, `243:965`, on `bg/surface`, so the dots frame's own `bg/surface` fill
-is left out. The file draws one frame, and its description, which still names a
-spinning arc the node does not draw, leaves the motion to code: each dot takes a
-turn of 300 ms, the state change of section 7, so the lit dot crosses the three
-in 900, and the moment the middle one is lit is the file's frame, which the
-motion starts on, KN-324. A reader who asks for less motion gets that frame,
-standing still.
+**Loading / Extract**, `1031:3818`, Step 1, 2 and 3, read on 2026-11-03: three
+dots and no text, the owner's decision of 1 Aban, which the node's description
+records and DESIGN-HANDOFF.md repeats. It replaces the Loading State, `159:92`,
+which the redesign took off the Components page, and with it KN-616's turning
+arc, the owner's earlier choice for that node. The frame has 32 of padding on
+every side, unbound at `spacing/xl`'s value, round a box of 38 by 22, and in the
+box three dots of 10 in `color/border/focus`, `spacing/2xs` apart, drawn from
+the left whatever the language. The lit dot is at the top of the box at full
+opacity and the other two are 8 lower at 0.45; the box, the dots, the drop and
+the opacity bind no variable. Step 1 lights the left dot, Step 2 the middle one
+and Step 3 the right one. Each step holds 300 ms and then moves to the next in
+250, ease in and out, the prototype's After delay and Smart animate, so the lit
+dot steps 1, 2, 3 and back to 1 every 1650 ms. The motion starts on Step 1,
+KN-324, and a reader who asks for less motion gets Step 1 standing still. The
+frames' own `color/bg/surface` fill is left out, since the add flow they sit in
+is that colour. `get_motion_context` exports no prototype interactions, so the
+timings were read off the variants' reactions with use_figma, KN-768.
 
-**A turning arc replaces the dots**, the owner's decision of 2026-09-15, KN-616:
-the node's description asks for a spinning arc animated in code, and the owner
-chose it over the dots the node draws. The dots stay until KN-616 builds the
-arc; the node draws no arc, so its size, stroke and turn are settled in KN-616's
-plan.
-
-**Past fifteen seconds the line changes.** Render's free tier sleeps and takes
-up to a minute to wake, DEPLOY.md, and three dots alone for that long look
-hung. So from fifteen seconds the line reads «هنوز داره می‌خونه. اگه سرور خواب
-بوده، بیدار شدنش تا یه دقیقه طول می‌کشه.», which says it is still working and
-names the likely cause without claiming it. The state is a status region, so a
-screen reader reads the change out. The region is in the page empty when the
-state appears, and the line, on screen from the first frame, is written into
-it 100 ms later, so the first line is read out as a change as well, KN-326. A
-start already past fifteen seconds when it is given, or moved to, shows that
-line at once, with no reading line between, KN-325. The file draws no second
-line; the copy is KN-022's, in the file's register. KN-022.
+**The cold start is still explained, out of sight.** Render's free tier sleeps
+and takes up to a minute to wake, DEPLOY.md, and the design draws no text for
+that wait, so the lines KN-022 wrote are kept for a screen reader alone. The
+state is a status region that says «داره آگهی رو می‌خونه…» and, from fifteen
+seconds, «هنوز داره می‌خونه. اگه سرور خواب بوده، بیدار شدنش تا یه دقیقه
+طول می‌کشه.», which says it is still working and names the likely cause without
+claiming it. The region is in the page empty when the state appears and its
+line is written into it 100 ms later, so the first line reaches the region as a
+change, which is what a screen reader announces from, KN-326; no screen reader
+has been run against it, KN-619. A start already past fifteen seconds when it
+is given, or moved to, has the slow line at once, with no reading line between,
+KN-325. The same line, out of sight, names the add flow's Loading panel, KN-362,
+and the app still warms the server on load, AGENTS.md section 2.
 
 ### The Bulk Action Bar
 
@@ -1118,7 +1121,7 @@ of the contract.
 | Search Bar          | `155:92`  | Default, Focus, Filled                                                                          |
 | Filter Chip         | `159:71`  | Default, Hover, Pressed, Selected, doubles as the status counter                                |
 | Empty State         | `159:80`  | title and body as text properties, a required Primary M action; used for jobs, contacts and search |
-| Loading State       | `159:92`  | dots until KN-616's turning arc, the owner's choice; the line says why past fifteen seconds     |
+| Loading / Extract   | `1031:3818` | Step 1, 2 and 3: three dots and no text, the owner's decision of 1 Aban; the status says why past fifteen seconds |
 | Menu Item           | `181:22`  | Default, Hover, Disabled, Destructive                                                           |
 | Menu                | `512:8350`| Type=Status, Type=Card                                                                          |
 | Select              | `183:26`  | Default, Filled, Focus, Disabled, Open                                                          |
