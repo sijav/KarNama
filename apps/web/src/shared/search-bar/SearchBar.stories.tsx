@@ -4,6 +4,7 @@ import type { StoryObj } from '@storybook/react-vite'
 import { useRef, useState } from 'react'
 import { useArgs } from 'storybook/preview-api'
 import { clearAllMocks, expect, fireEvent, fn, userEvent, waitFor, within } from 'storybook/test'
+import { darkSemantic } from '../../theme/darkMode'
 import { semantic, spacing, type as typeScale } from '../../theme/tokens'
 import { fixtures } from '../story-fixtures'
 import type { StoryMeta } from '../story-docs/story-meta'
@@ -161,16 +162,52 @@ export const Filled: Story = {
   play: async ({ canvasElement }) => {
     const { field, bar } = partsOf(canvasElement)
     await isTheFiles(canvasElement)
-    // 401:437: the text in text/primary, and the clear control, 20 square at
-    // the inline end, named.
+    // 401:437: the text in text/primary, and the clear control at the inline
+    // end, named: the redesign's Popover / Close at 16, radius 6, in a 20
+    // frame, KN-791.
     await expect(field).toHaveValue(TYPED)
     await expect(getComputedStyle(field).color).toBe(computedColour(field, semantic['text/primary']))
     const clear = within(canvasElement).getByRole('button')
     await expect(clear.getAttribute('aria-label')?.length).toBeGreaterThan(0)
-    const box = clear.getBoundingClientRect()
-    await expect([box.width, box.height]).toEqual([20, 20])
+    const frame = clear.parentElement
+    if (!frame) throw new Error('the clear has no frame')
+    const [box, frameBox] = [clear.getBoundingClientRect(), frame.getBoundingClientRect()]
+    await expect([frameBox.width, frameBox.height, box.width, box.height]).toEqual([20, 20, 16, 16])
+    await expect(px(getComputedStyle(clear).borderTopLeftRadius)).toBe(6)
     // Centred down the bar as the search icon is, 401:441.
-    await expect(box.top - bar.getBoundingClientRect().top).toBe(MOBILE_PLACED.icon)
+    await expect(frameBox.top - bar.getBoundingClientRect().top).toBe(MOBILE_PLACED.icon)
+  },
+}
+
+// Hover, the redesign's fourth state, by the runner's real pointer, KN-225: the
+// edge in text/secondary, and focus, once the field has it, still wins, KN-791.
+const hoversTheEdge = async (canvasElement: HTMLElement, palette: Record<keyof typeof semantic, string>) => {
+  const { field, bar } = partsOf(canvasElement)
+  if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
+    if (import.meta.env.MODE !== 'test') return
+    throw new Error('Hover is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
+  }
+  const browser = await import('vitest/browser')
+  const [hover, focus] = [computedColour(field, palette['text/secondary']), computedColour(field, palette['border/focus'])]
+  await browser.userEvent.hover(bar)
+  await waitFor(() => expect(getComputedStyle(bar, '::before').borderTopColor).toBe(hover))
+  await expect(px(getComputedStyle(bar, '::before').borderTopWidth)).toBe(1)
+  field.focus()
+  await waitFor(() => expect(getComputedStyle(bar, '::before').borderTopColor).toBe(focus))
+  await expect(px(getComputedStyle(bar, '::before').borderTopWidth)).toBe(2)
+}
+
+export const Hover: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await hoversTheEdge(canvasElement, semantic)
+  },
+}
+
+export const HoverInDark: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    await hoversTheEdge(canvasElement, darkSemantic)
   },
 }
 

@@ -946,6 +946,21 @@ small would cover the cross, so keyboard focus is the product's outline, two of
 `color/border/focus` at an offset of two, KN-244. It is an icon-only button, so
 it names itself with Tooltip / Label, KN-837 and KN-777.
 
+### The Search Bar
+
+**Search Bar**, `155:92`, Default, Focus, Filled and Hover, read in the original
+on 2026-11-03: 320 by 44 on `color/bg/surface`, `spacing/md` at the sides and
+`spacing/xs` between its parts, `radius/md`, an edge of one inside in
+`color/border/default` and two in `color/border/focus` while focused; the 20
+search icon at the inline start, the text in Body, the hint in
+`color/text/secondary` and what is typed in `color/text/primary`. Two things
+are new to the redesign, KN-791: **Hover**, the Default with its edge in
+`color/text/secondary`, which focus overrides, and **Filled's clear**, Popover /
+Close at 16 in a 20 frame at the inline end, where the copy drew the x alone,
+so it is the close's square of radius 6 with its grey hover and its name label,
+KN-837. The board's and the network page's toolbars draw the bar 36 high,
+KN-315.
+
 ### The navigation
 
 The Nav Item, `184:14`: 208 by 44 in the sidebar, radius md, 12 of padding, the
@@ -1185,7 +1200,7 @@ of the contract.
 | Modal / Change Status | `150:93` |                                                                                                 |
 | Modal / Add-Edit    | `166:82`  | steps Paste, PasteFilled, Loading, Review, Manual, Error                                        |
 | Page Header         | `155:56`  | title, optional back button, optional primary action                                            |
-| Search Bar          | `155:92`  | Default, Focus, Filled                                                                          |
+| Search Bar          | `155:92`  | Default, Focus, Filled, Hover                                                                        |
 | Filter Chip         | `159:71`  | Default, Hover, Pressed, Selected, doubles as the status counter                                |
 | Empty State         | `159:80`  | title and body as text properties, a required Primary M action; no screen in the redesign uses it |
 | Loading / Extract   | `1031:3818` | Step 1, 2 and 3: three dots and no text, the owner's decision of 1 Aban; the status says why past fifteen seconds |

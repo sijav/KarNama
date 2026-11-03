@@ -1,8 +1,9 @@
 import { useLingui } from '@lingui/react'
-import { Box, ButtonBase, InputBase } from '@mui/material'
+import { Box, InputBase } from '@mui/material'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { Icon } from '../icon'
+import { PopoverClose } from '../popover-close'
 
 /** The desktop toolbar's bar, or the phone's. */
 export type SearchBarLayout = 'desktop' | 'mobile'
@@ -144,6 +145,9 @@ export const SearchBar = ({ value, defaultValue = '', layout = 'mobile', label, 
             borderColor: colour['border/default'],
             pointerEvents: 'none',
           },
+          // Hover, the redesign's fourth state: the edge in text/secondary under
+          // the pointer while the field has no focus, KN-791.
+          '@media (hover: hover)': { '&:hover:not(:focus-within)::before': { borderColor: colour['text/secondary'] } },
           // Focus, 155:89: two pixels of border/focus, while the field has it.
           '&:focus-within::before': { borderWidth: FOCUS_EDGE, borderColor: colour['border/focus'] },
         }
@@ -175,22 +179,11 @@ export const SearchBar = ({ value, defaultValue = '', layout = 'mobile', label, 
         })}
       />
       {text === '' ? null : (
-        // Clear, 401:441: a 20 square holding the 16 x, at the inline end.
-        <ButtonBase
-          aria-label={i18n._('Clear search')}
-          disableRipple
-          onClick={clear}
-          sx={(theme) => ({
-            width: CLEAR,
-            height: CLEAR,
-            flexShrink: 0,
-            borderRadius: `${theme.karnama.radius.sm}px`,
-            color: theme.karnama.semantic['text/secondary'],
-            '&.Mui-focusVisible': { outlineWidth: FOCUS_EDGE, outlineStyle: 'solid', outlineColor: theme.karnama.semantic['border/focus'], outlineOffset: FOCUS_EDGE },
-          })}
-        >
-          <Icon name="x" size="sm" color="inherit" />
-        </ButtonBase>
+        // Clear, 401:441: a 20 frame at the inline end holding Popover / Close at
+        // 16, as the redesign draws it, KN-791 and KN-837.
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: CLEAR, height: CLEAR, flexShrink: 0 }}>
+          <PopoverClose size={16} aria-label={i18n._('Clear search')} onClick={clear} />
+        </Box>
       )}
     </Box>
   )

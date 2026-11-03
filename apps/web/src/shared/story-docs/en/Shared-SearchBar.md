@@ -135,3 +135,12 @@ A phone's bar, 358 by 44, full width inside the page's own gutters.
 Two bars, one given nothing and one given only a name: both show the board's
 hint, and only the name differs. The hint does not follow the name, so a page
 that searches something else passes its own.
+
+### Hover
+
+The pointer over the bar: its edge darkens to the secondary text grey, and
+once the field has focus the blue focus edge takes over.
+
+### HoverInDark
+
+The same in the dark scheme, in the theme's dark colours.
