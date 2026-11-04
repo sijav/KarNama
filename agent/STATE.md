@@ -25,11 +25,14 @@ component card is `critical`, ahead of the record model (KN-731 to KN-741) and
 the screens (KN-805 to KN-828); KN-829 reads the older cards against the
 redesign last.
 
-**KN-776, the Source Picker `1223:96580`, is in progress**: Default with its
-hint, Empty, Open with the reader's sources and the common ones, Hover, and
-Typing with the quiet normalisation, «منظورتون این بود؟» and «ساختن منبع «…»»;
-its menu opens upward, out of the layout, at the end of a scrolling form. Read
-the node, write the plan beside it, stories first.
+**KN-790, the add form `166:82` redrawn with a Manual Details step, is in
+progress**: list every difference between the copy and the original, read the
+add flow's frames in `1062:54410` (`1268:62218` among them), write the plan
+beside the add-job component, stories first.
+
+**KN-776, the Source Picker `1223:96580`, closed (b395f28)**:
+`shared/source-picker`, the quiet normalisation in `sources.ts`; its roast runs
+in the background. KN-856 holds the Select's label, 12 on 19 in the file.
 
 **KN-804, the Contact Modal `270:152`, closed (e3e6e26)**: the Label Picker and
 Linked Jobs in the body, the primary off until it can save, «حذف از شبکه» at the
