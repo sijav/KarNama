@@ -57,3 +57,7 @@ Enter on the focused Cancel, and nothing deleted.
 ### InEnglish
 
 The question in English.
+
+### Dark
+
+The deletion question in the dark scheme, its close in the theme's dark colours.

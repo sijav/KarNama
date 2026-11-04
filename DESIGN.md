@@ -627,8 +627,12 @@ traps focus, closes on Escape, the close or a press on the scrim, and gives
 focus back to its trigger; the prototype wires no overlay, so the scrim's press
 is a cancel, never the action. **Confirm** is 360 wide, its question as the
 title and what cannot be undone in Body `text/secondary`, then Cancel and the
-Destructive action; Cancel takes focus as it opens. Its body in the file says
-«این آگهی»; the code says «این فرصت شغلی», KN-329. **Change Status** is 420 wide
+Destructive action; Cancel takes focus as it opens. The copy's body said «این
+آگهی برای همیشه حذف می‌شود و برگشتی ندارد.», and the code said «این فرصت شغلی»,
+KN-329; the original says «این فرصت شغلی برای همیشه حذف می‌شه و برگشتی نداره.»,
+the rule's word in the redesign's spoken voice, two lines at 360, so it is 230
+tall where the copy drew 208, and the code says it, the bulk deletion's line in
+the same voice, KN-788. **Change Status** is 420 wide
 round the Status Picker, then Cancel and Primary «تأیید»; the choice waits until
 Confirm, and each opening starts from the job's status. The set's description
 still speaks of a radio list with a name field; the component draws the chip

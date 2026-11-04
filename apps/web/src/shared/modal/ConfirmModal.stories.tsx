@@ -8,6 +8,7 @@ import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
 import { Button } from '../button'
 import type { StoryMeta } from '../story-docs/story-meta'
+import { darkSemantic } from '../../theme/darkMode'
 import { semantic } from '../../theme/tokens'
 import { closeIsTheFiles } from './closeCheck'
 import { ConfirmModal, type ConfirmModalProps } from './ConfirmModal'
@@ -110,6 +111,19 @@ export const InEnglish: Story = {
     const dialog = await body(canvasElement).findByRole('dialog', { name: args.title })
     await waitFor(() => expect(dialog).toBeVisible())
     await closeIsTheFiles(dialog, 'en-US', semantic)
+    await userEvent.keyboard('{Escape}')
+  },
+}
+
+export const Dark: Story = {
+  // The dark scheme: the close's x in the dark text/secondary, KN-788.
+  args: specimen('fa-IR'),
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ args, canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole('button'))
+    const dialog = await body(canvasElement).findByRole('dialog', { name: args.title })
+    await waitFor(() => expect(dialog).toBeVisible())
+    await closeIsTheFiles(dialog, 'fa-IR', darkSemantic)
     await userEvent.keyboard('{Escape}')
   },
 }

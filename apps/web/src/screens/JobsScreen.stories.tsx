@@ -812,7 +812,8 @@ export const Selecting: Story = {
     // and the count in the reader's own digits at the head of its body.
     await expect(confirm).toHaveAccessibleName('این فرصت‌های شغلی حذف شوند؟')
     await expect(confirm).toHaveTextContent(formatCount('fa-IR', 2))
-    await expect(confirm).toHaveTextContent('فرصت شغلی برای همیشه حذف می‌شود و برگشتی ندارد.')
+    const i18n = i18nFor('fa-IR')
+    await expect(confirm).toHaveTextContent(i18n._('job opportunities are deleted for good and cannot be brought back.'))
     // Pressed a second time as the dialog dissolves, it deletes nothing more,
     // KN-427: the button is held before the first press.
     const confirmDelete = within(confirm).getByRole('button', { name: 'حذف' })
