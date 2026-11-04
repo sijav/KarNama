@@ -82,3 +82,20 @@ export const prepareNetwork = async (page: Page, names: readonly string[]) => {
   await page.reload()
   for (const name of names) await addContact(page, name)
 }
+
+/**
+ * Signs out the way the screen offers it: the sidebar's «خروج» on a desktop,
+ * and on a phone the one inside Settings, the Page Header's one shell control,
+ * the owner's answer of 2026-11-04, KN-850. It waits for the page first, since
+ * which way it goes is read from whether the sidebar is drawn.
+ */
+export const signOut = async (page: Page) => {
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  const sidebar = page.getByRole('complementary')
+  if ((await sidebar.count()) > 0) {
+    await sidebar.getByRole('button', { name: 'خروج', exact: true }).click()
+    return
+  }
+  await page.getByRole('button', { name: 'تنظیمات', exact: true }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'خروج', exact: true }).click()
+}

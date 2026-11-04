@@ -8,9 +8,10 @@ import { columnOrder, contactsOf, jobsIn, REJECTED, statusGroups, tokenOf, useRe
 import { formatCount } from '../i18n/formatCount'
 import { AddJobModal, type AddJobModalProps, type JobDraft } from '../shared/add-job'
 import { BulkActionBar } from '../shared/bulk-action-bar'
-import { Button, type ButtonType, type ButtonVariant } from '../shared/button'
+import { Button, type ButtonSize, type ButtonType, type ButtonVariant } from '../shared/button'
 import { EmptyState } from '../shared/empty-state'
 import { FilterChip } from '../shared/filter-chip'
+import type { IconName } from '../shared/icon'
 import { Input } from '../shared/input'
 import { JobCard, type JobCardLayout } from '../shared/job-card'
 import { formatDay, JobModal } from '../shared/job-modal'
@@ -54,6 +55,11 @@ const QUIET: ButtonVariant = 'text'
 
 // The button that finishes a form, typed for the same reason.
 const SUBMIT: ButtonType = 'submit'
+
+// A phone's add in the Page Header, Button S led by its plus, 1274:64229, KN-850:
+// typed so the lint rule reads them as values rather than as copy.
+const PHONE_ADD: ButtonSize = 'S'
+const PLUS: IconName = 'plus'
 
 // Focusable on purpose and not in the tab order: somewhere to put a reader
 // whose own control was just deleted, KN-344.
@@ -409,23 +415,19 @@ export const JobsScreen = ({
         <PageHeader
           title={i18n._('My job opportunities')}
           {...(onSignOut === undefined ? {} : { onSignOut })}
-          // The action is the desktop's. On a phone the header already carries
-          // the shell's own controls, KN-478, and the tab bar carries adding as a
-          // destination of its own, so one more control here only takes the room
-          // the title needs and leaves it cut. The file draws it there, KN-515.
-          {...(wide
-            ? {
-                action: (
-                  <Button
-                    onClick={() => {
-                      setAdding(first)
-                    }}
-                  >
-                    {i18n._('Add job opportunity')}
-                  </Button>
-                ),
-              }
-            : {})}
+          // On a phone the add is Button S with its plus, 1274:64229, the gear
+          // after it the header's one shell control: the owner's answer of
+          // 2026-11-04, which lets the title be cut a little to fit, KN-850.
+          action={
+            <Button
+              {...(wide ? {} : { size: PHONE_ADD, startIcon: PLUS })}
+              onClick={() => {
+                setAdding(first)
+              }}
+            >
+              {i18n._('Add job opportunity')}
+            </Button>
+          }
         />
 
         {/* The toolbar, 367:5362: the search bar's own 320 at the inline start

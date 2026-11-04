@@ -58,6 +58,7 @@ const meta = {
     onLocaleChange: fn(),
     onColorSchemeChange: fn(),
     onLoadSamples: fn(),
+    onSignOut: fn(),
   },
   parameters: { controls: { exclude: HIDDEN_CONTROLS } },
   render: function Render(args) {
@@ -168,4 +169,35 @@ export const EnglishDark: Story = {
   args: { locale: 'en-US', colorScheme: 'dark' },
   globals: { locale: 'en-US', colorScheme: 'dark' },
   play: languagesShown,
+}
+
+export const SigningOut: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args, canvasElement, globals }) => {
+    // On a phone the gear is the shell's one control in the header, so signing
+    // out is here, the owner's answer of 2026-11-04, KN-850.
+    const { i18n, dialog } = await openSettings(canvasElement, globals.locale)
+    await userEvent.click(dialog.getByRole('button', { name: i18n._('Sign out') }))
+    await expect(args.onSignOut).toHaveBeenCalledTimes(1)
+  },
+}
+
+export const WithoutSigningOut: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  // The sidebar's gear: the sidebar signs out with a button of its own, so the
+  // dialog is given no sign-out and draws none.
+  render: function Render(args) {
+    const [, updateArgs] = useArgs<SettingsDialogProps>()
+    const { open, locale, colorScheme, loaded, onClose, onLocaleChange, onColorSchemeChange, onLoadSamples } = args
+    return (
+      <WithTrigger
+        args={{ open, locale, colorScheme, loaded, onClose, onLocaleChange, onColorSchemeChange, onLoadSamples }}
+        updateArgs={updateArgs}
+      />
+    )
+  },
+  play: async ({ canvasElement, globals }) => {
+    const { i18n, dialog } = await openSettings(canvasElement, globals.locale)
+    await expect(dialog.queryByRole('button', { name: i18n._('Sign out') })).toBeNull()
+  },
 }

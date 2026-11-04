@@ -8,10 +8,11 @@ English page turns it round. The arrow is 20, and the control round it takes a
 press anywhere in 24 each way. The primary action, a button, sits at the other
 end. The row is 44 tall whatever it holds, the height the design draws it at,
 so a page with a small action or none keeps its header's height. On a narrow
-screen the shell's own controls follow the action, the
-language, the settings and signing out, since the tab bar at the bottom has
-room only for the three destinations; on a wide screen they live at the foot of
-the sidebar instead.
+screen the settings gear follows the action, the shell's one control there, with
+the language and signing out inside its dialog, the owner's answer of
+2026-11-04, since the tab bar at the bottom has room only for the three
+destinations; on a wide screen the language, the settings and signing out live
+at the foot of the sidebar instead.
 
 ## Props
 
@@ -30,8 +31,8 @@ of the row is empty.
 
 ### onSignOut
 
-Called when signing out is pressed among a narrow screen's controls. Leave it
-out and there is no sign-out button there.
+Called when signing out is pressed inside the settings a narrow screen's gear
+opens. Leave it out and that dialog has no sign-out button.
 
 ## Stories
 
@@ -49,9 +50,9 @@ The title alone, both optional parts left out.
 
 ### ControlsOnNarrowScreens
 
-The shell's own controls, the language, the settings and signing out, showing
-after the action on a narrow screen and gone on a wide one, and signing out
-pressed. The story sets the width when it runs as a test; in Storybook itself,
+The settings gear showing after the action on a narrow screen and gone on a
+wide one, the language and signing out in its dialog rather than the header,
+and signing out pressed there. The story sets the width when it runs as a test; in Storybook itself,
 resize the window.
 
 ### InEnglish

@@ -26,6 +26,9 @@ Apply the selected appearance immediately.
 ### onLoadSamples
 Add the fictional jobs and contacts while preserving existing records.
 
+### onSignOut
+Sign out from inside the dialog, for a phone, whose header holds only the gear that opens it. Without it the dialog has no sign-out button.
+
 ## Stories
 
 ### Preferences
@@ -45,3 +48,9 @@ The same, in English and light.
 
 ### EnglishDark
 The same, in English and dark.
+
+### SigningOut
+Signing out from the dialog, as a phone does.
+
+### WithoutSigningOut
+The dialog as the sidebar's gear opens it, with no sign-out button, since the sidebar has its own.

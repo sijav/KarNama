@@ -123,11 +123,12 @@ export const LanguageOnAPhone: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     // At a phone's width the sidebar gives way to the tab bar, and the
-    // language switch is the Page Header's, DESIGN.md section 5, KN-355:
-    // choosing English there turns the page and keeps the choice. The screen
-    // is resized by the runner's own browser, which only the runner has,
-    // KN-225; the story puts the screen back after. The choice is kept in the
-    // story's own localStorage, which the preview gives every story, KN-178.
+    // language is chosen in Settings, the Page Header's one shell control, the
+    // owner's answer of 2026-11-04, KN-850: choosing English there turns the page
+    // and keeps the choice. The screen is resized by the runner's own browser,
+    // which only the runner has, KN-225; the story puts the screen back after.
+    // The choice is kept in the story's own localStorage, which the preview
+    // gives every story, KN-178.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
     const { page } = await import('vitest/browser')
     const canvas = within(canvasElement)
@@ -135,18 +136,30 @@ export const LanguageOnAPhone: Story = {
     try {
       await page.viewport(PHONE.width, PHONE.height)
       await waitFor(() => expect(canvasElement.querySelector('aside')).toBeNull())
-      // The title keeps the whole of itself beside the header's controls, in
-      // the page's own 342 between its gutters, KN-478.
-      const uncut = async () => {
-        const heading = canvas.getByRole('heading', { level: 1 })
-        await expect(heading.scrollWidth).toBeLessThanOrEqual(heading.clientWidth)
+      // The header holds the title, the board's add and the gear on one line
+      // inside the page, the title cut to fit where it must, as the owner
+      // allowed, KN-850.
+      const body = within(canvasElement.ownerDocument.body)
+      const fits = async (names: readonly string[]) => {
+        const header = canvasElement.querySelector('main header')
+        if (!(header instanceof HTMLElement)) throw new Error('the page has no header band')
+        for (const name of names) {
+          const box = within(header).getByRole('button', { name }).getBoundingClientRect()
+          await expect(box.left >= 0 && box.right <= window.innerWidth).toBe(true)
+        }
       }
-      await uncut()
-      await userEvent.click(canvas.getByRole('button', { name: 'زبان' }))
-      await userEvent.click(await within(canvasElement.ownerDocument.body).findByRole('menuitem', { name: 'English' }))
+      // The board's add and the gear, by their names in a language.
+      const headerButtons = (i18n: I18n) => [i18n._('Add job opportunity'), i18n._('Settings')]
+      await fits(headerButtons(i18nFor('fa-IR')))
+      await userEvent.click(canvas.getByRole('button', { name: 'تنظیمات' }))
+      const settings = within(await body.findByRole('dialog'))
+      await userEvent.click(settings.getByRole('combobox', { name: 'زبان' }))
+      await userEvent.click(await body.findByRole('option', { name: 'English' }))
       await waitFor(() => expect(window.document.documentElement).toHaveAttribute('dir', 'ltr'))
+      await userEvent.click(settings.getByRole('button', { name: 'Done' }))
+      await waitFor(() => expect(body.queryByRole('dialog')).toBeNull())
       await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('My job opportunities')
-      await uncut()
+      await fits(headerButtons(i18nFor('en-US')))
       await expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '{}')).toMatchObject({ locale: 'en-US' })
     } finally {
       await page.viewport(before.width, before.height)
@@ -157,9 +170,10 @@ export const LanguageOnAPhone: Story = {
 export const SigningOutOnAPhone: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
-    // A phone reader signs out from the Page Header's «خروج», KN-478 and
-    // KN-418: the tab bar has no room for it and the sidebar is not drawn.
-    // The screen is resized by the runner's own browser, KN-225.
+    // A phone reader signs out from inside Settings, the Page Header's one
+    // shell control, the owner's answer of 2026-11-04, KN-850, after KN-478 and
+    // KN-418: the tab bar has no room for it and the sidebar is not drawn. The
+    // screen is resized by the runner's own browser, KN-225.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
     const { page } = await import('vitest/browser')
     const canvas = within(canvasElement)
@@ -167,7 +181,9 @@ export const SigningOutOnAPhone: Story = {
     try {
       await page.viewport(PHONE.width, PHONE.height)
       await waitFor(() => expect(canvasElement.querySelector('aside')).toBeNull())
-      await userEvent.click(canvas.getByRole('button', { name: 'خروج' }))
+      await userEvent.click(canvas.getByRole('button', { name: 'تنظیمات' }))
+      const settings = within(await within(canvasElement.ownerDocument.body).findByRole('dialog'))
+      await userEvent.click(settings.getByRole('button', { name: 'خروج' }))
       await expect(await canvas.findByRole('button', { name: 'ارسال کد' })).toBeInTheDocument()
     } finally {
       await page.viewport(before.width, before.height)

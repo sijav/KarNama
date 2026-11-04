@@ -2221,7 +2221,8 @@ a fourth entry would change the design, so the switch belongs in the Page Header
 
 The file draws two widths, 390 and 1440, and no breakpoint between them; the
 build takes MUI's `md`, 900 pixels, as the line: below it the switch sits in
-the Page Header, after its action, KN-021.
+the Page Header, after its action, KN-021, and since KN-850 inside the Settings
+dialog its gear opens there, below.
 
 **The flag, the owner's addition of 2026-09-14, KN-479**: "the language button
 should have flag next to it". Each language takes the flag of its region from
@@ -2242,8 +2243,14 @@ KN-848: the language by the current language's own name, its icon that
 language's flag; settings by «Language, theme and sample data»; signing out by
 «Signs you out of your account on this device». On desktop they
 are one row at the sidebar's foot, 12 apart, in place of the language row and
-the file's «خروج» Nav Item; on a phone they follow the page's action in the Page
-Header, and nothing sits in a row above a page's title. The network's add
+the file's «خروج» Nav Item. **On a phone the Page Header holds the settings gear
+alone**, after the page's action, the owner's answer of 2026-11-04, KN-850: the
+redesign's phone board, `1274:64227`, draws its header as the title and the
+Primary Button S «افزودن فرصت شغلی» with its plus, Tab Bar v2 having taken
+adding out of the bottom bar, and leaves no room for three Icon Buttons more.
+So the language and signing out are inside the Settings dialog, which signs out
+when its gear is given a way to, and the title may be cut a little to fit, more
+in English. Nothing sits in a row above a page's title. The network's add
 contact, which the file draws as Button M in its Page Header, is the Icon Button
 with `user-plus` there. The language menu opens above its button from the
 sidebar and below it from a header, never over it. The settings gear is the

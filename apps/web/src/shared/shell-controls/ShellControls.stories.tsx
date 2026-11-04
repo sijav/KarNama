@@ -65,8 +65,19 @@ export const InTheSidebar: Story = {
 export const InTheHeader: Story = {
   args: { placement: 'header' },
   globals: { locale: 'fa-IR' },
-  play: async ({ canvasElement }) => {
-    await isTheRow(buttonsIn(canvasElement, 'fa-IR', true))
+  play: async ({ args, canvasElement }) => {
+    // A phone's header holds the gear alone, the language and signing out
+    // inside the dialog it opens, the owner's answer of 2026-11-04, KN-850.
+    const i18n = i18nFor('fa-IR')
+    const body = within(canvasElement.ownerDocument.body)
+    const buttons = within(canvasElement).getAllByRole('button')
+    await expect(buttons.map((button) => button.getAttribute('aria-label'))).toEqual([i18n._('Settings')])
+    await userEvent.click(buttons[0] ?? canvasElement)
+    const dialog = within(await body.findByRole('dialog'))
+    await expect(dialog.getByRole('combobox', { name: i18n._('Language') })).toBeInTheDocument()
+    await userEvent.click(dialog.getByRole('button', { name: i18n._('Sign out') }))
+    await expect(args.onSignOut).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(body.queryByRole('dialog')).toBeNull())
   },
 }
 

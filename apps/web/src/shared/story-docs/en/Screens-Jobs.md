@@ -41,7 +41,8 @@ board.
 
 ### onSignOut
 
-Signs the reader out, from the controls a phone's page header carries.
+Signs the reader out, from inside the settings a phone's page header gear
+opens.
 
 ### onExtract
 
@@ -235,5 +236,5 @@ deletes them from the store and from the job modal.
 
 ### WithoutSigningOut
 
-A board given no way to sign out, at a phone's width: its header carries the
-language switch and no sign out.
+A board given no way to sign out, at a phone's width: its header's gear opens
+settings with no sign out.

@@ -1,17 +1,18 @@
 import type { StoryObj } from '@storybook/react-vite'
-import { expect, userEvent, waitFor, within } from 'storybook/test'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, type Locale } from '../../i18n'
 import { spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { SettingsControl } from './SettingsControl'
 
-// No `component`: the control takes no props, so react-docgen reports nothing
-// for it and there is no Controls table to key off one, as the network page's
-// stories say of theirs. It reads the preferences and the records the
-// providers every story renders already hold.
+// It reads the preferences and the records the providers every story renders
+// already hold; its one prop is the way to sign out a phone's header gives it,
+// KN-850.
 const meta = {
   title: 'Shared/SettingsControl',
-  render: () => <SettingsControl />,
+  component: SettingsControl,
+  args: { onSignOut: fn() },
+  render: (args) => <SettingsControl {...args} />,
 } satisfies StoryMeta<typeof SettingsControl>
 
 export default meta
@@ -46,5 +47,34 @@ export const InEnglish: Story = {
   globals: { locale: 'en-US' },
   play: async ({ canvasElement }) => {
     await opensSettings(canvasElement, 'en-US')
+  },
+}
+
+export const SigningOut: Story = {
+  globals: { locale: 'fa-IR' },
+  play: async ({ args, canvasElement }) => {
+    // Given a way to sign out, the dialog carries it, and pressing it closes the
+    // dialog and signs out, as a phone's header gear does, KN-850.
+    const i18n = i18nFor('fa-IR')
+    const body = within(canvasElement.ownerDocument.body)
+    await userEvent.click(within(canvasElement).getByRole('button', { name: i18n._('Settings') }))
+    const dialog = within(await body.findByRole('dialog'))
+    await userEvent.click(dialog.getByRole('button', { name: i18n._('Sign out') }))
+    await expect(args.onSignOut).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(body.queryByRole('dialog')).toBeNull())
+  },
+}
+
+export const WithoutSigningOut: Story = {
+  globals: { locale: 'fa-IR' },
+  // The sidebar's gear, whose row signs out with a button of its own.
+  render: ({ onSignOut: _ownButton, ...args }) => <SettingsControl {...args} />,
+  play: async ({ canvasElement }) => {
+    const i18n = i18nFor('fa-IR')
+    const body = within(canvasElement.ownerDocument.body)
+    await userEvent.click(within(canvasElement).getByRole('button', { name: i18n._('Settings') }))
+    const dialog = within(await body.findByRole('dialog'))
+    await expect(dialog.queryByRole('button', { name: i18n._('Sign out') })).toBeNull()
+    await userEvent.click(dialog.getByRole('button', { name: i18n._('Done') }))
   },
 }

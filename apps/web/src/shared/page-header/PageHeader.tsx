@@ -30,9 +30,10 @@ const HEIGHT = 44
 
 // The Page Header of node 155:56: the title at the inline start, with the
 // back arrow of 155:72 before it when there is somewhere to go back to, and
-// the primary action at the inline end. On a narrow screen the shell's own
-// controls follow the action, the language, settings and signing out, KN-478,
-// since the tab bar has no room for them.
+// the primary action at the inline end. On a narrow screen the settings gear
+// follows the action, the shell's one control there, the language and signing
+// out inside its dialog, the owner's answer of 2026-11-04, KN-850, since the tab
+// bar has no room for them.
 export const PageHeader = ({ title, onBack, action, onSignOut }: PageHeaderProps) => {
   const { i18n } = useLingui()
   return (

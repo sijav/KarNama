@@ -47,8 +47,19 @@ test('the language choice survives a reload', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
 
-  await page.getByRole('button', { name: 'زبان' }).click()
-  await page.getByRole('menuitem', { name: 'English' }).click()
+  // The sidebar's switch on a desktop, and on a phone the Settings dialog's
+  // language, the Page Header's one shell control, KN-850.
+  const sidebar = page.getByRole('complementary')
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  if ((await sidebar.count()) > 0) {
+    await sidebar.getByRole('button', { name: 'زبان' }).click()
+    await page.getByRole('menuitem', { name: 'English' }).click()
+  } else {
+    await page.getByRole('button', { name: 'تنظیمات', exact: true }).click()
+    await page.getByRole('dialog').getByRole('combobox', { name: 'زبان' }).click()
+    await page.getByRole('option', { name: 'English', exact: true }).click()
+    await page.getByRole('dialog').getByRole('button', { name: 'Done', exact: true }).click()
+  }
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('My job opportunities')
 

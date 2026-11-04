@@ -3,8 +3,9 @@ of icon buttons.
 
 The design draws none of the three as an icon, and the owner asked for all of
 them as icons, so they sit together in chrome the design already has: at the
-foot of the desktop sidebar and, on a phone, in each page's header after its
-action. From the start of the row: the language, its icon the current
+foot of the desktop sidebar as a row of three, and, on a phone, in each page's
+header after its action as the settings gear alone, the language and signing
+out inside the dialog it opens, the owner's answer of 2026-11-04. From the start of the row: the language, its icon the current
 language's flag; the settings, a gear; and signing out, when there is someone to
 sign out. They are 12 pixels apart, and each names itself in its label tip,
 keeping what its name does not say as the description a screen reader hears
@@ -14,8 +15,9 @@ after it.
 
 ### placement
 
-Where the row sits, which decides where the language menu opens: `sidebar`,
-above its button, or `header`, below it.
+Where the controls sit: `sidebar`, the row of three at the sidebar's foot, its
+language menu opening above its button, or `header`, a phone's page header,
+which holds the settings gear alone.
 
 ### onSignOut
 
@@ -31,7 +33,8 @@ their names and descriptions, and signing out pressed.
 
 ### InTheHeader
 
-The row as a phone's page header holds it.
+A phone's page header: the settings gear alone, its dialog holding the
+language and signing out.
 
 ### WithoutSigningOut
 

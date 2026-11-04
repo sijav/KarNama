@@ -1856,11 +1856,10 @@ export const WithoutSigningOut: Story = {
   // A board given no way to sign out, which the prop's being optional allows.
   render: ({ onSignOut: _noSigningOut, ...args }) => <JobsScreen {...args} />,
   play: async ({ canvasElement }) => {
-    // KN-427: on a phone the Page Header carries the shell's own controls, and
-    // signing out is among them only when the board is given a way to, KN-478. The
-    // language switch, there either way, shows the header was read. The screen is
-    // resized by the runner's own browser, which only the runner has, KN-225, and
-    // put back after.
+    // KN-427: on a phone the Page Header carries the settings gear, and its
+    // dialog signs out only when the board is given a way to, KN-850. The gear,
+    // there either way, shows the header was read. The screen is resized by the
+    // runner's own browser, which only the runner has, KN-225, and put back after.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
     const { page } = await import('vitest/browser')
     const canvas = within(canvasElement)
@@ -1868,8 +1867,10 @@ export const WithoutSigningOut: Story = {
     const before = { width: window.innerWidth, height: window.innerHeight }
     try {
       await page.viewport(PHONE.width, PHONE.height)
-      await expect(await canvas.findByRole('button', { name: i18n._('Language') })).toBeInTheDocument()
-      await expect(canvas.queryByRole('button', { name: i18n._('Sign out') })).toBeNull()
+      await userEvent.click(await canvas.findByRole('button', { name: i18n._('Settings') }))
+      const settings = within(await within(canvasElement.ownerDocument.body).findByRole('dialog'))
+      await expect(settings.queryByRole('button', { name: i18n._('Sign out') })).toBeNull()
+      await userEvent.click(settings.getByRole('button', { name: i18n._('Done') }))
     } finally {
       await page.viewport(before.width, before.height)
     }

@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react'
 import type { StoryObj } from '@storybook/react-vite'
-import { expect, fn, userEvent, within } from 'storybook/test'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, localeOrder } from '../../i18n'
 import { semantic } from '../../theme/tokens'
 import { Button } from '../button'
@@ -131,24 +131,31 @@ export const ControlsOnNarrowScreens: Story = {
   globals: { locale: 'fa-IR' },
   render: (args) => <Drawn withAction onSignOut={args.onSignOut} />,
   play: async ({ args, canvasElement }) => {
-    // The shell's own controls, the language, settings and signing out, show
+    // The shell's one control in a narrow header, the settings gear, shows
     // below the build's mobile breakpoint, MUI's md, after the action, and not
-    // above it, KN-478. The width is set with the runner's own viewport; in the
-    // published Storybook, resize the window to see them go.
+    // above it, KN-478; the language and signing out are inside its dialog, the
+    // owner's answer of 2026-11-04, KN-850. The width is set with the runner's own
+    // viewport; in the published Storybook, resize the window to see it go.
     if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
       if (import.meta.env.MODE !== 'test') return
       throw new Error('ControlsOnNarrowScreens is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
     }
     const browser = await import('vitest/browser')
     const i18n = i18nFor('fa-IR')
-    const controls = () =>
-      [i18n._('Language'), i18n._('Settings'), i18n._('Sign out')].map((name) => within(canvasElement).getByRole('button', { hidden: true, name }))
+    const controls = () => [i18n._('Settings')].map((name) => within(canvasElement).getByRole('button', { hidden: true, name }))
+    const body = within(canvasElement.ownerDocument.body)
     try {
       await browser.page.viewport(390, 844)
       for (const control of controls()) await expect(control).toBeVisible()
-      const [, , signOut] = controls()
-      await userEvent.click(signOut ?? canvasElement)
+      for (const name of [i18n._('Language'), i18n._('Sign out')]) {
+        await expect(within(canvasElement).queryByRole('button', { hidden: true, name })).toBeNull()
+      }
+      const [settings] = controls()
+      await userEvent.click(settings ?? canvasElement)
+      const dialog = within(await body.findByRole('dialog'))
+      await userEvent.click(dialog.getByRole('button', { name: i18n._('Sign out') }))
       await expect(args.onSignOut).toHaveBeenCalledTimes(1)
+      await waitFor(() => expect(body.queryByRole('dialog')).toBeNull())
       // 899 and 900 sit either side of md, so the line moved to a lower width
       // fails at 899 and to a higher one at 900, KN-321.
       await browser.page.viewport(899, 900)

@@ -11,14 +11,20 @@ export interface ShellControlsProps {
   onSignOut?: () => void
 }
 
-// The shell's own controls, the owner's of 2026-09-14, KN-478: the language,
-// settings and signing out, as Icon Buttons named by their label tips, each with
-// a description of what its name does not say, KN-848, in that order from the
-// inline start and 12 apart, as the compact Contact Card sets its Icon
+// The shell's own controls, the owner's of 2026-09-14, KN-478. At the
+// sidebar's foot, the language, settings and signing out, as Icon Buttons named
+// by their label tips, each with a description of what its name does not say,
+// KN-848, in that order from the inline start and 12 apart, as the compact Contact Card sets its Icon
 // Buttons. The sidebar holds them at its foot and a phone's Page Header after
 // its action, so both draw them from here and the two cannot drift.
+//
+// A phone's Page Header has room for the page's action and one gear, which the
+// redesign's header, 1274:64227, leaves beside its title: the owner's answer of
+// 2026-11-04, KN-850. So there the gear stands alone, the language and signing
+// out inside the dialog it opens.
 export const ShellControls = ({ placement, onSignOut }: ShellControlsProps) => {
   const { i18n } = useLingui()
+  if (placement === 'header') return <SettingsControl {...(onSignOut === undefined ? {} : { onSignOut })} />
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: `${spacing.sm}px` }}>
       <LanguageSwitch placement={placement} />

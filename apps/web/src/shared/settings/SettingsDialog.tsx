@@ -19,6 +19,7 @@ export interface SettingsDialogProps {
   onLocaleChange: (locale: Locale) => void
   onColorSchemeChange: (scheme: ColorSchemePreference) => void
   onLoadSamples: () => void
+  onSignOut?: () => void
 }
 
 export const SettingsDialog = ({
@@ -30,6 +31,7 @@ export const SettingsDialog = ({
   onLocaleChange,
   onColorSchemeChange,
   onLoadSamples,
+  onSignOut,
 }: SettingsDialogProps) => {
   const { i18n } = useLingui()
   const themeId = useId()
@@ -100,6 +102,14 @@ export const SettingsDialog = ({
             {loaded ? i18n._('Sample data loaded. Open your board or network to explore it.') : null}
           </Box>
         </Box>
+        {onSignOut === undefined ? null : (
+          // Signing out where the shell has no button of its own for it: a
+          // phone's header holds only the gear that opens this dialog, the
+          // owner's answer of 2026-11-04, KN-850.
+          <Button variant="secondary" startIcon="log-out" onClick={onSignOut}>
+            {i18n._('Sign out')}
+          </Button>
+        )}
       </Box>
     </Modal>
   )

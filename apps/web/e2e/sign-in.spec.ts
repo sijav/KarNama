@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { signOut } from './session'
 
 /**
  * Signing in, end to end, KN-046.
@@ -128,9 +129,9 @@ test('signing out clears the session and asks for a number again', async ({ page
   await page.getByRole('button', { name: 'شروع کن' }).click()
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('فرصت‌های شغلی من')
 
-  // At the sidebar's foot on a desktop, and in the page header's controls on a
-  // phone, KN-478 and KN-418.
-  await page.getByRole('button', { name: 'خروج' }).click()
+  // At the sidebar's foot on a desktop, and inside Settings on a phone, KN-478,
+  // KN-418 and KN-850.
+  await signOut(page)
 
   await expect(page.getByRole('button', { name: 'ارسال کد' })).toBeVisible()
   const kept = await page.evaluate(() => window.localStorage.getItem('karnama.session'))
@@ -154,7 +155,7 @@ test("one reader never sees another reader's archive", async ({ page }) => {
   await expect(page.getByRole('article').filter({ hasText: SECRET })).toBeVisible()
 
   // They sign out, and somebody else signs in on the same browser.
-  await page.getByRole('button', { name: 'خروج' }).click()
+  await signOut(page)
   await page.getByLabel('شماره موبایل').fill(OTHER_PHONE)
   await page.getByRole('button', { name: 'ارسال کد' }).click()
   await expect.poll(() => codes.length).toBeGreaterThan(1)

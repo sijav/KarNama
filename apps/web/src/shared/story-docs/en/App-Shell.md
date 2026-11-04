@@ -26,17 +26,17 @@ is where a layout bug shows.
 
 ### LanguageOnAPhone
 
-At a phone's width the sidebar gives way to the tab bar, and the shell's own
-controls are in the page's header: choosing English from the language button
-there turns the page and keeps the choice, and the page's title stays whole
-beside the controls in both languages. The story resizes the screen when it
-runs as a test; in Storybook itself, narrow the window and use the switch
+At a phone's width the sidebar gives way to the tab bar, and the page's header
+holds its add and the settings gear: choosing English in settings turns the page
+and keeps the choice, and the header's add and gear stay inside the page in both
+languages, the title cut to fit where it must. The story resizes the screen when
+it runs as a test; in Storybook itself, narrow the window and use the gear
 yourself.
 
 ### SigningOutOnAPhone
 
-At a phone's width, signing out from the page header's controls, since the tab
-bar has no room for it: the sign-in screen comes back. The story resizes the
+At a phone's width, signing out from inside the settings the page header's gear
+opens, since the tab bar has no room for it: the sign-in screen comes back. The story resizes the
 screen when it runs as a test.
 
 ### Navigating

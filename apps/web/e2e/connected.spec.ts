@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { signOut } from './session'
 
 for (const locale of ['en-US', 'fa-IR']) {
   for (const colorScheme of ['light', 'dark']) {
@@ -54,7 +55,7 @@ test('server login, wrong code, signup, extraction, reload and logout', async ({
   await expect(modal.getByLabel('شرح شغل و مسئولیت‌ها')).toHaveValue('fail extraction: preserve this original ad text')
   await page.goto('/jobs')
   await page.reload()
-  await page.getByRole('button', { name: 'خروج', exact: true }).click()
+  await signOut(page)
   await expect(page.getByLabel('شماره موبایل', { exact: true })).toBeVisible()
   await page.reload()
   await expect(page.getByLabel('شماره موبایل', { exact: true })).toBeVisible()
