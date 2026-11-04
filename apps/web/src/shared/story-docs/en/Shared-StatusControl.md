@@ -9,9 +9,13 @@ looks pressed.
 
 ## Props
 
-### statuses
+### stages
 
-The statuses to choose from, in the board's order.
+The stages to choose from in the modal, in the board's order.
+
+### outcomes
+
+The outcomes that close a case, under the stages in the modal.
 
 ### value
 
@@ -23,7 +27,7 @@ Called with the id of the status chosen.
 
 ### onAdd
 
-Called when «+ وضعیت تازه» is pressed in the modal.
+Called when «+ افزودن وضعیت» is pressed in the modal.
 
 ## Stories
 

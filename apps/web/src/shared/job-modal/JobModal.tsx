@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react'
 import { Box, ButtonBase, Dialog, InputBase } from '@mui/material'
 import { useId, useRef, useState, type ReactNode } from 'react'
 import { usePreferences } from '../../core/preferences'
+import { statusGroups } from '../../core/records'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
 import { JobFields, missingFields, validPostingUrl, type JobDraft } from '../add-job'
 import { Button } from '../button'
@@ -658,7 +659,7 @@ export const JobModal = ({
           </Box>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0, gap: `${spacing.sm}px` }}>
-          <StatusControl statuses={statuses} value={job.draft.status} onChange={onStatusChange} onAdd={onAddStatus} />
+          <StatusControl {...statusGroups(statuses)} value={job.draft.status} onChange={onStatusChange} onAdd={onAddStatus} />
           <Box sx={{ display: 'inline-flex', margin: `-${(spacing.xl - iconSize.md) / 2}px` }}>
             <IconButton icon="x" iconSize="md" aria-label={i18n._('Close')} onClick={onClose} />
           </Box>

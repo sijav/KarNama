@@ -98,6 +98,25 @@ export const columnOrder = (statuses: readonly StatusOption[]): StatusOption[] =
   return [...statuses].sort((one, other) => rank(one) - rank(other))
 }
 
+/** The statuses as the grouped picker takes them: the stages, then the outcomes that close a case. */
+export interface StatusGroups {
+  stages: StatusOption[]
+  outcomes: StatusOption[]
+}
+
+/**
+ * The statuses in the grouped picker's two groups, each in the board's order.
+ *
+ * The records do not yet give a status its group, KN-731, so Rejected, by its
+ * id and never its colour, KN-440, is the one outcome they know, and every other
+ * status, the reader's own among them, is a stage. Once they do, this reads the
+ * group, and the modal and the control it feeds stay as they are.
+ */
+export const statusGroups = (statuses: readonly StatusOption[]): StatusGroups => {
+  const ordered = columnOrder(statuses)
+  return { stages: ordered.filter((entry) => entry.id !== REJECTED), outcomes: ordered.filter((entry) => entry.id === REJECTED) }
+}
+
 /** A new job opportunity, from what the add flow collected. */
 export const jobFrom = (draft: JobDraft, at: string): JobEntry => ({
   id: newId('job'),

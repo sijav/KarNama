@@ -13,11 +13,13 @@ export {
   nextCustomToken,
   readRecords,
   sortJobs,
+  statusGroups,
   tokenOf,
   withSaved,
   withStatus,
   type ContactEntry,
   type JobEntry,
   type Records,
+  type StatusGroups,
 } from './records'
 export { RecordsContext, RecordsProvider, STORAGE_KEY, useRecords, type RecordsProviderProps, type RecordsValue } from './RecordsProvider'

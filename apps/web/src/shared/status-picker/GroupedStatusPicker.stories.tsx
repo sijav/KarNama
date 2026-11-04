@@ -4,11 +4,10 @@ import { useState } from 'react'
 import { expect, fn, userEvent, within } from 'storybook/test'
 import { i18nFor, type Locale } from '../../i18n'
 import { darkSemantic } from '../../theme/darkMode'
-import { semantic, type StatusToken } from '../../theme/tokens'
+import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
 import { GroupedStatusPicker, type GroupedStatusPickerProps } from './GroupedStatusPicker'
-import type { StatusOption } from './StatusPicker'
 
 // The modal's body is 512 wide where the file draws the picker.
 const WIDTH = 512
@@ -17,32 +16,8 @@ const FA = fixtures('fa-IR')
 const EN = fixtures('en-US')
 type Fixtures = typeof FA
 
-// The four stages the file draws, from the fixtures' own statuses.
-const STAGES: readonly StatusToken[] = ['new', 'applied', 'interview', 'offer']
-const ACCEPTED: StatusToken = 'custom-1'
-const REJECTED: StatusToken = 'rejected'
-const GREY: StatusToken = 'new'
-
-const stagesOf = (set: Fixtures): StatusOption[] =>
-  STAGES.map((token) => {
-    const found = set.statusOptions.find((option) => option.token === token)
-    if (!found) throw new Error(`the fixtures hold no ${token} status`)
-    return found
-  })
-
-// The four outcomes in the pairs the file draws them in, until the records hold
-// them, KN-749.
-const outcomesOf = (set: Fixtures): StatusOption[] => [
-  { id: 'outcome-accepted', token: ACCEPTED, name: set.outcomeNames.accepted },
-  { id: 'outcome-rejected', token: REJECTED, name: set.outcomeNames.rejected },
-  { id: 'outcome-no-response', token: GREY, name: set.outcomeNames.noResponse },
-  { id: 'outcome-withdrawn', token: GREY, name: set.outcomeNames.withdrawn },
-]
-
-const specimen = (set: Fixtures) => {
-  const stages = stagesOf(set)
-  return { stages, outcomes: outcomesOf(set), value: stages[0]?.id ?? '' }
-}
+// The four stages and the four outcomes the file draws, from the fixtures.
+const specimen = (set: Fixtures) => ({ stages: set.stageOptions, outcomes: set.outcomeOptions, value: set.stageOptions[0]?.id ?? '' })
 
 // The picker holding its own choice, as a modal does, telling the args.
 const Held = ({ value, onChange, ...args }: GroupedStatusPickerProps) => {

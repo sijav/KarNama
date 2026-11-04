@@ -15,6 +15,7 @@ import {
   nextCustomToken,
   readRecords,
   sortJobs,
+  statusGroups,
   tokenOf,
   withSaved,
   withStatus,
@@ -75,6 +76,22 @@ describe('the statuses the product starts with', () => {
   it('reads a status colour by id, and the first default for one the board lost', () => {
     expect(tokenOf(statuses, 'offer')).toBe('offer')
     expect(tokenOf(statuses, 'gone')).toBe('new')
+  })
+
+  it('groups the stages before the one outcome the records know, Rejected, KN-789', () => {
+    // Until KN-731 gives every status its group. A status of the reader's own
+    // is a stage even in Rejected's colour, since which status is Rejected is
+    // its id, KN-440.
+    const mine: StatusOption = { id: 'own', token: 'rejected', name: 'mine' }
+    const groups = statusGroups([...[...statuses].reverse(), mine])
+    expect(groups.stages.map((entry) => entry.id)).toEqual(['new', 'applied', 'interview', 'offer', 'own'])
+    expect(groups.outcomes.map((entry) => entry.id)).toEqual(['rejected'])
+  })
+
+  it('has no outcome when the board no longer holds Rejected', () => {
+    const groups = statusGroups(statuses.filter((entry) => entry.id !== 'rejected'))
+    expect(groups.stages).toHaveLength(4)
+    expect(groups.outcomes).toEqual([])
   })
 })
 

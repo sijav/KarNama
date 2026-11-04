@@ -2,13 +2,14 @@ import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import { useId, useState, type SyntheticEvent } from 'react'
 import { Button, type ButtonType } from '../button'
-import { StatusPicker, type StatusOption } from '../status-picker'
+import { GroupedStatusPicker, type StatusOption } from '../status-picker'
 import { Modal } from './Modal'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface ChangeStatusModalProps {
   open: boolean
-  statuses: readonly StatusOption[]
+  stages: readonly StatusOption[]
+  outcomes: readonly StatusOption[]
   value: string
   onConfirm: (id: string) => void
   onCancel: () => void
@@ -22,12 +23,14 @@ const SUBMIT: ButtonType = 'submit'
 
 const CHANGE_STATUS_WIDTH = 420
 
-// The Change Status modal of node 150:93, 420 wide: the Status Picker, and
-// Cancel then Confirm at the inline end. A choice waits in the modal until
-// Confirm hands it over; Cancel, Escape, the close and the scrim leave the
-// status as it was. Each opening starts from the status the job has, with
-// focus on it, so the arrows move from there, KN-337.
-export const ChangeStatusModal = ({ open, statuses, value, onConfirm, onCancel, onAdd }: ChangeStatusModalProps) => {
+// The Change Status modal of node 150:93, 420 wide: the grouped Status Picker
+// of 636:6417 with its «وضعیت», the stages over the outcomes that close a case,
+// which makes it 410 tall where the copy drew 293 round the flat picker,
+// KN-789; then Cancel and Confirm at the inline end. A choice waits in the
+// modal until Confirm hands it over; Cancel, Escape, the close and the scrim
+// leave the status as it was. Each opening starts from the status the job has,
+// with focus on it, so the arrows move from there, KN-337.
+export const ChangeStatusModal = ({ open, stages, outcomes, value, onConfirm, onCancel, onAdd }: ChangeStatusModalProps) => {
   const { i18n } = useLingui()
   const [pending, setPending] = useState(value)
   const formId = useId()
@@ -70,7 +73,7 @@ export const ChangeStatusModal = ({ open, statuses, value, onConfirm, onCancel, 
         // KN-463.
         sx={{ display: 'contents' }}
       >
-        <StatusPicker statuses={statuses} value={pending} onChange={setPending} onAdd={onAdd} autoFocus />
+        <GroupedStatusPicker stages={stages} outcomes={outcomes} value={pending} onChange={setPending} onAdd={onAdd} autoFocus />
       </Box>
     </Modal>
   )

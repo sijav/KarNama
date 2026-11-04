@@ -667,10 +667,14 @@ KN-329; the original says «این فرصت شغلی برای همیشه حذف 
 the rule's word in the redesign's spoken voice, two lines at 360, so it is 230
 tall where the copy drew 208, and the code says it, the bulk deletion's line in
 the same voice, KN-788. **Change Status** is 420 wide
-round the Status Picker, then Cancel and Primary «تأیید»; the choice waits until
-Confirm, and each opening starts from the job's status. The set's description
-still speaks of a radio list with a name field; the component draws the chip
-picker. KN-028.
+round the grouped Status Picker, `636:6417`, with its «وضعیت», the stages over
+the four outcomes, then Cancel and Primary «تأیید»: 410 tall where the copy drew
+293 round the flat picker, the stages wrapping to a second line at 372, KN-789.
+The choice waits until Confirm, and each opening starts from the job's status.
+The set's description still speaks of a radio list with a name field; the
+component draws the chip picker. Until the records give every status its group,
+KN-731, `statusGroups` hands the modal Rejected as the one outcome they know and
+every other status as a stage. KN-028.
 
 **The modal forms are in the accessibility tree, and they are unnamed on
 purpose. KN-468.** Each set of fields is wrapped in a `form` whose `onSubmit`
@@ -802,17 +806,17 @@ ways, each item at the top of its line, and ends it with the dashed «+ افزو
 which the add chip follows in the row from outside, KN-338: Tab reaches the
 chosen one and the arrows move and choose, the Color Picker's way; the
 keyboard's choice takes the three pixel ring, told from Selected's two
-by its width. The file uses it in the add form and the Change Status modal.
+by its width. The copy used it in the add form and the Change Status modal.
 Both were read again in the original on 2026-11-04, KN-786: the choice is drawn
 as the copy drew it, its set narrower only because its example chip now says
 «مصاحبه» on the interview colour where the copy said «پیشنهاد کار»; the picker
 is too, but its add chip says «افزودن وضعیت» where the copy said «وضعیت تازه»,
 as the board's add column says, and the status it makes is still named «وضعیت
 تازه». The handoff lists the flat picker among the components no screen uses:
-Status Picker / Grouped, `636:6417`, replaces it, KN-751, and the code's flat
-one goes once the add form and the Change Status modal draw the grouped one,
-KN-817 and KN-789, by KN-842; the Status Choice stays, inside the grouped
-picker.
+Status Picker / Grouped, `636:6417`, replaces it, KN-751. The Change Status
+modal draws the grouped one since KN-789, and the code's flat one goes once the
+add form does too, KN-817, by KN-842; the Status Choice stays, inside the
+grouped picker.
 
 The **Status Control**, `199:21`, is the clickable wrapper the job modal puts
 round a chip that stays display only, read in the original on 2026-11-03,
@@ -1855,7 +1859,7 @@ of the contract.
 | Modal / Confirm     | `150:92`  | delete and archive confirmation                                                                 |
 | Modal / Unsaved       | `893:3780`   | no variants: save, close without saving, or go back to the modal                                                  |
 | Modal / Delete Status | `919:2885`   | Cards=None, Cards=Has: deleting a stage the reader made, its job opportunities moved                              |
-| Modal / Change Status | `150:93` |                                                                                                 |
+| Modal / Change Status | `150:93`     | no variants: the grouped Status Picker with its label, then Cancel and Confirm                                    |
 | Modal / Add-Edit    | `166:82`  | steps Paste, PasteFilled, Loading, Review, Manual, Error                                        |
 | Page Header         | `155:56`  | title, optional back button, optional primary action                                            |
 | Search Bar          | `155:92`  | Default, Focus, Filled, Hover                                                                        |

@@ -18,7 +18,13 @@ const i18n = setupI18n({ locale: 'fa-IR', messages: { 'fa-IR': fa } })
 const meta = {
   title: 'Shared/StatusControl',
   component: StatusControl,
-  args: { statuses: fixtures('fa-IR').statusOptions, value: INTERVIEW, onChange: fn(), onAdd: fn() },
+  args: {
+    stages: fixtures('fa-IR').stageOptions,
+    outcomes: fixtures('fa-IR').outcomeOptions,
+    value: INTERVIEW,
+    onChange: fn(),
+    onAdd: fn(),
+  },
   parameters: { controls: { include: ['value'] } },
 } satisfies StoryMeta<typeof StatusControl>
 
@@ -123,10 +129,12 @@ export const EscapeCancels: Story = {
 }
 
 export const InEnglish: Story = {
-  args: { statuses: fixtures('en-US').statusOptions },
+  args: { stages: fixtures('en-US').stageOptions, outcomes: fixtures('en-US').outcomeOptions },
   globals: { locale: 'en-US' },
   play: async ({ args, canvasElement }) => {
     const control = within(canvasElement).getByRole('button')
-    await expect(control).toHaveTextContent(args.statuses.find((status) => status.id === args.value)?.name ?? 'missing')
+    await expect(control).toHaveTextContent(
+      [...args.stages, ...args.outcomes].find((status) => status.id === args.value)?.name ?? 'missing',
+    )
   },
 }

@@ -1,5 +1,5 @@
-Changing a job opportunity's status in a modal: the status picker, and Cancel
-beside Confirm.
+Changing a job opportunity's status in a modal: the grouped status picker, the
+stages over the outcomes that close a case, and Cancel beside Confirm.
 
 The choice waits in the modal until Confirm hands it over; Cancel, Escape, the
 close and the scrim leave the status as it was, and the next opening starts
@@ -11,9 +11,14 @@ again from the job opportunity's status, with focus on it.
 
 Whether the modal is showing.
 
-### statuses
+### stages
 
-The statuses to choose from, in the board's order.
+The stages to choose from, in the board's order: the open statuses, the
+reader's own among them.
+
+### outcomes
+
+The outcomes that close a case, under the stages.
 
 ### value
 
@@ -35,8 +40,16 @@ Called when «+ افزودن وضعیت» is pressed in the picker.
 
 ### Default
 
-Another status chosen and confirmed.
+The modal measured against the design, an outcome chosen and confirmed.
 
 ### CancelLeavesItAsItWas
 
 A choice cancelled, and the next opening back on the job opportunity's status.
+
+### InEnglish
+
+The modal in English.
+
+### Dark
+
+The modal in the dark scheme, in the theme's dark colours.

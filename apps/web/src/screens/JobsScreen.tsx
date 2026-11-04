@@ -4,7 +4,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type SyntheticEven
 import { useSearchParams } from 'react-router'
 import { QUERY, searchStep } from '../app/routes'
 import { usePreferences } from '../core/preferences'
-import { columnOrder, contactsOf, jobsIn, REJECTED, tokenOf, useRecords, type JobEntry } from '../core/records'
+import { columnOrder, contactsOf, jobsIn, REJECTED, statusGroups, tokenOf, useRecords, type JobEntry } from '../core/records'
 import { formatCount } from '../i18n/formatCount'
 import { AddJobModal, type AddJobModalProps, type JobDraft } from '../shared/add-job'
 import { BulkActionBar } from '../shared/bulk-action-bar'
@@ -820,7 +820,7 @@ export const JobsScreen = ({
 
       <ChangeStatusModal
         open={moving !== null}
-        statuses={records.statuses}
+        {...statusGroups(records.statuses)}
         value={records.jobs.find((entry) => entry.id === moving?.[0])?.draft.status ?? first}
         onConfirm={move}
         onCancel={() => {

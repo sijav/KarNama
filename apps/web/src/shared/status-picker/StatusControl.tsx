@@ -9,7 +9,8 @@ import type { StatusOption } from './StatusPicker'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface StatusControlProps {
-  statuses: readonly StatusOption[]
+  stages: readonly StatusOption[]
+  outcomes: readonly StatusOption[]
   value: string
   onChange: (id: string) => void
   onAdd: () => void
@@ -27,13 +28,13 @@ const FOCUS_RING = 3
 // Status Chip and a caret in a pill, the clickable wrapper the card and the job
 // modal put round a chip that stays display only. It opens the Change Status
 // modal, 150:93, as the file draws it over the job modal at 377:6244, KN-337:
-// a named dialog opening on the chosen status. Confirm there hands the choice
-// over; Cancel and Escape change nothing. Either way focus is back on the
-// control.
-export const StatusControl = ({ statuses, value, onChange, onAdd }: StatusControlProps) => {
+// a named dialog opening on the chosen status, a stage or an outcome, KN-789.
+// Confirm there hands the choice over; Cancel and Escape change nothing.
+// Either way focus is back on the control.
+export const StatusControl = ({ stages, outcomes, value, onChange, onAdd }: StatusControlProps) => {
   const { i18n } = useLingui()
   const [open, setOpen] = useState(false)
-  const current = statuses.find((option) => option.id === value)
+  const current = [...stages, ...outcomes].find((option) => option.id === value)
   const close = () => {
     setOpen(false)
   }
@@ -94,7 +95,8 @@ export const StatusControl = ({ statuses, value, onChange, onAdd }: StatusContro
       </ButtonBase>
       <ChangeStatusModal
         open={open}
-        statuses={statuses}
+        stages={stages}
+        outcomes={outcomes}
         value={value}
         onConfirm={(id) => {
           close()

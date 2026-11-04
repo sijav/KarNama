@@ -3,37 +3,18 @@ import { useState } from 'react'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, type Locale } from '../../i18n'
 import { darkSemantic } from '../../theme/darkMode'
-import { semantic, type StatusToken } from '../../theme/tokens'
+import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
-import type { StatusOption } from './StatusPicker'
 import { StatusSelect, type StatusSelectProps } from './StatusSelect'
 
 const FA = fixtures('fa-IR')
 const EN = fixtures('en-US')
 type Fixtures = typeof FA
 
-// The four stages and four outcomes the grouped picker draws, as its stories
-// take them.
-const STAGES: readonly StatusToken[] = ['new', 'applied', 'interview', 'offer']
-const ACCEPTED: StatusToken = 'custom-1'
-const REJECTED: StatusToken = 'rejected'
-const GREY: StatusToken = 'new'
-
-const specimen = (set: Fixtures) => {
-  const stages = STAGES.map((token) => {
-    const found = set.statusOptions.find((option) => option.token === token)
-    if (!found) throw new Error(`the fixtures hold no ${token} status`)
-    return found
-  })
-  const outcomes: StatusOption[] = [
-    { id: 'outcome-accepted', token: ACCEPTED, name: set.outcomeNames.accepted },
-    { id: 'outcome-rejected', token: REJECTED, name: set.outcomeNames.rejected },
-    { id: 'outcome-no-response', token: GREY, name: set.outcomeNames.noResponse },
-    { id: 'outcome-withdrawn', token: GREY, name: set.outcomeNames.withdrawn },
-  ]
-  return { stages, outcomes, value: stages[0]?.id ?? '' }
-}
+// The four stages and the four outcomes the grouped picker draws, from the
+// fixtures, as its stories take them.
+const specimen = (set: Fixtures) => ({ stages: set.stageOptions, outcomes: set.outcomeOptions, value: set.stageOptions[0]?.id ?? '' })
 
 // The trigger holding its own choice, as the add modal does, in a footer that
 // leaves room above it for the menu.

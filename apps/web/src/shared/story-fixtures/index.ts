@@ -155,6 +155,10 @@ export interface Fixtures {
    * product's defaults have it, for anything that takes a `StatusOption`, KN-437.
    */
   statusOptions: readonly StatusOption[]
+  /** The four stages the grouped picker draws, from the statuses above, KN-751. */
+  stageOptions: readonly StatusOption[]
+  /** The four outcomes in the pairs the file draws them in, until the records hold them, KN-731. */
+  outcomeOptions: readonly StatusOption[]
   // Each status's name by its token, every one of the nine present.
   names: Readonly<Record<StatusToken, string>>
   renamedStatus: StatusFixture
@@ -220,6 +224,14 @@ export interface RawFixtures {
 }
 
 const isToken = (value: string): value is StatusToken => value in status
+
+// The stages the grouped picker draws, 636:6417, and the colours its outcomes
+// wear: accepted in the custom-1 pair, rejected in its own, no response and
+// withdrawn in the greys of new.
+const STAGES: readonly StatusToken[] = ['new', 'applied', 'interview', 'offer']
+const ACCEPTED: StatusToken = 'custom-1'
+const REJECTED: StatusToken = 'rejected'
+const GREY: StatusToken = 'new'
 
 const tokenOf = (value: string): StatusToken => {
   if (!isToken(value)) throw new Error(`a story fixture names a status that does not exist: ${value}`)
@@ -288,6 +300,21 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     if (!found) throw new Error(`the story fixtures have no status ${token}`)
     return found.name
   }
+  const stageOptions = Object.freeze(
+    STAGES.map((token) => {
+      const found = statusOptions.find((option) => option.token === token)
+      if (!found) throw new Error(`the story fixtures have no status ${token}`)
+      return found
+    }),
+  )
+  const outcomeOptions = Object.freeze(
+    [
+      { id: 'outcome-accepted', token: ACCEPTED, name: raw.outcomeNames.accepted },
+      { id: 'outcome-rejected', token: REJECTED, name: raw.outcomeNames.rejected },
+      { id: 'outcome-no-response', token: GREY, name: raw.outcomeNames.noResponse },
+      { id: 'outcome-withdrawn', token: GREY, name: raw.outcomeNames.withdrawn },
+    ].map((option) => Object.freeze(option)),
+  )
   const names: Record<StatusToken, string> = {
     new: nameOf('new'),
     applied: nameOf('applied'),
@@ -302,6 +329,8 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
   return Object.freeze({
     statuses: Object.freeze(statuses),
     statusOptions,
+    stageOptions,
+    outcomeOptions,
     names: Object.freeze(names),
     renamedStatus: statusOf(raw.renamedStatus),
     longStatusName: raw.longStatusName,
