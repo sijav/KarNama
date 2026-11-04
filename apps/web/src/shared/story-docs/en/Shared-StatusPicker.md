@@ -1,5 +1,5 @@
 How a status is chosen: «وضعیت» above a row of status chips, the chosen one
-ringed in blue, and a dashed «+ وضعیت تازه» that makes a new status in place.
+ringed in blue, and a dashed «+ افزودن وضعیت» that makes a new status in place.
 
 Status is chosen with chips, never a dropdown. The chips are one radio group:
 Tab reaches the chosen one, and the arrows move and choose. The add chip is the
@@ -24,7 +24,7 @@ Called with the id of the status chosen.
 
 ### onAdd
 
-Called when «+ وضعیت تازه» is pressed; the page makes the new status.
+Called when «+ افزودن وضعیت» is pressed; the page makes the new status.
 
 ### autoFocus
 
@@ -58,8 +58,12 @@ The picker with the statuses' English names.
 
 In Persian the choices run right to left, and the left arrow moves to the
 choice on the left, the right arrow to the one on the right, pressed on a real
-keyboard; an arrow pressed on New status moves nothing.
+keyboard; an arrow pressed on Add status moves nothing.
 
 ### ArrowsInEnglish
 
 The same keys in English, where the choices run left to right.
+
+### Dark
+
+The picker in the dark scheme, in the theme's dark colours.

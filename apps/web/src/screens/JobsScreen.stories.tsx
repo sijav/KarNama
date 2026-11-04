@@ -476,7 +476,7 @@ export const People: Story = {
     // Waited for by role: the modal is held out of the accessibility tree
     // while anything is over it, and the file picker's own dialog is one.
     await userEvent.click(await within(job).findByRole('button', { name: new RegExp(`^وضعیت:`) }))
-    await userEvent.click(await body.findByRole('button', { name: 'وضعیت تازه' }))
+    await userEvent.click(await body.findByRole('button', { name: i18nFor('fa-IR')._('Add status') }))
     await userEvent.click(await within(job).findByRole('button', { name: new RegExp(`^وضعیت:`) }))
     const picking = await body.findByRole('dialog', { name: 'تغییر وضعیت' })
     await userEvent.click(within(picking).getByRole('radio', { name: set.names.offer }))
@@ -653,7 +653,7 @@ export const BackingOut: Story = {
     const change = await body.findByRole('dialog')
     // The picker's own way to a new column, which reads as the name it will
     // take rather than as an instruction.
-    await userEvent.click(within(change).getByRole('button', { name: 'وضعیت تازه' }))
+    await userEvent.click(within(change).getByRole('button', { name: i18n._('Add status') }))
     await waitFor(async () => {
       await expect(within(change).getByRole('radio', { name: 'وضعیت تازه' })).toBeInTheDocument()
     })
@@ -704,7 +704,7 @@ export const Adding: Story = {
     await waitFor(async () => {
       await expect(within(adding).getByLabelText(/عنوان شغلی/)).toBeInTheDocument()
     })
-    await userEvent.click(within(adding).getByRole('button', { name: 'وضعیت تازه' }))
+    await userEvent.click(within(adding).getByRole('button', { name: i18nFor('fa-IR')._('Add status') }))
     await waitFor(async () => {
       await expect(within(adding).getByRole('radio', { name: 'وضعیت تازه' })).toBeInTheDocument()
     })

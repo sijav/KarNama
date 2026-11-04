@@ -691,13 +691,23 @@ radius full, ringed two pixels inside: none at rest, its `bg/surface` stroke
 being invisible on the surface it sits on, `border/default` on Hover and
 `border/focus` when Selected. The **Status Picker**, `427:592`, puts «وضعیت», the
 Label role in `text/secondary`, 8 above a row of choices that wraps, 8 both
-ways, each item at the top of its line, and ends it with the dashed «+ وضعیت
-تازه», 28 tall, `text/brand`, a 16 plus, one pixel of `border/default` dashed
-4 and 3, which CSS draws with its own dash. The choices are one radio group,
+ways, each item at the top of its line, and ends it with the dashed «+ افزودن
+وضعیت», 28 tall, `text/brand`, a 16 plus in `text/secondary`, one pixel of
+`border/default` dashed 4 and 3, which CSS draws with its own dash. The choices are one radio group,
 which the add chip follows in the row from outside, KN-338: Tab reaches the
 chosen one and the arrows move and choose, the Color Picker's way; the
 keyboard's choice takes the three pixel ring, told from Selected's two
 by its width. The file uses it in the add form and the Change Status modal.
+Both were read again in the original on 2026-11-04, KN-786: the choice is drawn
+as the copy drew it, its set narrower only because its example chip now says
+«مصاحبه» on the interview colour where the copy said «پیشنهاد کار»; the picker
+is too, but its add chip says «افزودن وضعیت» where the copy said «وضعیت تازه»,
+as the board's add column says, and the status it makes is still named «وضعیت
+تازه». The handoff lists the flat picker among the components no screen uses:
+Status Picker / Grouped, `636:6417`, replaces it, KN-751, and the code's flat
+one goes once the add form and the Change Status modal draw the grouped one,
+KN-817 and KN-789, by KN-842; the Status Choice stays, inside the grouped
+picker.
 
 The **Status Control**, `199:21`, is the clickable wrapper the job modal puts
 round a chip that stays display only, read in the original on 2026-11-03,
@@ -1625,7 +1635,7 @@ status-management page was removed.
 
 **Status is chosen with chips, never a dropdown.** The `Status Picker` is a row
 of status chips with a blue ring on the selected one, plus a dashed
-«+ وضعیت تازه» chip that creates a new status in place.
+«+ افزودن وضعیت» chip that creates a new status in place.
 
 **The card's status stripe is on the RIGHT edge**, 4px, in the status colour.
 On hover a checkbox appears, the title shifts, and a delete icon appears in the
@@ -1722,7 +1732,7 @@ project پروژه‌ای · freelance فریلنسری · temporary موقت
 senior specialist کارشناس ارشد · middle manager مدیر میانی ·
 deputy or senior manager معاون / مدیر ارشد · chief executive مدیر عامل
 
-**وضعیت, status:** the five defaults, plus «+ وضعیت تازه» to create one. Two
+**وضعیت, status:** the five defaults, plus «+ افزودن وضعیت» to create one. Two
 Persianisations are already applied and should not be undone:
 «تازه اضافه‌شده» became «ذخیره‌شده», and «اپلای‌شده» became «درخواست‌شده».
 

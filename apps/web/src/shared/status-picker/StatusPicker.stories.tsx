@@ -2,6 +2,7 @@ import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18n } from '../../i18n'
+import { darkSemantic } from '../../theme/darkMode'
 import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
@@ -48,7 +49,7 @@ export const Default: Story = {
     const group = within(canvasElement).getByRole('radiogroup')
     // The add chip is not a choice, so it stands outside the group, KN-338, in
     // the row the group lays its choices out in.
-    const add = within(canvasElement).getByRole('button', { name: i18n._('New status') })
+    const add = within(canvasElement).getByRole('button', { name: i18n._('Add status') })
     await expect(group.contains(add)).toBe(false)
     const row = group.parentElement
     if (!row) throw new Error('the group has no row round it')
@@ -115,7 +116,7 @@ export const Wrapping: Story = {
     // chip outside the group after the last choice: on its line 8 beyond it, or
     // first on the next line, 8 below it.
     const group = within(canvasElement).getByRole('radiogroup')
-    const add = within(canvasElement).getByRole('button', { name: i18n._('New status') })
+    const add = within(canvasElement).getByRole('button', { name: i18n._('Add status') })
     await expect(group.contains(add)).toBe(false)
     const row = group.parentElement
     if (!row) throw new Error('the group has no row round it')
@@ -169,7 +170,7 @@ export const ByKeyboard: Story = {
     await expect(args.onChange).toHaveBeenLastCalledWith(next.getAttribute('value'))
     await waitFor(() => expect(px(getComputedStyle(shellOf(next), '::after').borderTopWidth)).toBe(3))
     await userEvent.tab()
-    await expect(within(canvasElement).getByRole('button', { name: i18n._('New status') })).toHaveFocus()
+    await expect(within(canvasElement).getByRole('button', { name: i18n._('Add status') })).toHaveFocus()
     await userEvent.keyboard('{Enter}')
     await expect(args.onAdd).toHaveBeenCalledTimes(1)
   },
@@ -210,7 +211,7 @@ export const InEnglish: Story = {
 // to be overridden, as in use. From the second status, which has a neighbour
 // on each side in its row, the left arrow lands on the choice that sits to its
 // left on screen and the right arrow on the one to its right, and the row takes
-// both keys itself; an arrow pressed on «+ وضعیت تازه», outside the group,
+// both keys itself; an arrow pressed on «+ افزودن وضعیت», outside the group,
 // moves nothing. In the published Storybook there is no runner to press keys,
 // so press them yourself. The runner is known by the flag
 // .storybook/vitest.setup.ts sets, KN-225.
@@ -263,7 +264,7 @@ const arrowsFollowTheScreen =
     await expect(right.top).toBe(start.top)
     await expect(right.left).toBeGreaterThanOrEqual(start.right)
     // On the add chip, an arrow is the browser's and moves nothing.
-    const add = within(canvasElement).getByRole('button', { name: i18n._('New status') })
+    const add = within(canvasElement).getByRole('button', { name: i18n._('Add status') })
     add.focus()
     await browser.userEvent.keyboard('{ArrowLeft}')
     await expect(add).toHaveFocus()
@@ -280,4 +281,29 @@ export const ArrowsInEnglish: Story = {
   args: { statuses: fixtures('en-US').statusOptions },
   globals: { locale: 'en-US' },
   play: arrowsFollowTheScreen('ltr'),
+}
+
+export const Dark: Story = {
+  // The dark scheme: the label and the plus in text/secondary, the add chip's
+  // words in text/brand with its dashed edge in border/default, and the chosen
+  // ring in border/focus, each in the theme's dark colours.
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    const group = within(canvasElement).getByRole('radiogroup')
+    const label = canvasElement.ownerDocument.getElementById(group.getAttribute('aria-labelledby') ?? '')
+    if (!label) throw new Error('the group has no label')
+    await expect(getComputedStyle(label).color).toBe(computedColour(label, darkSemantic['text/secondary']))
+    const add = within(canvasElement).getByRole('button', { name: i18n._('Add status') })
+    await expect(getComputedStyle(add).color).toBe(computedColour(add, darkSemantic['text/brand']))
+    await expect(getComputedStyle(add, '::before').borderTopColor).toBe(computedColour(add, darkSemantic['border/default']))
+    const plus = add.querySelector('svg')
+    if (!plus) throw new Error('the add chip has no plus')
+    await expect(getComputedStyle(plus).color).toBe(computedColour(add, darkSemantic['text/secondary']))
+    const chosen = within(group)
+      .getAllByRole('radio')
+      .find((radio) => radio instanceof HTMLInputElement && radio.checked)
+    if (!chosen) throw new Error('nothing is chosen')
+    const shell = shellOf(chosen)
+    await expect(getComputedStyle(shell, '::after').borderTopColor).toBe(computedColour(shell, darkSemantic['border/focus']))
+  },
 }

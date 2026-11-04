@@ -29,7 +29,7 @@ Called when the modal is cancelled.
 
 ### onAdd
 
-Called when «+ وضعیت تازه» is pressed in the picker.
+Called when «+ افزودن وضعیت» is pressed in the picker.
 
 ## Stories
 

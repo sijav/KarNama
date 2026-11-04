@@ -64,7 +64,7 @@ export const StatusChoice = ({ option, selected }: { option: StatusOption; selec
 )
 
 // The Status Picker of node 427:592: «وضعیت» above a wrapping row of Status
-// Choices and the dashed «+ وضعیت تازه» that makes a new status in place. Status
+// Choices and the dashed «+ افزودن وضعیت» that makes a new status in place. Status
 // is chosen with chips, never a dropdown, DESIGN.md. A native radio group
 // through MUI gives one Tab stop and arrows that move and choose, the Color
 // Picker's way; the add chip is the next stop. Told to, it puts focus on the
@@ -169,7 +169,7 @@ export const StatusPicker = ({ statuses, value, onChange, onAdd, autoFocus = fal
           })}
         >
           <Icon name="plus" size="sm" />
-          {i18n._('New status')}
+          {i18n._('Add status')}
         </ButtonBase>
       </Box>
     </Box>
