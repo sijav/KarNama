@@ -38,52 +38,27 @@ screens go through `apps/web/src/screens/personModal.ts`. KN-598 closed with it.
 Its roast and KN-598's run in the background, KN-804's first; KN-855 holds the
 Label Picker's older coverage gaps.
 
-**Closed today, among others**: KN-775, KN-789, KN-796, KN-848, KN-850 with
-KN-851, KN-783, KN-745 (`shared/kanban-card`), KN-747 (`shared/interview-slot`),
-KN-754, KN-756 and KN-757 (`shared/date-picker`), KN-854, KN-771
-(`shared/label-picker`), KN-804 and KN-598. KN-847 made the Pages build green; every push since is
-green.
-
-**Pieces other cards build on**: `shared/popover`, `shared/date-picker`,
-`cardFooter`, the grouped status picker, the modals, `HistoryRow`, the menus,
-`SearchPicker`, `statusGroups`, `KanbanCard` with `InterviewSlot`,
-`LabelPicker`, `LinkedJobs`. **Adoption is the screens'**: notes on KN-805,
-KN-812, KN-816, KN-817, KN-822 and KN-828 say what each swaps in; retiring
-waits on it: KN-842, KN-844, KN-852.
-
-**Open findings on built components**: KN-853, the Kanban Card's content 244
-wide where the frame leaves 242; KN-849, the stale drag-cards e2e spec.
-
-**A phone's header, the owner's answer of 2026-11-04** ("Gear holds the rest"):
-the title, the page's action and one settings gear; language and sign out live
-in the Settings dialog.
+**Built today**: `shared/kanban-card`, `shared/interview-slot`,
+`shared/date-picker`, `shared/label-picker`, the person modal; every push since
+KN-847 is green. **Adoption is the screens'**: notes on KN-805, KN-812, KN-816,
+KN-817, KN-822 and KN-828 say what each swaps in; retiring waits on it: KN-842,
+KN-844, KN-852. Open findings on built components: KN-853, KN-849, KN-855.
+**A phone's header** ("Gear holds the rest", 2026-11-04): the title, the page's
+action and one settings gear.
 
 ## Learned, and the traps
 
 - Figma's auto layout can include a stroke in layout
   (`strokesIncludedInLayout`): read it before taking a padding.
-- The story runner is 1200 by 900; the published check 1280 by 720, where a
-  tall modal scrolls its body: measure `scrollHeight` and offsets, and allow
-  for MUI lifting a popover into the window. Before pushing a popover's
-  stories run `storybook build` then `playwright test --config
-  playwright.storybook.config.ts -g <ids>`.
-- An act warning from `ForwardRef(PopperTooltip)` is a Popper whose state
-  changed outside act: an inline `modifiers` array, or focus lost to the body
-  that a Dialog's focus trap takes back on its 50 ms interval.
-- Focusing from an effect makes React warn outside act: `flushSync` in the
-  handler, then focus. A disabled default button blocks implicit submission.
-- Coverage is 100% in every file; a story's coverage of a file the unit project
-  touches is discarded, KN-103. A guard that cannot be false is a failed branch.
-- Screenshots: the browser pane cannot render while hidden; use
-  `%TEMP%/kn804/shot.cjs` (Playwright through apps/web's `@playwright/test`).
+- Before pushing a popover's stories run `storybook build`, then `playwright
+  test --config playwright.storybook.config.ts -g <ids>`. AGENTS.md section 7
+  holds the Popper act warning, implicit submission and coverage lessons.
 - The lint rule's traps: a string literal passed to an unlisted function, a
   string ternary outside `sx`, `i18nFor(x)._()` in one expression, a template
   of words, a letter in a date literal; type a literal as a one-member union.
-- Git Bash mangles `\\`, long Persian and TSX in a heredoc: use Write.
 
-**CI**: the Pages workflow builds the app and Storybook and runs
-`e2e/storybook`'s specs. Watch a run with `gh run watch` in the background,
-then read `gh run view <id>`.
+**CI**: Pages builds the app and Storybook and runs `e2e/storybook`; watch a
+run with `gh run watch` in the background, then read `gh run view <id>`.
 
 **The redesign** is in Figma `K1EP8GCOmelU8o4vPR7a9f`, Screens `5:7`, with the
 handoff in `DESIGN-HANDOFF.md`; read the instances on the screens for real copy

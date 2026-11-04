@@ -504,6 +504,10 @@ short and the lessons sit in a file every iteration reads.
 - The production Storybook is not the Vitest one: body box-sizing, and act(). Portable stories apply no updateArgs, so anything that needs the store is proved in a production build. A story's pinned globals beat URL globals; view dark through an unpinned story.
 - Read the file with use_figma before trusting a code comment about it.
 - Forced colours: box-shadow removed, borders kept, SVG author strokes kept.
+- An act warning from `ForwardRef(PopperTooltip)` is a MUI Popper whose state changed outside act: an inline `modifiers` array rebuilds popper.js on every render, whose first placement lands a tick later, and focus lost to the body is taken back by a Dialog's focus trap on its 50 ms interval. Hoist the modifiers, and give focus back where a removed row held it (KN-804).
+- A disabled default button blocks implicit submission, so a form whose primary is off cannot be sent by Enter; a field inside a form whose own Enter does something else must `preventDefault` it, or the form takes it for its save (KN-804).
+- Coverage is held at 100 percent in every file, and a guard that can never be false is a branch no test reaches; read a file's misses from the storybook project's `--coverage.reporter=json`, since a story's coverage of a file the unit project touches is discarded (KN-103, KN-804).
+- The Vitest story runner draws at 1200 by 900 and the published check at 1280 by 720: a modal taller than 688 scrolls its body there, so measure `scrollHeight` and offsets from the scroll origin, not boxes against the window.
 - Python on Windows prints `\r\n` where Node prints `\n`, and a test reading pipes as text cannot see it: compare bytes. node:sqlite's busy timeout defaults to zero: pass `{ timeout }`.
 - A second checkout for comparison needs `git -c core.longpaths=true` and node_modules as junctions, removed with `cmd /c rmdir` before `git worktree remove`; the Storybook browser project cannot load its setup file through junctioned node_modules.
 - When two stores claim one truth, retire one in the same change: the JSON board and the skill's database drifted for a week unnoticed.
