@@ -311,9 +311,12 @@ export const TimeListOpen: Story = {
     await waitFor(() => expect(Number(getComputedStyle(surface.parentElement ?? surface).opacity)).toBe(1))
     await expect(field).toHaveAttribute('aria-expanded', 'true')
     const [fieldBox, listBox] = [field.getBoundingClientRect(), surface.getBoundingClientRect()]
-    await expect([Math.round(listBox.top - fieldBox.bottom), listBox.width, Math.round(listBox.right - fieldBox.right)]).toEqual([
-      4, 242, 0,
-    ])
+    await expect([listBox.width, Math.round(listBox.right - fieldBox.right)]).toEqual([242, 0])
+    // 4 under the field where the window has room for it, as the frame draws it;
+    // in a shorter one, as the published Storybook's 720 high page is, MUI
+    // lifts it to stay in the window, overlapping the field.
+    if (window.innerHeight - fieldBox.bottom >= listBox.height + 4 + 16) await expect(Math.round(listBox.top - fieldBox.bottom)).toBe(4)
+    else await expect(listBox.bottom).toBeLessThanOrEqual(window.innerHeight)
     await waitFor(() => expect(within(list).getByRole('option', { name: '۱۰:۰۰' })).toHaveFocus())
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(bodyOf(canvasElement).queryByRole('listbox')).toBeNull())
