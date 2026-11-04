@@ -43,6 +43,7 @@ export type StoryTitle =
   | 'Shared/CodeInput'
   | 'Shared/ColorPicker'
   | 'Shared/CompanyLogo'
+  | 'Shared/CompanyMatch'
   | 'Shared/ConfirmModal'
   | 'Shared/ContactCard'
   | 'Shared/ContactModal'

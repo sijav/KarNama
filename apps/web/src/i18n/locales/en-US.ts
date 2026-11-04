@@ -280,4 +280,9 @@ export const messages: Record<string, string> = {
   'Changes saved': 'Changes saved',
   Time: 'Time',
   'What was the result?': 'What was the result?',
+  'person from': 'person from',
+  'people from': 'people from',
+  'is in your network': 'is in your network',
+  'are in your network': 'are in your network',
+  Connect: 'Connect',
 }

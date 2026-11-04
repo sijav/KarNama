@@ -1141,6 +1141,29 @@ person, so each button is heard with whose it is. A copy writes to the
 clipboard and tells the caller, which says so with the toast, KN-764; a refused
 clipboard says nothing. KN-773.
 
+### The company match
+
+**Company Match**, `1096:3111`, read on 2026-11-04: one component with no
+variants, at the top of the job modal's related people tab, where its one
+instance, `1096:92316`, fills the tab's 672. A column that hugs its height, 88
+with one person, on `color/bg/brand/container` at `radius/md`, `spacing/sm`
+above and below, `spacing/md` at the sides and `spacing/xs` between its rows,
+its items at the inline start. The title row: the `user-plus` at 16 in
+`color/text/brand`, then «۱ نفر از دیجی‌کالا در شبکهٔ شماست» in Label in
+`color/text/brand`, `spacing/xs` apart. The person, 40 tall: the name in Title
+in `color/text/primary` over «سمت · شرکت» in Label in `color/text/secondary` at
+the inline start, and at the inline end a Button / S Secondary «وصل کردن» whose
+fill the instance sets to `color/bg/surface`. Connect links the person and the
+box goes; with nobody, there is no box, as the description and the handoff say.
+The code counts the title in the reader's digits and plural, Persian keeping
+«نفر» singular; draws several people as a row each, `spacing/xs` apart, where
+the file draws one; keeps `spacing/sm` between a person and Connect, where the
+file's spacer has no least width, so a long name is cut before it reaches the
+button; puts the icon at the top of the title, the same on one line, so it
+stays on the first when a long company wraps; and makes the box a group named
+by its title and each person a group named by them, so each Connect is heard
+with whose it is. KN-774.
+
 ### The stats number
 
 **Stats / Number**, `1168:3159`, Status=Applied, Interview, Offer, Rejected and
@@ -1218,6 +1241,10 @@ Title; all at a radius of 8. Only the icons' layer order changed, the original
 putting the leading icon at the inline start in a right to left reading, where
 the code's start icon already sits. The handoff lists Button / L among the
 components no screen uses, so the code draws S and M, and L is retired.
+The Company Match's Connect, `1096:3117`, is a Secondary S whose instance
+fills it with `color/bg/surface` on its coloured ground; the Button's
+`surface` fills a style that has no fill at rest with it, its hover and
+pressed fills staying its own, KN-774.
 
 ### The navigation
 
@@ -1490,6 +1517,7 @@ of the contract.
 | Paste Field           | `961:101573` | Default, Hover: the add form's one-row paste field                                                                |
 | Manual Path Link      | `961:101603` | Default, Hover: the way round the paste field to the empty form                                                   |
 | Related Person        | `1096:3109`  | Default, Hover; Related Person / Mobile `1313:3295`                                                               |
+| Company Match         | `1096:3111`  | no variants: the related people tab's prompt to link someone from the job opportunity's company                   |
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |

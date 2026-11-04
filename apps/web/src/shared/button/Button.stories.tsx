@@ -92,10 +92,11 @@ const meta = {
     variant: { control: 'select', options: VARIANTS },
     size: { control: 'radio', options: SIZES },
     disabled: { control: 'boolean' },
+    surface: { control: 'boolean' },
     startIcon: { control: 'select', options: ICON_NAMES },
     endIcon: { control: 'select', options: ICON_NAMES },
   },
-  parameters: { controls: { include: ['variant', 'size', 'disabled', 'startIcon', 'endIcon'] } },
+  parameters: { controls: { include: ['variant', 'size', 'disabled', 'surface', 'startIcon', 'endIcon'] } },
   render: (args) => <Labelled {...args} />,
 } satisfies StoryMeta<typeof Button>
 
@@ -394,5 +395,33 @@ export const WithIcons: Story = {
     const scale = { S: 16, M: 20 }[size]
     for (const icon of icons) await expect(icon.getBoundingClientRect().width).toBe(scale)
     await expect(px(getComputedStyle(button).columnGap)).toBe({ S: 4, M: 8 }[size])
+  },
+}
+
+export const OnAColouredGround: Story = {
+  // Told it sits on a coloured ground, a style with no fill at rest takes the
+  // surface's, as the related people tab's prompt draws its Secondary S
+  // Connect on bg/brand/container, 1096:3117; a filled style keeps its own.
+  args: { variant: 'secondary', size: 'S', surface: true },
+  globals: { colorScheme: 'light' },
+  render: (args) => (
+    <Box
+      sx={(theme) => ({
+        display: 'flex',
+        gap: `${spacing.sm}px`,
+        padding: `${spacing.md}px`,
+        backgroundColor: theme.karnama.semantic['bg/brand/container'],
+      })}
+    >
+      <Labelled {...args} />
+      <Labelled {...args} variant="primary" />
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const [secondary, primary] = within(canvasElement).getAllByRole('button')
+    if (!secondary || !primary) throw new Error('a button is missing')
+    await expect(getComputedStyle(secondary).backgroundColor).toBe(computedColour(secondary, semantic['bg/surface']))
+    await expect(getComputedStyle(secondary).color).toBe(computedColour(secondary, semantic['text/brand']))
+    await expect(getComputedStyle(primary).backgroundColor).toBe(computedColour(primary, semantic['bg/brand/default']))
   },
 }

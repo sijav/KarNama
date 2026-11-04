@@ -19,6 +19,7 @@ export interface ButtonProps {
   /** The id of the form this submits, for an action that sits outside it. */
   form?: string
   autoFocus?: boolean
+  surface?: boolean
   onClick?: () => void
 }
 
@@ -106,6 +107,7 @@ export const Button = ({
   type = 'button',
   form,
   autoFocus = false,
+  surface = false,
   onClick,
 }: ButtonProps) => {
   const measure = SIZES[size]
@@ -124,6 +126,10 @@ export const Button = ({
       sx={(theme) => {
         const colour = theme.karnama.semantic
         const fill = (role: Role | null) => (role === null ? 'transparent' : colour[role])
+        // A style with no fill at rest takes the surface's on a coloured
+        // ground, as the related people tab's prompt fills its Secondary
+        // Connect, 1096:3117, KN-774; its hover and pressed fills are its own.
+        const ground: Role | null = surface ? 'bg/surface' : null
         const hovered = { backgroundColor: fill(look.hover.fill), color: colour[look.hover.text], boxShadow: 'none' }
         return {
           position: 'relative',
@@ -140,7 +146,7 @@ export const Button = ({
           fontWeight: measure.text.weight,
           letterSpacing: 0,
           boxShadow: 'none',
-          backgroundColor: fill(look.rest.fill),
+          backgroundColor: fill(look.rest.fill ?? ground),
           color: colour[look.rest.text],
           // MUI's icon slots carry their own margins; the gap spaces them here.
           '& .MuiButton-startIcon, & .MuiButton-endIcon': { margin: 0 },
@@ -184,7 +190,7 @@ export const Button = ({
             color: colour[look.pressed.text],
             ...(variant === 'ghost' ? { opacity: GHOST_PRESSED_OPACITY } : {}),
           },
-          '&.Mui-disabled': { backgroundColor: fill(look.disabled.fill), color: colour[look.disabled.text] },
+          '&.Mui-disabled': { backgroundColor: fill(look.disabled.fill ?? ground), color: colour[look.disabled.text] },
           // Focus as the file draws it: two pixels of border/focus, inside in
           // place of Secondary's edge, outside every other style.
           '&.Mui-focusVisible:not([data-state]), &[data-state="focus"]:not(.Mui-disabled)': look.edge

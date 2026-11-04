@@ -280,4 +280,9 @@ export const messages: Record<string, string> = {
   'Changes saved': 'تغییرات ذخیره شد',
   Time: 'ساعت',
   'What was the result?': 'نتیجه چی بود؟',
+  'person from': 'نفر از',
+  'people from': 'نفر از',
+  'is in your network': 'در شبکهٔ شماست',
+  'are in your network': 'در شبکهٔ شماست',
+  Connect: 'وصل کردن',
 }

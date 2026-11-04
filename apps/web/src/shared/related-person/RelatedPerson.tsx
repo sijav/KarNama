@@ -1,8 +1,9 @@
 import { useLingui } from '@lingui/react'
-import { Box, type Theme } from '@mui/material'
+import { Box } from '@mui/material'
 import { useId } from 'react'
-import { spacing, type as typeScale } from '../../theme/tokens'
+import { spacing } from '../../theme/tokens'
 import { IconButton } from '../icon-button'
+import { labelText, nameText, oneLine } from './personText'
 
 export type Copied = 'email' | 'phone'
 
@@ -34,33 +35,6 @@ const ROW = 60
 const TAG = 'KarnamaRelatedPerson-tag'
 // The class on the actions, so the row's hover and focus can show them.
 const ACTIONS = 'KarnamaRelatedPerson-actions'
-
-const { title, label } = typeScale
-
-// The person's name in Title, and their role and company in Label: the
-// Related Person's Text, 1096:3086 and 1313:3292. Under sx keys, which the
-// lint rule reads as CSS.
-const nameText = {
-  sx: (theme: Theme) => ({
-  fontSize: `${title.size}px`,
-  lineHeight: `${title.lineHeight}px`,
-  fontWeight: title.weight,
-  letterSpacing: `${title.letterSpacing}px`,
-  color: theme.karnama.semantic['text/primary'],
-  }),
-}
-const labelText = {
-  sx: (theme: Theme) => ({
-  fontSize: `${label.size}px`,
-  lineHeight: `${label.lineHeight}px`,
-  fontWeight: label.weight,
-  letterSpacing: `${label.letterSpacing}px`,
-  color: theme.karnama.semantic['text/secondary'],
-  }),
-}
-
-// One line, cut at its end rather than wrapped.
-const oneLine = { sx: { minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } } as const
 
 // Related Person, node 1096:3109, Default and Hover, and Related Person /
 // Mobile, 1313:3295: a person linked to a job opportunity in its related

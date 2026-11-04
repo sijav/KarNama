@@ -24,6 +24,12 @@ The label, already in the reader's language.
 
 `S` or `M`, the default.
 
+### surface
+
+Fills a Secondary, Text or Ghost button with the surface's white where it has
+none at rest, for a button on a coloured ground, as the related people tab's
+prompt draws its Connect. Its hover and pressed fills are its own.
+
 ### disabled
 
 Greys the button and takes it out of the tab order.
@@ -100,3 +106,8 @@ Every style in every size, disabled, and forced into hover, pressed and focus by
 the attribute States uses. Each keeps the disabled look the design draws, its
 grey with no pressed opacity and no focus ring beyond Secondary's own edge, since
 a disabled button can be in none of the three.
+
+### OnAColouredGround
+
+A Secondary on a coloured ground filled with the surface's white, beside a
+Primary that keeps its own.
