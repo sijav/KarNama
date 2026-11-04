@@ -9,16 +9,13 @@ D:/Kar/Sijav-Skills/Sijav-Clauder/skills/todo/todo.mjs next`, `show <id>`,
 
 ## The task spec
 
-Build **KarNama** (کارنما), a job application tracker, driven by a Ralph loop. A
-job seeker adds a posting by link or text; the product structures it into a
-record that carries a status through the search. **The value is the trail, not
-the listing.** Scope is closed; crawling is permanently out.
-
-Monorepo, npm workspaces. React 19, TypeScript, MUI 9, Storybook 10, Vitest,
-Playwright. NestJS, GraphQL code first, Prisma, Postgres on **Neon**. The web at
-**https://kar-nama.ir/** on GitHub Pages behind Cloudflare, Storybook at
-`/storybook/`, the API on Render. lingui, **English ids**. **Components first
-with their stories, then screens. Match the design exactly.**
+**KarNama** (کارنما), a job application tracker built by a Ralph loop: a
+posting added by link or text becomes a record that carries a status through
+the search. **The value is the trail, not the listing**; crawling is out. React
+19, MUI 9, Storybook 10, Vitest, Playwright; NestJS, GraphQL, Prisma, Postgres
+on **Neon**. The web at **https://kar-nama.ir/** on GitHub Pages, Storybook at
+`/storybook/`, the API on Render; lingui with **English ids**. **Components
+first with their stories, then screens; match the design exactly.**
 
 ## Where things stand, 2026-11-04, noon
 
@@ -36,19 +33,12 @@ header, KN-783 Tab Bar v2, KN-745 the redesigned card `793:1820`
 (`shared/interview-slot`, 7e418d3). KN-847 made the Pages build green; every
 push since is green.
 
-**Pieces other cards build on**: `shared/popover`'s `popoverSurface`;
-`shared/date-picker`'s TimeList, which KN-754 and KN-756 join;
-`shared/job-card/footer.ts`'s `cardFooter`; `shared/status-picker`'s
-`GroupedStatusPicker` and `StatusSelect`; `shared/modal`'s unsaved, delete and
-stage modals; `shared/history`'s `HistoryRow`; `shared/menu`, `shared/sort-menu`;
-`shared/empty-state`; `shared/contact-row`; `shared/linked-jobs`;
-`shared/picker`'s `SearchPicker` and `shared/person-picker`;
-`core/records`' `statusGroups`; `shared/kanban-card`'s `KanbanCard`, whose
-`interview` slot takes `InterviewSlot`, whose `interviewWhen` and `waitingFor`
-word an interview's dates. The navigation's three are the board, `/stats` and
-the network. **Adoption is the screens'**: notes on KN-805, KN-812, KN-816,
-KN-817 and KN-828 say what each swaps in; retiring waits on adoption: KN-842
-the flat picker, KN-844 the Contact Card, KN-852 the old JobCard.
+**Pieces other cards build on**: `shared/popover`, `shared/date-picker`'s
+TimeList (KN-754 and KN-756 join it), `cardFooter`, the grouped status picker,
+the modals, `HistoryRow`, the menus, `SearchPicker`, `statusGroups`,
+`KanbanCard` and its `interview` slot's `InterviewSlot`. **Adoption is the
+screens'**: notes on KN-805, KN-812, KN-816, KN-817 and KN-828 say what each
+swaps in; retiring waits on it: KN-842, KN-844, KN-852.
 
 **Open findings on built components, after the new ones**: KN-853, the Kanban
 Card's content 244 wide where the frame's edge takes layout space and leaves
@@ -62,33 +52,25 @@ in the Settings dialog; the title may be cut to fit.
 
 - Figma's auto layout can include a stroke in layout
   (`strokesIncludedInLayout`): read it before taking a padding.
-- Intl's short weekday and month are the long ones in Persian; English needs the
-  short ones to fit a card's row.
 - `Math.round` of a hair below zero is `-0`, which `toBe(0)` rejects at a
   fractional zoom: use a helper that returns `|| 0`.
-- The browser pane clips a right-to-left page at its edge: screenshot stories
-  with the repository's Playwright from a scratch script instead.
-- GitHub's SSH sometimes refuses a good key; retry the push.
+- The browser pane clips a right-to-left page: screenshot stories with the
+  repository's Playwright. GitHub's SSH sometimes refuses a good key: retry.
 - The lint rule's traps: a string ternary outside `sx`, `i18nFor(x)._()` in one
   expression, a template of words, a letter in a date literal, an unlisted
   class constant (add it to `structuralProps`), a bare style object; type a
   literal as a one-member union, `type Clear = 'rgba(0, 0, 0, 0)'`.
-- A ref read in a helper made during render trips `react-hooks/refs`; read it
-  in the handler itself.
-- testing-library's click goes to the element it is handed; the runner's
+- Read a ref in the handler, not a helper made during render. The runner's
   `userEvent.click(el, { force: true })` hits what is drawn there.
-- Git Bash folds `\\` in a heredoc and mangles long Persian or TSX: use the
-  Write tool for those.
+- Git Bash mangles `\\`, long Persian and TSX in a heredoc: use Write.
 
 **CI**: the Pages workflow builds the app and Storybook and runs
-`e2e/storybook`'s specs against the build. After a push, watch the run in the
-background with `gh run watch <id> --exit-status`; a lost connection ends the
-watch early, so read `gh run view <id>` before believing it.
+`e2e/storybook`'s specs. Watch a run in the background with `gh run watch`; a
+lost connection ends the watch early, so read `gh run view <id>` after it.
 
-**The redesign** is in the Figma file `K1EP8GCOmelU8o4vPR7a9f`, Screens `5:7`,
-with the handoff in `DESIGN-HANDOFF.md`. Read a component's instances on the
-screens for its real copy and sizing; read a variant's reactions with use_figma
-for motion.
+**The redesign** is in Figma `K1EP8GCOmelU8o4vPR7a9f`, Screens `5:7`, with the
+handoff in `DESIGN-HANDOFF.md`; read the instances on the screens for real copy
+and sizing, and a variant's reactions for motion.
 
 **The backend is not done**: the live API answers with
 `access-control-allow-origin https://sijav.github.io`. KN-836 lets the code
@@ -98,17 +80,15 @@ Render's WEB_ORIGIN and Cloudflare's Always Use HTTPS.
 **Roasts** run on Sonnet 5.5 through the claude CLI,
 `agent/scripts/roast-sonnet.py`, which passes `--remote-control`, one session
 per kind. Each closed card is roasted in the background to `.claude/roasts/`;
-**none is judged until every to-do is done**. KN-747's was running at this
-writing; the launchers in the scratchpad, `roast-747.py` the latest, show the
-arguments.
+**none is judged until every to-do is done**. Every closed card through KN-747
+has its record; the scratchpad's `roast-747.py` shows the arguments.
 
 ## What fails, and which failures are known
 
-`npm test` exits 1, none of it new: `session.test.ts`'s two, KN-551; the Input's
-Multiline and JobCard Pressed, KN-699; the real pointer between parallel files,
-KN-365; `apps/api`'s database timeouts, KN-486. The runner draws several story
-files in one page at once, so a story never asks for something page-wide.
-**Search the board before filing a failure.**
+`npm test` exits 1, none of it new: KN-551's `session.test.ts` two, KN-699,
+KN-365's parallel pointer, KN-486's database timeouts. Several story files share
+one page, so a story never asks for something page-wide. **Search the board
+before filing a failure.**
 
 ## Drift, and the method
 
@@ -122,11 +102,9 @@ Python `newline='\n'`.
 
 ## Open, and waiting
 
-KN-473 has open children; KN-477 waits on twenty-four; KN-723's dependency
-question is the owner's; KN-683 is for the owner; KN-515, KN-516, KN-517 and
-KN-486 wait on the owner. The Codex log the owner pasted holds the Groq key;
-never repeat it. **KN-685's discipline binds**: the fixtures' two sentinels are
-named nowhere, this file included.
+KN-723, KN-683, KN-515, KN-516, KN-517 and KN-486 wait on the owner; KN-477 on
+twenty-four others. The Codex log the owner pasted holds the Groq key; never
+repeat it. **KN-685 binds**: the fixtures' two sentinels are named nowhere.
 
 ## The owner's rules, most recent first
 
@@ -137,10 +115,8 @@ named nowhere, this file included.
   to-do, roast each to a file in the background, and only when all are done read
   the files, file their findings and work them. Roasts on Sonnet 5.5 through the
   claude CLI, never an Agent subagent. Build from Screens `5:7`.
-- **2026-09-16, global.** Answer WHY with the mechanism; "I don't know" is a
-  correct answer; never invent an authority; do not just agree.
-- **2026-09-14.** The board is the todo skill's database; the owner reads on a
-  phone: literal truth, no excuses.
+- **2026-09-16 and 09-14.** Answer WHY with the mechanism; "I don't know" is
+  a correct answer; do not just agree. The owner reads on a phone: literal truth.
 - **2026-09-11.** Push after every close. No proof at the close. Do not invent
   gates. **A finding is a CHILD of its task**, one level. Plans live beside the
   work.
