@@ -308,9 +308,10 @@ export const ContactCard = ({
         <Box sx={{ position: 'relative', zIndex: 1, display: 'flex', gap: `${spacing['2xs']}px`, flexShrink: 0 }}>
           {/* A link, as the full card's own email row is: mail is an address,
               and handing it to the browser as one lets the reader open it
-              where they read mail, copy it, or ignore it. */}
+              where they read mail, copy it, or ignore it. Tone=Primary, as
+              the original draws the compact card's mail, KN-802. */}
           {contact.email === null ? null : (
-            <IconButton icon="mail" aria-label={i18n._('Send an email')} href={`mailto:${contact.email}`} />
+            <IconButton icon="mail" tone="primary" aria-label={i18n._('Send an email')} href={`mailto:${contact.email}`} />
           )}
           <IconButton icon="trash" tone="danger" aria-label={i18n._('Delete contact')} onClick={onDelete} />
         </Box>

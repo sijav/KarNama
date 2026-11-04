@@ -683,6 +683,17 @@ stretched over the card, so a press anywhere else opens the contact. The
 Checkbox keeps its ring whole in the Title Group, which clips nothing, KN-293.
 KN-026.
 
+**Read again in the original on 2026-11-04, and retired**, KN-802. Every
+variant is drawn as the copy drew it but for two things: the Full card's delete
+is now an instance of Contact Delete Button, drawn the same, and the Compact
+card's mail is the Icon Button at Tone=Primary round the mail icon, where the
+copy put Tone=Neutral round the trash; the code's compact mail takes Primary,
+whose hover is `bg/brand/container` under `text/brand`. The handoff lists the
+Contact Card and the Contact Delete Button among the components no screen uses:
+the network page draws Contact Row, `1056:2872`, KN-770, and the job modal's
+people tab Related Person, KN-773. KN-844 removes the card once the network
+page and the people tab draw those, KN-821 and KN-816.
+
 **A phone chooses a person with a held press**, KN-533. The phone's network,
 `252:411`, draws the full card, and its cards press to Mobile Selection,
 `305:1842`, over a Smart Animate of 250 ms, the job card's press of KN-428. So on a

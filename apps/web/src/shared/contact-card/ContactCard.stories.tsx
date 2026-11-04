@@ -460,6 +460,17 @@ export const Compact: Story = {
     await expect(buttons).toHaveLength(1)
     await userEvent.click(buttons.at(-1) ?? card)
     await expect(args.onDelete).toHaveBeenCalledTimes(1)
+    // The mail is the Icon Button at Tone=Primary, as the original draws it,
+    // KN-802: under a real pointer it takes bg/brand/container and its icon
+    // text/brand, once its transition has run. Only the test runner has a
+    // pointer to move, and the colours are read before it, outside waitFor,
+    // KN-014.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const mail = within(card).getByRole('link')
+    const hovered = [computedColour(mail, semantic['bg/brand/container']), computedColour(mail, semantic['text/brand'])]
+    const browser = await import('vitest/browser')
+    await browser.userEvent.hover(mail)
+    await waitFor(() => expect([getComputedStyle(mail).backgroundColor, getComputedStyle(mail).color]).toEqual(hovered))
   },
 }
 
