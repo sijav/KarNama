@@ -3,6 +3,7 @@ import type { ContactCardContact } from '../../shared/contact-card'
 import type { JobContact, JobFile, JobRecord, JobSaved, StatusChange } from '../../shared/job-modal'
 import type { LinkedJobItem } from '../../shared/linked-jobs'
 import type { SortOrder } from '../../shared/sort-control'
+import { sourceKey, type SourceOption } from '../../shared/source-picker'
 import type { StatusOption } from '../../shared/status-picker'
 import { status as statusTokens, type StatusToken } from '../../theme/tokens'
 
@@ -219,6 +220,31 @@ export const linkableJobs = (records: Records): LinkedJobItem[] =>
         status: { token: status.token, name: status.name },
       })),
   )
+
+/**
+ * The reader's own sources, the ones their job opportunities carry, for the
+ * Source Picker: each once, in the spelling it was first written in, a name
+ * folded as the picker folds one, and nothing for a job with none.
+ */
+export const ownSources = (records: Records): SourceOption[] => {
+  const seen = new Set<string>()
+  return records.jobs.flatMap((job) => {
+    const key = sourceKey(job.draft.source)
+    if (key === '' || seen.has(key)) return []
+    seen.add(key)
+    return [{ name: job.draft.source.trim(), aliases: [] }]
+  })
+}
+
+/**
+ * How many of the reader's network are at a company, its name folded as the
+ * Source Picker folds a source's, so «دیجی‌کالا» written with an Arabic yeh or
+ * without its half-space is the same company. None for no company.
+ */
+export const peopleAtCompany = (records: Records, company: string): number => {
+  const key = sourceKey(company)
+  return key === '' ? 0 : records.contacts.filter((held) => sourceKey(held.contact.company ?? '') === key).length
+}
 
 /** Everything a search matches in a person: what a reader would look for by eye. */
 export const contactMatches = (held: ContactEntry, search: string): boolean => {

@@ -1140,6 +1140,25 @@ export const PasteLabel: Story = {
   },
 }
 
+export const BrandHelper: Story = {
+  // The add form's company field, 150:94: the Input's own helper turned to
+  // text/brand on that instance, the note of the reader's network at the
+  // company, still the line that describes the field. Its copy can change in
+  // Controls; anything that would change its colour is not offered.
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'name']),
+  args: { helperTone: 'brand' },
+  globals: { colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    const box = within(canvasElement).getByRole('textbox')
+    const line = canvasElement.ownerDocument.getElementById(box.getAttribute('aria-describedby') ?? '')
+    if (!line) throw new Error('the field describes itself by nothing')
+    const style = getComputedStyle(line)
+    await expect([px(style.fontSize), px(style.lineHeight), Number(style.fontWeight)]).toEqual([14, 22, 400])
+    await expect(style.color).toBe(computedColour(line, semantic['text/brand']))
+    await expect(box).toHaveAccessibleDescription(line.textContent)
+  },
+}
+
 export const Required: Story = {
   // A required field, the owner's KN-075: a mark after the label, seen and not
   // read, and the field says it is required.

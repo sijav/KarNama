@@ -133,6 +133,9 @@ export const SourcePicker = ({ value, own, common, autoFilled, onChange }: Sourc
     ...(found.create === null ? [] : [{ kind: 'create', name: found.create } satisfies Item]),
   ]
   const chosen = sourceKey(value)
+  // The menu is drawn only while it has something to offer: a reader with no
+  // sources yet sees nothing open until they type.
+  const showing = open && items.length > 0
   const optionId = (at: number) => `${listId}-${String(at)}`
 
   const close = () => {
@@ -264,18 +267,18 @@ export const SourcePicker = ({ value, own, common, autoFilled, onChange }: Sourc
             role: 'combobox',
             autoComplete: 'off',
             'aria-autocomplete': 'list',
-            'aria-expanded': open,
+            'aria-expanded': showing,
             'aria-controls': listId,
-            'aria-activedescendant': open && active >= 0 ? optionId(active) : undefined,
+            'aria-activedescendant': showing && active >= 0 ? optionId(active) : undefined,
           }}
           endAdornment={
             <Box component="span" aria-hidden sx={(theme) => ({ display: 'inline-flex', color: theme.karnama.semantic['text/secondary'] })}>
               <Icon name="chevron-down" size="md" color="inherit" />
             </Box>
           }
-          sx={(theme) => field.sx(theme, open)}
+          sx={(theme) => field.sx(theme, showing)}
         />
-        {open ? (
+        {showing ? (
           <Box
             onMouseDown={(event) => {
               // A press on the menu's own edge or scroll keeps focus in the field.

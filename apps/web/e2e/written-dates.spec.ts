@@ -52,8 +52,8 @@ const board = {
 
 // Each language's names for what the test reaches for.
 const WORDS = {
-  'fa-IR': { posted: 'تاریخ انتشار', expires: 'تاریخ انقضا', note: 'یادداشت', save: 'ذخیره' },
-  'en-US': { posted: 'Posted on', expires: 'Expires on', note: 'Note', save: 'Save' },
+  'fa-IR': { posted: 'تاریخ انتشار', expires: 'مهلت درخواست', note: 'یادداشت', save: 'ذخیره' },
+  'en-US': { posted: 'Posted on', expires: 'Application deadline', note: 'Note', save: 'Save' },
 } as const
 
 for (const locale of ['fa-IR', 'en-US'] as const) {

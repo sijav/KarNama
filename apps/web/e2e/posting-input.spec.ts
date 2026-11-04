@@ -23,7 +23,8 @@ for (const locale of ['en-US', 'fa-IR']) {
           frameHeight: element.parentElement?.getBoundingClientRect().height,
           overflow: element.scrollHeight > element.clientHeight,
         }))
-      expect(await dimensions()).toMatchObject({ inputHeight: 108, frameHeight: 140 })
+      // The Paste Field, 961:101573: one line, 54 tall, growing with what is pasted.
+      expect(await dimensions()).toMatchObject({ inputHeight: 22, frameHeight: 54 })
       const source = `https://example.test/jobs/software-engineer?source=${'tracking'.repeat(100)}`
       await input.fill(source)
       await expect.poll(async () => (await dimensions()).frameHeight).toBe(208)
@@ -33,16 +34,16 @@ for (const locale of ['en-US', 'fa-IR']) {
       const cases = [
         { code: 'AUTH_NOT_CONFIGURED', text: english ? 'Automatic extraction is unavailable.' : 'استخراج خودکار در دسترس نیست.' },
         { code: 'EXTRACTION_FAILED', text: english ? 'We could not extract the job details.' : 'نتوانستیم اطلاعات شغل را استخراج کنیم.' },
-        { code: 'POSTING_UNAVAILABLE', text: english ? 'We could not read this link.' : 'نتوانستیم اطلاعات این لینک را بخوانیم.' },
+        { code: 'POSTING_UNAVAILABLE', text: english ? 'The posting may have been removed' : 'شاید آگهی حذف شده یا سایتش' },
       ]
       for (const failure of cases) {
         code = failure.code
-        await dialog.getByRole('button', { name: english ? /Extract details|Try again/ : /استخراج اطلاعات|دوباره امتحان کن/ }).click()
+        await dialog.getByRole('button', { name: english ? /Extract details|Retry/ : /استخراج اطلاعات|تلاش دوباره/ }).click()
         await expect(dialog.getByRole('alert')).toContainText(failure.text)
         await expect(input).toHaveValue(source)
       }
       await input.fill('Short posting text')
-      await expect.poll(async () => (await dimensions()).frameHeight).toBe(140)
+      await expect.poll(async () => (await dimensions()).frameHeight).toBe(54)
     })
   }
 }

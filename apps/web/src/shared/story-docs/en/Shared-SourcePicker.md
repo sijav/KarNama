@@ -86,6 +86,11 @@ closes it with nothing chosen.
 
 What is typed and not chosen goes when the field loses focus.
 
+### NothingToOfferYet
+
+A reader with no sources yet: a press opens nothing, and what is typed offers
+only its making.
+
 ### InEnglish
 
 The field and a name a letter off, in English.

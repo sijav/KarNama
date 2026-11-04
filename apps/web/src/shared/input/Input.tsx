@@ -19,6 +19,12 @@ export type InputDirection = 'page' | 'ltr'
 export type InputLabelStyle = 'field' | 'paste'
 const FIELD_LABEL: InputLabelStyle = 'field'
 
+// The colour of the helper line: the Input set's text/secondary, or the
+// text/brand the add form's company field turns it to, 150:94, where the line
+// says who in the reader's network is at the company.
+export type InputHelperTone = 'secondary' | 'brand'
+const SECONDARY: InputHelperTone = 'secondary'
+
 export interface InputProps {
   label: string
   direction?: InputDirection
@@ -26,6 +32,7 @@ export interface InputProps {
   defaultValue?: string
   placeholder?: string
   helperText?: string
+  helperTone?: InputHelperTone
   error?: string
   disabled?: boolean
   name?: string
@@ -141,6 +148,7 @@ const drawn = (node: ReactNode) =>
 export const Input = ({
   label,
   helperText,
+  helperTone = SECONDARY,
   error: given,
   disabled = false,
   multiline = false,
@@ -355,7 +363,7 @@ export const Input = ({
               ? theme.karnama.semantic['text/error']
               : disabled
                 ? theme.karnama.semantic['text/disabled']
-                : theme.karnama.semantic['text/secondary'],
+                : theme.karnama.semantic[helperTone === 'brand' ? 'text/brand' : 'text/secondary'],
         })}
       >
         {/* The error is announced as it appears, to someone still typing in

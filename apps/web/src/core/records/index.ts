@@ -12,6 +12,8 @@ export {
   matches,
   newId,
   nextCustomToken,
+  ownSources,
+  peopleAtCompany,
   readRecords,
   sortJobs,
   statusGroups,

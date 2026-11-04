@@ -1,10 +1,15 @@
+import { CombinedGraphQLErrors } from '@apollo/client/errors'
 import { setupI18n } from '@lingui/core'
 import type { StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { expect, fireEvent, fn, userEvent, waitFor, within } from 'storybook/test'
+import { statusGroups } from '../../core/records'
 import { i18nFor, type Locale } from '../../i18n'
 import { messages as en } from '../../i18n/locales/en-US'
+import { darkSemantic } from '../../theme/darkMode'
+import { semantic } from '../../theme/tokens'
 import type { JobLevel } from '../job-selects'
+import type { SourceLists } from '../source-picker'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
 import { keyboardOf, type Keyboard } from '../story-fixtures/keyboard'
@@ -13,7 +18,7 @@ import type { JobDraft } from './draft'
 
 // What reading the posting finds, the Review step of node 150:94: the title and
 // company of a fixture job, full-time, a senior specialist, and the rest of
-// the posting's details.
+// the posting's details, its source among them.
 const LEVEL: JobLevel = 'senior-specialist'
 const foundIn = (locale: Locale): Partial<JobDraft> => {
   const [job] = fixtures(locale).jobs
@@ -26,6 +31,19 @@ const foundIn = (locale: Locale): Partial<JobDraft> => {
   }
 }
 const LINK = fixtures('fa-IR').extraction.postingUrl
+const FOUND = foundIn('fa-IR')
+
+// The statuses the product starts with, the fixtures' first five, as the board
+// splits them: the stages, and Rejected among the outcomes. A new job
+// opportunity starts in the first, «ذخیره‌شده».
+const groupsIn = (locale: Locale) => statusGroups(fixtures(locale).statusOptions.slice(0, 5))
+const sourcesIn = (locale: Locale): SourceLists => ({
+  own: fixtures(locale).sourcePicker.own,
+  common: fixtures(locale).sourcePicker.common,
+})
+// The reader's network: three people at the company reading found.
+const PEOPLE = 3
+const peopleAtFound = (locale: Locale) => (company: string) => (company === foundIn(locale).company ? PEOPLE : 0)
 
 const STEPS: Exclude<AddJobStep, 'loading'>[] = ['paste', 'review', 'manual', 'error']
 const CONTROLLED: (keyof AddJobModalProps)[] = ['open', 'step', 'source']
@@ -57,10 +75,11 @@ const meta = {
   component: AddJobModal,
   args: {
     open: true,
-    // The five statuses the product starts with, the fixtures' first five; a new
-    // job opportunity starts in the first, «ذخیره‌شده».
-    statuses: fixtures('fa-IR').statusOptions.slice(0, 5),
+    ...groupsIn('fa-IR'),
     status: 'new',
+    sources: sourcesIn('fa-IR'),
+    // Nobody of the network at any company, unless a story says otherwise.
+    peopleAt: fn<(company: string) => number>(() => 0),
     step: 'paste',
     source: '',
     onExtract: fn(() => Promise.resolve(foundIn('fa-IR'))),
@@ -75,6 +94,20 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+const px = (value: string) => Number.parseFloat(value) || 0
+
+// A colour as the browser computes it, borrowed on the body's own inline style,
+// which no transition moves, and put back in the same tick. Never inside
+// waitFor, KN-014.
+const computed = (value: string) => {
+  const host = document.body
+  const previous = host.style.color
+  host.style.color = value
+  const result = getComputedStyle(host).color
+  host.style.color = previous
+  return result
+}
+
 // The dialog, once its dissolve has brought it into view.
 const dialogNamed = async (name: string) => {
   const dialog = await within(document.body).findByRole('dialog', { name })
@@ -82,25 +115,65 @@ const dialogNamed = async (name: string) => {
   return dialog
 }
 
+// What every step of 166:82 draws round its body: 560 wide, the header and the
+// footer 24 in from the dialog's edges, the dividers 512 across; and the footer's
+// primary, the one handed in, at the inline end with Cancel 12 before it.
+const isTheShell = async (dialog: HTMLElement, locale: Locale, primary: HTMLElement) => {
+  const i18n = i18nFor(locale)
+  const rtl = locale === 'fa-IR'
+  const box = dialog.getBoundingClientRect()
+  await expect(box.width).toBe(560)
+  const dividers = [...dialog.querySelectorAll('hr')]
+  await expect(dividers.map((divider) => divider.getBoundingClientRect().width)).toEqual([512, 512])
+  const cancel = within(dialog).getByRole('button', { name: i18n._('Cancel') })
+  const [primaryBox, cancelBox] = [primary.getBoundingClientRect(), cancel.getBoundingClientRect()]
+  await expect(Math.round(rtl ? primaryBox.left - box.left : box.right - primaryBox.right)).toBe(24)
+  await expect(Math.round(rtl ? cancelBox.left - primaryBox.right : primaryBox.left - cancelBox.right)).toBe(12)
+  return cancel
+}
+
+// The form steps' footer, 254:13: the Status Select at the inline start, 24 in,
+// 44 tall, «وضعیت:» before the chip of the status the job opportunity is added
+// in, which the story reads off what it returns.
+const isTheStatusFooter = async (dialog: HTMLElement, locale: Locale) => {
+  const i18n = i18nFor(locale)
+  const said = i18n._('Status:')
+  const rtl = locale === 'fa-IR'
+  const box = dialog.getBoundingClientRect()
+  const select = within(dialog).getByRole('button', { name: (name) => name.startsWith(said) })
+  const selectBox = select.getBoundingClientRect()
+  await expect(selectBox.height).toBe(44)
+  await expect(Math.round(rtl ? box.right - selectBox.right : selectBox.left - box.left)).toBe(24)
+  return select
+}
+
+// The paste steps' wrap, 166:67, 371:427 and 304:7: the Paste Field 54 tall, its
+// helper or the failure in its place, and 4 below the Manual Path Link.
+const isThePasteWrap = async (dialog: HTMLElement, locale: Locale) => {
+  const i18n = i18nFor(locale)
+  const field = within(dialog).getByRole('textbox', { name: i18n._('Posting link or full text') })
+  await expect(field.parentElement?.getBoundingClientRect().height).toBe(54)
+  const manual = within(dialog).getByRole('button', { name: i18n._('Manual entry') })
+  await expect(manual).toBeVisible()
+  return field
+}
+
 export const Paste: Story = {
   // An entered source makes leaving ask, KN-571.
   parameters: FIXED,
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
-    // Node 166:62: 560 wide, the paste field 140 tall under its label with its
-    // helper, the way round to the form, and Extract waiting for the field.
-    // Leaving an empty flow asks nothing.
+    // Node 166:62: 315 tall, the Paste Field under its label with its helper,
+    // the Manual Path Link, and Extract waiting for the field. Leaving an empty
+    // flow asks nothing.
     const dialog = await dialogNamed('افزودن فرصت شغلی')
-    await expect(dialog.getBoundingClientRect().width).toBe(560)
-    const field = within(dialog).getByRole('textbox', { name: 'لینک آگهی یا متن کامل آگهی' })
-    await expect(field.parentElement?.getBoundingClientRect().height).toBe(140)
-    // 401 tall, the file's, with the label on its automatic 19, KN-359.
-    await expect(dialog.getBoundingClientRect().height).toBe(401)
-    const label = within(dialog).getByText('لینک آگهی یا متن کامل آگهی', { selector: 'label' })
-    await expect(label.getBoundingClientRect().height).toBe(19)
-    await expect(field).toHaveAccessibleDescription('هم لینک را می‌پذیرد، هم متن کامل آگهی را — لازم نیست چیزی را جدا کنی.')
-    await expect(within(dialog).getByRole('button', { name: 'خودت دستی وارد کن' })).toBeInTheDocument()
-    await expect(within(dialog).getByRole('button', { name: 'استخراج اطلاعات' })).toBeDisabled()
+    await expect(dialog.getBoundingClientRect().height).toBe(315)
+    const field = await isThePasteWrap(dialog, 'fa-IR')
+    await expect(field).toHaveAccessibleDescription('هم لینک، هم متن کامل آگهی؛ لازم نیست چیزی رو جدا کنید.')
+    const extract = within(dialog).getByRole('button', { name: 'استخراج اطلاعات' })
+    await isTheShell(dialog, 'fa-IR', extract)
+    await expect(extract).toBeDisabled()
+    await expect(within(dialog).queryByRole('button', { name: /وضعیت/u })).toBeNull()
     await userEvent.click(within(dialog).getByRole('button', { name: 'انصراف' }))
     await expect(args.onClose).toHaveBeenCalledTimes(1)
   },
@@ -115,11 +188,12 @@ export const PasteFilled: Story = {
     // has been touched as well as filled, the critical path's «click into the
     // field».
     const dialog = await dialogNamed('افزودن فرصت شغلی')
-    // 401 tall, as Paste, KN-359.
-    await expect(dialog.getBoundingClientRect().height).toBe(401)
+    await expect(dialog.getBoundingClientRect().height).toBe(315)
+    const field = await isThePasteWrap(dialog, 'fa-IR')
+    await expect(field).toHaveValue(LINK)
     const extract = within(dialog).getByRole('button', { name: 'استخراج اطلاعات' })
     await expect(extract).toBeDisabled()
-    await userEvent.click(within(dialog).getByRole('textbox', { name: 'لینک آگهی یا متن کامل آگهی' }))
+    await userEvent.click(field)
     await expect(extract).toBeEnabled()
   },
 }
@@ -135,7 +209,9 @@ export const ExtractsToReview: Story = {
     await userEvent.click(within(dialog).getByRole('button', { name: 'استخراج اطلاعات' }))
     await expect(args.onExtract).toHaveBeenCalledWith(LINK)
     const title = await within(dialog).findByRole('textbox', { name: 'عنوان شغلی' })
-    await expect(title).toHaveValue(foundIn('fa-IR').title)
+    await expect(title).toHaveValue(FOUND.title)
+    // The source reading found says so under the source.
+    await expect(within(dialog).getByText('از روی لینک آگهی پر شد.')).toBeVisible()
   },
 }
 
@@ -189,37 +265,68 @@ export const LeaveWhileReading: Story = {
   },
 }
 
+// The form's own scroll, inside the dialog's body: the element that holds the
+// fields and scrolls past its 420.
+const formScrollOf = (dialog: HTMLElement) => {
+  const title = within(dialog).getByRole('textbox', { name: 'عنوان شغلی' })
+  let scroll: HTMLElement | null = title.parentElement
+  while (scroll && getComputedStyle(scroll).overflowY !== 'auto') scroll = scroll.parentElement
+  if (!scroll) throw new Error('the form does not scroll')
+  return scroll
+}
+
 export const Review: Story = {
   // Its draft carries its own link, which wins over source, so source changes
   // nothing on screen here, KN-571.
   parameters: FIXED,
-  args: { step: 'review', source: LINK, draft: foundIn('fa-IR') },
+  args: { step: 'review', source: LINK, draft: FOUND, peopleAt: fn(peopleAtFound('fa-IR')) },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
-    // Node 150:94: 560 by 606, the form filled and open to correction, the
-    // title and the company marked required, in 420 that scroll; Save hands
-    // the draft over, in its status.
+    // Node 150:94: 560 by 606, the form filled and open to correction in 420
+    // that scroll under a 48 fade; the title and the company required, the
+    // company's network said under it in text/brand, the source reading found
+    // with its hint; the Status Select at the footer's inline start, «افزودن» at
+    // its end, which hands the draft over in the status chosen there.
     const dialog = await dialogNamed('افزودن فرصت شغلی')
     // The frame's 606 where there is room for it, and the cap where there is
     // not, KN-559: MUI caps a Dialog's Paper at CAP of its container, so a
-    // Storybook manager's short canvas, 380 at 1280 by 720, draws 316 of the
-    // modal while the runner's 1440 by 900 holds the whole 606. The cap's own
-    // text is read too, so a library that changed the rule fails this story for
-    // a reader to judge instead of being followed in silence; the number is
-    // written out, since a computed max-height is no dependable pixel count.
+    // Storybook manager's short canvas draws less of the modal while the
+    // runner's holds the whole 606. The cap's own text is read too, so a library
+    // that changed the rule fails this story for a reader to judge.
     await expect(window.getComputedStyle(dialog).maxHeight).toBe(CAP)
-    await expect([dialog.getBoundingClientRect().width, dialog.getBoundingClientRect().height]).toEqual([
-      560,
-      Math.min(606, window.innerHeight - CAP_GAP),
-    ])
+    await expect(dialog.getBoundingClientRect().height).toBe(Math.min(606, window.innerHeight - CAP_GAP))
+    await isTheShell(dialog, 'fa-IR', within(dialog).getByRole('button', { name: 'افزودن' }))
+    await expect(await isTheStatusFooter(dialog, 'fa-IR')).toHaveTextContent('ذخیره‌شده')
     const title = within(dialog).getByRole('textbox', { name: 'عنوان شغلی' })
     await expect(title).toHaveValue(args.draft?.title ?? 'missing')
     await expect(title).toBeRequired()
-    await expect(within(dialog).getByRole('textbox', { name: 'نام شرکت' })).toBeRequired()
+    const company = within(dialog).getByRole('textbox', { name: 'نام شرکت' })
+    await expect(company).toBeRequired()
+    await expect(args.peopleAt).toHaveBeenCalledWith(FOUND.company)
+    const note = within(dialog).getByText(`۳ نفر از ${FOUND.company ?? ''} در شبکهٔ شما هستند`)
+    const noteStyle = getComputedStyle(note)
+    await expect([px(noteStyle.fontSize), px(noteStyle.lineHeight), Number(noteStyle.fontWeight)]).toEqual([14, 22, 400])
+    await expect(noteStyle.color).toBe(computed(semantic['text/brand']))
+    const companyField = company.parentElement
+    if (!companyField) throw new Error('the company has no field')
+    await expect(Math.round(note.getBoundingClientRect().top - companyField.getBoundingClientRect().bottom)).toBe(4)
+    await expect(within(dialog).getByRole('combobox', { name: 'منبع' })).toHaveValue(FOUND.source ?? 'missing')
+    await expect(within(dialog).getByText('از روی لینک آگهی پر شد.')).toBeVisible()
     await expect(within(dialog).getByRole('textbox', { name: 'لینک آگهی' })).toHaveValue(LINK)
+    // The fade: 48 of bg/surface rising over the form's foot, gone once the form
+    // is scrolled to its end.
+    const scroll = formScrollOf(dialog)
+    const fade = scroll.nextElementSibling
+    if (!(fade instanceof HTMLElement)) throw new Error('the form has no fade')
+    const [fadeBox, scrollBox] = [fade.getBoundingClientRect(), scroll.getBoundingClientRect()]
+    await expect([fadeBox.width, fadeBox.height, Math.round(scrollBox.bottom - fadeBox.bottom)]).toEqual([512, 48, 0])
+    await expect(getComputedStyle(fade).backgroundImage).toContain('linear-gradient')
+    scroll.scrollTop = scroll.scrollHeight
+    await fireEvent.scroll(scroll)
+    await waitFor(() => expect(getComputedStyle(fade).opacity).toBe('0'))
     await userEvent.clear(title)
     await userEvent.type(title, 'مهندس نرم‌افزار')
-    await userEvent.click(within(dialog).getByRole('button', { name: 'ذخیره' }))
+    await userEvent.click(within(dialog).getByRole('button', { name: 'افزودن' }))
     await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ title: 'مهندس نرم‌افزار', status: 'new', postingUrl: LINK }))
   },
 }
@@ -227,18 +334,63 @@ export const Review: Story = {
 export const ReviewInEnglish: Story = {
   // Its draft's own link wins over source, as Review's does, KN-571.
   parameters: FIXED,
-  args: { step: 'review', source: LINK, draft: foundIn('en-US'), statuses: fixtures('en-US').statusOptions.slice(0, 5) },
-  globals: { locale: 'en-US' },
+  args: {
+    step: 'review',
+    source: LINK,
+    draft: foundIn('en-US'),
+    ...groupsIn('en-US'),
+    sources: sourcesIn('en-US'),
+    peopleAt: fn(peopleAtFound('en-US')),
+  },
+  globals: { locale: 'en-US', colorScheme: 'light' },
   play: async ({ args }) => {
-    // The Review step in English saves what reading found, its dates the days
-    // the fixtures hold, KN-494: they used to be written «1 September 2026»,
-    // which the form refused.
+    // The Review step in English, its footer and its note in the language's own
+    // order, saves what reading found, its dates the days the fixtures hold,
+    // KN-494: they used to be written «1 September 2026», which the form refused.
     const i18n = english
     const dialog = await dialogNamed(i18n._('Add job opportunity'))
-    await userEvent.click(within(dialog).getByRole('button', { name: i18n._('Save') }))
+    await isTheShell(dialog, 'en-US', within(dialog).getByRole('button', { name: i18n._('Add') }))
+    await expect(await isTheStatusFooter(dialog, 'en-US')).toHaveTextContent(fixtures('en-US').statusOptions[0]?.name ?? 'missing')
+    await expect(within(dialog).getByText(`3 people from ${foundIn('en-US').company ?? ''} are in your network`)).toBeVisible()
+    await userEvent.click(within(dialog).getByRole('button', { name: i18n._('Add') }))
     await expect(args.onSave).toHaveBeenCalledWith(
       expect.objectContaining({ title: fixtures('en-US').jobs[0]?.title, postedAt: '2026-09-01', expiresAt: '2026-09-04' }),
     )
+  },
+}
+
+export const OnePersonAtTheCompany: Story = {
+  // One person of the network at the company is said in the singular.
+  parameters: FIXED,
+  args: {
+    step: 'review',
+    source: LINK,
+    draft: foundIn('en-US'),
+    ...groupsIn('en-US'),
+    sources: sourcesIn('en-US'),
+    peopleAt: fn<(company: string) => number>(() => 1),
+  },
+  globals: { locale: 'en-US', colorScheme: 'light' },
+  play: async () => {
+    const i18n = english
+    const dialog = await dialogNamed(i18n._('Add job opportunity'))
+    await expect(within(dialog).getByText(`1 person from ${foundIn('en-US').company ?? ''} is in your network`)).toBeVisible()
+  },
+}
+
+export const Dark: Story = {
+  // Review in the dark theme: the note and the fade in the theme's dark colours.
+  parameters: FIXED,
+  args: { step: 'review', source: LINK, draft: FOUND, peopleAt: fn(peopleAtFound('fa-IR')) },
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async () => {
+    const dialog = await dialogNamed('افزودن فرصت شغلی')
+    await expect(getComputedStyle(dialog).backgroundColor).toBe(computed(darkSemantic['bg/surface']))
+    const note = within(dialog).getByText(`۳ نفر از ${FOUND.company ?? ''} در شبکهٔ شما هستند`)
+    await expect(getComputedStyle(note).color).toBe(computed(darkSemantic['text/brand']))
+    const fade = formScrollOf(dialog).nextElementSibling
+    if (!(fade instanceof HTMLElement)) throw new Error('the form has no fade')
+    await expect(getComputedStyle(fade).backgroundImage).toContain(computed(darkSemantic['bg/surface']))
   },
 }
 
@@ -248,18 +400,88 @@ export const Manual: Story = {
   args: { step: 'manual' },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
-    // Node 254:2: the same form, empty. Saving without a title and a company
-    // says what is missing and saves nothing; with them, it saves.
+    // Node 254:2: 288 tall, the title and the company over «جزئیات بیشتر», the
+    // rest of the form behind it, and the footer as Review's. Adding without a
+    // title and a company says what is missing and adds nothing; with them, it
+    // adds.
     const dialog = await dialogNamed('افزودن فرصت شغلی')
-    const save = within(dialog).getByRole('button', { name: 'ذخیره' })
-    await userEvent.click(save)
+    await expect(dialog.getBoundingClientRect().height).toBe(288)
+    const add = within(dialog).getByRole('button', { name: 'افزودن' })
+    await isTheShell(dialog, 'fa-IR', add)
+    await expect(await isTheStatusFooter(dialog, 'fa-IR')).toHaveTextContent('ذخیره‌شده')
+    const toggle = within(dialog).getByRole('button', { name: 'جزئیات بیشتر' })
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    const toggleStyle = getComputedStyle(toggle)
+    await expect([px(toggleStyle.fontSize), px(toggleStyle.lineHeight), px(toggleStyle.columnGap)]).toEqual([14, 22, 4])
+    await expect(toggleStyle.color).toBe(computed(semantic['text/brand']))
+    await expect(within(dialog).queryByRole('textbox', { name: 'موقعیت مکانی' })).toBeNull()
+    await userEvent.click(add)
     await expect(args.onSave).not.toHaveBeenCalled()
     await expect(within(dialog).getByRole('textbox', { name: 'عنوان شغلی' })).toHaveAccessibleDescription('عنوان شغلی را بنویس')
     await expect(within(dialog).getByRole('textbox', { name: 'نام شرکت' })).toHaveAccessibleDescription('نام شرکت را بنویس')
     await userEvent.type(within(dialog).getByRole('textbox', { name: 'عنوان شغلی' }), 'طراح محصول')
     await userEvent.type(within(dialog).getByRole('textbox', { name: 'نام شرکت' }), 'اسنپ')
-    await userEvent.click(save)
+    await userEvent.click(add)
     await expect(args.onSave).toHaveBeenCalledWith(expect.objectContaining({ title: 'طراح محصول', company: 'اسنپ', status: 'new' }))
+  },
+}
+
+export const ManualDetails: Story = {
+  // Node 1262:97354: «جزئیات بیشتر» opens the rest of the form, the modal 606,
+  // its chevron turned and «جزئیات کمتر»; the fields keep what was typed when it
+  // closes again. A fixed step, so no control applies.
+  parameters: FIXED,
+  args: { step: 'manual' },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async () => {
+    const dialog = await dialogNamed('افزودن فرصت شغلی')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'جزئیات بیشتر' }))
+    const less = within(dialog).getByRole('button', { name: 'جزئیات کمتر' })
+    await expect(less).toHaveAttribute('aria-expanded', 'true')
+    await waitFor(() => expect(dialog.getBoundingClientRect().height).toBe(Math.min(606, window.innerHeight - CAP_GAP)))
+    const chevron = less.querySelector('svg')
+    if (!chevron) throw new Error('the toggle has no chevron')
+    await expect(getComputedStyle(chevron).transform).toBe('matrix(-1, 0, 0, -1, 0, 0)')
+    const location = within(dialog).getByRole('textbox', { name: 'موقعیت مکانی' })
+    await userEvent.type(location, 'تهران')
+    await expect(within(dialog).getByRole('combobox', { name: 'منبع' })).toHaveValue('')
+    await expect(within(dialog).queryByText('از روی لینک آگهی پر شد.')).toBeNull()
+    // The description under its heading row: the 16 note icon and the title at
+    // 14 and SemiBold, 8 above a field of one line, its placeholder in
+    // text/secondary.
+    const description = within(dialog).getByRole('textbox', { name: 'شرح شغل و مسئولیت‌ها' })
+    await expect(description).toHaveAttribute('placeholder', 'متن آگهی یا شرح شغل رو اینجا بذارید')
+    await expect(description.parentElement?.getBoundingClientRect().height).toBe(46)
+    const heading = within(dialog).getByRole('heading', { name: 'شرح شغل و مسئولیت‌ها' })
+    await expect([px(getComputedStyle(heading).fontSize), Number(getComputedStyle(heading).fontWeight)]).toEqual([14, 600])
+    await expect(formScrollOf(dialog).nextElementSibling).toBeNull()
+    await userEvent.click(less)
+    await expect(within(dialog).queryByRole('textbox', { name: 'موقعیت مکانی' })).toBeNull()
+    await userEvent.click(within(dialog).getByRole('button', { name: 'جزئیات بیشتر' }))
+    await expect(within(dialog).getByRole('textbox', { name: 'موقعیت مکانی' })).toHaveValue('تهران')
+  },
+}
+
+export const ManualShowsWhatStopsTheSave: Story = {
+  // A field behind the toggle that stops the save opens the details, so its
+  // error is seen: a link that is not one, typed and then put away. A fixed
+  // step, so no control applies.
+  parameters: FIXED,
+  args: { step: 'manual' },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args }) => {
+    const dialog = await dialogNamed('افزودن فرصت شغلی')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'جزئیات بیشتر' }))
+    await userEvent.type(within(dialog).getByRole('textbox', { name: 'لینک آگهی' }), 'not-a-link')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'جزئیات کمتر' }))
+    await userEvent.type(within(dialog).getByRole('textbox', { name: 'عنوان شغلی' }), 'طراح محصول')
+    await userEvent.type(within(dialog).getByRole('textbox', { name: 'نام شرکت' }), 'اسنپ')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'افزودن' }))
+    await expect(args.onSave).not.toHaveBeenCalled()
+    await expect(within(dialog).getByRole('button', { name: 'جزئیات کمتر' })).toHaveAttribute('aria-expanded', 'true')
+    await expect(within(dialog).getByRole('textbox', { name: 'لینک آگهی' })).toHaveAccessibleDescription(
+      'یک لینک معتبر با http یا https وارد کن',
+    )
   },
 }
 
@@ -268,40 +490,46 @@ export const ManualPath: Story = {
   parameters: offers(['source']),
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async () => {
-    // «خودت دستی وارد کن» goes to the empty form.
+    // «ورود دستی» goes to the empty form.
     const dialog = await dialogNamed('افزودن فرصت شغلی')
-    await userEvent.click(within(dialog).getByRole('button', { name: 'خودت دستی وارد کن' }))
+    await userEvent.click(within(dialog).getByRole('button', { name: 'ورود دستی' }))
     await expect(await within(dialog).findByRole('textbox', { name: 'عنوان شغلی' })).toHaveValue('')
   },
 }
 
+// The server's answer for a posting it could not read: a GraphQL error whose
+// code is the API's word for it.
+type Unreadable = 'POSTING_UNAVAILABLE'
+const UNAVAILABLE: Unreadable = 'POSTING_UNAVAILABLE'
+const unreadable = () => new CombinedGraphQLErrors({ errors: [{ message: UNAVAILABLE, extensions: { code: UNAVAILABLE } }] })
+
 export const ErrorStep: Story = {
   parameters: FIXED,
-  args: { step: 'error', source: LINK, onExtract: fn(() => Promise.reject(new Error('unreadable'))) },
+  args: { step: 'error', source: LINK, onExtract: fn(() => Promise.reject(unreadable())) },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
-    // Node 304:2: the title says reading failed, the field keeps the link and
-    // says why in text/error, the way round stays, and «دوباره امتحان کن»
-    // reads it again; failing again, it stays here.
-    const dialog = await dialogNamed('نشد آگهی را بخوانیم')
-    // 423 tall, the file's: the label on its 19 and the message on two lines, KN-359.
-    await expect(dialog.getBoundingClientRect().height).toBe(423)
-    const field = within(dialog).getByRole('textbox', { name: 'لینک آگهی یا متن کامل آگهی' })
+    // Node 304:2: 315 tall, the title says reading failed, the field keeps the
+    // link and says why in text/error, the way round stays, and «تلاش دوباره»
+    // reads it again; the posting failing again, it says so again.
+    const dialog = await dialogNamed('نتونستیم آگهی رو بخونیم')
+    await expect(dialog.getBoundingClientRect().height).toBe(315)
+    const field = await isThePasteWrap(dialog, 'fa-IR')
     await expect(field).toHaveValue(LINK)
-    await expect(field).toHaveAccessibleDescription(
-      'نتوانستیم اطلاعات این لینک را بخوانیم. شاید آگهی حذف شده یا سایت اجازه‌ی خواندن نمی‌دهد. دوباره تلاش کن، یا اطلاعات را دستی وارد کن.',
-    )
-    await expect(within(dialog).getByRole('button', { name: 'خودت دستی وارد کن' })).toBeInTheDocument()
-    await userEvent.click(within(dialog).getByRole('button', { name: 'دوباره امتحان کن' }))
+    await expect(field).toHaveAccessibleDescription('شاید آگهی حذف شده یا سایتش اجازهٔ خوندن نمی‌ده. یه بار دیگه امتحان کنید.')
+    await isTheShell(dialog, 'fa-IR', within(dialog).getByRole('button', { name: 'تلاش دوباره' }))
+    await userEvent.click(within(dialog).getByRole('button', { name: 'تلاش دوباره' }))
     await expect(args.onExtract).toHaveBeenCalledWith(LINK)
-    await expect(await dialogNamed('نشد آگهی را بخوانیم')).toBeInTheDocument()
+    const again = await dialogNamed('نتونستیم آگهی رو بخونیم')
+    await expect(await within(again).findByRole('textbox', { name: 'لینک آگهی یا متن کامل آگهی' })).toHaveAccessibleDescription(
+      'شاید آگهی حذف شده یا سایتش اجازهٔ خوندن نمی‌ده. یه بار دیگه امتحان کنید.',
+    )
   },
 }
 
 export const LeavingAsks: Story = {
   // Its draft's own link wins over source, as Review's does, KN-571.
   parameters: FIXED,
-  args: { step: 'review', source: LINK, draft: foundIn('fa-IR') },
+  args: { step: 'review', source: LINK, draft: FOUND },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args }) => {
     // Leaving with something entered asks first; keeping it goes back, and
@@ -327,7 +555,7 @@ export const Phone: Story = {
   // Its draft's own link wins over source, and its assertions, which only the
   // runner reaches, read the form of that step, KN-571.
   parameters: FIXED,
-  args: { step: 'review', source: LINK, draft: foundIn('fa-IR') },
+  args: { step: 'review', source: LINK, draft: FOUND },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async () => {
     // On a phone's width, 243:726, the modal sits 16 from the edges and the
@@ -343,6 +571,14 @@ export const Phone: Story = {
       const title = within(dialog).getByRole('textbox', { name: 'عنوان شغلی' }).getBoundingClientRect()
       const company = within(dialog).getByRole('textbox', { name: 'نام شرکت' }).getBoundingClientRect()
       await expect([Math.round(company.right), company.top > title.bottom]).toEqual([Math.round(title.right), true])
+      // The footer keeps inside the dialog: the actions take a row of their own
+      // under the Status Select, at the inline end, rather than run past it.
+      const box = dialog.getBoundingClientRect()
+      const select = (await isTheStatusFooter(dialog, 'fa-IR')).getBoundingClientRect()
+      const add = within(dialog).getByRole('button', { name: 'افزودن' }).getBoundingClientRect()
+      const cancel = within(dialog).getByRole('button', { name: 'انصراف' }).getBoundingClientRect()
+      await expect([add, cancel, select].every((part) => part.left >= box.left && part.right <= box.right)).toBe(true)
+      await expect([add.top > select.bottom, Math.round(add.left - box.left)]).toEqual([true, 24])
     } finally {
       await page.viewport(before.width, before.height)
     }
@@ -352,13 +588,15 @@ export const Phone: Story = {
 export const InEnglish: Story = {
   // The paste field shows the source, KN-571.
   parameters: offers(['source']),
-  args: { statuses: fixtures('en-US').statusOptions.slice(0, 5) },
-  globals: { locale: 'en-US' },
+  args: { ...groupsIn('en-US'), sources: sourcesIn('en-US') },
+  globals: { locale: 'en-US', colorScheme: 'light' },
   play: async () => {
     const i18n = english
     const dialog = await dialogNamed(i18n._('Add job opportunity'))
-    await expect(within(dialog).getByRole('textbox', { name: i18n._('Posting link or full text') })).toBeInTheDocument()
-    await expect(within(dialog).getByRole('button', { name: i18n._('Extract details') })).toBeDisabled()
+    await isThePasteWrap(dialog, 'en-US')
+    const extract = within(dialog).getByRole('button', { name: i18n._('Extract details') })
+    await isTheShell(dialog, 'en-US', extract)
+    await expect(extract).toBeDisabled()
   },
 }
 
@@ -425,7 +663,7 @@ export const RestartWhileReading: Story = {
     await fireEvent.click(within(canvasElement).getByTestId('to-manual'))
     const title = await within(document.body).findByRole('textbox', { name: 'عنوان شغلی' })
     await expect(title).toHaveValue('')
-    settleReading?.(foundIn('fa-IR'))
+    settleReading?.(FOUND)
     await new Promise((resolve) => setTimeout(resolve, 100))
     await expect(within(document.body).getByRole('textbox', { name: 'عنوان شغلی' })).toHaveValue('')
   },
@@ -459,7 +697,7 @@ export const AnswerAfterLeaving: Story = {
     const field = await within(dialog).findByRole('textbox', { name: 'لینک آگهی یا متن کامل آگهی' })
 
     // The answer arrives for a reading nobody is waiting on any more.
-    settleLeft?.(foundIn('fa-IR'))
+    settleLeft?.(FOUND)
     await new Promise((resolve) => setTimeout(resolve, 100))
     await expect(field).toHaveValue(LINK)
     await expect(within(canvasElement.ownerDocument.body).queryByRole('textbox', { name: 'عنوان شغلی' })).toBeNull()
@@ -467,7 +705,8 @@ export const AnswerAfterLeaving: Story = {
 }
 
 // What the form's single-line fields declare, KN-464: the key that finishes each
-// saves, and the posting link asks for a link's keyboard.
+// saves, and the posting link asks for a link's keyboard. The source is the
+// Source Picker's combobox, which names no key of its own.
 const TYPED: Keyboard = { type: 'text', inputMode: null, enterKeyHint: 'done', autoComplete: null }
 const POSTING: Keyboard = { ...TYPED, type: 'url' }
 
@@ -476,13 +715,13 @@ const formIn =
   async () => {
     const i18n = i18nFor(locale)
     const dialog = await dialogNamed(i18n._('Add job opportunity'))
+    await userEvent.click(within(dialog).getByRole('button', { name: i18n._('More details') }))
     const expected: [string, Keyboard][] = [
       [i18n._('Job title'), TYPED],
       [i18n._('Company name'), TYPED],
       [i18n._('Location'), TYPED],
       [i18n._('Required experience'), TYPED],
       [i18n._('Salary'), TYPED],
-      [i18n._('Source'), TYPED],
       [i18n._('Posting link'), POSTING],
     ]
     for (const [label, keyboard] of expected) {
@@ -501,7 +740,7 @@ export const KeyboardsOnTheForm: Story = {
 export const KeyboardsOnTheFormInEnglish: Story = {
   // A pasted link fills the empty form's posting link, KN-571.
   parameters: offers(['source']),
-  args: { step: 'manual', statuses: fixtures('en-US').statusOptions.slice(0, 5) },
+  args: { step: 'manual', ...groupsIn('en-US'), sources: sourcesIn('en-US') },
   globals: { locale: 'en-US' },
   play: formIn('en-US'),
 }

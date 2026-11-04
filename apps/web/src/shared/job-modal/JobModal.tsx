@@ -1,16 +1,17 @@
 import { useLingui } from '@lingui/react'
-import { Box, ButtonBase, Dialog, InputBase } from '@mui/material'
+import { Box, ButtonBase, Dialog } from '@mui/material'
 import { useId, useRef, useState, type ReactNode } from 'react'
 import { usePreferences } from '../../core/preferences'
 import { statusGroups } from '../../core/records'
 import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
-import { JobFields, missingFields, validPostingUrl, type JobDraft } from '../add-job'
+import { JobArea, JobFields, JobPart, missingFields, validPostingUrl, type JobDraft } from '../add-job'
 import { Button } from '../button'
 import { ContactCard, type ContactCardContact } from '../contact-card'
-import { Icon, type IconName } from '../icon'
+import { Icon } from '../icon'
 import { IconButton } from '../icon-button'
 import { Input, type InputDirection } from '../input'
 import { DISSOLVE_MS, modalScrim } from '../modal'
+import type { SourceLists } from '../source-picker'
 import { StatusControl, type StatusOption } from '../status-picker'
 import { Tabs } from '../tabs'
 import { fileKind, fileSize, formatDay } from './format'
@@ -78,6 +79,7 @@ export interface JobModalProps {
   open: boolean
   job: JobRecord
   statuses: readonly StatusOption[]
+  sources: SourceLists
   tab?: JobModalTab
   onStatusChange: (status: string) => void
   onAddStatus: () => void
@@ -122,71 +124,6 @@ const Rule = () => (
   />
 )
 
-// A field of several lines without a label of its own, the description's and
-// the note's: 12 above and below and 16 at the sides, one pixel of
-// border/default inside, two of border/focus while it has focus, as the
-// Input's. Named by the heading or tab it sits under.
-const Area = ({ label, value, onChange, height }: { label: string; value: string; onChange: (value: string) => void; height?: number }) => (
-  <InputBase
-    multiline
-    {...(height === undefined ? { minRows: 2 } : { rows: 1 })}
-    value={value}
-    onChange={(event) => {
-      onChange(event.target.value)
-    }}
-    inputProps={{ 'aria-label': label }}
-    sx={(theme) => ({
-      position: 'relative',
-      width: '100%',
-      boxSizing: 'border-box',
-      alignItems: 'flex-start',
-      paddingBlock: `${spacing.sm}px`,
-      paddingInline: `${spacing.md}px`,
-      borderRadius: `${theme.karnama.radius.md}px`,
-      backgroundColor: theme.karnama.semantic['bg/surface'],
-      color: theme.karnama.semantic['text/primary'],
-      fontSize: `${typeScale.body.size}px`,
-      lineHeight: `${typeScale.body.lineHeight}px`,
-      '& textarea': { padding: 0, resize: 'none' },
-      ...(height === undefined ? {} : { height, '& textarea': { padding: 0, resize: 'none', height: '100%', overflowY: 'auto' } }),
-      '&::before': {
-        content: '""',
-        position: 'absolute',
-        inset: 0,
-        borderRadius: 'inherit',
-        borderStyle: 'solid',
-        borderWidth: EDGE,
-        borderColor: theme.karnama.semantic['border/default'],
-        pointerEvents: 'none',
-      },
-      '&.Mui-focused::before': { borderWidth: 2, borderColor: theme.karnama.semantic['border/focus'] },
-    })}
-  />
-)
-
-// A part of the Info tab under its heading, 210:56: a 16 icon and the title at
-// 14 and SemiBold, 8 above what it heads.
-const Part = ({ icon, title, children }: { icon: IconName; title: string; children: ReactNode }) => (
-  <Box component="section" sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.xs}px` }}>
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: `${spacing.xs}px` }}>
-      <Icon name={icon} size="sm" />
-      <Box
-        component="h3"
-        sx={(theme) => ({
-          margin: 0,
-          fontSize: `${typeScale.body.size}px`,
-          lineHeight: `${typeScale.body.lineHeight}px`,
-          fontWeight: typeScale['heading/m'].weight,
-          color: theme.karnama.semantic['text/primary'],
-        })}
-      >
-        {title}
-      </Box>
-    </Box>
-    {children}
-  </Box>
-)
-
 // The keyboard's ring, three pixels drawn inside a control's edge. Under an sx
 // key, which the lint rule reads as CSS.
 const ring = {
@@ -217,6 +154,7 @@ export const JobModal = ({
   open,
   job,
   statuses,
+  sources,
   tab: asked = INFO,
   onStatusChange,
   onAddStatus,
@@ -282,7 +220,7 @@ export const JobModal = ({
 
   const info = (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.md}px` }}>
-      <JobFields draft={draft} missing={tried ? missingFields(draft) : []} onChange={setDraft} />
+      <JobFields draft={draft} missing={tried ? missingFields(draft) : []} sources={sources} onChange={setDraft} />
       {/* The Link Row, 296:73: the field and, when there is a link, the
           button that opens the posting, at the field's foot. */}
       <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: `${spacing.xs}px` }}>
@@ -326,11 +264,11 @@ export const JobModal = ({
         )}
       </Box>
       <Rule />
-      <Part icon="note" title={i18n._('Job description and responsibilities')}>
-        <Area label={i18n._('Job description and responsibilities')} value={description} onChange={setDescription} />
-      </Part>
+      <JobPart icon="note" title={i18n._('Job description and responsibilities')}>
+        <JobArea label={i18n._('Job description and responsibilities')} value={description} onChange={setDescription} />
+      </JobPart>
       {job.skills.length === 0 ? null : (
-        <Part icon="tag" title={i18n._('Required skills')}>
+        <JobPart icon="tag" title={i18n._('Required skills')}>
           <Box component="ul" sx={{ display: 'flex', flexWrap: 'wrap', gap: `${spacing.xs}px`, margin: 0, padding: 0, listStyle: 'none' }}>
             {job.skills.map((skill) => (
               <Box
@@ -350,7 +288,7 @@ export const JobModal = ({
               </Box>
             ))}
           </Box>
-        </Part>
+        </JobPart>
       )}
     </Box>
   )
@@ -387,7 +325,7 @@ export const JobModal = ({
   // The note, 210:127, 200 tall, and when it was last edited.
   const noteTab = (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.md}px` }}>
-      <Area label={i18n._('Note')} value={note} onChange={setNote} height={NOTE_HEIGHT} />
+      <JobArea label={i18n._('Note')} value={note} onChange={setNote} height={NOTE_HEIGHT} />
       {job.noteEditedAt === null ? null : (
         <Box sx={(theme) => ({ ...small.sx, color: theme.karnama.semantic['text/secondary'] })}>
           {`${i18n._('Last edited:')} ${formatDay(locale, job.noteEditedAt)}`}

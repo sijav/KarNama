@@ -34,6 +34,11 @@ for the same record on every change.
 
 The statuses the header's control offers.
 
+### sources
+
+The reader's own sources and the common ones, which the Info tab's Source
+Picker offers.
+
 ### tab
 
 The tab shown: `info`, the default, `history`, `note`, `contacts` or `files`.

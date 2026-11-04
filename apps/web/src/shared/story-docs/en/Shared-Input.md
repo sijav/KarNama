@@ -91,6 +91,12 @@ start, so a Persian reader finds it where they expect.
 
 A short note under the field. Replaced by the error while there is one.
 
+### helperTone
+
+The helper line's colour: secondary, the Input set's, or brand, which the add
+form's company field draws for the note of who in the reader's network is at
+the company. An error keeps its own colour either way.
+
 ### error
 
 The error message. While it has any text, the field takes the error border, the
@@ -288,6 +294,11 @@ the frame and grows with the text up to eight rows, then scrolls internally.
 
 The add modal's paste field's label, which the file draws on a 19 line with no
 letter spacing where every other field's label sits on 16.
+
+### BrandHelper
+
+The helper line in the brand colour, as the add form's company field draws it,
+still describing the field.
 
 ### Required
 

@@ -700,22 +700,34 @@ export const Adding: Story = {
     await userEvent.click(within(adding).getByRole('button', { name: 'استخراج اطلاعات' }))
     await expect(args.onExtract).toHaveBeenCalledWith(posting)
 
-    // The form that comes back can take a column of its own before saving.
-    // The sixth fixture job opportunity, which the board is not seeded with.
+    // The form that comes back can take a column of its own before saving, from
+    // the footer's Status Select, which offers a new status too: the board adds
+    // it, and the select offers it the next time it opens. The sixth fixture job
+    // opportunity, which the board is not seeded with.
     const title = set.jobs[5]?.title ?? ''
     await waitFor(async () => {
       await expect(within(adding).getByLabelText(/عنوان شغلی/)).toBeInTheDocument()
     })
-    await userEvent.click(within(adding).getByRole('button', { name: i18nFor('fa-IR')._('Add status') }))
+    const statusSelect = () => within(adding).getByRole('button', { name: /^وضعیت:/u })
+    await userEvent.click(statusSelect())
+    const offered = await body.findByRole('dialog', { name: 'وضعیت' })
+    await userEvent.click(within(offered).getByRole('button', { name: i18nFor('fa-IR')._('Add status') }))
     await waitFor(async () => {
-      await expect(within(adding).getByRole('radio', { name: 'وضعیت تازه' })).toBeInTheDocument()
+      await expect(body.queryByRole('dialog', { name: 'وضعیت' })).toBeNull()
     })
+    await userEvent.click(statusSelect())
+    const reopened = await body.findByRole('dialog', { name: 'وضعیت' })
+    await expect(within(reopened).getByRole('radio', { name: 'وضعیت تازه' })).toBeInTheDocument()
+    await userEvent.click(within(reopened).getByRole('radio', { name: columns[1]?.name ?? '' }))
+    await waitFor(async () => {
+      await expect(body.queryByRole('dialog', { name: 'وضعیت' })).toBeNull()
+    })
+    await expect(statusSelect()).toHaveTextContent(columns[1]?.name ?? 'missing')
     await userEvent.type(within(adding).getByLabelText(/عنوان شغلی/), title)
     await userEvent.type(within(adding).getByLabelText(/شرکت/), set.jobs[0]?.company ?? '')
 
     // The rest of the form is optional and is filled the same way: the fields
-    // that are typed, the two that are chosen from a list, and the status,
-    // which the form carries as well so the add flow never needs the board.
+    // that are typed and the two that are chosen from a list.
     await userEvent.type(within(adding).getByLabelText('موقعیت مکانی'), set.jobs[0]?.location ?? '')
     await userEvent.type(within(adding).getByLabelText('لینک آگهی'), set.jobs[1]?.link ?? '')
     const choose = async (field: HTMLElement) => {
@@ -732,9 +744,8 @@ export const Adding: Story = {
     }
     await choose(within(adding).getByRole('combobox', { name: 'نوع همکاری' }))
     await choose(within(adding).getByRole('combobox', { name: 'سطح شغلی' }))
-    await userEvent.click(await within(adding).findByRole('radio', { name: columns[1]?.name ?? '' }))
 
-    await userEvent.click(within(adding).getByRole('button', { name: 'ذخیره' }))
+    await userEvent.click(within(adding).getByRole('button', { name: 'افزودن' }))
     await gone()
     await waitFor(async () => {
       await expect(canvas.getByText(title)).toBeInTheDocument()

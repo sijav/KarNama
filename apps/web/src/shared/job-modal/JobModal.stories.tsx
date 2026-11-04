@@ -9,6 +9,7 @@ import type { StatusToken } from '../../theme/tokens'
 import { emptyDraft } from '../add-job'
 import { JobCard } from '../job-card'
 import type { JobLevel } from '../job-selects'
+import type { SourceLists } from '../source-picker'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
 import { JobModal, type JobModalProps, type JobModalTab, type JobRecord, type JobSaved } from './JobModal'
@@ -76,6 +77,12 @@ const recordIn = (locale: Locale): JobRecord => {
 // The English copy, read from its catalog.
 const english = setupI18n({ locale: 'en-US', messages: { 'en-US': en } })
 
+// The reader's sources and the common ones the Info tab's Source Picker offers.
+const sourcesIn = (locale: Locale): SourceLists => ({
+  own: fixtures(locale).sourcePicker.own,
+  common: fixtures(locale).sourcePicker.common,
+})
+
 const meta = {
   title: 'Shared/JobModal',
   component: JobModal,
@@ -84,6 +91,7 @@ const meta = {
     job: recordIn('fa-IR'),
     // The five statuses the product starts with, the fixtures' first five.
     statuses: fixtures('fa-IR').statusOptions.slice(0, 5),
+    sources: sourcesIn('fa-IR'),
     tab: 'info',
     onStatusChange: fn(),
     onAddStatus: fn(),
@@ -451,7 +459,7 @@ export const Phone: Story = {
 
 export const InEnglish: Story = {
   parameters: FIXED,
-  args: { job: recordIn('en-US'), statuses: fixtures('en-US').statusOptions.slice(0, 5) },
+  args: { job: recordIn('en-US'), statuses: fixtures('en-US').statusOptions.slice(0, 5), sources: sourcesIn('en-US') },
   globals: { locale: 'en-US' },
   play: async ({ args }) => {
     const i18n = english
@@ -494,7 +502,7 @@ export const KeepsAWrittenDate: Story = {
     await expect(posted).toHaveValue(WRITTEN)
     await expect(posted).not.toHaveAttribute('type', 'date')
     // The expiry, a day, keeps its picker.
-    await expect(within(panelOf(dialog)).getByLabelText('تاریخ انقضا')).toHaveAttribute('type', 'date')
+    await expect(within(panelOf(dialog)).getByLabelText('مهلت درخواست')).toHaveAttribute('type', 'date')
     await userEvent.click(within(dialog).getByRole('tab', { name: 'یادداشت' }))
     await userEvent.type(within(panelOf(dialog)).getByRole('textbox', { name: 'یادداشت' }), ' تماس گرفتند.')
     await userEvent.click(within(dialog).getByRole('button', { name: 'ذخیره' }))
@@ -546,6 +554,7 @@ const Swappable = ({ onSave }: { onSave: (job: JobSaved) => void }) => {
         open
         job={record}
         statuses={fixtures('fa-IR').statusOptions.slice(0, 5)}
+        sources={sourcesIn('fa-IR')}
         onStatusChange={fn()}
         onAddStatus={fn()}
         onSave={onSave}
@@ -651,7 +660,7 @@ const linesOf = (button: HTMLElement) => {
 // and no label breaks onto a second line inside its fixed height.
 export const InEnglishOnAPhone: Story = {
   parameters: FIXED,
-  args: { job: recordIn('en-US'), statuses: fixtures('en-US').statusOptions.slice(0, 5) },
+  args: { job: recordIn('en-US'), statuses: fixtures('en-US').statusOptions.slice(0, 5), sources: sourcesIn('en-US') },
   globals: { locale: 'en-US', colorScheme: 'light' },
   play: async ({ args }) => {
     // The screen is resized by the runner's own browser, which only the runner

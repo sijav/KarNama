@@ -462,6 +462,30 @@ export const LeavingPutsItBack: Story = {
   },
 }
 
+export const NothingToOfferYet: Story = {
+  // A reader with no sources of their own and no common ones handed over: a
+  // press opens nothing, and what is typed offers only its making.
+  args: { value: '', own: [], common: [], autoFilled: false },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args, canvasElement }) => {
+    const { combobox } = fieldOf(canvasElement, 'fa-IR')
+    await userEvent.click(combobox)
+    await expect(combobox).toHaveAttribute('aria-expanded', 'false')
+    await expect(within(canvasElement).queryByRole('listbox')).toBeNull()
+    await userEvent.keyboard(FA.newName)
+    await expect(combobox).toHaveAttribute('aria-expanded', 'true')
+    await isTheMenu(canvasElement, 'fa-IR', semantic, {
+      height: 4 + 38 + 4,
+      headers: [],
+      rows: [],
+      chosen: null,
+      create: createRow('fa-IR', FA.newName),
+    })
+    await userEvent.keyboard('{Enter}')
+    await expect(args.onChange).toHaveBeenCalledWith(FA.newName)
+  },
+}
+
 export const InEnglish: Story = {
   // Typing in English: a name one letter off, and its making.
   args: { value: EN.own[0]?.name ?? '', own: EN.own, common: EN.common, autoFilled: true },

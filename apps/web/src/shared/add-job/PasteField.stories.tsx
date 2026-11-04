@@ -165,7 +165,10 @@ export const LongText: Story = {
 export const WithError: Story = {
   // Step=Error, 304:2: reading failed, its reason in the helper's place in
   // text/error, the edge border/error.
-  args: { value: fixtures('fa-IR').extraction.postingUrl, error: i18n._('We could not read this link.') },
+  args: {
+    value: fixtures('fa-IR').extraction.postingUrl,
+    error: i18n._('The posting may have been removed, or its site may not allow reading it. Please try again.'),
+  },
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     const field = fieldIn(canvasElement)

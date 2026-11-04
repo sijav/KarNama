@@ -4,7 +4,19 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type SyntheticEven
 import { useSearchParams } from 'react-router'
 import { QUERY, searchStep } from '../app/routes'
 import { usePreferences } from '../core/preferences'
-import { columnOrder, contactsOf, jobsIn, linkableJobs, REJECTED, statusGroups, tokenOf, useRecords, type JobEntry } from '../core/records'
+import {
+  columnOrder,
+  contactsOf,
+  jobsIn,
+  linkableJobs,
+  ownSources,
+  peopleAtCompany,
+  REJECTED,
+  statusGroups,
+  tokenOf,
+  useRecords,
+  type JobEntry,
+} from '../core/records'
 import { formatCount } from '../i18n/formatCount'
 import { AddJobModal, type AddJobModalProps, type JobDraft } from '../shared/add-job'
 import { BulkActionBar } from '../shared/bulk-action-bar'
@@ -20,6 +32,7 @@ import { ChangeStatusModal, ConfirmModal, ContactModal, Modal, type ContactModal
 import { PageHeader } from '../shared/page-header'
 import { SearchBar, type SearchBarLayout } from '../shared/search-bar'
 import { SortControl, type SortOrder } from '../shared/sort-control'
+import type { SourceLists } from '../shared/source-picker'
 import { spacing } from '../theme/tokens'
 import { band, gutterOf } from './band'
 import { asValues, useVisitLabels } from './personModal'
@@ -340,6 +353,9 @@ export const JobsScreen = ({
   }, [deleting, onJobDeleteConfirmationOpenChange])
 
   const people = linkableJobs(records)
+  // The reader's own sources, from their job opportunities, for the add form's
+  // and the Info tab's Source Picker; the common ones are KN-739's.
+  const sources: SourceLists = { own: ownSources(records), common: [] }
   const labels = useVisitLabels()
   // The person the contact modal is editing, or null while it adds or is closed:
   // narrowed once, here, so the edit's modal and handlers know their record without
@@ -636,8 +652,10 @@ export const JobsScreen = ({
 
       <AddJobModal
         open={addingTo !== null}
-        statuses={records.statuses}
+        {...statusGroups(records.statuses)}
         status={addingTo ?? first}
+        sources={sources}
+        peopleAt={(company) => peopleAtCompany(records, company)}
         onExtract={onExtract}
         onSave={addJob}
         onAddStatus={() => {
@@ -656,6 +674,7 @@ export const JobsScreen = ({
           // named here rather than held inside the job, KN-056.
           job={{ ...job, contacts: contactsOf(records.contacts, job.id) }}
           statuses={records.statuses}
+          sources={sources}
           onStatusChange={(status) => {
             records.moveJob(job.id, status)
           }}

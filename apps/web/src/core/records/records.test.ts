@@ -14,6 +14,8 @@ import {
   matches,
   newId,
   nextCustomToken,
+  ownSources,
+  peopleAtCompany,
   readRecords,
   sortJobs,
   statusGroups,
@@ -25,6 +27,11 @@ import {
 } from './records'
 
 const named = (token: string) => `name of ${token}`
+
+// The half-space and the Arabic yeh, by code point, which no reader can see in
+// the source.
+const ZWNJ = String.fromCodePoint(0x200c)
+const ARABIC_YEH = String.fromCodePoint(0x64a)
 const statuses = defaultStatuses(named)
 
 const jobWith = (fields: Partial<JobEntry['draft']> & { id?: string }): JobEntry => ({
@@ -127,6 +134,26 @@ describe('a job opportunity', () => {
 
   it('has an id nothing else has, even twice in the same millisecond', () => {
     expect(newId('job')).not.toBe(newId('job'))
+  })
+})
+
+describe("the reader's own sources", () => {
+  it('are the sources their job opportunities carry, each once in its first spelling, none for a job with none', () => {
+    const records: Records = {
+      statuses,
+      jobs: [
+        jobWith({ source: ' جابینجا ' }),
+        jobWith({ source: '' }),
+        jobWith({ source: 'LinkedIn' }),
+        jobWith({ source: 'جاب' + ZWNJ + 'ینجا' }),
+        jobWith({ source: 'linkedin' }),
+      ],
+      contacts: [],
+    }
+    expect(ownSources(records)).toEqual([
+      { name: 'جابینجا', aliases: [] },
+      { name: 'LinkedIn', aliases: [] },
+    ])
   })
 })
 
@@ -243,6 +270,20 @@ describe('the people kept against a job opportunity', () => {
       { id: 'a', title: 'A', company: 'Company', status: { token: 'applied', name: 'name of applied' } },
       { id: 'b', title: 'B', company: '', status: { token: 'custom-1', name: 'mine' } },
     ])
+  })
+
+  it('are counted at a company however its name is spelled, and none at no company', () => {
+    const at = (company: string | null, id: string) => ({ ...person(id, null, id), contact: { ...person(id, null, id).contact, company } })
+    const folded = 'دیج' + ARABIC_YEH + 'کالا'
+    const records: Records = {
+      statuses,
+      jobs: [],
+      contacts: [at('دیجی' + ZWNJ + 'کالا', '1'), at(folded, '2'), at('Snapp', '3'), at(null, '4')],
+    }
+    expect(peopleAtCompany(records, 'دیجی‌کالا')).toBe(2)
+    expect(peopleAtCompany(records, ' snapp ')).toBe(1)
+    expect(peopleAtCompany(records, 'Tapsi')).toBe(0)
+    expect(peopleAtCompany(records, '  ')).toBe(0)
   })
 
   it('are dropped from a stored set when they are not people at all', () => {

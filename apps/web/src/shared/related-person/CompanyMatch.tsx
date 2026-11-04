@@ -1,11 +1,10 @@
 import { useLingui } from '@lingui/react'
 import { Box } from '@mui/material'
 import { useId } from 'react'
-import { usePreferences } from '../../core/preferences'
-import { formatCount } from '../../i18n/formatCount'
 import { spacing } from '../../theme/tokens'
 import { Button } from '../button'
 import { Icon } from '../icon'
+import { useNetworkAt } from './network'
 import { labelText, nameText, oneLine } from './personText'
 
 // The props are documented in story-docs, not here, KN-207.
@@ -20,19 +19,6 @@ export interface CompanyMatchProps {
   company: string
   people: readonly CompanyMatchPerson[]
   onConnect: (id: string) => void
-}
-
-// The title as the reader says it: the count in their digits, the noun in the
-// plural the count takes, the company, and the verb that agrees with it.
-// Persian keeps «نفر» singular after a number, so both of its forms are one
-// string, and so is its verb.
-const useTitle = (company: string, count: number) => {
-  const { i18n } = useLingui()
-  const { locale } = usePreferences()
-  const one = new Intl.PluralRules(locale).select(count) === 'one'
-  const from = one ? i18n._('person from') : i18n._('people from')
-  const network = one ? i18n._('is in your network') : i18n._('are in your network')
-  return `${formatCount(locale, count)} ${from} ${company} ${network}`
 }
 
 // The Company Match's Person, 1096:3116: the name over «سمت · شرکت» at the
@@ -84,7 +70,7 @@ const Match = ({ person, onConnect }: { person: CompanyMatchPerson; onConnect: (
 // drawn. A group named by its title.
 export const CompanyMatch = ({ company, people, onConnect }: CompanyMatchProps) => {
   const titleId = useId()
-  const title = useTitle(company, people.length)
+  const title = useNetworkAt(company, people.length)
   if (people.length === 0) return null
   return (
     <Box

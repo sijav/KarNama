@@ -489,6 +489,11 @@ requires one; a field without a visible label would need an aria-label
 contract first, and nothing on the screens asks for it. The Helper Text boolean
 is the owner's decision of KN-285.
 
+**The helper's tone.** The add form's company field, `150:94`, turns its Helper
+Text to `color/text/brand` for the note of the reader's network at the company,
+an override on that instance; the Input takes it as `helperTone`, `secondary`
+unless asked, and an error keeps its own colour. KN-790.
+
 ### The Empty State, and the line height its title does not have
 
 Node `159:80` is a round mark of 64 in `bg/surface-secondary`, a title, a body
@@ -1480,8 +1485,7 @@ field is found by its edge alone, KN-275, and its focus the Input's two of
 `color/text/secondary` and `spacing/2xs` after it «ورود دستی» at Medium in
 `color/text/brand`, underlined on Hover; a button, since it turns the flow to
 the empty form, with the product's outline for the keyboard. The add modal
-takes both in KN-817, where the old copy, «لینک آگهی را بچسبان…» and «خودت دستی
-وارد کن», goes. KN-766.
+draws both, KN-790. KN-766.
 
 ### The related person
 
@@ -1795,7 +1799,8 @@ the inline start, and at the inline end a Button / S Secondary «وصل کردن
 fill the instance sets to `color/bg/surface`. Connect links the person and the
 box goes; with nobody, there is no box, as the description and the handoff say.
 The code counts the title in the reader's digits and plural, Persian keeping
-«نفر» singular; draws several people as a row each, `spacing/xs` apart, where
+«نفر» singular and its verb plural for several, «در شبکهٔ شما هستند», as the add
+form's note under the company draws it, KN-790; draws several people as a row each, `spacing/xs` apart, where
 the file draws one; keeps `spacing/sm` between a person and Connect, where the
 file's spacer has no least width, so a long name is cut before it reaches the
 button; puts the icon at the top of the title, the same on one line, so it
@@ -1997,41 +2002,55 @@ settled here and is KN-715, KN-716.
 
 ### The add modal
 
-Node `166:82`, the shell at 560 in four drawn steps and the loading panel of
-`243:964` between them. **Paste**, `166:62`, is the Input of several lines, initially
-140 tall with its text 16 from every edge. The owner's September 12 correction
-makes this a minimum height: the field grows with its text up to eight rows,
-then scrolls internally. It sits under «لینک آگهی یا متن کامل آگهی», its
-helper «هم لینک را می‌پذیرد، هم متن کامل آگهی را — لازم نیست چیزی را جدا کنی.», and
-the row «لینک یا متن آگهی نداری؟ خودت دستی وارد کن», the second half 14 at Medium
-in `text/brand`; then Cancel and Primary «استخراج اطلاعات», disabled until the
-field is filled and has been touched, taking focus counting as touching, the
-critical path's «click into the field» (**PasteFilled**, `371:422`). The file
-draws the label at its automatic 19, which the code keeps too, KN-359, so Paste
-is 401 tall, as the file is. **Loading**, `243:964`, is the same dialog as a
-panel of 360, 32 above and below and 24 at the sides, holding the Loading State
-alone; it takes focus as a group named by the Loading State's line, whose status
-then speaks only a later line, KN-362, and Escape there goes back to the paste
-field with what was pasted. **Review**, `150:94`, is the form in 420 of the modal's 606,
-scrolling beyond, its bar in the modal's padding at the inline end: two columns
-of 248 with 16 between, from the inline start the title and the company, then
-employment type and location, experience and level, the posting and the salary,
-the source and the expiry, the posting's link across the row, and the Status
-Picker; one column below MUI's sm. **The phone keeps the title first**, the
-owner's decision of 2026-09-15, KN-358: `243:726` draws no form of its own but
-the desktop Review at 358 wide, whose left to right wrap stacks the company
-first. The title and the
-company carry the required mark, the owner's KN-075, a star in `text/error`
-after the label, said by the field's `aria-required`; saving without them says
-«عنوان شغلی را بنویس» and «نام شرکت را بنویس». A pasted link fills the posting's
-link when reading found none. **Manual**, `254:2`, is the same form, empty.
-**Error**, `304:2`, titles itself «نشد آگهی را بخوانیم», keeps what was pasted,
-puts reading's failure in `text/error` where the helper was, and offers «دوباره
-امتحان کن» and the manual row; editing the field goes back to Paste. Leaving with
-anything entered asks first in the Confirm modal, «بدون ذخیره بسته شود؟», since
-the file draws no discard of its own. The set's name says Edit, but the file
-draws no Edit step: a job opportunity is edited in place in the Job Modal,
-section 3. KN-029.
+Node `166:82`, the shell at 560 in six drawn steps and the loading panel of
+`243:964` between them, read in the original on 2026-11-04, KN-790. **Paste**,
+`166:62`, is 315 tall: the Field Wrap of the Paste Field, `961:101573`, under
+«لینک آگهی یا متن کامل آگهی» at 12 on 19, its helper «هم لینک، هم متن کامل آگهی؛
+لازم نیست چیزی رو جدا کنید.» at 14 on 22, and the Manual Path Link, `961:101603`,
+all 4 apart; then Cancel and Primary «استخراج اطلاعات», disabled until the field
+is filled and has been touched, taking focus counting as touching, the critical
+path's «click into the field» (**PasteFilled**, `371:422`). The field grows with
+what is pasted to the Input's eight rows, then scrolls. **Loading**, `243:964`,
+is the same dialog as a panel of 360, 32 above and below and 24 at the sides,
+holding the Loading State alone; it takes focus as a group named by the Loading
+State's line, whose status then speaks only a later line, KN-362, and Escape
+there goes back to the paste field with what was pasted. **Review**, `150:94`,
+is the form in 420 of the modal's 606, scrolling beyond, its bar in the modal's
+padding at the inline end: two columns of 248 with 16 between, from the inline
+start the title and the company, then employment type and location, experience
+and level, the posted date and the salary, the source and «مهلت درخواست», the
+posting's link across the row, and «شرح شغل و مسئولیت‌ها» at 14 and SemiBold
+after a 16 note icon in `text/secondary`, 8 above a field 16 and 12 in that
+grows from one line, its placeholder «متن آگهی یا شرح شغل رو اینجا بذارید»; one
+column below MUI's sm. The source is the Source Picker, its hint drawn while it
+holds the source reading found. Under the company, when the reader's network
+holds people there, «۳ نفر از دیجی‌کالا در شبکهٔ شما هستند» is the field's own
+helper turned to Body `text/brand`, said and not pressed. A fade of 48 rises from
+nothing to `bg/surface`, the file's white, over the form's foot, and leaves once
+the form is scrolled to its end. The dates stay the product's own fields until
+KN-818 and KN-813 draw the calendar and the reader's written date.
+**The phone keeps the title first**, the owner's decision of 2026-09-15,
+KN-358, and on a phone's width the footer's actions take a row of their own under
+the Status Select. The title and the company carry the required mark, the
+owner's KN-075, a star in `text/error` after the label, said by the field's
+`aria-required`; adding without them says «عنوان شغلی را بنویس» and «نام شرکت را
+بنویس». A pasted link fills the posting's link when reading found none.
+**Manual**, `254:2`, 288 tall, is the same form, empty: the title and the company
+over the Details Toggle, the 20 chevron in `text/secondary` and 4 after it
+«جزئیات بیشتر» in Body `text/brand`, at the inline start. **Manual Details**,
+`1262:97354`, is it open, «جزئیات کمتر» and the chevron turned, the rest of the
+form under it and no fade, as the frame draws none; a field behind the toggle
+that stops the adding opens it, so its error is seen. The form steps' footer,
+`254:13`, holds the Status Select at the inline start, the status the job
+opportunity is added in, and Cancel and «افزودن» at the inline end, so the
+status is no longer a field of the form. **Error**, `304:2`, 315 tall, titles
+itself «نتونستیم آگهی رو بخونیم», keeps what was pasted, puts «شاید آگهی حذف شده یا
+سایتش اجازهٔ خوندن نمی‌ده. یه بار دیگه امتحان کنید.» in `text/error` where the
+helper was, keeps the Manual Path Link and offers «تلاش دوباره»; editing the
+field goes back to Paste. Leaving with anything entered asks first in the
+Confirm modal, «بدون ذخیره بسته شود؟», since the file draws no discard of its
+own. The set's name says Edit, but the file draws no Edit step: a job
+opportunity is edited in place in the Job Modal, section 3. KN-029, KN-790.
 
 ### The Job Modal
 
@@ -2175,7 +2194,7 @@ of the contract.
 | Modal / Unsaved       | `893:3780`   | no variants: save, close without saving, or go back to the modal                                                  |
 | Modal / Delete Status | `919:2885`   | Cards=None, Cards=Has: deleting a stage the reader made, its job opportunities moved                              |
 | Modal / Change Status | `150:93`     | no variants: the grouped Status Picker with its label, then Cancel and Confirm                                    |
-| Modal / Add-Edit    | `166:82`  | steps Paste, PasteFilled, Loading, Review, Manual, Error                                        |
+| Modal / Add-Edit    | `166:82`  | steps Paste, PasteFilled, Loading, Review, Manual, Manual Details, Error                        |
 | Page Header         | `155:56`  | title, optional back button, optional primary action                                            |
 | Search Bar          | `155:92`  | Default, Focus, Filled, Hover                                                                        |
 | Filter Chip           | `159:71`     | Default, Hover, Pressed, Selected, the label at Medium; the status counter, or a suggestion with no count         |
@@ -2363,8 +2382,9 @@ reading of the file.
 **A Contact Card has no detail view.** Everything about a contact is on the
 card itself. There is a Contact Modal, but only for Add and Edit.
 
-**The add-job flow is Paste, then Loading, then Review**, with Manual as the
-fallback path and Error as the failure path. Which fields the Review step shows
+**The add-job flow is Paste, then Loading, then Review**, with Manual, and
+Manual Details behind its toggle, as the fallback path and Error as the failure
+path. Which fields the Review step shows
 was settled by the owner, KN-075, see section 6: everything the parse filled,
 the required fields marked. KN-029 builds it, "The add modal" in section 1.
 
@@ -2479,7 +2499,7 @@ message**, because the user can rename any status.
 
 **Optional.** `postingUrl` لینک آگهی · `location` موقعیت مکانی ·
 `employmentType` نوع همکاری · `jobLevel` سطح شغلی · `experience` سابقه‌ی موردنیاز
-· `salary` حقوق · `postedAt` تاریخ انتشار · `expiresAt` تاریخ انقضا ·
+· `salary` حقوق · `postedAt` تاریخ انتشار · `expiresAt` مهلت درخواست ·
 `source` منبع · `description` شرح شغل · `skills` مهارت‌ها · `note` یادداشت ·
 `contacts` افراد مرتبط · `files` فایل‌ها
 

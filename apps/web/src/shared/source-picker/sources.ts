@@ -8,6 +8,12 @@ export interface SourceOption {
   aliases: readonly string[]
 }
 
+/** The two lists the picker offers: the reader's own sources, and the common ones. */
+export interface SourceLists {
+  own: readonly SourceOption[]
+  common: readonly SourceOption[]
+}
+
 // The Persian yeh and kaf the Arabic letters fold into.
 const PERSIAN_YEH = String.fromCodePoint(0x6cc)
 const PERSIAN_KAF = String.fromCodePoint(0x6a9)

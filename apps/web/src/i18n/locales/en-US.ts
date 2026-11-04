@@ -49,7 +49,6 @@ export const messages: Record<string, string> = {
   'Jamie (sample)': 'Jamie (sample)',
   'Casey (sample)': 'Casey (sample)',
   Recruiter: 'Recruiter',
-  'Review and complete the details before saving.': 'Review and complete the details before saving.',
   'Sign-in is not configured yet. Please try later.': 'Sign-in is not configured yet. Please try later.',
   'The code could not be sent. Please try again.': 'The code could not be sent. Please try again.',
   'Too many attempts. Please try again in an hour.': 'Too many attempts. Please try again in an hour.',
@@ -64,7 +63,6 @@ export const messages: Record<string, string> = {
   'Could not reach the service. Please try again.': 'Could not reach the service. Please try again.',
   'Restoring your session…': 'Restoring your session…',
   'Connecting… The server may take a minute to wake up.': 'Connecting… The server may take a minute to wake up.',
-  'Enter a valid date; expiry cannot be before publication': 'Enter a valid date; expiry cannot be before publication',
   'Enter a valid http or https link': 'Enter a valid http or https link',
   KarNama: 'KarNama',
   'My job opportunities': 'My job opportunities',
@@ -203,15 +201,7 @@ export const messages: Record<string, string> = {
   Workspace: 'Workspace',
   'We could not read the posting': 'We could not read the posting',
   'Posting link or full text': 'Posting link or full text',
-  'Paste the posting link, or copy the whole posting text here': 'Paste the posting link, or copy the whole posting text here',
-  'It takes a link or the whole posting text; you do not need to separate anything.':
-    'It takes a link or the whole posting text; you do not need to separate anything.',
-  'We could not read this link.': 'We could not read this link.',
-  'The posting may have been removed or the site may not allow reading it.':
-    'The posting may have been removed or the site may not allow reading it.',
-  'Try again, or enter the details yourself.': 'Try again, or enter the details yourself.',
   'No link or posting text?': 'No link or posting text?',
-  'Enter it yourself': 'Enter it yourself',
   'Try again': 'Try again',
   'Extract details': 'Extract details',
   'Close without saving?': 'Close without saving?',
@@ -225,7 +215,6 @@ export const messages: Record<string, string> = {
   'Posted on': 'Posted on',
   Salary: 'Salary',
   Source: 'Source',
-  'Expires on': 'Expires on',
   'Posting link': 'Posting link',
   'Job description and responsibilities': 'Job description and responsibilities',
   'Required skills': 'Required skills',
@@ -414,4 +403,13 @@ export const messages: Record<string, string> = {
   'Common sources': 'Common sources',
   'Did you mean?': 'Did you mean?',
   'Create the source': 'Create the source',
+  Retry: 'Retry',
+  'The posting may have been removed, or its site may not allow reading it. Please try again.':
+    'The posting may have been removed, or its site may not allow reading it. Please try again.',
+  'More details': 'More details',
+  'Fewer details': 'Fewer details',
+  'Put the posting text or the job description here': 'Put the posting text or the job description here',
+  'Application deadline': 'Application deadline',
+  'Enter a valid date; the deadline cannot be before the posting date':
+    'Enter a valid date; the deadline cannot be before the posting date',
 }
