@@ -852,6 +852,23 @@ no numbers and neither platform offers the web a default; the `contextmenu` a
 phone's browser may send for its own long press is taken as the hold. The
 desktop's rule is unchanged: `243:433` draws only the chosen cards Selected.
 
+### The card's footer
+
+Card / Kanban, `793:1820`, says in its description what a card's footer says,
+and the handoff's پاورقی کارت repeats it, read on 2026-11-04. The saved column
+counts down to its deadline, the clock leading: more than three days left, «N
+روز مهلت» in grey; three or fewer, the same in red; the last day, «امروز آخرین
+روزه», red; after it, «مهلتش تموم شد», grey with no number. Without a deadline it
+says «امروز ذخیره شد» or «N روز پیش ذخیره شد», grey, with no icon and no pencil.
+Applied, interview and offer count «N روز از درخواست», and a closed outcome says
+«بعد از N روز بسته شد», from applying, or saving when it was never applied, to
+the day it closed. A large number is said more simply, «۱ ماه و نیم مهلت»: from
+30 days, months and half months, rounded down so time left is never overstated.
+The pencil edits the deadline or the application, never the day it was saved.
+The file says nothing of applying or closing on the day, which say «امروز
+درخواست شد» and «همون روز بسته شد». `cardFooter` in `shared/job-card` is this, a
+function of the dates and today, proved at every boundary, KN-744.
+
 ### The kanban column
 
 Node `241:125`, a frame on the board screen rather than a component: 300 wide
