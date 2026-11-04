@@ -1,5 +1,5 @@
 import { Box, IconButton as MuiIconButton, type Theme } from '@mui/material'
-import { useEffect, type AriaAttributes, type DOMAttributes, type ReactElement, type Ref } from 'react'
+import { useEffect, useId, type AriaAttributes, type DOMAttributes, type ReactElement, type Ref } from 'react'
 import { spacing } from '../../theme/tokens'
 import { report } from '../console-guard'
 import { Icon, type IconName } from '../icon'
@@ -52,6 +52,7 @@ const OUTSIDE: Rel = 'noopener noreferrer'
 interface IconButtonBase extends Opener {
   icon: IconName | ReactElement
   'aria-label': string
+  description?: string
   tone?: 'neutral' | 'danger' | 'primary'
   iconSize?: 'sm' | 'md'
   onClick?: () => void
@@ -120,10 +121,14 @@ const forwarded = <Element extends HTMLElement>(props: TooltipTrigger<Element> &
 // close, 401:436, is the same square round a 20 icon, so the icon's size is a
 // prop, 16 unless told otherwise. It names itself with Tooltip / Label, its own
 // name over it on hover and on keyboard focus, as the redesign asks of every
-// icon-only button, 1123:57071, KN-777.
+// icon-only button, 1123:57071, KN-777. What its name does not say goes in its
+// description, heard after the name and never drawn: a hidden copy the button
+// points at, as the old Tooltip gives its own, KN-231, joined to any a caller or
+// a Tooltip gives it, KN-848.
 export const IconButton = (props: IconButtonProps) => {
-  const { icon, 'aria-label': label, tone = 'neutral', iconSize = 'sm', onClick } = props
+  const { icon, 'aria-label': label, description, tone = 'neutral', iconSize = 'sm', onClick } = props
   const name = nameOf(label)
+  const descriptionId = useId()
   // A blank name is the caller's mistake: reported as it mounts, as the
   // Tooltip reports its own, and the button left out, so the failure stays at
   // the button rather than a throw during render taking the screen down with
@@ -201,22 +206,54 @@ export const IconButton = (props: IconButtonProps) => {
   // caller's, or the state an opener gives it. A handler of the button's own under
   // one of those names would be dropped whenever one is given, so it is composed
   // with the forwarded one, never set beside it.
+  //
+  // The description joins whatever is handed on, rather than replacing it, so it
+  // goes after the forwarded props and carries theirs with it.
+  const told = description === undefined || description.trim() === '' ? undefined : description
+  const describedBy = [props['aria-describedby'], told === undefined ? undefined : descriptionId].filter(Boolean).join(' ')
+  const describing = describedBy === '' ? {} : { 'aria-describedby': describedBy }
+  const hint =
+    told === undefined ? null : (
+      <Box component="span" id={descriptionId} hidden>
+        {told}
+      </Box>
+    )
   if (props.href === undefined) {
     const { ref, disabled = false, ...rest } = props
     return (
-      <TooltipLabel title={name}>
-        <MuiIconButton ref={ref} {...shared} aria-disabled={disabled} onClick={disabled ? undefined : onClick} {...forwarded(rest)}>
-          {mark}
-        </MuiIconButton>
-      </TooltipLabel>
+      <>
+        <TooltipLabel title={name}>
+          <MuiIconButton
+            ref={ref}
+            {...shared}
+            aria-disabled={disabled}
+            onClick={disabled ? undefined : onClick}
+            {...forwarded(rest)}
+            {...describing}
+          >
+            {mark}
+          </MuiIconButton>
+        </TooltipLabel>
+        {hint}
+      </>
     )
   }
   const { ref, href, external = false, ...rest } = props
   return (
-    <TooltipLabel title={name}>
-      <MuiIconButton ref={ref} {...shared} href={href} {...(external ? { target: '_blank', rel: OUTSIDE } : {})} {...forwarded(rest)}>
-        {mark}
-      </MuiIconButton>
-    </TooltipLabel>
+    <>
+      <TooltipLabel title={name}>
+        <MuiIconButton
+          ref={ref}
+          {...shared}
+          href={href}
+          {...(external ? { target: '_blank', rel: OUTSIDE } : {})}
+          {...forwarded(rest)}
+          {...describing}
+        >
+          {mark}
+        </MuiIconButton>
+      </TooltipLabel>
+      {hint}
+    </>
   )
 }

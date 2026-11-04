@@ -43,9 +43,10 @@ export const tooltipPair = (theme: Theme) => {
 
 // Whether what renders here is the element a Tooltip describes, which it
 // already speaks for. The Icon Button's own label, Tooltip / Label, stays out
-// of such an element, so the two tips never show at once, KN-777. Four icon
-// buttons keep this Tooltip until their own cards take it off, since the
-// redesign's shell and network page draw none of their tips.
+// of such an element, so the two tips never show at once, KN-777. One icon
+// button keeps this Tooltip, the network page's add, until its own card takes
+// it off; the shell's three carry their descriptions as the Icon Button's own,
+// KN-848.
 export const DescribedByATooltip = createContext(false)
 
 // The props are documented in story-docs, not here, KN-207.

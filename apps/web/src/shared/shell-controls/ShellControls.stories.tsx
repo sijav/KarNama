@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
-import { expect, fn, userEvent, within } from 'storybook/test'
-import { i18nFor, type Locale } from '../../i18n'
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
+import { i18nFor, locales, type Locale } from '../../i18n'
 import { spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { ShellControls } from './ShellControls'
@@ -88,5 +88,53 @@ export const InEnglish: Story = {
     // Left to right, the language button is the leftmost.
     const [language, , signOut] = buttons
     await expect(language?.getBoundingClientRect().left).toBeLessThan(signOut?.getBoundingClientRect().left ?? 0)
+  },
+}
+
+// Each names itself with its label tip, Tooltip / Label, under the pointer and
+// on the keyboard's focus, and is still described by what its name does not
+// say, KN-848.
+const nameThemselves = async (canvasElement: HTMLElement, locale: Locale) => {
+  const i18n = i18nFor(locale)
+  const buttons = buttonsIn(canvasElement, locale, true)
+  const body = within(canvasElement.ownerDocument.body)
+  const shows = async (name: string) => {
+    await waitFor(() => expect(body.getByRole('tooltip')).toHaveTextContent(name), { timeout: 1000 })
+  }
+  for (const button of buttons) {
+    await userEvent.hover(button)
+    await shows(button.getAttribute('aria-label') ?? '')
+    await userEvent.unhover(button)
+    await waitFor(() => expect(body.queryByRole('tooltip')).toBeNull())
+  }
+  for (const button of buttons) {
+    await userEvent.tab()
+    await expect(button).toHaveFocus()
+    await shows(button.getAttribute('aria-label') ?? '')
+  }
+  const [language, settings, signOut] = buttons
+  await expect(language).toHaveAccessibleDescription(locales[locale])
+  await expect(settings).toHaveAccessibleDescription(i18n._('Language, theme and sample data'))
+  await expect(signOut).toHaveAccessibleDescription(i18n._('Signs you out of your account on this device'))
+}
+
+export const NameThemselves: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await nameThemselves(canvasElement, 'fa-IR')
+  },
+}
+
+export const NameThemselvesInEnglish: Story = {
+  globals: { locale: 'en-US', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await nameThemselves(canvasElement, 'en-US')
+  },
+}
+
+export const NameThemselvesInDark: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    await nameThemselves(canvasElement, 'fa-IR')
   },
 }

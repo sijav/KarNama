@@ -2,7 +2,8 @@ Switches the interface language between Persian and English.
 
 An icon button whose icon is the flag of the current language's region, Iran's
 for Persian and the United States' for English, named «زبان» in Persian and
-Language in English. Its tip is the current language's own name, the one label
+Language in English, which its label tip shows. Its description is the current
+language's own name, the one label
 here that is never translated: a reader who cannot read the interface still
 recognises their language, by its flag or by its name. Pressing it opens a menu
 of both languages, each naming itself in its own language beside its flag, and
@@ -22,7 +23,7 @@ from the button's end.
 ### Sidebar
 
 The switch at rest as the sidebar holds it: a 32 pixel square, the 20 pixel
-flag, its name and its tip.
+flag, its name and its description.
 
 ### Header
 
@@ -49,4 +50,4 @@ The same, in English.
 ### Switching
 
 The point of the control. Choosing English renames the button, changes its
-flag and its tip, and the document's direction and language follow it.
+flag and its description, and the document's direction and language follow it.

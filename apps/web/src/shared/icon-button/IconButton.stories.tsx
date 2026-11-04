@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
+import { i18nFor } from '../../i18n'
 import { semantic, spacing, status } from '../../theme/tokens'
 import { passOnUnmarked } from '../console-guard'
 import { ICON_NAMES } from '../icon'
@@ -557,5 +558,41 @@ export const NamesItselfOnKeyboardFocus: Story = {
     await expect(button).toHaveFocus()
     const tip = await within(document.body).findByRole('tooltip', {}, { timeout: 1000 })
     await expect(tip).toHaveTextContent(button.getAttribute('aria-label') ?? '')
+  },
+}
+
+// The shell's sign out, KN-848: named by its label tip, with a description of
+// what its name does not say.
+const DescribedButton = (args: IconButtonSwitch) => {
+  const { i18n } = useLingui()
+  return (
+    <IconButton
+      {...args}
+      icon="log-out"
+      aria-label={i18n._('Sign out')}
+      description={i18n._('Signs you out of your account on this device')}
+    />
+  )
+}
+
+export const Described: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  render: (args) => <DescribedButton {...args} />,
+  play: async ({ canvasElement }) => {
+    // The description is heard after the name and drawn nowhere; the label tip
+    // shows the name alone, KN-848.
+    const i18n = i18nFor('fa-IR')
+    const button = within(canvasElement).getByRole('button')
+    await expect(button).toHaveAccessibleName(i18n._('Sign out'))
+    await expect(button).toHaveAccessibleDescription(i18n._('Signs you out of your account on this device'))
+    const hint = canvasElement.ownerDocument.getElementById(button.getAttribute('aria-describedby') ?? '')
+    await expect(hint).not.toBeNull()
+    await expect(hint).not.toBeVisible()
+    await userEvent.hover(button)
+    const tip = await within(document.body).findByRole('tooltip', {}, { timeout: 1000 })
+    await expect(tip).toHaveTextContent(i18n._('Sign out'))
+    await expect(tip).not.toHaveTextContent(i18n._('Signs you out of your account on this device'))
+    await userEvent.unhover(button)
+    await waitFor(() => expect(within(document.body).queryByRole('tooltip')).toBeNull())
   },
 }

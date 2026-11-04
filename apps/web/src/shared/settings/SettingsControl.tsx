@@ -3,13 +3,12 @@ import { useState } from 'react'
 import { usePreferences } from '../../core/preferences'
 import { useRecords } from '../../core/records'
 import { IconButton } from '../icon-button'
-import { Tooltip } from '../tooltip'
 import { SettingsDialog } from './SettingsDialog'
 
 // Settings as an Icon Button, the owner's of 2026-09-14, KN-478. The file draws
 // no settings, so it takes the gear the icon set gained for it, is named
-// «تنظیمات», and its tip says what the dialog holds, since a tip that repeated
-// the name would be heard twice.
+// «تنظیمات», which its label tip shows, KN-848, and its description says what
+// the dialog holds, since one that repeated the name would be heard twice.
 export const SettingsControl = () => {
   const { i18n } = useLingui()
   const preferences = usePreferences()
@@ -18,16 +17,15 @@ export const SettingsControl = () => {
   const [loaded, setLoaded] = useState(false)
   return (
     <>
-      <Tooltip title={i18n._('Language, theme and sample data')}>
-        <IconButton
-          icon="settings"
-          aria-label={i18n._('Settings')}
-          aria-haspopup="dialog"
-          onClick={() => {
-            setOpen(true)
-          }}
-        />
-      </Tooltip>
+      <IconButton
+        icon="settings"
+        aria-label={i18n._('Settings')}
+        description={i18n._('Language, theme and sample data')}
+        aria-haspopup="dialog"
+        onClick={() => {
+          setOpen(true)
+        }}
+      />
       <SettingsDialog
         open={open}
         locale={preferences.locale}

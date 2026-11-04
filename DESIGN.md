@@ -1067,10 +1067,11 @@ next one too, and closes at once, with no motion either way, since the file
 draws none; its text is the button's aria-label, so it names nothing new. The
 Icon Button carries it, so the network row's, the related people tab's and the
 person window's buttons the spec draws it over get it when they are built,
-KN-777. Four icon buttons still sit in the old Tooltip, whose description wins
-there so two tips never show: the shell's settings, sign out and language, and
-the network page's add. The handoff draws none of their tips, so the sidebar's
-and the network page's cards take them off.
+KN-777. The network page's add still sits in the old Tooltip, whose
+description wins there so two tips never show, until the network page's card
+takes it off. The shell's settings, sign out and language name themselves with
+it since KN-848, each keeping what its old tip said as its description, which
+the Icon Button's `description` makes heard and never drawn.
 
 ### The period switch
 
@@ -2235,8 +2236,11 @@ language's name, `xs` apart. It is decoration: the control's name is «زبان�
 **The shell's own controls are Icon Buttons, the owner's instruction of
 2026-09-14, KN-478**: "settings, signout, language, add contact, all needs to be
 a icon button!" The language, settings and signing out are the Icon Button of
-`460:672`, each with a Tooltip saying what its name does not: the language's is
-the current language's own name, its icon that language's flag. On desktop they
+`460:672`, each named by its label tip, Tooltip / Label, and described by what
+its name does not say, heard and never drawn, the Icon Button's `description`,
+KN-848: the language by the current language's own name, its icon that
+language's flag; settings by «Language, theme and sample data»; signing out by
+«Signs you out of your account on this device». On desktop they
 are one row at the sidebar's foot, 12 apart, in place of the language row and
 the file's «خروج» Nav Item; on a phone they follow the page's action in the Page
 Header, and nothing sits in a row above a page's title. The network's add

@@ -27,6 +27,12 @@ the button's name stays its only name.
 The button's name, read by screen readers and required: say what pressing it
 does.
 
+### description
+
+What the name does not say, heard by a screen reader after it and drawn
+nowhere; the label tip still shows the name alone. It joins any description a
+Tooltip gives the button.
+
 ### tone
 
 `neutral`, the default, `danger` for an action that removes something, or
@@ -169,3 +175,8 @@ and stays called only that.
 ### NamesItselfOnKeyboardFocus
 
 The same name, reached by Tab alone.
+
+### Described
+
+Named by its label tip, with a description heard after the name and drawn
+nowhere.

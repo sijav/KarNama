@@ -7,7 +7,6 @@ import { inlineEndOf, inlineStartOf } from '../../theme/sides'
 import { spacing } from '../../theme/tokens'
 import { IconButton } from '../icon-button'
 import { LanguageFlag } from '../language-flag'
-import { Tooltip } from '../tooltip'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface LanguageSwitchProps {
@@ -16,9 +15,10 @@ export interface LanguageSwitchProps {
 
 // The control that changes the language: an Icon Button whose icon is the
 // current language's flag, the owner's of 2026-09-14, KN-479 and KN-478. Its
-// name says what it is, «زبان»; its tip is the current language's own name, the
-// one label that must NOT be translated, since a reader who cannot read the
-// interface has to be able to find their own language. The menu lists both,
+// name says what it is, «زبان», and its label tip shows it, KN-848; its
+// description is the current language's own name, the one label that must NOT
+// be translated, since a reader who cannot read the interface has to be able to
+// find their own language. The menu lists both,
 // each in its own language beside its flag.
 //
 // The menu opens where there is room and never over its button. At the
@@ -47,19 +47,18 @@ export const LanguageSwitch = ({ placement = 'sidebar' }: LanguageSwitchProps) =
 
   return (
     <>
-      <Tooltip title={locales[locale]}>
-        <IconButton
-          ref={button}
-          icon={<LanguageFlag locale={locale} />}
-          aria-label={i18n._('Language')}
-          aria-haspopup="menu"
-          aria-expanded={anchor ? true : undefined}
-          aria-controls={anchor ? menuId : undefined}
-          onClick={() => {
-            setAnchor(button.current)
-          }}
-        />
-      </Tooltip>
+      <IconButton
+        ref={button}
+        icon={<LanguageFlag locale={locale} />}
+        aria-label={i18n._('Language')}
+        description={locales[locale]}
+        aria-haspopup="menu"
+        aria-expanded={anchor ? true : undefined}
+        aria-controls={anchor ? menuId : undefined}
+        onClick={() => {
+          setAnchor(button.current)
+        }}
+      />
       <Menu
         id={menuId}
         anchorEl={anchor}
