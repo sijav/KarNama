@@ -92,5 +92,20 @@
     ],
     "query": "هم",
     "newName": "دوست خانوادگی"
+  },
+  "sourcePicker": {
+    "own": [
+      {"name": "جابینجا", "aliases": ["Jobinja"]},
+      {"name": "لینکدین", "aliases": ["LinkedIn"]},
+      {"name": "تلگرام", "aliases": ["Telegram"]}
+    ],
+    "common": [
+      {"name": "جاب‌ویژن", "aliases": ["JobVision"]},
+      {"name": "ایران‌تلنت", "aliases": ["IranTalent"]}
+    ],
+    "folded": "جابينجا",
+    "near": "جاب بینجا",
+    "otherName": "jobvision",
+    "newName": "معرفی دوست"
   }
 }

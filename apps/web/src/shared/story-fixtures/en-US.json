@@ -98,5 +98,20 @@
     ],
     "query": "Former",
     "newName": "Family friend"
+  },
+  "sourcePicker": {
+    "own": [
+      {"name": "Jobinja", "aliases": ["جابینجا"]},
+      {"name": "LinkedIn", "aliases": ["لینکدین"]},
+      {"name": "Telegram", "aliases": ["تلگرام"]}
+    ],
+    "common": [
+      {"name": "JobVision", "aliases": ["جاب‌ویژن"]},
+      {"name": "IranTalent", "aliases": ["ایران‌تلنت"]}
+    ],
+    "folded": "Job Inja",
+    "near": "Jobinga",
+    "otherName": "جاب‌ویژن",
+    "newName": "A friend's referral"
   }
 }

@@ -149,6 +149,27 @@ export interface LabelPickerFixture {
   newName: string
 }
 
+/** A source the source picker offers: its name, and the other spellings that mean it, KN-776. */
+export interface SourceOptionFixture {
+  name: string
+  aliases: readonly string[]
+}
+
+/**
+ * The source picker's words, KN-776: the reader's sources and the common ones;
+ * the first of the reader's as the quiet normalisation folds it, and one letter
+ * away from it; a common source by its name in the other language; and a source
+ * nobody has yet.
+ */
+export interface SourcePickerFixture {
+  own: readonly SourceOptionFixture[]
+  common: readonly SourceOptionFixture[]
+  folded: string
+  near: string
+  otherName: string
+  newName: string
+}
+
 /** The closed outcomes' names, as the board's strips show them, KN-749. */
 export interface OutcomeNamesFixture {
   accepted: string
@@ -232,6 +253,8 @@ export interface Fixtures {
   dateEdit: DateEditFixture
   /** The label picker's words, as 1086:3004 draws them, KN-771. */
   labelPicker: LabelPickerFixture
+  /** The source picker's words, as 1223:96580 draws them, KN-776. */
+  sourcePicker: SourcePickerFixture
   /**
    * The fixtures as the product keeps them, for a story to seed a
    * `RecordsProvider` with, KN-437: every status, every job opportunity made by
@@ -264,6 +287,7 @@ export interface RawFixtures {
   kanbanCard: KanbanCardFixture
   dateEdit: DateEditFixture
   labelPicker: LabelPickerFixture
+  sourcePicker: SourcePickerFixture
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -409,6 +433,13 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
       labels: Object.freeze(raw.labelPicker.labels.map((label) => Object.freeze({ ...label }))),
       query: raw.labelPicker.query,
       newName: raw.labelPicker.newName,
+    }),
+    sourcePicker: Object.freeze({
+      ...raw.sourcePicker,
+      own: Object.freeze(raw.sourcePicker.own.map((source) => Object.freeze({ ...source, aliases: Object.freeze([...source.aliases]) }))),
+      common: Object.freeze(
+        raw.sourcePicker.common.map((source) => Object.freeze({ ...source, aliases: Object.freeze([...source.aliases]) })),
+      ),
     }),
   })
 }

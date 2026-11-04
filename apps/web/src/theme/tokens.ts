@@ -150,7 +150,8 @@ export const type = {
  * today and the chosen day, KN-754. The date dropdown's shortcut, `780:44444`,
  * and its clear link, `848:2253`, are 12 on 19 at Regular, KN-756. The calendar
  * popover, `774:16705`, sets its title 14 on 22 at Medium, its helper and its
- * time's label 12 on 19 and its time 13 on 20 at Regular, KN-757.
+ * time's label 12 on 19 and its time 13 on 20 at Regular, KN-757. The source
+ * picker, `1223:96580`, sets its label 12 on 19 at Medium, KN-776.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -195,6 +196,7 @@ export const unstyledText = {
   dateEditHelper: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
   timeFieldLabel: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
   timeFieldValue: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
+  sourceLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
 } as const
 
 /**

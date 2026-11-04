@@ -408,4 +408,10 @@ export const messages: Record<string, string> = {
   'No one carries it yet.': 'هنوز کسی این برچسب را ندارد.',
   'Confirm the new name': 'تأیید نام تازه',
   'New name': 'نام تازه',
+  'Choose or type a source': 'انتخاب یا نوشتن منبع',
+  'Filled in from the posting link.': 'از روی لینک آگهی پر شد.',
+  'Your sources': 'منبع‌های شما',
+  'Common sources': 'منبع‌های رایج',
+  'Did you mean?': 'منظور شما این بود؟',
+  'Create the source': 'ساختن منبع',
 }

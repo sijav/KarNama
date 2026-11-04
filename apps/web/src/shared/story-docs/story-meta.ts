@@ -106,6 +106,7 @@ export type StoryTitle =
   | 'Shared/SortCaption'
   | 'Shared/SortControl'
   | 'Shared/SortMenu'
+  | 'Shared/SourcePicker'
   | 'Shared/SourceRow'
   | 'Shared/StageModal'
   | 'Shared/StatsGuidance'

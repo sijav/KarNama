@@ -1749,6 +1749,37 @@ them; a delete asks in its row, never a modal on the modal, and takes the label
 off the people who carry it, never the people. The four defaults have no «⋯»,
 the designer's decision of 1 Aban. KN-771.
 
+### The source picker
+
+**Source Picker**, `1223:96580`, read on 2026-11-04, Default, Hover, Empty, Open
+and Typing: the «منبع» of the add form and the job modal's info tab. «منبع» is
+12 on Figma's automatic 19 at Medium in `text/primary`,
+`unstyledText.sourceLabel`, bound to no style as the Select's label is, KN-856;
+4 below it the Select's field, 44 at radius md, 16 in and 8 between, one pixel
+of `border/control` at rest, KN-275, `text/secondary` under the pointer, two of
+`border/focus` focused and one and a half open, the value in Body or «انتخاب یا
+نوشتن منبع» in `text/secondary`, and the 20 chevron in `text/secondary` at the
+inline end, never turned. When the link filled it, «از روی لینک آگهی پر شد.» in
+Label `text/secondary` 4 under the field.
+
+Its menu opens upward and out of the layout, the set's description says, since
+the field ends a scrolling form: 4 above the field and as wide, the Select's
+panel with `elevation.optionsMenu`, capped at the Open frame's 256 and scrolling
+past it. Open lists «منبع‌های شما», the reader's own, then «منبع‌های رایج», the
+common ones not among them, each under a header 24 tall, 12 and 4 in, Label in
+`text/secondary`, over the Select's Option Rows, the chosen one Selected with
+its check. Typing folds what is typed quietly, the handoff's ی and ي, ک and ك,
+spaces and the half-space, letter case, and a common source's name in the other
+language through its aliases, and narrows the list under the same headers; when
+nothing is exactly a source, «منظور شما این بود؟», the frame's words rather than
+the description's «منظورتون», offers the sources one letter away, then a divider
+of `border/default` and «ساختن منبع «…»», 38 tall, Body `text/brand` after its
+16 plus. It is a combobox: a press or an arrow opens it, what it showed is
+selected so typing takes its place, the arrows move, Enter chooses and the form
+round it does not take it, Escape closes only the menu, and leaving puts the
+value back. The common list and keeping the reader's sources are KN-739's.
+KN-776.
+
 ### The company match
 
 **Company Match**, `1096:3111`, read on 2026-11-04: one component with no
@@ -2203,6 +2234,7 @@ of the contract.
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |
+| Source Picker         | `1223:96580` | Default, Hover, Empty, Open, Typing: the add form's source, chosen, folded quietly or made                        |
 | Stats Guidance        | `1168:3170`  | no variants: a rule's message and its action at the top of the Stats page                                         |
 | Status Tab (Mobile)   | `1274:3275`  | Default, Active, Add: the mobile board's status tabs                                                              |
 | Outcome Strip         | `638:7928`   | no variants: accepted, rejected, no response, withdrawn, each a closed outcome after the stages                   |

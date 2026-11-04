@@ -408,4 +408,10 @@ export const messages: Record<string, string> = {
   'No one carries it yet.': 'No one carries it yet.',
   'Confirm the new name': 'Confirm the new name',
   'New name': 'New name',
+  'Choose or type a source': 'Choose or type a source',
+  'Filled in from the posting link.': 'Filled in from the posting link.',
+  'Your sources': 'Your sources',
+  'Common sources': 'Common sources',
+  'Did you mean?': 'Did you mean?',
+  'Create the source': 'Create the source',
 }
