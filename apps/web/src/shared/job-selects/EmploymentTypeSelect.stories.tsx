@@ -1,6 +1,9 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
 import { i18n } from '../../i18n'
+import { darkSemantic } from '../../theme/darkMode'
+import { semantic } from '../../theme/tokens'
+import { hoverEdge } from '../select/hoverEdge'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { EmploymentTypeSelect, type EmploymentTypeSelectProps } from './EmploymentTypeSelect'
 import { employmentTypeLabels } from './labels'
@@ -46,5 +49,22 @@ export const InEnglish: Story = {
   globals: { locale: 'en-US' },
   play: async ({ canvasElement }) => {
     await offersTheEight(canvasElement)
+  },
+}
+
+export const Hover: Story = {
+  // Select / نوع همکاری's Hover, 448:8051, which the original adds, KN-794: the chosen
+  // type in text/primary inside the pointer's text/secondary edge.
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await hoverEdge(canvasElement, semantic, true)
+  },
+}
+
+export const HoverInTheDark: Story = {
+  // The same in English and in the dark scheme, in the theme's dark colours.
+  globals: { locale: 'en-US', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    await hoverEdge(canvasElement, darkSemantic, true)
   },
 }

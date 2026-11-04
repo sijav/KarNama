@@ -21,3 +21,12 @@ Called with the level chosen.
 
 Nothing chosen; opening it offers the seven levels, and choosing one hands it
 back.
+
+### Hover
+
+Under a real pointer the edge turns to the secondary text colour round the
+chosen level. In Storybook itself, hover it yourself.
+
+### HoverInTheDark
+
+The same in English and in the dark scheme, in the theme's dark colours.

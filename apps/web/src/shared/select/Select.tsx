@@ -173,6 +173,11 @@ export const Select = ({ label, options, value, multiple = false, placeholder, d
             // Disabled keeps the file's edge, as an inactive control asks no
             // contrast of it, KN-275.
             '&.Mui-disabled::before': { borderColor: colour['border/default'] },
+            // Hover, which the original adds to 183:26 and both option Selects,
+            // KN-794: the Input's text/secondary edge, empty or filled; not while
+            // focused, open or disabled, whose edges say more, and only where the
+            // primary input can hover, so a tap leaves nothing drawn, KN-318.
+            '@media (hover: hover)': { '&:hover:not(.Mui-focused):not(.Mui-disabled)::before': { borderColor: colour['text/secondary'] } },
             '&.Mui-focused::before': { borderWidth: FOCUS_EDGE, borderColor: colour['border/focus'] },
             // Open, 448:610: one and a half of border/focus, which wins over
             // the focused two while the menu is up.

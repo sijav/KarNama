@@ -568,9 +568,13 @@ inline end, 8 from the value. Default shows «انتخاب کنید…» in `tex
 Filled the choice in `text/primary`; Focus two pixels of `border/focus`;
 Disabled `bg/surface-secondary` with the text and chevron `text/disabled`; Open
 one and a half of `border/focus`, an inset shadow over the one pixel border
-since Chromium floors a border of 1.5, and the chevron not turned. The set
-draws **no Hover**, so the field has none, where the Input has one. The label
-is the Input's, Label role. KN-012.
+since Chromium floors a border of 1.5, and the chevron not turned. The copy
+drew **no Hover**; the original, read on 2026-11-04, adds Hover and Filled
+Hover, one pixel of `text/secondary` round the placeholder or the value, the
+Input's hover, and gives each option Select, `448:8051` and `448:8095`, a
+Hover the same, so the field takes it where the pointer can hover, not while
+focused, open or disabled, KN-794. The label is the Input's, Label role.
+KN-012.
 
 The menu, `408:487`, sits 4 below the field and as wide: `bg/surface`, one
 pixel of `border/default` inside, radius md, 4 above and below its rows, and
@@ -1526,7 +1530,7 @@ of the contract.
 | Loading / Extract   | `1031:3818` | Step 1, 2 and 3: three dots and no text, the owner's decision of 1 Aban; the status says why past fifteen seconds |
 | Menu Item           | `181:22`  | Default, Hover, Disabled, Destructive, Destructive Hover                                                         |
 | Menu                | `512:8350`| Type=Status, Type=Card                                                                          |
-| Select              | `183:26`  | Default, Filled, Focus, Disabled, Open                                                          |
+| Select                | `183:26`     | Default, Filled, Focus, Disabled, Open, Hover, Filled Hover                                                       |
 | Option Row          | `408:465` | Default, Hover, Selected, Disabled                                                              |
 | Sort Control        | `408:512` | Default, Hover, Open                                                                            |
 | Tooltip             | `410:469` | FIXED 260 wide, text fills the rest; no variable bound to the width, so it is a component constant |

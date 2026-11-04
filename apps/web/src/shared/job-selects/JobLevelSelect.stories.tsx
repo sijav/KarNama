@@ -1,10 +1,13 @@
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, within } from 'storybook/test'
 import { i18n } from '../../i18n'
+import { darkSemantic } from '../../theme/darkMode'
+import { semantic } from '../../theme/tokens'
+import { hoverEdge } from '../select/hoverEdge'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { JobLevelSelect, type JobLevelSelectProps } from './JobLevelSelect'
 import { jobLevelLabels } from './labels'
-import { JOB_LEVELS } from './values'
+import { JOB_LEVELS, type JobLevel } from './values'
 
 const CONTROLLED: (keyof JobLevelSelectProps)[] = ['value', 'disabled']
 
@@ -35,5 +38,27 @@ export const Default: Story = {
     await expect(rows.map((row) => row.textContent)).toEqual(JOB_LEVELS.map((level) => labels[level]))
     await userEvent.click(rows[2] ?? listbox)
     await expect(args.onChange).toHaveBeenCalledWith(JOB_LEVELS[2])
+  },
+}
+
+// The level the file shows hovered, «کارشناس ارشد».
+const SENIOR: JobLevel = 'senior-specialist'
+
+export const Hover: Story = {
+  // Select / سطح شغلی's Hover, 448:8095, which the original adds, KN-794: the chosen
+  // level in text/primary inside the pointer's text/secondary edge.
+  args: { value: SENIOR },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await hoverEdge(canvasElement, semantic, true)
+  },
+}
+
+export const HoverInTheDark: Story = {
+  // The same in English and in the dark scheme, in the theme's dark colours.
+  args: { value: SENIOR },
+  globals: { locale: 'en-US', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    await hoverEdge(canvasElement, darkSemantic, true)
   },
 }

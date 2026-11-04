@@ -27,3 +27,12 @@ The field with full-time chosen and its eight types in Persian.
 ### InEnglish
 
 The same in English.
+
+### Hover
+
+Under a real pointer the edge turns to the secondary text colour round the
+chosen type. In Storybook itself, hover it yourself.
+
+### HoverInTheDark
+
+The same in English and in the dark scheme, in the theme's dark colours.

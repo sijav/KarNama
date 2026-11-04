@@ -5,10 +5,12 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { localeOrder, locales, type Locale } from '../../i18n'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
+import { darkSemantic } from '../../theme/darkMode'
 import { elevation, semantic } from '../../theme/tokens'
 import { EMPLOYMENT_TYPES, employmentTypeLabels } from '../job-selects'
 import { LanguageFlag } from '../language-flag'
 import type { StoryMeta } from '../story-docs/story-meta'
+import { hoverEdge } from './hoverEdge'
 import { Select, type SelectProps } from './Select'
 
 import type { EmploymentType } from '../job-selects'
@@ -191,6 +193,33 @@ export const Disabled: Story = {
     // Out of the tab order, and announced as unavailable.
     await expect(combobox).toHaveAttribute('aria-disabled', 'true')
     await expect(combobox).not.toHaveAttribute('tabindex')
+  },
+}
+
+export const Hover: Story = {
+  // 183:26's Hover, which the original adds, KN-794: nothing chosen, the
+  // placeholder in text/secondary inside the pointer's text/secondary edge.
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await hoverEdge(canvasElement, semantic, false)
+  },
+}
+
+export const FilledHover: Story = {
+  // Its Filled Hover: the chosen option in text/primary inside the same edge.
+  args: { value: [FULL_TIME] },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await hoverEdge(canvasElement, semantic, true)
+  },
+}
+
+export const HoverInTheDark: Story = {
+  // The same in English and in the dark scheme, in the theme's dark colours.
+  args: { ...EN, value: [FULL_TIME] },
+  globals: { locale: 'en-US', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    await hoverEdge(canvasElement, darkSemantic, true)
   },
 }
 

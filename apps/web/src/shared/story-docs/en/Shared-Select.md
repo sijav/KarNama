@@ -64,6 +64,20 @@ The field focused by the keyboard, its edge two pixels of blue.
 
 The field disabled.
 
+### Hover
+
+Nothing chosen, under a real pointer: the edge turns to the secondary text
+colour round the placeholder. In Storybook itself, hover it yourself.
+
+### FilledHover
+
+An option chosen, under a real pointer: the same edge round the chosen name, in
+the primary text colour.
+
+### HoverInTheDark
+
+The same in English and in the dark scheme, in the theme's dark colours.
+
 ### Open
 
 The list open, the chosen option checked and one option disabled.
