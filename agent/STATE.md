@@ -25,11 +25,17 @@ component card is `critical`, ahead of the record model (KN-731 to KN-741) and
 the screens (KN-805 to KN-828); KN-829 reads the older cards against the
 redesign last.
 
-**KN-800, the Job Modal `210:276` redrawn with a History tab, is in progress**:
-list every difference between the copy and the original, read the frames of
-`1062:54409` beside it, write the plan beside the job-modal component, stories
-first. Its notes name what it takes in: RelatedPerson rows and CompanyMatch in
-the people tab, PopoverClose at 20 in the header.
+**KN-800, the Job Modal `210:276`, closed (fa70cd6)**, its roast running in the
+background: the «…» menu, Popover Close, five tabs with «تاریخچه» last, a stage
+saved with «ذخیره», an outcome handed over at once, «ذخیره» off until a change,
+the Unsaved ask, people as Company Match and Related Person rows (unlink only,
+`records.linkContact`, `companyMatches`), history rows with rounds. **Not yet
+looked at against 210:101, 760:47508 and 210:208 by eye**: the Storybook dev
+server had stopped; `preview_start storybook-static` serves the fresh build on
+6007 for `$TEMP/kn790/shot.cjs` (point it at 6007). **KN-857** (the footerless
+Change Status dialog over the job modal) is filed and critical. **KN-858**
+(the e2e helper's old add-form copy) closed, 5c2cf64; KN-790 was roasted again
+with it. Next: the look, then `todo next`.
 
 **KN-790, the add form `166:82`, closed (f5a46d6)**: the paste steps on
 PasteField and ManualPathLink, the Source Picker and the company's network note
