@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import { spacing, type as typeScale, type semantic } from '../../theme/tokens'
 import { Icon, type IconName } from '../icon'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'text' | 'destructive' | 'ghost'
+export type ButtonVariant = 'primary' | 'secondary' | 'text' | 'destructive-text' | 'destructive' | 'ghost'
 export type ButtonSize = 'S' | 'M'
 export type ButtonType = 'button' | 'submit'
 
@@ -68,6 +68,16 @@ export const LOOKS: Record<ButtonVariant, Look> = {
     rest: { fill: null, text: 'text/brand' },
     hover: { fill: 'bg/brand/container', text: 'text/brand' },
     pressed: { fill: 'accent/200', text: 'text/brand' },
+    disabled: { fill: null, text: 'text/disabled' },
+    edge: false,
+  },
+  // The Text style with its label in text/error, as the stage modal's delete,
+  // 919:2795, overrides it; the file draws it at rest alone, so under the
+  // pointer and pressed it takes the destructive Menu Item's red/100, 961:2491.
+  'destructive-text': {
+    rest: { fill: null, text: 'text/error' },
+    hover: { fill: 'red/100', text: 'text/error' },
+    pressed: { fill: 'red/100', text: 'text/error' },
     disabled: { fill: null, text: 'text/disabled' },
     edge: false,
   },

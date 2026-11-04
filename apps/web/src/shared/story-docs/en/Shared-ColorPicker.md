@@ -19,6 +19,11 @@ The colour the status has now, one of the nine status tokens.
 
 Fired with the token of the colour picked, by pointer or by arrow key.
 
+### fullWidth
+
+Whether it fills the field it sits in, as the stage modal's does, its nine in
+one row, the four defaults first from the start of the row.
+
 ## Stories
 
 ### Default
@@ -51,3 +56,8 @@ The same keys in English, where the swatches run left to right.
 ### Dark
 
 The picker in the dark scheme, the chosen swatch in its status's dark pair.
+
+### FullWidth
+
+Stretched to the stage modal's field: the nine in one row, the defaults first
+from the start of the row, then offer and the four reserved for new stages.

@@ -121,7 +121,9 @@ export const type = {
  * `749:32`, sets its date 12 on its automatic 19 at Regular and a round's title
  * 13 on 20 at Medium, KN-753. The column header's sort caption, `961:97159`,
  * is 11 on 17 at Regular, and its menu's label, `912:40045`, 12 on Figma's
- * automatic 19 at Medium, KN-759.
+ * automatic 19 at Medium, KN-759. The stage modal's suggestions label,
+ * `919:2804`, is 12 on Figma's automatic 19 at Medium, and the Color Picker's
+ * helper, `257:17`, 12 on that 19 at Regular, KN-760.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -146,6 +148,8 @@ export const unstyledText = {
   historyTitle: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
   sortCaption: { size: 11, lineHeight: 17, weight: 400, letterSpacing: 0 },
   sortMenuLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+  stageSuggestions: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+  colorPickerHelper: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
 } as const
 
 /**

@@ -8,7 +8,7 @@ import { ICON_NAMES } from '../icon'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { Button, type ButtonProps, type ButtonSize, type ButtonVariant } from './Button'
 
-const VARIANTS: readonly ButtonVariant[] = ['primary', 'secondary', 'text', 'destructive', 'ghost']
+const VARIANTS: readonly ButtonVariant[] = ['primary', 'secondary', 'text', 'destructive-text', 'destructive', 'ghost']
 const SIZES: readonly ButtonSize[] = ['S', 'M']
 
 // The label is copy, the file's «دکمه», drawn in the reader's language inside
@@ -128,6 +128,9 @@ const EXPECTED: Record<ButtonVariant, Record<'rest' | 'hover' | 'pressed' | 'dis
   primary: { rest: ['bg/brand/default', 'text/on-accent'], hover: ['bg/brand/hover', 'text/on-accent'], pressed: ['accent/700', 'text/on-accent'], disabled: ['gray/200', 'text/disabled'] },
   secondary: { rest: [null, 'text/brand'], hover: ['bg/brand/container', 'text/brand'], pressed: ['accent/200', 'text/brand'], disabled: [null, 'text/disabled'] },
   text: { rest: [null, 'text/brand'], hover: ['bg/brand/container', 'text/brand'], pressed: ['accent/200', 'text/brand'], disabled: [null, 'text/disabled'] },
+  // The Text style in text/error, 919:2795, KN-760; its hover and pressed are the
+  // destructive Menu Item's red/100, which the file draws under text/error.
+  'destructive-text': { rest: [null, 'text/error'], hover: ['red/100', 'text/error'], pressed: ['red/100', 'text/error'], disabled: [null, 'text/disabled'] },
   destructive: { rest: ['bg/danger/default', 'text/on-accent'], hover: ['bg/danger/hover', 'text/on-accent'], pressed: ['red/700', 'text/on-accent'], disabled: ['gray/200', 'text/disabled'] },
   ghost: { rest: [null, 'text/secondary'], hover: ['bg/surface-secondary', 'text/primary'], pressed: ['bg/surface-secondary', 'text/primary'], disabled: [null, 'text/disabled'] },
 }

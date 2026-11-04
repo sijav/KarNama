@@ -4,4 +4,5 @@ export { ContactModal, type ContactModalProps, type ContactModalValues } from '.
 export { DeleteStatusModal, type DeleteStatusModalProps } from './DeleteStatusModal'
 export { DISSOLVE_MS, Modal, ModalActions, ModalDivider, ModalHeader, modalPaper, modalScrim, ModalText, type ModalProps } from './Modal'
 export { PanelModal, type PanelModalProps } from './PanelModal'
+export { StageModal, type Stage, type StageModalProps } from './StageModal'
 export { UnsavedModal, type UnsavedModalProps } from './UnsavedModal'

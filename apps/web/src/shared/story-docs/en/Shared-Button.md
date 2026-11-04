@@ -18,7 +18,9 @@ The label, already in the reader's language.
 
 ### variant
 
-`primary`, the default, `secondary`, `text`, `destructive` or `ghost`.
+`primary`, the default, `secondary`, `text`, `destructive-text`, `destructive`
+or `ghost`. `destructive-text` is the Text style in red, as the stage modal's
+delete draws it.
 
 ### size
 

@@ -1,4 +1,5 @@
 import { setupI18n } from '@lingui/core'
+import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { useRef, useState } from 'react'
 import { useArgs } from 'storybook/preview-api'
@@ -6,9 +7,9 @@ import { clearAllMocks, expect, fn, userEvent, within } from 'storybook/test'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
 import { darkSemantic, darkStatus } from '../../theme/darkMode'
-import { semantic, status, type StatusToken } from '../../theme/tokens'
+import { semantic, spacing, status, type StatusToken } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
-import { COLOURS, ColorPicker, type ColorPickerProps } from './ColorPicker'
+import { COLOURS, ColorPicker, ROW_COLOURS, type ColorPickerProps } from './ColorPicker'
 
 // The args the meta's render takes: the picker's props, and the revision each
 // pick is written back with, the Input's way, KN-280. Story plumbing: it never
@@ -49,6 +50,7 @@ const Held = ({ args: given, updateArgs }: { args: PickedArgs; updateArgs: (upda
   }
   return (
     <ColorPicker
+      {...(args.fullWidth === undefined ? {} : { fullWidth: args.fullWidth })}
       value={shown.value}
       onChange={(value) => {
         const at = Math.max(counter.current, revision ?? 0) + 1
@@ -290,5 +292,42 @@ export const Dark: Story = {
     const picked = swatchOf(within(group).getByRole('radio', { checked: true }))
     await expect(getComputedStyle(picked, '::before').borderTopColor).toBe(computedColour(panel, darkStatus[args.value].base))
     await expect(getComputedStyle(picked).backgroundColor).toBe(computedColour(panel, darkStatus[args.value].container))
+  },
+}
+
+// The stage modal's field, 392 wide, which the picker fills, 919:2526.
+const FIELD_WIDTH = 392
+
+export const FullWidth: Story = {
+  // Stretched to the stage modal's field: the nine in one row, the four
+  // defaults first from the inline start, then offer and the four reserved, as
+  // 919:2526 lays them out, 8 apart from 12 in.
+  args: { fullWidth: true, value: 'custom-1' },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  render: function Render(args) {
+    const [, updateArgs] = useArgs<PickedArgs>()
+    return (
+      <Box sx={{ width: FIELD_WIDTH }}>
+        <Held args={args} updateArgs={updateArgs} />
+      </Box>
+    )
+  },
+  play: async ({ canvasElement }) => {
+    const radios = within(canvasElement).getAllByRole('radio')
+    await expect(radios.map((radio) => radio.getAttribute('value'))).toEqual([...ROW_COLOURS])
+    const group = within(canvasElement).getByRole('radiogroup', { name: persian(i18n._('Status colour')) })
+    const panel = group.parentElement
+    if (!panel) throw new Error('the group has no panel')
+    // 113 tall, as 919:2526 is: its helper on Figma's automatic 19.
+    await expect([panel.getBoundingClientRect().width, panel.getBoundingClientRect().height]).toEqual([FIELD_WIDTH, 113])
+    const boxes = radios.map((radio) => swatchOf(radio).getBoundingClientRect())
+    await expect(new Set(boxes.map((box) => box.top)).size).toBe(1)
+    const [first] = boxes
+    if (!first) throw new Error('the picker has no swatches')
+    await expect(panel.getBoundingClientRect().right - first.right).toBe(spacing.sm)
+    for (const [index, box] of boxes.entries()) {
+      const next = boxes[index + 1]
+      if (next) await expect(Math.round(box.left - next.right)).toBe(spacing.xs)
+    }
   },
 }

@@ -1321,6 +1321,32 @@ on the column's order, and names the caption by its words and its column. The
 board's one order, the four options under Sorting, gives way to these once the
 board adopts them, KN-736 and KN-808. KN-759.
 
+### The stage modal
+
+**Modal / Status**, `919:2804`, read on 2026-11-04, sets its suggestions' label
+12 on 19, Figma's automatic line, at Medium in `text/secondary`,
+`stageSuggestions`: the window that adds a stage of the reader's own or edits
+one, Mode Add, Add Filled, Add Duplicate and Edit. The shell at 440,
+«افزودن وضعیت» or «ویرایش وضعیت»; its fields 20 apart. The name, «اسم وضعیت»,
+takes at most 20 letters, «مثلاً: مصاحبهٔ فنی» while empty, the count «۰ از ۲۰
+حرف» under it, which turns to «این اسم رو قبلاً انتخاب کردید. اسم دیگه‌ای انتخاب
+کنید.» in `text/error` when another stage has the name. On Add, «پیشنهادها» and
+five Filter Chips with no count, which fill the name and show pressed while it
+is theirs, in the order the frame lays them out from the inline start: «تکلیف»,
+«مصاحبهٔ منابع انسانی», «مصاحبهٔ فنی», then «مذاکرهٔ حقوق» and «مصاحبهٔ نهایی»
+on the second row. The Color Picker fills the field, its nine in one row, the
+four defaults first from the inline start, then offer and the four reserved, as
+`919:2526` draws them; the Color Picker, `257:17`, sets its helper
+12 on 19 at Regular, Figma's automatic line, `colorPickerHelper`, where CSS's
+normal drew it a pixel short. The footer has Cancel and Add, or Save, at the
+inline end, Add and Save off while the name is empty or taken; Edit puts
+«حذف وضعیت» at the footer's inline start in the Button's Text style with its
+label in `text/error`, `919:2795`, the code's `destructive-text`, which takes
+the destructive Menu Item's `red/100` under the pointer. Its description names
+a «بعد از کدوم وضعیت؟» field that no variant and no screen draws, so the code
+draws none. The code makes the fields a form, so Enter in the name does what
+Add or Save does. KN-760.
+
 ### The company match
 
 **Company Match**, `1096:3111`, read on 2026-11-04: one component with no
@@ -1690,7 +1716,7 @@ of the contract.
 
 | Family              | Node      | What it draws                                                                                   |
 | ------------------- | --------- | ----------------------------------------------------------------------------------------------- |
-| Button                | `31:4`       | S `37:10` and M `33:58` × 5 styles Primary/Secondary/Text/Destructive/Ghost × 5 states; L retired                 |
+| Button                | `31:4`       | S `37:10` and M `33:58` × 5 styles Primary/Secondary/Text/Destructive/Ghost × 5 states, Text in red; L retired    |
 | Status Chip         | `82:2`    | 9 statuses × 2 sizes S/M, display only                                                          |
 | Status Choice       | `427:567` | Default, Hover, Selected                                                                        |
 | Status Picker       | `427:592` | the popover that assigns a status                                                               |
@@ -1744,6 +1770,7 @@ of the contract.
 | Sort Caption          | `961:97159`  | Default, Hover: a column's order at its header's end, opening its sort menu                                       |
 | Sort Menu             | `912:40045`  | a column's orders; Menu / Sort (Custom) `919:2886` adds editing and deleting the stage                            |
 | Check Menu Item       | `912:40044`  | Default, Hover, Selected, Selected Hover: one order, ticked when chosen                                           |
+| Stage Modal           | `919:2804`   | Add, Add Filled, Add Duplicate, Edit: a stage of the reader's own, its name, suggestions and colour               |
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |

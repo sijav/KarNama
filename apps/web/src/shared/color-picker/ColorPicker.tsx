@@ -3,13 +3,14 @@ import { useLingui } from '@lingui/react'
 import { Box, Radio, RadioGroup } from '@mui/material'
 import { useId } from 'react'
 import { arrowsAcross } from '../../theme/sides'
-import { spacing, type as typeScale, type StatusToken } from '../../theme/tokens'
+import { spacing, type as typeScale, unstyledText, type StatusToken } from '../../theme/tokens'
 import { GLYPHS } from '../icon'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface ColorPickerProps {
   value: StatusToken
   onChange: (value: StatusToken) => void
+  fullWidth?: boolean
 }
 
 // Node 257:17 binds no variable to these, so they are component constants, as
@@ -19,10 +20,18 @@ const WIDTH = 232
 const CHECK = 14
 const EDGE = 2
 
+// The helper under the swatches, 12 on Figma's automatic 19 at Regular.
+const helper = unstyledText.colorPickerHelper
+
 // The nine pairs, in the order the file draws them from the inline start:
 // the first row offer and the four custom slots, the second the other four
 // defaults. Read from the swatches' x coordinates; RTL is the natural order.
 export const COLOURS = ['offer', 'custom-1', 'custom-2', 'custom-3', 'custom-4', 'new', 'applied', 'interview', 'rejected'] as const satisfies readonly StatusToken[]
+
+// Stretched to a field's width, as the stage modal's 919:2526 is, the file lays
+// the nine out in one row, and from the inline start that row reads the four
+// defaults first, then offer and the four reserved, KN-760.
+export const ROW_COLOURS = ['new', 'applied', 'interview', 'rejected', 'offer', 'custom-1', 'custom-2', 'custom-3', 'custom-4'] as const satisfies readonly StatusToken[]
 
 // Each swatch is named for its colour, since a colour is what it offers and a
 // status name would repeat the board. The Documentation frame 376:30 names the
@@ -112,7 +121,7 @@ const Swatch = ({ token, selected }: { token: StatusToken; selected: boolean }) 
 // arrow keys that move and select, and the checked colour announced; its left
 // and right arrows are the row's own, so they move the way they point in
 // every browser, KN-301.
-export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
+export const ColorPicker = ({ value, onChange, fullWidth = false }: ColorPickerProps) => {
   const { i18n } = useLingui()
   const titleId = useId()
   const helperId = useId()
@@ -120,7 +129,7 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
   return (
     <Box
       sx={(theme) => ({
-        width: WIDTH,
+        width: fullWidth ? '100%' : WIDTH,
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
@@ -172,7 +181,7 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
         // row in the panel's 208, four to the second.
         sx={{ flexWrap: 'wrap', gap: `${spacing.xs}px` }}
       >
-        {COLOURS.map((token) => (
+        {(fullWidth ? ROW_COLOURS : COLOURS).map((token) => (
           <Radio
             key={token}
             value={token}
@@ -192,15 +201,16 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
           />
         ))}
       </RadioGroup>
-      {/* 12 at 400 with the file's AUTO line height, the font's own, which is
-          CSS's normal: the label role's size with the body's weight. */}
+      {/* 12 at 400 on the file's automatic 19, which CSS's normal line for
+          the web font drew a pixel short, KN-760. */}
       <Box
         component="span"
         id={helperId}
         sx={(theme) => ({
-          fontSize: `${typeScale.label.size}px`,
-          lineHeight: 'normal',
-          fontWeight: typeScale.body.weight,
+          fontSize: `${helper.size}px`,
+          lineHeight: `${helper.lineHeight}px`,
+          fontWeight: helper.weight,
+          letterSpacing: `${helper.letterSpacing}px`,
           color: theme.karnama.semantic['text/secondary'],
         })}
       >

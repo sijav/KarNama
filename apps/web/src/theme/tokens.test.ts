@@ -155,6 +155,8 @@ describe('the token set agrees with DESIGN.md', () => {
       historyTitle: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
       sortCaption: { size: 11, lineHeight: 17, weight: 400, letterSpacing: 0 },
       sortMenuLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+      stageSuggestions: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+      colorPickerHelper: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
     })
     expect(design).toMatch(/`166:68`[^\n]*12 on 19/)
     expect(design).toMatch(/`961:98854`[^.]*12 on 19/)
@@ -173,6 +175,8 @@ describe('the token set agrees with DESIGN.md', () => {
     expect(design).toMatch(/`636:6417`[^.]*12 on 19[^.]*12 on 19/)
     expect(design).toMatch(/`749:32`[^.]*12 on 19[^.]*13 on 20/)
     expect(design).toMatch(/`961:97159`[^.]*11 on 17[^.]*12 on 19/)
+    expect(design).toMatch(/`919:2804`[^.]*12 on 19/)
+    expect(design).toMatch(/`257:17`[^.]*12 on 19 at Regular/)
   })
 
   it('has nine statuses, five default and four reserved', () => {

@@ -18,7 +18,9 @@
 
 ### variant
 
-`primary` که پیش‌فرض است، `secondary`، `text`، `destructive` یا `ghost`.
+`primary` که پیش‌فرض است، `secondary`، `text`، `destructive-text`، `destructive`
+یا `ghost`. `destructive-text` همان سبک Text به رنگ قرمز است، مثل حذف در
+پنجرهٔ وضعیت.
 
 ### size
 
