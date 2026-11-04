@@ -23,9 +23,8 @@ first with their stories, then screens; match the design exactly.**
 redesign, has 52 open and 64 done; OKR-4, the backend, follows; then OKR-1 and
 OKR-2. Within the design every component card is `critical`, ahead of the
 record model (KN-731 to KN-741) and the screens (KN-805 to KN-828); KN-829 reads
-the older cards against the redesign last. **`todo next` picks KN-757, the
-card's calendar popover `774:16705`, on KN-754's calendar and KN-755's time
-list.**
+the older cards against the redesign last. **`todo next` picks KN-771, the
+relationship label picker `1086:3004`.**
 
 **Closed today, among others**: KN-775 the person picker, KN-789 the Change
 Status modal, KN-796 the Stats route, KN-848, KN-850 with KN-851 a phone's
@@ -35,7 +34,9 @@ header, KN-783 Tab Bar v2, KN-745 the redesigned card `793:1820`
 with its day and arrows (`shared/date-picker`, c3cf9dd): Solar Hijri in
 Persian, Gregorian in English, Saturday first, Friday `red/500`; and KN-756
 the form's date dropdown `774:16896` (d0a7d79), on which the calendar now fills
-its container and follows the chosen day. KN-847 made the Pages build green; every
+its container and follows the chosen day; and KN-757 the calendar popover
+`774:16705` (1e3773e), sharing the dropdown's shortcuts and footer in
+`date-picker/parts.tsx`, with a time field over the time list. KN-847 made the Pages build green; every
 push since is green.
 
 **Pieces other cards build on**: `shared/popover`, `shared/date-picker`'s
@@ -86,8 +87,8 @@ Render's WEB_ORIGIN and Cloudflare's Always Use HTTPS.
 `agent/scripts/roast-sonnet.py`, which passes `--remote-control`, one session
 per kind. Each closed card is roasted in the background to `.claude/roasts/`;
 **none is judged until every to-do is done**. Every closed card through KN-747
-has its record, KN-754's too, and KN-756's was running at this writing; the
-scratchpad's `roast-756.py` shows the arguments.
+has its record, through KN-756, and KN-757's was running at this writing; the
+scratchpad's `roast-757.py` shows the arguments.
 
 ## What fails, and which failures are known
 
