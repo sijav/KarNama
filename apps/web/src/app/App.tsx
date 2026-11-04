@@ -193,12 +193,10 @@ const Shell = () => {
         // current destination, so a mistyped address still gets fixed by
         // pressing the page it is nearest, as it did before.
         onNavigate={(destination) => {
-          // The add flow is a MODAL over the board, DESIGN.md line 791, so it
-          // keeps the search the board is showing, KN-697: a reader who searches,
-          // opens it and cancels must not land on a board they never searched.
-          // Every other destination is a different page and drops the query.
-          const to = destination === 'add' ? `${PATH.add}${search}` : PATH[destination]
-          if (pathname !== PATH[destination]) void navigate(to)
+          // Every destination is a different page and drops the query. Adding is
+          // none of them since KN-783: the board's own header opens the flow over
+          // it, which keeps the search the board is showing, KN-697.
+          if (pathname !== PATH[destination]) void navigate(PATH[destination])
         }}
         userName={session.name}
         userPhone={session.phone}

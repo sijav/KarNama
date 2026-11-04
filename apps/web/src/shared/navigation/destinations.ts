@@ -13,20 +13,13 @@ interface Entry {
   icon: IconName
 }
 
-// The sidebar's three, 185:11 as the original draws it: the board, the Stats
-// page and the network page, KN-796. Adding left it for the board's own button.
+// The three the sidebar and the tab bar draw, as the original's 185:11 and Tab
+// Bar v2, 1273:103863, draw them: the board, the Stats page and the network page,
+// KN-796 and KN-783. Adding left both for the board's own header button, KN-850,
+// and `/add` keeps its address without a place in either.
 export const DESTINATIONS: readonly Entry[] = [
   { id: 'jobs', icon: 'file' },
   { id: 'stats', icon: 'chart' },
-  { id: 'network', icon: 'user' },
-]
-
-// The tab bar's three, 185:19: the board, adding and the network page. A phone's
-// board has no add button of its own, so adding stays here until Tab Bar v2,
-// KN-783, draws the sidebar's three and moves adding into the page header.
-export const TAB_DESTINATIONS: readonly Entry[] = [
-  { id: 'jobs', icon: 'file' },
-  { id: 'add', icon: 'plus' },
   { id: 'network', icon: 'user' },
 ]
 

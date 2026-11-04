@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DESTINATION_IDS, DESTINATIONS, TAB_DESTINATIONS } from '../shared/navigation'
+import { DESTINATION_IDS, DESTINATIONS } from '../shared/navigation'
 import { pathForHash, searchStep, siteBase } from './routes'
 
 /**
@@ -33,10 +33,9 @@ describe('the address and the destination', () => {
   })
 
   it('knows the pages the navigation draws, so the build writes one for each', () => {
-    // The sidebar's three and the tab bar's three are the four pages between
-    // them, until the tab bar draws the sidebar's, KN-783.
-    const drawn = new Set([...DESTINATIONS, ...TAB_DESTINATIONS].map((destination) => destination.id))
-    expect([...drawn].sort()).toEqual([...DESTINATION_IDS].sort())
+    // The navigation draws every page but adding, which opens over the board from
+    // its header and keeps an address of its own, KN-783.
+    expect(DESTINATIONS.map((destination) => destination.id)).toEqual(DESTINATION_IDS.filter((id) => id !== 'add'))
   })
 })
 

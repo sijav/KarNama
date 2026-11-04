@@ -200,22 +200,12 @@ const MOVED: keyof WindowEventMap = 'popstate'
 export const Navigating: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
-    // On a phone, whose tab bar still carries adding: the sidebar draws the Stats
-    // page in its place since KN-796, until Tab Bar v2 moves adding into the
-    // page header, KN-783. The viewport is the runner's to set, so this runs as a
-    // test only.
-    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
-    const { page: runner } = await import('vitest/browser')
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
     const base = siteBase(import.meta.env.BASE_URL, window.location.href)
-    // The frame's own address, its path, query and hash, put back whole after,
-    // and its size.
+    // The frame's own address, its path, query and hash, put back whole after.
     const before = window.location.href
-    const size = { width: window.innerWidth, height: window.innerHeight }
     try {
-      await runner.viewport(PHONE.width, PHONE.height)
-      await waitFor(() => expect(canvasElement.querySelector('aside')).toBeNull())
       // Going to another page writes the address, a path with no hash.
       await userEvent.click(canvas.getByRole('button', { name: 'شبکه من' }))
       await waitFor(async () => {
@@ -232,23 +222,10 @@ export const Navigating: Story = {
       await userEvent.click(canvas.getByRole('button', { name: 'شبکه من' }))
       await expect(window.history.length).toBe(entries)
 
-      // Pressing the add destination opens the flow over the board and writes its
-      // address. This is the shell's OWN path into it, where the block below is an
-      // address arriving from somewhere else; the shell carries whatever the board
-      // is searching into it and back out again, KN-697.
-      await userEvent.click(canvas.getByRole('button', { name: 'افزودن فرصت شغلی' }))
-      const pressed = await body.findByRole('dialog')
-      await expect(window.location.pathname).toBe(`${base}add`)
-      await userEvent.click(within(pressed).getByRole('button', { name: 'انصراف' }))
-      await waitFor(async () => {
-        await expect(body.queryByRole('dialog')).toBeNull()
-      })
-      await expect(window.location.pathname).toBe(`${base}jobs`)
-
-      // And an address the history moves to by anything else is read back into
-      // the page: the add destination opens the add flow over the board, and
-      // closing it puts the address back on the board rather than leaving it
-      // asking for a flow that is no longer open, KN-044.
+      // An address the history moves to is read back into the page: `/add`, which
+      // no navigation draws since KN-783 but the flow keeps, opens it over the
+      // board, and closing it puts the address back on the board rather than
+      // leaving it asking for a flow that is no longer open, KN-044.
       const page: Destination = 'add'
       window.history.pushState(null, '', `${base}${page}`)
       window.dispatchEvent(new PopStateEvent(MOVED))
@@ -264,7 +241,6 @@ export const Navigating: Story = {
       })
       await expect([window.location.pathname, window.location.hash]).toEqual([`${base}jobs`, ''])
     } finally {
-      await runner.viewport(size.width, size.height)
       window.history.replaceState(null, '', before)
     }
   },
@@ -353,29 +329,21 @@ export const BackFromAConfirmation: Story = {
 export const OpeningTheAddFlowKeepsFocus: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
-    // From a phone's tab bar, which still carries adding, as Navigating does,
-    // KN-796.
-    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
-    const { page } = await import('vitest/browser')
-    const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
     const base = siteBase(import.meta.env.BASE_URL, window.location.href)
     const before = window.location.href
-    const size = { width: window.innerWidth, height: window.innerHeight }
     const main = canvasElement.ownerDocument.querySelector('main')
     if (!(main instanceof HTMLElement)) throw new Error('the shell draws no page region')
     try {
-      await page.viewport(PHONE.width, PHONE.height)
-      await waitFor(() => expect(canvasElement.querySelector('aside')).toBeNull())
-      // Scoped to the navigation landmark rather than asked for by name alone:
-      // the board draws «افزودن فرصت شغلی» twice more, in its Page Header and in
-      // its empty state, so the bare name matches three controls here.
-      // `Navigating` above gets away with the bare query only because it has
-      // already left the board by the time it asks.
-      const workspace = canvas.getByRole('navigation', { name: 'فضای کار' })
-      await userEvent.click(within(workspace).getByRole('button', { name: 'افزودن فرصت شغلی' }))
+      // The board's own add in its Page Header, the flow's one way in since no
+      // navigation draws adding, KN-783. Scoped to the header band, since the
+      // empty state draws «افزودن فرصت شغلی» too.
+      const header = canvasElement.querySelector('main header')
+      if (!(header instanceof HTMLElement)) throw new Error('the board has no header band')
+      await userEvent.click(within(header).getByRole('button', { name: 'افزودن فرصت شغلی' }))
       const adding = await body.findByRole('dialog')
-      await expect(window.location.pathname).toBe(`${base}add`)
+      // It opens over the board without leaving it, so the address is not the flow's.
+      await expect(window.location.pathname).not.toBe(`${base}add`)
       // The dialog has focus and the page region does not: no screen changed.
       await expect(main).not.toHaveFocus()
       await expect(adding.contains(canvasElement.ownerDocument.activeElement)).toBe(true)
@@ -386,7 +354,6 @@ export const OpeningTheAddFlowKeepsFocus: Story = {
       // And closing it is not a change of screen either.
       await expect(main).not.toHaveFocus()
     } finally {
-      await page.viewport(size.width, size.height)
       window.history.replaceState(null, '', before)
     }
   },

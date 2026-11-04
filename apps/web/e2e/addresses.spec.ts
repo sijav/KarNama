@@ -46,7 +46,7 @@ test('each page opens at its path, and again after a reload', async ({ page }) =
   await expect(heading(page)).toContainText(JOBS)
 })
 
-test('Back and Forward move between the pages the navigation opened', async ({ page }, testInfo) => {
+test('Back and Forward move between the pages the navigation opened', async ({ page }) => {
   await page.goto('/jobs')
   await navigation(page).getByRole('button', { name: NETWORK, exact: true }).click()
   await expect(page).toHaveURL(/\/network$/)
@@ -60,34 +60,19 @@ test('Back and Forward move between the pages the navigation opened', async ({ p
   await expect(page).toHaveURL(/\/network$/)
   await expect(heading(page)).toContainText(NETWORK)
 
-  // The sidebar draws the Stats page where the tab bar draws adding, KN-796,
-  // until Tab Bar v2 moves adding into the page header, KN-783.
-  if (testInfo.project.name === 'desktop') {
-    await navigation(page).getByRole('button', { name: STATS, exact: true }).click()
-    await expect(page).toHaveURL(/\/stats$/)
-    await expect(heading(page)).toContainText(STATS)
-    await page.goBack()
-    await expect(page).toHaveURL(/\/network$/)
-    await expect(heading(page)).toContainText(NETWORK)
-    await page.goForward()
-    await expect(page).toHaveURL(/\/stats$/)
-    await expect(heading(page)).toContainText(STATS)
-    return
-  }
-
-  // The add flow opens over the board, and Back closes it where it was opened.
-  await navigation(page).getByRole('button', { name: ADD, exact: true }).click()
-  await expect(page).toHaveURL(/\/add$/)
-  await expect(page.getByRole('dialog')).toBeVisible()
+  // The Stats page, which the sidebar and the tab bar both draw since KN-796
+  // and KN-783, where adding was.
+  await navigation(page).getByRole('button', { name: STATS, exact: true }).click()
+  await expect(page).toHaveURL(/\/stats$/)
+  await expect(heading(page)).toContainText(STATS)
 
   await page.goBack()
   await expect(page).toHaveURL(/\/network$/)
-  await expect(page.getByRole('dialog')).toHaveCount(0)
   await expect(heading(page)).toContainText(NETWORK)
 
   await page.goForward()
-  await expect(page).toHaveURL(/\/add$/)
-  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page).toHaveURL(/\/stats$/)
+  await expect(heading(page)).toContainText(STATS)
 })
 
 test('an address from when the page was in the hash lands on its path, its query kept', async ({ page }) => {
@@ -96,32 +81,23 @@ test('an address from when the page was in the hash lands on its path, its query
   await expect(heading(page)).toContainText(NETWORK)
 })
 
-test('each destination the navigation opens writes its path and no hash', async ({ page }, testInfo) => {
+test('each destination the navigation opens writes its path and no hash', async ({ page }) => {
   await page.goto('/jobs')
   const address = () => {
     const { pathname, hash } = new URL(page.url())
     return [pathname, hash]
   }
-  // The sidebar's three, KN-796, and the tab bar's, whose add flow comes last,
-  // since its dialog takes the navigation out of reach.
-  const phone = testInfo.project.name === 'mobile'
-  const opened = phone
-    ? ([
-        [NETWORK, '/network'],
-        [JOBS, '/jobs'],
-        [ADD, '/add'],
-      ] as const)
-    : ([
-        [NETWORK, '/network'],
-        [STATS, '/stats'],
-        [JOBS, '/jobs'],
-      ] as const)
+  // The three the sidebar and the tab bar both draw, KN-796 and KN-783.
+  const opened = [
+    [NETWORK, '/network'],
+    [STATS, '/stats'],
+    [JOBS, '/jobs'],
+  ] as const
   for (const [name, path] of opened) {
     await navigation(page).getByRole('button', { name, exact: true }).click()
     await expect.poll(address).toEqual([path, ''])
   }
-  if (phone) await expect(page.getByRole('dialog')).toBeVisible()
-  else await expect(heading(page)).toContainText(JOBS)
+  await expect(heading(page)).toContainText(JOBS)
 })
 
 /**
@@ -174,19 +150,19 @@ test('a search adds ONE history entry however long it is refined, and Back leave
   await expect(cardFor(page, SECOND)).toBeVisible()
 })
 
-test('the add flow keeps the search the board is showing, and another page drops it', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name === 'desktop', "the sidebar draws no add since KN-796; the tab bar's is the shell's path into the flow")
+test('the add flow keeps the search the board is showing, and another page drops it', async ({ page }) => {
   await prepareBoard(page, [FIRST, SECOND])
   const searched = `/jobs?${QUERY}=${encodeURIComponent(SECOND)}`
   await page.goto(searched)
   await expect(cardFor(page, FIRST)).toHaveCount(0)
 
   // The add flow is a MODAL over the board, DESIGN.md line 791, and the board is
-  // visible behind it, so it carries the search: cancelling must not land the
-  // reader on a board they never searched.
-  await navigation(page).getByRole('button', { name: ADD, exact: true }).click()
-  await expect(page).toHaveURL(new RegExp(`/add\\?${QUERY}=`))
+  // visible behind it, so it keeps the search: cancelling must not land the
+  // reader on a board they never searched. It opens from the board's own header
+  // since no navigation draws adding, KN-783, and leaves the address as it is.
+  await page.locator('main header').getByRole('button', { name: ADD, exact: true }).click()
   await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page).toHaveURL(new RegExp(`/jobs\\?${QUERY}=`))
   await page.getByRole('dialog').getByRole('button', { name: CANCEL }).click()
   await expect(page.getByRole('dialog')).toHaveCount(0)
   await expect(page).toHaveURL(new RegExp(`/jobs\\?${QUERY}=`))

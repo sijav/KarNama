@@ -1648,12 +1648,15 @@ the shell's own controls, the owner's instruction of KN-478 over the file's
 «خروج» Nav Item, the first centred on the items' icon column. Before
 anyone signs in, the user and «خروج» are left out.
 
-The tab bar, `185:19`, is the screen's width and 72 tall, `bg/surface` with one
-pixel of `border/default` along the top: the copy's three destinations, the
-board, «افزودن فرصت شغلی» and the network page, in equal thirds, since a phone's
-board has no add button of its own until Tab Bar v2, `1273:103863`, draws the
-sidebar's three and moves adding into the page header, KN-783; the board at the inline start, each a 24 icon 4 above its label at 12
-and Medium, `text/secondary`, or `text/brand` for the current page. Nothing else
+The tab bar, Nav / Tab Bar v2, `1273:103863`, read on 2026-11-04, keeps the
+copy's `185:19` measures: the screen's width and 72 tall, `bg/surface` with one
+pixel of `border/default` along the top, 8 above and below. It draws the
+sidebar's three destinations, «فرصت‌های شغلی من» with `file`, «آمار من» with
+`chart` and «شبکه من» with `user`, in equal thirds, one variant for each as the
+current, where the copy put «افزودن فرصت شغلی» second; adding is the board's
+header button since KN-850, KN-783. The board is at the inline start, each a 24
+icon 4 above its label at 12 and Medium, `text/secondary`, or `text/brand` for
+the current page. Nothing else
 joins it. Below MUI's md, 900, it replaces the sidebar, pinned to the foot of
 the screen, and the page keeps its 72 clear; the file says it gives way to the
 Bulk Action Bar while selecting, which is the board's to do. KN-027.
@@ -1879,7 +1882,7 @@ of the contract.
 | Tooltip             | `410:469` | FIXED 260 wide, text fills the rest; no variable bound to the width, so it is a component constant |
 | Nav Item / Side     | `184:14`  | Default, Active, Hover                                                                          |
 | Nav / Sidebar       | `185:11`  | desktop, on the RIGHT                                                                           |
-| Nav / Tab Bar       | `185:19`  | mobile, at the bottom                                                                           |
+| Nav / Tab Bar         | `185:19`     | mobile, at the bottom; v2, `1273:103863`, the board, the stats and the network                                    |
 | Checkbox            | `204:11`  | Unchecked, Checked, Indeterminate, Hover, Disabled, Checked Hover                                              |
 | Code Input          | `407:6981`| the Code Row of the Auth Code frames, five boxes over one field; no library component |
 | Tab Item            | `204:20`  | Default, Active, Hover                                                                          |
@@ -1954,9 +1957,10 @@ specific, and the owner confirmed it: the destinations are
 standalone contacts page drawn in full at page-map row 5. The old labels are
 also superseded, see the terminology rule below. The redesign of 2026-11-03
 puts **آمار من**, the Stats page at `/stats`, in the sidebar where adding was,
-and adding opens from the board's own header: on a desktop since KN-796, on a
-phone once Tab Bar v2 does, KN-783. `/add` keeps its address and still opens
-the flow over the board.
+and adding opens from the board's own header, on a desktop since KN-796 and
+on a phone since KN-850 and KN-783, when Tab Bar v2 put the Stats page in the
+bottom bar too. `/add` keeps its address and still opens the flow over the
+board.
 
 **The main screen is a kanban board, not a list.** Columns are statuses, cards
 drag between them, and the desktop board scrolls horizontally. Read from
