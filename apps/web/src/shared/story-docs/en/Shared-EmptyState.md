@@ -25,6 +25,11 @@ The button's label, already in the reader's language.
 
 Called when the button is pressed. On the job list it starts the add flow.
 
+### picture
+
+`jobs` or `network`: the board's or the network's own picture, drawn in the
+mark's place, as their empty states have.
+
 ## Stories
 
 ### JobList
@@ -44,3 +49,20 @@ the design draws it.
 ### InEnglish
 
 The empty job list in English.
+
+### Jobs
+
+The board's own empty state, with its picture of stacked cards in the mark's
+place.
+
+### Network
+
+The network page's own, with its copy and its picture of two people's cards.
+
+### NetworkInEnglish
+
+The network's in English; the picture is a drawing and is not mirrored.
+
+### JobsInTheDark
+
+The board's in the dark scheme, the picture in the theme's dark colours.

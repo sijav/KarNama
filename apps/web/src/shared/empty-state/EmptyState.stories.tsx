@@ -4,6 +4,7 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import type { Locale } from '../../i18n'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
+import { darkSemantic } from '../../theme/darkMode'
 import { semantic } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { EmptyState, type EmptyStateProps } from './EmptyState'
@@ -17,7 +18,7 @@ const CONTROLLED: (keyof Copy)[] = ['title', 'body', 'actionLabel']
 // in the language a story pins, so the args hold what the canvas draws and the
 // Controls show it: the empty job list, 243:64, the contacts, 305:2266, and a
 // search that finds nothing, 305:1684, which keeps the add button.
-const specimens = (locale: Locale): Record<'jobs' | 'contacts' | 'search', Copy> => {
+const specimens = (locale: Locale): Record<'jobs' | 'contacts' | 'search' | 'network', Copy> => {
   const i18n = setupI18n({ locale, messages: { [locale]: locale === 'fa-IR' ? fa : en } })
   const add = i18n._('Add job opportunity')
   return {
@@ -35,6 +36,12 @@ const specimens = (locale: Locale): Record<'jobs' | 'contacts' | 'search', Copy>
       title: i18n._('No results found'),
       body: i18n._('Nothing matches this search. Try other words or remove the filters.'),
       actionLabel: add,
+    },
+    // Empty State / Network's own copy, 1083:55307, KN-769.
+    network: {
+      title: i18n._('Nobody is in your network yet'),
+      body: i18n._('Add the people you deal with, or know, on the way to finding a job.'),
+      actionLabel: i18n._('Add to network'),
     },
   }
 }
@@ -71,7 +78,7 @@ const partsOf = (canvasElement: HTMLElement) => {
   const title = within(canvasElement).getByRole('heading', { level: 2 })
   const root = title.parentElement
   const [mark, , body] = root ? [...root.children] : []
-  if (!root || !(mark instanceof HTMLElement) || !(body instanceof HTMLElement))
+  if (!root || !(mark instanceof HTMLElement || mark instanceof SVGElement) || !(body instanceof HTMLElement))
     throw new Error('the empty state is not the mark, the title and the body in a column')
   return { root, mark, title, body, action: within(canvasElement).getByRole('button') }
 }
@@ -88,14 +95,22 @@ const drawsTheFrame = async (canvasElement: HTMLElement, args: EmptyStateProps, 
   if (!box || !markBox || !titleBox || !bodyBox || !actionBox) throw new Error('a part has no box')
   const style = getComputedStyle(root)
   await expect([style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft].map(px)).toEqual([32, 32, 32, 32])
-  await expect([markBox.width, markBox.height]).toEqual([64, 64])
-  await expect(px(getComputedStyle(mark).borderTopLeftRadius)).toBeGreaterThanOrEqual(32)
+  // The round mark of 64, or a picture of 160 by 120 in its place, KN-769.
+  if (args.picture === undefined) {
+    await expect([markBox.width, markBox.height]).toEqual([64, 64])
+    await expect(px(getComputedStyle(mark).borderTopLeftRadius)).toBeGreaterThanOrEqual(32)
+  } else {
+    await expect([markBox.width, markBox.height]).toEqual([160, 120])
+  }
   const titleStyle = getComputedStyle(title)
-  await expect([px(titleStyle.fontSize), Number(titleStyle.fontWeight), px(titleStyle.lineHeight)]).toEqual([16, 600, 24])
+  // 16 at SemiBold on the file's automatic 25, KN-769.
+  await expect([px(titleStyle.fontSize), Number(titleStyle.fontWeight), px(titleStyle.lineHeight)]).toEqual([16, 600, 25])
   const bodyStyle = getComputedStyle(body)
   await expect([bodyBox.width, px(bodyStyle.fontSize), Number(bodyStyle.fontWeight), px(bodyStyle.lineHeight)]).toEqual([220, 14, 400, 22])
-  if (colours) {
+  if (colours && mark instanceof HTMLElement) {
     await expect(getComputedStyle(mark).backgroundColor).toBe(computedColour(mark, semantic['bg/surface-secondary']))
+  }
+  if (colours) {
     await expect(titleStyle.color).toBe(computedColour(title, semantic['text/primary']))
     await expect(bodyStyle.color).toBe(computedColour(body, semantic['text/secondary']))
   }
@@ -142,5 +157,102 @@ export const InEnglish: Story = {
   play: async ({ args, canvasElement }) => {
     await drawsTheFrame(canvasElement, args, { colours: true })
     await expect(getComputedStyle(partsOf(canvasElement).root).direction).toBe('ltr')
+  },
+}
+
+type Palette = Record<keyof typeof semantic, string>
+
+// A picture's colours, read off its parts in the order 894:79231 and 1083:55308
+// stack them: the disc behind, then the cards, and in front the brand disc and
+// its plus, each in the theme's colour for it.
+const paintsThePicture = async (canvasElement: HTMLElement, palette: Palette, expected: readonly (keyof Palette)[]) => {
+  const { mark } = partsOf(canvasElement)
+  const shapes = [...mark.querySelectorAll('path, rect, circle')]
+  const painted = shapes.map((shape) => shape.getAttribute('fill') ?? shape.getAttribute('stroke'))
+  await expect(painted).toEqual(expected.map((role) => palette[role]))
+}
+
+// The board's picture: the disc, three cards tilted against each other, the
+// front one's brand stripe, its square and four lines, and the plus.
+const JOBS_PICTURE: readonly (keyof Palette)[] = [
+  'picture/disc',
+  'picture/blue',
+  'picture/pale',
+  'bg/surface',
+  'bg/brand/default',
+  'picture/pale',
+  'picture/edge',
+  'picture/line',
+  'picture/line',
+  'picture/line',
+  'bg/brand/default',
+  'text/on-accent',
+]
+
+// The network's: the disc, two people's cards, each with a face and two lines,
+// the front one with its stripe, and the plus.
+const NETWORK_PICTURE: readonly (keyof Palette)[] = [
+  'picture/disc',
+  'picture/pale',
+  'picture/blue',
+  'picture/edge',
+  'picture/line',
+  'bg/surface',
+  'picture/blue',
+  'picture/edge',
+  'picture/line',
+  'bg/brand/default',
+  'bg/brand/default',
+  'text/on-accent',
+]
+
+export const Jobs: Story = {
+  // Empty State / Jobs, 894:79222: the board's own, 284 by 375, its picture of
+  // stacked cards in the mark's place.
+  args: { ...FA.jobs, picture: 'jobs' },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args, canvasElement }) => {
+    await drawsTheFrame(canvasElement, args, { colours: true })
+    await paintsThePicture(canvasElement, semantic, JOBS_PICTURE)
+    const box = partsOf(canvasElement).root.getBoundingClientRect()
+    await expect([Math.round(box.width), Math.round(box.height)]).toEqual([284, 375])
+  },
+}
+
+export const Network: Story = {
+  // Empty State / Network, 1083:55307: the network page's, its own copy and its
+  // picture of two people's cards, the front one raised by its shadow.
+  args: { ...FA.network, picture: 'network' },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args, canvasElement }) => {
+    await drawsTheFrame(canvasElement, args, { colours: true })
+    await paintsThePicture(canvasElement, semantic, NETWORK_PICTURE)
+    const { mark } = partsOf(canvasElement)
+    const lift = mark.querySelector('feDropShadow')
+    if (!lift) throw new Error('the front card has no shadow')
+    await expect([lift.getAttribute('dx'), lift.getAttribute('dy'), lift.getAttribute('stdDeviation')]).toEqual(['0', '2', '3'])
+    const box = partsOf(canvasElement).root.getBoundingClientRect()
+    await expect([Math.round(box.width), Math.round(box.height)]).toEqual([284, 375])
+  },
+}
+
+export const NetworkInEnglish: Story = {
+  // The network's in English: the picture is a drawing and is not mirrored.
+  args: { ...EN.network, picture: 'network' },
+  globals: { locale: 'en-US', colorScheme: 'light' },
+  play: async ({ args, canvasElement }) => {
+    await drawsTheFrame(canvasElement, args, { colours: true })
+    await paintsThePicture(canvasElement, semantic, NETWORK_PICTURE)
+  },
+}
+
+export const JobsInTheDark: Story = {
+  // The board's in the dark scheme: the picture's blues as dark tints of their
+  // hue, its lines lifted so they still show on the dark card.
+  args: { ...FA.jobs, picture: 'jobs' },
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ args, canvasElement }) => {
+    await drawsTheFrame(canvasElement, args, { colours: false })
+    await paintsThePicture(canvasElement, darkSemantic, JOBS_PICTURE)
   },
 }

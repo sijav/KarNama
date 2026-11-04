@@ -357,4 +357,7 @@ export const messages: Record<string, string> = {
   '.': '.',
   'Move to': 'بردن به',
   'Keep': 'نگه داشتن',
+  'Nobody is in your network yet': 'هنوز کسی در شبکهٔ شما نیست',
+  'Add the people you deal with, or know, on the way to finding a job.': 'آدم‌هایی که توی مسیر پیدا کردن کار باهاشون سروکار دارید یا می‌شناسیدشون رو اینجا اضافه کنید.',
+  'Add to network': 'افزودن به شبکه',
 }

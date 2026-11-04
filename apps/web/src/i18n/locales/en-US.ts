@@ -357,4 +357,7 @@ export const messages: Record<string, string> = {
   '.': '.',
   'Move to': 'Move to',
   'Keep': 'Keep',
+  'Nobody is in your network yet': 'Nobody is in your network yet',
+  'Add the people you deal with, or know, on the way to finding a job.': 'Add the people you deal with, or know, on the way to finding a job.',
+  'Add to network': 'Add to network',
 }

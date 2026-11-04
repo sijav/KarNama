@@ -86,6 +86,7 @@ describe('the token set agrees with DESIGN.md', () => {
       'authCard',
       'popover',
       'toast',
+      'illustrationCard',
     ])
     // The shadow numbers, in the order the design stacks them.
     expect(elevation.card).toBe('0 1px 3px 0 #0000000F, 0 1px 2px 0 #0000000A')
@@ -108,6 +109,9 @@ describe('the token set agrees with DESIGN.md', () => {
     // Read from the toast 717:12416's effects with use_figma: text/primary's
     // #111827 at 20 percent, 0x33, 8 below and blurred 24.
     expect(elevation.toast).toBe('0 8px 24px 0 #11182733')
+    // Read from the network empty state's front card, 1083:55329, with use_figma:
+    // #121726 at 6 percent, 0x0F, 2 below and blurred 6.
+    expect(elevation.illustrationCard).toBe('0 2px 6px 0 #1217260F')
     // Still exactly two STYLES: the tooltip's, the bar's and the menu's shadows
     // are bound to none, and the document has to say so where the table is.
     expect(design).toContain('exactly two effect styles')
@@ -119,6 +123,7 @@ describe('the token set agrees with DESIGN.md', () => {
     expect(design).toMatch(/`844:85811`[^\n]*#12172614[^\n]*0 4[^\n]*blur 12[^\n]*spread 0/)
     expect(design).toMatch(/`717:12416`[^\n]*#11182733[^\n]*0 8[^\n]*blur 24[^\n]*spread 0/)
     expect(design).toMatch(/`407:6952`[^\n]*#0000000F[^\n]*0 4[^\n]*blur 16[^\n]*spread 0/)
+    expect(design).toMatch(/`1083:55329`[^\n]*#1217260F[^\n]*0 2[^\n]*blur 6[^\n]*spread 0/)
   })
 
   it('has five type roles, and Body/Small is not one of them', () => {
@@ -159,6 +164,7 @@ describe('the token set agrees with DESIGN.md', () => {
       colorPickerHelper: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
       deleteNote: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
       deleteHint: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
+      emptyTitle: { size: 16, lineHeight: 25, weight: 600, letterSpacing: 0 },
     })
     expect(design).toMatch(/`166:68`[^\n]*12 on 19/)
     expect(design).toMatch(/`961:98854`[^.]*12 on 19/)
@@ -180,6 +186,7 @@ describe('the token set agrees with DESIGN.md', () => {
     expect(design).toMatch(/`919:2804`[^.]*12 on 19/)
     expect(design).toMatch(/`257:17`[^.]*12 on 19 at Regular/)
     expect(design).toMatch(/`865:33825`[^.]*12 on 19[^.]*13 on 20/)
+    expect(design).toMatch(/`894:79222`[^.]*16 on 25/)
   })
 
   it('has nine statuses, five default and four reserved', () => {

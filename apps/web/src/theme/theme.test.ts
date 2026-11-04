@@ -43,6 +43,7 @@ describe('the theme is generated from the tokens', () => {
       'authCard',
       'popover',
       'toast',
+      'illustrationCard',
     ])
   })
 })

@@ -1,6 +1,7 @@
 import { Box } from '@mui/material'
-import { spacing, type as typeScale } from '../../theme/tokens'
+import { spacing, type as typeScale, unstyledText } from '../../theme/tokens'
 import { Button } from '../button'
+import { EmptyPicture, type EmptyPictureName } from './EmptyPicture'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface EmptyStateProps {
@@ -8,6 +9,7 @@ export interface EmptyStateProps {
   body: string
   actionLabel: string
   onAction: () => void
+  picture?: EmptyPictureName
 }
 
 // Node 159:80's measures that bind no variable: the round mark, 64 across, and
@@ -16,17 +18,18 @@ export interface EmptyStateProps {
 const MARK = 64
 const BODY_WIDTH = 220
 
-// The title binds no text style: 16 at SemiBold on the file's automatic line
-// height. It is composed from the roles, as the Status Chip's M is, Title's size
-// and line height with Heading/M's weight, DESIGN.md.
-const TITLE = { size: typeScale.title.size, lineHeight: typeScale.title.lineHeight, weight: typeScale['heading/m'].weight }
+// The title binds no text style: 16 at SemiBold on the file's automatic 25,
+// which the Title role's 24 drew a pixel short, KN-769.
+const TITLE = unstyledText.emptyTitle
 
 // The Empty State of node 159:80: a round mark, the title, the body and the
 // primary action that starts the list's first item, each 12 apart, with the
 // file's 8 pixel spacer frame and a second gap of 12 above the action. The
 // screens use it for the job list, the contacts and a search with no result,
-// each with its own copy, which arrives translated from the caller.
-export const EmptyState = ({ title, body, actionLabel, onAction }: EmptyStateProps) => (
+// each with its own copy, which arrives translated from the caller. Empty State
+// / Jobs, 894:79222, and Empty State / Network, 1083:55307, are the same with
+// their picture, 160 by 120, in the mark's place, KN-769.
+export const EmptyState = ({ title, body, actionLabel, onAction, picture }: EmptyStateProps) => (
   <Box
     sx={{
       display: 'flex',
@@ -40,16 +43,20 @@ export const EmptyState = ({ title, body, actionLabel, onAction }: EmptyStatePro
       textAlign: 'center',
     }}
   >
-    <Box
-      aria-hidden
-      sx={(theme) => ({
-        flexShrink: 0,
-        width: MARK,
-        height: MARK,
-        borderRadius: `${theme.karnama.radius.full}px`,
-        backgroundColor: theme.karnama.semantic['bg/surface-secondary'],
-      })}
-    />
+    {picture === undefined ? (
+      <Box
+        aria-hidden
+        sx={(theme) => ({
+          flexShrink: 0,
+          width: MARK,
+          height: MARK,
+          borderRadius: `${theme.karnama.radius.full}px`,
+          backgroundColor: theme.karnama.semantic['bg/surface-secondary'],
+        })}
+      />
+    ) : (
+      <EmptyPicture picture={picture} />
+    )}
     <Box
       component="h2"
       sx={(theme) => ({

@@ -221,7 +221,15 @@ export const deriveDarkFill = (hex: string): string => {
  * under its own text, KN-272. One list, which the palette derives and the tests
  * read, so the two cannot disagree about which tokens are fills.
  */
-export const DARK_FILLS = ['bg/brand/container', 'bg/brand/subtle', 'accent/200', 'red/100'] as const satisfies readonly (keyof typeof semantic)[]
+export const DARK_FILLS = [
+  'bg/brand/container',
+  'bg/brand/subtle',
+  'accent/200',
+  'red/100',
+  'picture/disc',
+  'picture/pale',
+  'picture/blue',
+] as const satisfies readonly (keyof typeof semantic)[]
 
 /**
  * The text read on an INVERSE surface, the toast's text/primary pill, which is
@@ -368,6 +376,14 @@ export const darkSemantic = {
   // The scrim dims whatever is under a modal, and black at half dims a dark
   // page as it does a light one, so it is the design's in both.
   'overlay/scrim': semantic['overlay/scrim'],
+  // The empty states' pictures, KN-769: their blues are fills, dark tints of
+  // their own hue, one of DARK_FILLS; their lines are drawn marks, which the
+  // foreground rule lifts to its floor so they still show on a dark card.
+  'picture/disc': deriveDarkFill(semantic['picture/disc']),
+  'picture/pale': deriveDarkFill(semantic['picture/pale']),
+  'picture/blue': deriveDarkFill(semantic['picture/blue']),
+  'picture/edge': deriveDark(semantic['picture/edge']),
+  'picture/line': deriveDark(semantic['picture/line']),
 } satisfies Record<keyof typeof semantic, string>
 
 

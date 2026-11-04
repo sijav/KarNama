@@ -54,6 +54,13 @@ export const semantic = {
   'red/100': '#fee2e2',
   'red/700': '#b91c1c',
   'overlay/scrim': '#00000080',
+  // The empty states' pictures, 894:79231 and 1083:55308, KN-769: fills the file
+  // leaves unbound, which no variable carries, named for what each paints.
+  'picture/disc': '#f1f5ff',
+  'picture/pale': '#eaf1ff',
+  'picture/blue': '#dce7fd',
+  'picture/edge': '#e3e7ee',
+  'picture/line': '#eef1f5',
 } as const
 
 /**
@@ -128,7 +135,8 @@ export const type = {
  * `919:2804`, is 12 on Figma's automatic 19 at Medium, and the Color Picker's
  * helper, `257:17`, 12 on that 19 at Regular, KN-760. The delete modal,
  * `865:33825`, sets its note 12 on 19 at Regular and its hint 13 on 20 at
- * Regular, KN-762.
+ * Regular, KN-762. The empty states, `894:79222`, set their title 16 on Figma's
+ * automatic 25 at SemiBold, which the Title role's 24 drew a pixel short, KN-769.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -157,6 +165,7 @@ export const unstyledText = {
   colorPickerHelper: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
   deleteNote: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
   deleteHint: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
+  emptyTitle: { size: 16, lineHeight: 25, weight: 600, letterSpacing: 0 },
 } as const
 
 /**
@@ -180,6 +189,7 @@ export const elevation = {
   authCard: '0 4px 16px 0 #0000000F',
   popover: '0 4px 12px 0 #12172614',
   toast: '0 8px 24px 0 #11182733',
+  illustrationCard: '0 2px 6px 0 #1217260F',
 } as const
 
 export const fontFamily = "'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif"

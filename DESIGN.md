@@ -100,6 +100,11 @@ gets added to the palette with a name, it does not get inlined.
 | `red/700`                   | `#b91c1c` |
 | `overlay/scrim`             | `#00000080` |
 | `data/bar`              | `#60a5fa`   |
+| `picture/disc`          | `#f1f5ff`   |
+| `picture/pale`          | `#eaf1ff`   |
+| `picture/blue`          | `#dce7fd`   |
+| `picture/edge`          | `#e3e7ee`   |
+| `picture/line`          | `#eef1f5`   |
 
 #### Not on the Foundations board, and where each was actually read
 
@@ -135,6 +140,11 @@ decision that made it, so it is never mistaken for a value read from the file.
 | `border/selected` | `KN-276` | `#2563eb` | a selected Filter Chip's one pixel edge: the blue of `border/focus` today, at 3 to one or more on every surface and on the selected fill in both schemes, told from the pressed edge by its width, one pixel against 1.5, KN-279 |
 | `text/brand-inverse` | `KN-764` | `#93c5fd` | the toast's action on its `text/primary` pill, the handoff's colour, which no variable carries; in dark the pill turns light and the action takes the light scheme's `text/brand`, walked to 4.5 to one against it                                |
 | `bg/brand/subtle`    | `KN-762` | `#eff4ff` | the delete modal's chosen reason and its hint, `865:33595`, a fill the file leaves unbound and no variable carries; in dark a dark tint of its own hue, under `text/primary` at 4.5 to one                                                        |
+| `picture/disc`       | `KN-769` | `#f1f5ff` | the empty states' pictures, the disc behind each picture, a fill the file leaves unbound and no variable carries                                                                                                                                  |
+| `picture/pale`       | `KN-769` | `#eaf1ff` | the empty states' pictures, the cards and the square drawn in the lighter blue, a fill the file leaves unbound and no variable carries                                                                                                            |
+| `picture/blue`       | `KN-769` | `#dce7fd` | the empty states' pictures, the card behind and the faces, in the stronger blue, a fill the file leaves unbound and no variable carries                                                                                                           |
+| `picture/edge`       | `KN-769` | `#e3e7ee` | the empty states' pictures, the cards' edges and their title lines, a fill the file leaves unbound and no variable carries                                                                                                                        |
+| `picture/line`       | `KN-769` | `#eef1f5` | the empty states' pictures, the cards' other lines, a fill the file leaves unbound and no variable carries                                                                                                                                        |
 
 ### Colour, status
 
@@ -207,9 +217,10 @@ shadows, and each value below was read from the named node with
 | no style, options menu | `408:487` | `#0000001F` `0 8` blur 24 spread -4 | none                       |
 | no style, contact hover | `463:698` | `#0000000F` `0 2` blur 8 spread 0 | none                        |
 | no style, card focus | `137:44` | `#2563EB2E` `0 0` blur 0 spread 3 | none                            |
-| no style, sign-in card  | `407:6952`  | `#0000000F` `0 4` blur 16 spread 0  | none                               |
-| no style, popovers      | `844:85811` | `#12172614` `0 4` blur 12 spread 0  | none                               |
-| no style, toast         | `717:12416` | `#11182733` `0 8` blur 24 spread 0  | none                               |
+| no style, sign-in card  | `407:6952`   | `#0000000F` `0 4` blur 16 spread 0  | none                               |
+| no style, popovers      | `844:85811`  | `#12172614` `0 4` blur 12 spread 0  | none                               |
+| no style, toast         | `717:12416`  | `#11182733` `0 8` blur 24 spread 0  | none                               |
+| no style, empty picture | `1083:55329` | `#1217260F` `0 2` blur 6 spread 0   | none                               |
 
 The third row is **not an effect style**. The tooltip at `410:469` draws its own
 shadow, 24 percent black, read from the frame's `get_design_context` because
@@ -495,15 +506,35 @@ holds. The code still draws this one for the empty job list, the network and a
 search that finds nothing until those screens are rebuilt.
 
 **The title binds no text style.** It is 16 at SemiBold on the file's automatic
-line height, 25 in Vazirmatn. It is composed from the roles, as the Status
-Chip's M is: Title's size and line height, 16 and 24, with SemiBold. So the
-state is 318 tall where the frame is 319.
+line height, 25 in Vazirmatn, `emptyTitle`, so the state is 319 tall as the
+frame is. It was composed from the Title role's 24 and drew a pixel short until
+KN-769.
 
 **The mark is all but invisible where it is used.** Every screen puts the Empty
 State on `bg/page`, `#f6f7f9`, and the mark is `#f3f4f6`, about 1.02 to one.
 It is decorative, so no contrast rule applies, and it is drawn as the file
 draws it; whether it should be `bg/surface` or carry an illustration is the
 owner's call.
+
+### The empty states' pictures
+
+**Empty State / Jobs**, `894:79222`, and **Empty State / Network**,
+`1083:55307`, read on 2026-11-04, set their title 16 on 25 at SemiBold,
+`emptyTitle`, and are the Empty State with a picture of 160 by 120 in the mark's
+place, 284 by 375: the board's stacked cards, option الف of 21 Mehr, and the
+network's two people's cards, option ب. Each is the file's exported drawing,
+`894-79231.svg` and `1083-55308.svg` beside the component, its geometry in
+`illustrations.json`, coloured from the theme: the disc behind in
+`picture/disc`, the cards in `picture/pale`, `picture/blue` and `bg/surface`,
+their edges and lines in `picture/edge` and `picture/line`, the stripes and the
+plus's disc in `bg/brand/default` and the plus in `text/on-accent`; the network's
+front card is raised by `elevation.illustrationCard`. The file leaves the five
+picture colours unbound, so they are roles of their own; in dark the blues are
+dark tints of their hue and the lines take the foreground rule's floor, so they
+still show on a dark card. A drawing has no direction, so neither is mirrored in
+English. The board's copy is the Empty State's; the network's is «هنوز کسی در
+شبکهٔ شما نیست», «آدم‌هایی که توی مسیر پیدا کردن کار باهاشون سروکار دارید یا
+می‌شناسیدشون رو اینجا اضافه کنید.» and «افزودن به شبکه». KN-769.
 
 ### The extraction loading
 
@@ -1802,6 +1833,8 @@ of the contract.
 | Stage Modal           | `919:2804`   | Add, Add Filled, Add Duplicate, Edit: a stage of the reader's own, its name, suggestions and colour               |
 | Delete Modal          | `865:33825`  | Reason none, not wanted, no answer, mistake: deleting a job opportunity, or moving it instead                     |
 | Reason Option         | `865:33595`  | Default, Hover, Selected, Selected Hover: one optional reason in the delete modal                                 |
+| Jobs Empty State      | `894:79222`  | no variants: the board's empty state, its picture of stacked cards in the mark's place                            |
+| Network Empty State   | `1083:55307` | no variants: the network page's empty state, its picture of two people's cards                                    |
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |
