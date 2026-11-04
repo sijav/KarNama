@@ -101,9 +101,9 @@ press.
 ### People
 
 The people and the files kept against one job opportunity: a person added from
-the job's own tab and opened again, and a file chosen and downloaded. Both are
-the network's records rather than the job's, so a person added here is on the
-network page too.
+the job's own tab, then unlinked from their row, which keeps them in the network,
+and a file chosen and downloaded. Both are the network's records rather than the
+job's, so a person added here is on the network page too.
 
 ### BackingOut
 
@@ -207,8 +207,9 @@ Card row.
 
 ### FocusWhenTheOpenerSurvives
 
-The other half: a confirmation backed out of leaves focus exactly where it was,
-so the fallback does not take over the ordinary case.
+The other half: a confirmation backed out of leaves focus on the control the
+delete was asked from, the modal's «…», so the fallback does not take over the
+ordinary case.
 
 ### FocusAfterDeletingInAColumn
 
@@ -220,19 +221,13 @@ of the whole board, which would read as the product jumping somewhere on its own
 
 A person kept against a job opportunity with everything the contact modal takes:
 an add backed out of keeps no one, a person added with every field keeps each, and
-edited with the role emptied, the role goes and the rest stays.
+unlinked, every field stays and only the link goes.
 
 ### PersonForAJobDeletedElsewhere
 
-Another open tab deletes a job opportunity while a person is being written on it:
+Another open tab deletes a job opportunity while a person is being added on it:
 the job modal goes with its job, the contact modal stays, and saving keeps the
-person with no job, for a person being edited and for one being added.
-
-### DeletingAPersonAsksFirst
-
-A person deleted from their edit form is asked about first, as on the network page:
-the edit closes into the confirmation, backing out keeps the person, and confirming
-deletes them from the store and from the job modal.
+person with no job.
 
 ### WithoutSigningOut
 

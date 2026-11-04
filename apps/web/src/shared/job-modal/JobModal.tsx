@@ -1,16 +1,21 @@
 import { useLingui } from '@lingui/react'
-import { Box, ButtonBase, Dialog } from '@mui/material'
+import { Box, ButtonBase, Dialog, useMediaQuery, type Theme } from '@mui/material'
 import { useId, useRef, useState, type ReactNode } from 'react'
 import { usePreferences } from '../../core/preferences'
-import { statusGroups } from '../../core/records'
-import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
+import { statusGroups, tokenOf } from '../../core/records'
+import { spacing, type as typeScale } from '../../theme/tokens'
+import { AddContact } from '../add-contact'
 import { JobArea, JobFields, JobPart, missingFields, validPostingUrl, type JobDraft } from '../add-job'
 import { Button } from '../button'
-import { ContactCard, type ContactCardContact } from '../contact-card'
+import type { ContactCardContact } from '../contact-card'
+import { HistoryRow, type HistoryRowProps } from '../history'
 import { Icon } from '../icon'
 import { IconButton } from '../icon-button'
 import { Input, type InputDirection } from '../input'
-import { DISSOLVE_MS, modalScrim } from '../modal'
+import { CardMenu } from '../menu'
+import { DISSOLVE_MS, modalScrim, UnsavedModal } from '../modal'
+import { PopoverClose } from '../popover-close'
+import { CompanyMatch, RelatedPerson, type CompanyMatchPerson, type Copied } from '../related-person'
 import type { SourceLists } from '../source-picker'
 import { StatusControl, type StatusOption } from '../status-picker'
 import { Tabs } from '../tabs'
@@ -21,10 +26,10 @@ import { fileKind, fileSize, formatDay } from './format'
 // rather than as copy.
 const LATIN: InputDirection = 'ltr'
 
-// The five tabs, in the order the owner settled: the information, then its
-// history, then the note, the related people and the files, KN-072.
-export type JobModalTab = 'info' | 'history' | 'note' | 'contacts' | 'files'
-const TABS: readonly JobModalTab[] = ['info', 'history', 'note', 'contacts', 'files']
+// The five tabs in the order 210:276 draws them: the information, the note, the
+// related people, the files, and the history last, «تاریخچه».
+export type JobModalTab = 'info' | 'note' | 'contacts' | 'files' | 'history'
+const TABS: readonly JobModalTab[] = ['info', 'note', 'contacts', 'files', 'history']
 const isTab = (value: string): value is JobModalTab => TABS.some((tab) => tab === value)
 const INFO: JobModalTab = 'info'
 
@@ -36,7 +41,7 @@ export interface JobFile {
   addedAt: string
 }
 
-// One change of status: the status's name as it was, when, and whether the
+// One change of status: the status it moved to, by id, when, and whether the
 // reader made it or the product did.
 export interface StatusChange {
   id: string
@@ -45,9 +50,22 @@ export interface StatusChange {
   automatic: boolean
 }
 
+// A person linked to the job opportunity, and the tag they carry in the
+// network, none until the records hold tags, KN-738.
 export interface JobContact {
   id: string
   contact: ContactCardContact
+  tag?: string | null
+}
+
+// An interview round as the history shows it: its title, the day it was on, and
+// what is said after the day, its time and its result. What a round holds and
+// how its words are made is the record's, KN-733.
+export interface InterviewRound {
+  id: string
+  title: string
+  at: string
+  detail: string
 }
 
 // Everything the modal shows of a job opportunity.
@@ -62,14 +80,12 @@ export interface JobRecord {
   contacts: readonly JobContact[]
   files: readonly JobFile[]
   history: readonly StatusChange[]
+  rounds?: readonly InterviewRound[]
 }
 
-// What saving hands over: the fields, the description and the note, and never
-// the status, which the header's Status Control changes at once. A Save pressed
-// before the page hands back a job with the new status would otherwise carry
-// the old one, and a page saving the whole record would write it back over the
-// change, KN-364.
-export interface JobSaved extends Omit<JobDraft, 'status'> {
+// What saving hands over: the fields with the status the header holds, which
+// the handoff records with «ذخیره», the description and the note.
+export interface JobSaved extends JobDraft {
   description: string
   note: string
 }
@@ -80,6 +96,7 @@ export interface JobModalProps {
   job: JobRecord
   statuses: readonly StatusOption[]
   sources: SourceLists
+  matches: readonly CompanyMatchPerson[]
   tab?: JobModalTab
   onStatusChange: (status: string) => void
   onAddStatus: () => void
@@ -87,30 +104,42 @@ export interface JobModalProps {
   onDelete: () => void
   onClose: () => void
   onAddContact: () => void
-  onOpenContact: (id: string) => void
-  onDeleteContact: (id: string) => void
+  onConnectContact: (id: string) => void
+  onUnlinkContact: (id: string) => void
+  onCopied?: (what: Copied) => void
   onAddFiles: (files: File[]) => void
   onDownloadFile: (id: string) => void
+  onEditHistory?: (id: string) => void
 }
 
 // Node 210:276's measures that bind no variable: 720 by 617; the posting's
 // open button a 44 square, the field's height; the file's tile 40; the note
-// 200 tall; and the file's one pixel strokes, with the keyboard's ring three
-// inside, as the Icon Button's.
+// 200 tall; the close at 20, Popover / Close's; and the file's one pixel
+// strokes, with the keyboard's ring three inside, as the Icon Button's.
 const WIDTH = 720
 const HEIGHT = 617
 const OPEN_LINK = 44
 const FILE_TILE = 40
 const NOTE_HEIGHT = 200
+const CLOSE = 20
 const EDGE = 1
 const FOCUS_RING = 3
 
-// What an outside link carries, so the page it opens cannot reach back.
+// What an outside link carries, so the page it opens cannot reach back, on
+// the open button and through the «…».
 type Rel = 'noopener noreferrer'
 const OUTSIDE: Rel = 'noopener noreferrer'
+type Features = 'noopener,noreferrer'
+const OUTSIDE_WINDOW: Features = 'noopener,noreferrer'
 
-// A rule of border/default. Across the whole modal under the tabs and over the
-// footer, and inside the Info tab between its parts.
+// The rows' layouts, the related person's and the history's, by the screen's
+// width, typed so the lint rule reads them as values.
+type Layout = NonNullable<HistoryRowProps['layout']>
+const DESKTOP: Layout = 'desktop'
+const MOBILE: Layout = 'mobile'
+
+// A rule of border/default. Over the footer, and inside the Info tab between
+// its parts.
 const Rule = () => (
   <Box
     component="hr"
@@ -142,19 +171,27 @@ const ring = {
   }),
 }
 
+// One row of the history: a change of status or an interview round, by when.
+type Entry =
+  { kind: 'status'; id: string; at: string; change: StatusChange } | { kind: 'round'; id: string; at: string; round: InterviewRound }
+
 // The Job Modal of node 210:276, editable where it stands, the file's
 // description says: no separate view and edit. The header holds the title and
-// the company and, at its other end, the Status Control, which changes the
-// status at once, and the close; then the five tabs, their panel scrolling in
-// the body; then the footer, Cancel and Save at the inline start and the
-// delete at the end, as the Contact Modal's Edit draws them. The history is
-// its own tab, second, the owner's KN-072, newest first. What is typed in the
-// Info tab and the note is held here, so switching tabs loses none of it.
+// the company and, at its other end, the Status Control, the More Button with
+// the «…» menu of 894:75677, and the 20 close; then the five tabs, their panel
+// scrolling in the body; then the footer, «ذخیره» and «انصراف» at the inline end.
+// The handoff of 2026-11-03: every tab is edited where it stands and «ذخیره» is
+// off until something differs from the record; a stage chosen in the header is
+// recorded with «ذخیره», and an outcome is handed to the page at once, which
+// closes the modal for the board's undo; closing with a difference asks in the
+// Unsaved modal. What is typed in any tab is held here, so switching tabs loses
+// none of it.
 export const JobModal = ({
   open,
   job,
   statuses,
   sources,
+  matches,
   tab: asked = INFO,
   onStatusChange,
   onAddStatus,
@@ -162,21 +199,28 @@ export const JobModal = ({
   onDelete,
   onClose,
   onAddContact,
-  onOpenContact,
-  onDeleteContact,
+  onConnectContact,
+  onUnlinkContact,
+  onCopied,
   onAddFiles,
   onDownloadFile,
+  onEditHistory,
 }: JobModalProps) => {
   const { i18n } = useLingui()
   const { locale } = usePreferences()
+  const phone = !useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'))
+  const layout = phone ? MOBILE : DESKTOP
   const titleId = useId()
   const formId = useId()
   const picker = useRef<HTMLInputElement>(null)
+  const more = useRef<HTMLButtonElement>(null)
   const [tab, setTab] = useState(asked)
   const [draft, setDraft] = useState(job.draft)
   const [description, setDescription] = useState(job.description)
   const [note, setNote] = useState(job.note)
   const [tried, setTried] = useState(false)
+  const [menu, setMenu] = useState<HTMLElement | null>(null)
+  const [asking, setAsking] = useState(false)
   // Each opening starts from the record, and so does being handed a DIFFERENT
   // record while open, KN-363: a page that swaps the job under an open modal
   // used to draw the new record's header over the old one's editable fields,
@@ -198,21 +242,37 @@ export const JobModal = ({
       // With the rest, or the first record's refusals would be shown against
       // the second's fields.
       setTried(false)
+      setMenu(null)
+      setAsking(false)
     }
   }
 
+  const { stages, outcomes } = statusGroups(statuses)
+  // Whether anything differs from the record, which turns «ذخیره» on and makes
+  // leaving ask. The draft is compared by what it holds; it is built from the
+  // record's by spreading, so its fields keep their order.
+  const changed = JSON.stringify(draft) !== JSON.stringify(job.draft) || description !== job.description || note !== job.note
+  // A stage waits for «ذخیره»; an outcome is the page's at once, KN-812.
+  const chooseStatus = (id: string) => {
+    if (outcomes.some((outcome) => outcome.id === id)) onStatusChange(id)
+    else setDraft((current) => ({ ...current, status: id }))
+  }
   const save = () => {
     if (missingFields(draft).length > 0) {
       setTried(true)
       setTab(INFO)
       return
     }
-    // The status is the record's: the header changes it at once, not Save.
-    const { status: _status, ...fields } = draft
-    onSave({ ...fields, title: draft.title.trim(), company: draft.company.trim(), description, note })
+    onSave({ ...draft, title: draft.title.trim(), company: draft.company.trim(), description, note })
+  }
+  // The close, Escape, the scrim and «انصراف»: with a difference, ask first.
+  const leave = () => {
+    if (changed) setAsking(true)
+    else onClose()
   }
 
-  const history = [...job.history].sort((first, second) => second.at.localeCompare(first.at))
+  const link = draft.postingUrl.trim()
+  const linkable = link !== '' && validPostingUrl(link)
   const units = { kilobytes: i18n._('KB'), megabytes: i18n._('MB') }
   // The small line, 12 at 400 on the automatic height. Under an sx key, which
   // the lint rule reads as CSS.
@@ -222,7 +282,7 @@ export const JobModal = ({
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.md}px` }}>
       <JobFields draft={draft} missing={tried ? missingFields(draft) : []} sources={sources} onChange={setDraft} />
       {/* The Link Row, 296:73: the field and, when there is a link, the
-          button that opens the posting, at the field's foot. */}
+          button that opens the posting, 8 after it at the field's foot. */}
       <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: `${spacing.xs}px` }}>
         <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
           <Input
@@ -237,10 +297,10 @@ export const JobModal = ({
             }}
           />
         </Box>
-        {draft.postingUrl.trim() === '' || !validPostingUrl(draft.postingUrl) ? null : (
+        {linkable ? (
           <Box
             component="a"
-            href={draft.postingUrl.trim()}
+            href={link}
             target="_blank"
             rel={OUTSIDE}
             aria-label={i18n._('Open the posting link')}
@@ -261,7 +321,7 @@ export const JobModal = ({
           >
             <Icon name="external-link" size="sm" color="inherit" />
           </Box>
-        )}
+        ) : null}
       </Box>
       <Rule />
       <JobPart icon="note" title={i18n._('Job description and responsibilities')}>
@@ -293,35 +353,6 @@ export const JobModal = ({
     </Box>
   )
 
-  // The status history, newest first, 210:75: the status's name at 14 and
-  // Medium, and on the other side the day and who made the change.
-  const changes = (
-    <Box component="ol" sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.xs}px`, margin: 0, padding: 0, listStyle: 'none' }}>
-      {history.map((change) => (
-        <Box
-          component="li"
-          key={change.id}
-          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: `${spacing.xs}px` }}
-        >
-          <Box
-            component="span"
-            sx={(theme) => ({
-              fontSize: `${typeScale.body.size}px`,
-              lineHeight: `${typeScale.body.lineHeight}px`,
-              fontWeight: typeScale.label.weight,
-              color: theme.karnama.semantic['text/primary'],
-            })}
-          >
-            {statuses.find((status) => status.id === change.status)?.name ?? change.status}
-          </Box>
-          <Box component="span" sx={(theme) => ({ ...small.sx, color: theme.karnama.semantic['text/secondary'] })}>
-            {`${formatDay(locale, change.at)} · ${change.automatic ? i18n._('Automatic') : i18n._('Manual')}`}
-          </Box>
-        </Box>
-      ))}
-    </Box>
-  )
-
   // The note, 210:127, 200 tall, and when it was last edited.
   const noteTab = (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.md}px` }}>
@@ -334,53 +365,60 @@ export const JobModal = ({
     </Box>
   )
 
-  // The related people, 210:170: each the compact Contact Card, and the dashed
-  // «+ افزودن مخاطب» after them, 46 tall, dashed 6 and 4 in the file and CSS's
-  // own dash here.
+  // The related people, 210:208: the Company Match at the top, which draws
+  // nothing with nobody to link; the Related Person rows in their list, a box of
+  // bg/surface at radius md with an edge of border/default inside and a rule
+  // between rows; and «+ افزودن نفر». A row's remove only unlinks the person.
   const people = (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.md}px` }}>
-      {job.contacts.map(({ id, contact }) => (
-        <ContactCard
-          key={id}
-          contact={contact}
-          layout="compact"
-          onOpen={() => {
-            onOpenContact(id)
-          }}
-          onSelectedChange={() => undefined}
-          onDelete={() => {
-            onDeleteContact(id)
-          }}
-        />
-      ))}
-      <ButtonBase
-        disableRipple
-        onClick={onAddContact}
-        sx={(theme) => ({
-          position: 'relative',
-          gap: `${spacing.xs}px`,
-          paddingBlock: `${spacing.sm}px`,
-          borderRadius: `${theme.karnama.radius.md}px`,
-          borderStyle: 'dashed',
-          borderWidth: EDGE,
-          borderColor: theme.karnama.semantic['border/default'],
-          fontFamily: 'inherit',
-          fontSize: `${typeScale.body.size}px`,
-          lineHeight: `${typeScale.body.lineHeight}px`,
-          fontWeight: typeScale.label.weight,
-          color: theme.karnama.semantic['text/brand'],
-          ...ring.sx(theme.karnama.semantic['border/focus'], theme.karnama.radius.md),
-        })}
-      >
-        <Icon name="plus" size="sm" color="inherit" />
-        {i18n._('Add contact')}
-      </ButtonBase>
+      <CompanyMatch company={job.draft.company} people={matches} onConnect={onConnectContact} />
+      {job.contacts.length === 0 ? null : (
+        <Box
+          component="ul"
+          aria-label={i18n._('Related people')}
+          sx={(theme) => ({
+            margin: 0,
+            padding: 0,
+            listStyle: 'none',
+            overflow: 'hidden',
+            borderRadius: `${theme.karnama.radius.md}px`,
+            borderStyle: 'solid',
+            borderWidth: EDGE,
+            borderColor: theme.karnama.semantic['border/default'],
+            backgroundColor: theme.karnama.semantic['bg/surface'],
+            '& > li + li': {
+              borderTopStyle: 'solid',
+              borderTopWidth: EDGE,
+              borderTopColor: theme.karnama.semantic['border/default'],
+            },
+          })}
+        >
+          {job.contacts.map(({ id, contact, tag }) => (
+            <li key={id}>
+              <RelatedPerson
+                name={contact.name}
+                role={contact.role}
+                company={contact.company}
+                tag={tag ?? null}
+                email={contact.email}
+                phone={contact.phone}
+                layout={layout}
+                onUnlink={() => {
+                  onUnlinkContact(id)
+                }}
+                {...(onCopied === undefined ? {} : { onCopied })}
+              />
+            </li>
+          ))}
+        </Box>
+      )}
+      <AddContact onClick={onAddContact} />
     </Box>
   )
 
-  // The files, 210:233: each a row of the 40 tile, the name and what it is,
-  // and the download at the other end; then the drop zone, where a file can
-  // be dropped or chosen.
+  // The files, 210:275: each a row of the 40 tile, the name and its size, day
+  // and kind, and the download at the other end; then the drop zone, where a
+  // file can be dropped or chosen.
   const files = (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.md}px` }}>
       {job.files.map((file) => (
@@ -439,7 +477,7 @@ export const JobModal = ({
                 {file.name}
               </Box>
               <Box component="span" sx={(theme) => ({ ...small.sx, color: theme.karnama.semantic['text/secondary'] })}>
-                {[fileKind(file.name), fileSize(locale, file.size, units), formatDay(locale, file.addedAt)]
+                {[fileSize(locale, file.size, units), formatDay(locale, file.addedAt), fileKind(file.name)]
                   .filter((part) => part !== '')
                   .join(' · ')}
               </Box>
@@ -516,157 +554,247 @@ export const JobModal = ({
     </Box>
   )
 
+  // The history, 760:47508: the changes of status and the interview rounds,
+  // newest first, each a History / Row, the job's first entry, when it was
+  // saved, locked. A page that changes their dates is asked to by a row's date,
+  // and the hint says so 16 above the list; one that does not offers neither.
+  const entries = [
+    ...job.history.map((change): Entry => ({ kind: 'status', id: change.id, at: change.at, change })),
+    ...(job.rounds ?? []).map((round): Entry => ({ kind: 'round', id: round.id, at: round.at, round })),
+  ].sort((first, second) => second.at.localeCompare(first.at))
+  const saved = [...job.history].sort((first, second) => first.at.localeCompare(second.at))[0]?.id
+  const historyTab = (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.md}px` }}>
+      {onEditHistory === undefined ? null : (
+        <Box sx={(theme) => ({ ...small.sx, color: theme.karnama.semantic['text/secondary'] })}>
+          {i18n._('You can change the date of each stage.')}
+        </Box>
+      )}
+      <Box component="ol" aria-label={i18n._('History')} sx={{ margin: 0, padding: 0, listStyle: 'none' }}>
+        {entries.map((entry, at) => {
+          const shared = {
+            date: formatDay(locale, entry.at),
+            lineAbove: at > 0,
+            lineBelow: at < entries.length - 1,
+            locked: entry.id === saved,
+            layout,
+            ...(onEditHistory === undefined
+              ? {}
+              : {
+                  onEdit: () => {
+                    onEditHistory(entry.id)
+                  },
+                }),
+          }
+          return (
+            <li key={entry.id}>
+              {entry.kind === 'status' ? (
+                <HistoryRow
+                  kind={entry.kind}
+                  status={{
+                    token: tokenOf(statuses, entry.change.status),
+                    name: statuses.find((status) => status.id === entry.change.status)?.name ?? entry.change.status,
+                  }}
+                  source={entry.change.automatic ? i18n._('Automatic') : i18n._('Manual')}
+                  {...shared}
+                />
+              ) : (
+                <HistoryRow kind={entry.kind} title={entry.round.title} source={entry.round.detail} {...shared} />
+              )}
+            </li>
+          )
+        })}
+      </Box>
+    </Box>
+  )
+
   const labels: Record<JobModalTab, string> = {
     info: i18n._('Job opportunity info'),
-    history: i18n._('History'),
     note: i18n._('Note'),
     contacts: i18n._('Related people'),
     files: i18n._('Files'),
+    history: i18n._('History'),
   }
-  const panels: Record<JobModalTab, ReactNode> = { info, history: changes, note: noteTab, contacts: people, files }
+  const panels: Record<JobModalTab, ReactNode> = { info, note: noteTab, contacts: people, files, history: historyTab }
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      aria-labelledby={titleId}
-      transitionDuration={DISSOLVE_MS}
-      slotProps={{
-        backdrop: { sx: modalScrim.sx },
-        paper: {
-          sx: (theme) => ({
-            boxSizing: 'border-box',
-            width: WIDTH,
-            height: HEIGHT,
-            maxWidth: `calc(100% - ${2 * spacing.md}px)`,
-            maxHeight: `calc(100% - ${2 * spacing.md}px)`,
-            margin: `${spacing.md}px`,
+    <>
+      <Dialog
+        open={open}
+        onClose={leave}
+        aria-labelledby={titleId}
+        transitionDuration={DISSOLVE_MS}
+        slotProps={{
+          backdrop: { sx: modalScrim.sx },
+          paper: {
+            sx: (theme) => ({
+              boxSizing: 'border-box',
+              width: WIDTH,
+              height: HEIGHT,
+              maxWidth: `calc(100% - ${2 * spacing.md}px)`,
+              maxHeight: `calc(100% - ${2 * spacing.md}px)`,
+              margin: `${spacing.md}px`,
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+              borderRadius: `${theme.karnama.radius.lg}px`,
+              backgroundColor: theme.karnama.semantic['bg/surface'],
+              backgroundImage: 'none',
+              boxShadow: theme.karnama.elevation.modal,
+            }),
+          },
+        }}
+      >
+        {/* The Header, 210:3: 24 above and at the sides, 16 below; the title
+            and the company at the inline start, the Status Control, the More
+            Button and the close at the end, 12 apart. */}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexShrink: 0,
+            gap: `${spacing.sm}px`,
+            paddingTop: `${spacing.lg}px`,
+            paddingInline: `${spacing.lg}px`,
+            paddingBottom: `${spacing.md}px`,
+          }}
+        >
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing['2xs']}px`, minWidth: 0 }}>
+            <Box
+              component="h2"
+              id={titleId}
+              sx={(theme) => ({
+                margin: 0,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                fontSize: `${typeScale['heading/m'].size}px`,
+                lineHeight: 'normal',
+                fontWeight: typeScale['heading/m'].weight,
+                color: theme.karnama.semantic['text/primary'],
+              })}
+            >
+              {job.draft.title}
+            </Box>
+            <Box
+              component="span"
+              sx={(theme) => ({
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                fontSize: `${typeScale.body.size}px`,
+                lineHeight: `${typeScale.body.lineHeight}px`,
+                color: theme.karnama.semantic['text/secondary'],
+              })}
+            >
+              {job.draft.company}
+            </Box>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0, gap: `${spacing.sm}px` }}>
+            <StatusControl stages={stages} outcomes={outcomes} value={draft.status} onChange={chooseStatus} onAdd={onAddStatus} />
+            <IconButton
+              ref={more}
+              icon="more"
+              aria-label={i18n._('Job opportunity actions')}
+              aria-haspopup="menu"
+              aria-expanded={menu !== null}
+              onClick={() => {
+                setMenu(more.current)
+              }}
+            />
+            <PopoverClose size={CLOSE} aria-label={i18n._('Close')} onClick={leave} />
+          </Box>
+        </Box>
+        {/* The tabs, 210:14, edge to edge, and the chosen one's panel scrolling
+            in the body's 24, 210:27. */}
+        <Box
+          component="form"
+          id={formId}
+          noValidate
+          onSubmit={(event) => {
+            event.preventDefault()
+            save()
+          }}
+          sx={{
+            flex: '1 1 auto',
+            minHeight: 0,
             display: 'flex',
             flexDirection: 'column',
-            overflow: 'hidden',
-            borderRadius: `${theme.karnama.radius.lg}px`,
-            backgroundColor: theme.karnama.semantic['bg/surface'],
-            backgroundImage: 'none',
-            boxShadow: theme.karnama.elevation.modal,
-          }),
-        },
-      }}
-    >
-      {/* The Header, 210:3: 24 above and at the sides, 16 below. */}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexShrink: 0,
-          gap: `${spacing.sm}px`,
-          paddingTop: `${spacing.lg}px`,
-          paddingInline: `${spacing.lg}px`,
-          paddingBottom: `${spacing.md}px`,
-        }}
-      >
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing['2xs']}px`, minWidth: 0 }}>
-          <Box
-            component="h2"
-            id={titleId}
-            sx={(theme) => ({
-              margin: 0,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              fontSize: `${typeScale['heading/m'].size}px`,
-              lineHeight: 'normal',
-              fontWeight: typeScale['heading/m'].weight,
-              color: theme.karnama.semantic['text/primary'],
-            })}
-          >
-            {job.draft.title}
-          </Box>
-          <Box
-            component="span"
-            sx={(theme) => ({
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              fontSize: `${typeScale.body.size}px`,
-              lineHeight: `${typeScale.body.lineHeight}px`,
-              color: theme.karnama.semantic['text/secondary'],
-            })}
-          >
-            {job.draft.company}
-          </Box>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0, gap: `${spacing.sm}px` }}>
-          <StatusControl {...statusGroups(statuses)} value={job.draft.status} onChange={onStatusChange} onAdd={onAddStatus} />
-          <Box sx={{ display: 'inline-flex', margin: `-${(spacing.xl - iconSize.md) / 2}px` }}>
-            <IconButton icon="x" iconSize="md" aria-label={i18n._('Close')} onClick={onClose} />
-          </Box>
-        </Box>
-      </Box>
-      {/* The tabs, 210:14, edge to edge, and the chosen one's panel scrolling
-          in the body's 24, 210:27. */}
-      <Box
-        component="form"
-        id={formId}
-        noValidate
-        onSubmit={(event) => {
-          event.preventDefault()
-          save()
-        }}
-        sx={{
-          flex: '1 1 auto',
-          minHeight: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          '& > div': { flex: '1 1 auto', minHeight: 0, display: 'flex', flexDirection: 'column' },
-          // The row keeps its 44 however tall the panel's content, which
-          // takes what is left and scrolls in it.
-          '& .MuiTabs-root': { flexShrink: 0 },
-          '& [role="tabpanel"]': { flex: '1 1 0', minHeight: 0, overflowY: 'auto', padding: `${spacing.lg}px`, outline: 'none' },
-        }}
-      >
-        <Tabs
-          aria-label={i18n._('Job opportunity sections')}
-          value={tab}
-          onChange={(chosen) => {
-            if (isTab(chosen)) setTab(chosen)
+            '& > div': { flex: '1 1 auto', minHeight: 0, display: 'flex', flexDirection: 'column' },
+            // The row keeps its 44 however tall the panel's content, which
+            // takes what is left and scrolls in it.
+            '& .MuiTabs-root': { flexShrink: 0 },
+            '& [role="tabpanel"]': { flex: '1 1 0', minHeight: 0, overflowY: 'auto', padding: `${spacing.lg}px`, outline: 'none' },
           }}
-          tabs={TABS.map((value) => ({ value, label: labels[value], panel: panels[value] }))}
-        />
-      </Box>
-      <Rule />
-      {/* The Footer, 210:86: Cancel and Save at the inline start, the delete at
-          the end, in 16 and 24. Where the three do not fit on a row, English on a
-          phone, KN-514, the delete takes a row of its own and keeps the inline end,
-          rather than squeezing its label onto two lines of a fixed height. */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexShrink: 0,
-          gap: `${spacing.sm}px`,
-          paddingBlock: `${spacing.md}px`,
-          paddingInline: `${spacing.lg}px`,
-        }}
-      >
-        <Box sx={{ display: 'flex', flexShrink: 0, alignItems: 'center', gap: `${spacing.sm}px` }}>
-          <Button variant="ghost" onClick={onClose}>
+        >
+          <Tabs
+            aria-label={i18n._('Job opportunity sections')}
+            value={tab}
+            onChange={(chosen) => {
+              if (isTab(chosen)) setTab(chosen)
+            }}
+            tabs={TABS.map((value) => ({ value, label: labels[value], panel: panels[value] }))}
+          />
+        </Box>
+        <Rule />
+        {/* The Footer, 210:86: «انصراف» and «ذخیره» at the inline end, 12 apart,
+            in 16 and 24; «ذخیره» off until something changes. */}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            flexShrink: 0,
+            gap: `${spacing.sm}px`,
+            paddingBlock: `${spacing.md}px`,
+            paddingInline: `${spacing.lg}px`,
+          }}
+        >
+          <Button variant="ghost" onClick={leave}>
             {i18n._('Cancel')}
           </Button>
-          <Button type="submit" form={formId}>
+          <Button type="submit" form={formId} disabled={!changed}>
             {i18n._('Save')}
           </Button>
         </Box>
-        {/* A box of its own, since the Button takes no sx: the auto margin keeps it at
-            the inline end on a row of its own, where space-between alone would not. */}
-        <Box sx={{ flexShrink: 0, marginInlineStart: 'auto' }}>
-          <Button variant="destructive" onClick={onDelete}>
-            {i18n._('Delete job opportunity')}
-          </Button>
-        </Box>
-      </Box>
-    </Dialog>
+      </Dialog>
+      <CardMenu
+        anchorEl={menu}
+        onClose={() => {
+          setMenu(null)
+        }}
+        {...(linkable
+          ? {
+              onOpenLink: () => {
+                window.open(link, '_blank', OUTSIDE_WINDOW)
+              },
+            }
+          : {})}
+        // The delete is handed over once the menu has closed: the page remembers
+        // what has focus as it asks, KN-344, and that is then the More Button, which
+        // a delete backed out of leaves focus on, not a menu item already gone.
+        onDelete={() => {
+          window.setTimeout(() => {
+            more.current?.focus()
+            onDelete()
+          })
+        }}
+      />
+      <UnsavedModal
+        open={asking}
+        onSave={() => {
+          setAsking(false)
+          save()
+        }}
+        onDiscard={() => {
+          setAsking(false)
+          onClose()
+        }}
+        onKeepEditing={() => {
+          setAsking(false)
+        }}
+      />
+    </>
   )
 }

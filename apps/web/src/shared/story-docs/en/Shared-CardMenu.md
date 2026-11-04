@@ -16,7 +16,8 @@ Called when the menu closes.
 
 ### onChangeStatus
 
-Called when Change status is chosen.
+Called when Change status is chosen. Leave it out where a Status Control sits
+beside the menu, as in the Job Modal's header, and the action is not offered.
 
 ### onOpenLink
 
@@ -36,3 +37,8 @@ The three actions, and delete handing over.
 ### WithoutALink
 
 A posting with no link: two actions.
+
+### InTheJobModal
+
+The Job Modal's menu: the posting's link and the delete, with no change of
+status.

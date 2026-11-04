@@ -330,6 +330,12 @@ export const Working: Story = {
   },
 }
 
+// A job opportunity's own delete, in its modal's «…», 894:75677.
+const deleteFromItsModal = async (job: HTMLElement) => {
+  await userEvent.click(within(job).getByRole('button', { name: 'کارهای فرصت شغلی' }))
+  await userEvent.click(await within(job.ownerDocument.body).findByRole('menuitem', { name: 'حذف فرصت شغلی' }))
+}
+
 export const Managing: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
@@ -364,12 +370,12 @@ export const Managing: Story = {
       await expect(canvas.getAllByText('وضعیت تازه').length).toBeGreaterThan(0)
     })
 
-    // A job opportunity is deleted from its own modal, where the control is not
-    // folded behind a hover the synthetic pointer cannot set, KN-365.
+    // A job opportunity is deleted from its own modal's «…», where the control is
+    // not folded behind a hover the synthetic pointer cannot set, KN-365.
     await userEvent.click(canvas.getByRole('button', { name: first }))
     const open = await body.findByRole('dialog')
-    await userEvent.click(within(open).getByRole('button', { name: 'حذف فرصت شغلی' }))
-    const confirm = await body.findByRole('dialog')
+    await deleteFromItsModal(open)
+    const confirm = await body.findByRole('dialog', { name: 'حذف این فرصت شغلی؟' })
     await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
     await gone()
     await waitFor(async () => {
@@ -424,29 +430,15 @@ export const People: Story = {
 
     // A person is added against this job opportunity, and the job it belongs to
     // is filled in already, since the modal was opened from that job's own tab.
-    await userEvent.click(within(job).getByRole('button', { name: 'افزودن مخاطب' }))
+    await userEvent.click(within(job).getByRole('button', { name: 'افزودن نفر' }))
     const adding = await body.findByRole('dialog', { name: 'افزودن به شبکه' })
     await userEvent.type(within(adding).getByLabelText('اسم و فامیل'), person)
     await userEvent.click(within(adding).getByRole('button', { name: 'افزودن' }))
     // Asked for by role rather than by text: while the nested modal is still
     // closing, MUI holds the job modal out of the accessibility tree, and a
-    // text query would find the new person there a frame before it can be
-    // clicked.
+    // text query would find the new person there a frame before they show.
     await waitFor(async () => {
-      await expect(within(job).getByRole('button', { name: person })).toBeInTheDocument()
-    })
-
-    // Opening them again reads back what was kept, and backing out changes
-    // nothing.
-    await userEvent.click(within(job).getByRole('button', { name: person }))
-    const editing = await body.findByRole('dialog', { name: 'ویرایش اطلاعات' })
-    await expect(within(editing).getByLabelText('اسم و فامیل')).toHaveValue(person)
-    await userEvent.click(within(editing).getByRole('button', { name: 'انصراف' }))
-    // Again by role: the person is still kept, and asking for them this way
-    // waits for the job modal to be given back to the accessibility tree,
-    // which MUI takes from it while any modal is over it.
-    await waitFor(async () => {
-      await expect(within(job).getByRole('button', { name: person })).toBeInTheDocument()
+      await expect(within(job).getByRole('group', { name: person })).toBeInTheDocument()
     })
 
     // A file is chosen rather than dropped: the picker is a hidden input, and
@@ -523,26 +515,17 @@ export const People: Story = {
     await userEvent.click(within(reopened).getByRole('tab', { name: 'یادداشت' }))
     await expect(within(reopened).getByRole('textbox', { name: 'یادداشت' })).toHaveValue(NOTE)
 
-    // The person kept against it is changed from here too, and let go of from
-    // their own card, which takes them off the network page as well.
+    // The person kept against it is let go of from their row, which only unlinks
+    // them, the handoff's: they leave this job opportunity and stay in the network.
     await userEvent.click(within(reopened).getByRole('tab', { name: 'افراد مرتبط' }))
-    await userEvent.click(within(reopened).getByRole('button', { name: person }))
-    const changing = await body.findByRole('dialog', { name: 'ویرایش اطلاعات' })
-    const ROLE = set.contacts[0]?.role ?? ''
-    await userEvent.type(within(changing).getByLabelText('سمت'), ROLE)
-    await userEvent.click(within(changing).getByRole('button', { name: 'ذخیره' }))
+    const row = within(reopened).getByRole('group', { name: person })
+    await userEvent.hover(row)
+    await userEvent.click(within(row).getByRole('button', { name: 'برداشتن از این فرصت شغلی' }))
     await waitFor(async () => {
-      await expect(within(reopened).getByRole('button', { name: person })).toBeInTheDocument()
+      await expect(within(reopened).queryByRole('group', { name: person })).toBeNull()
     })
-    await expect(within(reopened).getByText(ROLE)).toBeInTheDocument()
-
-    const held = within(reopened).getByRole('button', { name: person }).closest('article')
-    if (!held) throw new Error('the person has no card around them')
-
-    await userEvent.click(within(held).getByRole('button', { name: 'حذف مخاطب' }))
-    await waitFor(async () => {
-      await expect(within(reopened).queryByText(person)).toBeNull()
-    })
+    const kept: unknown = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '{}')
+    await expect(kept).toMatchObject({ contacts: [{ jobId: null, contact: { name: person } }] })
   },
 }
 
@@ -666,7 +649,7 @@ export const BackingOut: Story = {
     // And a deletion backed out of keeps the job opportunity.
     await userEvent.click(canvas.getByRole('button', { name: first }))
     const job = await body.findByRole('dialog')
-    await userEvent.click(within(job).getByRole('button', { name: 'حذف فرصت شغلی' }))
+    await deleteFromItsModal(job)
     const confirm = await body.findByRole('dialog', { name: 'حذف این فرصت شغلی؟' })
     await userEvent.click(within(confirm).getByRole('button', { name: 'انصراف' }))
     await waitFor(async () => {
@@ -1162,22 +1145,29 @@ export const OnAPhone: Story = {
         await expect(canvas.queryByText(last)).toBeNull()
       })
 
-      // A job opportunity whose status is changed from inside its modal leaves the
-      // status the phone shows; deleted there, nothing of it is left in that column
-      // to land on, so focus lands on the board itself, KN-427.
+      // A job opportunity moved out of the status the phone shows while its modal
+      // is open, as another open tab moves it, KN-427; deleted there, nothing of it
+      // is left in that column to land on, so focus lands on the board itself.
+      // The modal records its own change of stage with «ذخیره», which closes it,
+      // so the other tab is the way a job leaves the column under its modal.
       const i18n = i18nFor('fa-IR')
       const opened = set.jobs[0]?.title ?? ''
       await userEvent.click(await canvas.findByRole('button', { name: new RegExp(columns[0]?.name ?? '') }))
       await userEvent.click(await canvas.findByRole('button', { name: opened }))
       const job = await body.findByRole('dialog')
-      await userEvent.click(await within(job).findByRole('button', { name: new RegExp(`^${i18n._('Status')}:`) }))
-      const picking = await body.findByRole('dialog', { name: i18n._('Change status') })
-      await userEvent.click(within(picking).getByRole('radio', { name: set.names.offer }))
-      await userEvent.click(within(picking).getByRole('button', { name: i18n._('Confirm') }))
-      await waitFor(async () => {
-        await expect(body.queryByRole('dialog', { name: i18n._('Change status') })).toBeNull()
+      const records = readRecords(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '{}'), seeded())
+      const written = JSON.stringify({
+        ...records,
+        jobs: records.jobs.map((entry) =>
+          entry.draft.title === opened ? { ...entry, draft: { ...entry.draft, status: 'offer' } } : entry,
+        ),
       })
-      await userEvent.click(await within(job).findByRole('button', { name: i18n._('Delete job opportunity') }))
+      window.localStorage.setItem(STORAGE_KEY, written)
+      window.dispatchEvent(new StorageEvent(STORED, { key: STORAGE_KEY, newValue: written }))
+      await waitFor(async () => {
+        await expect(canvas.queryByRole('button', { name: opened })).toBeNull()
+      })
+      await deleteFromItsModal(job)
       const confirmDelete = await body.findByRole('dialog', { name: i18n._('Delete this job opportunity?') })
       await userEvent.click(within(confirmDelete).getByRole('button', { name: i18n._('Delete') }))
       await waitFor(async () => {
@@ -1560,7 +1550,7 @@ export const FocusAfterDeleting: Story = {
 
     await userEvent.click(canvas.getByRole('button', { name: first }))
     const job = await body.findByRole('dialog')
-    await userEvent.click(within(job).getByRole('button', { name: 'حذف فرصت شغلی' }))
+    await deleteFromItsModal(job)
     const confirm = await body.findByRole('dialog', { name: 'حذف این فرصت شغلی؟' })
     await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
 
@@ -1581,8 +1571,9 @@ export const FocusAfterDeleting: Story = {
 export const FocusWhenTheOpenerSurvives: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
-    // The other half, KN-344: a confirmation backed out of leaves the control
-    // that opened it exactly where it was, and the fallback must not take over.
+    // The other half, KN-344: a confirmation backed out of leaves focus on the
+    // control the delete was asked from, the modal's «…», whose menu is gone by
+    // then, and the fallback must not take over.
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
     const set = fixtures('fa-IR')
@@ -1590,8 +1581,8 @@ export const FocusWhenTheOpenerSurvives: Story = {
 
     await userEvent.click(canvas.getByRole('button', { name: first }))
     const job = await body.findByRole('dialog')
-    const opener = within(job).getByRole('button', { name: 'حذف فرصت شغلی' })
-    await userEvent.click(opener)
+    const opener = within(job).getByRole('button', { name: 'کارهای فرصت شغلی' })
+    await deleteFromItsModal(job)
     const confirm = await body.findByRole('dialog', { name: 'حذف این فرصت شغلی؟' })
     await userEvent.click(within(confirm).getByRole('button', { name: 'انصراف' }))
     await waitFor(async () => {
@@ -1662,8 +1653,8 @@ export const PeopleInFull: Story = {
   play: async ({ canvasElement }) => {
     // KN-427: a person kept against a job opportunity with everything the contact
     // modal takes. An add backed out of keeps no one; a person added with every
-    // field keeps each; edited with the role emptied, the role goes and the rest
-    // stays. What is kept is read from the story's own store, KN-178.
+    // field keeps each; unlinked from the job opportunity, every field stays and
+    // only the link goes. What is kept is read from the story's own store, KN-178.
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
     const i18n = i18nFor('fa-IR')
@@ -1678,17 +1669,17 @@ export const PeopleInFull: Story = {
     await userEvent.click(within(job).getByRole('tab', { name: i18n._('Related people') }))
 
     // Backed out of, an add keeps no one.
-    await userEvent.click(within(job).getByRole('button', { name: i18n._('Add contact') }))
+    await userEvent.click(within(job).getByRole('button', { name: i18n._('Add person') }))
     const cancelled = await body.findByRole('dialog', { name: i18n._('Add to network') })
     await userEvent.type(within(cancelled).getByLabelText(i18n._('Full name')), person.fullName)
     await userEvent.click(within(cancelled).getByRole('button', { name: i18n._('Cancel') }))
     await waitFor(async () => {
       await expect(body.queryByRole('dialog', { name: i18n._('Add to network') })).toBeNull()
     })
-    await expect(within(job).queryByRole('button', { name: person.fullName })).toBeNull()
+    await expect(within(job).queryByRole('group', { name: person.fullName })).toBeNull()
 
     // Added with every field the modal takes, each is kept.
-    await userEvent.click(within(job).getByRole('button', { name: i18n._('Add contact') }))
+    await userEvent.click(within(job).getByRole('button', { name: i18n._('Add person') }))
     const adding = await body.findByRole('dialog', { name: i18n._('Add to network') })
     // Every field the fixture's first contact fills, refused by name if it ever stops.
     type Field = 'role' | 'company' | 'email' | 'phone' | 'linkedin'
@@ -1718,13 +1709,12 @@ export const PeopleInFull: Story = {
       await expect(stored()).toMatchObject({ contacts: [{ contact: { ...kept, role: person.role } }] })
     })
 
-    // Edited with the role emptied, the role goes and the rest stays.
-    await userEvent.click(await within(job).findByRole('button', { name: person.fullName }))
-    const editing = await body.findByRole('dialog', { name: i18n._('Edit details') })
-    await userEvent.clear(within(editing).getByLabelText(i18n._('Role')))
-    await userEvent.click(within(editing).getByRole('button', { name: i18n._('Save') }))
+    // Unlinked, every field stays and only the link goes.
+    const row = await within(job).findByRole('group', { name: person.fullName })
+    await userEvent.hover(row)
+    await userEvent.click(within(row).getByRole('button', { name: i18n._('Remove from this job opportunity') }))
     await waitFor(async () => {
-      await expect(stored()).toMatchObject({ contacts: [{ contact: { ...kept, role: null } }] })
+      await expect(stored()).toMatchObject({ contacts: [{ jobId: null, contact: { ...kept, role: person.role } }] })
     })
   },
 }
@@ -1733,19 +1723,18 @@ export const PersonForAJobDeletedElsewhere: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
     // KN-427: another open tab deletes a job opportunity while a person is being
-    // written on it. The job modal goes with its job, the contact modal stays, and
-    // saving keeps the person with no job: first a person being edited, then one
-    // being added. The other tab is stood in for by what its write delivers, as in
-    // ChangedInAnotherTab. The contact modal lets go of the deleted job, so the
-    // records keep no link to it either, KN-598.
+    // added on it. The job modal goes with its job, the contact modal stays, and
+    // saving keeps the person with no job. The other tab is stood in for by what
+    // its write delivers, as in ChangedInAnotherTab. The contact modal lets go of
+    // the deleted job, so the records keep no link to it either, KN-598.
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
     const i18n = i18nFor('fa-IR')
     const set = fixtures('fa-IR')
-    const [first = '', second = ''] = set.jobs.slice(0, 2).map((job) => job.title)
-    // Two people with short names, since the story is about the job and every
+    const first = set.jobs[0]?.title ?? ''
+    // A person with a short name, since the story is about the job and every
     // letter is typed into a modal on a full board.
-    const [one = '', , two = ''] = set.contacts.slice(0, 3).map((contact) => contact.fullName)
+    const two = set.contacts[2]?.fullName ?? ''
     const stored = (): unknown => JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '{}')
     // The other tab's write: this tab's own board as its store holds it, less a job.
     const deletedElsewhere = (title: string) => {
@@ -1761,31 +1750,10 @@ export const PersonForAJobDeletedElsewhere: Story = {
       return job
     }
 
-    // A person kept against the second job opportunity, then opened to edit.
-    const job = await peopleOf(second)
-    await userEvent.click(within(job).getByRole('button', { name: i18n._('Add contact') }))
-    const adding = await body.findByRole('dialog', { name: i18n._('Add to network') })
-    await userEvent.type(within(adding).getByLabelText(i18n._('Full name')), one)
-    await userEvent.click(within(adding).getByRole('button', { name: i18n._('Add') }))
-    await userEvent.click(await within(job).findByRole('button', { name: one }))
-    const editing = await body.findByRole('dialog', { name: i18n._('Edit details') })
-
-    // The job goes in the other tab: its card and its modal go, the edit stays, and
-    // saving a change keeps the person with no job, and no link to the one gone.
-    deletedElsewhere(second)
-    await waitFor(async () => {
-      await expect(body.queryByText(second)).toBeNull()
-    })
-    await userEvent.click(within(editing).getByRole('button', { name: i18n._('Acquaintance') }))
-    await userEvent.click(within(editing).getByRole('button', { name: i18n._('Save') }))
-    await waitFor(async () => {
-      await expect(stored()).toMatchObject({ contacts: [{ jobId: null, contact: { name: one, job: null } }] })
-    })
-
-    // A person being added to the first job opportunity when it goes the same way is
-    // kept with no job too.
+    // A person being added to the first job opportunity when it goes is kept with
+    // no job.
     const other = await peopleOf(first)
-    await userEvent.click(within(other).getByRole('button', { name: i18n._('Add contact') }))
+    await userEvent.click(within(other).getByRole('button', { name: i18n._('Add person') }))
     const late = await body.findByRole('dialog', { name: i18n._('Add to network') })
     await userEvent.type(within(late).getByLabelText(i18n._('Full name')), two)
     deletedElsewhere(first)
@@ -1793,78 +1761,9 @@ export const PersonForAJobDeletedElsewhere: Story = {
       await expect(body.queryByText(first)).toBeNull()
     })
     await userEvent.click(within(late).getByRole('button', { name: i18n._('Add') }))
-    // The records keep the newest person first.
     await waitFor(async () => {
-      await expect(stored()).toMatchObject({
-        contacts: [
-          { jobId: null, contact: { name: two, job: null } },
-          { jobId: null, contact: { name: one, job: null } },
-        ],
-      })
+      await expect(stored()).toMatchObject({ contacts: [{ jobId: null, contact: { name: two, job: null } }] })
     })
-  },
-}
-
-export const DeletingAPersonAsksFirst: Story = {
-  globals: { locale: 'fa-IR' },
-  play: async ({ canvasElement }) => {
-    // KN-348: a person deleted from their edit form is asked about first, as the
-    // network page asks. The edit closes into the confirmation; backed out of, the
-    // person stays, and confirmed, they go. What is kept is read from the story's
-    // own store, KN-178.
-    const canvas = within(canvasElement)
-    const body = within(canvasElement.ownerDocument.body)
-    const i18n = i18nFor('fa-IR')
-    const set = fixtures('fa-IR')
-    const first = set.jobs[0]?.title ?? ''
-    const person = set.contacts[0]?.fullName ?? ''
-    const stored = (): unknown => JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '{}')
-    const asking = () => body.queryByRole('dialog', { name: i18n._('Delete contact') })
-
-    // A person kept against the first job opportunity.
-    await userEvent.click(canvas.getByRole('button', { name: first }))
-    const job = await body.findByRole('dialog')
-    await userEvent.click(within(job).getByRole('tab', { name: i18n._('Related people') }))
-    await userEvent.click(within(job).getByRole('button', { name: i18n._('Add contact') }))
-    const adding = await body.findByRole('dialog', { name: i18n._('Add to network') })
-    await userEvent.type(within(adding).getByLabelText(i18n._('Full name')), person)
-    await userEvent.click(within(adding).getByRole('button', { name: i18n._('Add') }))
-    await waitFor(async () => {
-      await expect(stored()).toMatchObject({ contacts: [{ contact: { name: person } }] })
-    })
-
-    // Opened to edit and deleted from the form, which closes into the question.
-    const deleteFromTheForm = async () => {
-      await userEvent.click(await within(job).findByRole('button', { name: person }))
-      const editing = await body.findByRole('dialog', { name: i18n._('Edit details') })
-      await userEvent.click(within(editing).getByRole('button', { name: i18n._('Delete from network') }))
-      const confirm = await body.findByRole('dialog', { name: i18n._('Delete contact') })
-      await waitFor(async () => {
-        await expect(body.queryByRole('dialog', { name: i18n._('Edit details') })).toBeNull()
-      })
-      return confirm
-    }
-
-    // Backed out of, nothing is deleted, and the person is still in the job modal.
-    const backedOut = await deleteFromTheForm()
-    await userEvent.click(within(backedOut).getByRole('button', { name: i18n._('Cancel') }))
-    await waitFor(async () => {
-      await expect(asking()).toBeNull()
-    })
-    await expect(stored()).toMatchObject({ contacts: [{ contact: { name: person } }] })
-    await expect(await within(job).findByRole('button', { name: person })).toBeVisible()
-
-    // Confirmed, the person goes from the store and from the job modal.
-    const confirmed = await deleteFromTheForm()
-    await userEvent.click(within(confirmed).getByRole('button', { name: i18n._('Delete') }))
-    await waitFor(async () => {
-      await expect(asking()).toBeNull()
-    })
-    await waitFor(async () => {
-      await expect(stored()).toMatchObject({ contacts: [] })
-    })
-    await expect(within(job).getByRole('tab', { name: i18n._('Related people') })).toBeVisible()
-    await expect(within(job).queryByRole('button', { name: person })).toBeNull()
   },
 }
 

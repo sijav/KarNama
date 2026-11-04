@@ -3,6 +3,7 @@ import { emptyDraft } from '../../shared/add-job'
 import type { StatusOption } from '../../shared/status-picker'
 import {
   columnOrder,
+  companyMatches,
   contactMatches,
   contactsOf,
   defaultStatuses,
@@ -284,6 +285,29 @@ describe('the people kept against a job opportunity', () => {
     expect(peopleAtCompany(records, ' snapp ')).toBe(1)
     expect(peopleAtCompany(records, 'Tapsi')).toBe(0)
     expect(peopleAtCompany(records, '  ')).toBe(0)
+  })
+
+  it('are offered to a job opportunity from its company, folded, when they are not linked to it', () => {
+    const at = (id: string, jobId: string | null, company: string | null) => ({
+      ...person(id, jobId, id),
+      contact: { ...person(id, jobId, id).contact, company },
+    })
+    const records: Records = {
+      statuses,
+      jobs: [],
+      contacts: [
+        at('1', null, 'دیجی' + ZWNJ + 'کالا'),
+        at('2', 'job-1', 'دیجیکالا'),
+        at('3', 'job-2', ' دیجیکالا '),
+        at('4', null, 'Snapp'),
+        at('5', null, null),
+      ],
+    }
+    expect(companyMatches(records, 'job-1', 'دیجی‌کالا').map((match) => [match.id, match.name, match.company])).toEqual([
+      ['1', '1', 'دیجی' + ZWNJ + 'کالا'],
+      ['3', '3', ' دیجیکالا '],
+    ])
+    expect(companyMatches(records, 'job-1', '')).toEqual([])
   })
 
   it('are dropped from a stored set when they are not people at all', () => {

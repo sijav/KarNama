@@ -412,4 +412,5 @@ export const messages: Record<string, string> = {
   'Application deadline': 'Application deadline',
   'Enter a valid date; the deadline cannot be before the posting date':
     'Enter a valid date; the deadline cannot be before the posting date',
+  'You can change the date of each stage.': 'You can change the date of each stage.',
 }

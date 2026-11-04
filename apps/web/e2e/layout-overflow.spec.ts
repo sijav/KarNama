@@ -53,7 +53,9 @@ for (const locale of ['fa-IR', 'en-US']) {
       expect(box.y).toBeGreaterThanOrEqual(0)
       expect(box.y + box.height).toBeLessThanOrEqual((await bounds()).availableHeight)
       await expect(dialog.getByRole('button', { name: english ? 'Save' : 'ذخیره', exact: true })).toBeInViewport()
-      await expect(dialog.getByRole('button', { name: english ? 'Delete job opportunity' : 'حذف فرصت شغلی', exact: true })).toBeInViewport()
+      await expect(
+        dialog.getByRole('button', { name: english ? 'Job opportunity actions' : 'کارهای فرصت شغلی', exact: true }),
+      ).toBeInViewport()
       await page.screenshot({ path: testInfo.outputPath('dialog.png'), animations: 'disabled', scale: 'css' })
       expect((await bounds()).width).toBeLessThanOrEqual((await bounds()).viewport + 1)
     })

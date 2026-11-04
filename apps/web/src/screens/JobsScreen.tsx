@@ -6,6 +6,7 @@ import { QUERY, searchStep } from '../app/routes'
 import { usePreferences } from '../core/preferences'
 import {
   columnOrder,
+  companyMatches,
   contactsOf,
   jobsIn,
   linkableJobs,
@@ -35,7 +36,7 @@ import { SortControl, type SortOrder } from '../shared/sort-control'
 import type { SourceLists } from '../shared/source-picker'
 import { spacing } from '../theme/tokens'
 import { band, gutterOf } from './band'
-import { asValues, useVisitLabels } from './personModal'
+import { useVisitLabels } from './personModal'
 
 /**
  * The board: a column per status, its cards in it, KN-043.
@@ -202,12 +203,10 @@ export const JobsScreen = ({
   // Which column a phone is showing. The board scrolls sideways on a desktop
   // and a phone gets one column with the status chosen above it, node 241:176.
   const [chosen, setChosen] = useState<string | null>(null)
-  // A person being written from inside the job modal: their id when one is
-  // being edited, null for a new one, undefined when that modal is closed.
-  const [person, setPerson] = useState<{ id: string | null; values: ContactModalValues } | undefined>(undefined)
-  // The person deleted from their edit form, asked about before they go, KN-348:
-  // their id while the question is open, and nobody otherwise.
-  const [deletingPeople, setDeletingPeople] = useState<readonly string[]>([])
+  // A person being added from inside the job modal's related people, undefined
+  // while that modal is closed. The redesign's rows only unlink a person, so
+  // nobody is edited from here: that is the network page's.
+  const [person, setPerson] = useState<ContactModalValues | undefined>(undefined)
   // A column being renamed: its id and the name as it is being typed.
   const [renaming, setRenaming] = useState<{ id: string; name: string; tried: boolean } | null>(null)
   // The control that asked to delete, kept as it asks, KN-344: by the time the
@@ -357,10 +356,6 @@ export const JobsScreen = ({
   // and the Info tab's Source Picker; the common ones are KN-739's.
   const sources: SourceLists = { own: ownSources(records), common: [] }
   const labels = useVisitLabels()
-  // The person the contact modal is editing, or null while it adds or is closed:
-  // narrowed once, here, so the edit's modal and handlers know their record without
-  // a check no reader can fail, KN-427.
-  const editing = person !== undefined && person.id !== null ? { id: person.id, values: person.values } : null
   // How many are going: one is this job opportunity, several are these, KN-432. Held
   // while the confirmation dissolves, so its copy does not turn singular as it closes.
   const [going, setGoing] = useState(0)
@@ -675,8 +670,12 @@ export const JobsScreen = ({
           job={{ ...job, contacts: contactsOf(records.contacts, job.id) }}
           statuses={records.statuses}
           sources={sources}
+          matches={companyMatches(records, job.id, job.draft.company)}
+          // An outcome chosen in the modal moves the job at once and closes the
+          // modal, for the board to show it, the handoff's; the undo is KN-812's.
           onStatusChange={(status) => {
             records.moveJob(job.id, status)
+            setReading(null)
           }}
           onAddStatus={() => {
             records.addStatus(i18n._('New status'))
@@ -685,6 +684,9 @@ export const JobsScreen = ({
           // its job exists, KN-427. Saving is the end of reading it: the modal closes,
           // as every other modal in the product does when its work is done.
           onSave={(saved) => {
+            // A stage chosen in the header is recorded with the save, moved first
+            // so the history writes the move, then the fields.
+            if (saved.status !== job.draft.status) records.moveJob(job.id, saved.status)
             records.saveJob(job.id, saved)
             setReading(null)
           }}
@@ -698,19 +700,15 @@ export const JobsScreen = ({
           // The related people are the network's records, kept against this
           // job opportunity, so what is added here is on the network page too.
           onAddContact={() => {
-            setPerson({
-              id: null,
-              values: { name: '', role: '', company: '', label: null, email: '', phone: '', linkedin: '', jobIds: [job.id] },
-            })
+            setPerson({ name: '', role: '', company: '', label: null, email: '', phone: '', linkedin: '', jobIds: [job.id] })
           }}
-          onOpenContact={(id) => {
-            const held = records.contacts.find((entry) => entry.id === id)
-            // The job modal offers only the people contactsOf read for this job in the
-            // same render, so the person is always found, KN-427.
-            if (held) setPerson({ id: held.id, values: asValues(held) })
+          // Connecting a person of the company links them here; removing one only
+          // unlinks them, and they stay in the network, the handoff's.
+          onConnectContact={(id) => {
+            records.linkContact(id, job.id)
           }}
-          onDeleteContact={(id) => {
-            records.deleteContacts([id])
+          onUnlinkContact={(id) => {
+            records.linkContact(id, null)
           }}
           onAddFiles={(files) => {
             records.addFiles(job.id, files)
@@ -721,67 +719,31 @@ export const JobsScreen = ({
         />
       ) : null}
 
-      {/* Adding and editing are different shapes, KN-386: an Edit carries the
-          id it is on and the record that belongs to it, so a form cannot be
-          filled from one contact and saved onto another. */}
-      {editing === null ? (
-        <ContactModal
-          open={person !== undefined}
-          mode="add"
-          // Added from inside a job opportunity, the form starts with that job
-          // chosen, KN-056.
-          {...(person ? { initial: person.values } : {})}
-          jobs={people}
-          {...labels}
-          onSave={(values) => {
-            const contact = {
-              name: values.name.trim(),
-              role: values.role.trim() === '' ? null : values.role.trim(),
-              company: values.company.trim() === '' ? null : values.company.trim(),
-              email: values.email.trim() === '' ? null : values.email.trim(),
-              phone: values.phone.trim() === '' ? null : values.phone.trim(),
-              linkedin: values.linkedin.trim() === '' ? null : values.linkedin.trim(),
-              job: records.jobs.find((entry) => entry.id === values.jobIds[0])?.draft.title ?? null,
-            }
-            records.addContact(contact, values.jobIds[0] ?? null)
-            setPerson(undefined)
-          }}
-          onCancel={() => {
-            setPerson(undefined)
-          }}
-        />
-      ) : (
-        <ContactModal
-          open
-          mode="edit"
-          recordId={editing.id}
-          initial={editing}
-          jobs={people}
-          {...labels}
-          onSave={(values) => {
-            const contact = {
-              name: values.name.trim(),
-              role: values.role.trim() === '' ? null : values.role.trim(),
-              company: values.company.trim() === '' ? null : values.company.trim(),
-              email: values.email.trim() === '' ? null : values.email.trim(),
-              phone: values.phone.trim() === '' ? null : values.phone.trim(),
-              linkedin: values.linkedin.trim() === '' ? null : values.linkedin.trim(),
-              job: records.jobs.find((entry) => entry.id === values.jobIds[0])?.draft.title ?? null,
-            }
-            records.saveContact(editing.id, contact, values.jobIds[0] ?? null)
-            setPerson(undefined)
-          }}
-          onCancel={() => {
-            setPerson(undefined)
-          }}
-          // Asked about first, as the network page asks, KN-348: the edit closes
-          // into the confirmation, and nobody goes until it is confirmed.
-          onDelete={() => {
-            setDeletingPeople([editing.id])
-            setPerson(undefined)
-          }}
-        />
-      )}
+      <ContactModal
+        open={person !== undefined}
+        mode="add"
+        // Added from inside a job opportunity, the form starts with that job
+        // chosen, KN-056.
+        {...(person ? { initial: person } : {})}
+        jobs={people}
+        {...labels}
+        onSave={(values) => {
+          const contact = {
+            name: values.name.trim(),
+            role: values.role.trim() === '' ? null : values.role.trim(),
+            company: values.company.trim() === '' ? null : values.company.trim(),
+            email: values.email.trim() === '' ? null : values.email.trim(),
+            phone: values.phone.trim() === '' ? null : values.phone.trim(),
+            linkedin: values.linkedin.trim() === '' ? null : values.linkedin.trim(),
+            job: records.jobs.find((entry) => entry.id === values.jobIds[0])?.draft.title ?? null,
+          }
+          records.addContact(contact, values.jobIds[0] ?? null)
+          setPerson(undefined)
+        }}
+        onCancel={() => {
+          setPerson(undefined)
+        }}
+      />
 
       <Modal
         open={renaming !== null}
@@ -865,20 +827,6 @@ export const JobsScreen = ({
         onConfirm={remove}
         onCancel={() => {
           setDeleting(null)
-        }}
-      />
-
-      <ConfirmModal
-        open={deletingPeople.length > 0}
-        title={i18n._('Delete contact')}
-        body={i18n._('This contact is deleted for good and cannot be brought back.')}
-        confirmLabel={i18n._('Delete')}
-        onConfirm={() => {
-          records.deleteContacts(deletingPeople)
-          setDeletingPeople([])
-        }}
-        onCancel={() => {
-          setDeletingPeople([])
         }}
       />
     </Stack>

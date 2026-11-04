@@ -95,7 +95,7 @@ export const messages: Record<string, string> = {
   Fuchsia: 'سرخابی',
   'Job opportunity sections': 'بخش‌های فرصت شغلی',
   'Job opportunity info': 'اطلاعات فرصت شغلی',
-  History: 'سابقه',
+  History: 'تاریخچه',
   Note: 'یادداشت',
   'Related people': 'افراد مرتبط',
   Files: 'فایل‌ها',
@@ -224,7 +224,7 @@ export const messages: Record<string, string> = {
   Manual: 'دستی',
   'Last edited:': 'آخرین ویرایش:',
   Download: 'دانلود',
-  'Drop a file here': 'فایل را اینجا رها کن',
+  'Drop a file here': 'فایل رو اینجا رها کنید',
   'Choose file': 'انتخاب فایل',
   KB: 'کیلوبایت',
   MB: 'مگابایت',
@@ -413,4 +413,5 @@ export const messages: Record<string, string> = {
   'Application deadline': 'مهلت درخواست',
   'Enter a valid date; the deadline cannot be before the posting date':
     'تاریخ معتبر وارد کن؛ مهلت درخواست نمی‌تواند قبل از تاریخ انتشار باشد',
+  'You can change the date of each stage.': 'تاریخ هر مرحله رو می‌تونید ویرایش کنید.',
 }

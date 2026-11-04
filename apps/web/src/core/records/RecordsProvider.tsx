@@ -31,6 +31,8 @@ export interface RecordsValue extends Records {
   deleteJobs: (ids: readonly string[]) => void
   addContact: (contact: ContactCardContact, jobId: string | null) => void
   saveContact: (id: string, contact: ContactCardContact, jobId: string | null) => void
+  /** Links a person to a job opportunity, or to none, and keeps who they are. */
+  linkContact: (id: string, jobId: string | null) => void
   deleteContacts: (ids: readonly string[]) => void
   /** Keeps what a file is, and its bytes for this visit, KN-045. */
   addFiles: (jobId: string, files: readonly File[]) => void
@@ -61,6 +63,7 @@ const NO_RECORDS: RecordsValue = {
   deleteJobs: () => undefined,
   addContact: () => undefined,
   saveContact: () => undefined,
+  linkContact: () => undefined,
   deleteContacts: () => undefined,
   addFiles: () => undefined,
   downloadFile: () => undefined,
@@ -215,6 +218,9 @@ export const RecordsProvider = ({ initial, owner = '', children }: RecordsProvid
           ...from,
           contacts: from.contacts.map((held) => (held.id === id ? { ...held, jobId, contact } : held)),
         }))
+      },
+      linkContact: (id, jobId) => {
+        change((from) => ({ ...from, contacts: from.contacts.map((held) => (held.id === id ? { ...held, jobId } : held)) }))
       },
       deleteContacts: (ids) => {
         const wanted = new Set(ids)

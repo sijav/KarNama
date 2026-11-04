@@ -109,18 +109,18 @@ test('the job modal keeps a note, a person and the history of its moves, KN-045'
   await page.getByRole('button', { name: FIRST }).click()
   const modal = page.getByRole('dialog')
 
-  // Its status changes from the modal's own header, and the history tab grows.
+  // Its status is chosen in the modal's own header, and recorded with «ذخیره»,
+  // as the handoff says, KN-800.
   await modal.getByRole('button', { name: new RegExp(SAVED) }).click()
   await page.getByRole('dialog').getByRole('radio', { name: OFFER }).check()
   await page.getByRole('dialog').getByRole('button', { name: 'تأیید' }).click()
-  await modal.getByRole('tab', { name: 'سابقه' }).click()
-  await expect(modal.getByText(OFFER).first()).toBeVisible()
+  await expect(modal.getByRole('button', { name: new RegExp(OFFER) })).toBeVisible()
 
   // A note is written and a person is kept against this job opportunity.
   await modal.getByRole('tab', { name: 'یادداشت' }).click()
   await modal.getByRole('textbox').fill('با مدیر فنی صحبت شد')
   await modal.getByRole('tab', { name: 'افراد مرتبط' }).click()
-  await modal.getByRole('button', { name: 'افزودن مخاطب' }).click()
+  await modal.getByRole('button', { name: 'افزودن نفر' }).click()
   const person = page.getByRole('dialog').last()
   await person.getByLabel('اسم و فامیل').fill('مینا رضایی')
   await person.getByRole('button', { name: 'افزودن', exact: true }).click()
@@ -137,7 +137,8 @@ test('the job modal keeps a note, a person and the history of its moves, KN-045'
   const reopened = page.getByRole('dialog')
   await reopened.getByRole('tab', { name: 'افراد مرتبط' }).click()
   await expect(reopened.getByText('مینا رضایی')).toBeVisible()
-  await reopened.getByRole('tab', { name: 'سابقه' }).click()
+  // The move was written into the history when it was saved.
+  await reopened.getByRole('tab', { name: 'تاریخچه' }).click()
   await expect(reopened.getByText(OFFER).first()).toBeVisible()
 })
 

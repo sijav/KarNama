@@ -2055,37 +2055,49 @@ opportunity is edited in place in the Job Modal, section 3. KN-029, KN-790.
 ### The Job Modal
 
 Node `210:276`, 720 by 617, editable where it stands: the set's description
-says there is no separate view and edit. The header, 24 above and at the sides
-and 16 below, holds the title in Heading/M and the company in Body
-`text/secondary` 4 under it, and at its other end the Status Control, which
-changes the status at once rather than with Save, and the 20 x. The tabs follow
-edge to edge, the Tab Item row of KN-023, in the owner's order, KN-072:
-«اطلاعات فرصت شغلی», «سابقه», «یادداشت», «افراد مرتبط», «فایل‌ها»; the chosen one's
-panel scrolls in the body's 24 while the row keeps its 44. A panel is a tab stop
-only when nothing in it is, as the WAI-ARIA tabs pattern asks, so Tab goes from
-the tab to a panel's first field, KN-302. **Info**, `210:101`,
-is the add modal's fields at 328 a column, the posting's link with a 44 square
-in `bg/surface-secondary` that opens it, drawn only when there is a link, a
-rule, the description under a 16 note icon and «شرح شغل و مسئولیت‌ها» at 14 and
-SemiBold, a field of two lines that grows, and the skills under a tag icon, chips
-at 12 and Medium in `text/secondary` on `bg/surface-secondary`, radius full.
-**History**, the file's block at the foot of Info moved to its own tab second,
-lists each change of status newest first: the status's name at 14 and Medium,
-and at the other end the day on the reader's calendar and «دستی» or «خودکار» at
-12 in `text/secondary`. **Note**, `210:145`, is a field 200 tall with «آخرین
-ویرایش:» and its day under it; what is typed there or in Info is held by the
-modal, so a switch of tabs keeps it. **Related people**, `210:208`, are compact
-Contact Cards and the dashed «+ افزودن مخاطب», 46 tall, dashed 6 and 4 in the file
-and CSS's own dash here. **Files**, `210:275`, are rows of a 40 tile, the name at
-14 and Medium over its kind, size and day at 12, and a 32 download in
-`bg/surface-secondary`; then the drop zone on `bg/surface-secondary`, «فایل را
-اینجا رها کن» over Button S Secondary «انتخاب فایل». The footer, 16 and 24 under a
-rule, puts Cancel and Save at the inline start and Destructive «حذف فرصت شغلی» at
-the end, where the file says «حذف آگهی», KN-329's rule. The file draws it in
-Persian alone; where the three do not fit on one row, as in English on a phone,
-the delete takes a row of its own 12 below and keeps the inline end, rather than
-breaking its label onto a second line of the Button's 44, KN-514. Saving without
-a title or a company goes back to Info and says which. KN-030.
+says there is no separate view and edit. Read in the original on 2026-11-04,
+KN-800, with its fifth variant, `Tab=History` `760:47508`, and the handoff's
+rules for it. The header, 24 above and at the sides and 16 below, holds the title
+at 20 and SemiBold and the company in Body `text/secondary` 4 under it, and at
+its other end the Status Control, the More Button, an Icon Button Neutral of the
+`more` glyph at 32, and the 20 Popover Close, 12 apart. The More Button opens
+the «…» of `894:75677`, the Card Menu without its change of status, since the
+Status Control sits beside it: «باز کردن لینک آگهی», only when there is a link,
+and «حذف فرصت شغلی», handed to the page once the menu has closed so that a delete
+backed out of leaves focus on the «…», KN-344. The tabs follow edge to edge, the
+Tab Item row of KN-023, in the original's order: «اطلاعات فرصت شغلی», «یادداشت»,
+«افراد مرتبط», «فایل‌ها», «تاریخچه»; the chosen one's panel scrolls in the body's
+24 while the row keeps its 44. A panel is a tab stop only when nothing in it is,
+as the WAI-ARIA tabs pattern asks, so Tab goes from the tab to a panel's first
+field, KN-302. **Info**, `210:101`, is the add modal's fields at 328 a column,
+the Source Picker among them, the posting's link with a 44 square in
+`bg/surface-secondary` 8 after it that opens it, drawn only when there is a
+link, a rule, the description under a 16 note icon and «شرح شغل و مسئولیت‌ها» at
+14 and SemiBold, a field of two lines that grows, and the skills under a tag
+icon, chips at 12 and Medium in `text/secondary` on `bg/surface-secondary`,
+radius full. **Note**, `210:145`, is a field 200 tall with «آخرین ویرایش:» and
+its day 16 under it; what is typed in any tab is held by the modal, so a switch
+of tabs keeps it. **Related people**, `210:208`, are the Company Match at the top,
+the people of the company in the network who are not linked, which draws
+nothing with nobody; the Related Person rows in their list of `bg/surface` at
+radius md, an edge of `border/default` inside and a rule between rows, whose
+remove only unlinks; and Add Contact, «+ افزودن نفر». **Files**, `210:275`, are
+rows of a 40 tile, the name at 14 and Medium over its size, day and kind at 12,
+«۲۴۰ کیلوبایت · ۱۰ شهریور ۱۴۰۵ · PDF», and a 32 download in
+`bg/surface-secondary`; then the drop zone on `bg/surface-secondary`, «فایل رو
+اینجا رها کنید» over Button S Secondary «انتخاب فایل». **History**, `760:47508`,
+lists the changes of status and the interview rounds, newest first, each a
+History / Row, the job's first entry Locked and last; «تاریخ هر مرحله رو
+می‌تونید ویرایش کنید.» at 12 in `text/secondary` 16 above the list, and each row's
+date pressable, only where the page edits the dates, KN-734. The rounds are
+handed in with their title and detail until the record keeps them, KN-733. The
+footer, 16 and 24 under a rule, puts «انصراف» and «ذخیره» at the inline end, 12
+apart, with no delete; «ذخیره» is off until something differs from the record.
+A stage chosen in the header waits for «ذخیره», the ready-to-save of
+`938:109984`, while a closed status is handed to the page at once, which closes
+the modal for the board's undo; closing with something changed asks in Modal /
+Unsaved, the close, Escape, the scrim and «انصراف» alike. Saving without a title
+or a company goes back to Info and says which. KN-030, KN-800.
 
 ### A stroke is drawn inside, and takes no space
 
@@ -2213,7 +2225,7 @@ of the contract.
 | Code Input          | `407:6981`| the Code Row of the Auth Code frames, five boxes over one field; no library component |
 | Tab Item            | `204:20`  | Default, Active, Hover                                                                          |
 | Bulk Action Bar     | `401:436` | Type=Jobs, Type=Contacts                                                                        |
-| Job Modal           | `210:276` | tabs Info, Note, Contacts, Files                                                                |
+| Job Modal           | `210:276` | tabs Info, Note, Contacts, Files, History                                                       |
 | Icon                | `239:44`  | 32 icons, 24×24, 2px stroke, round cap and join                                                 |
 | Icon Button         | `460:672` | Neutral and Danger × Default, Hover, Disabled; Primary × Default, Hover                         |
 | Contact Card        | `248:116` | Full and Compact × Default, Hover, Selected                                                     |
@@ -2367,17 +2379,12 @@ outright, twice, for the contacts grid and as a general principle. Figma reverse
 its arrays because horizontal Auto Layout always lays out left to right; code
 must not copy that. Reversing an array in code to "fix" RTL is a defect.
 
-**The Job Modal replaces a detail page.** The file draws four tabs at `210:276`. The third one
-was once labelled «مخاطبین», which the rename below supersedes, and the file has
-since applied the renames, read with use_figma on 2026-09-11, KN-023:
-اطلاعات فرصت شغلی, یادداشت, افراد مرتبط, فایل‌ها. It also puts status history at the
-bottom of the Info tab and flags that as open item 18, and **the owner settled
-that on 2026-09-08, KN-072: history is now its own tab**. Its POSITION, second,
-is an **author proposal, not yet put to the owner**, see section 6. So the modal
-has FIVE: اطلاعات فرصت شغلی, سابقه, یادداشت, افراد مرتبط, فایل‌ها. See section 6. This is
-the second place the build deliberately departs from the frame, the first being
-where رد شده sits on the board, and both are the owner's call rather than a
-reading of the file.
+**The Job Modal replaces a detail page.** The redesign draws five tabs at
+`210:276`, read on 2026-11-04, KN-800: اطلاعات فرصت شغلی, یادداشت, افراد مرتبط,
+فایل‌ها, and **تاریخچه last**, `760:47508`. The owner made history a tab of its
+own on 2026-09-08, KN-072, and the redesign, which the owner asked everything to
+match on 2026-11-03, places it last, so the second place the author proposed
+is withdrawn and KN-517's question is answered by the frame. See section 6.
 
 **A Contact Card has no detail view.** Everything about a contact is on the
 card itself. There is a Contact Modal, but only for Add and Edit.
@@ -2662,23 +2669,14 @@ Components canvas open item 18. It is no longer at the bottom of the Info tab.
 The trail is the payoff of the whole data model, and a tab gives it room for
 timestamps and per-transition notes instead of burying it under a scroll.
 
-**That makes FIVE tabs, not three.** Frame `210:276` draws four variants —
-`Tab=Info` `210:101`, `Tab=Note` `210:145`, `Tab=Contacts` `210:208`,
-`Tab=Files` `210:275`, each 720x617 — and this decision inserts a fifth:
+**That makes FIVE tabs, and the history is last.** The redesign draws the fifth
+variant, `Tab=History` `760:47508`, at the end of the row:
 
-> اطلاعات فرصت شغلی · **سابقه** · یادداشت · افراد مرتبط · فایل‌ها
+> اطلاعات فرصت شغلی · یادداشت · افراد مرتبط · فایل‌ها · **تاریخچه**
 
-**Author proposal, not yet put to the owner: history goes SECOND**, directly
-after the information it is the history OF. The owner settled that history gets
-its own TAB; they were never asked where that tab sits. Second position is the
-author's reading of what follows from the decision, and it is recorded here so
-it can be argued with rather than inherited as settled.
-
-The
-question put to the owner illustrated the idea with a three-tab sketch, and that
-sketch was an illustration rather than the tab set: reading it as the answer
-would silently drop افراد مرتبط and فایل‌ها, which the design draws and the product
-needs. The decision adds a tab; it does not replace the others.
+The author once proposed it second, after the information it is the history OF,
+and never put that to the owner, KN-517; the frame settles it. The tab holds the
+changes of status and the interview rounds, newest first, as the handoff says.
 
 **The Review step shows everything the parse filled, with the required fields
 marked.** Owner, KN-075, over frame `376:31`. Not only the three required ones.

@@ -153,6 +153,7 @@ describe('the records provider', () => {
       held?.deleteStatus('a')
       held?.addContact({ name: 'a', role: null, company: null, email: null, phone: null, linkedin: null, job: null }, null)
       held?.saveContact('a', { name: 'a', role: null, company: null, email: null, phone: null, linkedin: null, job: null }, null)
+      held?.linkContact('a', null)
       held?.deleteContacts(['a'])
       held?.addFiles('a', [])
       held?.downloadFile('a')
@@ -241,6 +242,26 @@ describe('the records provider', () => {
 
     held.deleteContacts([id])
     expect((JSON.parse(written[2] ?? '{}') as Records).contacts).toEqual([])
+  })
+
+  it('links a person to a job opportunity and lets them go from it, keeping who they are', () => {
+    const written: string[] = []
+    vi.stubGlobal('localStorage', { getItem: () => null, setItem: (_key: string, value: string) => written.push(value) })
+    const { held } = capture(seeded())
+    const person = { name: 'Mina', role: 'HR', company: 'Digikala', email: null, phone: null, linkedin: null, job: null }
+    held.addContact(person, null)
+    held.addContact({ ...person, name: 'Sara' }, null)
+    const id = (JSON.parse(written[1] ?? '{}') as Records).contacts[1]?.id ?? ''
+
+    held.linkContact(id, 'job-1')
+    const linked = (JSON.parse(written[2] ?? '{}') as Records).contacts
+    expect(linked.map((entry) => [entry.contact.name, entry.jobId])).toEqual([
+      ['Sara', null],
+      ['Mina', 'job-1'],
+    ])
+
+    held.linkContact(id, null)
+    expect((JSON.parse(written[3] ?? '{}') as Records).contacts[1]).toMatchObject({ jobId: null, contact: person })
   })
 
   it('keeps what a file is, and hands back only what this visit added', () => {

@@ -2,6 +2,7 @@ import { dayFrom, emptyDraft, type JobDraft } from '../../shared/add-job'
 import type { ContactCardContact } from '../../shared/contact-card'
 import type { JobContact, JobFile, JobRecord, JobSaved, StatusChange } from '../../shared/job-modal'
 import type { LinkedJobItem } from '../../shared/linked-jobs'
+import type { CompanyMatchPerson } from '../../shared/related-person'
 import type { SortOrder } from '../../shared/sort-control'
 import { sourceKey, type SourceOption } from '../../shared/source-picker'
 import type { StatusOption } from '../../shared/status-picker'
@@ -244,6 +245,20 @@ export const ownSources = (records: Records): SourceOption[] => {
 export const peopleAtCompany = (records: Records, company: string): number => {
   const key = sourceKey(company)
   return key === '' ? 0 : records.contacts.filter((held) => sourceKey(held.contact.company ?? '') === key).length
+}
+
+/**
+ * The network's people at a company who are not linked to a job opportunity,
+ * for its related people tab's Company Match: the company folded as
+ * `peopleAtCompany` folds it, and nobody for no company.
+ */
+export const companyMatches = (records: Records, jobId: string, company: string): CompanyMatchPerson[] => {
+  const key = sourceKey(company)
+  return key === ''
+    ? []
+    : records.contacts
+        .filter((held) => held.jobId !== jobId && sourceKey(held.contact.company ?? '') === key)
+        .map((held) => ({ id: held.id, name: held.contact.name, role: held.contact.role, company: held.contact.company }))
 }
 
 /** Everything a search matches in a person: what a reader would look for by eye. */

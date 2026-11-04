@@ -9,11 +9,17 @@ import type { StoryMeta } from '../story-docs/story-meta'
 import { CardMenu, type CardMenuProps } from './CardMenu'
 
 // A card's three dots on a phone, and the menu that hangs from them. The story
-// can leave the link's action out, for a posting with no link.
-const WithTrigger = ({ onClose, withoutLink = false, ...args }: CardMenuProps & { withoutLink?: boolean }) => {
+// can leave the link's action out, for a posting with no link, and the change of
+// status, for the Job Modal's header, which has a Status Control of its own.
+const WithTrigger = ({
+  onClose,
+  withoutLink = false,
+  withoutStatus = false,
+  ...args
+}: CardMenuProps & { withoutLink?: boolean; withoutStatus?: boolean }) => {
   const trigger = useRef<HTMLElement>(null)
   const [anchor, setAnchor] = useState<HTMLElement | null>(null)
-  const { onOpenLink, ...rest } = args
+  const { onOpenLink, onChangeStatus, ...rest } = args
   return (
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', paddingInline: `${spacing.lg}px` }}>
       <Box ref={trigger} sx={{ display: 'inline-flex' }}>
@@ -27,6 +33,7 @@ const WithTrigger = ({ onClose, withoutLink = false, ...args }: CardMenuProps & 
         <CardMenu
           {...rest}
           {...(withoutLink || onOpenLink === undefined ? {} : { onOpenLink })}
+          {...(withoutStatus || onChangeStatus === undefined ? {} : { onChangeStatus })}
           anchorEl={anchor}
           onClose={() => {
             setAnchor(null)
@@ -83,5 +90,22 @@ export const WithoutALink: Story = {
     const menu = await open(canvasElement)
     await expect(itemsOf(menu).map((item) => item.textContent)).toEqual([i18n._('Change status'), i18n._('Delete job opportunity')])
     await userEvent.keyboard('{Escape}')
+  },
+}
+
+export const InTheJobModal: Story = {
+  globals: { locale: 'fa-IR' },
+  render: (args) => <WithTrigger {...args} withoutStatus />,
+  play: async ({ args, canvasElement }) => {
+    // The Job Modal's «…», 894:75677: its header has a Status Control of its
+    // own, so the menu offers the posting's link and the delete, and nothing
+    // else; the link closes the menu and hands over.
+    const menu = await open(canvasElement)
+    await expect(itemsOf(menu).map((item) => item.textContent)).toEqual([i18n._('Open the posting link'), i18n._('Delete job opportunity')])
+    const link = itemsOf(menu)[0]
+    if (!link) throw new Error('no link')
+    await userEvent.click(link)
+    await expect(args.onOpenLink).toHaveBeenCalledTimes(1)
+    await expect(args.onChangeStatus).not.toHaveBeenCalled()
   },
 }

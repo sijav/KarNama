@@ -1,6 +1,7 @@
 export {
   REJECTED,
   columnOrder,
+  companyMatches,
   contactMatches,
   contactsOf,
   defaultStatuses,
