@@ -5,6 +5,7 @@ import { useArgs } from 'storybook/preview-api'
 import { clearAllMocks, expect, fn, userEvent, within } from 'storybook/test'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
+import { darkSemantic, darkStatus } from '../../theme/darkMode'
 import { semantic, status, type StatusToken } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { COLOURS, ColorPicker, type ColorPickerProps } from './ColorPicker'
@@ -90,10 +91,11 @@ const computedColour = (host: HTMLElement, colour: string) => {
 }
 
 // The colour names in the file's order, as the Documentation frame 376:30
-// names the nine: English, through an English catalog, and Persian by looking
-// each English id up in the Persian one.
+// names the nine but for the three KN-730 changed, named for what they are,
+// KN-803: English, through an English catalog, and Persian by looking each
+// English id up in the Persian one.
 const i18n = setupI18n({ locale: 'en-US', messages: { 'en-US': en } })
-const NAMES = [i18n._('Green'), i18n._('Teal'), i18n._('Purple'), i18n._('Pink'), i18n._('Cyan'), i18n._('Gray'), i18n._('Indigo'), i18n._('Amber'), i18n._('Red')]
+const NAMES = [i18n._('Green'), i18n._('Orange'), i18n._('Purple'), i18n._('Pink'), i18n._('Fuchsia'), i18n._('Gray'), i18n._('Indigo'), i18n._('Teal'), i18n._('Red')]
 const persian = (id: string) => {
   const text = fa[id]
   if (text === undefined) throw new Error(`the Persian catalog has no ${id}`)
@@ -273,4 +275,20 @@ export const ArrowsInPersian: Story = {
 export const ArrowsInEnglish: Story = {
   globals: { locale: 'en-US' },
   play: arrowsFollowTheScreen('ltr'),
+}
+
+export const Dark: Story = {
+  // The dark scheme: the panel on the dark surface, and the chosen swatch's
+  // edge and fill in its status's dark pair.
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ args, canvasElement }) => {
+    await isTheFiles(canvasElement, args.value)
+    const group = within(canvasElement).getByRole('radiogroup', { name: persian(i18n._('Status colour')) })
+    const panel = group.parentElement
+    if (!panel) throw new Error('the group has no panel')
+    await expect(getComputedStyle(panel).backgroundColor).toBe(computedColour(panel, darkSemantic['bg/surface']))
+    const picked = swatchOf(within(group).getByRole('radio', { checked: true }))
+    await expect(getComputedStyle(picked, '::before').borderTopColor).toBe(computedColour(panel, darkStatus[args.value].base))
+    await expect(getComputedStyle(picked).backgroundColor).toBe(computedColour(panel, darkStatus[args.value].container))
+  },
 }

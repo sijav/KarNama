@@ -47,3 +47,7 @@ keyboard; up and down still move through the order.
 ### ArrowsInEnglish
 
 The same keys in English, where the swatches run left to right.
+
+### Dark
+
+The picker in the dark scheme, the chosen swatch in its status's dark pair.

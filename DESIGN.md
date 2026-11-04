@@ -171,6 +171,15 @@ rejected. They are one radio group, and in either direction the left and right
 arrows move to the swatch that sits that way on screen, which WebKit's own radio
 group does not do right to left, KN-301.
 
+Read again in the original on 2026-11-04, KN-803: the panel and the swatches are
+the copy's; its helper says «رنگ خودکار انتخاب شده؛ اگه خواستید عوضش کنید.», the
+redesign's plural you; and its example marks custom-1 with a ring and tick in
+an unbound `#0f766e`, the teal custom-1 was before KN-730, where the copy bound
+them to the chosen status's base, which the code keeps. The Documentation frame
+`376:30` still names interview amber, custom-1 teal and custom-4 cyan, so the
+swatches the screen reader names take the colours they now are: teal, orange
+and fuchsia, «سبزآبی», «نارنجی» and «سرخابی».
+
 ### Spacing, radius, icon size
 
 ```

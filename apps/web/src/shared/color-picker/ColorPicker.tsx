@@ -24,9 +24,11 @@ const EDGE = 2
 // defaults. Read from the swatches' x coordinates; RTL is the natural order.
 export const COLOURS = ['offer', 'custom-1', 'custom-2', 'custom-3', 'custom-4', 'new', 'applied', 'interview', 'rejected'] as const satisfies readonly StatusToken[]
 
-// Each swatch is named for its colour, as the Documentation frame 376:30 names
-// the nine, since a colour is what it offers and a status name would repeat
-// the board.
+// Each swatch is named for its colour, since a colour is what it offers and a
+// status name would repeat the board. The Documentation frame 376:30 names the
+// nine, but still calls interview, custom-1 and custom-4 by the colours they
+// were before KN-730, so those three are named for what they are now: teal,
+// orange and fuchsia, KN-803.
 const colourName = (i18n: I18n, token: StatusToken): string => {
   switch (token) {
     case 'new':
@@ -34,19 +36,19 @@ const colourName = (i18n: I18n, token: StatusToken): string => {
     case 'applied':
       return i18n._('Indigo')
     case 'interview':
-      return i18n._('Amber')
+      return i18n._('Teal')
     case 'rejected':
       return i18n._('Red')
     case 'offer':
       return i18n._('Green')
     case 'custom-1':
-      return i18n._('Teal')
+      return i18n._('Orange')
     case 'custom-2':
       return i18n._('Purple')
     case 'custom-3':
       return i18n._('Pink')
     case 'custom-4':
-      return i18n._('Cyan')
+      return i18n._('Fuchsia')
   }
 }
 
