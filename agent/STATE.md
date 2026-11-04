@@ -20,10 +20,10 @@ Playwright. NestJS, GraphQL code first, Prisma, Postgres on **Neon**. The web at
 `/storybook/`, the API on Render. lingui, **English ids**. **Components first
 with their stories, then screens. Match the design exactly.**
 
-## Where things stand, 2026-11-04, morning
+## Where things stand, 2026-11-04, late morning
 
 **The owner's order: the design, then the backend, then the rest.** OKR-3, the
-redesign, is position 1 with 54 open and 57 done; OKR-4, the backend, position
+redesign, is position 1 with 52 open and 62 done; OKR-4, the backend, position
 2; OKR-1 and OKR-2 follow. Within the design every component card is
 `critical`, new and redrawn alike, ahead of the record model (KN-731 to KN-741)
 and the screens (KN-805 to KN-828). KN-829 reads every older card against the
@@ -43,10 +43,13 @@ card's footer line, KN-749 the outcome strip, KN-751 the grouped status picker,
 KN-752 the add modal's status trigger, KN-753 the history row, KN-759 the column
 sort controls, KN-846 the Filter Chip without a count, KN-760 the stage modal,
 KN-762 the delete modal with a reason, KN-769 the empty states' pictures, KN-770
-the network's row, KN-772 the linked job opportunities, KN-775 the person picker
-and KN-789 the Change Status modal round the grouped picker. **KN-847 is done
-too**: the Pages build had failed on every push since KN-795, on three stale
-Storybook checks, and its actions now run on Node 24.
+the network's row, KN-772 the linked job opportunities, KN-775 the person picker,
+KN-789 the Change Status modal round the grouped picker, KN-796 the sidebar with
+«آمار من» and the `/stats` route, KN-848 the shell's buttons named by their label
+tips, KN-850 and its child KN-851 a phone's header, and KN-783 Tab Bar v2.
+**KN-847 is done too**: the Pages build had failed on every push since KN-795,
+on three stale Storybook checks, and its actions now run on Node 24; every push
+since has gone green.
 
 **New pieces other cards build on**: `shared/popover`'s `popoverSurface` and
 `popoverPaper` at radius 10 with `elevation.popover`; `shared/date-picker`,
@@ -62,7 +65,12 @@ which KN-754 and KN-756 join; `shared/board` with the outcome strip;
 `SearchPicker`, which the job picker and `shared/person-picker`'s
 `PersonPicker` both draw through; `shared/quoted.ts` for a name in quotation
 marks; the Button's `surface` for a coloured ground and its `destructive-text`.
-`core/records`' `statusGroups` hands the modal and the Status Control the
+The navigation's three are the board, the Stats page and the network, in the
+sidebar and the tab bar alike; adding is the board's header button, and `/add`
+keeps its address with no place in either. `/stats` opens `StatsScreen`, a
+Header band until KN-823 builds the page. The Icon Button takes a
+`description`, heard and never drawn. `screens/phoneHeaderCheck.ts` measures a
+phone's Page Header. `core/records`' `statusGroups` hands the modal and the Status Control the
 stages and the outcomes, Rejected the one outcome until KN-731 gives each status
 its group. The story fixtures' `stageOptions` and `outcomeOptions` are the
 grouped picker's four and four. **Adoption is the screens'**: notes on KN-805
@@ -90,6 +98,13 @@ heredoc, so a patch script goes through the Write tool; it also rewrites an
 argument such as `/storybook/` into a Windows path, so a build with that base
 runs from PowerShell.
 
+**A phone's header, the owner's answer of 2026-11-04** ("Gear holds the rest"):
+the title, the page's action (the board's is Button S with its plus,
+`1274:64227`) and the settings gear alone; the language and signing out are
+inside the Settings dialog, and the title may be cut to fit. The sidebar keeps
+its row of three. e2e/session.ts' `signOut` takes the sidebar's button on a
+desktop and Settings' on a phone.
+
 **CI**: the Pages workflow builds the app and Storybook and runs
 `e2e/storybook`'s three specs against the build, so a story's change can fail
 it while every local suite passes. After a push, watch the run in the
@@ -115,10 +130,10 @@ sets WEB_ORIGIN and Cloudflare's Always Use HTTPS. Both wait in OKR-4.
 with `--remote-control`, one session per kind in `.claude/claude-sessions/`,
 and Luna's prefix; a second roast of one kind waits for the first's lock. Each
 closed card is roasted in the background to `.claude/roasts/`; **none is judged
-until every to-do is done**. Every card closed through KN-847 has its record;
-KN-789's was running at this writing, and KN-762's, which had none, was
-launched again behind it. The launchers in the scratchpad, `roast-789.py` the
-latest, show how to pass the arguments from Python.
+until every to-do is done**. Every card closed through KN-850, KN-851 with it,
+has its record, KN-762's among them; KN-783's was running at this writing. The
+launchers in the scratchpad, `roast-783.py` the latest, show how to pass the
+arguments from Python.
 
 ## What fails, and which failures are known
 
@@ -139,7 +154,7 @@ duplicates of KN-551 and KN-699 today.
 
 Drift is Prettier's, measured with the repository's configuration from the
 file's real path: `prettier --stdin-filepath <path> < <file> | diff <file> -`.
-A new file measures 0; hold each baseline: `DESIGN.md` 226 with 9 em dashes,
+A new file measures 0; hold each baseline: `DESIGN.md` 224 with 9 em dashes,
 `AGENTS.md` 0 with 16, `agent/RALPH.md` 5 with 2, `App.stories.tsx` 13,
 `JobsScreen.stories.tsx` 2. **Python's text mode on Windows writes CRLF**: pass
 `newline='\n'`, or one edit becomes a whole-file diff.
@@ -155,6 +170,9 @@ fixtures' two sentinels are named nowhere, this file included.
 
 ## The owner's rules, most recent first
 
+- **2026-11-04.** "Gear holds the rest": a phone's Page Header is the title, the
+  page's action and one settings gear; sign out moves inside Settings, which
+  holds the language; the title may be cut a little to fit, more in English.
 - **2026-11-03.** The design first, then the backend, then the rest; within the
   design, missing components and fixes to existing ones first. Finish every
   to-do, roast each to a file in the background, and only when all are done read
