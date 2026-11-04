@@ -47,6 +47,7 @@ export type StoryTitle =
   | 'Shared/ConfirmModal'
   | 'Shared/ContactCard'
   | 'Shared/ContactModal'
+  | 'Shared/DeleteStatusModal'
   | 'Shared/EmploymentTypeSelect'
   | 'Shared/EmptyState'
   | 'Shared/FilterChip'

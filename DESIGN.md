@@ -1187,6 +1187,22 @@ person, so each button is heard with whose it is. A copy writes to the
 clipboard and tells the caller, which says so with the toast, KN-764; a refused
 clipboard says nothing. KN-773.
 
+### The stage delete modal
+
+**Modal / Delete Status**, `919:2885`, Cards=None and Cards=Has, read on
+2026-11-04: deleting a stage the reader made, as its description says; the
+default stages have no delete. The shell at 440, its title «حذف وضعیت «…»؟» with
+Popover / Close at 20. Cards=None, 208 tall, says «این وضعیت از برد حذف می‌شه.
+فرصت شغلی‌ای توش نیست.» in Body `text/secondary` above Ghost «انصراف» and
+Destructive «حذف وضعیت». Cards=Has says how many job opportunities it holds and
+asks where they go, «۲ فرصت شغلی توی این وضعیت هست. انتخاب کنید بعد از حذف کجا
+برن.», with the Select «انتقال فرصت‌های شغلی به» 16 under it, filled, and
+Destructive «حذف و انتقال». The code starts the Select on the first stage the
+caller gives, turns Delete and move off while there is nowhere to move them,
+counts in the reader's digits and plural, quotes the name in the reader's own
+marks from the catalog, `quoted`, and gives Cancel the focus as it opens, as the
+Confirm modal does; the close, Escape and the scrim cancel. KN-761.
+
 ### The unsaved changes modal
 
 **Modal / Unsaved**, `893:3780`, read on 2026-11-04: one component with no
@@ -1565,6 +1581,7 @@ of the contract.
 | Company Logo          | `620:3684`   | the default organisation icon; a fetched logo covers the same square                                              |
 | Modal / Confirm     | `150:92`  | delete and archive confirmation                                                                 |
 | Modal / Unsaved       | `893:3780`   | no variants: save, close without saving, or go back to the modal                                                  |
+| Modal / Delete Status | `919:2885`   | Cards=None, Cards=Has: deleting a stage the reader made, its job opportunities moved                              |
 | Modal / Change Status | `150:93` |                                                                                                 |
 | Modal / Add-Edit    | `166:82`  | steps Paste, PasteFilled, Loading, Review, Manual, Error                                        |
 | Page Header         | `155:56`  | title, optional back button, optional primary action                                            |
