@@ -160,8 +160,10 @@ const isARow = async (choices: readonly HTMLElement[], rtl: boolean) => {
   }
 }
 
-// How much narrower than the file a chip may draw, untracked, KN-847.
+// How much narrower than the file a chip may draw, untracked, and how much
+// wider, a fraction of a pixel in Linux's text, KN-847.
 const SHORTFALL = 5
+const OVERSHOOT = 1
 
 export const Default: Story = {
   globals: { locale: 'fa-IR', colorScheme: 'light' },
@@ -174,12 +176,13 @@ export const Default: Story = {
     // which fill the 335 inside the panel exactly. Figma tracks the chips' Persian
     // 0.2 a letter, which a browser does not do to a joined script, so each is
     // drawn narrower: up to 3 in Chromium on Windows, and 4 in the Linux one the
-    // Pages build checks the published Storybook in, KN-847. The four stay on one
-    // line, which is what the widths are for.
+    // Pages build checks the published Storybook in, which draws others a fraction
+    // over, 65.2 for 65, KN-847. The four stay on one line, which is what the
+    // widths are for and what is checked after them.
     const drawn = choices.map((choice) => choice.getBoundingClientRect().width)
     for (const [index, file] of [89, 92, 65, 65].entries()) {
       const width = drawn[index] ?? 0
-      await expect(width).toBeLessThanOrEqual(file)
+      await expect(width).toBeLessThan(file + OVERSHOOT)
       await expect(width).toBeGreaterThan(file - SHORTFALL)
     }
     await expect(new Set(choices.map((choice) => choice.getBoundingClientRect().top)).size).toBe(1)
