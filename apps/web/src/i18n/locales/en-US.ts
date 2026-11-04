@@ -361,4 +361,10 @@ export const messages: Record<string, string> = {
   'Add the people you deal with, or know, on the way to finding a job.': 'Add the people you deal with, or know, on the way to finding a job.',
   'Add to network': 'Add to network',
   'Open link': 'Open link',
+  'Linked job opportunities': 'Linked job opportunities',
+  'Not linked to a job opportunity yet.': 'Not linked to a job opportunity yet.',
+  'Link to a job opportunity': 'Link to a job opportunity',
+  'Search your job opportunities': 'Search your job opportunities',
+  'Linked': 'Linked',
+  'Unlink': 'Unlink',
 }

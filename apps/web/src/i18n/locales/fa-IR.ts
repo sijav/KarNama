@@ -361,4 +361,10 @@ export const messages: Record<string, string> = {
   'Add the people you deal with, or know, on the way to finding a job.': 'آدم‌هایی که توی مسیر پیدا کردن کار باهاشون سروکار دارید یا می‌شناسیدشون رو اینجا اضافه کنید.',
   'Add to network': 'افزودن به شبکه',
   'Open link': 'باز کردن لینک',
+  'Linked job opportunities': 'فرصت‌های شغلی وصل‌شده',
+  'Not linked to a job opportunity yet.': 'هنوز به فرصت شغلی‌ای وصل نیست.',
+  'Link to a job opportunity': 'وصل کردن به فرصت شغلی',
+  'Search your job opportunities': 'جست‌وجو بین فرصت‌های شغلی',
+  'Linked': 'وصل است',
+  'Unlink': 'برداشتن وصل',
 }

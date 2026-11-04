@@ -190,6 +190,7 @@ export const elevation = {
   popover: '0 4px 12px 0 #12172614',
   toast: '0 8px 24px 0 #11182733',
   illustrationCard: '0 2px 6px 0 #1217260F',
+  picker: '0 6px 16px 0 #1217261F',
 } as const
 
 export const fontFamily = "'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif"

@@ -87,6 +87,7 @@ describe('the token set agrees with DESIGN.md', () => {
       'popover',
       'toast',
       'illustrationCard',
+      'picker',
     ])
     // The shadow numbers, in the order the design stacks them.
     expect(elevation.card).toBe('0 1px 3px 0 #0000000F, 0 1px 2px 0 #0000000A')
@@ -112,6 +113,9 @@ describe('the token set agrees with DESIGN.md', () => {
     // Read from the network empty state's front card, 1083:55329, with use_figma:
     // #121726 at 6 percent, 0x0F, 2 below and blurred 6.
     expect(elevation.illustrationCard).toBe('0 2px 6px 0 #1217260F')
+    // Read from the person modal's job picker, 1092:3072, with use_figma:
+    // #121726 at 12 percent, 0x1F, 6 below and blurred 16.
+    expect(elevation.picker).toBe('0 6px 16px 0 #1217261F')
     // Still exactly two STYLES: the tooltip's, the bar's and the menu's shadows
     // are bound to none, and the document has to say so where the table is.
     expect(design).toContain('exactly two effect styles')
@@ -124,6 +128,7 @@ describe('the token set agrees with DESIGN.md', () => {
     expect(design).toMatch(/`717:12416`[^\n]*#11182733[^\n]*0 8[^\n]*blur 24[^\n]*spread 0/)
     expect(design).toMatch(/`407:6952`[^\n]*#0000000F[^\n]*0 4[^\n]*blur 16[^\n]*spread 0/)
     expect(design).toMatch(/`1083:55329`[^\n]*#1217260F[^\n]*0 2[^\n]*blur 6[^\n]*spread 0/)
+    expect(design).toMatch(/`1092:3072`[^\n]*#1217261F[^\n]*0 6[^\n]*blur 16[^\n]*spread 0/)
   })
 
   it('has five type roles, and Body/Small is not one of them', () => {

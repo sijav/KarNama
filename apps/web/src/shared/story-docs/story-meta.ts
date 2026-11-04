@@ -67,6 +67,8 @@ export type StoryTitle =
   | 'Shared/KanbanColumn'
   | 'Shared/LanguageFlag'
   | 'Shared/LanguageSwitch'
+  | 'Shared/LinkedJob'
+  | 'Shared/LinkedJobs'
   | 'Shared/LoadingState'
   | 'Shared/LogoMark'
   | 'Shared/ManualPathLink'

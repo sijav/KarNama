@@ -221,6 +221,7 @@ shadows, and each value below was read from the named node with
 | no style, popovers      | `844:85811`  | `#12172614` `0 4` blur 12 spread 0  | none                               |
 | no style, toast         | `717:12416`  | `#11182733` `0 8` blur 24 spread 0  | none                               |
 | no style, empty picture | `1083:55329` | `#1217260F` `0 2` blur 6 spread 0   | none                               |
+| no style, job picker    | `1092:3072`  | `#1217261F` `0 6` blur 16 spread 0  | none                               |
 
 The third row is **not an effect style**. The tooltip at `410:469` draws its own
 shadow, 24 percent black, read from the frame's `get_design_context` because
@@ -1429,6 +1430,30 @@ inside too, and opens the person from the name, which chooses them instead while
 the page selects; the count reads left to right, as the frame sets it. It
 replaces the Contact Card on the network page, KN-844. KN-770.
 
+### The linked job opportunities
+
+**Linked Job**, `1092:2997`, Default and Hover, and **Linked Jobs**,
+`1092:3103`, Empty, Filled and Picking, read on 2026-11-04: the job
+opportunities linked to a person, in the person's modal. A Linked Job is a row
+56 tall, 8 above and below and 12 at the sides, 12 between: from the inline
+start its status's stripe, 3 by 32, its title in Body over its company in Label
+`text/secondary`, its status's small chip, and the Neutral Icon Button that
+unlinks it, `link-off`, shown on Hover, which fills the row with
+`bg/surface-secondary`. Linked Jobs puts «فرصت‌های شغلی وصل‌شده» in Label over
+either «هنوز به فرصت شغلی‌ای وصل نیست.» in Body `text/secondary` or the rows in
+a list of `bg/surface` at radius 8 inside one pixel of `border/default`, a
+divider between each; then the Text button «وصل کردن به فرصت شغلی» at S with its
+plus, which opens the job picker 4 under it from its inline start: 360 wide at
+radius 8, 8 round its parts and 4 between, `elevation.picker`, a search inside
+one and a half of `border/focus` at radius 4, and each job opportunity it finds,
+54 tall, its stripe, title, company and status, the linked ones muted with
+«وصل است» and the check in `text/brand` instead of their status. The code makes
+the search a combobox over the list, so the arrows move through the ones that
+can be chosen and Enter links one; a press links it too, and Escape and a press
+outside close it. It shows three before it scrolls, as the frame does, says
+«نتیجه‌ای پیدا نشد» when nothing matches, and draws the unlink button with focus
+inside the row as well as under the pointer. KN-772.
+
 ### The company match
 
 **Company Match**, `1096:3111`, read on 2026-11-04: one component with no
@@ -1858,6 +1883,8 @@ of the contract.
 | Jobs Empty State      | `894:79222`  | no variants: the board's empty state, its picture of stacked cards in the mark's place                            |
 | Network Empty State   | `1083:55307` | no variants: the network page's empty state, its picture of two people's cards                                    |
 | Contact Row           | `1056:2872`  | Default, Hover, Selectable, Selected: one person on the network page                                              |
+| Linked Job            | `1092:2997`  | Default, Hover: a job opportunity linked to a person, unlinked from the row                                       |
+| Linked Jobs           | `1092:3103`  | Empty, Filled, Picking: the person modal's linked job opportunities and the picker                                |
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |
