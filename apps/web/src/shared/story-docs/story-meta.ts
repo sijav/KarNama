@@ -51,6 +51,7 @@ export type StoryTitle =
   | 'Shared/EmploymentTypeSelect'
   | 'Shared/EmptyState'
   | 'Shared/FilterChip'
+  | 'Shared/GroupedStatusPicker'
   | 'Shared/Icon'
   | 'Shared/IconButton'
   | 'Shared/InlineLink'

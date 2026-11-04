@@ -315,4 +315,6 @@ export const messages: Record<string, string> = {
   After: 'After',
   'it was closed': 'it was closed',
   'Closed the same day': 'Closed the same day',
+  'In progress': 'In progress',
+  Closed: 'Closed',
 }

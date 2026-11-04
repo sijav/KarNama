@@ -720,6 +720,23 @@ phone's card has no hover, which a tap would leave behind, and its Checkbox and
 delete unfold while the focus inside is the keyboard's. Mobile Selection draws the
 Bulk Action Bar of Type=Contacts 24 above the foot, in the tab bar's place.
 
+### The grouped status picker
+
+**Status Picker / Grouped**, `636:6417`, read on 2026-11-04, sets its label
+«وضعیت» 12 on 19 at Medium in `text/secondary` and its two captions 12 on 19 at
+Regular in `text/disabled`, `groupedPickerLabel` and `groupedPickerCaption`,
+none bound to a style: a column 10 apart, «در جریان» over the stages, Status
+Choices 8 apart both ways that wrap, ended by the Add Stage chip; a divider of
+`border/default`; and «بسته‌شده» over the four outcomes, «پذیرفته‌شده» in the
+custom-1 pair, «رد شده», and «بی‌پاسخ» and «انصراف» in the new pair's greys. Its
+description: the stages can be customised and the new stage chip always makes
+one; the outcomes are fixed. The code makes each row a radio group named by its
+caption, the two sharing one name, so the browser keeps one choice and one Tab
+stop across both, inside a group named «وضعیت»; the arrows move across both
+rows the way they point, KN-301, and the add chip follows the stages' group
+rather than sitting in it, KN-338. It replaces the flat Status Picker wherever
+the redesign draws a status choice. KN-751.
+
 ### The Status Picker, its choices and the Status Control
 
 The **Status Choice**, `427:567`, is the medium Status Chip in a shell of 4,
@@ -1607,6 +1624,7 @@ of the contract.
 | Status Chip         | `82:2`    | 9 statuses × 2 sizes S/M, display only                                                          |
 | Status Choice       | `427:567` | Default, Hover, Selected                                                                        |
 | Status Picker       | `427:592` | the popover that assigns a status                                                               |
+| Grouped Picker        | `636:6417`   | Status Picker / Grouped: the stages and the outcomes in two groups, one choice                                    |
 | Status Control      | `199:21`  | the clickable wrapper around a chip, Default/Hover/Pressed                                      |
 | Input                 | `95:39`      | Default, Filled, Focus, Error, Disabled, Hover, Filled Hover                                                      |
 | Card                | `137:44`  | Default, Hover, Pressed, Selected, Static, Focus, desktop                                       |

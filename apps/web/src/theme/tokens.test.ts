@@ -149,6 +149,8 @@ describe('the token set agrees with DESIGN.md', () => {
       statusTabName: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
       outcomeStripName: { size: 13, lineHeight: 20, weight: 600, letterSpacing: 0 },
       outcomeStripCount: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+      groupedPickerLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+      groupedPickerCaption: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
     })
     expect(design).toMatch(/`166:68`[^\n]*12 on 19/)
     expect(design).toMatch(/`961:98854`[^.]*12 on 19/)
@@ -164,6 +166,7 @@ describe('the token set agrees with DESIGN.md', () => {
     expect(design).toMatch(/`956:3193`[^.]*13 on 20/)
     expect(design).toMatch(/`1274:3275`[^.]*12 on 19[^.]*13 on 20/)
     expect(design).toMatch(/`638:7928`[^.]*13 on 20[^.]*12 on 19/)
+    expect(design).toMatch(/`636:6417`[^.]*12 on 19[^.]*12 on 19/)
   })
 
   it('has nine statuses, five default and four reserved', () => {

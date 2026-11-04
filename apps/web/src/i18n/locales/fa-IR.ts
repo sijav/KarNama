@@ -315,4 +315,6 @@ export const messages: Record<string, string> = {
   After: 'بعد از',
   'it was closed': 'بسته شد',
   'Closed the same day': 'همون روز بسته شد',
+  'In progress': 'در جریان',
+  Closed: 'بسته‌شده',
 }
