@@ -4,7 +4,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type SyntheticEven
 import { useSearchParams } from 'react-router'
 import { QUERY, searchStep } from '../app/routes'
 import { usePreferences } from '../core/preferences'
-import { columnOrder, contactsOf, jobsIn, REJECTED, statusGroups, tokenOf, useRecords, type JobEntry } from '../core/records'
+import { columnOrder, contactsOf, jobsIn, linkableJobs, REJECTED, statusGroups, tokenOf, useRecords, type JobEntry } from '../core/records'
 import { formatCount } from '../i18n/formatCount'
 import { AddJobModal, type AddJobModalProps, type JobDraft } from '../shared/add-job'
 import { BulkActionBar } from '../shared/bulk-action-bar'
@@ -22,6 +22,7 @@ import { SearchBar, type SearchBarLayout } from '../shared/search-bar'
 import { SortControl, type SortOrder } from '../shared/sort-control'
 import { spacing } from '../theme/tokens'
 import { band, gutterOf } from './band'
+import { asValues, useVisitLabels } from './personModal'
 
 /**
  * The board: a column per status, its cards in it, KN-043.
@@ -338,7 +339,8 @@ export const JobsScreen = ({
     onJobDeleteConfirmationOpenChange?.(deleting !== null)
   }, [deleting, onJobDeleteConfirmationOpenChange])
 
-  const people = records.jobs.map((entry) => ({ value: entry.id, label: entry.draft.title }))
+  const people = linkableJobs(records)
+  const labels = useVisitLabels()
   // The person the contact modal is editing, or null while it adds or is closed:
   // narrowed once, here, so the edit's modal and handlers know their record without
   // a check no reader can fail, KN-427.
@@ -677,26 +679,16 @@ export const JobsScreen = ({
           // The related people are the network's records, kept against this
           // job opportunity, so what is added here is on the network page too.
           onAddContact={() => {
-            setPerson({ id: null, values: { name: '', role: '', company: '', email: '', phone: '', linkedin: '', jobId: job.id } })
+            setPerson({
+              id: null,
+              values: { name: '', role: '', company: '', label: null, email: '', phone: '', linkedin: '', jobIds: [job.id] },
+            })
           }}
           onOpenContact={(id) => {
             const held = records.contacts.find((entry) => entry.id === id)
             // The job modal offers only the people contactsOf read for this job in the
             // same render, so the person is always found, KN-427.
-            if (held) {
-              setPerson({
-                id: held.id,
-                values: {
-                  name: held.contact.name,
-                  role: held.contact.role ?? '',
-                  company: held.contact.company ?? '',
-                  email: held.contact.email ?? '',
-                  phone: held.contact.phone ?? '',
-                  linkedin: held.contact.linkedin ?? '',
-                  jobId: held.jobId,
-                },
-              })
-            }
+            if (held) setPerson({ id: held.id, values: asValues(held) })
           }}
           onDeleteContact={(id) => {
             records.deleteContacts([id])
@@ -721,6 +713,7 @@ export const JobsScreen = ({
           // chosen, KN-056.
           {...(person ? { initial: person.values } : {})}
           jobs={people}
+          {...labels}
           onSave={(values) => {
             const contact = {
               name: values.name.trim(),
@@ -729,9 +722,9 @@ export const JobsScreen = ({
               email: values.email.trim() === '' ? null : values.email.trim(),
               phone: values.phone.trim() === '' ? null : values.phone.trim(),
               linkedin: values.linkedin.trim() === '' ? null : values.linkedin.trim(),
-              job: records.jobs.find((entry) => entry.id === values.jobId)?.draft.title ?? null,
+              job: records.jobs.find((entry) => entry.id === values.jobIds[0])?.draft.title ?? null,
             }
-            records.addContact(contact, values.jobId)
+            records.addContact(contact, values.jobIds[0] ?? null)
             setPerson(undefined)
           }}
           onCancel={() => {
@@ -745,6 +738,7 @@ export const JobsScreen = ({
           recordId={editing.id}
           initial={editing}
           jobs={people}
+          {...labels}
           onSave={(values) => {
             const contact = {
               name: values.name.trim(),
@@ -753,9 +747,9 @@ export const JobsScreen = ({
               email: values.email.trim() === '' ? null : values.email.trim(),
               phone: values.phone.trim() === '' ? null : values.phone.trim(),
               linkedin: values.linkedin.trim() === '' ? null : values.linkedin.trim(),
-              job: records.jobs.find((entry) => entry.id === values.jobId)?.draft.title ?? null,
+              job: records.jobs.find((entry) => entry.id === values.jobIds[0])?.draft.title ?? null,
             }
-            records.saveContact(editing.id, contact, values.jobId)
+            records.saveContact(editing.id, contact, values.jobIds[0] ?? null)
             setPerson(undefined)
           }}
           onCancel={() => {

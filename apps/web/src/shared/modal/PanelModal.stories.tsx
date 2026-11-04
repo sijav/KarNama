@@ -18,7 +18,7 @@ import { PanelModal, type PanelModalProps } from './PanelModal'
 // story pins.
 const titleIn = (locale: Locale) => {
   const i18n = setupI18n({ locale, messages: { [locale]: locale === 'fa-IR' ? fa : en } })
-  return i18n._('Edit contact')
+  return i18n._('Edit details')
 }
 
 // Save in the language a story pins, to find it by its name.
@@ -62,7 +62,7 @@ const WithTrigger = ({ onClose, withAside = false, long = false, ...args }: Pane
           ? {
               aside: (
                 <Button variant="destructive" onClick={close}>
-                  {i18n._('Delete contact')}
+                  {i18n._('Delete from network')}
                 </Button>
               ),
             }
@@ -76,7 +76,7 @@ const WithTrigger = ({ onClose, withAside = false, long = false, ...args }: Pane
             <Input label={i18n._('Email')} />
             <Input label={i18n._('Phone')} />
             <Input label={i18n._('Social link')} />
-            <Input label={i18n._('Related job opportunity')} />
+            <Input label={i18n._('Label')} />
           </>
         ) : null}
       </PanelModal>
@@ -124,18 +124,41 @@ export const Panel: Story = {
   },
 }
 
+// Mode=Edit's footer as the redesign draws it, KN-804: the delete 24 in from
+// the inline start, and the actions 24 in from the end.
+const asideIs = async (canvasElement: HTMLElement, locale: Locale) => {
+  const i18n = setupI18n({ locale, messages: { [locale]: locale === 'fa-IR' ? fa : en } })
+  await userEvent.click(within(canvasElement).getByRole('button'))
+  const dialog = await within(canvasElement.ownerDocument.body).findByRole('dialog')
+  const footer = [...dialog.children].filter((part) => part instanceof HTMLElement).at(-1)
+  if (!footer) throw new Error('no footer')
+  const rtl = getComputedStyle(footer).direction === 'rtl'
+  const edge = footer.getBoundingClientRect()
+  const remove = within(footer)
+    .getByRole('button', { name: i18n._('Delete from network') })
+    .getBoundingClientRect()
+  const save = within(footer)
+    .getByRole('button', { name: i18n._('Save') })
+    .getBoundingClientRect()
+  await expect(Math.round(rtl ? edge.right - remove.right : remove.left - edge.left)).toBe(24)
+  await expect(Math.round(rtl ? save.left - edge.left : edge.right - save.right)).toBe(24)
+  await userEvent.keyboard('{Escape}')
+}
+
 export const WithAnAside: Story = {
   globals: { locale: 'fa-IR' },
   render: (args) => <WithTrigger {...args} withAside />,
   play: async ({ canvasElement }) => {
-    // Mode=Edit's footer: the actions at the inline start, the delete at the end.
-    await userEvent.click(within(canvasElement).getByRole('button'))
-    const dialog = await within(canvasElement.ownerDocument.body).findByRole('dialog')
-    const footer = [...dialog.children].filter((part) => part instanceof HTMLElement).at(-1)
-    if (!footer) throw new Error('no footer')
-    // Spaced between: the actions at one end, the aside at the other.
-    await expect(getComputedStyle(footer).justifyContent.endsWith('between')).toBe(true)
-    await userEvent.keyboard('{Escape}')
+    await asideIs(canvasElement, 'fa-IR')
+  },
+}
+
+export const WithAnAsideInEnglish: Story = {
+  args: { title: titleIn('en-US') },
+  globals: { locale: 'en-US' },
+  render: (args) => <WithTrigger {...args} withAside />,
+  play: async ({ canvasElement }) => {
+    await asideIs(canvasElement, 'en-US')
   },
 }
 

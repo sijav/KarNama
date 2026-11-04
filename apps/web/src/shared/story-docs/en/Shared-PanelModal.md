@@ -2,9 +2,8 @@ The larger modal frame the contact and job opportunity modals share: a header, a
 divider across the whole width, the body, another divider, and the actions.
 
 It traps focus, closes on Escape, the close or the scrim, and gives focus back,
-as the smaller shell does. The actions sit at the end of the footer; with an
-aside, such as Edit's delete, they move to the start and the aside takes the
-end.
+as the smaller shell does. The actions sit at the end of the footer; an aside,
+such as Edit's delete, takes the start.
 
 On a phone it places itself inside what the software keyboard leaves in view, so
 the footer stays above the keyboard.
@@ -39,7 +38,7 @@ The footer's buttons, the least drastic first.
 
 ### aside
 
-An action set apart at the other end of the footer, such as a delete.
+An action set apart at the start of the footer, such as a delete.
 
 ## Stories
 
@@ -49,7 +48,11 @@ The frame with a field for a body, measured against the design.
 
 ### WithAnAside
 
-The footer with a delete set apart.
+The footer with a delete set apart at its start, and the actions at its end.
+
+### WithAnAsideInEnglish
+
+The same footer in English, the delete at the left.
 
 ### FooterInAPhoneView
 

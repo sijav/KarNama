@@ -8,6 +8,7 @@ export {
   emptyRecords,
   jobFrom,
   jobsIn,
+  linkableJobs,
   matches,
   newId,
   nextCustomToken,

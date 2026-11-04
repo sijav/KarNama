@@ -50,6 +50,12 @@ A person written in full from the page's own action, changed and read back,
 and let go of from inside their own details, after a confirmation that can be
 backed out of.
 
+### LabelsForTheVisit
+
+The relationship labels the reader makes in the person modal, which the page
+holds while it lives until the records keep them: two made, one renamed and the
+chosen one deleted, each drawn as the label picker draws it.
+
 ### LettingGoOfASelection
 
 Two chosen, counted in the reader's own digits, and the selection let go of,

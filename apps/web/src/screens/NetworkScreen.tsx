@@ -4,7 +4,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { QUERY, searchStep } from '../app/routes'
 import { usePreferences } from '../core/preferences'
-import { contactMatches, useRecords, type ContactEntry } from '../core/records'
+import { contactMatches, linkableJobs, useRecords, type ContactEntry } from '../core/records'
 import { formatCount } from '../i18n/formatCount'
 import { BulkActionBar } from '../shared/bulk-action-bar'
 import { ContactCard } from '../shared/contact-card'
@@ -16,6 +16,7 @@ import { SearchBar, type SearchBarLayout } from '../shared/search-bar'
 import { Tooltip } from '../shared/tooltip'
 import { spacing } from '../theme/tokens'
 import { band, gutterOf } from './band'
+import { asValues, useVisitLabels } from './personModal'
 
 /**
  * The network: the people met on the way to a job, KN-056.
@@ -40,17 +41,7 @@ const MOBILE: SearchBarLayout = 'mobile'
 const LOOSE = -1
 
 /** An empty person, for the add modal. */
-const NOBODY: ContactModalValues = { name: '', role: '', company: '', email: '', phone: '', linkedin: '', jobId: null }
-
-const asValues = (held: ContactEntry): ContactModalValues => ({
-  name: held.contact.name,
-  role: held.contact.role ?? '',
-  company: held.contact.company ?? '',
-  email: held.contact.email ?? '',
-  phone: held.contact.phone ?? '',
-  linkedin: held.contact.linkedin ?? '',
-  jobId: held.jobId,
-})
+const NOBODY: ContactModalValues = { name: '', role: '', company: '', label: null, email: '', phone: '', linkedin: '', jobIds: [] }
 
 // The props are documented in story-docs, not here, KN-207.
 export interface NetworkScreenProps {
@@ -134,7 +125,8 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
       onSelecting?.(false)
     }
   }, [chosen.length, onSelecting])
-  const jobs = records.jobs.map((job) => ({ value: job.id, label: job.draft.title }))
+  const jobs = linkableJobs(records)
+  const labels = useVisitLabels()
   const titleOf = (jobId: string | null) => records.jobs.find((job) => job.id === jobId)?.draft.title ?? null
   const editingId = editing?.id ?? null
 
@@ -146,10 +138,10 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
       email: values.email.trim() === '' ? null : values.email.trim(),
       phone: values.phone.trim() === '' ? null : values.phone.trim(),
       linkedin: values.linkedin.trim() === '' ? null : values.linkedin.trim(),
-      job: titleOf(values.jobId),
+      job: titleOf(values.jobIds[0] ?? null),
     }
-    if (editingId === null) records.addContact(contact, values.jobId)
-    else records.saveContact(editingId, contact, values.jobId)
+    if (editingId === null) records.addContact(contact, values.jobIds[0] ?? null)
+    else records.saveContact(editingId, contact, values.jobIds[0] ?? null)
     setEditing(undefined)
   }
 
@@ -280,6 +272,7 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
           open={editing !== undefined}
           mode="add"
           jobs={jobs}
+          {...labels}
           onSave={save}
           onCancel={() => {
             setEditing(undefined)
@@ -292,6 +285,7 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
           recordId={editingId}
           initial={editing === undefined ? undefined : { id: editingId, values: editing.values }}
           jobs={jobs}
+          {...labels}
           onSave={save}
           onCancel={() => {
             setEditing(undefined)

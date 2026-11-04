@@ -79,7 +79,13 @@ A new label left with Escape.
 
 ### Rename
 
-A label renamed in its row and kept with the tick.
+A label renamed in its row and kept with the tick, and focus back in the new
+label's input.
+
+### RenameWithTheKeyboard
+
+Enter keeps the new name as the tick does and Escape the old one, and either way
+focus goes back to the new label's input.
 
 ### DeleteConfirm
 

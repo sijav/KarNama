@@ -4,7 +4,8 @@ import { useId, useState, type ReactNode } from 'react'
 import { spacing } from '../../theme/tokens'
 import { Button, type ButtonType } from '../button'
 import { Input, type InputDirection } from '../input'
-import { Select, type SelectOption } from '../select'
+import { LabelPicker, type PersonLabel } from '../label-picker'
+import { LinkedJobs, type LinkedJobItem } from '../linked-jobs'
 import { PanelModal } from './PanelModal'
 
 // A field of latin data: a phone number, an email or a link runs left to right
@@ -19,10 +20,13 @@ export interface ContactModalValues {
   name: string
   role: string
   company: string
+  // The relationship label: a default's id, one of the reader's own, or none.
+  label: string | null
   email: string
   phone: string
   linkedin: string
-  jobId: string | null
+  // The job opportunities the person is linked to, in the order they were linked.
+  jobIds: readonly string[]
 }
 
 // The props are documented in story-docs, not here, KN-207.
@@ -43,7 +47,11 @@ export interface ContactModalRecord {
 
 interface ContactModalShared {
   open: boolean
-  jobs: readonly SelectOption[]
+  jobs: readonly LinkedJobItem[]
+  labels: readonly PersonLabel[]
+  onCreateLabel: (name: string) => string
+  onRenameLabel: (id: string, name: string) => void
+  onDeleteLabel: (id: string) => void
   onSave: (values: ContactModalValues) => void
   onCancel: () => void
 }
@@ -55,7 +63,7 @@ interface ContactModalShared {
  * delete, cannot be written at all, KN-348.
  */
 export type ContactModalProps =
-  // Adding can start from something, a job opportunity already chosen when the
+  // Adding can start from something, a job opportunity already linked when the
   // person is added from inside one, but it has no record and no id.
   | (ContactModalShared & { mode: 'add'; recordId?: never; initial?: ContactModalValues; onDelete?: never })
   | (ContactModalShared & { mode: 'edit'; recordId: string; initial: ContactModalRecord | undefined; onDelete: () => void })
@@ -69,7 +77,32 @@ const EMAIL_EXAMPLE: EmailExample = 'name@example.com'
 type SocialExample = 'linkedin.com/in/…'
 const SOCIAL_EXAMPLE: SocialExample = 'linkedin.com/in/…'
 
-const EMPTY: ContactModalValues = { name: '', role: '', company: '', email: '', phone: '', linkedin: '', jobId: null }
+const EMPTY: ContactModalValues = { name: '', role: '', company: '', label: null, email: '', phone: '', linkedin: '', jobIds: [] }
+
+// What a save hands over: the name, the role and the company without the spaces
+// round them, so a role of only spaces is nothing, KN-385; and of the job
+// opportunities linked, only those still on the board, so one another tab
+// deleted is let go, KN-598.
+const outgoing = (values: ContactModalValues, jobs: readonly LinkedJobItem[]): ContactModalValues => ({
+  ...values,
+  name: values.name.trim(),
+  role: values.role.trim(),
+  company: values.company.trim(),
+  jobIds: values.jobIds.filter((id) => jobs.some((job) => job.id === id)),
+})
+
+// Whether two forms hold the same person: every field, the label, and the same
+// job opportunities, whatever order they were linked in.
+const same = (one: ContactModalValues, other: ContactModalValues) =>
+  one.name === other.name &&
+  one.role === other.role &&
+  one.company === other.company &&
+  one.label === other.label &&
+  one.email === other.email &&
+  one.phone === other.phone &&
+  one.linkedin === other.linkedin &&
+  one.jobIds.length === other.jobIds.length &&
+  one.jobIds.every((id) => other.jobIds.includes(id))
 
 // Two fields side by side, 16 apart, each half the row, as 270:152 pairs the
 // company with the role and the phone with the email.
@@ -77,17 +110,33 @@ const Pair = ({ children }: { children: ReactNode }) => (
   <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: `${spacing.md}px` }}>{children}</Box>
 )
 
-// The Contact Modal of node 270:152, Add and Edit, on the panel modal: the full
-// name, the role and the company, the email and the phone, the social link and
-// the job opportunity the contact belongs to. A contact saves with a full name
-// and nothing else, the owner's decision of KN-071, so only the name can be in
-// error. Edit opens filled from the record and offers the delete. Cancel,
-// Escape, the close and the scrim discard what was typed; each opening starts
-// from the record, or from nothing.
-export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCancel, onDelete }: ContactModalProps) => {
+// The Contact Modal of node 270:152 as the redesign draws it, Add and Edit, on
+// the panel modal: «افزودن به شبکه» or «ویرایش اطلاعات»; the full name, the role
+// beside the company, the relationship label, the email beside the phone, the
+// social link, and the job opportunities the person is linked to. A person
+// saves with a full name and nothing else, the owner's decision of KN-071, so
+// the primary, «افزودن» or «ذخیره», is off until there is a name and, in Edit,
+// until something differs from the record. Edit opens filled from the record
+// and offers «حذف از شبکه» at the footer's inline start. Cancel, Escape, the
+// close and the scrim discard what was typed; each opening starts from the
+// record, or from nothing. Labels made, renamed or deleted here are the
+// reader's, and change at once.
+export const ContactModal = ({
+  open,
+  mode,
+  initial,
+  recordId,
+  jobs,
+  labels,
+  onCreateLabel,
+  onRenameLabel,
+  onDeleteLabel,
+  onSave,
+  onCancel,
+  onDelete,
+}: ContactModalProps) => {
   const { i18n } = useLingui()
   const [values, setValues] = useState<ContactModalValues>(EMPTY)
-  const [tried, setTried] = useState(false)
   // React's pattern for state that follows a prop, adjusted during render: an
   // opening, or another record by its id, starts the form again. Never a new
   // object with the same record in it, which a parent that renders again for a
@@ -103,12 +152,8 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
     setSeen({ open, recordId, mode })
     setValues(EMPTY)
     setEdited(false)
-    setTried(false)
   }
 
-  // Only a record that says it is THIS record. A page that has been told to
-  // edit B while it still holds A's values must show nothing of A's, or a
-  // reader typing in that one render would write A's details into B.
   // For an edit, only a record that says it is THIS record: a page told to edit
   // B while it still holds A's values must show nothing of A's, or a reader
   // typing in that one render would write A's details into B. For an add, what
@@ -120,19 +165,19 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
     setValues(next)
     setEdited(true)
   }
-  const set = (field: keyof Omit<ContactModalValues, 'jobId'>) => (value: string) => {
+  const set = (field: 'name' | 'role' | 'company' | 'email' | 'phone' | 'linkedin') => (value: string) => {
     change({ ...shown, [field]: value })
   }
   const formId = useId()
-  const nameMissing = shown.name.trim() === ''
-  const save = () => {
-    setTried(true)
-    if (!nameMissing) onSave({ ...shown, name: shown.name.trim(), role: shown.role.trim(), company: shown.company.trim() })
-  }
+  const leaving = outgoing(shown, jobs)
+  // The primary is off until it can save, so the form submits only when it can:
+  // a disabled default button takes Enter from the fields with it.
+  const ready = leaving.name !== '' && (mode === 'add' || !same(leaving, outgoing(known ?? EMPTY, jobs)))
+  const linked = leaving.jobIds.flatMap((id) => jobs.filter((job) => job.id === id))
   return (
     <PanelModal
       open={open}
-      title={mode === 'add' ? i18n._('Add contact') : i18n._('Edit contact')}
+      title={mode === 'add' ? i18n._('Add to network') : i18n._('Edit details')}
       width={WIDTH}
       onClose={onCancel}
       actions={
@@ -140,8 +185,8 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
           <Button variant="ghost" onClick={onCancel}>
             {i18n._('Cancel')}
           </Button>
-          <Button type={SUBMIT} form={formId}>
-            {i18n._('Save')}
+          <Button type={SUBMIT} form={formId} disabled={!ready}>
+            {mode === 'add' ? i18n._('Add') : i18n._('Save')}
           </Button>
         </>
       }
@@ -149,7 +194,7 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
         ? {
             aside: (
               <Button variant="destructive" onClick={onDelete}>
-                {i18n._('Delete contact')}
+                {i18n._('Delete from network')}
               </Button>
             ),
           }
@@ -161,7 +206,7 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
         id={formId}
         onSubmit={(event) => {
           event.preventDefault()
-          save()
+          onSave(leaving)
         }}
         // The form draws no box of its own, so the fields stay direct children
         // of the modal's body and its gaps are unchanged, KN-463.
@@ -174,7 +219,6 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
           placeholder={i18n._('e.g. Sara Mohammadi')}
           value={shown.name}
           onChange={set('name')}
-          {...(tried && nameMissing ? { error: i18n._('Write the full name') } : {})}
         />
         <Pair>
           <Input
@@ -194,6 +238,21 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
             onChange={set('company')}
           />
         </Pair>
+        <LabelPicker
+          value={shown.label}
+          labels={labels}
+          onChange={(label) => {
+            change({ ...shown, label })
+          }}
+          onCreate={(name) => {
+            change({ ...shown, label: onCreateLabel(name) })
+          }}
+          onRename={onRenameLabel}
+          onDelete={(id) => {
+            onDeleteLabel(id)
+            if (shown.label === id) change({ ...shown, label: null })
+          }}
+        />
         <Pair>
           <Input
             label={i18n._('Email')}
@@ -226,13 +285,15 @@ export const ContactModal = ({ open, mode, initial, recordId, jobs, onSave, onCa
           value={shown.linkedin}
           onChange={set('linkedin')}
         />
-        <Select
-          label={i18n._('Related job opportunity')}
-          placeholder={i18n._('Choose a job opportunity…')}
-          options={jobs}
-          value={shown.jobId === null ? [] : [shown.jobId]}
-          onChange={(next) => {
-            change({ ...shown, jobId: next[0] ?? null })
+        <LinkedJobs
+          linked={linked}
+          jobs={jobs}
+          // Linked Jobs offers only what is not linked yet.
+          onLink={(id) => {
+            change({ ...shown, jobIds: [...shown.jobIds, id] })
+          }}
+          onUnlink={(id) => {
+            change({ ...shown, jobIds: shown.jobIds.filter((entry) => entry !== id) })
           }}
         />
       </Box>

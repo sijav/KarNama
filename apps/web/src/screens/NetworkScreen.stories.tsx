@@ -101,7 +101,7 @@ export const Keeping: Story = {
     await userEvent.click(canvas.getAllByRole('button', { name: 'افزودن مخاطب' })[1] ?? canvasElement)
     const adding = await body.findByRole('dialog')
     await userEvent.type(within(adding).getByLabelText('اسم و فامیل'), NAME)
-    await userEvent.click(within(adding).getByRole('button', { name: 'ذخیره' }))
+    await userEvent.click(within(adding).getByRole('button', { name: 'افزودن' }))
     await waitFor(async () => {
       await expect(body.queryByRole('dialog')).toBeNull()
       await expect(canvas.getByText(NAME)).toBeInTheDocument()
@@ -177,16 +177,16 @@ export const Editing: Story = {
     await userEvent.type(within(adding).getByLabelText('شماره تماس'), person?.phone ?? '')
     await userEvent.type(within(adding).getByLabelText('لینک شبکه اجتماعی'), person?.linkedin ?? '')
 
-    // And which job opportunity they belong to, which is how a person on this
-    // page turns up in that job opportunity's own related people, KN-056.
-    await userEvent.click(within(adding).getByRole('combobox', { name: 'فرصت شغلی مربوطه' }))
+    // And which job opportunity they are linked to, which is how a person on
+    // this page turns up in that job opportunity's own related people, KN-056.
+    await userEvent.click(within(adding).getByRole('button', { name: 'وصل کردن به فرصت شغلی' }))
     const jobs = await body.findByRole('listbox')
-    await userEvent.click(within(jobs).getByRole('option', { name: set.jobs[0]?.title ?? '' }))
+    await userEvent.click(within(jobs).getByText(set.jobs[0]?.title ?? ''))
     await waitFor(async () => {
       await expect(body.queryByRole('listbox')).toBeNull()
     })
 
-    await userEvent.click(within(adding).getByRole('button', { name: 'ذخیره' }))
+    await userEvent.click(within(adding).getByRole('button', { name: 'افزودن' }))
     await gone()
 
     // Opened again, what was typed is there, and changing it keeps the same
@@ -209,7 +209,7 @@ export const Editing: Story = {
     await userEvent.click(canvas.getByRole('button', { name: NAME }))
     const open = await body.findByRole('dialog')
     await expect(within(open).getByLabelText('سمت')).toHaveValue(CHANGED)
-    await userEvent.click(within(open).getByRole('button', { name: 'حذف مخاطب' }))
+    await userEvent.click(within(open).getByRole('button', { name: 'حذف از شبکه' }))
     const confirm = await body.findByRole('dialog')
     await userEvent.click(within(confirm).getByRole('button', { name: 'انصراف' }))
     await gone()
@@ -217,12 +217,62 @@ export const Editing: Story = {
 
     await userEvent.click(canvas.getByRole('button', { name: NAME }))
     const last = await body.findByRole('dialog')
-    await userEvent.click(within(last).getByRole('button', { name: 'حذف مخاطب' }))
+    await userEvent.click(within(last).getByRole('button', { name: 'حذف از شبکه' }))
     const sure = await body.findByRole('dialog')
     await userEvent.click(within(sure).getByRole('button', { name: 'حذف' }))
     await gone()
     await waitFor(async () => {
       await expect(canvas.queryByText(NAME)).toBeNull()
+    })
+  },
+}
+
+export const LabelsForTheVisit: Story = {
+  // The records keep no labels until KN-738, so the person modal's are the
+  // page's own while it lives: two are made, the first renamed and the second,
+  // the one chosen, deleted from their «⋯», each as the Label Picker draws it.
+  parameters: { contacts: false },
+  globals: { locale: 'fa-IR' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const body = within(canvasElement.ownerDocument.body)
+    const { labels, query, newName } = fixtures('fa-IR').labelPicker
+    const [first, second] = labels
+    if (!first || !second) throw new Error('the fixtures hold fewer than two labels')
+    await userEvent.click(canvas.getAllByRole('button', { name: 'افزودن مخاطب' })[0] ?? canvasElement)
+    const adding = await body.findByRole('dialog')
+    const group = within(adding).getByRole('group', { name: 'برچسب' })
+    const type = async (words: string) => {
+      await userEvent.click(within(group).getByRole('button', { name: 'برچسب تازه' }))
+      await userEvent.type(within(group).getByRole('combobox', { name: 'برچسب تازه' }), words)
+    }
+    for (const label of [first, second]) {
+      await type(label.name)
+      await userEvent.keyboard('{Enter}')
+      await expect(within(group).getByRole('button', { pressed: true })).toHaveTextContent(label.name)
+    }
+
+    await type(query)
+    const list = within(adding).getByRole('listbox')
+    const manage = async (name: string) => {
+      await userEvent.click(within(list).getByRole('button', { name: `مدیریت برچسب «${name}»` }))
+      return body.findByRole('menu')
+    }
+    await userEvent.click(within(await manage(first.name)).getByRole('menuitem', { name: 'تغییر نام' }))
+    const rename = await within(list).findByRole('textbox', { name: 'نام تازه' })
+    await waitFor(() => expect(rename).toHaveFocus())
+    await userEvent.clear(rename)
+    await userEvent.type(rename, newName)
+    await userEvent.keyboard('{Enter}')
+    await expect(within(list).queryByText(first.name)).toBeNull()
+
+    await userEvent.click(within(await manage(second.name)).getByRole('menuitem', { name: 'حذف برچسب' }))
+    await userEvent.click(await within(list).findByRole('button', { name: 'حذف' }))
+    await expect(within(group).queryByRole('button', { pressed: true })).toBeNull()
+    await expect(within(list).queryByText(second.name)).toBeNull()
+    await userEvent.click(within(adding).getByRole('button', { name: 'انصراف' }))
+    await waitFor(async () => {
+      await expect(body.queryByRole('dialog')).toBeNull()
     })
   },
 }
@@ -537,7 +587,7 @@ export const FocusAfterDeletingFromTheModal: Story = {
 
     await userEvent.click(canvas.getByRole('button', { name: person }))
     const editing = await body.findByRole('dialog')
-    await userEvent.click(within(editing).getByRole('button', { name: 'حذف مخاطب' }))
+    await userEvent.click(within(editing).getByRole('button', { name: 'حذف از شبکه' }))
     const confirm = await body.findByRole('dialog')
     await userEvent.click(within(confirm).getByRole('button', { name: 'حذف' }))
 

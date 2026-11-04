@@ -57,9 +57,9 @@ const Divider = () => (
 // on MUI's Dialog, with everything the shell does for focus, Escape and the
 // scrim. Where the shell pads the whole modal, the panel lays its dividers edge
 // to edge: the header, 24 above and at the sides and 16 below, then the body in
-// 24, then the footer in 16 and 24. The actions sit at the inline end; with an
-// aside, the Edit mode's delete, the actions move to the inline start and the
-// aside takes the end, as the file's Edit mode draws them.
+// 24, then the footer in 16 and 24. The actions sit at the inline end; an
+// aside, the Edit mode's delete, takes the inline start, as the redesign's Edit
+// mode draws it, KN-804.
 export const PanelModal = ({ open, title, width, onClose, children, actions, aside }: PanelModalProps) => {
   const { i18n } = useLingui()
   const titleId = useId()
@@ -146,8 +146,8 @@ export const PanelModal = ({ open, title, width, onClose, children, actions, asi
           paddingInline: `${spacing.lg}px`,
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: `${spacing.sm}px` }}>{actions}</Box>
         {aside}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: `${spacing.sm}px` }}>{actions}</Box>
       </Box>
     </Dialog>
   )

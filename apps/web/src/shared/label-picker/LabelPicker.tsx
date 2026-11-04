@@ -38,6 +38,10 @@ const FOCUS_RING = 3
 
 type Offset = 'offset'
 const OFFSET: Offset = 'offset'
+// The suggestions hang 4 under the input. Made once: a new array on every render
+// made the Popper build its popper.js again each time, whose first placement
+// lands a tick later, outside the render that asked for it, KN-804.
+const HANG = [{ name: OFFSET, options: { offset: [0, spacing['2xs']] } }]
 
 const body = typeScale.body
 const label = typeScale.label
@@ -175,9 +179,18 @@ export const LabelPicker = ({ value, labels, onChange, onCreate, onRename, onDel
       leave(true)
     }
   }
+  // Back to the new label's input once a row's rename or delete is done, drawn
+  // at once: the row that held focus is gone, and focus left on the page would
+  // be taken back by a modal round the picker, its reader's place lost, KN-804.
+  const backToTyping = (done: () => void) => {
+    flushSync(done)
+    input?.querySelector('input')?.focus()
+  }
   const rename = (own: PersonLabel, draft: string) => {
-    if (draft.trim() !== '' && draft.trim() !== own.name) onRename(own.id, draft.trim())
-    setRenaming(null)
+    backToTyping(() => {
+      if (draft.trim() !== '' && draft.trim() !== own.name) onRename(own.id, draft.trim())
+      setRenaming(null)
+    })
   }
   const note = (own: PersonLabel) =>
     own.people === 0
@@ -202,10 +215,17 @@ export const LabelPicker = ({ value, labels, onChange, onCreate, onRename, onDel
               setRenaming({ id: own.id, draft: event.target.value })
             }}
             onKeyDown={(event) => {
-              if (event.key === 'Enter') rename(own, renaming.draft)
+              // Enter keeps the name and nothing else: the person modal's form
+              // round the picker would take it for its own save, KN-804.
+              if (event.key === 'Enter') {
+                event.preventDefault()
+                rename(own, renaming.draft)
+              }
               if (event.key === 'Escape') {
                 event.stopPropagation()
-                setRenaming(null)
+                backToTyping(() => {
+                  setRenaming(null)
+                })
               }
             }}
             sx={(theme) => ({ ...pill.sx(theme), flexGrow: 1, '& input': { padding: 0, height: `${body.lineHeight}px` } })}
@@ -243,7 +263,9 @@ export const LabelPicker = ({ value, labels, onChange, onCreate, onRename, onDel
               variant="ghost"
               size="S"
               onClick={() => {
-                setDeleting(null)
+                backToTyping(() => {
+                  setDeleting(null)
+                })
               }}
             >
               {i18n._('Keep')}
@@ -252,8 +274,10 @@ export const LabelPicker = ({ value, labels, onChange, onCreate, onRename, onDel
               variant="destructive"
               size="S"
               onClick={() => {
-                onDelete(own.id)
-                setDeleting(null)
+                backToTyping(() => {
+                  onDelete(own.id)
+                  setDeleting(null)
+                })
               }}
             >
               {i18n._('Delete')}
@@ -394,7 +418,7 @@ export const LabelPicker = ({ value, labels, onChange, onCreate, onRename, onDel
           anchorEl={input}
           placement="bottom-end"
           disablePortal
-          modifiers={[{ name: OFFSET, options: { offset: [0, spacing['2xs']] } }]}
+          modifiers={HANG}
           sx={(theme) => ({
             zIndex: 1,
             boxSizing: 'border-box',

@@ -46,7 +46,7 @@ test('a fresh account sees the empty state and can add the first person', async 
   const modal = page.getByRole('dialog')
   await modal.getByLabel('اسم و فامیل').fill(MINA)
   await modal.getByLabel('سمت').fill('کارشناس منابع انسانی')
-  await modal.getByRole('button', { name: 'ذخیره' }).click()
+  await modal.getByRole('button', { name: 'افزودن', exact: true }).click()
 
   await expect(page.getByText(MINA)).toBeVisible()
   await expect(page.getByText('هنوز کسی رو به شبکه‌ت اضافه نکردی')).toHaveCount(0)
@@ -59,7 +59,7 @@ test('a fresh account sees the empty state and can add the first person', async 
 test('a contact can be edited, and the change is what the page shows', async ({ page }) => {
   await page.getByRole('button', { name: 'افزودن مخاطب' }).first().click()
   await page.getByRole('dialog').getByLabel('اسم و فامیل').fill(MINA)
-  await page.getByRole('dialog').getByRole('button', { name: 'ذخیره' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'افزودن', exact: true }).click()
   await expect(page.getByText(MINA)).toBeVisible()
 
   await page.getByRole('button', { name: MINA }).click()
@@ -75,7 +75,7 @@ test('two people are selected and deleted through the bar at the foot', async ({
   for (const name of [MINA, REZA]) {
     await page.getByRole('button', { name: 'افزودن مخاطب' }).first().click()
     await page.getByRole('dialog').getByLabel('اسم و فامیل').fill(name)
-    await page.getByRole('dialog').getByRole('button', { name: 'ذخیره' }).click()
+    await page.getByRole('dialog').getByRole('button', { name: 'افزودن', exact: true }).click()
     await expect(page.getByText(name)).toBeVisible()
   }
 

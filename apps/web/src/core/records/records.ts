@@ -1,6 +1,7 @@
 import { dayFrom, emptyDraft, type JobDraft } from '../../shared/add-job'
 import type { ContactCardContact } from '../../shared/contact-card'
 import type { JobContact, JobFile, JobRecord, JobSaved, StatusChange } from '../../shared/job-modal'
+import type { LinkedJobItem } from '../../shared/linked-jobs'
 import type { SortOrder } from '../../shared/sort-control'
 import type { StatusOption } from '../../shared/status-picker'
 import { status as statusTokens, type StatusToken } from '../../theme/tokens'
@@ -201,6 +202,23 @@ export const emptyRecords = (name: (token: StatusToken) => string): Records => (
 /** The people kept against one job opportunity, for its related people tab. */
 export const contactsOf = (contacts: readonly ContactEntry[], jobId: string): JobContact[] =>
   contacts.filter((held) => held.jobId === jobId).map((held) => ({ id: held.id, contact: held.contact }))
+
+/**
+ * The reader's job opportunities as the person modal's Linked Jobs lists and
+ * offers them, in the board's order: each title and company with its status's
+ * colour and name. One whose status the board no longer holds is left out.
+ */
+export const linkableJobs = (records: Records): LinkedJobItem[] =>
+  records.jobs.flatMap((job) =>
+    records.statuses
+      .filter((status) => status.id === job.draft.status)
+      .map((status) => ({
+        id: job.id,
+        title: job.draft.title,
+        company: job.draft.company,
+        status: { token: status.token, name: status.name },
+      })),
+  )
 
 /** Everything a search matches in a person: what a reader would look for by eye. */
 export const contactMatches = (held: ContactEntry, search: string): boolean => {

@@ -70,7 +70,7 @@ export const addContact = async (page: Page, name: string) => {
   await page.getByRole('button', { name: 'افزودن مخاطب' }).first().click()
   const modal = page.getByRole('dialog')
   await modal.getByLabel('اسم و فامیل').fill(name)
-  await modal.getByRole('button', { name: 'ذخیره' }).click()
+  await modal.getByRole('button', { name: 'افزودن', exact: true }).click()
   await expect(page.getByText(name)).toBeVisible()
 }
 

@@ -646,8 +646,9 @@ when they do not fit. A single select handed more than one value reads only the
 first, in its field and in its checks, KN-332. The two selects the file names,
 «نوع همکاری» and «سطح
 شغلی», are `EmploymentTypeSelect` and `JobLevelSelect`, their values English
-ids and their names from the catalog. On the screens the only Select drawn is
-the contact modal's «آگهی مربوطه», whose own prompt is why the prompt is a prop.
+ids and their names from the catalog. The copy's screens drew one Select, the
+contact modal's «آگهی مربوطه», whose own prompt is why the prompt is a prop; the
+redesign links job opportunities there instead, KN-804.
 
 ### The modals: the shell, Confirm and Change Status
 
@@ -703,17 +704,26 @@ reports the grouping is lost.
 The Contact Modal, `270:152`, and the Job Modal, `210:276`, share a larger
 frame than the shell: 560 wide for the contact, the header 24 above and at the
 sides and 16 below, **dividers edge to edge**, the body in 24 with 16 between
-fields, and the footer in 16 and 24; the code calls it the panel modal. The
-Add/Edit job modal, `166:82`, uses the shell. The contact's fields, in the
-file's order from the inline start: «اسم و فامیل», then «سمت» beside «شرکت», then
-«ایمیل» beside «شماره تماس», each pair half the row, then «لینک شبکه اجتماعی», and
-the Select of the job opportunity the contact belongs to, which the file calls
-«آگهی مربوطه» and the code «فرصت شغلی مربوطه», KN-329. Add ends with Cancel and
-Save at the inline end; Edit fills from the record and moves them to the inline
-start, «حذف مخاطب» taking the end, as the file's Edit draws it. A contact saves
-with a full name alone, KN-071, so the name is the only field that can be in
-error. The form starts again on opening and on another record's id, never on
-a fresh copy of the same record, KN-347. KN-031.
+fields, and the footer in 16 and 24, 12 between; the code calls it the panel
+modal. The Add/Edit job modal, `166:82`, uses the shell. KN-031.
+
+**Read again in the original on 2026-11-04**, KN-804. Add, `270:74`, is 676
+tall and Edit, `270:151`, 769, titled «افزودن به شبکه» and «ویرایش اطلاعات». The
+fields, from the inline start: «اسم و فامیل», then «سمت» beside «شرکت», each pair
+half the row, then the Label Picker, Default in Add and on «کارشناس جذب» in
+Edit, then «ایمیل» beside «شماره تماس», then «لینک شبکه اجتماعی», then Linked
+Jobs, Empty in Add and two rows in Edit, where the copy drew the Select «آگهی
+مربوطه». Cancel and the primary sit at the footer's inline end, the primary,
+«افزودن» or «ذخیره», drawn Disabled: it is off until there is a name, the only
+field a person needs, KN-071, and in Edit until something differs from the
+record, as the handoff says of the job modal's «ذخیره». Edit's «حذف از شبکه»
+takes the footer's inline start, where the copy put «حذف مخاطب» at the end.
+Labels made, renamed or deleted in the modal are the reader's and change at
+once, and the one made is chosen; a save lets go of a link to a job opportunity
+no longer on the board, KN-598. Until KN-738 gives the records labels and many
+links, the screens keep the first link and hold the reader's labels only while
+the page lives. The form starts again on opening and on another record's id,
+never on a fresh copy of the same record, KN-347.
 
 ### The Contact Card
 
@@ -1732,7 +1742,8 @@ chooses a label and another takes it off. Its variants:
 
 It is a combobox: the arrows move through the suggestions, the first under the
 keyboard on `bg/surface-secondary`, Enter chooses or makes one, Escape and a
-press outside leave it, and focus goes back to «برچسب تازه». The suggestions
+press outside leave it, and focus goes back to «برچسب تازه»; after a rename or
+a delete in its row, focus goes back to the input, KN-804. The suggestions
 hang inside the picker, not in a portal, so the person modal's focus trap keeps
 them; a delete asks in its row, never a modal on the modal, and takes the label
 off the people who carry it, never the people. The four defaults have no «⋯»,

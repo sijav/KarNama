@@ -10,6 +10,7 @@ import {
   emptyRecords,
   jobFrom,
   jobsIn,
+  linkableJobs,
   matches,
   newId,
   nextCustomToken,
@@ -225,6 +226,23 @@ describe('the people kept against a job opportunity', () => {
     expect(contactMatches(held, 'nobody')).toBe(false)
     // A field nothing was written in is not a match for everything.
     expect(contactMatches({ ...held, contact: { ...held.contact, company: null } }, 'digikala')).toBe(false)
+  })
+
+  it('are linked to job opportunities offered with their status, and none whose status has gone', () => {
+    const own: StatusOption = { id: 'own', token: 'custom-1', name: 'mine' }
+    const records: Records = {
+      statuses: [...statuses, own],
+      jobs: [
+        jobWith({ id: 'a', title: 'A', company: 'Company', status: 'applied' }),
+        jobWith({ id: 'b', title: 'B', status: 'own' }),
+        jobWith({ id: 'c', title: 'C', status: 'gone' }),
+      ],
+      contacts: [],
+    }
+    expect(linkableJobs(records)).toEqual([
+      { id: 'a', title: 'A', company: 'Company', status: { token: 'applied', name: 'name of applied' } },
+      { id: 'b', title: 'B', company: '', status: { token: 'custom-1', name: 'mine' } },
+    ])
   })
 
   it('are dropped from a stored set when they are not people at all', () => {

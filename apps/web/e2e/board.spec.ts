@@ -123,7 +123,7 @@ test('the job modal keeps a note, a person and the history of its moves, KN-045'
   await modal.getByRole('button', { name: 'افزودن مخاطب' }).click()
   const person = page.getByRole('dialog').last()
   await person.getByLabel('اسم و فامیل').fill('مینا رضایی')
-  await person.getByRole('button', { name: 'ذخیره' }).click()
+  await person.getByRole('button', { name: 'افزودن', exact: true }).click()
   await expect(modal.getByText('مینا رضایی')).toBeVisible()
 
   // Saved, closed, and opened again: all of it is still there.

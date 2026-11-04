@@ -279,11 +279,12 @@ export const OptionMenu: Story = {
 }
 
 export const Rename: Story = {
-  // Rename turns the row into its name to edit, with a tick that keeps it.
+  // Rename turns the row into its name to edit, with a tick that keeps it;
+  // focus goes back to the new label's input, the row it was in being gone.
   globals: { locale: 'fa-IR', colorScheme: 'light' },
   play: async ({ args, canvasElement }) => {
     const i18n = i18nFor('fa-IR')
-    await startTyping(canvasElement, 'fa-IR', FA.query)
+    const input = await startTyping(canvasElement, 'fa-IR', FA.query)
     const menu = await openMenu(canvasElement, CLASSMATE)
     await userEvent.click(within(menu).getByRole('menuitem', { name: 'تغییر نام' }))
     const rename = await within(listIn(canvasElement)).findByRole('textbox', { name: i18n._('New name') })
@@ -293,6 +294,34 @@ export const Rename: Story = {
     await userEvent.type(rename, FA.newName)
     await userEvent.click(within(listIn(canvasElement)).getByRole('button', { name: i18n._('Confirm the new name') }))
     await expect(args.onRename).toHaveBeenCalledWith('own-classmate', FA.newName)
+    await expect(input).toHaveFocus()
+  },
+}
+
+export const RenameWithTheKeyboard: Story = {
+  // Enter keeps the new name as the tick does, Escape leaves the old one, and
+  // either way focus goes back to the new label's input.
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args, canvasElement }) => {
+    const i18n = i18nFor('fa-IR')
+    const input = await startTyping(canvasElement, 'fa-IR', FA.query)
+    const renameIt = async () => {
+      const menu = await openMenu(canvasElement, CLASSMATE)
+      await userEvent.click(within(menu).getByRole('menuitem', { name: 'تغییر نام' }))
+      const rename = await within(listIn(canvasElement)).findByRole('textbox', { name: i18n._('New name') })
+      await waitFor(() => expect(rename).toHaveFocus())
+      return rename
+    }
+    await userEvent.type(await renameIt(), FA.newName)
+    await userEvent.keyboard('{Escape}')
+    await expect(input).toHaveFocus()
+    await expect(args.onRename).not.toHaveBeenCalled()
+    const rename = await renameIt()
+    await userEvent.clear(rename)
+    await userEvent.type(rename, FA.newName)
+    await userEvent.keyboard('{Enter}')
+    await expect(args.onRename).toHaveBeenCalledWith('own-classmate', FA.newName)
+    await expect(input).toHaveFocus()
   },
 }
 
@@ -312,6 +341,7 @@ export const DeleteConfirm: Story = {
     await userEvent.click(keep)
     await expect(within(list).queryByText('حذف برچسب «هم‌دوره‌ای دانشگاه»؟')).toBeNull()
     await expect(args.onDelete).not.toHaveBeenCalled()
+    await expect(within(groupIn(canvasElement)).getByRole('combobox', { name: 'برچسب تازه' })).toHaveFocus()
   },
 }
 
@@ -324,6 +354,7 @@ export const AfterDelete: Story = {
     await userEvent.click(within(menu).getByRole('menuitem', { name: 'حذف برچسب' }))
     await userEvent.click(await within(listIn(canvasElement)).findByRole('button', { name: 'حذف' }))
     await expect(args.onDelete).toHaveBeenCalledWith('own-classmate')
+    await expect(within(groupIn(canvasElement)).getByRole('combobox', { name: 'برچسب تازه' })).toHaveFocus()
     await expect(
       within(listIn(canvasElement))
         .getAllByRole('option')

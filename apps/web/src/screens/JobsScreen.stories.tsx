@@ -5,7 +5,6 @@ import { i18nFor, isLocale } from '../i18n'
 import { formatCount } from '../i18n/formatCount'
 import { defaultStatuses, jobFrom, readRecords, RecordsProvider, REJECTED, STORAGE_KEY, type JobEntry, type Records } from '../core/records'
 import { emptyDraft, type JobDraft } from '../shared/add-job'
-import { allowConsole } from '../shared/console-guard'
 import type { StatusOption } from '../shared/status-picker'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { fixtures } from '../shared/story-fixtures'
@@ -426,9 +425,9 @@ export const People: Story = {
     // A person is added against this job opportunity, and the job it belongs to
     // is filled in already, since the modal was opened from that job's own tab.
     await userEvent.click(within(job).getByRole('button', { name: 'افزودن مخاطب' }))
-    const adding = await body.findByRole('dialog', { name: 'افزودن مخاطب' })
+    const adding = await body.findByRole('dialog', { name: 'افزودن به شبکه' })
     await userEvent.type(within(adding).getByLabelText('اسم و فامیل'), person)
-    await userEvent.click(within(adding).getByRole('button', { name: 'ذخیره' }))
+    await userEvent.click(within(adding).getByRole('button', { name: 'افزودن' }))
     // Asked for by role rather than by text: while the nested modal is still
     // closing, MUI holds the job modal out of the accessibility tree, and a
     // text query would find the new person there a frame before it can be
@@ -440,7 +439,7 @@ export const People: Story = {
     // Opening them again reads back what was kept, and backing out changes
     // nothing.
     await userEvent.click(within(job).getByRole('button', { name: person }))
-    const editing = await body.findByRole('dialog', { name: 'ویرایش مخاطب' })
+    const editing = await body.findByRole('dialog', { name: 'ویرایش اطلاعات' })
     await expect(within(editing).getByLabelText('اسم و فامیل')).toHaveValue(person)
     await userEvent.click(within(editing).getByRole('button', { name: 'انصراف' }))
     // Again by role: the person is still kept, and asking for them this way
@@ -528,7 +527,7 @@ export const People: Story = {
     // their own card, which takes them off the network page as well.
     await userEvent.click(within(reopened).getByRole('tab', { name: 'افراد مرتبط' }))
     await userEvent.click(within(reopened).getByRole('button', { name: person }))
-    const changing = await body.findByRole('dialog', { name: 'ویرایش مخاطب' })
+    const changing = await body.findByRole('dialog', { name: 'ویرایش اطلاعات' })
     const ROLE = set.contacts[0]?.role ?? ''
     await userEvent.type(within(changing).getByLabelText('سمت'), ROLE)
     await userEvent.click(within(changing).getByRole('button', { name: 'ذخیره' }))
@@ -1669,17 +1668,17 @@ export const PeopleInFull: Story = {
 
     // Backed out of, an add keeps no one.
     await userEvent.click(within(job).getByRole('button', { name: i18n._('Add contact') }))
-    const cancelled = await body.findByRole('dialog', { name: i18n._('Add contact') })
+    const cancelled = await body.findByRole('dialog', { name: i18n._('Add to network') })
     await userEvent.type(within(cancelled).getByLabelText(i18n._('Full name')), person.fullName)
     await userEvent.click(within(cancelled).getByRole('button', { name: i18n._('Cancel') }))
     await waitFor(async () => {
-      await expect(body.queryByRole('dialog', { name: i18n._('Add contact') })).toBeNull()
+      await expect(body.queryByRole('dialog', { name: i18n._('Add to network') })).toBeNull()
     })
     await expect(within(job).queryByRole('button', { name: person.fullName })).toBeNull()
 
     // Added with every field the modal takes, each is kept.
     await userEvent.click(within(job).getByRole('button', { name: i18n._('Add contact') }))
-    const adding = await body.findByRole('dialog', { name: i18n._('Add contact') })
+    const adding = await body.findByRole('dialog', { name: i18n._('Add to network') })
     // Every field the fixture's first contact fills, refused by name if it ever stops.
     type Field = 'role' | 'company' | 'email' | 'phone' | 'linkedin'
     const filled = (value: string | null, field: Field) => {
@@ -1695,7 +1694,7 @@ export const PeopleInFull: Story = {
       [i18n._('Social link'), filled(person.linkedin, 'linkedin')],
     ]
     for (const [label, value] of fields) await userEvent.type(within(adding).getByLabelText(label), value)
-    await userEvent.click(within(adding).getByRole('button', { name: i18n._('Save') }))
+    await userEvent.click(within(adding).getByRole('button', { name: i18n._('Add') }))
     const kept = {
       name: person.fullName,
       company: person.company,
@@ -1710,7 +1709,7 @@ export const PeopleInFull: Story = {
 
     // Edited with the role emptied, the role goes and the rest stays.
     await userEvent.click(await within(job).findByRole('button', { name: person.fullName }))
-    const editing = await body.findByRole('dialog', { name: i18n._('Edit contact') })
+    const editing = await body.findByRole('dialog', { name: i18n._('Edit details') })
     await userEvent.clear(within(editing).getByLabelText(i18n._('Role')))
     await userEvent.click(within(editing).getByRole('button', { name: i18n._('Save') }))
     await waitFor(async () => {
@@ -1726,18 +1725,16 @@ export const PersonForAJobDeletedElsewhere: Story = {
     // written on it. The job modal goes with its job, the contact modal stays, and
     // saving keeps the person with no job: first a person being edited, then one
     // being added. The other tab is stood in for by what its write delivers, as in
-    // ChangedInAnotherTab.
-    //
-    // Until KN-598 the contact modal keeps the deleted job's id, which its Select no
-    // longer offers, and MUI warns of the out-of-range value: allowed for this story
-    // alone, TECH-DEBT.md section 22.
-    allowConsole(/out-of-range value/u)
+    // ChangedInAnotherTab. The contact modal lets go of the deleted job, so the
+    // records keep no link to it either, KN-598.
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
     const i18n = i18nFor('fa-IR')
     const set = fixtures('fa-IR')
     const [first = '', second = ''] = set.jobs.slice(0, 2).map((job) => job.title)
-    const [one = '', two = ''] = set.contacts.slice(0, 2).map((contact) => contact.fullName)
+    // Two people with short names, since the story is about the job and every
+    // letter is typed into a modal on a full board.
+    const [one = '', , two = ''] = set.contacts.slice(0, 3).map((contact) => contact.fullName)
     const stored = (): unknown => JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '{}')
     // The other tab's write: this tab's own board as its store holds it, less a job.
     const deletedElsewhere = (title: string) => {
@@ -1756,37 +1753,43 @@ export const PersonForAJobDeletedElsewhere: Story = {
     // A person kept against the second job opportunity, then opened to edit.
     const job = await peopleOf(second)
     await userEvent.click(within(job).getByRole('button', { name: i18n._('Add contact') }))
-    const adding = await body.findByRole('dialog', { name: i18n._('Add contact') })
+    const adding = await body.findByRole('dialog', { name: i18n._('Add to network') })
     await userEvent.type(within(adding).getByLabelText(i18n._('Full name')), one)
-    await userEvent.click(within(adding).getByRole('button', { name: i18n._('Save') }))
+    await userEvent.click(within(adding).getByRole('button', { name: i18n._('Add') }))
     await userEvent.click(await within(job).findByRole('button', { name: one }))
-    const editing = await body.findByRole('dialog', { name: i18n._('Edit contact') })
+    const editing = await body.findByRole('dialog', { name: i18n._('Edit details') })
 
     // The job goes in the other tab: its card and its modal go, the edit stays, and
-    // saving keeps the person with no job.
+    // saving a change keeps the person with no job, and no link to the one gone.
     deletedElsewhere(second)
     await waitFor(async () => {
       await expect(body.queryByText(second)).toBeNull()
     })
+    await userEvent.click(within(editing).getByRole('button', { name: i18n._('Acquaintance') }))
     await userEvent.click(within(editing).getByRole('button', { name: i18n._('Save') }))
     await waitFor(async () => {
-      await expect(stored()).toMatchObject({ contacts: [{ contact: { name: one, job: null } }] })
+      await expect(stored()).toMatchObject({ contacts: [{ jobId: null, contact: { name: one, job: null } }] })
     })
 
     // A person being added to the first job opportunity when it goes the same way is
     // kept with no job too.
     const other = await peopleOf(first)
     await userEvent.click(within(other).getByRole('button', { name: i18n._('Add contact') }))
-    const late = await body.findByRole('dialog', { name: i18n._('Add contact') })
+    const late = await body.findByRole('dialog', { name: i18n._('Add to network') })
     await userEvent.type(within(late).getByLabelText(i18n._('Full name')), two)
     deletedElsewhere(first)
     await waitFor(async () => {
       await expect(body.queryByText(first)).toBeNull()
     })
-    await userEvent.click(within(late).getByRole('button', { name: i18n._('Save') }))
+    await userEvent.click(within(late).getByRole('button', { name: i18n._('Add') }))
     // The records keep the newest person first.
     await waitFor(async () => {
-      await expect(stored()).toMatchObject({ contacts: [{ contact: { name: two, job: null } }, { contact: { name: one, job: null } }] })
+      await expect(stored()).toMatchObject({
+        contacts: [
+          { jobId: null, contact: { name: two, job: null } },
+          { jobId: null, contact: { name: one, job: null } },
+        ],
+      })
     })
   },
 }
@@ -1812,9 +1815,9 @@ export const DeletingAPersonAsksFirst: Story = {
     const job = await body.findByRole('dialog')
     await userEvent.click(within(job).getByRole('tab', { name: i18n._('Related people') }))
     await userEvent.click(within(job).getByRole('button', { name: i18n._('Add contact') }))
-    const adding = await body.findByRole('dialog', { name: i18n._('Add contact') })
+    const adding = await body.findByRole('dialog', { name: i18n._('Add to network') })
     await userEvent.type(within(adding).getByLabelText(i18n._('Full name')), person)
-    await userEvent.click(within(adding).getByRole('button', { name: i18n._('Save') }))
+    await userEvent.click(within(adding).getByRole('button', { name: i18n._('Add') }))
     await waitFor(async () => {
       await expect(stored()).toMatchObject({ contacts: [{ contact: { name: person } }] })
     })
@@ -1822,11 +1825,11 @@ export const DeletingAPersonAsksFirst: Story = {
     // Opened to edit and deleted from the form, which closes into the question.
     const deleteFromTheForm = async () => {
       await userEvent.click(await within(job).findByRole('button', { name: person }))
-      const editing = await body.findByRole('dialog', { name: i18n._('Edit contact') })
-      await userEvent.click(within(editing).getByRole('button', { name: i18n._('Delete contact') }))
+      const editing = await body.findByRole('dialog', { name: i18n._('Edit details') })
+      await userEvent.click(within(editing).getByRole('button', { name: i18n._('Delete from network') }))
       const confirm = await body.findByRole('dialog', { name: i18n._('Delete contact') })
       await waitFor(async () => {
-        await expect(body.queryByRole('dialog', { name: i18n._('Edit contact') })).toBeNull()
+        await expect(body.queryByRole('dialog', { name: i18n._('Edit details') })).toBeNull()
       })
       return confirm
     }
