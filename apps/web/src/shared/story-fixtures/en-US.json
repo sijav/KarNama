@@ -62,5 +62,15 @@
     { "name": "LinkedIn", "applications": 5, "interviews": 2 },
     { "name": "e-Estekhdam", "applications": 2, "interviews": 0 },
     { "name": "A referral from a former colleague on the platform team", "applications": 1, "interviews": 1 }
+  ],
+  "statsGuidance": [
+    {
+      "message": "3 applications have gone unanswered for more than 3 weeks. Move them to “No response”.",
+      "action": "See the applications"
+    },
+    {
+      "message": "You haven't applied to anything yet this week. You have 5 saved job opportunities.",
+      "action": "See saved job opportunities"
+    }
   ]
 }

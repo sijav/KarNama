@@ -107,6 +107,11 @@ export interface StatsSourceFixture {
   interviews: number
 }
 
+export interface StatsGuidanceFixture {
+  message: string
+  action: string
+}
+
 export interface NoteFixture {
   id: string
   jobId: string
@@ -161,6 +166,8 @@ export interface Fixtures {
   statsLabels: StatsLabelsFixture
   /** Where applications came from, the last named too long for a card's row, KN-781. */
   statsSources: readonly StatsSourceFixture[]
+  /** The Stats page's two guidance messages and their actions, as the handoff words them, KN-779. */
+  statsGuidance: readonly StatsGuidanceFixture[]
   /**
    * The fixtures as the product keeps them, for a story to seed a
    * `RecordsProvider` with, KN-437: every status, every job opportunity made by
@@ -187,6 +194,7 @@ export interface RawFixtures {
   contactTag: string
   statsLabels: StatsLabelsFixture
   statsSources: readonly StatsSourceFixture[]
+  statsGuidance: readonly StatsGuidanceFixture[]
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -298,6 +306,7 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     contactTag: raw.contactTag,
     statsLabels: Object.freeze({ ...raw.statsLabels }),
     statsSources: Object.freeze(raw.statsSources.map((source) => Object.freeze({ ...source }))),
+    statsGuidance: Object.freeze(raw.statsGuidance.map((guidance) => Object.freeze({ ...guidance }))),
   })
 }
 

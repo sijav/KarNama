@@ -1213,6 +1213,27 @@ at the top and its name takes up to three lines, as the description says,
 where the file's text node is set to one. The bar is hidden from a screen
 reader, which reads the count. KN-781.
 
+### The stats guidance
+
+**Stats / Guidance**, `1168:3170`, read on 2026-11-04: one component with no
+variants and one text property, Message, the first child of each Stats frame's
+Content, whose instances fill its 1200 less 32 at each side, 16 above the
+requests card; the frames of a reader with one to nine applications draw none.
+A row that hugs its height, 60, on `color/bg/brand/container` at `radius/md`,
+`spacing/sm` above and below, `spacing/md` at the sides and `spacing/md`
+between, its items centred: from the inline start the message in Body in
+`color/text/primary`, filling the row and wrapping, and at the inline end its
+Action, a Button / S Secondary «دیدن درخواست‌ها» with no fill of its own, so
+the ground shows through it. Its description and the handoff: at most two at
+the top of the page, made by a fixed rule from the reader's own data, never
+«پیگیری کنید»; the first the applications unanswered for more than 21 days,
+linking to them; the second, which has no frame and whose exact rule is open,
+«این هفته هنوز درخواستی ثبت نکردید. ۵ فرصت شغلی ذخیره‌شده دارید.» with «دیدن
+فرصت‌های ذخیره‌شده». The code takes the message and an optional action,
+`{ label, onClick }` as the Toast's; the file has no property to hide the
+action, so without one the message fills the row. The page writes the messages
+and chooses them, KN-823. KN-779.
+
 ### The mobile status tab
 
 **Tab / Status (Mobile)**, `1274:3275`, Default, Active and Add, read on 2026-11-04: a status of the mobile
@@ -1521,6 +1542,7 @@ of the contract.
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |
+| Stats Guidance        | `1168:3170`  | no variants: a rule's message and its action at the top of the Stats page                                         |
 | Status Tab (Mobile)   | `1274:3275`  | Default, Active, Add: the mobile board's status tabs                                                              |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,

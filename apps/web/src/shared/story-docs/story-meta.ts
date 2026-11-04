@@ -82,6 +82,7 @@ export type StoryTitle =
   | 'Shared/Sidebar'
   | 'Shared/SortControl'
   | 'Shared/SourceRow'
+  | 'Shared/StatsGuidance'
   | 'Shared/StatsNumber'
   | 'Shared/StatusChip'
   | 'Shared/StatusControl'
