@@ -81,6 +81,7 @@ export type StoryTitle =
   | 'Shared/PanelModal'
   | 'Shared/PasteField'
   | 'Shared/PeriodSwitch'
+  | 'Shared/PersonPicker'
   | 'Shared/PopoverClose'
   | 'Shared/ReasonOption'
   | 'Shared/RelatedPerson'

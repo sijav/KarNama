@@ -367,4 +367,7 @@ export const messages: Record<string, string> = {
   'Search your job opportunities': 'جست‌وجو بین فرصت‌های شغلی',
   'Linked': 'وصل است',
   'Unlink': 'برداشتن وصل',
+  'Search your network': 'جست‌وجو بین آدم‌های شبکه',
+  'From your network': 'از شبکهٔ شما',
+  'to the network as a new person': 'به شبکه به‌عنوان نفر تازه',
 }

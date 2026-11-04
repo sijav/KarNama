@@ -367,4 +367,7 @@ export const messages: Record<string, string> = {
   'Search your job opportunities': 'Search your job opportunities',
   'Linked': 'Linked',
   'Unlink': 'Unlink',
+  'Search your network': 'Search your network',
+  'From your network': 'From your network',
+  'to the network as a new person': 'to the network as a new person',
 }

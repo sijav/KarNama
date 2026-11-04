@@ -1454,6 +1454,23 @@ outside close it. It shows three before it scrolls, as the frame does, says
 «نتیجه‌ای پیدا نشد» when nothing matches, and draws the unlink button with focus
 inside the row as well as under the pointer. KN-772.
 
+### The person picker
+
+**Person Picker**, `1096:3129`, read on 2026-11-04: the related people tab's
+«+ افزودن نفر», the job picker's panel at 400, `elevation.picker`, with its
+search, then «از شبکهٔ شما» in Label `text/secondary`, 4 above and below and 12
+at the sides, and each person of the reader's network it finds, 54 tall, their
+name in Body over «سمت · شرکت» in Label `text/secondary` at the inline start,
+the ones linked already in `text/secondary` with «وصل است» and the check in
+`text/brand` at the inline end, the one under the pointer on
+`bg/surface-secondary`. With something typed, a divider of `border/default` and
+«افزودن «…» به شبکه به‌عنوان نفر تازه» in Body `text/brand` after its plus, 38
+tall, which asks for the add form with the name filled. Both pickers are one
+component in the code, `SearchPicker`, which makes the search a combobox over the
+list: the arrows move through the people who can be chosen and Enter links one,
+or, when no one can be, asks to add the name; a press does either, and each
+closes it, as Escape and a press outside do. KN-775.
+
 ### The company match
 
 **Company Match**, `1096:3111`, read on 2026-11-04: one component with no
@@ -1885,6 +1902,7 @@ of the contract.
 | Contact Row           | `1056:2872`  | Default, Hover, Selectable, Selected: one person on the network page                                              |
 | Linked Job            | `1092:2997`  | Default, Hover: a job opportunity linked to a person, unlinked from the row                                       |
 | Linked Jobs           | `1092:3103`  | Empty, Filled, Picking: the person modal's linked job opportunities and the picker                                |
+| Person Picker         | `1096:3129`  | no variants: the related people tab's search of the network, and adding someone new                               |
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |
