@@ -6,7 +6,10 @@ import { defaultStatuses, jobFrom, RecordsProvider, type Records } from '../core
 import { emptyDraft } from '../shared/add-job'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { fixtures } from '../shared/story-fixtures'
+import { darkSemantic } from '../theme/darkMode'
+import { semantic } from '../theme/tokens'
 import { NetworkScreen } from './NetworkScreen'
+import { phoneHeaderIsTheFrames } from './phoneHeaderCheck'
 
 // A job opportunity holding the fixtures' contacts, which is where the network
 // page reads its people from until it keeps its own, KN-415.
@@ -548,5 +551,28 @@ export const FocusAfterDeletingFromTheModal: Story = {
       await expect(canvas.getByRole('button', { name: after })).toHaveFocus()
     })
     await expect(canvas.queryByText(person)).toBeNull()
+  },
+}
+
+// The network's header: the title, the add contact Icon Button and the gear, on a phone, the owner's answer of 2026-11-04, KN-850, in each language
+// and scheme, KN-851.
+export const PhoneHeader: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await phoneHeaderIsTheFrames(canvasElement, 'fa-IR', semantic, 'network')
+  },
+}
+
+export const PhoneHeaderInEnglish: Story = {
+  globals: { locale: 'en-US', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await phoneHeaderIsTheFrames(canvasElement, 'en-US', semantic, 'network')
+  },
+}
+
+export const PhoneHeaderDark: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    await phoneHeaderIsTheFrames(canvasElement, 'fa-IR', darkSemantic, 'network')
   },
 }

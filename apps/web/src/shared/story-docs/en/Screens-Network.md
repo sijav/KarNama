@@ -89,3 +89,16 @@ The Delete inside the contact modal closes that modal in the same breath, so by
 the time the confirmation is up the control that asked is already gone. It is
 captured when it asks, not when the confirmation opens, and the reader lands on
 the person after the one deleted.
+
+### PhoneHeader
+
+At a phone's width the header holds the title, the add contact icon button, and the settings gear,
+with no language or sign-out button, which are inside settings.
+
+### PhoneHeaderInEnglish
+
+The same in English.
+
+### PhoneHeaderDark
+
+The same in the dark scheme.

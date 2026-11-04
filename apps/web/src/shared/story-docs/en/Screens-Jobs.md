@@ -238,3 +238,16 @@ deletes them from the store and from the job modal.
 
 A board given no way to sign out, at a phone's width: its header's gear opens
 settings with no sign out.
+
+### PhoneHeader
+
+At a phone's width the header holds the title, the add as a small button led by its plus, and the settings gear,
+with no language or sign-out button, which are inside settings.
+
+### PhoneHeaderInEnglish
+
+The same in English.
+
+### PhoneHeaderDark
+
+The same in the dark scheme.

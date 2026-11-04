@@ -10,7 +10,10 @@ import type { StatusOption } from '../shared/status-picker'
 import type { StoryMeta } from '../shared/story-docs/story-meta'
 import { fixtures } from '../shared/story-fixtures'
 import { BOARD_LISTENING, ListeningAround } from '../shared/story-fixtures/listening'
+import { darkSemantic } from '../theme/darkMode'
+import { semantic } from '../theme/tokens'
 import { JobsScreen, type JobsScreenProps } from './JobsScreen'
+import { phoneHeaderIsTheFrames } from './phoneHeaderCheck'
 
 // A board of the fixtures' own job opportunities, one per status, so the screen
 // draws what the design draws rather than a made-up set, KN-062.
@@ -1874,5 +1877,28 @@ export const WithoutSigningOut: Story = {
     } finally {
       await page.viewport(before.width, before.height)
     }
+  },
+}
+
+// The board's header, 1274:64227: the title, the add as Button S led by its plus, and the gear, on a phone, the owner's answer of 2026-11-04, KN-850, in each language
+// and scheme, KN-851.
+export const PhoneHeader: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await phoneHeaderIsTheFrames(canvasElement, 'fa-IR', semantic, 'board')
+  },
+}
+
+export const PhoneHeaderInEnglish: Story = {
+  globals: { locale: 'en-US', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    await phoneHeaderIsTheFrames(canvasElement, 'en-US', semantic, 'board')
+  },
+}
+
+export const PhoneHeaderDark: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'dark' },
+  play: async ({ canvasElement }) => {
+    await phoneHeaderIsTheFrames(canvasElement, 'fa-IR', darkSemantic, 'board')
   },
 }
