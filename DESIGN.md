@@ -1293,6 +1293,34 @@ asks to change the date, draws the hover look while keyboard focus is inside as
 well as under the pointer where there is hover, and draws the round's one and a
 half as an inset shadow, since Chromium floors a border of 1.5. KN-753.
 
+### The column sort controls
+
+**Column Header / Sort**, `961:97159`, read on 2026-11-04, sets its caption
+11 on 17 at Regular, `sortCaption`, and **Menu / Sort**, `912:40045`, its label
+12 on 19, Figma's automatic line, at Medium, `sortMenuLabel`: the order a board
+column is in, at its header's inline end in `text/disabled`, `text/primary`
+under the pointer, the more icon after it at 16 in `text/secondary`, 8 apart. The
+redesign has no order for the whole board: each column keeps its own, and the
+caption opens its menu, 220 wide at radius 8 on `bg/surface`, a pixel of
+`border/default` inside and in its layout, the card menu's shadow, hanging 4
+under the column header from its inline end. «مرتب‌سازی این ستون» in
+`text/disabled` heads it, 8 above, 12 at the sides and 4 below; then **Menu
+Item / Check**, `912:40044`, a row for each order, 40 tall, 12 at the sides and
+8 between, a 16 room for the tick at the inline start, the label Body in
+`text/primary`, or Medium in `text/brand` with the check when chosen, and
+`bg/surface-secondary` under the pointer or keyboard focus. The saved column
+orders by deadline, the applied by waiting time, the interview by the
+interview's date and the offer by arrival, newest first; each can also go
+newest or oldest first by its own date, or by company name, as `912:82571`,
+`912:83039`, `912:83507` and `912:83975` list them, the default first with
+«(پیش‌فرض)». **Menu / Sort (Custom)**, `919:2886`, is a stage the reader made:
+the offer column's three orders, then 4, a divider and the Menu's own items,
+«ویرایش وضعیت» and the destructive «حذف وضعیت»; the default stages are not
+edited or deleted. The code makes each order a radio of the menu, starts focus
+on the column's order, and names the caption by its words and its column. The
+board's one order, the four options under Sorting, gives way to these once the
+board adopts them, KN-736 and KN-808. KN-759.
+
 ### The company match
 
 **Company Match**, `1096:3111`, read on 2026-11-04: one component with no
@@ -1713,6 +1741,9 @@ of the contract.
 | Related Person        | `1096:3109`  | Default, Hover; Related Person / Mobile `1313:3295`                                                               |
 | Company Match         | `1096:3111`  | no variants: the related people tab's prompt to link someone from the job opportunity's company                   |
 | History Row           | `749:32`     | Status, Round by Default, Hover, Locked; History / Row (Mobile) `1313:3390`                                       |
+| Sort Caption          | `961:97159`  | Default, Hover: a column's order at its header's end, opening its sort menu                                       |
+| Sort Menu             | `912:40045`  | a column's orders; Menu / Sort (Custom) `919:2886` adds editing and deleting the stage                            |
+| Check Menu Item       | `912:40044`  | Default, Hover, Selected, Selected Hover: one order, ticked when chosen                                           |
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |

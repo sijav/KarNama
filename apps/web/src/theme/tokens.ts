@@ -119,7 +119,9 @@ export const type = {
  * at Medium, KN-749. The grouped status picker, `636:6417`, sets its label 12
  * on 19 at Medium and its captions 12 on 19 at Regular, KN-751. The history row,
  * `749:32`, sets its date 12 on its automatic 19 at Regular and a round's title
- * 13 on 20 at Medium, KN-753.
+ * 13 on 20 at Medium, KN-753. The column header's sort caption, `961:97159`,
+ * is 11 on 17 at Regular, and its menu's label, `912:40045`, 12 on Figma's
+ * automatic 19 at Medium, KN-759.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -142,6 +144,8 @@ export const unstyledText = {
   groupedPickerCaption: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
   historyDate: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
   historyTitle: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
+  sortCaption: { size: 11, lineHeight: 17, weight: 400, letterSpacing: 0 },
+  sortMenuLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
 } as const
 
 /**

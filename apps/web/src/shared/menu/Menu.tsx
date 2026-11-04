@@ -1,7 +1,8 @@
 import { Divider, MenuItem, Menu as MuiMenu, useTheme } from '@mui/material'
 import { inlineEndOf } from '../../theme/sides'
-import { spacing, type as typeScale } from '../../theme/tokens'
+import { spacing } from '../../theme/tokens'
 import { Tooltip } from '../tooltip'
+import { menuItemLook } from './itemLook'
 
 export interface MenuAction {
   id: string
@@ -20,13 +21,10 @@ export interface MenuProps {
   onClose: () => void
 }
 
-// Node 512:8350's menus are fixed at 220 and 181:22's items at 40; neither
-// binds a variable. The edge is the file's one pixel, and the keyboard's ring
-// the three drawn inside that the Filter Chip and the Icon Button use.
+// Node 512:8350's menus are fixed at 220, binding no variable; its items, 181:22,
+// take the look in itemLook. The edge is the file's one pixel.
 const WIDTH = 220
-const ITEM_HEIGHT = 40
 const EDGE = 1
-const FOCUS_RING = 3
 
 // The Menu of node 512:8350 and its items, 181:22, on MUI's Menu, which closes
 // on Escape and on a press outside and gives focus back to the element that
@@ -78,38 +76,7 @@ export const Menu = ({ label, anchorEl, actions, onClose }: MenuProps) => {
             onClick={() => {
               if (!blocked) action.onSelect()
             }}
-            sx={(theme) => {
-              const colour = theme.karnama.semantic
-              const text = blocked ? colour['text/disabled'] : action.destructive === true ? colour['text/error'] : colour['text/primary']
-              // State=Hover's grey, or State=Destructive Hover's red/100 for a
-              // destructive item, 961:2491, KN-793; keyboard focus takes it too.
-              const hover = action.destructive === true ? colour['red/100'] : colour['bg/surface-secondary']
-              return {
-                position: 'relative',
-                boxSizing: 'border-box',
-                minHeight: ITEM_HEIGHT,
-                height: ITEM_HEIGHT,
-                paddingBlock: 0,
-                paddingInline: `${spacing.sm}px`,
-                gap: `${spacing.xs}px`,
-                fontSize: `${typeScale.body.size}px`,
-                lineHeight: `${typeScale.body.lineHeight}px`,
-                fontWeight: typeScale.body.weight,
-                letterSpacing: typeScale.body.letterSpacing,
-                color: text,
-                cursor: blocked ? 'default' : 'pointer',
-                '&:hover, &.Mui-focusVisible': { backgroundColor: blocked ? 'transparent' : hover },
-                '&.Mui-focusVisible::after': {
-                  content: '""',
-                  position: 'absolute',
-                  inset: EDGE,
-                  borderStyle: 'solid',
-                  borderWidth: FOCUS_RING,
-                  borderColor: colour['border/focus'],
-                  pointerEvents: 'none',
-                },
-              }
-            }}
+            sx={(theme) => menuItemLook.sx(theme, { destructive: action.destructive === true, blocked })}
           >
             {action.label}
           </MenuItem>
