@@ -95,6 +95,7 @@ export type StoryTitle =
   | 'Shared/Toast'
   | 'Shared/Tooltip'
   | 'Shared/TooltipLabel'
+  | 'Shared/UnsavedModal'
   | 'Shared/WeekBar'
 
 /** Storybook's `Meta`, with the title narrowed to a registered story path. */

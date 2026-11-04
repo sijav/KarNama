@@ -1183,6 +1183,20 @@ person, so each button is heard with whose it is. A copy writes to the
 clipboard and tells the caller, which says so with the toast, KN-764; a refused
 clipboard says nothing. KN-773.
 
+### The unsaved changes modal
+
+**Modal / Unsaved**, `893:3780`, read on 2026-11-04: one component with no
+variants, asked when a modal holding unsaved changes is closed. The shell at
+360, its header «تغییرات ذخیره نشده» with Popover / Close at 20, a divider,
+«اگه بدون ذخیره ببندید، تغییرهایی که دادید از بین می‌رن.» in Body
+`text/secondary`, a divider, and at the inline end, 12 apart, the Secondary M
+«بستن بدون ذخیره» then the Primary M «ذخیره» at the very end, as its description
+says. The × goes back to the modal, and so do Escape and a press on the scrim.
+The code puts focus on Save as it opens, so Enter keeps the changes, where the
+Confirm modal's Cancel takes it because there the first key must change
+nothing. Its body is the Confirm modal's paragraph, the shell's `ModalText`.
+KN-763.
+
 ### The company match
 
 **Company Match**, `1096:3111`, read on 2026-11-04: one component with no
@@ -1546,6 +1560,7 @@ of the contract.
 | Status Stripe       | `358:430` | the 4px colour bar on the card, one per status                                                  |
 | Company Logo          | `620:3684`   | the default organisation icon; a fetched logo covers the same square                                              |
 | Modal / Confirm     | `150:92`  | delete and archive confirmation                                                                 |
+| Modal / Unsaved       | `893:3780`   | no variants: save, close without saving, or go back to the modal                                                  |
 | Modal / Change Status | `150:93` |                                                                                                 |
 | Modal / Add-Edit    | `166:82`  | steps Paste, PasteFilled, Loading, Review, Manual, Error                                        |
 | Page Header         | `155:56`  | title, optional back button, optional primary action                                            |

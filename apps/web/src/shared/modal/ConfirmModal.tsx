@@ -1,8 +1,6 @@
 import { useLingui } from '@lingui/react'
-import { Box } from '@mui/material'
-import { type as typeScale } from '../../theme/tokens'
 import { Button } from '../button'
-import { Modal } from './Modal'
+import { Modal, ModalText } from './Modal'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface ConfirmModalProps {
@@ -64,18 +62,7 @@ export const ConfirmModal = ({ open, title, body, confirmLabel, onConfirm, onCan
         </>
       }
     >
-      <Box
-        component="p"
-        sx={(theme) => ({
-          margin: 0,
-          fontSize: `${typeScale.body.size}px`,
-          lineHeight: `${typeScale.body.lineHeight}px`,
-          fontWeight: typeScale.body.weight,
-          color: theme.karnama.semantic['text/secondary'],
-        })}
-      >
-        {body}
-      </Box>
+      <ModalText>{body}</ModalText>
     </Modal>
   )
 }

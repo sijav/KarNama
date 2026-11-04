@@ -285,4 +285,7 @@ export const messages: Record<string, string> = {
   'is in your network': 'در شبکهٔ شماست',
   'are in your network': 'در شبکهٔ شماست',
   Connect: 'وصل کردن',
+  'Unsaved changes': 'تغییرات ذخیره نشده',
+  'If you close without saving, the changes you made will be lost.': 'اگه بدون ذخیره ببندید، تغییرهایی که دادید از بین می‌رن.',
+  'Close without saving': 'بستن بدون ذخیره',
 }

@@ -1,5 +1,6 @@
 export { ChangeStatusModal, type ChangeStatusModalProps } from './ChangeStatusModal'
 export { ConfirmModal, type ConfirmModalProps } from './ConfirmModal'
 export { ContactModal, type ContactModalProps, type ContactModalValues } from './ContactModal'
-export { DISSOLVE_MS, Modal, ModalActions, ModalDivider, ModalHeader, modalPaper, modalScrim, type ModalProps } from './Modal'
+export { DISSOLVE_MS, Modal, ModalActions, ModalDivider, ModalHeader, modalPaper, modalScrim, ModalText, type ModalProps } from './Modal'
 export { PanelModal, type PanelModalProps } from './PanelModal'
+export { UnsavedModal, type UnsavedModalProps } from './UnsavedModal'

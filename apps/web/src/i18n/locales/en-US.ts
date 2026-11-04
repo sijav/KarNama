@@ -285,4 +285,7 @@ export const messages: Record<string, string> = {
   'is in your network': 'is in your network',
   'are in your network': 'are in your network',
   Connect: 'Connect',
+  'Unsaved changes': 'Unsaved changes',
+  'If you close without saving, the changes you made will be lost.': 'If you close without saving, the changes you made will be lost.',
+  'Close without saving': 'Close without saving',
 }

@@ -41,6 +41,24 @@ export const ModalDivider = () => (
   />
 )
 
+// A modal's words, Body in text/secondary: what cannot be undone in the Confirm
+// modal, 150:92, and what closing without saving loses in Modal / Unsaved,
+// 893:3780.
+export const ModalText = ({ children }: { children: ReactNode }) => (
+  <Box
+    component="p"
+    sx={(theme) => ({
+      margin: 0,
+      fontSize: `${typeScale.body.size}px`,
+      lineHeight: `${typeScale.body.lineHeight}px`,
+      fontWeight: typeScale.body.weight,
+      color: theme.karnama.semantic['text/secondary'],
+    })}
+  >
+    {children}
+  </Box>
+)
+
 // The shell's paper: bg/surface, radius lg, Elevation/Modal, 24 of padding and
 // 16 between the parts, the caller's width, and 16 from the screen's edges
 // where the screen is narrower. Under an sx key, which the lint rule reads as CSS.
