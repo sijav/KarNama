@@ -100,7 +100,8 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 // The file's geometry in every state, 159:63 to 159:69: the text 12 from both
-// sides of a chip 32 tall, and no border of the chip's own, its edge drawn
+// sides of a chip 32 tall, 14 on 22 at Medium, KN-846, and no border of the
+// chip's own, its edge drawn
 // inside on its ::before, KN-282. The label is the chip's one element, a flex
 // item, so its box is where the text is laid out; the gaps are rounded to a
 // hundredth, since the text's width is not a whole pixel.
@@ -112,6 +113,8 @@ const isTheFiles = async (canvasElement: HTMLElement) => {
   const inner = text.getBoundingClientRect()
   await expect([inner.left - outer.left, outer.right - inner.right].map((gap) => Math.round(gap * 100) / 100)).toEqual([12, 12])
   await expect(outer.height).toBe(32)
+  const words = getComputedStyle(text)
+  await expect([px(words.fontSize), px(words.lineHeight), words.fontWeight]).toEqual([14, 22, '500'])
   const own = getComputedStyle(chip)
   await expect([own.borderTopWidth, own.borderRightWidth, own.borderBottomWidth, own.borderLeftWidth].map(Number.parseFloat)).toEqual([0, 0, 0, 0])
   return getComputedStyle(chip, '::before')
@@ -125,7 +128,7 @@ export const Default: Story = {
     const chip = within(canvasElement).getByRole('button')
     // The count is in the reader's own digits, which is the whole reason it
     // goes through formatCount rather than into the string raw.
-    await expect(chip.textContent).toBe(`${args.label} (${formatCount('fa-IR', args.count)})`)
+    await expect(chip.textContent).toBe(args.count === undefined ? args.label : `${args.label} (${formatCount('fa-IR', args.count)})`)
     await expect(chip).toHaveAttribute('aria-pressed', String(args.selected ?? false))
     // Node 159:63: a one pixel edge, inside, and the text 12 from each side; a
     // selected chip's is the owner's blue, at 3:1 or more on its fill, KN-279.
@@ -217,7 +220,9 @@ export const InEnglish: Story = {
   play: async ({ args, canvasElement }) => {
     // Same component, Latin digits. The label is record data and arrives as
     // whatever the user named the status, so it does not translate.
-    await expect(within(canvasElement).getByRole('button').textContent).toBe(`${args.label} (${formatCount('en-US', args.count)})`)
+    await expect(within(canvasElement).getByRole('button').textContent).toBe(
+      args.count === undefined ? args.label : `${args.label} (${formatCount('en-US', args.count)})`,
+    )
     // And the same 12 either side, the direction turned.
     await isTheFiles(canvasElement)
   },
@@ -321,5 +326,18 @@ export const FocusedInAClippingHost: Story = {
       const band = rounded(w - 2 * from, h - 2 * from, r - from) - rounded(w - 2 * (from + width), h - 2 * (from + width), r - from - width)
       await expect(band - (4 * w + 4 * h - (16 - 4 * Math.PI) * r)).toBeGreaterThanOrEqual(0)
     }
+  },
+}
+
+export const NoCount: Story = {
+  // A chip that counts nothing, as the stage modal's suggestions, 919:2804, are:
+  // the name alone, no parentheses, the same geometry and type.
+  args: { label: statusName('fa-IR', 'offer') },
+  globals: { locale: 'fa-IR' },
+  render: ({ count: _count, ...args }) => <FilterChip {...args} />,
+  play: async ({ args, canvasElement }) => {
+    const chip = within(canvasElement).getByRole('button')
+    await expect(chip.textContent).toBe(args.label)
+    await isTheFiles(canvasElement)
   },
 }

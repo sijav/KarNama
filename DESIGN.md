@@ -1709,7 +1709,7 @@ of the contract.
 | Modal / Add-Edit    | `166:82`  | steps Paste, PasteFilled, Loading, Review, Manual, Error                                        |
 | Page Header         | `155:56`  | title, optional back button, optional primary action                                            |
 | Search Bar          | `155:92`  | Default, Focus, Filled, Hover                                                                        |
-| Filter Chip         | `159:71`  | Default, Hover, Pressed, Selected, doubles as the status counter                                |
+| Filter Chip           | `159:71`     | Default, Hover, Pressed, Selected, the label at Medium; the status counter, or a suggestion with no count         |
 | Empty State         | `159:80`  | title and body as text properties, a required Primary M action; no screen in the redesign uses it |
 | Loading / Extract   | `1031:3818` | Step 1, 2 and 3: three dots and no text, the owner's decision of 1 Aban; the status says why past fifteen seconds |
 | Menu Item           | `181:22`  | Default, Hover, Disabled, Destructive, Destructive Hover                                                         |

@@ -17,8 +17,8 @@ const FOCUS_RING = 3
 export interface FilterChipProps {
   /** The status name. */
   label: string
-  /** How many records sit in this status. */
-  count: number
+  /** How many records sit in this status, none for a chip that counts nothing. */
+  count?: number
   /** Whether this filter is currently on. */
   selected?: boolean
   /** Called with the state the chip is moving TO. */
@@ -38,7 +38,12 @@ export interface FilterChipProps {
  *
  * The count goes through `formatCount`, which is why the Figma frame reads
  * «مصاحبه (۳)» and not «مصاحبه (3)». A Persian reader counts in Persian digits,
- * and a raw number would be the one untranslated thing on the screen.
+ * and a raw number would be the one untranslated thing on the screen. A chip
+ * that counts nothing, the stage modal's suggestions, `919:2804`, has no count
+ * and no parentheses, KN-846.
+ *
+ * The label is the Body's size and line at Medium in every state, as
+ * `159:71` sets it, KN-846.
  *
  * No disabled state, because the file does not draw one. Four states, four
  * states.
@@ -81,7 +86,7 @@ export const FilterChip = ({ label, count, selected = false, onToggle }: FilterC
           fontFamily: 'inherit',
           fontSize: `${typeScale.body.size}px`,
           lineHeight: `${typeScale.body.lineHeight}px`,
-          fontWeight: typeScale.body.weight,
+          fontWeight: typeScale.label.weight,
           backgroundColor: selected ? colour['bg/brand/container'] : colour['bg/surface'],
           color: selected ? colour['text/brand'] : colour['text/secondary'],
 
@@ -127,7 +132,7 @@ export const FilterChip = ({ label, count, selected = false, onToggle }: FilterC
     >
       {/* One flex item for the label and its count, so its box is where the
           text sits and a story can measure it from the chip's edge, KN-282. */}
-      <span>{`${label} (${formatCount(locale, count)})`}</span>
+      <span>{count === undefined ? label : `${label} (${formatCount(locale, count)})`}</span>
     </Box>
   )
 }

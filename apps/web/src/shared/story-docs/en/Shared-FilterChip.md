@@ -22,6 +22,9 @@ How many records sit in this status. Rendered through `i18n.number`, so a
 Persian reader sees «۳» and an English reader sees «3». A raw number would be
 the one untranslated thing on the screen.
 
+None for a chip that counts nothing, such as the stage modal's suggestions:
+the chip then shows the name alone.
+
 ### selected
 
 Whether this filter is on. Drives both the fill and `aria-pressed`.
@@ -81,3 +84,8 @@ it can be cut off. The story checks that every pixel the focus paints lies
 inside the host, that the ring stands out from the chip's fill, and that it is
 at least the chip's two pixel perimeter. The label and the count are its
 controls, since they change the width the ring has to cover.
+
+### NoCount
+
+A chip that counts nothing, as the stage modal's suggestions are: the name
+alone, with no parentheses.
