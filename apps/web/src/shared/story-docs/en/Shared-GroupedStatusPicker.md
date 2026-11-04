@@ -34,6 +34,11 @@ Called when Add status is pressed; the page makes a new stage.
 Puts focus on the chosen status as the picker mounts, as a dialog opening on it
 does.
 
+### label
+
+Whether it draws its own Status line; off where something beside it already
+says so, as the add modal's footer does. The group is named Status either way.
+
 ## Stories
 
 ### Default

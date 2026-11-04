@@ -14,6 +14,7 @@ export interface GroupedStatusPickerProps {
   onChange: (id: string) => void
   onAdd: () => void
   autoFocus?: boolean
+  label?: boolean
 }
 
 // Node 636:6417 binds no variable to these: the 10 between its parts, the
@@ -59,7 +60,9 @@ const Choice = ({ option, value, autoFocus }: { option: StatusOption; value: str
 // is inline flow, its radios and the add chip 8 apart both ways, the add chip
 // following the stages' group rather than sitting in it, KN-338. Told to, it
 // puts focus on the chosen status as it mounts, as a dialog opening on it does.
-export const GroupedStatusPicker = ({ stages, outcomes, value, onChange, onAdd, autoFocus = false }: GroupedStatusPickerProps) => {
+// Without its label, as the add modal's footer opens it under its own «وضعیت:»,
+// 1257:3315, the group is named by the same word, KN-752.
+export const GroupedStatusPicker = ({ stages, outcomes, value, onChange, onAdd, autoFocus = false, label: labelled = true }: GroupedStatusPickerProps) => {
   const { i18n } = useLingui()
   const name = useId()
   const labelId = useId()
@@ -80,23 +83,25 @@ export const GroupedStatusPicker = ({ stages, outcomes, value, onChange, onAdd, 
   return (
     <Box
       role="group"
-      aria-labelledby={labelId}
+      {...(labelled ? { 'aria-labelledby': labelId } : { 'aria-label': i18n._('Status') })}
       onKeyDown={arrowsAcross}
       sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: `${GAP}px` }}
     >
-      <Box
-        component="span"
-        id={labelId}
-        sx={(theme) => ({
-          fontSize: `${label.size}px`,
-          lineHeight: `${label.lineHeight}px`,
-          fontWeight: label.weight,
-          letterSpacing: `${label.letterSpacing}px`,
-          color: theme.karnama.semantic['text/secondary'],
-        })}
-      >
-        {i18n._('Status')}
-      </Box>
+      {labelled ? (
+        <Box
+          component="span"
+          id={labelId}
+          sx={(theme) => ({
+            fontSize: `${label.size}px`,
+            lineHeight: `${label.lineHeight}px`,
+            fontWeight: label.weight,
+            letterSpacing: `${label.letterSpacing}px`,
+            color: theme.karnama.semantic['text/secondary'],
+          })}
+        >
+          {i18n._('Status')}
+        </Box>
+      ) : null}
       <Box component="span" id={stagesId} sx={(theme) => captionSx.sx(theme.karnama.semantic['text/disabled'])}>
         {i18n._('In progress')}
       </Box>

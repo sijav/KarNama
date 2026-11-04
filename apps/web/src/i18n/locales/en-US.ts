@@ -317,4 +317,5 @@ export const messages: Record<string, string> = {
   'Closed the same day': 'Closed the same day',
   'In progress': 'In progress',
   Closed: 'Closed',
+  'Status:': 'Status:',
 }

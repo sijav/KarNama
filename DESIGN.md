@@ -737,6 +737,24 @@ rows the way they point, KN-301, and the add chip follows the stages' group
 rather than sitting in it, KN-338. It replaces the flat Status Picker wherever
 the redesign draws a status choice. KN-751.
 
+### The add modal's status trigger
+
+**Status Select / Footer**, `1257:3315`, Value by State, Default, Hover and
+Open, read on 2026-11-04: the status of a job opportunity being added, in the
+add modal's footer at the inline start, the buttons at the other end. A field 44
+tall that hugs its width, `bg/surface` at radius md, 16 at the sides and 8
+between: «وضعیت:» in Body `text/secondary`, the chosen status's small Status
+Chip and the chevron at 20 in `text/secondary`; its edge one pixel of
+`border/default`, `text/secondary` on Hover and `border/focus` while Open. Open
+draws a menu of `bg/surface` at radius lg, 12 round, an edge of
+`border/default` and Elevation/Modal, holding the grouped picker without its
+«وضعیت» line, its inline start at the field's; the file lays it over the field's
+top, and its description says it opens upward, so the code opens it 4 above, the
+Select's 4 turned upward. A choice closes it and hands the status over, the add
+chip closes it and asks for a stage, Escape and a press outside close it, focus
+back on the field; the keyboard draws two of `border/focus` inside, as the
+Select's field does, and the hover edge only where there is hover. KN-752.
+
 ### The Status Picker, its choices and the Status Control
 
 The **Status Choice**, `427:567`, is the medium Status Chip in a shell of 4,
@@ -1625,6 +1643,7 @@ of the contract.
 | Status Choice       | `427:567` | Default, Hover, Selected                                                                        |
 | Status Picker       | `427:592` | the popover that assigns a status                                                               |
 | Grouped Picker        | `636:6417`   | Status Picker / Grouped: the stages and the outcomes in two groups, one choice                                    |
+| Status Select         | `1257:3315`  | Default, Hover, Open: the add modal's footer trigger that opens the grouped chips upward                          |
 | Status Control      | `199:21`  | the clickable wrapper around a chip, Default/Hover/Pressed                                      |
 | Input                 | `95:39`      | Default, Filled, Focus, Error, Disabled, Hover, Filled Hover                                                      |
 | Card                | `137:44`  | Default, Hover, Pressed, Selected, Static, Focus, desktop                                       |
@@ -1756,7 +1775,10 @@ status-management page was removed.
 
 **Status is chosen with chips, never a dropdown.** The `Status Picker` is a row
 of status chips with a blue ring on the selected one, plus a dashed
-«+ افزودن وضعیت» chip that creates a new status in place.
+«+ افزودن وضعیت» chip that creates a new status in place. In the add modal's
+footer the chips sit behind a trigger, Status Select / Footer, which shows the
+chosen status and opens the grouped chips upward; the status is still chosen
+with chips, KN-752.
 
 **The card's status stripe is on the RIGHT edge**, 4px, in the status colour.
 On hover a checkbox appears, the title shifts, and a delete icon appears in the

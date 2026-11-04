@@ -317,4 +317,5 @@ export const messages: Record<string, string> = {
   'Closed the same day': 'همون روز بسته شد',
   'In progress': 'در جریان',
   Closed: 'بسته‌شده',
+  'Status:': 'وضعیت:',
 }
