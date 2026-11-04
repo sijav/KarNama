@@ -304,8 +304,11 @@ of it is its start. KN-264, KN-370.
 
 ### The Input focused while invalid
 
-Node `95:38` draws six standalone states and no composite, so this one is a
-decision rather than a reading. **A focused invalid field keeps the error
+Node `95:38` drew six standalone states and no composite; the original adds a
+seventh, Filled Hover, Hover's `text/secondary` edge round Filled's
+`text/primary` value, the one composite it draws, which the code's hover rule
+already drew on a field with a value, KN-787. It draws no focused invalid
+field, so this one is a decision rather than a reading. **A focused invalid field keeps the error
 colour and takes the focus width**: two pixels of `border/error`, because
 turning it blue would hide the error exactly while the user is fixing it. **And
 the product's focus ring is drawn inside it**: two pixels of `border/focus`,
@@ -1508,7 +1511,7 @@ of the contract.
 | Status Choice       | `427:567` | Default, Hover, Selected                                                                        |
 | Status Picker       | `427:592` | the popover that assigns a status                                                               |
 | Status Control      | `199:21`  | the clickable wrapper around a chip, Default/Hover/Pressed                                      |
-| Input               | `95:39`   | Default, Filled, Focus, Error, Disabled, Hover                                                  |
+| Input                 | `95:39`      | Default, Filled, Focus, Error, Disabled, Hover, Filled Hover                                                      |
 | Card                | `137:44`  | Default, Hover, Pressed, Selected, Static, Focus, desktop                                       |
 | Card / Mobile       | `491:751` | Default, Selected                                                                               |
 | Status Stripe       | `358:430` | the 4px colour bar on the card, one per status                                                  |

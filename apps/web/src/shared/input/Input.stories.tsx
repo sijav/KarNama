@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { useArgs, useGlobals, useRef as useStoryRef } from 'storybook/preview-api'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { defaultLocale, i18n, i18nFor, isLocale, type Locale } from '../../i18n'
-import { contrast } from '../../theme/darkMode'
+import { contrast, darkSemantic } from '../../theme/darkMode'
 import { iconSize, radius, semantic, spacing } from '../../theme/tokens'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
@@ -631,6 +631,45 @@ export const Hover: Story = {
     // Node 512:761: the border takes text/secondary.
     await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, semantic['text/secondary']))
   },
+}
+
+// Node 95:38's seventh state, State=Filled Hover, which the original adds: a
+// field holding a value takes Hover's text/secondary edge under the pointer and
+// keeps Filled's text/primary words, KN-787. Only the test runner's real pointer
+// reaches the edge's assertion.
+const isFilledHover =
+  (typed: string, palette: Record<keyof typeof semantic, string>) =>
+  async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const box = within(canvasElement).getByRole('textbox')
+    const field = fieldOf(canvasElement)
+    await expect(box).toHaveValue(typed)
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, palette['border/control']))
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) {
+      if (import.meta.env.MODE !== 'test') return
+      throw new Error('FilledHover is running outside Storybook without the story-test flag that .storybook/vitest.setup.ts sets')
+    }
+    const browser = await import('vitest/browser')
+    await browser.userEvent.hover(box)
+    await expect(edgeOf(field).borderTopColor).toBe(computedColour(field, palette['text/secondary']))
+    await expect(getComputedStyle(box).color).toBe(computedColour(box, palette['text/primary']))
+  }
+
+export const FilledHover: Story = {
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'name']),
+  args: { defaultValue: TYPED },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: isFilledHover(TYPED, semantic),
+}
+
+// The same in English and in the dark scheme, in the theme's dark colours.
+const [FIRST_JOB_IN_ENGLISH] = fixtures('en-US').jobs
+if (!FIRST_JOB_IN_ENGLISH) throw new Error('the English story fixtures have no job opportunity')
+
+export const FilledHoverInTheDark: Story = {
+  parameters: offers(['label', 'value', 'defaultValue', 'placeholder', 'helperText', 'name']),
+  args: { defaultValue: FIRST_JOB_IN_ENGLISH.title },
+  globals: { locale: 'en-US', colorScheme: 'dark' },
+  play: isFilledHover(FIRST_JOB_IN_ENGLISH.title, darkSemantic),
 }
 
 export const LabelIsBound: Story = {

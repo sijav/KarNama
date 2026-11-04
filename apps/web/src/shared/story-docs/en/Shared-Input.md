@@ -201,6 +201,15 @@ The secondary surface, with the text in the disabled colour.
 The border turns to the secondary text colour under a real pointer. In Storybook
 itself, hover it yourself.
 
+### FilledHover
+
+A field holding a value under a real pointer: the same border, and its words
+stay the primary text colour. In Storybook itself, hover it yourself.
+
+### FilledHoverInTheDark
+
+The same in English and in the dark scheme, in the theme's dark colours.
+
 ### LabelIsBound
 
 Clicking the label focuses the field, and the field is named by the label.
