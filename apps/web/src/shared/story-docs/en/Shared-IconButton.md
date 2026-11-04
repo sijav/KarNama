@@ -56,6 +56,11 @@ A control that goes somewhere cannot also be turned off, and the type refuses
 the pair, KN-433: an anchor takes no `disabled` attribute, so it would say it
 was off and still navigate.
 
+### external
+
+For a link to another site: it opens in a new tab, and the page it opens
+cannot reach back.
+
 ### ref
 
 The element itself, handed back to whoever asks. A button that can be turned

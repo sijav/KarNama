@@ -43,6 +43,11 @@ type TooltipTrigger<Element extends HTMLElement> = Pick<
 // menu or a dialog, whether that is open, and which element it is.
 type Opener = Pick<AriaAttributes, 'aria-haspopup' | 'aria-expanded' | 'aria-controls'>
 
+// What an outside link carries, so the page it opens cannot reach back, as the
+// Contact Card's links do.
+type Rel = 'noopener noreferrer'
+const OUTSIDE: Rel = 'noopener noreferrer'
+
 // The props are documented in story-docs, not here, KN-207.
 interface IconButtonBase extends Opener {
   icon: IconName | ReactElement
@@ -70,6 +75,7 @@ export interface IconButtonSwitch extends IconButtonBase, TooltipTrigger<HTMLBut
 export interface IconButtonLink extends IconButtonBase, TooltipTrigger<HTMLAnchorElement> {
   ref?: Ref<HTMLAnchorElement>
   href: string
+  external?: boolean
   disabled?: never
 }
 
@@ -205,10 +211,10 @@ export const IconButton = (props: IconButtonProps) => {
       </TooltipLabel>
     )
   }
-  const { ref, href, ...rest } = props
+  const { ref, href, external = false, ...rest } = props
   return (
     <TooltipLabel title={name}>
-      <MuiIconButton ref={ref} {...shared} href={href} {...forwarded(rest)}>
+      <MuiIconButton ref={ref} {...shared} href={href} {...(external ? { target: '_blank', rel: OUTSIDE } : {})} {...forwarded(rest)}>
         {mark}
       </MuiIconButton>
     </TooltipLabel>

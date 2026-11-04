@@ -1407,6 +1407,28 @@ focus as the modal opens, and the close, Escape and the scrim keep the job
 opportunity. The component's description adds that a card made the same day is
 deleted without it, which is the board's to do. KN-762.
 
+### The network's row
+
+**Contact Row**, `1056:2872`, read on 2026-11-04, State Default, Hover,
+Selectable and Selected: one person on the network page, a row 72 tall, 12
+above and below and 16 at the sides, 16 between, one pixel of `border/default`
+under it. From the inline start the Checkbox, hidden at rest; the name in Title
+over «سمت · شرکت» in Body `text/secondary`, each one line, in a column of 280;
+the relationship label, a chip of Label in `text/secondary` on
+`bg/surface-secondary` at full radius, 4 and 8 in, in a column of 140; the first
+job opportunity they are linked to, a pill of Label in `text/primary` inside one
+pixel of `border/default` at radius 4, its status's stripe 3 by 14 at its inline
+start, and the rest counted, «+۲», on `bg/surface-secondary` at radius 4; and at
+the inline end the Primary Icon Buttons that open their link, copy their number
+and copy their email, from the content outward, shown on Hover alone. Hover
+fills the row with `bg/surface-secondary` and lifts the two chips to
+`bg/surface`; Selectable shows the checkbox while the page selects; Selected
+fills the row with `bg/brand/container` and ticks it. The code draws each button
+only when there is something for it, shows the hover look with keyboard focus
+inside too, and opens the person from the name, which chooses them instead while
+the page selects; the count reads left to right, as the frame sets it. It
+replaces the Contact Card on the network page, KN-844. KN-770.
+
 ### The company match
 
 **Company Match**, `1096:3111`, read on 2026-11-04: one component with no
@@ -1835,6 +1857,7 @@ of the contract.
 | Reason Option         | `865:33595`  | Default, Hover, Selected, Selected Hover: one optional reason in the delete modal                                 |
 | Jobs Empty State      | `894:79222`  | no variants: the board's empty state, its picture of stacked cards in the mark's place                            |
 | Network Empty State   | `1083:55307` | no variants: the network page's empty state, its picture of two people's cards                                    |
+| Contact Row           | `1056:2872`  | Default, Hover, Selectable, Selected: one person on the network page                                              |
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |
