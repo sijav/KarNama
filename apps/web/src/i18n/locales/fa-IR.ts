@@ -386,4 +386,6 @@ export const messages: Record<string, string> = {
   'Next round': 'دور بعدی',
   'How did the interview on': 'مصاحبهٔ',
   'go?': 'چی شد؟',
+  'Next month': 'ماه بعد',
+  'Previous month': 'ماه قبل',
 }

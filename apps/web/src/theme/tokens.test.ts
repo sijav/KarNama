@@ -179,6 +179,10 @@ describe('the token set agrees with DESIGN.md', () => {
       kanbanDeadline: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
       interviewSlotText: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
       interviewSlotLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+      calendarTitle: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
+      calendarWeekday: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+      calendarDay: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
+      calendarDayMarked: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
     })
     expect(design).toMatch(/`166:68`[^\n]*12 on 19/)
     expect(design).toMatch(/`961:98854`[^.]*12 on 19/)

@@ -336,6 +336,9 @@ export const darkSemantic = {
   // reads on that pill, KN-764.
   'text/brand-inverse': ensureContrast(semantic['text/brand'], ensureContrast(deriveDark(semantic['text/primary']), darkSurface)),
   'text/error': ensureContrast(deriveDark(semantic['text/error']), darkSurface),
+  // The calendar's Friday, a number read on the popover's surface, derived and
+  // walked to 4.5 to one as text/error is, KN-754.
+  'red/500': ensureContrast(deriveDark(semantic['red/500']), darkSurface),
   // The resting border shows no state, and the design itself draws it at 1.24
   // to one on white, so it is derived and left there.
   'border/default': deriveDark(semantic['border/default']),

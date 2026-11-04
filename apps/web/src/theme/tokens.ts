@@ -53,6 +53,10 @@ export const semantic = {
   // Primitives variable the file binds there directly, KN-793.
   'red/100': '#fee2e2',
   'red/700': '#b91c1c',
+  // The calendar's Friday, its number and its letter, 773:16113 and 773:16585,
+  // KN-754: a Primitives variable the file binds there directly, 3.76 to one on
+  // white, which the design draws as it is.
+  'red/500': '#ef4444',
   'overlay/scrim': '#00000080',
   // The empty states' pictures, 894:79231 and 1083:55308, KN-769: fills the file
   // leaves unbound, which no variable carries, named for what each paints.
@@ -140,7 +144,10 @@ export const type = {
  * The redesigned job card, `793:1820`, sets its title 14 on Figma's automatic 22
  * at Medium and every other line 12 on its automatic 19 at Regular, its deadline
  * at Medium, KN-745. The card's interview slot, `656:6291`, sets its words 12
- * on that 19 at Regular and its labels at Medium, KN-747.
+ * on that 19 at Regular and its labels at Medium, KN-747. The month calendar,
+ * `773:16585`, sets its title 14 on Figma's automatic 22 at Medium, its
+ * weekdays 12 on 19 at Regular, and its days, `773:16113`, 13 on 20, Medium on
+ * today and the chosen day, KN-754.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -175,6 +182,10 @@ export const unstyledText = {
   kanbanDeadline: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
   interviewSlotText: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
   interviewSlotLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+  calendarTitle: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
+  calendarWeekday: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+  calendarDay: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
+  calendarDayMarked: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
 } as const
 
 /**

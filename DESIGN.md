@@ -98,6 +98,7 @@ gets added to the palette with a name, it does not get inlined.
 | `gray/200`                  | `#e5e7eb` |
 | `red/100`               | `#fee2e2`   |
 | `red/700`                   | `#b91c1c` |
+| `red/500`               | `#ef4444`   |
 | `overlay/scrim`             | `#00000080` |
 | `data/bar`              | `#60a5fa`   |
 | `picture/disc`          | `#f1f5ff`   |
@@ -121,6 +122,7 @@ frame it was read from with `get_variable_defs`. Do not delete them as strays.
 | `gray/200`           | `31:4`    | `#e5e7eb` | a primitive, the same value as `border/default` |
 | `red/700`            | `31:4`    | `#b91c1c` | a primitive, the value `text/error` resolves to |
 | `red/100`           | `961:2491` | `#fee2e2`   | a primitive, the Menu Item's Destructive Hover         |
+| `red/500`           | `5:5`      | `#ef4444`   | a primitive, the calendar's Friday, `773:16113`        |
 | `text/error`         | `95:39`   | `#b91c1c` | the Input error state                         |
 | `black/base`         | `31:4`    | `#000000` | the base the two elevation shadows take alpha from |
 | `overlay/scrim`      | `377:6244` | `#00000080` | black at half behind a modal, the variable's own alpha |
@@ -1276,6 +1278,59 @@ Enter chooses, and told to it puts focus on the chosen time as it opens; the
 keyboard's row takes the Hover fill and the three pixel ring of the Select's
 rows. KN-755.
 
+### The month calendar
+
+**Date Picker / Day**, `773:16113`, read on 2026-11-04: a cell 34 by 32 round a
+circle of 28 at radius 14, none bound, its number 13 on Figma's automatic 20.
+Nine variants:
+
+- Default in `text/primary` at Regular, and Friday in `red/500`, a Primitives
+  variable the file binds directly;
+- Hover and Friday Hover, the circle `bg/surface-secondary`;
+- Today, a ring of one of `border/focus` inside the circle and the number in
+  `text/brand` at Medium, and Today Hover with the grey;
+- Selected, the circle `bg/brand/default` and the number in `text/on-accent` at
+  Medium;
+- Disabled in `text/disabled`, and Empty, which draws nothing.
+
+The hover is the file's 120 ms and the choice its 150 ms, ease out. A press on
+the chosen day keeps it chosen, since the handoff says a press only selects; the
+prototype's way back is the field's clear link, KN-756. Today's ring is an
+edge, which forced colours keep, and the keyboard's focus is two of
+`border/focus` one clear of the circle.
+
+**Date Picker / Nav Arrow**, `848:2238`, Next and Prev by Default and Hover: 28
+square at radius 8, unbound, which is `radius/md`; a 16 `chevron-down` in
+`text/secondary`, turned a quarter to point the way the days run, the next
+month to the inline end, so left in Persian; Hover fills `bg/surface-secondary`
+over 120 ms.
+
+**Date Picker / Calendar**, `773:16585`, Shahrivar, Mehr and Aban 1405: 244
+wide, 4 between its rows. The header, 4 above the weekdays, holds the previous
+month at the inline start, the title, «شهریور ۱۴۰۵», 14 on 22 at Medium in
+`text/primary`, and the next month at the inline end. The weekdays are seven
+cells 34 by 24, «ش ی د س چ پ ج», 12 on 19 at Regular in `text/secondary`,
+Friday's in `red/500`; then the weeks, 238 wide, as many as the month needs,
+five for Shahrivar and Mehr and six for Aban. A turn of the month dissolves its
+weeks in over the handoff's 150 ms, at once under reduced motion.
+
+The handoff makes every date Solar Hijri, the week from Saturday with Friday
+red, today ringed, the chosen day blue and the days not allowed off. The grid is
+Intl's own calendars, no library: ICU 78 gives the official leap years, 30
+Esfand 1403 and Nowruz 1408 on 20 March 2029, which `month.test.ts` proves with
+the three months. An English reader sees the Gregorian month, as every English
+date in the product is written, in the design's week; its letters are Intl's
+short names, "Sat", since the narrow ones repeat. Intl's Persian writes the year
+before the month, so the title joins the two, and names a day in full year
+first, so a day's name is its weekday and then its date, «دوشنبه ۲۰ مهر ۱۴۰۵».
+`red/500` is 3.76 to one on white, short of 4.5 for numbers of 13; the design
+draws it so, and the dark scheme walks it to 4.5. For the keyboard it is
+WAI-ARIA's date grid: one day in the Tab order, the arrows a day, mirrored in
+Persian, or a week, Home and End to the week's ends, Page Up and Page Down a
+month, a move past the month turning it; the days off stay in reach and take no
+press. `calendarTitle`, `calendarWeekday`, `calendarDay` and
+`calendarDayMarked` are its words. KN-754.
+
 ### The board's add links
 
 **Board / Add Card Link**, `961:95525`, Default and Hover, read on 2026-11-03:
@@ -1986,6 +2041,9 @@ of the contract.
 | Color Picker        | `257:17`  | offers the nine status colour pairs, the current one marked                                     |
 | Popover / Result      | `844:85811`  | what can follow an interview, one press applies; the redesign's popover panel                                     |
 | Time List             | `774:16897`  | the day's half-hours, six shown; Time Item `786:1753` Default, Hover, Selected                                    |
+| Date Picker / Day     | `773:16113`  | Default, Friday, Hover, Today, Selected, Disabled, Empty, two hovers: a day, KN-754                               |
+| Month Calendar        | `773:16585`  | Date Picker / Calendar, Shahrivar, Mehr, Aban 1405: one month, Saturday first                                     |
+| Month Arrow           | `848:2238`   | Date Picker / Nav Arrow, Next and Prev by Default, Hover: turns the month                                         |
 | Add Card Link         | `961:95525`  | Default, Hover: after a column's last card, adds to that column                                                   |
 | Add Status Column     | `961:95530`  | Default, Hover: a dashed stage-wide column that makes a stage                                                     |
 | Toast                 | `956:3193`   | the action, Default, Hover; the frames' whole message `717:12416`                                                 |
