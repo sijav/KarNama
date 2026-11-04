@@ -80,6 +80,7 @@ gets added to the palette with a name, it does not get inlined.
 | `bg/brand/default`          | `#2563eb` |
 | `bg/brand/hover`            | `#1d4ed8` |
 | `bg/brand/container`        | `#dbeafe` |
+| `bg/brand/subtle`       | `#eff4ff`   |
 | `bg/danger/default`         | `#ef4444` |
 | `bg/danger/hover`           | `#d43030` |
 | `text/primary`              | `#111827` |
@@ -133,6 +134,7 @@ decision that made it, so it is never mistaken for a value read from the file.
 | `border/control` | `KN-273` | `#7f8694` | a control's resting edge, the Input's, the unchecked Checkbox's and the Select's: text/secondary's hue made lighter to the last value at 3.3 to one on `bg/page`, `bg/surface` and `bg/surface-secondary`, and walked to 3 to one in dark, KN-275 |
 | `border/selected` | `KN-276` | `#2563eb` | a selected Filter Chip's one pixel edge: the blue of `border/focus` today, at 3 to one or more on every surface and on the selected fill in both schemes, told from the pressed edge by its width, one pixel against 1.5, KN-279 |
 | `text/brand-inverse` | `KN-764` | `#93c5fd` | the toast's action on its `text/primary` pill, the handoff's colour, which no variable carries; in dark the pill turns light and the action takes the light scheme's `text/brand`, walked to 4.5 to one against it                                |
+| `bg/brand/subtle`    | `KN-762` | `#eff4ff` | the delete modal's chosen reason and its hint, `865:33595`, a fill the file leaves unbound and no variable carries; in dark a dark tint of its own hue, under `text/primary` at 4.5 to one                                                        |
 
 ### Colour, status
 
@@ -1347,6 +1349,33 @@ a «بعد از کدوم وضعیت؟» field that no variant and no screen draw
 draws none. The code makes the fields a form, so Enter in the name does what
 Add or Save does. KN-760.
 
+### The delete modal
+
+**Modal / Delete**, `865:33825`, read on 2026-11-04, sets its note 12 on 19 at
+Regular, `deleteNote`, and its hint 13 on 20 at Regular, `deleteHint`, both on
+Figma's automatic line: deleting a job opportunity, Reason هیچ, مهم نیست, جواب
+نگرفتم and اشتباه. The shell at 400, «حذف این فرصت شغلی؟»; «چرا می‌خواید حذفش
+کنید؟», the Body's size at Medium in `text/primary`, and «لازم نیست انتخاب
+کنید.» under it in `text/secondary`, 4 apart; then three **Reason Options**,
+`865:33595`, 8 apart, none chosen: a row 44 tall at radius 10, 11 above and
+below and 14 at the sides, an 18 radio at the inline start and its label 10
+after it, 14 on 22 at Medium. At rest `bg/surface` inside one pixel of
+`border/default`, the radio one and a half of it; under the pointer the edge
+turns `text/secondary`; chosen, the row fills with `bg/brand/subtle`, `#eff4ff`,
+which no variable carries, inside one and a half of `bg/brand/default`, the
+radio five of it. With no reason or «اشتباهی یا تکراری اضافه شده» the footer is
+«نگه داشتن», a Ghost, and the Destructive «حذف». «دیگه دنبالش نیستم» and «جوابی
+نگرفتم» add a hint in `bg/brand/subtle` at radius 10, 10 above and below and 12
+at the sides, that the job opportunity can go to «انصراف» or «بی‌پاسخ» instead
+and still count in the stats, and the footer becomes Keep, «حذف» in the Text
+style and «بردن به …» as the Primary, which moves it there. The file binds that
+«حذف» to `bg/danger/default`, 3.8 to one on the surface, short of the 4.5 text
+needs, so the code draws it in `text/error`, the stage modal's
+`destructive-text`. Keep is not «انصراف», since that is a status's name; it takes
+focus as the modal opens, and the close, Escape and the scrim keep the job
+opportunity. The component's description adds that a card made the same day is
+deleted without it, which is the board's to do. KN-762.
+
 ### The company match
 
 **Company Match**, `1096:3111`, read on 2026-11-04: one component with no
@@ -1771,6 +1800,8 @@ of the contract.
 | Sort Menu             | `912:40045`  | a column's orders; Menu / Sort (Custom) `919:2886` adds editing and deleting the stage                            |
 | Check Menu Item       | `912:40044`  | Default, Hover, Selected, Selected Hover: one order, ticked when chosen                                           |
 | Stage Modal           | `919:2804`   | Add, Add Filled, Add Duplicate, Edit: a stage of the reader's own, its name, suggestions and colour               |
+| Delete Modal          | `865:33825`  | Reason none, not wanted, no answer, mistake: deleting a job opportunity, or moving it instead                     |
+| Reason Option         | `865:33595`  | Default, Hover, Selected, Selected Hover: one optional reason in the delete modal                                 |
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |

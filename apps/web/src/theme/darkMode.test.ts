@@ -367,6 +367,11 @@ describe('the fills are dark tints of their own hue, and what sits on them reads
     }
   })
 
+  it('text/primary clears 4.5:1 on bg/brand/subtle in both schemes, as the delete modal draws its chosen reason and hint, KN-762', () => {
+    expect(contrast(semantic['text/primary'], semantic['bg/brand/subtle'])).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(darkSemantic['text/primary'], darkSemantic['bg/brand/subtle'])).toBeGreaterThanOrEqual(4.5)
+  })
+
   it('text/error clears 4.5:1 on red/100 in both schemes, as a hovered destructive menu item draws it, KN-793', () => {
     expect(contrast(semantic['text/error'], semantic['red/100'])).toBeGreaterThanOrEqual(4.5)
     expect(contrast(darkSemantic['text/error'], darkSemantic['red/100'])).toBeGreaterThanOrEqual(4.5)

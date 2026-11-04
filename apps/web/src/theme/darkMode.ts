@@ -221,7 +221,7 @@ export const deriveDarkFill = (hex: string): string => {
  * under its own text, KN-272. One list, which the palette derives and the tests
  * read, so the two cannot disagree about which tokens are fills.
  */
-export const DARK_FILLS = ['bg/brand/container', 'accent/200', 'red/100'] as const satisfies readonly (keyof typeof semantic)[]
+export const DARK_FILLS = ['bg/brand/container', 'bg/brand/subtle', 'accent/200', 'red/100'] as const satisfies readonly (keyof typeof semantic)[]
 
 /**
  * The text read on an INVERSE surface, the toast's text/primary pill, which is
@@ -306,6 +306,9 @@ export const darkSemantic = {
   'bg/brand/hover': brandHover,
   // A fill, one of DARK_FILLS: a selected Filter Chip reads text/brand on it.
   'bg/brand/container': deriveDarkFill(semantic['bg/brand/container']),
+  // A fill, one of DARK_FILLS: the delete modal's chosen reason and its hint,
+  // under text/primary, KN-762.
+  'bg/brand/subtle': deriveDarkFill(semantic['bg/brand/subtle']),
   'bg/danger/default': dangerRest,
   'bg/danger/hover': dangerHover,
   // Text is derived AND THEN checked against the surface it sits on. The

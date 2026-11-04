@@ -16,6 +16,9 @@ export const semantic = {
   'bg/brand/default': '#2563eb',
   'bg/brand/hover': '#1d4ed8',
   'bg/brand/container': '#dbeafe',
+  // The delete modal's chosen reason and its hint, 865:33595, KN-762: a fill the
+  // file leaves unbound, which no variable carries.
+  'bg/brand/subtle': '#eff4ff',
   'bg/danger/default': '#ef4444',
   'bg/danger/hover': '#d43030',
   'text/primary': '#111827',
@@ -123,7 +126,9 @@ export const type = {
  * is 11 on 17 at Regular, and its menu's label, `912:40045`, 12 on Figma's
  * automatic 19 at Medium, KN-759. The stage modal's suggestions label,
  * `919:2804`, is 12 on Figma's automatic 19 at Medium, and the Color Picker's
- * helper, `257:17`, 12 on that 19 at Regular, KN-760.
+ * helper, `257:17`, 12 on that 19 at Regular, KN-760. The delete modal,
+ * `865:33825`, sets its note 12 on 19 at Regular and its hint 13 on 20 at
+ * Regular, KN-762.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -150,6 +155,8 @@ export const unstyledText = {
   sortMenuLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
   stageSuggestions: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
   colorPickerHelper: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+  deleteNote: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+  deleteHint: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
 } as const
 
 /**
