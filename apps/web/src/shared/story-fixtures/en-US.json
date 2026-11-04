@@ -90,5 +90,13 @@
     "deadlineHelper": "The card turns red 3 days before the deadline.",
     "interviewTitle": "Interview date",
     "interviewHelper": "The history changes with it too."
+  },
+  "labelPicker": {
+    "labels": [
+      {"id": "own-classmate", "name": "University classmate", "people": 2},
+      {"id": "own-teammate", "name": "Former teammate", "people": 1}
+    ],
+    "query": "Former",
+    "newName": "Family friend"
   }
 }

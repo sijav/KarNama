@@ -225,6 +225,7 @@ shadows, and each value below was read from the named node with
 | no style, empty picture | `1083:55329` | `#1217260F` `0 2` blur 6 spread 0   | none                               |
 | no style, job picker    | `1092:3072`  | `#1217261F` `0 6` blur 16 spread 0  | none                               |
 | no style, card hover    | `793:1775`   | `#1217261A` `0 4` blur 12 spread 0  | none                               |
+| no style, labels        | `1086:3004`  | `#1217261A` `0 4` blur 12 spread 0  | none                               |
 
 The third row is **not an effect style**. The tooltip at `410:469` draws its own
 shadow, 24 percent black, read from the frame's `get_design_context` because
@@ -1692,6 +1693,51 @@ list: the arrows move through the people who can be chosen and Enter links one,
 or, when no one can be, asks to add the name; a press does either, and each
 closes it, as Escape and a press outside do. KN-775.
 
+### The relationship label
+
+**Label Choice**, `1086:2944`, read on 2026-11-04, Default, Hover, Selected and
+Add: a pill 32 high at radius 999, 4 above and below and 12 at the sides, 4
+between, one pixel of `border/default` inside; its label Body in
+`text/secondary` on `bg/surface`, which `bg/surface-secondary` fills under the
+pointer over 120 ms. Selected is `bg/brand/container` inside `border/focus`, the
+label in `text/brand` after a 16 check; Add is the dashed «برچسب تازه», 4 on and
+3 off as CSS dashes it, in `text/brand` after a 16 plus. A label is a toggle,
+pressed or not; Add is a button.
+
+**Label Picker**, `1086:3004`, the person modal's field, optional: «برچسب»,
+Label at Medium in `text/primary`, 8 above the choices, which wrap 8 apart from
+the inline start. The four defaults have ids of their own and names in the
+catalog, «آشنا», «همکار قبلی», «کارشناس جذب» and «مصاحبه‌کننده», English's
+"Recruitment specialist" since "Recruiter" is already «کارشناس جذب نیرو»; then
+the chosen label when it is the reader's own, so it shows; then Add. A press
+chooses a label and another takes it off. Its variants:
+
+- Typing: Add becomes a pill input inside one and a half of `border/focus`,
+  drawn as an inset shadow since Chromium floors the border; the suggestions
+  hang 4 under it from its inline end, 240 wide, 4 in, at radius 8, inside
+  `border/default` with `elevation.labelSuggestions`, `#121726` at 10 percent,
+  4 below and blur 12: «برچسب‌های شما», Label in `text/secondary`; the
+  reader's labels that hold what is typed, 38 high, Body in `text/primary`,
+  with «⋯» at the inline end; a divider; and «ساختن برچسب «…»» in `text/brand`
+  after a plus, unless the name is taken;
+- Option Menu: «⋯» opens a menu 160 wide with the same edge and shadow, «تغییر
+  نام» and the destructive «حذف برچسب» in the Menu Item's look;
+- Rename: the row becomes a pill input with the name, and a 16 tick in
+  `text/secondary` at the inline end keeps it, as Enter does;
+- Delete Confirm: the row becomes «حذف برچسب «…»؟», Body, over «از روی ۲ نفر
+  برداشته می‌شود. خود افراد حذف نمی‌شوند.», Label in `text/secondary`, and
+  Button S Ghost «نگه داشتن» with Destructive «حذف» at the inline end, focus on
+  «نگه داشتن»;
+- After Delete: the list without it.
+
+It is a combobox: the arrows move through the suggestions, the first under the
+keyboard on `bg/surface-secondary`, Enter chooses or makes one, Escape and a
+press outside leave it, and focus goes back to «برچسب تازه». The suggestions
+hang inside the picker, not in a portal, so the person modal's focus trap keeps
+them; a delete asks in its row, never a modal on the modal, and takes the label
+off the people who carry it, never the people. The four defaults have no «⋯»,
+the designer's decision of 1 Aban. KN-771.
+
 ### The company match
 
 **Company Match**, `1096:3111`, read on 2026-11-04: one component with no
@@ -2141,6 +2187,8 @@ of the contract.
 | Linked Job            | `1092:2997`  | Default, Hover: a job opportunity linked to a person, unlinked from the row                                       |
 | Linked Jobs           | `1092:3103`  | Empty, Filled, Picking: the person modal's linked job opportunities and the picker                                |
 | Person Picker         | `1096:3129`  | no variants: the related people tab's search of the network, and adding someone new                               |
+| Label Choice          | `1086:2944`  | Default, Hover, Selected, Add: one relationship label, a toggle                                                   |
+| Label Picker          | `1086:3004`  | the person modal's relationship label: choose, make, rename, delete                                               |
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |

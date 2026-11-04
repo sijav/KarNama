@@ -84,5 +84,13 @@
     "deadlineHelper": "۳ روز مونده به مهلت، روی کارت قرمز میشه.",
     "interviewTitle": "تاریخ مصاحبه",
     "interviewHelper": "تاریخچه هم با همین عوض میشه."
+  },
+  "labelPicker": {
+    "labels": [
+      {"id": "own-classmate", "name": "هم‌دوره‌ای دانشگاه", "people": 2},
+      {"id": "own-teammate", "name": "هم‌تیمی قبلی", "people": 1}
+    ],
+    "query": "هم",
+    "newName": "دوست خانوادگی"
   }
 }

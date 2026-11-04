@@ -89,6 +89,7 @@ describe('the token set agrees with DESIGN.md', () => {
       'illustrationCard',
       'picker',
       'kanbanCard',
+      'labelSuggestions',
     ])
     // The shadow numbers, in the order the design stacks them.
     expect(elevation.card).toBe('0 1px 3px 0 #0000000F, 0 1px 2px 0 #0000000A')
@@ -120,6 +121,8 @@ describe('the token set agrees with DESIGN.md', () => {
     // Read from the redesigned card's Hover, 793:1775, with use_figma: #121726
     // at 10 percent, 0x1A, 4 below and blurred 12.
     expect(elevation.kanbanCard).toBe('0 4px 12px 0 #1217261A')
+    // The label picker's suggestions and its menu, 1086:3004, the same shadow.
+    expect(elevation.labelSuggestions).toBe('0 4px 12px 0 #1217261A')
     // Still exactly two STYLES: the tooltip's, the bar's and the menu's shadows
     // are bound to none, and the document has to say so where the table is.
     expect(design).toContain('exactly two effect styles')

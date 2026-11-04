@@ -203,10 +203,11 @@ export const unstyledText = {
  * Action Bar at `401:436`, the Options Menu at `408:487`, the compact
  * Contact Card's hover at `463:698`, the job card's focus at `137:44`, the
  * sign-in card at `407:6952`, the redesign's popovers at `844:85811`, the
- * toast at `717:12416` and the redesigned card's hover at `793:1775` each draw
- * their own unnamed shadow, bound to no effect style, so each is named here for
- * the surface that uses it. KN-218, KN-025, KN-012, KN-026, KN-015, KN-518,
- * KN-748, KN-764, KN-745.
+ * toast at `717:12416`, the redesigned card's hover at `793:1775` and the
+ * label picker's suggestions at `1086:3004` each draw their own unnamed shadow,
+ * bound to no effect style, so each is named here for the surface that uses it.
+ * KN-218, KN-025, KN-012, KN-026, KN-015, KN-518, KN-748, KN-764, KN-745,
+ * KN-771.
  */
 export const elevation = {
   card: '0 1px 3px 0 #0000000F, 0 1px 2px 0 #0000000A',
@@ -222,6 +223,7 @@ export const elevation = {
   illustrationCard: '0 2px 6px 0 #1217260F',
   picker: '0 6px 16px 0 #1217261F',
   kanbanCard: '0 4px 12px 0 #1217261A',
+  labelSuggestions: '0 4px 12px 0 #1217261A',
 } as const
 
 export const fontFamily = "'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif"

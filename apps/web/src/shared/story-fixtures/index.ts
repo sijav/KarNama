@@ -135,6 +135,20 @@ export interface DateEditFixture {
   interviewHelper: string
 }
 
+/** One of the reader's own relationship labels and how many people carry it, KN-771. */
+export interface PersonLabelFixture {
+  id: string
+  name: string
+  people: number
+}
+
+/** The label picker's words: the reader's own labels and what is typed to find them, KN-771. */
+export interface LabelPickerFixture {
+  labels: readonly PersonLabelFixture[]
+  query: string
+  newName: string
+}
+
 /** The closed outcomes' names, as the board's strips show them, KN-749. */
 export interface OutcomeNamesFixture {
   accepted: string
@@ -216,6 +230,8 @@ export interface Fixtures {
   kanbanCard: KanbanCardFixture
   /** The calendar popover's words, as the screens write them, KN-757. */
   dateEdit: DateEditFixture
+  /** The label picker's words, as 1086:3004 draws them, KN-771. */
+  labelPicker: LabelPickerFixture
   /**
    * The fixtures as the product keeps them, for a story to seed a
    * `RecordsProvider` with, KN-437: every status, every job opportunity made by
@@ -247,6 +263,7 @@ export interface RawFixtures {
   historyWords: HistoryWordsFixture
   kanbanCard: KanbanCardFixture
   dateEdit: DateEditFixture
+  labelPicker: LabelPickerFixture
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -388,6 +405,11 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     historyWords: Object.freeze({ ...raw.historyWords }),
     kanbanCard: Object.freeze({ ...raw.kanbanCard }),
     dateEdit: Object.freeze({ ...raw.dateEdit }),
+    labelPicker: Object.freeze({
+      labels: Object.freeze(raw.labelPicker.labels.map((label) => Object.freeze({ ...label }))),
+      query: raw.labelPicker.query,
+      newName: raw.labelPicker.newName,
+    }),
   })
 }
 

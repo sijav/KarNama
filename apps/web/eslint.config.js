@@ -69,9 +69,9 @@ const structuralProps =
   // When the browser fetches an image, 'lazy': a browser keyword too, KN-743.
   '|loading' +
   // ARIA attributes whose values are tokens from the ARIA vocabulary, 'menu',
-  // 'dialog', 'page', 'polite', never text a screen reader speaks as words.
+  // 'dialog', 'page', 'polite', 'list', never text a screen reader speaks as words.
   // aria-label and aria-describedby carry words, and stay checked.
-  '|aria-haspopup|aria-current|aria-live' +
+  '|aria-haspopup|aria-current|aria-live|aria-autocomplete' +
   // SVG presentation attributes: 'round', 'none', a colour name. Drawing
   // instructions, not copy.
   '|fill|stroke|strokeLinecap|strokeLinejoin' +

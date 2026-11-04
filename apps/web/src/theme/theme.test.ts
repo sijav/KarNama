@@ -46,6 +46,7 @@ describe('the theme is generated from the tokens', () => {
       'illustrationCard',
       'picker',
       'kanbanCard',
+      'labelSuggestions',
     ])
   })
 })
