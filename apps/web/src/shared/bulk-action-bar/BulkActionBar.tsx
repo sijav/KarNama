@@ -5,7 +5,7 @@ import { usePreferences } from '../../core/preferences'
 import { formatCount } from '../../i18n/formatCount'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { Button } from '../button'
-import { IconButton } from '../icon-button'
+import { PopoverClose } from '../popover-close'
 
 export type BulkActionBarType = 'jobs' | 'contacts'
 
@@ -14,21 +14,21 @@ interface SharedProps {
   count: number
   onClear: () => void
   onDelete: () => void
+  onSelectAll: () => void
 }
 
-// The job list's bar offers Select all and Change status, so it cannot be written without
-// either; the network's offers neither, and names both as never so it cannot be handed them,
-// not even in a spread, KN-331.
+// Both bars offer Select all, which the original gives the network's too,
+// KN-799. The job list's offers Change status, so it cannot be written without
+// it; the network's names it as never so it cannot be handed it, not even in a
+// spread, KN-331.
 interface JobsBarProps extends SharedProps {
   type: 'jobs'
   onChangeStatus: () => void
-  onSelectAll: () => void
 }
 
 interface ContactsBarProps extends SharedProps {
   type: 'contacts'
   onChangeStatus?: never
-  onSelectAll?: never
 }
 
 export type BulkActionBarProps = JobsBarProps | ContactsBarProps
@@ -55,6 +55,8 @@ const MODAL: ModalMark = '[aria-modal="true"]'
 
 const EDGE = 1
 const DIVIDER_HEIGHT = 24
+// The Close frame round Popover / Close, 32 square and bound to no variable.
+const CLOSE = 32
 
 // The count as the reader says it: the number in their digits, then the noun
 // in the plural the number takes. Persian keeps the noun singular after a
@@ -69,15 +71,15 @@ const useCountText = (type: BulkActionBarType, count: number) => {
         ? i18n._('job opportunity selected')
         : i18n._('job opportunities selected')
       : one
-        ? i18n._('contact selected')
-        : i18n._('contacts selected')
+        ? i18n._('person selected')
+        : i18n._('people selected')
   return `${formatCount(locale, count)} ${noun}`
 }
 
 // The Bulk Action Bar of node 401:436: it floats at the bottom centre of the
-// screen while anything is selected. From the inline start: the count, then the
-// Jobs type's Select all and Change status, Delete, a divider and the close
-// that clears the selection. It hugs its content, and on a screen too narrow
+// screen while anything is selected. From the inline start: the count, Select
+// all, the Jobs type's Change status, Delete, a divider and the close that
+// clears the selection. It hugs its content, and on a screen too narrow
 // for it, 16 from each side, it wraps, where the file's mobile bar overflows.
 export const BulkActionBar = ({ type, count, onClear, onDelete, onChangeStatus, onSelectAll }: BulkActionBarProps) => {
   const { i18n } = useLingui()
@@ -196,11 +198,9 @@ export const BulkActionBar = ({ type, count, onClear, onDelete, onChangeStatus, 
           >
             {text}
           </Box>
-          {type === 'jobs' ? (
-            <Button variant="ghost" size="S" onClick={onSelectAll}>
-              {i18n._('Select all')}
-            </Button>
-          ) : null}
+          <Button variant="ghost" size="S" onClick={onSelectAll}>
+            {i18n._('Select all')}
+          </Button>
           {type === 'jobs' ? (
             <Button variant="secondary" size="S" onClick={onChangeStatus}>
               {i18n._('Change status')}
@@ -218,7 +218,11 @@ export const BulkActionBar = ({ type, count, onClear, onDelete, onChangeStatus, 
               backgroundColor: theme.karnama.semantic['border/default'],
             })}
           />
-          <IconButton icon="x" iconSize="md" aria-label={i18n._('Clear selection')} onClick={onClear} />
+          {/* The file's Close, a 32 frame round Popover / Close at 20, whose x
+              is 16 in text/secondary, KN-799. */}
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, width: CLOSE, height: CLOSE }}>
+            <PopoverClose size={20} aria-label={i18n._('Clear selection')} onClick={onClear} />
+          </Box>
         </Box>
       ) : null}
     </>

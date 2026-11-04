@@ -3,7 +3,7 @@ many are selected, what can be done to all of them at once, and a close that
 clears the selection.
 
 The job list's bar offers Select all, Change status and Delete; the network's
-offers Delete alone. The bar shows only while at least one item is selected, and
+offers Select all and Delete. The bar shows only while at least one item is selected, and
 the count is read out each time it changes. The page puts the bar before the
 list in its order, so Tab reaches it without crossing the list; it floats at the
 bottom all the same. While it shows, the page keeps room at its foot, or the
@@ -15,7 +15,7 @@ wraps what does not fit.
 ### type
 
 `jobs` for the job list, `contacts` for the network. It decides the noun in the
-count and whether the job actions are offered.
+count, job opportunities or people, and whether Change status is offered.
 
 ### count
 
@@ -36,8 +36,8 @@ given it. Called when Change status is pressed.
 
 ### onSelectAll
 
-The job list's bar cannot be written without it, and the network's cannot be
-given it. Called when Select all is pressed.
+Both bars take it. Called when Select all is pressed; the page chooses every
+item its search shows.
 
 ## Stories
 
@@ -47,7 +47,7 @@ The job list's bar with two selected, measured on a desktop screen.
 
 ### Contacts
 
-The network's bar: Delete and the close.
+The network's bar: Select all, Delete and the close, counting people.
 
 ### NothingSelected
 

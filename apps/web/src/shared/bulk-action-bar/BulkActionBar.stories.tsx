@@ -14,19 +14,18 @@ const CONTROLLED: (keyof BulkActionBarProps)[] = ['type', 'count']
 
 // What a story's render is handed: the meta's args, which give every callback so the Actions
 // panel records each, KN-207, with the story's own over them. A story of the network's type
-// therefore still holds the job list's two callbacks, which the bar's own props refuse.
-type Args =
-  Extract<BulkActionBarProps, { type: 'jobs' }> | Omit<Extract<BulkActionBarProps, { type: 'contacts' }>, 'onChangeStatus' | 'onSelectAll'>
+// therefore still holds the job list's Change status, which the bar's own props refuse.
+type Args = Extract<BulkActionBarProps, { type: 'jobs' }> | Omit<Extract<BulkActionBarProps, { type: 'contacts' }>, 'onChangeStatus'>
 
 // The bar a caller could write for the type the args hold, KN-331: the job list's with all four
-// callbacks, the network's with its own two. Every story draws its bar through this, so neither
+// callbacks, the network's with its own three. Every story draws its bar through this, so neither
 // the Contacts story nor a reader who switches the type in Controls hands the bar what its props
 // refuse, and Show code offers a call that compiles.
 const barFor = (args: Args) =>
   args.type === 'jobs' ? (
     <BulkActionBar {...args} />
   ) : (
-    <BulkActionBar type="contacts" count={args.count} onClear={args.onClear} onDelete={args.onDelete} />
+    <BulkActionBar type="contacts" count={args.count} onClear={args.onClear} onDelete={args.onDelete} onSelectAll={args.onSelectAll} />
   )
 
 const meta = {
@@ -64,8 +63,8 @@ const countFor = (type: BulkActionBarType, count: number, locale: 'fa-IR' | 'en-
         ? i18n._('job opportunity selected')
         : i18n._('job opportunities selected')
       : one
-        ? i18n._('contact selected')
-        : i18n._('contacts selected')
+        ? i18n._('person selected')
+        : i18n._('people selected')
   return `${formatCount(locale, count)} ${noun}`
 }
 
@@ -93,7 +92,8 @@ const backToTheRunnersWidth = async () => {
 // Node 401:436 on a desktop screen, 243:595: one row 60 tall, 16 and 12 of
 // padding, 12 apart, radius lg, 24 above the bottom and centred, with the
 // bar's own shadow; the count at the inline start in 14 on 22 at 500, the
-// divider 1 by 24, and the close a 32 square round a 20 icon at the end.
+// divider 1 by 24, and at the end the close, a 32 frame round Popover /
+// Close, 20 square round a 16 x, KN-799.
 const drawsTheRow = async (bar: HTMLElement, { colours }: { colours: boolean }) => {
   const style = getComputedStyle(bar)
   const box = bar.getBoundingClientRect()
@@ -114,8 +114,13 @@ const drawsTheRow = async (bar: HTMLElement, { colours }: { colours: boolean }) 
   await expect(Math.round(startOf(count))).toBe(16)
   const close = within(bar).getByRole('button', { name: i18n._('Clear selection') })
   const closeBox = close.getBoundingClientRect()
-  await expect([closeBox.width, closeBox.height, close.querySelector('svg')?.getBoundingClientRect().width]).toEqual([32, 32, 20])
-  await expect(Math.round(box.width - startOf(close) - closeBox.width)).toBe(16)
+  await expect([closeBox.width, closeBox.height, close.querySelector('svg')?.getBoundingClientRect().width]).toEqual([20, 20, 16])
+  const frame = close.parentElement
+  if (!frame) throw new Error('the close has no frame')
+  const frameBox = frame.getBoundingClientRect()
+  await expect([frameBox.width, frameBox.height]).toEqual([32, 32])
+  await expect([closeBox.left - frameBox.left, closeBox.top - frameBox.top]).toEqual([6, 6])
+  await expect(Math.round(box.width - startOf(frame) - frameBox.width)).toBe(16)
   const divider = rest.find((child) => child.getBoundingClientRect().width === 1)
   await expect(divider?.getBoundingClientRect().height).toBe(24)
   for (const button of within(bar)
@@ -155,10 +160,13 @@ export const Contacts: Story = {
   args: { type: 'contacts' },
   globals: { locale: 'fa-IR' },
   play: async ({ args, canvasElement }) => {
-    // Delete and the close only, node 401:428.
+    // Select all, Delete and the close, node 401:428: the original gives the
+    // network's bar Select all too, KN-799, and the count is of people.
     const bar = barOf(canvasElement)
-    await expect(namesOf(bar)).toEqual([i18n._('Delete'), i18n._('Clear selection')])
+    await expect(namesOf(bar)).toEqual([i18n._('Select all'), i18n._('Delete'), i18n._('Clear selection')])
     await expect(within(canvasElement).getByRole('status')).toHaveTextContent(countFor('contacts', args.count, 'fa-IR'))
+    await userEvent.click(within(bar).getByRole('button', { name: i18n._('Select all') }))
+    await expect(args.onSelectAll).toHaveBeenCalledTimes(1)
     if (!(await atWidth(1440, 900))) return
     await drawsTheRow(barOf(canvasElement), { colours: false })
     await backToTheRunnersWidth()

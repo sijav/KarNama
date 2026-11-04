@@ -535,17 +535,20 @@ with a one pixel `border/default` edge inside, radius lg, 12 and 16 of padding,
 12 between its parts, and its own shadow, `elevation.bulkBar`. From the inline
 start, the file's description says so for RTL: the count, then on the Jobs type
 Ghost «انتخاب همه» and Secondary «تغییر وضعیت», Destructive «حذف», all Button
-S, a divider 1 by 24 in `border/default`, and a close, a 32 square of radius md
-round the 20 x icon in `text/secondary`, which the code draws with the Icon
-Button's states. The count is Body's size and line height with Label's weight
+S, a divider 1 by 24 in `border/default`, and a close, a 32 frame of radius md
+round Popover / Close, a 20 square of radius 6 round the x at 16 in
+`text/secondary`, the shared `PopoverClose`, where the copy drew the x at 20 in
+the frame; the original gives the Contacts type Select all too, before Delete,
+KN-799. The count is Body's size and line height with Label's weight
 at no tracking, `text/primary`. On the screens it sits 24 above the bottom,
 centred, `243:595` and `252:386`. The set's Secondary Action boolean is bound to
 no layer, so it does nothing and the code has no such prop. KN-025.
 
-**The count says «فرصت شغلی».** The file draws «۲ آگهی انتخاب شده», and the
+**The count says «فرصت شغلی».** The copy drew «۲ آگهی انتخاب شده», and the
 selected items are job opportunities, which section 3's terminology rule, the
-file's own and without exception, never calls «آگهی». The code follows the rule
-and KN-329 asks the file to. The number is the reader's digits, and the English
+file's own and without exception, never calls «آگهی», as KN-329 asked. The
+original says «۲ فرصت شغلی انتخاب شد» and, on the network, «۲ نفر انتخاب شد»,
+people rather than contacts, both in the simple past, KN-799. The number is the reader's digits, and the English
 noun takes its plural from the number; Persian keeps it singular.
 
 **On a phone it wraps.** The file's mobile bar, `243:408`, is fixed at 358 and

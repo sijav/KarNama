@@ -266,6 +266,11 @@ export const NetworkScreen = ({ onSelecting, onSignOut }: NetworkScreenProps) =>
           remember(chosen)
           setDeleting(chosen)
         }}
+        onSelectAll={() => {
+          // Everyone the search shows, in place of who was chosen, as the
+          // board's does, KN-431, KN-799.
+          setSelected(shown.map((held) => held.id))
+        }}
       />
 
       {/* Adding and editing are different shapes, KN-386: an Edit carries the
