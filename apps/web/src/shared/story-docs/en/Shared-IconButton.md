@@ -43,6 +43,11 @@ Tooltip gives the button.
 `sm`, the default, a 16 icon, or `md`, a 20 icon, which the Bulk Action
 Bar's close uses. The button stays 32 square either way.
 
+### compact
+
+The 28 square the redesigned card's More draws, in place of 32. The icon keeps
+its size.
+
 ### disabled
 
 Fades the button and refuses its press, while leaving it reachable: it keeps its
@@ -180,3 +185,7 @@ The same name, reached by Tab alone.
 
 Named by its label tip, with a description heard after the name and drawn
 nowhere.
+
+### Compact
+
+The button at 28 square, its icon still 16.

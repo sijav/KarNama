@@ -222,6 +222,7 @@ shadows, and each value below was read from the named node with
 | no style, toast         | `717:12416`  | `#11182733` `0 8` blur 24 spread 0  | none                               |
 | no style, empty picture | `1083:55329` | `#1217260F` `0 2` blur 6 spread 0   | none                               |
 | no style, job picker    | `1092:3072`  | `#1217261F` `0 6` blur 16 spread 0  | none                               |
+| no style, card hover    | `793:1775`   | `#1217261A` `0 4` blur 12 spread 0  | none                               |
 
 The third row is **not an effect style**. The tooltip at `410:469` draws its own
 shadow, 24 percent black, read from the frame's `get_design_context` because
@@ -941,6 +942,48 @@ The pencil edits the deadline or the application, never the day it was saved.
 The file says nothing of applying or closing on the day, which say «امروز
 درخواست شد» and «همون روز بسته شد». `cardFooter` in `shared/job-card` is this, a
 function of the dates and today, proved at every boundary, KN-744.
+
+### The redesigned job card
+
+**Card / Kanban**, `793:1820`, read on 2026-11-04 with its documentation frame
+`812:55419` and the 1301 instances on the screens: State Default, Hover and
+Select Hover, each with the deadline عادی, نزدیک or تمام‌شده. It is 276 wide on
+`bg/surface` inside one pixel of `border/default` at radius 8, `spacing/md`
+round and `spacing/sm` between, and the status's 4 stripe runs the inline start.
+From the top:
+
+- the head, 12 apart: the 20 Checkbox while the board is selecting, the 36
+  Company Logo, and the title, 14 on 22 at Medium in `text/primary`, over the
+  company, 12 on 19 in `text/secondary`, each one line, cut;
+- on Hover, the More button at the inline end, the Neutral Icon Button at 28,
+  `compact`;
+- the meta line, 6 apart, the location, a `·` in `text/disabled` and the salary;
+- the interview slot, `656:6291`, KN-747's;
+- the note line, a 14 `note` and the note in `text/primary`;
+- the prompt «هنوز منتظرید؟» with the Link / Inline «بی‌پاسخ موند», on
+  `bg/surface-secondary` at radius 6, 6 and 8 in, which shows when the board says
+  the card has waited;
+- the footer, 10 apart, the source at the inline start and every time at the
+  inline end, as `cardFooter` words it: the deadline after its 16 clock at Medium,
+  red when near; then the pencil, Card / Edit Icon `793:1770`, 28 by 19 at radius
+  5 round a 14 `pencil`, `bg/surface-secondary` under the pointer.
+
+Every line but the title is 12 on Figma's automatic 19, bound to no text style:
+`kanbanTitle`, `kanbanText` and `kanbanDeadline`.
+
+Hover lifts it with `elevation.kanbanCard`, `#121726` at 10 percent, 4 below
+and blur 12, over 150 ms, and unfolds More and the pencil. Select Hover is the
+shadow alone, More staying away while the board selects. Selected ticks the
+Checkbox and rings the card in two of `border/focus`. The title is the card's
+button and its cover takes a press anywhere else, which opens the job
+opportunity, or, while selecting, selects it, the handoff's «تا پایانش هر کلیک
+انتخاب است». More and the pencil unfold for the keyboard's focus too, and More
+stays in view where there is no hover, as on a phone.
+
+The variant draws a Next row, counters and a Select slot ring of an unbound
+`#e5e7eb` that no screen uses or shows, so the code draws none of them; the
+Checkbox is drawn alone. It replaces the old Card, `137:44`, when the board is
+rebuilt, KN-805. KN-745.
 
 ### The kanban column
 
@@ -1862,6 +1905,8 @@ of the contract.
 | Input                 | `95:39`      | Default, Filled, Focus, Error, Disabled, Hover, Filled Hover                                                      |
 | Card                | `137:44`  | Default, Hover, Pressed, Selected, Static, Focus, desktop                                       |
 | Card / Mobile       | `491:751` | Default, Selected                                                                               |
+| Card / Kanban         | `793:1820`   | Default, Hover, Select Hover by deadline: the redesigned board's card, KN-745                                     |
+| Card / Edit Icon      | `793:1770`   | Default, Hover: the pencil that edits a card's deadline or application date                                       |
 | Status Stripe       | `358:430` | the 4px colour bar on the card, one per status                                                  |
 | Company Logo          | `620:3684`   | the default organisation icon; a fetched logo covers the same square                                              |
 | Modal / Confirm     | `150:92`  | delete and archive confirmation                                                                 |

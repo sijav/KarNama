@@ -55,6 +55,7 @@ interface IconButtonBase extends Opener {
   description?: string
   tone?: 'neutral' | 'danger' | 'primary'
   iconSize?: 'sm' | 'md'
+  compact?: boolean
   onClick?: () => void
 }
 
@@ -90,6 +91,9 @@ export type IconButtonProps = IconButtonSwitch | IconButtonLink
 const DISABLED_OPACITY = 0.7
 const FOCUS_RING = 3
 const EDGE = 1
+// The compact square, 28, which the redesigned card's More draws its instance
+// at, 793:1775, and binds no variable to, KN-745.
+const COMPACT = 28
 
 // An icon-only control has no text to be named by, so its name is required,
 // and a name that is only blank is refused rather than rendered nameless: null.
@@ -119,14 +123,15 @@ const forwarded = <Element extends HTMLElement>(props: TooltipTrigger<Element> &
 // Neutral and Danger, each at rest, hovered and disabled, and the redesign's
 // Primary at rest and hovered. The Bulk Action Bar's
 // close, 401:436, is the same square round a 20 icon, so the icon's size is a
-// prop, 16 unless told otherwise. It names itself with Tooltip / Label, its own
+// prop, 16 unless told otherwise, and the redesigned card's More, 793:1775, the
+// same button at 28, so the square is one too, compact, KN-745. It names itself with Tooltip / Label, its own
 // name over it on hover and on keyboard focus, as the redesign asks of every
 // icon-only button, 1123:57071, KN-777. What its name does not say goes in its
 // description, heard after the name and never drawn: a hidden copy the button
 // points at, as the old Tooltip gives its own, KN-231, joined to any a caller or
 // a Tooltip gives it, KN-848.
 export const IconButton = (props: IconButtonProps) => {
-  const { icon, 'aria-label': label, description, tone = 'neutral', iconSize = 'sm', onClick } = props
+  const { icon, 'aria-label': label, description, tone = 'neutral', iconSize = 'sm', compact = false, onClick } = props
   const name = nameOf(label)
   const descriptionId = useId()
   // A blank name is the caller's mistake: reported as it mounts, as the
@@ -163,8 +168,8 @@ export const IconButton = (props: IconButtonProps) => {
               : { fill: colour['bg/surface-secondary'], icon: colour['text/primary'] }
         return {
           position: 'relative',
-          width: spacing.xl,
-          height: spacing.xl,
+          width: compact ? COMPACT : spacing.xl,
+          height: compact ? COMPACT : spacing.xl,
           padding: 0,
           borderRadius: `${theme.karnama.radius.md}px`,
           color: colour['text/secondary'],

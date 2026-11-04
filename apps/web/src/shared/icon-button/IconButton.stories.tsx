@@ -596,3 +596,16 @@ export const Described: Story = {
     await waitFor(() => expect(within(document.body).queryByRole('tooltip')).toBeNull())
   },
 }
+
+export const Compact: Story = {
+  args: { compact: true },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // The redesigned card's More, 793:1775: the same button at 28 square, its
+    // 16 icon unchanged, KN-745.
+    const button = within(canvasElement).getByRole('button')
+    const box = button.getBoundingClientRect()
+    await expect([box.width, box.height]).toEqual([28, 28])
+    await expect(button.querySelector('svg')?.getBoundingClientRect().width).toBe(16)
+  },
+}

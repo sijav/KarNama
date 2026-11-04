@@ -155,6 +155,10 @@ export const messages: Record<string, string> = {
   'job opportunities; to delete it, first move them to another column.':
     'job opportunities; to delete it, first move them to another column.',
   'Job opportunity actions': 'Job opportunity actions',
+  'Still waiting?': 'Still waiting?',
+  'It went unanswered': 'It went unanswered',
+  'Change the deadline': 'Change the deadline',
+  'Change the application date': 'Change the application date',
   'Open the posting link': 'Open the posting link',
   'Delete job opportunity': 'Delete job opportunity',
   'Sort:': 'Sort:',

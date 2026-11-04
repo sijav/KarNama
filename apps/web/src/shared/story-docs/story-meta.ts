@@ -63,6 +63,7 @@ export type StoryTitle =
   | 'Shared/InterviewResultPopover'
   | 'Shared/Input'
   | 'Shared/JobCard'
+  | 'Shared/KanbanCard'
   | 'Shared/JobLevelSelect'
   | 'Shared/JobModal'
   | 'Shared/KanbanColumn'

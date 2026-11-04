@@ -74,5 +74,13 @@
       "message": "You haven't applied to anything yet this week. You have 5 saved job opportunities.",
       "action": "See saved job opportunities"
     }
-  ]
+  ],
+  "kanbanCard": {
+    "title": "Product designer",
+    "company": "Snapp",
+    "location": "Tehran · hybrid",
+    "salary": "45 to 60 million",
+    "source": "Jobinja",
+    "note": "Technical interview on Tuesday at 10"
+  }
 }

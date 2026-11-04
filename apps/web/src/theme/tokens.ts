@@ -137,6 +137,9 @@ export const type = {
  * `865:33825`, sets its note 12 on 19 at Regular and its hint 13 on 20 at
  * Regular, KN-762. The empty states, `894:79222`, set their title 16 on Figma's
  * automatic 25 at SemiBold, which the Title role's 24 drew a pixel short, KN-769.
+ * The redesigned job card, `793:1820`, sets its title 14 on Figma's automatic 22
+ * at Medium and every other line 12 on its automatic 19 at Regular, its deadline
+ * at Medium, KN-745.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -166,6 +169,9 @@ export const unstyledText = {
   deleteNote: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
   deleteHint: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
   emptyTitle: { size: 16, lineHeight: 25, weight: 600, letterSpacing: 0 },
+  kanbanTitle: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
+  kanbanText: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+  kanbanDeadline: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
 } as const
 
 /**
@@ -173,10 +179,11 @@ export const unstyledText = {
  * the page, a modal sits above everything. The tooltip at `410:469`, the Bulk
  * Action Bar at `401:436`, the Options Menu at `408:487`, the compact
  * Contact Card's hover at `463:698`, the job card's focus at `137:44`, the
- * sign-in card at `407:6952`, the redesign's popovers at `844:85811` and the
- * toast at `717:12416` each draw their own unnamed shadow, bound to no effect
- * style, so each is named here for the surface that uses it. KN-218, KN-025,
- * KN-012, KN-026, KN-015, KN-518, KN-748, KN-764.
+ * sign-in card at `407:6952`, the redesign's popovers at `844:85811`, the
+ * toast at `717:12416` and the redesigned card's hover at `793:1775` each draw
+ * their own unnamed shadow, bound to no effect style, so each is named here for
+ * the surface that uses it. KN-218, KN-025, KN-012, KN-026, KN-015, KN-518,
+ * KN-748, KN-764, KN-745.
  */
 export const elevation = {
   card: '0 1px 3px 0 #0000000F, 0 1px 2px 0 #0000000A',
@@ -191,6 +198,7 @@ export const elevation = {
   toast: '0 8px 24px 0 #11182733',
   illustrationCard: '0 2px 6px 0 #1217260F',
   picker: '0 6px 16px 0 #1217261F',
+  kanbanCard: '0 4px 12px 0 #1217261A',
 } as const
 
 export const fontFamily = "'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif"

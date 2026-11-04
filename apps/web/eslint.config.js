@@ -54,7 +54,7 @@ const structuralProps =
   // and opener of the two cards, the Status Choice's shell, the Related
   // Person's tag and actions, KN-773, and the history row's date, source and
   // pencil, KN-753.
-  '|TOOLTIP_SURFACE|TOOLTIP_LABEL_SURFACE|FRAME|SWATCH|REVEAL|CHECK|BIN|OPENER|CHOICE|TAG|ACTIONS|DATE|SOURCE|EDIT|CHIP' +
+  '|TOOLTIP_SURFACE|TOOLTIP_LABEL_SURFACE|FRAME|SWATCH|REVEAL|CHECK|BIN|OPENER|CHOICE|TAG|ACTIONS|DATE|SOURCE|EDIT|CHIP|MORE_SLOT|PENCIL_SLOT' +
   // Storybook's own vocabulary, KN-214: the colour scheme a story pins, the
   // control a prop gets and the canvas layout. Each value is one of a few
   // names Storybook defines; none is ever shown to a reader as text.

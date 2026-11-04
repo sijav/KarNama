@@ -115,6 +115,16 @@ export interface HistoryWordsFixture {
   roundDetail: string
 }
 
+/** The redesigned card's words, as Card / Kanban 793:1820 draws them, KN-745. */
+export interface KanbanCardFixture {
+  title: string
+  company: string
+  location: string
+  salary: string
+  source: string
+  note: string
+}
+
 /** The closed outcomes' names, as the board's strips show them, KN-749. */
 export interface OutcomeNamesFixture {
   accepted: string
@@ -192,6 +202,8 @@ export interface Fixtures {
   outcomeNames: OutcomeNamesFixture
   /** A history row's words, until the history tab writes them, KN-753. */
   historyWords: HistoryWordsFixture
+  /** The redesigned card's words, as its frame draws them, KN-745. */
+  kanbanCard: KanbanCardFixture
   /**
    * The fixtures as the product keeps them, for a story to seed a
    * `RecordsProvider` with, KN-437: every status, every job opportunity made by
@@ -221,6 +233,7 @@ export interface RawFixtures {
   statsGuidance: readonly StatsGuidanceFixture[]
   outcomeNames: OutcomeNamesFixture
   historyWords: HistoryWordsFixture
+  kanbanCard: KanbanCardFixture
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -360,6 +373,7 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     statsGuidance: Object.freeze(raw.statsGuidance.map((guidance) => Object.freeze({ ...guidance }))),
     outcomeNames: Object.freeze({ ...raw.outcomeNames }),
     historyWords: Object.freeze({ ...raw.historyWords }),
+    kanbanCard: Object.freeze({ ...raw.kanbanCard }),
   })
 }
 

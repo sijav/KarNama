@@ -88,6 +88,7 @@ describe('the token set agrees with DESIGN.md', () => {
       'toast',
       'illustrationCard',
       'picker',
+      'kanbanCard',
     ])
     // The shadow numbers, in the order the design stacks them.
     expect(elevation.card).toBe('0 1px 3px 0 #0000000F, 0 1px 2px 0 #0000000A')
@@ -116,6 +117,9 @@ describe('the token set agrees with DESIGN.md', () => {
     // Read from the person modal's job picker, 1092:3072, with use_figma:
     // #121726 at 12 percent, 0x1F, 6 below and blurred 16.
     expect(elevation.picker).toBe('0 6px 16px 0 #1217261F')
+    // Read from the redesigned card's Hover, 793:1775, with use_figma: #121726
+    // at 10 percent, 0x1A, 4 below and blurred 12.
+    expect(elevation.kanbanCard).toBe('0 4px 12px 0 #1217261A')
     // Still exactly two STYLES: the tooltip's, the bar's and the menu's shadows
     // are bound to none, and the document has to say so where the table is.
     expect(design).toContain('exactly two effect styles')
@@ -170,6 +174,9 @@ describe('the token set agrees with DESIGN.md', () => {
       deleteNote: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
       deleteHint: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
       emptyTitle: { size: 16, lineHeight: 25, weight: 600, letterSpacing: 0 },
+      kanbanTitle: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
+      kanbanText: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+      kanbanDeadline: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
     })
     expect(design).toMatch(/`166:68`[^\n]*12 on 19/)
     expect(design).toMatch(/`961:98854`[^.]*12 on 19/)

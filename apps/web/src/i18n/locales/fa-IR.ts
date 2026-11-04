@@ -159,6 +159,10 @@ export const messages: Record<string, string> = {
   'job opportunities; to delete it, first move them to another column.':
     'فرصت شغلی داره؛ برای حذفش اول باید فرصت‌های شغلی رو ببرید یه ستون دیگه.',
   'Job opportunity actions': 'کارهای فرصت شغلی',
+  'Still waiting?': 'هنوز منتظرید؟',
+  'It went unanswered': 'بی‌پاسخ موند',
+  'Change the deadline': 'تغییر مهلت',
+  'Change the application date': 'تغییر تاریخ درخواست',
   'Open the posting link': 'باز کردن لینک آگهی',
   'Delete job opportunity': 'حذف فرصت شغلی',
   'Sort:': 'مرتب‌سازی:',

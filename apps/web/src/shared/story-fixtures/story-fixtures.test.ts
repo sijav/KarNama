@@ -237,12 +237,12 @@ describe('story fixtures', () => {
 
   it('name a status by its token, and refuse a set that leaves one of the nine unnamed', () => {
     expect(statusName('en-US', 'interview')).toBe(fixtures('en-US').statuses.find((entry) => entry.token === 'interview')?.name)
-    const missing: RawFixtures = { statuses: [], renamedStatus: { token: 'new', name: 'x' }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames, interviewResults: [], stageAfterInterview: fixtures('en-US').stageAfterInterview, toastMessage: '', contactTag: '', statsLabels: fixtures('en-US').statsLabels, statsSources: [], statsGuidance: [], outcomeNames: fixtures('en-US').outcomeNames, historyWords: fixtures('en-US').historyWords }
+    const missing: RawFixtures = { statuses: [], renamedStatus: { token: 'new', name: 'x' }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames, interviewResults: [], stageAfterInterview: fixtures('en-US').stageAfterInterview, toastMessage: '', contactTag: '', statsLabels: fixtures('en-US').statsLabels, statsSources: [], statsGuidance: [], outcomeNames: fixtures('en-US').outcomeNames, historyWords: fixtures('en-US').historyWords, kanbanCard: fixtures('en-US').kanbanCard }
     expect(() => parseFixtures(missing)).toThrow(/have no status new/)
   })
 
   it('refuse a status token that is not one of the nine', () => {
-    const bad: RawFixtures = { statuses: [{ token: 'purple-ish', name: 'x' }], renamedStatus: { token: 'new', name: 'x' }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames, interviewResults: [], stageAfterInterview: fixtures('en-US').stageAfterInterview, toastMessage: '', contactTag: '', statsLabels: fixtures('en-US').statsLabels, statsSources: [], statsGuidance: [], outcomeNames: fixtures('en-US').outcomeNames, historyWords: fixtures('en-US').historyWords }
+    const bad: RawFixtures = { statuses: [{ token: 'purple-ish', name: 'x' }], renamedStatus: { token: 'new', name: 'x' }, longStatusName: '', jobs: [], contacts: [], notes: [], extraction: fixtures('en-US').extraction, jobDetail: fixtures('en-US').jobDetail, mixedStatusNames: fixtures('en-US').mixedStatusNames, interviewResults: [], stageAfterInterview: fixtures('en-US').stageAfterInterview, toastMessage: '', contactTag: '', statsLabels: fixtures('en-US').statsLabels, statsSources: [], statsGuidance: [], outcomeNames: fixtures('en-US').outcomeNames, historyWords: fixtures('en-US').historyWords, kanbanCard: fixtures('en-US').kanbanCard }
     expect(() => parseFixtures(bad)).toThrow(/does not exist: purple-ish/)
   })
 })
