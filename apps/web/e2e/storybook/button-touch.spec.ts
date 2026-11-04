@@ -4,13 +4,11 @@ import { devices, expect, test, type Locator, type Page } from '@playwright/test
  * The Button on a touch screen, KN-318, against the published Storybook's build, beside the
  * Icon Button's, KN-313. A tap leaves :hover on what was tapped, so the hover fill the
  * Button drew for every device stayed after a tap. The Matrix story holds every style in
- * every size with no state forced: in Playwright's Pixel 7, which has touch and no hover,
- * each of its fifteen enabled Buttons is tapped and keeps what it draws at rest; with the
- * check's own desktop Chrome, a pointer still fills each.
+ * every size with no state forced, enabled and then disabled: in Playwright's Pixel 7,
+ * which has touch and no hover, each of its enabled Buttons is tapped and keeps what it
+ * draws at rest; with the check's own desktop Chrome, a pointer still fills each.
  */
 const STORY = 'iframe.html?id=shared-button--matrix&viewMode=story'
-// The Matrix's first fifteen: every style in every size, enabled, before the disabled.
-const ENABLED = 15
 // Twice MUI's short transition, 250 ms, over which the Button's fill eases: read before
 // the ease has run, a fill still on its way in would read as the one at rest.
 const EASE = 500
@@ -19,12 +17,19 @@ const EASE = 500
 // new worker, so the Pixel 7 goes in without it.
 const { defaultBrowserType: _browser, ...pixel } = devices['Pixel 7']
 
-// The Matrix's enabled Buttons, once all thirty have rendered.
+// The Matrix's enabled Buttons, read from the story rather than counted here: a count
+// written down went stale twice, when the L size was retired and when destructive-text
+// joined the styles, KN-847, and the story's own play counts them against its styles and
+// sizes. The Matrix renders in one go, so once a Button is on the page every one is, and
+// there are as many disabled as enabled, one of each for every style in every size.
 const enabledOf = async (page: Page) => {
   await page.goto(STORY)
-  const buttons = page.getByRole('button')
-  await expect(buttons).toHaveCount(ENABLED * 2)
-  return Array.from({ length: ENABLED }, (_, index) => buttons.nth(index))
+  await expect(page.getByRole('button').first()).toBeVisible()
+  const enabled = page.getByRole('button', { disabled: false })
+  const count = await enabled.count()
+  expect(count).toBeGreaterThan(0)
+  await expect(page.getByRole('button', { disabled: true })).toHaveCount(count)
+  return Array.from({ length: count }, (_, index) => enabled.nth(index))
 }
 
 // What a Button draws, and whether it has :hover.

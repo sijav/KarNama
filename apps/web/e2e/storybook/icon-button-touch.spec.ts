@@ -3,7 +3,8 @@ import { devices, expect, test, type Locator, type Page } from '@playwright/test
 /**
  * The Icon Button on a touch screen, KN-313, against the published Storybook's build.
  * A tap leaves :hover on what was tapped, so a hover fill drawn for every device stayed
- * after the tap, grey or the danger tone's pale red. In Playwright's Pixel 7, which has
+ * after the tap, grey, the danger tone's pale red or the primary tone's pale blue. In
+ * Playwright's Pixel 7, which has
  * touch and no hover, each tone is tapped and keeps what it draws at rest; with the
  * check's own desktop Chrome, a pointer still fills it.
  */
@@ -16,12 +17,14 @@ const EASE = 300
 // new worker, so the Pixel 7 goes in without it.
 const { defaultBrowserType: _browser, ...pixel } = devices['Pixel 7']
 
-// The story's two buttons, neutral and danger, once they have rendered.
+// The story's three buttons, neutral, danger and the redesign's primary, KN-801, once
+// they have rendered. The count was two until the primary tone joined, KN-847.
+const TONES = ['neutral', 'danger', 'primary'] as const
 const buttonsOf = async (page: Page) => {
   await page.goto(STORY)
   const buttons = page.getByRole('button')
-  await expect(buttons).toHaveCount(2)
-  return [buttons.nth(0), buttons.nth(1)]
+  await expect(buttons).toHaveCount(TONES.length)
+  return TONES.map((_, index) => buttons.nth(index))
 }
 
 // What a button draws, and whether it has :hover.
