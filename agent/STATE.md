@@ -17,71 +17,73 @@ on **Neon**. The web at **https://kar-nama.ir/** on GitHub Pages, Storybook at
 `/storybook/`, the API on Render; lingui with **English ids**. **Components
 first with their stories, then screens; match the design exactly.**
 
-## Where things stand, 2026-11-04, noon
+## Where things stand, 2026-11-04, afternoon
 
 **The owner's order: the design, then the backend, then the rest.** OKR-3, the
-redesign, has 52 open and 64 done; OKR-4, the backend, follows; then OKR-1 and
-OKR-2. Within the design every component card is `critical`, ahead of the
-record model (KN-731 to KN-741) and the screens (KN-805 to KN-828); KN-829 reads
-the older cards against the redesign last. **`todo next` picks KN-804, the
-redrawn Contact Modal `270:152`, on KN-771's label picker.**
+redesign, then OKR-4, the backend, then OKR-1 and OKR-2. Within the design every
+component card is `critical`, ahead of the record model (KN-731 to KN-741) and
+the screens (KN-805 to KN-828); KN-829 reads the older cards against the
+redesign last.
 
-**Closed today, among others**: KN-775 the person picker, KN-789 the Change
-Status modal, KN-796 the Stats route, KN-848, KN-850 with KN-851 a phone's
-header, KN-783 Tab Bar v2, KN-745 the redesigned card `793:1820`
-(`shared/kanban-card`), KN-747 the interview slot `656:6291`
-(`shared/interview-slot`, 7e418d3), and KN-754 the month calendar `773:16585`
-with its day and arrows (`shared/date-picker`, c3cf9dd): Solar Hijri in
-Persian, Gregorian in English, Saturday first, Friday `red/500`; and KN-756
-the form's date dropdown `774:16896` (d0a7d79), on which the calendar now fills
-its container and follows the chosen day; and KN-757 the calendar popover
-`774:16705` (1e3773e), sharing the dropdown's shortcuts and footer in
-`date-picker/parts.tsx`, with a time field over the time list; KN-854 fixed
-its story for the published check's 720 high page, which had stopped Pages;
-and KN-771 the relationship label picker `1086:3004` (598b727),
-`shared/label-picker`. KN-847 made the Pages build green; every
-push since is green.
+**KN-776, the Source Picker `1223:96580`, is in progress**: Default with its
+hint, Empty, Open with the reader's sources and the common ones, Hover, and
+Typing with the quiet normalisation, «منظورتون این بود؟» and «ساختن منبع «…»»;
+its menu opens upward, out of the layout, at the end of a scrolling form. Read
+the node, write the plan beside it, stories first.
 
-**Pieces other cards build on**: `shared/popover`, `shared/date-picker`'s
-TimeList (KN-754 and KN-756 join it), `cardFooter`, the grouped status picker,
-the modals, `HistoryRow`, the menus, `SearchPicker`, `statusGroups`,
-`KanbanCard` and its `interview` slot's `InterviewSlot`. **Adoption is the
-screens'**: notes on KN-805, KN-812, KN-816, KN-817 and KN-828 say what each
-swaps in; retiring waits on it: KN-842, KN-844, KN-852.
+**KN-804, the Contact Modal `270:152`, closed (e3e6e26)**: the Label Picker and
+Linked Jobs in the body, the primary off until it can save, «حذف از شبکه» at the
+footer's inline start; values carry `label` and `jobIds`. Until KN-738 the
+screens go through `apps/web/src/screens/personModal.ts`. KN-598 closed with it.
+Its roast and KN-598's run in the background, KN-804's first; KN-855 holds the
+Label Picker's older coverage gaps.
 
-**Open findings on built components, after the new ones**: KN-853, the Kanban
-Card's content 244 wide where the frame's edge takes layout space and leaves
-242; KN-849, the stale drag-cards e2e spec.
+**Closed today, among others**: KN-775, KN-789, KN-796, KN-848, KN-850 with
+KN-851, KN-783, KN-745 (`shared/kanban-card`), KN-747 (`shared/interview-slot`),
+KN-754, KN-756 and KN-757 (`shared/date-picker`), KN-854, KN-771
+(`shared/label-picker`), KN-804 and KN-598. KN-847 made the Pages build green; every push since is
+green.
+
+**Pieces other cards build on**: `shared/popover`, `shared/date-picker`,
+`cardFooter`, the grouped status picker, the modals, `HistoryRow`, the menus,
+`SearchPicker`, `statusGroups`, `KanbanCard` with `InterviewSlot`,
+`LabelPicker`, `LinkedJobs`. **Adoption is the screens'**: notes on KN-805,
+KN-812, KN-816, KN-817, KN-822 and KN-828 say what each swaps in; retiring
+waits on it: KN-842, KN-844, KN-852.
+
+**Open findings on built components**: KN-853, the Kanban Card's content 244
+wide where the frame leaves 242; KN-849, the stale drag-cards e2e spec.
 
 **A phone's header, the owner's answer of 2026-11-04** ("Gear holds the rest"):
 the title, the page's action and one settings gear; language and sign out live
-in the Settings dialog; the title may be cut to fit.
+in the Settings dialog.
 
 ## Learned, and the traps
 
 - Figma's auto layout can include a stroke in layout
   (`strokesIncludedInLayout`): read it before taking a padding.
-- `Math.round` of a hair below zero is `-0`, which `toBe(0)` rejects at a
-  fractional zoom: use a helper that returns `|| 0`.
-- The browser pane clips a right-to-left page: screenshot stories with the
-  repository's Playwright. GitHub's SSH sometimes refuses a good key: retry.
-- The published check opens every story at 1280 by 720: a play that asserts a
-  popover's place must allow for MUI lifting it to stay in the window. Run
-  `storybook build` and `playwright test --config
-  playwright.storybook.config.ts -g <ids>` before pushing a popover's stories.
-- Focusing a ButtonBase from an effect makes React warn outside act: commit
-  with `flushSync` in the handler and focus there.
-- The lint rule's traps: a string ternary outside `sx`, `i18nFor(x)._()` in one
-  expression, a template of words, a letter in a date literal, an unlisted
-  class constant (add it to `structuralProps`), a bare style object; type a
-  literal as a one-member union, `type Clear = 'rgba(0, 0, 0, 0)'`.
-- Read a ref in the handler, not a helper made during render. The runner's
-  `userEvent.click(el, { force: true })` hits what is drawn there.
+- The story runner is 1200 by 900; the published check 1280 by 720, where a
+  tall modal scrolls its body: measure `scrollHeight` and offsets, and allow
+  for MUI lifting a popover into the window. Before pushing a popover's
+  stories run `storybook build` then `playwright test --config
+  playwright.storybook.config.ts -g <ids>`.
+- An act warning from `ForwardRef(PopperTooltip)` is a Popper whose state
+  changed outside act: an inline `modifiers` array, or focus lost to the body
+  that a Dialog's focus trap takes back on its 50 ms interval.
+- Focusing from an effect makes React warn outside act: `flushSync` in the
+  handler, then focus. A disabled default button blocks implicit submission.
+- Coverage is 100% in every file; a story's coverage of a file the unit project
+  touches is discarded, KN-103. A guard that cannot be false is a failed branch.
+- Screenshots: the browser pane cannot render while hidden; use
+  `%TEMP%/kn804/shot.cjs` (Playwright through apps/web's `@playwright/test`).
+- The lint rule's traps: a string literal passed to an unlisted function, a
+  string ternary outside `sx`, `i18nFor(x)._()` in one expression, a template
+  of words, a letter in a date literal; type a literal as a one-member union.
 - Git Bash mangles `\\`, long Persian and TSX in a heredoc: use Write.
 
 **CI**: the Pages workflow builds the app and Storybook and runs
-`e2e/storybook`'s specs. Watch a run in the background with `gh run watch`; a
-lost connection ends the watch early, so read `gh run view <id>` after it.
+`e2e/storybook`'s specs. Watch a run with `gh run watch` in the background,
+then read `gh run view <id>`.
 
 **The redesign** is in Figma `K1EP8GCOmelU8o4vPR7a9f`, Screens `5:7`, with the
 handoff in `DESIGN-HANDOFF.md`; read the instances on the screens for real copy
@@ -95,26 +97,27 @@ Render's WEB_ORIGIN and Cloudflare's Always Use HTTPS.
 **Roasts** run on Sonnet 5.5 through the claude CLI,
 `agent/scripts/roast-sonnet.py`, which passes `--remote-control`, one session
 per kind. Each closed card is roasted in the background to `.claude/roasts/`;
-**none is judged until every to-do is done**. Every closed card through KN-747
-has its record, KN-757 with KN-854 among them, and KN-771's was running at
-this writing; the scratchpad's `roast-771.py` shows the arguments.
+**none is judged until every to-do is done**. Every closed card through KN-771
+has its record, KN-804's and KN-598's were running at this writing; the
+scratchpad's `roast-<id>.py` files hold the arguments.
 
 ## What fails, and which failures are known
 
 `npm test` exits 1, none of it new: KN-551's `session.test.ts` two, KN-699,
-KN-365's parallel pointer, KN-486's database timeouts. Several story files share
-one page, so a story never asks for something page-wide. **Search the board
-before filing a failure.**
+KN-365's parallel pointer, KN-486's database timeouts. A heavy board story can
+pass alone and time out at 15 s in its file's run: type short fixture names.
+**Search the board before filing a failure.**
 
 ## Drift, and the method
 
 Drift is Prettier's, from the file's real path: `prettier --stdin-filepath
 <path> < <file> | diff <file> -`. A new file measures 0; hold each baseline:
-`DESIGN.md` 224 with 9 em dashes, `AGENTS.md` 0, `agent/RALPH.md` 5,
-`App.stories.tsx` 13, `JobsScreen.stories.tsx` 2. The catalogs and
-`eslint.config.js` are not Prettier's at HEAD: never `--write` them. A
-DESIGN.md table row takes Prettier's form and must not widen a column. Pass
-Python `newline='\n'`.
+`DESIGN.md` 224 with 9 em dashes, `TECH-DEBT.md` 17, `AGENTS.md` 0,
+`agent/RALPH.md` 5, `App.stories.tsx` 13, `JobsScreen.stories.tsx` 2. Several
+story files are off only by Prettier's import order at HEAD: format your own
+lines by hand there. The catalogs and `eslint.config.js` are not Prettier's at
+HEAD: never `--write` them. A DESIGN.md table row takes Prettier's form and
+must not widen a column. Pass Python `newline='\n'`.
 
 ## Open, and waiting
 
