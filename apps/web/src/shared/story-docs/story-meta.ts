@@ -24,6 +24,7 @@ export type StoryTitle =
   | 'Screens/Jobs'
   | 'Screens/SignIn'
   | 'Screens/Network'
+  | 'Screens/Stats'
   | 'Core/AuthProvider'
   | 'Core/PreferencesProvider'
   | 'Foundations/Tokens'

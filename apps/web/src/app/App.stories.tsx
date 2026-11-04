@@ -184,12 +184,22 @@ const MOVED: keyof WindowEventMap = 'popstate'
 export const Navigating: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
+    // On a phone, whose tab bar still carries adding: the sidebar draws the Stats
+    // page in its place since KN-796, until Tab Bar v2 moves adding into the
+    // page header, KN-783. The viewport is the runner's to set, so this runs as a
+    // test only.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page: runner } = await import('vitest/browser')
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
     const base = siteBase(import.meta.env.BASE_URL, window.location.href)
-    // The frame's own address, its path, query and hash, put back whole after.
+    // The frame's own address, its path, query and hash, put back whole after,
+    // and its size.
     const before = window.location.href
+    const size = { width: window.innerWidth, height: window.innerHeight }
     try {
+      await runner.viewport(PHONE.width, PHONE.height)
+      await waitFor(() => expect(canvasElement.querySelector('aside')).toBeNull())
       // Going to another page writes the address, a path with no hash.
       await userEvent.click(canvas.getByRole('button', { name: 'شبکه من' }))
       await waitFor(async () => {
@@ -238,6 +248,7 @@ export const Navigating: Story = {
       })
       await expect([window.location.pathname, window.location.hash]).toEqual([`${base}jobs`, ''])
     } finally {
+      await runner.viewport(size.width, size.height)
       window.history.replaceState(null, '', before)
     }
   },
@@ -326,13 +337,20 @@ export const BackFromAConfirmation: Story = {
 export const OpeningTheAddFlowKeepsFocus: Story = {
   globals: { locale: 'fa-IR' },
   play: async ({ canvasElement }) => {
+    // From a phone's tab bar, which still carries adding, as Navigating does,
+    // KN-796.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
     const canvas = within(canvasElement)
     const body = within(canvasElement.ownerDocument.body)
     const base = siteBase(import.meta.env.BASE_URL, window.location.href)
     const before = window.location.href
+    const size = { width: window.innerWidth, height: window.innerHeight }
     const main = canvasElement.ownerDocument.querySelector('main')
     if (!(main instanceof HTMLElement)) throw new Error('the shell draws no page region')
     try {
+      await page.viewport(PHONE.width, PHONE.height)
+      await waitFor(() => expect(canvasElement.querySelector('aside')).toBeNull())
       // Scoped to the navigation landmark rather than asked for by name alone:
       // the board draws «افزودن فرصت شغلی» twice more, in its Page Header and in
       // its empty state, so the bare name matches three controls here.
@@ -352,6 +370,7 @@ export const OpeningTheAddFlowKeepsFocus: Story = {
       // And closing it is not a change of screen either.
       await expect(main).not.toHaveFocus()
     } finally {
+      await page.viewport(size.width, size.height)
       window.history.replaceState(null, '', before)
     }
   },
@@ -678,6 +697,34 @@ export const LaidOutAsTheFramesInEnglish: Story = {
   globals: { locale: 'en-US', colorScheme: 'light' },
   play: async ({ canvasElement }) => {
     await laidOutAsTheFrames(canvasElement, i18nFor('en-US'))
+  },
+}
+
+export const ToTheStatsPage: Story = {
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    // The sidebar's «آمار من», the original's second destination, opens the Stats
+    // page's place at its own address and is the current page there, KN-796.
+    if (!('__KARNAMA_STORY_TEST__' in globalThis)) return
+    const { page } = await import('vitest/browser')
+    const canvas = within(canvasElement)
+    const base = siteBase(import.meta.env.BASE_URL, window.location.href)
+    const before = { width: window.innerWidth, height: window.innerHeight }
+    const address = window.location.href
+    try {
+      await page.viewport(DESKTOP.width, DESKTOP.height)
+      await waitFor(() => expect(canvasElement.querySelector('aside')).not.toBeNull())
+      const workspace = canvas.getByRole('navigation', { name: 'فضای کار' })
+      await userEvent.click(within(workspace).getByRole('button', { name: 'آمار من' }))
+      await waitFor(async () => {
+        await expect(canvas.getByRole('heading', { level: 1 })).toHaveTextContent('آمار من')
+      })
+      await expect([window.location.pathname, window.location.hash]).toEqual([`${base}stats`, ''])
+      await expect(within(workspace).getByRole('button', { name: 'آمار من' })).toHaveAttribute('aria-current', CURRENT)
+    } finally {
+      await page.viewport(before.width, before.height)
+      window.history.replaceState(null, '', address)
+    }
   },
 }
 

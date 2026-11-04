@@ -1,6 +1,6 @@
 export { BrandRow } from './BrandRow'
 export { DESTINATION_IDS } from './destinationIds'
-export { CURRENT, DESTINATIONS, useDestinationName, type Destination } from './destinations'
+export { CURRENT, DESTINATIONS, TAB_DESTINATIONS, useDestinationName, type Destination } from './destinations'
 export { Navigation, type NavigationProps } from './Navigation'
 export { NavItem, type NavItemProps } from './NavItem'
 export { SIDEBAR_WIDTH, Sidebar, type SidebarProps } from './Sidebar'

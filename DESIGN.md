@@ -1630,24 +1630,28 @@ keyboard's is three pixels of `border/focus` inside the row.
 The sidebar, `185:11`, is 240 wide and the screen's height, at the page's inline
 end side, the right in Persian, `bg/surface` with one pixel of `border/default`
 on the edge that faces the page: 24 above and below, 16 at the sides, 8 between
-its parts. From the top: the Brand Row, a 32 mark of radius md in
-`bg/brand/default` holding the name's first letter at 16 and SemiBold in
-`text/on-accent`, then «کارنما» at 20 and SemiBold; the User Row, a 32 avatar in
+its parts. From the top: the Brand Row, the 32 mark of `576:7665`, the
+original's Logo / Mark where the copy drew the name's first letter on
+`bg/brand/default`, KN-742, then «کارنما» at 20 and SemiBold; the User Row, a 32 avatar in
 `bg/brand/container`, the name at 14 and Medium over the phone at 12 in the
 reader's digits; a divider; a 16 spacer; «فضای کار» at 12 and Medium, which the
 file draws in `text/disabled`, 2.54 to one on the sidebar's `bg/surface`, under
 the 4.5 WCAG asks of text that size; it is information rather than an inactive
 control, and the accessibility decision of 2026-09-16 set that bar, so the build
 departs from the node and draws `text/secondary`, the existing token that meets
-it here at 4.83, KN-666; the three destinations; the room the file leaves; the language
+it here at 4.83, KN-666; the three destinations, «فرصت‌های شغلی من» with
+`file`, «آمار من» with `chart`, the original's in place of the copy's «افزودن
+فرصت شغلی» with `plus`, KN-796, and «شبکه من» with `user`; the room the file leaves; the language
 switch, settings and «خروج», the file's `log-out`, as one row of Icon Buttons,
 the shell's own controls, the owner's instruction of KN-478 over the file's
 «خروج» Nav Item, the first centred on the items' icon column. Before
 anyone signs in, the user and «خروج» are left out.
 
 The tab bar, `185:19`, is the screen's width and 72 tall, `bg/surface` with one
-pixel of `border/default` along the top: the same three destinations in equal
-thirds, the board at the inline start, each a 24 icon 4 above its label at 12
+pixel of `border/default` along the top: the copy's three destinations, the
+board, «افزودن فرصت شغلی» and the network page, in equal thirds, since a phone's
+board has no add button of its own until Tab Bar v2, `1273:103863`, draws the
+sidebar's three and moves adding into the page header, KN-783; the board at the inline start, each a 24 icon 4 above its label at 12
 and Medium, `text/secondary`, or `text/brand` for the current page. Nothing else
 joins it. Below MUI's md, 900, it replaces the sidebar, pinned to the foot of
 the screen, and the page keeps its 72 clear; the file says it gives way to the
@@ -1947,7 +1951,11 @@ The Components canvas annotation says two destinations, آگهی‌های من a
 specific, and the owner confirmed it: the destinations are
 **فرصت‌های شغلی من** (the board), **افزودن فرصت شغلی**, and **شبکه من**, a
 standalone contacts page drawn in full at page-map row 5. The old labels are
-also superseded, see the terminology rule below.
+also superseded, see the terminology rule below. The redesign of 2026-11-03
+puts **آمار من**, the Stats page at `/stats`, in the sidebar where adding was,
+and adding opens from the board's own header: on a desktop since KN-796, on a
+phone once Tab Bar v2 does, KN-783. `/add` keeps its address and still opens
+the flow over the board.
 
 **The main screen is a kanban board, not a list.** Columns are statuses, cards
 drag between them, and the desktop board scrolls horizontally. Read from

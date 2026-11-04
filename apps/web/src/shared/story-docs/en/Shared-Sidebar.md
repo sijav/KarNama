@@ -2,8 +2,8 @@ The desktop navigation, down the side of the screen that faces the start of the
 page, the right in Persian.
 
 From the top: the product's name and mark, the signed-in user with their phone,
-and under «فضای کار» the three places the product goes, the board, adding a job
-opportunity and the network, the current one marked. At the foot, where the
+and under «فضای کار» the three places the product goes, the board, the stats
+and the network, the current one marked. At the foot, where the
 design leaves room, the shell's own controls, the language, the settings and
 signing out, as a row of icon buttons. Before anyone signs in, the user and
 signing out are left out.
@@ -12,7 +12,8 @@ signing out are left out.
 
 ### current
 
-The place the reader is on: `jobs`, `add` or `network`.
+The place the reader is on: `jobs`, `stats` or `network`. With `add`, which
+the sidebar does not draw, none is marked.
 
 ### userName
 
@@ -39,6 +40,10 @@ The sidebar as the design draws it, measured, a place and signing out pressed.
 ### NetworkCurrent
 
 The sidebar on the network page.
+
+### StatsCurrent
+
+The sidebar on the Stats page.
 
 ### WithoutUser
 

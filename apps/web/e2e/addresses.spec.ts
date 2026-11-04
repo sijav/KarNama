@@ -14,6 +14,7 @@ import { prepareBoard, signedIn } from './session'
  */
 const JOBS = 'فرصت‌های شغلی من'
 const ADD = 'افزودن فرصت شغلی'
+const STATS = 'آمار من'
 const NETWORK = 'شبکه من'
 
 const heading = (page: Page) => page.getByRole('heading', { level: 1 })
@@ -34,13 +35,18 @@ test('each page opens at its path, and again after a reload', async ({ page }) =
   await page.reload()
   await expect(page.getByRole('dialog')).toBeVisible()
 
+  await page.goto('/stats')
+  await expect(heading(page)).toContainText(STATS)
+  await page.reload()
+  await expect(heading(page)).toContainText(STATS)
+
   await page.goto('/jobs')
   await expect(heading(page)).toContainText(JOBS)
   await page.reload()
   await expect(heading(page)).toContainText(JOBS)
 })
 
-test('Back and Forward move between the pages the navigation opened', async ({ page }) => {
+test('Back and Forward move between the pages the navigation opened', async ({ page }, testInfo) => {
   await page.goto('/jobs')
   await navigation(page).getByRole('button', { name: NETWORK, exact: true }).click()
   await expect(page).toHaveURL(/\/network$/)
@@ -53,6 +59,21 @@ test('Back and Forward move between the pages the navigation opened', async ({ p
   await page.goForward()
   await expect(page).toHaveURL(/\/network$/)
   await expect(heading(page)).toContainText(NETWORK)
+
+  // The sidebar draws the Stats page where the tab bar draws adding, KN-796,
+  // until Tab Bar v2 moves adding into the page header, KN-783.
+  if (testInfo.project.name === 'desktop') {
+    await navigation(page).getByRole('button', { name: STATS, exact: true }).click()
+    await expect(page).toHaveURL(/\/stats$/)
+    await expect(heading(page)).toContainText(STATS)
+    await page.goBack()
+    await expect(page).toHaveURL(/\/network$/)
+    await expect(heading(page)).toContainText(NETWORK)
+    await page.goForward()
+    await expect(page).toHaveURL(/\/stats$/)
+    await expect(heading(page)).toContainText(STATS)
+    return
+  }
 
   // The add flow opens over the board, and Back closes it where it was opened.
   await navigation(page).getByRole('button', { name: ADD, exact: true }).click()
@@ -75,23 +96,32 @@ test('an address from when the page was in the hash lands on its path, its query
   await expect(heading(page)).toContainText(NETWORK)
 })
 
-test('each destination the navigation opens writes its path and no hash', async ({ page }) => {
+test('each destination the navigation opens writes its path and no hash', async ({ page }, testInfo) => {
   await page.goto('/jobs')
   const address = () => {
     const { pathname, hash } = new URL(page.url())
     return [pathname, hash]
   }
-  // The add flow last, since its dialog takes the navigation out of reach.
-  const opened = [
-    [NETWORK, '/network'],
-    [JOBS, '/jobs'],
-    [ADD, '/add'],
-  ] as const
+  // The sidebar's three, KN-796, and the tab bar's, whose add flow comes last,
+  // since its dialog takes the navigation out of reach.
+  const phone = testInfo.project.name === 'mobile'
+  const opened = phone
+    ? ([
+        [NETWORK, '/network'],
+        [JOBS, '/jobs'],
+        [ADD, '/add'],
+      ] as const)
+    : ([
+        [NETWORK, '/network'],
+        [STATS, '/stats'],
+        [JOBS, '/jobs'],
+      ] as const)
   for (const [name, path] of opened) {
     await navigation(page).getByRole('button', { name, exact: true }).click()
     await expect.poll(address).toEqual([path, ''])
   }
-  await expect(page.getByRole('dialog')).toBeVisible()
+  if (phone) await expect(page.getByRole('dialog')).toBeVisible()
+  else await expect(heading(page)).toContainText(JOBS)
 })
 
 /**
@@ -144,7 +174,8 @@ test('a search adds ONE history entry however long it is refined, and Back leave
   await expect(cardFor(page, SECOND)).toBeVisible()
 })
 
-test('the add flow keeps the search the board is showing, and another page drops it', async ({ page }) => {
+test('the add flow keeps the search the board is showing, and another page drops it', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'desktop', "the sidebar draws no add since KN-796; the tab bar's is the shell's path into the flow")
   await prepareBoard(page, [FIRST, SECOND])
   const searched = `/jobs?${QUERY}=${encodeURIComponent(SECOND)}`
   await page.goto(searched)
@@ -272,7 +303,7 @@ test.describe('the build, served the way GitHub Pages serves it', () => {
 
   test('each page answers 200 at its path and any other path 404, both with the app', async ({ request }) => {
     const app = await readFile(join(DIST, 'index.html'), 'utf8')
-    for (const path of ['/jobs', '/add', '/network']) {
+    for (const path of ['/jobs', '/add', '/stats', '/network']) {
       const answer = await request.get(`${origin}${path}`, { maxRedirects: 0 })
       expect(answer.status(), path).toBe(200)
       expect(await answer.text(), path).toBe(app)

@@ -4,13 +4,16 @@ import { expect, fn, userEvent, within } from 'storybook/test'
 import { MIN_CONTRAST, contrast } from '../../theme/darkMode'
 import { semantic } from '../../theme/tokens'
 import { formatPhone } from '../contact-card'
+import { GLYPHS, type IconName } from '../icon'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { CURRENT } from './destinations'
 import { Sidebar, type SidebarProps } from './Sidebar'
 
 // The sidebar is the screen's height, 720 in the file's component.
 const HEIGHT = 720
-const DESTINATIONS: NonNullable<SidebarProps['current']>[] = ['jobs', 'add', 'network']
+// The three the original draws, KN-796, and their icons, file, chart and user.
+const DESTINATIONS: NonNullable<SidebarProps['current']>[] = ['jobs', 'stats', 'network']
+const ICONS: readonly IconName[] = ['file', 'chart', 'user']
 
 const meta = {
   title: 'Shared/Sidebar',
@@ -107,7 +110,8 @@ export const Default: Story = {
     }
     const nav = sidebar.getByRole('navigation', { name: 'فضای کار' })
     const items = within(nav).getAllByRole('button')
-    await expect(items.map((item) => item.textContent)).toEqual(['فرصت‌های شغلی من', 'افزودن فرصت شغلی', 'شبکه من'])
+    await expect(items.map((item) => item.textContent)).toEqual(['فرصت‌های شغلی من', 'آمار من', 'شبکه من'])
+    await expect(items.map((item) => item.querySelector('path')?.getAttribute('d'))).toEqual(ICONS.map((name) => GLYPHS[name].stroke[0]))
     // The item args.current names is the current page, and only it, KN-574.
     const current = DESTINATIONS.indexOf(args.current)
     await expect(items.map((item) => item.getAttribute('aria-current'))).toEqual(
@@ -130,7 +134,7 @@ export const Default: Story = {
     }
     await expect(centreOf(language)).toBe(centreOf(destinationIcon))
     await userEvent.click(items[1] ?? aside)
-    await expect(args.onNavigate).toHaveBeenCalledWith('add')
+    await expect(args.onNavigate).toHaveBeenCalledWith('stats')
     await userEvent.click(signOut)
     await expect(args.onSignOut).toHaveBeenCalledTimes(1)
   },
@@ -147,6 +151,20 @@ export const NetworkCurrent: Story = {
       .getAllByRole('button')
       .filter((item) => item.getAttribute('aria-current') === CURRENT)
     await expect(current.map((item) => item.textContent)).toEqual(['شبکه من'])
+  },
+}
+
+export const StatsCurrent: Story = {
+  // The Stats page, the original's second destination, KN-796.
+  parameters: { controls: { include: ['userName', 'userPhone'] } },
+  args: { current: 'stats' },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ canvasElement }) => {
+    const nav = within(asideIn(canvasElement)).getByRole('navigation')
+    const current = within(nav)
+      .getAllByRole('button')
+      .filter((item) => item.getAttribute('aria-current') === CURRENT)
+    await expect(current.map((item) => item.textContent)).toEqual(['آمار من'])
   },
 }
 
@@ -213,5 +231,7 @@ export const InEnglish: Story = {
     if (args.userPhone !== undefined && args.userPhone !== '') {
       await expect(within(userRow).getByText(formatPhone('en-US', args.userPhone))).toBeInTheDocument()
     }
+    const items = within(within(aside).getByRole('navigation')).getAllByRole('button')
+    await expect(items.map((item) => item.textContent)).toEqual(['My job opportunities', 'My stats', 'My network'])
   },
 }

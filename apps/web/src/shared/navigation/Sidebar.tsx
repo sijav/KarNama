@@ -36,7 +36,8 @@ const oneLine = { sx: { minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis
 // The desktop navigation of node 185:11, on the page's inline end side, the
 // right in Persian, with its one pixel of border/default on the edge that faces
 // the page. From the top: the brand, the signed-in user, a divider, and under
-// «فضای کار» the three destinations; at the foot, below the room the file leaves
+// «فضای کار» the three destinations, the board, «آمار من» and the network, as
+// the original draws them, KN-796; at the foot, below the room the file leaves
 // empty, the shell's own controls, the language, settings and «خروج», as a row
 // of Icon Buttons, DESIGN.md section 5, KN-478.
 export const Sidebar = ({ current, userName, userPhone, onNavigate, onSignOut }: SidebarProps) => {

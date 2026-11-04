@@ -38,7 +38,7 @@ import { DESTINATION_IDS, type Destination } from '../shared/navigation'
  * KN-095 closed for `title`. A literal typed as a union of string literals is
  * skipped instead, which is that fix, reused.
  */
-export const PATH: { [D in Destination]: `/${D}` } = { jobs: '/jobs', add: '/add', network: '/network' }
+export const PATH: { [D in Destination]: `/${D}` } = { jobs: '/jobs', add: '/add', stats: '/stats', network: '/network' }
 
 /**
  * The name the search goes under in the address, `/jobs?q=…`, KN-697.

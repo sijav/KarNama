@@ -4,7 +4,7 @@ import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { BrowserRouter, Route, Routes, useLocation, useMatch, useNavigate } from 'react-router'
 import { apiErrorText, extractJob } from '../core/api'
 import { useAuth } from '../core/auth'
-import { AuthScreen, JobsScreen, NetworkScreen } from '../screens'
+import { AuthScreen, JobsScreen, NetworkScreen, StatsScreen } from '../screens'
 import { Navigation, TAB_BAR_HEIGHT, type Destination } from '../shared/navigation'
 import { spacing } from '../theme/tokens'
 import { PATH, pathForHash, siteBase } from './routes'
@@ -48,11 +48,13 @@ const migrateLegacyHash = () => {
  * for nothing more, so each screen's Page Header carries them, DESIGN.md
  * section 5, KN-478. Nothing sits in a row above a page's title.
  *
- * The destination is the address's path under the base, KN-505: `/jobs`, `/add`
- * and `/network`, each served on Pages from a page the build writes. `add` is a
- * destination in the navigation and a modal on the board, as the design has it:
- * job detail and adding are never pages of their own, which is why it renders the
- * board with its flow open rather than a page of its own, KN-698.
+ * The destination is the address's path under the base, KN-505: `/jobs`, `/add`,
+ * `/stats` and `/network`, each served on Pages from a page the build writes. The
+ * sidebar draws the board, the Stats page and the network page, KN-796, and the
+ * tab bar the board, adding and the network page until KN-783. `add` is a modal
+ * on the board, as the design has it: job detail and adding are never pages of
+ * their own, which is why it renders the board with its flow open rather than a
+ * page of its own, KN-698.
  */
 export const App = () => {
   // The hash migration happens in a state initialiser, which React runs during
@@ -71,12 +73,12 @@ export const App = () => {
  * Which SCREEN is showing, which is not the same as which destination.
  *
  * The add flow is a modal over the board, DESIGN.md's navigation section, so
- * `/jobs` and `/add` are one screen and only `/network` is the other. Named
- * rather than read off `current` where it is used, because `current` is `'add'`
- * on the add route and keying anything on that would treat opening the flow as
- * a change of screen, KN-473.
+ * `/jobs` and `/add` are one screen, and `/stats` and `/network` are the others.
+ * Named rather than read off `current` where it is used, because `current` is
+ * `'add'` on the add route and keying anything on that would treat opening the
+ * flow as a change of screen, KN-473.
  */
-type Screen = 'jobs' | 'network'
+type Screen = 'jobs' | 'stats' | 'network'
 
 const Shell = () => {
   // Whether the page under the shell is selecting, so the tab bar can give the
@@ -97,9 +99,10 @@ const Shell = () => {
   // said jobs. Both are reachable, since Pages answers an unknown path with
   // `404.html`, which is this app.
   const network = useMatch(PATH.network)
+  const stats = useMatch(PATH.stats)
   const add = useMatch(PATH.add)
-  const current: Destination = network ? 'network' : add ? 'add' : 'jobs'
-  const screen: Screen = current === 'network' ? 'network' : 'jobs'
+  const current: Destination = network ? 'network' : stats ? 'stats' : add ? 'add' : 'jobs'
+  const screen: Screen = current === 'add' ? 'jobs' : current
 
   // The page region, and the only thing here that outlives a route change: the
   // screen inside it is replaced, this is not. It takes focus when the screen
@@ -215,7 +218,8 @@ const Shell = () => {
           flex: '1 1 auto',
           minWidth: 0,
           minHeight: 0,
-          overflowY: current === 'network' ? 'auto' : 'hidden',
+          // The board scrolls its own columns; the other pages scroll here.
+          overflowY: screen === 'jobs' ? 'hidden' : 'auto',
           display: 'flex',
           flexDirection: 'column',
           pb: { xs: `calc(${TAB_BAR_HEIGHT}px + env(safe-area-inset-bottom))`, md: 0 },
@@ -228,6 +232,7 @@ const Shell = () => {
         ) : null}
         <Routes>
           <Route path={PATH.network} element={<NetworkScreen onSelecting={setSelecting} onSignOut={signOut} />} />
+          <Route path={PATH.stats} element={<StatsScreen onSignOut={signOut} />} />
           <Route path={PATH.add} element={board(true)} />
           {/* Anything else is the board, which keeps what Pages serves from
               404.html showing the archive rather than redirecting a mistyped

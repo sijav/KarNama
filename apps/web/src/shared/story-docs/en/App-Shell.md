@@ -111,6 +111,11 @@ The same measurements in English, where the direction flips: every distance is
 read from the edge a line of text starts at, so the same numbers hold on the
 other side.
 
+### ToTheStatsPage
+
+On a desktop the sidebar's «آمار من» opens the Stats page at its own address,
+and it is the current page there.
+
 ### Selecting
 
 While a page is selecting, the Bulk Action Bar has the foot of the screen to

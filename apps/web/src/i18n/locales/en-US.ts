@@ -198,6 +198,7 @@ export const messages: Record<string, string> = {
   'Nothing at this stage matches your search': 'Nothing at this stage matches your search',
   'Add status': 'Add status',
   'My network': 'My network',
+  'My stats': 'My stats',
   'Sign out': 'Sign out',
   Workspace: 'Workspace',
   'We could not read the posting': 'We could not read the posting',

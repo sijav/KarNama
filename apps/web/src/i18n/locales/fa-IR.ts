@@ -200,6 +200,7 @@ export const messages: Record<string, string> = {
   'Nothing at this stage matches your search': 'چیزی با این جستجو تو این مرحله نیست',
   'Add status': 'افزودن وضعیت',
   'My network': 'شبکه من',
+  'My stats': 'آمار من',
   'Sign out': 'خروج',
   Workspace: 'فضای کار',
   'We could not read the posting': 'نشد آگهی را بخوانیم',

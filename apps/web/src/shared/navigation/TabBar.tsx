@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react'
 import { Box, ButtonBase } from '@mui/material'
 import { spacing, type as typeScale } from '../../theme/tokens'
 import { Icon } from '../icon'
-import { CURRENT, DESTINATIONS, insetRing, useDestinationName, type Destination } from './destinations'
+import { CURRENT, insetRing, TAB_DESTINATIONS, useDestinationName, type Destination } from './destinations'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface TabBarProps {
@@ -17,9 +17,10 @@ export const TAB_BAR_HEIGHT = 72
 const HEIGHT = TAB_BAR_HEIGHT
 const EDGE = 1
 
-// The phone's navigation of node 185:19: the full width, bg/surface, the same
-// three destinations as the sidebar in equal thirds, the first at the inline
-// start, the right in Persian. Each is a 24 icon 4 above its label at 12 and
+// The phone's navigation of node 185:19: the full width, bg/surface, its three
+// destinations, the board, adding and the network page, in equal thirds, the
+// first at the inline start, the right in Persian; Tab Bar v2, KN-783, draws the
+// sidebar's three instead. Each is a 24 icon 4 above its label at 12 and
 // Medium, text/secondary, or text/brand for the current page. Nothing else
 // joins it: the language switch sits in the Page Header on a phone,
 // DESIGN.md section 5.
@@ -43,7 +44,7 @@ export const TabBar = ({ current, onNavigate }: TabBarProps) => {
         borderBlockStartColor: theme.karnama.semantic['border/default'],
       })}
     >
-      {DESTINATIONS.map(({ id, icon }) => (
+      {TAB_DESTINATIONS.map(({ id, icon }) => (
         <ButtonBase
           key={id}
           disableRipple
