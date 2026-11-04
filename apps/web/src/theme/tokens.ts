@@ -148,7 +148,9 @@ export const type = {
  * `773:16585`, sets its title 14 on Figma's automatic 22 at Medium, its
  * weekdays 12 on 19 at Regular, and its days, `773:16113`, 13 on 20, Medium on
  * today and the chosen day, KN-754. The date dropdown's shortcut, `780:44444`,
- * and its clear link, `848:2253`, are 12 on 19 at Regular, KN-756.
+ * and its clear link, `848:2253`, are 12 on 19 at Regular, KN-756. The calendar
+ * popover, `774:16705`, sets its title 14 on 22 at Medium, its helper and its
+ * time's label 12 on 19 and its time 13 on 20 at Regular, KN-757.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -189,6 +191,10 @@ export const unstyledText = {
   calendarDayMarked: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
   dateShortcut: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
   clearLink: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+  dateEditTitle: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
+  dateEditHelper: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+  timeFieldLabel: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+  timeFieldValue: { size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
 } as const
 
 /**

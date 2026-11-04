@@ -391,4 +391,5 @@ export const messages: Record<string, string> = {
   Yesterday: 'Yesterday',
   'Two days ago': 'Two days ago',
   Clear: 'Clear',
+  'In two days': 'In two days',
 }

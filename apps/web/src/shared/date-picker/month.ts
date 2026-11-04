@@ -15,8 +15,11 @@ type Digits = 'latn'
 const LATIN: Digits = 'latn'
 
 const DAY_MS = 86_400_000
-// The characters of a `YYYY-MM-DD` day.
+const MINUTE_MS = 60_000
+// The characters of a `YYYY-MM-DD` day, and of a `YYYY-MM-DDTHH:mm` time.
 const DAY_LENGTH = 10
+const TIME_START = 11
+const TIME_END = 16
 // A week, and the shortest month of either calendar, which a month's length is
 // counted on from.
 export const WEEK = 7
@@ -33,6 +36,20 @@ const dayAt = (time: number) => new Date(time).toISOString().slice(0, DAY_LENGTH
 
 /** The day as a Date at its UTC midnight, for a formatter that reads it there. */
 export const dateOf = (day: string) => new Date(timeOf(day))
+
+/** The day of a `YYYY-MM-DD`, or of a `YYYY-MM-DDTHH:mm`. */
+export const dayOf = (at: string) => at.slice(0, DAY_LENGTH)
+
+/** The minutes after midnight of a `YYYY-MM-DDTHH:mm`, or null for a day alone. */
+export const minutesOf = (at: string): number | null => {
+  const time = at.slice(TIME_START, TIME_END)
+  if (time.length !== TIME_END - TIME_START) return null
+  const [hours = 0, minutes = 0] = time.split(':').map(Number)
+  return hours * 60 + minutes
+}
+
+/** A day at a time, as `YYYY-MM-DDTHH:mm`. */
+export const atTime = (day: string, minutes: number) => new Date(timeOf(day) + minutes * MINUTE_MS).toISOString().slice(0, TIME_END)
 
 /** The day `days` after `day`, or before it for a negative count. */
 export const addDays = (day: string, days: number) => dayAt(timeOf(day) + days * DAY_MS)

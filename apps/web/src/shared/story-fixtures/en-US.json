@@ -82,5 +82,13 @@
     "salary": "45 to 60 million",
     "source": "Jobinja",
     "note": "Technical interview on Tuesday at 10"
+  },
+  "dateEdit": {
+    "appliedTitle": "Application date",
+    "appliedHelper": "The footer's count and the column's order are counted from this date.",
+    "deadlineTitle": "Application deadline",
+    "deadlineHelper": "The card turns red 3 days before the deadline.",
+    "interviewTitle": "Interview date",
+    "interviewHelper": "The history changes with it too."
   }
 }

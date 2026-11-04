@@ -391,4 +391,5 @@ export const messages: Record<string, string> = {
   Yesterday: 'دیروز',
   'Two days ago': 'پریروز',
   Clear: 'پاک کردن',
+  'In two days': 'پس‌فردا',
 }

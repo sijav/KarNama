@@ -53,6 +53,7 @@ export type StoryTitle =
   | 'Shared/ContactModal'
   | 'Shared/ContactRow'
   | 'Shared/DateDropdown'
+  | 'Shared/DateEditPopover'
   | 'Shared/DateShortcut'
   | 'Shared/DeleteJobModal'
   | 'Shared/DeleteStatusModal'

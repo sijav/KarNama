@@ -1,5 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { addDays, calendarOf, columnOf, isOff, monthLength, monthStart, nextMonth, partsOf, previousMonth, weeksOf } from './month'
+import {
+  addDays,
+  atTime,
+  calendarOf,
+  columnOf,
+  dayOf,
+  isOff,
+  minutesOf,
+  monthLength,
+  monthStart,
+  nextMonth,
+  partsOf,
+  previousMonth,
+  weeksOf,
+} from './month'
 import { dayLabel, dayName, monthTitle, weekdays } from './words'
 
 // A month's weeks as day numbers, with 0 where the month has no day, so a grid
@@ -90,6 +104,16 @@ describe('the days around a month', () => {
     expect([calendarOf('fa-IR'), calendarOf('en-US')]).toEqual(['persian', 'gregory'])
     expect([columnOf('2026-10-03'), columnOf('2026-10-04'), columnOf('2026-10-09')]).toEqual([0, 1, 6])
     expect([addDays('2026-12-31', 1), addDays('2026-03-01', -1)]).toEqual(['2027-01-01', '2026-02-28'])
+  })
+
+  it('reads a day and a time out of an interview’s moment and writes them back', () => {
+    expect([dayOf('2026-10-12T11:30'), dayOf('2026-10-12')]).toEqual(['2026-10-12', '2026-10-12'])
+    expect([minutesOf('2026-10-12T11:30'), minutesOf('2026-10-12T00:00'), minutesOf('2026-10-12')]).toEqual([690, 0, null])
+    expect([atTime('2026-10-12', 690), atTime('2026-10-12', 0), atTime('2026-10-12', 23 * 60 + 30)]).toEqual([
+      '2026-10-12T11:30',
+      '2026-10-12T00:00',
+      '2026-10-12T23:30',
+    ])
   })
 
   it('turns off the days before the least and after the most a field allows', () => {

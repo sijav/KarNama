@@ -1364,6 +1364,46 @@ least 47 and an English one grows: "Today", "Yesterday", "Two days ago".
 19 at Regular in `text/secondary`, and `text/primary` underlined under the
 pointer over 120 ms. `dateShortcut` and `clearLink` are their words. KN-756.
 
+### The calendar popover
+
+**Popover / ویرایش تاریخ (تقویم)**, `774:16705`, read on 2026-11-04: Type
+تاریخ, and تاریخ و ساعت by Time List Closed, Open and Hover, with Title, Helper,
+Show Helper, Clear, Show Shortcuts and Time. The panel is the date dropdown's,
+`popoverPaper` at 276. From the top:
+
+- the head, the title 14 on 22 at Medium in `text/primary` at the inline start
+  and Popover / Close at 22 at the inline end;
+- the shortcuts, a past date's «امروز، دیروز، پریروز» or an interview's «امروز،
+  فردا، پس‌فردا», the date dropdown's row;
+- the month calendar, filling 242;
+- with a time, Field / ساعت: «ساعت» 12 on 19 at Regular in `text/secondary`, 6
+  above a box 38 high at radius 6, 8 and 10 in, `bg/surface` inside one of
+  `border/default`, the time 13 on 20 in `text/primary` at the inline start and
+  the 16 clock at the inline end, a dash while it has none; its edge
+  `text/secondary` under the pointer;
+- the helper, 12 on 19 at Regular in `text/secondary`, wrapping;
+- the actions, the date dropdown's footer with «ذخیره» for its Primary.
+
+A press on the time opens the Time List, `774:16897`, 4 under the box at its
+width over 150 ms and closes it over 120, in a popover of its own whose focus
+starts on the chosen time and comes back to the box; Escape closes the list
+alone. A press on a day, a shortcut or a time only chooses it; Save hands over
+the day, or the day at its time as `YYYY-MM-DDTHH:mm`, and closes; Popover /
+Close, Cancel, Escape and a press outside close with no change. The clear link
+shows when the field may be emptied and has a date, as the deadline's does. The
+screens' copy is the field's: «مهلت درخواست» with «۳ روز مونده به مهلت، روی کارت
+قرمز میشه.», «تاریخ درخواست» with «عدد پاورقی و ترتیب ستون از همین تاریخ حساب
+میشن.», «تاریخ مصاحبه» with «تاریخچه هم با همین عوض میشه.».
+
+The handoff opens it under the card, or beside it when there is no room, and
+beside the row in the history: it hangs 4 under its anchor from the inline
+start, or 4 beside it at the inline end, level with its top, when the room
+below is short of the tallest it can be, 534 with a time and 459 without, or
+when `beside` asks. It fades in over 200 ms and out over 150, a dialog named by
+its title. `dateEditTitle`, `dateEditHelper`, `timeFieldLabel` and
+`timeFieldValue` are its words. The compact Popover / ویرایش تاریخ, `755:22108`,
+is on the handoff's list not to build. KN-757.
+
 ### The board's add links
 
 **Board / Add Card Link**, `961:95525`, Default and Hover, read on 2026-11-03:
@@ -2080,6 +2120,7 @@ of the contract.
 | Date Dropdown         | `774:16896`  | Date Picker / Dropdown, Show Shortcuts and Clear: a form's date field's calendar                                  |
 | Date Shortcut         | `780:44444`  | Date Picker / Shortcut, Default and Hover: a day at one press                                                     |
 | Clear Link            | `848:2253`   | Date Picker / Clear Link, Default and Hover: empties the date field                                               |
+| Calendar Popover      | `774:16705`  | Popover / ویرایش تاریخ (تقویم): a date, or a date and time with its time list                                     |
 | Add Card Link         | `961:95525`  | Default, Hover: after a column's last card, adds to that column                                                   |
 | Add Status Column     | `961:95530`  | Default, Hover: a dashed stage-wide column that makes a stage                                                     |
 | Toast                 | `956:3193`   | the action, Default, Hover; the frames' whole message `717:12416`                                                 |

@@ -125,6 +125,16 @@ export interface KanbanCardFixture {
   note: string
 }
 
+/** The calendar popover's titles and helpers, as the screens write them on 774:16705, KN-757. */
+export interface DateEditFixture {
+  appliedTitle: string
+  appliedHelper: string
+  deadlineTitle: string
+  deadlineHelper: string
+  interviewTitle: string
+  interviewHelper: string
+}
+
 /** The closed outcomes' names, as the board's strips show them, KN-749. */
 export interface OutcomeNamesFixture {
   accepted: string
@@ -204,6 +214,8 @@ export interface Fixtures {
   historyWords: HistoryWordsFixture
   /** The redesigned card's words, as its frame draws them, KN-745. */
   kanbanCard: KanbanCardFixture
+  /** The calendar popover's words, as the screens write them, KN-757. */
+  dateEdit: DateEditFixture
   /**
    * The fixtures as the product keeps them, for a story to seed a
    * `RecordsProvider` with, KN-437: every status, every job opportunity made by
@@ -234,6 +246,7 @@ export interface RawFixtures {
   outcomeNames: OutcomeNamesFixture
   historyWords: HistoryWordsFixture
   kanbanCard: KanbanCardFixture
+  dateEdit: DateEditFixture
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -374,6 +387,7 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     outcomeNames: Object.freeze({ ...raw.outcomeNames }),
     historyWords: Object.freeze({ ...raw.historyWords }),
     kanbanCard: Object.freeze({ ...raw.kanbanCard }),
+    dateEdit: Object.freeze({ ...raw.dateEdit }),
   })
 }
 
