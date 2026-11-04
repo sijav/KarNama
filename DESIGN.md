@@ -1269,6 +1269,30 @@ Confirm modal's Cancel takes it because there the first key must change
 nothing. Its body is the Confirm modal's paragraph, the shell's `ModalText`.
 KN-763.
 
+### The history row
+
+**History / Row**, `749:32`, read on 2026-11-04, sets its date 12 on 19, Figma's
+automatic line, at Regular and a round's title 13 on 20 at Medium,
+`historyDate` and `historyTitle`: one entry of a job opportunity's history,
+Kind Status or Round by State Default, Hover and Locked, with Line Top and Line
+Bottom. A row 43 tall at radius 8, 12 at the sides and 12 between, its items
+centred: from the inline start the Marker, 12 wide, a two pixel line of
+`border/default` above and below a dot, a solid 10 of `text/secondary` for a
+status and a hollow 8, `bg/surface` inside one and a half of `text/secondary`,
+for a round; the status's small Status Chip or the round's title in
+`text/primary`; then the date, «· دستی» or the round's time and result after it
+in `text/secondary`, and a pencil at 14, hidden, 6 apart. Hover fills the row
+with `bg/surface-secondary`, turns the date `text/brand` at Medium and gives the
+source's room to the pencil in `text/brand`; Locked, the saved row, has no
+pencil and no hover. **History / Row (Mobile)**, `1313:3390`, puts the heading
+over the date, 4 apart and 8 above and below, its pencil always shown in
+`text/secondary` but on the locked row. The job modal's History List stacks the
+rows with no gap, the newest without its top line and the oldest without its
+bottom one. The code makes the date, its source and the pencil one button that
+asks to change the date, draws the hover look while keyboard focus is inside as
+well as under the pointer where there is hover, and draws the round's one and a
+half as an inset shadow, since Chromium floors a border of 1.5. KN-753.
+
 ### The company match
 
 **Company Match**, `1096:3111`, read on 2026-11-04: one component with no
@@ -1688,6 +1712,7 @@ of the contract.
 | Manual Path Link      | `961:101603` | Default, Hover: the way round the paste field to the empty form                                                   |
 | Related Person        | `1096:3109`  | Default, Hover; Related Person / Mobile `1313:3295`                                                               |
 | Company Match         | `1096:3111`  | no variants: the related people tab's prompt to link someone from the job opportunity's company                   |
+| History Row           | `749:32`     | Status, Round by Default, Hover, Locked; History / Row (Mobile) `1313:3390`                                       |
 | Stats Number          | `1168:3159`  | Applied, Interview, Offer, Rejected, NoResponse: the Stats page's first row                                       |
 | Week Bar              | `1168:3183`  | Current=No, Current=Yes: one week of the Stats page's applications                                                |
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |

@@ -318,4 +318,5 @@ export const messages: Record<string, string> = {
   'In progress': 'In progress',
   Closed: 'Closed',
   'Status:': 'Status:',
+  'Change the date': 'Change the date',
 }

@@ -52,6 +52,7 @@ export type StoryTitle =
   | 'Shared/EmptyState'
   | 'Shared/FilterChip'
   | 'Shared/GroupedStatusPicker'
+  | 'Shared/HistoryRow'
   | 'Shared/Icon'
   | 'Shared/IconButton'
   | 'Shared/InlineLink'

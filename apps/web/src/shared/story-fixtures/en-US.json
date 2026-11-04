@@ -58,6 +58,7 @@
   "contactTag": "Recruiter",
   "statsLabels": { "applied": "Applied", "interview": "Interviews", "offer": "Offers", "rejected": "Rejected", "noResponse": "No response" },
   "outcomeNames": { "accepted": "Accepted", "rejected": "Rejected", "noResponse": "No response", "withdrawn": "Withdrawn" },
+  "historyWords": { "roundTitle": "First interview round", "manual": "manual", "automatic": "automatic", "roundDetail": "at 11 · result: next round" },
   "statsSources": [
     { "name": "Jobinja", "applications": 9, "interviews": 1 },
     { "name": "LinkedIn", "applications": 5, "interviews": 2 },

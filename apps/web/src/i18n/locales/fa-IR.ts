@@ -318,4 +318,5 @@ export const messages: Record<string, string> = {
   'In progress': 'در جریان',
   Closed: 'بسته‌شده',
   'Status:': 'وضعیت:',
+  'Change the date': 'تغییر تاریخ',
 }

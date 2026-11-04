@@ -117,7 +117,9 @@ export const type = {
  * SemiBold on the chosen tab, KN-784. The board's outcome strip, `638:7928`,
  * sets its name 13 on 20 at SemiBold and its count 12 on Figma's automatic 19
  * at Medium, KN-749. The grouped status picker, `636:6417`, sets its label 12
- * on 19 at Medium and its captions 12 on 19 at Regular, KN-751.
+ * on 19 at Medium and its captions 12 on 19 at Regular, KN-751. The history row,
+ * `749:32`, sets its date 12 on its automatic 19 at Regular and a round's title
+ * 13 on 20 at Medium, KN-753.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -138,6 +140,8 @@ export const unstyledText = {
   outcomeStripCount: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
   groupedPickerLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
   groupedPickerCaption: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+  historyDate: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+  historyTitle: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
 } as const
 
 /**

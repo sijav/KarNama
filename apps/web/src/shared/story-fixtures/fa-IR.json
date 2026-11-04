@@ -58,6 +58,7 @@
   "contactTag": "کارشناس جذب",
   "statsLabels": { "applied": "درخواست", "interview": "مصاحبه", "offer": "پیشنهاد کار", "rejected": "رد شده", "noResponse": "بی‌پاسخ" },
   "outcomeNames": { "accepted": "پذیرفته‌شده", "rejected": "رد شده", "noResponse": "بی‌پاسخ", "withdrawn": "انصراف" },
+  "historyWords": { "roundTitle": "مصاحبهٔ دور اول", "manual": "دستی", "automatic": "خودکار", "roundDetail": "ساعت ۱۱ · نتیجه: دور بعدی" },
   "statsSources": [
     { "name": "جابینجا", "applications": 9, "interviews": 1 },
     { "name": "لینکدین", "applications": 5, "interviews": 2 },

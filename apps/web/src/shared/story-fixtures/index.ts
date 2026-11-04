@@ -107,6 +107,14 @@ export interface StatsSourceFixture {
   interviews: number
 }
 
+/** A history row's words, the round's title and the sources, as the history tab writes them, KN-753. */
+export interface HistoryWordsFixture {
+  roundTitle: string
+  manual: string
+  automatic: string
+  roundDetail: string
+}
+
 /** The closed outcomes' names, as the board's strips show them, KN-749. */
 export interface OutcomeNamesFixture {
   accepted: string
@@ -178,6 +186,8 @@ export interface Fixtures {
   statsGuidance: readonly StatsGuidanceFixture[]
   /** The closed outcomes' names, until the records hold the outcomes, KN-749. */
   outcomeNames: OutcomeNamesFixture
+  /** A history row's words, until the history tab writes them, KN-753. */
+  historyWords: HistoryWordsFixture
   /**
    * The fixtures as the product keeps them, for a story to seed a
    * `RecordsProvider` with, KN-437: every status, every job opportunity made by
@@ -206,6 +216,7 @@ export interface RawFixtures {
   statsSources: readonly StatsSourceFixture[]
   statsGuidance: readonly StatsGuidanceFixture[]
   outcomeNames: OutcomeNamesFixture
+  historyWords: HistoryWordsFixture
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -319,6 +330,7 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     statsSources: Object.freeze(raw.statsSources.map((source) => Object.freeze({ ...source }))),
     statsGuidance: Object.freeze(raw.statsGuidance.map((guidance) => Object.freeze({ ...guidance }))),
     outcomeNames: Object.freeze({ ...raw.outcomeNames }),
+    historyWords: Object.freeze({ ...raw.historyWords }),
   })
 }
 
