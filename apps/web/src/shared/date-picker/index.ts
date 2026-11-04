@@ -1,4 +1,7 @@
 export { CalendarDay, type CalendarDayProps } from './CalendarDay'
+export { ClearLink, type ClearLinkProps } from './ClearLink'
+export { DateDropdown, type DateDropdownProps } from './DateDropdown'
+export { DateShortcut, type DateShortcutProps } from './DateShortcut'
 export { calendarOf, monthStart, type CalendarSystem } from './month'
 export { MonthArrow, type MonthArrowProps } from './MonthArrow'
 export { MonthCalendar, type MonthCalendarProps } from './MonthCalendar'

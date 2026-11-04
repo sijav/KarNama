@@ -1,3 +1,4 @@
+import { Box } from '@mui/material'
 import type { StoryObj } from '@storybook/react-vite'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, type Locale } from '../../i18n'
@@ -20,6 +21,8 @@ const SHAHRIVAR = '2026-08-23'
 const MEHR = '2026-09-23'
 const ABAN = '2026-10-23'
 const NINTH_OF_MEHR = '2026-10-01'
+// Node 773:16585's own width.
+const WIDTH = 244
 
 const meta = {
   title: 'Shared/MonthCalendar',
@@ -28,6 +31,14 @@ const meta = {
   // Each story's dates are the ones its play measures, so a control changing one
   // would fail a play nothing broke.
   parameters: { controls: { disable: true } },
+  // The frame's own width; the calendar fills whatever holds it.
+  decorators: [
+    (Story) => (
+      <Box sx={{ width: WIDTH }}>
+        <Story />
+      </Box>
+    ),
+  ],
 } satisfies StoryMeta<typeof MonthCalendar>
 
 export default meta

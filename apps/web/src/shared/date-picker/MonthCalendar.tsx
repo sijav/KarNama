@@ -32,10 +32,10 @@ export interface MonthCalendarProps {
   onSelect: (day: string) => void
 }
 
-// Node 773:16585 binds no variable to its sizes: 244 wide, its weeks 238, seven
-// cells of 34; the weekdays' cells 24 high. Its 4 between rows and under the
-// header is spacing 2xs.
-const WIDTH = 244
+// Node 773:16585 binds no variable to its sizes: its weeks 238, seven cells of
+// 34, centred in its width, 244 alone and 242 filling the date dropdown, KN-756;
+// the weekdays' cells 24 high. Its 4 between rows and under the header is
+// spacing 2xs.
 const CELL_WIDTH = 34
 const WEEKDAY_HEIGHT = 24
 // The month's turn, the handoff's 150 ms dissolve.
@@ -61,10 +61,11 @@ const sameDayIn = (system: CalendarSystem, start: string, day: string) =>
 // then the weekdays' letters, then the weeks, five or six, whose turn
 // dissolves in over 150 ms. Today is ringed, the chosen day is blue, and the
 // days outside `min` and `max` are off. The month shown first holds
-// `initialMonth`, else the chosen day, else today. The keyboard moves as a date
-// grid does: one day in the Tab order, the arrows a day or a week, Home and End
-// to the week's ends, Page Up and Page Down a month, a move past the month
-// turning it.
+// `initialMonth`, else the chosen day, else today, and it turns to the chosen
+// day when that moves outside it, as a shortcut moves it. The keyboard moves as
+// a date grid does: one day in the Tab order, the arrows a day or a week, Home
+// and End to the week's ends, Page Up and Page Down a month, a move past the
+// month turning it.
 export const MonthCalendar = ({ today, selected = null, min = null, max = null, initialMonth = null, onSelect }: MonthCalendarProps) => {
   const { locale } = usePreferences()
   const system = calendarOf(locale)
@@ -74,6 +75,13 @@ export const MonthCalendar = ({ today, selected = null, min = null, max = null, 
   const [shown, setShown] = useState(() => initialMonth ?? selected ?? today)
   const [focus, setFocus] = useState<string | null>(null)
   const [moved, setMoved] = useState(false)
+  // The chosen day this calendar last followed: a new one outside the month
+  // shown turns it there, React's way of adjusting state to a prop.
+  const [followed, setFollowed] = useState(selected)
+  if (selected !== followed) {
+    setFollowed(selected)
+    if (selected !== null && monthStart(system, selected) !== monthStart(system, shown)) setShown(selected)
+  }
   const start = monthStart(system, shown)
   const inMonth = (day: string | null) => day !== null && monthStart(system, day) === start
   const tabbable = [focus, selected, today].find(inMonth) ?? start
@@ -115,7 +123,7 @@ export const MonthCalendar = ({ today, selected = null, min = null, max = null, 
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', width: WIDTH, gap: `${spacing['2xs']}px` }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: `${spacing['2xs']}px` }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: `${spacing['2xs']}px` }}>
         <MonthArrow
           direction="previous"

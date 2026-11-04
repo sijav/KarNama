@@ -1306,7 +1306,7 @@ month to the inline end, so left in Persian; Hover fills `bg/surface-secondary`
 over 120 ms.
 
 **Date Picker / Calendar**, `773:16585`, Shahrivar, Mehr and Aban 1405: 244
-wide, 4 between its rows. The header, 4 above the weekdays, holds the previous
+wide alone and filling the date dropdown's 242, 4 between its rows. The header, 4 above the weekdays, holds the previous
 month at the inline start, the title, «شهریور ۱۴۰۵», 14 on 22 at Medium in
 `text/primary`, and the next month at the inline end. The weekdays are seven
 cells 34 by 24, «ش ی د س چ پ ج», 12 on 19 at Regular in `text/secondary`,
@@ -1330,6 +1330,39 @@ Persian, or a week, Home and End to the week's ends, Page Up and Page Down a
 month, a move past the month turning it; the days off stay in reach and take no
 press. `calendarTitle`, `calendarWeekday`, `calendarDay` and
 `calendarDayMarked` are its words. KN-754.
+
+### The date dropdown
+
+**Date Picker / Dropdown**, `774:16896`, read on 2026-11-04, a component with
+Show Shortcuts and Clear: a form's date field's calendar in the redesign's
+popover panel, `popoverPaper` at 276, 16 round and 12 between. From the top:
+
+- the shortcuts, 6 apart from the inline start, «امروز», «دیروز» and «پریروز»;
+- the month calendar, filling the panel's 242 inside its edge;
+- the footer, 8 apart: the clear link at the inline start, a spacer, and Button
+  S Text «انصراف» and Button S Primary «تأیید» at the inline end.
+
+Its description sets the rules: a press on a day only chooses it and the
+calendar stays open; «تأیید» puts the date in the field and closes; «انصراف» or
+a press outside closes with no change, and Escape does too; «پاک کردن», only
+when the field has a date, empties it and closes; the form's own save records
+the change; the shortcuts are the posted date's alone. A shortcut chooses its
+day as a day does, and the calendar turns to its month; one whose day the field
+does not allow is hidden, as the handoff says. «تأیید» with nothing chosen
+closes. The field's press opens it with Smart Animate over 200 ms, ease out, and
+the handoff closes a small window in 150, so it fades in and out over those,
+at once under reduced motion. It hangs 4 under the field from its inline
+start, a dialog named by the field, focus starting on the panel.
+
+**Date Picker / Shortcut**, `780:44444`, Default and Hover: a pill at radius
+999, 3 above and below and 10 at the sides, 12 on 19 at Regular in
+`text/primary` on `bg/surface-secondary`, and on `border/default` under the
+pointer over 120 ms. The screens' three are 47 wide each, so a shortcut is at
+least 47 and an English one grows: "Today", "Yesterday", "Two days ago".
+
+**Date Picker / Clear Link**, `848:2253`, Default and Hover: «پاک کردن» 12 on
+19 at Regular in `text/secondary`, and `text/primary` underlined under the
+pointer over 120 ms. `dateShortcut` and `clearLink` are their words. KN-756.
 
 ### The board's add links
 
@@ -2044,6 +2077,9 @@ of the contract.
 | Date Picker / Day     | `773:16113`  | Default, Friday, Hover, Today, Selected, Disabled, Empty, two hovers: a day, KN-754                               |
 | Month Calendar        | `773:16585`  | Date Picker / Calendar, Shahrivar, Mehr, Aban 1405: one month, Saturday first                                     |
 | Month Arrow           | `848:2238`   | Date Picker / Nav Arrow, Next and Prev by Default, Hover: turns the month                                         |
+| Date Dropdown         | `774:16896`  | Date Picker / Dropdown, Show Shortcuts and Clear: a form's date field's calendar                                  |
+| Date Shortcut         | `780:44444`  | Date Picker / Shortcut, Default and Hover: a day at one press                                                     |
+| Clear Link            | `848:2253`   | Date Picker / Clear Link, Default and Hover: empties the date field                                               |
 | Add Card Link         | `961:95525`  | Default, Hover: after a column's last card, adds to that column                                                   |
 | Add Status Column     | `961:95530`  | Default, Hover: a dashed stage-wide column that makes a stage                                                     |
 | Toast                 | `956:3193`   | the action, Default, Hover; the frames' whole message `717:12416`                                                 |

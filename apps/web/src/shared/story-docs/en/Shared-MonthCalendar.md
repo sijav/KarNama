@@ -21,7 +21,8 @@ Today's date, which is ringed.
 
 ### selected
 
-The chosen date, drawn blue. The month it is in shows first.
+The chosen date, drawn blue. The month it is in shows first, and the month
+turns to it when it moves outside, as a shortcut moves it.
 
 ### min
 

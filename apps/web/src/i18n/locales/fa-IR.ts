@@ -388,4 +388,7 @@ export const messages: Record<string, string> = {
   'go?': 'چی شد؟',
   'Next month': 'ماه بعد',
   'Previous month': 'ماه قبل',
+  Yesterday: 'دیروز',
+  'Two days ago': 'پریروز',
+  Clear: 'پاک کردن',
 }
