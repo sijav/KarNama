@@ -148,10 +148,10 @@ test("one reader never sees another reader's archive", async ({ page }) => {
   await page.getByLabel('نام و نام خانوادگی').fill(NAME)
   await page.getByRole('button', { name: 'شروع کن' }).click()
   await page.getByRole('button', { name: 'افزودن فرصت شغلی' }).first().click()
-  await page.getByRole('dialog').getByRole('button', { name: 'خودت دستی وارد کن' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'ورود دستی' }).click()
   await page.getByRole('dialog').getByLabel('عنوان شغلی*').fill(SECRET)
   await page.getByRole('dialog').getByLabel('نام شرکت*').fill('جایی')
-  await page.getByRole('dialog').getByRole('button', { name: 'ذخیره' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'افزودن', exact: true }).click()
   await expect(page.getByRole('article').filter({ hasText: SECRET })).toBeVisible()
 
   // They sign out, and somebody else signs in on the same browser.

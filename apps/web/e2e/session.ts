@@ -44,10 +44,10 @@ export const emptyBoard = async (page: Page) => {
 export const addJob = async (page: Page, title: string) => {
   await page.getByRole('button', { name: 'افزودن فرصت شغلی' }).first().click()
   const modal = page.getByRole('dialog')
-  await modal.getByRole('button', { name: 'خودت دستی وارد کن' }).click()
+  await modal.getByRole('button', { name: 'ورود دستی' }).click()
   await modal.getByLabel('عنوان شغلی*').fill(title)
   await modal.getByLabel('نام شرکت*').fill('یک شرکت')
-  await modal.getByRole('button', { name: 'ذخیره' }).click()
+  await modal.getByRole('button', { name: 'افزودن', exact: true }).click()
   await expect(page.getByRole('article').filter({ hasText: title })).toBeVisible()
 }
 
