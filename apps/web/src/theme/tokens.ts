@@ -139,7 +139,8 @@ export const type = {
  * automatic 25 at SemiBold, which the Title role's 24 drew a pixel short, KN-769.
  * The redesigned job card, `793:1820`, sets its title 14 on Figma's automatic 22
  * at Medium and every other line 12 on its automatic 19 at Regular, its deadline
- * at Medium, KN-745.
+ * at Medium, KN-745. The card's interview slot, `656:6291`, sets its words 12
+ * on that 19 at Regular and its labels at Medium, KN-747.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -172,6 +173,8 @@ export const unstyledText = {
   kanbanTitle: { size: 14, lineHeight: 22, weight: 500, letterSpacing: 0 },
   kanbanText: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
   kanbanDeadline: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
+  interviewSlotText: { size: 12, lineHeight: 19, weight: 400, letterSpacing: 0 },
+  interviewSlotLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
 } as const
 
 /**

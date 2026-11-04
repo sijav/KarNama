@@ -985,6 +985,51 @@ The variant draws a Next row, counters and a Select slot ring of an unbound
 Checkbox is drawn alone. It replaces the old Card, `137:44`, when the board is
 rebuilt, KN-805. KN-745.
 
+### The interview slot
+
+**Card / Interview Slot**, `656:6291`, read on 2026-11-04: the interview's row
+on a card in the interview column, across the card's inner width, 242. It has
+nine variants, five states and four of them hovered.
+
+- No date, «+ تاریخ مصاحبه», and the next round, «+ تاریخ دور دوم», are open
+  rows: a 14 plus and the label, 12 on Figma's automatic 19 at Regular in
+  `text/secondary`, 4 above and below and 4 between. Each plans the date, the
+  calendar with a time.
+- Dated is `bg/brand/container` at radius 6, 6 above and below, 8 at the sides
+  and 6 between: the 14 calendar and «مصاحبه» at Medium in `text/brand` at the
+  inline start, and when at the inline end at Medium, «امروز · ۱۴:۰۰», «فردا ·
+  ۱۰:۰۰» or the day and date, «دوشنبه ۲۰ مهر · ۱۱:۰۰», without the time when it
+  has none. Pressed, it plans the date again.
+- Waiting is the same on `bg/surface-secondary`: the 14 clock and «منتظر نتیجهٔ
+  مصاحبه» at Medium in `text/secondary`, and how long at Regular, «از ۳ روز
+  پیش» or «از امروز». The file gives its press no action, so it is a button
+  only when the board asks the question again.
+- The question is `bg/surface-secondary` at radius 6, 8 round and 8 between:
+  «مصاحبهٔ سه‌شنبه چی شد؟» at Medium in `text/primary`, three Chip / Action 6
+  apart from the inline start, «دور بعدی», «منتظر نتیجه» and «نتیجه گرفتم»,
+  then the Link / Inline «تاریخش عوض شد». The question names the answers'
+  group for a screen reader.
+
+Under the pointer a row's label is underlined, the file's 120 ms dissolve
+fading the line in, at once under reduced motion. The file draws no focus, so
+Tab draws an outline three wide and two clear round an open row, as round the
+Inline Link, and a ring three wide inside a boxed one, as inside the Action
+Chip.
+
+Dates are in the reader's calendar and digits. The day and date take Intl's
+short names, which Persian writes as the long ones, and which keep the English
+row, "Mon, Oct 12 · 11:00", on its one line; for the same reason the English
+waiting label is "Result pending". In English the answers wrap where the three
+do not fit. No size is bound in the file; the words are `interviewSlotText`
+and `interviewSlotLabel`, and `interviewWhen` and `waitingFor` in
+`shared/interview-slot` word the dates, proved at each boundary.
+
+The handoff says when each state shows, which is the board's, KN-805: the
+question 2 hours after the interview's time, or when its day ends; «نتیجه
+گرفتم» opens the status picker under the card; the next round clears the old
+date from the card and keeps it in the history; after 14 days of waiting the
+card asks whether the reader still is. KN-747.
+
 ### The kanban column
 
 Node `241:125`, a frame on the board screen rather than a component: 300 wide
@@ -1907,6 +1952,7 @@ of the contract.
 | Card / Mobile       | `491:751` | Default, Selected                                                                               |
 | Card / Kanban         | `793:1820`   | Default, Hover, Select Hover by deadline: the redesigned board's card, KN-745                                     |
 | Card / Edit Icon      | `793:1770`   | Default, Hover: the pencil that edits a card's deadline or application date                                       |
+| Card / Interview Slot | `656:6291`   | none, dated, waiting, question, next round, four hovered: a card's interview row, KN-747                          |
 | Status Stripe       | `358:430` | the 4px colour bar on the card, one per status                                                  |
 | Company Logo          | `620:3684`   | the default organisation icon; a fetched logo covers the same square                                              |
 | Modal / Confirm     | `150:92`  | delete and archive confirmation                                                                 |

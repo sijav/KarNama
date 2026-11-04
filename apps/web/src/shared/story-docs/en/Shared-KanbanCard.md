@@ -166,6 +166,11 @@ The actions button hands the board its anchor.
 
 The prompt, and its link pressed.
 
+### WithTheInterview
+
+The card holding a dated interview slot between the meta line and the note; a
+press on the slot plans the interview and does not open the job opportunity.
+
 ### OnATouchScreen
 
 Where there is no hover, the actions button stays in view.

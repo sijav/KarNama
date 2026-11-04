@@ -52,9 +52,9 @@ const structuralProps =
   // same for the class each component puts on the part its own rules select,
   // the Checkbox's frame, the Color Picker's swatch, the reveal, check, delete
   // and opener of the two cards, the Status Choice's shell, the Related
-  // Person's tag and actions, KN-773, and the history row's date, source and
-  // pencil, KN-753.
-  '|TOOLTIP_SURFACE|TOOLTIP_LABEL_SURFACE|FRAME|SWATCH|REVEAL|CHECK|BIN|OPENER|CHOICE|TAG|ACTIONS|DATE|SOURCE|EDIT|CHIP|MORE_SLOT|PENCIL_SLOT' +
+  // Person's tag and actions, KN-773, the history row's date, source and
+  // pencil, KN-753, and the interview slot's underlined label, KN-747.
+  '|TOOLTIP_SURFACE|TOOLTIP_LABEL_SURFACE|FRAME|SWATCH|REVEAL|CHECK|BIN|OPENER|CHOICE|TAG|ACTIONS|DATE|SOURCE|EDIT|CHIP|MORE_SLOT|PENCIL_SLOT|UNDERLINED' +
   // Storybook's own vocabulary, KN-214: the colour scheme a story pins, the
   // control a prop gets and the canvas layout. Each value is one of a few
   // names Storybook defines; none is ever shown to a reader as text.
@@ -76,9 +76,9 @@ const structuralProps =
   // instructions, not copy.
   '|fill|stroke|strokeLinecap|strokeLinejoin' +
   // The options of Intl's formatters, 'numeric', 'long', 'short', and the time
-  // zone one writes in, 'UTC', KN-494: how a date or a list is written, never
-  // the words themselves.
-  '|day|month|year|numeric|style|timeZone' +
+  // zone one writes in, 'UTC', KN-494, and the weekday's, KN-747: how a date or
+  // a list is written, never the words themselves.
+  '|day|month|year|weekday|numeric|style|timeZone' +
   // import.meta.glob's options, a query suffix and an export name, read by
   // Vite at build time.
   '|query|import' +

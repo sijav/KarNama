@@ -4,6 +4,7 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { i18nFor, type Locale } from '../../i18n'
 import { darkSemantic, darkStatus } from '../../theme/darkMode'
 import { elevation, semantic, status, type StatusToken } from '../../theme/tokens'
+import { InterviewSlot, type InterviewSlotState } from '../interview-slot'
 import { cardFooter, type CardFooter, type FooterColumn } from '../job-card'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
@@ -304,6 +305,42 @@ export const StillWaiting: Story = {
     await expect(style.backgroundColor).toBe(computed(row, semantic['bg/surface-secondary']))
     await userEvent.click(within(row).getByRole('button', { name: i18n._('It went unanswered') }))
     await expect(args.onNoResponse).toHaveBeenCalledTimes(1)
+    await expect(args.onOpen).not.toHaveBeenCalled()
+  },
+}
+
+// The interview slot's own acts, which are not the card's.
+const slotActs = { onPlan: fn(), onResult: fn(), onWaiting: fn(), onNextRound: fn(), onReschedule: fn() }
+const DATED: InterviewSlotState = 'dated'
+// Tomorrow at ten, as the slot reads it, which it says «فردا · ۱۰:۰۰».
+const TOMORROW_AT_TEN = new Date(TODAY_MS + DAY_MS + 10 * 3_600_000).toISOString().slice(0, 16)
+
+export const WithTheInterview: Story = {
+  // The interview slot, 656:6291, KN-747, between the meta line and the note
+  // across the card's inner width, 242 in the frame, KN-853. It sits above the
+  // title's cover, so a press on it plans the interview and does not open the
+  // job opportunity.
+  args: {
+    ...cardIn('fa-IR', footerFor('fa-IR', PROGRESS, null)),
+    interview: <InterviewSlot state={DATED} at={TOMORROW_AT_TEN} today={TODAY} {...slotActs} />,
+  },
+  globals: { locale: 'fa-IR', colorScheme: 'light' },
+  play: async ({ args, canvasElement }) => {
+    slotActs.onPlan.mockClear()
+    const card = await isTheFrame(canvasElement, args, semantic)
+    const i18n = i18nFor('fa-IR')
+    const slot = within(card).getByRole('button', { name: `${i18n._('Interview')} فردا · ۱۰:۰۰` })
+    const box = slot.getBoundingClientRect()
+    const framed = getComputedStyle(card)
+    const inner = card.getBoundingClientRect().width - px(framed.paddingInlineStart) - px(framed.paddingInlineEnd)
+    await expect([box.width, box.height]).toEqual([inner, 31])
+    const dot = within(card).getByText('·').getBoundingClientRect()
+    const note = within(card)
+      .getByText(args.note ?? '')
+      .getBoundingClientRect()
+    await expect([Math.round(box.top - dot.bottom), Math.round(note.top - box.bottom)]).toEqual([12, 12])
+    if (!(await pressAt(slot))) return
+    await expect(slotActs.onPlan).toHaveBeenCalledWith(slot)
     await expect(args.onOpen).not.toHaveBeenCalled()
   },
 }
