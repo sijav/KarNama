@@ -7,10 +7,12 @@ import { expect, fn, spyOn, userEvent, waitFor, within } from 'storybook/test'
 import type { Locale } from '../../i18n'
 import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
+import { darkSemantic } from '../../theme/darkMode'
 import { elevation, semantic } from '../../theme/tokens'
 import { Button } from '../button'
 import { passOnUnmarked } from '../console-guard'
 import type { StoryMeta } from '../story-docs/story-meta'
+import { closeIsTheFiles } from './closeCheck'
 import { DISSOLVE_MS, Modal, type ModalProps } from './Modal'
 
 // The file's Confirm specimen, node 150:92, its title from the catalog in the
@@ -135,6 +137,8 @@ export const Shell: Story = {
     ]).toEqual([20, 28, 600])
     await expect(title.parentElement?.getBoundingClientRect().height).toBe(28)
     await expect([...paper.querySelectorAll('hr')].map((rule) => rule.getBoundingClientRect().height)).toEqual([1, 1])
+    // The close is Popover / Close at 20, KN-838.
+    await closeIsTheFiles(dialog, 'fa-IR', semantic)
     await userEvent.keyboard('{Escape}')
   },
 }
@@ -186,6 +190,21 @@ export const InEnglish: Story = {
     // It dissolves in over 150 ms, so it is visible once that has run.
     const dialog = await body(canvasElement).findByRole('dialog', { name: args.title })
     await waitFor(() => expect(dialog).toBeVisible())
+    await closeIsTheFiles(dialog, 'en-US', semantic)
+    await userEvent.keyboard('{Escape}')
+  },
+}
+
+export const InTheDark: Story = {
+  // The close in English in the dark scheme, its x in the dark text/secondary,
+  // KN-838.
+  args: { title: titleIn('en-US') },
+  globals: { locale: 'en-US', colorScheme: 'dark' },
+  play: async ({ args, canvasElement }) => {
+    await userEvent.click(within(canvasElement).getByRole('button'))
+    const dialog = await body(canvasElement).findByRole('dialog', { name: args.title })
+    await waitFor(() => expect(dialog).toBeVisible())
+    await closeIsTheFiles(dialog, 'en-US', darkSemantic)
     await userEvent.keyboard('{Escape}')
   },
 }

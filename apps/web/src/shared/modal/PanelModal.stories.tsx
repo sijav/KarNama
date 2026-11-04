@@ -10,6 +10,8 @@ import { Button } from '../button'
 import { passOnUnmarked } from '../console-guard'
 import { Input } from '../input'
 import type { StoryMeta } from '../story-docs/story-meta'
+import { semantic } from '../../theme/tokens'
+import { closeIsTheFiles } from './closeCheck'
 import { PanelModal, type PanelModalProps } from './PanelModal'
 
 // The Contact Modal's title, node 270:152, from the catalog in the language a
@@ -103,6 +105,7 @@ export const Panel: Story = {
     // the actions at the inline end.
     await userEvent.click(within(canvasElement).getByRole('button'))
     const dialog = await within(canvasElement.ownerDocument.body).findByRole('dialog', { name: args.title })
+    await closeIsTheFiles(dialog, 'fa-IR', semantic)
     const [header, top, form, , footer] = [...dialog.children].filter((part) => part instanceof HTMLElement)
     if (!header || !top || !form || !footer) throw new Error('the panel has not five parts')
     const [headerStyle, formStyle, footerStyle] = [header, form, footer].map((part) => getComputedStyle(part))

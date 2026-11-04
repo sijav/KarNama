@@ -66,6 +66,10 @@ A press on the scrim closing it.
 
 The shell in English.
 
+### InTheDark
+
+The same in English in the dark scheme, its close in the theme's dark colours.
+
 ### ReportsABlankTitle
 
 A title of one space, which names nothing: the modal reports it at the console,

@@ -8,6 +8,8 @@ import type { SelectOption } from '../select'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
 import { keyboardOf, type Keyboard } from '../story-fixtures/keyboard'
+import { semantic } from '../../theme/tokens'
+import { closeIsTheFiles } from './closeCheck'
 import { ContactModal, type ContactModalProps, type ContactModalRecord, type ContactModalValues } from './ContactModal'
 
 // The job opportunities a contact can belong to, written «company — title» as
@@ -139,6 +141,7 @@ export const Add: Story = {
     if (!header || !top || !form || !bottom || !footer) throw new Error('the panel has not five parts')
     await expect(dialog.getBoundingClientRect().width).toBe(560)
     await expect([header.getBoundingClientRect().height, footer.getBoundingClientRect().height]).toEqual([68, 76])
+    await closeIsTheFiles(dialog, 'fa-IR', semantic)
     await expect([top.getBoundingClientRect().width, bottom.getBoundingClientRect().width]).toEqual([560, 560])
     const fields = within(form).getAllByRole('textbox')
     // Name, role, company, email, phone and the social link.
@@ -264,6 +267,7 @@ export const InEnglish: Story = {
   play: async ({ canvasElement }) => {
     const dialog = await open(canvasElement)
     await waitFor(() => expect(dialog).toBeVisible())
+    await closeIsTheFiles(dialog, 'en-US', semantic)
     await userEvent.keyboard('{Escape}')
   },
 }

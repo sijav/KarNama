@@ -1,9 +1,9 @@
 import { useLingui } from '@lingui/react'
 import { Box, Dialog } from '@mui/material'
 import { useEffect, useId, useSyncExternalStore, type ReactNode } from 'react'
-import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
+import { spacing, type as typeScale } from '../../theme/tokens'
 import { report } from '../console-guard'
-import { IconButton } from '../icon-button'
+import { PopoverClose } from '../popover-close'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface PanelModalProps {
@@ -19,7 +19,8 @@ export interface PanelModalProps {
 // The dissolve of section 7 and the file's one pixel divider, as the shell's.
 const DISSOLVE_MS = 150
 const EDGE = 1
-const CLOSE_OVERHANG = (spacing.xl - iconSize.md) / 2
+// The close, Popover / Close at 20 as the shell's, KN-838.
+const CLOSE = 20
 
 // What a phone's software keyboard leaves in view, KN-349. Safari on iOS and Chrome on
 // Android shrink the visual viewport under a keyboard and leave the layout viewport, which the
@@ -128,9 +129,7 @@ export const PanelModal = ({ open, title, width, onClose, children, actions, asi
         >
           {title}
         </Box>
-        <Box sx={{ display: 'inline-flex', flexShrink: 0, margin: `-${CLOSE_OVERHANG}px` }}>
-          <IconButton icon="x" iconSize="md" aria-label={i18n._('Close')} onClick={onClose} />
-        </Box>
+        <PopoverClose size={CLOSE} aria-label={i18n._('Close')} onClick={onClose} />
       </Box>
       <Divider />
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: `${spacing.md}px`, padding: `${spacing.lg}px`, overflowY: 'auto' }}>

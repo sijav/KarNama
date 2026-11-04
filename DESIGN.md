@@ -614,9 +614,11 @@ the contact modal's «آگهی مربوطه», whose own prompt is why the promp
 ### The modals: the shell, Confirm and Change Status
 
 Nodes `150:92` and `150:93` share a shell: `bg/surface`, radius lg,
-`Elevation/Modal`, 24 of padding and 16 between its parts; a header of the
-title in Heading/M and the 20 x at the other end, drawn as the Icon Button round
-it with its overhang given back; a divider; the body; a divider; and the actions
+`Elevation/Modal`, 24 of padding and 16 between its parts; a header 28 tall of
+the title in Heading/M and, at the other end, Popover / Close at 20 round the x
+at 16, the shared `PopoverClose`, as the original draws every redesigned modal's
+close, where the copy drew the x at 20, KN-838; a divider; the body; a divider;
+and the actions
 at the inline end, 12 apart, the least drastic first. It sits centred over the
 file's scrim, `overlay/scrim`, black at half, a variable of its own that the
 Foundations board does not show, read with use_figma from `377:6244`; dark takes

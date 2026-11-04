@@ -5,7 +5,9 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
 import { Button } from '../button'
 import type { StoryMeta } from '../story-docs/story-meta'
 import { fixtures } from '../story-fixtures'
+import { semantic } from '../../theme/tokens'
 import { ChangeStatusModal, type ChangeStatusModalProps } from './ChangeStatusModal'
+import { closeIsTheFiles } from './closeCheck'
 
 import type { StatusToken } from '../../theme/tokens'
 
@@ -74,6 +76,7 @@ export const Default: Story = {
     await userEvent.click(within(canvasElement).getByRole('button'))
     const dialog = await body(canvasElement).findByRole('dialog')
     await expect(panelOf(dialog).getBoundingClientRect().width).toBe(420)
+    await closeIsTheFiles(dialog, 'fa-IR', semantic)
     await waitFor(() => expect(within(dialog).getByRole('radio', { checked: true })).toHaveFocus())
     const radios = within(dialog).getAllByRole('radio')
     const other = radios.find((radio) => radio.getAttribute('value') !== args.value)

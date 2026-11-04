@@ -8,6 +8,8 @@ import { messages as en } from '../../i18n/locales/en-US'
 import { messages as fa } from '../../i18n/locales/fa-IR'
 import { Button } from '../button'
 import type { StoryMeta } from '../story-docs/story-meta'
+import { semantic } from '../../theme/tokens'
+import { closeIsTheFiles } from './closeCheck'
 import { ConfirmModal, type ConfirmModalProps } from './ConfirmModal'
 
 // Deleting a job opportunity, node 150:92, its copy from the catalog in the
@@ -76,6 +78,7 @@ export const DeleteAJobOpportunity: Story = {
     // label does not hide.
     await userEvent.click(within(canvasElement).getByRole('button'))
     const dialog = await body(canvasElement).findByRole('dialog', { name: args.title })
+    await closeIsTheFiles(dialog, 'fa-IR', semantic)
     await expect(dialog.querySelector('p')?.textContent).toBe(args.body)
     const [cancel, confirm] = within(dialog).getAllByRole('button').slice(-2)
     if (!cancel || !confirm) throw new Error('two actions expected')
@@ -106,6 +109,7 @@ export const InEnglish: Story = {
     // It dissolves in over 150 ms, so it is visible once that has run.
     const dialog = await body(canvasElement).findByRole('dialog', { name: args.title })
     await waitFor(() => expect(dialog).toBeVisible())
+    await closeIsTheFiles(dialog, 'en-US', semantic)
     await userEvent.keyboard('{Escape}')
   },
 }

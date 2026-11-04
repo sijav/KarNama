@@ -1,9 +1,9 @@
 import { useLingui } from '@lingui/react'
 import { Box, Dialog, type Theme } from '@mui/material'
 import { useEffect, useId, type ReactNode } from 'react'
-import { iconSize, spacing, type as typeScale } from '../../theme/tokens'
+import { spacing, type as typeScale } from '../../theme/tokens'
 import { report } from '../console-guard'
-import { IconButton } from '../icon-button'
+import { PopoverClose } from '../popover-close'
 
 // The props are documented in story-docs, not here, KN-207.
 export interface ModalProps {
@@ -22,10 +22,10 @@ export interface ModalProps {
 export const DISSOLVE_MS = 150
 const EDGE = 1
 
-// The close is the Icon Button, a 32 square round the file's 20 x; it gives the
-// difference back with a negative margin, so the x sits at the header's inline
-// end and the header keeps the title's 28.
-const CLOSE_OVERHANG = (spacing.xl - iconSize.md) / 2
+// The close is Popover / Close at 20, its x at 16, as every redesigned modal's
+// header draws it, 150:92 and 150:93, KN-838; it is shorter than the title's
+// 28, so the header keeps that with nothing to give back.
+const CLOSE = 20
 
 // A divider, one pixel of border/default across the modal.
 export const ModalDivider = () => (
@@ -84,9 +84,7 @@ export const ModalHeader = ({ title, titleId, onClose }: { title: string; titleI
       >
         {title}
       </Box>
-      <Box sx={{ display: 'inline-flex', flexShrink: 0, margin: `-${CLOSE_OVERHANG}px` }}>
-        <IconButton icon="x" iconSize="md" aria-label={i18n._('Close')} onClick={onClose} />
-      </Box>
+      <PopoverClose size={CLOSE} aria-label={i18n._('Close')} onClick={onClose} />
     </Box>
   )
 }
