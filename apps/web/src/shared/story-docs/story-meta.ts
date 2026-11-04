@@ -69,6 +69,7 @@ export type StoryTitle =
   | 'Shared/Modal'
   | 'Shared/Navigation'
   | 'Shared/NavItem'
+  | 'Shared/OutcomeStrip'
   | 'Shared/PageHeader'
   | 'Shared/PanelModal'
   | 'Shared/PasteField'

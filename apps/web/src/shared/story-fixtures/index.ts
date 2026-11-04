@@ -107,6 +107,14 @@ export interface StatsSourceFixture {
   interviews: number
 }
 
+/** The closed outcomes' names, as the board's strips show them, KN-749. */
+export interface OutcomeNamesFixture {
+  accepted: string
+  rejected: string
+  noResponse: string
+  withdrawn: string
+}
+
 export interface StatsGuidanceFixture {
   message: string
   action: string
@@ -168,6 +176,8 @@ export interface Fixtures {
   statsSources: readonly StatsSourceFixture[]
   /** The Stats page's two guidance messages and their actions, as the handoff words them, KN-779. */
   statsGuidance: readonly StatsGuidanceFixture[]
+  /** The closed outcomes' names, until the records hold the outcomes, KN-749. */
+  outcomeNames: OutcomeNamesFixture
   /**
    * The fixtures as the product keeps them, for a story to seed a
    * `RecordsProvider` with, KN-437: every status, every job opportunity made by
@@ -195,6 +205,7 @@ export interface RawFixtures {
   statsLabels: StatsLabelsFixture
   statsSources: readonly StatsSourceFixture[]
   statsGuidance: readonly StatsGuidanceFixture[]
+  outcomeNames: OutcomeNamesFixture
 }
 
 const isToken = (value: string): value is StatusToken => value in status
@@ -307,6 +318,7 @@ export const parseFixtures = (raw: RawFixtures): Fixtures => {
     statsLabels: Object.freeze({ ...raw.statsLabels }),
     statsSources: Object.freeze(raw.statsSources.map((source) => Object.freeze({ ...source }))),
     statsGuidance: Object.freeze(raw.statsGuidance.map((guidance) => Object.freeze({ ...guidance }))),
+    outcomeNames: Object.freeze({ ...raw.outcomeNames }),
   })
 }
 

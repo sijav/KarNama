@@ -114,7 +114,9 @@ export const type = {
  * message 13 on 20 at Regular and its action, `956:3193`, 13 on 20 at
  * SemiBold, KN-764. The mobile board's status tab, `1274:3275`, sets its count
  * 12 on Figma's automatic 19 and its name 13 on 20, both at Medium, the name
- * SemiBold on the chosen tab, KN-784.
+ * SemiBold on the chosen tab, KN-784. The board's outcome strip, `638:7928`,
+ * sets its name 13 on 20 at SemiBold and its count 12 on Figma's automatic 19
+ * at Medium, KN-749.
  */
 export const unstyledText = {
   pasteLabel: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
@@ -131,6 +133,8 @@ export const unstyledText = {
   toastAction: { size: 13, lineHeight: 20, weight: 600, letterSpacing: 0 },
   statusTabCount: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
   statusTabName: { size: 13, lineHeight: 20, weight: 500, letterSpacing: 0 },
+  outcomeStripName: { size: 13, lineHeight: 20, weight: 600, letterSpacing: 0 },
+  outcomeStripCount: { size: 12, lineHeight: 19, weight: 500, letterSpacing: 0 },
 } as const
 
 /**

@@ -1257,6 +1257,23 @@ stays on the first when a long company wraps; and makes the box a group named
 by its title and each person a group named by them, so each Connect is heard
 with whose it is. KN-774.
 
+### The outcome strip
+
+**Board / Outcome Strip**, `638:7928`, read on 2026-11-04, sets its name 13 on 20
+at SemiBold and its count 12 on 19, Figma's automatic line, at Medium,
+`outcomeStripName` and `outcomeStripCount`: a closed outcome after the board's
+stages, one component drawn as «بی‌پاسخ» whose 427 instances on the board frames
+give the four. A strip 88 wide the board's height, `bg/surface-secondary` at
+radius 16, 18 above, 14 below and 8 at the sides, its parts centred from the top
+6 apart: the outcome's icon at 20, the name, and the count in a pill 1 and 8
+round it. Accepted, «پذیرفته‌شده»,
+draws the `check`, the name and the count in the custom-1 pair's base and the
+pill in its container; rejected the `x` in the rejected pair; no response the
+`clock` and withdrawn, «انصراف», `log-out`, both in `text/secondary` on a
+`bg/surface` pill. A press opens it into its column with a close, `1223:97610`,
+the board's, KN-805. The code makes it a button named by its name and count, its
+keyboard ring the three inside its edge the status tabs draw. KN-749.
+
 ### The stats number
 
 **Stats / Number**, `1168:3159`, Status=Applied, Interview, Offer, Rejected and
@@ -1639,6 +1656,7 @@ of the contract.
 | Source Row            | `1223:1807`  | Context=Card, Context=Modal: one source of the Stats page's applications                                          |
 | Stats Guidance        | `1168:3170`  | no variants: a rule's message and its action at the top of the Stats page                                         |
 | Status Tab (Mobile)   | `1274:3275`  | Default, Active, Add: the mobile board's status tabs                                                              |
+| Outcome Strip         | `638:7928`   | no variants: accepted, rejected, no response, withdrawn, each a closed outcome after the stages                   |
 
 The icon set, all at 24×24: link, search, x, arrow-right, plus, check, mail,
 trash, pencil, chevron-down, more, download, file, external-link, user, phone,
